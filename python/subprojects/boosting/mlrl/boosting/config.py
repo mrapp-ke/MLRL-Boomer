@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility function for configuring boosting algorithms.
 """
-from mlrl.common.config import NONE, ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS, BINNING_EQUAL_WIDTH
+from mlrl.common.config import NONE, OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS, BINNING_EQUAL_WIDTH
 from mlrl.common.options import BooleanOption, parse_param, parse_param_and_options
 from typing import Dict, Set, Optional
 
@@ -15,17 +15,17 @@ HEAD_TYPE_SINGLE = 'single-label'
 
 HEAD_TYPE_PARTIAL_FIXED = 'partial-fixed'
 
-ARGUMENT_LABEL_RATIO = 'label_ratio'
+OPTION_LABEL_RATIO = 'label_ratio'
 
-ARGUMENT_MIN_LABELS = 'min_labels'
+OPTION_MIN_LABELS = 'min_labels'
 
-ARGUMENT_MAX_LABELS = 'max_labels'
+OPTION_MAX_LABELS = 'max_labels'
 
 HEAD_TYPE_PARTIAL_DYNAMIC = 'partial-dynamic'
 
-ARGUMENT_THRESHOLD = 'threshold'
+OPTION_THRESHOLD = 'threshold'
 
-ARGUMENT_EXPONENT = 'exponent'
+OPTION_EXPONENT = 'exponent'
 
 HEAD_TYPE_COMPLETE = 'complete'
 
@@ -57,14 +57,14 @@ DEFAULT_RULE_VALUES: Set[str] = {BooleanOption.TRUE.value, BooleanOption.FALSE.v
 
 HEAD_TYPE_VALUES: Dict[str, Set[str]] = {
     HEAD_TYPE_SINGLE: {},
-    HEAD_TYPE_PARTIAL_FIXED: {ARGUMENT_LABEL_RATIO, ARGUMENT_MIN_LABELS, ARGUMENT_MAX_LABELS},
-    HEAD_TYPE_PARTIAL_DYNAMIC: {ARGUMENT_THRESHOLD, ARGUMENT_EXPONENT},
+    HEAD_TYPE_PARTIAL_FIXED: {OPTION_LABEL_RATIO, OPTION_MIN_LABELS, OPTION_MAX_LABELS},
+    HEAD_TYPE_PARTIAL_DYNAMIC: {OPTION_THRESHOLD, OPTION_EXPONENT},
     HEAD_TYPE_COMPLETE: {}
 }
 
 LABEL_BINNING_VALUES: Dict[str, Set[str]] = {
     NONE: {},
-    BINNING_EQUAL_WIDTH: {ARGUMENT_BIN_RATIO, ARGUMENT_MIN_BINS, ARGUMENT_MAX_BINS}
+    BINNING_EQUAL_WIDTH: {OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS}
 }
 
 
@@ -110,13 +110,13 @@ def configure_head_type(config, head_type: Optional[str]):
             config.use_single_label_heads()
         elif value == HEAD_TYPE_PARTIAL_FIXED:
             c = config.use_fixed_partial_heads()
-            c.set_label_ratio(options.get_float(ARGUMENT_LABEL_RATIO, c.get_label_ratio()))
-            c.set_min_labels(options.get_int(ARGUMENT_MIN_LABELS, c.get_min_labels()))
-            c.set_max_labels(options.get_int(ARGUMENT_MAX_LABELS, c.get_max_labels()))
+            c.set_label_ratio(options.get_float(OPTION_LABEL_RATIO, c.get_label_ratio()))
+            c.set_min_labels(options.get_int(OPTION_MIN_LABELS, c.get_min_labels()))
+            c.set_max_labels(options.get_int(OPTION_MAX_LABELS, c.get_max_labels()))
         elif value == HEAD_TYPE_PARTIAL_DYNAMIC:
             c = config.use_dynamic_partial_heads()
-            c.set_threshold(options.get_float(ARGUMENT_THRESHOLD, c.get_threshold()))
-            c.set_exponent(options.get_float(ARGUMENT_EXPONENT, c.get_exponent()))
+            c.set_threshold(options.get_float(OPTION_THRESHOLD, c.get_threshold()))
+            c.set_exponent(options.get_float(OPTION_EXPONENT, c.get_exponent()))
         elif value == HEAD_TYPE_COMPLETE:
             config.use_complete_heads()
 
@@ -139,9 +139,9 @@ def configure_label_binning(config, label_binning: Optional[str]):
             config.use_no_label_binning()
         if value == BINNING_EQUAL_WIDTH:
             c = config.use_equal_width_label_binning()
-            c.set_bin_ratio(options.get_float(ARGUMENT_BIN_RATIO, c.get_bin_ratio()))
-            c.set_min_bins(options.get_int(ARGUMENT_MIN_BINS, c.get_min_bins()))
-            c.set_max_bins(options.get_int(ARGUMENT_MAX_BINS, c.get_max_bins()))
+            c.set_bin_ratio(options.get_float(OPTION_BIN_RATIO, c.get_bin_ratio()))
+            c.set_min_bins(options.get_int(OPTION_MIN_BINS, c.get_min_bins()))
+            c.set_max_bins(options.get_int(OPTION_MAX_BINS, c.get_max_bins()))
 
 
 def configure_label_wise_squared_error_loss(config, value: str):

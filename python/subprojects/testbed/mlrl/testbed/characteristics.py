@@ -8,17 +8,17 @@ from mlrl.testbed.format import Formattable
 from scipy.sparse import issparse
 from typing import List
 
-ARGUMENT_LABELS = 'labels'
+OPTION_LABELS = 'labels'
 
-ARGUMENT_LABEL_DENSITY = 'label_density'
+OPTION_LABEL_DENSITY = 'label_density'
 
-ARGUMENT_LABEL_SPARSITY = 'label_sparsity'
+OPTION_LABEL_SPARSITY = 'label_sparsity'
 
-ARGUMENT_LABEL_IMBALANCE_RATIO = 'label_imbalance_ratio'
+OPTION_LABEL_IMBALANCE_RATIO = 'label_imbalance_ratio'
 
-ARGUMENT_LABEL_CARDINALITY = 'label_cardinality'
+OPTION_LABEL_CARDINALITY = 'label_cardinality'
 
-ARGUMENT_DISTINCT_LABEL_VECTORS = 'distinct_label_vectors'
+OPTION_DISTINCT_LABEL_VECTORS = 'distinct_label_vectors'
 
 
 def density(m) -> float:
@@ -155,10 +155,10 @@ class Characteristic(Formattable):
 
 
 LABEL_CHARACTERISTICS: List[Characteristic] = [
-    Characteristic(ARGUMENT_LABELS, 'Labels', lambda x: x.num_labels),
-    Characteristic(ARGUMENT_LABEL_DENSITY, 'Label Density', lambda x: x.label_density, percentage=True),
-    Characteristic(ARGUMENT_LABEL_SPARSITY, 'Label Sparsity', lambda x: x.label_sparsity, percentage=True),
-    Characteristic(ARGUMENT_LABEL_IMBALANCE_RATIO, 'Label Imbalance Ratio', lambda x: x.avg_label_imbalance_ratio),
-    Characteristic(ARGUMENT_LABEL_CARDINALITY, 'Label Cardinality', lambda x: x.avg_label_cardinality),
-    Characteristic(ARGUMENT_DISTINCT_LABEL_VECTORS, 'Distinct Label Vectors', lambda x: x.num_distinct_label_vectors)
+    Characteristic(OPTION_LABELS, 'Labels', lambda x: x.num_labels),
+    Characteristic(OPTION_LABEL_DENSITY, 'Label Density', lambda x: x.label_density, percentage=True),
+    Characteristic(OPTION_LABEL_SPARSITY, 'Label Sparsity', lambda x: x.label_sparsity, percentage=True),
+    Characteristic(OPTION_LABEL_IMBALANCE_RATIO, 'Label Imbalance Ratio', lambda x: x.avg_label_imbalance_ratio),
+    Characteristic(OPTION_LABEL_CARDINALITY, 'Label Cardinality', lambda x: x.avg_label_cardinality),
+    Characteristic(OPTION_DISTINCT_LABEL_VECTORS, 'Distinct Label Vectors', lambda x: x.num_distinct_label_vectors)
 ]
