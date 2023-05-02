@@ -17,7 +17,7 @@ from mlrl.testbed.format import Formattable, filter_formattables, format_table, 
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from mlrl.testbed.predictions import PredictionScope
 from sklearn.utils.multiclass import is_multilabel
-from typing import List, Dict, Set, Optional
+from typing import List, Dict, Set, Optional, Tuple
 
 ARGUMENT_ENABLE_ALL = 'enable_all'
 
@@ -252,7 +252,7 @@ class EvaluationResult:
 
         return results
 
-    def avg(self, measure: Formattable, **kwargs) -> (str, str):
+    def avg(self, measure: Formattable, **kwargs) -> Tuple[str, str]:
         """
         Returns the score and standard deviation according to a specific measure averaged over all available folds.
 
