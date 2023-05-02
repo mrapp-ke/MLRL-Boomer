@@ -7,6 +7,7 @@ import logging as log
 import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
+from enum import Enum
 
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.format import format_enum_values
@@ -19,7 +20,7 @@ from mlrl.testbed.args import PARAM_DATA_SPLIT, PARAM_PREDICTION_TYPE, PARAM_PRI
     STORE_DATA_CHARACTERISTICS_VALUES, PRINT_PREDICTION_CHARACTERISTICS_VALUES, \
     STORE_PREDICTION_CHARACTERISTICS_VALUES, PRINT_RULES_VALUES, STORE_RULES_VALUES, INCREMENTAL_EVALUATION_VALUES, \
     OPTION_MIN_SIZE, OPTION_MAX_SIZE, OPTION_STEP_SIZE
-from mlrl.testbed.args import add_log_level_argument, add_learner_arguments, add_rule_learner_arguments
+from mlrl.testbed.args import add_learner_arguments, add_rule_learner_arguments
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
 from mlrl.testbed.data_splitting import DataSplitter, CrossValidationSplitter, TrainTestSplitter, NoSplitter, DataSet
@@ -39,6 +40,34 @@ from mlrl.testbed.predictions import PredictionPrinter, PredictionLogOutput, Pre
 from typing import Optional, Tuple
 
 LOG_FORMAT = '%(levelname)s %(message)s'
+
+
+class LogLevel(Enum):
+    DEBUG = 'debug'
+    INFO = 'info'
+    WARN = 'warn'
+    WARNING = 'warning'
+    ERROR = 'error'
+    CRITICAL = 'critical'
+    FATAL = 'fatal'
+    NOTSET = 'notset'
+
+    def parse(s):
+        s = s.lower()
+        if s == LogLevel.DEBUG.value:
+            return log.DEBUG
+        elif s == LogLevel.INFO.value:
+            return log.INFO
+        elif s == LogLevel.WARN.value or s == LogLevel.WARNING.value:
+            return log.WARN
+        elif s == LogLevel.ERROR.value:
+            return log.ERROR
+        elif s == LogLevel.CRITICAL.value or s == LogLevel.FATAL.value:
+            return log.CRITICAL
+        elif s == LogLevel.NOTSET.value:
+            return log.NOTSET
+        raise ValueError('Invalid log level given. Must be one of ' + format_enum_values(LogLevel) + ', but is "'
+                         + str(s) + '".')
 
 
 class Runnable(ABC):
@@ -74,7 +103,10 @@ class Runnable(ABC):
 
         :param parser:  An `ArgumentParser` that is used for parsing command line arguments
         """
-        add_log_level_argument(parser)
+        parser.add_argument('--log-level',
+                            type=LogLevel.parse,
+                            default=LogLevel.INFO.value,
+                            help='The log level to be used. Must be one of ' + format_enum_values(LogLevel) + '.')
 
     @abstractmethod
     def _run(self, args):

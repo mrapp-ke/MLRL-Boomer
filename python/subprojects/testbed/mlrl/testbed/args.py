@@ -3,9 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides functions for parsing command line arguments.
 """
-import logging as log
 from argparse import ArgumentParser
-from enum import Enum
 
 from mlrl.common.config import NONE, RULE_INDUCTION_VALUES, LABEL_SAMPLING_VALUES, FEATURE_SAMPLING_VALUES, \
     INSTANCE_SAMPLING_VALUES, PARTITION_SAMPLING_VALUES, FEATURE_BINNING_VALUES, GLOBAL_PRUNING_VALUES, \
@@ -31,8 +29,6 @@ from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 from mlrl.testbed.models import OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_LABEL_NAMES, OPTION_PRINT_NOMINAL_VALUES, \
     OPTION_PRINT_BODIES, OPTION_PRINT_HEADS
 from typing import Dict, Set
-
-PARAM_LOG_LEVEL = '--log-level'
 
 PARAM_RANDOM_STATE = '--random-state'
 
@@ -211,41 +207,6 @@ INCREMENTAL_EVALUATION_VALUES: Dict[str, Set[str]] = {
     BooleanOption.TRUE.value: {OPTION_MIN_SIZE, OPTION_MAX_SIZE, OPTION_STEP_SIZE},
     BooleanOption.FALSE.value: {}
 }
-
-
-class LogLevel(Enum):
-    DEBUG = 'debug'
-    INFO = 'info'
-    WARN = 'warn'
-    WARNING = 'warning'
-    ERROR = 'error'
-    CRITICAL = 'critical'
-    FATAL = 'fatal'
-    NOTSET = 'notset'
-
-    def parse(s):
-        s = s.lower()
-        if s == LogLevel.DEBUG.value:
-            return log.DEBUG
-        elif s == LogLevel.INFO.value:
-            return log.INFO
-        elif s == LogLevel.WARN.value or s == LogLevel.WARNING.value:
-            return log.WARN
-        elif s == LogLevel.ERROR.value:
-            return log.ERROR
-        elif s == LogLevel.CRITICAL.value or s == LogLevel.FATAL.value:
-            return log.CRITICAL
-        elif s == LogLevel.NOTSET.value:
-            return log.NOTSET
-        raise ValueError('Invalid log level given. Must be one of ' + format_enum_values(LogLevel) + ', but is "'
-                         + str(s) + '".')
-
-
-def add_log_level_argument(parser: ArgumentParser):
-    parser.add_argument(PARAM_LOG_LEVEL,
-                        type=LogLevel.parse,
-                        default=LogLevel.INFO.value,
-                        help='The log level to be used. Must be one of ' + format_enum_values(LogLevel) + '.')
 
 
 def add_learner_arguments(parser: ArgumentParser):
