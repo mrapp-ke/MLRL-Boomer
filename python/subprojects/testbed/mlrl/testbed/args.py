@@ -237,8 +237,8 @@ class LogLevel(Enum):
             return log.CRITICAL
         elif s == LogLevel.NOTSET.value:
             return log.NOTSET
-        raise ValueError('Invalid value given for parameter "' + PARAM_LOG_LEVEL + '". Must be one of '
-                         + format_enum_values(LogLevel) + ', but is "' + str(s) + '".')
+        raise ValueError('Invalid log level given. Must be one of ' + format_enum_values(LogLevel) + ', but is "'
+                         + str(s) + '".')
 
 
 def add_log_level_argument(parser: ArgumentParser):
