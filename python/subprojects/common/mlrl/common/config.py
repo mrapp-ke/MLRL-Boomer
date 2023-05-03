@@ -499,6 +499,33 @@ class IntParameter(Parameter, ABC):
         self._configure(config, int(value))
 
 
+class FloatParameter(Parameter, ABC):
+    """
+    A parameter of a rule learning algorithm that allows to set a floating point value.
+    """
+
+    def __init__(self, name: str, description: str, mixin: type):
+        """
+        :param mixin: The type of the mixin that must be implemented by a rule learner to support the parameter
+        """
+        super().__init__(name, description)
+        self.mixin = mixin
+
+    @abstractmethod
+    def _configure(self, config, value: float):
+        """
+        Must be implemented by subclasses in order to configure a rule learner depending on the specified floating point
+        value.
+
+        :param config:  The configuration to be modified
+        :param value:   The floating point value to be set
+        """
+        pass
+
+    def configure(self, config, value):
+        self._configure(config, float(value))
+
+
 class RuleInductionParameter(NominalParameter):
     """
     A parameter that allows to configure the algorithm to be used for the induction of individual rules.
