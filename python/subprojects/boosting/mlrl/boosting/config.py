@@ -109,7 +109,7 @@ class ShrinkageParameter(FloatParameter):
             description='The shrinkage parameter, a.k.a. the learning rate, to be used. Must be in (0, 1].',
             mixin=ConstantShrinkageMixin)
 
-    def _configure(config, value):
+    def _configure(self, config, value):
         if value == 1.0 and issubclass(type(config), NoPostProcessorMixin):
             config.use_no_post_processor()
         else:
@@ -126,7 +126,7 @@ class L1RegularizationParameter(FloatParameter):
                          description='The weight of the L1 regularization. Must be at least 0',
                          mixin=L1RegularizationMixin)
 
-    def _configure(config, value):
+    def _configure(self, config, value):
         if value == 0.0 and issubclass(type(config), NoL1RegularizationMixin):
             config.use_no_l1_regularization()
         else:
@@ -143,7 +143,7 @@ class L2RegularizationParameter(FloatParameter):
                          description='The weight of the L2 regularization. Must be at least 0',
                          mixin=L2RegularizationMixin)
 
-    def _configure(config, value):
+    def _configure(self, config, value):
         if value == 0.0 and issubclass(type(config), NoL2RegularizationMixin):
             config.use_no_l2_regularization()
         else:
