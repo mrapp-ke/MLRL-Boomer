@@ -3,6 +3,16 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities that ease the configuration of rule learning algorithms.
 """
+from mlrl.common.cython.learner import GreedyTopDownRuleInductionMixin, BeamSearchTopDownRuleInductionMixin, \
+    NoFeatureBinningMixin, EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, NoFeatureSamplingMixin, \
+    FeatureSamplingWithoutReplacementMixin, NoInstanceSamplingMixin, InstanceSamplingWithReplacementMixin, \
+    InstanceSamplingWithoutReplacementMixin, LabelWiseStratifiedInstanceSamplingMixin, \
+    ExampleWiseStratifiedInstanceSamplingMixin, NoFeatureSamplingMixin, FeatureSamplingWithoutReplacementMixin, \
+    NoPartitionSamplingMixin, RandomBiPartitionSamplingMixin, LabelWiseStratifiedBiPartitionSamplingMixin, \
+    ExampleWiseStratifiedBiPartitionSamplingMixin, NoGlobalPruningMixin, PostPruningMixin, PrePruningMixin, \
+    NoRulePruningMixin, IrepRulePruningMixin, NoParallelRuleRefinementMixin, ParallelRuleRefinementMixin, \
+    NoParallelStatisticUpdateMixin, ParallelStatisticUpdateMixin, NoParallelPredictionMixin, ParallelPredictionMixin, \
+    NoSequentialPostOptimizationMixin, SequentialPostOptimizationMixin
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.options import BooleanOption, parse_param, parse_param_and_options
 from typing import Dict, Set, Optional, List
@@ -403,7 +413,6 @@ class NominalParameter(Parameter):
             self.mixin = mixin
             self.options = options
 
-
     def __init__(self, name: str, description: str):
         super().__init__(name, description)
         self.values = []
@@ -419,3 +428,270 @@ class NominalParameter(Parameter):
         """
         self.values.append(NominalParameter.Value(name=name, mixin=mixin, options=options))
         return self
+
+
+class RuleInductionParameter(NominalParameter):
+    """
+    A parameter that allows to configure the algorithm to be used for the induction of individual rules.
+    """
+
+    RULE_INDUCTION_TOP_DOWN_GREEDY = 'top-down-greedy'
+
+    OPTION_MIN_COVERAGE = 'min_coverage'
+
+    OPTION_MIN_SUPPORT = 'min_support'
+
+    OPTION_MAX_CONDITIONS = 'max_conditions'
+
+    OPTION_MAX_HEAD_REFINEMENTS = 'max_head_refinements'
+
+    OPTION_RECALCULATE_PREDICTIONS = 'recalculate_predictions'
+
+    RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH = 'top-down-beam-search'
+
+    OPTION_BEAM_WIDTH = 'beam_width'
+
+    def __init__(self):
+        super().__init__(name='rule_induction',
+                         description='The name of the algorithm to be used for the induction of individual rules')
+        self.add_value(name=self.RULE_INDUCTION_TOP_DOWN_GREEDY,
+                       mixin=GreedyTopDownRuleInductionMixin,
+                       options={
+                           self.OPTION_MIN_COVERAGE, self.OPTION_MIN_SUPPORT, self.OPTION_MAX_CONDITIONS,
+                           self.OPTION_MAX_HEAD_REFINEMENTS, self.OPTION_RECALCULATE_PREDICTIONS
+                       })
+        self.add_value(name=self.RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH,
+                       mixin=BeamSearchTopDownRuleInductionMixin,
+                       options={
+                           self.OPTION_MIN_COVERAGE, self.OPTION_MIN_SUPPORT, self.OPTION_MAX_CONDITIONS,
+                           self.OPTION_MAX_HEAD_REFINEMENTS, self.OPTION_RECALCULATE_PREDICTIONS,
+                           self.OPTION_BEAM_WIDTH, OPTION_RESAMPLE_FEATURES
+                       })
+
+
+class FeatureBinningParameter(NominalParameter):
+    """
+    A parameter that allows to configure the strategy to be used for feature binning.
+    """
+
+    def __init__(self):
+        super().__init__(name='feature_binning', description='The name of the strategy to be used for feature binning')
+        self.add_value(name=NONE, mixin=NoFeatureBinningMixin)
+        self.add_value(name=BINNING_EQUAL_FREQUENCY,
+                       mixin=EqualFrequencyFeatureBinningMixin,
+                       options={OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS})
+        self.add_value(name=BINNING_EQUAL_WIDTH,
+                       mixin=EqualWidthFeatureBinningMixin,
+                       options={OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS})
+
+
+class LabelSamplingParameter(NominalParameter):
+    """
+    A parameter that allows to configure the strategy to be used for label sampling.
+    """
+
+    def __init__(self):
+        super().__init__(name='label_sampling', description='The name of the strategy to be used for label sampling')
+        self.add_value(name=NONE, mixin=NoFeatureSamplingMixin)
+        self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
+                       mixin=FeatureSamplingWithoutReplacementMixin,
+                       options={OPTION_NUM_SAMPLES})
+
+
+class InstanceSamplingParameter(NominalParameter):
+    """
+    A parameter that allows to configure the strategy to be used for instance sampling.
+    """
+
+    def __init__(self):
+        super().__init__(name='instance_sampling',
+                         description='The name of the strategy to be used for instance sampling')
+        self.add_value(name=NONE, mixin=NoInstanceSamplingMixin)
+        self.add_value(name=SAMPLING_WITH_REPLACEMENT,
+                       mixin=InstanceSamplingWithReplacementMixin,
+                       options={OPTION_SAMPLE_SIZE})
+        self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
+                       mixin=InstanceSamplingWithoutReplacementMixin,
+                       options={OPTION_SAMPLE_SIZE})
+        self.add_value(name=SAMPLING_STRATIFIED_LABEL_WISE,
+                       mixin=LabelWiseStratifiedInstanceSamplingMixin,
+                       options={OPTION_SAMPLE_SIZE})
+        self.add_value(name=SAMPLING_STRATIFIED_EXAMPLE_WISE,
+                       mixin=ExampleWiseStratifiedInstanceSamplingMixin,
+                       options={OPTION_SAMPLE_SIZE})
+
+
+class FeatureSamplingParameter(NominalParameter):
+    """
+    A parameter that allows to configure the strategy to be used for feature sampling.
+    """
+
+    def __init__(self):
+        super().__init__(name='feature_sampling',
+                         description='The name of the strategy to be used for feature sampling')
+        self.add_value(name=NONE, mixin=NoFeatureSamplingMixin)
+        self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
+                       mixin=FeatureSamplingWithoutReplacementMixin,
+                       options={OPTION_SAMPLE_SIZE})
+
+
+class PartitionSamplingParameter(NominalParameter):
+    """
+    A parameter that allows to configure the strategy to be used for creating a holdout set.
+    """
+
+    PARTITION_SAMPLING_RANDOM = 'random'
+
+    OPTION_HOLDOUT_SET_SIZE = 'holdout_set_size'
+
+    def __init__(self):
+        super().__init__(name='holdout', description='The name of the strategy to be used for creating a holdout set')
+        self.add_value(name=NONE, mixin=NoPartitionSamplingMixin)
+        self.add_value(name=self.PARTITION_SAMPLING_RANDOM,
+                       mixin=RandomBiPartitionSamplingMixin,
+                       options={self.OPTION_HOLDOUT_SET_SIZE})
+        self.add_value(name=SAMPLING_STRATIFIED_LABEL_WISE,
+                       mixin=LabelWiseStratifiedBiPartitionSamplingMixin,
+                       options={self.OPTION_HOLDOUT_SET_SIZE})
+        self.add_value(name=SAMPLING_STRATIFIED_EXAMPLE_WISE,
+                       mixin=ExampleWiseStratifiedBiPartitionSamplingMixin,
+                       options={self.OPTION_HOLDOUT_SET_SIZE})
+
+
+class GlobalPruningParameter(NominalParameter):
+    """
+    A parameter that allows to configure the strategy to be used for pruning entire rules.
+    """
+
+    GLOBAL_PRUNING_POST = 'post-pruning'
+
+    OPTION_USE_HOLDOUT_SET = 'use_holdout_set'
+
+    OPTION_REMOVE_UNUSED_RULES = 'remove_unused_rules'
+
+    OPTION_MIN_RULES = 'min_rules'
+
+    OPTION_INTERVAL = 'interval'
+
+    GLOBAL_PRUNING_PRE = 'pre-pruning'
+
+    OPTION_AGGREGATION_FUNCTION = 'aggregation'
+
+    OPTION_UPDATE_INTERVAL = 'update_interval'
+
+    OPTION_STOP_INTERVAL = 'stop_interval'
+
+    OPTION_NUM_PAST = 'num_past'
+
+    OPTION_NUM_RECENT = 'num_recent'
+
+    OPTION_MIN_IMPROVEMENT = 'min_improvement'
+
+    def __init__(self):
+        super().__init__(name='global_pruning',
+                         description='The name of the strategy to be used for pruning entire rules')
+        self.add_value(name=NONE, mixin=NoGlobalPruningMixin)
+        self.add_value(name=self.GLOBAL_PRUNING_POST,
+                       mixin=PostPruningMixin,
+                       options={
+                           self.OPTION_USE_HOLDOUT_SET, self.OPTION_REMOVE_UNUSED_RULES, self.OPTION_MIN_RULES,
+                           self.OPTION_INTERVAL
+                       })
+        self.add_value(name=self.GLOBAL_PRUNING_PRE,
+                       mixin=PrePruningMixin,
+                       options={
+                           self.OPTION_USE_HOLDOUT_SET, self.OPTION_REMOVE_UNUSED_RULES, self.OPTION_MIN_RULES,
+                           self.OPTION_AGGREGATION_FUNCTION, self.OPTION_UPDATE_INTERVAL, self.OPTION_STOP_INTERVAL,
+                           self.OPTION_NUM_PAST, self.OPTION_NUM_RECENT, self.OPTION_MIN_IMPROVEMENT
+                       })
+
+
+class RulePruningParameter(NominalParameter):
+    """
+    A parameter that allows to configure the strategy to be used for pruning individual rules.
+    """
+
+    RULE_PRUNING_IREP = 'irep'
+
+    def __init__(self):
+        super().__init__(name='rule_pruning',
+                         description='The name of the strategy to be used for pruning individual rules')
+        self.add_value(name=NONE, mixin=NoRulePruningMixin)
+        self.add_value(name=self.RULE_PRUNING_IREP, mixin=IrepRulePruningMixin)
+
+
+class ParallelRuleRefinementParameter(NominalParameter):
+    """
+    A parameter that allows to configure whether potential refinements of rules should be searched for in parallel or
+    not.
+    """
+
+    def __init__(self):
+        super().__init__(name='parallel_rule_refinement',
+                         description='Whether potential refinements of rules should be searched for in parallel or not')
+        self.add_value(name=BooleanOption.FALSE.value, mixin=NoParallelRuleRefinementMixin)
+        self.add_value(name=BooleanOption.TRUE.value, mixin=ParallelRuleRefinementMixin, options={OPTION_NUM_THREADS})
+
+
+class ParallelStatisticUpdateParameter(NominalParameter):
+    """
+    A parameter that allows to configure whether the statistics for different examples should be updated in parallel or
+    not.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name='parallel_statistic_update',
+            description='Whether the statistics for different examples should be updated in parallel or not')
+        self.add_value(name=BooleanOption.FALSE.value, mixin=NoParallelStatisticUpdateMixin)
+        self.add_value(name=BooleanOption.TRUE.value, mixin=ParallelStatisticUpdateMixin, options={OPTION_NUM_THREADS})
+
+
+class ParallelPredictionParameter(NominalParameter):
+    """
+    A parameter that allows to configure whether predictions for different examples should be obtained in parallel or
+    not.
+    """
+
+    def __init__(self):
+        super().__init__(name='parallel_prediction',
+                         description='Whether predictions for different examples should be obtained in parallel or not')
+        self.add_value(name=BooleanOption.FALSE.value, mixin=NoParallelPredictionMixin)
+        self.add_value(name=BooleanOption.TRUE.value, mixin=ParallelPredictionMixin, options={OPTION_NUM_THREADS})
+
+
+class SequentialPostOptimizationParameter(NominalParameter):
+    """
+    A parameter that allows to configure whether each rule in a previously learned model should be optimized by being
+    relearned in the context of the other rules or not.
+    """
+
+    OPTION_NUM_ITERATIONS = 'num_iterations'
+
+    OPTION_REFINE_HEADS = 'refine_heads'
+
+    def __init__(self):
+        super().__init__(
+            name='sequential_post_optimization',
+            description='Whether each rule in a previously learned model should be optimized by being relearned in the '
+            + 'context of the other rules or not')
+        self.add_value(name=BooleanOption.FALSE.value, mixin=NoSequentialPostOptimizationMixin)
+        self.add_value(name=BooleanOption.TRUE.value,
+                       mixin=SequentialPostOptimizationMixin,
+                       options={self.OPTION_NUM_ITERATIONS, self.OPTION_REFINE_HEADS, OPTION_RESAMPLE_FEATURES})
+
+
+RULE_LEARNER_PARAMETERS = [
+    RuleInductionParameter(),
+    FeatureBinningParameter(),
+    LabelSamplingParameter(),
+    InstanceSamplingParameter(),
+    FeatureSamplingParameter(),
+    PartitionSamplingParameter(),
+    GlobalPruningParameter(),
+    RulePruningParameter(),
+    ParallelRuleRefinementParameter(),
+    ParallelStatisticUpdateParameter(),
+    ParallelPredictionParameter(),
+    SequentialPostOptimizationParameter()
+]
