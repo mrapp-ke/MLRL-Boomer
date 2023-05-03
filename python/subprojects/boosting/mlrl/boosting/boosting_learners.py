@@ -6,28 +6,18 @@ Provides scikit-learn implementations of boosting algorithms.
 import mlrl.common.config as common_config
 from mlrl.boosting.cython.learner_boomer import Boomer as BoomerWrapper, BoomerConfig
 from mlrl.common.config import AUTOMATIC
-from mlrl.common.config import configure_rule_induction, configure_feature_binning, configure_label_sampling, \
-    configure_instance_sampling, configure_feature_sampling, configure_partition_sampling, configure_rule_pruning, \
-    configure_parallel_rule_refinement, configure_parallel_statistic_update, configure_parallel_prediction, \
-    configure_size_stopping_criterion, configure_time_stopping_criterion, configure_global_pruning, \
-    configure_sequential_post_optimization
+from mlrl.common.config import configure_rule_learner
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
-from mlrl.common.options import parse_param
-from mlrl.common.rule_learners import RuleLearner, SparsePolicy, get_string, get_int, get_float
+from mlrl.common.rule_learners import RuleLearner, SparsePolicy
 from sklearn.base import ClassifierMixin, RegressorMixin, MultiOutputMixin
 from typing import Dict, Set, Optional
 
 import mlrl.boosting.config as boosting_config
-from mlrl.boosting.config import LOSS_SQUARED_ERROR_LABEL_WISE, LOSS_SQUARED_HINGE_LABEL_WISE, \
-    LOSS_LOGISTIC_LABEL_WISE, LOSS_SQUARED_ERROR_EXAMPLE_WISE, LOSS_SQUARED_HINGE_EXAMPLE_WISE, \
-    LOSS_LOGISTIC_EXAMPLE_WISE, BINARY_PREDICTOR_LABEL_WISE, BINARY_PREDICTOR_EXAMPLE_WISE, BINARY_PREDICTOR_GFM, \
-    PROBABILITY_PREDICTOR_LABEL_WISE, PROBABILITY_PREDICTOR_MARGINALIZED
-from mlrl.boosting.config import configure_post_processor, configure_l1_regularization, configure_l2_regularization, \
-    configure_default_rule, configure_head_type, configure_statistics, configure_label_wise_squared_error_loss, \
-    configure_label_wise_squared_hinge_loss, configure_label_wise_logistic_loss, configure_example_wise_logistic_loss, \
-    configure_example_wise_squared_error_loss, configure_example_wise_squared_hinge_loss, configure_label_binning, \
-    configure_label_wise_binary_predictor, configure_example_wise_binary_predictor, configure_gfm_binary_predictor, \
-    configure_label_wise_probability_predictor, configure_marginalized_probability_predictor
+from mlrl.boosting.config import BOOSTING_RULE_LEARNER_PARAMETERS, LOSS_SQUARED_ERROR_LABEL_WISE, \
+    LOSS_SQUARED_HINGE_LABEL_WISE, LOSS_LOGISTIC_LABEL_WISE, LOSS_SQUARED_ERROR_EXAMPLE_WISE, \
+    LOSS_SQUARED_HINGE_EXAMPLE_WISE, LOSS_LOGISTIC_EXAMPLE_WISE, BINARY_PREDICTOR_LABEL_WISE, \
+    BINARY_PREDICTOR_EXAMPLE_WISE, BINARY_PREDICTOR_GFM, PROBABILITY_PREDICTOR_LABEL_WISE, \
+    PROBABILITY_PREDICTOR_MARGINALIZED
 
 FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {**common_config.FEATURE_BINNING_VALUES, **{AUTOMATIC: {}}}
 
@@ -202,125 +192,5 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
 
     def _create_learner(self) -> RuleLearnerWrapper:
         config = BoomerConfig()
-        configure_rule_induction(config, get_string(self.rule_induction))
-        configure_label_sampling(config, get_string(self.label_sampling))
-        configure_instance_sampling(config, get_string(self.instance_sampling))
-        configure_feature_sampling(config, get_string(self.feature_sampling))
-        configure_rule_pruning(config, get_string(self.rule_pruning))
-        configure_parallel_prediction(config, get_string(self.parallel_prediction))
-        configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
-        configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
-        configure_global_pruning(config, get_string(self.global_pruning))
-        configure_sequential_post_optimization(config, get_string(self.sequential_post_optimization))
-        configure_post_processor(config, shrinkage=get_float(self.shrinkage))
-        configure_l1_regularization(config, l1_regularization_weight=get_float(self.l1_regularization_weight))
-        configure_l2_regularization(config, l2_regularization_weight=get_float(self.l2_regularization_weight))
-        self.__configure_default_rule(config)
-        self.__configure_partition_sampling(config)
-        self.__configure_feature_binning(config)
-        self.__configure_head_type(config)
-        self.__configure_statistics(config)
-        self.__configure_loss(config)
-        self.__configure_label_binning(config)
-        self.__configure_binary_predictor(config)
-        self.__configure_probability_predictor(config)
-        self.__configure_parallel_rule_refinement(config)
-        self.__configure_parallel_statistic_update(config)
+        configure_rule_learner(self, config, BOOSTING_RULE_LEARNER_PARAMETERS)
         return BoomerWrapper(config)
-
-    def __configure_default_rule(self, config: BoomerConfig):
-        default_rule = get_string(self.default_rule)
-
-        if default_rule == AUTOMATIC:
-            config.use_automatic_default_rule()
-        else:
-            configure_default_rule(config, default_rule)
-
-    def __configure_partition_sampling(self, config: BoomerConfig):
-        holdout = get_string(self.holdout)
-
-        if holdout == AUTOMATIC:
-            config.use_automatic_partition_sampling()
-        else:
-            configure_partition_sampling(config, holdout)
-
-    def __configure_feature_binning(self, config: BoomerConfig):
-        feature_binning = get_string(self.feature_binning)
-
-        if feature_binning == AUTOMATIC:
-            config.use_automatic_feature_binning()
-        else:
-            configure_feature_binning(config, feature_binning)
-
-    def __configure_parallel_rule_refinement(self, config: BoomerConfig):
-        parallel_rule_refinement = get_string(self.parallel_rule_refinement)
-
-        if parallel_rule_refinement == AUTOMATIC:
-            config.use_automatic_parallel_rule_refinement()
-        else:
-            configure_parallel_rule_refinement(config, parallel_rule_refinement)
-
-    def __configure_parallel_statistic_update(self, config: BoomerConfig):
-        parallel_statistic_update = get_string(self.parallel_statistic_update)
-
-        if parallel_statistic_update == AUTOMATIC:
-            config.use_automatic_parallel_statistic_update()
-        else:
-            configure_parallel_statistic_update(config, parallel_statistic_update)
-
-    def __configure_head_type(self, config: BoomerConfig):
-        head_type = get_string(self.head_type)
-
-        if head_type == AUTOMATIC:
-            config.use_automatic_heads()
-        else:
-            configure_head_type(config, head_type)
-
-    def __configure_statistics(self, config: BoomerConfig):
-        statistic_format = get_string(self.statistic_format)
-
-        if statistic_format == AUTOMATIC:
-            config.use_automatic_statistics()
-        else:
-            configure_statistics(config, statistic_format)
-
-    def __configure_loss(self, config: BoomerConfig):
-        loss = get_string(self.loss)
-
-        if loss is not None:
-            value = parse_param('loss', loss, LOSS_VALUES)
-            configure_label_wise_squared_error_loss(config, value)
-            configure_label_wise_squared_hinge_loss(config, value)
-            configure_label_wise_logistic_loss(config, value)
-            configure_example_wise_squared_error_loss(config, value)
-            configure_example_wise_squared_hinge_loss(config, value)
-            configure_example_wise_logistic_loss(config, value)
-
-    def __configure_label_binning(self, config: BoomerConfig):
-        label_binning = get_string(self.label_binning)
-
-        if label_binning == AUTOMATIC:
-            config.use_automatic_label_binning()
-        else:
-            configure_label_binning(config, label_binning)
-
-    def __configure_binary_predictor(self, config: BoomerConfig):
-        binary_predictor = get_string(self.binary_predictor)
-
-        if binary_predictor == AUTOMATIC:
-            config.use_automatic_binary_predictor()
-        elif binary_predictor is not None:
-            value = parse_param('binary_predictor', binary_predictor, BINARY_PREDICTOR_VALUES)
-            configure_label_wise_binary_predictor(config, value)
-            configure_example_wise_binary_predictor(config, value)
-            configure_gfm_binary_predictor(config, value)
-
-    def __configure_probability_predictor(self, config: BoomerConfig):
-        probability_predictor = get_string(self.probability_predictor)
-
-        if probability_predictor == AUTOMATIC:
-            config.use_automatic_probability_predictor()
-        elif probability_predictor is not None:
-            value = parse_param('probability_predictor', probability_predictor, PROBABILITY_PREDICTOR_VALUES)
-            configure_label_wise_probability_predictor(config, value)
-            configure_marginalized_probability_predictor(config, value)

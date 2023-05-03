@@ -231,7 +231,7 @@ class ExtendedPartitionSamplingParameter(PartitionSamplingParameter):
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'depending on whether a holdout set is needed and depending on the loss function')
 
-    def _configure(config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Optional[Options]):
         if value == AUTOMATIC:
             config.use_automatic_partition_sampling()
         else:
@@ -250,7 +250,7 @@ class ExtendedFeatureBinningParameter(FeatureBinningParameter):
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'based on the characteristics of the feature matrix')
 
-    def _configure(config, value: str, options: Optional[Options]):
+    def _configure(self, config, value: str, options: Optional[Options]):
         if value == AUTOMATIC:
             config.use_automatic_feature_binning()
         else:
