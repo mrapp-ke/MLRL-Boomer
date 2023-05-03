@@ -403,6 +403,12 @@ class Parameter(ABC):
         """
         pass
 
+    def __lt__(self, other):
+        return self.name < other.name
+
+    def __hash__(self):
+        return hash(self.name)
+
 
 class NominalParameter(Parameter, ABC):
     """
@@ -973,7 +979,7 @@ class SequentialPostOptimizationParameter(NominalParameter):
             c.set_resample_features(options.get_bool(OPTION_RESAMPLE_FEATURES, c.are_features_resampled()))
 
 
-RULE_LEARNER_PARAMETERS = [
+RULE_LEARNER_PARAMETERS = {
     RuleInductionParameter(),
     FeatureBinningParameter(),
     LabelSamplingParameter(),
@@ -988,7 +994,7 @@ RULE_LEARNER_PARAMETERS = [
     SizeStoppingCriterionParameter(),
     TimeStoppingCriterionParameter(),
     SequentialPostOptimizationParameter()
-]
+}
 
 
 def configure_rule_learner(learner, config, parameters: List[Parameter]):
