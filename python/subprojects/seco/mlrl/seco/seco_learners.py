@@ -7,23 +7,11 @@ classification rules.
 from mlrl.common.config import configure_rule_learner
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.rule_learners import RuleLearner, SparsePolicy
-from mlrl.seco.config import HEURISTIC_ACCURACY, HEURISTIC_PRECISION, HEURISTIC_RECALL, HEURISTIC_LAPLACE, \
-    HEURISTIC_WRA, HEURISTIC_F_MEASURE, HEURISTIC_M_ESTIMATE, OPTION_M, OPTION_BETA
 from mlrl.seco.config import SECO_RULE_LEARNER_PARAMETERS
 from mlrl.seco.cython.learner_seco import MultiLabelSeCoRuleLearner as MultiLabelSeCoRuleLearnerWrapper, \
     MultiLabelSeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin, MultiOutputMixin
-from typing import Dict, Set, Optional
-
-HEURISTIC_VALUES: Dict[str, Set[str]] = {
-    HEURISTIC_ACCURACY: {},
-    HEURISTIC_PRECISION: {},
-    HEURISTIC_RECALL: {},
-    HEURISTIC_LAPLACE: {},
-    HEURISTIC_WRA: {},
-    HEURISTIC_F_MEASURE: {OPTION_BETA},
-    HEURISTIC_M_ESTIMATE: {OPTION_M}
-}
+from typing import Optional
 
 
 class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):

@@ -19,67 +19,7 @@ from mlrl.common.config import FloatParameter, NominalParameter, PartitionSampli
     ParallelRuleRefinementParameter, ParallelStatisticUpdateParameter, RULE_LEARNER_PARAMETERS, NONE, AUTOMATIC, \
     OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS, BINNING_EQUAL_WIDTH
 from mlrl.common.options import Options, BooleanOption
-from typing import Dict, Set, Optional
-
-STATISTIC_FORMAT_DENSE = 'dense'
-
-STATISTIC_FORMAT_SPARSE = 'sparse'
-
-HEAD_TYPE_SINGLE = 'single-label'
-
-HEAD_TYPE_PARTIAL_FIXED = 'partial-fixed'
-
-OPTION_LABEL_RATIO = 'label_ratio'
-
-OPTION_MIN_LABELS = 'min_labels'
-
-OPTION_MAX_LABELS = 'max_labels'
-
-HEAD_TYPE_PARTIAL_DYNAMIC = 'partial-dynamic'
-
-OPTION_THRESHOLD = 'threshold'
-
-OPTION_EXPONENT = 'exponent'
-
-HEAD_TYPE_COMPLETE = 'complete'
-
-LOSS_LOGISTIC_LABEL_WISE = 'logistic-label-wise'
-
-LOSS_LOGISTIC_EXAMPLE_WISE = 'logistic-example-wise'
-
-LOSS_SQUARED_ERROR_LABEL_WISE = 'squared-error-label-wise'
-
-LOSS_SQUARED_ERROR_EXAMPLE_WISE = 'squared-error-example-wise'
-
-LOSS_SQUARED_HINGE_LABEL_WISE = 'squared-hinge-label-wise'
-
-LOSS_SQUARED_HINGE_EXAMPLE_WISE = 'squared-hinge-example-wise'
-
-BINARY_PREDICTOR_LABEL_WISE = 'label-wise'
-
-BINARY_PREDICTOR_EXAMPLE_WISE = 'example-wise'
-
-BINARY_PREDICTOR_GFM = 'gfm'
-
-PROBABILITY_PREDICTOR_LABEL_WISE = 'label-wise'
-
-PROBABILITY_PREDICTOR_MARGINALIZED = 'marginalized'
-
-STATISTIC_FORMAT_VALUES: Set[str] = {STATISTIC_FORMAT_DENSE, STATISTIC_FORMAT_SPARSE}
-
-DEFAULT_RULE_VALUES: Set[str] = {BooleanOption.TRUE.value, BooleanOption.FALSE.value}
-
-HEAD_TYPE_VALUES: Dict[str, Set[str]] = {
-    HEAD_TYPE_SINGLE: {},
-    HEAD_TYPE_PARTIAL_FIXED: {OPTION_LABEL_RATIO, OPTION_MIN_LABELS, OPTION_MAX_LABELS},
-    HEAD_TYPE_PARTIAL_DYNAMIC: {OPTION_THRESHOLD, OPTION_EXPONENT},
-    HEAD_TYPE_COMPLETE: {}
-}
-
-LABEL_BINNING_VALUES: Dict[str, Set[str]] = {
-    NONE: {},
-    BINNING_EQUAL_WIDTH: {OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS}
-}
+from typing import Optional
 
 
 class ExtendedPartitionSamplingParameter(PartitionSamplingParameter):
@@ -252,9 +192,9 @@ class StatisticFormatParameter(NominalParameter):
                        + 'characteristics of the label matrix')
 
     def _configure(self, config, value: str, _: Optional[Options]):
-        if value == STATISTIC_FORMAT_DENSE:
+        if value == self.STATISTIC_FORMAT_DENSE:
             config.use_dense_statistics()
-        elif value == STATISTIC_FORMAT_SPARSE:
+        elif value == self.STATISTIC_FORMAT_SPARSE:
             config.use_sparse_statistics()
         elif value == AUTOMATIC:
             config.use_automatic_statistics()
