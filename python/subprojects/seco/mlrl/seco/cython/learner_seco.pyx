@@ -27,13 +27,13 @@ from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfi
 from libcpp.utility cimport move
 
 from mlrl.common.cython.learner import SequentialRuleModelAssemblageMixin, DefaultRuleMixin, \
-    GreedyTopDownRuleInductionMixin, BeamSearchTopDownRuleInductionMixin, EqualWidthFeatureBinningMixin, \
-    EqualFrequencyFeatureBinningMixin, NoLabelSamplingMixin, LabelSamplingWithoutReplacementMixin, \
-    NoInstanceSamplingMixin, InstanceSamplingWithReplacementMixin, InstanceSamplingWithoutReplacementMixin, \
-    LabelWiseStratifiedInstanceSamplingMixin, ExampleWiseStratifiedInstanceSamplingMixin, NoFeatureSamplingMixin, \
-    FeatureSamplingWithoutReplacementMixin, NoPartitionSamplingMixin, RandomBiPartitionSamplingMixin, \
-    LabelWiseStratifiedBiPartitionSamplingMixin, ExampleWiseStratifiedBiPartitionSamplingMixin, NoRulePruningMixin, \
-    IrepRulePruningMixin, NoParallelRuleRefinementMixin, ParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
+    GreedyTopDownRuleInductionMixin, BeamSearchTopDownRuleInductionMixin, NoLabelSamplingMixin, \
+    LabelSamplingWithoutReplacementMixin, NoInstanceSamplingMixin, InstanceSamplingWithReplacementMixin, \
+    InstanceSamplingWithoutReplacementMixin, LabelWiseStratifiedInstanceSamplingMixin, \
+    ExampleWiseStratifiedInstanceSamplingMixin, NoFeatureSamplingMixin, FeatureSamplingWithoutReplacementMixin, \
+    NoPartitionSamplingMixin, RandomBiPartitionSamplingMixin, LabelWiseStratifiedBiPartitionSamplingMixin, \
+    ExampleWiseStratifiedBiPartitionSamplingMixin, NoRulePruningMixin, IrepRulePruningMixin, \
+    NoParallelRuleRefinementMixin, ParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
     ParallelStatisticUpdateMixin, NoParallelPredictionMixin, ParallelPredictionMixin, NoSizeStoppingCriterionMixin, \
     SizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, TimeStoppingCriterionMixin, PrePruningMixin, \
     NoGlobalPruningMixin, PostPruningMixin, NoSequentialPostOptimizationMixin, SequentialPostOptimizationMixin
@@ -73,8 +73,6 @@ cdef class MultiLabelSeCoRuleLearnerConfig(RuleLearnerConfig,
                                            DefaultRuleMixin,
                                            GreedyTopDownRuleInductionMixin,
                                            BeamSearchTopDownRuleInductionMixin,
-                                           EqualWidthFeatureBinningMixin,
-                                           EqualFrequencyFeatureBinningMixin,
                                            NoLabelSamplingMixin,
                                            LabelSamplingWithoutReplacementMixin,
                                            NoInstanceSamplingMixin,
