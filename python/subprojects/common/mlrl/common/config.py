@@ -12,7 +12,8 @@ from mlrl.common.cython.learner import GreedyTopDownRuleInductionMixin, BeamSear
     ExampleWiseStratifiedBiPartitionSamplingMixin, NoGlobalPruningMixin, PostPruningMixin, PrePruningMixin, \
     NoRulePruningMixin, IrepRulePruningMixin, NoParallelRuleRefinementMixin, ParallelRuleRefinementMixin, \
     NoParallelStatisticUpdateMixin, ParallelStatisticUpdateMixin, NoParallelPredictionMixin, ParallelPredictionMixin, \
-    NoSequentialPostOptimizationMixin, SequentialPostOptimizationMixin
+    SizeStoppingCriterionMixin, TimeStoppingCriterionMixin, NoSequentialPostOptimizationMixin, \
+    SequentialPostOptimizationMixin
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.options import BooleanOption, parse_param, parse_param_and_options
 from typing import Dict, Set, Optional, List
@@ -430,6 +431,19 @@ class NominalParameter(Parameter):
         return self
 
 
+class IntParameter(Parameter):
+    """
+    A parameter of a rule learning algorithm that allows to set an integer value.
+    """
+
+    def __init__(self, name: str, description: str, mixin: type):
+        """
+        :param mixin: The type of the mixin that must be implemented by a rule learner to support the parameter
+        """
+        super().__init__(name, description)
+        self.mixin = mixin
+
+
 class RuleInductionParameter(NominalParameter):
     """
     A parameter that allows to configure the algorithm to be used for the induction of individual rules.
@@ -660,6 +674,32 @@ class ParallelPredictionParameter(NominalParameter):
         self.add_value(name=BooleanOption.TRUE.value, mixin=ParallelPredictionMixin, options={OPTION_NUM_THREADS})
 
 
+class MaxRulesParameter(IntParameter):
+    """
+    A parameter that allows to configure the maximum number of rules to be induced.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name='max_rules',
+            description='The maximum number of rules to be induced. Must be at least 1 or 0, if the number of rules '
+            + 'should not be restricted',
+            mixin=SizeStoppingCriterionMixin)
+
+
+class TimeLimitParameter(IntParameter):
+    """
+    A parameter that allows to configure the duration in seconds after which the induction of rules should be canceled.
+    """
+
+    def __init__(self):
+        super().__init__(
+            name='time_limit',
+            description='The duration in seconds after which the induction of rules should be canceled. Must be at '
+            + 'least 1 or 0, if no time limit should be set',
+            mixin=TimeStoppingCriterionMixin)
+
+
 class SequentialPostOptimizationParameter(NominalParameter):
     """
     A parameter that allows to configure whether each rule in a previously learned model should be optimized by being
@@ -693,5 +733,7 @@ RULE_LEARNER_PARAMETERS = [
     ParallelRuleRefinementParameter(),
     ParallelStatisticUpdateParameter(),
     ParallelPredictionParameter(),
+    MaxRulesParameter(),
+    TimeLimitParameter(),
     SequentialPostOptimizationParameter()
 ]
