@@ -3,15 +3,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from argparse import ArgumentParser
 
-from mlrl.common.format import format_dict_keys
-from mlrl.seco.seco_learners import MultiLabelSeCoRuleLearner, HEURISTIC_VALUES
-from mlrl.testbed.args import add_max_rules_argument, add_time_limit_argument, \
-    add_sequential_post_optimization_argument, add_label_sampling_argument, add_instance_sampling_argument, \
-    add_feature_sampling_argument, add_partition_sampling_argument, add_rule_pruning_argument, \
-    add_rule_induction_argument, add_parallel_prediction_argument, add_parallel_statistic_update_argument, \
-    add_parallel_rule_refinement_argument
-from mlrl.testbed.args_seco import add_head_type_argument, add_lift_function_argument, PARAM_HEURISTIC, \
-    PARAM_PRUNING_HEURISTIC
+from mlrl.common.config import configure_argument_parser
+
+from mlrl.seco.cython.learner_seco import MultiLabelSeCoRuleLearnerConfig
+from mlrl.seco.config import SECO_RULE_LEARNER_PARAMETERS
+from mlrl.seco.seco_learners import MultiLabelSeCoRuleLearner
+
 from mlrl.testbed.runnables import RuleLearnerRunnable
 
 
@@ -22,30 +19,7 @@ class SeCoRunnable(RuleLearnerRunnable):
 
     def _configure_arguments(self, parser: ArgumentParser):
         super()._configure_arguments(parser)
-        add_max_rules_argument(parser)
-        add_time_limit_argument(parser)
-        add_sequential_post_optimization_argument(parser)
-        add_label_sampling_argument(parser)
-        add_instance_sampling_argument(parser)
-        add_feature_sampling_argument(parser)
-        add_partition_sampling_argument(parser)
-        add_rule_pruning_argument(parser)
-        add_rule_induction_argument(parser)
-        add_parallel_prediction_argument(parser)
-        add_parallel_rule_refinement_argument(parser)
-        add_parallel_statistic_update_argument(parser)
-        add_head_type_argument(parser)
-        add_lift_function_argument(parser)
-        parser.add_argument(PARAM_HEURISTIC,
-                            type=str,
-                            help='The name of the heuristic to be used for learning rules. Must be one of '
-                            + format_dict_keys(HEURISTIC_VALUES) + '. For additional options refer to the '
-                            + 'documentation.')
-        parser.add_argument(PARAM_PRUNING_HEURISTIC,
-                            type=str,
-                            help='The name of the heuristic to be used for pruning individual rules. Must be one of '
-                            + format_dict_keys(HEURISTIC_VALUES) + '. For additional options refer to the '
-                            + 'documentation.')
+        configure_argument_parser(parser, MultiLabelSeCoRuleLearnerConfig, SECO_RULE_LEARNER_PARAMETERS)
 
     def _create_learner(self, args):
         return MultiLabelSeCoRuleLearner(random_state=args.random_state,
@@ -69,7 +43,7 @@ class SeCoRunnable(RuleLearnerRunnable):
                                          parallel_prediction=args.parallel_prediction)
 
     def _get_learner_name(self) -> str:
-        return "seco"
+        return 'seco'
 
 
 def main():
