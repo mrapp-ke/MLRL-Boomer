@@ -3,7 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility function for configuring boosting algorithms.
 """
-from mlrl.common.cython.learner import NoPostProcessorMixin, DefaultRuleMixin
+from mlrl.common.cython.learner import NoPostProcessorMixin, DefaultRuleMixin, NoMarginalProbabilityCalibrationMixin, \
+    NoJointProbabilityCalibrationMixin
 from mlrl.boosting.cython.learner import AutomaticPartitionSamplingMixin, AutomaticFeatureBinningMixin, \
     AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, ConstantShrinkageMixin, \
     NoL1RegularizationMixin, L1RegularizationMixin, NoL2RegularizationMixin, L2RegularizationMixin, \
@@ -12,6 +13,7 @@ from mlrl.boosting.cython.learner import AutomaticPartitionSamplingMixin, Automa
     LabelWiseLogisticLossMixin, ExampleWiseLogisticLossMixin, LabelWiseSquaredErrorLossMixin, \
     ExampleWiseSquaredErrorLossMixin, LabelWiseSquaredHingeLossMixin, ExampleWiseSquaredHingeLossMixin, \
     SingleLabelHeadMixin, FixedPartialHeadMixin, DynamicPartialHeadMixin, CompleteHeadMixin, \
+    IsotonicMarginalProbabilityCalibrationMixin, IsotonicJointProbabilityCalibrationMixin, \
     LabelWiseBinaryPredictorMixin, ExampleWiseBinaryPredictorMixin, GfmBinaryPredictorMixin, \
     AutomaticBinaryPredictorMixin, LabelWiseProbabilityPredictorMixin, MarginalizedProbabilityPredictorMixin, \
     AutomaticProbabilityPredictorMixin
@@ -21,6 +23,8 @@ from mlrl.common.config import FloatParameter, NominalParameter, PartitionSampli
 from mlrl.common.options import Options, BooleanOption
 from typing import Optional
 
+
+PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
 
 class ExtendedPartitionSamplingParameter(PartitionSamplingParameter):
     """
@@ -323,6 +327,42 @@ class HeadTypeParameter(NominalParameter):
             config.use_automatic_heads()
 
 
+class MarginalProbabilityCalibrationParameter(NominalParameter):
+    """
+    A parameter that allows to configure the method to be used for the calibration of marginal probabilities.
+    """
+
+    def __init__(self):
+        super().__init__(name='marginal_probability_calibration',
+                         description='The name of the method to be used for the calibration of marginal probabilities')
+        self.add_value(name=NONE, mixin=NoMarginalProbabilityCalibrationMixin)
+        self.add_value(name=PROBABILITY_CALIBRATION_ISOTONIC, mixin=IsotonicMarginalProbabilityCalibrationMixin)
+
+    def _configure(self, config, value: str, _: Optional[Options]):
+        if value == NONE:
+            config.use_no_marginal_probability_calibration()
+        if value == PROBABILITY_CALIBRATION_ISOTONIC:
+            config.use_isotonic_marginal_probability_calibration()
+
+
+class JointProbabilityCalibrationParameter(NominalParameter):
+    """
+    A parameter that allows to configure the method to be used for the calibration of joint probabilities.
+    """
+
+    def __init__(self):
+        super().__init__(name='joint_probability_calibration',
+                         description='The name of the method to be used for the calibration of joint probabilities')
+        self.add_value(name=NONE, mixin=NoJointProbabilityCalibrationMixin)
+        self.add_value(name=PROBABILITY_CALIBRATION_ISOTONIC, mixin=IsotonicJointProbabilityCalibrationMixin)
+
+    def _configure(self, config, value: str, _: Optional[Options]):
+        if value == NONE:
+            config.use_no_joint_probability_calibration()
+        if value == PROBABILITY_CALIBRATION_ISOTONIC:
+            config.use_isotonic_joint_probability_calibration()
+
+
 class BinaryPredictorParameter(NominalParameter):
     """
     A parameter that allows to configure the strategy to be used for predicting binary labels.
@@ -397,6 +437,8 @@ BOOSTING_RULE_LEARNER_PARAMETERS = RULE_LEARNER_PARAMETERS | {
     LabelBinningParameter(),
     LossParameter(),
     HeadTypeParameter(),
+    MarginalProbabilityCalibrationParameter(),
+    JointProbabilityCalibrationParameter(),
     BinaryPredictorParameter(),
     ProbabilityPredictorParameter()
 }
