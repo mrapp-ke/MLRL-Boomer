@@ -414,30 +414,33 @@ class NominalParameter(Parameter, ABC):
         A value that can be set for a nominal parameter.
         """
 
-        def __init__(self, name: str, mixin: type, options: Set[str]):
+        def __init__(self, name: str, mixin: type, options: Set[str], description: Optional[str]):
             """
-            :param name:    The name of the value
-            :param mixin:   The type of the mixin that must be implemented by a rule learner to support this value
-            :param options: A set that contains the names of additional options that may be specified
+            :param name:        The name of the value
+            :param mixin:       The type of the mixin that must be implemented by a rule learner to support this value
+            :param options:     A set that contains the names of additional options that may be specified
+            :param description: A textual description of the value
             """
             self.name = name
             self.mixin = mixin
             self.options = options
+            self.description = description
 
     def __init__(self, name: str, description: str):
         super().__init__(name, description)
         self.values = []
 
-    def add_value(self, name: str, mixin: type, options: Set[str] = {}):
+    def add_value(self, name: str, mixin: type, options: Set[str] = {}, description: Optional[str] = None):
         """
         Adds a new value to the parameter.
 
-        :param name:    The name of the value to be added
-        :param mixin:   The type of the mixin that must be implemented by a rule learner to support the value
-        :param options: A set that contains the names of additional options that may be specified
-        :return:        The parameter itself
+        :param name:        The name of the value to be added
+        :param mixin:       The type of the mixin that must be implemented by a rule learner to support the value
+        :param options:     A set that contains the names of additional options that may be specified
+        :param description: A textual description of the value
+        :return:            The parameter itself
         """
-        self.values.append(NominalParameter.Value(name=name, mixin=mixin, options=options))
+        self.values.append(NominalParameter.Value(name=name, mixin=mixin, options=options, description=description))
         return self
 
     @abstractmethod
