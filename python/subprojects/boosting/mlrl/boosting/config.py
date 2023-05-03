@@ -23,8 +23,10 @@ from mlrl.common.config import FloatParameter, NominalParameter, PartitionSampli
 from mlrl.common.options import Options, BooleanOption
 from typing import Optional
 
-
 PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
+
+OPTION_BASED_ON_PROBABILITIES = 'based_on_probabilities'
+
 
 class ExtendedPartitionSamplingParameter(PartitionSamplingParameter):
     """
@@ -377,19 +379,25 @@ class BinaryPredictorParameter(NominalParameter):
     def __init__(self):
         super().__init__(name='binary_predictor',
                          description='The name of the strategy to be used for predicting binary labels')
-        self.add_value(name=self.BINARY_PREDICTOR_LABEL_WISE, mixin=LabelWiseBinaryPredictorMixin)
-        self.add_value(name=self.BINARY_PREDICTOR_EXAMPLE_WISE, mixin=ExampleWiseBinaryPredictorMixin)
+        self.add_value(name=self.BINARY_PREDICTOR_LABEL_WISE,
+                       mixin=LabelWiseBinaryPredictorMixin,
+                       options={OPTION_BASED_ON_PROBABILITIES})
+        self.add_value(name=self.BINARY_PREDICTOR_EXAMPLE_WISE,
+                       mixin=ExampleWiseBinaryPredictorMixin,
+                       options={OPTION_BASED_ON_PROBABILITIES})
         self.add_value(name=self.BINARY_PREDICTOR_GFM, mixin=GfmBinaryPredictorMixin)
         self.add_value(name=AUTOMATIC,
                        mixin=AutomaticBinaryPredictorMixin,
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'based on the parameter ' + LossParameter().argument_name)
 
-    def _configure(self, config, value: str, _: Optional[Options]):
+    def _configure(self, config, value: str, options: Optional[Options]):
         if value == self.BINARY_PREDICTOR_LABEL_WISE:
-            config.use_label_wise_binary_predictor()
+            c = config.use_label_wise_binary_predictor()
+            c.set_based_on_probabilities(options.get_bool(OPTION_BASED_ON_PROBABILITIES, c.is_based_on_probabilities()))
         elif value == self.BINARY_PREDICTOR_EXAMPLE_WISE:
-            config.use_example_wise_binary_predictor()
+            c = config.use_example_wise_binary_predictor()
+            c.set_based_on_probabilities(options.get_bool(OPTION_BASED_ON_PROBABILITIES, c.is_based_on_probabilities()))
         elif value == self.BINARY_PREDICTOR_GFM:
             config.use_gfm_binary_predictor()
         elif value == AUTOMATIC:
