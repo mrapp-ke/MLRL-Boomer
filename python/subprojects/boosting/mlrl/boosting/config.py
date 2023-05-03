@@ -226,11 +226,10 @@ class ExtendedPartitionSamplingParameter(PartitionSamplingParameter):
 
     def __init__(self):
         super().__init__()
-        self.add_value(
-            name=AUTOMATIC,
-            mixin=AutomaticPartitionSamplingMixin,
-            description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically depending '
-            + 'on whether a holdout set is needed and depending on the loss function')
+        self.add_value(name=AUTOMATIC,
+                       mixin=AutomaticPartitionSamplingMixin,
+                       description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
+                       + 'depending on whether a holdout set is needed and depending on the loss function')
 
     def _configure(config, value: str, options: Optional[Options]):
         if value == AUTOMATIC:
@@ -246,11 +245,10 @@ class ExtendedFeatureBinningParameter(FeatureBinningParameter):
 
     def __init__(self):
         super().__init__()
-        self.add_value(
-            name=AUTOMATIC,
-            mixin=AutomaticFeatureBinningMixin,
-            description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically based on '
-            + 'the characteristics of the feature matrix')
+        self.add_value(name=AUTOMATIC,
+                       mixin=AutomaticFeatureBinningMixin,
+                       description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
+                       + 'based on the characteristics of the feature matrix')
 
     def _configure(config, value: str, options: Optional[Options]):
         if value == AUTOMATIC:
@@ -266,11 +264,10 @@ class ExtendedParallelRuleRefinementParameter(ParallelRuleRefinementParameter):
 
     def __init__(self):
         super().__init__()
-        self.add_value(
-            name=AUTOMATIC,
-            mixin=AutomaticParallelRuleRefinementMixin,
-            description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically based on '
-            + 'the parameter ' + PARAM_LOSS)
+        self.add_value(name=AUTOMATIC,
+                       mixin=AutomaticParallelRuleRefinementMixin,
+                       description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
+                       + 'based on ' + 'the parameter ' + PARAM_LOSS)
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == AUTOMATIC:
@@ -286,11 +283,10 @@ class ExtendedParallelStatisticUpdateParameter(ParallelStatisticUpdateParameter)
 
     def __init__(self):
         super().__init__()
-        self.add_value(
-            name=AUTOMATIC,
-            mixin=AutomaticParallelStatisticUpdateMixin,
-            description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically based on '
-            + 'the parameter ' + PARAM_LOSS)
+        self.add_value(name=AUTOMATIC,
+                       mixin=AutomaticParallelStatisticUpdateMixin,
+                       description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
+                       + 'based on ' + 'the parameter ' + PARAM_LOSS)
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == AUTOMATIC:
@@ -326,7 +322,7 @@ class L1RegularizationParameter(FloatParameter):
         super().__init__(name='l1_regularization_weight',
                          description='The weight of the L1 regularization. Must be at least 0',
                          mixin=L1RegularizationMixin)
-        
+
     def _configure(config, value: float):
         if value == 0.0 and issubclass(type(config), NoL1RegularizationMixin):
             config.use_no_l1_regularization()
@@ -343,7 +339,7 @@ class L2RegularizationParameter(FloatParameter):
         super().__init__(name='l2_regularization_weight',
                          description='The weight of the L2 regularization. Must be at least 0',
                          mixin=L2RegularizationMixin)
-        
+
     def _configure(config, value: float):
         if value == 0.0 and issubclass(type(config), NoL2RegularizationMixin):
             config.use_no_l2_regularization()
