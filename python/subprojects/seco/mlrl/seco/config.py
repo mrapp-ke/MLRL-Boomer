@@ -213,7 +213,7 @@ class LiftFunctionParameter(NominalParameter):
             c.set_curvature(options.get_float(self.OPTION_CURVATURE, c.get_curvature()))
         elif value == self.LIFT_FUNCTION_KLN:
             c = config.use_kln_lift_function()
-            c.set_k(options.get_float(self.OPTION_K, c.get_k()))        
+            c.set_k(options.get_float(self.OPTION_K, c.get_k()))
 
 
 class HeuristicParameter(NominalParameter):
