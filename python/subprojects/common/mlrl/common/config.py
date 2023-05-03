@@ -16,8 +16,10 @@ from mlrl.common.cython.learner import GreedyTopDownRuleInductionMixin, BeamSear
     TimeStoppingCriterionMixin, NoSequentialPostOptimizationMixin, SequentialPostOptimizationMixin
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.options import Options, BooleanOption, parse_param, parse_param_and_options
-from typing import Dict, Set, Optional, List
+from mlrl.common.format import format_dict_keys, format_string_set
+from typing import Dict, Set, Optional
 from abc import ABC, abstractmethod
+from argparse import ArgumentParser
 
 AUTOMATIC = 'auto'
 
@@ -181,10 +183,18 @@ class Parameter(ABC):
     @abstractmethod
     def configure(self, config, value):
         """
-        Must be implemented by subclasses in order to configure a rule learner depending on the parameter.
+        Configures a rule learner depending on this parameter.
 
         :param config:  The configuration to be modified
         :param value:   The value to be set
+        """
+        pass
+
+    @abstractmethod
+    def add_to_argument_parser(self, parser: ArgumentParser, config_type: type):
+        """
+        Adds a command line argument that corresponds to this parameter to an `ArgumentParser` if it is supported by a
+        configuration of a specific type.
         """
         pass
 
@@ -193,11 +203,16 @@ class Parameter(ABC):
 
     def __hash__(self):
         return hash(self.name)
+    
+    @property
+    def argument_name(self) -> str:
+        return '--' + self.name.replace('_', '-')
 
 
 class NominalParameter(Parameter, ABC):
     """
-    A nominal parameter of a rule learning algorithm that allows to set one out of a set of predefined values.
+    An abstract base class for all nominal parameters of a rule learning algorithm that allow to set one out of a set of
+    predefined values.
     """
 
     class Value:
@@ -225,7 +240,7 @@ class NominalParameter(Parameter, ABC):
 
     def __init__(self, name: str, description: str):
         super().__init__(name, description)
-        self.values = set()
+        self.values = {}
 
     def add_value(self, name: str, mixin: type, options: Set[str] = set(), description: Optional[str] = None):
         """
@@ -237,7 +252,7 @@ class NominalParameter(Parameter, ABC):
         :param description: A textual description of the value
         :return:            The parameter itself
         """
-        self.values.add(NominalParameter.Value(name=name, mixin=mixin, options=options, description=description))
+        self.values[name] = NominalParameter.Value(name=name, mixin=mixin, options=options, description=description)
         return self
 
     @abstractmethod
@@ -251,79 +266,122 @@ class NominalParameter(Parameter, ABC):
         """
         pass
 
-    def configure(self, config, value):
+    def __get_supported_values(self, config_type: type):
         num_options = 0
-        allowed_values = {}
+        supported_values = {}
 
-        for parameter_value in self.values:
-            if issubclass(type(config), parameter_value.mixin):
-                num_options += len(parameter_value.options)
-                allowed_values[parameter_value.name] = parameter_value.options
+        for parameter_value in self.values.values():
+            if issubclass(config_type, parameter_value.mixin):
+                options = parameter_value.options
+                num_options += len(options)
+                supported_values[parameter_value.name] = options
+        
+        if num_options == 0:
+            supported_values = {value for value in supported_values.keys()}
+        
+        return supported_values
 
-        if len(allowed_values) > 0:
+    def configure(self, config, value):
+        supported_values = self.__get_supported_values(type(config))
+
+        if len(supported_values) > 0:
             value = str(value)
 
-            if num_options > 0:
-                value, options = parse_param_and_options(self.name, value, allowed_values)
+            if type(supported_values) == Dict:
+                value, options = parse_param_and_options(self.name, value, supported_values)
             else:
-                allowed_values = {value for value in allowed_values.keys()}
-                value = parse_param(self.name, value, allowed_values)
+                value = parse_param(self.name, value, supported_values)
                 options = None
 
             self._configure(config, value, options)
 
+    def add_to_argument_parser(self, parser: ArgumentParser, config_type: type):
+        supported_values = self.__get_supported_values(config_type)
 
-class IntParameter(Parameter, ABC):
+        if len(supported_values) > 0:
+            description = self.description
+            description += '. Must be one of '
+
+            if type(supported_values) == Dict:
+                description += format_dict_keys(supported_values)
+                suffix = ' For additional options refer to the documentation.'
+                supported_values = {value for value in supported_values.keys()}
+            else:
+                description += format_string_set(supported_values)
+                suffix = ''
+
+            description += '.'
+
+            for supported_value in supported_values:
+                value_description = self.values[supported_value].description
+
+                if value_description is not None and len(value_description) > 0:
+                    description += ' ' + value_description + '.'
+
+            description += suffix
+            parser.add_argument(self.argument_name, type=str, help=description)
+
+
+class NumericalParameter(Parameter, ABC):
     """
-    A parameter of a rule learning algorithm that allows to set an integer value.
+    An abstract base class for all parameters of a rule learning algorithm that allow to set a numerical value.
     """
 
-    def __init__(self, name: str, description: str, mixin: type):
+    def __init__(self, name: str, description: str, mixin: type, numeric_type: type):
         """
-        :param mixin: The type of the mixin that must be implemented by a rule learner to support the parameter
+        :param mixin:           The type of the mixin that must be implemented by a rule learner to support the
+                                parameter
+        :param numeric_type:    The type of the numerical value
         """
-        super().__init__(name, description)
+        super().__init__(name=name, description=description)
         self.mixin = mixin
+        self.numeric_type = numeric_type
 
     @abstractmethod
-    def _configure(self, config, value: int):
+    def _configure(self, config, value):
         """
-        Must be implemented by subclasses in order to configure a rule learner depending on the specified integer value.
+        Must be implemented by subclasses in order to configure a rule learner depending on the specified numerical
+        value.
         
         :param config:  The configuration to be modified
-        :param value:   The integer value to be set
+        :param value:   The numerical value to be set
         """
         pass
 
+    def __is_supported(self, config_type: type):
+        return issubclass(config_type, self.mixin)
+    
     def configure(self, config, value):
-        self._configure(config, int(value))
+        if self.__is_supported(type(config)):
+            self._configure(config, self.numeric_type(value))
+
+    def add_to_argument_parser(self, parser: ArgumentParser, config_type: type):
+        if self.__is_supported(config_type):
+            parser.add_argument(self.argument_name, type=self.numeric_type, help=self.description)
 
 
-class FloatParameter(Parameter, ABC):
+class IntParameter(NumericalParameter, ABC):
     """
-    A parameter of a rule learning algorithm that allows to set a floating point value.
+    An abstract base class for all parameters of a rule learning algorithm that allow to set an integer value.
     """
 
     def __init__(self, name: str, description: str, mixin: type):
         """
         :param mixin: The type of the mixin that must be implemented by a rule learner to support the parameter
         """
-        super().__init__(name, description)
-        self.mixin = mixin
+        super().__init__(name=name, description=description, mixin=mixin, numeric_type=int)
+    
 
-    @abstractmethod
-    def _configure(self, config, value: float):
-        """
-        Must be implemented by subclasses in order to configure a rule learner depending on the specified floating point
-        value.
+class FloatParameter(NumericalParameter, ABC):
+    """
+    An abstract base class for all parameters of a rule learning algorithm that allow to set a floating point value.
+    """
 
-        :param config:  The configuration to be modified
-        :param value:   The floating point value to be set
-        """
-        pass
+    def __init__(self, name: str, description: str, mixin: type):
+        super().__init__(name=name, description=description, mixin=mixin, numeric_type=float)
 
-    def configure(self, config, value):
-        self._configure(config, float(value))
+    def _cast_value(self, value):
+        return float(value)
 
 
 class RuleInductionParameter(NominalParameter):
@@ -714,7 +772,7 @@ class SizeStoppingCriterionParameter(IntParameter):
             + 'should not be restricted',
             mixin=SizeStoppingCriterionMixin)
 
-    def _configure(self, config, value: int):
+    def _configure(self, config, value):
         if value == 0 and issubclass(type(config), NoSizeStoppingCriterionMixin):
             config.use_no_size_stopping_criterion()
         else:
@@ -733,7 +791,7 @@ class TimeStoppingCriterionParameter(IntParameter):
             + 'least 1 or 0, if no time limit should be set',
             mixin=TimeStoppingCriterionMixin)
 
-    def _configure(self, config, value: int):
+    def _configure(self, config, value):
         if value == 0 and issubclass(type(config), NoTimeStoppingCriterionMixin):
             config.use_no_time_stopping_criterion()
         else:
@@ -788,13 +846,13 @@ RULE_LEARNER_PARAMETERS = {
 }
 
 
-def configure_rule_learner(learner, config, parameters: List[Parameter]):
+def configure_rule_learner(learner, config, parameters: Set[Parameter]):
     """
-    Configures a rule learner by taking into account a given list of parameters.
+    Configures a rule learner by taking into account a given set of parameters.
 
     :param learner:     The rule learner to be configured
     :param config:      The configuration to be modified
-    :param parameters:  A list that contains the parameters that may be supported by the rule learner
+    :param parameters:  A set that contains the parameters to be taken into account
     """
     for parameter in parameters:
         parameter_name = parameter.name
@@ -804,3 +862,15 @@ def configure_rule_learner(learner, config, parameters: List[Parameter]):
 
             if value is not None:
                 parameter.configure(config=config, value=value)
+
+
+def configure_argument_parser(parser: ArgumentParser, config_type: type, parameters: Set[Parameter]):
+    """
+    Configure an `ArgumentParser` by taking into account a given set of parameters.
+
+    :param parser:      The `ArgumentParser` to be configured
+    :param config_type: The type of the configuration that should support the parameters
+    :param parameters:  A set that contains the parameters to be taken into account
+    """
+    for parameter in parameters:
+        parameter.add_to_argument_parser(parser, config_type)
