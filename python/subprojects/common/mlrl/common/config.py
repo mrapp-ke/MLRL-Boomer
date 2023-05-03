@@ -432,11 +432,17 @@ class NominalParameter(Parameter, ABC):
             self.options = options
             self.description = description
 
+        def __lt__(self, other):
+            return self.name < other.name
+
+        def __hash__(self):
+            return hash(self.name)
+
     def __init__(self, name: str, description: str):
         super().__init__(name, description)
-        self.values = []
+        self.values = set()
 
-    def add_value(self, name: str, mixin: type, options: Set[str] = {}, description: Optional[str] = None):
+    def add_value(self, name: str, mixin: type, options: Set[str] = set(), description: Optional[str] = None):
         """
         Adds a new value to the parameter.
 
@@ -446,7 +452,7 @@ class NominalParameter(Parameter, ABC):
         :param description: A textual description of the value
         :return:            The parameter itself
         """
-        self.values.append(NominalParameter.Value(name=name, mixin=mixin, options=options, description=description))
+        self.values.add(NominalParameter.Value(name=name, mixin=mixin, options=options, description=description))
         return self
 
     @abstractmethod
