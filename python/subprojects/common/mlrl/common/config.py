@@ -1,11 +1,12 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides utility function for configuring rule learning algorithms.
+Provides utilities that ease the configuration of rule learning algorithms.
 """
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.options import BooleanOption, parse_param, parse_param_and_options
-from typing import Dict, Set, Optional
+from typing import Dict, Set, Optional, List
+from abc import ABC
 
 AUTOMATIC = 'auto'
 
@@ -366,3 +367,55 @@ def configure_sequential_post_optimization(config, sequential_post_optimization:
             c.set_num_iterations(options.get_int(OPTION_NUM_ITERATIONS, c.get_num_iterations()))
             c.set_refine_heads(options.get_bool(OPTION_REFINE_HEADS, c.are_heads_refined()))
             c.set_resample_features(options.get_bool(OPTION_RESAMPLE_FEATURES, c.are_features_resampled()))
+
+
+class Parameter(ABC):
+    """
+    An abstract base class for all parameters of a rule learning algorithm.
+    """
+
+    def __init__(self, name: str, description: str):
+        """
+        :param name:        The name of the parameter
+        :param description: A textual description of the parameter
+        """
+        self.name = name
+        self.description = description
+
+
+class NominalParameter(Parameter):
+    """
+    A nominal parameter of a rule learning algorithm that allows to set one out of a set of predefined values.
+    """
+
+    class Value:
+        """
+        A value that can be set for a nominal parameter.
+        """
+
+        def __init__(self, name: str, mixin: type, options: Set[str]):
+            """
+            :param name:    The name of the value
+            :param mixin:   The type of the mixin that must be implemented by a rule learner to support this value
+            :param options: A set that contains the names of additional options that may be specified
+            """
+            self.name = name
+            self.mixin = mixin
+            self.options = options
+
+
+    def __init__(self, name: str, description: str):
+        super().__init__(name, description)
+        self.values = []
+
+    def add_value(self, name: str, mixin: type, options: Set[str] = {}):
+        """
+        Adds a new value to the parameter.
+
+        :param name:    The name of the value to be added
+        :param mixin:   The type of the mixin that must be implemented by a rule learner to support the value
+        :param options: A set that contains the names of additional options that may be specified
+        :return:        The parameter itself
+        """
+        self.values.append(NominalParameter.Value(name=name, mixin=mixin, options=options))
+        return self
