@@ -4,34 +4,14 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides a scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label
 classification rules.
 """
-from mlrl.common.config import configure_rule_induction, configure_label_sampling, configure_instance_sampling, \
-    configure_feature_sampling, configure_partition_sampling, configure_rule_pruning, \
-    configure_parallel_rule_refinement, configure_parallel_statistic_update, configure_parallel_prediction, \
-    configure_size_stopping_criterion, configure_time_stopping_criterion, configure_sequential_post_optimization
+from mlrl.common.config import configure_rule_learner
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
-from mlrl.common.options import parse_param_and_options
-from mlrl.common.rule_learners import RuleLearner, SparsePolicy, get_string, get_int
-from mlrl.seco.config import HEURISTIC_ACCURACY, HEURISTIC_PRECISION, HEURISTIC_RECALL, HEURISTIC_LAPLACE, \
-    HEURISTIC_WRA, HEURISTIC_F_MEASURE, HEURISTIC_M_ESTIMATE, OPTION_M, OPTION_BETA
-from mlrl.seco.config import configure_head_type, configure_lift_function, configure_accuracy_heuristic, \
-    configure_precision_heuristic, configure_recall_heuristic, configure_laplace_heuristic, configure_wra_heuristic, \
-    configure_f_measure_heuristic, configure_m_estimate_heuristic, configure_accuracy_pruning_heuristic, \
-    configure_precision_pruning_heuristic, configure_recall_pruning_heuristic, configure_laplace_pruning_heuristic, \
-    configure_wra_pruning_heuristic, configure_f_measure_pruning_heuristic, configure_m_estimate_pruning_heuristic
+from mlrl.common.rule_learners import RuleLearner, SparsePolicy
+from mlrl.seco.config import SECO_RULE_LEARNER_PARAMETERS
 from mlrl.seco.cython.learner_seco import MultiLabelSeCoRuleLearner as MultiLabelSeCoRuleLearnerWrapper, \
     MultiLabelSeCoRuleLearnerConfig
 from sklearn.base import ClassifierMixin, MultiOutputMixin
-from typing import Dict, Set, Optional
-
-HEURISTIC_VALUES: Dict[str, Set[str]] = {
-    HEURISTIC_ACCURACY: {},
-    HEURISTIC_PRECISION: {},
-    HEURISTIC_RECALL: {},
-    HEURISTIC_LAPLACE: {},
-    HEURISTIC_WRA: {},
-    HEURISTIC_F_MEASURE: {OPTION_BETA},
-    HEURISTIC_M_ESTIMATE: {OPTION_M}
-}
+from typing import Optional
 
 
 class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
@@ -135,46 +115,5 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
 
     def _create_learner(self) -> RuleLearnerWrapper:
         config = MultiLabelSeCoRuleLearnerConfig()
-        configure_rule_induction(config, get_string(self.rule_induction))
-        configure_label_sampling(config, get_string(self.label_sampling))
-        configure_instance_sampling(config, get_string(self.instance_sampling))
-        configure_feature_sampling(config, get_string(self.feature_sampling))
-        configure_partition_sampling(config, get_string(self.holdout))
-        configure_rule_pruning(config, get_string(self.rule_pruning))
-        configure_parallel_rule_refinement(config, get_string(self.parallel_rule_refinement))
-        configure_parallel_statistic_update(config, get_string(self.parallel_statistic_update))
-        configure_parallel_prediction(config, get_string(self.parallel_prediction))
-        configure_size_stopping_criterion(config, max_rules=get_int(self.max_rules))
-        configure_time_stopping_criterion(config, time_limit=get_int(self.time_limit))
-        configure_sequential_post_optimization(config, get_string(self.sequential_post_optimization))
-        configure_head_type(config, get_string(self.head_type))
-        configure_lift_function(config, get_string(self.lift_function))
-        self.__configure_heuristic(config)
-        self.__configure_pruning_heuristic(config)
+        configure_rule_learner(self, config, SECO_RULE_LEARNER_PARAMETERS)
         return MultiLabelSeCoRuleLearnerWrapper(config)
-
-    def __configure_heuristic(self, config: MultiLabelSeCoRuleLearnerConfig):
-        heuristic = get_string(self.heuristic)
-
-        if heuristic is not None:
-            value, options = parse_param_and_options('heuristic', heuristic, HEURISTIC_VALUES)
-            configure_accuracy_heuristic(config, value)
-            configure_precision_heuristic(config, value)
-            configure_recall_heuristic(config, value)
-            configure_laplace_heuristic(config, value)
-            configure_wra_heuristic(config, value)
-            configure_f_measure_heuristic(config, value, options)
-            configure_m_estimate_heuristic(config, value, options)
-
-    def __configure_pruning_heuristic(self, config: MultiLabelSeCoRuleLearnerConfig):
-        pruning_heuristic = get_string(self.pruning_heuristic)
-
-        if pruning_heuristic is not None:
-            value, options = parse_param_and_options('pruning_heuristic', pruning_heuristic, HEURISTIC_VALUES)
-            configure_accuracy_pruning_heuristic(config, value)
-            configure_precision_pruning_heuristic(config, value)
-            configure_recall_pruning_heuristic(config, value)
-            configure_laplace_pruning_heuristic(config, value)
-            configure_wra_pruning_heuristic(config, value)
-            configure_f_measure_pruning_heuristic(config, value, options)
-            configure_m_estimate_pruning_heuristic(config, value, options)
