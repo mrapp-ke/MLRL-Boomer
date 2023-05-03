@@ -21,12 +21,6 @@ from mlrl.common.config import FloatParameter, NominalParameter, PartitionSampli
 from mlrl.common.options import Options, BooleanOption
 from typing import Dict, Set, Optional
 
-PARAM_DEFAULT_RULE = 'default_rule'
-
-PARAM_LOSS = 'loss'
-
-PARAM_HEAD_TYPE = 'head_type'
-
 STATISTIC_FORMAT_DENSE = 'dense'
 
 STATISTIC_FORMAT_SPARSE = 'sparse'
@@ -136,7 +130,7 @@ class ExtendedParallelRuleRefinementParameter(ParallelRuleRefinementParameter):
         self.add_value(name=AUTOMATIC,
                        mixin=AutomaticParallelRuleRefinementMixin,
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
-                       + 'based on ' + 'the parameter ' + PARAM_LOSS)
+                       + 'based on ' + 'the parameter ' + LossParameter().argument_name)
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == AUTOMATIC:
@@ -155,7 +149,7 @@ class ExtendedParallelStatisticUpdateParameter(ParallelStatisticUpdateParameter)
         self.add_value(name=AUTOMATIC,
                        mixin=AutomaticParallelStatisticUpdateMixin,
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
-                       + 'based on ' + 'the parameter ' + PARAM_LOSS)
+                       + 'based on ' + 'the parameter ' + LossParameter().argument_name)
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == AUTOMATIC:
@@ -222,7 +216,7 @@ class DefaultRuleParameter(NominalParameter):
     """
 
     def __init__(self):
-        super().__init__(name=PARAM_DEFAULT_RULE, description='Whether a default rule should be induced or not')
+        super().__init__(name='default_rule', description='Whether a default rule should be induced or not')
         self.add_value(name=BooleanOption.FALSE.value, mixin=NoDefaultRuleMixin)
         self.add_value(name=BooleanOption.TRUE.value, mixin=DefaultRuleMixin)
         self.add_value(name=AUTOMATIC, mixin=AutomaticDefaultRuleMixin)
@@ -253,8 +247,9 @@ class StatisticFormatParameter(NominalParameter):
         self.add_value(name=AUTOMATIC,
                        mixin=AutomaticStatisticsMixin,
                        description='If set to "' + AUTOMATIC + '", the most suitable format is chosen automatically '
-                       + 'based on the parameters ' + PARAM_LOSS + ', ' + PARAM_HEAD_TYPE + ', ' + PARAM_DEFAULT_RULE
-                       + ' and the characteristics of the label matrix')
+                       + 'based on the parameters ' + LossParameter().argument_name + ', '
+                       + HeadTypeParameter().argument_name + ', ' + DefaultRuleParameter().argument_name + ' and the '
+                       + 'characteristics of the label matrix')
 
     def _configure(self, config, value: str, _: Optional[Options]):
         if value == STATISTIC_FORMAT_DENSE:
@@ -280,7 +275,8 @@ class LabelBinningParameter(NominalParameter):
         self.add_value(name=AUTOMATIC,
                        mixin=AutomaticLabelBinningMixin,
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
-                       + 'based on the parameters ' + PARAM_LOSS + ' and ' + PARAM_HEAD_TYPE)
+                       + 'based on the parameters ' + LossParameter().argument_name + ' and '
+                       + HeadTypeParameter().argument_name)
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == NONE:
@@ -312,7 +308,7 @@ class LossParameter(NominalParameter):
     LOSS_SQUARED_HINGE_EXAMPLE_WISE = 'squared-hinge-example-wise'
 
     def __init__(self):
-        super().__init__(name=PARAM_LOSS, description='The name of the loss function to be minimized during training')
+        super().__init__(name='loss', description='The name of the loss function to be minimized during training')
         self.add_value(name=self.LOSS_LOGISTIC_LABEL_WISE, mixin=LabelWiseLogisticLossMixin)
         self.add_value(name=self.LOSS_LOGISTIC_EXAMPLE_WISE, mixin=ExampleWiseLogisticLossMixin)
         self.add_value(name=self.LOSS_SQUARED_ERROR_LABEL_WISE, mixin=LabelWiseSquaredErrorLossMixin)
@@ -359,7 +355,7 @@ class HeadTypeParameter(NominalParameter):
     HEAD_TYPE_COMPLETE = 'complete'
 
     def __init__(self):
-        super().__init__(name=PARAM_HEAD_TYPE, description='The type of the rule heads that should be used')
+        super().__init__(name='head_type', description='The type of the rule heads that should be used')
         self.add_value(name=self.HEAD_TYPE_SINGLE, mixin=SingleLabelHeadMixin)
         self.add_value(name=self.HEAD_TYPE_PARTIAL_FIXED,
                        mixin=FixedPartialHeadMixin,
@@ -407,7 +403,7 @@ class BinaryPredictorParameter(NominalParameter):
         self.add_value(name=AUTOMATIC,
                        mixin=AutomaticBinaryPredictorMixin,
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
-                       + 'based on the parameter ' + PARAM_LOSS)
+                       + 'based on the parameter ' + LossParameter().argument_name)
 
     def _configure(self, config, value: str, _: Optional[Options]):
         if value == self.BINARY_PREDICTOR_LABEL_WISE:
@@ -437,7 +433,7 @@ class ProbabilityPredictorParameter(NominalParameter):
         self.add_value(name=AUTOMATIC,
                        mixin=AutomaticProbabilityPredictorMixin,
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
-                       + 'based on the parameter ' + PARAM_LOSS)
+                       + 'based on the parameter ' + LossParameter().argument_name)
 
     def _configure(self, config, value: str, _: Optional[Options]):
         if value == self.PROBABILITY_PREDICTOR_LABEL_WISE:
