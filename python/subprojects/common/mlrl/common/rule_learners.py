@@ -24,7 +24,6 @@ from mlrl.common.format import format_enum_values
 from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLearner
 from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
 from sklearn.utils import check_array
-from typing import Optional
 
 KWARG_MAX_RULES = 'max_rules'
 
@@ -46,18 +45,6 @@ def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
     except ValueError:
         raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
                          + format_enum_values(SparsePolicy) + ', but is "' + str(policy) + '"')
-
-
-def get_int(value) -> Optional[int]:
-    return int(value) if value is not None else None
-
-
-def get_float(value) -> Optional[float]:
-    return float(value) if value is not None else None
-
-
-def get_string(value) -> Optional[str]:
-    return str(value) if value is not None else None
 
 
 def is_sparse(m, sparse_format: SparseFormat, dtype, sparse_values: bool = True) -> bool:

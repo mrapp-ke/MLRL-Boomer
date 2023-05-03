@@ -12,7 +12,7 @@ from typing import Optional, Tuple, Dict, Set
 
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.format import format_enum_values, format_dict_keys
-from mlrl.common.config import NONE
+from mlrl.common.config import Parameter, configure_argument_parser, create_kwargs_from_parameters, NONE
 from mlrl.common.options import BooleanOption, parse_param_and_options
 from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
     DataCharacteristicsCsvOutput
@@ -230,8 +230,12 @@ class LearnerRunnable(Runnable, ABC):
 
     PARAM_PREDICTION_TYPE = '--prediction-type'
 
-    def __init__(self, description: str):
+    def __init__(self, description: str, learner_name: str):
+        """
+        :param learner_name: The name of the learner
+        """
         super().__init__(description)
+        self.learner_name = learner_name
 
     def __create_prediction_type(self, args) -> PredictionType:
         prediction_type = args.prediction_type
@@ -492,7 +496,7 @@ class LearnerRunnable(Runnable, ABC):
                                                   self.__create_prediction_characteristics_printer(args))
         data_splitter = self.__create_data_splitter(args)
         experiment = Experiment(base_learner=self._create_learner(args),
-                                learner_name=self._get_learner_name(),
+                                learner_name=self.learner_name,
                                 data_splitter=data_splitter,
                                 pre_execution_hook=self.__create_pre_execution_hook(args, data_splitter),
                                 train_evaluation=train_evaluation,
@@ -562,17 +566,8 @@ class LearnerRunnable(Runnable, ABC):
         """
         pass
 
-    @abstractmethod
-    def _get_learner_name(self) -> str:
-        """
-        Must be implemented by subclasses in order to provide the name of the learner.
 
-        :return: The name of the learner
-        """
-        pass
-
-
-class RuleLearnerRunnable(LearnerRunnable, ABC):
+class RuleLearnerRunnable(LearnerRunnable):
     """
     A base class for all programs that perform an experiment that involves training and evaluation of a rule learner.
     """
@@ -604,8 +599,17 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
 
     STORE_RULES_VALUES = PRINT_RULES_VALUES
 
-    def __init__(self, description: str):
-        super().__init__(description)
+    def __init__(self, description: str, learner_name: str, learner_type: type, config_type: type,
+                 parameters: Set[Parameter]):
+        """
+        :param learner_type:    The type of the rule learner
+        :param config_type:     The type of the rule learner's configuration
+        :param parameters:      A set that contains the parameters that may be supported by the rule learner
+        """
+        super().__init__(description=description, learner_name=learner_name)
+        self.learner_type = learner_type
+        self.config_type = config_type
+        self.parameters = parameters
 
     def _configure_arguments(self, parser: ArgumentParser):
         super()._configure_arguments(parser)
@@ -654,6 +658,15 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
                             default=SparsePolicy.AUTO.value,
                             help='The format to be used for the representation of predictions. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
+        configure_argument_parser(parser, self.config_type, self.parameters)
+
+    def _create_learner(self, args):
+        kwargs = create_kwargs_from_parameters(args, self.parameters)
+        kwargs['random_state'] = args.random_state
+        kwargs['feature_format'] = args.feature_format
+        kwargs['label_format'] = args.label_format
+        kwargs['prediction_format'] = args.prediction_format
+        return self.learner_type(**kwargs)
 
     def _create_evaluation(
             self, args, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
