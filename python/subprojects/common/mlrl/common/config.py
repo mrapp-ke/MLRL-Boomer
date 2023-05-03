@@ -203,7 +203,7 @@ class Parameter(ABC):
 
     def __hash__(self):
         return hash(self.name)
-    
+
     @property
     def argument_name(self) -> str:
         return '--' + self.name.replace('_', '-')
@@ -275,10 +275,10 @@ class NominalParameter(Parameter, ABC):
                 options = parameter_value.options
                 num_options += len(options)
                 supported_values[parameter_value.name] = options
-        
+
         if num_options == 0:
             supported_values = {value for value in supported_values.keys()}
-        
+
         return supported_values
 
     def configure(self, config, value):
@@ -350,7 +350,7 @@ class NumericalParameter(Parameter, ABC):
 
     def __is_supported(self, config_type: type):
         return issubclass(config_type, self.mixin)
-    
+
     def configure(self, config, value):
         if self.__is_supported(type(config)):
             self._configure(config, self.numeric_type(value))
@@ -370,7 +370,7 @@ class IntParameter(NumericalParameter, ABC):
         :param mixin: The type of the mixin that must be implemented by a rule learner to support the parameter
         """
         super().__init__(name=name, description=description, mixin=mixin, numeric_type=int)
-    
+
 
 class FloatParameter(NumericalParameter, ABC):
     """
