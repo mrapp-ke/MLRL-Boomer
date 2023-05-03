@@ -15,7 +15,7 @@ from mlrl.boosting.boosting_learners import Boomer
 class BoomerRunnable(RuleLearnerRunnable):
 
     def __init__(self):
-        super().__init__('Allows to run experiments using the BOOMER algorithm')
+        super().__init__(description='Allows to run experiments using the BOOMER algorithm', learner_name='boomer')
 
     def _configure_arguments(self, parser: ArgumentParser):
         super()._configure_arguments(parser)
@@ -50,9 +50,6 @@ class BoomerRunnable(RuleLearnerRunnable):
                       parallel_rule_refinement=args.parallel_rule_refinement,
                       parallel_statistic_update=args.parallel_statistic_update,
                       parallel_prediction=args.parallel_prediction)
-
-    def _get_learner_name(self) -> str:
-        return 'boomer'
 
 
 def main():
