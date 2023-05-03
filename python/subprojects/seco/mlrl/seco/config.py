@@ -11,49 +11,25 @@ from mlrl.seco.cython.learner import SingleLabelHeadMixin, PartialHeadMixin, NoL
     MEstimatePruningHeuristicMixin
 from mlrl.common.config import NominalParameter, NONE, RULE_LEARNER_PARAMETERS
 from mlrl.common.options import Options
-from typing import Dict, Set, Optional
-
-HEAD_TYPE_SINGLE = 'single-label'
-
-HEAD_TYPE_PARTIAL = 'partial'
+from typing import Optional
 
 HEURISTIC_ACCURACY = 'accuracy'
 
 HEURISTIC_PRECISION = 'precision'
 
-HEURISTIC_LAPLACE = 'laplace'
-
 HEURISTIC_RECALL = 'recall'
+
+HEURISTIC_LAPLACE = 'laplace'
 
 HEURISTIC_WRA = 'weighted-relative-accuracy'
 
 HEURISTIC_F_MEASURE = 'f-measure'
 
-HEURISTIC_M_ESTIMATE = 'm-estimate'
-
-LIFT_FUNCTION_PEAK = 'peak'
-
-OPTION_PEAK_LABEL = 'peak_label'
-
-LIFT_FUNCTION_KLN = 'kln'
-
-OPTION_K = 'k'
-
-OPTION_MAX_LIFT = 'max_lift'
-
-OPTION_CURVATURE = 'curvature'
-
 OPTION_BETA = 'beta'
 
+HEURISTIC_M_ESTIMATE = 'm-estimate'
+
 OPTION_M = 'm'
-
-HEAD_TYPE_VALUES: Set[str] = {HEAD_TYPE_SINGLE, HEAD_TYPE_PARTIAL}
-
-LIFT_FUNCTION_VALUES: Dict[str, Set[str]] = {
-    NONE: {},
-    LIFT_FUNCTION_PEAK: {OPTION_PEAK_LABEL, OPTION_MAX_LIFT, OPTION_CURVATURE},
-    LIFT_FUNCTION_KLN: {OPTION_K}
-}
 
 
 class HeadTypeParameter(NominalParameter):

@@ -3,48 +3,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides scikit-learn implementations of boosting algorithms.
 """
-import mlrl.common.config as common_config
-from mlrl.boosting.cython.learner_boomer import Boomer as BoomerWrapper, BoomerConfig
-from mlrl.common.config import AUTOMATIC
 from mlrl.common.config import configure_rule_learner
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.rule_learners import RuleLearner, SparsePolicy
+from mlrl.boosting.config import BOOSTING_RULE_LEARNER_PARAMETERS
+from mlrl.boosting.cython.learner_boomer import Boomer as BoomerWrapper, BoomerConfig
 from sklearn.base import ClassifierMixin, RegressorMixin, MultiOutputMixin
-from typing import Dict, Set, Optional
-
-import mlrl.boosting.config as boosting_config
-from mlrl.boosting.config import BOOSTING_RULE_LEARNER_PARAMETERS, LOSS_SQUARED_ERROR_LABEL_WISE, \
-    LOSS_SQUARED_HINGE_LABEL_WISE, LOSS_LOGISTIC_LABEL_WISE, LOSS_SQUARED_ERROR_EXAMPLE_WISE, \
-    LOSS_SQUARED_HINGE_EXAMPLE_WISE, LOSS_LOGISTIC_EXAMPLE_WISE, BINARY_PREDICTOR_LABEL_WISE, \
-    BINARY_PREDICTOR_EXAMPLE_WISE, BINARY_PREDICTOR_GFM, PROBABILITY_PREDICTOR_LABEL_WISE, \
-    PROBABILITY_PREDICTOR_MARGINALIZED
-
-FEATURE_BINNING_VALUES: Dict[str, Set[str]] = {**common_config.FEATURE_BINNING_VALUES, **{AUTOMATIC: {}}}
-
-PARALLEL_VALUES: Dict[str, Set[str]] = {**common_config.PARALLEL_VALUES, **{AUTOMATIC: {}}}
-
-STATISTIC_FORMAT_VALUES: Set[str] = boosting_config.STATISTIC_FORMAT_VALUES.union(AUTOMATIC)
-
-DEFAULT_RULE_VALUES: Set[str] = boosting_config.DEFAULT_RULE_VALUES.union(AUTOMATIC)
-
-PARTITION_SAMPLING_VALUES: Dict[str, Set[str]] = {**common_config.PARTITION_SAMPLING_VALUES, **{AUTOMATIC: {}}}
-
-HEAD_TYPE_VALUES: Dict[str, Set[str]] = {**boosting_config.HEAD_TYPE_VALUES, **{AUTOMATIC: {}}}
-
-LABEL_BINNING_VALUES: Dict[str, Set[str]] = {**boosting_config.LABEL_BINNING_VALUES, **{AUTOMATIC: {}}}
-
-LOSS_VALUES: Set[str] = {
-    LOSS_SQUARED_ERROR_LABEL_WISE, LOSS_SQUARED_ERROR_EXAMPLE_WISE, LOSS_SQUARED_HINGE_LABEL_WISE,
-    LOSS_SQUARED_HINGE_EXAMPLE_WISE, LOSS_LOGISTIC_LABEL_WISE, LOSS_LOGISTIC_EXAMPLE_WISE
-}
-
-BINARY_PREDICTOR_VALUES: Set[str] = {
-    BINARY_PREDICTOR_LABEL_WISE, BINARY_PREDICTOR_EXAMPLE_WISE, BINARY_PREDICTOR_GFM, AUTOMATIC
-}
-
-PROBABILITY_PREDICTOR_VALUES: Set[str] = {
-    PROBABILITY_PREDICTOR_LABEL_WISE, PROBABILITY_PREDICTOR_MARGINALIZED, AUTOMATIC
-}
+from typing import Optional
 
 
 class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
