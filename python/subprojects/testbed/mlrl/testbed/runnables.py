@@ -230,8 +230,12 @@ class LearnerRunnable(Runnable, ABC):
 
     PARAM_PREDICTION_TYPE = '--prediction-type'
 
-    def __init__(self, description: str):
+    def __init__(self, description: str, learner_name: str):
+        """
+        :param learner_name: The name of the learner
+        """
         super().__init__(description)
+        self.learner_name = learner_name
 
     def __create_prediction_type(self, args) -> PredictionType:
         prediction_type = args.prediction_type
@@ -492,7 +496,7 @@ class LearnerRunnable(Runnable, ABC):
                                                   self.__create_prediction_characteristics_printer(args))
         data_splitter = self.__create_data_splitter(args)
         experiment = Experiment(base_learner=self._create_learner(args),
-                                learner_name=self._get_learner_name(),
+                                learner_name=self.learner_name,
                                 data_splitter=data_splitter,
                                 pre_execution_hook=self.__create_pre_execution_hook(args, data_splitter),
                                 train_evaluation=train_evaluation,
@@ -562,15 +566,6 @@ class LearnerRunnable(Runnable, ABC):
         """
         pass
 
-    @abstractmethod
-    def _get_learner_name(self) -> str:
-        """
-        Must be implemented by subclasses in order to provide the name of the learner.
-
-        :return: The name of the learner
-        """
-        pass
-
 
 class RuleLearnerRunnable(LearnerRunnable, ABC):
     """
@@ -604,8 +599,8 @@ class RuleLearnerRunnable(LearnerRunnable, ABC):
 
     STORE_RULES_VALUES = PRINT_RULES_VALUES
 
-    def __init__(self, description: str):
-        super().__init__(description)
+    def __init__(self, description: str, learner_name: str):
+        super().__init__(description=description, learner_name=learner_name)
 
     def _configure_arguments(self, parser: ArgumentParser):
         super()._configure_arguments(parser)
