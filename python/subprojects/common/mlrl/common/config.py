@@ -1014,8 +1014,8 @@ def configure_rule_learner(learner, config, parameters: List[Parameter]):
     for parameter in parameters:
         parameter_name = parameter.name
 
-        if learner.hasattr(parameter_name):
-            value = learner.getattr(parameter_name)
+        if hasattr(learner, parameter_name):
+            value = getattr(learner, parameter_name)
 
             if value is not None:
                 parameter.configure(config=config, value=value)
