@@ -875,7 +875,7 @@ class ParallelPredictionParameter(NominalParameter):
             c.set_num_threads(options.get_int(OPTION_NUM_THREADS, c.get_num_threads()))
 
 
-class MaxRulesParameter(IntParameter):
+class SizeStoppingCriterionParameter(IntParameter):
     """
     A parameter that allows to configure the maximum number of rules to be induced.
     """
@@ -894,7 +894,7 @@ class MaxRulesParameter(IntParameter):
             config.use_size_stopping_criterion().set_max_rules(value)
 
 
-class TimeLimitParameter(IntParameter):
+class TimeStoppingCriterionParameter(IntParameter):
     """
     A parameter that allows to configure the duration in seconds after which the induction of rules should be canceled.
     """
@@ -955,8 +955,8 @@ RULE_LEARNER_PARAMETERS = [
     ParallelRuleRefinementParameter(),
     ParallelStatisticUpdateParameter(),
     ParallelPredictionParameter(),
-    MaxRulesParameter(),
-    TimeLimitParameter(),
+    SizeStoppingCriterionParameter(),
+    TimeStoppingCriterionParameter(),
     SequentialPostOptimizationParameter()
 ]
 
