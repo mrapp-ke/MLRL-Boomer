@@ -45,8 +45,7 @@ class SeCoRunnable(RuleLearnerRunnable):
 
 
 def main():
-    runnable = SeCoRunnable()
-    runnable.run()
+    SeCoRunnable().run()
 
 
 if __name__ == '__main__':
