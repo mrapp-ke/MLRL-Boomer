@@ -53,8 +53,7 @@ class BoomerRunnable(RuleLearnerRunnable):
 
 
 def main():
-    runnable = BoomerRunnable()
-    runnable.run()
+    BoomerRunnable().run()
 
 
 if __name__ == '__main__':
