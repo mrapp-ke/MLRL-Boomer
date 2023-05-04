@@ -1,5 +1,9 @@
 <p align="center">
-  <img alt="BOOMER - Gradient Boosted Multi-Label Classification Rules" src="https://github.com/mrapp-ke/Boomer/blob/master/logo.png" height="128"/>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo_dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/logo_light.svg">
+    <img alt="BOOMER - Gradient Boosted Multi-Label Classification Rules" src="assets/logo_light.svg">
+  </picture>
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
