@@ -1,5 +1,9 @@
 <p align="center">
-  <img alt="BOOMER - Gradient Boosted Multi-Label Classification Rules" src="https://github.com/mrapp-ke/Boomer/blob/master/logo.png" height="128"/>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo_dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/logo_light.svg">
+    <img alt="BOOMER - Gradient Boosted Multi-Label Classification Rules" src="assets/logo_light.svg">
+  </picture>
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -7,7 +11,7 @@
 [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest)
 [![Twitter URL](https://img.shields.io/twitter/url?label=Follow%20on%20Twitter&style=social&url=https%3A%2F%2Ftwitter.com%2FBOOMER_ML)](https://twitter.com/BOOMER_ML)
 
-**Important links:** [Documentation](https://mlrl-boomer.readthedocs.io) | [Issue Tracker](https://github.com/mrapp-ke/Boomer/issues) | [Changelog](https://github.com/mrapp-ke/Boomer/blob/master/CHANGELOG.md) | [Contributors](https://github.com/mrapp-ke/Boomer/blob/master/CONTRIBUTORS.md) | [Code of Conduct](https://github.com/mrapp-ke/Boomer/blob/master/CODE_OF_CONDUCT.md)
+**Important links:** [Documentation](https://mlrl-boomer.readthedocs.io) | [Issue Tracker](https://github.com/mrapp-ke/Boomer/issues) | [Changelog](CHANGELOG.md) | [Contributors](CONTRIBUTORS.md) | [Code of Conduct](CODE_OF_CONDUCT.md)
 
 This software package provides the official implementation of **BOOMER - an algorithm for learning gradient boosted multi-label classification rules** that integrates with the popular [scikit-learn](https://scikit-learn.org) machine learning framework.
 
@@ -54,10 +58,10 @@ An extensive user guide, as well as an API documentation for developers, is avai
 
 A collection of benchmark datasets that are compatible with the algorithm are provided in a separate [repository](https://github.com/mrapp-ke/Boomer-Datasets).
 
-For an overview of changes and new features that have been included in past releases, please refer to the [changelog](https://github.com/mrapp-ke/Boomer/blob/master/CHANGELOG.md).
+For an overview of changes and new features that have been included in past releases, please refer to the [changelog](CHANGELOG.md).
 
 ## License
 
-This project is open source software licensed under the terms of the [MIT license](https://github.com/mrapp-ke/Boomer/blob/master/LICENSE.txt). We welcome contributions to the project to enhance its functionality and make it more accessible to a broader audience. A frequently updated list of contributors is available [here](https://github.com/mrapp-ke/Boomer/blob/master/CONTRIBUTORS.md).
+This project is open source software licensed under the terms of the [MIT license](LICENSE.txt). We welcome contributions to the project to enhance its functionality and make it more accessible to a broader audience. A frequently updated list of contributors is available [here](CONTRIBUTORS.md).
 
-All contributions to the project and discussions on the [issue tracker](https://github.com/mrapp-ke/Boomer/issues) are expected to follow the [code of conduct](https://github.com/mrapp-ke/Boomer/blob/master/CODE_OF_CONDUCT.md).
+All contributions to the project and discussions on the [issue tracker](https://github.com/mrapp-ke/Boomer/issues) are expected to follow the [code of conduct](CODE_OF_CONDUCT.md).
