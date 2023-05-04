@@ -3,7 +3,7 @@ meson==1.1.0
 ninja==1.11.1
 wheel==0.40.0
 build==0.10.0
-yapf==0.32.0
+yapf==0.33.0
 clang-format==16.0.1
 numpy==1.24.2
 scipy==1.10.1
