@@ -5,7 +5,7 @@ wheel==0.40.0
 build==0.10.0
 yapf==0.33.0
 clang-format==16.0.3
-numpy==1.24.2
+numpy==1.24.3
 scipy==1.10.1
 scikit-learn==1.2.2
 liac-arff==2.5.0
