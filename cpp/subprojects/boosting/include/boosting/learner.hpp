@@ -829,12 +829,18 @@ namespace boosting {
                      * relevant or irrelevant by summing up the scores that are provided by the individual rules of a
                      * existing rule-based model and transforming them into binary values according to the general
                      * F-measure maximizer (GFM).
+                     *
+                     * @return A reference to an object of type `IGfmBinaryPredictorConfig` that allows further
+                     *         configuration of the predictor
                      */
-                    virtual void useGfmBinaryPredictor() {
+                    virtual IGfmBinaryPredictorConfig& useGfmBinaryPredictor() {
                         std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
                           this->getBinaryPredictorConfigPtr();
-                        binaryPredictorConfigPtr = std::make_unique<GfmBinaryPredictorConfig>(
+                        std::unique_ptr<GfmBinaryPredictorConfig> ptr = std::make_unique<GfmBinaryPredictorConfig>(
                           this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                        IGfmBinaryPredictorConfig& ref = *ptr;
+                        binaryPredictorConfigPtr = std::move(ptr);
+                        return ref;
                     }
             };
 
@@ -898,12 +904,19 @@ namespace boosting {
                      * the scores that are provided by individual rules of an existing rule-based model and transforming
                      * the aggregated scores into probabilities according to a certain transformation function that is
                      * applied to each label individually.
+                     *
+                     * @return A reference to an object of type `ILabelWiseProbabilityPredictorConfig` that allows
+                     *         further configuration of the predictor
                      */
-                    virtual void useLabelWiseProbabilityPredictor() {
+                    virtual ILabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor() {
                         std::unique_ptr<IProbabilityPredictorConfig>& probabilityPredictorConfigPtr =
                           this->getProbabilityPredictorConfigPtr();
-                        probabilityPredictorConfigPtr = std::make_unique<LabelWiseProbabilityPredictorConfig>(
-                          this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                        std::unique_ptr<LabelWiseProbabilityPredictorConfig> ptr =
+                          std::make_unique<LabelWiseProbabilityPredictorConfig>(this->getLossConfigPtr(),
+                                                                                this->getParallelPredictionConfigPtr());
+                        ILabelWiseProbabilityPredictorConfig& ref = *ptr;
+                        probabilityPredictorConfigPtr = std::move(ptr);
+                        return ref;
                     }
             };
 
@@ -925,12 +938,19 @@ namespace boosting {
                      * The probability for an individual label calculates as the sum of the distances that have been
                      * obtained for all label vectors, where the respective label is specified to be relevant, divided
                      * by the total sum of all distances.
+                     *
+                     * @return A reference to an object of type `IMarginalizedProbabilityPredictorConfig` that allows
+                     *         further configuration of the predictor
                      */
-                    virtual void useMarginalizedProbabilityPredictor() {
+                    virtual IMarginalizedProbabilityPredictorConfig& useMarginalizedProbabilityPredictor() {
                         std::unique_ptr<IProbabilityPredictorConfig>& probabilityPredictorConfigPtr =
                           this->getProbabilityPredictorConfigPtr();
-                        probabilityPredictorConfigPtr = std::make_unique<MarginalizedProbabilityPredictorConfig>(
-                          this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                        std::unique_ptr<MarginalizedProbabilityPredictorConfig> ptr =
+                          std::make_unique<MarginalizedProbabilityPredictorConfig>(
+                            this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                        IMarginalizedProbabilityPredictorConfig& ref = *ptr;
+                        probabilityPredictorConfigPtr = std::move(ptr);
+                        return ref;
                     }
             };
 
