@@ -52,7 +52,7 @@ namespace boosting {
                                                       public IProbabilityPredictorConfig {
         private:
 
-            bool useProbabilityCalibrationModel_;
+            std::unique_ptr<IMarginalProbabilityCalibrationModel> noMarginalProbabilityCalibrationModelPtr_;
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
 
