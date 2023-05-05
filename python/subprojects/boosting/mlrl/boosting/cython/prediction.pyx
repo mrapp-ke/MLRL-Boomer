@@ -153,7 +153,7 @@ cdef class LabelWiseBinaryPredictorConfig:
         return self.config_ptr.isProbabilityCalibrationModelUsed()
 
     def set_use_probability_calibration_model(
-        self, use_probability_calibration_model: bool) -> ExampleWiseBinaryPredictorConfig:
+        self, use_probability_calibration_model: bool) -> LabelWiseBinaryPredictorConfig:
         """
         Sets whether a model for the calibration of probabilities should be used, if available, or not.
 
