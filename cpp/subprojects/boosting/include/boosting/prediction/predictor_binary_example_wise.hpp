@@ -70,7 +70,9 @@ namespace boosting {
 
             bool basedOnProbabilities_;
 
-            bool useProbabilityCalibrationModel_;
+            std::unique_ptr<IMarginalProbabilityCalibrationModel> noMarginalProbabilityCalibrationModelPtr_;
+
+            std::unique_ptr<IJointProbabilityCalibrationModel> noJointProbabilityCalibrationModelPtr_;
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
 

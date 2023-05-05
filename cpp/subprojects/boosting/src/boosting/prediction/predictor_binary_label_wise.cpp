@@ -4,6 +4,7 @@
 #include "boosting/prediction/discretization_function_score.hpp"
 #include "boosting/prediction/predictor_binary_common.hpp"
 #include "boosting/prediction/transformation_binary_label_wise.hpp"
+#include "common/prediction/probability_calibration_no.hpp"
 
 namespace boosting {
 
@@ -17,21 +18,28 @@ namespace boosting {
 
             const std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr_;
 
+            const IMarginalProbabilityCalibrationModel* marginalProbabilityCalibrationModel_;
+
             const uint32 numThreads_;
 
         public:
 
             /**
-             * @param discretizationFunctionFactoryPtr  An unique pointer to an object of type
-             *                                          `IDiscretizationFunctionFactory` that allows to create the
-             *                                          implementation to be used for discretization
-             * @param numThreads                        The number of CPU threads to be used to make predictions for
-             *                                          different query examples in parallel. Must be at least 1
+             * @param discretizationFunctionFactoryPtr      An unique pointer to an object of type
+             *                                              `IDiscretizationFunctionFactory` that allows to create the
+             *                                              implementation to be used for discretization
+             * @param marginalProbabilityCalibrationModel   A pointer to an object of type
+             *                                              `IMarginalProbabilityCalibrationModel` to be used for the
+             *                                              calibration of marginal probabilities or a null pointer, if
+             *                                              no such model is available
+             * @param numThreads                            The number of CPU threads to be used to make predictions for
+             *                                              different query examples in parallel. Must be at least 1
              */
             LabelWiseBinaryPredictorFactory(
-              std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr, uint32 numThreads)
+              std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr,
+              const IMarginalProbabilityCalibrationModel* marginalProbabilityCalibrationModel, uint32 numThreads)
                 : discretizationFunctionFactoryPtr_(std::move(discretizationFunctionFactoryPtr)),
-                  numThreads_(numThreads) {}
+                  marginalProbabilityCalibrationModel_(marginalProbabilityCalibrationModel), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -43,7 +51,9 @@ namespace boosting {
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr =
-                  discretizationFunctionFactoryPtr_->create(marginalProbabilityCalibrationModel);
+                  discretizationFunctionFactoryPtr_->create(marginalProbabilityCalibrationModel_
+                                                              ? *marginalProbabilityCalibrationModel_
+                                                              : marginalProbabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
                   std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<BinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
@@ -60,7 +70,9 @@ namespace boosting {
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr =
-                  discretizationFunctionFactoryPtr_->create(marginalProbabilityCalibrationModel);
+                  discretizationFunctionFactoryPtr_->create(marginalProbabilityCalibrationModel_
+                                                              ? *marginalProbabilityCalibrationModel_
+                                                              : marginalProbabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
                   std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<BinaryPredictor<CsrConstView<const float32>, RuleList>>(
@@ -80,21 +92,28 @@ namespace boosting {
 
             const std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr_;
 
+            const IMarginalProbabilityCalibrationModel* marginalProbabilityCalibrationModel_;
+
             const uint32 numThreads_;
 
         public:
 
             /**
-             * @param discretizationFunctionFactoryPtr  An unique pointer to an object of type
-             *                                          `IDiscretizationFunctionFactory` that allows to create the
-             *                                          implementation to be used for discretization
-             * @param numThreads                        The number of CPU threads to be used to make predictions for
-             *                                          different query examples in parallel. Must be at least 1
+             * @param discretizationFunctionFactoryPtr      An unique pointer to an object of type
+             *                                              `IDiscretizationFunctionFactory` that allows to create the
+             *                                              implementation to be used for discretization
+             * @param marginalProbabilityCalibrationModel   A pointer to an object of type
+             *                                              `IMarginalProbabilityCalibrationModel` to be used for the
+             *                                              calibration of marginal probabilities or a null pointer, if
+             *                                              no such model is available
+             * @param numThreads                            The number of CPU threads to be used to make predictions for
+             *                                              different query examples in parallel. Must be at least 1
              */
             LabelWiseSparseBinaryPredictorFactory(
-              std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr, uint32 numThreads)
+              std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr,
+              const IMarginalProbabilityCalibrationModel* marginalProbabilityCalibrationModel, uint32 numThreads)
                 : discretizationFunctionFactoryPtr_(std::move(discretizationFunctionFactoryPtr)),
-                  numThreads_(numThreads) {}
+                  marginalProbabilityCalibrationModel_(marginalProbabilityCalibrationModel), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -106,7 +125,9 @@ namespace boosting {
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr =
-                  discretizationFunctionFactoryPtr_->create(marginalProbabilityCalibrationModel);
+                  discretizationFunctionFactoryPtr_->create(marginalProbabilityCalibrationModel_
+                                                              ? *marginalProbabilityCalibrationModel_
+                                                              : marginalProbabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
                   std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<SparseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
@@ -123,7 +144,9 @@ namespace boosting {
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
                 std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr =
-                  discretizationFunctionFactoryPtr_->create(marginalProbabilityCalibrationModel);
+                  discretizationFunctionFactoryPtr_->create(marginalProbabilityCalibrationModel_
+                                                              ? *marginalProbabilityCalibrationModel_
+                                                              : marginalProbabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
                   std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<SparseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
@@ -152,7 +175,7 @@ namespace boosting {
     LabelWiseBinaryPredictorConfig::LabelWiseBinaryPredictorConfig(
       const std::unique_ptr<ILossConfig>& lossConfigPtr,
       const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : basedOnProbabilities_(false), useProbabilityCalibrationModel_(true), lossConfigPtr_(lossConfigPtr),
+        : basedOnProbabilities_(false), lossConfigPtr_(lossConfigPtr),
           multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     bool LabelWiseBinaryPredictorConfig::isBasedOnProbabilities() const {
@@ -166,12 +189,13 @@ namespace boosting {
     }
 
     bool LabelWiseBinaryPredictorConfig::isProbabilityCalibrationModelUsed() const {
-        return useProbabilityCalibrationModel_;
+        return noMarginalProbabilityCalibrationModelPtr_ == nullptr;
     }
 
     ILabelWiseBinaryPredictorConfig& LabelWiseBinaryPredictorConfig::setUseProbabilityCalibrationModel(
       bool useProbabilityCalibrationModel) {
-        useProbabilityCalibrationModel_ = useProbabilityCalibrationModel;
+        noMarginalProbabilityCalibrationModelPtr_ =
+          useProbabilityCalibrationModel ? nullptr : createNoMarginalProbabilityCalibrationModel();
         return *this;
     }
 
@@ -182,8 +206,8 @@ namespace boosting {
 
         if (discretizationFunctionFactoryPtr) {
             uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-            return std::make_unique<LabelWiseBinaryPredictorFactory>(std::move(discretizationFunctionFactoryPtr),
-                                                                     numThreads);
+            return std::make_unique<LabelWiseBinaryPredictorFactory>(
+              std::move(discretizationFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(), numThreads);
         }
 
         return nullptr;
@@ -196,8 +220,8 @@ namespace boosting {
 
         if (discretizationFunctionFactoryPtr) {
             uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-            return std::make_unique<LabelWiseSparseBinaryPredictorFactory>(std::move(discretizationFunctionFactoryPtr),
-                                                                           numThreads);
+            return std::make_unique<LabelWiseSparseBinaryPredictorFactory>(
+              std::move(discretizationFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(), numThreads);
         }
 
         return nullptr;
