@@ -39,6 +39,24 @@ namespace boosting {
              *                              allows further configuration of the predictor
              */
             virtual ILabelWiseBinaryPredictorConfig& setBasedOnProbabilities(bool basedOnProbabilities) = 0;
+
+            /**
+             * Returns whether a model for the calibration of probabilities is used, if available, or not.
+             *
+             * @return True, if a model for the calibration of probabilities is used, if available, false otherwise
+             */
+            virtual bool isProbabilityCalibrationModelUsed() const = 0;
+
+            /**
+             * Sets whether a model for the calibration of probabilities should be used, if available, or not.
+             *
+             * @param useProbabilityCalibrationModel  True, if a model for the calibration of probabilities should be
+             *                                        used, if available, false otherwise
+             * @return                                A reference to an object of type `ILabelWiseBinaryPredictorConfig`
+             *                                        that allows further configuration of the predictor
+             */
+            virtual ILabelWiseBinaryPredictorConfig& setUseProbabilityCalibrationModel(
+              bool useProbabilityCalibrationModel) = 0;
     };
 
     /**
@@ -51,6 +69,8 @@ namespace boosting {
         private:
 
             bool basedOnProbabilities_;
+
+            std::unique_ptr<IMarginalProbabilityCalibrationModel> noMarginalProbabilityCalibrationModelPtr_;
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
 
@@ -71,6 +91,11 @@ namespace boosting {
             bool isBasedOnProbabilities() const override;
 
             ILabelWiseBinaryPredictorConfig& setBasedOnProbabilities(bool basedOnProbabilities) override;
+
+            bool isProbabilityCalibrationModelUsed() const override;
+
+            ILabelWiseBinaryPredictorConfig& setUseProbabilityCalibrationModel(
+              bool useProbabilityCalibrationModel) override;
 
             /**
              * @see `IPredictorFactory::createPredictorFactory`
