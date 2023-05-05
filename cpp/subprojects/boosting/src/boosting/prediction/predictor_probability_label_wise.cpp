@@ -72,7 +72,18 @@ namespace boosting {
     LabelWiseProbabilityPredictorConfig::LabelWiseProbabilityPredictorConfig(
       const std::unique_ptr<ILossConfig>& lossConfigPtr,
       const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
+        : useCalibrationModel_(true), lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {
+    }
+
+    bool LabelWiseProbabilityPredictorConfig::isCalibrationModelUsed() const {
+        return useCalibrationModel_;
+    }
+
+    ILabelWiseProbabilityPredictorConfig& LabelWiseProbabilityPredictorConfig::setUseCalibrationModel(
+      bool useCalibrationModel) {
+        useCalibrationModel_ = useCalibrationModel;
+        return *this;
+    }
 
     std::unique_ptr<IProbabilityPredictorFactory> LabelWiseProbabilityPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
