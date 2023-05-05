@@ -495,7 +495,7 @@ cdef class BoomerConfig(RuleLearnerConfig,
         cdef ILabelWiseProbabilityPredictorConfig* config_ptr = \
             &self.config_ptr.get().useLabelWiseProbabilityPredictor()
         cdef LabelWiseProbabilityPredictorConfig config = \
-            LabelWiseProbabilityPredictorConfig.__new__(LabelWiseBinaryPredictorConfig)
+            LabelWiseProbabilityPredictorConfig.__new__(LabelWiseProbabilityPredictorConfig)
         config.config_ptr = config_ptr
         return config
 
