@@ -27,7 +27,7 @@ PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
 
 OPTION_BASED_ON_PROBABILITIES = 'based_on_probabilities'
 
-OPTION_USE_PROBABILITY_CALIBRATION_MODEL = 'probability_calibration'
+OPTION_USE_PROBABILITY_CALIBRATION_MODEL = 'use_probability_calibration'
 
 
 class ExtendedPartitionSamplingParameter(PartitionSamplingParameter):
