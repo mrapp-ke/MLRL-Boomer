@@ -152,7 +152,7 @@ namespace boosting {
     LabelWiseBinaryPredictorConfig::LabelWiseBinaryPredictorConfig(
       const std::unique_ptr<ILossConfig>& lossConfigPtr,
       const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : basedOnProbabilities_(false), lossConfigPtr_(lossConfigPtr),
+        : basedOnProbabilities_(false), useProbabilityCalibrationModel_(true), lossConfigPtr_(lossConfigPtr),
           multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     bool LabelWiseBinaryPredictorConfig::isBasedOnProbabilities() const {
@@ -162,6 +162,16 @@ namespace boosting {
     ILabelWiseBinaryPredictorConfig& LabelWiseBinaryPredictorConfig::setBasedOnProbabilities(
       bool basedOnProbabilities) {
         basedOnProbabilities_ = basedOnProbabilities;
+        return *this;
+    }
+
+    bool LabelWiseBinaryPredictorConfig::isProbabilityCalibrationModelUsed() const {
+        return useProbabilityCalibrationModel_;
+    }
+
+    ILabelWiseBinaryPredictorConfig& LabelWiseBinaryPredictorConfig::setUseProbabilityCalibrationModel(
+      bool useProbabilityCalibrationModel) {
+        useProbabilityCalibrationModel_ = useProbabilityCalibrationModel;
         return *this;
     }
 
