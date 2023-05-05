@@ -4,6 +4,9 @@
 from mlrl.boosting.cython.head_type import FixedPartialHeadConfig, DynamicPartialHeadConfig
 from mlrl.boosting.cython.label_binning import EqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor import ConstantShrinkageConfig
+from mlrl.boosting.cython.prediction import LabelWiseProbabilityPredictorConfig, \
+    MarginalizedProbabilityPredictorConfig, LabelWiseBinaryPredictorConfig, ExampleWiseBinaryPredictorConfig, \
+    GfmBinaryPredictorConfig
 from mlrl.boosting.cython.regularization import ManualRegularizationConfig
 
 from abc import ABC, abstractmethod
@@ -449,12 +452,14 @@ class LabelWiseBinaryPredictorMixin(ABC):
     """
 
     @abstractmethod
-    def use_label_wise_binary_predictor(self):
+    def use_label_wise_binary_predictor(self) -> LabelWiseBinaryPredictorConfig:
         """
         Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
         irrelevant by summing up the scores that are provided by the individual rules of an existing rule-based model
         and transforming them into binary values according to a certain threshold that is applied to each label
         individually.
+
+        :return: A `LabelWiseBinaryPredictorConfig` that allows further configuration of the predictor
         """
         pass
             
@@ -467,12 +472,14 @@ class ExampleWiseBinaryPredictorMixin(ABC):
     """
             
     @abstractmethod
-    def use_example_wise_binary_predictor(self):
+    def use_example_wise_binary_predictor(self) -> ExampleWiseBinaryPredictorConfig:
         """
         Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
         irrelevant by summing up the scores that are provided by an existing rule-based model and comparing the
         aggregated score vector to the known label vectors according to a certain distance measure. The label vector
         that is closest to the aggregated score vector is finally predicted.
+
+        :return: An `ExampleWiseBinaryPredictorConfig` that allows further configuration of the predictor
         """
         pass    
 
@@ -485,11 +492,13 @@ class GfmBinaryPredictorMixin(ABC):
     """
 
     @abstractmethod
-    def use_gfm_binary_predictor(self):
+    def use_gfm_binary_predictor(self) -> GfmBinaryPredictorConfig:
         """
         Configures the rule learner to use a predictor for predicting whether individual labels are relevant or
         irrelevant by summing up the scores that are provided by the individual rules of a existing rule-based model and
         transforming them into binary values according to the general F-measure maximizer (GFM).
+
+        :return: A `GfmBinaryPredictorConfig` that allows further configuration of the predictor
         """
         pass
             
@@ -532,11 +541,13 @@ class LabelWiseProbabilityPredictorMixin(ABC):
     """
 
     @abstractmethod
-    def use_label_wise_probability_predictor(self):
+    def use_label_wise_probability_predictor(self) -> LabelWiseProbabilityPredictorConfig:
         """
         Configures the rule learner to use a predictor for predicting probability estimates by summing up the scores
         that are provided by individual rules of an existing rule-based model and transforming the aggregated scores
         into probabilities according to a certain transformation function that is applied to each label individually.
+
+        :return: A `LabelWiseProbabilityPredictorConfig` that allows further configuration of the predictor
         """
         pass
             
@@ -549,13 +560,15 @@ class MarginalizedProbabilityPredictorMixin(ABC):
     """
 
     @abstractmethod
-    def use_marginalized_probability_predictor(self):
+    def use_marginalized_probability_predictor(self) -> MarginalizedProbabilityPredictorConfig:
         """
         Configures the rule learner to use a predictor for predicting probability estimates by summing up the scores
         that are provided by individual rules of an existing rule-based model and comparing the aggregated score vector
         to the known label vectors according to a certain distance measure. The probability for an individual label
         calculates as the sum of the distances that have been obtained for all label vectors, where the respective label
         is specified to be relevant, divided by the total sum of all distances.
+
+        :return: A `MarginalizedProbabilityPredictorConfig` that allows further configuration of the predictor
         """
         pass
             
