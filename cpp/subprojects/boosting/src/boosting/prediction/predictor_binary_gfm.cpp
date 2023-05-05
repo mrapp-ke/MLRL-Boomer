@@ -179,7 +179,18 @@ namespace boosting {
     GfmBinaryPredictorConfig::GfmBinaryPredictorConfig(
       const std::unique_ptr<ILossConfig>& lossConfigPtr,
       const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : lossConfigPtr_(std::move(lossConfigPtr)), multiThreadingConfigPtr_(std::move(multiThreadingConfigPtr)) {}
+        : useProbabilityCalibrationModel_(true), lossConfigPtr_(std::move(lossConfigPtr)),
+          multiThreadingConfigPtr_(std::move(multiThreadingConfigPtr)) {}
+
+    bool GfmBinaryPredictorConfig::isProbabilityCalibrationModelUsed() const {
+        return useProbabilityCalibrationModel_;
+    }
+
+    IGfmBinaryPredictorConfig& GfmBinaryPredictorConfig::setUseProbabilityCalibrationModel(
+      bool useProbabilityCalibrationModel) {
+        useProbabilityCalibrationModel_ = useProbabilityCalibrationModel;
+        return *this;
+    }
 
     std::unique_ptr<IBinaryPredictorFactory> GfmBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
