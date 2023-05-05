@@ -43,7 +43,7 @@ namespace boosting {
     /**
      * Allows to configure a predictor that predicts label-wise probabilities for given query examples by transforming
      * the regression scores that are predicted for each label individually into probabilities.
-     * 
+     *
      * summing up the scores that are provided by individual rules of
      * an existing rule-based model and transforming the aggregated scores into probabilities in [0, 1] according to a
      * certain transformation function that is applied to each label individually.
