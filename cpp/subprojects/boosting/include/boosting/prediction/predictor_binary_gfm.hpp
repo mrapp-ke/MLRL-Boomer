@@ -17,7 +17,7 @@ namespace boosting {
      * exact algorithm for F-measure maximization", Dembczyński, Waegeman, Cheng and Hüllermeier 2011 (see
      * https://proceedings.neurips.cc/paper/2011/file/71ad16ad2c4d81f348082ff6c4b20768-Paper.pdf).
      */
-    class IGfmBinaryPredictorConfig {
+    class MLRLBOOSTING_API IGfmBinaryPredictorConfig {
         public:
 
             virtual ~IGfmBinaryPredictorConfig() {};
