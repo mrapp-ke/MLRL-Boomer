@@ -179,7 +179,7 @@ namespace boosting {
     ExampleWiseBinaryPredictorConfig::ExampleWiseBinaryPredictorConfig(
       const std::unique_ptr<ILossConfig>& lossConfigPtr,
       const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : basedOnProbabilities_(false), lossConfigPtr_(lossConfigPtr),
+        : basedOnProbabilities_(false), useProbabilityCalibrationModel_(true), lossConfigPtr_(lossConfigPtr),
           multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     bool ExampleWiseBinaryPredictorConfig::isBasedOnProbabilities() const {
@@ -189,6 +189,16 @@ namespace boosting {
     IExampleWiseBinaryPredictorConfig& ExampleWiseBinaryPredictorConfig::setBasedOnProbabilities(
       bool basedOnProbabilities) {
         basedOnProbabilities_ = basedOnProbabilities;
+        return *this;
+    }
+
+    bool ExampleWiseBinaryPredictorConfig::isProbabilityCalibrationModelUsed() const {
+        return useProbabilityCalibrationModel_;
+    }
+
+    IExampleWiseBinaryPredictorConfig& ExampleWiseBinaryPredictorConfig::setUseProbabilityCalibrationModel(
+      bool useProbabilityCalibrationModel) {
+        useProbabilityCalibrationModel_ = useProbabilityCalibrationModel;
         return *this;
     }
 
