@@ -31,6 +31,27 @@ cdef class ExampleWiseBinaryPredictorConfig:
         self.config_ptr.setBasedOnProbabilities(based_on_probabilities)
         return self
 
+    def is_probability_calibration_model_used(self) -> bool:
+        """
+        Returns whether a model for the calibration of probabilities is used, if available, or not.
+
+        :return: True, if a model for the calibration of probabilities is used, if available, False otherwise
+        """
+        return self.config_ptr.isProbabilityCalibrationModelUsed()
+
+    def set_use_probability_calibration_model(
+        self, use_probability_calibration_model: bool) -> ExampleWiseBinaryPredictorConfig:
+        """
+        Sets whether a model for the calibration of probabilities should be used, if available, or not.
+
+        :param use_probability_calibration_model:   True, if a model for the calibration of probabilities should be
+                                                    used, if available, false otherwise
+        :return:                                    An `ExampleWiseBinaryPredictorConfig` that allows further
+                                                    configuration of the predictor
+        """
+        self.config_ptr.setUseProbabilityCalibrationModel(use_probability_calibration_model)
+        return self
+
 
 cdef class LabelWiseBinaryPredictorConfig:
     """
@@ -59,4 +80,25 @@ cdef class LabelWiseBinaryPredictorConfig:
                                         predictor
         """
         self.config_ptr.setBasedOnProbabilities(based_on_probabilities)
+        return self
+
+    def is_probability_calibration_model_used(self) -> bool:
+        """
+        Returns whether a model for the calibration of probabilities is used, if available, or not.
+
+        :return: True, if a model for the calibration of probabilities is used, if available, False otherwise
+        """
+        return self.config_ptr.isProbabilityCalibrationModelUsed()
+
+    def set_use_probability_calibration_model(
+        self, use_probability_calibration_model: bool) -> ExampleWiseBinaryPredictorConfig:
+        """
+        Sets whether a model for the calibration of probabilities should be used, if available, or not.
+
+        :param use_probability_calibration_model:   True, if a model for the calibration of probabilities should be
+                                                    used, if available, false otherwise
+        :return:                                    An `LabelWiseBinaryPredictorConfig` that allows further
+                                                    configuration of the predictor
+        """
+        self.config_ptr.setUseProbabilityCalibrationModel(use_probability_calibration_model)
         return self
