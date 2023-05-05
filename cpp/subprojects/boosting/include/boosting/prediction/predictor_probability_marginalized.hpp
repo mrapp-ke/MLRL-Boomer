@@ -10,6 +10,14 @@
 
 namespace boosting {
 
+    /**
+     * Defines an interface for all classes that allow to configure a predictor that predicts marginalized probabilities
+     * for given query examples, which estimate the chance of individual labels to be relevant, by summing up the scores
+     * that are provided by individual rules of an existing rule-based model and comparing the aggregated score vector
+     * to the known label vectors according to a certain distance measure. The probability for an individual label
+     * calculates as the sum of the distances that have been obtained for all label vectors, where the respective label
+     * is specified to be relevant, divided by the total sum of all distances.
+     */
     class MLRLBOOSTING_API IMarginalizedProbabilityPredictorConfig {
         public:
 
