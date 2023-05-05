@@ -1,7 +1,9 @@
 from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig, IDynamicPartialHeadConfig
 from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
-from mlrl.boosting.cython.prediction cimport IExampleWiseBinaryPredictorConfig, ILabelWiseBinaryPredictorConfig
+from mlrl.boosting.cython.prediction cimport ILabelWiseProbabilityPredictorConfig, \
+    IMarginalizedProbabilityPredictorConfig, ILabelWiseBinaryPredictorConfig, IExampleWiseBinaryPredictorConfig, \
+    IGfmBinaryPredictorConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
 
 
@@ -246,7 +248,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         # Functions:
 
-        void useGfmBinaryPredictor()
+        IGfmBinaryPredictorConfig& useGfmBinaryPredictor()
 
 
     cdef cppclass IAutomaticBinaryPredictorMixin"boosting::IBoostingRuleLearner::IAutomaticBinaryPredictorMixin":
@@ -268,7 +270,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         # Functions:
 
-        void useLabelWiseProbabilityPredictor()
+        ILabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor()
 
 
     cdef cppclass IMarginalizedProbabilityPredictorMixin\
@@ -276,7 +278,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         # Functions:
 
-        void useMarginalizedProbabilityPredictor()
+        IMarginalizedProbabilityPredictorConfig& useMarginalizedProbabilityPredictor()
 
 
     cdef cppclass IAutomaticProbabilityPredictorMixin\
