@@ -11,6 +11,10 @@ cdef extern from "boosting/prediction/predictor_binary_example_wise.hpp" namespa
 
         IExampleWiseBinaryPredictorConfig& setBasedOnProbabilities(bool basedOnProbabilities)
 
+        bool isProbabilityCalibrationModelUsed() const
+
+        IExampleWiseBinaryPredictorConfig& setUseProbabilityCalibrationModel(bool useProbabilityCalibrationModel)
+
 
 cdef extern from "boosting/prediction/predictor_binary_label_wise.hpp" namespace "boosting" nogil:
 
@@ -21,6 +25,10 @@ cdef extern from "boosting/prediction/predictor_binary_label_wise.hpp" namespace
         bool isBasedOnProbabilities() const
 
         ILabelWiseBinaryPredictorConfig& setBasedOnProbabilities(bool basedOnProbabilities)
+
+        bool isProbabilityCalibrationModelUsed() const
+
+        IExampleWiseBinaryPredictorConfig& setUseProbabilityCalibrationModel(bool useProbabilityCalibrationModel)
 
 
 cdef class ExampleWiseBinaryPredictorConfig:
