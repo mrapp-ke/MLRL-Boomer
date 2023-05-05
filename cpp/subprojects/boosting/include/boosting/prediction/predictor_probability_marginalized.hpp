@@ -20,17 +20,19 @@ namespace boosting {
              *
              * @return True, if a model for the calibration of probabilities is used, if available, false otherwise
              */
-            virtual bool isCalibrationModelUsed() const = 0;
+            virtual bool isProbabilityCalibrationModelUsed() const = 0;
 
             /**
              * Sets whether a model for the calibration of probabilities should be used, if available, or not.
              *
-             * @param useCalibrationModel   True, if a model for the calibration of probabilities should be used, if
-             *                              available, false otherwise
-             * @return                      A reference to an object of type `IMarginalizedProbabilityPredictorConfig`
-             *                              that allows further configuration of the predictor
+             * @param useProbabilityCalibrationModel  True, if a model for the calibration of probabilities should be
+             *                                        used, if available, false otherwise
+             * @return                                A reference to an object of type
+             *                                        `IMarginalizedProbabilityPredictorConfig` that allows further
+             *                                        configuration of the predictor
              */
-            virtual IMarginalizedProbabilityPredictorConfig& setUseCalibrationModel(bool useCalibrationModel) = 0;
+            virtual IMarginalizedProbabilityPredictorConfig& setUseProbabilityCalibrationModel(
+              bool useProbabilityCalibrationModel) = 0;
     };
 
     /**
@@ -45,7 +47,7 @@ namespace boosting {
                                                          public IProbabilityPredictorConfig {
         private:
 
-            bool useCalibrationModel_;
+            bool useProbabilityCalibrationModel_;
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
 
@@ -64,9 +66,10 @@ namespace boosting {
               const std::unique_ptr<ILossConfig>& lossConfigPtr,
               const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
-            bool isCalibrationModelUsed() const override;
+            bool isProbabilityCalibrationModelUsed() const override;
 
-            IMarginalizedProbabilityPredictorConfig& setUseCalibrationModel(bool useCalibrationModel) override;
+            IMarginalizedProbabilityPredictorConfig& setUseProbabilityCalibrationModel(
+              bool useProbabilityCalibrationModel) override;
 
             /**
              * @see `IProbabilityPredictorConfig::createPredictorFactory`

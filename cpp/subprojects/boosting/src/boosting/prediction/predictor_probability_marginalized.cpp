@@ -96,16 +96,16 @@ namespace boosting {
     MarginalizedProbabilityPredictorConfig::MarginalizedProbabilityPredictorConfig(
       const std::unique_ptr<ILossConfig>& lossConfigPtr,
       const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : useCalibrationModel_(true), lossConfigPtr_(std::move(lossConfigPtr)),
+        : useProbabilityCalibrationModel_(true), lossConfigPtr_(std::move(lossConfigPtr)),
           multiThreadingConfigPtr_(std::move(multiThreadingConfigPtr)) {}
 
-    bool MarginalizedProbabilityPredictorConfig::isCalibrationModelUsed() const {
-        return useCalibrationModel_;
+    bool MarginalizedProbabilityPredictorConfig::isProbabilityCalibrationModelUsed() const {
+        return useProbabilityCalibrationModel_;
     }
 
-    IMarginalizedProbabilityPredictorConfig& MarginalizedProbabilityPredictorConfig::setUseCalibrationModel(
-      bool useCalibrationModel) {
-        useCalibrationModel_ = useCalibrationModel;
+    IMarginalizedProbabilityPredictorConfig& MarginalizedProbabilityPredictorConfig::setUseProbabilityCalibrationModel(
+      bool useProbabilityCalibrationModel) {
+        useProbabilityCalibrationModel_ = useProbabilityCalibrationModel;
         return *this;
     }
 
