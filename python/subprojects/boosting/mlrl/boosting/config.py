@@ -27,6 +27,8 @@ PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
 
 OPTION_BASED_ON_PROBABILITIES = 'based_on_probabilities'
 
+OPTION_USE_PROBABILITY_CALIBRATION_MODEL = 'probability_calibration'
+
 
 class ExtendedPartitionSamplingParameter(PartitionSamplingParameter):
     """
@@ -381,11 +383,13 @@ class BinaryPredictorParameter(NominalParameter):
                          description='The name of the strategy to be used for predicting binary labels')
         self.add_value(name=self.BINARY_PREDICTOR_LABEL_WISE,
                        mixin=LabelWiseBinaryPredictorMixin,
-                       options={OPTION_BASED_ON_PROBABILITIES})
+                       options={OPTION_BASED_ON_PROBABILITIES, OPTION_USE_PROBABILITY_CALIBRATION_MODEL})
         self.add_value(name=self.BINARY_PREDICTOR_EXAMPLE_WISE,
                        mixin=ExampleWiseBinaryPredictorMixin,
-                       options={OPTION_BASED_ON_PROBABILITIES})
-        self.add_value(name=self.BINARY_PREDICTOR_GFM, mixin=GfmBinaryPredictorMixin)
+                       options={OPTION_BASED_ON_PROBABILITIES, OPTION_USE_PROBABILITY_CALIBRATION_MODEL})
+        self.add_value(name=self.BINARY_PREDICTOR_GFM,
+                       mixin=GfmBinaryPredictorMixin,
+                       options={OPTION_USE_PROBABILITY_CALIBRATION_MODEL})
         self.add_value(name=AUTOMATIC,
                        mixin=AutomaticBinaryPredictorMixin,
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
@@ -395,11 +399,17 @@ class BinaryPredictorParameter(NominalParameter):
         if value == self.BINARY_PREDICTOR_LABEL_WISE:
             c = config.use_label_wise_binary_predictor()
             c.set_based_on_probabilities(options.get_bool(OPTION_BASED_ON_PROBABILITIES, c.is_based_on_probabilities()))
+            c.set_use_probability_calibration_model(
+                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL, c.is_probability_calibration_model_used()))
         elif value == self.BINARY_PREDICTOR_EXAMPLE_WISE:
             c = config.use_example_wise_binary_predictor()
             c.set_based_on_probabilities(options.get_bool(OPTION_BASED_ON_PROBABILITIES, c.is_based_on_probabilities()))
+            c.set_use_probability_calibration_model(
+                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL, c.is_probability_calibration_model_used()))
         elif value == self.BINARY_PREDICTOR_GFM:
-            config.use_gfm_binary_predictor()
+            c = config.use_gfm_binary_predictor()
+            c.set_use_probability_calibration_model(
+                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL, c.is_probability_calibration_model_used()))
         elif value == AUTOMATIC:
             config.use_automatic_binary_predictor()
 
@@ -416,18 +426,26 @@ class ProbabilityPredictorParameter(NominalParameter):
     def __init__(self):
         super().__init__(name='probability_predictor',
                          description='The name of the strategy to be used for predicting probabilities')
-        self.add_value(name=self.PROBABILITY_PREDICTOR_LABEL_WISE, mixin=LabelWiseProbabilityPredictorMixin)
-        self.add_value(name=self.PROBABILITY_PREDICTOR_MARGINALIZED, mixin=MarginalizedProbabilityPredictorMixin)
+        self.add_value(name=self.PROBABILITY_PREDICTOR_LABEL_WISE,
+                       mixin=LabelWiseProbabilityPredictorMixin,
+                       options={OPTION_USE_PROBABILITY_CALIBRATION_MODEL})
+        self.add_value(name=self.PROBABILITY_PREDICTOR_MARGINALIZED,
+                       mixin=MarginalizedProbabilityPredictorMixin,
+                       options={OPTION_USE_PROBABILITY_CALIBRATION_MODEL})
         self.add_value(name=AUTOMATIC,
                        mixin=AutomaticProbabilityPredictorMixin,
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'based on the parameter ' + LossParameter().argument_name)
 
-    def _configure(self, config, value: str, _: Optional[Options]):
+    def _configure(self, config, value: str, options: Optional[Options]):
         if value == self.PROBABILITY_PREDICTOR_LABEL_WISE:
-            config.use_label_wise_probability_predictor()
+            c = config.use_label_wise_probability_predictor()
+            c.set_use_probability_calibration_model(
+                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL, c.is_probability_calibration_model_used()))
         elif value == self.PROBABILITY_PREDICTOR_MARGINALIZED:
-            config.use_marginalized_probability_predictor()
+            c = config.use_marginalized_probability_predictor()
+            c.set_use_probability_calibration_model(
+                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL, c.is_probability_calibration_model_used()))
         elif value == AUTOMATIC:
             config.use_automatic_probability_predictor()
 
