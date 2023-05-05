@@ -96,7 +96,18 @@ namespace boosting {
     MarginalizedProbabilityPredictorConfig::MarginalizedProbabilityPredictorConfig(
       const std::unique_ptr<ILossConfig>& lossConfigPtr,
       const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : lossConfigPtr_(std::move(lossConfigPtr)), multiThreadingConfigPtr_(std::move(multiThreadingConfigPtr)) {}
+        : useCalibrationModel_(true), lossConfigPtr_(std::move(lossConfigPtr)),
+          multiThreadingConfigPtr_(std::move(multiThreadingConfigPtr)) {}
+
+    bool MarginalizedProbabilityPredictorConfig::isCalibrationModelUsed() const {
+        return useCalibrationModel_;
+    }
+
+    IMarginalizedProbabilityPredictorConfig& MarginalizedProbabilityPredictorConfig::setUseCalibrationModel(
+      bool useCalibrationModel) {
+        useCalibrationModel_ = useCalibrationModel;
+        return *this;
+    }
 
     std::unique_ptr<IProbabilityPredictorFactory> MarginalizedProbabilityPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {

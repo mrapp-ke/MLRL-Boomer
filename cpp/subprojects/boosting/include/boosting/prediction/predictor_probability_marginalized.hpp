@@ -4,10 +4,34 @@
 #pragma once
 
 #include "boosting/losses/loss.hpp"
+#include "boosting/macros.hpp"
 #include "common/multi_threading/multi_threading.hpp"
 #include "common/prediction/predictor_probability.hpp"
 
 namespace boosting {
+
+    class MLRLBOOSTING_API IMarginalizedProbabilityPredictorConfig {
+        public:
+
+            virtual ~IMarginalizedProbabilityPredictorConfig() {};
+
+            /**
+             * Returns whether a model for the calibration of probabilities is used, if available, or not.
+             *
+             * @return True, if a model for the calibration of probabilities is used, if available, false otherwise
+             */
+            virtual bool isCalibrationModelUsed() const = 0;
+
+            /**
+             * Sets whether a model for the calibration of probabilities should be used, if available, or not.
+             *
+             * @param useCalibrationModel   True, if a model for the calibration of probabilities should be used, if
+             *                              available, false otherwise
+             * @return                      A reference to an object of type `IMarginalizedProbabilityPredictorConfig`
+             *                              that allows further configuration of the predictor
+             */
+            virtual IMarginalizedProbabilityPredictorConfig& setUseCalibrationModel(bool useCalibrationModel) = 0;
+    };
 
     /**
      * Allows to configure a predictor that predicts marginalized probabilities for given query examples, which estimate
@@ -17,8 +41,11 @@ namespace boosting {
      * have been obtained for all label vectors, where the respective label is specified to be relevant, divided by the
      * total sum of all distances.
      */
-    class MarginalizedProbabilityPredictorConfig final : public IProbabilityPredictorConfig {
+    class MarginalizedProbabilityPredictorConfig final : public IMarginalizedProbabilityPredictorConfig,
+                                                         public IProbabilityPredictorConfig {
         private:
+
+            bool useCalibrationModel_;
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
 
@@ -36,6 +63,10 @@ namespace boosting {
             MarginalizedProbabilityPredictorConfig(
               const std::unique_ptr<ILossConfig>& lossConfigPtr,
               const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+
+            bool isCalibrationModelUsed() const override;
+
+            IMarginalizedProbabilityPredictorConfig& setUseCalibrationModel(bool useCalibrationModel) override;
 
             /**
              * @see `IProbabilityPredictorConfig::createPredictorFactory`
