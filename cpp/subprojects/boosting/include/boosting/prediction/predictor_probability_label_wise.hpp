@@ -12,10 +12,8 @@ namespace boosting {
 
     /**
      * Defines an interface for all classes that allow to configure a predictor that predicts label-wise probabilities
-     * for given query examples, which estimate the chance of individual labels to be relevant, by summing up the scores
-     * that are provided by individual rules of an existing rule-based model and transforming the aggregated scores into
-     * probabilities in [0, 1] according to a certain transformation function that is applied to each label
-     * individually.
+     * for given query examples by transforming the regression scores that are predicted for each label individually
+     * into probabilities.
      */
     class MLRLBOOSTING_API ILabelWiseProbabilityPredictorConfig {
         public:
@@ -43,8 +41,10 @@ namespace boosting {
     };
 
     /**
-     * Allows to configure a predictor that predicts label-wise probabilities for given query examples, which estimate
-     * the chance of individual labels to be relevant, by summing up the scores that are provided by individual rules of
+     * Allows to configure a predictor that predicts label-wise probabilities for given query examples by transforming
+     * the regression scores that are predicted for each label individually into probabilities.
+     * 
+     * summing up the scores that are provided by individual rules of
      * an existing rule-based model and transforming the aggregated scores into probabilities in [0, 1] according to a
      * certain transformation function that is applied to each label individually.
      */

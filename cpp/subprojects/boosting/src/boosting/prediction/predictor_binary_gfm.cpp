@@ -49,9 +49,8 @@ namespace boosting {
 
     /**
      * Allows to create instances of the type `IBinaryPredictor` that allow to predict whether individual labels of
-     * given query examples are relevant or irrelevant by summing up the scores that are provided by the individual
-     * rules of an existing rule-based model and transforming them into binary values according to the general F-measure
-     * maximizer (GFM).
+     * given query examples are relevant or irrelevant by discretizing the regression scores or probability estimates
+     * that are predicted for each label according to the general F-measure maximizer (GFM).
      */
     class GfmBinaryPredictorFactory final : public IBinaryPredictorFactory {
         private:
@@ -142,9 +141,8 @@ namespace boosting {
 
     /**
      * Allows to create instances of the type `ISparseBinaryPredictor` that allow to predict whether individual labels
-     * of given query examples are relevant or irrelevant by summing up the scores that are provided by the individual
-     * rules of an existing rule-based model and transforming them into binary values according to the general F-measure
-     * maximizer (GFM).
+     * of given query examples are relevant or irrelevant by discretizing the regression scores or probability estimates
+     * that are predicted for each label according to the general F-measure maximizer (GFM).
      */
     class GfmSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
         private:

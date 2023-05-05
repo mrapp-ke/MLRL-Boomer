@@ -45,9 +45,8 @@ namespace boosting {
 
     /**
      * Allows to create instances of the type `IBinaryPredictor` that allow to predict known label vectors for given
-     * query examples by summing up the scores that are provided by an existing rule-based model and comparing the
-     * aggregated score vector to the known label vectors according to a certain distance measure. The label vector that
-     * is closest to the aggregated score vector is finally predicted.
+     * query examples by comparing the predicted regression scores or probability estimates to the label vectors
+     * encountered in the training data.
      */
     class ExampleWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
         private:
@@ -137,9 +136,8 @@ namespace boosting {
 
     /**
      * Allows to create instances of the type `ISparseBinaryPredictor` that allow to predict known label vectors for
-     * given query examples by summing up the scores that are provided by an existing rule-based model and comparing the
-     * aggregated score vector to the known label vectors according to a certain distance measure. The label vector that
-     * is closest to the aggregated score vector is finally predicted.
+     * given query examples by comparing the predicted regression scores or probability estimates to the label vectors
+     * encountered in the training data.
      */
     class ExampleWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
         private:

@@ -749,10 +749,9 @@ namespace boosting {
             };
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
-             * predicting whether individual labels are relevant or irrelevant by summing up the scores that are
-             * provided by the individual rules of an existing rule-based model and transforming them into binary values
-             * according to a certain threshold that is applied to each label individually.
+             * Defines an interface for all classes that allow to configure a rule learner to use a predictor that
+             * predicts whether individual labels of given query examples are relevant or irrelevant by discretizing the
+             * regression scores or probability estimates that are predicted for each label individually.
              */
             class ILabelWiseBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
@@ -760,10 +759,9 @@ namespace boosting {
                     virtual ~ILabelWiseBinaryPredictorMixin() override {};
 
                     /**
-                     * Configures the rule learner to use a predictor for predicting whether individual labels are
-                     * relevant or irrelevant by summing up the scores that are provided by the individual rules of an
-                     * existing rule-based model and transforming them into binary values according to a certain
-                     * threshold that is applied to each label individually.
+                     * Configures the rule learner to use a predictor that predicts whether individual labels of given
+                     * query examples are relevant or irrelevant by discretizing the regression scores or probability
+                     * estimates that are predicted for each label individually.
                      *
                      * @return A reference to an object of type `ILabelWiseBinaryPredictorConfig` that allows further
                      *         configuration of the predictor
@@ -781,10 +779,9 @@ namespace boosting {
             };
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
-             * predicting whether individual labels are relevant or irrelevant by summing up the scores that are
-             * provided by an existing rule-based model and comparing the aggregated score vector to the known label
-             * vectors according to a certain distance measure.
+             * Defines an interface for all classes that allow to configure a rule learner to use a predictor that
+             * predicts known label vectors for given query examples by comparing the predicted regression scores or
+             * probability estimates to the label vectors encountered in the training data.
              */
             class IExampleWiseBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
@@ -792,11 +789,9 @@ namespace boosting {
                     virtual ~IExampleWiseBinaryPredictorMixin() override {};
 
                     /**
-                     * Configures the rule learner to use a predictor for predicting whether individual labels are
-                     * relevant or irrelevant by summing up the scores that are provided by an existing rule-based model
-                     * and comparing the aggregated score vector to the known label vectors according to a certain
-                     * distance measure. The label vector that is closest to the aggregated score vector is finally
-                     * predicted.
+                     * Configures the rule learner to use a predictor that predicts known label vectors for given query
+                     * examples by comparing the predicted regression scores or probability estimates to the label
+                     * vectors encountered in the training data.
                      *
                      * @return A reference to an object of type `IExampleWiseBinaryPredictorConfig` that allows further
                      *         configuration of the predictor
@@ -814,10 +809,10 @@ namespace boosting {
             };
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
-             * predicting whether individual labels are relevant or irrelevant by summing up the scores that are
-             * provided by the individual rules of an existing rule-based model and transforming them into binary values
-             * according to the general F-measure maximizer (GFM).
+             * Defines an interface for all classes that allow to configure a rule learner to use a predictor that
+             * predicts whether individual labels of given query examples are relevant or irrelevant by discretizing the
+             * regression scores or probability estimates that are predicted for each label according to the general
+             * F-measure maximizer (GFM).
              */
             class IGfmBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
@@ -825,10 +820,9 @@ namespace boosting {
                     virtual ~IGfmBinaryPredictorMixin() override {};
 
                     /**
-                     * Configures the rule learner to use a predictor for predicting whether individual labels are
-                     * relevant or irrelevant by summing up the scores that are provided by the individual rules of a
-                     * existing rule-based model and transforming them into binary values according to the general
-                     * F-measure maximizer (GFM).
+                     * Configures the rule learner to use a predictor that predicts whether individual labels of given
+                     * query examples are relevant or irrelevant by discretizing the regression scores or probability
+                     * estimates that are predicted for each label according to the general F-measure maximizer (GFM).
                      *
                      * @return A reference to an object of type `IGfmBinaryPredictorConfig` that allows further
                      *         configuration of the predictor
@@ -866,9 +860,9 @@ namespace boosting {
             };
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
-             * predicting regression scores by summing up the scores that are provided by the individual rules of an
-             * existing rule-based model for each label individually.
+             * Defines an interface for all classes that allow to configure a rule learner to use a predictor that
+             * predicts label-wise regression scores for given query examples by summing up the scores that are provided
+             * by individual rules for each label individually.
              */
             class ILabelWiseScorePredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
@@ -876,9 +870,9 @@ namespace boosting {
                     virtual ~ILabelWiseScorePredictorMixin() override {};
 
                     /**
-                     * Configures the rule learner to use a predictor for predicting regression scores by summing up the
-                     * scores that are provided by the individual rules of an existing rule-based model for each label
-                     * individually.
+                     * Configures the rule learner to use a predictor that predicts label-wise regression scores for
+                     * given query examples by summing up the scores that are provided by individual rules for each
+                     * label individually.
                      */
                     virtual void useLabelWiseScorePredictor() {
                         std::unique_ptr<IScorePredictorConfig>& scorePredictorConfigPtr =
@@ -889,10 +883,9 @@ namespace boosting {
             };
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to use a predictor for
-             * predicting probability estimates by summing up the scores that are provided by individual rules of an
-             * existing rule-based model and transforming the aggregated scores into probabilities according to a
-             * certain transformation function that is applied to each label individually.
+             * Defines an interface for all classes that allow to configure a rule learner to use a predictor that
+             * predicts label-wise probabilities for given query examples by transforming the regression scores that are
+             * predicted for each label individually into probabilities.
              */
             class ILabelWiseProbabilityPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
@@ -900,10 +893,9 @@ namespace boosting {
                     virtual ~ILabelWiseProbabilityPredictorMixin() override {};
 
                     /**
-                     * Configures the rule learner to use a predictor for predicting probability estimates by summing up
-                     * the scores that are provided by individual rules of an existing rule-based model and transforming
-                     * the aggregated scores into probabilities according to a certain transformation function that is
-                     * applied to each label individually.
+                     * Configures the rule learner to use a predictor that predicts label-wise probabilities for given
+                     * query examples by transforming the regression scores that are predicted for each label
+                     * individually into probabilities.
                      *
                      * @return A reference to an object of type `ILabelWiseProbabilityPredictorConfig` that allows
                      *         further configuration of the predictor
@@ -921,10 +913,9 @@ namespace boosting {
             };
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to use predictor for
-             * predicting probability estimates by summing up the scores that are provided by individual rules of an
-             * existing rule-based model and comparing the aggregated score vector to the known label vectors according
-             * to a certain distance measure.
+             * Defines an interface for all classes that allow to configure a rule learner to use predictor that
+             * predicts label-wise probabilities for given query examples by marginalizing over the joint probabilities
+             * of known label vectors.
              */
             class IMarginalizedProbabilityPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
@@ -932,12 +923,8 @@ namespace boosting {
                     virtual ~IMarginalizedProbabilityPredictorMixin() override {};
 
                     /**
-                     * Configures the rule learner to use a predictor for predicting probability estimates by summing up
-                     * the scores that are provided by individual rules of an existing rule-based model and comparing
-                     * the aggregated score vector to the known label vectors according to a certain distance measure.
-                     * The probability for an individual label calculates as the sum of the distances that have been
-                     * obtained for all label vectors, where the respective label is specified to be relevant, divided
-                     * by the total sum of all distances.
+                     * Configures the rule learner to use a predictor that predicts label-wise probabilities for given
+                     * query examples by marginalizing over the joint probabilities of known label vectors.
                      *
                      * @return A reference to an object of type `IMarginalizedProbabilityPredictorConfig` that allows
                      *         further configuration of the predictor

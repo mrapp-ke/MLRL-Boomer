@@ -7,11 +7,9 @@
 namespace boosting {
 
     /**
-     * Allows to create instances of the type `IProbabilityPredictor` that allow to predict label-wise probabilities
-     * for given query examples, which estimate the chance of individual labels to be relevant, by summing up the scores
-     * that are provided by individual rules of an existing rule-based model and transforming the aggregated scores into
-     * probabilities in [0, 1] according to a certain transformation function that is applied to each label
-     * individually.
+     * Allows to create instances of the type `IProbabilityPredictor` that allow to predict label-wise probabilities for
+     * given query examples by transforming the regression scores that are predicted for each label individually into
+     * probabilities.
      */
     class LabelWiseProbabilityPredictorFactory final : public IProbabilityPredictorFactory {
         private:
