@@ -39,6 +39,25 @@ namespace boosting {
              *                              allows further configuration of the predictor
              */
             virtual IExampleWiseBinaryPredictorConfig& setBasedOnProbabilities(bool basedOnProbabilities) = 0;
+
+            /**
+             * Returns whether a model for the calibration of probabilities is used, if available, or not.
+             *
+             * @return True, if a model for the calibration of probabilities is used, if available, false otherwise
+             */
+            virtual bool isProbabilityCalibrationModelUsed() const = 0;
+
+            /**
+             * Sets whether a model for the calibration of probabilities should be used, if available, or not.
+             *
+             * @param useProbabilityCalibrationModel  True, if a model for the calibration of probabilities should be
+             *                                        used, if available, false otherwise
+             * @return                                A reference to an object of type
+             *                                        `IExampleWiseBinaryPredictorConfig` that allows further
+             *                                        configuration of the predictor
+             */
+            virtual IExampleWiseBinaryPredictorConfig& setUseProbabilityCalibrationModel(
+              bool useProbabilityCalibrationModel) = 0;
     };
 
     /**
@@ -50,6 +69,8 @@ namespace boosting {
         private:
 
             bool basedOnProbabilities_;
+
+            bool useProbabilityCalibrationModel_;
 
             const std::unique_ptr<ILossConfig>& lossConfigPtr_;
 
@@ -70,6 +91,11 @@ namespace boosting {
             bool isBasedOnProbabilities() const override;
 
             IExampleWiseBinaryPredictorConfig& setBasedOnProbabilities(bool basedOnProbabilities) override;
+
+            bool isProbabilityCalibrationModelUsed() const override;
+
+            IExampleWiseBinaryPredictorConfig& setUseProbabilityCalibrationModel(
+              bool useProbabilityCalibrationModel) override;
 
             /**
              * @see `IPredictorConfig::createPredictorFactory`
