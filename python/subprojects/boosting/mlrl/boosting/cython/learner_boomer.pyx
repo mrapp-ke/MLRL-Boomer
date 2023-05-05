@@ -499,7 +499,6 @@ cdef class BoomerConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-
     def use_marginalized_probability_predictor(self) -> MarginalizedProbabilityPredictorConfig:
         cdef IMarginalizedProbabilityPredictorConfig* config_ptr = \
             &self.config_ptr.get().useMarginalizedProbabilityPredictor()
