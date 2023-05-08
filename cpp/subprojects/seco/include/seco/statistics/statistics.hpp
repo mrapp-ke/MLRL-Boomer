@@ -8,9 +8,6 @@
 
 namespace seco {
 
-    // Forward declarations
-    class DenseCoverageMatrix;
-
     /**
      * Defines an interface for all classes that allow to store the elements of confusion matrices that have been
      * computed based on a weight matrix and the ground truth labels of the training examples.
