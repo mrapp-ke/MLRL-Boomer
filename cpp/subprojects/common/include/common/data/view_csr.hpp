@@ -56,6 +56,8 @@ class CsrConstView : virtual public ITwoDimensionalView {
          */
         CsrConstView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* colIndices);
 
+        virtual ~CsrConstView() override {};
+
         /**
          * An iterator that provides read-only access to the values in the view.
          */
@@ -138,6 +140,8 @@ class CsrView : public CsrConstView<T> {
          *                      column-indices, the values in `data` correspond to
          */
         CsrView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* colIndices);
+
+        virtual ~CsrView() override {};
 
         /**
          * An iterator that provides access to the values in the view and allows to modify them.
