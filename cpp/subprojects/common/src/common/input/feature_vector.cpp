@@ -29,7 +29,5 @@ void FeatureVector::setNumElements(uint32 numElements, bool freeMemory) {
 }
 
 void FeatureVector::sortByValues() {
-    std::sort(vector_.begin(), vector_.end(), [=](const IndexedValue<float32>& a, const IndexedValue<float32>& b) {
-        return a.value < b.value;
-    });
+    std::sort(vector_.begin(), vector_.end(), IndexedValue<float32>::CompareValue());
 }

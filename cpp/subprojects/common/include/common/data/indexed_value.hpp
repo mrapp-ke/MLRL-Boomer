@@ -15,12 +15,9 @@ struct IndexedValue final {
     public:
 
         /**
-         * Allows to compare two objects of type `IndexedValue` according to the following strict weak ordering: If the
-         * value of the first object is smaller, it goes before the second one. If the values of both objects are equal
-         * and the index of the first object is smaller, it goes before the second one. Otherwise, the first object goes
-         * after the second one.
+         * Allows to compare two objects of type `IndexedValue` by their index.
          */
-        struct Compare final {
+        struct CompareIndex final {
             public:
 
                 /**
@@ -31,7 +28,25 @@ struct IndexedValue final {
                  * @return      True, if the first object should go before the second one, false otherwise
                  */
                 inline bool operator()(const IndexedValue<T>& lhs, const IndexedValue<T>& rhs) const {
-                    return lhs.value < rhs.value || (lhs.value == rhs.value && lhs.index < rhs.index);
+                    return lhs.index < rhs.index;
+                }
+        };
+
+        /**
+         * Allows to compare two objects of type `IndexedValue` by their value.
+         */
+        struct CompareValue final {
+            public:
+
+                /**
+                 * Returns whether the a given object of type `IndexedValue` should go before a second one.
+                 *
+                 * @param lhs   A reference to a first object of type `IndexedValue`
+                 * @param rhs   A reference to a second object of type `IndexedValue`
+                 * @return      True, if the first object should go before the second one, false otherwise
+                 */
+                inline bool operator()(const IndexedValue<T>& lhs, const IndexedValue<T>& rhs) const {
+                    return lhs.value < rhs.value;
                 }
         };
 
