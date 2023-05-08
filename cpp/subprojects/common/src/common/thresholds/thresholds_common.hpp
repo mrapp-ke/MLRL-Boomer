@@ -36,10 +36,10 @@ static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights,
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
       prediction.createStatisticsSubset(statistics, outOfSampleWeights);
     uint32 numCovered = coverageSet.getNumCovered();
-    CoverageSet::const_iterator iterator = coverageSet.cbegin();
+    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
 
     for (uint32 i = 0; i < numCovered; i++) {
-        uint32 exampleIndex = iterator[i];
+        uint32 exampleIndex = coverageSetIterator[i];
 
         if (statisticsSubsetPtr->hasNonZeroWeight(exampleIndex)) {
             statisticsSubsetPtr->addToSubset(exampleIndex);
@@ -58,10 +58,10 @@ static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights,
       prediction.createStatisticsSubset(statistics, outOfSampleWeights);
     const BitVector& holdoutSet = partition.getSecondSet();
     uint32 numCovered = coverageSet.getNumCovered();
-    CoverageSet::const_iterator iterator = coverageSet.cbegin();
+    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
 
     for (uint32 i = 0; i < numCovered; i++) {
-        uint32 exampleIndex = iterator[i];
+        uint32 exampleIndex = coverageSetIterator[i];
 
         if (statisticsSubsetPtr->hasNonZeroWeight(exampleIndex) && holdoutSet[exampleIndex]) {
             statisticsSubsetPtr->addToSubset(exampleIndex);
@@ -96,10 +96,10 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
     EqualWeightVector weights(numStatistics);
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics, weights);
     uint32 numCovered = coverageSet.getNumCovered();
-    CoverageSet::const_iterator iterator = coverageSet.cbegin();
+    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
 
     for (uint32 i = 0; i < numCovered; i++) {
-        uint32 exampleIndex = iterator[i];
+        uint32 exampleIndex = coverageSetIterator[i];
         statisticsSubsetPtr->addToSubset(exampleIndex);
     }
 
@@ -114,10 +114,10 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics, weights);
     const BitVector& holdoutSet = partition.getSecondSet();
     uint32 numCovered = coverageSet.getNumCovered();
-    CoverageSet::const_iterator iterator = coverageSet.cbegin();
+    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
 
     for (uint32 i = 0; i < numCovered; i++) {
-        uint32 exampleIndex = iterator[i];
+        uint32 exampleIndex = coverageSetIterator[i];
 
         if (holdoutSet[exampleIndex]) {
             statisticsSubsetPtr->addToSubset(exampleIndex);
