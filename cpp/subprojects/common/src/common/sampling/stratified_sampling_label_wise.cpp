@@ -11,6 +11,14 @@
 #include <set>
 #include <unordered_map>
 
+struct CompareIndexedValue final {
+    public:
+
+        inline bool operator()(const IndexedValue<uint32>& lhs, const IndexedValue<uint32>& rhs) const {
+            return lhs.value < rhs.value || (lhs.value == rhs.value && lhs.index < rhs.index);
+        }
+};
+
 static inline void updateNumExamplesPerLabel(const CContiguousLabelMatrix& labelMatrix, uint32 exampleIndex,
                                              uint32* numExamplesPerLabel,
                                              std::unordered_map<uint32, uint32>& affectedLabelIndices) {
@@ -52,7 +60,7 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
     // a sorted map that stores all label indices in increasing order of the number of associated examples...
     uint32 numLabels = cscLabelMatrix.getNumCols();
     uint32* numExamplesPerLabel = new uint32[numLabels];
-    typedef std::set<IndexedValue<uint32>, IndexedValue<uint32>::Compare> SortedSet;
+    typedef std::set<IndexedValue<uint32>, CompareIndexedValue> SortedSet;
     SortedSet sortedLabelIndices;
 
     for (uint32 i = 0; i < numLabels; i++) {
