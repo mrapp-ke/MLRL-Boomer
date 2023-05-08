@@ -11,9 +11,21 @@
 #include <set>
 #include <unordered_map>
 
+/**
+ * Allows to compare two objects of type `IndexedValue` according to the following strict weak ordering: If the value of
+ * the first object is smaller, it goes before the second one. If the values of both objects are equal and the index of
+ * the first object is smaller, it goes before the second one. Otherwise, the first object goes after the second one.
+ */
 struct CompareIndexedValue final {
     public:
 
+        /**
+         * Returns whether the a given object of type `IndexedValue` should go before a second one.
+         *
+         * @param lhs   A reference to a first object of type `IndexedValue`
+         * @param rhs   A reference to a second object of type `IndexedValue`
+         * @return      True, if the first object should go before the second one, false otherwise
+         */
         inline bool operator()(const IndexedValue<uint32>& lhs, const IndexedValue<uint32>& rhs) const {
             return lhs.value < rhs.value || (lhs.value == rhs.value && lhs.index < rhs.index);
         }
