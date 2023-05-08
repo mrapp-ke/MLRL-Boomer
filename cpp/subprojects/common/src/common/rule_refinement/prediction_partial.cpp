@@ -101,10 +101,7 @@ void PartialPrediction::sort() {
                 entry.value = scoreIterator[i];
             }
 
-            std::sort(sortedIterator, sortedVector.end(),
-                      [=](const IndexedValue<float64>& a, const IndexedValue<float64>& b) {
-                return a.index < b.index;
-            });
+            std::sort(sortedIterator, sortedVector.end(), IndexedValue<float64>::CompareIndex());
 
             for (uint32 i = 0; i < numElements; i++) {
                 const IndexedValue<float64>& entry = sortedIterator[i];
