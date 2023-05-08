@@ -5,26 +5,11 @@
 #include "common/stopping/stopping_criterion.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
 
-static inline BitVector* createBitVector(BiPartition::const_iterator iterator, uint32 numElements) {
-    BitVector* vector = new BitVector(numElements, true);
-
-    for (uint32 i = 0; i < numElements; i++) {
-        uint32 index = iterator[i];
-        vector->set(index, true);
-    }
-
-    return vector;
-}
+#include <algorithm>
 
 BiPartition::BiPartition(uint32 numFirst, uint32 numSecond)
-    : vector_(DenseVector<uint32>(numFirst + numSecond)), numFirst_(numFirst), firstSet_(nullptr), secondSet_(nullptr) {
-
-}
-
-BiPartition::~BiPartition() {
-    delete firstSet_;
-    delete secondSet_;
-}
+    : vector_(DenseVector<uint32>(numFirst + numSecond)), numFirst_(numFirst), firstSorted_(false),
+      secondSorted_(false) {}
 
 BiPartition::iterator BiPartition::first_begin() {
     return vector_.begin();
@@ -70,20 +55,18 @@ uint32 BiPartition::getNumElements() const {
     return vector_.getNumElements();
 }
 
-const BitVector& BiPartition::getFirstSet() {
-    if (!firstSet_) {
-        firstSet_ = createBitVector(this->first_cbegin(), this->getNumFirst());
+void BiPartition::sortFirst() {
+    if (!firstSorted_) {
+        std::sort(this->first_begin(), this->first_end(), std::less<uint32>());
+        firstSorted_ = true;
     }
-
-    return *firstSet_;
 }
 
-const BitVector& BiPartition::getSecondSet() {
-    if (!secondSet_) {
-        secondSet_ = createBitVector(this->second_cbegin(), this->getNumSecond());
+void BiPartition::sortSecond() {
+    if (!secondSorted_) {
+        std::sort(this->second_begin(), this->second_end(), std::less<uint32>());
+        secondSorted_ = true;
     }
-
-    return *secondSet_;
 }
 
 std::unique_ptr<IStoppingCriterion> BiPartition::createStoppingCriterion(const IStoppingCriterionFactory& factory) {
