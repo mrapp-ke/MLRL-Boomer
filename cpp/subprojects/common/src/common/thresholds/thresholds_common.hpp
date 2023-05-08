@@ -131,6 +131,8 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
         if (*holdoutSetIterator) {
             statisticsSubsetPtr->addToSubset(exampleIndex);
         }
+
+        previousExampleIndex = exampleIndex;
     }
 
     const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
