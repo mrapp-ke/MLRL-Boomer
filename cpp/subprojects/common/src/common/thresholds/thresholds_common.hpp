@@ -5,6 +5,7 @@
 
 #include "common/input/feature_info.hpp"
 #include "common/input/feature_matrix.hpp"
+#include "common/iterator/binary_forward_iterator.hpp"
 #include "common/thresholds/thresholds.hpp"
 #include "omp.h"
 
@@ -36,10 +37,10 @@ static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights,
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
       prediction.createStatisticsSubset(statistics, outOfSampleWeights);
     uint32 numCovered = coverageSet.getNumCovered();
-    CoverageSet::const_iterator iterator = coverageSet.cbegin();
+    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
 
     for (uint32 i = 0; i < numCovered; i++) {
-        uint32 exampleIndex = iterator[i];
+        uint32 exampleIndex = coverageSetIterator[i];
 
         if (statisticsSubsetPtr->hasNonZeroWeight(exampleIndex)) {
             statisticsSubsetPtr->addToSubset(exampleIndex);
@@ -56,16 +57,21 @@ static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights,
     OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
       prediction.createStatisticsSubset(statistics, outOfSampleWeights);
-    const BitVector& holdoutSet = partition.getSecondSet();
     uint32 numCovered = coverageSet.getNumCovered();
-    CoverageSet::const_iterator iterator = coverageSet.cbegin();
+    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
+    partition.sortSecond();
+    auto holdoutSetIterator = make_binary_forward_iterator(partition.second_cbegin(), partition.second_cend());
+    uint32 previousExampleIndex = 0;
 
     for (uint32 i = 0; i < numCovered; i++) {
-        uint32 exampleIndex = iterator[i];
+        uint32 exampleIndex = coverageSetIterator[i];
+        std::advance(holdoutSetIterator, exampleIndex - previousExampleIndex);
 
-        if (statisticsSubsetPtr->hasNonZeroWeight(exampleIndex) && holdoutSet[exampleIndex]) {
+        if (*holdoutSetIterator && statisticsSubsetPtr->hasNonZeroWeight(exampleIndex)) {
             statisticsSubsetPtr->addToSubset(exampleIndex);
         }
+
+        previousExampleIndex = exampleIndex;
     }
 
     return statisticsSubsetPtr->calculateScores();
@@ -96,10 +102,10 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
     EqualWeightVector weights(numStatistics);
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics, weights);
     uint32 numCovered = coverageSet.getNumCovered();
-    CoverageSet::const_iterator iterator = coverageSet.cbegin();
+    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
 
     for (uint32 i = 0; i < numCovered; i++) {
-        uint32 exampleIndex = iterator[i];
+        uint32 exampleIndex = coverageSetIterator[i];
         statisticsSubsetPtr->addToSubset(exampleIndex);
     }
 
@@ -112,16 +118,21 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
     uint32 numStatistics = statistics.getNumStatistics();
     EqualWeightVector weights(numStatistics);
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics, weights);
-    const BitVector& holdoutSet = partition.getSecondSet();
     uint32 numCovered = coverageSet.getNumCovered();
-    CoverageSet::const_iterator iterator = coverageSet.cbegin();
+    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
+    partition.sortSecond();
+    auto holdoutSetIterator = make_binary_forward_iterator(partition.second_cbegin(), partition.second_cend());
+    uint32 previousExampleIndex = 0;
 
     for (uint32 i = 0; i < numCovered; i++) {
-        uint32 exampleIndex = iterator[i];
+        uint32 exampleIndex = coverageSetIterator[i];
+        std::advance(holdoutSetIterator, exampleIndex - previousExampleIndex);
 
-        if (holdoutSet[exampleIndex]) {
+        if (*holdoutSetIterator) {
             statisticsSubsetPtr->addToSubset(exampleIndex);
         }
+
+        previousExampleIndex = exampleIndex;
     }
 
     const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();

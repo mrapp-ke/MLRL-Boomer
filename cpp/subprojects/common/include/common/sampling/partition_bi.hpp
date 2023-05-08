@@ -3,7 +3,6 @@
  */
 #pragma once
 
-#include "common/data/vector_bit.hpp"
 #include "common/data/vector_dense.hpp"
 #include "common/sampling/instance_sampling.hpp"
 #include "common/sampling/partition.hpp"
@@ -19,9 +18,9 @@ class BiPartition final : public IPartition {
 
         const uint32 numFirst_;
 
-        BitVector* firstSet_;
+        bool firstSorted_;
 
-        BitVector* secondSet_;
+        bool secondSorted_;
 
     public:
 
@@ -30,8 +29,6 @@ class BiPartition final : public IPartition {
          * @param numSecond The number of elements that are contained by the second set
          */
         BiPartition(uint32 numFirst, uint32 numSecond);
-
-        ~BiPartition() override;
 
         /**
          * An iterator that provides access to the indices that are contained by the first or second set and allows to
@@ -115,20 +112,14 @@ class BiPartition final : public IPartition {
         uint32 getNumSecond() const;
 
         /**
-         * Returns a vector that provides random access to the indices of all elements that are contained by the first
-         * set.
-         *
-         * @return A reference to an object of type `BitVector` that provides random access to the indices
+         * Sorts the elements that are contained by the first set in increasing order.
          */
-        const BitVector& getFirstSet();
+        void sortFirst();
 
         /**
-         * Returns a vector that provides random access to the indices of all elements that are contained by the second
-         * set.
-         *
-         * @return A reference to an object of type `BitVector` that provides random access to the indices
+         * Sorts the elements that are contained by the second set in increasing order.
          */
-        const BitVector& getSecondSet();
+        void sortSecond();
 
         /**
          * Returns the total number of elements.
