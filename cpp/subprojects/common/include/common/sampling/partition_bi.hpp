@@ -19,6 +19,10 @@ class BiPartition final : public IPartition {
 
         const uint32 numFirst_;
 
+        bool firstSorted_;
+
+        bool secondSorted_;
+
         BitVector* firstSet_;
 
         BitVector* secondSet_;
@@ -113,6 +117,16 @@ class BiPartition final : public IPartition {
          * @return The number of elements that are contained by the second set
          */
         uint32 getNumSecond() const;
+
+        /**
+         * Sorts the elements that are contained by the first set in increasing order.
+         */
+        void sortFirst();
+
+        /**
+         * Sorts the elements that are contained by the second set in increasing order.
+         */
+        void sortSecond();
 
         /**
          * Returns a vector that provides random access to the indices of all elements that are contained by the first
