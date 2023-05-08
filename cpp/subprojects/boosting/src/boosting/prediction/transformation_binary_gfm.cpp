@@ -102,9 +102,7 @@ namespace boosting {
 
         if (numRelevantLabels > 0) {
             SparseArrayVector<float64>::iterator iterator = tmpVector.begin();
-            std::sort(iterator, tmpVector.end(), [=](const IndexedValue<float64>& a, const IndexedValue<float64>& b) {
-                return a.index < b.index;
-            });
+            std::sort(iterator, tmpVector.end(), IndexedValue<float64>::CompareIndex());
 
             for (uint32 i = 0; i < numRelevantLabels; i++) {
                 predictionRow.emplace_back(iterator[i].index);
