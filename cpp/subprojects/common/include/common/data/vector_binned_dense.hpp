@@ -14,7 +14,7 @@
  * @tparam T The type of the data that is stored in the vector
  */
 template<typename T>
-class DenseBinnedVector {
+class DenseBinnedVector : virtual public IOneDimensionalView {
     private:
 
         DenseVector<uint32> binIndices_;
@@ -141,6 +141,8 @@ class DenseBinnedVector {
          */
         DenseBinnedVector(uint32 numElements, uint32 numBins);
 
+        virtual ~DenseBinnedVector() override {};
+
         /**
          * An iterator that provides access to the indices that correspond to individual bins and allows to modify them.
          */
@@ -238,13 +240,6 @@ class DenseBinnedVector {
         binned_const_iterator binned_cend() const;
 
         /**
-         * Returns the number of elements in the vector.
-         *
-         * @return The number of elements in the vector
-         */
-        uint32 getNumElements() const;
-
-        /**
          * Returns the number of bins.
          *
          * @return The number of bins
@@ -258,4 +253,9 @@ class DenseBinnedVector {
          * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
          */
         void setNumBins(uint32 numBins, bool freeMemory);
+
+        /**
+         * @see `IOneDimensionalView::getNumElements`
+         */
+        uint32 getNumElements() const override;
 };

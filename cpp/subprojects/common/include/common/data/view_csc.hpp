@@ -56,6 +56,8 @@ class CscConstView : virtual public ITwoDimensionalView {
          */
         CscConstView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* colIndices);
 
+        virtual ~CscConstView() override {};
+
         /**
          * An iterator that provides read-only access to the values in the view.
          */
@@ -138,6 +140,8 @@ class CscView : public CscConstView<T> {
          *                      The index at the last position is equal to `num_non_zero_values`
          */
         CscView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* colIndices);
+
+        virtual ~CscView() override {};
 
         /**
          * An iterator that provides access to the values in the view and allows to modify them.
