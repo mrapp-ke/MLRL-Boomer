@@ -361,13 +361,16 @@ class JointProbabilityCalibrationParameter(NominalParameter):
         super().__init__(name='joint_probability_calibration',
                          description='The name of the method to be used for the calibration of joint probabilities')
         self.add_value(name=NONE, mixin=NoJointProbabilityCalibrationMixin)
-        self.add_value(name=PROBABILITY_CALIBRATION_ISOTONIC, mixin=IsotonicJointProbabilityCalibrationMixin)
+        self.add_value(name=PROBABILITY_CALIBRATION_ISOTONIC,
+                       mixin=IsotonicJointProbabilityCalibrationMixin,
+                       options={OPTION_USE_HOLDOUT_SET})
 
-    def _configure(self, config, value: str, _: Optional[Options]):
+    def _configure(self, config, value: str, options: Optional[Options]):
         if value == NONE:
             config.use_no_joint_probability_calibration()
         if value == PROBABILITY_CALIBRATION_ISOTONIC:
-            config.use_isotonic_joint_probability_calibration()
+            c = config.use_isotonic_joint_probability_calibration()
+            c.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, c.is_holdout_set_used()))
 
 
 class BinaryPredictorParameter(NominalParameter):
