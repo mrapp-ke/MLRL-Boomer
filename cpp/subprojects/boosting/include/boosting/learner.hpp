@@ -745,12 +745,18 @@ namespace boosting {
 
                     /**
                      * Configures the rule learner to calibrate joint probabilities via isotonic regression.
+                     *
+                     * @return A reference to an object of type `IIsotonicJointProbabilityCalibratorConfig` that allows
+                     *         further configuration of the calibrator
                      */
-                    virtual void useIsotonicJointProbabilityCalibration() {
+                    virtual IIsotonicJointProbabilityCalibratorConfig& useIsotonicJointProbabilityCalibration() {
                         std::unique_ptr<IJointProbabilityCalibratorConfig>& jointProbabilityCalibratorConfigPtr =
                           this->getJointProbabilityCalibratorConfigPtr();
-                        jointProbabilityCalibratorConfigPtr =
+                        std::unique_ptr<IsotonicJointProbabilityCalibratorConfig> ptr =
                           std::make_unique<IsotonicJointProbabilityCalibratorConfig>();
+                        IIsotonicJointProbabilityCalibratorConfig& ref = *ptr;
+                        jointProbabilityCalibratorConfigPtr = std::move(ptr);
+                        return ref;
                     }
             };
 
