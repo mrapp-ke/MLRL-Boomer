@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/functions.hpp"
+#include "common/data/arrays.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
 #include "common/prediction/label_space_info.hpp"
 
