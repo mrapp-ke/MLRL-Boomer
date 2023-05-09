@@ -4,7 +4,8 @@ from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
 from mlrl.boosting.cython.prediction cimport ILabelWiseProbabilityPredictorConfig, \
     IMarginalizedProbabilityPredictorConfig, ILabelWiseBinaryPredictorConfig, IExampleWiseBinaryPredictorConfig, \
     IGfmBinaryPredictorConfig
-from mlrl.boosting.cython.probability_calibration cimport IIsotonicMarginalProbabilityCalibratorConfig
+from mlrl.boosting.cython.probability_calibration cimport IIsotonicMarginalProbabilityCalibratorConfig, \
+    IIsotonicJointProbabilityCalibratorConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
 
 
@@ -221,7 +222,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         # Functions:
 
-        void useIsotonicJointProbabilityCalibration()
+        IIsotonicJointProbabilityCalibratorConfig& useIsotonicJointProbabilityCalibration()
         
 
     cdef cppclass IAutomaticLabelBinningMixin"boosting::IBoostingRuleLearner::IAutomaticLabelBinningMixin":
