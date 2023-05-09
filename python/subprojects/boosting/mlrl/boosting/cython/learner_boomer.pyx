@@ -9,6 +9,9 @@ from mlrl.boosting.cython.prediction cimport ILabelWiseProbabilityPredictorConfi
     LabelWiseProbabilityPredictorConfig, IMarginalizedProbabilityPredictorConfig, \
     MarginalizedProbabilityPredictorConfig, IExampleWiseBinaryPredictorConfig, ExampleWiseBinaryPredictorConfig, \
     ILabelWiseBinaryPredictorConfig, LabelWiseBinaryPredictorConfig, IGfmBinaryPredictorConfig, GfmBinaryPredictorConfig
+from mlrl.boosting.cython.probability_calibration cimport IIsotonicMarginalProbabilityCalibratorConfig, \
+    IsotonicMarginalProbabilityCalibratorConfig, IIsotonicJointProbabilityCalibratorConfig, \
+    IsotonicJointProbabilityCalibratorConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig, ManualRegularizationConfig
 from mlrl.common.cython.feature_binning cimport IEqualWidthFeatureBinningConfig, EqualWidthFeatureBinningConfig, \
     IEqualFrequencyFeatureBinningConfig, EqualFrequencyFeatureBinningConfig
@@ -456,14 +459,24 @@ cdef class BoomerConfig(RuleLearnerConfig,
     def use_no_marginal_probability_calibration(self):
         self.config_ptr.get().useNoMarginalProbabilityCalibration()
 
-    def use_isotonic_marginal_probability_calibration(self):
-        self.config_ptr.get().useIsotonicMarginalProbabilityCalibration()
+    def use_isotonic_marginal_probability_calibration(self) -> IsotonicMarginalProbabilityCalibratorConfig:
+        cdef IIsotonicMarginalProbabilityCalibratorConfig* config_ptr = \
+            &self.config_ptr.get().useIsotonicMarginalProbabilityCalibration()
+        cdef IsotonicMarginalProbabilityCalibratorConfig config = \
+            IsotonicMarginalProbabilityCalibratorConfig.__new__(IsotonicMarginalProbabilityCalibratorConfig)
+        config.config_ptr = config_ptr
+        return config
 
     def use_no_joint_probability_calibration(self):
         self.config_ptr.get().useNoJointProbabilityCalibration()
 
-    def use_isotonic_joint_probability_calibration(self):
-        self.config_ptr.get().useIsotonicJointProbabilityCalibration()
+    def use_isotonic_joint_probability_calibration(self) -> IsotonicJointProbabilityCalibratorConfig:
+        cdef IIsotonicJointProbabilityCalibratorConfig* config_ptr = \
+            &self.config_ptr.get().useIsotonicJointProbabilityCalibration()
+        cdef IsotonicJointProbabilityCalibratorConfig config = \
+            IsotonicJointProbabilityCalibratorConfig.__new__(IsotonicJointProbabilityCalibratorConfig)
+        config.config_ptr = config_ptr
+        return config
 
     def use_label_wise_binary_predictor(self) -> LabelWiseBinaryPredictorConfig:
         cdef ILabelWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useLabelWiseBinaryPredictor()
