@@ -1,11 +1,21 @@
+from mlrl.common.cython._types cimport uint32, float64
+
 from libcpp.cast cimport dynamic_cast
 from libcpp.memory cimport unique_ptr
+
+
+ctypedef void (*BinVisitor)(uint32, float64, float64)
 
 
 cdef extern from "common/prediction/probability_calibration_marginal.hpp" nogil:
 
     cdef cppclass IMarginalProbabilityCalibrationModel:
-        pass
+
+        # Functions:
+
+        void addBin(uint32 labelIndex, float64 threshold, float64 probability)
+
+        void visit(BinVisitor) const
 
 
 cdef extern from "common/prediction/probability_calibration_joint.hpp" nogil:
@@ -38,7 +48,8 @@ cdef extern from "common/prediction/probability_calibration_isotonic.hpp" nogil:
     cdef cppclass IIsotonicMarginalProbabilityCalibrationModel(IMarginalProbabilityCalibrationModel):
         pass
 
-    unique_ptr[IIsotonicMarginalProbabilityCalibrationModel] createIsotonicMarginalProbabilityCalibrationModel()
+    unique_ptr[IIsotonicMarginalProbabilityCalibrationModel] createIsotonicMarginalProbabilityCalibrationModel(
+        uint32 numLabels)
 
     cdef cppclass IIsotonicJointProbabilityCalibrationModel(IJointProbabilityCalibrationModel):
         pass
@@ -50,6 +61,25 @@ ctypedef IIsotonicMarginalProbabilityCalibrationModel* IsotonicMarginalProbabili
 
 
 ctypedef IIsotonicJointProbabilityCalibrationModel* IsotonicJointProbabilityCalibrationModelPtr
+
+
+cdef extern from *:
+    """
+    #include "common/prediction/probability_calibration_isotonic.hpp"
+
+    typedef void (*BinCythonVisitor)(void*, uint32, float64, float64);
+
+    static inline IIsotonicMarginalProbabilityCalibrationModel::BinVisitor wrapBinVisitor(
+            void* self, BinCythonVisitor visitor) {
+        return [=](uint32 labelIndex, float64 threshold, float64 probability) {
+            visitor(self, labelIndex, threshold, probability);
+        };
+    }
+    """
+
+    ctypedef void (*BinCythonVisitor)(void*, uint32, float64, float64)
+
+    BinVisitor wrapBinVisitor(void* self, BinCythonVisitor visitor)
 
 
 cdef class MarginalProbabilityCalibrationModel:
@@ -85,6 +115,12 @@ cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibr
     # Attributes:
 
     cdef unique_ptr[IIsotonicMarginalProbabilityCalibrationModel] probability_calibration_model_ptr
+
+    cdef object state
+
+    # Functions:
+
+    cdef __serialize_bin(self, uint32 label_index, float64 threshold, float64 probability)
 
 
 cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationModel):
