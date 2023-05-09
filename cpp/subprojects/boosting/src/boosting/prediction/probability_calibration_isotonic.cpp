@@ -155,7 +155,7 @@ namespace boosting {
             // Sort bins in increasing order by their threshold...
             IsotonicMarginalProbabilityCalibrationModel::bin_list bins = calibrationModel[i];
             std::sort(bins.begin(), bins.end(), [=](const Tuple<float64>& lhs, const Tuple<float64>& rhs) {
-                return lhs.first < lhs.second;
+                return lhs.first < rhs.first;
             });
         }
     }
