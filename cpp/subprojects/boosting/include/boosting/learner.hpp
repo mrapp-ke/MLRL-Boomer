@@ -719,12 +719,18 @@ namespace boosting {
 
                     /**
                      * Configures the rule learner to calibrate marginal probabilities via isotonic regression.
+                     *
+                     * @return A reference to an object of type `IIsotonicMarginalProbabilityCalibratorConfig` that
+                     *         allows further configuration of the calibrator
                      */
-                    virtual void useIsotonicMarginalProbabilityCalibration() {
+                    virtual IIsotonicMarginalProbabilityCalibratorConfig& useIsotonicMarginalProbabilityCalibration() {
                         std::unique_ptr<IMarginalProbabilityCalibratorConfig>& marginalProbabilityCalibratorConfigPtr =
                           this->getMarginalProbabilityCalibratorConfigPtr();
-                        marginalProbabilityCalibratorConfigPtr =
+                        std::unique_ptr<IsotonicMarginalProbabilityCalibratorConfig> ptr =
                           std::make_unique<IsotonicMarginalProbabilityCalibratorConfig>();
+                        IIsotonicMarginalProbabilityCalibratorConfig& ref = *ptr;
+                        marginalProbabilityCalibratorConfigPtr = std::move(ptr);
+                        return ref;
                     }
             };
 
