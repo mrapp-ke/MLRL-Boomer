@@ -5,6 +5,32 @@
 
 namespace boosting {
 
+    template<typename IndexIterator>
+    static inline void extractThresholdsAndProbabilities(
+      IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
+      IsotonicMarginalProbabilityCalibrationModel& calibrationModel, const CContiguousLabelMatrix& labelMatrix,
+      const CContiguousConstView<float64>& scoreMatrix,
+      const IMarginalProbabilityFunction& marginalProbabilityFunction) {}
+
+    template<typename IndexIterator>
+    static inline void extractThresholdsAndProbabilities(
+      IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
+      IsotonicMarginalProbabilityCalibrationModel& calibrationModel, const CsrLabelMatrix& labelMatrix,
+      const CContiguousConstView<float64>& scoreMatrix,
+      const IMarginalProbabilityFunction& marginalProbabilityFunction) {}
+
+    template<typename IndexIterator>
+    static inline void extractThresholdsAndProbabilities(
+      IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
+      IsotonicMarginalProbabilityCalibrationModel& calibrationModel, const CContiguousLabelMatrix& labelMatrix,
+      const SparseSetMatrix<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {}
+
+    template<typename IndexIterator>
+    static inline void extractThresholdsAndProbabilities(
+      IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
+      IsotonicMarginalProbabilityCalibrationModel& calibrationModel, const CsrLabelMatrix& labelMatrix,
+      const SparseSetMatrix<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {}
+
     template<typename IndexIterator, typename LabelMatrix>
     static inline std::unique_ptr<IsotonicMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
       IndexIterator indexIterator, uint32 numExamples, const LabelMatrix& labelMatrix, const IStatistics& statistics,
@@ -19,6 +45,17 @@ namespace boosting {
         uint32 numLabels = labelMatrix.getNumCols();
         std::unique_ptr<IsotonicMarginalProbabilityCalibrationModel> calibrationModelPtr =
           std::make_unique<IsotonicMarginalProbabilityCalibrationModel>(numLabels);
+        const IBoostingStatistics& boostingStatistics = dynamic_cast<const IBoostingStatistics&>(statistics);
+        auto denseVisitor =
+          [&, indexIterator, numExamples, numLabels](const CContiguousConstView<float64>& scoreMatrix) {
+            extractThresholdsAndProbabilities(indexIterator, numExamples, numLabels, *calibrationModelPtr, labelMatrix,
+                                              scoreMatrix, *marginalProbabilityFunctionPtr);
+        };
+        auto sparseVisitor = [&, indexIterator, numExamples, numLabels](const SparseSetMatrix<float64>& scoreMatrix) {
+            extractThresholdsAndProbabilities(indexIterator, numExamples, numLabels, *calibrationModelPtr, labelMatrix,
+                                              scoreMatrix, *marginalProbabilityFunctionPtr);
+        };
+        boostingStatistics.visitScoreMatrix(denseVisitor, sparseVisitor);
         // TODO
         return calibrationModelPtr;
     }
