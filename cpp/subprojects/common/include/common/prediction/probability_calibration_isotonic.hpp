@@ -24,7 +24,7 @@ class MLRLCOMMON_API IIsotonicMarginalProbabilityCalibrationModel : public IMarg
 
         /**
          * Adds a new bin to the calibration model.
-         * 
+         *
          * @param labelIndex    The index of the label, the bin corresponds to
          * @param threshold     The threshold of the bin
          * @param probability   The probability of the bin
