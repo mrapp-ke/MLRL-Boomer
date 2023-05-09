@@ -54,6 +54,19 @@ class IsotonicMarginalProbabilityCalibrationModel final : public IIsotonicMargin
          */
         IsotonicMarginalProbabilityCalibrationModel(uint32 numLabels);
 
+        /**
+         * Provides access to the bins that correspond to a specific label and allows to modify them.
+         */
+        typedef ListOfLists<Tuple<float64>>::row bin_list;
+
+        /**
+         * Provides access to the bins that correspond to a specific label and allows to modify its elements.
+         *
+         * @param row   The index of the label
+         * @return      A `bin_list`
+         */
+        bin_list operator[](uint32 labelIndex);
+
         float64 calibrateMarginalProbability(uint32 labelIndex, float64 marginalProbability) const override;
 
         void addBin(uint32 labelIndex, float64 threshold, float64 probability) override;

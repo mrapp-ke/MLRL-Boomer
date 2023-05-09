@@ -9,6 +9,11 @@ float64 IsotonicMarginalProbabilityCalibrationModel::calibrateMarginalProbabilit
     return marginalProbability;
 }
 
+IsotonicMarginalProbabilityCalibrationModel::bin_list IsotonicMarginalProbabilityCalibrationModel::operator[](
+  uint32 labelIndex) {
+    return binsPerLabel_[labelIndex];
+}
+
 void IsotonicMarginalProbabilityCalibrationModel::addBin(uint32 labelIndex, float64 threshold, float64 probability) {
     ListOfLists<Tuple<float64>>::row row = binsPerLabel_[labelIndex];
     row.emplace_back(threshold, probability);
