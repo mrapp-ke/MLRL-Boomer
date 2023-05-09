@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "boosting/losses/loss.hpp"
 #include "boosting/macros.hpp"
 #include "common/prediction/probability_calibration_isotonic.hpp"
 
@@ -47,9 +48,14 @@ namespace boosting {
 
             bool useHoldoutSet_;
 
+            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+
         public:
 
-            IsotonicMarginalProbabilityCalibratorConfig();
+            /**
+             * @param lossConfigPtr A reference to an unique pointer that stores the configuration of the loss function
+             */
+            IsotonicMarginalProbabilityCalibratorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr);
 
             bool isHoldoutSetUsed() const override;
 

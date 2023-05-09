@@ -1,10 +1,21 @@
 #include "boosting/prediction/probability_calibration_isotonic.hpp"
 
+#include "boosting/statistics/statistics.hpp"
+#include "common/prediction/probability_calibration_no.hpp"
+
 namespace boosting {
 
     template<typename IndexIterator, typename LabelMatrix>
     static inline std::unique_ptr<IsotonicMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
-      IndexIterator indexIterator, uint32 numExamples, const LabelMatrix& labelMatrix, const IStatistics& statistics) {
+      IndexIterator indexIterator, uint32 numExamples, const LabelMatrix& labelMatrix, const IStatistics& statistics,
+      const IMarginalProbabilityFunctionFactory& marginalProbabilityFunctionFactory) {
+        // Create probability function...
+        std::unique_ptr<IMarginalProbabilityCalibrationModel> marginalProbabilityCalibrationModelPtr =
+          createNoMarginalProbabilityCalibrationModel();
+        std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr =
+          marginalProbabilityFunctionFactory.create(*marginalProbabilityCalibrationModelPtr);
+
+        // Extract thresholds and ground truth probabilities from score matrix and label matrix, respectively...
         uint32 numLabels = labelMatrix.getNumCols();
         std::unique_ptr<IsotonicMarginalProbabilityCalibrationModel> calibrationModelPtr =
           std::make_unique<IsotonicMarginalProbabilityCalibrationModel>(numLabels);
@@ -14,15 +25,16 @@ namespace boosting {
 
     template<typename LabelMatrix>
     static inline std::unique_ptr<IsotonicMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
-      const SinglePartition& partition, const LabelMatrix& labelMatrix, const IStatistics& statistics) {
+      const SinglePartition& partition, const LabelMatrix& labelMatrix, const IStatistics& statistics,
+      const IMarginalProbabilityFunctionFactory& marginalProbabilityFunctionFactory) {
         return fitMarginalProbabilityCalibrationModel(partition.cbegin(), partition.getNumElements(), labelMatrix,
-                                                      statistics);
+                                                      statistics, marginalProbabilityFunctionFactory);
     }
 
     template<typename LabelMatrix>
     static inline std::unique_ptr<IsotonicMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
-      const BiPartition& partition, uint32 useHoldoutSet, const LabelMatrix& labelMatrix,
-      const IStatistics& statistics) {
+      const BiPartition& partition, uint32 useHoldoutSet, const LabelMatrix& labelMatrix, const IStatistics& statistics,
+      const IMarginalProbabilityFunctionFactory& marginalProbabilityFunctionFactory) {
         BiPartition::const_iterator indexIterator;
         uint32 numExamples;
 
@@ -34,7 +46,8 @@ namespace boosting {
             numExamples = partition.getNumFirst();
         }
 
-        return fitMarginalProbabilityCalibrationModel(indexIterator, numExamples, labelMatrix, statistics);
+        return fitMarginalProbabilityCalibrationModel(indexIterator, numExamples, labelMatrix, statistics,
+                                                      marginalProbabilityFunctionFactory);
     }
 
     /**
@@ -44,17 +57,26 @@ namespace boosting {
     class IsotonicMarginalProbabilityCalibrator final : public IMarginalProbabilityCalibrator {
         private:
 
+            std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr_;
+
             bool useHoldoutSet_;
 
         public:
 
             /**
-             * @brief Construct a new Isotonic Marginal Probability Calibrator object
-             *
-             * @param useHoldoutSet True, if the calibration model should be fit to the examples in the holdout set, if
-             *                      available, false if the training set should be used instead
+             * @param marginalProbabilityFunctionFactoryPtr An unique pointer to an object of type
+             *                                              `IMarginalProbabilityFunctionFactory` that allows to create
+             *                                              implementations of the transformation function to be used to
+             *                                              transform regression scores that are predicted for
+             *                                              individual labels into probabilities
+             * @param useHoldoutSet                         True, if the calibration model should be fit to the examples
+             *                                              in the holdout set, if available, false otherwise
              */
-            IsotonicMarginalProbabilityCalibrator(bool useHoldoutSet) : useHoldoutSet_(useHoldoutSet) {}
+            IsotonicMarginalProbabilityCalibrator(
+              std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr,
+              bool useHoldoutSet)
+                : marginalProbabilityFunctionFactoryPtr_(std::move(marginalProbabilityFunctionFactoryPtr)),
+                  useHoldoutSet_(useHoldoutSet) {}
 
             /**
              * @see `IMarginalProbabilityCalibrator::fitProbabilityCalibrationModel`
@@ -62,7 +84,8 @@ namespace boosting {
             std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
               const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix,
               const IStatistics& statistics) const override {
-                return fitMarginalProbabilityCalibrationModel(partition, labelMatrix, statistics);
+                return fitMarginalProbabilityCalibrationModel(partition, labelMatrix, statistics,
+                                                              *marginalProbabilityFunctionFactoryPtr_);
             }
 
             /**
@@ -71,7 +94,8 @@ namespace boosting {
             std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
               const SinglePartition& partition, const CsrLabelMatrix& labelMatrix,
               const IStatistics& statistics) const override {
-                return fitMarginalProbabilityCalibrationModel(partition, labelMatrix, statistics);
+                return fitMarginalProbabilityCalibrationModel(partition, labelMatrix, statistics,
+                                                              *marginalProbabilityFunctionFactoryPtr_);
             }
 
             /**
@@ -80,7 +104,8 @@ namespace boosting {
             std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
               BiPartition& partition, const CContiguousLabelMatrix& labelMatrix,
               const IStatistics& statistics) const override {
-                return fitMarginalProbabilityCalibrationModel(partition, useHoldoutSet_, labelMatrix, statistics);
+                return fitMarginalProbabilityCalibrationModel(partition, useHoldoutSet_, labelMatrix, statistics,
+                                                              *marginalProbabilityFunctionFactoryPtr_);
             }
 
             /**
@@ -88,11 +113,14 @@ namespace boosting {
              */
             std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
               BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics) const override {
-                return fitMarginalProbabilityCalibrationModel(partition, useHoldoutSet_, labelMatrix, statistics);
+                return fitMarginalProbabilityCalibrationModel(partition, useHoldoutSet_, labelMatrix, statistics,
+                                                              *marginalProbabilityFunctionFactoryPtr_);
             }
     };
 
-    IsotonicMarginalProbabilityCalibratorConfig::IsotonicMarginalProbabilityCalibratorConfig() : useHoldoutSet_(true) {}
+    IsotonicMarginalProbabilityCalibratorConfig::IsotonicMarginalProbabilityCalibratorConfig(
+      const std::unique_ptr<ILossConfig>& lossConfigPtr)
+        : useHoldoutSet_(true), lossConfigPtr_(lossConfigPtr) {}
 
     bool IsotonicMarginalProbabilityCalibratorConfig::isHoldoutSetUsed() const {
         return useHoldoutSet_;
@@ -110,7 +138,10 @@ namespace boosting {
 
     std::unique_ptr<IMarginalProbabilityCalibrator>
       IsotonicMarginalProbabilityCalibratorConfig::createMarginalProbabilityCalibrator() const {
-        return std::make_unique<IsotonicMarginalProbabilityCalibrator>(useHoldoutSet_);
+        std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr =
+          lossConfigPtr_->createMarginalProbabilityFunctionFactory();
+        return std::make_unique<IsotonicMarginalProbabilityCalibrator>(std::move(marginalProbabilityFunctionFactoryPtr),
+                                                                       useHoldoutSet_);
     }
 
     /**
