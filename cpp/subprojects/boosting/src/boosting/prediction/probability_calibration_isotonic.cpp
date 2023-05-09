@@ -1,7 +1,11 @@
 #include "boosting/prediction/probability_calibration_isotonic.hpp"
 
 #include "boosting/statistics/statistics.hpp"
+#include "common/data/arrays.hpp"
+#include "common/iterator/binary_forward_iterator.hpp"
 #include "common/prediction/probability_calibration_no.hpp"
+
+#include <algorithm>
 
 namespace boosting {
 
@@ -10,26 +14,140 @@ namespace boosting {
       IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
       IsotonicMarginalProbabilityCalibrationModel& calibrationModel, const CContiguousLabelMatrix& labelMatrix,
       const CContiguousConstView<float64>& scoreMatrix,
-      const IMarginalProbabilityFunction& marginalProbabilityFunction) {}
+      const IMarginalProbabilityFunction& marginalProbabilityFunction) {
+        for (uint32 i = 0; i < numExamples; i++) {
+            uint32 exampleIndex = indexIterator[i];
+            CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
+            CContiguousConstView<float64>::value_const_iterator scoreIterator =
+              scoreMatrix.row_values_cbegin(exampleIndex);
+
+            for (uint32 j = 0; j < numLabels; j++) {
+                float64 trueProbability = labelIterator[j] ? 1 : 0;
+                float64 score = scoreIterator[j];
+                float64 marginalProbability =
+                  marginalProbabilityFunction.transformScoreIntoMarginalProbability(j, score);
+                calibrationModel.addBin(j, marginalProbability, trueProbability);
+            }
+        }
+    }
 
     template<typename IndexIterator>
     static inline void extractThresholdsAndProbabilities(
       IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
       IsotonicMarginalProbabilityCalibrationModel& calibrationModel, const CsrLabelMatrix& labelMatrix,
       const CContiguousConstView<float64>& scoreMatrix,
-      const IMarginalProbabilityFunction& marginalProbabilityFunction) {}
+      const IMarginalProbabilityFunction& marginalProbabilityFunction) {
+        for (uint32 i = 0; i < numExamples; i++) {
+            uint32 exampleIndex = indexIterator[i];
+            auto labelIterator = make_binary_forward_iterator(labelMatrix.row_indices_cbegin(exampleIndex),
+                                                              labelMatrix.row_indices_cend(exampleIndex));
+            CContiguousConstView<float64>::value_const_iterator scoreIterator =
+              scoreMatrix.row_values_cbegin(exampleIndex);
+
+            for (uint32 j = 0; j < numLabels; j++) {
+                float64 trueProbability = (*labelIterator) ? 1 : 0;
+                float64 score = scoreIterator[j];
+                float64 marginalProbability =
+                  marginalProbabilityFunction.transformScoreIntoMarginalProbability(j, score);
+                calibrationModel.addBin(j, marginalProbability, trueProbability);
+                labelIterator++;
+            }
+        }
+    }
 
     template<typename IndexIterator>
     static inline void extractThresholdsAndProbabilities(
       IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
       IsotonicMarginalProbabilityCalibrationModel& calibrationModel, const CContiguousLabelMatrix& labelMatrix,
-      const SparseSetMatrix<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {}
+      const SparseSetMatrix<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
+        for (uint32 i = 0; i < numLabels; i++) {
+            calibrationModel.addBin(i, 0, 0);
+        }
+
+        uint32* numSparsePerLabel = new uint32[numLabels] {};
+
+        for (uint32 i = 0; i < numExamples; i++) {
+            uint32 exampleIndex = indexIterator[i];
+            CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
+            SparseSetMatrix<float64>::const_row scoreRow = scoreMatrix[exampleIndex];
+
+            for (uint32 j = 0; j < numLabels; j++) {
+                float64 trueProbability = labelIterator[j] ? 1 : 0;
+                const IndexedValue<float64>* entry = scoreRow[j];
+
+                if (entry) {
+                    float64 score = entry->value;
+                    float64 marginalProbability =
+                      marginalProbabilityFunction.transformScoreIntoMarginalProbability(j, score);
+                    calibrationModel.addBin(j, marginalProbability, trueProbability);
+                } else {
+                    IsotonicMarginalProbabilityCalibrationModel::bin_list bins = calibrationModel[j];
+                    Tuple<float64>& firstBin = bins[0];
+                    uint32 numSparse = numSparsePerLabel[j] + 1;
+
+                    if (numSparse > 1) {
+                        firstBin.second = iterativeArithmeticMean(numSparse, trueProbability, firstBin.second);
+                    } else {
+                        firstBin.second = trueProbability;
+                    }
+
+                    numSparsePerLabel[j] = numSparse;
+                }
+            }
+        }
+
+        delete[] numSparsePerLabel;
+    }
 
     template<typename IndexIterator>
     static inline void extractThresholdsAndProbabilities(
       IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
       IsotonicMarginalProbabilityCalibrationModel& calibrationModel, const CsrLabelMatrix& labelMatrix,
-      const SparseSetMatrix<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {}
+      const SparseSetMatrix<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
+        for (uint32 i = 0; i < numLabels; i++) {
+            calibrationModel.addBin(i, 0, 0);
+        }
+
+        uint32* numSparsePerLabel = new uint32[numLabels];
+        setArrayToValue(numSparsePerLabel, numLabels, numExamples);
+        uint32* numSparseRelevantPerLabel = new uint32[numLabels] {};
+
+        for (uint32 i = 0; i < numExamples; i++) {
+            uint32 exampleIndex = indexIterator[i];
+            CsrLabelMatrix::index_const_iterator labelIndicesBegin = labelMatrix.row_indices_cbegin(exampleIndex);
+            CsrLabelMatrix::index_const_iterator labelIndicesEnd = labelMatrix.row_indices_cend(exampleIndex);
+            uint32 numRelevantLabels = labelIndicesEnd - labelIndicesBegin;
+
+            for (uint32 j = 0; j < numRelevantLabels; j++) {
+                uint32 labelIndex = labelIndicesBegin[j];
+                numSparseRelevantPerLabel[labelIndex] += 1;
+            }
+
+            for (auto it = scoreMatrix.row_cbegin(exampleIndex); it != scoreMatrix.row_cend(exampleIndex); it++) {
+                const IndexedValue<float64>& entry = *it;
+                uint32 labelIndex = entry.index;
+                float64 score = entry.value;
+                float64 marginalProbability =
+                  marginalProbabilityFunction.transformScoreIntoMarginalProbability(labelIndex, score);
+                bool trueLabel = std::binary_search(labelIndicesBegin, labelIndicesEnd, labelIndex);
+                calibrationModel.addBin(labelIndex, marginalProbability, trueLabel ? 1 : 0);
+                numSparsePerLabel[labelIndex] -= 1;
+
+                if (trueLabel) {
+                    numSparseRelevantPerLabel[labelIndex] -= 1;
+                }
+            }
+        }
+
+        for (uint32 i = 0; i < numLabels; i++) {
+            IsotonicMarginalProbabilityCalibrationModel::bin_list bins = calibrationModel[i];
+            Tuple<float64>& firstBin = bins[0];
+            firstBin.second = (float64) numSparseRelevantPerLabel[i] / (float64) numSparsePerLabel[i];
+        }
+
+        delete[] numSparsePerLabel;
+        delete[] numSparseRelevantPerLabel;
+    }
 
     template<typename IndexIterator, typename LabelMatrix>
     static inline std::unique_ptr<IsotonicMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
