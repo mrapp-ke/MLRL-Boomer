@@ -122,6 +122,13 @@ class IJointProbabilityCalibratorConfig {
         virtual ~IJointProbabilityCalibratorConfig() {};
 
         /**
+         * Returns whether a holdout set should be used, if available, or not.
+         *
+         * @return True, if a holdout set should be used, false otherwise
+         */
+        virtual bool shouldUseHoldoutSet() const = 0;
+
+        /**
          * Creates and returns a new object of template type `IJointProbabilityCalibrator` according to the
          * configuration.
          *

@@ -136,7 +136,8 @@ namespace boosting {
                         std::unique_ptr<IPartitionSamplingConfig>& partitionSamplingConfigPtr =
                           this->getPartitionSamplingConfigPtr();
                         partitionSamplingConfigPtr = std::make_unique<AutomaticPartitionSamplingConfig>(
-                          this->getGlobalPruningConfigPtr(), this->getLossConfigPtr());
+                          this->getGlobalPruningConfigPtr(), this->getMarginalProbabilityCalibratorConfigPtr(),
+                          this->getJointProbabilityCalibratorConfigPtr(), this->getLossConfigPtr());
                     }
             };
 
@@ -719,12 +720,18 @@ namespace boosting {
 
                     /**
                      * Configures the rule learner to calibrate marginal probabilities via isotonic regression.
+                     *
+                     * @return A reference to an object of type `IIsotonicMarginalProbabilityCalibratorConfig` that
+                     *         allows further configuration of the calibrator
                      */
-                    virtual void useIsotonicMarginalProbabilityCalibration() {
+                    virtual IIsotonicMarginalProbabilityCalibratorConfig& useIsotonicMarginalProbabilityCalibration() {
                         std::unique_ptr<IMarginalProbabilityCalibratorConfig>& marginalProbabilityCalibratorConfigPtr =
                           this->getMarginalProbabilityCalibratorConfigPtr();
-                        marginalProbabilityCalibratorConfigPtr =
+                        std::unique_ptr<IsotonicMarginalProbabilityCalibratorConfig> ptr =
                           std::make_unique<IsotonicMarginalProbabilityCalibratorConfig>();
+                        IIsotonicMarginalProbabilityCalibratorConfig& ref = *ptr;
+                        marginalProbabilityCalibratorConfigPtr = std::move(ptr);
+                        return ref;
                     }
             };
 
@@ -739,12 +746,18 @@ namespace boosting {
 
                     /**
                      * Configures the rule learner to calibrate joint probabilities via isotonic regression.
+                     *
+                     * @return A reference to an object of type `IIsotonicJointProbabilityCalibratorConfig` that allows
+                     *         further configuration of the calibrator
                      */
-                    virtual void useIsotonicJointProbabilityCalibration() {
+                    virtual IIsotonicJointProbabilityCalibratorConfig& useIsotonicJointProbabilityCalibration() {
                         std::unique_ptr<IJointProbabilityCalibratorConfig>& jointProbabilityCalibratorConfigPtr =
                           this->getJointProbabilityCalibratorConfigPtr();
-                        jointProbabilityCalibratorConfigPtr =
+                        std::unique_ptr<IsotonicJointProbabilityCalibratorConfig> ptr =
                           std::make_unique<IsotonicJointProbabilityCalibratorConfig>();
+                        IIsotonicJointProbabilityCalibratorConfig& ref = *ptr;
+                        jointProbabilityCalibratorConfigPtr = std::move(ptr);
+                        return ref;
                     }
             };
 

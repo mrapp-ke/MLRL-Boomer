@@ -45,6 +45,22 @@ namespace boosting {
             }
     };
 
+    IsotonicMarginalProbabilityCalibratorConfig::IsotonicMarginalProbabilityCalibratorConfig() : useHoldoutSet_(true) {}
+
+    bool IsotonicMarginalProbabilityCalibratorConfig::isHoldoutSetUsed() const {
+        return useHoldoutSet_;
+    }
+
+    IIsotonicMarginalProbabilityCalibratorConfig& IsotonicMarginalProbabilityCalibratorConfig::setUseHoldoutSet(
+      bool useHoldoutSet) {
+        useHoldoutSet_ = useHoldoutSet;
+        return *this;
+    }
+
+    bool IsotonicMarginalProbabilityCalibratorConfig::shouldUseHoldoutSet() const {
+        return useHoldoutSet_;
+    }
+
     std::unique_ptr<IMarginalProbabilityCalibrator>
       IsotonicMarginalProbabilityCalibratorConfig::createMarginalProbabilityCalibrator() const {
         return std::make_unique<IsotonicMarginalProbabilityCalibrator>();
@@ -94,6 +110,22 @@ namespace boosting {
                 return createIsotonicJointProbabilityCalibrationModel();
             }
     };
+
+    IsotonicJointProbabilityCalibratorConfig::IsotonicJointProbabilityCalibratorConfig() : useHoldoutSet_(true) {}
+
+    bool IsotonicJointProbabilityCalibratorConfig::isHoldoutSetUsed() const {
+        return useHoldoutSet_;
+    }
+
+    IIsotonicJointProbabilityCalibratorConfig& IsotonicJointProbabilityCalibratorConfig::setUseHoldoutSet(
+      bool useHoldoutSet) {
+        useHoldoutSet_ = useHoldoutSet;
+        return *this;
+    }
+
+    bool IsotonicJointProbabilityCalibratorConfig::shouldUseHoldoutSet() const {
+        return useHoldoutSet_;
+    }
 
     std::unique_ptr<IJointProbabilityCalibrator>
       IsotonicJointProbabilityCalibratorConfig::createJointProbabilityCalibrator() const {
