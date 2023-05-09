@@ -86,7 +86,7 @@ std::unique_ptr<IMarginalProbabilityCalibrationModel> CContiguousLabelMatrix::fi
 }
 
 std::unique_ptr<IMarginalProbabilityCalibrationModel> CContiguousLabelMatrix::fitMarginalProbabilityCalibrationModel(
-  const IMarginalProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
+  const IMarginalProbabilityCalibrator& probabilityCalibrator, BiPartition& partition,
   const IStatistics& statistics) const {
     return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
 }
@@ -100,7 +100,7 @@ std::unique_ptr<IJointProbabilityCalibrationModel> CContiguousLabelMatrix::fitJo
 }
 
 std::unique_ptr<IJointProbabilityCalibrationModel> CContiguousLabelMatrix::fitJointProbabilityCalibrationModel(
-  const IJointProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition, const IStatistics& statistics,
+  const IJointProbabilityCalibrator& probabilityCalibrator, BiPartition& partition, const IStatistics& statistics,
   const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
     return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics,
                                                                 marginalProbabilityCalibrationModel);

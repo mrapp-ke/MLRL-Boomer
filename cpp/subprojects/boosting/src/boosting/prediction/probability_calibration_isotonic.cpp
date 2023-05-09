@@ -31,7 +31,7 @@ namespace boosting {
              * @see `IMarginalProbabilityCalibrator::fitProbabilityCalibrationModel`
              */
             std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-              const BiPartition& partition, const CContiguousLabelMatrix& labelMatrix,
+              BiPartition& partition, const CContiguousLabelMatrix& labelMatrix,
               const IStatistics& statistics) const override {
                 return std::make_unique<IsotonicMarginalProbabilityCalibrationModel>();
             }
@@ -40,8 +40,7 @@ namespace boosting {
              * @see `IMarginalProbabilityCalibrator::fitProbabilityCalibrationModel`
              */
             std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-              const BiPartition& partition, const CsrLabelMatrix& labelMatrix,
-              const IStatistics& statistics) const override {
+              BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics) const override {
                 return std::make_unique<IsotonicMarginalProbabilityCalibrationModel>();
             }
     };
@@ -81,7 +80,7 @@ namespace boosting {
              * @see `IJointProbabilityCalibrator::fitProbabilityCalibrationModel`
              */
             std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-              const BiPartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
+              BiPartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
               const IMarginalProbabilityCalibrationModel& IsotonicMarginalProbabilityCalibrationModel) const override {
                 return std::make_unique<IsotonicJointProbabilityCalibrationModel>();
             }
@@ -90,7 +89,7 @@ namespace boosting {
              * @see `IJointProbabilityCalibrator::fitProbabilityCalibrationModel`
              */
             std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-              const BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
+              BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
               const IMarginalProbabilityCalibrationModel& IsotonicMarginalProbabilityCalibrationModel) const override {
                 return std::make_unique<IsotonicJointProbabilityCalibrationModel>();
             }

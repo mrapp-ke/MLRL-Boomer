@@ -42,14 +42,13 @@ void SinglePartition::recalculatePrediction(const IThresholdsSubset& thresholdsS
 
 std::unique_ptr<IMarginalProbabilityCalibrationModel> SinglePartition::fitMarginalProbabilityCalibrationModel(
   const IMarginalProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
-  const IStatistics& statistics) const {
+  const IStatistics& statistics) {
     return labelMatrix.fitMarginalProbabilityCalibrationModel(probabilityCalibrator, *this, statistics);
 }
 
 std::unique_ptr<IJointProbabilityCalibrationModel> SinglePartition::fitJointProbabilityCalibrationModel(
   const IJointProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
-  const IStatistics& statistics,
-  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
+  const IStatistics& statistics, const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) {
     return labelMatrix.fitJointProbabilityCalibrationModel(probabilityCalibrator, *this, statistics,
                                                            marginalProbabilityCalibrationModel);
 }

@@ -130,7 +130,7 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
          *                              that has been fit
          */
         virtual std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
-          const IMarginalProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
+          const IMarginalProbabilityCalibrator& probabilityCalibrator, BiPartition& partition,
           const IStatistics& statistics) const = 0;
 
         /**
@@ -171,7 +171,7 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
          *                                            `IJointProbabilityCalibrationModel` that has been fit
          */
         virtual std::unique_ptr<IJointProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
-          const IJointProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
+          const IJointProbabilityCalibrator& probabilityCalibrator, BiPartition& partition,
           const IStatistics& statistics,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const = 0;
 };

@@ -75,7 +75,7 @@ std::unique_ptr<IMarginalProbabilityCalibrationModel> CsrLabelMatrix::fitMargina
 }
 
 std::unique_ptr<IMarginalProbabilityCalibrationModel> CsrLabelMatrix::fitMarginalProbabilityCalibrationModel(
-  const IMarginalProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition,
+  const IMarginalProbabilityCalibrator& probabilityCalibrator, BiPartition& partition,
   const IStatistics& statistics) const {
     return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
 }
@@ -89,7 +89,7 @@ std::unique_ptr<IJointProbabilityCalibrationModel> CsrLabelMatrix::fitJointProba
 }
 
 std::unique_ptr<IJointProbabilityCalibrationModel> CsrLabelMatrix::fitJointProbabilityCalibrationModel(
-  const IJointProbabilityCalibrator& probabilityCalibrator, const BiPartition& partition, const IStatistics& statistics,
+  const IJointProbabilityCalibrator& probabilityCalibrator, BiPartition& partition, const IStatistics& statistics,
   const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
     return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics,
                                                                 marginalProbabilityCalibrationModel);

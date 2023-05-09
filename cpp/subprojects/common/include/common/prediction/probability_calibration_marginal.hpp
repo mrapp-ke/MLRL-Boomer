@@ -82,8 +82,7 @@ class IMarginalProbabilityCalibrator {
          *                      been fit
          */
         virtual std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const BiPartition& partition, const CContiguousLabelMatrix& labelMatrix,
-          const IStatistics& statistics) const = 0;
+          BiPartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics) const = 0;
 
         /**
          * Fits and returns a model for the calibration of marginal probabilities.
@@ -99,7 +98,7 @@ class IMarginalProbabilityCalibrator {
          *                      been fit
          */
         virtual std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics) const = 0;
+          BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics) const = 0;
 };
 
 /**
