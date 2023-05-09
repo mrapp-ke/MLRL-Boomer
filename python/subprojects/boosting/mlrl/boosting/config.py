@@ -19,7 +19,7 @@ from mlrl.boosting.cython.learner import AutomaticPartitionSamplingMixin, Automa
     AutomaticProbabilityPredictorMixin
 from mlrl.common.config import FloatParameter, NominalParameter, PartitionSamplingParameter, FeatureBinningParameter, \
     ParallelRuleRefinementParameter, ParallelStatisticUpdateParameter, RULE_LEARNER_PARAMETERS, NONE, AUTOMATIC, \
-    OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS, BINNING_EQUAL_WIDTH
+    OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS, BINNING_EQUAL_WIDTH, OPTION_USE_HOLDOUT_SET
 from mlrl.common.options import Options, BooleanOption
 from typing import Optional
 
@@ -340,13 +340,16 @@ class MarginalProbabilityCalibrationParameter(NominalParameter):
         super().__init__(name='marginal_probability_calibration',
                          description='The name of the method to be used for the calibration of marginal probabilities')
         self.add_value(name=NONE, mixin=NoMarginalProbabilityCalibrationMixin)
-        self.add_value(name=PROBABILITY_CALIBRATION_ISOTONIC, mixin=IsotonicMarginalProbabilityCalibrationMixin)
+        self.add_value(name=PROBABILITY_CALIBRATION_ISOTONIC,
+                       mixin=IsotonicMarginalProbabilityCalibrationMixin,
+                       options={OPTION_USE_HOLDOUT_SET})
 
-    def _configure(self, config, value: str, _: Optional[Options]):
+    def _configure(self, config, value: str, options: Optional[Options]):
         if value == NONE:
             config.use_no_marginal_probability_calibration()
         if value == PROBABILITY_CALIBRATION_ISOTONIC:
-            config.use_isotonic_marginal_probability_calibration()
+            c = config.use_isotonic_marginal_probability_calibration()
+            c.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, c.is_holdout_set_used()))
 
 
 class JointProbabilityCalibrationParameter(NominalParameter):
