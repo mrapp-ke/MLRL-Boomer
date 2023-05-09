@@ -42,6 +42,10 @@ class NoMarginalProbabilityCalibrator final : public IMarginalProbabilityCalibra
         }
 };
 
+bool NoMarginalProbabilityCalibratorConfig::shouldUseHoldoutSet() const {
+    return false;
+}
+
 std::unique_ptr<IMarginalProbabilityCalibrator>
   NoMarginalProbabilityCalibratorConfig::createMarginalProbabilityCalibrator() const {
     return std::make_unique<NoMarginalProbabilityCalibrator>();
