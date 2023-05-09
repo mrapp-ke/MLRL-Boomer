@@ -47,6 +47,8 @@ class MLRLCOMMON_API INoJointProbabilityCalibrationModel : public IJointProbabil
 class NoJointProbabilityCalibratorConfig final : public IJointProbabilityCalibratorConfig {
     public:
 
+        bool shouldUseHoldoutSet() const override;
+
         std::unique_ptr<IJointProbabilityCalibrator> createJointProbabilityCalibrator() const override;
 };
 

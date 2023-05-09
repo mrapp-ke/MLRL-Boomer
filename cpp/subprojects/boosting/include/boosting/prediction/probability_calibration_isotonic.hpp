@@ -114,6 +114,11 @@ namespace boosting {
             IIsotonicJointProbabilityCalibratorConfig& setUseHoldoutSet(bool useHoldoutSet) override;
 
             /**
+             * @see `IJointProbabilityCalibratorConfig::shouldUseHoldoutSet`
+             */
+            bool shouldUseHoldoutSet() const override;
+
+            /**
              * @see `IJointProbabilityCalibratorConfig::createJointProbabilityCalibrator`
              */
             std::unique_ptr<IJointProbabilityCalibrator> createJointProbabilityCalibrator() const override;
