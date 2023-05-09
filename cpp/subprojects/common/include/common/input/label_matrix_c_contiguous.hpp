@@ -8,7 +8,7 @@
     #pragma warning(disable : 4250)
 #endif
 
-#include "common/data/functions.hpp"
+#include "common/data/arrays.hpp"
 #include "common/data/view_c_contiguous.hpp"
 #include "common/data/view_vector.hpp"
 #include "common/input/label_matrix_row_wise.hpp"
