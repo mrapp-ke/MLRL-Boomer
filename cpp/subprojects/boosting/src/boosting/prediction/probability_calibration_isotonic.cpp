@@ -107,6 +107,18 @@ namespace boosting {
             }
     };
 
+    IsotonicJointProbabilityCalibratorConfig::IsotonicJointProbabilityCalibratorConfig() : useHoldoutSet_(true) {}
+
+    bool IsotonicJointProbabilityCalibratorConfig::isHoldoutSetUsed() const {
+        return useHoldoutSet_;
+    }
+
+    IIsotonicJointProbabilityCalibratorConfig& IsotonicJointProbabilityCalibratorConfig::setUseHoldoutSet(
+      bool useHoldoutSet) {
+        useHoldoutSet_ = useHoldoutSet;
+        return *this;
+    }
+
     std::unique_ptr<IJointProbabilityCalibrator>
       IsotonicJointProbabilityCalibratorConfig::createJointProbabilityCalibrator() const {
         return std::make_unique<IsotonicJointProbabilityCalibrator>();
