@@ -12,7 +12,6 @@ source_files = [
     'src/common/data/list_of_lists.cpp',
     'src/common/data/matrix_dense.cpp',
     'src/common/data/matrix_lil.cpp',
-    'src/common/data/matrix_lil_binary.cpp',
     'src/common/data/matrix_sparse_set.cpp',
     'src/common/data/ring_buffer.cpp',
     'src/common/data/vector_binned_dense.cpp',
