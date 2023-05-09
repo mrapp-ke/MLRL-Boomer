@@ -7,6 +7,7 @@ from mlrl.boosting.cython.post_processor import ConstantShrinkageConfig
 from mlrl.boosting.cython.prediction import LabelWiseProbabilityPredictorConfig, \
     MarginalizedProbabilityPredictorConfig, LabelWiseBinaryPredictorConfig, ExampleWiseBinaryPredictorConfig, \
     GfmBinaryPredictorConfig
+from mlrl.boosting.cython.probability_calibration import IsotonicMarginalProbabilityCalibratorConfig
 from mlrl.boosting.cython.regularization import ManualRegularizationConfig
 
 from abc import ABC, abstractmethod
@@ -424,9 +425,11 @@ class IsotonicMarginalProbabilityCalibrationMixin(ABC):
     """
 
     @abstractmethod
-    def use_isotonic_marginal_probability_calibration(self):
+    def use_isotonic_marginal_probability_calibration(self) -> IsotonicMarginalProbabilityCalibratorConfig:
         """
         Configures the rule learner to calibrate marginal probabilities via isotonic regression.
+
+        :return: An `IsotonicMarginalProbabilityCalibratorConfig` that allows further configuration of the calibrator
         """
         pass
 
