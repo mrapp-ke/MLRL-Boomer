@@ -88,7 +88,7 @@ class IJointProbabilityCalibrator {
          *                                            `IJointProbabilityCalibrationModel` that has been fit
          */
         virtual std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const BiPartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
+          BiPartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const = 0;
 
         /**
@@ -108,7 +108,7 @@ class IJointProbabilityCalibrator {
          *                                            `IJointProbabilityCalibrationModel` that has been fit
          */
         virtual std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
+          BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const = 0;
 };
 

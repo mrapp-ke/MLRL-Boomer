@@ -99,7 +99,7 @@ class IPartition {
          */
         virtual std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
           const IMarginalProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
-          const IStatistics& statistics) const = 0;
+          const IStatistics& statistics) = 0;
 
         /**
          * Fits and returns a model for the calibration of joint probabilities, based on the type of this partition.
@@ -119,5 +119,5 @@ class IPartition {
         virtual std::unique_ptr<IJointProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
           const IJointProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
           const IStatistics& statistics,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const = 0;
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) = 0;
 };
