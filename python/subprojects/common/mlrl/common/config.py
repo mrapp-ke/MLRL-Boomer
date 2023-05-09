@@ -51,6 +51,8 @@ OPTION_MAX_BINS = 'max_bins'
 
 OPTION_NUM_THREADS = 'num_threads'
 
+OPTION_USE_HOLDOUT_SET = 'use_holdout_set'
+
 
 class Parameter(ABC):
     """
@@ -481,8 +483,6 @@ class GlobalPruningParameter(NominalParameter):
 
     GLOBAL_PRUNING_POST = 'post-pruning'
 
-    OPTION_USE_HOLDOUT_SET = 'use_holdout_set'
-
     OPTION_REMOVE_UNUSED_RULES = 'remove_unused_rules'
 
     OPTION_MIN_RULES = 'min_rules'
@@ -516,13 +516,13 @@ class GlobalPruningParameter(NominalParameter):
         self.add_value(name=self.GLOBAL_PRUNING_POST,
                        mixin=PostPruningMixin,
                        options={
-                           self.OPTION_USE_HOLDOUT_SET, self.OPTION_REMOVE_UNUSED_RULES, self.OPTION_MIN_RULES,
+                           OPTION_USE_HOLDOUT_SET, self.OPTION_REMOVE_UNUSED_RULES, self.OPTION_MIN_RULES,
                            self.OPTION_INTERVAL
                        })
         self.add_value(name=self.GLOBAL_PRUNING_PRE,
                        mixin=PrePruningMixin,
                        options={
-                           self.OPTION_USE_HOLDOUT_SET, self.OPTION_REMOVE_UNUSED_RULES, self.OPTION_MIN_RULES,
+                           OPTION_USE_HOLDOUT_SET, self.OPTION_REMOVE_UNUSED_RULES, self.OPTION_MIN_RULES,
                            self.OPTION_AGGREGATION_FUNCTION, self.OPTION_UPDATE_INTERVAL, self.OPTION_STOP_INTERVAL,
                            self.OPTION_NUM_PAST, self.OPTION_NUM_RECENT, self.OPTION_MIN_IMPROVEMENT
                        })
@@ -544,13 +544,13 @@ class GlobalPruningParameter(NominalParameter):
             config.use_no_global_pruning()
         elif value == self.GLOBAL_PRUNING_POST:
             c = config.use_global_post_pruning()
-            c.set_use_holdout_set(options.get_bool(self.OPTION_USE_HOLDOUT_SET, c.is_holdout_set_used()))
+            c.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, c.is_holdout_set_used()))
             c.set_remove_unused_rules(options.get_bool(self.OPTION_REMOVE_UNUSED_RULES, c.is_remove_unused_rules()))
             c.set_min_rules(options.get_int(self.OPTION_MIN_RULES, c.get_min_rules()))
             c.set_interval(options.get_int(self.OPTION_INTERVAL, c.get_interval()))
         elif value == self.GLOBAL_PRUNING_PRE:
             c = config.use_global_pre_pruning()
-            c.set_use_holdout_set(options.get_bool(self.OPTION_USE_HOLDOUT_SET, c.is_holdout_set_used()))
+            c.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, c.is_holdout_set_used()))
             c.set_remove_unused_rules(options.get_bool(self.OPTION_REMOVE_UNUSED_RULES, c.is_remove_unused_rules()))
             c.set_min_rules(options.get_int(self.OPTION_MIN_RULES, c.get_min_rules()))
             aggregation_function = options.get_string(self.OPTION_AGGREGATION_FUNCTION, None)
