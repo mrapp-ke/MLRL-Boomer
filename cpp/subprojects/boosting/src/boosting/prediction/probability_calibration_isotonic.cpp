@@ -123,6 +123,10 @@ namespace boosting {
         return *this;
     }
 
+    bool IsotonicJointProbabilityCalibratorConfig::shouldUseHoldoutSet() const {
+        return useHoldoutSet_;
+    }
+
     std::unique_ptr<IJointProbabilityCalibrator>
       IsotonicJointProbabilityCalibratorConfig::createJointProbabilityCalibrator() const {
         return std::make_unique<IsotonicJointProbabilityCalibrator>();

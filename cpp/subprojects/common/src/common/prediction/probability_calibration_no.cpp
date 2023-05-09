@@ -98,6 +98,10 @@ class NoJointProbabilityCalibrator final : public IJointProbabilityCalibrator {
         }
 };
 
+bool NoJointProbabilityCalibratorConfig::shouldUseHoldoutSet() const {
+    return false;
+}
+
 std::unique_ptr<IJointProbabilityCalibrator> NoJointProbabilityCalibratorConfig::createJointProbabilityCalibrator()
   const {
     return std::make_unique<NoJointProbabilityCalibrator>();
