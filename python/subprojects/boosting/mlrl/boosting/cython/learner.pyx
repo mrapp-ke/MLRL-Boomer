@@ -7,6 +7,8 @@ from mlrl.boosting.cython.post_processor import ConstantShrinkageConfig
 from mlrl.boosting.cython.prediction import LabelWiseProbabilityPredictorConfig, \
     MarginalizedProbabilityPredictorConfig, LabelWiseBinaryPredictorConfig, ExampleWiseBinaryPredictorConfig, \
     GfmBinaryPredictorConfig
+from mlrl.boosting.cython.probability_calibration import IsotonicMarginalProbabilityCalibratorConfig, \
+    IsotonicJointProbabilityCalibratorConfig
 from mlrl.boosting.cython.regularization import ManualRegularizationConfig
 
 from abc import ABC, abstractmethod
@@ -424,9 +426,11 @@ class IsotonicMarginalProbabilityCalibrationMixin(ABC):
     """
 
     @abstractmethod
-    def use_isotonic_marginal_probability_calibration(self):
+    def use_isotonic_marginal_probability_calibration(self) -> IsotonicMarginalProbabilityCalibratorConfig:
         """
         Configures the rule learner to calibrate marginal probabilities via isotonic regression.
+
+        :return: An `IsotonicMarginalProbabilityCalibratorConfig` that allows further configuration of the calibrator
         """
         pass
 
@@ -437,9 +441,11 @@ class IsotonicJointProbabilityCalibrationMixin(ABC):
     """
 
     @abstractmethod
-    def use_isotonic_joint_probability_calibration(self):
+    def use_isotonic_joint_probability_calibration(self) -> IsotonicJointProbabilityCalibratorConfig:
         """
         Configures the rule learner to calibrate joint probabilities via isotonic regression.
+
+        :return: An `IsotonicJointProbabilityCalibratorConfig` that allows further configuration of the calibrator
         """
         pass
 
