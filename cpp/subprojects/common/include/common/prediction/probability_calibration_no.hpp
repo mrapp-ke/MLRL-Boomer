@@ -20,6 +20,8 @@ class MLRLCOMMON_API INoMarginalProbabilityCalibrationModel : public IMarginalPr
 class NoMarginalProbabilityCalibratorConfig final : public IMarginalProbabilityCalibratorConfig {
     public:
 
+        bool shouldUseHoldoutSet() const override;
+
         std::unique_ptr<IMarginalProbabilityCalibrator> createMarginalProbabilityCalibrator() const override;
 };
 

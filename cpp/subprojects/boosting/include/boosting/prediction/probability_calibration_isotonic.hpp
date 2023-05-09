@@ -56,6 +56,11 @@ namespace boosting {
             IIsotonicMarginalProbabilityCalibratorConfig& setUseHoldoutSet(bool useHoldoutSet) override;
 
             /**
+             * @see `IMarginalProbabilityCalibratorConfig::shouldUseHoldoutSet`
+             */
+            bool shouldUseHoldoutSet() const override;
+
+            /**
              * @see `IMarginalProbabilityCalibratorConfig::createMarginalProbabilityCalibrator`
              */
             std::unique_ptr<IMarginalProbabilityCalibrator> createMarginalProbabilityCalibrator() const override;

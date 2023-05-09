@@ -57,6 +57,10 @@ namespace boosting {
         return *this;
     }
 
+    bool IsotonicMarginalProbabilityCalibratorConfig::shouldUseHoldoutSet() const {
+        return useHoldoutSet_;
+    }
+
     std::unique_ptr<IMarginalProbabilityCalibrator>
       IsotonicMarginalProbabilityCalibratorConfig::createMarginalProbabilityCalibrator() const {
         return std::make_unique<IsotonicMarginalProbabilityCalibrator>();
