@@ -18,11 +18,11 @@ void IsotonicMarginalProbabilityCalibrationModel::visit(BinVisitor visitor) cons
     uint32 numLabels = binsPerLabel_.getNumRows();
 
     for (uint32 i = 0; i < numLabels; i++) {
-        ListOfLists<Tuple<float64>>::const_row row = binsPerLabel_[i];
+        ListOfLists<Tuple<float64>>::const_row bins = binsPerLabel_[i];
 
-        for (auto it = row.cbegin(); it != row.cend(); it++) {
-            const Tuple<float64>& tuple = *it;
-            visitor(i, tuple.first, tuple.second);
+        for (auto it = bins.cbegin(); it != bins.cend(); it++) {
+            const Tuple<float64>& bin = *it;
+            visitor(i, bin.first, bin.second);
         }
     }
 }
