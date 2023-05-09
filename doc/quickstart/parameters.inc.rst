@@ -233,10 +233,14 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'none'`` Marginal probabilities are not calibrated.
   * ``'isotonic'`` Marginal probabilities are calibrated via isotonic regression.
 
+    * ``'use_holdout_set'`` (Default value = ``'true'``) ``'true'``, if the calibration model should be fit to the examples in the holdout set, if available, ``'false'``, if the training set should be used instead.
+
 * ``joint_probability_calibration`` (Default value = ``'none'``)
 
   * ``'none'`` Joint probabilities are not calibrated.
   * ``'isotonic'`` Joint probabilities are calibrated via isotonic regression.
+
+    * ``'use_holdout_set'`` (Default value = ``'true'``) ``'true'``, if the calibration model should be fit to the examples in the holdout set, if available, ``'false'``, if the training set should be used instead.
 
 * ``binary_predictor`` (Default value = ``'auto'``)
 
