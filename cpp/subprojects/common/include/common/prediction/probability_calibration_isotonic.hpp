@@ -62,8 +62,8 @@ class IsotonicMarginalProbabilityCalibrationModel final : public IIsotonicMargin
         /**
          * Provides access to the bins that correspond to a specific label and allows to modify its elements.
          *
-         * @param row   The index of the label
-         * @return      A `bin_list`
+         * @param labelIndex    The index of the label
+         * @return              A `bin_list`
          */
         bin_list operator[](uint32 labelIndex);
 
