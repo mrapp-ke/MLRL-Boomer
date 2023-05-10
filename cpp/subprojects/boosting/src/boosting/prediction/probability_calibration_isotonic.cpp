@@ -167,14 +167,14 @@ namespace boosting {
             for (uint32 j = 1; j < numBins; j++) {
                 const Tuple<float64>& currentBin = bins[j];
 
-                if (currentBin.first != previousBin.first) {
+                if (isEqual(currentBin.first, previousBin.first)) {
+                    uint32 numAggregated = j - previousIndex + 1;
+                    previousBin.second = iterativeArithmeticMean(numAggregated, currentBin.second, previousBin.second);
+                } else {
                     bins[n] = previousBin;
                     n++;
                     previousIndex = j;
                     previousBin = currentBin;
-                } else {
-                    uint32 numAggregated = j - previousIndex + 1;
-                    previousBin.second = iterativeArithmeticMean(numAggregated, currentBin.second, previousBin.second);
                 }
             }
 
