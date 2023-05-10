@@ -6,8 +6,6 @@
 #include "common/util/validation.hpp"
 #include "index_sampling.hpp"
 
-#include <cmath>
-
 /**
  * Allows to select a subset of the available features without replacement.
  */

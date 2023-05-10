@@ -9,8 +9,6 @@
 #include "common/math/math.hpp"
 #include "common/util/validation.hpp"
 
-#include <limits>
-
 namespace boosting {
 
     /**
