@@ -200,11 +200,12 @@ namespace boosting {
           std::make_unique<IsotonicMarginalProbabilityCalibrationModel>(numLabels);
         const IBoostingStatistics& boostingStatistics = dynamic_cast<const IBoostingStatistics&>(statistics);
         auto denseVisitor =
-          [&, indexIterator, numExamples, numLabels](const CContiguousConstView<float64>& scoreMatrix) {
+          [=, &marginalProbabilityFunctionPtr, &calibrationModelPtr](const CContiguousConstView<float64>& scoreMatrix) {
             extractThresholdsAndProbabilities(indexIterator, numExamples, numLabels, *calibrationModelPtr, labelMatrix,
                                               scoreMatrix, *marginalProbabilityFunctionPtr);
         };
-        auto sparseVisitor = [&, indexIterator, numExamples, numLabels](const SparseSetMatrix<float64>& scoreMatrix) {
+        auto sparseVisitor =
+          [=, &calibrationModelPtr, &marginalProbabilityFunctionPtr](const SparseSetMatrix<float64>& scoreMatrix) {
             extractThresholdsAndProbabilities(indexIterator, numExamples, numLabels, *calibrationModelPtr, labelMatrix,
                                               scoreMatrix, *marginalProbabilityFunctionPtr);
         };
