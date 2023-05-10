@@ -157,6 +157,30 @@ namespace boosting {
             std::sort(bins.begin(), bins.end(), [=](const Tuple<float64>& lhs, const Tuple<float64>& rhs) {
                 return lhs.first < rhs.first;
             });
+
+            // Aggregate adjacent bins with identical thresholds by averaging their probabilities...
+            uint32 numBins = (uint32) bins.size();
+            uint32 previousIndex = 0;
+            Tuple<float64> previousBin = bins[previousIndex];
+            uint32 n = 0;
+
+            for (uint32 j = 1; j < numBins; j++) {
+                const Tuple<float64>& currentBin = bins[j];
+
+                if (currentBin.first != previousBin.first) {
+                    bins[n] = previousBin;
+                    n++;
+                    previousIndex = j;
+                    previousBin = currentBin;
+                } else {
+                    uint32 numAggregated = j - previousIndex + 1;
+                    previousBin.second = iterativeArithmeticMean(numAggregated, currentBin.second, previousBin.second);
+                }
+            }
+
+            bins[n] = bins[numBins - 1];
+            n++;
+            bins.resize(n);
         }
     }
 
