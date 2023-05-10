@@ -3,8 +3,6 @@
 #include "common/util/validation.hpp"
 #include "global_pruning_common.hpp"
 
-#include <limits>
-
 /**
  * An implementation of the type `IStoppingCriterion` that that keeps track of the number of rules in a model that
  * perform best with respect to the examples in the training or holdout set according to a certain measure.

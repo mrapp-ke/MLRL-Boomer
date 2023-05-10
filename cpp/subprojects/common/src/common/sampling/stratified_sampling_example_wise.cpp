@@ -4,7 +4,6 @@
 #include "stratified_sampling_common.hpp"
 
 #include <algorithm>
-#include <cmath>
 
 template<typename LabelMatrix, typename IndexIterator>
 ExampleWiseStratification<LabelMatrix, IndexIterator>::ExampleWiseStratification(const LabelMatrix& labelMatrix,
