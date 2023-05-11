@@ -4,8 +4,6 @@
 #include "common/util/validation.hpp"
 #include "global_pruning_common.hpp"
 
-#include <limits>
-
 /**
  * An implementation of the type `IStoppingCriterion` that stops the induction of rules as soon as the quality of a
  * model's predictions for the examples in the training or holdout set do not improve according a certain measure.

@@ -728,7 +728,7 @@ namespace boosting {
                         std::unique_ptr<IMarginalProbabilityCalibratorConfig>& marginalProbabilityCalibratorConfigPtr =
                           this->getMarginalProbabilityCalibratorConfigPtr();
                         std::unique_ptr<IsotonicMarginalProbabilityCalibratorConfig> ptr =
-                          std::make_unique<IsotonicMarginalProbabilityCalibratorConfig>();
+                          std::make_unique<IsotonicMarginalProbabilityCalibratorConfig>(this->getLossConfigPtr());
                         IIsotonicMarginalProbabilityCalibratorConfig& ref = *ptr;
                         marginalProbabilityCalibratorConfigPtr = std::move(ptr);
                         return ref;
