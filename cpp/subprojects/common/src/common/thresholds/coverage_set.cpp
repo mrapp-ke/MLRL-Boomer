@@ -6,9 +6,7 @@
 
 CoverageSet::CoverageSet(uint32 numElements)
     : array_(new uint32[numElements]), numElements_(numElements), numCovered_(numElements) {
-    for (uint32 i = 0; i < numElements; i++) {
-        array_[i] = i;
-    }
+    setArrayToIncreasingValues<uint32>(array_, numElements, 0, 1);
 }
 
 CoverageSet::CoverageSet(const CoverageSet& coverageSet)
@@ -51,10 +49,7 @@ void CoverageSet::setNumCovered(uint32 numCovered) {
 
 void CoverageSet::reset() {
     numCovered_ = numElements_;
-
-    for (uint32 i = 0; i < numElements_; i++) {
-        array_[i] = i;
-    }
+    setArrayToIncreasingValues<uint32>(array_, numElements_, 0, 1);
 }
 
 std::unique_ptr<ICoverageState> CoverageSet::copy() const {
