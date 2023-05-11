@@ -3,7 +3,6 @@
 #include "common/rule_refinement/rule_refinement_exact.hpp"
 #include "thresholds_common.hpp"
 
-#include <cmath>
 #include <unordered_map>
 
 /**

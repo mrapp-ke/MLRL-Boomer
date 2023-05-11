@@ -13,7 +13,6 @@
 #include "loss_label_wise_common.hpp"
 
 #include <algorithm>
-#include <limits>
 
 namespace boosting {
 

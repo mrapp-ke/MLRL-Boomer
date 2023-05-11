@@ -2,8 +2,6 @@
 
 #include "common/util/validation.hpp"
 
-#include <cmath>
-
 namespace seco {
 
     static inline float64 calculateLiftInternally(uint32 numLabels, float64 k) {

@@ -3,8 +3,6 @@
 #include "common/util/validation.hpp"
 #include "heuristic_common.hpp"
 
-#include <cmath>
-
 namespace seco {
 
     /**
