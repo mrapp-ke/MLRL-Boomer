@@ -28,7 +28,7 @@ float64 IsotonicMarginalProbabilityCalibrationModel::calibrateMarginalProbabilit
         upperBound = *it;
     }
 
-    float64 t = marginalProbability / (upperBound.first - lowerBound.first);
+    float64 t = (marginalProbability - lowerBound.first) / (upperBound.first - lowerBound.first);
     return lowerBound.second + (t * (upperBound.second - lowerBound.second));
 }
 
