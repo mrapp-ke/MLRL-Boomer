@@ -276,7 +276,7 @@ namespace boosting {
         };
         boostingStatistics.visitScoreMatrix(denseVisitor, sparseVisitor);
 
-        // Build an isotonic regression model...
+        // Build an isotonic regression model for each label...
         for (uint32 i = 0; i < numLabels; i++) {
             IsotonicMarginalProbabilityCalibrationModel::bin_list bins = (*calibrationModelPtr)[i];
             sortByThresholdsAndEliminateDuplicates(bins);
