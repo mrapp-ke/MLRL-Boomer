@@ -34,6 +34,25 @@ static inline void setArrayToValue(T* a, uint32 numElements, T value) {
 }
 
 /**
+ * Sets the elements in an array to increasing values.
+ *
+ * @tparam T            The type of the array
+ * @param a             A pointer to an array of template type `T`
+ * @param numElements   The number of elements in the array
+ * @param start         The value to start at
+ * @param increment     The difference between the values
+ */
+template<typename T>
+static inline void setArrayToIncreasingValues(T* a, uint32 numElements, T start, T increment) {
+    T nextValue = start;
+
+    for (uint32 i = 0; i < numElements; i++) {
+        a[i] = nextValue;
+        nextValue += increment;
+    }
+}
+
+/**
  * Copy all elements from one array another one.
  *
  * @tparam T            The type of the arrays
