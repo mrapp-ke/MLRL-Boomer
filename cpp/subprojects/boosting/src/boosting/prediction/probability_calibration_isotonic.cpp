@@ -149,7 +149,8 @@ namespace boosting {
         delete[] numSparseRelevantPerLabel;
     }
 
-    static inline void eliminateDuplicateThresholds(IsotonicMarginalProbabilityCalibrationModel::bin_list bins) {
+    static inline void sortByThresholdsAndEliminateDuplicates(
+      IsotonicMarginalProbabilityCalibrationModel::bin_list bins) {
         // Sort bins in increasing order by their threshold...
         std::sort(bins.begin(), bins.end(), [=](const Tuple<float64>& lhs, const Tuple<float64>& rhs) {
             return lhs.first < rhs.first;
@@ -275,13 +276,10 @@ namespace boosting {
         };
         boostingStatistics.visitScoreMatrix(denseVisitor, sparseVisitor);
 
+        // Build an isotonic regression model...
         for (uint32 i = 0; i < numLabels; i++) {
             IsotonicMarginalProbabilityCalibrationModel::bin_list bins = (*calibrationModelPtr)[i];
-
-            // Eliminate duplicate thresholds...
-            eliminateDuplicateThresholds(bins);
-
-            // Perform isotonic regression...
+            sortByThresholdsAndEliminateDuplicates(bins);
             performIsotonicRegression(bins);
         }
 
