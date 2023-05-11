@@ -149,39 +149,35 @@ namespace boosting {
         delete[] numSparseRelevantPerLabel;
     }
 
-    static inline void eliminateDuplicateThresholds(IsotonicMarginalProbabilityCalibrationModel& calibrationModel,
-                                                    uint32 numLabels) {
-        for (uint32 i = 0; i < numLabels; i++) {
-            // Sort bins in increasing order by their threshold...
-            IsotonicMarginalProbabilityCalibrationModel::bin_list bins = calibrationModel[i];
-            std::sort(bins.begin(), bins.end(), [=](const Tuple<float64>& lhs, const Tuple<float64>& rhs) {
-                return lhs.first < rhs.first;
-            });
+    static inline void eliminateDuplicateThresholds(IsotonicMarginalProbabilityCalibrationModel::bin_list bins) {
+        // Sort bins in increasing order by their threshold...
+        std::sort(bins.begin(), bins.end(), [=](const Tuple<float64>& lhs, const Tuple<float64>& rhs) {
+            return lhs.first < rhs.first;
+        });
 
-            // Aggregate adjacent bins with identical thresholds by averaging their probabilities...
-            uint32 numBins = (uint32) bins.size();
-            uint32 previousIndex = 0;
-            Tuple<float64> previousBin = bins[previousIndex];
-            uint32 n = 0;
+        // Aggregate adjacent bins with identical thresholds by averaging their probabilities...
+        uint32 numBins = (uint32) bins.size();
+        uint32 previousIndex = 0;
+        Tuple<float64> previousBin = bins[previousIndex];
+        uint32 n = 0;
 
-            for (uint32 j = 1; j < numBins; j++) {
-                const Tuple<float64>& currentBin = bins[j];
+        for (uint32 j = 1; j < numBins; j++) {
+            const Tuple<float64>& currentBin = bins[j];
 
-                if (isEqual(currentBin.first, previousBin.first)) {
-                    uint32 numAggregated = j - previousIndex + 1;
-                    previousBin.second = iterativeArithmeticMean(numAggregated, currentBin.second, previousBin.second);
-                } else {
-                    bins[n] = previousBin;
-                    n++;
-                    previousIndex = j;
-                    previousBin = currentBin;
-                }
+            if (isEqual(currentBin.first, previousBin.first)) {
+                uint32 numAggregated = j - previousIndex + 1;
+                previousBin.second = iterativeArithmeticMean(numAggregated, currentBin.second, previousBin.second);
+            } else {
+                bins[n] = previousBin;
+                n++;
+                previousIndex = j;
+                previousBin = currentBin;
             }
-
-            bins[n] = bins[numBins - 1];
-            n++;
-            bins.resize(n);
         }
+
+        bins[n] = bins[numBins - 1];
+        n++;
+        bins.resize(n);
     }
 
     template<typename IndexIterator, typename LabelMatrix>
@@ -211,10 +207,16 @@ namespace boosting {
         };
         boostingStatistics.visitScoreMatrix(denseVisitor, sparseVisitor);
 
-        // Eliminate duplicate thresholds...
-        eliminateDuplicateThresholds(*calibrationModelPtr, numLabels);
+        for (uint32 i = 0; i < numLabels; i++) {
+            IsotonicMarginalProbabilityCalibrationModel::bin_list bins = (*calibrationModelPtr)[i];
 
-        // TODO Perform isotonic regression...
+            // Eliminate duplicate thresholds...
+            eliminateDuplicateThresholds(bins);
+
+            // TODO Perform isotonic regression...
+
+            bins.shrink_to_fit();
+        }
 
         return calibrationModelPtr;
     }
