@@ -37,6 +37,8 @@ LABEL_BINNING_NO = 'none'
 
 LABEL_BINNING_EQUAL_WIDTH = 'equal-width'
 
+PROBABILITY_CALIBRATOR_ISOTONIC = 'isotonic'
+
 BINARY_PREDICTOR_AUTO = 'auto'
 
 BINARY_PREDICTOR_LABEL_WISE = 'label-wise'
@@ -88,6 +90,17 @@ class BoostingCmdBuilder(CmdBuilder):
         """
         self.args.append('--loss')
         self.args.append(loss)
+        return self
+
+    def marginal_probability_calibration(self, probability_calibrator: str = PROBABILITY_CALIBRATOR_ISOTONIC):
+        """
+        Configures the algorithm to fit a model for the calibration of marginal probabilities.
+
+        :param probability_calibrator:  The name of the method that should be used to fit a calibration model
+        :return:                        The builder itself
+        """
+        self.args.append('--marginal-probability-calibration')
+        self.args.append(probability_calibrator)
         return self
 
     def binary_predictor(self, binary_predictor: str = BINARY_PREDICTOR_AUTO):
@@ -383,6 +396,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         probability estimates.
         """
         builder = BoostingCmdBuilder() \
+            .marginal_probability_calibration() \
             .binary_predictor(BINARY_PREDICTOR_LABEL_WISE_BASED_ON_PROBABILITIES) \
             .print_predictions(True)
         self.run_cmd(builder, 'predictor-binary-label-wise_based-on-probabilities')
@@ -406,6 +420,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         that are obtained for each label individually based on probability estimates.
         """
         builder = BoostingCmdBuilder() \
+            .marginal_probability_calibration() \
             .binary_predictor(BINARY_PREDICTOR_LABEL_WISE_BASED_ON_PROBABILITIES) \
             .incremental_evaluation() \
             .set_output_dir() \
@@ -453,6 +468,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         vectors based on probability estimates.
         """
         builder = BoostingCmdBuilder() \
+            .marginal_probability_calibration() \
             .binary_predictor(BINARY_PREDICTOR_EXAMPLE_WISE_BASED_ON_PROBABILITIES) \
             .print_predictions(True)
         self.run_cmd(builder, 'predictor-binary-example-wise_based-on-probabilities')
@@ -476,6 +492,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         known label vectors based on probability estimates.
         """
         builder = BoostingCmdBuilder() \
+            .marginal_probability_calibration() \
             .binary_predictor(BINARY_PREDICTOR_EXAMPLE_WISE_BASED_ON_PROBABILITIES) \
             .incremental_evaluation() \
             .set_output_dir() \
