@@ -5,6 +5,7 @@ IsotonicMarginalProbabilityCalibrationModel::IsotonicMarginalProbabilityCalibrat
 
 float64 IsotonicMarginalProbabilityCalibrationModel::calibrateMarginalProbability(uint32 labelIndex,
                                                                                   float64 marginalProbability) const {
+    // Find the bins that impose a lower and upper bound on the marginal probability...
     ListOfLists<Tuple<float64>>::const_iterator begin = binsPerLabel_.row_cbegin(labelIndex);
     ListOfLists<Tuple<float64>>::const_iterator end = binsPerLabel_.row_cend(labelIndex);
     ListOfLists<Tuple<float64>>::const_iterator it =
@@ -28,6 +29,7 @@ float64 IsotonicMarginalProbabilityCalibrationModel::calibrateMarginalProbabilit
         upperBound = *it;
     }
 
+    // Interpolate linearly between the probabilities associated with the lower and upper bound...
     float64 t = (marginalProbability - lowerBound.first) / (upperBound.first - lowerBound.first);
     return lowerBound.second + (t * (upperBound.second - lowerBound.second));
 }
