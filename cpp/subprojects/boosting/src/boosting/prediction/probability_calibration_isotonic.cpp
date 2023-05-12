@@ -403,8 +403,13 @@ namespace boosting {
       IsotonicMarginalProbabilityCalibratorConfig::createMarginalProbabilityCalibrator() const {
         std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr =
           lossConfigPtr_->createMarginalProbabilityFunctionFactory();
-        return std::make_unique<IsotonicMarginalProbabilityCalibrator>(std::move(marginalProbabilityFunctionFactoryPtr),
-                                                                       useHoldoutSet_);
+
+        if (marginalProbabilityFunctionFactoryPtr) {
+            return std::make_unique<IsotonicMarginalProbabilityCalibrator>(
+              std::move(marginalProbabilityFunctionFactoryPtr), useHoldoutSet_);
+        } else {
+            return std::make_unique<NoMarginalProbabilityCalibrator>();
+        }
     }
 
     /**
