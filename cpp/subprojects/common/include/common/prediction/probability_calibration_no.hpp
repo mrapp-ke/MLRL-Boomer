@@ -15,6 +15,29 @@ class MLRLCOMMON_API INoMarginalProbabilityCalibrationModel : public IMarginalPr
 };
 
 /**
+ * An implementation of the type `IMarginalProbabilityCalibrator` that does not fit a model for the calibration of
+ * marginal probabilities.
+ */
+class NoMarginalProbabilityCalibrator final : public IMarginalProbabilityCalibrator {
+    public:
+
+        std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+          const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix,
+          const IStatistics& statistics) const override;
+
+        std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+          const SinglePartition& partition, const CsrLabelMatrix& labelMatrix,
+          const IStatistics& statistics) const override;
+
+        std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+          BiPartition& partition, const CContiguousLabelMatrix& labelMatrix,
+          const IStatistics& statistics) const override;
+
+        std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+          BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics) const override;
+};
+
+/**
  * Allows to configure a calibrator that does not fit a model for the calibration of marginal probabilities.
  */
 class NoMarginalProbabilityCalibratorConfig final : public IMarginalProbabilityCalibratorConfig {
@@ -39,6 +62,30 @@ class MLRLCOMMON_API INoJointProbabilityCalibrationModel : public IJointProbabil
     public:
 
         virtual ~INoJointProbabilityCalibrationModel() override {};
+};
+
+/**
+ * An implementation of the type `IJointProbabilityCalibrator` that does not fit a model for the calibration of joint
+ * probabilities.
+ */
+class NoJointProbabilityCalibrator final : public IJointProbabilityCalibrator {
+    public:
+
+        std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+          const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override;
+
+        std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+          const SinglePartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override;
+
+        std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+          BiPartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override;
+
+        std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+          BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override;
 };
 
 /**
