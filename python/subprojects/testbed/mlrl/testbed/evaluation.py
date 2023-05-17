@@ -13,7 +13,7 @@ from mlrl.common.arrays import enforce_dense
 from mlrl.common.data_types import DTYPE_UINT8
 from mlrl.common.options import Options
 from mlrl.testbed.data_splitting import DataSplit, DataType
-from mlrl.testbed.format import Formattable, filter_formattables, format_table, OPTION_DECIMALS, OPTION_PERCENTAGE
+from mlrl.testbed.format import Formatter, filter_formatters, format_table, OPTION_DECIMALS, OPTION_PERCENTAGE
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from mlrl.testbed.predictions import PredictionScope
 from sklearn.utils.multiclass import is_multilabel
@@ -88,7 +88,7 @@ OPTION_TRAINING_TIME = 'training_time'
 OPTION_PREDICTION_TIME = 'prediction_time'
 
 
-class EvaluationFunction(Formattable):
+class EvaluationFunction(Formatter):
     """
     An evaluation function.
     """
@@ -120,11 +120,11 @@ ARGS_MACRO = {'average': 'macro', 'zero_division': 1}
 
 ARGS_EXAMPLE_WISE = {'average': 'samples', 'zero_division': 1}
 
-EVALUATION_MEASURE_TRAINING_TIME = Formattable(OPTION_TRAINING_TIME, 'Training Time')
+EVALUATION_MEASURE_TRAINING_TIME = Formatter(OPTION_TRAINING_TIME, 'Training Time')
 
-EVALUATION_MEASURE_PREDICTION_TIME = Formattable(OPTION_PREDICTION_TIME, 'Prediction Time')
+EVALUATION_MEASURE_PREDICTION_TIME = Formatter(OPTION_PREDICTION_TIME, 'Prediction Time')
 
-MULTI_LABEL_EVALUATION_MEASURES: List[Formattable] = [
+MULTI_LABEL_EVALUATION_MEASURES: List[Formatter] = [
     EvaluationFunction(OPTION_HAMMING_ACCURACY, 'Hamming Accuracy', lambda a, b: 1 - metrics.hamming_loss(a, b)),
     EvaluationFunction(OPTION_HAMMING_LOSS, 'Hamming Loss', metrics.hamming_loss),
     EvaluationFunction(OPTION_SUBSET_ACCURACY, 'Subset Accuracy', metrics.accuracy_score),
@@ -146,7 +146,7 @@ MULTI_LABEL_EVALUATION_MEASURES: List[Formattable] = [
     EVALUATION_MEASURE_PREDICTION_TIME,
 ]
 
-SINGLE_LABEL_EVALUATION_MEASURES: List[Formattable] = [
+SINGLE_LABEL_EVALUATION_MEASURES: List[Formatter] = [
     EvaluationFunction(OPTION_ACCURACY, 'Accuracy', metrics.accuracy_score),
     EvaluationFunction(OPTION_ZERO_ONE_LOSS, '0/1 Loss', lambda a, b: 1 - metrics.accuracy_score(a, b)),
     EvaluationFunction(OPTION_PRECISION, 'Precision', metrics.precision_score, **ARGS_SINGLE_LABEL),
@@ -157,7 +157,7 @@ SINGLE_LABEL_EVALUATION_MEASURES: List[Formattable] = [
     EVALUATION_MEASURE_PREDICTION_TIME,
 ]
 
-REGRESSION_EVALUATION_MEASURES: List[Formattable] = [
+REGRESSION_EVALUATION_MEASURES: List[Formatter] = [
     EvaluationFunction(OPTION_MEAN_ABSOLUTE_ERROR, 'Mean Absolute Error', metrics.mean_absolute_error,
                        percentage=False),
     EvaluationFunction(OPTION_MEAN_SQUARED_ERROR, 'Mean Squared Error', metrics.mean_squared_error, percentage=False),
@@ -173,7 +173,7 @@ REGRESSION_EVALUATION_MEASURES: List[Formattable] = [
     EVALUATION_MEASURE_PREDICTION_TIME,
 ]
 
-RANKING_EVALUATION_MEASURES: List[Formattable] = [
+RANKING_EVALUATION_MEASURES: List[Formatter] = [
     EvaluationFunction(OPTION_RANK_LOSS, 'Ranking Loss', metrics.label_ranking_loss, percentage=False),
     EvaluationFunction(OPTION_COVERAGE_ERROR, 'Coverage Error', metrics.coverage_error, percentage=False),
     EvaluationFunction(OPTION_LABEL_RANKING_AVERAGE_PRECISION,
@@ -196,10 +196,10 @@ class EvaluationResult:
     """
 
     def __init__(self):
-        self.measures: Set[Formattable] = set()
-        self.results: Optional[List[Dict[Formattable, float]]] = None
+        self.measures: Set[Formatter] = set()
+        self.results: Optional[List[Dict[Formatter, float]]] = None
 
-    def put(self, measure: Formattable, score: float, num_folds: int, fold: Optional[int]):
+    def put(self, measure: Formatter, score: float, num_folds: int, fold: Optional[int]):
         """
         Adds a new score according to a specific measure to the evaluation result.
 
@@ -217,7 +217,7 @@ class EvaluationResult:
         values = self.results[fold if fold is not None else 0]
         values[measure] = score
 
-    def get(self, measure: Formattable, fold: Optional[int], **kwargs) -> str:
+    def get(self, measure: Formatter, fold: Optional[int], **kwargs) -> str:
         """
         Returns the score according to a specific measure.
 
@@ -231,7 +231,7 @@ class EvaluationResult:
         score = self.results[fold if fold is not None else 0][measure]
         return measure.format(score, **kwargs)
 
-    def dict(self, fold: Optional[int], **kwargs) -> Dict[Formattable, str]:
+    def dict(self, fold: Optional[int], **kwargs) -> Dict[Formatter, str]:
         """
         Returns a dictionary that stores the scores for a specific fold according to each measure.
 
@@ -242,14 +242,14 @@ class EvaluationResult:
         if self.results is None:
             raise AssertionError('No evaluation results available')
 
-        results: Dict[Formattable, str] = {}
+        results: Dict[Formatter, str] = {}
 
         for measure, score in self.results[fold if fold is not None else 0].items():
             results[measure] = measure.format(score, **kwargs)
 
         return results
 
-    def avg(self, measure: Formattable, **kwargs) -> Tuple[str, str]:
+    def avg(self, measure: Formatter, **kwargs) -> Tuple[str, str]:
         """
         Returns the score and standard deviation according to a specific measure averaged over all available folds.
 
@@ -267,7 +267,7 @@ class EvaluationResult:
         values = np.array(values)
         return measure.format(np.average(values), **kwargs), measure.format(np.std(values), **kwargs)
 
-    def avg_dict(self, **kwargs) -> Dict[Formattable, str]:
+    def avg_dict(self, **kwargs) -> Dict[Formatter, str]:
         """
         Returns a dictionary that stores the scores, averaged across all folds, as well as the standard deviation,
         according to each measure.
@@ -275,12 +275,12 @@ class EvaluationResult:
         :return: A dictionary that stores textual representations of the scores and standard deviation according to each
                  measure
         """
-        result: Dict[Formattable, str] = {}
+        result: Dict[Formatter, str] = {}
 
         for measure in self.measures:
             score, std_dev = self.avg(measure, **kwargs)
             result[measure] = score
-            result[Formattable(measure.option, 'Std.-dev. ' + measure.name, measure.percentage)] = std_dev
+            result[Formatter(measure.option, 'Std.-dev. ' + measure.name, measure.percentage)] = std_dev
 
         return result
 
@@ -398,9 +398,9 @@ class EvaluationCsvOutput(EvaluationOutput):
         options = self.options
         enable_all = options.get_bool(OPTION_ENABLE_ALL, True)
 
-        for formattable in header:
-            if not options.get_bool(formattable.option, enable_all):
-                del columns[formattable]
+        for formatter in header:
+            if not options.get_bool(formatter.option, enable_all):
+                del columns[formatter]
 
         header = sorted(columns.keys())
         incremental_prediction = not prediction_scope.is_global()
@@ -424,9 +424,9 @@ class EvaluationCsvOutput(EvaluationOutput):
         options = self.options
         enable_all = options.get_bool(OPTION_ENABLE_ALL, True)
 
-        for formattable in header:
-            if not options.get_bool(formattable.option, enable_all):
-                del columns[formattable]
+        for formatter in header:
+            if not options.get_bool(formatter.option, enable_all):
+                del columns[formatter]
 
         header = sorted(columns.keys())
         incremental_prediction = not prediction_scope.is_global()
@@ -503,8 +503,8 @@ class BinaryEvaluationPrinter(EvaluationPrinter):
     def __init__(self, outputs: List[EvaluationOutput]):
         super(BinaryEvaluationPrinter, self).__init__(outputs)
         options = [output.options for output in outputs]
-        self.multi_Label_evaluation_functions = filter_formattables(MULTI_LABEL_EVALUATION_MEASURES, options)
-        self.single_Label_evaluation_functions = filter_formattables(SINGLE_LABEL_EVALUATION_MEASURES, options)
+        self.multi_Label_evaluation_functions = filter_formatters(MULTI_LABEL_EVALUATION_MEASURES, options)
+        self.single_Label_evaluation_functions = filter_formatters(SINGLE_LABEL_EVALUATION_MEASURES, options)
 
     def _populate_result(self, data_split: DataSplit, result: EvaluationResult, predictions, ground_truth):
         num_folds = data_split.get_num_folds()
@@ -532,8 +532,8 @@ class ScoreEvaluationPrinter(EvaluationPrinter):
     def __init__(self, outputs: List[EvaluationOutput]):
         super(ScoreEvaluationPrinter, self).__init__(outputs)
         options = [output.options for output in outputs]
-        self.regression_evaluation_functions = filter_formattables(REGRESSION_EVALUATION_MEASURES, options)
-        self.ranking_evaluation_functions = filter_formattables(RANKING_EVALUATION_MEASURES, options)
+        self.regression_evaluation_functions = filter_formatters(REGRESSION_EVALUATION_MEASURES, options)
+        self.ranking_evaluation_functions = filter_formatters(RANKING_EVALUATION_MEASURES, options)
 
     def _populate_result(self, data_split: DataSplit, result: EvaluationResult, predictions, ground_truth):
         num_folds = data_split.get_num_folds()
