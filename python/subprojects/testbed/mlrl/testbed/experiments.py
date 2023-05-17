@@ -15,7 +15,7 @@ from mlrl.testbed.data_splitting import DataSplitter, DataSplit, DataType
 from mlrl.testbed.evaluation import EvaluationPrinter
 from mlrl.testbed.format import format_duration
 from mlrl.testbed.model_characteristics import ModelCharacteristicsPrinter
-from mlrl.testbed.parameters import ParameterInput, ParameterPrinter
+from mlrl.testbed.parameters import ParameterInput
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
 from mlrl.testbed.predictions import PredictionScope, GlobalPrediction, IncrementalPrediction, PredictionPrinter
@@ -283,7 +283,6 @@ class Experiment(DataSplitter.Callback):
                  train_evaluation: Optional[Evaluation] = None,
                  test_evaluation: Optional[Evaluation] = None,
                  parameter_input: Optional[ParameterInput] = None,
-                 parameter_printer: Optional[ParameterPrinter] = None,
                  model_characteristics_printer: Optional[ModelCharacteristicsPrinter] = None,
                  persistence: Optional[ModelPersistence] = None):
         """
@@ -299,7 +298,6 @@ class Experiment(DataSplitter.Callback):
         :param test_evaluation:                 The method to be used for evaluating the predictions for the test data
                                                 or None, if the predictions should not be evaluated
         :param parameter_input:                 The input that should be used to read the parameter settings
-        :param parameter_printer:               The printer that should be used to print parameter settings
         :param model_characteristics_printer:   The printer that should be used to print the characteristics of models
                                                 or None, if the characteristics should not be printed
         :param persistence:                     The `ModelPersistence` that should be used for loading and saving models
@@ -313,7 +311,6 @@ class Experiment(DataSplitter.Callback):
         self.train_evaluation = train_evaluation
         self.test_evaluation = test_evaluation
         self.parameter_input = parameter_input
-        self.parameter_printer = parameter_printer
         self.model_characteristics_printer = model_characteristics_printer
         self.persistence = persistence
 
@@ -341,12 +338,6 @@ class Experiment(DataSplitter.Callback):
         # Write output data before model is trained...
         for output_writer in self.pre_training_output_writers:
             output_writer.write_output(meta_data, train_x, train_y, data_split, current_learner)
-
-        # Print parameter setting, if necessary...
-        parameter_printer = self.parameter_printer
-
-        if parameter_printer is not None:
-            parameter_printer.print(data_split, current_learner)
 
         # Set the indices of nominal attributes, if supported...
         if isinstance(current_learner, NominalAttributeLearner):
