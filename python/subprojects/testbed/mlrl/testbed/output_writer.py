@@ -4,13 +4,14 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utilities for writing output data to sinks like the console or output files.
 """
 from abc import ABC, abstractmethod
-from typing import List, Optional, Any
+from typing import Any, List, Dict, Optional
 import logging as log
 
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit
-from mlrl.testbed.io import open_writable_txt_file
+from mlrl.testbed.io import open_writable_txt_file, open_writable_csv_file, create_csv_dict_writer
 from mlrl.common.options import Options
+from python.subprojects.testbed.mlrl.testbed.data_splitting import DataSplit
 
 
 class Formattable(ABC):
@@ -25,6 +26,21 @@ class Formattable(ABC):
 
         :param options: Options to be taken into account
         :return:        The textual representation that has been created
+        """
+        pass
+
+
+class Tabularizable(ABC):
+    """
+    An abstract base class for all classes from which a tabular representation can be created.
+    """
+
+    def tabularize(self, options: Options) -> List[Dict[str, str]]:
+        """
+        Creates and returns a tabular representation of the object.
+
+        :param options: Options to be taken into account
+        :return:        The tabular representation that has been created
         """
         pass
 
@@ -74,7 +90,7 @@ class OutputWriter(ABC):
 
     class TxtSink(Sink):
         """
-        Allows to write output data into a text file.
+        Allows to write output data to a text file.
         """
 
         def __init__(self, output_dir: str, file_name: str, options: Options = Options()):
@@ -90,6 +106,33 @@ class OutputWriter(ABC):
         def write_output(self, data_split: DataSplit, output_data):
             with open_writable_txt_file(self.output_dir, self.file_name, data_split.get_fold()) as txt_file:
                 txt_file.write(output_data.format(self.options))
+
+    class CsvSink(Sink):
+        """
+        Allows to write output data to a CSV file. 
+        """
+
+        def __init__(self, output_dir: str, file_name: str, options: Options = Options()):
+            """
+            :param output_dir:  The path of the directory, where the text file should be located
+            :param file_name:   The name of the text file (without suffix)
+            :param options:     Options to be taken into account
+            """
+            self.output_dir = output_dir
+            self.file_name = file_name
+            self.options = options
+
+        def write_output(self, data_split: DataSplit, output_data):
+            tabular_data = output_data.tabularize(self.options)
+
+            if len(tabular_data) > 0:
+                header = sorted(tabular_data[0].keys())
+
+                with open_writable_csv_file(self.output_dir, self.file_name, data_split.get_fold()) as csv_file:
+                    csv_writer = create_csv_dict_writer(csv_file, header)
+
+                    for row in tabular_data:
+                        csv_writer.writerow(row)
 
     def __init__(self, sinks: List[Sink]):
         """
