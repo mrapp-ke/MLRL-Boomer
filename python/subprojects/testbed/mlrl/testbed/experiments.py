@@ -14,7 +14,6 @@ from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_splitting import DataSplitter, DataSplit, DataType
 from mlrl.testbed.evaluation import EvaluationPrinter
 from mlrl.testbed.format import format_duration
-from mlrl.testbed.model_characteristics import ModelCharacteristicsPrinter
 from mlrl.testbed.parameters import ParameterInput
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
@@ -283,7 +282,6 @@ class Experiment(DataSplitter.Callback):
                  train_evaluation: Optional[Evaluation] = None,
                  test_evaluation: Optional[Evaluation] = None,
                  parameter_input: Optional[ParameterInput] = None,
-                 model_characteristics_printer: Optional[ModelCharacteristicsPrinter] = None,
                  persistence: Optional[ModelPersistence] = None):
         """
         :param base_learner:                    The classifier or ranker to be trained
@@ -298,8 +296,6 @@ class Experiment(DataSplitter.Callback):
         :param test_evaluation:                 The method to be used for evaluating the predictions for the test data
                                                 or None, if the predictions should not be evaluated
         :param parameter_input:                 The input that should be used to read the parameter settings
-        :param model_characteristics_printer:   The printer that should be used to print the characteristics of models
-                                                or None, if the characteristics should not be printed
         :param persistence:                     The `ModelPersistence` that should be used for loading and saving models
         """
         self.base_learner = base_learner
@@ -311,7 +307,6 @@ class Experiment(DataSplitter.Callback):
         self.train_evaluation = train_evaluation
         self.test_evaluation = test_evaluation
         self.parameter_input = parameter_input
-        self.model_characteristics_printer = model_characteristics_printer
         self.persistence = persistence
 
     def run(self):
@@ -381,15 +376,6 @@ class Experiment(DataSplitter.Callback):
         # Write output data after model was trained...
         for output_writer in self.post_training_output_writers:
             output_writer.write_output(meta_data, train_x, train_y, data_split, current_learner)
-
-        # Print model characteristics, if necessary...
-        model_characteristics_printer = self.model_characteristics_printer
-
-        if model_characteristics_printer is not None:
-            try:
-                model_characteristics_printer.print(data_split, current_learner)
-            except ValueError:
-                log.error('The learner does not support to obtain model characteristics')
 
     @staticmethod
     def __train(learner, x, y):
