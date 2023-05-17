@@ -85,6 +85,7 @@ class OutputWriter(ABC):
             """
             self.output_dir = output_dir
             self.file_name = file_name
+            self.options = options
 
         def write_output(self, data_split: DataSplit, output_data):
             with open_writable_txt_file(self.output_dir, self.file_name, data_split.get_fold()) as txt_file:
