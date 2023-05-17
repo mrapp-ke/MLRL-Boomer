@@ -52,5 +52,4 @@ INFO Model characteristics:
 │ Predictions                 │         2 │      2    │         2 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-
 INFO Successfully finished after 7.843341681989841 seconds
