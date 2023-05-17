@@ -1010,6 +1010,7 @@ INFO Model (Fold 1):
 {Std_Acc1298_Std_Mem40_MFCC_9 <= 0.0815185 & Std_Acc1298_Mean_Mem40_MFCC_0 <= 2.045195 & Std_Acc1298_Std_Mem40_Centroid <= 0.034953997 & Std_Acc1298_Mean_Mem40_MFCC_2 <= 0.7989265 & Std_Acc1298_Mean_Mem40_MFCC_1 <= 0.7417145 & Mean_Acc1298_Std_Mem40_MFCC_7 > 0.491173 & Std_Acc1298_Mean_Mem40_MFCC_0 > 1.5133235} => (happy-pleased = 0.19)
 {Std_Acc1298_Mean_Mem40_MFCC_1 <= 1.580405 & Mean_Acc1298_Mean_Mem40_MFCC_7 <= 1.0710065 & Std_Acc1298_Std_Mem40_MFCC_5 > 0.169192 & Mean_Acc1298_Std_Mem40_MFCC_8 > 0.51803 & Std_Acc1298_Mean_Mem40_MFCC_2 > 0.504333 & Mean_Acc1298_Std_Mem40_MFCC_11 > 0.4743805 & Std_Acc1298_Std_Mem40_MFCC_3 > 0.1743895 & Std_Acc1298_Mean_Mem40_MFCC_7 > 0.2654665 & Mean_Acc1298_Std_Mem40_MFCC_3 > 0.518853 & Mean_Acc1298_Std_Mem40_MFCC_12 > 0.43361598 & Std_Acc1298_Mean_Mem40_Centroid > 0.0143425} => (sad-lonely = -0.16)
 
+
 INFO Fold 2 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -2017,6 +2018,7 @@ INFO Model (Fold 2):
 {Std_Acc1298_Mean_Mem40_Rolloff <= 0.046763003 & Mean_Acc1298_Mean_Mem40_MFCC_3 <= 2.224742 & Std_Acc1298_Mean_Mem40_Flux <= 0.009653 & Mean_Acc1298_Mean_Mem40_MFCC_4 <= 1.016602 & Std_Acc1298_Mean_Mem40_MFCC_10 <= 0.58773506 & Mean_Acc1298_Mean_Mem40_MFCC_9 <= 0.9654945 & BH_HighPeakAmp <= 0.4903375 & Std_Acc1298_Mean_Mem40_MFCC_2 <= 1.140162 & Mean_Acc1298_Mean_Mem40_MFCC_10 > 0.3420815 & Mean_Acc1298_Mean_Mem40_MFCC_6 > 0.143355 & Std_Acc1298_Std_Mem40_MFCC_4 > 0.0767095 & Mean_Acc1298_Mean_Mem40_MFCC_3 > 0.9807085} => (relaxing-calm = -0.22)
 {BH_HighPeakBPM <= 165.5 & BH_LowPeakAmp <= 0.4096255 & Std_Acc1298_Std_Mem40_MFCC_3 <= 0.26788598 & Std_Acc1298_Std_Mem40_Centroid <= 0.0415585 & Mean_Acc1298_Std_Mem40_MFCC_12 <= 0.7445275 & Std_Acc1298_Mean_Mem40_MFCC_0 > 2.459472 & Mean_Acc1298_Mean_Mem40_MFCC_5 > 0.512615 & BH_LowPeakAmp > 0.024976 & Std_Acc1298_Std_Mem40_MFCC_0 > 3.4821029 & Std_Acc1298_Mean_Mem40_Centroid > 0.0145145 & Std_Acc1298_Mean_Mem40_MFCC_6 > 0.2324415 & Std_Acc1298_Std_Mem40_MFCC_11 > 0.069075 & Mean_Acc1298_Mean_Mem40_MFCC_4 > -0.423963} => (relaxing-calm = 0.22)
 {BH_LowPeakAmp > 0.10724451 & Mean_Acc1298_Std_Mem40_MFCC_2 > 0.9306365 & Std_Acc1298_Std_Mem40_MFCC_5 > 0.123351 & Mean_Acc1298_Mean_Mem40_MFCC_5 > 0.1188035} => (quiet-still = -0.14)
+
 
 INFO Fold 3 / 10:
 INFO Fitting model to 533 training examples...
@@ -3026,6 +3028,7 @@ INFO Model (Fold 3):
 {Mean_Acc1298_Std_Mem40_MFCC_9 <= 0.54372203 & Std_Acc1298_Std_Mem40_MFCC_7 <= 0.153462 & Mean_Acc1298_Std_Mem40_Centroid <= 0.0798915 & Mean_Acc1298_Mean_Mem40_MFCC_8 > 0.37152702 & Std_Acc1298_Std_Mem40_Rolloff > 0.0646165 & Mean_Acc1298_Mean_Mem40_MFCC_4 > 0.307829 & Mean_Acc1298_Std_Mem40_MFCC_4 > 0.48659 & Mean_Acc1298_Std_Mem40_MFCC_10 > 0.409471 & Mean_Acc1298_Mean_Mem40_MFCC_6 > 0.110522 & Std_Acc1298_Std_Mem40_MFCC_1 > 0.261218 & Std_Acc1298_Mean_Mem40_MFCC_8 > 0.1626555 & Mean_Acc1298_Mean_Mem40_MFCC_11 > -0.038669996 & Std_Acc1298_Mean_Mem40_MFCC_10 > 0.15331599 & Std_Acc1298_Std_Mem40_MFCC_8 > 0.0723935} => (relaxing-calm = 0.21)
 {Std_Acc1298_Std_Mem40_MFCC_6 <= 0.106276 & BH_HighPeakAmp <= 0.2173485 & Std_Acc1298_Std_Mem40_Rolloff <= 0.107915 & Std_Acc1298_Std_Mem40_MFCC_1 <= 0.4803055 & Mean_Acc1298_Mean_Mem40_MFCC_9 <= 0.838182 & Mean_Acc1298_Mean_Mem40_MFCC_12 <= 0.81865096 & Mean_Acc1298_Mean_Mem40_MFCC_2 <= 1.8486819 & Std_Acc1298_Mean_Mem40_MFCC_5 <= 0.5219575 & Std_Acc1298_Mean_Mem40_MFCC_10 > 0.2267995 & BHSUM1 > 0.021753501 & Mean_Acc1298_Std_Mem40_Flux > 0.0280365 & Std_Acc1298_Mean_Mem40_MFCC_10 > 0.22957301 & Std_Acc1298_Std_Mem40_Centroid > 0.0214915 & Mean_Acc1298_Std_Mem40_MFCC_12 > 0.3952445} => (happy-pleased = 0.23)
 
+
 INFO Fold 4 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -4033,6 +4036,7 @@ INFO Model (Fold 4):
 {Std_Acc1298_Std_Mem40_MFCC_3 > 0.33216852 & Mean_Acc1298_Std_Mem40_Rolloff > 0.14379251 & Mean_Acc1298_Std_Mem40_MFCC_5 > 0.6575215} => (angry-aggresive = 0.12)
 {Mean_Acc1298_Std_Mem40_MFCC_3 <= 0.976704 & Std_Acc1298_Mean_Mem40_MFCC_1 <= 2.526618 & Mean_Acc1298_Mean_Mem40_MFCC_8 <= 0.91550153 & Std_Acc1298_Std_Mem40_MFCC_2 <= 0.5166255 & Std_Acc1298_Mean_Mem40_MFCC_2 > 0.654011 & Mean_Acc1298_Mean_Mem40_MFCC_4 > 0.357409 & Std_Acc1298_Std_Mem40_Rolloff > 0.064961 & Mean_Acc1298_Std_Mem40_MFCC_6 > 0.4432725 & Std_Acc1298_Mean_Mem40_MFCC_7 > 0.302293 & Std_Acc1298_Mean_Mem40_MFCC_11 > 0.261294 & Mean_Acc1298_Std_Mem40_Flux > 0.0280965 & Mean_Acc1298_Mean_Mem40_MFCC_6 > -0.13818401 & Std_Acc1298_Mean_Mem40_MFCC_9 > 0.2353245 & Mean_Acc1298_Mean_Mem40_MFCC_3 > 0.809017 & Std_Acc1298_Mean_Mem40_MFCC_1 > 0.769036} => (relaxing-calm = -0.22)
 {Mean_Acc1298_Mean_Mem40_MFCC_6 <= 0.4597155 & Std_Acc1298_Std_Mem40_MFCC_1 <= 0.4803295 & Mean_Acc1298_Std_Mem40_MFCC_12 <= 0.6705315 & Mean_Acc1298_Std_Mem40_Rolloff <= 0.2723825 & Std_Acc1298_Std_Mem40_MFCC_12 > 0.13767499 & Mean_Acc1298_Std_Mem40_MFCC_2 > 0.574562 & Mean_Acc1298_Mean_Mem40_MFCC_10 > -0.15233201} => (happy-pleased = 0.19)
+
 
 INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
@@ -5042,6 +5046,7 @@ INFO Model (Fold 5):
 {Std_Acc1298_Mean_Mem40_MFCC_4 <= 0.493284 & Mean_Acc1298_Std_Mem40_MFCC_5 <= 0.86674905 & Mean_Acc1298_Mean_Mem40_MFCC_12 <= 0.888938 & Mean_Acc1298_Std_Mem40_MFCC_3 <= 1.2651856 & Std_Acc1298_Mean_Mem40_Centroid <= 0.040880002 & Mean_Acc1298_Std_Mem40_MFCC_0 > 6.497493 & Std_Acc1298_Mean_Mem40_MFCC_0 > 2.4400058 & Mean_Acc1298_Std_Mem40_MFCC_8 > 0.4463935} => (angry-aggresive = -0.16)
 {Std_Acc1298_Mean_Mem40_MFCC_4 <= 0.23799449 & Mean_Acc1298_Std_Mem40_Flux <= 0.043086 & Std_Acc1298_Std_Mem40_MFCC_4 > 0.084077 & Std_Acc1298_Mean_Mem40_MFCC_0 > 1.7919555 & Mean_Acc1298_Mean_Mem40_Centroid > 0.037285 & Std_Acc1298_Std_Mem40_MFCC_6 > 0.069400996} => (amazed-suprised = 0.17)
 
+
 INFO Fold 6 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -6049,6 +6054,7 @@ INFO Model (Fold 6):
 {Std_Acc1298_Mean_Mem40_MFCC_3 <= 0.326791 & Std_Acc1298_Mean_Mem40_Centroid > 0.0178505 & Std_Acc1298_Mean_Mem40_MFCC_8 > 0.149711 & Std_Acc1298_Std_Mem40_MFCC_12 > 0.057329997 & Mean_Acc1298_Mean_Mem40_MFCC_12 > 0.0899155 & Std_Acc1298_Std_Mem40_MFCC_2 > 0.103897005} => (amazed-suprised = -0.18)
 {Std_Acc1298_Mean_Mem40_MFCC_1 <= 0.54584 & Mean_Acc1298_Std_Mem40_MFCC_5 <= 0.6410435 & Std_Acc1298_Std_Mem40_MFCC_6 <= 0.188774 & Std_Acc1298_Mean_Mem40_MFCC_12 <= 0.438173} => (relaxing-calm = -0.13)
 {Std_Acc1298_Std_Mem40_MFCC_4 <= 0.091422 & Std_Acc1298_Mean_Mem40_MFCC_5 <= 0.397369 & BH_LowPeakAmp > 0.023674 & Mean_Acc1298_Mean_Mem40_MFCC_7 > 0.0409455 & Std_Acc1298_Std_Mem40_MFCC_0 > 3.8348556} => (quiet-still = -0.12)
+
 
 INFO Fold 7 / 10:
 INFO Fitting model to 534 training examples...
@@ -7058,6 +7064,7 @@ INFO Model (Fold 7):
 {Std_Acc1298_Mean_Mem40_MFCC_1 <= 0.7752325 & Std_Acc1298_Mean_Mem40_MFCC_12 <= 0.3231175 & Mean_Acc1298_Std_Mem40_MFCC_0 <= 6.7276564 & BH_HighPeakBPM > 169.0 & BHSUM1 > 0.065762 & Std_Acc1298_Mean_Mem40_MFCC_4 > 0.1824415 & Mean_Acc1298_Mean_Mem40_Centroid > 0.040615 & Mean_Acc1298_Std_Mem40_MFCC_12 > 0.39231652} => (angry-aggresive = 0.17)
 {Std_Acc1298_Mean_Mem40_MFCC_7 <= 0.5008615 & Mean_Acc1298_Std_Mem40_Rolloff <= 0.279253 & Std_Acc1298_Mean_Mem40_Rolloff <= 0.126895 & Mean_Acc1298_Mean_Mem40_Flux <= 0.0992095 & BH_HighPeakBPM > 188.5 & Mean_Acc1298_Mean_Mem40_MFCC_10 > 0.4336935 & Std_Acc1298_Mean_Mem40_MFCC_1 > 0.5821605 & Std_Acc1298_Mean_Mem40_Flux > 0.0067535 & Mean_Acc1298_Mean_Mem40_Rolloff > 0.083529994} => (amazed-suprised = 0.19)
 
+
 INFO Fold 8 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -8065,6 +8072,7 @@ INFO Model (Fold 8):
 {Std_Acc1298_Std_Mem40_MFCC_2 <= 0.253578 & Std_Acc1298_Mean_Mem40_MFCC_12 <= 0.522646 & Std_Acc1298_Std_Mem40_Rolloff <= 0.153865 & Std_Acc1298_Std_Mem40_Centroid <= 0.0420195 & Std_Acc1298_Mean_Mem40_MFCC_0 > 3.515446 & Std_Acc1298_Std_Mem40_MFCC_2 > 0.150855 & Std_Acc1298_Std_Mem40_MFCC_11 > 0.076646 & Mean_Acc1298_Mean_Mem40_MFCC_11 > -0.016981997} => (relaxing-calm = 0.22)
 {Mean_Acc1298_Std_Mem40_MFCC_7 <= 0.6002915 & Mean_Acc1298_Mean_Mem40_MFCC_7 <= 0.8534855 & Std_Acc1298_Mean_Mem40_MFCC_7 > 0.56675303 & Mean_Acc1298_Mean_Mem40_MFCC_10 > 0.115108 & Std_Acc1298_Std_Mem40_Rolloff > 0.0501495} => (relaxing-calm = -0.15)
 {Std_Acc1298_Mean_Mem40_Centroid > 0.036292 & Std_Acc1298_Std_Mem40_MFCC_5 > 0.071121 & Mean_Acc1298_Mean_Mem40_Centroid > 0.0636635 & Mean_Acc1298_Std_Mem40_MFCC_12 > 0.41791898} => (happy-pleased = -0.14)
+
 
 INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
@@ -9074,6 +9082,7 @@ INFO Model (Fold 9):
 {Mean_Acc1298_Std_Mem40_MFCC_2 <= 1.283428 & Mean_Acc1298_Mean_Mem40_MFCC_8 <= 0.968525 & Std_Acc1298_Mean_Mem40_Rolloff > 0.0704775 & Std_Acc1298_Std_Mem40_MFCC_1 > 0.363782 & Std_Acc1298_Std_Mem40_MFCC_6 > 0.0734185 & Mean_Acc1298_Mean_Mem40_Flux > 0.0746955 & Std_Acc1298_Mean_Mem40_MFCC_3 > 0.31567198} => (happy-pleased = -0.18)
 {Mean_Acc1298_Std_Mem40_MFCC_12 <= 0.711854 & Mean_Acc1298_Mean_Mem40_Rolloff <= 0.5195855 & BHSUM1 > 0.9539205 & Std_Acc1298_Std_Mem40_MFCC_12 > 0.0728845 & Mean_Acc1298_Std_Mem40_MFCC_11 > 0.330345 & Std_Acc1298_Mean_Mem40_MFCC_1 > 0.45110452 & Std_Acc1298_Mean_Mem40_MFCC_9 > 0.16739249 & Std_Acc1298_Std_Mem40_MFCC_0 > 3.6375031} => (sad-lonely = 0.14)
 
+
 INFO Fold 10 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -10081,5 +10090,6 @@ INFO Model (Fold 10):
 {Mean_Acc1298_Std_Mem40_MFCC_1 <= 0.864825 & Mean_Acc1298_Mean_Mem40_MFCC_10 <= 0.659415 & BH_LowPeakBPM <= 83.5 & Mean_Acc1298_Mean_Mem40_MFCC_11 <= 0.9740615 & Std_Acc1298_Mean_Mem40_MFCC_0 <= 7.902652 & Std_Acc1298_Mean_Mem40_MFCC_1 <= 1.0761135 & Std_Acc1298_Std_Mem40_MFCC_8 <= 0.12783849 & Mean_Acc1298_Std_Mem40_MFCC_12 <= 0.4609085 & Mean_Acc1298_Std_Mem40_MFCC_0 > 2.2344265 & Mean_Acc1298_Mean_Mem40_MFCC_0 > -83.047516} => (angry-aggresive = 0.19)
 {Mean_Acc1298_Mean_Mem40_MFCC_9 <= 0.48393053 & Mean_Acc1298_Std_Mem40_MFCC_8 <= 0.6102975 & Mean_Acc1298_Mean_Mem40_MFCC_11 <= 0.730968 & Mean_Acc1298_Std_Mem40_MFCC_5 > 0.675196} => (sad-lonely = -0.17)
 {Mean_Acc1298_Mean_Mem40_MFCC_10 <= 0.4400075 & Std_Acc1298_Std_Mem40_MFCC_9 <= 0.151061 & Mean_Acc1298_Mean_Mem40_Rolloff <= 0.339225 & Std_Acc1298_Std_Mem40_MFCC_4 <= 0.3013035 & Mean_Acc1298_Std_Mem40_MFCC_7 <= 0.760069 & Std_Acc1298_Mean_Mem40_MFCC_3 <= 0.8646555 & Mean_Acc1298_Std_Mem40_MFCC_1 > 1.354373 & Std_Acc1298_Mean_Mem40_MFCC_12 > 0.163944 & Mean_Acc1298_Mean_Mem40_MFCC_11 > 0.0906935 & Std_Acc1298_Std_Mem40_MFCC_0 > 3.4925337 & Std_Acc1298_Mean_Mem40_MFCC_1 > 0.52790546 & Mean_Acc1298_Mean_Mem40_MFCC_3 > 1.269789} => (sad-lonely = 0.21)
+
 
 INFO Successfully finished after 4.948133033999511 seconds

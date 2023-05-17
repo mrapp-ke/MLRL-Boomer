@@ -83,6 +83,7 @@ INFO Model (Fold 1):
 {Std_Acc1298_Mean_Mem40_MFCC_0 > 7.463271} => (relaxing-calm = 1.00)
 {} => (amazed-suprised = 0.00, happy-pleased = 0.00, relaxing-calm = 0.00, quiet-still = 0.00, sad-lonely = 0.00, angry-aggresive = 0.00)
 
+
 INFO Fold 2 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -162,6 +163,7 @@ INFO Model (Fold 2):
 {Mean_Acc1298_Mean_Mem40_MFCC_9 > 0.9756335} => (relaxing-calm = 1.00)
 {} => (amazed-suprised = 0.00, happy-pleased = 0.00, relaxing-calm = 0.00, quiet-still = 0.00, sad-lonely = 0.00, angry-aggresive = 0.00)
 
+
 INFO Fold 3 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -234,6 +236,7 @@ INFO Model (Fold 3):
 {Mean_Acc1298_Mean_Mem40_MFCC_0 <= -84.5332} => (quiet-still = 1.00)
 {Std_Acc1298_Std_Mem40_MFCC_5 > 0.15907899} => (relaxing-calm = 1.00)
 {} => (amazed-suprised = 0.00, happy-pleased = 0.00, relaxing-calm = 0.00, quiet-still = 0.00, sad-lonely = 0.00, angry-aggresive = 0.00)
+
 
 INFO Fold 4 / 10:
 INFO Fitting model to 534 training examples...
@@ -314,6 +317,7 @@ INFO Model (Fold 4):
 {Std_Acc1298_Mean_Mem40_MFCC_0 <= 1.8694385 & Mean_Acc1298_Mean_Mem40_MFCC_5 > 0.5328515} => (amazed-suprised = 1.00)
 {} => (amazed-suprised = 0.00, happy-pleased = 0.00, relaxing-calm = 0.00, quiet-still = 0.00, sad-lonely = 0.00, angry-aggresive = 0.00)
 
+
 INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -382,6 +386,7 @@ INFO Model (Fold 5):
 {Std_Acc1298_Mean_Mem40_Flux <= 0.005793} => (quiet-still = 1.00)
 {Std_Acc1298_Mean_Mem40_MFCC_3 > 1.1591206} => (quiet-still = 1.00)
 {} => (amazed-suprised = 0.00, happy-pleased = 0.00, relaxing-calm = 0.00, quiet-still = 0.00, sad-lonely = 0.00, angry-aggresive = 0.00)
+
 
 INFO Fold 6 / 10:
 INFO Fitting model to 534 training examples...
@@ -462,6 +467,7 @@ INFO Model (Fold 6):
 {Mean_Acc1298_Mean_Mem40_MFCC_2 <= -0.793967 & Std_Acc1298_Mean_Mem40_MFCC_3 <= 0.36297} => (happy-pleased = 1.00)
 {} => (amazed-suprised = 0.00, happy-pleased = 0.00, relaxing-calm = 0.00, quiet-still = 0.00, sad-lonely = 0.00, angry-aggresive = 0.00)
 
+
 INFO Fold 7 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -541,6 +547,7 @@ INFO Model (Fold 7):
 {Std_Acc1298_Mean_Mem40_MFCC_0 > 9.4917} => (amazed-suprised = 1.00)
 {Mean_Acc1298_Mean_Mem40_MFCC_6 > 0.978407} => (relaxing-calm = 1.00)
 {} => (amazed-suprised = 0.00, happy-pleased = 0.00, relaxing-calm = 0.00, quiet-still = 0.00, sad-lonely = 0.00, angry-aggresive = 0.00)
+
 
 INFO Fold 8 / 10:
 INFO Fitting model to 534 training examples...
@@ -638,6 +645,7 @@ INFO Model (Fold 8):
 {BHSUM1 <= 0.038689 & Mean_Acc1298_Mean_Mem40_Centroid <= 0.082343} => (relaxing-calm = 1.00)
 {} => (amazed-suprised = 0.00, happy-pleased = 0.00, relaxing-calm = 0.00, quiet-still = 0.00, sad-lonely = 0.00, angry-aggresive = 0.00)
 
+
 INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -722,6 +730,7 @@ INFO Model (Fold 9):
 {Mean_Acc1298_Mean_Mem40_MFCC_0 > -62.615013} => (amazed-suprised = 1.00)
 {} => (amazed-suprised = 0.00, happy-pleased = 0.00, relaxing-calm = 0.00, quiet-still = 0.00, sad-lonely = 0.00, angry-aggresive = 0.00)
 
+
 INFO Fold 10 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -792,5 +801,6 @@ INFO Model (Fold 10):
 {Mean_Acc1298_Mean_Mem40_MFCC_5 <= 0.077658504} => (amazed-suprised = 1.00)
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.110892 & Mean_Acc1298_Mean_Mem40_Centroid > 0.0420625} => (relaxing-calm = 1.00)
 {} => (amazed-suprised = 0.00, happy-pleased = 0.00, relaxing-calm = 0.00, quiet-still = 0.00, sad-lonely = 0.00, angry-aggresive = 0.00)
+
 
 INFO Successfully finished after 2.68288376997225 seconds
