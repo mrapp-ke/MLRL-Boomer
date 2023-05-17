@@ -58,7 +58,7 @@ class ModelCharacteristicsWriter(OutputWriter, ABC):
 
         if isinstance(learner, Learner):
             model = learner.model_
-            return self._create_model_characteristics(model)
+            model_characteristics = self._create_model_characteristics(model)
 
         if model_characteristics is None:
             log.error('The learner does not support to obtain model characteristics')
