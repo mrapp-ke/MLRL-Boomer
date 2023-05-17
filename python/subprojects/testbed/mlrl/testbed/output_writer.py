@@ -11,7 +11,6 @@ from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit
 from mlrl.testbed.io import open_writable_txt_file, open_writable_csv_file, create_csv_dict_writer
 from mlrl.common.options import Options
-from python.subprojects.testbed.mlrl.testbed.data_splitting import DataSplit
 
 
 class Formattable(ABC):
