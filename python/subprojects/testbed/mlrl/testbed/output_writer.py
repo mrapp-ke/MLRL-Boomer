@@ -4,7 +4,7 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utilities for writing output data to sinks like the console or output files.
 """
 from abc import ABC, abstractmethod
-from typing import List, Generic, TypeVar
+from typing import List, Optional, Generic, TypeVar
 import logging as log
 
 from mlrl.testbed.data import MetaData
@@ -79,7 +79,7 @@ class OutputWriter(Generic[OutputData], ABC):
         self.sinks = sinks
 
     @abstractmethod
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner) -> OutputData:
+    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner) -> Optional[OutputData]:
         """
         Must be implemented by subclasses in order to generate the output data that should be written to the available
         sinks.
@@ -91,7 +91,7 @@ class OutputWriter(Generic[OutputData], ABC):
                             the ground truth labels
         :param data_split:  Information about the split of the available data, the output data corresponds to
         :param learner:     The learner that has been trained
-        :return:            The output data that has been generated
+        :return:            The output data that has been generated or None, if no output data was generated
         """
         pass
 
@@ -112,5 +112,6 @@ class OutputWriter(Generic[OutputData], ABC):
         if len(sinks) > 0:
             output_data = self._generate_output_data(meta_data, x, y, data_split, learner)
 
-            for sink in sinks:
-                sink.write_output(data_split, output_data)
+            if output_data is not None:
+                for sink in sinks:
+                    sink.write_output(data_split, output_data)
