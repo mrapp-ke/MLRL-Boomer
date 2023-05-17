@@ -10,6 +10,7 @@ import logging as log
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit
 from mlrl.testbed.io import open_writable_txt_file
+from mlrl.common.options import Options
 
 
 class Formattable(ABC):
@@ -18,11 +19,12 @@ class Formattable(ABC):
     """
 
     @abstractmethod
-    def format(self) -> str:
+    def format(self, options: Options) -> str:
         """
         Creates and returns a textual representation of the object.
 
-        :return: The textual representation that has been created
+        :param options: Options to be taken into account
+        :return:        The textual representation that has been created
         """
         pass
 
@@ -53,11 +55,13 @@ class OutputWriter(ABC):
         Allows to write output data to the console.
         """
 
-        def __init__(self, title: str):
+        def __init__(self, title: str, options: Options = Options()):
             """
-            :param title: A title that is printed before the actual output data
+            :param title:   A title that is printed before the actual output data
+            :param options: Options to be taken into account
             """
             self.title = title
+            self.options = options
 
         def write_output(self, data_split: DataSplit, output_data):
             message = self.title
@@ -65,7 +69,7 @@ class OutputWriter(ABC):
             if data_split.is_cross_validation_used():
                 message += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
 
-            message += ':\n\n' + output_data.format()
+            message += ':\n\n' + output_data.format(self.options)
             log.info(message)
 
     class TxtSink(Sink):
@@ -73,17 +77,18 @@ class OutputWriter(ABC):
         Allows to write output data into a text file.
         """
 
-        def __init__(self, output_dir: str, file_name: str):
+        def __init__(self, output_dir: str, file_name: str, options: Options = Options()):
             """
             :param output_dir:  The path of the directory, where the text file should be located
             :param file_name:   The name of the text file (without suffix)
+            :param options:     Options to be taken into account
             """
             self.output_dir = output_dir
             self.file_name = file_name
 
         def write_output(self, data_split: DataSplit, output_data):
             with open_writable_txt_file(self.output_dir, self.file_name, data_split.get_fold()) as txt_file:
-                txt_file.write(output_data.format())
+                txt_file.write(output_data.format(self.options))
 
     def __init__(self, sinks: List[Sink]):
         """
