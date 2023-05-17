@@ -79,7 +79,7 @@ class OutputWriter(Generic[OutputData], ABC):
         self.sinks = sinks
 
     @abstractmethod
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit) -> OutputData:
+    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner) -> OutputData:
         """
         Must be implemented by subclasses in order to generate the output data that should be written to the available
         sinks.
@@ -90,11 +90,12 @@ class OutputWriter(Generic[OutputData], ABC):
         :param y:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores
                             the ground truth labels
         :param data_split:  Information about the split of the available data, the output data corresponds to
+        :param learner:     The learner that has been trained
         :return:            The output data that has been generated
         """
         pass
 
-    def write_output(self, meta_data: MetaData, x, y, data_split: DataSplit):
+    def write_output(self, meta_data: MetaData, x, y, data_split: DataSplit, learner):
         """
         Generates the output data and writes it to all available sinks.
 
@@ -104,11 +105,12 @@ class OutputWriter(Generic[OutputData], ABC):
         :param y:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores
                             the ground truth labels
         :param data_split:  Information about the split of the available data, the output data corresponds to
+        :param learner:     The learner that has been trained
         """
         sinks = self.sinks
 
         if len(sinks) > 0:
-            output_data = self._generate_output_data(meta_data, x, y, data_split)
+            output_data = self._generate_output_data(meta_data, x, y, data_split, learner)
 
             for sink in sinks:
                 sink.write_output(data_split, output_data)
