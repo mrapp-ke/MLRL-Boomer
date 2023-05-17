@@ -215,9 +215,9 @@ class RuleModelWriter(ModelWriter):
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner) -> Optional[Any]:
         if isinstance(learner, Learner):
             model = learner.model_
-            
+
             if isinstance(model, RuleModel):
                 return RuleModelWriter.RuleModelFormattable(meta_data, model)
-        
+
         log.error('The learner does not support to create a textual representation of the model')
         return None
