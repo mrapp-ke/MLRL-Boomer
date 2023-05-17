@@ -84,7 +84,7 @@ class OutputWriter(ABC):
             if data_split.is_cross_validation_used():
                 message += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
 
-            message += ':\n\n' + output_data.format(self.options)
+            message += ':\n\n' + output_data.format(self.options) + '\n'
             log.info(message)
 
     class TxtSink(Sink):
