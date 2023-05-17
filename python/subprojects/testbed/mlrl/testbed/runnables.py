@@ -477,6 +477,8 @@ class LearnerRunnable(Runnable, ABC):
                             + format_enum_values(PredictionType) + '.')
 
     def _run(self, args):
+        pre_training_output_writers = []
+        post_training_output_writers = []
         prediction_type = self.__create_prediction_type(args)
 
         if args.evaluate_training_data:
@@ -498,6 +500,8 @@ class LearnerRunnable(Runnable, ABC):
         experiment = Experiment(base_learner=self._create_learner(args),
                                 learner_name=self.learner_name,
                                 data_splitter=data_splitter,
+                                pre_training_output_writers=pre_training_output_writers,
+                                post_training_output_writers=post_training_output_writers,
                                 pre_execution_hook=self.__create_pre_execution_hook(args, data_splitter),
                                 train_evaluation=train_evaluation,
                                 test_evaluation=test_evaluation,

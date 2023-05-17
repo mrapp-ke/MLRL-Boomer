@@ -21,8 +21,9 @@ from mlrl.testbed.parameters import ParameterInput, ParameterPrinter
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
 from mlrl.testbed.predictions import PredictionScope, GlobalPrediction, IncrementalPrediction, PredictionPrinter
+from mlrl.testbed.output_writer import OutputWriter
 from sklearn.base import BaseEstimator, RegressorMixin, clone
-from typing import Optional
+from typing import Optional, List
 
 
 class PredictionType(Enum):
@@ -278,6 +279,8 @@ class Experiment(DataSplitter.Callback):
                  base_learner: BaseEstimator,
                  learner_name: str,
                  data_splitter: DataSplitter,
+                 pre_training_output_writers: List[OutputWriter],
+                 post_training_output_writers: List[OutputWriter],
                  pre_execution_hook: Optional[ExecutionHook] = None,
                  train_evaluation: Optional[Evaluation] = None,
                  test_evaluation: Optional[Evaluation] = None,
@@ -292,6 +295,8 @@ class Experiment(DataSplitter.Callback):
         :param learner_name:                    The name of the classifier or ranker
         :param data_splitter:                   The method to be used for splitting the available data into training and
                                                 test sets
+        :param pre_training_output_writers:     A list that contains all output writers to be invoked before training
+        :param post_training_output_writers:    A list that contains all output writers to be invoked after training
         :param pre_execution_hook:              An operation that should be executed before the experiment
         :param train_evaluation:                The method to be used for evaluating the predictions for the training
                                                 data or None, if the predictions should not be evaluated
@@ -310,6 +315,8 @@ class Experiment(DataSplitter.Callback):
         self.base_learner = base_learner
         self.learner_name = learner_name
         self.data_splitter = data_splitter
+        self.pre_training_output_writers = pre_training_output_writers
+        self.post_training_output_writers = post_training_output_writers
         self.pre_execution_hook = pre_execution_hook
         self.train_evaluation = train_evaluation
         self.test_evaluation = test_evaluation
@@ -340,6 +347,10 @@ class Experiment(DataSplitter.Callback):
             params = parameter_input.read_parameters(data_split)
             current_learner.set_params(**params)
             log.info('Successfully applied parameter setting: %s', params)
+
+        # Write output data before model is trained...
+        for output_writer in self.pre_training_output_writers:
+            output_writer.write_output(meta_data, train_x, train_y, data_split, current_learner)
 
         # Print parameter setting, if necessary...
         parameter_printer = self.parameter_printer
@@ -391,6 +402,10 @@ class Experiment(DataSplitter.Callback):
             data_type = DataType.TEST if data_split.is_train_test_separated() else DataType.TRAINING
             evaluation.predict_and_evaluate(meta_data, data_split, data_type, train_time, current_learner, test_x,
                                             test_y)
+
+        # Write output data after model was trained...
+        for output_writer in self.post_training_output_writers:
+            output_writer.write_output(meta_data, train_x, train_y, data_split, current_learner)
 
         # Print model characteristics, if necessary...
         model_characteristics_printer = self.model_characteristics_printer
