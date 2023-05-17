@@ -65,9 +65,9 @@ class Parameters(Formattable, Tabularizable):
 
             if value is not None:
                 rows.append([str(key), str(value)])
-        
+
         return format_table(rows)
-    
+
     def tabularize(self, _: Options):
         params = self.params
         columns = {}
@@ -75,7 +75,7 @@ class Parameters(Formattable, Tabularizable):
         for key, value in params.items():
             if value is not None:
                 columns[key] = value
-        
+
         return [columns]
 
 
