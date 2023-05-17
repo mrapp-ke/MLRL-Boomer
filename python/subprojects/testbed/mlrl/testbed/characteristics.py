@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides functions to determine certain characteristics of feature or label matrices.
 """
 import numpy as np
-from mlrl.testbed.format import Formattable
+from mlrl.testbed.format import Formatter
 from scipy.sparse import issparse
 from typing import List
 
@@ -138,7 +138,7 @@ class LabelCharacteristics:
         return self._num_distinct_label_vectors
 
 
-class Characteristic(Formattable):
+class Characteristic(Formatter):
     """
     Allows to create textual representations of characteristics.
     """
