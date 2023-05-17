@@ -24,8 +24,7 @@ from mlrl.testbed.model_characteristics import ModelCharacteristicsPrinter, Rule
     RuleModelCharacteristicsLogOutput, RuleModelCharacteristicsCsvOutput
 from mlrl.testbed.models import ModelWriter, RuleModelWriter
 from mlrl.testbed.output_writer import OutputWriter
-from mlrl.testbed.parameters import ParameterInput, ParameterCsvInput, ParameterPrinter, ParameterLogOutput, \
-    ParameterCsvOutput
+from mlrl.testbed.parameters import ParameterInput, ParameterCsvInput, ParameterWriter
 from mlrl.common.rule_learners import SparsePolicy
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter, \
@@ -282,16 +281,16 @@ class LearnerRunnable(Runnable, ABC):
         return None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
 
     @staticmethod
-    def __create_parameter_printer(args) -> Optional[ParameterPrinter]:
-        outputs = []
+    def __create_parameter_writer(args) -> Optional[OutputWriter]:
+        sinks = []
 
         if args.print_parameters:
-            outputs.append(ParameterLogOutput())
+            sinks.append(ParameterWriter.LogSink())
 
         if args.store_parameters and args.output_dir is not None:
-            outputs.append(ParameterCsvOutput(output_dir=args.output_dir))
+            sinks.append(ParameterWriter.CsvSink(output_dir=args.output_dir))
 
-        return ParameterPrinter(outputs) if len(outputs) > 0 else None
+        return ParameterWriter(sinks) if len(sinks) > 0 else None
 
     @staticmethod
     def __create_persistence(args) -> Optional[ModelPersistence]:
@@ -489,6 +488,11 @@ class LearnerRunnable(Runnable, ABC):
         if data_characteristics_writer is not None:
             pre_training_output_writers.append(data_characteristics_writer)
 
+        parameter_writer = self.__create_parameter_writer(args)
+
+        if parameter_writer is not None:
+            pre_training_output_writers.append(parameter_writer)
+
         prediction_type = self.__create_prediction_type(args)
 
         if args.evaluate_training_data:
@@ -516,7 +520,6 @@ class LearnerRunnable(Runnable, ABC):
                                 train_evaluation=train_evaluation,
                                 test_evaluation=test_evaluation,
                                 parameter_input=self.__create_parameter_input(args),
-                                parameter_printer=self.__create_parameter_printer(args),
                                 model_characteristics_printer=self._create_model_characteristics_printer(args),
                                 persistence=self.__create_persistence(args))
         experiment.run()

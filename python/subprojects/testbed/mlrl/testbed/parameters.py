@@ -4,14 +4,15 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for loading and printing parameter settings that are used by a learner. The parameter settings can be
 written to one or several outputs, e.g., to the console or to a file. They can also be loaded from CSV files.
 """
-import logging as log
 from abc import ABC, abstractmethod
 
+from mlrl.common.options import Options
+from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit
 from mlrl.testbed.format import format_table
-from mlrl.testbed.io import create_csv_dict_reader, open_readable_csv_file, open_writable_csv_file, \
-    create_csv_dict_writer
-from typing import List
+from mlrl.testbed.io import create_csv_dict_reader, open_readable_csv_file
+from mlrl.testbed.output_writer import OutputWriter, Formattable, Tabularizable
+from typing import Any, List, Optional
 
 
 class ParameterInput(ABC):
@@ -44,33 +45,19 @@ class ParameterCsvInput(ParameterInput):
             return dict(next(csv_reader))
 
 
-class ParameterOutput(ABC):
+class Parameters(Formattable, Tabularizable):
     """
-    An abstract base class for all outputs, parameter settings may be written to.
+    Stores the parameter settings of a learner.
     """
 
-    @abstractmethod
-    def write_parameters(self, data_split: DataSplit, learner):
+    def __init__(self, learner):
         """
-        :param data_split:  Information about the split of the available data, the parameter setting corresponds to
-        :param learner:     The learner
+        :param learner: A learner
         """
-        pass
+        self.params = learner.get_params()
 
-
-class ParameterLogOutput(ParameterOutput):
-    """
-    Outputs parameter settings using the logger.
-    """
-
-    def write_parameters(self, data_split: DataSplit, learner):
-        msg = 'Custom parameters'
-
-        if data_split.is_cross_validation_used():
-            msg += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
-
-        msg += ':\n\n%s\n'
-        params = learner.get_params()
+    def format(self, _: Options):
+        params = self.params
         rows = []
 
         for key in sorted(params):
@@ -78,50 +65,43 @@ class ParameterLogOutput(ParameterOutput):
 
             if value is not None:
                 rows.append([str(key), str(value)])
+        
+        return format_table(rows)
+    
+    def tabularize(self, _: Options):
+        params = self.params
+        columns = {}
 
-        log.info(msg, format_table(rows))
+        for key, value in params.items():
+            if value is not None:
+                columns[key] = value
+        
+        return [columns]
 
 
-class ParameterCsvOutput(ParameterOutput):
+class ParameterWriter(OutputWriter):
     """
-    Writes parameter settings to a CSV file.
-    """
-
-    def __init__(self, output_dir: str):
-        """
-        :param output_dir: The path of the directory, the CSV files should be written to
-        """
-        self.output_dir = output_dir
-
-    def write_parameters(self, data_split: DataSplit, learner):
-        params = learner.get_params()
-
-        for key, value in list(params.items()):
-            if value is None:
-                del params[key]
-
-        header = sorted(params)
-
-        with open_writable_csv_file(self.output_dir, 'parameters', data_split.get_fold()) as csv_file:
-            csv_writer = create_csv_dict_writer(csv_file, header)
-            csv_writer.writerow(params)
-
-
-class ParameterPrinter:
-    """
-    A class that allows to print the parameter setting that is used by a learner.
+    Allows to write parameter settings to one or several sinks.
     """
 
-    def __init__(self, outputs: List[ParameterOutput]):
+    class LogSink(OutputWriter.LogSink):
         """
-        :param outputs: The outputs, the parameter settings should be written to
+        Allows to write parameter settings to the console.
         """
-        self.outputs = outputs
 
-    def print(self, data_split: DataSplit, learner):
+        def __init__(self):
+            super().__init__(title='Custom parameters')
+
+    class CsvSink(OutputWriter.CsvSink):
         """
-        :param data_split:  Information about the split of the available data, the characteristics correspond to
-        :param learner:     The learner
+        Allows to write parameter settings to CSV files.
         """
-        for output in self.outputs:
-            output.write_parameters(data_split, learner)
+
+        def __init__(self, output_dir: str):
+            super().__init__(output_dir=output_dir, file_name='parameters')
+
+    def __init__(self, sinks: List[OutputWriter.Sink]):
+        super().__init__(sinks)
+
+    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner) -> Optional[Any]:
+        return Parameters(learner)
