@@ -6,7 +6,7 @@ e.g., to the console or to a file.
 """
 import logging as log
 from _io import StringIO
-from abc import ABC, abstractmethod
+from abc import ABC
 
 import numpy as np
 from mlrl.common.cython.rule_model import RuleModel, RuleModelVisitor, EmptyBody, ConjunctiveBody, CompleteHead, \
@@ -53,30 +53,6 @@ class ModelWriter(OutputWriter, ABC):
 
     def __init__(self, sinks: List[OutputWriter.Sink]):
         super().__init__(sinks)
-
-    @abstractmethod
-    def _create_formattable(self, meta_data: MetaData, model) -> Optional[Formattable]:
-        """
-        Must be implemented by subclasses in order to create a `Formattable` object that allows to create textual
-        representation of a model.
-
-        :param meta_data:   The meta-data of the data set
-        :param model:       The model
-        :return:            The `Formattable` object that has been created or None, if no such object could be created
-        """
-        pass
-
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner) -> Optional[Any]:
-        formattable = None
-
-        if isinstance(learner, Learner):
-            model = learner.model_
-            formattable = self._create_formattable(meta_data, model)
-
-        if formattable is None:
-            log.error('The learner does not support to create a textual representation of the model')
-
-        return formattable
 
 
 class RuleModelWriter(ModelWriter):
@@ -236,8 +212,12 @@ class RuleModelWriter(ModelWriter):
     def __init__(self, sinks: List[OutputWriter.Sink]):
         super().__init__(sinks)
 
-    def _create_formattable(self, meta_data: MetaData, model) -> Optional[Formattable]:
-        if isinstance(model, RuleModel):
-            return RuleModelWriter.RuleModelFormattable(meta_data, model)
-        else:
-            return None
+    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner) -> Optional[Any]:
+        if isinstance(learner, Learner):
+            model = learner.model_
+            
+            if isinstance(model, RuleModel):
+                return RuleModelWriter.RuleModelFormattable(meta_data, model)
+        
+        log.error('The learner does not support to create a textual representation of the model')
+        return None
