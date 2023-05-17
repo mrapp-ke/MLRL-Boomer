@@ -20,8 +20,7 @@ from mlrl.testbed.evaluation import EvaluationPrinter, BinaryEvaluationPrinter, 
     ProbabilityEvaluationPrinter, EvaluationLogOutput, EvaluationCsvOutput
 from mlrl.testbed.experiments import Experiment, PredictionType, Evaluation, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.io import clear_directory
-from mlrl.testbed.model_characteristics import ModelCharacteristicsPrinter, RuleModelCharacteristicsPrinter, \
-    RuleModelCharacteristicsLogOutput, RuleModelCharacteristicsCsvOutput
+from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
 from mlrl.testbed.models import ModelWriter, RuleModelWriter
 from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.parameters import ParameterInput, ParameterCsvInput, ParameterWriter
@@ -483,6 +482,11 @@ class LearnerRunnable(Runnable, ABC):
         if model_writer is not None:
             post_training_output_writers.append(model_writer)
 
+        model_characteristics_writer = self._create_model_characteristics_writer(args)
+
+        if model_characteristics_writer is not None:
+            post_training_output_writers.append(model_characteristics_writer)
+
         data_characteristics_writer = self.__create_data_characteristics_writer(args)
 
         if data_characteristics_writer is not None:
@@ -520,7 +524,6 @@ class LearnerRunnable(Runnable, ABC):
                                 train_evaluation=train_evaluation,
                                 test_evaluation=test_evaluation,
                                 parameter_input=self.__create_parameter_input(args),
-                                model_characteristics_printer=self._create_model_characteristics_printer(args),
                                 persistence=self.__create_persistence(args))
         experiment.run()
 
@@ -551,7 +554,7 @@ class LearnerRunnable(Runnable, ABC):
 
     def _create_model_writer(self, args) -> Optional[OutputWriter]:
         """
-        May be overridden by subclasses in order to create the `OutputWriter` that should be used to print textual
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output textual
         representations of models.
 
         :param args:    The command line arguments
@@ -559,13 +562,13 @@ class LearnerRunnable(Runnable, ABC):
         """
         return None
 
-    def _create_model_characteristics_printer(self, args) -> Optional[ModelCharacteristicsPrinter]:
+    def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
         """
-        May be overridden by subclasses in order to create the `ModelCharacteristicsPrinter` that should be used to
-        print the characteristics of models.
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output the
+        characteristics of models.
 
         :param args:    The command line arguments
-        :return:        The `ModelCharacteristicsPrinter` that has been created
+        :return:        The `OutputWriter` that has been created
         """
         return None
 
@@ -726,13 +729,13 @@ class RuleLearnerRunnable(LearnerRunnable):
 
         return RuleModelWriter(sinks) if len(sinks) > 0 else None
 
-    def _create_model_characteristics_printer(self, args) -> Optional[ModelCharacteristicsPrinter]:
-        outputs = []
+    def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
+        sinks = []
 
         if args.print_model_characteristics:
-            outputs.append(RuleModelCharacteristicsLogOutput())
+            sinks.append(ModelCharacteristicsWriter.LogSink())
 
         if args.store_model_characteristics and args.output_dir is not None:
-            outputs.append(RuleModelCharacteristicsCsvOutput(output_dir=args.output_dir))
+            sinks.append(ModelCharacteristicsWriter.CsvSink(output_dir=args.output_dir))
 
-        return RuleModelCharacteristicsPrinter(outputs) if len(outputs) > 0 else None
+        return RuleModelCharacteristicsWriter(sinks) if len(sinks) > 0 else None
