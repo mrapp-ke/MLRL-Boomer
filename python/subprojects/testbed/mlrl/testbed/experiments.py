@@ -11,7 +11,6 @@ from timeit import default_timer as timer
 
 from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLearner
 from mlrl.testbed.data import MetaData, AttributeType
-from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter
 from mlrl.testbed.data_splitting import DataSplitter, DataSplit, DataType
 from mlrl.testbed.evaluation import EvaluationPrinter
 from mlrl.testbed.format import format_duration
@@ -286,7 +285,6 @@ class Experiment(DataSplitter.Callback):
                  parameter_input: Optional[ParameterInput] = None,
                  parameter_printer: Optional[ParameterPrinter] = None,
                  model_characteristics_printer: Optional[ModelCharacteristicsPrinter] = None,
-                 data_characteristics_printer: Optional[DataCharacteristicsPrinter] = None,
                  persistence: Optional[ModelPersistence] = None):
         """
         :param base_learner:                    The classifier or ranker to be trained
@@ -304,8 +302,6 @@ class Experiment(DataSplitter.Callback):
         :param parameter_printer:               The printer that should be used to print parameter settings
         :param model_characteristics_printer:   The printer that should be used to print the characteristics of models
                                                 or None, if the characteristics should not be printed
-        :param data_characteristics_printer:    The printer that should be used to print the characteristics of the
-                                                training data or None, if the characteristics should not be printed
         :param persistence:                     The `ModelPersistence` that should be used for loading and saving models
         """
         self.base_learner = base_learner
@@ -319,7 +315,6 @@ class Experiment(DataSplitter.Callback):
         self.parameter_input = parameter_input
         self.parameter_printer = parameter_printer
         self.model_characteristics_printer = model_characteristics_printer
-        self.data_characteristics_printer = data_characteristics_printer
         self.persistence = persistence
 
     def run(self):
@@ -352,12 +347,6 @@ class Experiment(DataSplitter.Callback):
 
         if parameter_printer is not None:
             parameter_printer.print(data_split, current_learner)
-
-        # Print data characteristics, if necessary...
-        data_characteristics_printer = self.data_characteristics_printer
-
-        if data_characteristics_printer is not None:
-            data_characteristics_printer.print(meta_data, data_split, train_x, train_y)
 
         # Set the indices of nominal attributes, if supported...
         if isinstance(current_learner, NominalAttributeLearner):
