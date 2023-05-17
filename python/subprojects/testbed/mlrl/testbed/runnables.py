@@ -8,14 +8,13 @@ import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 from enum import Enum
-from typing import Optional, Tuple, Dict, Set
+from typing import Optional, Dict, Set
 
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.format import format_enum_values, format_dict_keys
 from mlrl.common.config import Parameter, configure_argument_parser, create_kwargs_from_parameters, NONE
 from mlrl.common.options import BooleanOption, parse_param_and_options
-from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
-    DataCharacteristicsCsvOutput
+from mlrl.testbed.data_characteristics import DataCharacteristicsWriter
 from mlrl.testbed.data_splitting import DataSplitter, CrossValidationSplitter, TrainTestSplitter, NoSplitter, DataSet
 from mlrl.testbed.evaluation import EvaluationPrinter, BinaryEvaluationPrinter, ScoreEvaluationPrinter, \
     ProbabilityEvaluationPrinter, EvaluationLogOutput, EvaluationCsvOutput
@@ -24,6 +23,7 @@ from mlrl.testbed.io import clear_directory
 from mlrl.testbed.model_characteristics import ModelCharacteristicsPrinter, RuleModelCharacteristicsPrinter, \
     RuleModelCharacteristicsLogOutput, RuleModelCharacteristicsCsvOutput
 from mlrl.testbed.models import ModelWriter, RuleModelWriter
+from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.parameters import ParameterInput, ParameterCsvInput, ParameterPrinter, ParameterLogOutput, \
     ParameterCsvOutput
 from mlrl.common.rule_learners import SparsePolicy
@@ -354,22 +354,21 @@ class LearnerRunnable(Runnable, ABC):
 
         return PredictionCharacteristicsPrinter(outputs=outputs) if len(outputs) > 0 else None
 
-    def __create_data_characteristics_printer(self, args) -> Tuple[Optional[DataCharacteristicsPrinter], bool]:
-        outputs = []
-
+    def __create_data_characteristics_writer(self, args) -> Optional[OutputWriter]:
+        sinks = []
         value, options = parse_param_and_options(self.PARAM_PRINT_DATA_CHARACTERISTICS, args.print_data_characteristics,
                                                  self.PRINT_DATA_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            outputs.append(DataCharacteristicsLogOutput(options))
+            sinks.append(DataCharacteristicsWriter.LogSink(options=options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_DATA_CHARACTERISTICS, args.store_data_characteristics,
                                                  self.STORE_DATA_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            outputs.append(DataCharacteristicsCsvOutput(options, output_dir=args.output_dir))
+            sinks.append(DataCharacteristicsWriter.CsvSink(output_dir=args.output_dir, options=options))
 
-        return DataCharacteristicsPrinter(outputs=outputs) if len(outputs) > 0 else None
+        return DataCharacteristicsWriter(sinks) if len(sinks) > 0 else None
 
     def _configure_arguments(self, parser: ArgumentParser):
         super()._configure_arguments(parser)
@@ -481,9 +480,14 @@ class LearnerRunnable(Runnable, ABC):
         post_training_output_writers = []
 
         model_writer = self._create_model_writer(args)
-        
+
         if model_writer is not None:
             post_training_output_writers.append(model_writer)
+
+        data_characteristics_writer = self.__create_data_characteristics_writer(args)
+
+        if data_characteristics_writer is not None:
+            pre_training_output_writers.append(data_characteristics_writer)
 
         prediction_type = self.__create_prediction_type(args)
 
@@ -514,7 +518,6 @@ class LearnerRunnable(Runnable, ABC):
                                 parameter_input=self.__create_parameter_input(args),
                                 parameter_printer=self.__create_parameter_printer(args),
                                 model_characteristics_printer=self._create_model_characteristics_printer(args),
-                                data_characteristics_printer=self.__create_data_characteristics_printer(args),
                                 persistence=self.__create_persistence(args))
         experiment.run()
 
@@ -543,13 +546,13 @@ class LearnerRunnable(Runnable, ABC):
         else:
             return None
 
-    def _create_model_writer(self, args) -> Optional[ModelWriter]:
+    def _create_model_writer(self, args) -> Optional[OutputWriter]:
         """
-        May be overridden by subclasses in order to create the `ModelWriter` that should be used to print textual
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to print textual
         representations of models.
 
         :param args:    The command line arguments
-        :return:        The `ModelWriter` that has been created
+        :return:        The `OutputWriter` that has been created
         """
         log.warning('The learner does not support printing textual representations of models')
         return None
@@ -708,7 +711,7 @@ class RuleLearnerRunnable(LearnerRunnable):
             return super()._create_evaluation(args, prediction_type, evaluation_printer, prediction_printer,
                                               prediction_characteristics_printer)
 
-    def _create_model_writer(self, args) -> Optional[ModelWriter]:
+    def _create_model_writer(self, args) -> Optional[OutputWriter]:
         sinks = []
         value, options = parse_param_and_options(self.PARAM_PRINT_RULES, args.print_rules, self.PRINT_RULES_VALUES)
 
