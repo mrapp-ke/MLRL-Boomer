@@ -16,7 +16,6 @@ from mlrl.testbed.data_splitting import DataSplitter, DataSplit, DataType
 from mlrl.testbed.evaluation import EvaluationPrinter
 from mlrl.testbed.format import format_duration
 from mlrl.testbed.model_characteristics import ModelCharacteristicsPrinter
-from mlrl.testbed.models import ModelPrinter
 from mlrl.testbed.parameters import ParameterInput, ParameterPrinter
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
@@ -286,7 +285,6 @@ class Experiment(DataSplitter.Callback):
                  test_evaluation: Optional[Evaluation] = None,
                  parameter_input: Optional[ParameterInput] = None,
                  parameter_printer: Optional[ParameterPrinter] = None,
-                 model_printer: Optional[ModelPrinter] = None,
                  model_characteristics_printer: Optional[ModelCharacteristicsPrinter] = None,
                  data_characteristics_printer: Optional[DataCharacteristicsPrinter] = None,
                  persistence: Optional[ModelPersistence] = None):
@@ -304,8 +302,6 @@ class Experiment(DataSplitter.Callback):
                                                 or None, if the predictions should not be evaluated
         :param parameter_input:                 The input that should be used to read the parameter settings
         :param parameter_printer:               The printer that should be used to print parameter settings
-        :param model_printer:                   The printer that should be used to print textual representations of
-                                                models or None, if no textual representations should be printed
         :param model_characteristics_printer:   The printer that should be used to print the characteristics of models
                                                 or None, if the characteristics should not be printed
         :param data_characteristics_printer:    The printer that should be used to print the characteristics of the
@@ -322,7 +318,6 @@ class Experiment(DataSplitter.Callback):
         self.test_evaluation = test_evaluation
         self.parameter_input = parameter_input
         self.parameter_printer = parameter_printer
-        self.model_printer = model_printer
         self.model_characteristics_printer = model_characteristics_printer
         self.data_characteristics_printer = data_characteristics_printer
         self.persistence = persistence
@@ -415,15 +410,6 @@ class Experiment(DataSplitter.Callback):
                 model_characteristics_printer.print(data_split, current_learner)
             except ValueError:
                 log.error('The learner does not support to obtain model characteristics')
-
-        # Print model, if necessary...
-        model_printer = self.model_printer
-
-        if model_printer is not None:
-            try:
-                model_printer.print(meta_data, data_split, current_learner)
-            except ValueError:
-                log.error('The learner does not support to create a textual representation of the model')
 
     @staticmethod
     def __train(learner, x, y):
