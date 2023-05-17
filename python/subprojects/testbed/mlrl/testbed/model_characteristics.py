@@ -5,7 +5,7 @@ Provides classes for printing certain characteristics of models. The characteris
 outputs, e.g., to the console or to a file.
 """
 import logging as log
-from abc import ABC, abstractmethod
+from abc import ABC
 
 import numpy as np
 from mlrl.common.cython.rule_model import RuleModel, RuleModelVisitor, EmptyBody, ConjunctiveBody, CompleteHead, \
@@ -42,28 +42,6 @@ class ModelCharacteristicsWriter(OutputWriter, ABC):
 
     def __init__(self, sinks: List[OutputWriter.Sink]):
         super().__init__(sinks)
-
-    @abstractmethod
-    def _create_model_characteristics(self, model) -> Optional[Any]:
-        """
-        Must be implemented by subclasses in order to determine the characteristics of a model.
-
-        :param model:   The model
-        :return:        The characteristics of the model or None, if the characteristics could not be determined
-        """
-        pass
-
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner) -> Optional[Any]:
-        model_characteristics = None
-
-        if isinstance(learner, Learner):
-            model = learner.model_
-            model_characteristics = self._create_model_characteristics(model)
-
-        if model_characteristics is None:
-            log.error('The learner does not support to obtain model characteristics')
-
-        return model_characteristics
 
 
 class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
@@ -309,19 +287,23 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
     def __init__(self, sinks: List[OutputWriter.Sink]):
         super().__init__(sinks)
 
-    def _create_model_characteristics(self, model) -> Optional[Any]:
-        if isinstance(model, RuleModel):
-            visitor = RuleModelCharacteristicsWriter.RuleModelCharacteristicsVisitor()
-            model.visit_used(visitor)
-            return RuleModelCharacteristicsWriter.RuleModelCharacteristics(
-                default_rule_index=visitor.default_rule_index,
-                default_rule_pos_predictions=visitor.default_rule_pos_predictions,
-                default_rule_neg_predictions=visitor.default_rule_neg_predictions,
-                num_leq=np.asarray(visitor.num_leq),
-                num_gr=np.asarray(visitor.num_gr),
-                num_eq=np.asarray(visitor.num_eq),
-                num_neq=np.asarray(visitor.num_neq),
-                num_pos_predictions=np.asarray(visitor.num_pos_predictions),
-                num_neg_predictions=np.asarray(visitor.num_neg_predictions))
-        else:
-            return None
+    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner) -> Optional[Any]:
+        if isinstance(learner, Learner):
+            model = learner.model_
+
+            if isinstance(model, RuleModel):
+                visitor = RuleModelCharacteristicsWriter.RuleModelCharacteristicsVisitor()
+                model.visit_used(visitor)
+                return RuleModelCharacteristicsWriter.RuleModelCharacteristics(
+                    default_rule_index=visitor.default_rule_index,
+                    default_rule_pos_predictions=visitor.default_rule_pos_predictions,
+                    default_rule_neg_predictions=visitor.default_rule_neg_predictions,
+                    num_leq=np.asarray(visitor.num_leq),
+                    num_gr=np.asarray(visitor.num_gr),
+                    num_eq=np.asarray(visitor.num_eq),
+                    num_neq=np.asarray(visitor.num_neq),
+                    num_pos_predictions=np.asarray(visitor.num_pos_predictions),
+                    num_neg_predictions=np.asarray(visitor.num_neg_predictions))
+
+        log.error('The learner does not support to obtain model characteristics')
+        return None
