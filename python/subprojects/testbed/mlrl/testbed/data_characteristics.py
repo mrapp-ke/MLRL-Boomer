@@ -12,7 +12,7 @@ from mlrl.common.options import Options
 from mlrl.testbed.characteristics import LabelCharacteristics, density, Characteristic, LABEL_CHARACTERISTICS
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_splitting import DataSplit
-from mlrl.testbed.format import filter_formattables, format_table, OPTION_DECIMALS, OPTION_PERCENTAGE
+from mlrl.testbed.format import filter_formatters, format_table, OPTION_DECIMALS, OPTION_PERCENTAGE
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
 from typing import List
 
@@ -108,8 +108,8 @@ class DataCharacteristicsLogOutput(DataCharacteristicsOutput):
         """
         :param options: The options that should be used for writing the characteristics of a data set to the output
         """
-        self.feature_characteristic_formattables = filter_formattables(FEATURE_CHARACTERISTICS, [options])
-        self.label_characteristic_formattables = filter_formattables(LABEL_CHARACTERISTICS, [options])
+        self.feature_characteristic_formatters = filter_formatters(FEATURE_CHARACTERISTICS, [options])
+        self.label_characteristic_formatters = filter_formatters(LABEL_CHARACTERISTICS, [options])
         self.percentage = options.get_bool(OPTION_PERCENTAGE, True)
         self.decimals = options.get_int(OPTION_DECIMALS, 2)
 
@@ -123,16 +123,16 @@ class DataCharacteristicsLogOutput(DataCharacteristicsOutput):
         msg += ':\n\n%s\n'
         rows = []
 
-        for characteristic in self.feature_characteristic_formattables:
+        for formatter in self.feature_characteristic_formatters:
             rows.append([
-                characteristic.name,
-                characteristic.format(feature_characteristics, percentage=self.percentage, decimals=self.decimals)
+                formatter.name,
+                formatter.format(feature_characteristics, percentage=self.percentage, decimals=self.decimals)
             ])
 
-        for characteristic in self.label_characteristic_formattables:
+        for formatter in self.label_characteristic_formatters:
             rows.append([
-                characteristic.name,
-                characteristic.format(label_characteristics, percentage=self.percentage, decimals=self.decimals)
+                formatter.name,
+                formatter.format(label_characteristics, percentage=self.percentage, decimals=self.decimals)
             ])
 
         log.info(msg, format_table(rows))
@@ -149,8 +149,8 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
         :param output_dir:  The path of the directory, the CSV files should be written to
         """
         self.output_dir = output_dir
-        self.feature_characteristic_formattables = filter_formattables(FEATURE_CHARACTERISTICS, [options])
-        self.label_characteristic_formattables = filter_formattables(LABEL_CHARACTERISTICS, [options])
+        self.feature_characteristic_formatters = filter_formatters(FEATURE_CHARACTERISTICS, [options])
+        self.label_characteristic_formatters = filter_formatters(LABEL_CHARACTERISTICS, [options])
         self.percentage = options.get_bool(OPTION_PERCENTAGE, True)
         self.decimals = options.get_int(OPTION_DECIMALS, 0)
 
@@ -158,15 +158,15 @@ class DataCharacteristicsCsvOutput(DataCharacteristicsOutput):
                                    label_characteristics: LabelCharacteristics):
         columns = {}
 
-        for formattable in self.feature_characteristic_formattables:
-            columns[formattable] = formattable.format(feature_characteristics,
-                                                      percentage=self.percentage,
-                                                      decimals=self.decimals)
+        for formatter in self.feature_characteristic_formatters:
+            columns[formatter] = formatter.format(feature_characteristics,
+                                                  percentage=self.percentage,
+                                                  decimals=self.decimals)
 
-        for formattable in self.label_characteristic_formattables:
-            columns[formattable] = formattable.format(label_characteristics,
-                                                      percentage=self.percentage,
-                                                      decimals=self.decimals)
+        for formatter in self.label_characteristic_formatters:
+            columns[formatter] = formatter.format(label_characteristics,
+                                                  percentage=self.percentage,
+                                                  decimals=self.decimals)
 
         header = sorted(columns.keys())
         with open_writable_csv_file(self.output_dir, 'data_characteristics', data_split.get_fold()) as csv_file:

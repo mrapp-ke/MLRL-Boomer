@@ -93,7 +93,7 @@ def format_table(rows, header=None, alignment=None) -> str:
         return tabulate(rows, headers=header, colalign=alignment, tablefmt='simple_outline')
 
 
-class Formattable:
+class Formatter:
     """
     Allows to create textual representations of values.
     """
@@ -132,18 +132,18 @@ class Formattable:
         return format_float(value, decimals=decimals)
 
 
-def filter_formattables(formattables: List[Formattable], options: List[Options]) -> List[Formattable]:
+def filter_formatters(formatters: List[Formatter], options: List[Options]) -> List[Formatter]:
     """
-    Allows to filter a list of `Formattable` objects.
+    Allows to filter a list of `Formatter` objects.
 
-    :param formattables:    A list of `Formattable` objects
-    :param options:         A list of `Options` objects that should be used for filtering
-    :return:                A filtered list of the given `Formattable` objects
+    :param formatters:  A list of `Formatter` objects
+    :param options:     A list of `Options` objects that should be used for filtering
+    :return:            A filtered list of the given `Formatter` objects
     """
-    filtered: List[Formattable] = []
+    filtered: List[Formatter] = []
 
-    for formattable in formattables:
-        if reduce(lambda a, b: a | b.get_bool(formattable.option, True), options, False):
-            filtered.append(formattable)
+    for formatter in formatters:
+        if reduce(lambda a, b: a | b.get_bool(formatter.option, True), options, False):
+            filtered.append(formatter)
 
     return filtered
