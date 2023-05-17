@@ -4,14 +4,12 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utilities for writing output data to sinks like the console or output files.
 """
 from abc import ABC, abstractmethod
-from typing import List, Optional, Generic, TypeVar
+from typing import List, Optional, Any
 import logging as log
 
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit
 from mlrl.testbed.io import open_writable_txt_file
-
-OutputData = TypeVar('OutputData')
 
 
 class Formattable(ABC):
@@ -29,19 +27,19 @@ class Formattable(ABC):
         pass
 
 
-class OutputWriter(Generic[OutputData], ABC):
+class OutputWriter(ABC):
     """
     An abstract base class for all classes that allow to write output data to one or several sinks, e.g., the console or
     output files.
     """
 
-    class Sink(Generic[OutputData], ABC):
+    class Sink(ABC):
         """
         An abstract base class for all sinks, output data may be written to.
         """
 
         @abstractmethod
-        def write_output(self, data_split: DataSplit, output_data: OutputData):
+        def write_output(self, data_split: DataSplit, output_data):
             """
             Must be implemented by subclasses in order to write output data to the sink.
 
@@ -50,7 +48,7 @@ class OutputWriter(Generic[OutputData], ABC):
             """
             pass
 
-    class LogSink(Generic[OutputData], Sink[OutputData]):
+    class LogSink(Sink):
         """
         Allows to write output data to the console.
         """
@@ -61,7 +59,7 @@ class OutputWriter(Generic[OutputData], ABC):
             """
             self.title = title
 
-        def write_output(self, data_split: DataSplit, output_data: OutputData):
+        def write_output(self, data_split: DataSplit, output_data):
             message = self.title
 
             if data_split.is_cross_validation_used():
@@ -70,7 +68,7 @@ class OutputWriter(Generic[OutputData], ABC):
             message += ':\n\n' + output_data.format()
             log.info(message)
 
-    class TxtSink(Generic[OutputData], Sink[OutputData]):
+    class TxtSink(Sink):
         """
         Allows to write output data into a text file.
         """
@@ -83,18 +81,18 @@ class OutputWriter(Generic[OutputData], ABC):
             self.output_dir = output_dir
             self.file_name = file_name
 
-        def write_output(self, data_split: DataSplit, output_data: OutputData):
+        def write_output(self, data_split: DataSplit, output_data):
             with open_writable_txt_file(self.output_dir, self.file_name, data_split.get_fold()) as txt_file:
                 txt_file.write(output_data.format())
 
-    def __init__(self, sinks: List[Sink[OutputData]]):
+    def __init__(self, sinks: List[Sink]):
         """
         :param sinks: A list that contains all sinks, output data should be written to
         """
         self.sinks = sinks
 
     @abstractmethod
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner) -> Optional[OutputData]:
+    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner) -> Optional[Any]:
         """
         Must be implemented by subclasses in order to generate the output data that should be written to the available
         sinks.
