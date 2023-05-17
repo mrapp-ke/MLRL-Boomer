@@ -60,7 +60,7 @@ class OutputWriter(Generic[OutputData], ABC):
         Allows to write output data into a text file.
         """
 
-        def __init__(self, output_dir: str, file_name: OutputData):
+        def __init__(self, output_dir: str, file_name: str):
             """
             :param output_dir:  The path of the directory, where the text file should be located
             :param file_name:   The name of the text file (without suffix)
