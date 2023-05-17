@@ -14,6 +14,21 @@ from mlrl.testbed.io import open_writable_txt_file
 OutputData = TypeVar('OutputData')
 
 
+class Formattable(ABC):
+    """
+    An abstract base class for all classes from which a textual representation can be created.
+    """
+
+    @abstractmethod
+    def format(self) -> str:
+        """
+        Creates and returns a textual representation of the object.
+
+        :return: The textual representation that has been created
+        """
+        pass
+
+
 class OutputWriter(Generic[OutputData], ABC):
     """
     An abstract base class for all classes that allow to write output data to one or several sinks, e.g., the console or
@@ -52,7 +67,7 @@ class OutputWriter(Generic[OutputData], ABC):
             if data_split.is_cross_validation_used():
                 message += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
 
-            message += ':\n\n' + str(output_data)
+            message += ':\n\n' + output_data.format()
             log.info(message)
 
     class TxtSink(Generic[OutputData], Sink[OutputData]):
@@ -70,7 +85,7 @@ class OutputWriter(Generic[OutputData], ABC):
 
         def write_output(self, data_split: DataSplit, output_data: OutputData):
             with open_writable_txt_file(self.output_dir, self.file_name, data_split.get_fold()) as txt_file:
-                txt_file.write(str(output_data))
+                txt_file.write(output_data.format())
 
     def __init__(self, sinks: List[Sink[OutputData]]):
         """
