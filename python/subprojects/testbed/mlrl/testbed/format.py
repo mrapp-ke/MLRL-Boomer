@@ -119,7 +119,7 @@ class Formatter:
 
     def format(self, value, **kwargs) -> str:
         """
-        Creates and returns a textual representation of a given value
+        Creates and returns a textual representation of a given value.
 
         :param value:   The value
         :return:        The textual representation that has been created
