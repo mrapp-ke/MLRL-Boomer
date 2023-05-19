@@ -18,7 +18,7 @@ from mlrl.testbed.data_characteristics import DataCharacteristicsWriter
 from mlrl.testbed.data_splitting import DataSplitter, CrossValidationSplitter, TrainTestSplitter, NoSplitter, DataSet
 from mlrl.testbed.evaluation import EvaluationPrinter, BinaryEvaluationPrinter, ScoreEvaluationPrinter, \
     ProbabilityEvaluationPrinter, EvaluationLogOutput, EvaluationCsvOutput
-from mlrl.testbed.experiments import Experiment, PredictionType, Evaluation, GlobalEvaluation, IncrementalEvaluation
+from mlrl.testbed.experiments import Experiment, Evaluation, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
 from mlrl.testbed.models import ModelWriter, RuleModelWriter
@@ -28,7 +28,7 @@ from mlrl.common.rule_learners import SparsePolicy
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter, \
     PredictionCharacteristicsLogOutput, PredictionCharacteristicsCsvOutput
-from mlrl.testbed.predictions import PredictionPrinter, PredictionLogOutput, PredictionArffOutput
+from mlrl.testbed.predictions import PredictionType, PredictionPrinter, PredictionLogOutput, PredictionArffOutput
 from mlrl.testbed.evaluation import OPTION_ENABLE_ALL, OPTION_HAMMING_LOSS, OPTION_HAMMING_ACCURACY, \
     OPTION_SUBSET_ZERO_ONE_LOSS, OPTION_SUBSET_ACCURACY, OPTION_MICRO_PRECISION, OPTION_MICRO_RECALL, OPTION_MICRO_F1, \
     OPTION_MICRO_JACCARD, OPTION_MACRO_PRECISION, OPTION_MACRO_RECALL, OPTION_MACRO_F1, OPTION_MACRO_JACCARD, \
