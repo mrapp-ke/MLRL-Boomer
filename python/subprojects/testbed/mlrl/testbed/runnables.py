@@ -364,6 +364,53 @@ class LearnerRunnable(Runnable, ABC):
 
         return DataCharacteristicsWriter(sinks) if len(sinks) > 0 else None
 
+    def __create_pre_training_output_writers(self, args) -> List[OutputWriter]:
+        output_writers = []
+        output_writer = self.__create_data_characteristics_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        output_writer = self.__create_parameter_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        return output_writers
+
+    def __create_post_training_output_writers(self, args) -> List[OutputWriter]:
+        output_writers = []
+        output_writer = self._create_model_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        output_writer = self._create_model_characteristics_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        return output_writers
+
+    def __create_evaluation_output_writers(self, args, prediction_type: PredictionType) -> List[OutputWriter]:
+        output_writers = []
+        output_writer = self.__create_evaluation_writer(args, prediction_type)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        output_writer = self.__create_prediction_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        output_writer = self.__create_prediction_characteristics_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        return output_writers
+
     def _configure_arguments(self, parser: ArgumentParser):
         super()._configure_arguments(parser)
         parser.add_argument('--random-state',
@@ -470,71 +517,18 @@ class LearnerRunnable(Runnable, ABC):
                             + format_enum_values(PredictionType) + '.')
 
     def _run(self, args):
-        pre_training_output_writers = []
-        post_training_output_writers = []
-        train_evaluation_output_writers = []
-        test_evaluation_output_writers = []
-
-        model_writer = self._create_model_writer(args)
-
-        if model_writer is not None:
-            post_training_output_writers.append(model_writer)
-
-        model_characteristics_writer = self._create_model_characteristics_writer(args)
-
-        if model_characteristics_writer is not None:
-            post_training_output_writers.append(model_characteristics_writer)
-
-        data_characteristics_writer = self.__create_data_characteristics_writer(args)
-
-        if data_characteristics_writer is not None:
-            pre_training_output_writers.append(data_characteristics_writer)
-
-        parameter_writer = self.__create_parameter_writer(args)
-
-        if parameter_writer is not None:
-            pre_training_output_writers.append(parameter_writer)
-
         prediction_type = self.__create_prediction_type(args)
-        evaluation_writer = self.__create_evaluation_writer(args, prediction_type)
-
-        if evaluation_writer is not None:
-            test_evaluation_output_writers.append(evaluation_writer)
-
-        prediction_writer = self.__create_prediction_writer(args)
-
-        if prediction_writer is not None:
-            test_evaluation_output_writers.append(prediction_writer)
-
-        prediction_characteristics_writer = self.__create_prediction_characteristics_writer(args)
-
-        if prediction_characteristics_writer is not None:
-            test_evaluation_output_writers.append(prediction_characteristics_writer)
-
-        if args.evaluate_training_data:
-            evaluation_writer = self.__create_evaluation_writer(args, prediction_type)
-
-            if evaluation_writer is not None:
-                train_evaluation_output_writers.append(evaluation_writer)
-
-            prediction_writer = self.__create_prediction_writer(args)
-
-            if prediction_writer is not None:
-                train_evaluation_output_writers.append(prediction_writer)
-
-            prediction_characteristics_writer = self.__create_prediction_characteristics_writer(args)
-
-            if prediction_characteristics_writer is not None:
-                train_evaluation_output_writers.append(prediction_characteristics_writer)
-
-        train_evaluation = self._create_evaluation(args, prediction_type, train_evaluation_output_writers)
-        test_evaluation = self._create_evaluation(args, prediction_type, test_evaluation_output_writers)
+        train_evaluation = self._create_evaluation(
+            args, prediction_type,
+            self.__create_evaluation_output_writers(args, prediction_type) if args.evaluate_training_data else [])
+        test_evaluation = self._create_evaluation(args, prediction_type,
+                                                  self.__create_evaluation_output_writers(args, prediction_type))
         data_splitter = self.__create_data_splitter(args)
         experiment = Experiment(base_learner=self._create_learner(args),
                                 learner_name=self.learner_name,
                                 data_splitter=data_splitter,
-                                pre_training_output_writers=pre_training_output_writers,
-                                post_training_output_writers=post_training_output_writers,
+                                pre_training_output_writers=self.__create_pre_training_output_writers(args),
+                                post_training_output_writers=self.__create_post_training_output_writers(args),
                                 pre_execution_hook=self.__create_pre_execution_hook(args, data_splitter),
                                 train_evaluation=train_evaluation,
                                 test_evaluation=test_evaluation,
