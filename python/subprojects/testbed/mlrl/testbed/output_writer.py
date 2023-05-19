@@ -57,12 +57,18 @@ class OutputWriter(ABC):
         """
 
         @abstractmethod
-        def write_output(self, data_split: DataSplit, output_data):
+        def write_output(self, data_split: DataSplit, data_type: Optional[DataType],
+                         prediction_scope: Optional[PredictionScope], output_data):
             """
             Must be implemented by subclasses in order to write output data to the sink.
 
-            :param data_split:  Information about the split of the available data, the output data corresponds to
-            :param output_data: The output data that should be written to the sink
+            :param data_split:          Information about the split of the available data, the output data corresponds
+                                        to
+            :param data_type:           Specifies whether the predictions and ground truth labels correspond to the
+                                        training or test data or None, if no predictions have been obtained
+            :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
+                                        incrementally or None, if no predictions have been obtained
+            :param output_data:         The output data that should be written to the sink
             """
             pass
 
@@ -79,8 +85,15 @@ class OutputWriter(ABC):
             self.title = title
             self.options = options
 
-        def write_output(self, data_split: DataSplit, output_data):
+        def write_output(self, data_split: DataSplit, data_type: Optional[DataType],
+                         prediction_scope: Optional[PredictionScope], output_data):
             message = self.title
+
+            if data_type is not None:
+                message += ' for ' + data_type.value + ' data'
+
+            if not prediction_scope.is_global():
+                message += ' using a model of size ' + str(prediction_scope.get_model_size())
 
             if data_split.is_cross_validation_used():
                 message += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
@@ -103,7 +116,8 @@ class OutputWriter(ABC):
             self.file_name = file_name
             self.options = options
 
-        def write_output(self, data_split: DataSplit, output_data):
+        def write_output(self, data_split: DataSplit, data_type: Optional[DataType],
+                         prediction_scope: Optional[PredictionScope], output_data):
             with open_writable_txt_file(self.output_dir, self.file_name, data_split.get_fold()) as txt_file:
                 txt_file.write(output_data.format(self.options))
 
@@ -122,13 +136,22 @@ class OutputWriter(ABC):
             self.file_name = file_name
             self.options = options
 
-        def write_output(self, data_split: DataSplit, output_data):
+        def write_output(self, data_split: DataSplit, data_type: Optional[DataType],
+                         prediction_scope: Optional[PredictionScope], output_data):
             tabular_data = output_data.tabularize(self.options)
+            incremental_prediction = prediction_scope is not None and not prediction_scope.is_global()
+
+            if incremental_prediction:
+                for row in tabular_data:
+                    row['Model size'] = prediction_scope.get_model_size()
 
             if len(tabular_data) > 0:
                 header = sorted(tabular_data[0].keys())
 
-                with open_writable_csv_file(self.output_dir, self.file_name, data_split.get_fold()) as csv_file:
+                with open_writable_csv_file(directory=self.output_dir,
+                                            file_name=self.file_name,
+                                            fold=data_split.get_fold(),
+                                            append=incremental_prediction) as csv_file:
                     csv_writer = create_csv_dict_writer(csv_file, header)
 
                     for row in tabular_data:
@@ -198,4 +221,4 @@ class OutputWriter(ABC):
 
             if output_data is not None:
                 for sink in sinks:
-                    sink.write_output(data_split, output_data)
+                    sink.write_output(data_split, data_type, prediction_scope, output_data)
