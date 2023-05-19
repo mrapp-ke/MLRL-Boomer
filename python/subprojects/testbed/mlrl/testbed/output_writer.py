@@ -105,7 +105,10 @@ class OutputWriter(ABC):
                 message += ' using a model of size ' + str(prediction_scope.get_model_size())
 
             if data_split.is_cross_validation_used():
-                message += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
+                fold = data_split.get_fold()
+                
+                if fold is not None:
+                    message += ' (Fold ' + str(fold + 1) + ')'
 
             message += ':\n\n' + output_data.format(self.options, **kwargs) + '\n'
             log.info(message)
