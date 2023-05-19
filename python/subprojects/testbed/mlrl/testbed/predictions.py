@@ -61,7 +61,7 @@ class PredictionWriter(OutputWriter):
             self.output_dir = output_dir
 
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
-                         prediction_scope: Optional[PredictionScope], output_data):
+                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
             file_name = get_file_name_per_fold(prediction_scope.get_file_name(data_type.get_file_name('predictions')),
                                                SUFFIX_ARFF, data_split.get_fold())
             attributes = [Label('Ground Truth ' + label.attribute_name) for label in meta_data.labels]
