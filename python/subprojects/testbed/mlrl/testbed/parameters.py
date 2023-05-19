@@ -12,7 +12,7 @@ from mlrl.testbed.data_splitting import DataSplit
 from mlrl.testbed.format import format_table
 from mlrl.testbed.io import create_csv_dict_reader, open_readable_csv_file
 from mlrl.testbed.output_writer import OutputWriter, Formattable, Tabularizable
-from mlrl.testbed.prediction_scope import PredictionType
+from mlrl.testbed.prediction_scope import PredictionType, PredictionScope
 from typing import Any, List, Optional
 
 
@@ -105,5 +105,6 @@ class ParameterWriter(OutputWriter):
         super().__init__(sinks)
 
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              prediction_type: Optional[PredictionType], predictions: Optional[Any]) -> Optional[Any]:
+                              prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
+                              predictions: Optional[Any]) -> Optional[Any]:
         return Parameters(learner)
