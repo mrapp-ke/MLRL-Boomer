@@ -340,7 +340,8 @@ class EvaluationWriter(OutputWriter, ABC):
 
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
                          prediction_scope: Optional[PredictionScope], output_data, **kwargs):
-            new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: data_split.get_fold()}}
+            fold = data_split.get_fold() if data_split.is_cross_validation_used() else 0
+            new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold}}
             super().write_output(meta_data, data_split, data_type, prediction_scope, output_data, **new_kwargs)
 
             if data_split.is_cross_validation_used() and data_split.is_last_fold():
@@ -357,7 +358,8 @@ class EvaluationWriter(OutputWriter, ABC):
 
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
                          prediction_scope: Optional[PredictionScope], output_data, **kwargs):
-            new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: data_split.get_fold()}}
+            fold = data_split.get_fold() if data_split.is_cross_validation_used() else 0
+            new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold}}
             super().write_output(meta_data, data_split, data_type, prediction_scope, output_data, **new_kwargs)
 
             if data_split.is_cross_validation_used() and data_split.is_last_fold():
