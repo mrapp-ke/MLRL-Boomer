@@ -5,33 +5,19 @@ Provides classes for performing experiments.
 """
 import logging as log
 from abc import ABC, abstractmethod
-from enum import Enum
 from functools import reduce
 from timeit import default_timer as timer
 
 from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLearner
 from mlrl.testbed.data import MetaData, AttributeType
-from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter
 from mlrl.testbed.data_splitting import DataSplitter, DataSplit, DataType
-from mlrl.testbed.evaluation import EvaluationPrinter
 from mlrl.testbed.format import format_duration
-from mlrl.testbed.model_characteristics import ModelCharacteristicsPrinter
-from mlrl.testbed.models import ModelPrinter
-from mlrl.testbed.parameters import ParameterInput, ParameterPrinter
+from mlrl.testbed.parameters import ParameterInput
 from mlrl.testbed.persistence import ModelPersistence
-from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
-from mlrl.testbed.predictions import PredictionScope, GlobalPrediction, IncrementalPrediction, PredictionPrinter
+from mlrl.testbed.prediction_scope import PredictionType, PredictionScope, GlobalPrediction, IncrementalPrediction
+from mlrl.testbed.output_writer import OutputWriter
 from sklearn.base import BaseEstimator, RegressorMixin, clone
-from typing import Optional
-
-
-class PredictionType(Enum):
-    """
-    Contains all possible types of predictions that may be obtained from a learner.
-    """
-    BINARY = 'binary'
-    SCORES = 'scores'
-    PROBABILITIES = 'probabilities'
+from typing import Optional, List
 
 
 class Evaluation(ABC):
@@ -40,22 +26,14 @@ class Evaluation(ABC):
     trained model.
     """
 
-    def __init__(self, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
-                 prediction_printer: Optional[PredictionPrinter],
-                 prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter]):
+    def __init__(self, prediction_type: PredictionType, output_writers: List[OutputWriter]):
         """
-        :param prediction_type:                     The type of the predictions to be obtained
-        :param evaluation_printer:                  The printer to be used for evaluating the predictions or None, if
-                                                    the predictions should not be evaluated
-        :param prediction_printer:                  The printer to be used for printing the predictions or None, if the
-                                                    predictions should not be printed
-        :param prediction_characteristics_printer:  The printer to be used for printing the characteristics of the
-                                                    predictions or None, if the characteristics should not be printed
+        :param prediction_type: The type of the predictions to be obtained
+        :param output_writers:  A list that contains all output writers to be invoked after predictions have been
+                                obtained
         """
         self.prediction_type = prediction_type
-        self.evaluation_printer = evaluation_printer
-        self.prediction_printer = prediction_printer
-        self.prediction_characteristics_printer = prediction_characteristics_printer
+        self.output_writers = output_writers
 
     def _invoke_prediction_function(self, learner, predict_function, predict_proba_function, x):
         """
@@ -96,8 +74,8 @@ class Evaluation(ABC):
         return result
 
     def _evaluate_predictions(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType,
-                              prediction_scope: PredictionScope, train_time: float, predict_time: float, predictions,
-                              y):
+                              prediction_scope: PredictionScope, train_time: float, predict_time: float, x, y,
+                              predictions, learner):
         """
         May be used by subclasses in order to evaluate predictions that have been obtained from a previously trained
         model.
@@ -111,34 +89,17 @@ class Evaluation(ABC):
                                     incrementally
         :param train_time:          The time needed to train the model
         :param predict_time:        The time needed to obtain the predictions
-        :param predictions:         A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                    stores the predictions for the query examples
+        :param x:                   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`,
+                                    that stores the feature values of the query examples
         :param y:                   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
                                     stores the ground truth labels of the query examples
+        :param predictions:         A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
+                                    stores the predictions for the query examples
+        :param learner:             The learner, the predictions have been obtained from
         """
-        if predictions is not None:
-            evaluation_printer = self.evaluation_printer
-
-            if evaluation_printer is not None:
-                evaluation_printer.evaluate(data_split,
-                                            data_type,
-                                            prediction_scope,
-                                            train_time=train_time,
-                                            predict_time=predict_time,
-                                            ground_truth=y,
-                                            predictions=predictions)
-
-            prediction_printer = self.prediction_printer
-
-            if prediction_printer is not None:
-                prediction_printer.print(meta_data, data_split, data_type, prediction_scope, predictions, y)
-
-            # Model characteristics can only be determined in the case of binary predictions
-            if self.prediction_type == PredictionType.BINARY:
-                prediction_characteristics_printer = self.prediction_characteristics_printer
-
-                if prediction_characteristics_printer is not None:
-                    prediction_characteristics_printer.print(data_split, data_type, prediction_scope, predictions)
+        for output_writer in self.output_writers:
+            output_writer.write_output(meta_data, x, y, data_split, learner, data_type, self.prediction_type,
+                                       prediction_scope, predictions, train_time, predict_time)
 
     @abstractmethod
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
@@ -166,10 +127,8 @@ class GlobalEvaluation(Evaluation):
     Obtains and evaluates predictions from a previously trained global model.
     """
 
-    def __init__(self, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
-                 prediction_printer: Optional[PredictionPrinter],
-                 prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter]):
-        super().__init__(prediction_type, evaluation_printer, prediction_printer, prediction_characteristics_printer)
+    def __init__(self, prediction_type: PredictionType, output_writers: List[OutputWriter]):
+        super().__init__(prediction_type, output_writers)
 
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
                              learner, x, y):
@@ -181,16 +140,16 @@ class GlobalEvaluation(Evaluation):
 
         if predictions is not None:
             log.info('Successfully predicted in %s', format_duration(predict_time))
-
-        prediction_scope = GlobalPrediction()
-        self._evaluate_predictions(meta_data,
-                                   data_split,
-                                   data_type,
-                                   prediction_scope,
-                                   train_time=train_time,
-                                   predict_time=predict_time,
-                                   predictions=predictions,
-                                   y=y)
+            self._evaluate_predictions(meta_data=meta_data,
+                                       data_split=data_split,
+                                       data_type=data_type,
+                                       prediction_scope=GlobalPrediction(),
+                                       train_time=train_time,
+                                       predict_time=predict_time,
+                                       x=x,
+                                       y=y,
+                                       predictions=predictions,
+                                       learner=learner)
 
 
 class IncrementalEvaluation(Evaluation):
@@ -199,9 +158,7 @@ class IncrementalEvaluation(Evaluation):
     several rules, using only a subset of the ensemble members with increasing size.
     """
 
-    def __init__(self, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
-                 prediction_printer: Optional[PredictionPrinter],
-                 prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter], min_size: int,
+    def __init__(self, prediction_type: PredictionType, output_writers: List[OutputWriter], min_size: int,
                  max_size: int, step_size: int):
         """
         :param min_size:    The minimum number of ensemble members to be evaluated. Must be at least 0
@@ -210,7 +167,7 @@ class IncrementalEvaluation(Evaluation):
         :param step_size:   The number of additional ensemble members to be considered at each repetition. Must be at
                             least 1
         """
-        super().__init__(prediction_type, evaluation_printer, prediction_printer, prediction_characteristics_printer)
+        super().__init__(prediction_type, output_writers)
         self.min_size = min_size
         self.max_size = max_size
         self.step_size = step_size
@@ -242,16 +199,20 @@ class IncrementalEvaluation(Evaluation):
                 predictions = incremental_predictor.apply_next(next_step_size)
                 end_time = timer()
                 predict_time = end_time - start_time
-                log.info('Successfully predicted in %s', format_duration(predict_time))
-                prediction_scope = IncrementalPrediction(current_size)
-                self._evaluate_predictions(meta_data,
-                                           data_split,
-                                           data_type,
-                                           prediction_scope,
-                                           train_time=train_time,
-                                           predict_time=predict_time,
-                                           predictions=predictions,
-                                           y=y)
+
+                if predictions is not None:
+                    log.info('Successfully predicted in %s', format_duration(predict_time))
+                    self._evaluate_predictions(meta_data=meta_data,
+                                               data_split=data_split,
+                                               data_type=data_type,
+                                               prediction_scope=IncrementalPrediction(current_size),
+                                               train_time=train_time,
+                                               predict_time=predict_time,
+                                               x=x,
+                                               y=y,
+                                               predictions=predictions,
+                                               learner=learner)
+
                 next_step_size = step_size
                 current_size = min(current_size + next_step_size, total_size)
 
@@ -278,46 +239,37 @@ class Experiment(DataSplitter.Callback):
                  base_learner: BaseEstimator,
                  learner_name: str,
                  data_splitter: DataSplitter,
+                 pre_training_output_writers: List[OutputWriter],
+                 post_training_output_writers: List[OutputWriter],
                  pre_execution_hook: Optional[ExecutionHook] = None,
                  train_evaluation: Optional[Evaluation] = None,
                  test_evaluation: Optional[Evaluation] = None,
                  parameter_input: Optional[ParameterInput] = None,
-                 parameter_printer: Optional[ParameterPrinter] = None,
-                 model_printer: Optional[ModelPrinter] = None,
-                 model_characteristics_printer: Optional[ModelCharacteristicsPrinter] = None,
-                 data_characteristics_printer: Optional[DataCharacteristicsPrinter] = None,
                  persistence: Optional[ModelPersistence] = None):
         """
         :param base_learner:                    The classifier or ranker to be trained
         :param learner_name:                    The name of the classifier or ranker
         :param data_splitter:                   The method to be used for splitting the available data into training and
                                                 test sets
+        :param pre_training_output_writers:     A list that contains all output writers to be invoked before training
+        :param post_training_output_writers:    A list that contains all output writers to be invoked after training
         :param pre_execution_hook:              An operation that should be executed before the experiment
         :param train_evaluation:                The method to be used for evaluating the predictions for the training
                                                 data or None, if the predictions should not be evaluated
         :param test_evaluation:                 The method to be used for evaluating the predictions for the test data
                                                 or None, if the predictions should not be evaluated
         :param parameter_input:                 The input that should be used to read the parameter settings
-        :param parameter_printer:               The printer that should be used to print parameter settings
-        :param model_printer:                   The printer that should be used to print textual representations of
-                                                models or None, if no textual representations should be printed
-        :param model_characteristics_printer:   The printer that should be used to print the characteristics of models
-                                                or None, if the characteristics should not be printed
-        :param data_characteristics_printer:    The printer that should be used to print the characteristics of the
-                                                training data or None, if the characteristics should not be printed
         :param persistence:                     The `ModelPersistence` that should be used for loading and saving models
         """
         self.base_learner = base_learner
         self.learner_name = learner_name
         self.data_splitter = data_splitter
+        self.pre_training_output_writers = pre_training_output_writers
+        self.post_training_output_writers = post_training_output_writers
         self.pre_execution_hook = pre_execution_hook
         self.train_evaluation = train_evaluation
         self.test_evaluation = test_evaluation
         self.parameter_input = parameter_input
-        self.parameter_printer = parameter_printer
-        self.model_printer = model_printer
-        self.model_characteristics_printer = model_characteristics_printer
-        self.data_characteristics_printer = data_characteristics_printer
         self.persistence = persistence
 
     def run(self):
@@ -341,17 +293,9 @@ class Experiment(DataSplitter.Callback):
             current_learner.set_params(**params)
             log.info('Successfully applied parameter setting: %s', params)
 
-        # Print parameter setting, if necessary...
-        parameter_printer = self.parameter_printer
-
-        if parameter_printer is not None:
-            parameter_printer.print(data_split, current_learner)
-
-        # Print data characteristics, if necessary...
-        data_characteristics_printer = self.data_characteristics_printer
-
-        if data_characteristics_printer is not None:
-            data_characteristics_printer.print(meta_data, data_split, train_x, train_y)
+        # Write output data before model is trained...
+        for output_writer in self.pre_training_output_writers:
+            output_writer.write_output(meta_data, train_x, train_y, data_split, current_learner)
 
         # Set the indices of nominal attributes, if supported...
         if isinstance(current_learner, NominalAttributeLearner):
@@ -392,23 +336,9 @@ class Experiment(DataSplitter.Callback):
             evaluation.predict_and_evaluate(meta_data, data_split, data_type, train_time, current_learner, test_x,
                                             test_y)
 
-        # Print model characteristics, if necessary...
-        model_characteristics_printer = self.model_characteristics_printer
-
-        if model_characteristics_printer is not None:
-            try:
-                model_characteristics_printer.print(data_split, current_learner)
-            except ValueError:
-                log.error('The learner does not support to obtain model characteristics')
-
-        # Print model, if necessary...
-        model_printer = self.model_printer
-
-        if model_printer is not None:
-            try:
-                model_printer.print(meta_data, data_split, current_learner)
-            except ValueError:
-                log.error('The learner does not support to create a textual representation of the model')
+        # Write output data after model was trained...
+        for output_writer in self.post_training_output_writers:
+            output_writer.write_output(meta_data, train_x, train_y, data_split, current_learner, train_time=train_time)
 
     @staticmethod
     def __train(learner, x, y):

@@ -9,7 +9,7 @@ INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.005270293971989304 seconds
-INFO Evaluation result on test data (Fold 1):
+INFO Evaluation result for test data (Fold 1):
 
 Example-wise F1         59.61
 Example-wise Jaccard    50.83
@@ -35,7 +35,7 @@ INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0036368920118547976 seconds
-INFO Evaluation result on test data (Fold 2):
+INFO Evaluation result for test data (Fold 2):
 
 Example-wise F1         51.28
 Example-wise Jaccard    42.75
@@ -61,7 +61,7 @@ INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0017903620027936995 seconds
-INFO Evaluation result on test data (Fold 3):
+INFO Evaluation result for test data (Fold 3):
 
 Example-wise F1         59.05
 Example-wise Jaccard    49.56
@@ -87,7 +87,7 @@ INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.001761442981660366 seconds
-INFO Evaluation result on test data (Fold 4):
+INFO Evaluation result for test data (Fold 4):
 
 Example-wise F1         49.87
 Example-wise Jaccard    41.36
@@ -113,7 +113,7 @@ INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.004047070979140699 seconds
-INFO Evaluation result on test data (Fold 5):
+INFO Evaluation result for test data (Fold 5):
 
 Example-wise F1         61.13
 Example-wise Jaccard    52.4
@@ -139,7 +139,7 @@ INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0032115689828060567 seconds
-INFO Evaluation result on test data (Fold 6):
+INFO Evaluation result for test data (Fold 6):
 
 Example-wise F1         49.41
 Example-wise Jaccard    39.41
@@ -165,7 +165,7 @@ INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0017237330321222544 seconds
-INFO Evaluation result on test data (Fold 7):
+INFO Evaluation result for test data (Fold 7):
 
 Example-wise F1         59.14
 Example-wise Jaccard    49.63
@@ -191,7 +191,7 @@ INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0016760089783929288 seconds
-INFO Evaluation result on test data (Fold 8):
+INFO Evaluation result for test data (Fold 8):
 
 Example-wise F1         57.29
 Example-wise Jaccard    48.02
@@ -217,7 +217,7 @@ INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0017551440396346152 seconds
-INFO Evaluation result on test data (Fold 9):
+INFO Evaluation result for test data (Fold 9):
 
 Example-wise F1         58.7
 Example-wise Jaccard    49.15
@@ -243,7 +243,7 @@ INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.004026564012747258 seconds
-INFO Evaluation result on test data (Fold 10):
+INFO Evaluation result for test data (Fold 10):
 
 Example-wise F1         52.21
 Example-wise Jaccard    45.65
@@ -262,7 +262,7 @@ Micro Recall            55.45
 Subset 0/1 Loss         71.19
 Subset Accuracy         28.81
 
-INFO Overall evaluation result on test data:
+INFO Evaluation result for test data (Average across 10 folds):
 
 Example-wise F1         55.77  ±4.30
 Example-wise Jaccard    46.88  ±4.15

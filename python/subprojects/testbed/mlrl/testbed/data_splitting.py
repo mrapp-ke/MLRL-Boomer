@@ -150,6 +150,30 @@ class CrossValidationFold(DataSplit):
         return self.current_fold < 0 and self.fold == self.num_folds - 1
 
 
+class CrossValidationOverall(DataSplit):
+    """
+    Provides information about the overall splits of a cross validation.
+    """
+
+    def __init__(self, num_folds: int):
+        """
+        :param num_folds: The total number of folds
+        """
+        self.num_folds = num_folds
+
+    def is_train_test_separated(self) -> bool:
+        return True
+
+    def get_num_folds(self) -> int:
+        return self.num_folds
+
+    def get_fold(self) -> Optional[int]:
+        return None
+
+    def is_last_fold(self) -> bool:
+        return True
+
+
 class DataType(Enum):
     """
     Characterizes data as either training or test data.
