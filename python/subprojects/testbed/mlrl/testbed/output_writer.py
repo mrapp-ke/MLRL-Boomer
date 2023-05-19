@@ -57,11 +57,12 @@ class OutputWriter(ABC):
         """
 
         @abstractmethod
-        def write_output(self, data_split: DataSplit, data_type: Optional[DataType],
+        def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
                          prediction_scope: Optional[PredictionScope], output_data):
             """
             Must be implemented by subclasses in order to write output data to the sink.
 
+            :param meta_data:           The meta data of the data set
             :param data_split:          Information about the split of the available data, the output data corresponds
                                         to
             :param data_type:           Specifies whether the predictions and ground truth labels correspond to the
@@ -85,7 +86,7 @@ class OutputWriter(ABC):
             self.title = title
             self.options = options
 
-        def write_output(self, data_split: DataSplit, data_type: Optional[DataType],
+        def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
                          prediction_scope: Optional[PredictionScope], output_data):
             message = self.title
 
@@ -116,7 +117,7 @@ class OutputWriter(ABC):
             self.file_name = file_name
             self.options = options
 
-        def write_output(self, data_split: DataSplit, data_type: Optional[DataType],
+        def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
                          prediction_scope: Optional[PredictionScope], output_data):
             file_name = self.file_name if data_type is None else data_type.get_file_name(self.file_name)
 
@@ -131,15 +132,15 @@ class OutputWriter(ABC):
 
         def __init__(self, output_dir: str, file_name: str, options: Options = Options()):
             """
-            :param output_dir:  The path of the directory, where the text file should be located
-            :param file_name:   The name of the text file (without suffix)
+            :param output_dir:  The path of the directory, where the CSV file should be located
+            :param file_name:   The name of the CSV file (without suffix)
             :param options:     Options to be taken into account
             """
             self.output_dir = output_dir
             self.file_name = file_name
             self.options = options
 
-        def write_output(self, data_split: DataSplit, data_type: Optional[DataType],
+        def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
                          prediction_scope: Optional[PredictionScope], output_data):
             tabular_data = output_data.tabularize(self.options)
             incremental_prediction = prediction_scope is not None and not prediction_scope.is_global()
@@ -225,4 +226,4 @@ class OutputWriter(ABC):
 
             if output_data is not None:
                 for sink in sinks:
-                    sink.write_output(data_split, data_type, prediction_scope, output_data)
+                    sink.write_output(meta_data, data_split, data_type, prediction_scope, output_data)
