@@ -73,58 +73,60 @@ FEATURE_CHARACTERISTICS: List[Characteristic] = [
 ]
 
 
-class DataCharacteristics(Formattable, Tabularizable):
-    """
-    Stores characteristics of a feature matrix and a label matrix.
-    """
-
-    def __init__(self, feature_characteristics: FeatureCharacteristics, label_characteristics: LabelCharacteristics):
-        """
-        :param feature_characteristics: The characteristics of the feature matrix
-        :param label_characteristics:   The characteristics of the label matrix
-        """
-        self.feature_characteristics = feature_characteristics
-        self.label_characteristics = label_characteristics
-
-    def format(self, options: Options):
-        percentage = options.get_bool(OPTION_PERCENTAGE, True)
-        decimals = options.get_int(OPTION_DECIMALS, 2)
-        rows = []
-
-        for formatter in filter_formatters(FEATURE_CHARACTERISTICS, [options]):
-            rows.append([
-                formatter.name,
-                formatter.format(self.feature_characteristics, percentage=percentage, decimals=decimals)
-            ])
-
-        for formatter in filter_formatters(LABEL_CHARACTERISTICS, [options]):
-            rows.append([
-                formatter.name,
-                formatter.format(self.label_characteristics, percentage=percentage, decimals=decimals)
-            ])
-
-        return format_table(rows)
-
-    def tabularize(self, options: Options) -> List[Dict[str, str]]:
-        percentage = options.get_bool(OPTION_PERCENTAGE, True)
-        decimals = options.get_int(OPTION_DECIMALS, 0)
-        columns = {}
-
-        for formatter in filter_formatters(FEATURE_CHARACTERISTICS, [options]):
-            columns[formatter] = formatter.format(self.feature_characteristics,
-                                                  percentage=percentage,
-                                                  decimals=decimals)
-
-        for formatter in filter_formatters(LABEL_CHARACTERISTICS, [options]):
-            columns[formatter] = formatter.format(self.label_characteristics, percentage=percentage, decimals=decimals)
-
-        return [columns]
-
-
 class DataCharacteristicsWriter(OutputWriter):
     """
     Allows to write the characteristics of a data set to one or severals sinks.
     """
+
+    class DataCharacteristics(Formattable, Tabularizable):
+        """
+        Stores characteristics of a feature matrix and a label matrix.
+        """
+
+        def __init__(self, feature_characteristics: FeatureCharacteristics,
+                     label_characteristics: LabelCharacteristics):
+            """
+            :param feature_characteristics: The characteristics of the feature matrix
+            :param label_characteristics:   The characteristics of the label matrix
+            """
+            self.feature_characteristics = feature_characteristics
+            self.label_characteristics = label_characteristics
+
+        def format(self, options: Options):
+            percentage = options.get_bool(OPTION_PERCENTAGE, True)
+            decimals = options.get_int(OPTION_DECIMALS, 2)
+            rows = []
+
+            for formatter in filter_formatters(FEATURE_CHARACTERISTICS, [options]):
+                rows.append([
+                    formatter.name,
+                    formatter.format(self.feature_characteristics, percentage=percentage, decimals=decimals)
+                ])
+
+            for formatter in filter_formatters(LABEL_CHARACTERISTICS, [options]):
+                rows.append([
+                    formatter.name,
+                    formatter.format(self.label_characteristics, percentage=percentage, decimals=decimals)
+                ])
+
+            return format_table(rows)
+
+        def tabularize(self, options: Options) -> List[Dict[str, str]]:
+            percentage = options.get_bool(OPTION_PERCENTAGE, True)
+            decimals = options.get_int(OPTION_DECIMALS, 0)
+            columns = {}
+
+            for formatter in filter_formatters(FEATURE_CHARACTERISTICS, [options]):
+                columns[formatter] = formatter.format(self.feature_characteristics,
+                                                      percentage=percentage,
+                                                      decimals=decimals)
+
+            for formatter in filter_formatters(LABEL_CHARACTERISTICS, [options]):
+                columns[formatter] = formatter.format(self.label_characteristics,
+                                                      percentage=percentage,
+                                                      decimals=decimals)
+
+            return [columns]
 
     class LogSink(OutputWriter.LogSink):
         """
@@ -151,5 +153,5 @@ class DataCharacteristicsWriter(OutputWriter):
                               train_time: float, predict_time: float) -> Optional[Any]:
         feature_characteristics = FeatureCharacteristics(meta_data, x)
         label_characteristics = LabelCharacteristics(y)
-        return DataCharacteristics(feature_characteristics=feature_characteristics,
-                                   label_characteristics=label_characteristics)
+        return DataCharacteristicsWriter.DataCharacteristics(feature_characteristics=feature_characteristics,
+                                                             label_characteristics=label_characteristics)
