@@ -14,6 +14,7 @@ from mlrl.testbed.format import filter_formatters, format_table, OPTION_DECIMALS
 from mlrl.testbed.output_writer import OutputWriter, Formattable, Tabularizable
 from mlrl.testbed.predictions import PredictionType
 from typing import Any, Dict, List, Optional
+from functools import cached_property
 
 OPTION_EXAMPLES = 'examples'
 
@@ -43,26 +44,19 @@ class FeatureCharacteristics:
         self._meta_data = meta_data
         self.num_examples = x.shape[0]
         self.num_features = x.shape[1]
-        self._num_nominal_features = None
-        self._feature_density = None
 
-    @property
+    @cached_property
     def num_nominal_features(self):
-        if self._num_nominal_features is None:
-            self._num_nominal_features = reduce(
-                lambda num, attribute: num + (1 if attribute.attribute_type == AttributeType.NOMINAL else 0),
-                self._meta_data.attributes, 0)
-        return self._num_nominal_features
+        return reduce(lambda num, attribute: num + (1 if attribute.attribute_type == AttributeType.NOMINAL else 0),
+                      self._meta_data.attributes, 0)
 
     @property
     def num_numerical_features(self):
         return self.num_features - self.num_nominal_features
 
-    @property
+    @cached_property
     def feature_density(self):
-        if self._feature_density is None:
-            self._feature_density = density(self._x)
-        return self._feature_density
+        return density(self._x)
 
     @property
     def feature_sparsity(self):
