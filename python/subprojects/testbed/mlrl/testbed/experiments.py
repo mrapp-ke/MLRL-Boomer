@@ -15,8 +15,7 @@ from mlrl.testbed.evaluation import EvaluationPrinter
 from mlrl.testbed.format import format_duration
 from mlrl.testbed.parameters import ParameterInput
 from mlrl.testbed.persistence import ModelPersistence
-from mlrl.testbed.predictions import PredictionType, PredictionScope, GlobalPrediction, IncrementalPrediction, \
-    PredictionPrinter
+from mlrl.testbed.prediction_scope import PredictionType, PredictionScope, GlobalPrediction, IncrementalPrediction
 from mlrl.testbed.output_writer import OutputWriter
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 from typing import Optional, List
@@ -29,19 +28,16 @@ class Evaluation(ABC):
     """
 
     def __init__(self, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
-                 prediction_printer: Optional[PredictionPrinter], output_writers: List[OutputWriter]):
+                 output_writers: List[OutputWriter]):
         """
         :param prediction_type:     The type of the predictions to be obtained
         :param evaluation_printer:  The printer to be used for evaluating the predictions or None, if the predictions
                                     should not be evaluated
-        :param prediction_printer:  The printer to be used for printing the predictions or None, if the predictions
-                                    should not be printed
         :param output_writers:      A list that contains all output writers to be invoked after predictions have been
                                     obtained
         """
         self.prediction_type = prediction_type
         self.evaluation_printer = evaluation_printer
-        self.prediction_printer = prediction_printer
         self.output_writers = output_writers
 
     def _invoke_prediction_function(self, learner, predict_function, predict_proba_function, x):
@@ -122,11 +118,6 @@ class Evaluation(ABC):
             output_writer.write_output(meta_data, x, y, data_split, learner, data_type, self.prediction_type,
                                        prediction_scope, predictions)
 
-        prediction_printer = self.prediction_printer
-
-        if prediction_printer is not None:
-            prediction_printer.print(meta_data, data_split, data_type, prediction_scope, predictions, y)
-
     @abstractmethod
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
                              learner, x, y):
@@ -154,8 +145,8 @@ class GlobalEvaluation(Evaluation):
     """
 
     def __init__(self, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
-                 prediction_printer: Optional[PredictionPrinter], output_writers: List[OutputWriter]):
-        super().__init__(prediction_type, evaluation_printer, prediction_printer, output_writers)
+                 output_writers: List[OutputWriter]):
+        super().__init__(prediction_type, evaluation_printer, output_writers)
 
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
                              learner, x, y):
@@ -186,8 +177,7 @@ class IncrementalEvaluation(Evaluation):
     """
 
     def __init__(self, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
-                 prediction_printer: Optional[PredictionPrinter], output_writers: List[OutputWriter], min_size: int,
-                 max_size: int, step_size: int):
+                 output_writers: List[OutputWriter], min_size: int, max_size: int, step_size: int):
         """
         :param min_size:    The minimum number of ensemble members to be evaluated. Must be at least 0
         :param max_size:    The maximum number of ensemble members to be evaluated. Must be greater than `min_size` or
@@ -195,7 +185,7 @@ class IncrementalEvaluation(Evaluation):
         :param step_size:   The number of additional ensemble members to be considered at each repetition. Must be at
                             least 1
         """
-        super().__init__(prediction_type, evaluation_printer, prediction_printer, output_writers)
+        super().__init__(prediction_type, evaluation_printer, output_writers)
         self.min_size = min_size
         self.max_size = max_size
         self.step_size = step_size

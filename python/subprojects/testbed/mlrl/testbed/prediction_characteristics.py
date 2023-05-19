@@ -9,7 +9,7 @@ from mlrl.testbed.characteristics import LabelCharacteristics
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit
 from mlrl.testbed.output_writer import OutputWriter
-from mlrl.testbed.predictions import PredictionType
+from mlrl.testbed.prediction_scope import PredictionType
 from typing import Any, List, Optional
 
 

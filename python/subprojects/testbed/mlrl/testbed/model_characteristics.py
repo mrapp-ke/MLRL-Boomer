@@ -16,7 +16,7 @@ from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit
 from mlrl.testbed.format import format_table, format_percentage, format_float
 from mlrl.testbed.output_writer import OutputWriter, Formattable, Tabularizable
-from mlrl.testbed.predictions import PredictionType
+from mlrl.testbed.prediction_scope import PredictionType
 from typing import Any, Dict, List, Optional
 
 

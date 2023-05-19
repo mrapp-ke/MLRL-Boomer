@@ -16,7 +16,7 @@ from mlrl.common.options import Options
 from mlrl.testbed.data import Attribute, MetaData
 from mlrl.testbed.data_splitting import DataSplit
 from mlrl.testbed.output_writer import OutputWriter, Formattable
-from mlrl.testbed.predictions import PredictionType
+from mlrl.testbed.prediction_scope import PredictionType
 from typing import List, Optional, Any
 
 OPTION_PRINT_FEATURE_NAMES = 'print_feature_names'
