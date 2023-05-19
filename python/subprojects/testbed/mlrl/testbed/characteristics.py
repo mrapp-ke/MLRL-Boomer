@@ -6,9 +6,9 @@ Provides functions to determine certain characteristics of feature or label matr
 import numpy as np
 from mlrl.common.options import Options
 from mlrl.testbed.format import Formatter, filter_formatters, format_table, OPTION_PERCENTAGE, OPTION_DECIMALS
-from mlrl.testbed.output_writer import Formattable
+from mlrl.testbed.output_writer import Formattable, Tabularizable
 from scipy.sparse import issparse
-from typing import List
+from typing import Dict, List
 
 OPTION_LABELS = 'labels'
 
@@ -95,7 +95,7 @@ def label_imbalance_ratio(y) -> float:
         return 0.0
 
 
-class LabelCharacteristics(Formattable):
+class LabelCharacteristics(Formattable, Tabularizable):
     """
     Stores characteristics of a label matrix.
     """
@@ -148,6 +148,16 @@ class LabelCharacteristics(Formattable):
             rows.append([formatter.name, formatter.format(self, percentage=percentage, decimals=decimals)])
 
         return format_table(rows)
+    
+    def tabularize(self, options: Options) -> List[Dict[str, str]]:
+        percentage = options.get_bool(OPTION_PERCENTAGE, True)
+        decimals = options.get_int(OPTION_DECIMALS, 0)
+        columns = {}
+
+        for formatter in filter_formatters(LABEL_CHARACTERISTICS, [options]):
+            columns[formatter] = formatter.format(self, percentage=percentage, decimals=decimals)
+
+        return [columns]
 
 
 class Characteristic(Formatter):
