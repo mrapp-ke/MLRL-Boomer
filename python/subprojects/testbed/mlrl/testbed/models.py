@@ -198,7 +198,7 @@ class RuleModelWriter(ModelWriter):
             elif self.print_bodies:
                 text.write('\n')
 
-        def format(self, options: Options) -> str:
+        def format(self, options: Options, **kwargs) -> str:
             self.print_feature_names = options.get_bool(OPTION_PRINT_FEATURE_NAMES, True)
             self.print_label_names = options.get_bool(OPTION_PRINT_LABEL_NAMES, True)
             self.print_nominal_values = options.get_bool(OPTION_PRINT_NOMINAL_VALUES, True)

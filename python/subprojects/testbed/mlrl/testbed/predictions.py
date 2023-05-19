@@ -34,7 +34,7 @@ class PredictionWriter(OutputWriter):
             self.predictions = predictions
             self.ground_truth = ground_truth
 
-        def format(self, _: Options) -> str:
+        def format(self, _: Options, **kwargs) -> str:
             text = 'Ground truth:\n\n'
             text += np.array2string(self.ground_truth, threshold=sys.maxsize)
             text += '\n\nPredictions:\n\n'
