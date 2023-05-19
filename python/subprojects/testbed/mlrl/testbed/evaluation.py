@@ -343,7 +343,7 @@ class EvaluationWriter(OutputWriter, ABC):
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: data_split.get_fold()}}
             super().write_output(meta_data, data_split, data_type, prediction_scope, output_data, **new_kwargs)
 
-            if data_split.is_cross_validation_used and data_split.is_last_fold():
+            if data_split.is_cross_validation_used() and data_split.is_last_fold():
                 super().write_output(meta_data, CrossValidationOverall(data_split.get_num_folds()), data_type,
                                      prediction_scope, output_data, **kwargs)
 
@@ -360,7 +360,7 @@ class EvaluationWriter(OutputWriter, ABC):
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: data_split.get_fold()}}
             super().write_output(meta_data, data_split, data_type, prediction_scope, output_data, **new_kwargs)
 
-            if data_split.is_cross_validation_used and data_split.is_last_fold():
+            if data_split.is_cross_validation_used() and data_split.is_last_fold():
                 super().write_output(meta_data, CrossValidationOverall(data_split.get_num_folds()), data_type,
                                      prediction_scope, output_data, **kwargs)
 
