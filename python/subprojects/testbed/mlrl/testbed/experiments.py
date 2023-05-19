@@ -11,7 +11,6 @@ from timeit import default_timer as timer
 from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLearner
 from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_splitting import DataSplitter, DataSplit, DataType
-from mlrl.testbed.evaluation import EvaluationPrinter
 from mlrl.testbed.format import format_duration
 from mlrl.testbed.parameters import ParameterInput
 from mlrl.testbed.persistence import ModelPersistence
@@ -27,17 +26,13 @@ class Evaluation(ABC):
     trained model.
     """
 
-    def __init__(self, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
-                 output_writers: List[OutputWriter]):
+    def __init__(self, prediction_type: PredictionType, output_writers: List[OutputWriter]):
         """
-        :param prediction_type:     The type of the predictions to be obtained
-        :param evaluation_printer:  The printer to be used for evaluating the predictions or None, if the predictions
-                                    should not be evaluated
-        :param output_writers:      A list that contains all output writers to be invoked after predictions have been
-                                    obtained
+        :param prediction_type: The type of the predictions to be obtained
+        :param output_writers:  A list that contains all output writers to be invoked after predictions have been
+                                obtained
         """
         self.prediction_type = prediction_type
-        self.evaluation_printer = evaluation_printer
         self.output_writers = output_writers
 
     def _invoke_prediction_function(self, learner, predict_function, predict_proba_function, x):
@@ -102,18 +97,6 @@ class Evaluation(ABC):
                                     stores the predictions for the query examples
         :param learner:             The learner, the predictions have been obtained from
         """
-        evaluation_printer = self.evaluation_printer
-
-        if evaluation_printer is not None:
-            evaluation_printer.evaluate(data_split=data_split,
-                                        data_type=data_type,
-                                        prediction_scope=prediction_scope,
-                                        train_time=train_time,
-                                        predict_time=predict_time,
-                                        ground_truth=y,
-                                        predictions=predictions)
-
-        # Write output data after predictions have been obtained...
         for output_writer in self.output_writers:
             output_writer.write_output(meta_data, x, y, data_split, learner, data_type, self.prediction_type,
                                        prediction_scope, predictions, train_time, predict_time)
@@ -144,9 +127,8 @@ class GlobalEvaluation(Evaluation):
     Obtains and evaluates predictions from a previously trained global model.
     """
 
-    def __init__(self, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
-                 output_writers: List[OutputWriter]):
-        super().__init__(prediction_type, evaluation_printer, output_writers)
+    def __init__(self, prediction_type: PredictionType, output_writers: List[OutputWriter]):
+        super().__init__(prediction_type, output_writers)
 
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
                              learner, x, y):
@@ -176,8 +158,8 @@ class IncrementalEvaluation(Evaluation):
     several rules, using only a subset of the ensemble members with increasing size.
     """
 
-    def __init__(self, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
-                 output_writers: List[OutputWriter], min_size: int, max_size: int, step_size: int):
+    def __init__(self, prediction_type: PredictionType, output_writers: List[OutputWriter], min_size: int,
+                 max_size: int, step_size: int):
         """
         :param min_size:    The minimum number of ensemble members to be evaluated. Must be at least 0
         :param max_size:    The maximum number of ensemble members to be evaluated. Must be greater than `min_size` or
@@ -185,7 +167,7 @@ class IncrementalEvaluation(Evaluation):
         :param step_size:   The number of additional ensemble members to be considered at each repetition. Must be at
                             least 1
         """
-        super().__init__(prediction_type, evaluation_printer, output_writers)
+        super().__init__(prediction_type, output_writers)
         self.min_size = min_size
         self.max_size = max_size
         self.step_size = step_size
