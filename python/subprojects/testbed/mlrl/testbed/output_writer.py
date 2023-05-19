@@ -52,10 +52,18 @@ class OutputWriter(ABC):
     output files.
     """
 
+    KWARG_DATA_SPLIT = 'data_split'
+
     class Sink(ABC):
         """
         An abstract base class for all sinks, output data may be written to.
         """
+
+        def __init__(self, options: Options = Options()):
+            """
+            :param options: Options to be taken into account
+            """
+            self.options = options
 
         @abstractmethod
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
@@ -82,10 +90,9 @@ class OutputWriter(ABC):
         def __init__(self, title: str, options: Options = Options()):
             """
             :param title:   A title that is printed before the actual output data
-            :param options: Options to be taken into account
             """
+            super().__init__(options=options)
             self.title = title
-            self.options = options
 
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
                          prediction_scope: Optional[PredictionScope], output_data):
@@ -100,7 +107,8 @@ class OutputWriter(ABC):
             if data_split.is_cross_validation_used():
                 message += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
 
-            message += ':\n\n' + output_data.format(self.options) + '\n'
+            kwargs = {OutputWriter.KWARG_DATA_SPLIT: data_split}
+            message += ':\n\n' + output_data.format(self.options, **kwargs) + '\n'
             log.info(message)
 
     class TxtSink(Sink):
@@ -112,11 +120,10 @@ class OutputWriter(ABC):
             """
             :param output_dir:  The path of the directory, where the text file should be located
             :param file_name:   The name of the text file (without suffix)
-            :param options:     Options to be taken into account
             """
+            super().__init__(options=options)
             self.output_dir = output_dir
             self.file_name = file_name
-            self.options = options
 
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
                          prediction_scope: Optional[PredictionScope], output_data):
@@ -124,7 +131,8 @@ class OutputWriter(ABC):
 
             with open_writable_txt_file(directory=self.output_dir, file_name=file_name,
                                         fold=data_split.get_fold()) as txt_file:
-                txt_file.write(output_data.format(self.options))
+                kwargs = {OutputWriter.KWARG_DATA_SPLIT: data_split}
+                txt_file.write(output_data.format(self.options, **kwargs))
 
     class CsvSink(Sink):
         """
@@ -135,15 +143,15 @@ class OutputWriter(ABC):
             """
             :param output_dir:  The path of the directory, where the CSV file should be located
             :param file_name:   The name of the CSV file (without suffix)
-            :param options:     Options to be taken into account
             """
+            super().__init__(options=options)
             self.output_dir = output_dir
             self.file_name = file_name
-            self.options = options
 
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
                          prediction_scope: Optional[PredictionScope], output_data):
-            tabular_data = output_data.tabularize(self.options)
+            kwargs = {OutputWriter.KWARG_DATA_SPLIT: data_split}
+            tabular_data = output_data.tabularize(self.options, **kwargs)
             incremental_prediction = prediction_scope is not None and not prediction_scope.is_global()
 
             if incremental_prediction:
