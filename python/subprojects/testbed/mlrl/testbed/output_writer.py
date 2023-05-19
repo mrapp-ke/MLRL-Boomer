@@ -67,7 +67,7 @@ class OutputWriter(ABC):
 
         @abstractmethod
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
-                         prediction_scope: Optional[PredictionScope], output_data):
+                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
             """
             Must be implemented by subclasses in order to write output data to the sink.
 
@@ -95,7 +95,7 @@ class OutputWriter(ABC):
             self.title = title
 
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
-                         prediction_scope: Optional[PredictionScope], output_data):
+                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
             message = self.title
 
             if data_type is not None:
@@ -107,7 +107,6 @@ class OutputWriter(ABC):
             if data_split.is_cross_validation_used():
                 message += ' (Fold ' + str(data_split.get_fold() + 1) + ')'
 
-            kwargs = {OutputWriter.KWARG_DATA_SPLIT: data_split}
             message += ':\n\n' + output_data.format(self.options, **kwargs) + '\n'
             log.info(message)
 
@@ -126,12 +125,11 @@ class OutputWriter(ABC):
             self.file_name = file_name
 
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
-                         prediction_scope: Optional[PredictionScope], output_data):
+                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
             file_name = self.file_name if data_type is None else data_type.get_file_name(self.file_name)
 
             with open_writable_txt_file(directory=self.output_dir, file_name=file_name,
                                         fold=data_split.get_fold()) as txt_file:
-                kwargs = {OutputWriter.KWARG_DATA_SPLIT: data_split}
                 txt_file.write(output_data.format(self.options, **kwargs))
 
     class CsvSink(Sink):
@@ -149,8 +147,7 @@ class OutputWriter(ABC):
             self.file_name = file_name
 
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
-                         prediction_scope: Optional[PredictionScope], output_data):
-            kwargs = {OutputWriter.KWARG_DATA_SPLIT: data_split}
+                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
             tabular_data = output_data.tabularize(self.options, **kwargs)
             incremental_prediction = prediction_scope is not None and not prediction_scope.is_global()
 
