@@ -10,7 +10,7 @@ INFO Predicting for 196 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted probability estimates
 INFO Successfully predicted in 0.006304007954895496 seconds
-INFO Overall evaluation result forr test data:
+INFO Evaluation result for test data:
 
 Coverage Error                    2.68
 Discounted Cumulative Gain        1.39

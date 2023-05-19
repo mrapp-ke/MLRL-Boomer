@@ -291,7 +291,7 @@ Micro Recall            60.18
 Subset 0/1 Loss         75
 Subset Accuracy         25
 
-INFO Overall evaluation result for test data:
+INFO Evaluation result for test data (Average across 10 folds):
 
 Example-wise F1         60.82  ±2.90
 Example-wise Jaccard    53.08  ±3.07
