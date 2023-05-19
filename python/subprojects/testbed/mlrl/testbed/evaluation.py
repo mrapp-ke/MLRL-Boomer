@@ -15,7 +15,7 @@ from mlrl.common.options import Options
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.format import Formatter, filter_formatters, format_table, OPTION_DECIMALS, OPTION_PERCENTAGE
 from mlrl.testbed.io import open_writable_csv_file, create_csv_dict_writer
-from mlrl.testbed.predictions import PredictionScope
+from mlrl.testbed.prediction_scope import PredictionScope
 from sklearn.utils.multiclass import is_multilabel
 from typing import List, Dict, Set, Optional, Tuple
 

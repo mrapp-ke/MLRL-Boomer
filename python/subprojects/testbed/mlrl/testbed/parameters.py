@@ -12,7 +12,7 @@ from mlrl.testbed.data_splitting import DataSplit
 from mlrl.testbed.format import format_table
 from mlrl.testbed.io import create_csv_dict_reader, open_readable_csv_file
 from mlrl.testbed.output_writer import OutputWriter, Formattable, Tabularizable
-from mlrl.testbed.predictions import PredictionType
+from mlrl.testbed.prediction_scope import PredictionType
 from typing import Any, List, Optional
 
 

@@ -12,7 +12,7 @@ from mlrl.testbed.data import MetaData, AttributeType
 from mlrl.testbed.data_splitting import DataSplit
 from mlrl.testbed.format import filter_formatters, format_table, OPTION_DECIMALS, OPTION_PERCENTAGE
 from mlrl.testbed.output_writer import OutputWriter, Formattable, Tabularizable
-from mlrl.testbed.predictions import PredictionType
+from mlrl.testbed.prediction_scope import PredictionType
 from typing import Any, Dict, List, Optional
 from functools import cached_property
 

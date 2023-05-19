@@ -10,7 +10,7 @@ import logging as log
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.io import open_writable_txt_file, open_writable_csv_file, create_csv_dict_writer
-from mlrl.testbed.predictions import PredictionType, PredictionScope
+from mlrl.testbed.prediction_scope import PredictionType, PredictionScope
 from mlrl.common.options import Options
 
 
