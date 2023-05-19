@@ -10,7 +10,7 @@ from unittest import TestCase, SkipTest
 
 from typing import List, Optional
 
-OVERWRITE_EXPECTED_OUTPUT_FILES = True
+OVERWRITE_EXPECTED_OUTPUT_FILES = False
 
 DIR_RES = 'python/subprojects/testbed/tests/res'
 
