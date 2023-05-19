@@ -92,7 +92,7 @@ class OutputWriter(ABC):
             if data_type is not None:
                 message += ' for ' + data_type.value + ' data'
 
-            if not prediction_scope.is_global():
+            if prediction_scope is not None and not prediction_scope.is_global():
                 message += ' using a model of size ' + str(prediction_scope.get_model_size())
 
             if data_split.is_cross_validation_used():
