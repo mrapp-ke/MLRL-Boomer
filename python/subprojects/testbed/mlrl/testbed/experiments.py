@@ -116,7 +116,7 @@ class Evaluation(ABC):
         # Write output data after predictions have been obtained...
         for output_writer in self.output_writers:
             output_writer.write_output(meta_data, x, y, data_split, learner, data_type, self.prediction_type,
-                                       prediction_scope, predictions)
+                                       prediction_scope, predictions, train_time, predict_time)
 
     @abstractmethod
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
@@ -356,7 +356,7 @@ class Experiment(DataSplitter.Callback):
 
         # Write output data after model was trained...
         for output_writer in self.post_training_output_writers:
-            output_writer.write_output(meta_data, train_x, train_y, data_split, current_learner)
+            output_writer.write_output(meta_data, train_x, train_y, data_split, current_learner, train_time=train_time)
 
     @staticmethod
     def __train(learner, x, y):

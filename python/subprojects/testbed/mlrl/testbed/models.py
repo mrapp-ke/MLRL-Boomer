@@ -215,7 +215,7 @@ class RuleModelWriter(ModelWriter):
 
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
-                              predictions: Optional[Any]) -> Optional[Any]:
+                              predictions: Optional[Any], train_time: float, predict_time: float) -> Optional[Any]:
         if isinstance(learner, Learner):
             model = learner.model_
 
