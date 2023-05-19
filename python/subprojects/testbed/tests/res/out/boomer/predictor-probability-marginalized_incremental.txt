@@ -10,7 +10,7 @@ DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted probability estimates
 INFO Predicting for 196 test examples using a model of size 50...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 50:
+INFO Overall evaluation result ffrr test data using a model of size 50:
 
 Coverage Error                    2.94
 Discounted Cumulative Gain        1.35
@@ -24,7 +24,7 @@ Ranking Loss                      0.17
 
 INFO Predicting for 196 test examples using a model of size 100...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 100:
+INFO Overall evaluation result ffrr test data using a model of size 100:
 
 Coverage Error                    2.81
 Discounted Cumulative Gain        1.36
@@ -38,7 +38,7 @@ Ranking Loss                      0.16
 
 INFO Predicting for 196 test examples using a model of size 150...
 INFO Successfully predicted in 1 millisecond
-INFO Overall evaluation result on test data using a model of size 150:
+INFO Overall evaluation result ffrr test data using a model of size 150:
 
 Coverage Error                    2.78
 Discounted Cumulative Gain        1.36
@@ -52,7 +52,7 @@ Ranking Loss                      0.16
 
 INFO Predicting for 196 test examples using a model of size 200...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 200:
+INFO Overall evaluation result ffrr test data using a model of size 200:
 
 Coverage Error                    2.74
 Discounted Cumulative Gain        1.37
@@ -66,7 +66,7 @@ Ranking Loss                      0.15
 
 INFO Predicting for 196 test examples using a model of size 250...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 250:
+INFO Overall evaluation result ffrr test data using a model of size 250:
 
 Coverage Error                    2.76
 Discounted Cumulative Gain        1.37
@@ -80,7 +80,7 @@ Ranking Loss                      0.15
 
 INFO Predicting for 196 test examples using a model of size 300...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 300:
+INFO Overall evaluation result forr test data using a model of size 300:
 
 Coverage Error                    2.79
 Discounted Cumulative Gain        1.37
@@ -94,7 +94,7 @@ Ranking Loss                      0.16
 
 INFO Predicting for 196 test examples using a model of size 350...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 350:
+INFO Overall evaluation result forr test data using a model of size 350:
 
 Coverage Error                    2.8
 Discounted Cumulative Gain        1.37
@@ -108,7 +108,7 @@ Ranking Loss                      0.16
 
 INFO Predicting for 196 test examples using a model of size 400...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 400:
+INFO Overall evaluation result forr test data using a model of size 400:
 
 Coverage Error                    2.8
 Discounted Cumulative Gain        1.37
@@ -122,7 +122,7 @@ Ranking Loss                      0.16
 
 INFO Predicting for 196 test examples using a model of size 450...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 450:
+INFO Overall evaluation result forr test data using a model of size 450:
 
 Coverage Error                    2.8
 Discounted Cumulative Gain        1.37
@@ -136,7 +136,7 @@ Ranking Loss                      0.16
 
 INFO Predicting for 196 test examples using a model of size 500...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 500:
+INFO Overall evaluation result forr test data using a model of size 500:
 
 Coverage Error                    2.78
 Discounted Cumulative Gain        1.37
@@ -150,7 +150,7 @@ Ranking Loss                      0.15
 
 INFO Predicting for 196 test examples using a model of size 550...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 550:
+INFO Overall evaluation result forr test data using a model of size 550:
 
 Coverage Error                    2.77
 Discounted Cumulative Gain        1.37
@@ -164,7 +164,7 @@ Ranking Loss                      0.15
 
 INFO Predicting for 196 test examples using a model of size 600...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 600:
+INFO Overall evaluation result forr test data using a model of size 600:
 
 Coverage Error                    2.75
 Discounted Cumulative Gain        1.37
@@ -178,7 +178,7 @@ Ranking Loss                      0.15
 
 INFO Predicting for 196 test examples using a model of size 650...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 650:
+INFO Overall evaluation result forr test data using a model of size 650:
 
 Coverage Error                    2.74
 Discounted Cumulative Gain        1.37
@@ -192,7 +192,7 @@ Ranking Loss                      0.15
 
 INFO Predicting for 196 test examples using a model of size 700...
 INFO Successfully predicted in 3 milliseconds
-INFO Overall evaluation result on test data using a model of size 700:
+INFO Overall evaluation result forr test data using a model of size 700:
 
 Coverage Error                    2.76
 Discounted Cumulative Gain        1.37
@@ -206,7 +206,7 @@ Ranking Loss                      0.15
 
 INFO Predicting for 196 test examples using a model of size 750...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 750:
+INFO Overall evaluation result forr test data using a model of size 750:
 
 Coverage Error                    2.71
 Discounted Cumulative Gain        1.38
@@ -220,7 +220,7 @@ Ranking Loss                      0.14
 
 INFO Predicting for 196 test examples using a model of size 800...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 800:
+INFO Overall evaluation result forr test data using a model of size 800:
 
 Coverage Error                    2.71
 Discounted Cumulative Gain        1.38
@@ -234,7 +234,7 @@ Ranking Loss                      0.14
 
 INFO Predicting for 196 test examples using a model of size 850...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 850:
+INFO Overall evaluation result forr test data using a model of size 850:
 
 Coverage Error                    2.72
 Discounted Cumulative Gain        1.38
@@ -248,7 +248,7 @@ Ranking Loss                      0.14
 
 INFO Predicting for 196 test examples using a model of size 900...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 900:
+INFO Overall evaluation result forr test data using a model of size 900:
 
 Coverage Error                    2.7
 Discounted Cumulative Gain        1.38
@@ -262,7 +262,7 @@ Ranking Loss                      0.14
 
 INFO Predicting for 196 test examples using a model of size 950...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 950:
+INFO Overall evaluation result forr test data using a model of size 950:
 
 Coverage Error                    2.69
 Discounted Cumulative Gain        1.39
@@ -276,7 +276,7 @@ Ranking Loss                      0.14
 
 INFO Predicting for 196 test examples using a model of size 1000...
 INFO Successfully predicted in 0 milliseconds
-INFO Overall evaluation result on test data using a model of size 1000:
+INFO Overall evaluation result forr test data using a model of size 1000:
 
 Coverage Error                    2.7
 Discounted Cumulative Gain        1.39
