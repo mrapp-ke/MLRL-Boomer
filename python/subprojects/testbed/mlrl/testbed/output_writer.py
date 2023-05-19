@@ -20,7 +20,7 @@ class Formattable(ABC):
     """
 
     @abstractmethod
-    def format(self, options: Options) -> str:
+    def format(self, options: Options, **kwargs) -> str:
         """
         Creates and returns a textual representation of the object.
 
@@ -35,7 +35,7 @@ class Tabularizable(ABC):
     An abstract base class for all classes from which a tabular representation can be created.
     """
 
-    def tabularize(self, options: Options) -> List[Dict[str, str]]:
+    def tabularize(self, options: Options, **kwargs) -> List[Dict[str, str]]:
         """
         Creates and returns a tabular representation of the object.
 
