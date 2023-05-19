@@ -40,7 +40,6 @@ INFO Model characteristics (Fold 1):
 │ Predictions                 │         1 │         1 │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-
 INFO Fold 2 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 2):
@@ -78,7 +77,6 @@ INFO Model characteristics (Fold 2):
 │ Conditions                  │         1 │         1 │         1 │
 │ Predictions                 │         1 │         1 │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
-
 
 INFO Fold 3 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -118,7 +116,6 @@ INFO Model characteristics (Fold 3):
 │ Predictions                 │         1 │         1 │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-
 INFO Fold 4 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 4):
@@ -156,7 +153,6 @@ INFO Model characteristics (Fold 4):
 │ Conditions                  │         1 │         1 │         1 │
 │ Predictions                 │         1 │         1 │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
-
 
 INFO Fold 5 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -196,7 +192,6 @@ INFO Model characteristics (Fold 5):
 │ Predictions                 │         1 │         1 │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-
 INFO Fold 6 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 6):
@@ -234,7 +229,6 @@ INFO Model characteristics (Fold 6):
 │ Conditions                  │         1 │         1 │         1 │
 │ Predictions                 │         1 │         1 │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
-
 
 INFO Fold 7 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -274,7 +268,6 @@ INFO Model characteristics (Fold 7):
 │ Predictions                 │         1 │         1 │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-
 INFO Fold 8 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 8):
@@ -312,7 +305,6 @@ INFO Model characteristics (Fold 8):
 │ Conditions                  │         1 │         1 │         1 │
 │ Predictions                 │         1 │         1 │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
-
 
 INFO Fold 9 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
@@ -352,7 +344,6 @@ INFO Model characteristics (Fold 9):
 │ Predictions                 │         1 │         1 │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-
 INFO Fold 10 / 10:
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 10):
@@ -390,6 +381,5 @@ INFO Model characteristics (Fold 10):
 │ Conditions                  │         1 │         1 │         1 │
 │ Predictions                 │         1 │         1 │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
-
 
 INFO Successfully finished after 0.4678866580070462 seconds

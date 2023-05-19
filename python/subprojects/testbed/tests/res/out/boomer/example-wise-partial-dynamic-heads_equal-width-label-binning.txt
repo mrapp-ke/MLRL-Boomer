@@ -10,7 +10,7 @@ INFO Predicting for 196 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.00516850408166647 seconds
-INFO Overall evaluation result on test data:
+INFO Evaluation result for test data:
 
 Example-wise F1         66.43
 Example-wise Jaccard    57.87
@@ -51,6 +51,5 @@ INFO Model characteristics:
 │ Conditions                  │         1 │      4.98 │        26 │
 │ Predictions                 │         1 │      1.53 │         4 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
-
 
 INFO Successfully finished after 7.2824588840594515 seconds

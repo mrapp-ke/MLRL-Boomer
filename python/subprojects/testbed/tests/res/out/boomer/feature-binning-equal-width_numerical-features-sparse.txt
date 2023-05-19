@@ -10,7 +10,7 @@ INFO Predicting for 196 test examples...
 DEBUG A sparse matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.004945316002704203 seconds
-INFO Overall evaluation result on test data:
+INFO Evaluation result for test data:
 
 Example-wise F1         59.35
 Example-wise Jaccard    51.28

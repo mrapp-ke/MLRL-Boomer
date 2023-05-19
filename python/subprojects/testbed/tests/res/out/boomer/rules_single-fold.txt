@@ -1010,4 +1010,5 @@ INFO Model (Fold 1):
 {Std_Acc1298_Std_Mem40_MFCC_9 <= 0.0815185 & Std_Acc1298_Mean_Mem40_MFCC_0 <= 2.045195 & Std_Acc1298_Std_Mem40_Centroid <= 0.034953997 & Std_Acc1298_Mean_Mem40_MFCC_2 <= 0.7989265 & Std_Acc1298_Mean_Mem40_MFCC_1 <= 0.7417145 & Mean_Acc1298_Std_Mem40_MFCC_7 > 0.491173 & Std_Acc1298_Mean_Mem40_MFCC_0 > 1.5133235} => (happy-pleased = 0.19)
 {Std_Acc1298_Mean_Mem40_MFCC_1 <= 1.580405 & Mean_Acc1298_Mean_Mem40_MFCC_7 <= 1.0710065 & Std_Acc1298_Std_Mem40_MFCC_5 > 0.169192 & Mean_Acc1298_Std_Mem40_MFCC_8 > 0.51803 & Std_Acc1298_Mean_Mem40_MFCC_2 > 0.504333 & Mean_Acc1298_Std_Mem40_MFCC_11 > 0.4743805 & Std_Acc1298_Std_Mem40_MFCC_3 > 0.1743895 & Std_Acc1298_Mean_Mem40_MFCC_7 > 0.2654665 & Mean_Acc1298_Std_Mem40_MFCC_3 > 0.518853 & Mean_Acc1298_Std_Mem40_MFCC_12 > 0.43361598 & Std_Acc1298_Mean_Mem40_Centroid > 0.0143425} => (sad-lonely = -0.16)
 
+
 INFO Successfully finished after 0.36763900599999033 seconds
