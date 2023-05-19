@@ -170,8 +170,9 @@ class OutputWriter(ABC):
 
     @abstractmethod
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
-                              predictions: Optional[Any], train_time: float, predict_time: float) -> Optional[Any]:
+                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
+                              train_time: float, predict_time: float) -> Optional[Any]:
         """
         Must be implemented by subclasses in order to generate the output data that should be written to the available
         sinks.
@@ -183,6 +184,8 @@ class OutputWriter(ABC):
                                     stores the ground truth labels
         :param data_split:          Information about the split of the available data, the output data corresponds to
         :param learner:             The learner that has been trained
+        :param data_type:           Specifies whether the predictions and ground truth labels correspond to the training
+                                    or test data or None, if no predictions have been obtained
         :param prediction_type:     The type of the predictions or None, if no predictions have been obtained
         :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
                                     incrementally or None, if no predictions have been obtained
@@ -231,7 +234,7 @@ class OutputWriter(ABC):
         sinks = self.sinks
 
         if len(sinks) > 0:
-            output_data = self._generate_output_data(meta_data, x, y, data_split, learner, prediction_type,
+            output_data = self._generate_output_data(meta_data, x, y, data_split, learner, data_type, prediction_type,
                                                      prediction_scope, predictions, train_time, predict_time)
 
             if output_data is not None:

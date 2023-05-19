@@ -14,7 +14,7 @@ from mlrl.common.cython.rule_model import RuleModel, RuleModelVisitor, EmptyBody
 from mlrl.common.learners import Learner
 from mlrl.common.options import Options
 from mlrl.testbed.data import Attribute, MetaData
-from mlrl.testbed.data_splitting import DataSplit
+from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.output_writer import OutputWriter, Formattable
 from mlrl.testbed.prediction_scope import PredictionType, PredictionScope
 from typing import List, Optional, Any
@@ -214,8 +214,9 @@ class RuleModelWriter(ModelWriter):
         super().__init__(sinks)
 
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
-                              predictions: Optional[Any], train_time: float, predict_time: float) -> Optional[Any]:
+                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
+                              train_time: float, predict_time: float) -> Optional[Any]:
         if isinstance(learner, Learner):
             model = learner.model_
 

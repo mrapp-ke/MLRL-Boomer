@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 
 from mlrl.common.options import Options
 from mlrl.testbed.data import MetaData
-from mlrl.testbed.data_splitting import DataSplit
+from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.format import format_table
 from mlrl.testbed.io import create_csv_dict_reader, open_readable_csv_file
 from mlrl.testbed.output_writer import OutputWriter, Formattable, Tabularizable
@@ -105,6 +105,7 @@ class ParameterWriter(OutputWriter):
         super().__init__(sinks)
 
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
-                              predictions: Optional[Any], train_time: float, predict_time: float) -> Optional[Any]:
+                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
+                              train_time: float, predict_time: float) -> Optional[Any]:
         return Parameters(learner)
