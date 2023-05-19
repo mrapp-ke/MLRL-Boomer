@@ -128,7 +128,7 @@ class LabelCharacteristics(Formattable, Tabularizable):
     def num_distinct_label_vectors(self):
         return distinct_label_vectors(self._y)
 
-    def format(self, options: Options) -> str:
+    def format(self, options: Options, **kwargs) -> str:
         percentage = options.get_bool(OPTION_PERCENTAGE, True)
         decimals = options.get_int(OPTION_DECIMALS, 2)
         rows = []
@@ -138,7 +138,7 @@ class LabelCharacteristics(Formattable, Tabularizable):
 
         return format_table(rows)
 
-    def tabularize(self, options: Options) -> List[Dict[str, str]]:
+    def tabularize(self, options: Options, **kwargs) -> List[Dict[str, str]]:
         percentage = options.get_bool(OPTION_PERCENTAGE, True)
         decimals = options.get_int(OPTION_DECIMALS, 0)
         columns = {}

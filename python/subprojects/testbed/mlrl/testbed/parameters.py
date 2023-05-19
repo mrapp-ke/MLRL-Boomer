@@ -62,7 +62,7 @@ class ParameterWriter(OutputWriter):
             """
             self.params = learner.get_params()
 
-        def format(self, _: Options):
+        def format(self, _: Options, **kwargs):
             params = self.params
             rows = []
 
@@ -74,7 +74,7 @@ class ParameterWriter(OutputWriter):
 
             return format_table(rows)
 
-        def tabularize(self, _: Options):
+        def tabularize(self, _: Options, **kwargs):
             params = self.params
             columns = {}
 
