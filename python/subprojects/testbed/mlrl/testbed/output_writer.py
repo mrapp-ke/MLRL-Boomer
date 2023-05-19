@@ -10,7 +10,7 @@ import logging as log
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.io import open_writable_txt_file, open_writable_csv_file, create_csv_dict_writer
-from mlrl.testbed.predictions import PredictionScope
+from mlrl.testbed.predictions import PredictionType, PredictionScope
 from mlrl.common.options import Options
 
 
@@ -164,6 +164,7 @@ class OutputWriter(ABC):
                      data_split: DataSplit,
                      learner,
                      data_type: Optional[DataType] = None,
+                     prediction_type: Optional[PredictionType] = None,
                      prediction_scope: Optional[PredictionScope] = None,
                      predictions: Optional[Any] = None):
         """
@@ -178,6 +179,7 @@ class OutputWriter(ABC):
         :param learner:             The learner that has been trained
         :param data_type:           Specifies whether the predictions and ground truth labels correspond to the training
                                     or test data or None, if no predictions have been obtained
+        :param prediction_type:     The type of the predictions or None, if no predictions have been obtained
         :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
                                     incrementally or None, if no predictions have been obtained
         :param predictions:         A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that

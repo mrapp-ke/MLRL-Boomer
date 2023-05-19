@@ -125,7 +125,8 @@ class Evaluation(ABC):
 
         # Write output data after predictions have been obtained...
         for output_writer in self.output_writers:
-            output_writer.write_output(meta_data, x, y, data_split, learner, data_type, prediction_scope, predictions)
+            output_writer.write_output(meta_data, x, y, data_split, learner, data_type, self.prediction_type,
+                                       prediction_scope, predictions)
 
         prediction_printer = self.prediction_printer
 
