@@ -26,8 +26,7 @@ from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.parameters import ParameterInput, ParameterCsvInput, ParameterWriter
 from mlrl.common.rule_learners import SparsePolicy
 from mlrl.testbed.persistence import ModelPersistence
-from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter, \
-    PredictionCharacteristicsLogOutput, PredictionCharacteristicsCsvOutput
+from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsWriter
 from mlrl.testbed.predictions import PredictionType, PredictionPrinter, PredictionLogOutput, PredictionArffOutput
 from mlrl.testbed.evaluation import OPTION_ENABLE_ALL, OPTION_HAMMING_LOSS, OPTION_HAMMING_ACCURACY, \
     OPTION_SUBSET_ZERO_ONE_LOSS, OPTION_SUBSET_ACCURACY, OPTION_MICRO_PRECISION, OPTION_MICRO_RECALL, OPTION_MICRO_F1, \
@@ -333,24 +332,23 @@ class LearnerRunnable(Runnable, ABC):
 
         return PredictionPrinter(outputs) if len(outputs) > 0 else None
 
-    def __create_prediction_characteristics_printer(self, args) -> Optional[PredictionCharacteristicsPrinter]:
-        outputs = []
-
+    def __create_prediction_characteristics_writer(self, args) -> Optional[OutputWriter]:
+        sinks = []
         value, options = parse_param_and_options(self.PARAM_PRINT_PREDICTION_CHARACTERISTICS,
                                                  args.print_prediction_characteristics,
                                                  self.PRINT_PREDICTION_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            outputs.append(PredictionCharacteristicsLogOutput(options))
+            sinks.append(PredictionCharacteristicsWriter.LogSink(options=options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_PREDICTION_CHARACTERISTICS,
                                                  args.store_prediction_characteristics,
                                                  self.STORE_PREDICTION_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            outputs.append(PredictionCharacteristicsCsvOutput(options, output_dir=args.output_dir))
+            sinks.append(PredictionCharacteristicsWriter.CsvSink(output_dir=args.output_dir, options=options))
 
-        return PredictionCharacteristicsPrinter(outputs=outputs) if len(outputs) > 0 else None
+        return PredictionCharacteristicsWriter(sinks) if len(sinks) > 0 else None
 
     def __create_data_characteristics_writer(self, args) -> Optional[OutputWriter]:
         sinks = []
@@ -499,24 +497,29 @@ class LearnerRunnable(Runnable, ABC):
         if parameter_writer is not None:
             pre_training_output_writers.append(parameter_writer)
 
+        prediction_characteristics_writer = self.__create_prediction_characteristics_writer(args)
+
+        if prediction_characteristics_writer is not None:
+            test_evaluation_output_writers.append(prediction_characteristics_writer)
+
         prediction_type = self.__create_prediction_type(args)
 
         if args.evaluate_training_data:
             train_evaluation_printer = self.__create_evaluation_printer(args, prediction_type)
             train_prediction_printer = self.__create_prediction_printer(args)
-            train_prediction_characteristics_printer = self.__create_prediction_characteristics_printer(args)
+            prediction_characteristics_writer = self.__create_prediction_characteristics_writer(args)
+
+            if prediction_characteristics_writer is not None:
+                train_evaluation_output_writers.append(prediction_characteristics_writer)
         else:
             train_evaluation_printer = None
             train_prediction_printer = None
-            train_prediction_characteristics_printer = None
 
         train_evaluation = self._create_evaluation(args, prediction_type, train_evaluation_printer,
-                                                   train_prediction_printer, train_prediction_characteristics_printer,
-                                                   train_evaluation_output_writers)
+                                                   train_prediction_printer, train_evaluation_output_writers)
         test_evaluation = self._create_evaluation(args, prediction_type,
                                                   self.__create_evaluation_printer(args, prediction_type),
                                                   self.__create_prediction_printer(args),
-                                                  self.__create_prediction_characteristics_printer(args),
                                                   test_evaluation_output_writers)
         data_splitter = self.__create_data_splitter(args)
         experiment = Experiment(base_learner=self._create_learner(args),
@@ -533,28 +536,23 @@ class LearnerRunnable(Runnable, ABC):
 
     def _create_evaluation(self, args, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
                            prediction_printer: Optional[PredictionPrinter],
-                           prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter],
                            output_writers: List[OutputWriter]) -> Optional[Evaluation]:
         """
         May be overridden by subclasses in order to create the `Evaluation` that should be used to evaluate predictions
         that are obtained from a previously trained model.
 
-        :param args:                                The command line arguments
-        :param prediction_type:                     The type of the predictions to be obtained
-        :param evaluation_printer:                  The printer to be used for evaluating the predictions or None, if
-                                                    the predictions should not be evaluated
-        :param prediction_printer:                  The printer to be used for printing the predictions or None, if the
-                                                    predictions should not be printed
-        :param prediction_characteristics_printer:  The printer to be used for printing the characteristics of the
-                                                    predictions or None, if the characteristics should not be printed
-        :param output_writers:                      A list that contains all output writers to be invoked after
-                                                    predictions have been obtained
-        :return:                                    The `Evaluation` that has been created
+        :param args:                The command line arguments
+        :param prediction_type:     The type of the predictions to be obtained
+        :param evaluation_printer:  The printer to be used for evaluating the predictions or None, if the predictions
+                                    should not be evaluated
+        :param prediction_printer:  The printer to be used for printing the predictions or None, if the predictions
+                                    should not be printed
+        :param output_writers:      A list that contains all output writers to be invoked after predictions have been
+                                    obtained
+        :return:                    The `Evaluation` that has been created
         """
-        if evaluation_printer is not None or prediction_printer is not None \
-                or prediction_characteristics_printer is not None:
-            return GlobalEvaluation(prediction_type, evaluation_printer, prediction_printer,
-                                    prediction_characteristics_printer, output_writers)
+        if evaluation_printer is not None or prediction_printer is not None or len(output_writers) > 0:
+            return GlobalEvaluation(prediction_type, evaluation_printer, prediction_printer, output_writers)
         else:
             return None
 
@@ -692,7 +690,6 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     def _create_evaluation(self, args, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
                            prediction_printer: Optional[PredictionPrinter],
-                           prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter],
                            output_writers: List[OutputWriter]) -> Optional[Evaluation]:
         value, options = parse_param_and_options(self.PARAM_INCREMENTAL_EVALUATION, args.incremental_evaluation,
                                                  self.INCREMENTAL_EVALUATION_VALUES)
@@ -706,12 +703,10 @@ class RuleLearnerRunnable(LearnerRunnable):
             step_size = options.get_int(self.OPTION_STEP_SIZE, 1)
             assert_greater_or_equal(self.OPTION_STEP_SIZE, step_size, 1)
 
-            if evaluation_printer is not None or prediction_printer is not None \
-                    or prediction_characteristics_printer is not None:
+            if evaluation_printer is not None or prediction_printer is not None or len(output_writers) > 0:
                 return IncrementalEvaluation(prediction_type,
                                              evaluation_printer,
                                              prediction_printer,
-                                             prediction_characteristics_printer,
                                              output_writers,
                                              min_size=min_size,
                                              max_size=max_size,
@@ -720,7 +715,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                 return None
         else:
             return super()._create_evaluation(args, prediction_type, evaluation_printer, prediction_printer,
-                                              prediction_characteristics_printer, output_writers)
+                                              output_writers)
 
     def _create_model_writer(self, args) -> Optional[OutputWriter]:
         sinks = []
