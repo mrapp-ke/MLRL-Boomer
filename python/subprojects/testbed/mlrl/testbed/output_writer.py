@@ -141,19 +141,24 @@ class OutputWriter(ABC):
         self.sinks = sinks
 
     @abstractmethod
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner) -> Optional[Any]:
+    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
+                              prediction_type: Optional[PredictionType], predictions: Optional[Any]) -> Optional[Any]:
         """
         Must be implemented by subclasses in order to generate the output data that should be written to the available
         sinks.
 
-        :param meta_data:   The meta-data of the data set
-        :param x:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that
-                            stores the feature values
-        :param y:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores
-                            the ground truth labels
-        :param data_split:  Information about the split of the available data, the output data corresponds to
-        :param learner:     The learner that has been trained
-        :return:            The output data that has been generated or None, if no output data was generated
+        :param meta_data:       The meta-data of the data set
+        :param x:               A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that
+                                stores the feature values
+        :param y:               A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
+                                stores the ground truth labels
+        :param data_split:      Information about the split of the available data, the output data corresponds to
+        :param learner:         The learner that has been trained
+        :param prediction_type: The type of the predictions or None, if no predictions have been obtained
+        :param predictions:     A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
+                                stores the predictions for the query examples or None, if no predictions have been
+                                obtained
+        :return:                The output data that has been generated or None, if no output data was generated
         """
         pass
 
@@ -189,7 +194,7 @@ class OutputWriter(ABC):
         sinks = self.sinks
 
         if len(sinks) > 0:
-            output_data = self._generate_output_data(meta_data, x, y, data_split, learner)
+            output_data = self._generate_output_data(meta_data, x, y, data_split, learner, prediction_type, predictions)
 
             if output_data is not None:
                 for sink in sinks:

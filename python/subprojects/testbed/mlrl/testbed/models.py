@@ -16,6 +16,7 @@ from mlrl.common.options import Options
 from mlrl.testbed.data import Attribute, MetaData
 from mlrl.testbed.data_splitting import DataSplit
 from mlrl.testbed.output_writer import OutputWriter, Formattable
+from mlrl.testbed.predictions import PredictionType
 from typing import List, Optional, Any
 
 OPTION_PRINT_FEATURE_NAMES = 'print_feature_names'
@@ -212,7 +213,8 @@ class RuleModelWriter(ModelWriter):
     def __init__(self, sinks: List[OutputWriter.Sink]):
         super().__init__(sinks)
 
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner) -> Optional[Any]:
+    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
+                              prediction_type: Optional[PredictionType], predictions: Optional[Any]) -> Optional[Any]:
         if isinstance(learner, Learner):
             model = learner.model_
 
