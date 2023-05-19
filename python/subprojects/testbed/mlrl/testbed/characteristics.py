@@ -4,7 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides functions to determine certain characteristics of feature or label matrices.
 """
 import numpy as np
-from mlrl.testbed.format import Formatter
+from mlrl.common.options import Options
+from mlrl.testbed.format import Formatter, filter_formatters, format_table, OPTION_PERCENTAGE, OPTION_DECIMALS
+from mlrl.testbed.output_writer import Formattable
 from scipy.sparse import issparse
 from typing import List
 
@@ -93,7 +95,7 @@ def label_imbalance_ratio(y) -> float:
         return 0.0
 
 
-class LabelCharacteristics:
+class LabelCharacteristics(Formattable):
     """
     Stores characteristics of a label matrix.
     """
@@ -136,6 +138,16 @@ class LabelCharacteristics:
         if self._num_distinct_label_vectors is None:
             self._num_distinct_label_vectors = distinct_label_vectors(self._y)
         return self._num_distinct_label_vectors
+
+    def format(self, options: Options) -> str:
+        percentage = options.get_bool(OPTION_PERCENTAGE, True)
+        decimals = options.get_int(OPTION_DECIMALS, 2)
+        rows = []
+
+        for formatter in filter_formatters(LABEL_CHARACTERISTICS, [options]):
+            rows.append([formatter.name, formatter.format(self, percentage=percentage, decimals=decimals)])
+
+        return format_table(rows)
 
 
 class Characteristic(Formatter):
