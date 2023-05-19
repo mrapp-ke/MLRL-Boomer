@@ -106,9 +106,10 @@ class OutputWriter(ABC):
 
             if data_split.is_cross_validation_used():
                 fold = data_split.get_fold()
-                
-                if fold is not None:
-                    message += ' (Fold ' + str(fold + 1) + ')'
+                message += ' ('
+                message += 'Average across ' + str(
+                    data_split.get_num_folds()) + ' folds' if fold is None else 'Fold ' + str(fold + 1)
+                message += ')'
 
             message += ':\n\n' + output_data.format(self.options, **kwargs) + '\n'
             log.info(message)
