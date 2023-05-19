@@ -8,8 +8,9 @@ from typing import Any, List, Dict, Optional
 import logging as log
 
 from mlrl.testbed.data import MetaData
-from mlrl.testbed.data_splitting import DataSplit
+from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.io import open_writable_txt_file, open_writable_csv_file, create_csv_dict_writer
+from mlrl.testbed.predictions import PredictionScope
 from mlrl.common.options import Options
 
 
@@ -156,17 +157,32 @@ class OutputWriter(ABC):
         """
         pass
 
-    def write_output(self, meta_data: MetaData, x, y, data_split: DataSplit, learner):
+    def write_output(self,
+                     meta_data: MetaData,
+                     x,
+                     y,
+                     data_split: DataSplit,
+                     learner,
+                     data_type: Optional[DataType] = None,
+                     prediction_scope: Optional[PredictionScope] = None,
+                     predictions: Optional[Any] = None):
         """
         Generates the output data and writes it to all available sinks.
 
-        :param meta_data:   The meta-data of the data set
-        :param x:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that
-                            stores the feature values
-        :param y:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores
-                            the ground truth labels
-        :param data_split:  Information about the split of the available data, the output data corresponds to
-        :param learner:     The learner that has been trained
+        :param meta_data:           The meta-data of the data set
+        :param x:                   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`,
+                                    that stores the feature values
+        :param y:                   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
+                                    stores the ground truth labels
+        :param data_split:          Information about the split of the available data, the output data corresponds to
+        :param learner:             The learner that has been trained
+        :param data_type:           Specifies whether the predictions and ground truth labels correspond to the training
+                                    or test data or None, if no predictions have been obtained
+        :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
+                                    incrementally or None, if no predictions have been obtained
+        :param predictions:         A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
+                                    stores the predictions for the query examples or None, if no predictions have been
+                                    obtained
         """
         sinks = self.sinks
 
