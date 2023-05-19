@@ -7,12 +7,22 @@ e.g., to the console or to a file.
 import logging as log
 import sys
 from abc import ABC, abstractmethod
+from enum import Enum
 from typing import List
 
 import numpy as np
 from mlrl.testbed.data import MetaData, Label, save_arff_file
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
+
+
+class PredictionType(Enum):
+    """
+    Contains all possible types of predictions that may be obtained from a learner.
+    """
+    BINARY = 'binary'
+    SCORES = 'scores'
+    PROBABILITIES = 'probabilities'
 
 
 class PredictionScope(ABC):

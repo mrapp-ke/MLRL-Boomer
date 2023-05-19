@@ -5,7 +5,6 @@ Provides classes for performing experiments.
 """
 import logging as log
 from abc import ABC, abstractmethod
-from enum import Enum
 from functools import reduce
 from timeit import default_timer as timer
 
@@ -17,19 +16,11 @@ from mlrl.testbed.format import format_duration
 from mlrl.testbed.parameters import ParameterInput
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter
-from mlrl.testbed.predictions import PredictionScope, GlobalPrediction, IncrementalPrediction, PredictionPrinter
+from mlrl.testbed.predictions import PredictionType, PredictionScope, GlobalPrediction, IncrementalPrediction, \
+    PredictionPrinter
 from mlrl.testbed.output_writer import OutputWriter
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 from typing import Optional, List
-
-
-class PredictionType(Enum):
-    """
-    Contains all possible types of predictions that may be obtained from a learner.
-    """
-    BINARY = 'binary'
-    SCORES = 'scores'
-    PROBABILITIES = 'probabilities'
 
 
 class Evaluation(ABC):
