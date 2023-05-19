@@ -46,44 +46,43 @@ class ParameterCsvInput(ParameterInput):
             return dict(next(csv_reader))
 
 
-class Parameters(Formattable, Tabularizable):
-    """
-    Stores the parameter settings of a learner.
-    """
-
-    def __init__(self, learner):
-        """
-        :param learner: A learner
-        """
-        self.params = learner.get_params()
-
-    def format(self, _: Options):
-        params = self.params
-        rows = []
-
-        for key in sorted(params):
-            value = params[key]
-
-            if value is not None:
-                rows.append([str(key), str(value)])
-
-        return format_table(rows)
-
-    def tabularize(self, _: Options):
-        params = self.params
-        columns = {}
-
-        for key, value in params.items():
-            if value is not None:
-                columns[key] = value
-
-        return [columns]
-
-
 class ParameterWriter(OutputWriter):
     """
     Allows to write parameter settings to one or several sinks.
     """
+
+    class Parameters(Formattable, Tabularizable):
+        """
+        Stores the parameter settings of a learner.
+        """
+
+        def __init__(self, learner):
+            """
+            :param learner: A learner
+            """
+            self.params = learner.get_params()
+
+        def format(self, _: Options):
+            params = self.params
+            rows = []
+
+            for key in sorted(params):
+                value = params[key]
+
+                if value is not None:
+                    rows.append([str(key), str(value)])
+
+            return format_table(rows)
+
+        def tabularize(self, _: Options):
+            params = self.params
+            columns = {}
+
+            for key, value in params.items():
+                if value is not None:
+                    columns[key] = value
+
+            return [columns]
 
     class LogSink(OutputWriter.LogSink):
         """
@@ -108,4 +107,4 @@ class ParameterWriter(OutputWriter):
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
-        return Parameters(learner)
+        return ParameterWriter.Parameters(learner)
