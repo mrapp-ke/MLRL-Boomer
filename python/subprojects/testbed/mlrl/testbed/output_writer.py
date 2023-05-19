@@ -35,6 +35,7 @@ class Tabularizable(ABC):
     An abstract base class for all classes from which a tabular representation can be created.
     """
 
+    @abstractmethod
     def tabularize(self, options: Options, **kwargs) -> List[Dict[str, str]]:
         """
         Creates and returns a tabular representation of the object.
