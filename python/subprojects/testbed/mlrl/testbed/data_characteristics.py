@@ -147,7 +147,7 @@ class DataCharacteristicsWriter(OutputWriter):
 
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
-                              predictions: Optional[Any]) -> Optional[Any]:
+                              predictions: Optional[Any], train_time: float, predict_time: float) -> Optional[Any]:
         feature_characteristics = FeatureCharacteristics(meta_data, x)
         label_characteristics = LabelCharacteristics(y)
         return DataCharacteristics(feature_characteristics=feature_characteristics,

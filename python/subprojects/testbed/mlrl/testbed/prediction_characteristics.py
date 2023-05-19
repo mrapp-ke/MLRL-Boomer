@@ -39,6 +39,6 @@ class PredictionCharacteristicsWriter(OutputWriter):
 
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
-                              predictions: Optional[Any]) -> Optional[Any]:
+                              predictions: Optional[Any], train_time: float, predict_time: float) -> Optional[Any]:
         # Prediction characteristics can only be determined in the case of binary predictions...
         return LabelCharacteristics(predictions) if prediction_type == PredictionType.BINARY else None
