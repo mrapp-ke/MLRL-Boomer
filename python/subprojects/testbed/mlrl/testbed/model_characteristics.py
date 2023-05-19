@@ -16,7 +16,7 @@ from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit
 from mlrl.testbed.format import format_table, format_percentage, format_float
 from mlrl.testbed.output_writer import OutputWriter, Formattable, Tabularizable
-from mlrl.testbed.prediction_scope import PredictionType
+from mlrl.testbed.prediction_scope import PredictionType, PredictionScope
 from typing import Any, Dict, List, Optional
 
 
@@ -289,7 +289,8 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
         super().__init__(sinks)
 
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              prediction_type: Optional[PredictionType], predictions: Optional[Any]) -> Optional[Any]:
+                              prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
+                              predictions: Optional[Any]) -> Optional[Any]:
         if isinstance(learner, Learner):
             model = learner.model_
 

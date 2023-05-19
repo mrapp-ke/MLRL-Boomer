@@ -74,5 +74,6 @@ class PredictionWriter(OutputWriter):
         super().__init__(sinks)
 
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              prediction_type: Optional[PredictionType], predictions: Optional[Any]) -> Optional[Any]:
+                              prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
+                              predictions: Optional[Any]) -> Optional[Any]:
         return PredictionWriter.Predictions(predictions=predictions, ground_truth=y)
