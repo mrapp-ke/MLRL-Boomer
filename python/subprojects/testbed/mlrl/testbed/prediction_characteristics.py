@@ -7,7 +7,7 @@ or several outputs, e.g., to the console or to a file.
 from mlrl.common.options import Options
 from mlrl.testbed.characteristics import LabelCharacteristics
 from mlrl.testbed.data import MetaData
-from mlrl.testbed.data_splitting import DataSplit
+from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.prediction_scope import PredictionType, PredictionScope
 from typing import Any, List, Optional
@@ -38,7 +38,8 @@ class PredictionCharacteristicsWriter(OutputWriter):
         super().__init__(sinks)
 
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              prediction_type: Optional[PredictionType], prediction_scope: Optional[PredictionScope],
-                              predictions: Optional[Any], train_time: float, predict_time: float) -> Optional[Any]:
+                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
+                              train_time: float, predict_time: float) -> Optional[Any]:
         # Prediction characteristics can only be determined in the case of binary predictions...
         return LabelCharacteristics(predictions) if prediction_type == PredictionType.BINARY else None
