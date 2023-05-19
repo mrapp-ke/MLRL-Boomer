@@ -8,29 +8,27 @@ import sys
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 from enum import Enum
-from typing import Optional, Tuple, Dict, Set
+from typing import Optional, Dict, Set, List
 
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.format import format_enum_values, format_dict_keys
 from mlrl.common.config import Parameter, configure_argument_parser, create_kwargs_from_parameters, NONE
 from mlrl.common.options import BooleanOption, parse_param_and_options
-from mlrl.testbed.data_characteristics import DataCharacteristicsPrinter, DataCharacteristicsLogOutput, \
-    DataCharacteristicsCsvOutput
+from mlrl.testbed.data_characteristics import DataCharacteristicsWriter
 from mlrl.testbed.data_splitting import DataSplitter, CrossValidationSplitter, TrainTestSplitter, NoSplitter, DataSet
-from mlrl.testbed.evaluation import EvaluationPrinter, BinaryEvaluationPrinter, ScoreEvaluationPrinter, \
-    ProbabilityEvaluationPrinter, EvaluationLogOutput, EvaluationCsvOutput
-from mlrl.testbed.experiments import Experiment, PredictionType, Evaluation, GlobalEvaluation, IncrementalEvaluation
+from mlrl.testbed.evaluation import EvaluationWriter, BinaryEvaluationWriter, ScoreEvaluationWriter, \
+    ProbabilityEvaluationWriter
+from mlrl.testbed.experiments import Experiment, Evaluation, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.io import clear_directory
-from mlrl.testbed.model_characteristics import ModelCharacteristicsPrinter, RuleModelCharacteristicsPrinter, \
-    RuleModelCharacteristicsLogOutput, RuleModelCharacteristicsCsvOutput
-from mlrl.testbed.models import ModelPrinter, RulePrinter, ModelPrinterLogOutput, ModelPrinterTxtOutput
-from mlrl.testbed.parameters import ParameterInput, ParameterCsvInput, ParameterPrinter, ParameterLogOutput, \
-    ParameterCsvOutput
+from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
+from mlrl.testbed.models import ModelWriter, RuleModelWriter
+from mlrl.testbed.output_writer import OutputWriter
+from mlrl.testbed.parameters import ParameterInput, ParameterCsvInput, ParameterWriter
 from mlrl.common.rule_learners import SparsePolicy
 from mlrl.testbed.persistence import ModelPersistence
-from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsPrinter, \
-    PredictionCharacteristicsLogOutput, PredictionCharacteristicsCsvOutput
-from mlrl.testbed.predictions import PredictionPrinter, PredictionLogOutput, PredictionArffOutput
+from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsWriter
+from mlrl.testbed.prediction_scope import PredictionType
+from mlrl.testbed.predictions import PredictionWriter
 from mlrl.testbed.evaluation import OPTION_ENABLE_ALL, OPTION_HAMMING_LOSS, OPTION_HAMMING_ACCURACY, \
     OPTION_SUBSET_ZERO_ONE_LOSS, OPTION_SUBSET_ACCURACY, OPTION_MICRO_PRECISION, OPTION_MICRO_RECALL, OPTION_MICRO_F1, \
     OPTION_MICRO_JACCARD, OPTION_MACRO_PRECISION, OPTION_MACRO_RECALL, OPTION_MACRO_F1, OPTION_MACRO_JACCARD, \
@@ -282,94 +280,89 @@ class LearnerRunnable(Runnable, ABC):
         return None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
 
     @staticmethod
-    def __create_parameter_printer(args) -> Optional[ParameterPrinter]:
-        outputs = []
+    def __create_parameter_writer(args) -> Optional[OutputWriter]:
+        sinks = []
 
         if args.print_parameters:
-            outputs.append(ParameterLogOutput())
+            sinks.append(ParameterWriter.LogSink())
 
         if args.store_parameters and args.output_dir is not None:
-            outputs.append(ParameterCsvOutput(output_dir=args.output_dir))
+            sinks.append(ParameterWriter.CsvSink(output_dir=args.output_dir))
 
-        return ParameterPrinter(outputs) if len(outputs) > 0 else None
+        return ParameterWriter(sinks) if len(sinks) > 0 else None
 
     @staticmethod
     def __create_persistence(args) -> Optional[ModelPersistence]:
         return None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
 
-    def __create_evaluation_printer(self, args, prediction_type: PredictionType) -> Optional[EvaluationPrinter]:
-        outputs = []
+    def __create_evaluation_writer(self, args, prediction_type: PredictionType) -> Optional[OutputWriter]:
+        sinks = []
         value, options = parse_param_and_options(self.PARAM_PRINT_EVALUATION, args.print_evaluation,
                                                  self.PRINT_EVALUATION_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            outputs.append(EvaluationLogOutput(options))
+            sinks.append(EvaluationWriter.LogSink(options=options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_EVALUATION, args.store_evaluation,
                                                  self.STORE_EVALUATION_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            outputs.append(EvaluationCsvOutput(options, output_dir=args.output_dir))
+            sinks.append(EvaluationWriter.CsvSink(output_dir=args.output_dir, options=options))
 
-        if len(outputs) > 0:
-            if prediction_type == PredictionType.SCORES:
-                evaluation = ScoreEvaluationPrinter(outputs)
-            elif prediction_type == PredictionType.PROBABILITIES:
-                evaluation = ProbabilityEvaluationPrinter(outputs)
-            else:
-                evaluation = BinaryEvaluationPrinter(outputs)
+        if len(sinks) == 0:
+            return None
+        elif prediction_type == PredictionType.SCORES:
+            return ScoreEvaluationWriter(sinks)
+        elif prediction_type == PredictionType.PROBABILITIES:
+            return ProbabilityEvaluationWriter(sinks)
         else:
-            evaluation = None
-
-        return evaluation
+            return BinaryEvaluationWriter(sinks)
 
     @staticmethod
-    def __create_prediction_printer(args) -> Optional[PredictionPrinter]:
-        outputs = []
+    def __create_prediction_writer(args) -> Optional[OutputWriter]:
+        sinks = []
 
         if args.print_predictions:
-            outputs.append(PredictionLogOutput())
+            sinks.append(PredictionWriter.LogSink())
 
         if args.store_predictions and args.output_dir is not None:
-            outputs.append(PredictionArffOutput(output_dir=args.output_dir))
+            sinks.append(PredictionWriter.ArffSink(output_dir=args.output_dir))
 
-        return PredictionPrinter(outputs) if len(outputs) > 0 else None
+        return PredictionWriter(sinks) if len(sinks) > 0 else None
 
-    def __create_prediction_characteristics_printer(self, args) -> Optional[PredictionCharacteristicsPrinter]:
-        outputs = []
-
+    def __create_prediction_characteristics_writer(self, args) -> Optional[OutputWriter]:
+        sinks = []
         value, options = parse_param_and_options(self.PARAM_PRINT_PREDICTION_CHARACTERISTICS,
                                                  args.print_prediction_characteristics,
                                                  self.PRINT_PREDICTION_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            outputs.append(PredictionCharacteristicsLogOutput(options))
+            sinks.append(PredictionCharacteristicsWriter.LogSink(options=options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_PREDICTION_CHARACTERISTICS,
                                                  args.store_prediction_characteristics,
                                                  self.STORE_PREDICTION_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            outputs.append(PredictionCharacteristicsCsvOutput(options, output_dir=args.output_dir))
+            sinks.append(PredictionCharacteristicsWriter.CsvSink(output_dir=args.output_dir, options=options))
 
-        return PredictionCharacteristicsPrinter(outputs=outputs) if len(outputs) > 0 else None
+        return PredictionCharacteristicsWriter(sinks) if len(sinks) > 0 else None
 
-    def __create_data_characteristics_printer(self, args) -> Tuple[Optional[DataCharacteristicsPrinter], bool]:
-        outputs = []
-
+    def __create_data_characteristics_writer(self, args) -> Optional[OutputWriter]:
+        sinks = []
         value, options = parse_param_and_options(self.PARAM_PRINT_DATA_CHARACTERISTICS, args.print_data_characteristics,
                                                  self.PRINT_DATA_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            outputs.append(DataCharacteristicsLogOutput(options))
+            sinks.append(DataCharacteristicsWriter.LogSink(options=options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_DATA_CHARACTERISTICS, args.store_data_characteristics,
                                                  self.STORE_DATA_CHARACTERISTICS_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            outputs.append(DataCharacteristicsCsvOutput(options, output_dir=args.output_dir))
+            sinks.append(DataCharacteristicsWriter.CsvSink(output_dir=args.output_dir, options=options))
 
-        return DataCharacteristicsPrinter(outputs=outputs) if len(outputs) > 0 else None
+        return DataCharacteristicsWriter(sinks) if len(sinks) > 0 else None
 
     def _configure_arguments(self, parser: ArgumentParser):
         super()._configure_arguments(parser)
@@ -477,83 +470,110 @@ class LearnerRunnable(Runnable, ABC):
                             + format_enum_values(PredictionType) + '.')
 
     def _run(self, args):
+        pre_training_output_writers = []
+        post_training_output_writers = []
+        train_evaluation_output_writers = []
+        test_evaluation_output_writers = []
+
+        model_writer = self._create_model_writer(args)
+
+        if model_writer is not None:
+            post_training_output_writers.append(model_writer)
+
+        model_characteristics_writer = self._create_model_characteristics_writer(args)
+
+        if model_characteristics_writer is not None:
+            post_training_output_writers.append(model_characteristics_writer)
+
+        data_characteristics_writer = self.__create_data_characteristics_writer(args)
+
+        if data_characteristics_writer is not None:
+            pre_training_output_writers.append(data_characteristics_writer)
+
+        parameter_writer = self.__create_parameter_writer(args)
+
+        if parameter_writer is not None:
+            pre_training_output_writers.append(parameter_writer)
+
         prediction_type = self.__create_prediction_type(args)
+        evaluation_writer = self.__create_evaluation_writer(args, prediction_type)
+
+        if evaluation_writer is not None:
+            test_evaluation_output_writers.append(evaluation_writer)
+
+        prediction_writer = self.__create_prediction_writer(args)
+
+        if prediction_writer is not None:
+            test_evaluation_output_writers.append(prediction_writer)
+
+        prediction_characteristics_writer = self.__create_prediction_characteristics_writer(args)
+
+        if prediction_characteristics_writer is not None:
+            test_evaluation_output_writers.append(prediction_characteristics_writer)
 
         if args.evaluate_training_data:
-            train_evaluation_printer = self.__create_evaluation_printer(args, prediction_type)
-            train_prediction_printer = self.__create_prediction_printer(args)
-            train_prediction_characteristics_printer = self.__create_prediction_characteristics_printer(args)
-        else:
-            train_evaluation_printer = None
-            train_prediction_printer = None
-            train_prediction_characteristics_printer = None
+            evaluation_writer = self.__create_evaluation_writer(args, prediction_type)
 
-        train_evaluation = self._create_evaluation(args, prediction_type, train_evaluation_printer,
-                                                   train_prediction_printer, train_prediction_characteristics_printer)
-        test_evaluation = self._create_evaluation(args, prediction_type,
-                                                  self.__create_evaluation_printer(args, prediction_type),
-                                                  self.__create_prediction_printer(args),
-                                                  self.__create_prediction_characteristics_printer(args))
+            if evaluation_writer is not None:
+                train_evaluation_output_writers.append(evaluation_writer)
+
+            prediction_writer = self.__create_prediction_writer(args)
+
+            if prediction_writer is not None:
+                train_evaluation_output_writers.append(prediction_writer)
+
+            prediction_characteristics_writer = self.__create_prediction_characteristics_writer(args)
+
+            if prediction_characteristics_writer is not None:
+                train_evaluation_output_writers.append(prediction_characteristics_writer)
+
+        train_evaluation = self._create_evaluation(args, prediction_type, train_evaluation_output_writers)
+        test_evaluation = self._create_evaluation(args, prediction_type, test_evaluation_output_writers)
         data_splitter = self.__create_data_splitter(args)
         experiment = Experiment(base_learner=self._create_learner(args),
                                 learner_name=self.learner_name,
                                 data_splitter=data_splitter,
+                                pre_training_output_writers=pre_training_output_writers,
+                                post_training_output_writers=post_training_output_writers,
                                 pre_execution_hook=self.__create_pre_execution_hook(args, data_splitter),
                                 train_evaluation=train_evaluation,
                                 test_evaluation=test_evaluation,
                                 parameter_input=self.__create_parameter_input(args),
-                                parameter_printer=self.__create_parameter_printer(args),
-                                model_printer=self._create_model_printer(args),
-                                model_characteristics_printer=self._create_model_characteristics_printer(args),
-                                data_characteristics_printer=self.__create_data_characteristics_printer(args),
                                 persistence=self.__create_persistence(args))
         experiment.run()
 
-    def _create_evaluation(
-            self, args, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
-            prediction_printer: Optional[PredictionPrinter],
-            prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter]) -> Optional[Evaluation]:
+    def _create_evaluation(self, args, prediction_type: PredictionType,
+                           output_writers: List[OutputWriter]) -> Optional[Evaluation]:
         """
         May be overridden by subclasses in order to create the `Evaluation` that should be used to evaluate predictions
         that are obtained from a previously trained model.
 
-        :param args:                                The command line arguments
-        :param prediction_type:                     The type of the predictions to be obtained
-        :param evaluation_printer:                  The printer to be used for evaluating the predictions or None, if
-                                                    the predictions should not be evaluated
-        :param prediction_printer:                  The printer to be used for printing the predictions or None, if the
-                                                    predictions should not be printed
-        :param prediction_characteristics_printer:  The printer to be used for printing the characteristics of the
-                                                    predictions or None, if the characteristics should not be printed
-        :return:                                    The `Evaluation` that has been created
+        :param args:            The command line arguments
+        :param prediction_type: The type of the predictions to be obtained
+        :param output_writers:  A list that contains all output writers to be invoked after predictions have been
+                                obtained
+        :return:                The `Evaluation` that has been created
         """
-        if evaluation_printer is not None or prediction_printer is not None \
-                or prediction_characteristics_printer is not None:
-            return GlobalEvaluation(prediction_type, evaluation_printer, prediction_printer,
-                                    prediction_characteristics_printer)
-        else:
-            return None
+        return GlobalEvaluation(prediction_type, output_writers) if len(output_writers) > 0 else None
 
-    def _create_model_printer(self, args) -> Optional[ModelPrinter]:
+    def _create_model_writer(self, args) -> Optional[OutputWriter]:
         """
-        May be overridden by subclasses in order to create the `ModelPrinter` that should be used to print textual
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output textual
         representations of models.
 
         :param args:    The command line arguments
-        :return:        The `ModelPrinter` that has been created
+        :return:        The `OutputWriter` that has been created
         """
-        log.warning('The learner does not support printing textual representations of models')
         return None
 
-    def _create_model_characteristics_printer(self, args) -> Optional[ModelCharacteristicsPrinter]:
+    def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
         """
-        May be overridden by subclasses in order to create the `ModelCharacteristicsPrinter` that should be used to
-        print the characteristics of models.
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output the
+        characteristics of models.
 
         :param args:    The command line arguments
-        :return:        The `ModelCharacteristicsPrinter` that has been created
+        :return:        The `OutputWriter` that has been created
         """
-        log.warning('The learner does not support printing the characteristics of models')
         return None
 
     @abstractmethod
@@ -668,10 +688,8 @@ class RuleLearnerRunnable(LearnerRunnable):
         kwargs['prediction_format'] = args.prediction_format
         return self.learner_type(**kwargs)
 
-    def _create_evaluation(
-            self, args, prediction_type: PredictionType, evaluation_printer: Optional[EvaluationPrinter],
-            prediction_printer: Optional[PredictionPrinter],
-            prediction_characteristics_printer: Optional[PredictionCharacteristicsPrinter]) -> Optional[Evaluation]:
+    def _create_evaluation(self, args, prediction_type: PredictionType,
+                           output_writers: List[OutputWriter]) -> Optional[Evaluation]:
         value, options = parse_param_and_options(self.PARAM_INCREMENTAL_EVALUATION, args.incremental_evaluation,
                                                  self.INCREMENTAL_EVALUATION_VALUES)
 
@@ -683,43 +701,33 @@ class RuleLearnerRunnable(LearnerRunnable):
                 assert_greater(self.OPTION_MAX_SIZE, max_size, min_size)
             step_size = options.get_int(self.OPTION_STEP_SIZE, 1)
             assert_greater_or_equal(self.OPTION_STEP_SIZE, step_size, 1)
-
-            if evaluation_printer is not None or prediction_printer is not None \
-                    or prediction_characteristics_printer is not None:
-                return IncrementalEvaluation(prediction_type,
-                                             evaluation_printer,
-                                             prediction_printer,
-                                             prediction_characteristics_printer,
-                                             min_size=min_size,
-                                             max_size=max_size,
-                                             step_size=step_size)
-            else:
-                return None
+            return IncrementalEvaluation(
+                prediction_type, output_writers, min_size=min_size, max_size=max_size,
+                step_size=step_size) if len(output_writers) > 0 else None
         else:
-            return super()._create_evaluation(args, prediction_type, evaluation_printer, prediction_printer,
-                                              prediction_characteristics_printer)
+            return super()._create_evaluation(args, prediction_type, output_writers)
 
-    def _create_model_printer(self, args) -> Optional[ModelPrinter]:
-        outputs = []
+    def _create_model_writer(self, args) -> Optional[OutputWriter]:
+        sinks = []
         value, options = parse_param_and_options(self.PARAM_PRINT_RULES, args.print_rules, self.PRINT_RULES_VALUES)
 
         if value == BooleanOption.TRUE.value:
-            outputs.append(ModelPrinterLogOutput(options))
+            sinks.append(ModelWriter.LogSink(options=options))
 
         value, options = parse_param_and_options(self.PARAM_STORE_RULES, args.store_rules, self.STORE_RULES_VALUES)
 
         if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            outputs.append(ModelPrinterTxtOutput(options, output_dir=args.output_dir))
+            sinks.append(ModelWriter.TxtSink(output_dir=args.output_dir, options=options))
 
-        return RulePrinter(outputs) if len(outputs) > 0 else None
+        return RuleModelWriter(sinks) if len(sinks) > 0 else None
 
-    def _create_model_characteristics_printer(self, args) -> Optional[ModelCharacteristicsPrinter]:
-        outputs = []
+    def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
+        sinks = []
 
         if args.print_model_characteristics:
-            outputs.append(RuleModelCharacteristicsLogOutput())
+            sinks.append(ModelCharacteristicsWriter.LogSink())
 
         if args.store_model_characteristics and args.output_dir is not None:
-            outputs.append(RuleModelCharacteristicsCsvOutput(output_dir=args.output_dir))
+            sinks.append(ModelCharacteristicsWriter.CsvSink(output_dir=args.output_dir))
 
-        return RuleModelCharacteristicsPrinter(outputs) if len(outputs) > 0 else None
+        return RuleModelCharacteristicsWriter(sinks) if len(sinks) > 0 else None

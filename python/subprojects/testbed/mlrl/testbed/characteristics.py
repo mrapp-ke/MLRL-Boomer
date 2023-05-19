@@ -4,9 +4,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides functions to determine certain characteristics of feature or label matrices.
 """
 import numpy as np
-from mlrl.testbed.format import Formatter
+from mlrl.common.options import Options
+from mlrl.testbed.format import Formatter, filter_formatters, format_table, OPTION_PERCENTAGE, OPTION_DECIMALS
+from mlrl.testbed.output_writer import Formattable, Tabularizable
 from scipy.sparse import issparse
-from typing import List
+from typing import Dict, List
+from functools import cached_property
 
 OPTION_LABELS = 'labels'
 
@@ -93,7 +96,7 @@ def label_imbalance_ratio(y) -> float:
         return 0.0
 
 
-class LabelCharacteristics:
+class LabelCharacteristics(Formattable, Tabularizable):
     """
     Stores characteristics of a label matrix.
     """
@@ -104,38 +107,46 @@ class LabelCharacteristics:
         """
         self._y = y
         self.num_labels = y.shape[1]
-        self._label_density = None
-        self._avg_label_imbalance_ratio = None
-        self._avg_label_cardinality = None
-        self._num_distinct_label_vectors = None
 
-    @property
+    @cached_property
     def label_density(self):
-        if self._label_density is None:
-            self._label_density = density(self._y)
-        return self._label_density
+        return density(self._y)
 
     @property
     def label_sparsity(self):
         return 1 - self.label_density
 
-    @property
+    @cached_property
     def avg_label_imbalance_ratio(self):
-        if self._avg_label_imbalance_ratio is None:
-            self._avg_label_imbalance_ratio = label_imbalance_ratio(self._y)
-        return self._avg_label_imbalance_ratio
+        return label_imbalance_ratio(self._y)
 
-    @property
+    @cached_property
     def avg_label_cardinality(self):
-        if self._avg_label_cardinality is None:
-            self._avg_label_cardinality = label_cardinality(self._y)
-        return self._avg_label_cardinality
+        return label_cardinality(self._y)
 
-    @property
+    @cached_property
     def num_distinct_label_vectors(self):
-        if self._num_distinct_label_vectors is None:
-            self._num_distinct_label_vectors = distinct_label_vectors(self._y)
-        return self._num_distinct_label_vectors
+        return distinct_label_vectors(self._y)
+
+    def format(self, options: Options, **kwargs) -> str:
+        percentage = options.get_bool(OPTION_PERCENTAGE, True)
+        decimals = options.get_int(OPTION_DECIMALS, 2)
+        rows = []
+
+        for formatter in filter_formatters(LABEL_CHARACTERISTICS, [options]):
+            rows.append([formatter.name, formatter.format(self, percentage=percentage, decimals=decimals)])
+
+        return format_table(rows)
+
+    def tabularize(self, options: Options, **kwargs) -> List[Dict[str, str]]:
+        percentage = options.get_bool(OPTION_PERCENTAGE, True)
+        decimals = options.get_int(OPTION_DECIMALS, 0)
+        columns = {}
+
+        for formatter in filter_formatters(LABEL_CHARACTERISTICS, [options]):
+            columns[formatter] = formatter.format(self, percentage=percentage, decimals=decimals)
+
+        return [columns]
 
 
 class Characteristic(Formatter):
