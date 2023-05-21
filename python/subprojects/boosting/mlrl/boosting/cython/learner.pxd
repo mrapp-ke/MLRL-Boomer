@@ -1,13 +1,11 @@
-from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig, IDynamicPartialHeadConfig
+from mlrl.boosting.cython.head_type cimport IDynamicPartialHeadConfig, IFixedPartialHeadConfig
 from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
-from mlrl.boosting.cython.prediction cimport ILabelWiseProbabilityPredictorConfig, \
-    IMarginalizedProbabilityPredictorConfig, ILabelWiseBinaryPredictorConfig, IExampleWiseBinaryPredictorConfig, \
-    IGfmBinaryPredictorConfig
-from mlrl.boosting.cython.probability_calibration cimport IIsotonicMarginalProbabilityCalibratorConfig, \
-    IIsotonicJointProbabilityCalibratorConfig
+from mlrl.boosting.cython.prediction cimport IExampleWiseBinaryPredictorConfig, IGfmBinaryPredictorConfig, \
+    ILabelWiseBinaryPredictorConfig, ILabelWiseProbabilityPredictorConfig, IMarginalizedProbabilityPredictorConfig
+from mlrl.boosting.cython.probability_calibration cimport IIsotonicJointProbabilityCalibratorConfig, \
+    IIsotonicMarginalProbabilityCalibratorConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
-
 
 ctypedef double (*DdotFunction)(int* n, double* dx, int* incx, double* dy, int* incy)
 

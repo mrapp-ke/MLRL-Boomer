@@ -6,11 +6,10 @@ from abc import ABC, abstractmethod
 from mlrl.boosting.cython.head_type import DynamicPartialHeadConfig, FixedPartialHeadConfig
 from mlrl.boosting.cython.label_binning import EqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor import ConstantShrinkageConfig
-from mlrl.boosting.cython.prediction import LabelWiseProbabilityPredictorConfig, \
-    MarginalizedProbabilityPredictorConfig, LabelWiseBinaryPredictorConfig, ExampleWiseBinaryPredictorConfig, \
-    GfmBinaryPredictorConfig
-from mlrl.boosting.cython.probability_calibration import IsotonicMarginalProbabilityCalibratorConfig, \
-    IsotonicJointProbabilityCalibratorConfig
+from mlrl.boosting.cython.prediction import ExampleWiseBinaryPredictorConfig, GfmBinaryPredictorConfig, \
+    LabelWiseBinaryPredictorConfig, LabelWiseProbabilityPredictorConfig, MarginalizedProbabilityPredictorConfig
+from mlrl.boosting.cython.probability_calibration import IsotonicJointProbabilityCalibratorConfig, \
+    IsotonicMarginalProbabilityCalibratorConfig
 from mlrl.boosting.cython.regularization import ManualRegularizationConfig
 
 

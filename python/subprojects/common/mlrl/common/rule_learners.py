@@ -20,8 +20,8 @@ from mlrl.common.cython.feature_matrix import CContiguousFeatureMatrix, CscFeatu
 from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
 from mlrl.common.cython.label_space_info import LabelSpaceInfo
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
-from mlrl.common.cython.probability_calibration import MarginalProbabilityCalibrationModel, \
-    JointProbabilityCalibrationModel
+from mlrl.common.cython.probability_calibration import JointProbabilityCalibrationModel, \
+    MarginalProbabilityCalibrationModel
 from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.cython.validation import assert_greater_or_equal
 from mlrl.common.data_types import DTYPE_FLOAT32, DTYPE_UINT8, DTYPE_UINT32
