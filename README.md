@@ -62,6 +62,6 @@ For an overview of changes and new features that have been included in past rele
 
 ## License
 
-This project is open source software licensed under the terms of the [MIT license](LICENSE.txt). We welcome contributions to the project to enhance its functionality and make it more accessible to a broader audience. A frequently updated list of contributors is available [here](CONTRIBUTORS.md).
+This project is open source software licensed under the terms of the [MIT license](LICENSE.md). We welcome contributions to the project to enhance its functionality and make it more accessible to a broader audience. A frequently updated list of contributors is available [here](CONTRIBUTORS.md).
 
 All contributions to the project and discussions on the [issue tracker](https://github.com/mrapp-ke/Boomer/issues) are expected to follow the [code of conduct](CODE_OF_CONDUCT.md).
