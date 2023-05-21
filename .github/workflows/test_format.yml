@@ -6,6 +6,9 @@ on:
       - '**/*.cpp'
       - '**/*.py'
       - 'Makefile'
+      - '.clang-format'
+      - '.isort.cfg'
+      - '.style.yapf'
       - '.github/workflows/test_format.yml'
 jobs:
   test_format:

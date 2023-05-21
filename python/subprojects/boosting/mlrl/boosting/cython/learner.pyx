@@ -1,7 +1,9 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.boosting.cython.head_type import FixedPartialHeadConfig, DynamicPartialHeadConfig
+from abc import ABC, abstractmethod
+
+from mlrl.boosting.cython.head_type import DynamicPartialHeadConfig, FixedPartialHeadConfig
 from mlrl.boosting.cython.label_binning import EqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor import ConstantShrinkageConfig
 from mlrl.boosting.cython.prediction import LabelWiseProbabilityPredictorConfig, \
@@ -10,8 +12,6 @@ from mlrl.boosting.cython.prediction import LabelWiseProbabilityPredictorConfig,
 from mlrl.boosting.cython.probability_calibration import IsotonicMarginalProbabilityCalibratorConfig, \
     IsotonicJointProbabilityCalibratorConfig
 from mlrl.boosting.cython.regularization import ManualRegularizationConfig
-
-from abc import ABC, abstractmethod
 
 
 class AutomaticPartitionSamplingMixin(ABC):

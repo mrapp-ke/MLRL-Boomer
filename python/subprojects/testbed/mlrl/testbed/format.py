@@ -4,10 +4,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for creating textual representations.
 """
 from functools import reduce
+from typing import List
+
+from tabulate import tabulate
 
 from mlrl.common.options import Options
-from tabulate import tabulate
-from typing import List
 
 OPTION_DECIMALS = 'decimals'
 

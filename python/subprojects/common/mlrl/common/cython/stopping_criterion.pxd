@@ -1,6 +1,6 @@
-from mlrl.common.cython._types cimport uint8, uint32, float64
-
 from libcpp cimport bool
+
+from mlrl.common.cython._types cimport float64, uint8, uint32
 
 
 cdef extern from "common/stopping/stopping_criterion_size.hpp" nogil:

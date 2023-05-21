@@ -4,9 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides a data structure that allows to store and parse options that are provided as key-value pairs.
 """
 from enum import Enum
+from typing import Dict, Set, Tuple
 
-from mlrl.common.format import format_string_set, format_enum_values, format_dict_keys
-from typing import Set, Dict, Tuple
+from mlrl.common.format import format_dict_keys, format_enum_values, format_string_set
 
 
 class BooleanOption(Enum):

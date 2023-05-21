@@ -36,7 +36,6 @@ from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig,
     IPostPruningConfig, PostPruningConfig
 
 from libcpp.utility cimport move
-
 from scipy.linalg.cython_blas cimport ddot, dspmv
 from scipy.linalg.cython_lapack cimport dsysv
 
