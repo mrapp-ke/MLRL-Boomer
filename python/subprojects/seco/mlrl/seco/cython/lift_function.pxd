@@ -1,4 +1,4 @@
-from mlrl.common.cython._types cimport uint32, float64
+from mlrl.common.cython._types cimport float64, uint32
 
 
 cdef extern from "seco/lift_functions/lift_function_peak.hpp" namespace "seco" nogil:

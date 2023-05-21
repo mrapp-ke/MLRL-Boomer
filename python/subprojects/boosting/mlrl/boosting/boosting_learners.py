@@ -3,13 +3,16 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides scikit-learn implementations of boosting algorithms.
 """
+from typing import Optional
+
+from sklearn.base import ClassifierMixin, MultiOutputMixin, RegressorMixin
+
 from mlrl.common.config import configure_rule_learner
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.rule_learners import RuleLearner, SparsePolicy
+
 from mlrl.boosting.config import BOOSTING_RULE_LEARNER_PARAMETERS
 from mlrl.boosting.cython.learner_boomer import Boomer as BoomerWrapper, BoomerConfig
-from sklearn.base import ClassifierMixin, RegressorMixin, MultiOutputMixin
-from typing import Optional
 
 
 class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):

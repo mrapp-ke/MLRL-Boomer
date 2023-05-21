@@ -1,7 +1,7 @@
-from mlrl.common.cython._types cimport uint8, uint32, float32
-
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
+
+from mlrl.common.cython._types cimport float32, uint8, uint32
 
 
 cdef extern from "common/input/label_matrix.hpp" nogil:

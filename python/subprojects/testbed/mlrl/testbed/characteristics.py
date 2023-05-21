@@ -3,13 +3,17 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides functions to determine certain characteristics of feature or label matrices.
 """
-import numpy as np
-from mlrl.common.options import Options
-from mlrl.testbed.format import Formatter, filter_formatters, format_table, OPTION_PERCENTAGE, OPTION_DECIMALS
-from mlrl.testbed.output_writer import Formattable, Tabularizable
-from scipy.sparse import issparse
-from typing import Dict, List
 from functools import cached_property
+from typing import Dict, List
+
+import numpy as np
+
+from scipy.sparse import issparse
+
+from mlrl.common.options import Options
+
+from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
+from mlrl.testbed.output_writer import Formattable, Tabularizable
 
 OPTION_LABELS = 'labels'
 

@@ -3,23 +3,24 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities that ease the configuration of rule learning algorithms.
 """
-from mlrl.common.cython.learner import GreedyTopDownRuleInductionMixin, BeamSearchTopDownRuleInductionMixin, \
-    NoFeatureBinningMixin, EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, NoFeatureSamplingMixin, \
-    FeatureSamplingWithoutReplacementMixin, NoInstanceSamplingMixin, InstanceSamplingWithReplacementMixin, \
-    InstanceSamplingWithoutReplacementMixin, LabelWiseStratifiedInstanceSamplingMixin, \
-    ExampleWiseStratifiedInstanceSamplingMixin, NoFeatureSamplingMixin, FeatureSamplingWithoutReplacementMixin, \
-    NoPartitionSamplingMixin, RandomBiPartitionSamplingMixin, LabelWiseStratifiedBiPartitionSamplingMixin, \
-    ExampleWiseStratifiedBiPartitionSamplingMixin, NoGlobalPruningMixin, PostPruningMixin, PrePruningMixin, \
-    NoRulePruningMixin, IrepRulePruningMixin, NoParallelRuleRefinementMixin, ParallelRuleRefinementMixin, \
-    NoParallelStatisticUpdateMixin, ParallelStatisticUpdateMixin, NoParallelPredictionMixin, ParallelPredictionMixin, \
-    NoSizeStoppingCriterionMixin, SizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, \
-    TimeStoppingCriterionMixin, NoSequentialPostOptimizationMixin, SequentialPostOptimizationMixin
-from mlrl.common.cython.stopping_criterion import AggregationFunction
-from mlrl.common.options import Options, BooleanOption, parse_param, parse_param_and_options
-from mlrl.common.format import format_dict_keys, format_string_set
-from typing import Dict, Set, Optional
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
+from typing import Dict, Optional, Set
+
+from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, EqualFrequencyFeatureBinningMixin, \
+    EqualWidthFeatureBinningMixin, ExampleWiseStratifiedBiPartitionSamplingMixin, \
+    ExampleWiseStratifiedInstanceSamplingMixin, FeatureSamplingWithoutReplacementMixin, \
+    GreedyTopDownRuleInductionMixin, InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, \
+    IrepRulePruningMixin, LabelWiseStratifiedBiPartitionSamplingMixin, LabelWiseStratifiedInstanceSamplingMixin, \
+    NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, NoInstanceSamplingMixin, \
+    NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
+    NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, \
+    NoTimeStoppingCriterionMixin, ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, \
+    PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, SequentialPostOptimizationMixin, \
+    SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
+from mlrl.common.cython.stopping_criterion import AggregationFunction
+from mlrl.common.format import format_dict_keys, format_string_set
+from mlrl.common.options import BooleanOption, Options, parse_param, parse_param_and_options
 
 AUTOMATIC = 'auto'
 

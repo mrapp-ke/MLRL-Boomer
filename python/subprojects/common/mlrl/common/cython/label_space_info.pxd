@@ -1,7 +1,7 @@
-from mlrl.common.cython._types cimport uint32
-
 from libcpp.cast cimport dynamic_cast
 from libcpp.memory cimport unique_ptr
+
+from mlrl.common.cython._types cimport uint32
 
 
 cdef extern from "common/prediction/label_space_info.hpp" nogil:

@@ -5,46 +5,44 @@ Provides base classes for programs that can be configured via command line argum
 """
 import logging as log
 import sys
+
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 from enum import Enum
-from typing import Optional, Dict, Set, List
+from typing import Dict, List, Optional, Set
 
+from mlrl.common.config import NONE, Parameter, configure_argument_parser, create_kwargs_from_parameters
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
-from mlrl.common.format import format_enum_values, format_dict_keys
-from mlrl.common.config import Parameter, configure_argument_parser, create_kwargs_from_parameters, NONE
+from mlrl.common.format import format_dict_keys, format_enum_values
 from mlrl.common.options import BooleanOption, parse_param_and_options
-from mlrl.testbed.data_characteristics import DataCharacteristicsWriter
-from mlrl.testbed.data_splitting import DataSplitter, CrossValidationSplitter, TrainTestSplitter, NoSplitter, DataSet
-from mlrl.testbed.evaluation import EvaluationWriter, BinaryEvaluationWriter, ScoreEvaluationWriter, \
-    ProbabilityEvaluationWriter
-from mlrl.testbed.experiments import Experiment, Evaluation, GlobalEvaluation, IncrementalEvaluation
+from mlrl.common.rule_learners import SparsePolicy
+
+from mlrl.testbed.characteristics import OPTION_DISTINCT_LABEL_VECTORS, OPTION_LABEL_CARDINALITY, \
+    OPTION_LABEL_DENSITY, OPTION_LABEL_IMBALANCE_RATIO, OPTION_LABEL_SPARSITY, OPTION_LABELS
+from mlrl.testbed.data_characteristics import OPTION_EXAMPLES, OPTION_FEATURE_DENSITY, OPTION_FEATURE_SPARSITY, \
+    OPTION_FEATURES, OPTION_NOMINAL_FEATURES, OPTION_NUMERICAL_FEATURES, DataCharacteristicsWriter
+from mlrl.testbed.data_splitting import CrossValidationSplitter, DataSet, DataSplitter, NoSplitter, TrainTestSplitter
+from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTION_DISCOUNTED_CUMULATIVE_GAIN, \
+    OPTION_ENABLE_ALL, OPTION_EXAMPLE_WISE_F1, OPTION_EXAMPLE_WISE_JACCARD, OPTION_EXAMPLE_WISE_PRECISION, \
+    OPTION_EXAMPLE_WISE_RECALL, OPTION_F1, OPTION_HAMMING_ACCURACY, OPTION_HAMMING_LOSS, OPTION_JACCARD, \
+    OPTION_LABEL_RANKING_AVERAGE_PRECISION, OPTION_MACRO_F1, OPTION_MACRO_JACCARD, OPTION_MACRO_PRECISION, \
+    OPTION_MACRO_RECALL, OPTION_MEAN_ABSOLUTE_ERROR, OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR, OPTION_MEAN_SQUARED_ERROR, \
+    OPTION_MEDIAN_ABSOLUTE_ERROR, OPTION_MICRO_F1, OPTION_MICRO_JACCARD, OPTION_MICRO_PRECISION, OPTION_MICRO_RECALL, \
+    OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, OPTION_PRECISION, OPTION_PREDICTION_TIME, OPTION_RANK_LOSS, \
+    OPTION_RECALL, OPTION_SUBSET_ACCURACY, OPTION_SUBSET_ZERO_ONE_LOSS, OPTION_TRAINING_TIME, OPTION_ZERO_ONE_LOSS, \
+    BinaryEvaluationWriter, EvaluationWriter, ProbabilityEvaluationWriter, ScoreEvaluationWriter
+from mlrl.testbed.experiments import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
+from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
-from mlrl.testbed.models import ModelWriter, RuleModelWriter
+from mlrl.testbed.models import OPTION_PRINT_BODIES, OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, \
+    OPTION_PRINT_LABEL_NAMES, OPTION_PRINT_NOMINAL_VALUES, ModelWriter, RuleModelWriter
 from mlrl.testbed.output_writer import OutputWriter
-from mlrl.testbed.parameters import ParameterInput, ParameterCsvInput, ParameterWriter
-from mlrl.common.rule_learners import SparsePolicy
+from mlrl.testbed.parameters import ParameterCsvInput, ParameterInput, ParameterWriter
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsWriter
 from mlrl.testbed.prediction_scope import PredictionType
 from mlrl.testbed.predictions import PredictionWriter
-from mlrl.testbed.evaluation import OPTION_ENABLE_ALL, OPTION_HAMMING_LOSS, OPTION_HAMMING_ACCURACY, \
-    OPTION_SUBSET_ZERO_ONE_LOSS, OPTION_SUBSET_ACCURACY, OPTION_MICRO_PRECISION, OPTION_MICRO_RECALL, OPTION_MICRO_F1, \
-    OPTION_MICRO_JACCARD, OPTION_MACRO_PRECISION, OPTION_MACRO_RECALL, OPTION_MACRO_F1, OPTION_MACRO_JACCARD, \
-    OPTION_EXAMPLE_WISE_PRECISION, OPTION_EXAMPLE_WISE_RECALL, OPTION_EXAMPLE_WISE_F1, OPTION_EXAMPLE_WISE_JACCARD, \
-    OPTION_ACCURACY, OPTION_ZERO_ONE_LOSS, OPTION_PRECISION, OPTION_RECALL, OPTION_F1, OPTION_JACCARD, \
-    OPTION_MEAN_ABSOLUTE_ERROR, OPTION_MEAN_SQUARED_ERROR, OPTION_MEDIAN_ABSOLUTE_ERROR, \
-    OPTION_MEAN_ABSOLUTE_PERCENTAGE_ERROR, OPTION_RANK_LOSS, OPTION_COVERAGE_ERROR, \
-    OPTION_LABEL_RANKING_AVERAGE_PRECISION, OPTION_DISCOUNTED_CUMULATIVE_GAIN, \
-    OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, OPTION_PREDICTION_TIME, OPTION_TRAINING_TIME
-from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE
-from mlrl.testbed.characteristics import OPTION_LABELS, OPTION_LABEL_DENSITY, OPTION_LABEL_SPARSITY, \
-    OPTION_LABEL_IMBALANCE_RATIO, OPTION_LABEL_CARDINALITY, OPTION_DISTINCT_LABEL_VECTORS
-from mlrl.testbed.data_characteristics import OPTION_EXAMPLES, OPTION_FEATURES, OPTION_NUMERICAL_FEATURES, \
-    OPTION_NOMINAL_FEATURES, OPTION_FEATURE_DENSITY, OPTION_FEATURE_SPARSITY
-from mlrl.testbed.models import OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_LABEL_NAMES, OPTION_PRINT_NOMINAL_VALUES, \
-    OPTION_PRINT_BODIES, OPTION_PRINT_HEADS
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 

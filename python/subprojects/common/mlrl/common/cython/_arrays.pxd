@@ -1,9 +1,9 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython._types cimport uint8, uint32, float64
-
 from cython.view cimport array as cvarray
+
+from mlrl.common.cython._types cimport float64, uint8, uint32
 
 
 cdef inline cvarray array_uint32(uint32* array, uint32 num_elements):
