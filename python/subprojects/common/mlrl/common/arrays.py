@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for handling arrays.
 """
 import numpy as np
+
 from scipy.sparse import issparse
 
 

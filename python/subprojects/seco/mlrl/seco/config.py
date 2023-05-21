@@ -3,15 +3,16 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities that ease the configuration of separate-and-conquer (SeCo) algorithms.
 """
-from mlrl.seco.cython.learner import SingleLabelHeadMixin, PartialHeadMixin, NoLiftFunctionMixin, \
-    PeakLiftFunctionMixin, KlnLiftFunctionMixin, AccuracyHeuristicMixin, PrecisionHeuristicMixin, \
-    RecallHeuristicMixin, LaplaceHeuristicMixin, WraHeuristicMixin, FMeasureHeuristicMixin, MEstimateHeuristicMixin, \
-    AccuracyPruningHeuristicMixin, PrecisionPruningHeuristicMixin, RecallPruningHeuristicMixin, \
-    LaplacePruningHeuristicMixin, WraPruningHeuristicMixin, FMeasurePruningHeuristicMixin, \
-    MEstimatePruningHeuristicMixin
-from mlrl.common.config import NominalParameter, NONE, RULE_LEARNER_PARAMETERS
-from mlrl.common.options import Options
 from typing import Optional
+
+from mlrl.common.config import NONE, RULE_LEARNER_PARAMETERS, NominalParameter
+from mlrl.common.options import Options
+
+from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, FMeasureHeuristicMixin, \
+    FMeasurePruningHeuristicMixin, KlnLiftFunctionMixin, LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, \
+    MEstimateHeuristicMixin, MEstimatePruningHeuristicMixin, NoLiftFunctionMixin, PartialHeadMixin, \
+    PeakLiftFunctionMixin, PrecisionHeuristicMixin, PrecisionPruningHeuristicMixin, RecallHeuristicMixin, \
+    RecallPruningHeuristicMixin, SingleLabelHeadMixin, WraHeuristicMixin, WraPruningHeuristicMixin
 
 HEURISTIC_ACCURACY = 'accuracy'
 

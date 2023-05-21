@@ -1,10 +1,10 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+from enum import Enum
+
 from mlrl.common.cython.validation import assert_greater_or_equal, assert_less_or_equal, assert_multiple, \
     assert_not_none
-
-from enum import Enum
 
 
 cdef class SizeStoppingCriterionConfig:

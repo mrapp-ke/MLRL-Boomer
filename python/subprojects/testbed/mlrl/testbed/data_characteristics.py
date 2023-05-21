@@ -4,17 +4,17 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for printing certain characteristics of multi-label data sets. The characteristics can be written to
 one or several outputs, e.g., to the console or to a file.
 """
-from functools import reduce
+from functools import cached_property, reduce
+from typing import Any, Dict, List, Optional
 
 from mlrl.common.options import Options
-from mlrl.testbed.characteristics import LabelCharacteristics, density, Characteristic, LABEL_CHARACTERISTICS
-from mlrl.testbed.data import MetaData, AttributeType
+
+from mlrl.testbed.characteristics import LABEL_CHARACTERISTICS, Characteristic, LabelCharacteristics, density
+from mlrl.testbed.data import AttributeType, MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
-from mlrl.testbed.format import filter_formatters, format_table, OPTION_DECIMALS, OPTION_PERCENTAGE
-from mlrl.testbed.output_writer import OutputWriter, Formattable, Tabularizable
-from mlrl.testbed.prediction_scope import PredictionType, PredictionScope
-from typing import Any, Dict, List, Optional
-from functools import cached_property
+from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, filter_formatters, format_table
+from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
+from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 
 OPTION_EXAMPLES = 'examples'
 

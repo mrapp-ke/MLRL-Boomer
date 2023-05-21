@@ -2,32 +2,32 @@
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from mlrl.common.cython.validation import assert_greater_or_equal
+
+from cython.operator cimport dereference
+from libcpp.utility cimport move
+
 from mlrl.common.cython.feature_info cimport FeatureInfo
 from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseFeatureMatrix
 from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
 from mlrl.common.cython.label_space_info cimport create_label_space_info
-from mlrl.common.cython.prediction cimport BinaryPredictor, SparseBinaryPredictor, ScorePredictor, ProbabilityPredictor
+from mlrl.common.cython.prediction cimport BinaryPredictor, ProbabilityPredictor, ScorePredictor, SparseBinaryPredictor
 from mlrl.common.cython.rule_model cimport create_rule_model
 
-from libcpp.utility cimport move
-
-from cython.operator cimport dereference
-
-from mlrl.common.cython.feature_binning import EqualWidthFeatureBinningConfig, EqualFrequencyFeatureBinningConfig
-from mlrl.common.cython.feature_sampling import FeatureSamplingWithoutReplacementConfig
-from mlrl.common.cython.instance_sampling import InstanceSamplingWithoutReplacementConfig, \
-    InstanceSamplingWithReplacementConfig, LabelWiseStratifiedInstanceSamplingConfig, \
-    ExampleWiseStratifiedInstanceSamplingConfig
-from mlrl.common.cython.multi_threading import ManualMultiThreadingConfig
-from mlrl.common.cython.label_sampling import LabelSamplingWithoutReplacementConfig
-from mlrl.common.cython.partition_sampling import RandomBiPartitionSamplingConfig, \
-    LabelWiseStratifiedBiPartitionSamplingConfig, ExampleWiseStratifiedBiPartitionSamplingConfig
-from mlrl.common.cython.post_optimization import SequentialPostOptimizationConfig
-from mlrl.common.cython.rule_induction import GreedyTopDownRuleInductionConfig, BeamSearchTopDownRuleInductionConfig
-from mlrl.common.cython.stopping_criterion import SizeStoppingCriterionConfig, TimeStoppingCriterionConfig, \
-    PrePruningConfig, PostPruningConfig
-
 from abc import ABC, abstractmethod
+
+from mlrl.common.cython.feature_binning import EqualFrequencyFeatureBinningConfig, EqualWidthFeatureBinningConfig
+from mlrl.common.cython.feature_sampling import FeatureSamplingWithoutReplacementConfig
+from mlrl.common.cython.instance_sampling import ExampleWiseStratifiedInstanceSamplingConfig, \
+    InstanceSamplingWithoutReplacementConfig, InstanceSamplingWithReplacementConfig, \
+    LabelWiseStratifiedInstanceSamplingConfig
+from mlrl.common.cython.label_sampling import LabelSamplingWithoutReplacementConfig
+from mlrl.common.cython.multi_threading import ManualMultiThreadingConfig
+from mlrl.common.cython.partition_sampling import ExampleWiseStratifiedBiPartitionSamplingConfig, \
+    LabelWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
+from mlrl.common.cython.post_optimization import SequentialPostOptimizationConfig
+from mlrl.common.cython.rule_induction import BeamSearchTopDownRuleInductionConfig, GreedyTopDownRuleInductionConfig
+from mlrl.common.cython.stopping_criterion import PostPruningConfig, PrePruningConfig, SizeStoppingCriterionConfig, \
+    TimeStoppingCriterionConfig
 
 
 cdef class TrainingResult:

@@ -1,7 +1,7 @@
-from mlrl.common.cython._types cimport uint8, uint32, float64
-
-from libcpp.memory cimport unique_ptr
 from libcpp cimport bool
+from libcpp.memory cimport unique_ptr
+
+from mlrl.common.cython._types cimport float64, uint8, uint32
 
 
 cdef extern from "common/prediction/prediction_matrix_dense.hpp" nogil:
