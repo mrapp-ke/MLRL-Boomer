@@ -5,15 +5,18 @@ Provides classes for printing the predictions of a model. The predictions can be
 e.g., to the console or to a file.
 """
 import sys
+
 from typing import Any, List, Optional
 
 import numpy as np
+
 from mlrl.common.options import Options
-from mlrl.testbed.data import MetaData, Label, save_arff_file
+
+from mlrl.testbed.data import Label, MetaData, save_arff_file
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
-from mlrl.testbed.output_writer import OutputWriter, Formattable
-from mlrl.testbed.prediction_scope import PredictionType, PredictionScope
+from mlrl.testbed.output_writer import Formattable, OutputWriter
+from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 
 
 class PredictionWriter(OutputWriter):

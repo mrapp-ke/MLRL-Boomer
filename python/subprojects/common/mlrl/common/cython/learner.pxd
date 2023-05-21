@@ -1,27 +1,27 @@
+from libcpp cimport bool
+from libcpp.memory cimport unique_ptr
+
 from mlrl.common.cython._types cimport uint32
-from mlrl.common.cython.feature_binning cimport IEqualWidthFeatureBinningConfig, IEqualFrequencyFeatureBinningConfig
+from mlrl.common.cython.feature_binning cimport IEqualFrequencyFeatureBinningConfig, IEqualWidthFeatureBinningConfig
 from mlrl.common.cython.feature_info cimport IFeatureInfo
 from mlrl.common.cython.feature_matrix cimport IColumnWiseFeatureMatrix, IRowWiseFeatureMatrix
 from mlrl.common.cython.feature_sampling cimport IFeatureSamplingWithoutReplacementConfig
 from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstanceSamplingConfig, \
-    ILabelWiseStratifiedInstanceSamplingConfig, IInstanceSamplingWithReplacementConfig, \
-    IInstanceSamplingWithoutReplacementConfig
+    IInstanceSamplingWithoutReplacementConfig, IInstanceSamplingWithReplacementConfig, \
+    ILabelWiseStratifiedInstanceSamplingConfig
 from mlrl.common.cython.label_matrix cimport IRowWiseLabelMatrix
 from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig
-from mlrl.common.cython.label_space_info cimport LabelSpaceInfo, ILabelSpaceInfo
+from mlrl.common.cython.label_space_info cimport ILabelSpaceInfo, LabelSpaceInfo
 from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
     ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig
-from mlrl.common.cython.prediction cimport IBinaryPredictor, ISparseBinaryPredictor, IScorePredictor, \
-    IProbabilityPredictor
-from mlrl.common.cython.rule_induction cimport IGreedyTopDownRuleInductionConfig, IBeamSearchTopDownRuleInductionConfig
-from mlrl.common.cython.rule_model cimport RuleModel, IRuleModel
-from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, ITimeStoppingCriterionConfig, \
-    IPrePruningConfig, IPostPruningConfig
-
-from libcpp cimport bool
-from libcpp.memory cimport unique_ptr
+from mlrl.common.cython.prediction cimport IBinaryPredictor, IProbabilityPredictor, IScorePredictor, \
+    ISparseBinaryPredictor
+from mlrl.common.cython.rule_induction cimport IBeamSearchTopDownRuleInductionConfig, IGreedyTopDownRuleInductionConfig
+from mlrl.common.cython.rule_model cimport IRuleModel, RuleModel
+from mlrl.common.cython.stopping_criterion cimport IPostPruningConfig, IPrePruningConfig, \
+    ISizeStoppingCriterionConfig, ITimeStoppingCriterionConfig
 
 
 cdef extern from "common/learner.hpp" nogil:

@@ -1,6 +1,6 @@
-from mlrl.common.cython._types cimport uint32
-
 from libcpp.memory cimport unique_ptr
+
+from mlrl.common.cython._types cimport uint32
 
 
 cdef extern from "common/input/feature_info.hpp" nogil:

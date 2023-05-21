@@ -1,61 +1,63 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.boosting.cython.head_type cimport IFixedPartialHeadConfig, FixedPartialHeadConfig, \
-    IDynamicPartialHeadConfig, DynamicPartialHeadConfig
-from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig, EqualWidthLabelBinningConfig
-from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig, ConstantShrinkageConfig
-from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig, ManualRegularizationConfig
-from mlrl.common.cython.feature_binning cimport IEqualWidthFeatureBinningConfig, EqualWidthFeatureBinningConfig, \
-    IEqualFrequencyFeatureBinningConfig, EqualFrequencyFeatureBinningConfig
-from mlrl.common.cython.feature_sampling cimport IFeatureSamplingWithoutReplacementConfig, \
-    FeatureSamplingWithoutReplacementConfig
-from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstanceSamplingConfig, \
-    ExampleWiseStratifiedInstanceSamplingConfig, ILabelWiseStratifiedInstanceSamplingConfig, \
-    LabelWiseStratifiedInstanceSamplingConfig, IInstanceSamplingWithReplacementConfig, \
-    InstanceSamplingWithReplacementConfig, IInstanceSamplingWithoutReplacementConfig, \
-    InstanceSamplingWithoutReplacementConfig
-from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig, \
-    LabelSamplingWithoutReplacementConfig
-from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig, ManualMultiThreadingConfig
-from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
-    ExampleWiseStratifiedBiPartitionSamplingConfig, ILabelWiseStratifiedBiPartitionSamplingConfig, \
-    LabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
-from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig, SequentialPostOptimizationConfig
-from mlrl.common.cython.rule_induction cimport IGreedyTopDownRuleInductionConfig, GreedyTopDownRuleInductionConfig, \
-    IBeamSearchTopDownRuleInductionConfig, BeamSearchTopDownRuleInductionConfig
-from mlrl.common.cython.stopping_criterion cimport ISizeStoppingCriterionConfig, SizeStoppingCriterionConfig, \
-    ITimeStoppingCriterionConfig, TimeStoppingCriterionConfig, IPrePruningConfig, PrePruningConfig, \
-    IPostPruningConfig, PostPruningConfig
-
 from libcpp.utility cimport move
-
 from scipy.linalg.cython_blas cimport ddot, dspmv
 from scipy.linalg.cython_lapack cimport dsysv
 
-from mlrl.common.cython.learner import SequentialRuleModelAssemblageMixin, DefaultRuleMixin, \
-    GreedyTopDownRuleInductionMixin, BeamSearchTopDownRuleInductionMixin, NoPostProcessorMixin, NoFeatureBinningMixin, \
-    EqualWidthFeatureBinningMixin, EqualFrequencyFeatureBinningMixin, NoLabelSamplingMixin, \
-    LabelSamplingWithoutReplacementMixin, NoInstanceSamplingMixin, InstanceSamplingWithReplacementMixin, \
-    InstanceSamplingWithoutReplacementMixin, LabelWiseStratifiedInstanceSamplingMixin, \
-    ExampleWiseStratifiedInstanceSamplingMixin, NoFeatureSamplingMixin, FeatureSamplingWithoutReplacementMixin, \
-    NoPartitionSamplingMixin, RandomBiPartitionSamplingMixin, LabelWiseStratifiedBiPartitionSamplingMixin, \
-    ExampleWiseStratifiedBiPartitionSamplingMixin, NoRulePruningMixin, IrepRulePruningMixin, \
-    NoParallelRuleRefinementMixin, ParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
-    ParallelStatisticUpdateMixin, NoParallelPredictionMixin, ParallelPredictionMixin, NoSizeStoppingCriterionMixin, \
-    SizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, TimeStoppingCriterionMixin, PrePruningMixin, \
-    NoGlobalPruningMixin, PostPruningMixin, NoSequentialPostOptimizationMixin, SequentialPostOptimizationMixin
-from mlrl.boosting.cython.learner import AutomaticPartitionSamplingMixin, AutomaticFeatureBinningMixin, \
-    AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, ConstantShrinkageMixin, \
-    NoL1RegularizationMixin, L1RegularizationMixin, NoL2RegularizationMixin, L2RegularizationMixin, \
-    NoDefaultRuleMixin, AutomaticDefaultRuleMixin, CompleteHeadMixin, FixedPartialHeadMixin, DynamicPartialHeadMixin, \
-    SingleLabelHeadMixin, AutomaticHeadMixin, DenseStatisticsMixin, SparseStatisticsMixin, AutomaticStatisticsMixin, \
+from mlrl.common.cython.feature_binning cimport EqualFrequencyFeatureBinningConfig, EqualWidthFeatureBinningConfig, \
+    IEqualFrequencyFeatureBinningConfig, IEqualWidthFeatureBinningConfig
+from mlrl.common.cython.feature_sampling cimport FeatureSamplingWithoutReplacementConfig, \
+    IFeatureSamplingWithoutReplacementConfig
+from mlrl.common.cython.instance_sampling cimport ExampleWiseStratifiedInstanceSamplingConfig, \
+    IExampleWiseStratifiedInstanceSamplingConfig, IInstanceSamplingWithoutReplacementConfig, \
+    IInstanceSamplingWithReplacementConfig, ILabelWiseStratifiedInstanceSamplingConfig, \
+    InstanceSamplingWithoutReplacementConfig, InstanceSamplingWithReplacementConfig, \
+    LabelWiseStratifiedInstanceSamplingConfig
+from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig, \
+    LabelSamplingWithoutReplacementConfig
+from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig, ManualMultiThreadingConfig
+from mlrl.common.cython.partition_sampling cimport ExampleWiseStratifiedBiPartitionSamplingConfig, \
+    IExampleWiseStratifiedBiPartitionSamplingConfig, ILabelWiseStratifiedBiPartitionSamplingConfig, \
+    IRandomBiPartitionSamplingConfig, LabelWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
+from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig, SequentialPostOptimizationConfig
+from mlrl.common.cython.rule_induction cimport BeamSearchTopDownRuleInductionConfig, GreedyTopDownRuleInductionConfig, \
+    IBeamSearchTopDownRuleInductionConfig, IGreedyTopDownRuleInductionConfig
+from mlrl.common.cython.stopping_criterion cimport IPostPruningConfig, IPrePruningConfig, \
+    ISizeStoppingCriterionConfig, ITimeStoppingCriterionConfig, PostPruningConfig, PrePruningConfig, \
+    SizeStoppingCriterionConfig, TimeStoppingCriterionConfig
+
+from mlrl.boosting.cython.head_type cimport DynamicPartialHeadConfig, FixedPartialHeadConfig, \
+    IDynamicPartialHeadConfig, IFixedPartialHeadConfig
+from mlrl.boosting.cython.label_binning cimport EqualWidthLabelBinningConfig, IEqualWidthLabelBinningConfig
+from mlrl.boosting.cython.post_processor cimport ConstantShrinkageConfig, IConstantShrinkageConfig
+from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig, ManualRegularizationConfig
+
+from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, DefaultRuleMixin, \
+    EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, ExampleWiseStratifiedBiPartitionSamplingMixin, \
+    ExampleWiseStratifiedInstanceSamplingMixin, FeatureSamplingWithoutReplacementMixin, \
+    GreedyTopDownRuleInductionMixin, InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, \
+    IrepRulePruningMixin, LabelSamplingWithoutReplacementMixin, LabelWiseStratifiedBiPartitionSamplingMixin, \
+    LabelWiseStratifiedInstanceSamplingMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, \
+    NoInstanceSamplingMixin, NoLabelSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, \
+    NoParallelStatisticUpdateMixin, NoPartitionSamplingMixin, NoPostProcessorMixin, NoRulePruningMixin, \
+    NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, \
+    ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, \
+    PrePruningMixin, RandomBiPartitionSamplingMixin, SequentialPostOptimizationMixin, \
+    SequentialRuleModelAssemblageMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
+
+from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
+    AutomaticFeatureBinningMixin, AutomaticHeadMixin, AutomaticLabelBinningMixin, \
+    AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, AutomaticPartitionSamplingMixin, \
+    AutomaticProbabilityPredictorMixin, AutomaticStatisticsMixin, CompleteHeadMixin, ConstantShrinkageMixin, \
+    DenseStatisticsMixin, DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, \
     ExampleWiseLogisticLossMixin, ExampleWiseSquaredErrorLossMixin, ExampleWiseSquaredHingeLossMixin, \
-    LabelWiseLogisticLossMixin, LabelWiseSquaredErrorLossMixin, LabelWiseSquaredHingeLossMixin, NoLabelBinningMixin, \
-    EqualWidthLabelBinningMixin, AutomaticLabelBinningMixin, LabelWiseBinaryPredictorMixin, \
-    ExampleWiseBinaryPredictorMixin, GfmBinaryPredictorMixin, AutomaticBinaryPredictorMixin, \
-    LabelWiseScorePredictorMixin, LabelWiseProbabilityPredictorMixin, MarginalizedProbabilityPredictorMixin, \
-    AutomaticProbabilityPredictorMixin
+    FixedPartialHeadMixin, GfmBinaryPredictorMixin, L1RegularizationMixin, L2RegularizationMixin, \
+    LabelWiseBinaryPredictorMixin, LabelWiseLogisticLossMixin, LabelWiseProbabilityPredictorMixin, \
+    LabelWiseScorePredictorMixin, LabelWiseSquaredErrorLossMixin, LabelWiseSquaredHingeLossMixin, \
+    MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
+    NoLabelBinningMixin, SingleLabelHeadMixin, SparseStatisticsMixin
+
 
 cdef class BoomerConfig(RuleLearnerConfig,
                         AutomaticPartitionSamplingMixin,

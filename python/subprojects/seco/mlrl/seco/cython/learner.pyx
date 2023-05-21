@@ -1,11 +1,11 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.seco.cython.heuristic import FMeasureConfig, MEstimateConfig
-from mlrl.seco.cython.lift_function import PeakLiftFunctionConfig, KlnLiftFunctionConfig
-from mlrl.seco.cython.stopping_criterion import CoverageStoppingCriterionConfig
-
 from abc import ABC, abstractmethod
+
+from mlrl.seco.cython.heuristic import FMeasureConfig, MEstimateConfig
+from mlrl.seco.cython.lift_function import KlnLiftFunctionConfig, PeakLiftFunctionConfig
+from mlrl.seco.cython.stopping_criterion import CoverageStoppingCriterionConfig
 
 
 class NoCoverageStoppingCriterionMixin(ABC):

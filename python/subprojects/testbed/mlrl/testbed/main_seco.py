@@ -1,8 +1,8 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.seco.cython.learner_seco import MultiLabelSeCoRuleLearnerConfig
 from mlrl.seco.config import SECO_RULE_LEARNER_PARAMETERS
+from mlrl.seco.cython.learner_seco import MultiLabelSeCoRuleLearnerConfig
 from mlrl.seco.seco_learners import MultiLabelSeCoRuleLearner
 
 from mlrl.testbed.runnables import RuleLearnerRunnable

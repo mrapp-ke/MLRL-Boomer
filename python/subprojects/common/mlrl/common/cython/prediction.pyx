@@ -2,13 +2,15 @@
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal
-from mlrl.common.cython._arrays cimport array_uint32, view_uint32, c_matrix_uint8, c_view_uint8, c_matrix_float64, \
-    c_view_float64
 
 from libcpp.utility cimport move
 
-from scipy.sparse import csr_matrix
+from mlrl.common.cython._arrays cimport array_uint32, c_matrix_float64, c_matrix_uint8, c_view_float64, c_view_uint8, \
+    view_uint32
+
 import numpy as np
+
+from scipy.sparse import csr_matrix
 
 
 cdef class IncrementalBinaryPredictor:
