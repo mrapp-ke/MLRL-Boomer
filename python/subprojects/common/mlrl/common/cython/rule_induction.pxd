@@ -1,6 +1,6 @@
-from mlrl.common.cython._types cimport uint32, float32
-
 from libcpp cimport bool
+
+from mlrl.common.cython._types cimport float32, uint32
 
 
 cdef extern from "common/rule_induction/rule_induction_top_down_greedy.hpp" nogil:

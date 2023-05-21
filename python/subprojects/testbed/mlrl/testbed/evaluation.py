@@ -5,19 +5,22 @@ Provides classes for evaluating the predictions or rankings provided by a multi-
 measures. The evaluation results can be written to one or several outputs, e.g., to the console or to a file.
 """
 from abc import ABC
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
 import sklearn.metrics as metrics
+
+from sklearn.utils.multiclass import is_multilabel
+
 from mlrl.common.arrays import enforce_dense
 from mlrl.common.data_types import DTYPE_UINT8
 from mlrl.common.options import Options
+
 from mlrl.testbed.data import MetaData
-from mlrl.testbed.data_splitting import DataType, DataSplit, CrossValidationOverall
-from mlrl.testbed.format import Formatter, filter_formatters, format_table, OPTION_DECIMALS, OPTION_PERCENTAGE
-from mlrl.testbed.output_writer import OutputWriter, Formattable, Tabularizable
-from mlrl.testbed.prediction_scope import PredictionType, PredictionScope
-from sklearn.utils.multiclass import is_multilabel
-from typing import Any, List, Dict, Set, Optional, Tuple
+from mlrl.testbed.data_splitting import CrossValidationOverall, DataSplit, DataType
+from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
+from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
+from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 
 OPTION_ENABLE_ALL = 'enable_all'
 

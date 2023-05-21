@@ -3,15 +3,17 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities for writing output data to sinks like the console or output files.
 """
-from abc import ABC, abstractmethod
-from typing import Any, List, Dict, Optional
 import logging as log
+
+from abc import ABC, abstractmethod
+from typing import Any, Dict, List, Optional
+
+from mlrl.common.options import Options
 
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
-from mlrl.testbed.io import open_writable_txt_file, open_writable_csv_file, create_csv_dict_writer
-from mlrl.testbed.prediction_scope import PredictionType, PredictionScope
-from mlrl.common.options import Options
+from mlrl.testbed.io import create_csv_dict_writer, open_writable_csv_file, open_writable_txt_file
+from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 
 
 class Formattable(ABC):

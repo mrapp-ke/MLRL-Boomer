@@ -4,14 +4,19 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for implementing single- or multi-label rule learning algorithms.
 """
 import logging as log
+
 from abc import ABC, abstractmethod
 from enum import Enum
 
 import numpy as np
-from mlrl.common.arrays import enforce_dense, enforce_2d
-from mlrl.common.cython.feature_info import FeatureInfo, EqualFeatureInfo, MixedFeatureInfo
-from mlrl.common.cython.feature_matrix import RowWiseFeatureMatrix, FortranContiguousFeatureMatrix, CscFeatureMatrix, \
-    CsrFeatureMatrix, CContiguousFeatureMatrix
+
+from scipy.sparse import issparse, isspmatrix_coo, isspmatrix_csc, isspmatrix_csr, isspmatrix_dok, isspmatrix_lil
+from sklearn.utils import check_array
+
+from mlrl.common.arrays import enforce_2d, enforce_dense
+from mlrl.common.cython.feature_info import EqualFeatureInfo, FeatureInfo, MixedFeatureInfo
+from mlrl.common.cython.feature_matrix import CContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
+    FortranContiguousFeatureMatrix, RowWiseFeatureMatrix
 from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
 from mlrl.common.cython.label_space_info import LabelSpaceInfo
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
@@ -19,11 +24,9 @@ from mlrl.common.cython.probability_calibration import MarginalProbabilityCalibr
     JointProbabilityCalibrationModel
 from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.cython.validation import assert_greater_or_equal
-from mlrl.common.data_types import DTYPE_UINT8, DTYPE_UINT32, DTYPE_FLOAT32
+from mlrl.common.data_types import DTYPE_FLOAT32, DTYPE_UINT8, DTYPE_UINT32
 from mlrl.common.format import format_enum_values
-from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLearner
-from scipy.sparse import issparse, isspmatrix_lil, isspmatrix_coo, isspmatrix_dok, isspmatrix_csc, isspmatrix_csr
-from sklearn.utils import check_array
+from mlrl.common.learners import IncrementalLearner, Learner, NominalAttributeLearner
 
 KWARG_MAX_RULES = 'max_rules'
 

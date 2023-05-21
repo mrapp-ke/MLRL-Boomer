@@ -1,14 +1,17 @@
+from libcpp cimport bool
+from libcpp.memory cimport unique_ptr
+
 from mlrl.common.cython._types cimport uint32
-from mlrl.common.cython.feature_binning cimport IEqualWidthFeatureBinningConfig, IEqualFrequencyFeatureBinningConfig
+from mlrl.common.cython.feature_binning cimport IEqualFrequencyFeatureBinningConfig, IEqualWidthFeatureBinningConfig
 from mlrl.common.cython.feature_info cimport IFeatureInfo
 from mlrl.common.cython.feature_matrix cimport IColumnWiseFeatureMatrix, IRowWiseFeatureMatrix
 from mlrl.common.cython.feature_sampling cimport IFeatureSamplingWithoutReplacementConfig
 from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstanceSamplingConfig, \
-    ILabelWiseStratifiedInstanceSamplingConfig, IInstanceSamplingWithReplacementConfig, \
-    IInstanceSamplingWithoutReplacementConfig
+    IInstanceSamplingWithoutReplacementConfig, IInstanceSamplingWithReplacementConfig, \
+    ILabelWiseStratifiedInstanceSamplingConfig
 from mlrl.common.cython.label_matrix cimport IRowWiseLabelMatrix
 from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig
-from mlrl.common.cython.label_space_info cimport LabelSpaceInfo, ILabelSpaceInfo
+from mlrl.common.cython.label_space_info cimport ILabelSpaceInfo, LabelSpaceInfo
 from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
     ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig

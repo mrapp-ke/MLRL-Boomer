@@ -1,10 +1,10 @@
-from mlrl.common.cython._types cimport uint32, float32, float64
+cimport numpy as npc
 
 from libcpp cimport bool
 from libcpp.cast cimport dynamic_cast
 from libcpp.memory cimport unique_ptr
 
-cimport numpy as npc
+from mlrl.common.cython._types cimport float32, float64, uint32
 
 
 cdef extern from "common/model/body.hpp" nogil:

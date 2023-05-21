@@ -1,6 +1,6 @@
-from mlrl.common.cython._types cimport uint32
-
 from libcpp cimport bool
+
+from mlrl.common.cython._types cimport uint32
 
 
 cdef extern from "common/post_optimization/post_optimization_sequential.hpp" nogil:

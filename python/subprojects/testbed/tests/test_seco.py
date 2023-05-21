@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from os import path
 
-from test_common import CommonIntegrationTests, CmdBuilder, DIR_OUT, DIR_DATA, DATASET_EMOTIONS, RULE_PRUNING_IREP
+from test_common import DATASET_EMOTIONS, DIR_DATA, DIR_OUT, RULE_PRUNING_IREP, CmdBuilder, CommonIntegrationTests
 
 CMD_SECO = 'seco'
 

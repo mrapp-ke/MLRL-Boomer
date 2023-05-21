@@ -3,12 +3,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 import shutil
 import subprocess
+
 from abc import ABC
 from functools import reduce
-from os import path, makedirs
-from unittest import TestCase, SkipTest
-
+from os import makedirs, path
 from typing import List, Optional
+from unittest import SkipTest, TestCase
 
 OVERWRITE_EXPECTED_OUTPUT_FILES = False
 
