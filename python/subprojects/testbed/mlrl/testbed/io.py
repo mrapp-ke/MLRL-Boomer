@@ -6,10 +6,10 @@ Provides functions for writing and reading files.
 import os
 import os.path as path
 import xml.etree.ElementTree as XmlTree
-from csv import DictReader, DictWriter, QUOTE_MINIMAL
-from xml.dom import minidom
 
+from csv import QUOTE_MINIMAL, DictReader, DictWriter
 from typing import Optional
+from xml.dom import minidom
 
 # The delimiter used to separate the columns in a CSV file
 CSV_DELIMITER = ','

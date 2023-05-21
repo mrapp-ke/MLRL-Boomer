@@ -5,19 +5,23 @@ Provides classes for printing textual representations of models. The models can 
 e.g., to the console or to a file.
 """
 import logging as log
-from _io import StringIO
+
 from abc import ABC
+from typing import Any, List, Optional
 
 import numpy as np
-from mlrl.common.cython.rule_model import RuleModel, RuleModelVisitor, EmptyBody, ConjunctiveBody, CompleteHead, \
-    PartialHead
+
+from _io import StringIO
+
+from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBody, PartialHead, RuleModel, \
+    RuleModelVisitor
 from mlrl.common.learners import Learner
 from mlrl.common.options import Options
+
 from mlrl.testbed.data import Attribute, MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
-from mlrl.testbed.output_writer import OutputWriter, Formattable
-from mlrl.testbed.prediction_scope import PredictionType, PredictionScope
-from typing import List, Optional, Any
+from mlrl.testbed.output_writer import Formattable, OutputWriter
+from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 
 OPTION_PRINT_FEATURE_NAMES = 'print_feature_names'
 

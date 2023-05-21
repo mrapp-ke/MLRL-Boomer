@@ -4,20 +4,23 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for performing experiments.
 """
 import logging as log
+
 from abc import ABC, abstractmethod
 from functools import reduce
 from timeit import default_timer as timer
+from typing import List, Optional
 
-from mlrl.common.learners import Learner, NominalAttributeLearner, IncrementalLearner
-from mlrl.testbed.data import MetaData, AttributeType
-from mlrl.testbed.data_splitting import DataSplitter, DataSplit, DataType
+from sklearn.base import BaseEstimator, RegressorMixin, clone
+
+from mlrl.common.learners import IncrementalLearner, Learner, NominalAttributeLearner
+
+from mlrl.testbed.data import AttributeType, MetaData
+from mlrl.testbed.data_splitting import DataSplit, DataSplitter, DataType
 from mlrl.testbed.format import format_duration
+from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.parameters import ParameterInput
 from mlrl.testbed.persistence import ModelPersistence
-from mlrl.testbed.prediction_scope import PredictionType, PredictionScope, GlobalPrediction, IncrementalPrediction
-from mlrl.testbed.output_writer import OutputWriter
-from sklearn.base import BaseEstimator, RegressorMixin, clone
-from typing import Optional, List
+from mlrl.testbed.prediction_scope import GlobalPrediction, IncrementalPrediction, PredictionScope, PredictionType
 
 
 class Evaluation(ABC):

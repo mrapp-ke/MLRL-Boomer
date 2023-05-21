@@ -4,13 +4,15 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for printing certain characteristics of binary predictions. The characteristics can be written to one
 or several outputs, e.g., to the console or to a file.
 """
+from typing import Any, List, Optional
+
 from mlrl.common.options import Options
+
 from mlrl.testbed.characteristics import LabelCharacteristics
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.output_writer import OutputWriter
-from mlrl.testbed.prediction_scope import PredictionType, PredictionScope
-from typing import Any, List, Optional
+from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 
 
 class PredictionCharacteristicsWriter(OutputWriter):

@@ -1,9 +1,9 @@
 """
 @author Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython._types cimport uint32
-
 from libcpp.utility cimport move
+
+from mlrl.common.cython._types cimport uint32
 
 
 cdef class FeatureInfo:

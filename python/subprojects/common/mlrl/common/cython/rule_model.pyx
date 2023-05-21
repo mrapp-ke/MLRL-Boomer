@@ -1,8 +1,8 @@
 """
 @author Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from libcpp.utility cimport move
 from libcpp.memory cimport make_unique
+from libcpp.utility cimport move
 
 from abc import abstractmethod
 

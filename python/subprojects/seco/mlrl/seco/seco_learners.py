@@ -4,14 +4,17 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides a scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label
 classification rules.
 """
+from typing import Optional
+
+from sklearn.base import ClassifierMixin, MultiOutputMixin
+
 from mlrl.common.config import configure_rule_learner
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.rule_learners import RuleLearner, SparsePolicy
+
 from mlrl.seco.config import SECO_RULE_LEARNER_PARAMETERS
 from mlrl.seco.cython.learner_seco import MultiLabelSeCoRuleLearner as MultiLabelSeCoRuleLearnerWrapper, \
     MultiLabelSeCoRuleLearnerConfig
-from sklearn.base import ClassifierMixin, MultiOutputMixin
-from typing import Optional
 
 
 class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
