@@ -25,6 +25,9 @@ VENV_CREATE = ${PYTHON} -m venv ${VENV_DIR}
 VENV_ACTIVATE = $(if ${IS_WIN},${PS} "${VENV_DIR}/Scripts/activate.bat;",. ${VENV_DIR}/bin/activate)
 VENV_DEACTIVATE = $(if ${IS_WIN},${PS} "${VENV_DIR}/Scripts/deactivate.bat;",deactivate)
 PIP_INSTALL = python -m pip install --prefer-binary
+ISORT = isort --settings-path . --virtual-env ${VENV_DIR} --skip-gitignore
+ISORT_DRYRUN = ${ISORT} --check
+ISORT_INPLACE = ${ISORT} --overwrite-in-place
 YAPF = yapf -r -p --style=.style.yapf --verbose
 YAPF_DRYRUN = ${YAPF} --diff
 YAPF_INPLACE = ${YAPF} -i
@@ -133,6 +136,7 @@ venv:
 test_format_python: venv
 	@echo Checking Python code style...
 	${VENV_ACTIVATE} \
+		&& ${ISORT_DRYRUN} ${PYTHON_PACKAGE_DIR} \
 	    && ${YAPF_DRYRUN} ${PYTHON_PACKAGE_DIR} \
 	    && ${VENV_DEACTIVATE}
 
@@ -147,6 +151,7 @@ test_format: test_format_python test_format_cpp
 format_python: venv
 	@echo Formatting Python code...
 	${VENV_ACTIVATE} \
+		&& ${ISORT_INPLACE} ${PYTHON_PACKAGE_DIR} \
 	    && ${YAPF_INPLACE} ${PYTHON_PACKAGE_DIR} \
 	    && ${VENV_DEACTIVATE}
 
