@@ -2,7 +2,7 @@
 
 BOOMER is open source software. Everyone is welcomed to contribute to the project to enhance its functionality and make it more accessible to a broader audience.
 
-### List of Contributors
+## List of Contributors
 
 We highly appreciate the efforts of the following persons (listed in alphabetical order), who have actively contributed code to the project:
 
@@ -17,6 +17,6 @@ We highly appreciate the efforts of the following persons (listed in alphabetica
 * [Michael Rapp](https://github.com/michael-rapp)
 * [Paul Trojahn](https://github.com/ptrojahn)
 
-### Special Thanks
+## Special Thanks
 
 We would also like to thank Johannes Fürnkranz and Eyke Hüllermeier for making the project possible in the first place and sharing their extensive knowledge. 
