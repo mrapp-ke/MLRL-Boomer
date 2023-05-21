@@ -136,7 +136,7 @@ venv:
 test_format_python: venv
 	@echo Checking Python code style...
 	${VENV_ACTIVATE} \
-		&& ${ISORT_DRYRUN} ${PYTHON_PACKAGE_DIR} \
+	    && ${ISORT_DRYRUN} ${PYTHON_PACKAGE_DIR} \
 	    && ${YAPF_DRYRUN} ${PYTHON_PACKAGE_DIR} \
 	    && ${VENV_DEACTIVATE}
 
@@ -151,7 +151,7 @@ test_format: test_format_python test_format_cpp
 format_python: venv
 	@echo Formatting Python code...
 	${VENV_ACTIVATE} \
-		&& ${ISORT_INPLACE} ${PYTHON_PACKAGE_DIR} \
+	    && ${ISORT_INPLACE} ${PYTHON_PACKAGE_DIR} \
 	    && ${YAPF_INPLACE} ${PYTHON_PACKAGE_DIR} \
 	    && ${VENV_DEACTIVATE}
 
