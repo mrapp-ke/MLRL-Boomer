@@ -1,8 +1,7 @@
-from mlrl.common.cython._types cimport uint32, float64
-
 from libcpp.cast cimport dynamic_cast
 from libcpp.memory cimport unique_ptr
 
+from mlrl.common.cython._types cimport float64, uint32
 
 ctypedef void (*BinVisitor)(uint32, float64, float64)
 

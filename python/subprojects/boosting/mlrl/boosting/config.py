@@ -3,25 +3,27 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility function for configuring boosting algorithms.
 """
-from mlrl.common.cython.learner import NoPostProcessorMixin, DefaultRuleMixin, NoMarginalProbabilityCalibrationMixin, \
-    NoJointProbabilityCalibrationMixin
-from mlrl.boosting.cython.learner import AutomaticPartitionSamplingMixin, AutomaticFeatureBinningMixin, \
-    AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, ConstantShrinkageMixin, \
-    NoL1RegularizationMixin, L1RegularizationMixin, NoL2RegularizationMixin, L2RegularizationMixin, \
-    DenseStatisticsMixin, SparseStatisticsMixin, AutomaticStatisticsMixin, NoDefaultRuleMixin, \
-    AutomaticDefaultRuleMixin, NoLabelBinningMixin, EqualWidthLabelBinningMixin, AutomaticLabelBinningMixin, \
-    LabelWiseLogisticLossMixin, ExampleWiseLogisticLossMixin, LabelWiseSquaredErrorLossMixin, \
-    ExampleWiseSquaredErrorLossMixin, LabelWiseSquaredHingeLossMixin, ExampleWiseSquaredHingeLossMixin, \
-    SingleLabelHeadMixin, FixedPartialHeadMixin, DynamicPartialHeadMixin, CompleteHeadMixin, \
-    IsotonicMarginalProbabilityCalibrationMixin, IsotonicJointProbabilityCalibrationMixin, \
-    LabelWiseBinaryPredictorMixin, ExampleWiseBinaryPredictorMixin, GfmBinaryPredictorMixin, \
-    AutomaticBinaryPredictorMixin, LabelWiseProbabilityPredictorMixin, MarginalizedProbabilityPredictorMixin, \
-    AutomaticProbabilityPredictorMixin
-from mlrl.common.config import FloatParameter, NominalParameter, PartitionSamplingParameter, FeatureBinningParameter, \
-    ParallelRuleRefinementParameter, ParallelStatisticUpdateParameter, RULE_LEARNER_PARAMETERS, NONE, AUTOMATIC, \
-    OPTION_BIN_RATIO, OPTION_MIN_BINS, OPTION_MAX_BINS, BINNING_EQUAL_WIDTH, OPTION_USE_HOLDOUT_SET
-from mlrl.common.options import Options, BooleanOption
 from typing import Optional
+
+from mlrl.common.config import AUTOMATIC, BINNING_EQUAL_WIDTH, NONE, OPTION_BIN_RATIO, OPTION_MAX_BINS, \
+    OPTION_MIN_BINS, OPTION_USE_HOLDOUT_SET, RULE_LEARNER_PARAMETERS, FeatureBinningParameter, FloatParameter, \
+    NominalParameter, ParallelRuleRefinementParameter, ParallelStatisticUpdateParameter, PartitionSamplingParameter
+from mlrl.common.cython.learner import DefaultRuleMixin, NoJointProbabilityCalibrationMixin, \
+    NoMarginalProbabilityCalibrationMixin, NoPostProcessorMixin
+from mlrl.common.options import BooleanOption, Options
+
+from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
+    AutomaticFeatureBinningMixin, AutomaticLabelBinningMixin, AutomaticParallelRuleRefinementMixin, \
+    AutomaticParallelStatisticUpdateMixin, AutomaticPartitionSamplingMixin, AutomaticProbabilityPredictorMixin, \
+    AutomaticStatisticsMixin, CompleteHeadMixin, ConstantShrinkageMixin, DenseStatisticsMixin, \
+    DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, \
+    ExampleWiseLogisticLossMixin, ExampleWiseSquaredErrorLossMixin, ExampleWiseSquaredHingeLossMixin, \
+    FixedPartialHeadMixin, GfmBinaryPredictorMixin, IsotonicJointProbabilityCalibrationMixin, \
+    IsotonicMarginalProbabilityCalibrationMixin, L1RegularizationMixin, L2RegularizationMixin, \
+    LabelWiseBinaryPredictorMixin, LabelWiseLogisticLossMixin, LabelWiseProbabilityPredictorMixin, \
+    LabelWiseSquaredErrorLossMixin, LabelWiseSquaredHingeLossMixin, MarginalizedProbabilityPredictorMixin, \
+    NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, NoLabelBinningMixin, SingleLabelHeadMixin, \
+    SparseStatisticsMixin
 
 PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
 

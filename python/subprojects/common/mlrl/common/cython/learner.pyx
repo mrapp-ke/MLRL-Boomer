@@ -10,9 +10,9 @@ from mlrl.common.cython.feature_info cimport FeatureInfo
 from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseFeatureMatrix
 from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
 from mlrl.common.cython.label_space_info cimport create_label_space_info
-from mlrl.common.cython.prediction cimport BinaryPredictor, SparseBinaryPredictor, ScorePredictor, ProbabilityPredictor
-from mlrl.common.cython.probability_calibration cimport create_marginal_probability_calibration_model, \
-    create_joint_probability_calibration_model
+from mlrl.common.cython.prediction cimport BinaryPredictor, ProbabilityPredictor, ScorePredictor, SparseBinaryPredictor
+from mlrl.common.cython.probability_calibration cimport create_joint_probability_calibration_model, \
+    create_marginal_probability_calibration_model
 from mlrl.common.cython.rule_model cimport create_rule_model
 
 from abc import ABC, abstractmethod
