@@ -25,28 +25,33 @@ The algorithm was first published in the following [paper](https://doi.org/10.10
 
 If you use the algorithm in a scientific publication, we would appreciate citations to the mentioned paper. An overview of publications that are concerned with the BOOMER algorithm, together with information on how to cite them, can be found in the section [References](https://mlrl-boomer.readthedocs.io/en/latest/references/index.html) of the documentation. 
 
-## Features
+## Functionalities
 
 The algorithm that is provided by this project currently supports the following core functionalities to learn an ensemble of boosted classification rules:
 
-* Different label-wise or example-wise loss functions can be minimized during training (optionally using L1 or L2 regularization).
-* The rules may not only predict for a single label, but also for a subset of the labels or even for all labels, which enables to model local dependencies between labels.
-* When learning a new rule, random samples of the training examples, features or labels may be used (including different techniques such as sampling with or without replacement or stratification methods).
-* The impact of individual rules on the ensemble can be controlled using shrinkage.
-* Hyper-parameters that provide fine-grained control over the specificity/generality of rules are available.
-* The conditions of rules can be pruned based on a hold-out set.
-* The algorithm can natively handle numerical, ordinal and nominal features (without the need for pre-processing techniques such as one-hot encoding).
-* The algorithm is able to deal with missing feature values, i.e., occurrences of NaN in the feature matrix.
-* Different strategies for predicting labels or probabilities, which can be tailored to the used loss function, are available.
+* **Label-wise decomposable or non-decomposable loss functions** can be minimized in expectation.
+* **L1 and L2 regularization** can be used.
+* **Single-label, partial, or complete heads** can be used by rules, i.e., they can predict for an individual label, a subset of the available labels, or all labels. Predicting for multiple labels simultaneously enables rules to model local dependencies between labels.
+* **Various strategies for predicting regression scores, labels or probabilities** are available.
+* **Sampling techniques and stratification methods** can be used to learn new rules on a subset of the available training examples, feature, or labels.
+* **Shrinkage (a.k.a. the learning rate) can be adjusted** to control the impact of individual rules on the overall ensemble.
+* **Fine-grained control over the specificity/generality of rules** is provided via hyper-parameters.
+* **Incremental reduced error pruning** can be used to remove overly specific conditions from rules and prevent overfitting.
+* **Post- and pre-pruning (a.k.a. early stopping)** allows to determine the optimal number of rules to be included in an ensemble.
+* **Native support for numerical, ordinal, and nominal features** eliminates the need for pre-processing techniques such as one-hot encoding.
+* **Handling of missing feature values**, i.e., occurrences of NaN in the feature matrix, is implemented by the algorithm.
+
+## Runtime and Memory Optimizations
 
 In addition, the following features that may speed up training or reduce the memory footprint are currently implemented:
 
-* Approximate methods for evaluating potential conditions of rules, based on unsupervised binning methods, can be used.
-* [Gradient-based label binning (GBLB)](https://arxiv.org/pdf/2106.11690.pdf) can be used to assign the available labels to a limited number of bins. The use of label binning may speed up training significantly when using rules that predict for multiple labels to minimize a non-decomposable loss function.
-* Dense or sparse feature matrices can be used for training and prediction. The use of sparse matrices may speed up training significantly on some data sets.
-* Dense or sparse label matrices can be used for training. The use of sparse matrices may reduce the memory footprint in case of large data sets.
-* Dense or sparse matrices can be used to store predictions. The use of sparse matrices may reduce the memory footprint in case of large data sets.
-* Multi-threading can be used to parallelize the evaluation of a rule's potential refinements across several features, to update the gradients and Hessians of individual examples in parallel, or to obtain predictions for several examples in parallel.
+* **Unsupervised feature binning** can be used to speed up the evaluation of a rule's potential conditions when dealing with numerical features.
+* **[Gradient-based label binning (GBLB)](https://arxiv.org/pdf/2106.11690.pdf)** can be used to assign the available labels to a limited number of bins. This may speed up training significantly when minimizing a non-decomposable loss function using rules with partial or complete heads.
+* **Sparse feature matrices** can be used for training and prediction. This may speed up training significantly on some data sets.
+* **Sparse label matrices** can be used for training. This may reduce the memory footprint in case of large data sets.
+* **Sparse prediction matrices** can be used to store predicted labels. This may reduce the memory footprint in case of large data sets.
+* **Sparse matrices for storing gradients and Hessians** can be used if supported by the loss function. This may speed up training significantly on data sets with many labels.
+* **Multi-threading** can be used to parallelize the evaluation of a rule's potential refinements across several features, to update the gradients and Hessians of individual examples in parallel, or to obtain predictions for several examples in parallel.
 
 ## Documentation
 
