@@ -38,6 +38,7 @@ The algorithm that is provided by this project currently supports the following 
 * **Fine-grained control over the specificity/generality of rules** is provided via hyper-parameters.
 * **Incremental reduced error pruning** can be used to remove overly specific conditions from rules and prevent overfitting.
 * **Post- and pre-pruning (a.k.a. early stopping)** allows to determine the optimal number of rules to be included in an ensemble.
+* **Sequential post-optimization** may help to improve the predictive performance of a model by reconstructing each rule in the context of the other rules.
 * **Native support for numerical, ordinal, and nominal features** eliminates the need for pre-processing techniques such as one-hot encoding.
 * **Handling of missing feature values**, i.e., occurrences of NaN in the feature matrix, is implemented by the algorithm.
 
