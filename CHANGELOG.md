@@ -15,7 +15,7 @@ A major update to the BOOMER algorithm that introduces the following changes.
 * **Probability estimates can be obtained for each label independently or via marginalization** over the label vectors encountered in the training data by setting the new parameter `--probability-predictor` to the value `label-wise` or `marginalized`.
 * **Predictions that maximize the example-wise F1-measure can now be obtained** by setting the parameter `--classification-predictor` to the value `gfm`.
 * **Binary predictions can now be derived from probability estimates** by specifying the new option `based_on_probabilities`.
-* **Isotonic calibration models can now be used** to calibrate marginal and joint probabilities predicted by a model via the new parameters `--marginal-probability-calibration` and `--joint-probability-calibration`.
+* **Isotonic regression models can now be used** to calibrate marginal and joint probabilities predicted by a model via the new parameters `--marginal-probability-calibration` and `--joint-probability-calibration`.
 * **The rules in a previously learned model can now be post-optimized** by reconstructing them in the context of the other rules via the new parameter `--sequential-post-optimization`.
 * **Early stopping or post-pruning can now be used** by setting the new parameter `--global-pruning` to the value `pre-pruning` or `post-pruning`.
 
