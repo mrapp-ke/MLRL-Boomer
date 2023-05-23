@@ -2,28 +2,42 @@
 
 ## Version 0.9.0 (to be released)
 
-***This release comes with changes to the command line API. For an updated overview of the available parameters, please refer to the [documentation](https://mlrl-boomer.readthedocs.io).***
+***This release comes with several API changes. For an updated overview of the available parameters and command line arguments, please refer to the [documentation](https://mlrl-boomer.readthedocs.io).***
 
-A major update to the BOOMER algorithm that introduces the following changes:
+A major update to the BOOMER algorithm that introduces the following changes.
 
-* Sparse data structures can now be used to store gradients and Hessians if supported by the loss function. The desired behavior can be specified via a new parameter `--statistic-format`.
-* The parameter `--head-type` does now allow to learn partial rules that predict for a predefined number of labels (`partial-fixed`) or a subset of the available labels that is determined dynamically (`partial-dynamic`).
-* The parameter `--rule-induction` does now allow to use a top-down beam search for the induction of individual rules (`top-down-beam-search`).
-* The parameter `--classification-predictor` has been renamed to `--binary-predictor`. It does now allow to obtain predictions that maximize the example-wise F1-measure (`gfm`).
-* The parameter `--loss` does now allow to use variants of the squared error loss and squared hinge loss that take all labels of an example into account at the same time (`squared-error-example-wise` and `squared-hinge-example-wise`).  
-* A new parameter `--sequential-post-optimization` has been added. It allows to optimize each rule in a previously learned model by being relearned in the context of the other rules.
-* A new parameter `--probability-predictor` has been added. It allows to specify whether probability estimates should be obtained for each label independently (`label-wise`) or via marginalization over the label vectors that are encountered in the training data (`marginalized`).
-* The arguments `--print-prediction-characteristics` and `--store-prediction-characteristics` have been added to the command line API. They allow to print certain characteristics of binary predictions or write them into output files.
-* The argument ``--incremental-prediction`` has been added to the command line API. It allows to specify whether ensemble models should be evaluated repeatedly, using only a subset of the ensemble members with increasing size, or not.
-* Fixed behavior of the argument `--label-format` when set to the value `auto`.
-* Rules are now guaranteed to not cover more examples than specified via the parameter `min_coverage`. The parameter is now also taken into account when using feature binning. Alternatively, the minimum coverage of rules can now also be specified as a fraction via the parameter `min_support`. 
-* The parameters `--folds` and `--current-fold` have been replaced with a new parameter `--data-split` that provides more control of how data is split into training and test sets.
-* The parameter `--predict-probabilities` has been replaced with a new parameter `--prediction-type` that allows to specify whether binary labels (`binary`), regression scores (`scores`) or probability estimates (`probabilities`) should be predicted.
-* The parameters `--print-evaluation` and `--store-evaluation` do now allow to specify whether individual evaluation measures should be used or not.
-* The parameter `--early-stopping` has been replaced with a new parameter `--global-pruning`. It allows to use early stopping (`pre-pruning`) oder post-pruning (`post-pruning`). 
+### Algorithmic Enhancements
+
+* **Sparse matrices can now be used to store gradients and Hessians** if supported by the loss function. The desired behavior can be specified via a new parameter `--statistic-format`.
+* **Rules with partial heads can now be learned** by setting the parameter `--head-type` to the value `partial-fixed`, if the number of predicted labels should be predefined, or `partial-dynamic`, if the subset of predicted labels should be determined dynamically.
+* **A beam search can now be used** for the induction of individual rules by setting the parameter `--rule-induction` to the value `top-down-beam-search`.
+* **Variants of the squared error loss and squared hinge loss**, which take all labels of an example into account at the same time, can now be used by setting the parameter `--loss` to the value `squared-error-example-wise` or `squared-hinge-example-wise`.
+* **Probability estimates can be obtained for each label independently or via marginalization** over the label vectors encountered in the training data by setting the new parameter `--probability-predictor` to the value `label-wise` or `marginalized`.
+* **Predictions that maximize the example-wise F1-measure can now be obtained** by setting the parameter `--classification-predictor` to the value `gfm`.
+* **The rules in a previously learned model can now be post-optimized** by reconstructing them in the context of the other rules via the new parameter `--sequential-post-optimization`.
+* **Early stopping or post-pruning can now be used** by setting the new parameter `--global-pruning` to the value `pre-pruning` or `post-pruning`.
+
+### Additions to the Command Line API
+
+* **Data sets in the MEKA format are now supported.**
+* **Certain characteristics of binary predictions can be printed or written to output files** via the new arguments `--print-prediction-characteristics` and `--store-prediction-characteristics`.
+* **Models can now be evaluated repeatedly, using a subset of their rules with increasing size,** by specifying the argument `--incremental-prediction`.
+* **More control of how data is split into training and test sets** is now provided by the argument `--data-split` that replaces the arguments `--folds` and `--current-fold`.
+* **Binary labels, regression scores, or probabilities can now be predicted,** depending on the value of the new argument `--prediction-type`, which can be set to the values `binary`, `scores`, or `probabilities`.
+* **Individual evaluation measures can now be enabled or disabled** via additional options that have been added to the arguments `--print-evaluation` and `--store-evaluation`.
+
+### Bugfixes
+
+* The behavior of the argument `--label-format` has been fixed when set to the value `auto`.
+* Rules are now guaranteed to not cover more examples than specified via the option `min_coverage`. The option is now also taken into account when using feature binning. Alternatively, the minimum coverage of rules can now also be specified as a fraction via the option `min_support`. 
+
+### API Changes
+
+* The parameter `--early-stopping` has been replaced with a new parameter `--global-pruning`.
 * The parameter `--pruning` has been renamed to `--rule-pruning`.
-* The parameter `--predicted-label-format` has been renamed to `--prediction-format`.
-* Data sets in the MEKA format can now be used for experiments.
+* The parameter `--classification-predictor` has been renamed to `--binary-predictor`.
+* The command line argument `--predict-probabilities` has been replaced with a new argument `--prediction-type`.
+* The command line argument `--predicted-label-format` has been renamed to `--prediction-format`.
 
 ## Version 0.8.2 (Apr. 11th, 2022)
 
