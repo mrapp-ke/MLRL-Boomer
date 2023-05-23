@@ -23,6 +23,13 @@ class MLRLCOMMON_API IIsotonicMarginalProbabilityCalibrationModel : public IMarg
         typedef std::function<void(uint32 labelIndex, float64 threshold, float64 probability)> BinVisitor;
 
         /**
+         * Returns the number of available labels.
+         * 
+         * @return The number of available labels
+         */
+        virtual uint32 getNumLabels() const = 0;
+
+        /**
          * Adds a new bin to the calibration model.
          *
          * @param labelIndex    The index of the label, the bin corresponds to
@@ -68,6 +75,8 @@ class IsotonicMarginalProbabilityCalibrationModel final : public IIsotonicMargin
         bin_list operator[](uint32 labelIndex);
 
         float64 calibrateMarginalProbability(uint32 labelIndex, float64 marginalProbability) const override;
+
+        uint32 getNumLabels() const override;
 
         void addBin(uint32 labelIndex, float64 threshold, float64 probability) override;
 
