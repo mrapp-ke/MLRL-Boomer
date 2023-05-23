@@ -12,6 +12,8 @@ cdef extern from "common/prediction/probability_calibration_marginal.hpp" nogil:
 
         # Functions:
 
+        uint32 getNumLabels() const
+
         void addBin(uint32 labelIndex, float64 threshold, float64 probability)
 
         void visit(BinVisitor) const

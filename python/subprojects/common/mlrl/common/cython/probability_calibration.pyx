@@ -3,7 +3,7 @@
 """
 from libcpp.utility cimport move
 
-SERIALIZATION_VERVSION = 0
+SERIALIZATION_VERSION = 0
 
 
 cdef class MarginalProbabilityCalibrationModel:
@@ -63,33 +63,31 @@ cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibr
         return self.probability_calibration_model_ptr.get()
     
     cdef __serialize_bin(self, uint32 label_index, float64 threshold, float64 probability):
-        if len(self.state) <= label_index:
-            self.state.append([])
-
         cdef list bin_list = self.state[label_index]
         bin_list.append((threshold, probability))
 
-    def __reduce(self):
-        self.state = []
+    def __reduce__(self):
+        cdef uint32 num_labels = self.probability_calibration_model_ptr.get().getNumLabels()
+        self.state = [[] for i in range(num_labels)]
         self.probability_calibration_model_ptr.get().visit(
             wrapBinVisitor(<void*>self, <BinCythonVisitor>self.__serialize_bin))
-        cdef object state = (SERIALIZATION_VERVSION, self.state)
+        cdef object state = (SERIALIZATION_VERSION, self.state)
         self.state = None
         return (IsotonicMarginalProbabilityCalibrationModel, (), state)
 
-    def __setstate(self, state):
+    def __setstate__(self, state):
         cdef int version = state[0]
 
-        if version != SERIALIZATION_VERVSION:
+        if version != SERIALIZATION_VERSION:
             raise AssertionError('Version of the serialized IsotonicMarginalProbabilityCalibrationModel is '
-                                 + str(version) + ', expected ' + str(SERIALIZATION_VERVSION))
+                                 + str(version) + ', expected ' + str(SERIALIZATION_VERSION))
         
         cdef list bins_per_label = state[1]
         cdef uint32 num_labels = len(bins_per_label)
         cdef unique_ptr[IIsotonicMarginalProbabilityCalibrationModel] marginal_probability_calibration_model_ptr = \
             createIsotonicMarginalProbabilityCalibrationModel(num_labels)
         cdef list bin_list
-        cdef threshold, probability
+        cdef float64 threshold, probability
         cdef uint32 i, j, num_bins
 
         for i in range(num_labels):
