@@ -26,4 +26,4 @@ This document is intended for users and developers who are interested in the alg
 
    source/CONTRIBUTORS.md
 
-   license
+   source/LICENSE.md
