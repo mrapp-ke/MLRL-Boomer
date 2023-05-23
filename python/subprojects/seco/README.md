@@ -12,7 +12,8 @@ The algorithm that is provided by this project currently supports the following 
 
 * **A large variety of heuristics is available** to assess the quality of candidate rules.
 * **Rules may predict for a single label or multiple ones** (which enables to model local label dependencies).
-* **Sampling techniques and stratification methods** can be used to learn new rules on a subset of the available training examples, feature, or labels.
+* **Rules can be constructed via a greedy search or a beam search.** The latter may help to improve the quality of individual rules.
+* **Sampling techniques and stratification methods** can be used to learn new rules on a subset of the available training examples, features, or labels.
 * **Fine-grained control over the specificity/generality of rules** is provided via hyper-parameters.
 * **Incremental reduced error pruning** can be used to remove overly specific conditions from rules and prevent overfitting.
 * **Sequential post-optimization** may help to improve the predictive performance of a model by reconstructing each rule in the context of the other rules.

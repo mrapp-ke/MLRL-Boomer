@@ -33,7 +33,8 @@ The algorithm that is provided by this project currently supports the following 
 * **L1 and L2 regularization** can be used.
 * **Single-label, partial, or complete heads** can be used by rules, i.e., they can predict for an individual label, a subset of the available labels, or all labels. Predicting for multiple labels simultaneously enables rules to model local dependencies between labels.
 * **Various strategies for predicting regression scores, labels or probabilities** are available.
-* **Sampling techniques and stratification methods** can be used to learn new rules on a subset of the available training examples, feature, or labels.
+* **Rules can be constructed via a greedy search or a beam search.** The latter may help to improve the quality of individual rules.
+* **Sampling techniques and stratification methods** can be used to learn new rules on a subset of the available training examples, features, or labels.
 * **Shrinkage (a.k.a. the learning rate) can be adjusted** to control the impact of individual rules on the overall ensemble.
 * **Fine-grained control over the specificity/generality of rules** is provided via hyper-parameters.
 * **Incremental reduced error pruning** can be used to remove overly specific conditions from rules and prevent overfitting.
