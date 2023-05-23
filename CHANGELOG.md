@@ -39,6 +39,12 @@ A major update to the BOOMER algorithm that introduces the following changes.
 * The command line argument `--predict-probabilities` has been replaced with a new argument `--prediction-type`.
 * The command line argument `--predicted-label-format` has been renamed to `--prediction-format`.
 
+### Quality-of-Life Improvements
+
+* Continuous integration is now used to test the most common functionalites of the BOOMER algorithm and the corresponding command line API.
+* Successful generation of the documentation is now tested via continuous integration.
+* Style definitions for Python and C++ code are now enforced by applying the tools `clang-format`, `yapf`, and `isort` via continuous integration.
+
 ## Version 0.8.2 (Apr. 11th, 2022)
 
 A bugfix release that solves the following issues:
