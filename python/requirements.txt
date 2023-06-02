@@ -1,5 +1,5 @@
 cython==0.29.35
-meson==1.1.0
+meson==1.1.1
 ninja==1.11.1
 wheel==0.40.0
 build==0.10.0
