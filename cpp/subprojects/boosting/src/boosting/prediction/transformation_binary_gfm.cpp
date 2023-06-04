@@ -9,12 +9,13 @@
 namespace boosting {
 
     static inline uint32 getMaxLabelCardinality(const LabelVectorSet& labelVectorSet) {
+        LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
+        uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
         uint32 maxLabelCardinality = 0;
 
-        for (auto it = labelVectorSet.cbegin(); it != labelVectorSet.cend(); it++) {
-            const auto& entry = *it;
-            const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
-            uint32 numRelevantLabels = labelVectorPtr->getNumElements();
+        for (uint32 i = 0; i < numLabelVectors; i++) {
+            const LabelVector& labelVector = *labelVectorIterator[i];
+            uint32 numRelevantLabels = labelVector.getNumElements();
 
             if (numRelevantLabels > maxLabelCardinality) {
                 maxLabelCardinality = numRelevantLabels;
@@ -27,17 +28,17 @@ namespace boosting {
     static inline float64 calculateMarginalizedProbabilities(
       SparseSetMatrix<float64>& probabilities, uint32 numLabels,
       VectorConstView<float64>::const_iterator jointProbabilityIterator, const LabelVectorSet& labelVectorSet) {
+        LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
+        uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
         float64 nullVectorProbability = 0;
-        uint32 i = 0;
 
-        for (auto it = labelVectorSet.cbegin(); it != labelVectorSet.cend(); it++) {
-            const auto& entry = *it;
-            const std::unique_ptr<LabelVector>& labelVectorPtr = entry.first;
-            uint32 numRelevantLabels = labelVectorPtr->getNumElements();
+        for (uint32 i = 0; i < numLabelVectors; i++) {
+            const LabelVector& labelVector = *labelVectorIterator[i];
+            uint32 numRelevantLabels = labelVector.getNumElements();
             float64 jointProbability = jointProbabilityIterator[i];
 
             if (numRelevantLabels > 0) {
-                LabelVector::const_iterator labelIndexIterator = labelVectorPtr->cbegin();
+                LabelVector::const_iterator labelIndexIterator = labelVector.cbegin();
 
                 for (uint32 j = 0; j < numRelevantLabels; j++) {
                     uint32 labelIndex = labelIndexIterator[j];
@@ -48,8 +49,6 @@ namespace boosting {
             } else {
                 nullVectorProbability = jointProbability;
             }
-
-            i++;
         }
 
         return nullVectorProbability;
