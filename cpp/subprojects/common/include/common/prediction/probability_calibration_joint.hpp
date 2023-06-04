@@ -130,6 +130,15 @@ class IJointProbabilityCalibratorConfig {
         virtual bool shouldUseHoldoutSet() const = 0;
 
         /**
+         * Returns whether the calibrator needs access to the label vectors that are encountered in the training data or
+         * not.
+         *
+         * @return True, if the calibrator needs access to the label vectors that are encountered in the training data,
+         *         false otherwise
+         */
+        virtual bool isLabelVectorSetNeeded() const = 0;
+
+        /**
          * Creates and returns a new object of template type `IJointProbabilityCalibrator` according to the
          * configuration.
          *

@@ -83,6 +83,10 @@ bool NoJointProbabilityCalibratorConfig::shouldUseHoldoutSet() const {
     return false;
 }
 
+bool NoJointProbabilityCalibratorConfig::isLabelVectorSetNeeded() const {
+    return false;
+}
+
 std::unique_ptr<IJointProbabilityCalibrator> NoJointProbabilityCalibratorConfig::createJointProbabilityCalibrator()
   const {
     return std::make_unique<NoJointProbabilityCalibrator>();
