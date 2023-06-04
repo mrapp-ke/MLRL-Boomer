@@ -50,7 +50,7 @@ std::unique_ptr<INoMarginalProbabilityCalibrationModel> createNoMarginalProbabil
 class NoJointProbabilityCalibrationModel final : public INoJointProbabilityCalibrationModel {
     public:
 
-        float64 calibrateJointProbability(float64 jointProbability) const override {
+        float64 calibrateJointProbability(uint32 labelVectorIndex, float64 jointProbability) const override {
             return jointProbability;
         }
 };

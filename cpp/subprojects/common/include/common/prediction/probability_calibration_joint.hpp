@@ -16,10 +16,11 @@ class MLRLCOMMON_API IJointProbabilityCalibrationModel {
         /**
          * Calibrates a joint probability.
          *
+         * @param labelVectorIndex  The index of the label vector, the probability is predicted for
          * @param jointProbability  The joint probability to be calibrated
          * @return                  The calibrated probability
          */
-        virtual float64 calibrateJointProbability(float64 jointProbability) const = 0;
+        virtual float64 calibrateJointProbability(uint32 labelVectorIndex, float64 jointProbability) const = 0;
 };
 
 /**
