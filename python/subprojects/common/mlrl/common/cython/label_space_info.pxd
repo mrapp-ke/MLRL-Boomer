@@ -40,7 +40,7 @@ cdef extern from "common/input/label_vector.hpp" nogil:
         const_iterator cbegin() const
 
 
-ctypedef void (*LabelVectorVisitor)(const LabelVector&)
+ctypedef void (*LabelVectorVisitor)(const LabelVector&, uint32)
 
 
 cdef extern from "common/prediction/label_vector_set.hpp" nogil:
@@ -49,7 +49,7 @@ cdef extern from "common/prediction/label_vector_set.hpp" nogil:
 
         # Functions:
 
-        void addLabelVector(unique_ptr[LabelVector] labelVectorPtr)
+        void addLabelVector(unique_ptr[LabelVector] labelVectorPtr, uint32 frequency)
 
         void visit(LabelVectorVisitor) const
 
@@ -67,17 +67,17 @@ cdef extern from *:
     #include "common/prediction/label_vector_set.hpp"
 
 
-    typedef void (*LabelVectorCythonVisitor)(void*, const LabelVector&);
+    typedef void (*LabelVectorCythonVisitor)(void*, const LabelVector&, uint32);
 
     static inline LabelVectorSet::LabelVectorVisitor wrapLabelVectorVisitor(
             void* self, LabelVectorCythonVisitor visitor) {
-        return [=](const LabelVector& labelVector) {
-            visitor(self, labelVector);
+        return [=](const LabelVector& labelVector, uint32 frequency) {
+            visitor(self, labelVector, frequency);
         };
     }
     """
 
-    ctypedef void (*LabelVectorCythonVisitor)(void*, const LabelVector&)
+    ctypedef void (*LabelVectorCythonVisitor)(void*, const LabelVector&, uint32 frequency)
 
     LabelVectorVisitor wrapLabelVectorVisitor(void* self, LabelVectorCythonVisitor visitor)
 
@@ -106,7 +106,7 @@ cdef class LabelVectorSet(LabelSpaceInfo):
 
     # Functions:
 
-    cdef __serialize_label_vector(self, const LabelVector& label_vector)
+    cdef __serialize_label_vector(self, const LabelVector& label_vector, uint32 frequency)
 
     cdef unique_ptr[LabelVector] __deserialize_label_vector(self, object label_vector_state)
 
