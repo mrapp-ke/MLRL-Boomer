@@ -17,10 +17,11 @@ namespace boosting {
         DenseVector<float64>::const_iterator jointProbabilityIterator = jointProbabilityVectorPtr->cbegin();
         uint32 numLabels = probabilitiesEnd - probabilitiesBegin;
         setArrayToZeros(probabilitiesBegin, numLabels);
-        uint32 i = 0;
+        LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet_.cbegin();
+        uint32 numLabelVectors = labelVectorSet_.getNumLabelVectors();
 
-        for (auto it = labelVectorSet_.cbegin(); it != labelVectorSet_.cend(); it++) {
-            const LabelVector& labelVector = *((*it).first);
+        for (uint32 i = 0; i < numLabelVectors; i++) {
+            const LabelVector& labelVector = *labelVectorIterator[i];
             uint32 numRelevantLabels = labelVector.getNumElements();
             LabelVector::const_iterator labelIndexIterator = labelVector.cbegin();
             float64 jointProbability = jointProbabilityIterator[i];
@@ -29,8 +30,6 @@ namespace boosting {
                 uint32 labelIndex = labelIndexIterator[j];
                 probabilitiesBegin[labelIndex] += jointProbability;
             }
-
-            i++;
         }
     }
 

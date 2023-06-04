@@ -54,20 +54,20 @@ namespace boosting {
                   std::make_unique<DenseVector<float64>>(numLabelVectors);
                 DenseVector<float64>::iterator jointProbabilityIterator = jointProbabilityVectorPtr->begin();
                 float64 sumOfJointProbabilities = 0;
-                uint32 i = 0;
 
                 // Calculate joint probabilities...
-                for (auto it = labelVectorSet.cbegin(); it != labelVectorSet.cend(); it++) {
-                    const LabelVector& labelVector = *((*it).first);
+                LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
+
+                for (uint32 i = 0; i < numLabelVectors; i++) {
+                    const LabelVector& labelVector = *labelVectorIterator[i];
                     float64 jointProbability =
                       this->transformScoresIntoJointProbability(labelVector, scoresBegin, scoresEnd);
                     sumOfJointProbabilities += jointProbability;
                     jointProbabilityIterator[i] = jointProbability;
-                    i++;
                 }
 
                 // Normalize joint probabilities...
-                for (i = 0; i < numLabelVectors; i++) {
+                for (uint32 i = 0; i < numLabelVectors; i++) {
                     float64 jointProbability = jointProbabilityIterator[i];
                     jointProbabilityIterator[i] = divideOrZero(jointProbability, sumOfJointProbabilities);
                 }
