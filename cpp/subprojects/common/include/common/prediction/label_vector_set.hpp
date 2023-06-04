@@ -8,8 +8,7 @@
 #include "common/prediction/label_space_info.hpp"
 
 #include <functional>
-#include <memory>
-#include <unordered_map>
+#include <vector>
 
 /**
  * Defines an interface for all classes that provide access to a set of unique label vectors.
@@ -20,16 +19,17 @@ class MLRLCOMMON_API ILabelVectorSet : public ILabelSpaceInfo {
         virtual ~ILabelVectorSet() override {};
 
         /**
-         * A visitor function for handling objects of the type `LabelVector`.
+         * A visitor function for handling objects of the type `LabelVector` and their frequencies.
          */
-        typedef std::function<void(const LabelVector&)> LabelVectorVisitor;
+        typedef std::function<void(const LabelVector&, uint32)> LabelVectorVisitor;
 
         /**
          * Adds a label vector to the set.
          *
-         * @param labelVectorPtr An unique pointer to an object of type `LabelVector`
+         * @param labelVectorPtr    An unique pointer to an object of type `LabelVector`
+         * @param frequency         The frequency of the label vector
          */
-        virtual void addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr) = 0;
+        virtual void addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr, uint32 frequency) = 0;
 
         /**
          * Invokes the given visitor function for each label vector that has been added to the set.
@@ -46,39 +46,30 @@ class MLRLCOMMON_API ILabelVectorSet : public ILabelSpaceInfo {
 class LabelVectorSet final : public ILabelVectorSet {
     private:
 
-        /**
-         * Allows to compute hashes for objects of type `LabelVector`.
-         */
-        struct Hash final {
-            public:
+        std::vector<std::unique_ptr<LabelVector>> labelVectors_;
 
-                inline std::size_t operator()(const std::unique_ptr<LabelVector>& v) const {
-                    return hashArray(v->cbegin(), v->getNumElements());
-                }
-        };
-
-        /**
-         * Allows to check whether two objects of type `LabelVector` are equal or not.
-         */
-        struct Pred final {
-            public:
-
-                inline bool operator()(const std::unique_ptr<LabelVector>& lhs,
-                                       const std::unique_ptr<LabelVector>& rhs) const {
-                    return compareArrays(lhs->cbegin(), lhs->getNumElements(), rhs->cbegin(), rhs->getNumElements());
-                }
-        };
-
-        typedef std::unordered_map<std::unique_ptr<LabelVector>, uint32, Hash, Pred> Map;
-
-        Map labelVectors_;
+        std::vector<uint32> frequencies_;
 
     public:
 
+        LabelVectorSet();
+
         /**
-         * An iterator that provides read-only access to the label vectors, as well as their frequency.
+         * @param labelMatrix A reference to an object of type `IRowWiseLabelMatrix` that stores the label vectors that
+         *                    should be added to the set
          */
-        typedef Map::const_iterator const_iterator;
+        LabelVectorSet(const IRowWiseLabelMatrix& labelMatrix);
+
+        /**
+         * An iterator that provides read-only access to the label vectors.
+         */
+        typedef std::vector<std::unique_ptr<LabelVector>>::const_iterator const_iterator;
+
+        /**
+         * An iterator that provides read-only access to the frequency of the label lectors.
+         *
+         */
+        typedef std::vector<uint32>::const_iterator frequency_const_iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the label vectors in the set.
@@ -95,13 +86,27 @@ class LabelVectorSet final : public ILabelVectorSet {
         const_iterator cend() const;
 
         /**
+         * Returns a `frequency_const_iterator` to the beginning of the frequencies.
+         *
+         * @return frequency_const_iterator A `frequency_const_iterator` to the beginning
+         */
+        frequency_const_iterator frequencies_cbegin() const;
+
+        /**
+         * Returns a `frequency_const_iterator` to the end of the frequencies.
+         *
+         * @return frequency_const_iterator A `frequency_const_iterator` to the end
+         */
+        frequency_const_iterator frequencies_cend() const;
+
+        /**
          * Returns the number of label vectors in the set.
          *
          * @return The number of label vectors
          */
         uint32 getNumLabelVectors() const;
 
-        void addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr) override;
+        void addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr, uint32 frequency) override;
 
         void visit(LabelVectorVisitor visitor) const override;
 
@@ -152,12 +157,3 @@ class LabelVectorSet final : public ILabelVectorSet {
  * @return An unique pointer to an object of type `ILabelVectorSet` that has been created
  */
 MLRLCOMMON_API std::unique_ptr<ILabelVectorSet> createLabelVectorSet();
-
-/**
- * Creates and returns a new object of the type `ILabelVectorSet` that stores all label vectors that are encountered in
- * a given label matrix.
- *
- * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix`
- * @return              An unique pointer to an object of type `ILabelVectorSet` that has been created
- */
-std::unique_ptr<ILabelVectorSet> createLabelVectorSet(const IRowWiseLabelMatrix& labelMatrix);

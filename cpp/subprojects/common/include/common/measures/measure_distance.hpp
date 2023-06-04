@@ -45,20 +45,21 @@ class IDistanceMeasure {
         virtual const LabelVector& getClosestLabelVector(const LabelVectorSet& labelVectorSet,
                                                          VectorConstView<float64>::const_iterator scoresBegin,
                                                          VectorConstView<float64>::const_iterator scoresEnd) const {
-            LabelVectorSet::const_iterator it = labelVectorSet.cbegin();
-            const LabelVector* closestLabelVector = (*it).first.get();
-            uint32 maxCount = (*it).second;
+            LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
+            LabelVectorSet::frequency_const_iterator frequencyIterator = labelVectorSet.frequencies_cbegin();
+            uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
+            const LabelVector* closestLabelVector = labelVectorIterator[0].get();
+            uint32 maxFrequency = frequencyIterator[0];
             float64 minDistance = this->measureDistance(*closestLabelVector, scoresBegin, scoresEnd);
-            it++;
 
-            for (; it != labelVectorSet.cend(); it++) {
-                const LabelVector& labelVector = *((*it).first);
-                uint32 count = (*it).second;
+            for (uint32 i = 1; i < numLabelVectors; i++) {
+                const LabelVector& labelVector = *labelVectorIterator[i];
+                uint32 frequency = frequencyIterator[i];
                 float64 distance = this->measureDistance(labelVector, scoresBegin, scoresEnd);
 
-                if (distance < minDistance || (distance == minDistance && count > maxCount)) {
+                if (distance < minDistance || (distance == minDistance && frequency > maxFrequency)) {
                     closestLabelVector = &labelVector;
-                    maxCount = count;
+                    maxFrequency = frequency;
                     minDistance = distance;
                 }
             }
