@@ -32,10 +32,10 @@ namespace boosting {
                   jointProbabilityCalibrationModel_(jointProbabilityCalibrationModel) {}
 
             float64 transformScoresIntoJointProbability(
-              const VectorConstView<uint32>& relevantLabelIndices, VectorConstView<float64>::const_iterator scoresBegin,
+              uint32 labelVectorIndex, const LabelVector& labelVector,
+              VectorConstView<float64>::const_iterator scoresBegin,
               VectorConstView<float64>::const_iterator scoresEnd) const override {
-                auto labelIterator =
-                  make_binary_forward_iterator(relevantLabelIndices.cbegin(), relevantLabelIndices.cend());
+                auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
                 uint32 numLabels = scoresEnd - scoresBegin;
                 float64 jointProbability = 1;
 
@@ -53,7 +53,7 @@ namespace boosting {
                     labelIterator++;
                 }
 
-                return jointProbabilityCalibrationModel_.calibrateJointProbability(jointProbability);
+                return jointProbabilityCalibrationModel_.calibrateJointProbability(labelVectorIndex, jointProbability);
             }
     };
 

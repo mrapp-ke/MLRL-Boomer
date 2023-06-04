@@ -66,7 +66,8 @@ std::unique_ptr<IIsotonicMarginalProbabilityCalibrationModel> createIsotonicMarg
     return std::make_unique<IsotonicMarginalProbabilityCalibrationModel>(numLabels);
 }
 
-float64 IsotonicJointProbabilityCalibrationModel::calibrateJointProbability(float64 jointProbability) const {
+float64 IsotonicJointProbabilityCalibrationModel::calibrateJointProbability(uint32 labelVectorIndex,
+                                                                            float64 jointProbability) const {
     // TODO Implement
     return jointProbability;
 }

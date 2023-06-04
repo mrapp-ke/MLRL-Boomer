@@ -21,17 +21,18 @@ namespace boosting {
 
             /**
              * Transforms the regression scores that are predicted for an example into a joint probability that
-             * corresponds to the chance of given ground truth labels being correct.
+             * corresponds to the chance of a given label vector being correct.
              *
-             * @param relevantLabelIndices  A reference to an object of type `VectorConstView` that provides access to
-             *                              the indices of the relevant labels according to the ground truth
-             * @param scoresBegin           A `VectorConstView::const_iterator` to the beginning of the scores
-             * @param scoresEnd             A `VectorConstView::const_iterator` to the end of the scores
-             * @return                      The joint probability that corresponds to the chance of the given ground
-             *                              truth labels being correct
+             * @param labelVectorIndex  The index of the label vector, the scores should be compared to
+             * @param labelVector       A reference to an object of type `LabelVector`, the scores should be compared to
+             * @param scoresBegin       A `VectorConstView::const_iterator` to the beginning of the scores
+             * @param scoresEnd         A `VectorConstView::const_iterator` to the end of the scores
+             * @return                  The joint probability that corresponds to the chance of the given label vector
+             *                          being correct
              */
             virtual float64 transformScoresIntoJointProbability(
-              const VectorConstView<uint32>& relevantLabelIndices, VectorConstView<float64>::const_iterator scoresBegin,
+              uint32 labelVectorIndex, const LabelVector& labelVector,
+              VectorConstView<float64>::const_iterator scoresBegin,
               VectorConstView<float64>::const_iterator scoresEnd) const = 0;
 
             /**
@@ -39,7 +40,7 @@ namespace boosting {
              * correspond to the chance of individual label vectors contained by a `LabelVectorSet` being correct.
              *
              * @param labelVectorSet    A reference to an object of type `LabelVectorSet` that contains the label
-             *                          vectors the scores should be compared to
+             *                          vectors, the scores should be compared to
              * @param scoresBegin       A `VectorConstView::const_iterator` to the beginning of the scores
              * @param scoresEnd         A `VectorConstView::const_iterator` to the end of the scores
              * @return                  An unique pointer to an object of type `DenseVector` that stores the joint
@@ -61,7 +62,7 @@ namespace boosting {
                 for (uint32 i = 0; i < numLabelVectors; i++) {
                     const LabelVector& labelVector = *labelVectorIterator[i];
                     float64 jointProbability =
-                      this->transformScoresIntoJointProbability(labelVector, scoresBegin, scoresEnd);
+                      this->transformScoresIntoJointProbability(i, labelVector, scoresBegin, scoresEnd);
                     sumOfJointProbabilities += jointProbability;
                     jointProbabilityIterator[i] = jointProbability;
                 }
@@ -78,10 +79,12 @@ namespace boosting {
             /**
              * @see `IDistanceMeasure::measureDistance`
              */
-            float64 measureDistance(const VectorConstView<uint32>& relevantLabelIndices,
+            float64 measureDistance(uint32 labelVectorIndex, const LabelVector& labelVector,
                                     VectorConstView<float64>::const_iterator scoresBegin,
                                     VectorConstView<float64>::const_iterator scoresEnd) const override final {
-                return 1.0 - this->transformScoresIntoJointProbability(relevantLabelIndices, scoresBegin, scoresEnd);
+                return 1.0
+                       - this->transformScoresIntoJointProbability(labelVectorIndex, labelVector, scoresBegin,
+                                                                   scoresEnd);
             }
     };
 

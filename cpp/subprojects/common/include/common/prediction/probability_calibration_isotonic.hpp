@@ -24,7 +24,7 @@ class MLRLCOMMON_API IIsotonicMarginalProbabilityCalibrationModel : public IMarg
 
         /**
          * Returns the number of available labels.
-         * 
+         *
          * @return The number of available labels
          */
         virtual uint32 getNumLabels() const = 0;
@@ -108,7 +108,7 @@ class MLRLCOMMON_API IIsotonicJointProbabilityCalibrationModel : public IJointPr
 class IsotonicJointProbabilityCalibrationModel final : public IIsotonicJointProbabilityCalibrationModel {
     public:
 
-        float64 calibrateJointProbability(float64 jointProbability) const override;
+        float64 calibrateJointProbability(uint32 labelVectorIndex, float64 jointProbability) const override;
 };
 
 /**
