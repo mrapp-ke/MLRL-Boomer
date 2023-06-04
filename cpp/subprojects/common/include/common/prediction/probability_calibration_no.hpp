@@ -96,6 +96,8 @@ class NoJointProbabilityCalibratorConfig final : public IJointProbabilityCalibra
 
         bool shouldUseHoldoutSet() const override;
 
+        bool isLabelVectorSetNeeded() const override;
+
         std::unique_ptr<IJointProbabilityCalibrator> createJointProbabilityCalibrator() const override;
 };
 

@@ -125,6 +125,11 @@ namespace boosting {
             bool shouldUseHoldoutSet() const override;
 
             /**
+             * @see `IJointProbabilityCalibratorConfig::isLabelVectorSetNeeeded`
+             */
+            bool isLabelVectorSetNeeded() const override;
+
+            /**
              * @see `IJointProbabilityCalibratorConfig::createJointProbabilityCalibrator`
              */
             std::unique_ptr<IJointProbabilityCalibrator> createJointProbabilityCalibrator() const override;

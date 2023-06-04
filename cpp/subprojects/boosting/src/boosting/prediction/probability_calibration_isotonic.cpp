@@ -473,6 +473,10 @@ namespace boosting {
         return useHoldoutSet_;
     }
 
+    bool IsotonicJointProbabilityCalibratorConfig::isLabelVectorSetNeeded() const {
+        return true;
+    }
+
     std::unique_ptr<IJointProbabilityCalibrator>
       IsotonicJointProbabilityCalibratorConfig::createJointProbabilityCalibrator() const {
         return std::make_unique<IsotonicJointProbabilityCalibrator>();

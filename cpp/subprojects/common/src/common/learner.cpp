@@ -323,10 +323,13 @@ std::unique_ptr<ILabelSpaceInfo> AbstractRuleLearner::createLabelSpaceInfo(
     const IBinaryPredictorConfig* binaryPredictorConfig = config_.getBinaryPredictorConfigPtr().get();
     const IScorePredictorConfig* scorePredictorConfig = config_.getScorePredictorConfigPtr().get();
     const IProbabilityPredictorConfig* probabilityPredictorConfig = config_.getProbabilityPredictorConfigPtr().get();
+    const IJointProbabilityCalibratorConfig& jointProbabilityCalibratorConfig =
+      *config_.getJointProbabilityCalibratorConfigPtr();
 
     if ((binaryPredictorConfig && binaryPredictorConfig->isLabelVectorSetNeeded())
         || (scorePredictorConfig && scorePredictorConfig->isLabelVectorSetNeeded())
-        || (probabilityPredictorConfig && probabilityPredictorConfig->isLabelVectorSetNeeded())) {
+        || (probabilityPredictorConfig && probabilityPredictorConfig->isLabelVectorSetNeeded())
+        || (jointProbabilityCalibratorConfig.isLabelVectorSetNeeded())) {
         return std::make_unique<LabelVectorSet>(labelMatrix);
     } else {
         return createNoLabelSpaceInfo();
