@@ -4,7 +4,7 @@
 from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
 
-SERIALIZATION_VERSION = 2
+SERIALIZATION_VERSION = 3
 
 
 cdef class LabelSpaceInfo:
@@ -39,7 +39,7 @@ cdef class LabelVectorSet(LabelSpaceInfo):
     cdef ILabelSpaceInfo* get_label_space_info_ptr(self):
         return self.label_vector_set_ptr.get()
 
-    cdef __serialize_label_vector(self, const LabelVector& label_vector):
+    cdef __serialize_label_vector(self, const LabelVector& label_vector, uint32 frequency):
         cdef list label_vector_state = []
         cdef uint32 num_elements = label_vector.getNumElements()
         cdef LabelVector.const_iterator iterator = label_vector.cbegin()
@@ -49,7 +49,7 @@ cdef class LabelVectorSet(LabelSpaceInfo):
             label_index = iterator[i]
             label_vector_state.append(label_index)
 
-        self.state.append(label_vector_state)
+        self.state.append((label_vector_state, frequency))
 
     cdef unique_ptr[LabelVector] __deserialize_label_vector(self, object label_vector_state):
         cdef uint32 num_elements = len(label_vector_state)
@@ -82,10 +82,10 @@ cdef class LabelVectorSet(LabelSpaceInfo):
         cdef uint32 num_label_vectors = len(label_vector_list)
         cdef unique_ptr[ILabelVectorSet] label_vector_set_ptr = createLabelVectorSet()
         cdef list label_vector_state
-        cdef uint32 i
+        cdef uint32 i, frequency
 
         for i in range(num_label_vectors):
-            label_vector_state = label_vector_list[i]
-            label_vector_set_ptr.get().addLabelVector(self.__deserialize_label_vector(label_vector_state))
+            label_vector_state, frequency = label_vector_list[i]
+            label_vector_set_ptr.get().addLabelVector(self.__deserialize_label_vector(label_vector_state), frequency)
 
         self.label_vector_set_ptr = move(label_vector_set_ptr)
