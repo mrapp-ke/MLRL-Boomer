@@ -192,6 +192,17 @@ class LearnerRunnable(Runnable, ABC):
         BooleanOption.FALSE.value: {}
     }
 
+    PARAM_PRINT_PREDICTIONS = '--print-predictions'
+
+    PRINT_PREDICTIONS_VALUES: Dict[str, Set[str]] = {
+        BooleanOption.TRUE.value: {OPTION_DECIMALS},
+        BooleanOption.FALSE.value: {}
+    }
+
+    PARAM_STORE_PREDICTIONS = '--store-predictions'
+
+    STORE_PREDICTIONS_VALUES = PRINT_PREDICTIONS_VALUES
+
     PARAM_PRINT_PREDICTION_CHARACTERISTICS = '--print-prediction-characteristics'
 
     PRINT_PREDICTION_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
@@ -316,15 +327,19 @@ class LearnerRunnable(Runnable, ABC):
         else:
             return BinaryEvaluationWriter(sinks)
 
-    @staticmethod
-    def __create_prediction_writer(args) -> Optional[OutputWriter]:
+    def __create_prediction_writer(self, args) -> Optional[OutputWriter]:
         sinks = []
+        value, options = parse_param_and_options(self.PARAM_PRINT_PREDICTIONS, args.print_predictions,
+                                                 self.PRINT_PREDICTIONS_VALUES)
 
-        if args.print_predictions:
-            sinks.append(PredictionWriter.LogSink())
+        if value == BooleanOption.TRUE.value:
+            sinks.append(PredictionWriter.LogSink(options=options))
 
-        if args.store_predictions and args.output_dir is not None:
-            sinks.append(PredictionWriter.ArffSink(output_dir=args.output_dir))
+        value, options = parse_param_and_options(self.PARAM_STORE_PREDICTIONS, args.store_predictions,
+                                                 self.STORE_PREDICTIONS_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            sinks.append(PredictionWriter.ArffSink(output_dir=args.output_dir, options=options))
 
         return PredictionWriter(sinks) if len(sinks) > 0 else None
 
@@ -497,17 +512,19 @@ class LearnerRunnable(Runnable, ABC):
                             help='Whether the parameter setting should be written into output files or not. Must be '
                             + 'one of ' + format_enum_values(BooleanOption) + '. Does only have an effect, if the '
                             + 'parameter ' + self.PARAM_OUTPUT_DIR + ' is specified.')
-        parser.add_argument('--print-predictions',
-                            type=BooleanOption.parse,
-                            default=False,
+        parser.add_argument(self.PARAM_PRINT_PREDICTIONS,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
                             help='Whether the predictions for individual examples and labels should be printed on the '
-                            + 'console or not. Must be one of ' + format_enum_values(BooleanOption) + '.')
-        parser.add_argument('--store-predictions',
-                            type=BooleanOption.parse,
-                            default=False,
+                            + 'console or not. Must be one of ' + format_dict_keys(self.PRINT_PREDICTIONS_VALUES) + '. '
+                            + 'For additional options refer to the documentation.')
+        parser.add_argument(self.PARAM_STORE_PREDICTIONS,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
                             help='Whether the predictions for individual examples and labels should be written into '
-                            + 'output files or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does '
-                            + 'only have an effect, if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified.')
+                            + 'output files or not. Must be one of ' + format_dict_keys(self.STORE_PREDICTIONS_VALUES)
+                            + '. Does only have an effect, if the parameter ' + self.PARAM_OUTPUT_DIR + ' is '
+                            + 'specified. For additional options refer to the documentation.')
         parser.add_argument(self.PARAM_PREDICTION_TYPE,
                             type=str,
                             default=PredictionType.BINARY.value,

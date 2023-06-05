@@ -25,6 +25,7 @@ A major update to the BOOMER algorithm that introduces the following changes.
 * **More control of how data is split into training and test sets** is now provided by the argument `--data-split` that replaces the arguments `--folds` and `--current-fold`.
 * **Binary labels, regression scores, or probabilities can now be predicted,** depending on the value of the new argument `--prediction-type`, which can be set to the values `binary`, `scores`, or `probabilities`.
 * **Individual evaluation measures can now be enabled or disabled** via additional options that have been added to the arguments `--print-evaluation` and `--store-evaluation`.
+* **The presentation of values printed on the console has vastly been improved**. In addition, options for controlling the presentation of values to be printed or written to output files have been added to various command line arguments.
 
 ### Bugfixes
 
