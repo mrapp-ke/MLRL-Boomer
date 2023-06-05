@@ -75,7 +75,7 @@ class PredictionWriter(OutputWriter):
 
             if decimals > 0 and not issubclass(predictions.dtype.type, np.integer):
                 predictions = np.around(predictions, decimals=decimals)
-            
+
             file_name = get_file_name_per_fold(prediction_scope.get_file_name(data_type.get_file_name('predictions')),
                                                SUFFIX_ARFF, data_split.get_fold())
             attributes = [Label('Ground Truth ' + label.attribute_name) for label in meta_data.labels]
