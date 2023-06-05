@@ -39,7 +39,7 @@ class PredictionWriter(OutputWriter):
             self.ground_truth = ground_truth
 
         def format(self, options: Options, **kwargs) -> str:
-            decimals = options.get_int(OPTION_DECIMALS, 8)
+            decimals = options.get_int(OPTION_DECIMALS, 2)
             precision = decimals if decimals > 0 else None
             text = 'Ground truth:\n\n'
             text += np.array2string(self.ground_truth, threshold=sys.maxsize)
