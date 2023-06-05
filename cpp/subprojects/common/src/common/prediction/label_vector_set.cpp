@@ -53,17 +53,16 @@ LabelVectorSet::LabelVectorSet(const IRowWiseLabelMatrix& labelMatrix) {
 
     for (uint32 i = 0; i < numRows; i++) {
         std::unique_ptr<LabelVector> labelVectorPtr = labelMatrix.createLabelVector(i);
-        uint32 frequency = ++map[*labelVectorPtr];
+        auto it = map.find(*labelVectorPtr);
 
-        if (frequency <= 1) {
+        if (it == map.end()) {
+            map.emplace(*labelVectorPtr, (uint32) frequencies_.size());
+            frequencies_.emplace_back(1);
             labelVectors_.push_back(std::move(labelVectorPtr));
+        } else {
+            uint32 index = (*it).second;
+            frequencies_[index] += 1;
         }
-    }
-
-    for (auto it = labelVectors_.cbegin(); it != labelVectors_.cend(); it++) {
-        const std::unique_ptr<LabelVector>& labelVectorPtr = *it;
-        uint32 frequency = map[*labelVectorPtr];
-        frequencies_.emplace_back(frequency);
     }
 }
 
