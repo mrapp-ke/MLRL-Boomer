@@ -60,21 +60,28 @@ class PredictionWriter(OutputWriter):
         Allows to write predictions and corresponding ground truth labels to ARFF files.
         """
 
-        def __init__(self, output_dir: str):
+        def __init__(self, output_dir: str, options: Options = Options()):
             """
             :param output_dir: The path of the directory, where the ARFF file should be located
             """
+            super().__init__(options=options)
             self.output_dir = output_dir
 
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
                          prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+            decimals = self.options.get_int(OPTION_DECIMALS, 0)
+            ground_truth = output_data.ground_truth
+            predictions = output_data.predictions
+
+            if decimals > 0 and not issubclass(predictions.dtype.type, np.integer):
+                predictions = np.around(predictions, decimals=decimals)
+            
             file_name = get_file_name_per_fold(prediction_scope.get_file_name(data_type.get_file_name('predictions')),
                                                SUFFIX_ARFF, data_split.get_fold())
             attributes = [Label('Ground Truth ' + label.attribute_name) for label in meta_data.labels]
             labels = [Label('Prediction ' + label.attribute_name) for label in meta_data.labels]
             prediction_meta_data = MetaData(attributes, labels, labels_at_start=False)
-            save_arff_file(self.output_dir, file_name, output_data.ground_truth, output_data.predictions,
-                           prediction_meta_data)
+            save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
     def __init__(self, sinks: List[OutputWriter.Sink]):
         super().__init__(sinks)
