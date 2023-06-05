@@ -153,11 +153,17 @@ In addition to the mandatory arguments that must be provided to the command line
 * ``--print-predictions`` (Default value = ``false``)
 
   * ``true`` The predictions for individual examples and labels are printed on the console.
+
+    * ``decimals`` (Default value = ``2``) The number of decimals to be used for real-valued predictions or 0, if the number of decimals should not be restricted.
+
   * ``false`` The predictions are not printed on the console.
 
 * ``--store-predictions`` (Default value = ``false``)
 
   * ``true`` The predictions for individual examples and labels are written into .arff files. Does only have an effect if the parameter ``--output-dir`` is specified.
+
+    * ``decimals`` (Default value = ``0``) The number of decimals to be used for real-valued predictions or 0, if the number of decimals should not be restricted.
+
   * ``false`` Predictions are not written into .arff files.
 
 * ``--print-prediction-characteristics`` (Default value = ``false``)
