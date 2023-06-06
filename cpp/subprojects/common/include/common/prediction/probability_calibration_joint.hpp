@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/prediction/label_space_info.hpp"
+#include "common/prediction/label_vector_set.hpp"
 #include "common/prediction/probability_calibration_marginal.hpp"
 
 /**
@@ -125,12 +125,12 @@ class IJointProbabilityCalibratorFactory {
         /**
          * Creates and returns a new object of type `IJointProbabilityCalibrator`.
          *
-         * @param labelSpaceInfo  A reference to an object of type `ILabelSpaceInfo` that provides information about the
-         *                        label space that may be used as a basis for obtaining predictions
+         * @param labelVectorSet  A pointer to an object of type `LabelVectorSet` that stores all known label vectors or
+         *                        a null pointer, if no such object is available
          * @return                An unique pointer to an object of type `IJointProbabilityCalibrator` that has been
          *                        created
          */
-        virtual std::unique_ptr<IJointProbabilityCalibrator> create(const ILabelSpaceInfo& labelSpaceInfo) const = 0;
+        virtual std::unique_ptr<IJointProbabilityCalibrator> create(const LabelVectorSet* labelVectorSet) const = 0;
 };
 
 /**

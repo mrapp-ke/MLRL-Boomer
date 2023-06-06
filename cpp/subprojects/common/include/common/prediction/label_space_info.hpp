@@ -8,6 +8,8 @@
 
 #include <memory>
 
+class IJointProbabilityCalibrator;
+class IJointProbabilityCalibratorFactory;
 class CContiguousFeatureMatrix;
 class CsrFeatureMatrix;
 class RuleList;
@@ -30,6 +32,17 @@ class MLRLCOMMON_API ILabelSpaceInfo {
     public:
 
         virtual ~ILabelSpaceInfo() {};
+
+        /**
+         * Creates and returns a new instance of the class `IJointProbabilityCalibrator`, based on the type of this
+         * information about the label space.
+         *
+         * @param factory A reference to an object of type `IJointProbabilityCalibratorFactory` that should be used to
+         *                create the instance
+         * @return        An unique pointer to an object of type `IJointProbabilityPredictor` that has been created
+         */
+        virtual std::unique_ptr<IJointProbabilityCalibrator> createJointProbabilityCalibrator(
+          const IJointProbabilityCalibratorFactory& factory) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IBinaryPredictor`, based on the type of this information

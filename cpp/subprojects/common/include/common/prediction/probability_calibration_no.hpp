@@ -61,7 +61,7 @@ class MLRLCOMMON_API INoJointProbabilityCalibrationModel : public IJointProbabil
 class NoJointProbabilityCalibratorFactory final : public IJointProbabilityCalibratorFactory {
     public:
 
-        std::unique_ptr<IJointProbabilityCalibrator> create(const ILabelSpaceInfo& labelSpaceInfo) const override;
+        std::unique_ptr<IJointProbabilityCalibrator> create(const LabelVectorSet* labelVectorSet) const override;
 };
 
 /**

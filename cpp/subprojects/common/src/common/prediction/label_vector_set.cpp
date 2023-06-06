@@ -6,6 +6,7 @@
 #include "common/prediction/predictor_binary.hpp"
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
+#include "common/prediction/probability_calibration_joint.hpp"
 #include "common/prediction/probability_calibration_marginal.hpp"
 
 #include <unordered_map>
@@ -99,6 +100,11 @@ void LabelVectorSet::visit(LabelVectorVisitor visitor) const {
         uint32 frequency = frequencies_[i];
         visitor(*labelVectorPtr, frequency);
     }
+}
+
+std::unique_ptr<IJointProbabilityCalibrator> LabelVectorSet::createJointProbabilityCalibrator(
+  const IJointProbabilityCalibratorFactory& factory) const {
+    return factory.create(this);
 }
 
 std::unique_ptr<IBinaryPredictor> LabelVectorSet::createBinaryPredictor(

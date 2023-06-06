@@ -499,7 +499,7 @@ namespace boosting {
             /**
              * @see `IJointProbabilityCalibratorFactory::create`
              */
-            std::unique_ptr<IJointProbabilityCalibrator> create(const ILabelSpaceInfo& labelSpaceInfo) const override {
+            std::unique_ptr<IJointProbabilityCalibrator> create(const LabelVectorSet* labelVectorSet) const override {
                 return std::make_unique<IsotonicJointProbabilityCalibrator>();
             }
     };
