@@ -22,7 +22,14 @@ cdef extern from "common/prediction/probability_calibration_marginal.hpp" nogil:
 cdef extern from "common/prediction/probability_calibration_joint.hpp" nogil:
 
     cdef cppclass IJointProbabilityCalibrationModel:
-        pass
+        
+        # Functions:
+
+        uint32 getNumLabelVectors() const
+
+        void addBin(uint32 labelVectorIndex, float64 threshold, float64 probability)
+
+        void visit(BinVisitor) const
 
 
 cdef extern from "common/prediction/probability_calibration_no.hpp" nogil:
@@ -55,7 +62,8 @@ cdef extern from "common/prediction/probability_calibration_isotonic.hpp" nogil:
     cdef cppclass IIsotonicJointProbabilityCalibrationModel(IJointProbabilityCalibrationModel):
         pass
 
-    unique_ptr[IIsotonicJointProbabilityCalibrationModel] createIsotonicJointProbabilityCalibrationModel()
+    unique_ptr[IIsotonicJointProbabilityCalibrationModel] createIsotonicJointProbabilityCalibrationModel(
+        uint32 numLabelVectors)
 
 
 ctypedef IIsotonicMarginalProbabilityCalibrationModel* IsotonicMarginalProbabilityCalibrationModelPtr
@@ -129,6 +137,12 @@ cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationM
     # Attributes:
 
     cdef unique_ptr[IIsotonicJointProbabilityCalibrationModel] probability_calibration_model_ptr
+
+    cdef object state
+
+    # Functions:
+
+    cdef __serialize_bin(self, uint32 label_vector_index, float64 threshold, float64 probability)
 
 
 cdef inline MarginalProbabilityCalibrationModel create_marginal_probability_calibration_model(

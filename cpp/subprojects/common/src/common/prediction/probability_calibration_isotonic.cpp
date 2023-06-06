@@ -1,15 +1,11 @@
 #include "common/prediction/probability_calibration_isotonic.hpp"
 
-IsotonicMarginalProbabilityCalibrationModel::IsotonicMarginalProbabilityCalibrationModel(uint32 numLabels)
-    : binsPerLabel_(ListOfLists<Tuple<float64>>(numLabels)) {}
-
-float64 IsotonicMarginalProbabilityCalibrationModel::calibrateMarginalProbability(uint32 labelIndex,
-                                                                                  float64 marginalProbability) const {
-    // Find the bins that impose a lower and upper bound on the marginal probability...
-    ListOfLists<Tuple<float64>>::const_iterator begin = binsPerLabel_.row_cbegin(labelIndex);
-    ListOfLists<Tuple<float64>>::const_iterator end = binsPerLabel_.row_cend(labelIndex);
+static inline float64 calibrateProbability(const ListOfLists<Tuple<float64>>& bins, uint32 index, float64 probability) {
+    // Find the bins that impose a lower and upper bound on the probability...
+    ListOfLists<Tuple<float64>>::const_iterator begin = bins.row_cbegin(index);
+    ListOfLists<Tuple<float64>>::const_iterator end = bins.row_cend(index);
     ListOfLists<Tuple<float64>>::const_iterator it =
-      std::lower_bound(begin, end, marginalProbability, [=](const Tuple<float64>& lhs, const float64& rhs) {
+      std::lower_bound(begin, end, probability, [=](const Tuple<float64>& lhs, const float64& rhs) {
           return lhs.first < rhs;
       });
     uint32 offset = it - begin;
@@ -30,8 +26,16 @@ float64 IsotonicMarginalProbabilityCalibrationModel::calibrateMarginalProbabilit
     }
 
     // Interpolate linearly between the probabilities associated with the lower and upper bound...
-    float64 t = (marginalProbability - lowerBound.first) / (upperBound.first - lowerBound.first);
+    float64 t = (probability - lowerBound.first) / (upperBound.first - lowerBound.first);
     return lowerBound.second + (t * (upperBound.second - lowerBound.second));
+}
+
+IsotonicMarginalProbabilityCalibrationModel::IsotonicMarginalProbabilityCalibrationModel(uint32 numLabels)
+    : binsPerLabel_(ListOfLists<Tuple<float64>>(numLabels)) {}
+
+float64 IsotonicMarginalProbabilityCalibrationModel::calibrateMarginalProbability(uint32 labelIndex,
+                                                                                  float64 marginalProbability) const {
+    return calibrateProbability(binsPerLabel_, labelIndex, marginalProbability);
 }
 
 IsotonicMarginalProbabilityCalibrationModel::bin_list IsotonicMarginalProbabilityCalibrationModel::operator[](
@@ -66,12 +70,42 @@ std::unique_ptr<IIsotonicMarginalProbabilityCalibrationModel> createIsotonicMarg
     return std::make_unique<IsotonicMarginalProbabilityCalibrationModel>(numLabels);
 }
 
+IsotonicJointProbabilityCalibrationModel::IsotonicJointProbabilityCalibrationModel(uint32 numLabelVectors)
+    : binsPerLabelVector_(ListOfLists<Tuple<float64>>(numLabelVectors)) {}
+
 float64 IsotonicJointProbabilityCalibrationModel::calibrateJointProbability(uint32 labelVectorIndex,
                                                                             float64 jointProbability) const {
-    // TODO Implement
-    return jointProbability;
+    return calibrateProbability(binsPerLabelVector_, labelVectorIndex, jointProbability);
 }
 
-std::unique_ptr<IIsotonicJointProbabilityCalibrationModel> createIsotonicJointProbabilityCalibrationModel() {
-    return std::make_unique<IsotonicJointProbabilityCalibrationModel>();
+IsotonicJointProbabilityCalibrationModel::bin_list IsotonicJointProbabilityCalibrationModel::operator[](
+  uint32 labelVectorIndex) {
+    return binsPerLabelVector_[labelVectorIndex];
+}
+
+uint32 IsotonicJointProbabilityCalibrationModel::getNumLabelVectors() const {
+    return binsPerLabelVector_.getNumRows();
+}
+
+void IsotonicJointProbabilityCalibrationModel::addBin(uint32 labelVectorIndex, float64 threshold, float64 probability) {
+    ListOfLists<Tuple<float64>>::row row = binsPerLabelVector_[labelVectorIndex];
+    row.emplace_back(threshold, probability);
+}
+
+void IsotonicJointProbabilityCalibrationModel::visit(BinVisitor visitor) const {
+    uint32 numLabelVectors = binsPerLabelVector_.getNumRows();
+
+    for (uint32 i = 0; i < numLabelVectors; i++) {
+        ListOfLists<Tuple<float64>>::const_row bins = binsPerLabelVector_[i];
+
+        for (auto it = bins.cbegin(); it != bins.cend(); it++) {
+            const Tuple<float64>& bin = *it;
+            visitor(i, bin.first, bin.second);
+        }
+    }
+}
+
+std::unique_ptr<IIsotonicJointProbabilityCalibrationModel> createIsotonicJointProbabilityCalibrationModel(
+  uint32 numLabelVectors) {
+    return std::make_unique<IsotonicJointProbabilityCalibrationModel>(numLabelVectors);
 }

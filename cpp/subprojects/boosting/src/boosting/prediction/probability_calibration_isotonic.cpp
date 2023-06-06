@@ -445,12 +445,25 @@ namespace boosting {
         }
     }
 
+    static inline std::unique_ptr<IJointProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
+      const LabelVectorSet& labelVectorSet) {
+        uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
+        return std::make_unique<IsotonicJointProbabilityCalibrationModel>(numLabelVectors);
+    }
+
     /**
      * An implementation of the type `IJointProbabilityCalibrator` that does fit a model for the calibration of joint
      * probabilities via isotonic regression.
      */
     class IsotonicJointProbabilityCalibrator final : public IJointProbabilityCalibrator {
+        private:
+
+            const LabelVectorSet& labelVectorSet_;
+
         public:
+
+            IsotonicJointProbabilityCalibrator(const LabelVectorSet& labelVectorSet)
+                : labelVectorSet_(labelVectorSet) {}
 
             /**
              * @see `IJointProbabilityCalibrator::fitProbabilityCalibrationModel`
@@ -459,7 +472,7 @@ namespace boosting {
               const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix,
               const IStatistics& statistics,
               const IMarginalProbabilityCalibrationModel& IsotonicMarginalProbabilityCalibrationModel) const override {
-                return createIsotonicJointProbabilityCalibrationModel();
+                return fitJointProbabilityCalibrationModel(labelVectorSet_);
             }
 
             /**
@@ -468,7 +481,7 @@ namespace boosting {
             std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
               const SinglePartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
               const IMarginalProbabilityCalibrationModel& IsotonicMarginalProbabilityCalibrationModel) const override {
-                return createIsotonicJointProbabilityCalibrationModel();
+                return fitJointProbabilityCalibrationModel(labelVectorSet_);
             }
 
             /**
@@ -477,7 +490,7 @@ namespace boosting {
             std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
               BiPartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
               const IMarginalProbabilityCalibrationModel& IsotonicMarginalProbabilityCalibrationModel) const override {
-                return createIsotonicJointProbabilityCalibrationModel();
+                return fitJointProbabilityCalibrationModel(labelVectorSet_);
             }
 
             /**
@@ -486,7 +499,7 @@ namespace boosting {
             std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
               BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
               const IMarginalProbabilityCalibrationModel& IsotonicMarginalProbabilityCalibrationModel) const override {
-                return createIsotonicJointProbabilityCalibrationModel();
+                return fitJointProbabilityCalibrationModel(labelVectorSet_);
             }
     };
 
@@ -500,7 +513,15 @@ namespace boosting {
              * @see `IJointProbabilityCalibratorFactory::create`
              */
             std::unique_ptr<IJointProbabilityCalibrator> create(const LabelVectorSet* labelVectorSet) const override {
-                return std::make_unique<IsotonicJointProbabilityCalibrator>();
+                if (!labelVectorSet) {
+                    throw std::runtime_error(
+                      "Information about the label vectors that have been encountered in the training data is required "
+                      "for fitting a model for the calibration of joint probabilities, but no such information is "
+                      "provided by the model. Most probably, the model was intended to use a different calibration "
+                      "method when it has been trained.");
+                }
+
+                return std::make_unique<IsotonicJointProbabilityCalibrator>(*labelVectorSet);
             }
     };
 
