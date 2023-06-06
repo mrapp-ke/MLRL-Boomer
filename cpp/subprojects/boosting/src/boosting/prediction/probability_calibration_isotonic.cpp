@@ -149,8 +149,7 @@ namespace boosting {
         delete[] numSparseRelevantPerLabel;
     }
 
-    static inline void sortByThresholdsAndEliminateDuplicates(
-      IsotonicMarginalProbabilityCalibrationModel::bin_list bins) {
+    static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<Tuple<float64>>::row bins) {
         // Sort bins in increasing order by their threshold...
         std::sort(bins.begin(), bins.end(), [=](const Tuple<float64>& lhs, const Tuple<float64>& rhs) {
             return lhs.first < rhs.first;
@@ -181,7 +180,7 @@ namespace boosting {
         bins.resize(n);
     }
 
-    static inline void performIsotonicRegression(IsotonicMarginalProbabilityCalibrationModel::bin_list bins) {
+    static inline void performIsotonicRegression(ListOfLists<Tuple<float64>>::row bins) {
         // We apply the "pool adjacent violators algorithm" (PAVA) to merge adjacent bins with non-increasing
         // probabilities. A temporary array `pools` is used to mark the beginning and end of subsequences with
         // non-increasing probabilities. If such a subsequence was found in range [i, j] then `pools[i] = j` and
@@ -318,7 +317,7 @@ namespace boosting {
 
             std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr_;
 
-            bool useHoldoutSet_;
+            const bool useHoldoutSet_;
 
         public:
 
@@ -386,7 +385,7 @@ namespace boosting {
 
             std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr_;
 
-            bool useHoldoutSet_;
+            const bool useHoldoutSet_;
 
         public:
 
@@ -406,7 +405,7 @@ namespace boosting {
                   useHoldoutSet_(useHoldoutSet) {}
 
             /**
-             * @see `ImarginalProbabilityCalibratorFactory::create`
+             * @see `IMarginalProbabilityCalibratorFactory::create`
              */
             std::unique_ptr<IMarginalProbabilityCalibrator> create() const override {
                 return std::make_unique<IsotonicMarginalProbabilityCalibrator>(*marginalProbabilityFunctionFactoryPtr_,
@@ -445,10 +444,57 @@ namespace boosting {
         }
     }
 
+    template<typename IndexIterator, typename LabelMatrix>
     static inline std::unique_ptr<IJointProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
+      IndexIterator indexIterator, uint32 numExamples, const LabelMatrix& labelMatrix, const IStatistics& statistics,
       const LabelVectorSet& labelVectorSet) {
+        // Extract thresholds and ground truth probabilities from score matrix and label matrix, respectively...
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
-        return std::make_unique<IsotonicJointProbabilityCalibrationModel>(numLabelVectors);
+        std::unique_ptr<IsotonicJointProbabilityCalibrationModel> calibrationModelPtr =
+          std::make_unique<IsotonicJointProbabilityCalibrationModel>(numLabelVectors);
+        const IBoostingStatistics& boostingStatistics = dynamic_cast<const IBoostingStatistics&>(statistics);
+        auto denseVisitor = [=, &calibrationModelPtr](const CContiguousConstView<float64>& scoreMatrix) {
+            // TODO
+        };
+        auto sparseVisitor = [=, &calibrationModelPtr](const SparseSetMatrix<float64>& scoreMatrix) {
+            // TODO
+        };
+        boostingStatistics.visitScoreMatrix(denseVisitor, sparseVisitor);
+
+        // Build an isotonic regression model for each label vector...
+        for (uint32 i = 0; i < numLabelVectors; i++) {
+            IsotonicJointProbabilityCalibrationModel::bin_list bins = (*calibrationModelPtr)[i];
+            sortByThresholdsAndEliminateDuplicates(bins);
+            performIsotonicRegression(bins);
+        }
+
+        return calibrationModelPtr;
+    }
+
+    template<typename LabelMatrix>
+    static inline std::unique_ptr<IJointProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
+      const SinglePartition& partition, const LabelMatrix& labelMatrix, const IStatistics& statistics,
+      const LabelVectorSet& labelVectorSet) {
+        return fitJointProbabilityCalibrationModel(partition.cbegin(), partition.getNumElements(), labelMatrix,
+                                                   statistics, labelVectorSet);
+    }
+
+    template<typename LabelMatrix>
+    static inline std::unique_ptr<IJointProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
+      const BiPartition& partition, bool useHoldoutSet, const LabelMatrix& labelMatrix, const IStatistics& statistics,
+      const LabelVectorSet& labelVectorSet) {
+        BiPartition::const_iterator indexIterator;
+        uint32 numExamples;
+
+        if (useHoldoutSet) {
+            indexIterator = partition.second_cbegin();
+            numExamples = partition.getNumSecond();
+        } else {
+            indexIterator = partition.first_cbegin();
+            numExamples = partition.getNumFirst();
+        }
+
+        return fitJointProbabilityCalibrationModel(indexIterator, numExamples, labelMatrix, statistics, labelVectorSet);
     }
 
     /**
@@ -458,16 +504,20 @@ namespace boosting {
     class IsotonicJointProbabilityCalibrator final : public IJointProbabilityCalibrator {
         private:
 
+            const bool useHoldoutSet_;
+
             const LabelVectorSet& labelVectorSet_;
 
         public:
 
             /**
-             * @param labelVectorSet A reference to an object of type `LabelVectorSet` that stores all known label
-             *                       vectors
+             * @param useHoldoutSet   True, if the calibration model should be fit to the examples in the holdout set,
+             *                        if available, false otherwise
+             * @param labelVectorSet  A reference to an object of type `LabelVectorSet` that stores all known label
+             *                        vectors
              */
-            IsotonicJointProbabilityCalibrator(const LabelVectorSet& labelVectorSet)
-                : labelVectorSet_(labelVectorSet) {}
+            IsotonicJointProbabilityCalibrator(bool useHoldoutSet, const LabelVectorSet& labelVectorSet)
+                : useHoldoutSet_(useHoldoutSet), labelVectorSet_(labelVectorSet) {}
 
             /**
              * @see `IJointProbabilityCalibrator::fitProbabilityCalibrationModel`
@@ -476,7 +526,7 @@ namespace boosting {
               const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix,
               const IStatistics& statistics,
               const IMarginalProbabilityCalibrationModel& IsotonicMarginalProbabilityCalibrationModel) const override {
-                return fitJointProbabilityCalibrationModel(labelVectorSet_);
+                return fitJointProbabilityCalibrationModel(partition, labelMatrix, statistics, labelVectorSet_);
             }
 
             /**
@@ -485,7 +535,7 @@ namespace boosting {
             std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
               const SinglePartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
               const IMarginalProbabilityCalibrationModel& IsotonicMarginalProbabilityCalibrationModel) const override {
-                return fitJointProbabilityCalibrationModel(labelVectorSet_);
+                return fitJointProbabilityCalibrationModel(partition, labelMatrix, statistics, labelVectorSet_);
             }
 
             /**
@@ -494,7 +544,8 @@ namespace boosting {
             std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
               BiPartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
               const IMarginalProbabilityCalibrationModel& IsotonicMarginalProbabilityCalibrationModel) const override {
-                return fitJointProbabilityCalibrationModel(labelVectorSet_);
+                return fitJointProbabilityCalibrationModel(partition, useHoldoutSet_, labelMatrix, statistics,
+                                                           labelVectorSet_);
             }
 
             /**
@@ -503,7 +554,8 @@ namespace boosting {
             std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
               BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
               const IMarginalProbabilityCalibrationModel& IsotonicMarginalProbabilityCalibrationModel) const override {
-                return fitJointProbabilityCalibrationModel(labelVectorSet_);
+                return fitJointProbabilityCalibrationModel(partition, useHoldoutSet_, labelMatrix, statistics,
+                                                           labelVectorSet_);
             }
     };
 
@@ -511,7 +563,17 @@ namespace boosting {
      * A factory that allows to create instances of the type `IsotonicJointProbabilityCalibrator`.
      */
     class IsotonicJointProbabilityCalibratorFactory final : public IJointProbabilityCalibratorFactory {
+        private:
+
+            const bool useHoldoutSet_;
+
         public:
+
+            /**
+             * @param useHoldoutSet True, if the calibration model should be fit to the examples in the holdout set, if
+             *                      available, false otherwise
+             */
+            IsotonicJointProbabilityCalibratorFactory(bool useHoldoutSet) : useHoldoutSet_(useHoldoutSet) {}
 
             /**
              * @see `IJointProbabilityCalibratorFactory::create`
@@ -525,7 +587,7 @@ namespace boosting {
                       "method when it has been trained.");
                 }
 
-                return std::make_unique<IsotonicJointProbabilityCalibrator>(*labelVectorSet);
+                return std::make_unique<IsotonicJointProbabilityCalibrator>(useHoldoutSet_, *labelVectorSet);
             }
     };
 
@@ -551,6 +613,6 @@ namespace boosting {
 
     std::unique_ptr<IJointProbabilityCalibratorFactory>
       IsotonicJointProbabilityCalibratorConfig::createJointProbabilityCalibratorFactory() const {
-        return std::make_unique<IsotonicJointProbabilityCalibratorFactory>();
+        return std::make_unique<IsotonicJointProbabilityCalibratorFactory>(useHoldoutSet_);
     }
 }
