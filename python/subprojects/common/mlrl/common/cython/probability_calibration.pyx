@@ -36,7 +36,7 @@ cdef class NoMarginalProbabilityCalibrationModel(MarginalProbabilityCalibrationM
         return (NoMarginalProbabilityCalibrationModel, (), ())
 
     def __setstate__(self, state):
-        self.probability_calibration_model_ptr = createNoMarginalProbabilityCalibrationModel()
+        self.probability_calibration_model_ptr = createNoProbabilityCalibrationModel()
 
 
 cdef class NoJointProbabilityCalibrationModel(JointProbabilityCalibrationModel):
@@ -51,7 +51,7 @@ cdef class NoJointProbabilityCalibrationModel(JointProbabilityCalibrationModel):
         return (NoJointProbabilityCalibrationModel, (), ())
 
     def __setstate__(self, state):
-        self.probability_calibration_model_ptr = createNoJointProbabilityCalibrationModel()
+        self.probability_calibration_model_ptr = createNoProbabilityCalibrationModel()
 
 
 cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibrationModel):
