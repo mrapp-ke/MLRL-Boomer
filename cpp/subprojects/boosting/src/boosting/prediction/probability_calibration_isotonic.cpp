@@ -12,7 +12,7 @@ namespace boosting {
     template<typename IndexIterator>
     static inline void extractThresholdsAndProbabilities(
       IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
-      IsotonicMarginalProbabilityCalibrationModel& calibrationModel, const CContiguousLabelMatrix& labelMatrix,
+      IsotonicProbabilityCalibrationModel& calibrationModel, const CContiguousLabelMatrix& labelMatrix,
       const CContiguousConstView<float64>& scoreMatrix,
       const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         for (uint32 i = 0; i < numExamples; i++) {
@@ -34,7 +34,7 @@ namespace boosting {
     template<typename IndexIterator>
     static inline void extractThresholdsAndProbabilities(
       IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
-      IsotonicMarginalProbabilityCalibrationModel& calibrationModel, const CsrLabelMatrix& labelMatrix,
+      IsotonicProbabilityCalibrationModel& calibrationModel, const CsrLabelMatrix& labelMatrix,
       const CContiguousConstView<float64>& scoreMatrix,
       const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         for (uint32 i = 0; i < numExamples; i++) {
@@ -58,7 +58,7 @@ namespace boosting {
     template<typename IndexIterator>
     static inline void extractThresholdsAndProbabilities(
       IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
-      IsotonicMarginalProbabilityCalibrationModel& calibrationModel, const CContiguousLabelMatrix& labelMatrix,
+      IsotonicProbabilityCalibrationModel& calibrationModel, const CContiguousLabelMatrix& labelMatrix,
       const SparseSetMatrix<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         for (uint32 i = 0; i < numLabels; i++) {
             calibrationModel.addBin(i, 0, 0);
@@ -81,7 +81,7 @@ namespace boosting {
                       marginalProbabilityFunction.transformScoreIntoMarginalProbability(j, score);
                     calibrationModel.addBin(j, marginalProbability, trueProbability);
                 } else {
-                    IsotonicMarginalProbabilityCalibrationModel::bin_list bins = calibrationModel[j];
+                    IsotonicProbabilityCalibrationModel::bin_list bins = calibrationModel[j];
                     Tuple<float64>& firstBin = bins[0];
                     uint32 numSparse = numSparsePerLabel[j] + 1;
 
@@ -102,7 +102,7 @@ namespace boosting {
     template<typename IndexIterator>
     static inline void extractThresholdsAndProbabilities(
       IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
-      IsotonicMarginalProbabilityCalibrationModel& calibrationModel, const CsrLabelMatrix& labelMatrix,
+      IsotonicProbabilityCalibrationModel& calibrationModel, const CsrLabelMatrix& labelMatrix,
       const SparseSetMatrix<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         for (uint32 i = 0; i < numLabels; i++) {
             calibrationModel.addBin(i, 0, 0);
@@ -140,7 +140,7 @@ namespace boosting {
         }
 
         for (uint32 i = 0; i < numLabels; i++) {
-            IsotonicMarginalProbabilityCalibrationModel::bin_list bins = calibrationModel[i];
+            IsotonicProbabilityCalibrationModel::bin_list bins = calibrationModel[i];
             Tuple<float64>& firstBin = bins[0];
             firstBin.second = (float64) numSparseRelevantPerLabel[i] / (float64) numSparsePerLabel[i];
         }
@@ -150,13 +150,13 @@ namespace boosting {
     }
 
     template<typename IndexIterator, typename LabelMatrix>
-    static inline std::unique_ptr<IsotonicMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
+    static inline std::unique_ptr<IsotonicProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
       IndexIterator indexIterator, uint32 numExamples, const LabelMatrix& labelMatrix, const IStatistics& statistics,
       const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         // Extract thresholds and ground truth probabilities from score matrix and label matrix, respectively...
         uint32 numLabels = labelMatrix.getNumCols();
-        std::unique_ptr<IsotonicMarginalProbabilityCalibrationModel> calibrationModelPtr =
-          std::make_unique<IsotonicMarginalProbabilityCalibrationModel>(numLabels);
+        std::unique_ptr<IsotonicProbabilityCalibrationModel> calibrationModelPtr =
+          std::make_unique<IsotonicProbabilityCalibrationModel>(numLabels);
         const IBoostingStatistics& boostingStatistics = dynamic_cast<const IBoostingStatistics&>(statistics);
         auto denseVisitor =
           [=, &marginalProbabilityFunction, &calibrationModelPtr](const CContiguousConstView<float64>& scoreMatrix) {
@@ -176,7 +176,7 @@ namespace boosting {
     }
 
     template<typename LabelMatrix>
-    static inline std::unique_ptr<IsotonicMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
+    static inline std::unique_ptr<IsotonicProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
       const SinglePartition& partition, const LabelMatrix& labelMatrix, const IStatistics& statistics,
       const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         return fitMarginalProbabilityCalibrationModel(partition.cbegin(), partition.getNumElements(), labelMatrix,
@@ -184,7 +184,7 @@ namespace boosting {
     }
 
     template<typename LabelMatrix>
-    static inline std::unique_ptr<IsotonicMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
+    static inline std::unique_ptr<IsotonicProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
       const BiPartition& partition, uint32 useHoldoutSet, const LabelMatrix& labelMatrix, const IStatistics& statistics,
       const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         BiPartition::const_iterator indexIterator;
@@ -341,13 +341,13 @@ namespace boosting {
     }
 
     template<typename IndexIterator, typename LabelMatrix>
-    static inline std::unique_ptr<IJointProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
+    static inline std::unique_ptr<IsotonicProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
       IndexIterator indexIterator, uint32 numExamples, const LabelMatrix& labelMatrix, const IStatistics& statistics,
       const LabelVectorSet& labelVectorSet) {
         // Extract thresholds and ground truth probabilities from score matrix and label matrix, respectively...
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
-        std::unique_ptr<IsotonicJointProbabilityCalibrationModel> calibrationModelPtr =
-          std::make_unique<IsotonicJointProbabilityCalibrationModel>(numLabelVectors);
+        std::unique_ptr<IsotonicProbabilityCalibrationModel> calibrationModelPtr =
+          std::make_unique<IsotonicProbabilityCalibrationModel>(numLabelVectors);
         const IBoostingStatistics& boostingStatistics = dynamic_cast<const IBoostingStatistics&>(statistics);
         auto denseVisitor = [=, &calibrationModelPtr](const CContiguousConstView<float64>& scoreMatrix) {
             // TODO
@@ -363,7 +363,7 @@ namespace boosting {
     }
 
     template<typename LabelMatrix>
-    static inline std::unique_ptr<IJointProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
+    static inline std::unique_ptr<IsotonicProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
       const SinglePartition& partition, const LabelMatrix& labelMatrix, const IStatistics& statistics,
       const LabelVectorSet& labelVectorSet) {
         return fitJointProbabilityCalibrationModel(partition.cbegin(), partition.getNumElements(), labelMatrix,
@@ -371,7 +371,7 @@ namespace boosting {
     }
 
     template<typename LabelMatrix>
-    static inline std::unique_ptr<IJointProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
+    static inline std::unique_ptr<IsotonicProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
       const BiPartition& partition, bool useHoldoutSet, const LabelMatrix& labelMatrix, const IStatistics& statistics,
       const LabelVectorSet& labelVectorSet) {
         BiPartition::const_iterator indexIterator;
@@ -416,7 +416,7 @@ namespace boosting {
             std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
               const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix,
               const IStatistics& statistics,
-              const IMarginalProbabilityCalibrationModel& IsotonicMarginalProbabilityCalibrationModel) const override {
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
                 return fitJointProbabilityCalibrationModel(partition, labelMatrix, statistics, labelVectorSet_);
             }
 
@@ -425,7 +425,7 @@ namespace boosting {
              */
             std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
               const SinglePartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
-              const IMarginalProbabilityCalibrationModel& IsotonicMarginalProbabilityCalibrationModel) const override {
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
                 return fitJointProbabilityCalibrationModel(partition, labelMatrix, statistics, labelVectorSet_);
             }
 
@@ -434,7 +434,7 @@ namespace boosting {
              */
             std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
               BiPartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
-              const IMarginalProbabilityCalibrationModel& IsotonicMarginalProbabilityCalibrationModel) const override {
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
                 return fitJointProbabilityCalibrationModel(partition, useHoldoutSet_, labelMatrix, statistics,
                                                            labelVectorSet_);
             }
@@ -444,7 +444,7 @@ namespace boosting {
              */
             std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
               BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
-              const IMarginalProbabilityCalibrationModel& IsotonicMarginalProbabilityCalibrationModel) const override {
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
                 return fitJointProbabilityCalibrationModel(partition, useHoldoutSet_, labelMatrix, statistics,
                                                            labelVectorSet_);
             }

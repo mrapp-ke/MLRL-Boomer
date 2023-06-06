@@ -12,10 +12,11 @@
 /**
  * Defines an interface for all isotonic calibration models.
  */
-class MLRLCOMMON_API IIsotonicProbabilityCalibrationModel {
+class MLRLCOMMON_API IIsotonicProbabilityCalibrationModel : public IMarginalProbabilityCalibrationModel,
+                                                            public IJointProbabilityCalibrationModel {
     public:
 
-        virtual ~IIsotonicProbabilityCalibrationModel() {};
+        virtual ~IIsotonicProbabilityCalibrationModel() override {};
 
         /**
          * A visitor function for handling individual bins.
@@ -49,9 +50,7 @@ class MLRLCOMMON_API IIsotonicProbabilityCalibrationModel {
 /**
  * An isotonic calibration models that allows to calibrate marginal and joint probabilities.
  */
-class IsotonicProbabilityCalibrationModel : virtual public IIsotonicProbabilityCalibrationModel,
-                                            virtual public IMarginalProbabilityCalibrationModel,
-                                            virtual public IJointProbabilityCalibrationModel {
+class IsotonicProbabilityCalibrationModel final : public IIsotonicProbabilityCalibrationModel {
     private:
 
         ListOfLists<Tuple<float64>> binsPerList_;
@@ -106,68 +105,10 @@ class IsotonicProbabilityCalibrationModel : virtual public IIsotonicProbabilityC
 };
 
 /**
- * Defines an interface for all models for the calibration of marginal probabilities via isotonic regression.
- */
-class MLRLCOMMON_API IIsotonicMarginalProbabilityCalibrationModel
-    : virtual public IIsotonicProbabilityCalibrationModel,
-      virtual public IMarginalProbabilityCalibrationModel {
-    public:
-
-        virtual ~IIsotonicMarginalProbabilityCalibrationModel() override {};
-};
-
-/**
- * A model for the calibration of marginal probabilities via isotonic regression.
- */
-class IsotonicMarginalProbabilityCalibrationModel final : public IsotonicProbabilityCalibrationModel,
-                                                          virtual public IIsotonicMarginalProbabilityCalibrationModel {
-    public:
-
-        /**
-         * @param numLabels The total number of available labels
-         */
-        IsotonicMarginalProbabilityCalibrationModel(uint32 numLabels);
-};
-
-/**
- * Creates and returns a new object of the type `IIsotonicMarginalProbabilityCalibrationModel`.
+ * Creates and returns a new object of the type `IIsotonicProbabilityCalibrationModel`.
  *
- * @param numLabels The total number of available labels
- * @return          An unique pointer to an object of type `IIsotonicMarginalProbabilityCalibrationModel` that has been
- *                  created
+ * @param numLists  The total number of lists for storing bins
+ * @return          An unique pointer to an object of type `IIsotonicProbabilityCalibrationModel` that has been created
  */
-MLRLCOMMON_API std::unique_ptr<IIsotonicMarginalProbabilityCalibrationModel>
-  createIsotonicMarginalProbabilityCalibrationModel(uint32 numLabels);
-
-/**
- * Defines an interface for all model for the calibration of joint probabilities via isotonic regression.
- */
-class MLRLCOMMON_API IIsotonicJointProbabilityCalibrationModel : virtual public IIsotonicProbabilityCalibrationModel,
-                                                                 virtual public IJointProbabilityCalibrationModel {
-    public:
-
-        virtual ~IIsotonicJointProbabilityCalibrationModel() override {};
-};
-
-/**
- * A model for the calibration of joint probabilities via isotonic regression.
- */
-class IsotonicJointProbabilityCalibrationModel final : public IsotonicProbabilityCalibrationModel,
-                                                       virtual public IIsotonicJointProbabilityCalibrationModel {
-    public:
-
-        /**
-         * @param numLabelVectors The total number of known label vectors
-         */
-        IsotonicJointProbabilityCalibrationModel(uint32 numLabelVectors);
-};
-
-/**
- * Creates and returns a new object of the type `IIsotonicJointProbabilityCalibrationModel`.
- *
- * @param numLabelVectors   The total number of known label vectors
- * @return                  An unique pointer to an object of type `IIsotonicJointProbabilityCalibrationModel` that has
- *                          been created
- */
-MLRLCOMMON_API std::unique_ptr<IIsotonicJointProbabilityCalibrationModel>
-  createIsotonicJointProbabilityCalibrationModel(uint32 numLabelVectors);
+MLRLCOMMON_API std::unique_ptr<IIsotonicProbabilityCalibrationModel> createIsotonicProbabilityCalibrationModel(
+  uint32 numLists);
