@@ -405,6 +405,9 @@ namespace boosting {
                 : marginalProbabilityFunctionFactoryPtr_(std::move(marginalProbabilityFunctionFactoryPtr)),
                   useHoldoutSet_(useHoldoutSet) {}
 
+            /**
+             * @see `ImarginalProbabilityCalibratorFactory::create`
+             */
             std::unique_ptr<IMarginalProbabilityCalibrator> create() const override {
                 return std::make_unique<IsotonicMarginalProbabilityCalibrator>(*marginalProbabilityFunctionFactoryPtr_,
                                                                                useHoldoutSet_);
