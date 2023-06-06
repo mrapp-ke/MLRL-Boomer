@@ -20,21 +20,14 @@ cdef extern from "common/prediction/probability_calibration_joint.hpp" nogil:
 
 cdef extern from "common/prediction/probability_calibration_no.hpp" nogil:
 
-    cdef cppclass INoMarginalProbabilityCalibrationModel(IMarginalProbabilityCalibrationModel):
+    cdef cppclass INoProbabilityCalibrationModel(IMarginalProbabilityCalibrationModel,
+                                                 IJointProbabilityCalibrationModel):
         pass
 
-    unique_ptr[INoMarginalProbabilityCalibrationModel] createNoMarginalProbabilityCalibrationModel()
-
-    cdef cppclass INoJointProbabilityCalibrationModel(IJointProbabilityCalibrationModel):
-        pass
-
-    unique_ptr[INoJointProbabilityCalibrationModel] createNoJointProbabilityCalibrationModel()
+    unique_ptr[INoProbabilityCalibrationModel] createNoProbabilityCalibrationModel()
 
 
-ctypedef INoMarginalProbabilityCalibrationModel* NoMarginalProbabilityCalibrationModelPtr
-
-
-ctypedef INoJointProbabilityCalibrationModel* NoJointProbabilityCalibrationModelPtr
+ctypedef INoProbabilityCalibrationModel* NoProbabilityCalibrationModelPtr
 
 
 cdef extern from "common/prediction/probability_calibration_isotonic.hpp" nogil:
@@ -94,14 +87,14 @@ cdef class NoMarginalProbabilityCalibrationModel(MarginalProbabilityCalibrationM
 
     # Attributes:
 
-    cdef unique_ptr[INoMarginalProbabilityCalibrationModel] probability_calibration_model_ptr
+    cdef unique_ptr[INoProbabilityCalibrationModel] probability_calibration_model_ptr
 
 
 cdef class NoJointProbabilityCalibrationModel(JointProbabilityCalibrationModel):
 
     # Attributes:
 
-    cdef unique_ptr[INoJointProbabilityCalibrationModel] probability_calibration_model_ptr
+    cdef unique_ptr[INoProbabilityCalibrationModel] probability_calibration_model_ptr
 
 
 cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibrationModel):
@@ -133,8 +126,8 @@ cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationM
 cdef inline MarginalProbabilityCalibrationModel create_marginal_probability_calibration_model(
         unique_ptr[IMarginalProbabilityCalibrationModel] marginal_probability_calibration_model_ptr):
     cdef IMarginalProbabilityCalibrationModel* ptr = marginal_probability_calibration_model_ptr.release()
-    cdef INoMarginalProbabilityCalibrationModel* no_marginal_probability_calibration_model_ptr = \
-        dynamic_cast[NoMarginalProbabilityCalibrationModelPtr](ptr)
+    cdef INoProbabilityCalibrationModel* no_marginal_probability_calibration_model_ptr = \
+        dynamic_cast[NoProbabilityCalibrationModelPtr](ptr)
     cdef NoMarginalProbabilityCalibrationModel no_marginal_probability_calibration_model
     cdef IIsotonicProbabilityCalibrationModel* isotonic_marginal_probability_calibration_model_ptr
     cdef IsotonicMarginalProbabilityCalibrationModel isotonic_marginal_probability_calibration_model
@@ -143,7 +136,7 @@ cdef inline MarginalProbabilityCalibrationModel create_marginal_probability_cali
         no_marginal_probability_calibration_model = \
             NoMarginalProbabilityCalibrationModel.__new__(NoMarginalProbabilityCalibrationModel)
         no_marginal_probability_calibration_model.probability_calibration_model_ptr = \
-            unique_ptr[INoMarginalProbabilityCalibrationModel](no_marginal_probability_calibration_model_ptr)
+            unique_ptr[INoProbabilityCalibrationModel](no_marginal_probability_calibration_model_ptr)
         return no_marginal_probability_calibration_model
     else:
         isotonic_marginal_probability_calibration_model_ptr = dynamic_cast[IsotonicProbabilityCalibrationModelPtr](ptr)
@@ -162,8 +155,8 @@ cdef inline MarginalProbabilityCalibrationModel create_marginal_probability_cali
 cdef inline JointProbabilityCalibrationModel create_joint_probability_calibration_model(
         unique_ptr[IJointProbabilityCalibrationModel] joint_probability_calibration_model_ptr):
     cdef IJointProbabilityCalibrationModel* ptr = joint_probability_calibration_model_ptr.release()
-    cdef INoJointProbabilityCalibrationModel* no_joint_probability_calibration_model_ptr = \
-        dynamic_cast[NoJointProbabilityCalibrationModelPtr](ptr)
+    cdef INoProbabilityCalibrationModel* no_joint_probability_calibration_model_ptr = \
+        dynamic_cast[NoProbabilityCalibrationModelPtr](ptr)
     cdef NoJointProbabilityCalibrationModel no_joint_probability_calibration_model
     cdef IIsotonicProbabilityCalibrationModel* isotonic_joint_probability_calibration_model_ptr
     cdef IsotonicJointProbabilityCalibrationModel isotonic_joint_probability_calibration_model
@@ -172,7 +165,7 @@ cdef inline JointProbabilityCalibrationModel create_joint_probability_calibratio
         no_joint_probability_calibration_model = \
             NoJointProbabilityCalibrationModel.__new__(NoJointProbabilityCalibrationModel)
         no_joint_probability_calibration_model.probability_calibration_model_ptr = \
-            unique_ptr[INoJointProbabilityCalibrationModel](no_joint_probability_calibration_model_ptr)
+            unique_ptr[INoProbabilityCalibrationModel](no_joint_probability_calibration_model_ptr)
         return no_joint_probability_calibration_model
     else:
         isotonic_joint_probability_calibration_model_ptr = dynamic_cast[IsotonicProbabilityCalibrationModelPtr](ptr)

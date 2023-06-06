@@ -228,7 +228,7 @@ namespace boosting {
              */
             IsotonicMarginalProbabilityCalibrator(
               const IMarginalProbabilityFunctionFactory& marginalProbabilityFunctionFactory, bool useHoldoutSet)
-                : marginalProbabilityCalibrationModelPtr_(createNoMarginalProbabilityCalibrationModel()),
+                : marginalProbabilityCalibrationModelPtr_(createNoProbabilityCalibrationModel()),
                   marginalProbabilityFunctionPtr_(
                     marginalProbabilityFunctionFactory.create(*marginalProbabilityCalibrationModelPtr_)),
                   useHoldoutSet_(useHoldoutSet) {}
