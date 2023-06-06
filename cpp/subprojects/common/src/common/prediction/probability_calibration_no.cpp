@@ -79,6 +79,17 @@ std::unique_ptr<IJointProbabilityCalibrationModel> NoJointProbabilityCalibrator:
     return std::make_unique<NoJointProbabilityCalibrationModel>();
 }
 
+/**
+ * A factory that allows to create instances of the class `NoJointProbabilityCalibrator`.
+ */
+class NoJointProbabilityCalibratorFactory final : public IJointProbabilityCalibratorFactory {
+    public:
+
+        std::unique_ptr<IJointProbabilityCalibrator> create(const ILabelSpaceInfo& labelSpaceInfo) const override {
+            return std::make_unique<NoJointProbabilityCalibrator>();
+        }
+};
+
 bool NoJointProbabilityCalibratorConfig::shouldUseHoldoutSet() const {
     return false;
 }
@@ -87,9 +98,9 @@ bool NoJointProbabilityCalibratorConfig::isLabelVectorSetNeeded() const {
     return false;
 }
 
-std::unique_ptr<IJointProbabilityCalibrator> NoJointProbabilityCalibratorConfig::createJointProbabilityCalibrator()
-  const {
-    return std::make_unique<NoJointProbabilityCalibrator>();
+std::unique_ptr<IJointProbabilityCalibratorFactory>
+  NoJointProbabilityCalibratorConfig::createJointProbabilityCalibratorFactory() const {
+    return std::make_unique<NoJointProbabilityCalibratorFactory>();
 }
 
 std::unique_ptr<INoJointProbabilityCalibrationModel> createNoJointProbabilityCalibrationModel() {

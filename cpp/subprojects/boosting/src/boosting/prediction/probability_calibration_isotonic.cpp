@@ -457,6 +457,20 @@ namespace boosting {
             }
     };
 
+    /**
+     * A factory that allows to create instances of the type `IsotonicJointProbabilityCalibrator`.
+     */
+    class IsotonicJointProbabilityCalibratorFactory final : public IJointProbabilityCalibratorFactory {
+        public:
+
+            /**
+             * @see `IJointProbabilityCalibratorFactory::create`
+             */
+            std::unique_ptr<IJointProbabilityCalibrator> create(const ILabelSpaceInfo& labelSpaceInfo) const override {
+                return std::make_unique<IsotonicJointProbabilityCalibrator>();
+            }
+    };
+
     IsotonicJointProbabilityCalibratorConfig::IsotonicJointProbabilityCalibratorConfig() : useHoldoutSet_(true) {}
 
     bool IsotonicJointProbabilityCalibratorConfig::isHoldoutSetUsed() const {
@@ -477,8 +491,8 @@ namespace boosting {
         return true;
     }
 
-    std::unique_ptr<IJointProbabilityCalibrator>
-      IsotonicJointProbabilityCalibratorConfig::createJointProbabilityCalibrator() const {
-        return std::make_unique<IsotonicJointProbabilityCalibrator>();
+    std::unique_ptr<IJointProbabilityCalibratorFactory>
+      IsotonicJointProbabilityCalibratorConfig::createJointProbabilityCalibratorFactory() const {
+        return std::make_unique<IsotonicJointProbabilityCalibratorFactory>();
     }
 }

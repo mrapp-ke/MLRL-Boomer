@@ -98,7 +98,7 @@ class NoJointProbabilityCalibratorConfig final : public IJointProbabilityCalibra
 
         bool isLabelVectorSetNeeded() const override;
 
-        std::unique_ptr<IJointProbabilityCalibrator> createJointProbabilityCalibrator() const override;
+        std::unique_ptr<IJointProbabilityCalibratorFactory> createJointProbabilityCalibratorFactory() const override;
 };
 
 /**

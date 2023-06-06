@@ -130,9 +130,10 @@ namespace boosting {
             bool isLabelVectorSetNeeded() const override;
 
             /**
-             * @see `IJointProbabilityCalibratorConfig::createJointProbabilityCalibrator`
+             * @see `IJointProbabilityCalibratorConfig::createJointProbabilityCalibratorFactory`
              */
-            std::unique_ptr<IJointProbabilityCalibrator> createJointProbabilityCalibrator() const override;
+            std::unique_ptr<IJointProbabilityCalibratorFactory> createJointProbabilityCalibratorFactory()
+              const override;
     };
 
 }
