@@ -252,27 +252,21 @@ namespace boosting {
     template<typename IndexIterator, typename LabelMatrix>
     static inline std::unique_ptr<IsotonicMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
       IndexIterator indexIterator, uint32 numExamples, const LabelMatrix& labelMatrix, const IStatistics& statistics,
-      const IMarginalProbabilityFunctionFactory& marginalProbabilityFunctionFactory) {
-        // Create probability function...
-        std::unique_ptr<IMarginalProbabilityCalibrationModel> marginalProbabilityCalibrationModelPtr =
-          createNoMarginalProbabilityCalibrationModel();
-        std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr =
-          marginalProbabilityFunctionFactory.create(*marginalProbabilityCalibrationModelPtr);
-
+      const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         // Extract thresholds and ground truth probabilities from score matrix and label matrix, respectively...
         uint32 numLabels = labelMatrix.getNumCols();
         std::unique_ptr<IsotonicMarginalProbabilityCalibrationModel> calibrationModelPtr =
           std::make_unique<IsotonicMarginalProbabilityCalibrationModel>(numLabels);
         const IBoostingStatistics& boostingStatistics = dynamic_cast<const IBoostingStatistics&>(statistics);
         auto denseVisitor =
-          [=, &marginalProbabilityFunctionPtr, &calibrationModelPtr](const CContiguousConstView<float64>& scoreMatrix) {
+          [=, &marginalProbabilityFunction, &calibrationModelPtr](const CContiguousConstView<float64>& scoreMatrix) {
             extractThresholdsAndProbabilities(indexIterator, numExamples, numLabels, *calibrationModelPtr, labelMatrix,
-                                              scoreMatrix, *marginalProbabilityFunctionPtr);
+                                              scoreMatrix, marginalProbabilityFunction);
         };
         auto sparseVisitor =
-          [=, &calibrationModelPtr, &marginalProbabilityFunctionPtr](const SparseSetMatrix<float64>& scoreMatrix) {
+          [=, &marginalProbabilityFunction, &calibrationModelPtr](const SparseSetMatrix<float64>& scoreMatrix) {
             extractThresholdsAndProbabilities(indexIterator, numExamples, numLabels, *calibrationModelPtr, labelMatrix,
-                                              scoreMatrix, *marginalProbabilityFunctionPtr);
+                                              scoreMatrix, marginalProbabilityFunction);
         };
         boostingStatistics.visitScoreMatrix(denseVisitor, sparseVisitor);
 
@@ -289,15 +283,15 @@ namespace boosting {
     template<typename LabelMatrix>
     static inline std::unique_ptr<IsotonicMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
       const SinglePartition& partition, const LabelMatrix& labelMatrix, const IStatistics& statistics,
-      const IMarginalProbabilityFunctionFactory& marginalProbabilityFunctionFactory) {
+      const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         return fitMarginalProbabilityCalibrationModel(partition.cbegin(), partition.getNumElements(), labelMatrix,
-                                                      statistics, marginalProbabilityFunctionFactory);
+                                                      statistics, marginalProbabilityFunction);
     }
 
     template<typename LabelMatrix>
     static inline std::unique_ptr<IsotonicMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
       const BiPartition& partition, uint32 useHoldoutSet, const LabelMatrix& labelMatrix, const IStatistics& statistics,
-      const IMarginalProbabilityFunctionFactory& marginalProbabilityFunctionFactory) {
+      const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         BiPartition::const_iterator indexIterator;
         uint32 numExamples;
 
@@ -310,7 +304,7 @@ namespace boosting {
         }
 
         return fitMarginalProbabilityCalibrationModel(indexIterator, numExamples, labelMatrix, statistics,
-                                                      marginalProbabilityFunctionFactory);
+                                                      marginalProbabilityFunction);
     }
 
     /**
@@ -318,6 +312,76 @@ namespace boosting {
      * marginal probabilities via isotonic regression.
      */
     class IsotonicMarginalProbabilityCalibrator final : public IMarginalProbabilityCalibrator {
+        private:
+
+            std::unique_ptr<IMarginalProbabilityCalibrationModel> marginalProbabilityCalibrationModelPtr_;
+
+            std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr_;
+
+            bool useHoldoutSet_;
+
+        public:
+
+            /**
+             * @param marginalProbabilityFunctionFactory  A reference to an object of type
+             *                                            `IMarginalProbabilityFunctionFactory` that allows to create
+             *                                            implementations of the transformation function to be used to
+             *                                            transform regression scores that are predicted for
+             *                                            individual labels into probabilities
+             * @param useHoldoutSet                       True, if the calibration model should be fit to the examples
+             *                                            in the holdout set, if available, false otherwise
+             */
+            IsotonicMarginalProbabilityCalibrator(
+              const IMarginalProbabilityFunctionFactory& marginalProbabilityFunctionFactory, bool useHoldoutSet)
+                : marginalProbabilityCalibrationModelPtr_(createNoMarginalProbabilityCalibrationModel()),
+                  marginalProbabilityFunctionPtr_(
+                    marginalProbabilityFunctionFactory.create(*marginalProbabilityCalibrationModelPtr_)),
+                  useHoldoutSet_(useHoldoutSet) {}
+
+            /**
+             * @see `IMarginalProbabilityCalibrator::fitProbabilityCalibrationModel`
+             */
+            std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+              const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix,
+              const IStatistics& statistics) const override {
+                return fitMarginalProbabilityCalibrationModel(partition, labelMatrix, statistics,
+                                                              *marginalProbabilityFunctionPtr_);
+            }
+
+            /**
+             * @see `IMarginalProbabilityCalibrator::fitProbabilityCalibrationModel`
+             */
+            std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+              const SinglePartition& partition, const CsrLabelMatrix& labelMatrix,
+              const IStatistics& statistics) const override {
+                return fitMarginalProbabilityCalibrationModel(partition, labelMatrix, statistics,
+                                                              *marginalProbabilityFunctionPtr_);
+            }
+
+            /**
+             * @see `IMarginalProbabilityCalibrator::fitProbabilityCalibrationModel`
+             */
+            std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+              BiPartition& partition, const CContiguousLabelMatrix& labelMatrix,
+              const IStatistics& statistics) const override {
+                return fitMarginalProbabilityCalibrationModel(partition, useHoldoutSet_, labelMatrix, statistics,
+                                                              *marginalProbabilityFunctionPtr_);
+            }
+
+            /**
+             * @see `IMarginalProbabilityCalibrator::fitProbabilityCalibrationModel`
+             */
+            std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+              BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics) const override {
+                return fitMarginalProbabilityCalibrationModel(partition, useHoldoutSet_, labelMatrix, statistics,
+                                                              *marginalProbabilityFunctionPtr_);
+            }
+    };
+
+    /**
+     * A factory that allows to create instances of the type `IsotonicMarginalProbabilityCalibrator`.
+     */
+    class IsotonicMarginalProbabilityCalibratorFactory final : public IMarginalProbabilityCalibratorFactory {
         private:
 
             std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr_;
@@ -335,49 +399,15 @@ namespace boosting {
              * @param useHoldoutSet                         True, if the calibration model should be fit to the examples
              *                                              in the holdout set, if available, false otherwise
              */
-            IsotonicMarginalProbabilityCalibrator(
+            IsotonicMarginalProbabilityCalibratorFactory(
               std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr,
               bool useHoldoutSet)
                 : marginalProbabilityFunctionFactoryPtr_(std::move(marginalProbabilityFunctionFactoryPtr)),
                   useHoldoutSet_(useHoldoutSet) {}
 
-            /**
-             * @see `IMarginalProbabilityCalibrator::fitProbabilityCalibrationModel`
-             */
-            std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-              const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix,
-              const IStatistics& statistics) const override {
-                return fitMarginalProbabilityCalibrationModel(partition, labelMatrix, statistics,
-                                                              *marginalProbabilityFunctionFactoryPtr_);
-            }
-
-            /**
-             * @see `IMarginalProbabilityCalibrator::fitProbabilityCalibrationModel`
-             */
-            std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-              const SinglePartition& partition, const CsrLabelMatrix& labelMatrix,
-              const IStatistics& statistics) const override {
-                return fitMarginalProbabilityCalibrationModel(partition, labelMatrix, statistics,
-                                                              *marginalProbabilityFunctionFactoryPtr_);
-            }
-
-            /**
-             * @see `IMarginalProbabilityCalibrator::fitProbabilityCalibrationModel`
-             */
-            std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-              BiPartition& partition, const CContiguousLabelMatrix& labelMatrix,
-              const IStatistics& statistics) const override {
-                return fitMarginalProbabilityCalibrationModel(partition, useHoldoutSet_, labelMatrix, statistics,
-                                                              *marginalProbabilityFunctionFactoryPtr_);
-            }
-
-            /**
-             * @see `IMarginalProbabilityCalibrator::fitProbabilityCalibrationModel`
-             */
-            std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-              BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics) const override {
-                return fitMarginalProbabilityCalibrationModel(partition, useHoldoutSet_, labelMatrix, statistics,
-                                                              *marginalProbabilityFunctionFactoryPtr_);
+            std::unique_ptr<IMarginalProbabilityCalibrator> create() const override {
+                return std::make_unique<IsotonicMarginalProbabilityCalibrator>(*marginalProbabilityFunctionFactoryPtr_,
+                                                                               useHoldoutSet_);
             }
     };
 
@@ -399,16 +429,16 @@ namespace boosting {
         return useHoldoutSet_;
     }
 
-    std::unique_ptr<IMarginalProbabilityCalibrator>
-      IsotonicMarginalProbabilityCalibratorConfig::createMarginalProbabilityCalibrator() const {
+    std::unique_ptr<IMarginalProbabilityCalibratorFactory>
+      IsotonicMarginalProbabilityCalibratorConfig::createMarginalProbabilityCalibratorFactory() const {
         std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr =
           lossConfigPtr_->createMarginalProbabilityFunctionFactory();
 
         if (marginalProbabilityFunctionFactoryPtr) {
-            return std::make_unique<IsotonicMarginalProbabilityCalibrator>(
+            return std::make_unique<IsotonicMarginalProbabilityCalibratorFactory>(
               std::move(marginalProbabilityFunctionFactoryPtr), useHoldoutSet_);
         } else {
-            return std::make_unique<NoMarginalProbabilityCalibrator>();
+            return std::make_unique<NoMarginalProbabilityCalibratorFactory>();
         }
     }
 

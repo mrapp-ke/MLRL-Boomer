@@ -275,8 +275,9 @@ std::unique_ptr<IPostOptimizationPhaseFactory> AbstractRuleLearner::createUnused
     return nullptr;
 }
 
-std::unique_ptr<IMarginalProbabilityCalibrator> AbstractRuleLearner::createMarginalProbabilityCalibrator() const {
-    return config_.getMarginalProbabilityCalibratorConfigPtr()->createMarginalProbabilityCalibrator();
+std::unique_ptr<IMarginalProbabilityCalibratorFactory> AbstractRuleLearner::createMarginalProbabilityCalibratorFactory()
+  const {
+    return config_.getMarginalProbabilityCalibratorConfigPtr()->createMarginalProbabilityCalibratorFactory();
 }
 
 std::unique_ptr<IJointProbabilityCalibratorFactory> AbstractRuleLearner::createJointProbabilityCalibratorFactory()
@@ -447,8 +448,10 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
                                        rng);
 
     // Fit model for the calibration of marginal probabilities...
+    std::unique_ptr<IMarginalProbabilityCalibratorFactory> marginalProbabilityCalibratorFactoryPtr =
+      this->createMarginalProbabilityCalibratorFactory();
     std::unique_ptr<IMarginalProbabilityCalibrator> marginalProbabilityCalibratorPtr =
-      this->createMarginalProbabilityCalibrator();
+      marginalProbabilityCalibratorFactoryPtr->create();
     std::unique_ptr<IMarginalProbabilityCalibrationModel> marginalProbabilityCalibrationModelPtr =
       partition.fitMarginalProbabilityCalibrationModel(*marginalProbabilityCalibratorPtr, labelMatrix,
                                                        statisticsProviderPtr->get());

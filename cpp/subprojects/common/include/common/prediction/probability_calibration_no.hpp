@@ -15,26 +15,15 @@ class MLRLCOMMON_API INoMarginalProbabilityCalibrationModel : public IMarginalPr
 };
 
 /**
- * An implementation of the type `IMarginalProbabilityCalibrator` that does not fit a model for the calibration of
- * marginal probabilities.
+ * A factory that allows to create instances of the type `IMarginalProbabilityCalibrator` that do not fit a model for
+ * the calibration of marginal probabilities.
  */
-class NoMarginalProbabilityCalibrator final : public IMarginalProbabilityCalibrator {
+class NoMarginalProbabilityCalibratorFactory final : public IMarginalProbabilityCalibratorFactory {
     public:
 
-        std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix,
-          const IStatistics& statistics) const override;
+        virtual ~NoMarginalProbabilityCalibratorFactory() {};
 
-        std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const SinglePartition& partition, const CsrLabelMatrix& labelMatrix,
-          const IStatistics& statistics) const override;
-
-        std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          BiPartition& partition, const CContiguousLabelMatrix& labelMatrix,
-          const IStatistics& statistics) const override;
-
-        std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics) const override;
+        std::unique_ptr<IMarginalProbabilityCalibrator> create() const override;
 };
 
 /**
@@ -45,7 +34,8 @@ class NoMarginalProbabilityCalibratorConfig final : public IMarginalProbabilityC
 
         bool shouldUseHoldoutSet() const override;
 
-        std::unique_ptr<IMarginalProbabilityCalibrator> createMarginalProbabilityCalibrator() const override;
+        std::unique_ptr<IMarginalProbabilityCalibratorFactory> createMarginalProbabilityCalibratorFactory()
+          const override;
 };
 
 /**
