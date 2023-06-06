@@ -39,16 +39,16 @@ float64 IsotonicMarginalProbabilityCalibrationModel::calibrateMarginalProbabilit
 }
 
 IsotonicMarginalProbabilityCalibrationModel::bin_list IsotonicMarginalProbabilityCalibrationModel::operator[](
-  uint32 labelIndex) {
-    return binsPerLabel_[labelIndex];
+  uint32 listIndex) {
+    return binsPerLabel_[listIndex];
 }
 
-uint32 IsotonicMarginalProbabilityCalibrationModel::getNumLabels() const {
+uint32 IsotonicMarginalProbabilityCalibrationModel::getNumBinLists() const {
     return binsPerLabel_.getNumRows();
 }
 
-void IsotonicMarginalProbabilityCalibrationModel::addBin(uint32 labelIndex, float64 threshold, float64 probability) {
-    ListOfLists<Tuple<float64>>::row row = binsPerLabel_[labelIndex];
+void IsotonicMarginalProbabilityCalibrationModel::addBin(uint32 listIndex, float64 threshold, float64 probability) {
+    ListOfLists<Tuple<float64>>::row row = binsPerLabel_[listIndex];
     row.emplace_back(threshold, probability);
 }
 
@@ -79,16 +79,16 @@ float64 IsotonicJointProbabilityCalibrationModel::calibrateJointProbability(uint
 }
 
 IsotonicJointProbabilityCalibrationModel::bin_list IsotonicJointProbabilityCalibrationModel::operator[](
-  uint32 labelVectorIndex) {
-    return binsPerLabelVector_[labelVectorIndex];
+  uint32 listIndex) {
+    return binsPerLabelVector_[listIndex];
 }
 
-uint32 IsotonicJointProbabilityCalibrationModel::getNumLabelVectors() const {
+uint32 IsotonicJointProbabilityCalibrationModel::getNumBinLists() const {
     return binsPerLabelVector_.getNumRows();
 }
 
-void IsotonicJointProbabilityCalibrationModel::addBin(uint32 labelVectorIndex, float64 threshold, float64 probability) {
-    ListOfLists<Tuple<float64>>::row row = binsPerLabelVector_[labelVectorIndex];
+void IsotonicJointProbabilityCalibrationModel::addBin(uint32 listIndex, float64 threshold, float64 probability) {
+    ListOfLists<Tuple<float64>>::row row = binsPerLabelVector_[listIndex];
     row.emplace_back(threshold, probability);
 }
 
