@@ -12,9 +12,9 @@ cdef extern from "common/prediction/probability_calibration_marginal.hpp" nogil:
 
         # Functions:
 
-        uint32 getNumLabels() const
+        uint32 getNumBinLists() const
 
-        void addBin(uint32 labelIndex, float64 threshold, float64 probability)
+        void addBin(uint32 listIndex, float64 threshold, float64 probability)
 
         void visit(BinVisitor) const
 
@@ -25,9 +25,9 @@ cdef extern from "common/prediction/probability_calibration_joint.hpp" nogil:
         
         # Functions:
 
-        uint32 getNumLabelVectors() const
+        uint32 getNumBinLists() const
 
-        void addBin(uint32 labelVectorIndex, float64 threshold, float64 probability)
+        void addBin(uint32 listIndex, float64 threshold, float64 probability)
 
         void visit(BinVisitor) const
 
@@ -129,7 +129,7 @@ cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibr
 
     # Functions:
 
-    cdef __serialize_bin(self, uint32 label_index, float64 threshold, float64 probability)
+    cdef __serialize_bin(self, uint32 list_index, float64 threshold, float64 probability)
 
 
 cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationModel):
@@ -142,7 +142,7 @@ cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationM
 
     # Functions:
 
-    cdef __serialize_bin(self, uint32 label_vector_index, float64 threshold, float64 probability)
+    cdef __serialize_bin(self, uint32 list_index, float64 threshold, float64 probability)
 
 
 cdef inline MarginalProbabilityCalibrationModel create_marginal_probability_calibration_model(

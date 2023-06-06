@@ -62,13 +62,13 @@ cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibr
     cdef IMarginalProbabilityCalibrationModel* get_marginal_probability_calibration_model_ptr(self):
         return self.probability_calibration_model_ptr.get()
     
-    cdef __serialize_bin(self, uint32 label_index, float64 threshold, float64 probability):
-        cdef list bin_list = self.state[label_index]
+    cdef __serialize_bin(self, uint32 list_index, float64 threshold, float64 probability):
+        cdef list bin_list = self.state[list_index]
         bin_list.append((threshold, probability))
 
     def __reduce__(self):
-        cdef uint32 num_labels = self.probability_calibration_model_ptr.get().getNumLabels()
-        self.state = [[] for i in range(num_labels)]
+        cdef uint32 num_bin_lists = self.probability_calibration_model_ptr.get().getNumBinLists()
+        self.state = [[] for i in range(num_bin_lists)]
         self.probability_calibration_model_ptr.get().visit(
             wrapBinVisitor(<void*>self, <BinCythonVisitor>self.__serialize_bin))
         cdef object state = (SERIALIZATION_VERSION, self.state)
@@ -82,16 +82,16 @@ cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibr
             raise AssertionError('Version of the serialized IsotonicMarginalProbabilityCalibrationModel is '
                                  + str(version) + ', expected ' + str(SERIALIZATION_VERSION))
         
-        cdef list bins_per_label = state[1]
-        cdef uint32 num_labels = len(bins_per_label)
+        cdef list bins_per_list = state[1]
+        cdef uint32 num_bin_lists = len(bins_per_list)
         cdef unique_ptr[IIsotonicMarginalProbabilityCalibrationModel] marginal_probability_calibration_model_ptr = \
-            createIsotonicMarginalProbabilityCalibrationModel(num_labels)
+            createIsotonicMarginalProbabilityCalibrationModel(num_bin_lists)
         cdef list bin_list
         cdef float64 threshold, probability
         cdef uint32 i, j, num_bins
 
-        for i in range(num_labels):
-            bin_list = bins_per_label[i]
+        for i in range(num_bin_lists):
+            bin_list = bins_per_list[i]
             num_bins = len(bin_list)
 
             for j in range(num_bins):
@@ -110,13 +110,13 @@ cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationM
     cdef IJointProbabilityCalibrationModel* get_joint_probability_calibration_model_ptr(self):
         return self.probability_calibration_model_ptr.get()
 
-    cdef __serialize_bin(self, uint32 label_vector_index, float64 threshold, float64 probability):
-        cdef list bin_list = self.state[label_vector_index]
+    cdef __serialize_bin(self, uint32 list_index, float64 threshold, float64 probability):
+        cdef list bin_list = self.state[list_index]
         bin_list.append((threshold, probability))
 
     def __reduce(self):
-        cdef uint32 num_label_vectors = self.probability_calibration_model_ptr.get().getNumLabelVectors()
-        self.state = [[] for i in range(num_label_vectors)]
+        cdef uint32 num_bin_lists = self.probability_calibration_model_ptr.get().getNumBinLists()
+        self.state = [[] for i in range(num_bin_lists)]
         self.probability_calibration_model_ptr.get().visit(
             wrapBinVisitor(<void*>self, <BinCythonVisitor>self.__serialize_bin))
         cdef object state = (SERIALIZATION_VERSION, self.state)
@@ -130,16 +130,16 @@ cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationM
             raise AssertionError('Version of the serialized IsotonicJointProbabilityCalibrationModel is ' + str(version)
                                  + ', expected ' + str(SERIALIZATION_VERSION))
         
-        cdef list bins_per_label_vector = state[1]
-        cdef uint32 num_label_vectors = len(bins_per_label_vector)
+        cdef list bins_per_list = state[1]
+        cdef uint32 num_bin_lists = len(bins_per_list)
         cdef unique_ptr[IIsotonicJointProbabilityCalibrationModel] joint_probability_calibration_model_ptr = \
-            createIsotonicJointProbabilityCalibrationModel(num_label_vectors)
+            createIsotonicJointProbabilityCalibrationModel(num_bin_lists)
         cdef list bin_list
         cdef float64 threshold, probability
         cdef uint32 i, j, num_bins
 
-        for i in range(num_label_vectors):
-            bin_list = bins_per_label_vector[i]
+        for i in range(num_bin_lists):
+            bin_list = bins_per_list[i]
             num_bins = len(bin_list)
 
             for j in range(num_bins):
