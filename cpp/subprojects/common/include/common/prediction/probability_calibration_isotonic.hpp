@@ -47,34 +47,29 @@ class MLRLCOMMON_API IIsotonicProbabilityCalibrationModel {
 };
 
 /**
- * Defines an interface for all models for the calibration of marginal probabilities via isotonic regression.
+ * An abstract base class for all isotonic calibration models.
  */
-class MLRLCOMMON_API IIsotonicMarginalProbabilityCalibrationModel : public IIsotonicProbabilityCalibrationModel,
-                                                                    public IMarginalProbabilityCalibrationModel {
-    public:
-
-        virtual ~IIsotonicMarginalProbabilityCalibrationModel() override {};
-};
-
-/**
- * A model for the calibration of marginal probabilities via isotonic regression.
- */
-class IsotonicMarginalProbabilityCalibrationModel final : public IIsotonicMarginalProbabilityCalibrationModel {
+class AbstractIsotonicProbabilityCalibrationModel : virtual public IIsotonicProbabilityCalibrationModel {
     private:
 
-        ListOfLists<Tuple<float64>> binsPerLabel_;
+        ListOfLists<Tuple<float64>> binsPerList_;
 
     public:
 
         /**
-         * @param numLabels The total number of available labels
+         * @param numLists The total number of lists for storing bins
          */
-        IsotonicMarginalProbabilityCalibrationModel(uint32 numLabels);
+        AbstractIsotonicProbabilityCalibrationModel(uint32 numLists);
 
         /**
-         * Provides access to the bins that correspond to a specific label and allows to modify them.
+         * Provides access to the bins that belong to a specific list and allows to modify them.
          */
         typedef ListOfLists<Tuple<float64>>::row bin_list;
+
+        /**
+         * Provides read-only access to the bins that belong to a specific list.
+         */
+        typedef ListOfLists<Tuple<float64>>::const_row const_bin_list;
 
         /**
          * Provides access to the bins that belong to the list at a specific index and allows to modify its elements.
@@ -84,13 +79,45 @@ class IsotonicMarginalProbabilityCalibrationModel final : public IIsotonicMargin
          */
         bin_list operator[](uint32 listIndex);
 
-        float64 calibrateMarginalProbability(uint32 labelIndex, float64 marginalProbability) const override;
+        /**
+         * Provides read-only access to the bins that belong to the list at a specific index.
+         *
+         * @param listIndex The index of the list
+         * @return          A `const_bin_list`
+         */
+        const_bin_list operator[](uint32 listIndex) const;
 
         uint32 getNumBinLists() const override;
 
         void addBin(uint32 listIndex, float64 threshold, float64 probability) override;
 
         void visit(BinVisitor visitor) const override;
+};
+
+/**
+ * Defines an interface for all models for the calibration of marginal probabilities via isotonic regression.
+ */
+class MLRLCOMMON_API IIsotonicMarginalProbabilityCalibrationModel
+    : virtual public IIsotonicProbabilityCalibrationModel,
+      virtual public IMarginalProbabilityCalibrationModel {
+    public:
+
+        virtual ~IIsotonicMarginalProbabilityCalibrationModel() override {};
+};
+
+/**
+ * A model for the calibration of marginal probabilities via isotonic regression.
+ */
+class IsotonicMarginalProbabilityCalibrationModel final : public AbstractIsotonicProbabilityCalibrationModel,
+                                                          virtual public IIsotonicMarginalProbabilityCalibrationModel {
+    public:
+
+        /**
+         * @param numLabels The total number of available labels
+         */
+        IsotonicMarginalProbabilityCalibrationModel(uint32 numLabels);
+
+        float64 calibrateMarginalProbability(uint32 labelIndex, float64 marginalProbability) const override;
 };
 
 /**
@@ -106,8 +133,8 @@ MLRLCOMMON_API std::unique_ptr<IIsotonicMarginalProbabilityCalibrationModel>
 /**
  * Defines an interface for all model for the calibration of joint probabilities via isotonic regression.
  */
-class MLRLCOMMON_API IIsotonicJointProbabilityCalibrationModel : public IIsotonicProbabilityCalibrationModel,
-                                                                 public IJointProbabilityCalibrationModel {
+class MLRLCOMMON_API IIsotonicJointProbabilityCalibrationModel : virtual public IIsotonicProbabilityCalibrationModel,
+                                                                 virtual public IJointProbabilityCalibrationModel {
     public:
 
         virtual ~IIsotonicJointProbabilityCalibrationModel() override {};
@@ -116,11 +143,8 @@ class MLRLCOMMON_API IIsotonicJointProbabilityCalibrationModel : public IIsotoni
 /**
  * A model for the calibration of joint probabilities via isotonic regression.
  */
-class IsotonicJointProbabilityCalibrationModel final : public IIsotonicJointProbabilityCalibrationModel {
-    private:
-
-        ListOfLists<Tuple<float64>> binsPerLabelVector_;
-
+class IsotonicJointProbabilityCalibrationModel final : public AbstractIsotonicProbabilityCalibrationModel,
+                                                       virtual public IIsotonicJointProbabilityCalibrationModel {
     public:
 
         /**
@@ -128,26 +152,7 @@ class IsotonicJointProbabilityCalibrationModel final : public IIsotonicJointProb
          */
         IsotonicJointProbabilityCalibrationModel(uint32 numLabelVectors);
 
-        /**
-         * Provides access to the bins that correspond to a specific label vector and allows to modify them.
-         */
-        typedef ListOfLists<Tuple<float64>>::row bin_list;
-
-        /**
-         * Provides access to the bins that belong to the list at a specific index and allows to modify its elements.
-         *
-         * @param listIndex The index of the list
-         * @return          A `bin_list`
-         */
-        bin_list operator[](uint32 listIndex);
-
         float64 calibrateJointProbability(uint32 labelVectorIndex, float64 jointProbability) const override;
-
-        uint32 getNumBinLists() const override;
-
-        void addBin(uint32 listIndex, float64 threshold, float64 probability) override;
-
-        void visit(BinVisitor visitor) const override;
 };
 
 /**
