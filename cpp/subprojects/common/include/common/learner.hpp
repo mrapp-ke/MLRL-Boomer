@@ -1822,7 +1822,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IPostOptimizationPhaseFactory> createUnusedRuleRemovalFactory() const;
 
-        std::unique_ptr<IMarginalProbabilityCalibrator> createMarginalProbabilityCalibrator() const;
+        std::unique_ptr<IMarginalProbabilityCalibratorFactory> createMarginalProbabilityCalibratorFactory() const;
 
         std::unique_ptr<IJointProbabilityCalibratorFactory> createJointProbabilityCalibratorFactory() const;
 

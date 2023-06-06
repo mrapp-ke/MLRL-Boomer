@@ -67,9 +67,10 @@ namespace boosting {
             bool shouldUseHoldoutSet() const override;
 
             /**
-             * @see `IMarginalProbabilityCalibratorConfig::createMarginalProbabilityCalibrator`
+             * @see `IMarginalProbabilityCalibratorConfig::createMarginalProbabilityCalibratorFactory`
              */
-            std::unique_ptr<IMarginalProbabilityCalibrator> createMarginalProbabilityCalibrator() const override;
+            std::unique_ptr<IMarginalProbabilityCalibratorFactory> createMarginalProbabilityCalibratorFactory()
+              const override;
     };
 
     /**

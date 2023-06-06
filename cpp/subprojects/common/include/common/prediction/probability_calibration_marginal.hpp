@@ -102,6 +102,22 @@ class IMarginalProbabilityCalibrator {
 };
 
 /**
+ * Defines an interface for all factories that allow to create instances of the type `IMarginalProbabilityCalibrator`.
+ */
+class IMarginalProbabilityCalibratorFactory {
+    public:
+
+        virtual ~IMarginalProbabilityCalibratorFactory() {};
+
+        /**
+         * Creates and returns a new object of type `IMarginalProbabilityCalibrator`.
+         *
+         * @return An unique pointer to an object of type `IMarginalProbabilityCalibrator` that has been created
+         */
+        virtual std::unique_ptr<IMarginalProbabilityCalibrator> create() const = 0;
+};
+
+/**
  * Defines an interface for all classes that allow to configure a method for fitting a model for the calibration of
  * marginal probabilities.
  */
@@ -118,11 +134,12 @@ class IMarginalProbabilityCalibratorConfig {
         virtual bool shouldUseHoldoutSet() const = 0;
 
         /**
-         * Creates and returns a new object of template type `IMarginalProbabilityCalibrator` according to the
+         * Creates and returns a new object of template type `IMarginalProbabilityCalibratorFactory` according to the
          * configuration.
          *
-         * @return An unique pointer to an object of template type `IMarginalProbabilityCalibrator` that has been
+         * @return An unique pointer to an object of template type `IMarginalProbabilityCalibratorFactory` that has been
          *         created
          */
-        virtual std::unique_ptr<IMarginalProbabilityCalibrator> createMarginalProbabilityCalibrator() const = 0;
+        virtual std::unique_ptr<IMarginalProbabilityCalibratorFactory> createMarginalProbabilityCalibratorFactory()
+          const = 0;
 };
