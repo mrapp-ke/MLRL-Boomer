@@ -47,9 +47,11 @@ class MLRLCOMMON_API IIsotonicProbabilityCalibrationModel {
 };
 
 /**
- * An abstract base class for all isotonic calibration models.
+ * An isotonic calibration models that allows to calibrate marginal and joint probabilities.
  */
-class IsotonicProbabilityCalibrationModel : virtual public IIsotonicProbabilityCalibrationModel {
+class IsotonicProbabilityCalibrationModel : virtual public IIsotonicProbabilityCalibrationModel,
+                                            virtual public IMarginalProbabilityCalibrationModel,
+                                            virtual public IJointProbabilityCalibrationModel {
     private:
 
         ListOfLists<Tuple<float64>> binsPerList_;
@@ -92,6 +94,10 @@ class IsotonicProbabilityCalibrationModel : virtual public IIsotonicProbabilityC
          */
         void fit();
 
+        float64 calibrateMarginalProbability(uint32 labelIndex, float64 marginalProbability) const override;
+
+        float64 calibrateJointProbability(uint32 labelVectorIndex, float64 jointProbability) const override;
+
         uint32 getNumBinLists() const override;
 
         void addBin(uint32 listIndex, float64 threshold, float64 probability) override;
@@ -121,8 +127,6 @@ class IsotonicMarginalProbabilityCalibrationModel final : public IsotonicProbabi
          * @param numLabels The total number of available labels
          */
         IsotonicMarginalProbabilityCalibrationModel(uint32 numLabels);
-
-        float64 calibrateMarginalProbability(uint32 labelIndex, float64 marginalProbability) const override;
 };
 
 /**
@@ -156,8 +160,6 @@ class IsotonicJointProbabilityCalibrationModel final : public IsotonicProbabilit
          * @param numLabelVectors The total number of known label vectors
          */
         IsotonicJointProbabilityCalibrationModel(uint32 numLabelVectors);
-
-        float64 calibrateJointProbability(uint32 labelVectorIndex, float64 jointProbability) const override;
 };
 
 /**
