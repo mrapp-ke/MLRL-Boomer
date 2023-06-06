@@ -462,6 +462,10 @@ namespace boosting {
 
         public:
 
+            /**
+             * @param labelVectorSet A reference to an object of type `LabelVectorSet` that stores all known label
+             *                       vectors
+             */
             IsotonicJointProbabilityCalibrator(const LabelVectorSet& labelVectorSet)
                 : labelVectorSet_(labelVectorSet) {}
 
