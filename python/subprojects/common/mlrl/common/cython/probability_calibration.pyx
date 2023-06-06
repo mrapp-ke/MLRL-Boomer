@@ -84,8 +84,8 @@ cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibr
         
         cdef list bins_per_list = state[1]
         cdef uint32 num_bin_lists = len(bins_per_list)
-        cdef unique_ptr[IIsotonicMarginalProbabilityCalibrationModel] marginal_probability_calibration_model_ptr = \
-            createIsotonicMarginalProbabilityCalibrationModel(num_bin_lists)
+        cdef unique_ptr[IIsotonicProbabilityCalibrationModel] marginal_probability_calibration_model_ptr = \
+            createIsotonicProbabilityCalibrationModel(num_bin_lists)
         cdef list bin_list
         cdef float64 threshold, probability
         cdef uint32 i, j, num_bins
@@ -132,8 +132,8 @@ cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationM
         
         cdef list bins_per_list = state[1]
         cdef uint32 num_bin_lists = len(bins_per_list)
-        cdef unique_ptr[IIsotonicJointProbabilityCalibrationModel] joint_probability_calibration_model_ptr = \
-            createIsotonicJointProbabilityCalibrationModel(num_bin_lists)
+        cdef unique_ptr[IIsotonicProbabilityCalibrationModel] joint_probability_calibration_model_ptr = \
+            createIsotonicProbabilityCalibrationModel(num_bin_lists)
         cdef list bin_list
         cdef float64 threshold, probability
         cdef uint32 i, j, num_bins

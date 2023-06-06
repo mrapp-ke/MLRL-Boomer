@@ -184,18 +184,6 @@ void IsotonicProbabilityCalibrationModel::visit(BinVisitor visitor) const {
     }
 }
 
-IsotonicMarginalProbabilityCalibrationModel::IsotonicMarginalProbabilityCalibrationModel(uint32 numLabels)
-    : IsotonicProbabilityCalibrationModel(numLabels) {}
-
-std::unique_ptr<IIsotonicMarginalProbabilityCalibrationModel> createIsotonicMarginalProbabilityCalibrationModel(
-  uint32 numLabels) {
-    return std::make_unique<IsotonicMarginalProbabilityCalibrationModel>(numLabels);
-}
-
-IsotonicJointProbabilityCalibrationModel::IsotonicJointProbabilityCalibrationModel(uint32 numLabelVectors)
-    : IsotonicProbabilityCalibrationModel(numLabelVectors) {}
-
-std::unique_ptr<IIsotonicJointProbabilityCalibrationModel> createIsotonicJointProbabilityCalibrationModel(
-  uint32 numLabelVectors) {
-    return std::make_unique<IsotonicJointProbabilityCalibrationModel>(numLabelVectors);
+std::unique_ptr<IIsotonicProbabilityCalibrationModel> createIsotonicProbabilityCalibrationModel(uint32 numLists) {
+    return std::make_unique<IsotonicProbabilityCalibrationModel>(numLists);
 }
