@@ -87,6 +87,11 @@ class AbstractIsotonicProbabilityCalibrationModel : virtual public IIsotonicProb
          */
         const_bin_list operator[](uint32 listIndex) const;
 
+        /**
+         * Fits the isotonic calibration model.
+         */
+        void fit();
+
         uint32 getNumBinLists() const override;
 
         void addBin(uint32 listIndex, float64 threshold, float64 probability) override;
