@@ -10,7 +10,7 @@
 #include <functional>
 
 /**
- * Defines an interface for all isotonic calibration models.
+ * Defines an interface for all models for the calibration of marginal or joint probabilities via isotonic regression.
  */
 class MLRLCOMMON_API IIsotonicProbabilityCalibrationModel : public IMarginalProbabilityCalibrationModel,
                                                             public IJointProbabilityCalibrationModel {
@@ -48,7 +48,7 @@ class MLRLCOMMON_API IIsotonicProbabilityCalibrationModel : public IMarginalProb
 };
 
 /**
- * An isotonic calibration models that allows to calibrate marginal and joint probabilities.
+ * A model for the calibration of marginal or joint probabilities via isotonic regression.
  */
 class IsotonicProbabilityCalibrationModel final : public IIsotonicProbabilityCalibrationModel {
     private:
