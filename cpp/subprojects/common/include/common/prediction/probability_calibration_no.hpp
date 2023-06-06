@@ -55,27 +55,13 @@ class MLRLCOMMON_API INoJointProbabilityCalibrationModel : public IJointProbabil
 };
 
 /**
- * An implementation of the type `IJointProbabilityCalibrator` that does not fit a model for the calibration of joint
- * probabilities.
+ * A factory that allows to create instances of the class `IJointProbabilityCalibrator` that do not fit a model for the
+ * calibration of joint probabilities.
  */
-class NoJointProbabilityCalibrator final : public IJointProbabilityCalibrator {
+class NoJointProbabilityCalibratorFactory final : public IJointProbabilityCalibratorFactory {
     public:
 
-        std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override;
-
-        std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const SinglePartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override;
-
-        std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          BiPartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override;
-
-        std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override;
+        std::unique_ptr<IJointProbabilityCalibrator> create(const ILabelSpaceInfo& labelSpaceInfo) const override;
 };
 
 /**

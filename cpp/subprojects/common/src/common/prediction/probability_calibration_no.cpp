@@ -70,40 +70,42 @@ class NoJointProbabilityCalibrationModel final : public INoJointProbabilityCalib
         }
 };
 
-std::unique_ptr<IJointProbabilityCalibrationModel> NoJointProbabilityCalibrator::fitProbabilityCalibrationModel(
-  const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
-  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
-    return std::make_unique<NoJointProbabilityCalibrationModel>();
-}
-
-std::unique_ptr<IJointProbabilityCalibrationModel> NoJointProbabilityCalibrator::fitProbabilityCalibrationModel(
-  const SinglePartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
-  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
-    return std::make_unique<NoJointProbabilityCalibrationModel>();
-}
-
-std::unique_ptr<IJointProbabilityCalibrationModel> NoJointProbabilityCalibrator::fitProbabilityCalibrationModel(
-  BiPartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
-  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
-    return std::make_unique<NoJointProbabilityCalibrationModel>();
-}
-
-std::unique_ptr<IJointProbabilityCalibrationModel> NoJointProbabilityCalibrator::fitProbabilityCalibrationModel(
-  BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
-  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
-    return std::make_unique<NoJointProbabilityCalibrationModel>();
-}
-
 /**
- * A factory that allows to create instances of the class `NoJointProbabilityCalibrator`.
+ * An implementation of the type `IJointProbabilityCalibrator` that does not fit a model for the calibration of joint
+ * probabilities.
  */
-class NoJointProbabilityCalibratorFactory final : public IJointProbabilityCalibratorFactory {
+class NoJointProbabilityCalibrator final : public IJointProbabilityCalibrator {
     public:
 
-        std::unique_ptr<IJointProbabilityCalibrator> create(const ILabelSpaceInfo& labelSpaceInfo) const override {
-            return std::make_unique<NoJointProbabilityCalibrator>();
+        std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+          const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
+            return std::make_unique<NoJointProbabilityCalibrationModel>();
+        }
+
+        std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+          const SinglePartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
+            return std::make_unique<NoJointProbabilityCalibrationModel>();
+        }
+
+        std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+          BiPartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
+            return std::make_unique<NoJointProbabilityCalibrationModel>();
+        }
+
+        std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
+          BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
+            return std::make_unique<NoJointProbabilityCalibrationModel>();
         }
 };
+
+std::unique_ptr<IJointProbabilityCalibrator> NoJointProbabilityCalibratorFactory::create(
+  const ILabelSpaceInfo& labelSpaceInfo) const {
+    return std::make_unique<NoJointProbabilityCalibrator>();
+}
 
 bool NoJointProbabilityCalibratorConfig::shouldUseHoldoutSet() const {
     return false;
