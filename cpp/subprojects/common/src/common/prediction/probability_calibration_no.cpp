@@ -103,7 +103,7 @@ class NoJointProbabilityCalibrator final : public IJointProbabilityCalibrator {
 };
 
 std::unique_ptr<IJointProbabilityCalibrator> NoJointProbabilityCalibratorFactory::create(
-  const ILabelSpaceInfo& labelSpaceInfo) const {
+  const LabelVectorSet* labelVectorSet) const {
     return std::make_unique<NoJointProbabilityCalibrator>();
 }
 
