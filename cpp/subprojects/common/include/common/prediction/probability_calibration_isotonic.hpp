@@ -49,7 +49,7 @@ class MLRLCOMMON_API IIsotonicProbabilityCalibrationModel {
 /**
  * An abstract base class for all isotonic calibration models.
  */
-class AbstractIsotonicProbabilityCalibrationModel : virtual public IIsotonicProbabilityCalibrationModel {
+class IsotonicProbabilityCalibrationModel : virtual public IIsotonicProbabilityCalibrationModel {
     private:
 
         ListOfLists<Tuple<float64>> binsPerList_;
@@ -59,7 +59,7 @@ class AbstractIsotonicProbabilityCalibrationModel : virtual public IIsotonicProb
         /**
          * @param numLists The total number of lists for storing bins
          */
-        AbstractIsotonicProbabilityCalibrationModel(uint32 numLists);
+        IsotonicProbabilityCalibrationModel(uint32 numLists);
 
         /**
          * Provides access to the bins that belong to a specific list and allows to modify them.
@@ -113,7 +113,7 @@ class MLRLCOMMON_API IIsotonicMarginalProbabilityCalibrationModel
 /**
  * A model for the calibration of marginal probabilities via isotonic regression.
  */
-class IsotonicMarginalProbabilityCalibrationModel final : public AbstractIsotonicProbabilityCalibrationModel,
+class IsotonicMarginalProbabilityCalibrationModel final : public IsotonicProbabilityCalibrationModel,
                                                           virtual public IIsotonicMarginalProbabilityCalibrationModel {
     public:
 
@@ -148,7 +148,7 @@ class MLRLCOMMON_API IIsotonicJointProbabilityCalibrationModel : virtual public 
 /**
  * A model for the calibration of joint probabilities via isotonic regression.
  */
-class IsotonicJointProbabilityCalibrationModel final : public AbstractIsotonicProbabilityCalibrationModel,
+class IsotonicJointProbabilityCalibrationModel final : public IsotonicProbabilityCalibrationModel,
                                                        virtual public IIsotonicJointProbabilityCalibrationModel {
     public:
 
