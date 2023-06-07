@@ -104,20 +104,16 @@ class IPartition {
         /**
          * Fits and returns a model for the calibration of joint probabilities, based on the type of this partition.
          *
-         * @param probabilityCalibrator               A reference to an object of type `IJointProbabilityCalibrator`
-         *                                            that should be used to fit the calibration model
-         * @param labelMatrix                         A reference to an object of type `IRowWiseLabelMatrix` that
-         *                                            provides row-wise access to the labels of the training examples
-         * @param statistics                          A reference to an object of type `IStatistics` that provides
-         *                                            access to statistics about the labels of the training examples
-         * @param marginalProbabilityCalibrationModel A reference to an object of type
-         *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
-         *                                            calibration of marginal probabilities
-         * @return                                    An unique pointer to an object of type
-         *                                            `IJointProbabilityCalibrationModel` that has been fit
+         * @param probabilityCalibrator A reference to an object of type `IJointProbabilityCalibrator` that should be
+         *                              used to fit the calibration model
+         * @param labelMatrix           A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise
+         *                              access to the labels of the training examples
+         * @param statistics            A reference to an object of type `IStatistics` that provides access to
+         *                              statistics about the labels of the training examples
+         * @return                      An unique pointer to an object of type `IJointProbabilityCalibrationModel` that
+         *                              has been fit
          */
         virtual std::unique_ptr<IJointProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
           const IJointProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
-          const IStatistics& statistics,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) = 0;
+          const IStatistics& statistics) = 0;
 };
