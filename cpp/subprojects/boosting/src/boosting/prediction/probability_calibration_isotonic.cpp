@@ -340,6 +340,46 @@ namespace boosting {
         }
     }
 
+    template<typename IndexIterator>
+    static inline void extractThresholdsAndProbabilities(IndexIterator indexIterator, uint32 numExamples,
+                                                         IsotonicProbabilityCalibrationModel& calibrationModel,
+                                                         const CContiguousLabelMatrix& labelMatrix,
+                                                         const CContiguousConstView<float64>& scoreMatrix,
+                                                         const IJointProbabilityFunction& jointProbabilityFunction,
+                                                         const LabelVectorSet& labelVectorSet) {
+        // TODO
+    }
+
+    template<typename IndexIterator>
+    static inline void extractThresholdsAndProbabilities(IndexIterator indexIterator, uint32 numExamples,
+                                                         IsotonicProbabilityCalibrationModel& calibrationModel,
+                                                         const CsrLabelMatrix& labelMatrix,
+                                                         const CContiguousConstView<float64>& scoreMatrix,
+                                                         const IJointProbabilityFunction& jointProbabilityFunction,
+                                                         const LabelVectorSet& labelVectorSet) {
+        // TODO
+    }
+
+    template<typename IndexIterator>
+    static inline void extractThresholdsAndProbabilities(IndexIterator indexIterator, uint32 numExamples,
+                                                         IsotonicProbabilityCalibrationModel& calibrationModel,
+                                                         const CContiguousLabelMatrix& labelMatrix,
+                                                         const SparseSetMatrix<float64>& scoreMatrix,
+                                                         const IJointProbabilityFunction& jointProbabilityFunction,
+                                                         const LabelVectorSet& labelVectorSet) {
+        // TODO
+    }
+
+    template<typename IndexIterator>
+    static inline void extractThresholdsAndProbabilities(IndexIterator indexIterator, uint32 numExamples,
+                                                         IsotonicProbabilityCalibrationModel& calibrationModel,
+                                                         const CsrLabelMatrix& labelMatrix,
+                                                         const SparseSetMatrix<float64>& scoreMatrix,
+                                                         const IJointProbabilityFunction& jointProbabilityFunction,
+                                                         const LabelVectorSet& labelVectorSet) {
+        // TODO
+    }
+
     template<typename IndexIterator, typename LabelMatrix>
     static inline std::unique_ptr<IsotonicProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
       IndexIterator indexIterator, uint32 numExamples, const LabelMatrix& labelMatrix, const IStatistics& statistics,
@@ -349,11 +389,15 @@ namespace boosting {
         std::unique_ptr<IsotonicProbabilityCalibrationModel> calibrationModelPtr =
           std::make_unique<IsotonicProbabilityCalibrationModel>(numLabelVectors);
         const IBoostingStatistics& boostingStatistics = dynamic_cast<const IBoostingStatistics&>(statistics);
-        auto denseVisitor = [=, &calibrationModelPtr](const CContiguousConstView<float64>& scoreMatrix) {
-            // TODO
+        auto denseVisitor = [=, &jointProbabilityFunction, &calibrationModelPtr,
+                             &labelVectorSet](const CContiguousConstView<float64>& scoreMatrix) {
+            extractThresholdsAndProbabilities(indexIterator, numExamples, *calibrationModelPtr, labelMatrix,
+                                              scoreMatrix, jointProbabilityFunction, labelVectorSet);
         };
-        auto sparseVisitor = [=, &calibrationModelPtr](const SparseSetMatrix<float64>& scoreMatrix) {
-            // TODO
+        auto sparseVisitor = [=, &jointProbabilityFunction, &calibrationModelPtr,
+                              &labelVectorSet](const SparseSetMatrix<float64>& scoreMatrix) {
+            extractThresholdsAndProbabilities(indexIterator, numExamples, *calibrationModelPtr, labelMatrix,
+                                              scoreMatrix, jointProbabilityFunction, labelVectorSet);
         };
         boostingStatistics.visitScoreMatrix(denseVisitor, sparseVisitor);
 
