@@ -55,6 +55,14 @@ namespace boosting {
 
                 return jointProbabilityCalibrationModel_.calibrateJointProbability(labelVectorIndex, jointProbability);
             }
+
+            float64 transformScoresIntoJointProbability(
+              uint32 labelVectorIndex, const LabelVector& labelVector,
+              SparseSetMatrix<float64>::const_iterator scoresBegin,
+              SparseSetMatrix<float64>::const_iterator scoresEnd) const override {
+                // TODO
+                return 0;
+            }
     };
 
     ChainRuleFactory::ChainRuleFactory(

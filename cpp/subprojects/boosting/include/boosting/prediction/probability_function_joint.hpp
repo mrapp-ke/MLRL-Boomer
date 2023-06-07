@@ -4,6 +4,7 @@
 #pragma once
 
 #include "boosting/prediction/probability_function_marginal.hpp"
+#include "common/data/matrix_sparse_set.hpp"
 #include "common/data/vector_dense.hpp"
 #include "common/math/math.hpp"
 #include "common/measures/measure_distance.hpp"
@@ -34,6 +35,22 @@ namespace boosting {
               uint32 labelVectorIndex, const LabelVector& labelVector,
               VectorConstView<float64>::const_iterator scoresBegin,
               VectorConstView<float64>::const_iterator scoresEnd) const = 0;
+
+            /**
+             * Transforms the regression scores that are predicted for an example into a joint probability that
+             * corresponds to the chance of a given label vector being correct.
+             *
+             * @param labelVectorIndex  The index of the label vector, the scores should be compared to
+             * @param labelVector       A reference to an object of type `LabelVector`, the scores should be compared to
+             * @param scoresBegin       A `SparseSetMatrix::const_iterator` to the beginning of the scores
+             * @param scoresEnd         A `SparseSetMatrix::const_iterator` to the end of the scores
+             * @return                  The joint probability the corresponds to the chance of the given label vector
+             *                          being correct
+             */
+            virtual float64 transformScoresIntoJointProbability(
+              uint32 labelVectorIndex, const LabelVector& labelVector,
+              SparseSetMatrix<float64>::const_iterator scoresBegin,
+              SparseSetMatrix<float64>::const_iterator scoresEnd) const = 0;
 
             /**
              * Transforms the regression scores that are predicted for an example into joint probabilities that
