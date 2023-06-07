@@ -105,7 +105,8 @@ bool NoJointProbabilityCalibratorConfig::isLabelVectorSetNeeded() const {
 }
 
 std::unique_ptr<IJointProbabilityCalibratorFactory>
-  NoJointProbabilityCalibratorConfig::createJointProbabilityCalibratorFactory() const {
+  NoJointProbabilityCalibratorConfig::createJointProbabilityCalibratorFactory(
+    const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
     return std::make_unique<NoJointProbabilityCalibratorFactory>();
 }
 

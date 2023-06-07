@@ -133,8 +133,8 @@ namespace boosting {
             /**
              * @see `IJointProbabilityCalibratorConfig::createJointProbabilityCalibratorFactory`
              */
-            std::unique_ptr<IJointProbabilityCalibratorFactory> createJointProbabilityCalibratorFactory()
-              const override;
+            std::unique_ptr<IJointProbabilityCalibratorFactory> createJointProbabilityCalibratorFactory(
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override;
     };
 
 }
