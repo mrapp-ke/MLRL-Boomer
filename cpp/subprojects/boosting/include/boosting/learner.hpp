@@ -754,7 +754,7 @@ namespace boosting {
                         std::unique_ptr<IJointProbabilityCalibratorConfig>& jointProbabilityCalibratorConfigPtr =
                           this->getJointProbabilityCalibratorConfigPtr();
                         std::unique_ptr<IsotonicJointProbabilityCalibratorConfig> ptr =
-                          std::make_unique<IsotonicJointProbabilityCalibratorConfig>();
+                          std::make_unique<IsotonicJointProbabilityCalibratorConfig>(this->getLossConfigPtr());
                         IIsotonicJointProbabilityCalibratorConfig& ref = *ptr;
                         jointProbabilityCalibratorConfigPtr = std::move(ptr);
                         return ref;
