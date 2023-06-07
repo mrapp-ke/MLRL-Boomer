@@ -503,7 +503,8 @@ namespace boosting {
     }
 
     std::unique_ptr<IJointProbabilityCalibratorFactory>
-      IsotonicJointProbabilityCalibratorConfig::createJointProbabilityCalibratorFactory() const {
+      IsotonicJointProbabilityCalibratorConfig::createJointProbabilityCalibratorFactory(
+        const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
         return std::make_unique<IsotonicJointProbabilityCalibratorFactory>(useHoldoutSet_);
     }
 }

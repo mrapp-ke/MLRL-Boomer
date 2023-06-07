@@ -280,9 +280,10 @@ std::unique_ptr<IMarginalProbabilityCalibratorFactory> AbstractRuleLearner::crea
     return config_.getMarginalProbabilityCalibratorConfigPtr()->createMarginalProbabilityCalibratorFactory();
 }
 
-std::unique_ptr<IJointProbabilityCalibratorFactory> AbstractRuleLearner::createJointProbabilityCalibratorFactory()
-  const {
-    return config_.getJointProbabilityCalibratorConfigPtr()->createJointProbabilityCalibratorFactory();
+std::unique_ptr<IJointProbabilityCalibratorFactory> AbstractRuleLearner::createJointProbabilityCalibratorFactory(
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
+    return config_.getJointProbabilityCalibratorConfigPtr()->createJointProbabilityCalibratorFactory(
+      marginalProbabilityCalibrationModel);
 }
 
 void AbstractRuleLearner::createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const {
@@ -458,7 +459,7 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
 
     // Fit model for the calibration of joint probabilities...
     std::unique_ptr<IJointProbabilityCalibratorFactory> jointProbabilityCalibratorFactoryPtr =
-      this->createJointProbabilityCalibratorFactory();
+      this->createJointProbabilityCalibratorFactory(*marginalProbabilityCalibrationModelPtr);
     std::unique_ptr<IJointProbabilityCalibrator> jointProbabilityCalibratorPtr =
       labelSpaceInfoPtr->createJointProbabilityCalibrator(*jointProbabilityCalibratorFactoryPtr);
     std::unique_ptr<IJointProbabilityCalibrationModel> jointProbabilityCalibrationModelPtr =
