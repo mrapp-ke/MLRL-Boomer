@@ -464,8 +464,7 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
       labelSpaceInfoPtr->createJointProbabilityCalibrator(*jointProbabilityCalibratorFactoryPtr);
     std::unique_ptr<IJointProbabilityCalibrationModel> jointProbabilityCalibrationModelPtr =
       partition.fitJointProbabilityCalibrationModel(*jointProbabilityCalibratorPtr, labelMatrix,
-                                                    statisticsProviderPtr->get(),
-                                                    *marginalProbabilityCalibrationModelPtr);
+                                                    statisticsProviderPtr->get());
 
     return std::make_unique<TrainingResult>(
       labelMatrix.getNumCols(), modelBuilder.buildModel(), std::move(labelSpaceInfoPtr),

@@ -415,8 +415,7 @@ namespace boosting {
              */
             std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
               const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix,
-              const IStatistics& statistics,
-              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
+              const IStatistics& statistics) const override {
                 return fitJointProbabilityCalibrationModel(partition, labelMatrix, statistics, labelVectorSet_);
             }
 
@@ -424,8 +423,8 @@ namespace boosting {
              * @see `IJointProbabilityCalibrator::fitProbabilityCalibrationModel`
              */
             std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-              const SinglePartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
-              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
+              const SinglePartition& partition, const CsrLabelMatrix& labelMatrix,
+              const IStatistics& statistics) const override {
                 return fitJointProbabilityCalibrationModel(partition, labelMatrix, statistics, labelVectorSet_);
             }
 
@@ -433,8 +432,8 @@ namespace boosting {
              * @see `IJointProbabilityCalibrator::fitProbabilityCalibrationModel`
              */
             std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-              BiPartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
-              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
+              BiPartition& partition, const CContiguousLabelMatrix& labelMatrix,
+              const IStatistics& statistics) const override {
                 return fitJointProbabilityCalibrationModel(partition, useHoldoutSet_, labelMatrix, statistics,
                                                            labelVectorSet_);
             }
@@ -443,8 +442,7 @@ namespace boosting {
              * @see `IJointProbabilityCalibrator::fitProbabilityCalibrationModel`
              */
             std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-              BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
-              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
+              BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics) const override {
                 return fitJointProbabilityCalibrationModel(partition, useHoldoutSet_, labelMatrix, statistics,
                                                            labelVectorSet_);
             }
