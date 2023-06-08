@@ -92,7 +92,7 @@ class DataCharacteristicsWriter(OutputWriter):
             self.feature_characteristics = feature_characteristics
             self.label_characteristics = label_characteristics
 
-        def format(self, options: Options, **kwargs):
+        def format(self, options: Options, **kwargs) -> str:
             percentage = options.get_bool(OPTION_PERCENTAGE, True)
             decimals = options.get_int(OPTION_DECIMALS, 2)
             rows = []
