@@ -238,6 +238,22 @@ In addition to the mandatory arguments that must be provided to the command line
 
   * ``false`` The characteristics of the training data set are not written into a .csv file.
 
+* ``--print-label-vectors`` (Default value = ``false``)
+
+  * ``true`` The unique label vectors contained in the training data are printed on the console.
+
+    * ``sparse`` (Default value = ``false``) ``true``, if a sparse representation of label vectors should be used, ``false`` otherwise.
+
+  * ``false`` The unique label vectors contained in the training data are not printed on the console.
+
+* ``--store-label-vectors`` (Default value = ``false``)
+
+  * ``true`` The unique label vectors contained in the training data are written into a .csv file.
+
+    * ``sparse`` (Default value = ``false``) ``true``, if a sparse representation of label vectors should be used, ``false`` otherwise.
+
+  * ``false`` The unique label vectors contained in the training data are not written into a .csv file.
+
 * ``--print-model-characteristics`` (Default value = ``false``)
 
   * ``true`` The characteristics of rule models are printed on the console
