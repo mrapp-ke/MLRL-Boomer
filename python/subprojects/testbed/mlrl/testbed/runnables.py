@@ -296,58 +296,6 @@ class LearnerRunnable(Runnable, ABC):
         return None if args.output_dir is None or current_fold >= 0 else LearnerRunnable.ClearOutputDirHook(
             output_dir=args.output_dir)
 
-    def __create_pre_training_output_writers(self, args) -> List[OutputWriter]:
-        output_writers = []
-        output_writer = self._create_data_characteristics_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_parameter_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        return output_writers
-
-    def __create_post_training_output_writers(self, args) -> List[OutputWriter]:
-        output_writers = []
-        output_writer = self._create_label_vector_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_model_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_model_characteristics_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        return output_writers
-
-    def __create_evaluation_output_writers(self, args, prediction_type: PredictionType) -> List[OutputWriter]:
-        output_writers = []
-        output_writer = self._create_evaluation_writer(args, prediction_type)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_prediction_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_prediction_characteristics_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        return output_writers
-
     def _configure_arguments(self, parser: ArgumentParser):
         super()._configure_arguments(parser)
         parser.add_argument('--random-state',
@@ -473,21 +421,95 @@ class LearnerRunnable(Runnable, ABC):
         prediction_type = self.__create_prediction_type(args)
         train_evaluation = self._create_evaluation(
             args, prediction_type,
-            self.__create_evaluation_output_writers(args, prediction_type) if args.evaluate_training_data else [])
+            self._create_evaluation_output_writers(args, prediction_type) if args.evaluate_training_data else [])
         test_evaluation = self._create_evaluation(args, prediction_type,
                                                   self.__create_evaluation_output_writers(args, prediction_type))
         data_splitter = self.__create_data_splitter(args)
         experiment = Experiment(base_learner=self._create_learner(args),
                                 learner_name=self.learner_name,
                                 data_splitter=data_splitter,
-                                pre_training_output_writers=self.__create_pre_training_output_writers(args),
-                                post_training_output_writers=self.__create_post_training_output_writers(args),
+                                pre_training_output_writers=self._create_pre_training_output_writers(args),
+                                post_training_output_writers=self._create_post_training_output_writers(args),
                                 pre_execution_hook=self.__create_pre_execution_hook(args, data_splitter),
                                 train_evaluation=train_evaluation,
                                 test_evaluation=test_evaluation,
                                 parameter_input=self._create_parameter_input(args),
                                 persistence=self._create_persistence(args))
         experiment.run()
+
+    def _create_pre_training_output_writers(self, args) -> List[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter`s that should be invoked before training a
+        model.
+
+        :param args:    The command line arguments
+        :return:        A list that contains the `OutputWriter`s that have been created
+        """
+        output_writers = []
+        output_writer = self._create_data_characteristics_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        output_writer = self._create_parameter_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        return output_writers
+
+    def _create_post_training_output_writers(self, args) -> List[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter`s that should be invoked after training a
+        model.
+
+        :param args:    The command line arguments
+        :return:        A list that contains the `OutputWriters`s that have been created
+        """
+        output_writers = []
+        output_writer = self._create_label_vector_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        output_writer = self._create_model_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        output_writer = self._create_model_characteristics_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        return output_writers
+
+    def _create_evaluation_output_writers(self, args, prediction_type: PredictionType) -> List[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter`s that should be invoked after evaluating a
+        model.
+
+        :param args:            The command line arguments
+        :param prediction_type: The type of the predictions
+        :return:                A list that contains the `OutputWriter`s that have been created
+        """
+        output_writers = []
+        output_writer = self._create_evaluation_writer(args, prediction_type)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        output_writer = self._create_prediction_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        output_writer = self._create_prediction_characteristics_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        return output_writers
 
     def _create_persistence(self, args) -> Optional[ModelPersistence]:
         """
