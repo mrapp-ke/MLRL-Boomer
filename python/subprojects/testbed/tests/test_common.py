@@ -335,7 +335,7 @@ class CmdBuilder:
         self.args.append('--print-label-vectors')
         self.args.append(str(print_label_vectors).lower())
         return self
-    
+
     def store_label_vectors(self, store_label_vectors: bool = True):
         """
         Configures whether the unique label vectors contained in the training data should be written into output files
