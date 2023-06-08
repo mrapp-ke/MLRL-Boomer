@@ -34,6 +34,7 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
 from mlrl.testbed.experiments import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 from mlrl.testbed.io import clear_directory
+from mlrl.testbed.label_vectors import LabelVectorWriter
 from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
 from mlrl.testbed.models import OPTION_PRINT_BODIES, OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, \
     OPTION_PRINT_LABEL_NAMES, OPTION_PRINT_NOMINAL_VALUES, ModelWriter, RuleModelWriter
@@ -377,6 +378,17 @@ class LearnerRunnable(Runnable, ABC):
 
         return DataCharacteristicsWriter(sinks) if len(sinks) > 0 else None
 
+    def __create_label_vector_writer(self, args) -> Optional[OutputWriter]:
+        sinks = []
+
+        if args.print_label_vectors:
+            sinks.append(LabelVectorWriter.LogSink())
+
+        if args.store_label_vectors and args.output_dir is not None:
+            sinks.append(LabelVectorWriter.CsvSink(output_dir=args.output_dir))
+
+        return LabelVectorWriter(sinks) if len(sinks) > 0 else None
+
     def __create_pre_training_output_writers(self, args) -> List[OutputWriter]:
         output_writers = []
         output_writer = self.__create_data_characteristics_writer(args)
@@ -393,6 +405,11 @@ class LearnerRunnable(Runnable, ABC):
 
     def __create_post_training_output_writers(self, args) -> List[OutputWriter]:
         output_writers = []
+        output_writer = self.__create_label_vector_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
         output_writer = self._create_model_writer(args)
 
         if output_writer is not None:
@@ -487,7 +504,18 @@ class LearnerRunnable(Runnable, ABC):
                             help='Whether the characteristics of the training data should be written into output files '
                             + 'or not. Must be one of ' + format_dict_keys(self.STORE_DATA_CHARACTERISTICS_VALUES)
                             + '. Does only have an effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. '
-                            + 'For additional options refer to the documentation')
+                            + 'For additional options refer to the documentation.')
+        parser.add_argument('--print-label-vectors',
+                            type=BooleanOption.parse,
+                            default=False,
+                            help='Whether the unique label vectors contained in the training data should be printed on '
+                            + 'the console or not. Must be one of ' + format_enum_values(BooleanOption) + '.')
+        parser.add_argument('--store-label-vectors',
+                            type=BooleanOption.parse,
+                            default=False,
+                            help='Whether the unique label vectors contained in the training data should be written '
+                            + 'into output files or not. Must be one of ' + format_enum_values(BooleanOption) + '. '
+                            + 'Does only have an effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified.')
         parser.add_argument('--one-hot-encoding',
                             type=BooleanOption.parse,
                             default=False,
