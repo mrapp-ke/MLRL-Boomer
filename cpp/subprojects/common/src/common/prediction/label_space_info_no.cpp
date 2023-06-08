@@ -15,8 +15,9 @@ class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
     public:
 
         std::unique_ptr<IJointProbabilityCalibrator> createJointProbabilityCalibrator(
-          const IJointProbabilityCalibratorFactory& factory) const override {
-            return factory.create(nullptr);
+          const IJointProbabilityCalibratorFactory& factory,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
+            return factory.create(marginalProbabilityCalibrationModel, nullptr);
         }
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(

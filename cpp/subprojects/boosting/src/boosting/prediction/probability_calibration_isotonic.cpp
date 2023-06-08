@@ -617,8 +617,6 @@ namespace boosting {
     class IsotonicJointProbabilityCalibratorFactory final : public IJointProbabilityCalibratorFactory {
         private:
 
-            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel_;
-
             const std::unique_ptr<IJointProbabilityFunctionFactory> jointProbabilityFunctionFactoryPtr_;
 
             const bool useHoldoutSet_;
@@ -626,9 +624,6 @@ namespace boosting {
         public:
 
             /**
-             * @param marginalProbabilityCalibrationModel A reference to an object of type
-             *                                            `IMarginalProbabilityCalibrationModel` that may be used for
-             *                                            the calibration of marginal probabilities
              * @param jointProbabilityFunctionFactoryPtr  An unique pointer to an object of type
              *                                            `IJointProbabilityFunctionFactory` that allows to create
              *                                            implementations of the transformation function to be used to
@@ -638,16 +633,16 @@ namespace boosting {
              *                                            in the holdout set, if available, false otherwise
              */
             IsotonicJointProbabilityCalibratorFactory(
-              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               std::unique_ptr<IJointProbabilityFunctionFactory> jointProbabilityFunctionFactoryPtr, bool useHoldoutSet)
-                : marginalProbabilityCalibrationModel_(marginalProbabilityCalibrationModel),
-                  jointProbabilityFunctionFactoryPtr_(std::move(jointProbabilityFunctionFactoryPtr)),
+                : jointProbabilityFunctionFactoryPtr_(std::move(jointProbabilityFunctionFactoryPtr)),
                   useHoldoutSet_(useHoldoutSet) {}
 
             /**
              * @see `IJointProbabilityCalibratorFactory::create`
              */
-            std::unique_ptr<IJointProbabilityCalibrator> create(const LabelVectorSet* labelVectorSet) const override {
+            std::unique_ptr<IJointProbabilityCalibrator> create(
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const LabelVectorSet* labelVectorSet) const override {
                 if (!labelVectorSet) {
                     throw std::runtime_error(
                       "Information about the label vectors that have been encountered in the training data is required "
@@ -656,7 +651,7 @@ namespace boosting {
                       "method when it has been trained.");
                 }
 
-                return std::make_unique<IsotonicJointProbabilityCalibrator>(marginalProbabilityCalibrationModel_,
+                return std::make_unique<IsotonicJointProbabilityCalibrator>(marginalProbabilityCalibrationModel,
                                                                             *jointProbabilityFunctionFactoryPtr_,
                                                                             useHoldoutSet_, *labelVectorSet);
             }
@@ -685,14 +680,13 @@ namespace boosting {
     }
 
     std::unique_ptr<IJointProbabilityCalibratorFactory>
-      IsotonicJointProbabilityCalibratorConfig::createJointProbabilityCalibratorFactory(
-        const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
+      IsotonicJointProbabilityCalibratorConfig::createJointProbabilityCalibratorFactory() const {
         std::unique_ptr<IJointProbabilityFunctionFactory> jointProbabilityFunctionFactoryPtr =
           lossConfigPtr_->createJointProbabilityFunctionFactory();
 
         if (jointProbabilityFunctionFactoryPtr) {
             return std::make_unique<IsotonicJointProbabilityCalibratorFactory>(
-              marginalProbabilityCalibrationModel, std::move(jointProbabilityFunctionFactoryPtr), useHoldoutSet_);
+              std::move(jointProbabilityFunctionFactoryPtr), useHoldoutSet_);
         } else {
             return std::make_unique<NoJointProbabilityCalibratorFactory>();
         }
