@@ -10,6 +10,7 @@ import numpy as np
 
 from scipy.sparse import lil_matrix
 
+from mlrl.common.data_types import DTYPE_UINT8
 from mlrl.common.options import Options
 
 from mlrl.testbed.data import MetaData
@@ -17,6 +18,8 @@ from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.format import format_table
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+
+OPTION_SPARSE = 'sparse'
 
 
 class LabelVectorWriter(OutputWriter):
@@ -28,6 +31,12 @@ class LabelVectorWriter(OutputWriter):
         """
         Stores unique label vectors that are contained in a data set.
         """
+
+        COLUMN_INDEX = 'Index'
+
+        COLUMN_LABEL_VECTOR = 'Label vector'
+
+        COLUMN_FREQUENCY = 'Frequency'
 
         def __init__(self, y):
             """
@@ -50,21 +59,36 @@ class LabelVectorWriter(OutputWriter):
                 unique_label_vectors.append((label_vector, frequency))
 
             self.unique_label_vectors = unique_label_vectors
+            self.num_labels = y.shape[1]
+
+        def __format_label_vector(self, sparse_label_vector: np.ndarray, sparse: bool) -> str:
+            if sparse:
+                return str(sparse_label_vector)
+            else:
+                dense_label_vector = np.zeros(shape=self.num_labels, dtype=DTYPE_UINT8)
+                dense_label_vector[sparse_label_vector] = 1
+                return str(dense_label_vector)
 
         def format(self, options: Options, **kwargs) -> str:
-            header = ['Index', 'Label vector', 'Frequency']
+            sparse = options.get_bool(OPTION_SPARSE, False)
+            header = [self.COLUMN_INDEX, self.COLUMN_LABEL_VECTOR, self.COLUMN_FREQUENCY]
             rows = []
 
-            for i, (label_vector, frequency) in enumerate(self.unique_label_vectors):
-                rows.append([i, str(label_vector), frequency])
+            for i, (sparse_label_vector, frequency) in enumerate(self.unique_label_vectors):
+                rows.append([i, self.__format_label_vector(sparse_label_vector, sparse=sparse), frequency])
 
             return format_table(rows, header=header)
 
         def tabularize(self, options: Options, **kwargs) -> List[Dict[str, str]]:
+            sparse = options.get_bool(OPTION_SPARSE, False)
             rows = []
 
-            for i, (label_vector, frequency) in enumerate(self.unique_label_vectors):
-                columns = {'Index': i, 'Label vector': str(label_vector), 'Frequency': frequency}
+            for i, (sparse_label_vector, frequency) in enumerate(self.unique_label_vectors):
+                columns = {
+                    self.COLUMN_INDEX: i,
+                    self.COLUMN_LABEL_VECTOR: self.__format_label_vector(sparse_label_vector, sparse=sparse),
+                    self.COLUMN_FREQUENCY: frequency
+                }
                 rows.append(columns)
 
             return rows
@@ -74,16 +98,16 @@ class LabelVectorWriter(OutputWriter):
         Allows to write unique label vectors that are contained in a data set to the console.
         """
 
-        def __init__(self):
-            super().__init__(title='Label vectors')
+        def __init__(self, options: Options = Options()):
+            super().__init__(title='Label vectors', options=options)
 
     class CsvSink(OutputWriter.CsvSink):
         """
         Allows to write unique label vectors that are contained in a data set to a CSV file.
         """
 
-        def __init__(self, output_dir: str):
-            super().__init__(output_dir=output_dir, file_name='label_vectors')
+        def __init__(self, output_dir: str, options: Options = Options()):
+            super().__init__(output_dir=output_dir, file_name='label_vectors', options=options)
 
     def __init__(self, sinks: List[OutputWriter.Sink]):
         super().__init__(sinks)
