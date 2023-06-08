@@ -7,6 +7,7 @@
 #include "common/prediction/probability_calibration_no.hpp"
 
 #include <algorithm>
+#include <stdexcept>
 
 namespace boosting {
 
