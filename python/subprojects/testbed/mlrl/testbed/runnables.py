@@ -34,7 +34,7 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
 from mlrl.testbed.experiments import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 from mlrl.testbed.io import clear_directory
-from mlrl.testbed.label_vectors import LabelVectorWriter
+from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorWriter
 from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
 from mlrl.testbed.models import OPTION_PRINT_BODIES, OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, \
     OPTION_PRINT_LABEL_NAMES, OPTION_PRINT_NOMINAL_VALUES, ModelWriter, RuleModelWriter
@@ -234,6 +234,17 @@ class LearnerRunnable(Runnable, ABC):
 
     STORE_DATA_CHARACTERISTICS_VALUES = PRINT_DATA_CHARACTERISTICS_VALUES
 
+    PARAM_PRINT_LABEL_VECTORS = '--print-label-vectors'
+
+    PRINT_LABEL_VECTORS_VALUES: Dict[str, Set[str]] = {
+        BooleanOption.TRUE.value: {OPTION_SPARSE},
+        BooleanOption.FALSE.value: {}
+    }
+
+    PARAM_STORE_LABEL_VECTORS = '--store-label-vectors'
+
+    STORE_LABEL_VECTORS_VALUES = PRINT_LABEL_VECTORS_VALUES
+
     PARAM_OUTPUT_DIR = '--output-dir'
 
     PARAM_PREDICTION_TYPE = '--prediction-type'
@@ -380,12 +391,17 @@ class LearnerRunnable(Runnable, ABC):
 
     def __create_label_vector_writer(self, args) -> Optional[OutputWriter]:
         sinks = []
+        value, options = parse_param_and_options(self.PARAM_PRINT_LABEL_VECTORS, args.print_label_vectors,
+                                                 self.PRINT_LABEL_VECTORS_VALUES)
 
-        if args.print_label_vectors:
-            sinks.append(LabelVectorWriter.LogSink())
+        if value == BooleanOption.TRUE.value:
+            sinks.append(LabelVectorWriter.LogSink(options=options))
 
-        if args.store_label_vectors and args.output_dir is not None:
-            sinks.append(LabelVectorWriter.CsvSink(output_dir=args.output_dir))
+        value, options = parse_param_and_options(self.PARAM_STORE_LABEL_VECTORS, args.store_label_vectors,
+                                                 self.STORE_LABEL_VECTORS_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            sinks.append(LabelVectorWriter.CsvSink(output_dir=args.output_dir, options=options))
 
         return LabelVectorWriter(sinks) if len(sinks) > 0 else None
 
@@ -505,17 +521,20 @@ class LearnerRunnable(Runnable, ABC):
                             + 'or not. Must be one of ' + format_dict_keys(self.STORE_DATA_CHARACTERISTICS_VALUES)
                             + '. Does only have an effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. '
                             + 'For additional options refer to the documentation.')
-        parser.add_argument('--print-label-vectors',
-                            type=BooleanOption.parse,
-                            default=False,
+        parser.add_argument(self.PARAM_PRINT_LABEL_VECTORS,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
                             help='Whether the unique label vectors contained in the training data should be printed on '
-                            + 'the console or not. Must be one of ' + format_enum_values(BooleanOption) + '.')
-        parser.add_argument('--store-label-vectors',
-                            type=BooleanOption.parse,
-                            default=False,
+                            + 'the console or not. Must be one of ' + format_dict_keys(self.PRINT_LABEL_VECTORS_VALUES)
+                            + '. For additional options refer to the documentation.')
+        parser.add_argument(self.PARAM_STORE_LABEL_VECTORS,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
                             help='Whether the unique label vectors contained in the training data should be written '
-                            + 'into output files or not. Must be one of ' + format_enum_values(BooleanOption) + '. '
-                            + 'Does only have an effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified.')
+                            + 'into output files or not. Must be one of '
+                            + format_dict_keys(self.STORE_LABEL_VECTORS_VALUES) + '. Does only have an effect if the '
+                            + 'parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to '
+                            + 'the documentation.')
         parser.add_argument('--one-hot-encoding',
                             type=BooleanOption.parse,
                             default=False,
