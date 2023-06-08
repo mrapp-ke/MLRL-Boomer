@@ -98,6 +98,7 @@ class CmdBuilder:
         self.predictions_stored = False
         self.prediction_characteristics_stored = False
         self.data_characteristics_stored = False
+        self.label_vectors_stored = False
         self.model_characteristics_stored = False
         self.rules_stored = False
         self.args = [cmd, '--log-level', 'DEBUG', '--data-dir', data_dir, '--dataset', dataset]
@@ -320,6 +321,33 @@ class CmdBuilder:
         self.data_characteristics_stored = store_data_characteristics
         self.args.append('--store-data-characteristics')
         self.args.append(str(store_data_characteristics).lower())
+        return self
+
+    def print_label_vectors(self, print_label_vectors: bool = True):
+        """
+        Configures whether the unique label vectors contained in the training data should be printed on the console or
+        not.
+
+        :param print_label_vectors: True, if the unique label vectors contained in the training data should be printed,
+                                    False otherwise
+        :return:                    The builder itself    
+        """
+        self.args.append('--print-label-vectors')
+        self.args.append(str(print_label_vectors).lower())
+        return self
+    
+    def store_label_vectors(self, store_label_vectors: bool = True):
+        """
+        Configures whether the unique label vectors contained in the training data should be written into output files
+        or not.
+
+        :param store_label_vectors: True, if the unique label vectors contained in the training data should be written
+                                    into output files, False otherwise
+        :return:                    The builder itself
+        """
+        self.label_vectors_stored = store_label_vectors
+        self.args.append('--store-label-vectors')
+        self.args.append(str(store_label_vectors).lower())
         return self
 
     def print_model_characteristics(self, print_model_characteristics: bool = True):
@@ -660,6 +688,15 @@ class IntegrationTests(ABC, TestCase):
         if builder.data_characteristics_stored:
             self.__assert_output_files_exist(builder, 'data_characteristics', 'csv')
 
+    def __assert_label_vector_files_exist(self, builder: CmdBuilder):
+        """
+        Asserts that the label vector files, which should be created by a command, exist.
+
+        :param builder: The builder
+        """
+        if builder.label_vectors_stored:
+            self.__assert_output_files_exist(builder, 'label_vectors', 'csv')
+
     def __assert_model_characteristic_files_exist(self, builder: CmdBuilder):
         """
         Asserts that the model characteristic files, which should be created by a command, exist.
@@ -749,6 +786,7 @@ class IntegrationTests(ABC, TestCase):
             self.__assert_prediction_files_exist(builder)
             self.__assert_prediction_characteristic_files_exist(builder)
             self.__assert_data_characteristic_files_exist(builder)
+            self.__assert_label_vector_files_exist(builder)
             self.__assert_model_characteristic_files_exist(builder)
             self.__assert_rule_files_exist(builder)
 
@@ -1077,6 +1115,47 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .print_data_characteristics() \
             .store_data_characteristics()
         self.run_cmd(builder, 'data-characteristics_single-fold')
+
+    def test_label_vectors_train_test(self):
+        """
+        Tests the functionality to store the unique label vectors contained in the data used for training by the rule
+        learning algorithm when using a split of the dataset into training and test data.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .print_evaluation(False) \
+            .store_evaluation(False) \
+            .set_output_dir() \
+            .print_label_vectors() \
+            .store_label_vectors()
+        self.run_cmd(builder, 'label-vectors_train-test')
+
+    def test_label_vectors_cross_validation(self):
+        """
+        Tests the functionality to store the unique label vectors contained in the data used for training by the rule
+        learning algorithm when using a cross validation.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .cross_validation() \
+            .print_evaluation(False) \
+            .store_evaluation(False) \
+            .set_output_dir() \
+            .print_label_vectors() \
+            .store_label_vectors()
+        self.run_cmd(builder, 'label-vectors_cross-validation')
+
+    def test_label_vectors_single_fold(self):
+        """
+        Tests the functionality to store the unique label vectors contained in the data used for training by the rule
+        learning algorithm when using a single fold of a cross validation.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .cross_validation(current_fold=1) \
+            .print_evaluation(False) \
+            .store_evaluation(False) \
+            .set_output_dir() \
+            .print_label_vectors() \
+            .store_label_vectors()
+        self.run_cmd(builder, 'label-vectors_single-fold')
 
     def test_model_characteristics_train_test(self):
         """
