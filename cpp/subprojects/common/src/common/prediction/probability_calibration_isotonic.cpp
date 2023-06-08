@@ -100,7 +100,7 @@ static inline void performIsotonicRegression(ListOfLists<Tuple<float64>>::row bi
     bins.shrink_to_fit();
 }
 
-static inline float64 calibrateProbability(const ListOfLists<Tuple<float64>>::const_row bins, float64 probability) {
+static inline float64 calibrateProbability(ListOfLists<Tuple<float64>>::const_row bins, float64 probability) {
     // Find the bins that impose a lower and upper bound on the probability...
     ListOfLists<Tuple<float64>>::const_iterator begin = bins.cbegin();
     ListOfLists<Tuple<float64>>::const_iterator end = bins.cend();
