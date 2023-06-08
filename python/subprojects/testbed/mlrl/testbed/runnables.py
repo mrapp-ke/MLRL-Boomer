@@ -34,7 +34,7 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
 from mlrl.testbed.experiments import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 from mlrl.testbed.io import clear_directory
-from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorWriter
+from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorSetWriter, LabelVectorWriter
 from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
 from mlrl.testbed.models import OPTION_PRINT_BODIES, OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, \
     OPTION_PRINT_LABEL_NAMES, OPTION_PRINT_NOMINAL_VALUES, ModelWriter, RuleModelWriter
@@ -389,22 +389,6 @@ class LearnerRunnable(Runnable, ABC):
 
         return DataCharacteristicsWriter(sinks) if len(sinks) > 0 else None
 
-    def __create_label_vector_writer(self, args) -> Optional[OutputWriter]:
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_LABEL_VECTORS, args.print_label_vectors,
-                                                 self.PRINT_LABEL_VECTORS_VALUES)
-
-        if value == BooleanOption.TRUE.value:
-            sinks.append(LabelVectorWriter.LogSink(options=options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_LABEL_VECTORS, args.store_label_vectors,
-                                                 self.STORE_LABEL_VECTORS_VALUES)
-
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(LabelVectorWriter.CsvSink(output_dir=args.output_dir, options=options))
-
-        return LabelVectorWriter(sinks) if len(sinks) > 0 else None
-
     def __create_pre_training_output_writers(self, args) -> List[OutputWriter]:
         output_writers = []
         output_writer = self.__create_data_characteristics_writer(args)
@@ -421,7 +405,7 @@ class LearnerRunnable(Runnable, ABC):
 
     def __create_post_training_output_writers(self, args) -> List[OutputWriter]:
         output_writers = []
-        output_writer = self.__create_label_vector_writer(args)
+        output_writer = self._create_label_vector_writer(args)
 
         if output_writer is not None:
             output_writers.append(output_writer)
@@ -612,6 +596,29 @@ class LearnerRunnable(Runnable, ABC):
         """
         return GlobalEvaluation(prediction_type, output_writers) if len(output_writers) > 0 else None
 
+    def _create_label_vector_writer(self, args) -> Optional[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output unique label
+        vectors contained in the training data.
+
+        :param args:    The command line arguments
+        :return:        The `OutputWriter` that has been created
+        """
+        sinks = []
+        value, options = parse_param_and_options(self.PARAM_PRINT_LABEL_VECTORS, args.print_label_vectors,
+                                                 self.PRINT_LABEL_VECTORS_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            sinks.append(LabelVectorWriter.LogSink(options=options))
+
+        value, options = parse_param_and_options(self.PARAM_STORE_LABEL_VECTORS, args.store_label_vectors,
+                                                 self.STORE_LABEL_VECTORS_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            sinks.append(LabelVectorWriter.CsvSink(output_dir=args.output_dir, options=options))
+
+        return LabelVectorWriter(sinks) if len(sinks) > 0 else None
+
     def _create_model_writer(self, args) -> Optional[OutputWriter]:
         """
         May be overridden by subclasses in order to create the `OutputWriter` that should be used to output textual
@@ -762,6 +769,22 @@ class RuleLearnerRunnable(LearnerRunnable):
                 step_size=step_size) if len(output_writers) > 0 else None
         else:
             return super()._create_evaluation(args, prediction_type, output_writers)
+
+    def _create_label_vector_writer(self, args) -> Optional[OutputWriter]:
+        sinks = []
+        value, options = parse_param_and_options(self.PARAM_PRINT_LABEL_VECTORS, args.print_label_vectors,
+                                                 self.PRINT_LABEL_VECTORS_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            sinks.append(LabelVectorSetWriter.LogSink(options=options))
+
+        value, options = parse_param_and_options(self.PARAM_STORE_LABEL_VECTORS, args.store_label_vectors,
+                                                 self.STORE_LABEL_VECTORS_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            sinks.append(LabelVectorSetWriter.CsvSink(output_dir=args.output_dir, options=options))
+
+        return LabelVectorSetWriter(sinks) if len(sinks) > 0 else None
 
     def _create_model_writer(self, args) -> Optional[OutputWriter]:
         sinks = []
