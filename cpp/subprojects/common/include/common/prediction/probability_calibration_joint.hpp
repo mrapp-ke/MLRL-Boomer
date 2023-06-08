@@ -45,12 +45,18 @@ class IJointProbabilityCalibratorFactory {
         /**
          * Creates and returns a new object of type `IJointProbabilityCalibrator`.
          *
-         * @param labelVectorSet  A pointer to an object of type `LabelVectorSet` that stores all known label vectors or
-         *                        a null pointer, if no such object is available
-         * @return                An unique pointer to an object of type `IJointProbabilityCalibrator` that has been
-         *                        created
+         * @param marginalProbabilityCalibrationModel A reference to an object of type
+         *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of marginal probabilities
+         * @param labelVectorSet                      A pointer to an object of type `LabelVectorSet` that stores all
+         *                                            known label vectors or a null pointer, if no such object is
+         *                                            available
+         * @return                                    An unique pointer to an object of type
+         *                                            `IJointProbabilityCalibrator` that has been created
          */
-        virtual std::unique_ptr<IJointProbabilityCalibrator> create(const LabelVectorSet* labelVectorSet) const = 0;
+        virtual std::unique_ptr<IJointProbabilityCalibrator> create(
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const LabelVectorSet* labelVectorSet) const = 0;
 };
 
 /**
@@ -82,12 +88,8 @@ class IJointProbabilityCalibratorConfig {
          * Creates and returns a new object of template type `IJointProbabilityCalibratorFactory` according to the
          * configuration.
          *
-         * @param marginalProbabilityCalibrationModel A reference to an object of type
-         *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
-         *                                            calibration of marginal probabilities
-         * @return                                    An unique pointer to an object of template type
-         *                                            `IJointProbabilityCalibratorFactory` that has been created
+         * @return An unique pointer to an object of template type `IJointProbabilityCalibratorFactory` that has been
+         *         created
          */
-        virtual std::unique_ptr<IJointProbabilityCalibratorFactory> createJointProbabilityCalibratorFactory(
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const = 0;
+        virtual std::unique_ptr<IJointProbabilityCalibratorFactory> createJointProbabilityCalibratorFactory() const = 0;
 };

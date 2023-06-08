@@ -103,8 +103,9 @@ void LabelVectorSet::visit(LabelVectorVisitor visitor) const {
 }
 
 std::unique_ptr<IJointProbabilityCalibrator> LabelVectorSet::createJointProbabilityCalibrator(
-  const IJointProbabilityCalibratorFactory& factory) const {
-    return factory.create(this);
+  const IJointProbabilityCalibratorFactory& factory,
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
+    return factory.create(marginalProbabilityCalibrationModel, this);
 }
 
 std::unique_ptr<IBinaryPredictor> LabelVectorSet::createBinaryPredictor(

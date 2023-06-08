@@ -91,6 +91,7 @@ class NoJointProbabilityCalibrator final : public IJointProbabilityCalibrator {
 };
 
 std::unique_ptr<IJointProbabilityCalibrator> NoJointProbabilityCalibratorFactory::create(
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
   const LabelVectorSet* labelVectorSet) const {
     return std::make_unique<NoJointProbabilityCalibrator>();
 }
@@ -104,8 +105,7 @@ bool NoJointProbabilityCalibratorConfig::isLabelVectorSetNeeded() const {
 }
 
 std::unique_ptr<IJointProbabilityCalibratorFactory>
-  NoJointProbabilityCalibratorConfig::createJointProbabilityCalibratorFactory(
-    const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const {
+  NoJointProbabilityCalibratorConfig::createJointProbabilityCalibratorFactory() const {
     return std::make_unique<NoJointProbabilityCalibratorFactory>();
 }
 

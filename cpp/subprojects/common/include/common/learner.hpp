@@ -1824,8 +1824,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IMarginalProbabilityCalibratorFactory> createMarginalProbabilityCalibratorFactory() const;
 
-        std::unique_ptr<IJointProbabilityCalibratorFactory> createJointProbabilityCalibratorFactory(
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const;
+        std::unique_ptr<IJointProbabilityCalibratorFactory> createJointProbabilityCalibratorFactory() const;
 
     protected:
 
