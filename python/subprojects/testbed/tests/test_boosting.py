@@ -417,7 +417,8 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         builder = BoostingCmdBuilder() \
             .binary_predictor(BINARY_PREDICTOR_EXAMPLE_WISE) \
-            .print_predictions(True)
+            .print_predictions(True) \
+            .print_label_vectors(True)
         self.run_cmd(builder, 'predictor-binary-example-wise')
 
     def test_predictor_binary_example_wise_incremental(self):
@@ -441,6 +442,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder() \
             .binary_predictor(BINARY_PREDICTOR_EXAMPLE_WISE) \
             .print_predictions(True) \
+            .print_label_vectors(True) \
             .sparse_prediction_format(True)
         self.run_cmd(builder, 'predictor-binary-example-wise_sparse')
 
@@ -465,7 +467,8 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         builder = BoostingCmdBuilder() \
             .binary_predictor(BINARY_PREDICTOR_GFM) \
-            .print_predictions(True)
+            .print_predictions(True) \
+            .print_label_vectors(True)
         self.run_cmd(builder, 'predictor-binary-gfm')
 
     def test_predictor_binary_gfm_incremental(self):
@@ -489,6 +492,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder() \
             .binary_predictor(BINARY_PREDICTOR_GFM) \
             .print_predictions(True) \
+            .print_label_vectors(True) \
             .sparse_prediction_format(True)
         self.run_cmd(builder, 'predictor-binary-gfm_sparse')
 
@@ -561,7 +565,8 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         builder = BoostingCmdBuilder() \
             .prediction_type(PREDICTION_TYPE_PROBABILITIES) \
             .probability_predictor(PROBABILITY_PREDICTOR_MARGINALIZED) \
-            .print_predictions(True)
+            .print_predictions(True) \
+            .print_label_vectors(True)
         self.run_cmd(builder, 'predictor-probability-marginalized')
 
     def test_predictor_probability_marginalized_incremental(self):

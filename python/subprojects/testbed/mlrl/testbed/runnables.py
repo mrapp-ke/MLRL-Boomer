@@ -34,6 +34,7 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
 from mlrl.testbed.experiments import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 from mlrl.testbed.io import clear_directory
+from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorSetWriter, LabelVectorWriter
 from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
 from mlrl.testbed.models import OPTION_PRINT_BODIES, OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, \
     OPTION_PRINT_LABEL_NAMES, OPTION_PRINT_NOMINAL_VALUES, ModelWriter, RuleModelWriter
@@ -233,6 +234,17 @@ class LearnerRunnable(Runnable, ABC):
 
     STORE_DATA_CHARACTERISTICS_VALUES = PRINT_DATA_CHARACTERISTICS_VALUES
 
+    PARAM_PRINT_LABEL_VECTORS = '--print-label-vectors'
+
+    PRINT_LABEL_VECTORS_VALUES: Dict[str, Set[str]] = {
+        BooleanOption.TRUE.value: {OPTION_SPARSE},
+        BooleanOption.FALSE.value: {}
+    }
+
+    PARAM_STORE_LABEL_VECTORS = '--store-label-vectors'
+
+    STORE_LABEL_VECTORS_VALUES = PRINT_LABEL_VECTORS_VALUES
+
     PARAM_OUTPUT_DIR = '--output-dir'
 
     PARAM_PREDICTION_TYPE = '--prediction-type'
@@ -393,6 +405,11 @@ class LearnerRunnable(Runnable, ABC):
 
     def __create_post_training_output_writers(self, args) -> List[OutputWriter]:
         output_writers = []
+        output_writer = self._create_label_vector_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
         output_writer = self._create_model_writer(args)
 
         if output_writer is not None:
@@ -487,7 +504,21 @@ class LearnerRunnable(Runnable, ABC):
                             help='Whether the characteristics of the training data should be written into output files '
                             + 'or not. Must be one of ' + format_dict_keys(self.STORE_DATA_CHARACTERISTICS_VALUES)
                             + '. Does only have an effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. '
-                            + 'For additional options refer to the documentation')
+                            + 'For additional options refer to the documentation.')
+        parser.add_argument(self.PARAM_PRINT_LABEL_VECTORS,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
+                            help='Whether the unique label vectors contained in the training data should be printed on '
+                            + 'the console or not. Must be one of ' + format_dict_keys(self.PRINT_LABEL_VECTORS_VALUES)
+                            + '. For additional options refer to the documentation.')
+        parser.add_argument(self.PARAM_STORE_LABEL_VECTORS,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
+                            help='Whether the unique label vectors contained in the training data should be written '
+                            + 'into output files or not. Must be one of '
+                            + format_dict_keys(self.STORE_LABEL_VECTORS_VALUES) + '. Does only have an effect if the '
+                            + 'parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to '
+                            + 'the documentation.')
         parser.add_argument('--one-hot-encoding',
                             type=BooleanOption.parse,
                             default=False,
@@ -564,6 +595,29 @@ class LearnerRunnable(Runnable, ABC):
         :return:                The `Evaluation` that has been created
         """
         return GlobalEvaluation(prediction_type, output_writers) if len(output_writers) > 0 else None
+
+    def _create_label_vector_writer(self, args) -> Optional[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output unique label
+        vectors contained in the training data.
+
+        :param args:    The command line arguments
+        :return:        The `OutputWriter` that has been created
+        """
+        sinks = []
+        value, options = parse_param_and_options(self.PARAM_PRINT_LABEL_VECTORS, args.print_label_vectors,
+                                                 self.PRINT_LABEL_VECTORS_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            sinks.append(LabelVectorWriter.LogSink(options=options))
+
+        value, options = parse_param_and_options(self.PARAM_STORE_LABEL_VECTORS, args.store_label_vectors,
+                                                 self.STORE_LABEL_VECTORS_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            sinks.append(LabelVectorWriter.CsvSink(output_dir=args.output_dir, options=options))
+
+        return LabelVectorWriter(sinks) if len(sinks) > 0 else None
 
     def _create_model_writer(self, args) -> Optional[OutputWriter]:
         """
@@ -715,6 +769,22 @@ class RuleLearnerRunnable(LearnerRunnable):
                 step_size=step_size) if len(output_writers) > 0 else None
         else:
             return super()._create_evaluation(args, prediction_type, output_writers)
+
+    def _create_label_vector_writer(self, args) -> Optional[OutputWriter]:
+        sinks = []
+        value, options = parse_param_and_options(self.PARAM_PRINT_LABEL_VECTORS, args.print_label_vectors,
+                                                 self.PRINT_LABEL_VECTORS_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            sinks.append(LabelVectorSetWriter.LogSink(options=options))
+
+        value, options = parse_param_and_options(self.PARAM_STORE_LABEL_VECTORS, args.store_label_vectors,
+                                                 self.STORE_LABEL_VECTORS_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            sinks.append(LabelVectorSetWriter.CsvSink(output_dir=args.output_dir, options=options))
+
+        return LabelVectorSetWriter(sinks) if len(sinks) > 0 else None
 
     def _create_model_writer(self, args) -> Optional[OutputWriter]:
         sinks = []

@@ -104,7 +104,11 @@ cdef class LabelVectorSet(LabelSpaceInfo):
 
     cdef object state
 
+    cdef object visitor
+
     # Functions:
+
+    cdef __visit_label_vector(self, const LabelVector& label_vector, uint32 frequency)
 
     cdef __serialize_label_vector(self, const LabelVector& label_vector, uint32 frequency)
 
