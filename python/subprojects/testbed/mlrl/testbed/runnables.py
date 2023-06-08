@@ -296,107 +296,14 @@ class LearnerRunnable(Runnable, ABC):
         return None if args.output_dir is None or current_fold >= 0 else LearnerRunnable.ClearOutputDirHook(
             output_dir=args.output_dir)
 
-    @staticmethod
-    def __create_parameter_input(args) -> Optional[ParameterInput]:
-        return None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
-
-    @staticmethod
-    def __create_parameter_writer(args) -> Optional[OutputWriter]:
-        sinks = []
-
-        if args.print_parameters:
-            sinks.append(ParameterWriter.LogSink())
-
-        if args.store_parameters and args.output_dir is not None:
-            sinks.append(ParameterWriter.CsvSink(output_dir=args.output_dir))
-
-        return ParameterWriter(sinks) if len(sinks) > 0 else None
-
-    @staticmethod
-    def __create_persistence(args) -> Optional[ModelPersistence]:
-        return None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
-
-    def __create_evaluation_writer(self, args, prediction_type: PredictionType) -> Optional[OutputWriter]:
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_EVALUATION, args.print_evaluation,
-                                                 self.PRINT_EVALUATION_VALUES)
-
-        if value == BooleanOption.TRUE.value:
-            sinks.append(EvaluationWriter.LogSink(options=options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_EVALUATION, args.store_evaluation,
-                                                 self.STORE_EVALUATION_VALUES)
-
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(EvaluationWriter.CsvSink(output_dir=args.output_dir, options=options))
-
-        if len(sinks) == 0:
-            return None
-        elif prediction_type == PredictionType.SCORES:
-            return ScoreEvaluationWriter(sinks)
-        elif prediction_type == PredictionType.PROBABILITIES:
-            return ProbabilityEvaluationWriter(sinks)
-        else:
-            return BinaryEvaluationWriter(sinks)
-
-    def __create_prediction_writer(self, args) -> Optional[OutputWriter]:
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_PREDICTIONS, args.print_predictions,
-                                                 self.PRINT_PREDICTIONS_VALUES)
-
-        if value == BooleanOption.TRUE.value:
-            sinks.append(PredictionWriter.LogSink(options=options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_PREDICTIONS, args.store_predictions,
-                                                 self.STORE_PREDICTIONS_VALUES)
-
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(PredictionWriter.ArffSink(output_dir=args.output_dir, options=options))
-
-        return PredictionWriter(sinks) if len(sinks) > 0 else None
-
-    def __create_prediction_characteristics_writer(self, args) -> Optional[OutputWriter]:
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_PREDICTION_CHARACTERISTICS,
-                                                 args.print_prediction_characteristics,
-                                                 self.PRINT_PREDICTION_CHARACTERISTICS_VALUES)
-
-        if value == BooleanOption.TRUE.value:
-            sinks.append(PredictionCharacteristicsWriter.LogSink(options=options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_PREDICTION_CHARACTERISTICS,
-                                                 args.store_prediction_characteristics,
-                                                 self.STORE_PREDICTION_CHARACTERISTICS_VALUES)
-
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(PredictionCharacteristicsWriter.CsvSink(output_dir=args.output_dir, options=options))
-
-        return PredictionCharacteristicsWriter(sinks) if len(sinks) > 0 else None
-
-    def __create_data_characteristics_writer(self, args) -> Optional[OutputWriter]:
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_DATA_CHARACTERISTICS, args.print_data_characteristics,
-                                                 self.PRINT_DATA_CHARACTERISTICS_VALUES)
-
-        if value == BooleanOption.TRUE.value:
-            sinks.append(DataCharacteristicsWriter.LogSink(options=options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_DATA_CHARACTERISTICS, args.store_data_characteristics,
-                                                 self.STORE_DATA_CHARACTERISTICS_VALUES)
-
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(DataCharacteristicsWriter.CsvSink(output_dir=args.output_dir, options=options))
-
-        return DataCharacteristicsWriter(sinks) if len(sinks) > 0 else None
-
     def __create_pre_training_output_writers(self, args) -> List[OutputWriter]:
         output_writers = []
-        output_writer = self.__create_data_characteristics_writer(args)
+        output_writer = self._create_data_characteristics_writer(args)
 
         if output_writer is not None:
             output_writers.append(output_writer)
 
-        output_writer = self.__create_parameter_writer(args)
+        output_writer = self._create_parameter_writer(args)
 
         if output_writer is not None:
             output_writers.append(output_writer)
@@ -424,17 +331,17 @@ class LearnerRunnable(Runnable, ABC):
 
     def __create_evaluation_output_writers(self, args, prediction_type: PredictionType) -> List[OutputWriter]:
         output_writers = []
-        output_writer = self.__create_evaluation_writer(args, prediction_type)
+        output_writer = self._create_evaluation_writer(args, prediction_type)
 
         if output_writer is not None:
             output_writers.append(output_writer)
 
-        output_writer = self.__create_prediction_writer(args)
+        output_writer = self._create_prediction_writer(args)
 
         if output_writer is not None:
             output_writers.append(output_writer)
 
-        output_writer = self.__create_prediction_characteristics_writer(args)
+        output_writer = self._create_prediction_characteristics_writer(args)
 
         if output_writer is not None:
             output_writers.append(output_writer)
@@ -578,9 +485,19 @@ class LearnerRunnable(Runnable, ABC):
                                 pre_execution_hook=self.__create_pre_execution_hook(args, data_splitter),
                                 train_evaluation=train_evaluation,
                                 test_evaluation=test_evaluation,
-                                parameter_input=self.__create_parameter_input(args),
-                                persistence=self.__create_persistence(args))
+                                parameter_input=self._create_parameter_input(args),
+                                persistence=self._create_persistence(args))
         experiment.run()
+
+    def _create_persistence(self, args) -> Optional[ModelPersistence]:
+        """
+        May be overridden by subclasses in order to create the `ModelPersistence` that should be used to save and load
+        models.
+
+        :param args:    The command line arguments
+        :return:        The `ModelPersistence` that has been created
+        """
+        return None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
 
     def _create_evaluation(self, args, prediction_type: PredictionType,
                            output_writers: List[OutputWriter]) -> Optional[Evaluation]:
@@ -595,6 +512,135 @@ class LearnerRunnable(Runnable, ABC):
         :return:                The `Evaluation` that has been created
         """
         return GlobalEvaluation(prediction_type, output_writers) if len(output_writers) > 0 else None
+
+    def _create_evaluation_writer(self, args, prediction_type: PredictionType) -> Optional[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output evaluation
+        results.
+
+        :param args:            The command line arguments
+        :param prediction_type: The type of the predictions
+        :return:                The `OutputWriter` that has been created
+        """
+        sinks = []
+        value, options = parse_param_and_options(self.PARAM_PRINT_EVALUATION, args.print_evaluation,
+                                                 self.PRINT_EVALUATION_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            sinks.append(EvaluationWriter.LogSink(options=options))
+
+        value, options = parse_param_and_options(self.PARAM_STORE_EVALUATION, args.store_evaluation,
+                                                 self.STORE_EVALUATION_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            sinks.append(EvaluationWriter.CsvSink(output_dir=args.output_dir, options=options))
+
+        if len(sinks) == 0:
+            return None
+        elif prediction_type == PredictionType.SCORES:
+            return ScoreEvaluationWriter(sinks)
+        elif prediction_type == PredictionType.PROBABILITIES:
+            return ProbabilityEvaluationWriter(sinks)
+        else:
+            return BinaryEvaluationWriter(sinks)
+
+    def _create_parameter_input(self, args) -> Optional[ParameterInput]:
+        """
+        May be overridden by subclasses in order to create the `ParameterInput` that should be used to load parameter
+        settings.
+
+        :param args:    The command line arguments
+        :return:        The `ParameterInput` that has been created
+        """
+        return None if args.parameter_dir is None else ParameterCsvInput(input_dir=args.parameter_dir)
+
+    def _create_parameter_writer(self, args) -> Optional[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output parameter
+        settings.
+
+        :param args:    The command line arguments
+        :return:        The `OutputWriter` that has been created
+        """
+        sinks = []
+
+        if args.print_parameters:
+            sinks.append(ParameterWriter.LogSink())
+
+        if args.store_parameters and args.output_dir is not None:
+            sinks.append(ParameterWriter.CsvSink(output_dir=args.output_dir))
+
+        return ParameterWriter(sinks) if len(sinks) > 0 else None
+
+    def _create_prediction_writer(self, args) -> Optional[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output predictions.
+
+        :param args:    The command line arguments
+        :return:        The `OutputWriter` that has been created
+        """
+        sinks = []
+        value, options = parse_param_and_options(self.PARAM_PRINT_PREDICTIONS, args.print_predictions,
+                                                 self.PRINT_PREDICTIONS_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            sinks.append(PredictionWriter.LogSink(options=options))
+
+        value, options = parse_param_and_options(self.PARAM_STORE_PREDICTIONS, args.store_predictions,
+                                                 self.STORE_PREDICTIONS_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            sinks.append(PredictionWriter.ArffSink(output_dir=args.output_dir, options=options))
+
+        return PredictionWriter(sinks) if len(sinks) > 0 else None
+
+    def _create_prediction_characteristics_writer(self, args) -> Optional[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output prediction
+        characteristics.
+
+        :param args:    The command line arguments
+        :return:        The `OutputWriter` that has been created
+        """
+        sinks = []
+        value, options = parse_param_and_options(self.PARAM_PRINT_PREDICTION_CHARACTERISTICS,
+                                                 args.print_prediction_characteristics,
+                                                 self.PRINT_PREDICTION_CHARACTERISTICS_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            sinks.append(PredictionCharacteristicsWriter.LogSink(options=options))
+
+        value, options = parse_param_and_options(self.PARAM_STORE_PREDICTION_CHARACTERISTICS,
+                                                 args.store_prediction_characteristics,
+                                                 self.STORE_PREDICTION_CHARACTERISTICS_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            sinks.append(PredictionCharacteristicsWriter.CsvSink(output_dir=args.output_dir, options=options))
+
+        return PredictionCharacteristicsWriter(sinks) if len(sinks) > 0 else None
+
+    def _create_data_characteristics_writer(self, args) -> Optional[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output data
+        characteristics.
+
+        :param args:    The command line arguments
+        :return:        The `OutputWriter` that has been created
+        """
+        sinks = []
+        value, options = parse_param_and_options(self.PARAM_PRINT_DATA_CHARACTERISTICS, args.print_data_characteristics,
+                                                 self.PRINT_DATA_CHARACTERISTICS_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            sinks.append(DataCharacteristicsWriter.LogSink(options=options))
+
+        value, options = parse_param_and_options(self.PARAM_STORE_DATA_CHARACTERISTICS, args.store_data_characteristics,
+                                                 self.STORE_DATA_CHARACTERISTICS_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            sinks.append(DataCharacteristicsWriter.CsvSink(output_dir=args.output_dir, options=options))
+
+        return DataCharacteristicsWriter(sinks) if len(sinks) > 0 else None
 
     def _create_label_vector_writer(self, args) -> Optional[OutputWriter]:
         """
