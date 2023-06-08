@@ -474,6 +474,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .marginal_probability_calibration() \
             .binary_predictor(BINARY_PREDICTOR_EXAMPLE_WISE_BASED_ON_PROBABILITIES) \
             .print_predictions(True) \
+            .print_label_vectors(True) \
             .set_model_dir()
         self.run_cmd(builder, 'predictor-binary-example-wise_based-on-probabilities')
 
