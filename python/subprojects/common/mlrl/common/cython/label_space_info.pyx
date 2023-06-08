@@ -4,6 +4,10 @@
 from libcpp.memory cimport make_unique
 from libcpp.utility cimport move
 
+from abc import abstractmethod
+
+import numpy as np
+
 SERIALIZATION_VERSION = 3
 
 
@@ -31,13 +35,47 @@ cdef class NoLabelSpaceInfo(LabelSpaceInfo):
         self.label_space_info_ptr = createNoLabelSpaceInfo()
 
 
+class LabelVectorSetVisitor:
+    """
+    Defines the methods that must be implemented by a visitor that accesses the label vectors and frequencies stored by
+    a `LabelVectorSet`.
+    """
+
+    @abstractmethod
+    def visit_label_vector(self, label_vector: np.ndarray, frequency: int):
+        """
+        Must be implemented by subclasses in order to visit label vectors and their frequencies.
+
+        :param label_vector:    An `np.ndarray` of type `uint8`, shape `(num_relevant_labels)` that stores the indices
+                                of the relevant labels
+        :param frequency:       The frequency of the label vector    
+        """
+        pass
+
+
 cdef class LabelVectorSet(LabelSpaceInfo):
     """
     Stores a set of unique label vectors, as well as their frequency.
     """
 
+    def visit(self, visitor: LabelVectorSetVisitor):
+        """
+        Visits the label vectors and frequencies stored by the set.
+
+        :param visitor: The `LabelVectorSetVisitor` that should be used to access the label vectors and frequencies
+        """
+        self.visitor = visitor
+        self.label_vector_set_ptr.get().visit(
+            wrapLabelVectorVisitor(<void*>self, <LabelVectorCythonVisitor>self.__visit_label_vector))
+        self.visitor = None
+
     cdef ILabelSpaceInfo* get_label_space_info_ptr(self):
         return self.label_vector_set_ptr.get()
+
+    cdef __visit_label_vector(self, const LabelVector& label_vector, uint32 frequency):
+        cdef uint32 num_elements = label_vector.getNumElements()
+        label_indices = np.asarray(<uint32[:num_elements]>label_vector.cbegin() if num_elements > 0 else [])
+        self.visitor.visit_label_vector(label_indices, frequency)
 
     cdef __serialize_label_vector(self, const LabelVector& label_vector, uint32 frequency):
         cdef list label_vector_state = []
