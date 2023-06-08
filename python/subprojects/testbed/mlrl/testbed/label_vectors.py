@@ -10,8 +10,10 @@ import numpy as np
 
 from scipy.sparse import lil_matrix
 
+from mlrl.common.cython.label_space_info import LabelVectorSet, LabelVectorSetVisitor
 from mlrl.common.data_types import DTYPE_UINT8
 from mlrl.common.options import Options
+from mlrl.common.rule_learners import RuleLearner
 
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
@@ -38,28 +40,34 @@ class LabelVectorWriter(OutputWriter):
 
         COLUMN_FREQUENCY = 'Frequency'
 
-        def __init__(self, y):
+        def __init__(self, num_labels: int, y=None):
             """
-            :param y: A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the
-                      ground truth labels
+            :param num_labels:  The total number of available labels
+            :param y:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
+                                stores the ground truth labels
             """
-            unique_label_vector_strings: Dict[str, int] = {}
-            y = lil_matrix(y)
-            separator = ','
+            self.num_labels = num_labels
 
-            for label_vector in y.rows:
-                label_vector_string = separator.join(map(str, label_vector))
-                frequency = unique_label_vector_strings.setdefault(label_vector_string, 0)
-                unique_label_vector_strings[label_vector_string] = frequency + 1
+            if y is not None:
+                unique_label_vector_strings: Dict[str, int] = {}
+                y = lil_matrix(y)
+                separator = ','
 
-            unique_label_vectors: List[Tuple[np.array, int]] = []
+                for label_vector in y.rows:
+                    label_vector_string = separator.join(map(str, label_vector))
+                    frequency = unique_label_vector_strings.setdefault(label_vector_string, 0)
+                    unique_label_vector_strings[label_vector_string] = frequency + 1
 
-            for label_vector_string, frequency in unique_label_vector_strings.items():
-                label_vector = np.asarray([int(label_index) for label_index in label_vector_string.split(separator)])
-                unique_label_vectors.append((label_vector, frequency))
+                unique_label_vectors: List[Tuple[np.array, int]] = []
 
-            self.unique_label_vectors = unique_label_vectors
-            self.num_labels = y.shape[1]
+                for label_vector_string, frequency in unique_label_vector_strings.items():
+                    label_vector = np.asarray(
+                        [int(label_index) for label_index in label_vector_string.split(separator)])
+                    unique_label_vectors.append((label_vector, frequency))
+
+                self.unique_label_vectors = unique_label_vectors
+            else:
+                self.unique_label_vectors = []
 
         def __format_label_vector(self, sparse_label_vector: np.ndarray, sparse: bool) -> str:
             if sparse:
@@ -116,4 +124,43 @@ class LabelVectorWriter(OutputWriter):
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
-        return LabelVectorWriter.LabelVectors(y)
+        return LabelVectorWriter.LabelVectors(num_labels=y.shape[1], y=y)
+
+
+class LabelVectorSetWriter(LabelVectorWriter):
+    """
+    Allows to write unique label vectors that are stored as part of a model learned by a rule learning algorithm to one
+    or several sinks.
+    """
+
+    class Visitor(LabelVectorSetVisitor):
+        """
+        Allows to access the label vectors and frequencies store by a `LabelVectorSet`.
+        """
+
+        def __init__(self, num_labels: int):
+            """
+            :param num_labels: The total number of available labels
+            """
+            self.label_vectors = LabelVectorWriter.LabelVectors(num_labels=num_labels)
+
+        def visit_label_vector(self, label_vector: np.ndarray, frequency: int):
+            self.label_vectors.unique_label_vectors.append((label_vector, frequency))
+
+    def __init__(self, sinks: List[OutputWriter.Sink]):
+        super().__init__(sinks)
+
+    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
+                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+                              prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
+                              train_time: float, predict_time: float) -> Optional[Any]:
+        if isinstance(learner, RuleLearner):
+            label_space_info = learner.label_space_info_
+
+            if isinstance(label_space_info, LabelVectorSet):
+                visitor = LabelVectorSetWriter.Visitor(num_labels=y.shape[1])
+                label_space_info.visit(visitor)
+                return visitor.label_vectors
+
+        return super()._generate_output_data(meta_data, x, y, data_split, learner, data_type, prediction_type,
+                                             prediction_scope, predictions, train_time, predict_time)
