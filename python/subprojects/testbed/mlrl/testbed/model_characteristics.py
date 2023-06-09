@@ -191,7 +191,7 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             ])
             return text + format_table(rows, header=header)
 
-        def tabularize(self, _: Options, **kwargs) -> List[Dict[str, str]]:
+        def tabularize(self, _: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
             rows = []
             default_rule_index = self.default_rule_index
             num_rules = len(self.num_pos_predictions)

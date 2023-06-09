@@ -5,7 +5,7 @@ Provides classes for loading and printing parameter settings that are used by a 
 written to one or several outputs, e.g., to the console or to a file. They can also be loaded from CSV files.
 """
 from abc import ABC, abstractmethod
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 from mlrl.common.options import Options
 
@@ -75,7 +75,7 @@ class ParameterWriter(OutputWriter):
 
             return format_table(rows)
 
-        def tabularize(self, _: Options, **kwargs):
+        def tabularize(self, _: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
             params = self.params
             columns = {}
 
