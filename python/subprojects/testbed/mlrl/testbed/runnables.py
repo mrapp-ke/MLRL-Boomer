@@ -44,7 +44,8 @@ from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_characteristics import PredictionCharacteristicsWriter
 from mlrl.testbed.prediction_scope import PredictionType
 from mlrl.testbed.predictions import PredictionWriter
-from mlrl.testbed.probability_calibration import MarginalProbabilityCalibrationModelWriter
+from mlrl.testbed.probability_calibration import JointProbabilityCalibrationModelWriter, \
+    MarginalProbabilityCalibrationModelWriter
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 
@@ -488,6 +489,11 @@ class LearnerRunnable(Runnable, ABC):
         if output_writer is not None:
             output_writers.append(output_writer)
 
+        output_writer = self._create_joint_probability_calibration_model_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
         return output_writers
 
     def _create_evaluation_output_writers(self, args, prediction_type: PredictionType) -> List[OutputWriter]:
@@ -723,6 +729,16 @@ class LearnerRunnable(Runnable, ABC):
         """
         return None
 
+    def _create_joint_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output textual
+        representations of models for the calibration of joint probabilities.
+
+        :param args:    The command line arguments
+        :return:        The `OutputWriter` that has been created
+        """
+        return None
+
     @abstractmethod
     def _create_learner(self, args):
         """
@@ -776,6 +792,17 @@ class RuleLearnerRunnable(LearnerRunnable):
     PARAM_STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL = '--store-marginal-probability-calibration-model'
 
     STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES = PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES
+
+    PARAM_PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL = '--print-joint-probability-calibration-model'
+
+    PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES: Dict[str, Set[str]] = {
+        BooleanOption.TRUE.value: {OPTION_DECIMALS},
+        BooleanOption.FALSE.value: {}
+    }
+
+    PARAM_STORE_JOINT_PROBABILITY_CALIBRATION_MODEL = '--store-joint-probability-calibration-model'
+
+    STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES = PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES
 
     def __init__(self, description: str, learner_name: str, learner_type: type, config_type: type,
                  parameters: Set[Parameter]):
@@ -834,6 +861,19 @@ class RuleLearnerRunnable(LearnerRunnable):
                             + 'into an output file or not. Must be one of ' + format_enum_values(BooleanOption) + '. '
                             + 'Does only have an effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. '
                             + 'For additional options refer to the documentation.')
+        parser.add_argument(self.PARAM_PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
+                            help='Whether the model for the calibration of joint probabilities should be printed on '
+                            + 'the console or not. Must be one of ' + format_enum_values(BooleanOption) + '. For '
+                            + 'additional options refer to the documentation.')
+        parser.add_argument(self.PARAM_STORE_JOINT_PROBABILITY_CALIBRATION_MODEL,
+                            type=str,
+                            default=BooleanOption.FALSE.value,
+                            help='Whether the model for the calibration of joint probabilities should be written into '
+                            + 'an output file or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does '
+                            + 'only have an effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For '
+                            + 'additional options refer to the documentation.')
         parser.add_argument('--feature-format',
                             type=str,
                             default=SparsePolicy.AUTO.value,
@@ -936,3 +976,21 @@ class RuleLearnerRunnable(LearnerRunnable):
             sinks.append(MarginalProbabilityCalibrationModelWriter.CsvSink(output_dir=args.output_dir, options=options))
 
         return MarginalProbabilityCalibrationModelWriter(sinks) if len(sinks) > 0 else None
+
+    def _create_joint_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
+        sinks = []
+        value, options = parse_param_and_options(self.PARAM_PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL,
+                                                 args.print_joint_probability_calibration_model,
+                                                 self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            sinks.append(JointProbabilityCalibrationModelWriter.LogSink(options=options))
+
+        value, options = parse_param_and_options(self.PARAM_STORE_JOINT_PROBABILITY_CALIBRATION_MODEL,
+                                                 args.store_joint_probability_calibration_model,
+                                                 self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            sinks.append(JointProbabilityCalibrationModelWriter.CsvSink(output_dir=args.output_dir, options=options))
+
+        return JointProbabilityCalibrationModelWriter(sinks) if len(sinks) > 0 else None
