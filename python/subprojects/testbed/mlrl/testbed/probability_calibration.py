@@ -54,7 +54,8 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
             bin_list.append((threshold, probability))
 
         def format(self, options: Options, **kwargs) -> str:
-            decimals = options.get_int(OPTION_DECIMALS, 2)
+            self.calibration_model.visit(self)
+            decimals = options.get_int(OPTION_DECIMALS, 4)
             bins = self.bins
             result = ''
 
@@ -75,7 +76,8 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
             return result
 
         def tabularize(self, options: Options, **kwargs) -> List[Dict[str, str]]:
-            decimals = options.get_int(OPTION_DECIMALS, 2)
+            self.calibration_model.visit(self)
+            decimals = options.get_int(OPTION_DECIMALS, 0)
             bins = self.bins
             rows = []
             end = False
