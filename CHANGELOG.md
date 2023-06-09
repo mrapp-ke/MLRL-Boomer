@@ -24,6 +24,7 @@ A major update to the BOOMER algorithm that introduces the following changes.
 * **Data sets in the MEKA format are now supported.**
 * **Certain characteristics of binary predictions can be printed or written to output files** via the new arguments `--print-prediction-characteristics` and `--store-prediction-characteristics`.
 * **Unique label vectors contained in the training data can be printed or written to output files** via the new arguments `--print-label-vectors` and `--store-label-vectors`.
+* **Models for the calibration of marginal or joint probabilities can be printed or written to output files** via the new arguments `--print-marginal-probability-calibration-model`, `--store-marginal-probability-calibration-model`, `--print-joint-probability-calibration-model` and `--store-joint-probability-calibration-model`.
 * **Models can now be evaluated repeatedly, using a subset of their rules with increasing size,** by specifying the argument `--incremental-prediction`.
 * **More control of how data is split into training and test sets** is now provided by the argument `--data-split` that replaces the arguments `--folds` and `--current-fold`.
 * **Binary labels, regression scores, or probabilities can now be predicted,** depending on the value of the new argument `--prediction-type`, which can be set to the values `binary`, `scores`, or `probabilities`.
