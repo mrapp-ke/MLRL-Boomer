@@ -42,15 +42,14 @@ namespace boosting {
              *
              * @param labelVectorIndex  The index of the label vector, the scores should be compared to
              * @param labelVector       A reference to an object of type `LabelVector`, the scores should be compared to
-             * @param scoresBegin       A `SparseSetMatrix::const_iterator` to the beginning of the scores
-             * @param scoresEnd         A `SparseSetMatrix::const_iterator` to the end of the scores
+             * @param scores            A `SparseSetMatrix::const_row` that stores the scores
+             * @param numLabels         The total number of available labels
              * @return                  The joint probability the corresponds to the chance of the given label vector
              *                          being correct
              */
-            virtual float64 transformScoresIntoJointProbability(
-              uint32 labelVectorIndex, const LabelVector& labelVector,
-              SparseSetMatrix<float64>::const_iterator scoresBegin,
-              SparseSetMatrix<float64>::const_iterator scoresEnd) const = 0;
+            virtual float64 transformScoresIntoJointProbability(uint32 labelVectorIndex, const LabelVector& labelVector,
+                                                                SparseSetMatrix<float64>::const_row scores,
+                                                                uint32 numLabels) const = 0;
 
             /**
              * Transforms the regression scores that are predicted for an example into joint probabilities that

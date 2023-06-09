@@ -430,6 +430,7 @@ namespace boosting {
                                                          const LabelVectorSet& labelVectorSet) {
         LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
+        uint32 numLabels = labelMatrix.getNumCols();
 
         for (uint32 i = 0; i < numLabelVectors; i++) {
             IsotonicProbabilityCalibrationModel::bin_list bins = calibrationModel[i];
@@ -442,10 +443,9 @@ namespace boosting {
                 auto labelIndicesEnd = make_non_zero_index_forward_iterator(labelMatrix.row_values_cend(exampleIndex),
                                                                             labelMatrix.row_values_cend(exampleIndex));
                 float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
-                SparseSetMatrix<float64>::const_iterator scoresBegin = scoreMatrix.row_cbegin(exampleIndex);
-                SparseSetMatrix<float64>::const_iterator scoresEnd = scoreMatrix.row_cend(exampleIndex);
+                SparseSetMatrix<float64>::const_row scores = scoreMatrix[exampleIndex];
                 float64 jointProbability =
-                  jointProbabilityFunction.transformScoresIntoJointProbability(i, labelVector, scoresBegin, scoresEnd);
+                  jointProbabilityFunction.transformScoresIntoJointProbability(i, labelVector, scores, numLabels);
                 bins.emplace_back(jointProbability, trueProbability);
             }
         }
@@ -460,6 +460,7 @@ namespace boosting {
                                                          const LabelVectorSet& labelVectorSet) {
         LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
+        uint32 numLabels = labelMatrix.getNumCols();
 
         for (uint32 i = 0; i < numLabelVectors; i++) {
             IsotonicProbabilityCalibrationModel::bin_list bins = calibrationModel[i];
@@ -470,10 +471,9 @@ namespace boosting {
                 CsrLabelMatrix::index_const_iterator labelIndicesBegin = labelMatrix.row_indices_cbegin(exampleIndex);
                 CsrLabelMatrix::index_const_iterator labelIndicesEnd = labelMatrix.row_indices_cend(exampleIndex);
                 float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
-                SparseSetMatrix<float64>::const_iterator scoresBegin = scoreMatrix.row_cbegin(exampleIndex);
-                SparseSetMatrix<float64>::const_iterator scoresEnd = scoreMatrix.row_cend(exampleIndex);
+                SparseSetMatrix<float64>::const_row scores = scoreMatrix[exampleIndex];
                 float64 jointProbability =
-                  jointProbabilityFunction.transformScoresIntoJointProbability(i, labelVector, scoresBegin, scoresEnd);
+                  jointProbabilityFunction.transformScoresIntoJointProbability(i, labelVector, scores, numLabels);
                 bins.emplace_back(jointProbability, trueProbability);
             }
         }

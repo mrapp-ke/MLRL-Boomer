@@ -56,12 +56,28 @@ namespace boosting {
                 return jointProbabilityCalibrationModel_.calibrateJointProbability(labelVectorIndex, jointProbability);
             }
 
-            float64 transformScoresIntoJointProbability(
-              uint32 labelVectorIndex, const LabelVector& labelVector,
-              SparseSetMatrix<float64>::const_iterator scoresBegin,
-              SparseSetMatrix<float64>::const_iterator scoresEnd) const override {
-                // TODO
-                return 0;
+            float64 transformScoresIntoJointProbability(uint32 labelVectorIndex, const LabelVector& labelVector,
+                                                        SparseSetMatrix<float64>::const_row scores,
+                                                        uint32 numLabels) const override {
+                auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
+                float64 jointProbability = 1;
+
+                for (uint32 i = 0; i < numLabels; i++) {
+                    const IndexedValue<float64>* entry = scores[i];
+                    float64 score = entry ? entry->value : 0;
+                    float64 marginalProbability =
+                      marginalProbabilityFunctionPtr_->transformScoreIntoMarginalProbability(i, score);
+                    bool trueLabel = *labelIterator;
+
+                    if (!trueLabel) {
+                        marginalProbability = 1 - marginalProbability;
+                    }
+
+                    jointProbability *= marginalProbability;
+                    labelIterator++;
+                }
+
+                return jointProbabilityCalibrationModel_.calibrateJointProbability(labelVectorIndex, jointProbability);
             }
     };
 
