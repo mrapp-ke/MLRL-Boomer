@@ -98,7 +98,6 @@ std::unique_ptr<IMarginalProbabilityCalibrationModel> BiPartition::fitMarginalPr
 
 std::unique_ptr<IJointProbabilityCalibrationModel> BiPartition::fitJointProbabilityCalibrationModel(
   const IJointProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
-  const IStatistics& statistics, const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) {
-    return labelMatrix.fitJointProbabilityCalibrationModel(probabilityCalibrator, *this, statistics,
-                                                           marginalProbabilityCalibrationModel);
+  const IStatistics& statistics) {
+    return labelMatrix.fitJointProbabilityCalibrationModel(probabilityCalibrator, *this, statistics);
 }

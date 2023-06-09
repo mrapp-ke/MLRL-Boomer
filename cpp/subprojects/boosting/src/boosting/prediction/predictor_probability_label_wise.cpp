@@ -88,7 +88,7 @@ namespace boosting {
     ILabelWiseProbabilityPredictorConfig& LabelWiseProbabilityPredictorConfig::setUseProbabilityCalibrationModel(
       bool useProbabilityCalibrationModel) {
         noMarginalProbabilityCalibrationModelPtr_ =
-          useProbabilityCalibrationModel ? nullptr : createNoMarginalProbabilityCalibrationModel();
+          useProbabilityCalibrationModel ? nullptr : createNoProbabilityCalibrationModel();
         return *this;
     }
 

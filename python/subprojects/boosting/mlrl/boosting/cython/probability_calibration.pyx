@@ -46,7 +46,7 @@ cdef class IsotonicJointProbabilityCalibratorConfig:
         """
         return self.config_ptr.isHoldoutSetUsed()
 
-    def set_use_holdout_set(self, use_holdout_set: bool) -> IsotonicMarginalProbabilityCalibratorConfig:
+    def set_use_holdout_set(self, use_holdout_set: bool) -> IsotonicJointProbabilityCalibratorConfig:
         """
         Sets whether the calibration model should be fit to the examples in the holdout set, if available, or not.
 

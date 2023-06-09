@@ -103,6 +103,17 @@ class BoostingCmdBuilder(CmdBuilder):
         self.args.append(probability_calibrator)
         return self
 
+    def joint_probability_calibration(self, probability_calibrator: str = PROBABILITY_CALIBRATOR_ISOTONIC):
+        """
+        Configures the algorithm to fit a model for the calibration of joint probabilities.
+
+        :param probability_calibrator:  The name of the method that should be used to fit a calibration model
+        :return:                        The builder itself
+        """
+        self.args.append('--joint-probability-calibration')
+        self.args.append(probability_calibrator)
+        return self
+
     def binary_predictor(self, binary_predictor: str = BINARY_PREDICTOR_AUTO):
         """
         Configures the algorithm to use a specific method for predicting binary labels.
@@ -472,6 +483,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         builder = BoostingCmdBuilder() \
             .marginal_probability_calibration() \
+            .joint_probability_calibration() \
             .binary_predictor(BINARY_PREDICTOR_EXAMPLE_WISE_BASED_ON_PROBABILITIES) \
             .print_predictions(True) \
             .print_label_vectors(True) \
@@ -498,6 +510,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         builder = BoostingCmdBuilder() \
             .marginal_probability_calibration() \
+            .joint_probability_calibration() \
             .binary_predictor(BINARY_PREDICTOR_EXAMPLE_WISE_BASED_ON_PROBABILITIES) \
             .incremental_evaluation() \
             .set_output_dir() \
@@ -539,6 +552,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         builder = BoostingCmdBuilder() \
             .marginal_probability_calibration() \
+            .joint_probability_calibration() \
             .binary_predictor(BINARY_PREDICTOR_GFM) \
             .print_predictions(True) \
             .print_label_vectors(True) \
@@ -552,6 +566,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         builder = BoostingCmdBuilder() \
             .marginal_probability_calibration() \
+            .joint_probability_calibration() \
             .binary_predictor(BINARY_PREDICTOR_GFM) \
             .incremental_evaluation() \
             .set_output_dir() \
@@ -567,6 +582,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         builder = BoostingCmdBuilder() \
             .marginal_probability_calibration() \
+            .joint_probability_calibration() \
             .binary_predictor(BINARY_PREDICTOR_GFM) \
             .print_predictions(True) \
             .print_label_vectors(True) \
@@ -581,6 +597,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         builder = BoostingCmdBuilder() \
             .marginal_probability_calibration() \
+            .joint_probability_calibration() \
             .binary_predictor(BINARY_PREDICTOR_GFM) \
             .sparse_prediction_format(True) \
             .incremental_evaluation() \
@@ -648,6 +665,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         builder = BoostingCmdBuilder() \
             .marginal_probability_calibration() \
+            .joint_probability_calibration() \
             .prediction_type(PREDICTION_TYPE_PROBABILITIES) \
             .probability_predictor(PROBABILITY_PREDICTOR_MARGINALIZED) \
             .print_predictions(True) \
@@ -662,6 +680,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         builder = BoostingCmdBuilder() \
             .marginal_probability_calibration() \
+            .joint_probability_calibration() \
             .prediction_type(PREDICTION_TYPE_PROBABILITIES) \
             .probability_predictor(PROBABILITY_PREDICTOR_MARGINALIZED) \
             .incremental_evaluation() \

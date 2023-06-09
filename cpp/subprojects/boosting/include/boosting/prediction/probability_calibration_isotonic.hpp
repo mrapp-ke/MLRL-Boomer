@@ -112,9 +112,14 @@ namespace boosting {
 
             bool useHoldoutSet_;
 
+            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+
         public:
 
-            IsotonicJointProbabilityCalibratorConfig();
+            /**
+             * @param lossConfigPtr A reference to an unique pointer that stores the configuration of the loss function
+             */
+            IsotonicJointProbabilityCalibratorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr);
 
             bool isHoldoutSetUsed() const override;
 
