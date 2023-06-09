@@ -148,3 +148,32 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
 
         log.error('The learner does not support to create a textual representation of the calibration model')
         return None
+
+
+class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
+    """
+    Allow to write textual representations of models for the calibration of marginal probabilities to one or several
+    sinks.
+    """
+
+    class LogSink(OutputWriter.LogSink):
+        """
+        Allows to write textual representations of models for the calibration of marginal probabilities to the console.
+        """
+
+        def __init__(self, options: Options = Options()):
+            super().__init__(title='Marginal probability calibration model', options=options)
+
+    class CsvSink(OutputWriter.CsvSink):
+        """
+        Allows to write textual representations of models for the calibration of marginal probabilities to a CSV file.
+        """
+
+        def __init__(self, output_dir: str, options: Options = Options()):
+            super().__init__(output_dir=output_dir, file_name='marginal_probability_calibration_model', options=options)
+
+    def __init__(self, sinks: List[OutputWriter.Sink]):
+        super().__init__(sinks, list_title='Label')
+
+    def _get_calibration_model(self, learner: RuleLearner) -> Any:
+        return learner.marginal_probability_calibration_model_
