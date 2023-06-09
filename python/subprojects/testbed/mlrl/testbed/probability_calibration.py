@@ -75,7 +75,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
 
             return result
 
-        def tabularize(self, options: Options, **kwargs) -> List[Dict[str, str]]:
+        def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
             self.calibration_model.visit(self)
             decimals = options.get_int(OPTION_DECIMALS, 0)
             bins = self.bins
@@ -83,7 +83,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
             end = False
             i = 0
 
-            while end:
+            while not end:
                 columns = {}
                 end = True
 
@@ -101,7 +101,9 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
                         columns[column_probability] = None
                         columns[column_threshold] = None
 
-                rows.append(columns)
+                if not end:
+                    rows.append(columns)
+                
                 i += 1
 
             return rows
@@ -115,7 +117,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         def format(self, options: Options, **kwargs) -> str:
             return 'No calibration model used'
 
-        def tabularize(self, options: Options, **kwargs) -> List[Dict[str, str]]:
+        def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
             return None
 
     def __init__(self, sinks: List[OutputWriter.Sink], list_title: str):
