@@ -7,6 +7,7 @@ on:
       - '**/*.pxd'
       - '**/*.pyx'
       - '**/*.py'
+      - 'python/subprojects/testbed/tests/**'
       - 'Makefile'
       - '.github/workflows/test_integration.yml'
 jobs:
