@@ -413,7 +413,7 @@ class CmdBuilder:
         self.args.append('--print-marginal-probability-calibration-model')
         self.args.append(str(print_marginal_probability_calibration_model).lower())
         return self
-    
+
     def store_marginal_probability_calibration_model(self, store_marginal_probability_calibration_model: bool = True):
         """
         Configures whether textual representations of models for the calibration of marginal probabilities should be
@@ -442,7 +442,7 @@ class CmdBuilder:
         self.args.append('--print-joint-probability-calibration-model')
         self.args.append(str(print_joint_probability_calibration_model).lower())
         return self
-    
+
     def store_joint_probability_calibration_model(self, store_joint_probability_calibration_model: bool = True):
         """
         Configures whether textual representations of models for the calibration of joint probabilities should be
