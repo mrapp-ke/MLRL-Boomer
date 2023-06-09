@@ -423,7 +423,7 @@ class LearnerRunnable(Runnable, ABC):
             args, prediction_type,
             self._create_evaluation_output_writers(args, prediction_type) if args.evaluate_training_data else [])
         test_evaluation = self._create_evaluation(args, prediction_type,
-                                                  self.__create_evaluation_output_writers(args, prediction_type))
+                                                  self._create_evaluation_output_writers(args, prediction_type))
         data_splitter = self.__create_data_splitter(args)
         experiment = Experiment(base_learner=self._create_learner(args),
                                 learner_name=self.learner_name,
