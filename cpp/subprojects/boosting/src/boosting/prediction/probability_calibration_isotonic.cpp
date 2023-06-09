@@ -379,7 +379,7 @@ namespace boosting {
                   labelMatrix.row_values_cbegin(exampleIndex), labelMatrix.row_values_cend(exampleIndex));
                 auto labelIndicesEnd = make_non_zero_index_forward_iterator(labelMatrix.row_values_cend(exampleIndex),
                                                                             labelMatrix.row_values_cend(exampleIndex));
-                float trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
+                float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
                 CContiguousConstView<float64>::value_const_iterator scoresBegin =
                   scoreMatrix.row_values_cbegin(exampleIndex);
                 CContiguousConstView<float64>::value_const_iterator scoresEnd =
@@ -409,7 +409,7 @@ namespace boosting {
                 uint32 exampleIndex = indexIterator[j];
                 CsrLabelMatrix::index_const_iterator labelIndicesBegin = labelMatrix.row_indices_cbegin(exampleIndex);
                 CsrLabelMatrix::index_const_iterator labelIndicesEnd = labelMatrix.row_indices_cend(exampleIndex);
-                float trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
+                float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
                 CContiguousConstView<float64>::value_const_iterator scoresBegin =
                   scoreMatrix.row_values_cbegin(exampleIndex);
                 CContiguousConstView<float64>::value_const_iterator scoresEnd =
@@ -441,7 +441,7 @@ namespace boosting {
                   labelMatrix.row_values_cbegin(exampleIndex), labelMatrix.row_values_cend(exampleIndex));
                 auto labelIndicesEnd = make_non_zero_index_forward_iterator(labelMatrix.row_values_cend(exampleIndex),
                                                                             labelMatrix.row_values_cend(exampleIndex));
-                float trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
+                float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
                 SparseSetMatrix<float64>::const_iterator scoresBegin = scoreMatrix.row_cbegin(exampleIndex);
                 SparseSetMatrix<float64>::const_iterator scoresEnd = scoreMatrix.row_cend(exampleIndex);
                 float64 jointProbability =
@@ -469,7 +469,7 @@ namespace boosting {
                 uint32 exampleIndex = indexIterator[j];
                 CsrLabelMatrix::index_const_iterator labelIndicesBegin = labelMatrix.row_indices_cbegin(exampleIndex);
                 CsrLabelMatrix::index_const_iterator labelIndicesEnd = labelMatrix.row_indices_cend(exampleIndex);
-                float trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
+                float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
                 SparseSetMatrix<float64>::const_iterator scoresBegin = scoreMatrix.row_cbegin(exampleIndex);
                 SparseSetMatrix<float64>::const_iterator scoresEnd = scoreMatrix.row_cend(exampleIndex);
                 float64 jointProbability =
