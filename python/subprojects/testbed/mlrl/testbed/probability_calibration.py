@@ -103,7 +103,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
 
                 if not end:
                     rows.append(columns)
-                
+
                 i += 1
 
             return rows
@@ -181,3 +181,31 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
 
     def _get_calibration_model(self, learner: RuleLearner) -> Any:
         return learner.marginal_probability_calibration_model_
+
+
+class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
+    """
+    Allow to write textual representations of models for the calibration of joint probabilities to one or several sinks.
+    """
+
+    class LogSink(OutputWriter.LogSink):
+        """
+        Allows to write textual representations of models for the calibration of joint probabilities to the console.
+        """
+
+        def __init__(self, options: Options = Options()):
+            super().__init__(title='Joint probability calibration model', options=options)
+
+    class CsvSink(OutputWriter.CsvSink):
+        """
+        Allows to write textual representations of models for the calibration of joint probabilities to a CSV file.
+        """
+
+        def __init__(self, output_dir: str, options: Options = Options()):
+            super().__init__(output_dir=output_dir, file_name='joint_probability_calibration_model', options=options)
+
+    def __init__(self, sinks: List[OutputWriter.Sink]):
+        super().__init__(sinks, list_title='Label vector')
+
+    def _get_calibration_model(self, learner: RuleLearner) -> Any:
+        return learner.joint_probability_calibration_model_
