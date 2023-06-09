@@ -38,7 +38,7 @@ class Tabularizable(ABC):
     """
 
     @abstractmethod
-    def tabularize(self, options: Options, **kwargs) -> List[Dict[str, str]]:
+    def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
         """
         Creates and returns a tabular representation of the object.
 
@@ -155,24 +155,26 @@ class OutputWriter(ABC):
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
                          prediction_scope: Optional[PredictionScope], output_data, **kwargs):
             tabular_data = output_data.tabularize(self.options, **kwargs)
-            incremental_prediction = prediction_scope is not None and not prediction_scope.is_global()
 
-            if incremental_prediction:
-                for row in tabular_data:
-                    row['Model size'] = prediction_scope.get_model_size()
+            if tabular_data is not None:
+                incremental_prediction = prediction_scope is not None and not prediction_scope.is_global()
 
-            if len(tabular_data) > 0:
-                header = sorted(tabular_data[0].keys())
-                file_name = self.file_name if data_type is None else data_type.get_file_name(self.file_name)
-
-                with open_writable_csv_file(directory=self.output_dir,
-                                            file_name=file_name,
-                                            fold=data_split.get_fold(),
-                                            append=incremental_prediction) as csv_file:
-                    csv_writer = create_csv_dict_writer(csv_file, header)
-
+                if incremental_prediction:
                     for row in tabular_data:
-                        csv_writer.writerow(row)
+                        row['Model size'] = prediction_scope.get_model_size()
+
+                if len(tabular_data) > 0:
+                    header = sorted(tabular_data[0].keys())
+                    file_name = self.file_name if data_type is None else data_type.get_file_name(self.file_name)
+
+                    with open_writable_csv_file(directory=self.output_dir,
+                                                file_name=file_name,
+                                                fold=data_split.get_fold(),
+                                                append=incremental_prediction) as csv_file:
+                        csv_writer = create_csv_dict_writer(csv_file, header)
+
+                        for row in tabular_data:
+                            csv_writer.writerow(row)
 
     def __init__(self, sinks: List[Sink]):
         """

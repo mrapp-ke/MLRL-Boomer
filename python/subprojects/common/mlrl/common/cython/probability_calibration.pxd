@@ -89,12 +89,16 @@ cdef class NoMarginalProbabilityCalibrationModel(MarginalProbabilityCalibrationM
 
     cdef unique_ptr[INoProbabilityCalibrationModel] probability_calibration_model_ptr
 
+    cdef dict __dict__
+
 
 cdef class NoJointProbabilityCalibrationModel(JointProbabilityCalibrationModel):
 
     # Attributes:
 
     cdef unique_ptr[INoProbabilityCalibrationModel] probability_calibration_model_ptr
+
+    cdef dict __dict__
 
 
 cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibrationModel):
@@ -105,7 +109,13 @@ cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibr
 
     cdef object state
 
+    cdef object visitor
+
+    cdef dict __dict__
+
     # Functions:
+
+    cdef __visit_bin(self, uint32 list_index, float64 threshold, float64 probability)
 
     cdef __serialize_bin(self, uint32 list_index, float64 threshold, float64 probability)
 
@@ -118,7 +128,13 @@ cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationM
 
     cdef object state
 
+    cdef object visitor
+
+    cdef dict __dict__
+
     # Functions:
+
+    cdef __visit_bin(self, uint32 list_index, float64 threshold, float64 probability)
 
     cdef __serialize_bin(self, uint32 list_index, float64 threshold, float64 probability)
 
