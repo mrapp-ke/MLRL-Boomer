@@ -114,7 +114,7 @@ cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationM
         cdef list bin_list = self.state[list_index]
         bin_list.append((threshold, probability))
 
-    def __reduce(self):
+    def __reduce__(self):
         cdef uint32 num_bin_lists = self.probability_calibration_model_ptr.get().getNumBinLists()
         self.state = [[] for i in range(num_bin_lists)]
         self.probability_calibration_model_ptr.get().visit(
@@ -123,7 +123,7 @@ cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationM
         self.state = None
         return (IsotonicJointProbabilityCalibrationModel, (), state)
 
-    def __setstate(self, state):
+    def __setstate__(self, state):
         cdef int version = state[0]
 
         if version != SERIALIZATION_VERSION:
