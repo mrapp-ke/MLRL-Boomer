@@ -37,12 +37,18 @@ class MLRLCOMMON_API ILabelSpaceInfo {
          * Creates and returns a new instance of the class `IJointProbabilityCalibrator`, based on the type of this
          * information about the label space.
          *
-         * @param factory A reference to an object of type `IJointProbabilityCalibratorFactory` that should be used to
-         *                create the instance
-         * @return        An unique pointer to an object of type `IJointProbabilityPredictor` that has been created
+         * @param factory                             A reference to an object of type
+         *                                            `IJointProbabilityCalibratorFactory` that should be used to create
+         *                                            the instance
+         * @param marginalProbabilityCalibrationModel A reference to an object of type
+         *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
+         *                                            calibration of marginal probabilities
+         * @return                                    An unique pointer to an object of type
+         *                                            `IJointProbabilityPredictor` that has been created
          */
         virtual std::unique_ptr<IJointProbabilityCalibrator> createJointProbabilityCalibrator(
-          const IJointProbabilityCalibratorFactory& factory) const = 0;
+          const IJointProbabilityCalibratorFactory& factory,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IBinaryPredictor`, based on the type of this information

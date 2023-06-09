@@ -123,9 +123,9 @@ namespace boosting {
     IMarginalizedProbabilityPredictorConfig& MarginalizedProbabilityPredictorConfig::setUseProbabilityCalibrationModel(
       bool useProbabilityCalibrationModel) {
         noMarginalProbabilityCalibrationModelPtr_ =
-          useProbabilityCalibrationModel ? nullptr : createNoMarginalProbabilityCalibrationModel();
+          useProbabilityCalibrationModel ? nullptr : createNoProbabilityCalibrationModel();
         noJointProbabilityCalibrationModelPtr_ =
-          useProbabilityCalibrationModel ? nullptr : createNoJointProbabilityCalibrationModel();
+          useProbabilityCalibrationModel ? nullptr : createNoProbabilityCalibrationModel();
         return *this;
     }
 

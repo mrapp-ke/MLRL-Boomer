@@ -1,13 +1,17 @@
 #include "common/prediction/probability_calibration_no.hpp"
 
 /**
- * A model for the calibration of marginal probabilities that does not make any adjustments.
+ * A model for the calibration of marginal or joint probabilities that does not make any adjustments.
  */
-class NoMarginalProbabilityCalibrationModel final : public INoMarginalProbabilityCalibrationModel {
+class NoProbabilityCalibrationModel final : public INoProbabilityCalibrationModel {
     public:
 
         float64 calibrateMarginalProbability(uint32 labelIndex, float64 marginalProbability) const override {
             return marginalProbability;
+        }
+
+        float64 calibrateJointProbability(uint32 labelVectorIndex, float64 jointProbability) const override {
+            return jointProbability;
         }
 };
 
@@ -21,24 +25,24 @@ class NoMarginalProbabilityCalibrator final : public IMarginalProbabilityCalibra
         std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
           const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix,
           const IStatistics& statistics) const override {
-            return std::make_unique<NoMarginalProbabilityCalibrationModel>();
+            return std::make_unique<NoProbabilityCalibrationModel>();
         }
 
         std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
           const SinglePartition& partition, const CsrLabelMatrix& labelMatrix,
           const IStatistics& statistics) const override {
-            return std::make_unique<NoMarginalProbabilityCalibrationModel>();
+            return std::make_unique<NoProbabilityCalibrationModel>();
         }
 
         std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
           BiPartition& partition, const CContiguousLabelMatrix& labelMatrix,
           const IStatistics& statistics) const override {
-            return std::make_unique<NoMarginalProbabilityCalibrationModel>();
+            return std::make_unique<NoProbabilityCalibrationModel>();
         }
 
         std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
           BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics) const override {
-            return std::make_unique<NoMarginalProbabilityCalibrationModel>();
+            return std::make_unique<NoProbabilityCalibrationModel>();
         }
 };
 
@@ -55,21 +59,6 @@ std::unique_ptr<IMarginalProbabilityCalibratorFactory>
     return std::make_unique<NoMarginalProbabilityCalibratorFactory>();
 }
 
-std::unique_ptr<INoMarginalProbabilityCalibrationModel> createNoMarginalProbabilityCalibrationModel() {
-    return std::make_unique<NoMarginalProbabilityCalibrationModel>();
-}
-
-/**
- * A model for the calibration of joint probabilities that does not make any adjustments.
- */
-class NoJointProbabilityCalibrationModel final : public INoJointProbabilityCalibrationModel {
-    public:
-
-        float64 calibrateJointProbability(uint32 labelVectorIndex, float64 jointProbability) const override {
-            return jointProbability;
-        }
-};
-
 /**
  * An implementation of the type `IJointProbabilityCalibrator` that does not fit a model for the calibration of joint
  * probabilities.
@@ -78,31 +67,31 @@ class NoJointProbabilityCalibrator final : public IJointProbabilityCalibrator {
     public:
 
         std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
-            return std::make_unique<NoJointProbabilityCalibrationModel>();
+          const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix,
+          const IStatistics& statistics) const override {
+            return std::make_unique<NoProbabilityCalibrationModel>();
         }
 
         std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const SinglePartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
-            return std::make_unique<NoJointProbabilityCalibrationModel>();
+          const SinglePartition& partition, const CsrLabelMatrix& labelMatrix,
+          const IStatistics& statistics) const override {
+            return std::make_unique<NoProbabilityCalibrationModel>();
         }
 
         std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          BiPartition& partition, const CContiguousLabelMatrix& labelMatrix, const IStatistics& statistics,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
-            return std::make_unique<NoJointProbabilityCalibrationModel>();
+          BiPartition& partition, const CContiguousLabelMatrix& labelMatrix,
+          const IStatistics& statistics) const override {
+            return std::make_unique<NoProbabilityCalibrationModel>();
         }
 
         std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override {
-            return std::make_unique<NoJointProbabilityCalibrationModel>();
+          BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics) const override {
+            return std::make_unique<NoProbabilityCalibrationModel>();
         }
 };
 
 std::unique_ptr<IJointProbabilityCalibrator> NoJointProbabilityCalibratorFactory::create(
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
   const LabelVectorSet* labelVectorSet) const {
     return std::make_unique<NoJointProbabilityCalibrator>();
 }
@@ -120,6 +109,6 @@ std::unique_ptr<IJointProbabilityCalibratorFactory>
     return std::make_unique<NoJointProbabilityCalibratorFactory>();
 }
 
-std::unique_ptr<INoJointProbabilityCalibrationModel> createNoJointProbabilityCalibrationModel() {
-    return std::make_unique<NoJointProbabilityCalibrationModel>();
+std::unique_ptr<INoProbabilityCalibrationModel> createNoProbabilityCalibrationModel() {
+    return std::make_unique<NoProbabilityCalibrationModel>();
 }

@@ -111,7 +111,8 @@ class LabelVectorSet final : public ILabelVectorSet {
         void visit(LabelVectorVisitor visitor) const override;
 
         std::unique_ptr<IJointProbabilityCalibrator> createJointProbabilityCalibrator(
-          const IJointProbabilityCalibratorFactory& factory) const override;
+          const IJointProbabilityCalibratorFactory& factory,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override;
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,

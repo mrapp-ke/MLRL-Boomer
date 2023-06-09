@@ -460,11 +460,11 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
     std::unique_ptr<IJointProbabilityCalibratorFactory> jointProbabilityCalibratorFactoryPtr =
       this->createJointProbabilityCalibratorFactory();
     std::unique_ptr<IJointProbabilityCalibrator> jointProbabilityCalibratorPtr =
-      labelSpaceInfoPtr->createJointProbabilityCalibrator(*jointProbabilityCalibratorFactoryPtr);
+      labelSpaceInfoPtr->createJointProbabilityCalibrator(*jointProbabilityCalibratorFactoryPtr,
+                                                          *marginalProbabilityCalibrationModelPtr);
     std::unique_ptr<IJointProbabilityCalibrationModel> jointProbabilityCalibrationModelPtr =
       partition.fitJointProbabilityCalibrationModel(*jointProbabilityCalibratorPtr, labelMatrix,
-                                                    statisticsProviderPtr->get(),
-                                                    *marginalProbabilityCalibrationModelPtr);
+                                                    statisticsProviderPtr->get());
 
     return std::make_unique<TrainingResult>(
       labelMatrix.getNumCols(), modelBuilder.buildModel(), std::move(labelSpaceInfoPtr),
