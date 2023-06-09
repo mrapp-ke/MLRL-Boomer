@@ -105,7 +105,11 @@ cdef class IsotonicMarginalProbabilityCalibrationModel(MarginalProbabilityCalibr
 
     cdef object state
 
+    cdef object visitor
+
     # Functions:
+
+    cdef __visit_bin(self, uint32 list_index, float64 threshold, float64 probability)
 
     cdef __serialize_bin(self, uint32 list_index, float64 threshold, float64 probability)
 
@@ -118,7 +122,11 @@ cdef class IsotonicJointProbabilityCalibrationModel(JointProbabilityCalibrationM
 
     cdef object state
 
+    cdef object visitor
+
     # Functions:
+
+    cdef __visit_bin(self, uint32 list_index, float64 threshold, float64 probability)
 
     cdef __serialize_bin(self, uint32 list_index, float64 threshold, float64 probability)
 
