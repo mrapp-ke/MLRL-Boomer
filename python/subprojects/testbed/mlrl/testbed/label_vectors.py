@@ -83,17 +83,17 @@ class LabelVectorWriter(OutputWriter):
             rows = []
 
             for i, (sparse_label_vector, frequency) in enumerate(self.unique_label_vectors):
-                rows.append([i, self.__format_label_vector(sparse_label_vector, sparse=sparse), frequency])
+                rows.append([i + 1, self.__format_label_vector(sparse_label_vector, sparse=sparse), frequency])
 
             return format_table(rows, header=header)
 
-        def tabularize(self, options: Options, **kwargs) -> List[Dict[str, str]]:
+        def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
             sparse = options.get_bool(OPTION_SPARSE, False)
             rows = []
 
             for i, (sparse_label_vector, frequency) in enumerate(self.unique_label_vectors):
                 columns = {
-                    self.COLUMN_INDEX: i,
+                    self.COLUMN_INDEX: i + 1,
                     self.COLUMN_LABEL_VECTOR: self.__format_label_vector(sparse_label_vector, sparse=sparse),
                     self.COLUMN_FREQUENCY: frequency
                 }

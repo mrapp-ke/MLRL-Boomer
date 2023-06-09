@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides functions to determine certain characteristics of feature or label matrices.
 """
 from functools import cached_property
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import numpy as np
 
@@ -142,7 +142,7 @@ class LabelCharacteristics(Formattable, Tabularizable):
 
         return format_table(rows)
 
-    def tabularize(self, options: Options, **kwargs) -> List[Dict[str, str]]:
+    def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
         percentage = options.get_bool(OPTION_PERCENTAGE, True)
         decimals = options.get_int(OPTION_DECIMALS, 0)
         columns = {}
