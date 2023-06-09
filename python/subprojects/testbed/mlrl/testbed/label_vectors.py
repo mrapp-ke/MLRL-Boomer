@@ -87,7 +87,7 @@ class LabelVectorWriter(OutputWriter):
 
             return format_table(rows, header=header)
 
-        def tabularize(self, options: Options, **kwargs) -> List[Dict[str, str]]:
+        def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
             sparse = options.get_bool(OPTION_SPARSE, False)
             rows = []
 
