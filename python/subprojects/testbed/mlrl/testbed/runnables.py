@@ -789,6 +789,45 @@ class RuleLearnerRunnable(LearnerRunnable):
         kwargs['prediction_format'] = args.prediction_format
         return self.learner_type(**kwargs)
 
+    def _create_model_writer(self, args) -> Optional[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output textual
+        representations of models.
+
+        :param args:    The command line arguments
+        :return:        The `OutputWriter` that has been created
+        """
+        sinks = []
+        value, options = parse_param_and_options(self.PARAM_PRINT_RULES, args.print_rules, self.PRINT_RULES_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            sinks.append(ModelWriter.LogSink(options=options))
+
+        value, options = parse_param_and_options(self.PARAM_STORE_RULES, args.store_rules, self.STORE_RULES_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            sinks.append(ModelWriter.TxtSink(output_dir=args.output_dir, options=options))
+
+        return RuleModelWriter(sinks) if len(sinks) > 0 else None
+
+    def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output the
+        characteristics of models.
+
+        :param args:    The command line arguments
+        :return:        The `OutputWriter` that has been created
+        """
+        sinks = []
+
+        if args.print_model_characteristics:
+            sinks.append(ModelCharacteristicsWriter.LogSink())
+
+        if args.store_model_characteristics and args.output_dir is not None:
+            sinks.append(ModelCharacteristicsWriter.CsvSink(output_dir=args.output_dir))
+
+        return RuleModelCharacteristicsWriter(sinks) if len(sinks) > 0 else None
+
     def _create_evaluation(self, args, prediction_type: PredictionType,
                            output_writers: List[OutputWriter]) -> Optional[Evaluation]:
         value, options = parse_param_and_options(self.PARAM_INCREMENTAL_EVALUATION, args.incremental_evaluation,
@@ -823,31 +862,6 @@ class RuleLearnerRunnable(LearnerRunnable):
             sinks.append(LabelVectorSetWriter.CsvSink(output_dir=args.output_dir, options=options))
 
         return LabelVectorSetWriter(sinks) if len(sinks) > 0 else None
-
-    def _create_model_writer(self, args) -> Optional[OutputWriter]:
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_RULES, args.print_rules, self.PRINT_RULES_VALUES)
-
-        if value == BooleanOption.TRUE.value:
-            sinks.append(ModelWriter.LogSink(options=options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_RULES, args.store_rules, self.STORE_RULES_VALUES)
-
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(ModelWriter.TxtSink(output_dir=args.output_dir, options=options))
-
-        return RuleModelWriter(sinks) if len(sinks) > 0 else None
-
-    def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
-        sinks = []
-
-        if args.print_model_characteristics:
-            sinks.append(ModelCharacteristicsWriter.LogSink())
-
-        if args.store_model_characteristics and args.output_dir is not None:
-            sinks.append(ModelCharacteristicsWriter.CsvSink(output_dir=args.output_dir))
-
-        return RuleModelCharacteristicsWriter(sinks) if len(sinks) > 0 else None
 
     def _create_post_training_output_writers(self, args) -> List[OutputWriter]:
         output_writers = super()._create_post_training_output_writers(args)
