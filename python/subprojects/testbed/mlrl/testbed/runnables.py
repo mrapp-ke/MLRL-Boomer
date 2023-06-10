@@ -472,16 +472,6 @@ class LearnerRunnable(Runnable, ABC):
         if output_writer is not None:
             output_writers.append(output_writer)
 
-        output_writer = self._create_model_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_model_characteristics_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
         return output_writers
 
     def _create_evaluation_output_writers(self, args, prediction_type: PredictionType) -> List[OutputWriter]:
@@ -687,26 +677,6 @@ class LearnerRunnable(Runnable, ABC):
 
         return LabelVectorWriter(sinks) if len(sinks) > 0 else None
 
-    def _create_model_writer(self, args) -> Optional[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output textual
-        representations of models.
-
-        :param args:    The command line arguments
-        :return:        The `OutputWriter` that has been created
-        """
-        return None
-
-    def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output the
-        characteristics of models.
-
-        :param args:    The command line arguments
-        :return:        The `OutputWriter` that has been created
-        """
-        return None
-
     @abstractmethod
     def _create_learner(self, args):
         """
@@ -878,3 +848,17 @@ class RuleLearnerRunnable(LearnerRunnable):
             sinks.append(ModelCharacteristicsWriter.CsvSink(output_dir=args.output_dir))
 
         return RuleModelCharacteristicsWriter(sinks) if len(sinks) > 0 else None
+
+    def _create_post_training_output_writers(self, args) -> List[OutputWriter]:
+        output_writers = super()._create_post_training_output_writers(args)
+        output_writer = self._create_model_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        output_writer = self._create_model_characteristics_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        return output_writers
