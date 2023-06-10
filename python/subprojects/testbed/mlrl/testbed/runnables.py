@@ -474,26 +474,6 @@ class LearnerRunnable(Runnable, ABC):
         if output_writer is not None:
             output_writers.append(output_writer)
 
-        output_writer = self._create_model_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_model_characteristics_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_marginal_probability_calibration_model_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
-        output_writer = self._create_joint_probability_calibration_model_writer(args)
-
-        if output_writer is not None:
-            output_writers.append(output_writer)
-
         return output_writers
 
     def _create_evaluation_output_writers(self, args, prediction_type: PredictionType) -> List[OutputWriter]:
@@ -699,46 +679,6 @@ class LearnerRunnable(Runnable, ABC):
 
         return LabelVectorWriter(sinks) if len(sinks) > 0 else None
 
-    def _create_model_writer(self, args) -> Optional[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output textual
-        representations of models.
-
-        :param args:    The command line arguments
-        :return:        The `OutputWriter` that has been created
-        """
-        return None
-
-    def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output the
-        characteristics of models.
-
-        :param args:    The command line arguments
-        :return:        The `OutputWriter` that has been created
-        """
-        return None
-
-    def _create_marginal_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output textual
-        representations of models for the calibration of marginal probabilities.
-
-        :param args:    The command line arguments
-        :return:        The `OutputWriter` that has been created
-        """
-        return None
-
-    def _create_joint_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
-        """
-        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output textual
-        representations of models for the calibration of joint probabilities.
-
-        :param args:    The command line arguments
-        :return:        The `OutputWriter` that has been created
-        """
-        return None
-
     @abstractmethod
     def _create_learner(self, args):
         """
@@ -899,6 +839,95 @@ class RuleLearnerRunnable(LearnerRunnable):
         kwargs['prediction_format'] = args.prediction_format
         return self.learner_type(**kwargs)
 
+    def _create_model_writer(self, args) -> Optional[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output textual
+        representations of models.
+
+        :param args:    The command line arguments
+        :return:        The `OutputWriter` that has been created
+        """
+        sinks = []
+        value, options = parse_param_and_options(self.PARAM_PRINT_RULES, args.print_rules, self.PRINT_RULES_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            sinks.append(ModelWriter.LogSink(options=options))
+
+        value, options = parse_param_and_options(self.PARAM_STORE_RULES, args.store_rules, self.STORE_RULES_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            sinks.append(ModelWriter.TxtSink(output_dir=args.output_dir, options=options))
+
+        return RuleModelWriter(sinks) if len(sinks) > 0 else None
+
+    def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output the
+        characteristics of models.
+
+        :param args:    The command line arguments
+        :return:        The `OutputWriter` that has been created
+        """
+        sinks = []
+
+        if args.print_model_characteristics:
+            sinks.append(ModelCharacteristicsWriter.LogSink())
+
+        if args.store_model_characteristics and args.output_dir is not None:
+            sinks.append(ModelCharacteristicsWriter.CsvSink(output_dir=args.output_dir))
+
+        return RuleModelCharacteristicsWriter(sinks) if len(sinks) > 0 else None
+
+    def _create_marginal_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output textual
+        representations of models for the calibration of marginal probabilities.
+
+        :param args:    The command line arguments
+        :return:        The `OutputWriter` that has been created
+        """
+        sinks = []
+        value, options = parse_param_and_options(self.PARAM_PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
+                                                 args.print_marginal_probability_calibration_model,
+                                                 self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            sinks.append(MarginalProbabilityCalibrationModelWriter.LogSink(options=options))
+
+        value, options = parse_param_and_options(self.PARAM_STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
+                                                 args.store_marginal_probability_calibration_model,
+                                                 self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            sinks.append(MarginalProbabilityCalibrationModelWriter.CsvSink(output_dir=args.output_dir, options=options))
+
+        return MarginalProbabilityCalibrationModelWriter(sinks) if len(sinks) > 0 else None
+
+    def _create_joint_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
+        """
+        May be overridden by subclasses in order to create the `OutputWriter` that should be used to output textual
+        representations of models for the calibration of joint probabilities.
+
+        :param args:    The command line arguments
+        :return:        The `OutputWriter` that has been created
+        """
+        sinks = []
+        value, options = parse_param_and_options(self.PARAM_PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL,
+                                                 args.print_joint_probability_calibration_model,
+                                                 self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
+
+        if value == BooleanOption.TRUE.value:
+            sinks.append(JointProbabilityCalibrationModelWriter.LogSink(options=options))
+
+        value, options = parse_param_and_options(self.PARAM_STORE_JOINT_PROBABILITY_CALIBRATION_MODEL,
+                                                 args.store_joint_probability_calibration_model,
+                                                 self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
+
+        if value == BooleanOption.TRUE.value and args.output_dir is not None:
+            sinks.append(JointProbabilityCalibrationModelWriter.CsvSink(output_dir=args.output_dir, options=options))
+
+        return JointProbabilityCalibrationModelWriter(sinks) if len(sinks) > 0 else None
+
     def _create_evaluation(self, args, prediction_type: PredictionType,
                            output_writers: List[OutputWriter]) -> Optional[Evaluation]:
         value, options = parse_param_and_options(self.PARAM_INCREMENTAL_EVALUATION, args.incremental_evaluation,
@@ -934,19 +963,29 @@ class RuleLearnerRunnable(LearnerRunnable):
 
         return LabelVectorSetWriter(sinks) if len(sinks) > 0 else None
 
-    def _create_model_writer(self, args) -> Optional[OutputWriter]:
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_RULES, args.print_rules, self.PRINT_RULES_VALUES)
+    def _create_post_training_output_writers(self, args) -> List[OutputWriter]:
+        output_writers = super()._create_post_training_output_writers(args)
+        output_writer = self._create_model_writer(args)
 
-        if value == BooleanOption.TRUE.value:
-            sinks.append(ModelWriter.LogSink(options=options))
+        if output_writer is not None:
+            output_writers.append(output_writer)
 
-        value, options = parse_param_and_options(self.PARAM_STORE_RULES, args.store_rules, self.STORE_RULES_VALUES)
+        output_writer = self._create_model_characteristics_writer(args)
 
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(ModelWriter.TxtSink(output_dir=args.output_dir, options=options))
+        if output_writer is not None:
+            output_writers.append(output_writer)
 
-        return RuleModelWriter(sinks) if len(sinks) > 0 else None
+        output_writer = self._create_marginal_probability_calibration_model_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        output_writer = self._create_joint_probability_calibration_model_writer(args)
+
+        if output_writer is not None:
+            output_writers.append(output_writer)
+
+        return output_writers
 
     def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
         sinks = []
@@ -958,39 +997,3 @@ class RuleLearnerRunnable(LearnerRunnable):
             sinks.append(ModelCharacteristicsWriter.CsvSink(output_dir=args.output_dir))
 
         return RuleModelCharacteristicsWriter(sinks) if len(sinks) > 0 else None
-
-    def _create_marginal_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
-                                                 args.print_marginal_probability_calibration_model,
-                                                 self.PRINT_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
-
-        if value == BooleanOption.TRUE.value:
-            sinks.append(MarginalProbabilityCalibrationModelWriter.LogSink(options=options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL,
-                                                 args.store_marginal_probability_calibration_model,
-                                                 self.STORE_MARGINAL_PROBABILITY_CALIBRATION_MODEL_VALUES)
-
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(MarginalProbabilityCalibrationModelWriter.CsvSink(output_dir=args.output_dir, options=options))
-
-        return MarginalProbabilityCalibrationModelWriter(sinks) if len(sinks) > 0 else None
-
-    def _create_joint_probability_calibration_model_writer(self, args) -> Optional[OutputWriter]:
-        sinks = []
-        value, options = parse_param_and_options(self.PARAM_PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL,
-                                                 args.print_joint_probability_calibration_model,
-                                                 self.PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
-
-        if value == BooleanOption.TRUE.value:
-            sinks.append(JointProbabilityCalibrationModelWriter.LogSink(options=options))
-
-        value, options = parse_param_and_options(self.PARAM_STORE_JOINT_PROBABILITY_CALIBRATION_MODEL,
-                                                 args.store_joint_probability_calibration_model,
-                                                 self.STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES)
-
-        if value == BooleanOption.TRUE.value and args.output_dir is not None:
-            sinks.append(JointProbabilityCalibrationModelWriter.CsvSink(output_dir=args.output_dir, options=options))
-
-        return JointProbabilityCalibrationModelWriter(sinks) if len(sinks) > 0 else None
