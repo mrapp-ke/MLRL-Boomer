@@ -3,22 +3,26 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from pathlib import Path
 
+from pkg_resources import parse_requirements
 from setuptools import find_packages, setup
 
 VERSION = (Path(__file__).resolve().parent.parent.parent.parent / 'VERSION').read_text()
 
 
 def find_dependencies(requirements_file, dependency_names):
-    lines = requirements_file.read_text().split('\n')
+    requirements = {
+        requirement.key: requirement
+        for requirement in parse_requirements(requirements_file.read_text().split('\n'))
+    }
     dependencies = []
 
     for dependency_name in dependency_names:
-        matches = list(filter(lambda line: line.startswith(dependency_name), lines))
+        match = requirements.get(dependency_name)
 
-        if len(matches) != 1:
+        if match is None:
             raise RuntimeError('Failed to determine required version of dependency "' + dependency_name + '"')
 
-        dependencies.extend(matches)
+        dependencies.append(str(match))
 
     return dependencies
 
