@@ -1,6 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+import os
 import shutil
 import subprocess
 
@@ -74,6 +75,20 @@ HOLDOUT_RANDOM = 'random'
 HOLDOUT_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
 
 HOLDOUT_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
+
+
+def SkipTestOnCI(f):
+    """
+    A decorator that disables all annotated test case if run on a continuous integration system.
+    """
+
+    def wrapper(*args, **kwargs):
+        if os.getenv('GITHUB_ACTIONS') == 'true':
+            raise SkipTest('Temporarily disabled when run on CI')
+        else:
+            f(*args, **kwargs)
+
+    return wrapper
 
 
 class CmdBuilder:
