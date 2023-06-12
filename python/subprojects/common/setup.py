@@ -6,8 +6,8 @@ import shutil
 
 from pathlib import Path
 
-from setuptools import Extension, find_packages, setup
 from pkg_resources import parse_requirements
+from setuptools import Extension, find_packages, setup
 from setuptools.command.build_ext import build_ext
 
 VERSION = (Path(__file__).resolve().parent.parent.parent.parent / 'VERSION').read_text()
@@ -48,17 +48,19 @@ def find_extensions(directory):
 
 
 def find_dependencies(requirements_file, dependency_names):
-    requirements = list(parse_requirements(requirements_file.read_text().split('\n')))
+    requirements = {
+        requirement.key: requirement
+        for requirement in parse_requirements(requirements_file.read_text().split('\n'))
+    }
     dependencies = []
 
     for dependency_name in dependency_names:
-        matches = list(filter(lambda requirement: requirement.key == dependency_name, requirements))
+        match = requirements.get(dependency_name)
 
-        if len(matches) != 1:
+        if match is None:
             raise RuntimeError('Failed to determine required version of dependency "' + dependency_name + '"')
 
-        for match in matches:
-            dependencies.append(str(match))
+        dependencies.append(str(match))
 
     return dependencies
 
