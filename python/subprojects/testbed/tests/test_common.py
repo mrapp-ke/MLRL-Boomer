@@ -7,6 +7,7 @@ import subprocess
 from abc import ABC
 from functools import reduce
 from os import makedirs, path
+from sys import platform
 from typing import List, Optional
 from unittest import SkipTest, TestCase
 
@@ -909,6 +910,8 @@ class CommonIntegrationTests(IntegrationTests, ABC):
     def setUpClass(cls):
         if cls is CommonIntegrationTests:
             raise SkipTest(cls.__name__ + ' is an abstract base class')
+        elif not platform.startswith('linux'):
+            raise SkipTest('Integration tests are only supported on Linux')
         else:
             super(CommonIntegrationTests, cls).setUpClass()
 
