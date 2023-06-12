@@ -50,6 +50,8 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::INoLabelBinningMixin,
                             virtual public IBoostingRuleLearner::IEqualWidthLabelBinningMixin,
                             virtual public IBoostingRuleLearner::IAutomaticLabelBinningMixin,
+                            virtual public IBoostingRuleLearner::IIsotonicMarginalProbabilityCalibrationMixin,
+                            virtual public IBoostingRuleLearner::IIsotonicJointProbabilityCalibrationMixin,
                             virtual public IBoostingRuleLearner::ILabelWiseBinaryPredictorMixin,
                             virtual public IBoostingRuleLearner::IExampleWiseBinaryPredictorMixin,
                             virtual public IBoostingRuleLearner::IGfmBinaryPredictorMixin,
@@ -95,7 +97,9 @@ namespace boosting {
                             virtual public IRuleLearner::INoGlobalPruningMixin,
                             virtual public IRuleLearner::IPostPruningMixin,
                             virtual public IRuleLearner::INoSequentialPostOptimizationMixin,
-                            virtual public IRuleLearner::ISequentialPostOptimizationMixin {
+                            virtual public IRuleLearner::ISequentialPostOptimizationMixin,
+                            virtual public IRuleLearner::INoMarginalProbabilityCalibrationMixin,
+                            virtual public IRuleLearner::INoJointProbabilityCalibrationMixin {
                 public:
 
                     virtual ~IConfig() override {};

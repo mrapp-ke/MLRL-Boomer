@@ -5,6 +5,7 @@
 
 #include "common/data/view_vector.hpp"
 #include "common/prediction/label_vector_set.hpp"
+#include "common/prediction/probability_calibration_joint.hpp"
 
 #include <memory>
 
@@ -18,16 +19,15 @@ class IDistanceMeasure {
         virtual ~IDistanceMeasure() {};
 
         /**
-         * Calculates and returns the distance between the predicted scores for a single example and the corresponding
-         * ground truth labels.
+         * Calculates and returns the distance between the predicted scores for a single example and a label vector.
          *
-         * @param relevantLabelIndices  A reference to an object of type `VectorConstView` that provides access to the
-         *                              indices of the relevant labels according to the ground truth
-         * @param scoresBegin           A `VectorConstView::const_iterator` to the beginning of the predicted scores
-         * @param scoresEnd             A `VectorConstView::const_iterator` to the end of the predicted scores
-         * @return                      The distance that has been calculated
+         * @param labelVectorIndex  The index of the label vector, the scores should be compared to
+         * @param labelVector       A reference to an object of type `LabelVector`, the scores should be compared to
+         * @param scoresBegin       A `VectorConstView::const_iterator` to the beginning of the predicted scores
+         * @param scoresEnd         A `VectorConstView::const_iterator` to the end of the predicted scores
+         * @return                  The distance that has been calculated
          */
-        virtual float64 measureDistance(const VectorConstView<uint32>& relevantLabelIndices,
+        virtual float64 measureDistance(uint32 labelVectorIndex, const LabelVector& labelVector,
                                         VectorConstView<float64>::const_iterator scoresBegin,
                                         VectorConstView<float64>::const_iterator scoresEnd) const = 0;
 
@@ -49,12 +49,12 @@ class IDistanceMeasure {
             uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
             const LabelVector* closestLabelVector = labelVectorIterator[0].get();
             uint32 maxFrequency = frequencyIterator[0];
-            float64 minDistance = this->measureDistance(*closestLabelVector, scoresBegin, scoresEnd);
+            float64 minDistance = this->measureDistance(0, *closestLabelVector, scoresBegin, scoresEnd);
 
             for (uint32 i = 1; i < numLabelVectors; i++) {
                 const LabelVector& labelVector = *labelVectorIterator[i];
                 uint32 frequency = frequencyIterator[i];
-                float64 distance = this->measureDistance(labelVector, scoresBegin, scoresEnd);
+                float64 distance = this->measureDistance(i, labelVector, scoresBegin, scoresEnd);
 
                 if (distance < minDistance || (distance == minDistance && frequency > maxFrequency)) {
                     closestLabelVector = &labelVector;
@@ -78,7 +78,16 @@ class IDistanceMeasureFactory {
         /**
          * Creates and returns a new object of type `IDistanceMeasure`.
          *
-         * @return An unique pointer to an object of type `IDistanceMeasure` that has been created
+         * @param marginalProbabilityCalibrationModel   A reference to an object of type
+         *                                              `IMarginalProbabilityCalibrationModel` that should be used for
+         *                                              the calibration of marginal probabilities
+         * @param jointProbabilityCalibrationModel      A reference to an object of type
+         *                                              `IJointProbabilityCalibrationModel` that should be used for the
+         *                                              calibration of joint probabilities
+         * @return                                      An unique pointer to an object of type `IDistanceMeasure` that
+         *                                              has been created
          */
-        virtual std::unique_ptr<IDistanceMeasure> createDistanceMeasure() const = 0;
+        virtual std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const = 0;
 };

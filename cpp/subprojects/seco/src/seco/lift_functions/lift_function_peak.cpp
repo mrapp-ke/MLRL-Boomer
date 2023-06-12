@@ -3,7 +3,6 @@
 #include "common/util/validation.hpp"
 
 #include <algorithm>
-#include <cmath>
 
 namespace seco {
 

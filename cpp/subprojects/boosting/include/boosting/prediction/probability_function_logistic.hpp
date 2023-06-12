@@ -14,7 +14,8 @@ namespace boosting {
     class LogisticFunctionFactory final : public IMarginalProbabilityFunctionFactory {
         public:
 
-            std::unique_ptr<IMarginalProbabilityFunction> create() const override;
+            std::unique_ptr<IMarginalProbabilityFunction> create(
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override;
     };
 
 }

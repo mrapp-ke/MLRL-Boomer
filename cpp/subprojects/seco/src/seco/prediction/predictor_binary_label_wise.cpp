@@ -206,16 +206,22 @@ namespace seco {
              */
             LabelWiseBinaryPredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
 
-            std::unique_ptr<IBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
-                                                     const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                     uint32 numLabels) const override {
+            std::unique_ptr<IBinaryPredictor> create(
+              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const LabelVectorSet* labelVectorSet,
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
+              uint32 numLabels) const override {
                 return std::make_unique<LabelWiseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
             }
 
-            std::unique_ptr<IBinaryPredictor> create(const CsrConstView<const float32>& featureMatrix,
-                                                     const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                     uint32 numLabels) const override {
+            std::unique_ptr<IBinaryPredictor> create(
+              const CsrConstView<const float32>& featureMatrix, const RuleList& model,
+              const LabelVectorSet* labelVectorSet,
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
+              uint32 numLabels) const override {
                 return std::make_unique<LabelWiseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
             }
@@ -451,16 +457,22 @@ namespace seco {
              */
             LabelWiseSparseBinaryPredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
 
-            std::unique_ptr<ISparseBinaryPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
-                                                           const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                           uint32 numLabels) const override {
+            std::unique_ptr<ISparseBinaryPredictor> create(
+              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const LabelVectorSet* labelVectorSet,
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
+              uint32 numLabels) const override {
                 return std::make_unique<LabelWiseSparseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
             }
 
-            std::unique_ptr<ISparseBinaryPredictor> create(const CsrConstView<const float32>& featureMatrix,
-                                                           const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                           uint32 numLabels) const override {
+            std::unique_ptr<ISparseBinaryPredictor> create(
+              const CsrConstView<const float32>& featureMatrix, const RuleList& model,
+              const LabelVectorSet* labelVectorSet,
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
+              uint32 numLabels) const override {
                 return std::make_unique<LabelWiseSparseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
             }

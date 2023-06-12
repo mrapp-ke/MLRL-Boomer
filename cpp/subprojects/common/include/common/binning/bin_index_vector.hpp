@@ -5,7 +5,6 @@
 
 #include "common/data/types.hpp"
 
-#include <limits>
 #include <memory>
 
 // Forward declarations

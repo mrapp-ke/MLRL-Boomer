@@ -240,7 +240,7 @@ In addition to the mandatory arguments that must be provided to the command line
 
 * ``--print-label-vectors`` (Default value = ``false``)
 
-  * ``true`` The unique label vectors contained in the training data are printed on the console.
+  * ``true`` The unique label vectors contained in the training data are printed on the console. The following options may be specified via the bracket notation (see :ref:`parameters`):
 
     * ``sparse`` (Default value = ``false``) ``true``, if a sparse representation of label vectors should be used, ``false`` otherwise.
 
@@ -248,7 +248,7 @@ In addition to the mandatory arguments that must be provided to the command line
 
 * ``--store-label-vectors`` (Default value = ``false``)
 
-  * ``true`` The unique label vectors contained in the training data are written into a .csv file.
+  * ``true`` The unique label vectors contained in the training data are written into a .csv file. Does only have an effect if the parameter ```--output-dir`` is specified. The following options may be specified via the bracket notation (see :ref:`parameters`):
 
     * ``sparse`` (Default value = ``false``) ``true``, if a sparse representation of label vectors should be used, ``false`` otherwise.
 
@@ -287,6 +287,38 @@ In addition to the mandatory arguments that must be provided to the command line
     * ``print_heads`` (Default value = ``true``) ``true``, if the heads of rules should be printed, ``false`` otherwise.
 
   * ``false`` The induced rules are not written into a .txt file.
+
+* ``--print-marginal-probability-calibration-model`` (Default value = ``false``)
+
+  * ``true`` The model for the calibration of marginal probabilities is printed on the console. The following options may be specified via the bracket notation (see :ref:`parameters`):
+
+    * ``decimals`` (Default value = ``2``) The number of decimals to be used for thresholds and probabilities or 0, if the number of decimals should not be restricted.
+
+  * ``false`` The model for the calibration of marginal probabilities is not printed on the console.
+
+* ``--store-marginal-probability-calibration-model`` (Default value = ``false``)
+
+  * ``true`` The model for the calibration of marginal probabilities is written into a .csv file. Does only have an effect if the parameter ``--output-dir`` is specified. The following options may be specified via the bracket notation (see :ref:`parameters`):
+
+    * ``decimals`` (Default value = ``0``) The number of decimals to be used for thresholds and probabilities or 0, if the number of decimals should not be restricted.
+
+  * ``false`` The model for the calibration of marginal probabilities is not written into a .csv file.
+
+* ``--print-joint-probability-calibration-model`` (Default value = ``false``)
+
+  * ``true`` The model for the calibration of joint probabilities is printed on the console. The following options may be specified via the bracket notation (see :ref:`parameters`):
+
+    * ``decimals`` (Default value = ``2``) The number of decimals to be used for thresholds and probabilities or 0, if the number of decimals should not be restricted.
+
+  * ``false`` The model for the calibration of joint probabilities is not printed on the console.
+
+* ``--store-joint-probability-calibration-model`` (Default value = ``false``)
+
+  * ``true`` The model for the calibration of joint probabilities is written into a .csv file. Does only have an effect if the parameter ``--output-dir`` is specified. The following options may be specified via the bracket notation (see :ref:`parameters`):
+
+    * ``decimals`` (Default value = ``2``) The number of decimals to be used for thresholds and probabilities or 0, if the number of decimals should not be restricted.
+
+  * ``false`` The model for the calibration of joint probabilities is not written into a .csv file.
 
 * ``--log-level`` (Default value = ``info``)
 

@@ -7,7 +7,6 @@
 #include "common/sampling/partition_single.hpp"
 #include "stratified_sampling_common.hpp"
 
-#include <cmath>
 #include <set>
 #include <unordered_map>
 

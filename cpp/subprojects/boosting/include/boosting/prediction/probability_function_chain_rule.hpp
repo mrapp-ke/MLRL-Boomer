@@ -29,7 +29,9 @@ namespace boosting {
             ChainRuleFactory(
               std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr);
 
-            std::unique_ptr<IJointProbabilityFunction> create() const override;
+            std::unique_ptr<IJointProbabilityFunction> create(
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override;
     };
 
 }

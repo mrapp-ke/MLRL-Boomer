@@ -2,6 +2,7 @@
 
 #include "boosting/prediction/predictor_probability_common.hpp"
 #include "boosting/prediction/transformation_probability_marginalized.hpp"
+#include "common/prediction/probability_calibration_no.hpp"
 
 #include <stdexcept>
 
@@ -10,7 +11,10 @@ namespace boosting {
     template<typename FeatureMatrix, typename Model>
     static inline std::unique_ptr<IProbabilityPredictor> createPredictor(
       const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads,
-      const LabelVectorSet* labelVectorSet, const IJointProbabilityFunctionFactory& jointProbabilityFunctionFactory) {
+      const LabelVectorSet* labelVectorSet,
+      const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+      const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
+      const IJointProbabilityFunctionFactory& jointProbabilityFunctionFactory) {
         if (!labelVectorSet) {
             throw std::runtime_error(
               "Information about the label vectors that have been encountered in the training data is required for "
@@ -22,7 +26,8 @@ namespace boosting {
 
         if (labelVectorSet->getNumLabelVectors() > 0) {
             probabilityTransformationPtr = std::make_unique<MarginalizedProbabilityTransformation>(
-              *labelVectorSet, jointProbabilityFunctionFactory.create());
+              *labelVectorSet, jointProbabilityFunctionFactory.create(marginalProbabilityCalibrationModel,
+                                                                      jointProbabilityCalibrationModel));
         }
 
         return std::make_unique<ProbabilityPredictor<FeatureMatrix, Model>>(featureMatrix, model, numLabels, numThreads,
@@ -30,17 +35,17 @@ namespace boosting {
     }
 
     /**
-     * Allows to create instances of the type `IProbabilityPredictor` that allow to predict marginalized probabilities
-     * for given query examples, which estimate the chance of individual labels to be relevant, by summing up the scores
-     * that are provided by individual rules of an existing rule-based model and comparing the aggregated score vector
-     * to the known label vectors according to a certain distance measure. The probability for an individual label
-     * calculates as the sum of the distances that have been obtained for all label vectors, where the respective label
-     * is specified to be relevant, divided by the total sum of all distances.
+     * Allows to create instances of the type `IProbabilityPredictor` that allow to predict label-wise probabilities for
+     * given query examples by marginalizing over the joint probabilities of known label vectors.
      */
     class MarginalizedProbabilityPredictorFactory final : public IProbabilityPredictorFactory {
         private:
 
             const std::unique_ptr<IJointProbabilityFunctionFactory> jointProbabilityFunctionFactoryPtr_;
+
+            const IMarginalProbabilityCalibrationModel* marginalProbabilityCalibrationModel_;
+
+            const IJointProbabilityCalibrationModel* jointProbabilityCalibrationModel_;
 
             const uint32 numThreads_;
 
@@ -52,31 +57,56 @@ namespace boosting {
              *                                              implementations of the function to be used to transform
              *                                              regression scores that are predicted for an example into
              *                                              joint probabilities
+             * @param marginalProbabilityCalibrationModel   A pointer to an object of type
+             *                                              `IMarginalProbabilityCalibrationModel` to be used for the
+             *                                              calibration of marginal probabilities or a null pointer, if
+             *                                              no such model is available
+             * @param jointProbabilityCalibrationModel      A pointer to an object of type
+             *                                              `IJointProbabilityCalibrationModel` to be used for the
+             *                                              calibration of joint probabilities or a null pointer, if no
+             *                                              such model is available
              * @param numThreads                            The number of CPU threads to be used to make predictions for
              *                                              different query examples in parallel. Must be at least 1
              */
             MarginalizedProbabilityPredictorFactory(
-              std::unique_ptr<IJointProbabilityFunctionFactory> jointProbabilityFunctionFactoryPtr, uint32 numThreads)
+              std::unique_ptr<IJointProbabilityFunctionFactory> jointProbabilityFunctionFactoryPtr,
+              const IMarginalProbabilityCalibrationModel* marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel* jointProbabilityCalibrationModel, uint32 numThreads)
                 : jointProbabilityFunctionFactoryPtr_(std::move(jointProbabilityFunctionFactoryPtr)),
-                  numThreads_(numThreads) {}
+                  marginalProbabilityCalibrationModel_(marginalProbabilityCalibrationModel),
+                  jointProbabilityCalibrationModel_(jointProbabilityCalibrationModel), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<IProbabilityPredictor> create(const CContiguousConstView<const float32>& featureMatrix,
-                                                          const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                          uint32 numLabels) const override {
+            std::unique_ptr<IProbabilityPredictor> create(
+              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const LabelVectorSet* labelVectorSet,
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
+              uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
+                                       marginalProbabilityCalibrationModel_ ? *marginalProbabilityCalibrationModel_
+                                                                            : marginalProbabilityCalibrationModel,
+                                       jointProbabilityCalibrationModel_ ? *jointProbabilityCalibrationModel_
+                                                                         : jointProbabilityCalibrationModel,
                                        *jointProbabilityFunctionFactoryPtr_);
             }
 
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<IProbabilityPredictor> create(const CsrConstView<const float32>& featureMatrix,
-                                                          const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                          uint32 numLabels) const override {
+            std::unique_ptr<IProbabilityPredictor> create(
+              const CsrConstView<const float32>& featureMatrix, const RuleList& model,
+              const LabelVectorSet* labelVectorSet,
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
+              uint32 numLabels) const override {
                 return createPredictor(featureMatrix, model, numLabels, numThreads_, labelVectorSet,
+                                       marginalProbabilityCalibrationModel_ ? *marginalProbabilityCalibrationModel_
+                                                                            : marginalProbabilityCalibrationModel,
+                                       jointProbabilityCalibrationModel_ ? *jointProbabilityCalibrationModel_
+                                                                         : jointProbabilityCalibrationModel,
                                        *jointProbabilityFunctionFactoryPtr_);
             }
     };
@@ -86,6 +116,19 @@ namespace boosting {
       const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : lossConfigPtr_(std::move(lossConfigPtr)), multiThreadingConfigPtr_(std::move(multiThreadingConfigPtr)) {}
 
+    bool MarginalizedProbabilityPredictorConfig::isProbabilityCalibrationModelUsed() const {
+        return noMarginalProbabilityCalibrationModelPtr_ == nullptr;
+    }
+
+    IMarginalizedProbabilityPredictorConfig& MarginalizedProbabilityPredictorConfig::setUseProbabilityCalibrationModel(
+      bool useProbabilityCalibrationModel) {
+        noMarginalProbabilityCalibrationModelPtr_ =
+          useProbabilityCalibrationModel ? nullptr : createNoProbabilityCalibrationModel();
+        noJointProbabilityCalibrationModelPtr_ =
+          useProbabilityCalibrationModel ? nullptr : createNoProbabilityCalibrationModel();
+        return *this;
+    }
+
     std::unique_ptr<IProbabilityPredictorFactory> MarginalizedProbabilityPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IJointProbabilityFunctionFactory> jointProbabilityFunctionFactoryPtr =
@@ -94,7 +137,8 @@ namespace boosting {
         if (jointProbabilityFunctionFactoryPtr) {
             uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
             return std::make_unique<MarginalizedProbabilityPredictorFactory>(
-              std::move(jointProbabilityFunctionFactoryPtr), numThreads);
+              std::move(jointProbabilityFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
+              noJointProbabilityCalibrationModelPtr_.get(), numThreads);
         } else {
             return nullptr;
         }

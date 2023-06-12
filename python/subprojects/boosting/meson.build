@@ -8,6 +8,8 @@ cython_module_names = [
     'learner_boomer',
     'learner',
     'post_processor',
+    'prediction',
+    'probability_calibration',
     'regularization'
 ]
 

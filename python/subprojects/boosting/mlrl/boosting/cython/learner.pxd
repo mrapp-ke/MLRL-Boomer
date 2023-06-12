@@ -1,6 +1,10 @@
 from mlrl.boosting.cython.head_type cimport IDynamicPartialHeadConfig, IFixedPartialHeadConfig
 from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
+from mlrl.boosting.cython.prediction cimport IExampleWiseBinaryPredictorConfig, IGfmBinaryPredictorConfig, \
+    ILabelWiseBinaryPredictorConfig, ILabelWiseProbabilityPredictorConfig, IMarginalizedProbabilityPredictorConfig
+from mlrl.boosting.cython.probability_calibration cimport IIsotonicJointProbabilityCalibratorConfig, \
+    IIsotonicMarginalProbabilityCalibratorConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
 
 ctypedef double (*DdotFunction)(int* n, double* dx, int* incx, double* dy, int* incy)
@@ -205,6 +209,20 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
         IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning()
 
 
+    cdef cppclass IIsotonicMarginalProbabilityCalibrationMixin"boosting::IBoostingRuleLearner::IIsotonicMarginalProbabilityCalibrationMixin":
+
+        # Functions:
+
+        IIsotonicMarginalProbabilityCalibratorConfig& useIsotonicMarginalProbabilityCalibration()
+
+
+    cdef cppclass IIsotonicJointProbabilityCalibrationMixin"boosting::IBoostingRuleLearner::IIsotonicJointProbabilityCalibrationMixin":
+
+        # Functions:
+
+        IIsotonicJointProbabilityCalibratorConfig& useIsotonicJointProbabilityCalibration()
+        
+
     cdef cppclass IAutomaticLabelBinningMixin"boosting::IBoostingRuleLearner::IAutomaticLabelBinningMixin":
 
         # Functions:
@@ -216,21 +234,21 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         # Functions:
 
-        void useLabelWiseBinaryPredictor()
+        ILabelWiseBinaryPredictorConfig& useLabelWiseBinaryPredictor()
 
 
     cdef cppclass IExampleWiseBinaryPredictorMixin"boosting::IBoostingRuleLearner::IExampleWiseBinaryPredictorMixin":
 
         # Functions:
 
-        void useExampleWiseBinaryPredictor()
+        IExampleWiseBinaryPredictorConfig& useExampleWiseBinaryPredictor()
 
 
     cdef cppclass IGfmBinaryPredictorMixin"boosting::IBoostingRuleLearner::IGfmBinaryPredictorMixin":
 
         # Functions:
 
-        void useGfmBinaryPredictor()
+        IGfmBinaryPredictorConfig& useGfmBinaryPredictor()
 
 
     cdef cppclass IAutomaticBinaryPredictorMixin"boosting::IBoostingRuleLearner::IAutomaticBinaryPredictorMixin":
@@ -252,7 +270,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         # Functions:
 
-        void useLabelWiseProbabilityPredictor()
+        ILabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor()
 
 
     cdef cppclass IMarginalizedProbabilityPredictorMixin\
@@ -260,7 +278,7 @@ cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
 
         # Functions:
 
-        void useMarginalizedProbabilityPredictor()
+        IMarginalizedProbabilityPredictorConfig& useMarginalizedProbabilityPredictor()
 
 
     cdef cppclass IAutomaticProbabilityPredictorMixin\

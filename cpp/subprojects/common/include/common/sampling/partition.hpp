@@ -17,6 +17,10 @@ class IStatistics;
 class IThresholdsSubset;
 class ICoverageState;
 class AbstractPrediction;
+class IMarginalProbabilityCalibrationModel;
+class IMarginalProbabilityCalibrator;
+class IJointProbabilityCalibrationModel;
+class IJointProbabilityCalibrator;
 
 /**
  * Defines an interface for all classes that provide access to the indices of training examples that have been split
@@ -80,4 +84,36 @@ class IPartition {
          */
         virtual void recalculatePrediction(const IThresholdsSubset& thresholdsSubset,
                                            const ICoverageState& coverageState, AbstractPrediction& head) = 0;
+
+        /**
+         * Fits and returns a model for the calibration of marginal probabilities, based on the type of this partition.
+         *
+         * @param probabilityCalibrator A reference to an object of type `IMarginalProbabilityCalibrator` that should be
+         *                              used to fit the calibration model
+         * @param labelMatrix           A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise
+         *                              access to the labels of the training examples
+         * @param statistics            A reference to an object of type `IStatistics` that provides access to
+         *                              statistics about the labels of the training examples
+         * @return                      An unique pointer to an object of type `IMarginalProbabilityCalibrationModel`
+         *                              that has been fit
+         */
+        virtual std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
+          const IMarginalProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
+          const IStatistics& statistics) = 0;
+
+        /**
+         * Fits and returns a model for the calibration of joint probabilities, based on the type of this partition.
+         *
+         * @param probabilityCalibrator A reference to an object of type `IJointProbabilityCalibrator` that should be
+         *                              used to fit the calibration model
+         * @param labelMatrix           A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise
+         *                              access to the labels of the training examples
+         * @param statistics            A reference to an object of type `IStatistics` that provides access to
+         *                              statistics about the labels of the training examples
+         * @return                      An unique pointer to an object of type `IJointProbabilityCalibrationModel` that
+         *                              has been fit
+         */
+        virtual std::unique_ptr<IJointProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
+          const IJointProbabilityCalibrator& probabilityCalibrator, const IRowWiseLabelMatrix& labelMatrix,
+          const IStatistics& statistics) = 0;
 };

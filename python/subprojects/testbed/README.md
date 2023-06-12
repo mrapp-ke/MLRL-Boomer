@@ -20,7 +20,9 @@ Most notably, the package includes command line APIs that allow configuring the 
 * **Rule models can be evaluated incrementally**, i.e., they can be evaluated repeatedly using a subset of the rules with increasing size.
 * **Textual representations of rule models can be saved** to output files and printed on the console. In addition, the **characteristics of models can also be saved** and printed.
 * **Characteristics of datasets can be saved** to output files and printed on the console.
+* **Unique label vectors contained in a dataset can be saved** to output files and printed on the console.
 * **Predictions can be saved** to output files and printed on the console. In addition, **characteristics of binary predictions can also be saved** and printed.
+* **Models for the calibration of probabilities can be saved** to output files and printed on the console.
 * **Models can be saved on disk** in order to be reused by future experiments.
 * **Algorithmic parameters can be read from configuration files** instead of providing them via command line arguments. When providing parameters via the command line, corresponding configuration files can automatically be saved on disk.
 
