@@ -383,7 +383,7 @@ namespace boosting {
                 CContiguousConstView<float64>::value_const_iterator scoresBegin =
                   scoreMatrix.row_values_cbegin(exampleIndex);
                 CContiguousConstView<float64>::value_const_iterator scoresEnd =
-                  scoreMatrix.row_values_cbegin(exampleIndex);
+                  scoreMatrix.row_values_cend(exampleIndex);
                 float64 jointProbability =
                   jointProbabilityFunction.transformScoresIntoJointProbability(i, labelVector, scoresBegin, scoresEnd);
                 bins.emplace_back(jointProbability, trueProbability);
@@ -413,7 +413,7 @@ namespace boosting {
                 CContiguousConstView<float64>::value_const_iterator scoresBegin =
                   scoreMatrix.row_values_cbegin(exampleIndex);
                 CContiguousConstView<float64>::value_const_iterator scoresEnd =
-                  scoreMatrix.row_values_cbegin(exampleIndex);
+                  scoreMatrix.row_values_cend(exampleIndex);
                 float64 jointProbability =
                   jointProbabilityFunction.transformScoresIntoJointProbability(i, labelVector, scoresBegin, scoresEnd);
                 bins.emplace_back(jointProbability, trueProbability);
