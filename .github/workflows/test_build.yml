@@ -6,9 +6,12 @@ on:
       - '**/*.cpp'
       - '**/*.pxd'
       - '**/*.pyx'
+      - '**/*.py'
       - '**/*.build'
       - 'Makefile'
       - 'python/requirements.txt'
+      - 'doc/**'
+      - 'python/subprojects/testbed/tests/**'
       - '.github/workflows/test_build.yml'
 jobs:
   linux_build:
@@ -20,6 +23,14 @@ jobs:
       - name: Compile via GCC
         run: |
           make compile
+      - name: Run Tests
+        run: |
+          make tests
+      - name: Install Doxygen
+        uses: ssciwr/doxygen-install@v1
+      - name: Generate Documentation
+        run: |
+          make doc
   macos_build:
     name: Test MacOS build
     runs-on: macos-latest
