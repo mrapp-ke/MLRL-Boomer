@@ -149,30 +149,39 @@ void RuleList::visitUsed(IBody::EmptyBodyVisitor emptyBodyVisitor, IBody::Conjun
     }
 }
 
-std::unique_ptr<IBinaryPredictor> RuleList::createBinaryPredictor(const IBinaryPredictorFactory& factory,
-                                                                  const CContiguousFeatureMatrix& featureMatrix,
-                                                                  const ILabelSpaceInfo& labelSpaceInfo,
-                                                                  uint32 numLabels) const {
-    return labelSpaceInfo.createBinaryPredictor(factory, featureMatrix, *this, numLabels);
+std::unique_ptr<IBinaryPredictor> RuleList::createBinaryPredictor(
+  const IBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+  const ILabelSpaceInfo& labelSpaceInfo,
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
+    return labelSpaceInfo.createBinaryPredictor(factory, featureMatrix, *this, marginalProbabilityCalibrationModel,
+                                                jointProbabilityCalibrationModel, numLabels);
 }
 
-std::unique_ptr<IBinaryPredictor> RuleList::createBinaryPredictor(const IBinaryPredictorFactory& factory,
-                                                                  const CsrFeatureMatrix& featureMatrix,
-                                                                  const ILabelSpaceInfo& labelSpaceInfo,
-                                                                  uint32 numLabels) const {
-    return labelSpaceInfo.createBinaryPredictor(factory, featureMatrix, *this, numLabels);
+std::unique_ptr<IBinaryPredictor> RuleList::createBinaryPredictor(
+  const IBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const ILabelSpaceInfo& labelSpaceInfo,
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
+    return labelSpaceInfo.createBinaryPredictor(factory, featureMatrix, *this, marginalProbabilityCalibrationModel,
+                                                jointProbabilityCalibrationModel, numLabels);
 }
 
 std::unique_ptr<ISparseBinaryPredictor> RuleList::createSparseBinaryPredictor(
   const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
-  const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
-    return labelSpaceInfo.createSparseBinaryPredictor(factory, featureMatrix, *this, numLabels);
+  const ILabelSpaceInfo& labelSpaceInfo,
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
+    return labelSpaceInfo.createSparseBinaryPredictor(
+      factory, featureMatrix, *this, marginalProbabilityCalibrationModel, jointProbabilityCalibrationModel, numLabels);
 }
 
 std::unique_ptr<ISparseBinaryPredictor> RuleList::createSparseBinaryPredictor(
   const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
-  const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
-    return labelSpaceInfo.createSparseBinaryPredictor(factory, featureMatrix, *this, numLabels);
+  const ILabelSpaceInfo& labelSpaceInfo,
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
+    return labelSpaceInfo.createSparseBinaryPredictor(
+      factory, featureMatrix, *this, marginalProbabilityCalibrationModel, jointProbabilityCalibrationModel, numLabels);
 }
 
 std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(const IScorePredictorFactory& factory,
@@ -191,15 +200,20 @@ std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(const IScorePred
 
 std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(
   const IProbabilityPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
-  const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const {
-    return labelSpaceInfo.createProbabilityPredictor(factory, featureMatrix, *this, numLabels);
+  const ILabelSpaceInfo& labelSpaceInfo,
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
+    return labelSpaceInfo.createProbabilityPredictor(factory, featureMatrix, *this, marginalProbabilityCalibrationModel,
+                                                     jointProbabilityCalibrationModel, numLabels);
 }
 
-std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(const IProbabilityPredictorFactory& factory,
-                                                                            const CsrFeatureMatrix& featureMatrix,
-                                                                            const ILabelSpaceInfo& labelSpaceInfo,
-                                                                            uint32 numLabels) const {
-    return labelSpaceInfo.createProbabilityPredictor(factory, featureMatrix, *this, numLabels);
+std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(
+  const IProbabilityPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
+  const ILabelSpaceInfo& labelSpaceInfo,
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
+    return labelSpaceInfo.createProbabilityPredictor(factory, featureMatrix, *this, marginalProbabilityCalibrationModel,
+                                                     jointProbabilityCalibrationModel, numLabels);
 }
 
 std::unique_ptr<IRuleList> createRuleList(bool defaultRuleTakesPrecedence) {

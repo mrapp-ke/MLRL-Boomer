@@ -5,8 +5,6 @@
 
 #include "common/data/types.hpp"
 
-#include <cmath>
-
 namespace boosting {
 
     /**

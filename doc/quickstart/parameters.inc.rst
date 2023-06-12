@@ -118,7 +118,7 @@ The following parameters allow to control the behavior of the algorithm:
 * ``holdout`` (Default value = ``'auto'``)
 
   * ``'none'`` No holdout set is created.
-  * ``'auto'`` The most suitable strategy for creating a holdout set is chosen automatically, depending on whether a holdout set is needed and depending on the loss function.
+  * ``'auto'`` The most suitable strategy for creating a holdout set is chosen automatically, depending on whether a holdout set is needed according to the parameters ``--global_pruning``, ``--marginal-probability-calibration`` or ``--joint-probability-calibration`` and depending on the loss function.
   * ``'random'`` The available examples are randomly split into a training set and a holdout set. The following options may be provided using the bracket notation:
   
     * ``holdout_set_size`` (Default value = ``0.33``) The percentage of examples to be included in the holdout set. For example, a value of 0.3 corresponds to 30% of the available examples. Must be in (0, 1).
@@ -228,18 +228,47 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'squared-hinge-label-wise'`` A variant of the squared hinge loss that is applied to each label individually.
   * ``'squared-hinge-example-wise'`` A variant fot he squared hinge loss that takes all labels into account at the same time.
 
+* ``marginal_probability_calibration`` (Default value = ``'none'``)
+
+  * ``'none'`` Marginal probabilities are not calibrated.
+  * ``'isotonic'`` Marginal probabilities are calibrated via isotonic regression.
+
+    * ``'use_holdout_set'`` (Default value = ``'true'``) ``'true'``, if the calibration model should be fit to the examples in the holdout set, if available, ``'false'``, if the training set should be used instead.
+
+* ``joint_probability_calibration`` (Default value = ``'none'``)
+
+  * ``'none'`` Joint probabilities are not calibrated.
+  * ``'isotonic'`` Joint probabilities are calibrated via isotonic regression.
+
+    * ``'use_holdout_set'`` (Default value = ``'true'``) ``'true'``, if the calibration model should be fit to the examples in the holdout set, if available, ``'false'``, if the training set should be used instead.
+
 * ``binary_predictor`` (Default value = ``'auto'``)
 
   * ``'auto'`` The most suitable strategy for predicting binary labels is chosen automatically, depending on the loss function.
-  * ``'label-wise'`` The prediction for an example is determined for each label independently.
-  * ``'example-wise'`` The label vector that is predicted for an example is chosen from the set of label vectors encountered in the training data.
+  * ``'label-wise'`` The prediction for an example is determined for each label independently. The following options may be provided using the bracket notation:
+
+    * ``based_on_probabilities`` (Default value = ``'false'``) ``'true'``, if binary predictions should be derived from probability estimates rather than regression scores if supported by the loss function, ``'false'`` otherwise.
+    * ``use_probability_calibration`` (Default value = ``'true'``) ``'true'``, if a model for the calibration of probabilities should be used, if available, ``'false'`` otherwise. Does only have an effect if the option ``based_on_probabilities`` is set to ``'true'``.
+
+  * ``'example-wise'`` The label vector that is predicted for an example is chosen from the set of label vectors encountered in the training data. The following options may be provided using the bracket notation:
+
+    * ``based_on_probabilities`` (Default value = ``'false'``) ``'true'``, if binary predictions should be derived from probability estimates rather than regression scores if supported by the loss function, ``'false'`` otherwise.
+    * ``use_probability_calibration`` (Default value = ``'true'``) ``'true'``, if a model for the calibration of probabilities should be used, if available, ``'false'`` otherwise. Does only have an effect if the option ``based_on_probabilities`` is set to ``'true'``.
+
   * ``'gfm'`` The label vector that is predicted for an example is chosen according to the general F-measure maximizer (GFM).
+
+    * ``use_probability_calibration`` (Default value = ``'true'``) ``'true'``, if a model for the calibration of probabilities should be used, if available, ``'false'`` otherwise.
 
 * ``probability_predictor`` (Default value = ``'auto'``)
 
   * ``'auto'`` The most suitable strategy for predicting probability estimates is chosen automatically, depending on the loss function.
   * ``'label-wise'`` The prediction for an example is determined for each label independently
+
+    * ``use_probability_calibration`` (Default value = ``'true'``) ``'true'``, if a model for the calibration of probabilities should be used, if available, ``'false'`` otherwise.
+
   * ``'marginalized'`` The prediction for an example is determined via marginalization over the set of label vectors encountered in the training data.
+
+    * ``use_probability_calibration`` (Default value = ``'true'``) ``'true'``, if a model for the calibration of probabilities should be used, if available, ``'false'`` otherwise.
 
 * ``l1_regularization_weight`` (Default value = ``0.0``)
 

@@ -60,6 +60,8 @@ source_files = [
     'src/common/prediction/label_vector_set.cpp',
     'src/common/prediction/prediction_matrix_dense.cpp',
     'src/common/prediction/prediction_matrix_sparse_binary.cpp',
+    'src/common/prediction/probability_calibration_isotonic.cpp',
+    'src/common/prediction/probability_calibration_no.cpp',
     'src/common/rule_evaluation/score_vector_binned_dense.cpp',
     'src/common/rule_evaluation/score_vector_dense.cpp',
     'src/common/rule_induction/rule_induction_top_down_beam_search.cpp',

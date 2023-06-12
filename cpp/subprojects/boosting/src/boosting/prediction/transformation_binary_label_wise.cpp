@@ -2,7 +2,9 @@
 
 namespace boosting {
 
-    LabelWiseBinaryTransformation::LabelWiseBinaryTransformation(float64 threshold) : threshold_(threshold) {}
+    LabelWiseBinaryTransformation::LabelWiseBinaryTransformation(
+      std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr)
+        : discretizationFunctionPtr_(std::move(discretizationFunctionPtr)) {}
 
     void LabelWiseBinaryTransformation::apply(VectorConstView<float64>::const_iterator scoresBegin,
                                               VectorConstView<float64>::const_iterator scoresEnd,
@@ -12,7 +14,7 @@ namespace boosting {
 
         for (uint32 i = 0; i < numPredictions; i++) {
             float64 score = scoresBegin[i];
-            uint8 binaryPrediction = score > threshold_ ? 1 : 0;
+            uint8 binaryPrediction = discretizationFunctionPtr_->discretizeScore(i, score) ? 1 : 0;
             predictionBegin[i] = binaryPrediction;
         }
     }
@@ -25,7 +27,7 @@ namespace boosting {
         for (uint32 i = 0; i < numPredictions; i++) {
             float64 score = scoresBegin[i];
 
-            if (score > threshold_) {
+            if (discretizationFunctionPtr_->discretizeScore(i, score)) {
                 predictionRow.emplace_back(i);
             }
         }

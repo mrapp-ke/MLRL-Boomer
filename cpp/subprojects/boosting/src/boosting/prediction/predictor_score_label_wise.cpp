@@ -5,9 +5,8 @@
 namespace boosting {
 
     /**
-     * Allows to create instances of the type `IScorePredictor` that allow to predict label-wise regression scores for
-     * given query examples by summing up the scores that are provided by the individual rules of an existing rule-based
-     * model for each label individually.
+     * Allows to create instances of the type `IScorePredictor` that predict label-wise regression scores for given
+     * query examples by summing up the scores that are provided by individual rules for each label individually.
      */
     class LabelWiseScorePredictorFactory final : public IScorePredictorFactory {
         private:

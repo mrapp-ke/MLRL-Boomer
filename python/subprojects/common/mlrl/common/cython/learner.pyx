@@ -11,6 +11,8 @@ from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseF
 from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
 from mlrl.common.cython.label_space_info cimport create_label_space_info
 from mlrl.common.cython.prediction cimport BinaryPredictor, ProbabilityPredictor, ScorePredictor, SparseBinaryPredictor
+from mlrl.common.cython.probability_calibration cimport create_joint_probability_calibration_model, \
+    create_marginal_probability_calibration_model
 from mlrl.common.cython.rule_model cimport create_rule_model
 
 from abc import ABC, abstractmethod
@@ -36,15 +38,24 @@ cdef class TrainingResult:
     trained, as well as additional information that is necessary for obtaining predictions for unseen data.
     """
 
-    def __cinit__(self, uint32 num_labels, RuleModel rule_model not None, LabelSpaceInfo label_space_info not None):
+    def __cinit__(self, uint32 num_labels, RuleModel rule_model not None, LabelSpaceInfo label_space_info not None,
+                  MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
+                  JointProbabilityCalibrationModel joint_probability_calibration_model not None):
         """
-        :param num_labels:          The number of labels for which a model has been trained
-        :param rule_model:          The `RuleModel` that has been trained
-        :param label_space_info:    The `LabelSpaceInfo` that may be used as a basis for making predictions
+        :param num_labels:                              The number of labels for which a model has been trained
+        :param rule_model:                              The `RuleModel` that has been trained
+        :param label_space_info:                        The `LabelSpaceInfo` that may be used as a basis for making
+                                                        predictions
+        :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
+                                                        the calibration of marginal probabilities
+        :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
+                                                        calibration of joint probabilities    
         """
         self.num_labels = num_labels
         self.rule_model = rule_model
         self.label_space_info = label_space_info
+        self.marginal_probability_calibration_model = marginal_probability_calibration_model
+        self.joint_probability_calibration_model = joint_probability_calibration_model
 
 
 cdef class RuleLearner:
@@ -77,9 +88,18 @@ cdef class RuleLearner:
         cdef uint32 num_labels = training_result_ptr.get().getNumLabels()
         cdef unique_ptr[IRuleModel] rule_model_ptr = move(training_result_ptr.get().getRuleModel())
         cdef unique_ptr[ILabelSpaceInfo] label_space_info_ptr = move(training_result_ptr.get().getLabelSpaceInfo())
+        cdef unique_ptr[IMarginalProbabilityCalibrationModel] marginal_probability_calibration_model_ptr = \
+            move(training_result_ptr.get().getMarginalProbabilityCalibrationModel())
+        cdef unique_ptr[IJointProbabilityCalibrationModel] joint_probability_calibration_model_ptr = \
+            move(training_result_ptr.get().getJointProbabilityCalibrationModel())
         cdef RuleModel rule_model = create_rule_model(move(rule_model_ptr))
         cdef LabelSpaceInfo label_space_info = create_label_space_info(move(label_space_info_ptr))
-        return TrainingResult.__new__(TrainingResult, num_labels, rule_model, label_space_info)
+        cdef MarginalProbabilityCalibrationModel marginal_probability_calibration_model = \
+            create_marginal_probability_calibration_model(move(marginal_probability_calibration_model_ptr))
+        cdef JointProbabilityCalibrationModel joint_probability_calibration_model = \
+            create_joint_probability_calibration_model(move(joint_probability_calibration_model_ptr))
+        return TrainingResult.__new__(TrainingResult, num_labels, rule_model, label_space_info,
+                                      marginal_probability_calibration_model, joint_probability_calibration_model)
 
     def can_predict_binary(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
         """
@@ -94,24 +114,33 @@ cdef class RuleLearner:
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
 
     def create_binary_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
-                                LabelSpaceInfo label_space_info not None, uint32 num_labels) -> BinaryPredictor:
+                                LabelSpaceInfo label_space_info not None,
+                                MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
+                                JointProbabilityCalibrationModel joint_probability_calibration_model not None,
+                                uint32 num_labels) -> BinaryPredictor:
         """
         Creates and returns a predictor that may be used to predict binary labels for given query examples. If the
         prediction of binary labels is not supported by the rule learner, a `RuntimeError` is thrown.
 
-        :param feature_matrix:      A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
-                                    query examples
-        :param rule_model:          The `RuleModel` that should be used to obtain predictions
-        :param label_space_info:    The `LabelSpaceInfo` that provides information about the label space that may be
-                                    used as a basis for obtaining predictions
-        :param num_labels:          The number of labels to predict for
-        :return:                    A `BinaryPredictor` that may be used to predict binary labels for the given query
-                                    examples
+        :param feature_matrix:                          A `RowWiseFeatureMatrix` that provides row-wise access to the
+                                                        feature values of the query examples
+        :param rule_model:                              The `RuleModel` that should be used to obtain predictions
+        :param label_space_info:                        The `LabelSpaceInfo` that provides information about the label
+                                                        space that may be used as a basis for obtaining predictions
+        :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
+                                                        the calibration of marginal probabilities
+        :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
+                                                        calibration of joint probabilities    
+        :param num_labels:                              The number of labels to predict for
+        :return:                                        A `BinaryPredictor` that may be used to predict binary labels
+                                                        for the given query examples
         """
         cdef unique_ptr[IBinaryPredictor] predictor_ptr = move(self.get_rule_learner_ptr().createBinaryPredictor(
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
             dereference(rule_model.get_rule_model_ptr()),
             dereference(label_space_info.get_label_space_info_ptr()),
+            dereference(marginal_probability_calibration_model.get_marginal_probability_calibration_model_ptr()),
+            dereference(joint_probability_calibration_model.get_joint_probability_calibration_model_ptr()),
             num_labels))
         cdef BinaryPredictor binary_predictor = BinaryPredictor.__new__(BinaryPredictor)
         binary_predictor.predictor_ptr = move(predictor_ptr)
@@ -119,25 +148,33 @@ cdef class RuleLearner:
 
     def create_sparse_binary_predictor(self, RowWiseFeatureMatrix feature_matrix not None,
                                        RuleModel rule_model not None, LabelSpaceInfo label_space_info not None,
+                                       MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
+                                       JointProbabilityCalibrationModel joint_probability_calibration_model not None,
                                        uint32 num_labels) -> SparseBinaryPredictor:
         """
         Creates and returns a predictor that may be used to predict sparse binary labels for given query examples. If
         the prediction of sparse binary labels is not supported by the rule learner, a `RuntimeError` is thrown.
 
-        :param feature_matrix:      A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
-                                    query examples
-        :param rule_model:          The `RuleModel` that should be used to obtain predictions
-        :param label_space_info:    The `LabelSpaceInfo` that provides information about the label space that may be
-                                    used as a basis for obtaining predictions
-        :param num_labels:          The number of labels to predict for
-        :return:                    A `SparseBinaryPredictor` that may be used to predict sparse binary labels for the
-                                    given query examples
+        :param feature_matrix:                          A `RowWiseFeatureMatrix` that provides row-wise access to the
+                                                        feature values of the query examples
+        :param rule_model:                              The `RuleModel` that should be used to obtain predictions
+        :param label_space_info:                        The `LabelSpaceInfo` that provides information about the label
+                                                        space that may be used as a basis for obtaining predictions
+        :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
+                                                        the calibration of marginal probabilities
+        :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
+                                                        calibration of joint probabilities                                                            
+        :param num_labels:                              The number of labels to predict for
+        :return:                                        A `SparseBinaryPredictor` that may be used to predict sparse
+                                                        binary labels for the given query examples
         """
         cdef unique_ptr[ISparseBinaryPredictor] predictor_ptr = \
             move(self.get_rule_learner_ptr().createSparseBinaryPredictor(
                 dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
                 dereference(rule_model.get_rule_model_ptr()),
                 dereference(label_space_info.get_label_space_info_ptr()),
+                dereference(marginal_probability_calibration_model.get_marginal_probability_calibration_model_ptr()),
+                dereference(joint_probability_calibration_model.get_joint_probability_calibration_model_ptr()),
                 num_labels))
         cdef SparseBinaryPredictor sparse_binary_predictor = SparseBinaryPredictor.__new__(SparseBinaryPredictor)
         sparse_binary_predictor.predictor_ptr = move(predictor_ptr)
@@ -193,25 +230,33 @@ cdef class RuleLearner:
 
     def create_probability_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
                                      LabelSpaceInfo label_space_info not None,
+                                     MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
+                                     JointProbabilityCalibrationModel joint_probability_calibration_model not None,
                                      uint32 num_labels) -> ProbabilityPredictor:
         """
         Creates and returns a predictor that may be used to predict probability estimates for given query examples. If
         the prediction of probability estimates is not supported by the rule learner, a `RuntimeError` is thrown.
 
-        :param feature_matrix:      A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
-                                    query examples
-        :param rule_model:          The `RuleModel` that should be used to obtain predictions
-        :param label_space_info:    The `LabelSpaceInfo` that provides information about the label space that may be
-                                    used as a basis for obtaining predictions
-        :param num_labels:          The number of labels to predict for
-        :return:                    A `ProbabilityPredictor` that may be used to predict probability estimates for the
-                                    given query examples
+        :param feature_matrix:                          A `RowWiseFeatureMatrix` that provides row-wise access to the
+                                                        feature values of the query examples
+        :param rule_model:                              The `RuleModel` that should be used to obtain predictions
+        :param label_space_info:                        The `LabelSpaceInfo` that provides information about the label
+                                                        space that may be used as a basis for obtaining predictions
+        :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
+                                                        the calibration of marginal probabilities
+        :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
+                                                        calibration of joint probabilities    
+        :param num_labels:                              The number of labels to predict for
+        :return:                                        A `ProbabilityPredictor` that may be used to predict probability
+                                                        estimates for the given query examples
         """
         cdef unique_ptr[IProbabilityPredictor] predictor_ptr = \
             move(self.get_rule_learner_ptr().createProbabilityPredictor(
                 dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
                 dereference(rule_model.get_rule_model_ptr()),
                 dereference(label_space_info.get_label_space_info_ptr()),
+                dereference(marginal_probability_calibration_model.get_marginal_probability_calibration_model_ptr()),
+                dereference(joint_probability_calibration_model.get_joint_probability_calibration_model_ptr()),
                 num_labels))
         cdef ProbabilityPredictor probability_predictor = ProbabilityPredictor.__new__(ProbabilityPredictor)
         probability_predictor.predictor_ptr = move(predictor_ptr)
@@ -804,5 +849,31 @@ class SequentialPostOptimizationMixin(ABC):
         it in the context of the other rules.
 
         :return: A `SequentialPostOptimizationConfig` that allows further configuration of the post-optimization method
+        """
+        pass
+
+
+class NoMarginalProbabilityCalibrationMixin(ABC):
+    """
+    Allows to configure a rule learner to not calibrate marginal probabilities.
+    """
+
+    @abstractmethod
+    def use_no_marginal_probability_calibration(self):
+        """
+        Configures the rule learner to not calibrate marginal probabilities.
+        """
+        pass
+
+
+class NoJointProbabilityCalibrationMixin(ABC):
+    """
+    Allows to configure a rule learner to not calibrate joint probabilities.
+    """
+     
+    @abstractmethod
+    def use_no_joint_probability_calibration(self):
+        """
+        Configures the rule learner to not calibrate joint probabilities.
         """
         pass

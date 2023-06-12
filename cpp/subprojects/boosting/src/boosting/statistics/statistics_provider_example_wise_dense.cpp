@@ -85,6 +85,14 @@ namespace boosting {
                   std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
 
             /**
+             * @see `IBoostingStatistics::visitScoreMatrix`
+             */
+            void visitScoreMatrix(IBoostingStatistics::DenseScoreMatrixVisitor denseVisitor,
+                                  IBoostingStatistics::SparseScoreMatrixVisitor sparseVisitor) const override {
+                denseVisitor(*this->scoreMatrixPtr_);
+            }
+
+            /**
              * @see `IExampleWiseStatistics::toLabelWiseStatistics`
              */
             std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> toLabelWiseStatistics(

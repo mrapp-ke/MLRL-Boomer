@@ -12,17 +12,20 @@ bool CsrFeatureMatrix::isSparse() const {
     return true;
 }
 
-std::unique_ptr<IBinaryPredictor> CsrFeatureMatrix::createBinaryPredictor(const IBinaryPredictorFactory& factory,
-                                                                          const IRuleModel& ruleModel,
-                                                                          const ILabelSpaceInfo& labelSpaceInfo,
-                                                                          uint32 numLabels) const {
-    return ruleModel.createBinaryPredictor(factory, *this, labelSpaceInfo, numLabels);
+std::unique_ptr<IBinaryPredictor> CsrFeatureMatrix::createBinaryPredictor(
+  const IBinaryPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
+    return ruleModel.createBinaryPredictor(factory, *this, labelSpaceInfo, marginalProbabilityCalibrationModel,
+                                           jointProbabilityCalibrationModel, numLabels);
 }
 
 std::unique_ptr<ISparseBinaryPredictor> CsrFeatureMatrix::createSparseBinaryPredictor(
   const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
-  uint32 numLabels) const {
-    return ruleModel.createSparseBinaryPredictor(factory, *this, labelSpaceInfo, numLabels);
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
+    return ruleModel.createSparseBinaryPredictor(factory, *this, labelSpaceInfo, marginalProbabilityCalibrationModel,
+                                                 jointProbabilityCalibrationModel, numLabels);
 }
 
 std::unique_ptr<IScorePredictor> CsrFeatureMatrix::createScorePredictor(const IScorePredictorFactory& factory,
@@ -34,8 +37,10 @@ std::unique_ptr<IScorePredictor> CsrFeatureMatrix::createScorePredictor(const IS
 
 std::unique_ptr<IProbabilityPredictor> CsrFeatureMatrix::createProbabilityPredictor(
   const IProbabilityPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
-  uint32 numLabels) const {
-    return ruleModel.createProbabilityPredictor(factory, *this, labelSpaceInfo, numLabels);
+  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+  const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
+    return ruleModel.createProbabilityPredictor(factory, *this, labelSpaceInfo, marginalProbabilityCalibrationModel,
+                                                jointProbabilityCalibrationModel, numLabels);
 }
 
 std::unique_ptr<ICsrFeatureMatrix> createCsrFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,

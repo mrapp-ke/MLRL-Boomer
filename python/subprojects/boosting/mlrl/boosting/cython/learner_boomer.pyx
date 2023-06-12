@@ -31,6 +31,13 @@ from mlrl.boosting.cython.head_type cimport DynamicPartialHeadConfig, FixedParti
     IDynamicPartialHeadConfig, IFixedPartialHeadConfig
 from mlrl.boosting.cython.label_binning cimport EqualWidthLabelBinningConfig, IEqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport ConstantShrinkageConfig, IConstantShrinkageConfig
+from mlrl.boosting.cython.prediction cimport ExampleWiseBinaryPredictorConfig, GfmBinaryPredictorConfig, \
+    IExampleWiseBinaryPredictorConfig, IGfmBinaryPredictorConfig, ILabelWiseBinaryPredictorConfig, \
+    ILabelWiseProbabilityPredictorConfig, IMarginalizedProbabilityPredictorConfig, LabelWiseBinaryPredictorConfig, \
+    LabelWiseProbabilityPredictorConfig, MarginalizedProbabilityPredictorConfig
+from mlrl.boosting.cython.probability_calibration cimport IIsotonicJointProbabilityCalibratorConfig, \
+    IIsotonicMarginalProbabilityCalibratorConfig, IsotonicJointProbabilityCalibratorConfig, \
+    IsotonicMarginalProbabilityCalibratorConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig, ManualRegularizationConfig
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, DefaultRuleMixin, \
@@ -39,7 +46,8 @@ from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, Defa
     GreedyTopDownRuleInductionMixin, InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, \
     IrepRulePruningMixin, LabelSamplingWithoutReplacementMixin, LabelWiseStratifiedBiPartitionSamplingMixin, \
     LabelWiseStratifiedInstanceSamplingMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, \
-    NoInstanceSamplingMixin, NoLabelSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, \
+    NoInstanceSamplingMixin, NoJointProbabilityCalibrationMixin, NoLabelSamplingMixin, \
+    NoMarginalProbabilityCalibrationMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, \
     NoParallelStatisticUpdateMixin, NoPartitionSamplingMixin, NoPostProcessorMixin, NoRulePruningMixin, \
     NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, \
     ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, \
@@ -52,7 +60,8 @@ from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, Automati
     AutomaticProbabilityPredictorMixin, AutomaticStatisticsMixin, CompleteHeadMixin, ConstantShrinkageMixin, \
     DenseStatisticsMixin, DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, \
     ExampleWiseLogisticLossMixin, ExampleWiseSquaredErrorLossMixin, ExampleWiseSquaredHingeLossMixin, \
-    FixedPartialHeadMixin, GfmBinaryPredictorMixin, L1RegularizationMixin, L2RegularizationMixin, \
+    FixedPartialHeadMixin, GfmBinaryPredictorMixin, IsotonicJointProbabilityCalibrationMixin, \
+    IsotonicMarginalProbabilityCalibrationMixin, L1RegularizationMixin, L2RegularizationMixin, \
     LabelWiseBinaryPredictorMixin, LabelWiseLogisticLossMixin, LabelWiseProbabilityPredictorMixin, \
     LabelWiseScorePredictorMixin, LabelWiseSquaredErrorLossMixin, LabelWiseSquaredHingeLossMixin, \
     MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
@@ -88,6 +97,8 @@ cdef class BoomerConfig(RuleLearnerConfig,
                         NoLabelBinningMixin,
                         EqualWidthLabelBinningMixin,
                         AutomaticLabelBinningMixin,
+                        IsotonicMarginalProbabilityCalibrationMixin,
+                        IsotonicJointProbabilityCalibrationMixin,
                         LabelWiseBinaryPredictorMixin,
                         ExampleWiseBinaryPredictorMixin,
                         GfmBinaryPredictorMixin,
@@ -133,7 +144,9 @@ cdef class BoomerConfig(RuleLearnerConfig,
                         NoGlobalPruningMixin,
                         PostPruningMixin,
                         NoSequentialPostOptimizationMixin,
-                        SequentialPostOptimizationMixin):
+                        SequentialPostOptimizationMixin,
+                        NoMarginalProbabilityCalibrationMixin,
+                        NoJointProbabilityCalibrationMixin):
     """
     Allows to configure the BOOMER algorithm.
     """
@@ -446,14 +459,47 @@ cdef class BoomerConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_label_wise_binary_predictor(self):
-        self.config_ptr.get().useLabelWiseBinaryPredictor()
+    def use_no_marginal_probability_calibration(self):
+        self.config_ptr.get().useNoMarginalProbabilityCalibration()
 
-    def use_example_wise_binary_predictor(self):
-        self.config_ptr.get().useExampleWiseBinaryPredictor()
+    def use_isotonic_marginal_probability_calibration(self) -> IsotonicMarginalProbabilityCalibratorConfig:
+        cdef IIsotonicMarginalProbabilityCalibratorConfig* config_ptr = \
+            &self.config_ptr.get().useIsotonicMarginalProbabilityCalibration()
+        cdef IsotonicMarginalProbabilityCalibratorConfig config = \
+            IsotonicMarginalProbabilityCalibratorConfig.__new__(IsotonicMarginalProbabilityCalibratorConfig)
+        config.config_ptr = config_ptr
+        return config
 
-    def use_gfm_binary_predictor(self):
-        self.config_ptr.get().useGfmBinaryPredictor()
+    def use_no_joint_probability_calibration(self):
+        self.config_ptr.get().useNoJointProbabilityCalibration()
+
+    def use_isotonic_joint_probability_calibration(self) -> IsotonicJointProbabilityCalibratorConfig:
+        cdef IIsotonicJointProbabilityCalibratorConfig* config_ptr = \
+            &self.config_ptr.get().useIsotonicJointProbabilityCalibration()
+        cdef IsotonicJointProbabilityCalibratorConfig config = \
+            IsotonicJointProbabilityCalibratorConfig.__new__(IsotonicJointProbabilityCalibratorConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_label_wise_binary_predictor(self) -> LabelWiseBinaryPredictorConfig:
+        cdef ILabelWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useLabelWiseBinaryPredictor()
+        cdef LabelWiseBinaryPredictorConfig config = \
+            LabelWiseBinaryPredictorConfig.__new__(LabelWiseBinaryPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_example_wise_binary_predictor(self) -> ExampleWiseBinaryPredictorConfig:
+        cdef IExampleWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useExampleWiseBinaryPredictor()
+        cdef ExampleWiseBinaryPredictorConfig config = \
+            ExampleWiseBinaryPredictorConfig.__new__(ExampleWiseBinaryPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_gfm_binary_predictor(self) -> GfmBinaryPredictorConfig:
+        cdef IGfmBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useGfmBinaryPredictor()
+        cdef GfmBinaryPredictorConfig config = GfmBinaryPredictorConfig.__new__(GfmBinaryPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
 
     def use_automatic_binary_predictor(self):
         self.config_ptr.get().useLabelWiseBinaryPredictor()
@@ -461,11 +507,21 @@ cdef class BoomerConfig(RuleLearnerConfig,
     def use_label_wise_score_predictor(self):
         self.config_ptr.get().useLabelWiseScorePredictor()
 
-    def use_label_wise_probability_predictor(self):
-        self.config_ptr.get().useLabelWiseProbabilityPredictor()
+    def use_label_wise_probability_predictor(self) -> LabelWiseProbabilityPredictorConfig:
+        cdef ILabelWiseProbabilityPredictorConfig* config_ptr = \
+            &self.config_ptr.get().useLabelWiseProbabilityPredictor()
+        cdef LabelWiseProbabilityPredictorConfig config = \
+            LabelWiseProbabilityPredictorConfig.__new__(LabelWiseProbabilityPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
 
-    def use_marginalized_probability_predictor(self):
-        self.config_ptr.get().useMarginalizedProbabilityPredictor()
+    def use_marginalized_probability_predictor(self) -> MarginalizedProbabilityPredictorConfig:
+        cdef IMarginalizedProbabilityPredictorConfig* config_ptr = \
+            &self.config_ptr.get().useMarginalizedProbabilityPredictor()
+        cdef MarginalizedProbabilityPredictorConfig config = \
+            MarginalizedProbabilityPredictorConfig.__new__(MarginalizedProbabilityPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
 
     def use_automatic_probability_predictor(self):
         self.config_ptr.get().useAutomaticProbabilityPredictor()

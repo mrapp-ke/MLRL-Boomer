@@ -8,7 +8,8 @@ from mlrl.common.cython.learner cimport IBeamSearchTopDownRuleInductionMixin, ID
     IInstanceSamplingWithoutReplacementMixin, IInstanceSamplingWithReplacementMixin, IIrepRulePruningMixin, \
     ILabelSamplingWithoutReplacementMixin, ILabelWiseStratifiedBiPartitionSamplingMixin, \
     ILabelWiseStratifiedInstanceSamplingMixin, INoFeatureBinningMixin, INoFeatureSamplingMixin, INoGlobalPruningMixin, \
-    INoInstanceSamplingMixin, INoLabelSamplingMixin, INoParallelPredictionMixin, INoParallelRuleRefinementMixin, \
+    INoInstanceSamplingMixin, INoJointProbabilityCalibrationMixin, INoLabelSamplingMixin, \
+    INoMarginalProbabilityCalibrationMixin, INoParallelPredictionMixin, INoParallelRuleRefinementMixin, \
     INoParallelStatisticUpdateMixin, INoPartitionSamplingMixin, INoPostProcessorMixin, INoRulePruningMixin, \
     INoSequentialPostOptimizationMixin, INoSizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
     IParallelPredictionMixin, IParallelRuleRefinementMixin, IParallelStatisticUpdateMixin, IPostPruningMixin, \
@@ -22,7 +23,8 @@ from mlrl.boosting.cython.learner cimport DdotFunction, DspmvFunction, DsysvFunc
     IAutomaticProbabilityPredictorMixin, IAutomaticStatisticsMixin, ICompleteHeadMixin, IConstantShrinkageMixin, \
     IDenseStatisticsMixin, IDynamicPartialHeadMixin, IEqualWidthLabelBinningMixin, IExampleWiseBinaryPredictorMixin, \
     IExampleWiseLogisticLossMixin, IExampleWiseSquaredErrorLossMixin, IExampleWiseSquaredHingeLossMixin, \
-    IFixedPartialHeadMixin, IGfmBinaryPredictorMixin, IL1RegularizationMixin, IL2RegularizationMixin, \
+    IFixedPartialHeadMixin, IGfmBinaryPredictorMixin, IIsotonicJointProbabilityCalibrationMixin, \
+    IIsotonicMarginalProbabilityCalibrationMixin, IL1RegularizationMixin, IL2RegularizationMixin, \
     ILabelWiseBinaryPredictorMixin, ILabelWiseLogisticLossMixin, ILabelWiseProbabilityPredictorMixin, \
     ILabelWiseScorePredictorMixin, ILabelWiseSquaredErrorLossMixin, ILabelWiseSquaredHingeLossMixin, \
     IMarginalizedProbabilityPredictorMixin, INoDefaultRuleMixin, INoL1RegularizationMixin, INoL2RegularizationMixin, \
@@ -59,6 +61,8 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             INoLabelBinningMixin,
                                                             IEqualWidthLabelBinningMixin,
                                                             IAutomaticLabelBinningMixin,
+                                                            IIsotonicMarginalProbabilityCalibrationMixin,
+                                                            IIsotonicJointProbabilityCalibrationMixin,
                                                             ILabelWiseBinaryPredictorMixin,
                                                             IExampleWiseBinaryPredictorMixin,
                                                             IGfmBinaryPredictorMixin,
@@ -104,7 +108,9 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             INoGlobalPruningMixin,
                                                             IPostPruningMixin,
                                                             INoSequentialPostOptimizationMixin,
-                                                            ISequentialPostOptimizationMixin):
+                                                            ISequentialPostOptimizationMixin,
+                                                            INoMarginalProbabilityCalibrationMixin,
+                                                            INoJointProbabilityCalibrationMixin):
         pass
 
     cdef cppclass IBoomer(IRuleLearner):

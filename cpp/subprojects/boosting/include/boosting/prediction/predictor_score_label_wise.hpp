@@ -9,8 +9,8 @@
 namespace boosting {
 
     /**
-     * Allows to configure predictors that predict label-wise regression scores for given query examples by summing up
-     * the scores that are provided by the individual rules of an existing rule-based model for each label individually.
+     * Allows to configure a predictor that predicts label-wise regression scores for given query examples by summing up
+     * the scores that are provided by individual rules for each label individually.
      */
     class LabelWiseScorePredictorConfig final : public IScorePredictorConfig {
         private:

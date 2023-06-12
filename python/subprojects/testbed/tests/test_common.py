@@ -101,6 +101,8 @@ class CmdBuilder:
         self.label_vectors_stored = False
         self.model_characteristics_stored = False
         self.rules_stored = False
+        self.marginal_probability_calibration_model_stored = False
+        self.joint_probability_calibration_model_stored = False
         self.args = [cmd, '--log-level', 'DEBUG', '--data-dir', data_dir, '--dataset', dataset]
         self.tmp_dirs = []
 
@@ -396,6 +398,64 @@ class CmdBuilder:
         self.rules_stored = store_rules
         self.args.append('--store-rules')
         self.args.append(str(store_rules).lower())
+        return self
+
+    def print_marginal_probability_calibration_model(self, print_marginal_probability_calibration_model: bool = True):
+        """
+        Configures whether textual representations of models for the calibration of marginal probabilities should be
+        printed on the console or not.
+
+        :param print_marginal_probability_calibration_model:    True, if textual representations of models for the
+                                                                calibration of marginal probabilities should be printed,
+                                                                False otherwise
+        :return:                                                The builder itself    
+        """
+        self.args.append('--print-marginal-probability-calibration-model')
+        self.args.append(str(print_marginal_probability_calibration_model).lower())
+        return self
+
+    def store_marginal_probability_calibration_model(self, store_marginal_probability_calibration_model: bool = True):
+        """
+        Configures whether textual representations of models for the calibration of marginal probabilities should be
+        written into output files or not.
+
+        :param store_marginal_probability_calibration_model:    True, if textual representations of models for the
+                                                                calibration of marginal probabilities should be written
+                                                                into output files, False otherwise
+        :return:                                                The builder itself    
+        """
+        self.marginal_probability_calibration_model_stored = store_marginal_probability_calibration_model
+        self.args.append('--store-marginal-probability-calibration-model')
+        self.args.append(str(store_marginal_probability_calibration_model).lower())
+        return self
+
+    def print_joint_probability_calibration_model(self, print_joint_probability_calibration_model: bool = True):
+        """
+        Configures whether textual representations of models for the calibration of joint probabilities should be
+        printed on the console or not.
+
+        :param print_joint_probability_calibration_model:   True, if textual representations of models for the
+                                                            calibration of joint probabilities should be printed, False
+                                                            otherwise
+        :return:                                            The builder itself    
+        """
+        self.args.append('--print-joint-probability-calibration-model')
+        self.args.append(str(print_joint_probability_calibration_model).lower())
+        return self
+
+    def store_joint_probability_calibration_model(self, store_joint_probability_calibration_model: bool = True):
+        """
+        Configures whether textual representations of models for the calibration of joint probabilities should be
+        written into output files or not.
+
+        :param store_joint_probability_calibration_model:   True, if textual representations of models for the
+                                                            calibration of joint probabilities should be written into
+                                                            output files, False otherwise
+        :return:                                            The builder itself    
+        """
+        self.joint_probability_calibration_model_stored = store_joint_probability_calibration_model
+        self.args.append('--store-joint-probability-calibration-model')
+        self.args.append(str(store_joint_probability_calibration_model).lower())
         return self
 
     def sparse_feature_format(self, sparse: bool = True):
@@ -708,12 +768,30 @@ class IntegrationTests(ABC, TestCase):
 
     def __assert_rule_files_exist(self, builder: CmdBuilder):
         """
-        Assert that the rule files, which shouldbe created by a command, exist.
+        Asserts that the rule files, which should be created by a command, exist.
 
         :param builder: The builder
         """
         if builder.rules_stored:
             self.__assert_output_files_exist(builder, 'rules', 'txt')
+
+    def __assert_marginal_probability_calibration_model_filex_exist(self, builder: CmdBuilder):
+        """
+        Asserts that the marginal probability calibration model files, which should be created by a command, exist.
+
+        :param builder: The builder
+        """
+        if builder.marginal_probability_calibration_model_stored:
+            self.__assert_output_files_exist(builder, 'marginal_probability_calibration_model', 'csv')
+
+    def __assert_joint_probability_calibration_model_filex_exist(self, builder: CmdBuilder):
+        """
+        Asserts that the joint probability calibration model files, which should be created by a command, exist.
+
+        :param builder: The builder
+        """
+        if builder.joint_probability_calibration_model_stored:
+            self.__assert_output_files_exist(builder, 'joint_probability_calibration_model', 'csv')
 
     @staticmethod
     def __remove_tmp_dirs(builder: CmdBuilder):
@@ -723,7 +801,7 @@ class IntegrationTests(ABC, TestCase):
         :param builder: The builder
         """
         for tmp_dir in builder.tmp_dirs:
-            shutil.rmtree(tmp_dir)
+            shutil.rmtree(tmp_dir, ignore_errors=True)
 
     @staticmethod
     def __format_cmd(args: List[str]):
@@ -789,6 +867,8 @@ class IntegrationTests(ABC, TestCase):
             self.__assert_label_vector_files_exist(builder)
             self.__assert_model_characteristic_files_exist(builder)
             self.__assert_rule_files_exist(builder)
+            self.__assert_marginal_probability_calibration_model_filex_exist(builder)
+            self.__assert_joint_probability_calibration_model_filex_exist(builder)
 
         self.__remove_tmp_dirs(builder)
 

@@ -7,8 +7,6 @@
 
 #include "common/data/view_fortran_contiguous.hpp"
 
-#include <cmath>
-
 /**
  * An implementation of the type `IFortranContiguousFeatureMatrix` that provides column-wise read-only access to the
  * feature values of examples that are stored in a pre-allocated Fortran-contiguous array.

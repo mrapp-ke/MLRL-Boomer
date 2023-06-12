@@ -6,9 +6,10 @@ Provides utility function for configuring boosting algorithms.
 from typing import Optional
 
 from mlrl.common.config import AUTOMATIC, BINNING_EQUAL_WIDTH, NONE, OPTION_BIN_RATIO, OPTION_MAX_BINS, \
-    OPTION_MIN_BINS, RULE_LEARNER_PARAMETERS, FeatureBinningParameter, FloatParameter, NominalParameter, \
-    ParallelRuleRefinementParameter, ParallelStatisticUpdateParameter, PartitionSamplingParameter
-from mlrl.common.cython.learner import DefaultRuleMixin, NoPostProcessorMixin
+    OPTION_MIN_BINS, OPTION_USE_HOLDOUT_SET, RULE_LEARNER_PARAMETERS, FeatureBinningParameter, FloatParameter, \
+    NominalParameter, ParallelRuleRefinementParameter, ParallelStatisticUpdateParameter, PartitionSamplingParameter
+from mlrl.common.cython.learner import DefaultRuleMixin, NoJointProbabilityCalibrationMixin, \
+    NoMarginalProbabilityCalibrationMixin, NoPostProcessorMixin
 from mlrl.common.options import BooleanOption, Options
 
 from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
@@ -17,11 +18,18 @@ from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, Automati
     AutomaticStatisticsMixin, CompleteHeadMixin, ConstantShrinkageMixin, DenseStatisticsMixin, \
     DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, \
     ExampleWiseLogisticLossMixin, ExampleWiseSquaredErrorLossMixin, ExampleWiseSquaredHingeLossMixin, \
-    FixedPartialHeadMixin, GfmBinaryPredictorMixin, L1RegularizationMixin, L2RegularizationMixin, \
+    FixedPartialHeadMixin, GfmBinaryPredictorMixin, IsotonicJointProbabilityCalibrationMixin, \
+    IsotonicMarginalProbabilityCalibrationMixin, L1RegularizationMixin, L2RegularizationMixin, \
     LabelWiseBinaryPredictorMixin, LabelWiseLogisticLossMixin, LabelWiseProbabilityPredictorMixin, \
     LabelWiseSquaredErrorLossMixin, LabelWiseSquaredHingeLossMixin, MarginalizedProbabilityPredictorMixin, \
     NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, NoLabelBinningMixin, SingleLabelHeadMixin, \
     SparseStatisticsMixin
+
+PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
+
+OPTION_BASED_ON_PROBABILITIES = 'based_on_probabilities'
+
+OPTION_USE_PROBABILITY_CALIBRATION_MODEL = 'use_probability_calibration'
 
 
 class ExtendedPartitionSamplingParameter(PartitionSamplingParameter):
@@ -325,6 +333,48 @@ class HeadTypeParameter(NominalParameter):
             config.use_automatic_heads()
 
 
+class MarginalProbabilityCalibrationParameter(NominalParameter):
+    """
+    A parameter that allows to configure the method to be used for the calibration of marginal probabilities.
+    """
+
+    def __init__(self):
+        super().__init__(name='marginal_probability_calibration',
+                         description='The name of the method to be used for the calibration of marginal probabilities')
+        self.add_value(name=NONE, mixin=NoMarginalProbabilityCalibrationMixin)
+        self.add_value(name=PROBABILITY_CALIBRATION_ISOTONIC,
+                       mixin=IsotonicMarginalProbabilityCalibrationMixin,
+                       options={OPTION_USE_HOLDOUT_SET})
+
+    def _configure(self, config, value: str, options: Optional[Options]):
+        if value == NONE:
+            config.use_no_marginal_probability_calibration()
+        if value == PROBABILITY_CALIBRATION_ISOTONIC:
+            c = config.use_isotonic_marginal_probability_calibration()
+            c.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, c.is_holdout_set_used()))
+
+
+class JointProbabilityCalibrationParameter(NominalParameter):
+    """
+    A parameter that allows to configure the method to be used for the calibration of joint probabilities.
+    """
+
+    def __init__(self):
+        super().__init__(name='joint_probability_calibration',
+                         description='The name of the method to be used for the calibration of joint probabilities')
+        self.add_value(name=NONE, mixin=NoJointProbabilityCalibrationMixin)
+        self.add_value(name=PROBABILITY_CALIBRATION_ISOTONIC,
+                       mixin=IsotonicJointProbabilityCalibrationMixin,
+                       options={OPTION_USE_HOLDOUT_SET})
+
+    def _configure(self, config, value: str, options: Optional[Options]):
+        if value == NONE:
+            config.use_no_joint_probability_calibration()
+        if value == PROBABILITY_CALIBRATION_ISOTONIC:
+            c = config.use_isotonic_joint_probability_calibration()
+            c.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, c.is_holdout_set_used()))
+
+
 class BinaryPredictorParameter(NominalParameter):
     """
     A parameter that allows to configure the strategy to be used for predicting binary labels.
@@ -339,21 +389,35 @@ class BinaryPredictorParameter(NominalParameter):
     def __init__(self):
         super().__init__(name='binary_predictor',
                          description='The name of the strategy to be used for predicting binary labels')
-        self.add_value(name=self.BINARY_PREDICTOR_LABEL_WISE, mixin=LabelWiseBinaryPredictorMixin)
-        self.add_value(name=self.BINARY_PREDICTOR_EXAMPLE_WISE, mixin=ExampleWiseBinaryPredictorMixin)
-        self.add_value(name=self.BINARY_PREDICTOR_GFM, mixin=GfmBinaryPredictorMixin)
+        self.add_value(name=self.BINARY_PREDICTOR_LABEL_WISE,
+                       mixin=LabelWiseBinaryPredictorMixin,
+                       options={OPTION_BASED_ON_PROBABILITIES, OPTION_USE_PROBABILITY_CALIBRATION_MODEL})
+        self.add_value(name=self.BINARY_PREDICTOR_EXAMPLE_WISE,
+                       mixin=ExampleWiseBinaryPredictorMixin,
+                       options={OPTION_BASED_ON_PROBABILITIES, OPTION_USE_PROBABILITY_CALIBRATION_MODEL})
+        self.add_value(name=self.BINARY_PREDICTOR_GFM,
+                       mixin=GfmBinaryPredictorMixin,
+                       options={OPTION_USE_PROBABILITY_CALIBRATION_MODEL})
         self.add_value(name=AUTOMATIC,
                        mixin=AutomaticBinaryPredictorMixin,
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'based on the parameter ' + LossParameter().argument_name)
 
-    def _configure(self, config, value: str, _: Optional[Options]):
+    def _configure(self, config, value: str, options: Optional[Options]):
         if value == self.BINARY_PREDICTOR_LABEL_WISE:
-            config.use_label_wise_binary_predictor()
+            c = config.use_label_wise_binary_predictor()
+            c.set_based_on_probabilities(options.get_bool(OPTION_BASED_ON_PROBABILITIES, c.is_based_on_probabilities()))
+            c.set_use_probability_calibration_model(
+                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL, c.is_probability_calibration_model_used()))
         elif value == self.BINARY_PREDICTOR_EXAMPLE_WISE:
-            config.use_example_wise_binary_predictor()
+            c = config.use_example_wise_binary_predictor()
+            c.set_based_on_probabilities(options.get_bool(OPTION_BASED_ON_PROBABILITIES, c.is_based_on_probabilities()))
+            c.set_use_probability_calibration_model(
+                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL, c.is_probability_calibration_model_used()))
         elif value == self.BINARY_PREDICTOR_GFM:
-            config.use_gfm_binary_predictor()
+            c = config.use_gfm_binary_predictor()
+            c.set_use_probability_calibration_model(
+                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL, c.is_probability_calibration_model_used()))
         elif value == AUTOMATIC:
             config.use_automatic_binary_predictor()
 
@@ -370,18 +434,26 @@ class ProbabilityPredictorParameter(NominalParameter):
     def __init__(self):
         super().__init__(name='probability_predictor',
                          description='The name of the strategy to be used for predicting probabilities')
-        self.add_value(name=self.PROBABILITY_PREDICTOR_LABEL_WISE, mixin=LabelWiseProbabilityPredictorMixin)
-        self.add_value(name=self.PROBABILITY_PREDICTOR_MARGINALIZED, mixin=MarginalizedProbabilityPredictorMixin)
+        self.add_value(name=self.PROBABILITY_PREDICTOR_LABEL_WISE,
+                       mixin=LabelWiseProbabilityPredictorMixin,
+                       options={OPTION_USE_PROBABILITY_CALIBRATION_MODEL})
+        self.add_value(name=self.PROBABILITY_PREDICTOR_MARGINALIZED,
+                       mixin=MarginalizedProbabilityPredictorMixin,
+                       options={OPTION_USE_PROBABILITY_CALIBRATION_MODEL})
         self.add_value(name=AUTOMATIC,
                        mixin=AutomaticProbabilityPredictorMixin,
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
                        + 'based on the parameter ' + LossParameter().argument_name)
 
-    def _configure(self, config, value: str, _: Optional[Options]):
+    def _configure(self, config, value: str, options: Optional[Options]):
         if value == self.PROBABILITY_PREDICTOR_LABEL_WISE:
-            config.use_label_wise_probability_predictor()
+            c = config.use_label_wise_probability_predictor()
+            c.set_use_probability_calibration_model(
+                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL, c.is_probability_calibration_model_used()))
         elif value == self.PROBABILITY_PREDICTOR_MARGINALIZED:
-            config.use_marginalized_probability_predictor()
+            c = config.use_marginalized_probability_predictor()
+            c.set_use_probability_calibration_model(
+                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL, c.is_probability_calibration_model_used()))
         elif value == AUTOMATIC:
             config.use_automatic_probability_predictor()
 
@@ -399,6 +471,8 @@ BOOSTING_RULE_LEARNER_PARAMETERS = RULE_LEARNER_PARAMETERS | {
     LabelBinningParameter(),
     LossParameter(),
     HeadTypeParameter(),
+    MarginalProbabilityCalibrationParameter(),
+    JointProbabilityCalibrationParameter(),
     BinaryPredictorParameter(),
     ProbabilityPredictorParameter()
 }

@@ -1,0 +1,696 @@
+INFO Starting experiment...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_overall.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_overall.model"
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Predicting for 196 test examples using a model of size 50...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 50:
+
+Example-wise F1         47.53
+Example-wise Jaccard    37.5
+Example-wise Precision  56.12
+Example-wise Recall     44.9
+Hamming Accuracy        69.47
+Hamming Loss            30.53
+Macro F1                38.8
+Macro Jaccard           27.97
+Macro Precision         67.88
+Macro Recall            44.02
+Micro F1                49.08
+Micro Jaccard           32.52
+Micro Precision         52.42
+Micro Recall            46.13
+Subset 0/1 Loss         89.8
+Subset Accuracy         10.2
+
+INFO Predicting for 196 test examples using a model of size 100...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 100:
+
+Example-wise F1         50.39
+Example-wise Jaccard    40.52
+Example-wise Precision  64.54
+Example-wise Recall     44.81
+Hamming Accuracy        73.38
+Hamming Loss            26.62
+Macro F1                42.65
+Macro Jaccard           30.53
+Macro Precision         70.48
+Macro Recall            42.45
+Micro F1                51.77
+Micro Jaccard           34.93
+Micro Precision         61.31
+Micro Recall            44.8
+Subset 0/1 Loss         87.24
+Subset Accuracy         12.76
+
+INFO Predicting for 196 test examples using a model of size 150...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 150:
+
+Example-wise F1         50.6
+Example-wise Jaccard    40.43
+Example-wise Precision  66.33
+Example-wise Recall     44.47
+Hamming Accuracy        73.98
+Hamming Loss            26.02
+Macro F1                43.06
+Macro Jaccard           30.68
+Macro Precision         59.83
+Macro Recall            41.39
+Micro F1                51.74
+Micro Jaccard           34.89
+Micro Precision         63.32
+Micro Recall            43.73
+Subset 0/1 Loss         88.27
+Subset Accuracy         11.73
+
+INFO Predicting for 196 test examples using a model of size 200...
+INFO Successfully predicted in 2 milliseconds
+INFO Evaluation result for test data using a model of size 200:
+
+Example-wise F1         48.3
+Example-wise Jaccard    38.69
+Example-wise Precision  64.03
+Example-wise Recall     42.01
+Hamming Accuracy        73.21
+Hamming Loss            26.79
+Macro F1                43.09
+Macro Jaccard           29.75
+Macro Precision         64.9
+Macro Recall            39.79
+Micro F1                49.76
+Micro Jaccard           33.12
+Micro Precision         61.9
+Micro Recall            41.6
+Subset 0/1 Loss         88.27
+Subset Accuracy         11.73
+
+INFO Predicting for 196 test examples using a model of size 250...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 250:
+
+Example-wise F1         48.32
+Example-wise Jaccard    39.12
+Example-wise Precision  64.8
+Example-wise Recall     41.33
+Hamming Accuracy        73.13
+Hamming Loss            26.87
+Macro F1                44.3
+Macro Jaccard           30.09
+Macro Precision         64.03
+Macro Recall            39.74
+Micro F1                49.36
+Micro Jaccard           32.77
+Micro Precision         61.85
+Micro Recall            41.07
+Subset 0/1 Loss         86.73
+Subset Accuracy         13.27
+
+INFO Predicting for 196 test examples using a model of size 300...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 300:
+
+Example-wise F1         48.59
+Example-wise Jaccard    39.37
+Example-wise Precision  65.31
+Example-wise Recall     41.41
+Hamming Accuracy        72.96
+Hamming Loss            27.04
+Macro F1                44.38
+Macro Jaccard           30.16
+Macro Precision         62.46
+Macro Recall            40.03
+Micro F1                49.36
+Micro Jaccard           32.77
+Micro Precision         61.26
+Micro Recall            41.33
+Subset 0/1 Loss         86.22
+Subset Accuracy         13.78
+
+INFO Predicting for 196 test examples using a model of size 350...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 350:
+
+Example-wise F1         48.33
+Example-wise Jaccard    39.16
+Example-wise Precision  64.88
+Example-wise Recall     41.24
+Hamming Accuracy        72.87
+Hamming Loss            27.13
+Macro F1                44.3
+Macro Jaccard           30.13
+Macro Precision         61.86
+Macro Recall            40.29
+Micro F1                49.45
+Micro Jaccard           32.84
+Micro Precision         60.94
+Micro Recall            41.6
+Subset 0/1 Loss         86.73
+Subset Accuracy         13.27
+
+INFO Predicting for 196 test examples using a model of size 400...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 400:
+
+Example-wise F1         48.88
+Example-wise Jaccard    39.67
+Example-wise Precision  65.9
+Example-wise Recall     41.75
+Hamming Accuracy        73.3
+Hamming Loss            26.7
+Macro F1                46.24
+Macro Jaccard           31.56
+Macro Precision         62.08
+Macro Recall            41.21
+Micro F1                50.16
+Micro Jaccard           33.47
+Micro Precision         61.96
+Micro Recall            42.13
+Subset 0/1 Loss         86.22
+Subset Accuracy         13.78
+
+INFO Predicting for 196 test examples using a model of size 450...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 450:
+
+Example-wise F1         48.01
+Example-wise Jaccard    39.33
+Example-wise Precision  64.63
+Example-wise Recall     40.65
+Hamming Accuracy        72.7
+Hamming Loss            27.3
+Macro F1                45.59
+Macro Jaccard           30.78
+Macro Precision         61.28
+Macro Recall            40.49
+Micro F1                49.13
+Micro Jaccard           32.56
+Micro Precision         60.55
+Micro Recall            41.33
+Subset 0/1 Loss         85.2
+Subset Accuracy         14.8
+
+INFO Predicting for 196 test examples using a model of size 500...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 500:
+
+Example-wise F1         48.28
+Example-wise Jaccard    39.58
+Example-wise Precision  64.88
+Example-wise Recall     41.16
+Hamming Accuracy        72.87
+Hamming Loss            27.13
+Macro F1                45.92
+Macro Jaccard           31.08
+Macro Precision         60.73
+Macro Recall            40.78
+Micro F1                49.61
+Micro Jaccard           32.98
+Micro Precision         60.85
+Micro Recall            41.87
+Subset 0/1 Loss         84.69
+Subset Accuracy         15.31
+
+INFO Predicting for 196 test examples using a model of size 550...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 550:
+
+Example-wise F1         49.15
+Example-wise Jaccard    40.82
+Example-wise Precision  64.54
+Example-wise Recall     42.52
+Hamming Accuracy        72.87
+Hamming Loss            27.13
+Macro F1                47.12
+Macro Jaccard           32.03
+Macro Precision         59.55
+Macro Recall            42.06
+Micro F1                50.23
+Micro Jaccard           33.54
+Micro Precision         60.53
+Micro Recall            42.93
+Subset 0/1 Loss         82.65
+Subset Accuracy         17.35
+
+INFO Predicting for 196 test examples using a model of size 600...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 600:
+
+Example-wise F1         49.81
+Example-wise Jaccard    41.26
+Example-wise Precision  64.8
+Example-wise Recall     43.45
+Hamming Accuracy        72.79
+Hamming Loss            27.21
+Macro F1                47.65
+Macro Jaccard           32.42
+Macro Precision         59.01
+Macro Recall            42.79
+Micro F1                50.62
+Micro Jaccard           33.88
+Micro Precision         60.07
+Micro Recall            43.73
+Subset 0/1 Loss         82.65
+Subset Accuracy         17.35
+
+INFO Predicting for 196 test examples using a model of size 650...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 650:
+
+Example-wise F1         46.17
+Example-wise Jaccard    37.87
+Example-wise Precision  61.14
+Example-wise Recall     39.71
+Hamming Accuracy        70.92
+Hamming Loss            29.08
+Macro F1                44.25
+Macro Jaccard           29.45
+Macro Precision         55.25
+Macro Recall            40.1
+Micro F1                47.22
+Micro Jaccard           30.91
+Micro Precision         56.04
+Micro Recall            40.8
+Subset 0/1 Loss         85.2
+Subset Accuracy         14.8
+
+INFO Predicting for 196 test examples using a model of size 700...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 700:
+
+Example-wise F1         47.52
+Example-wise Jaccard    38.94
+Example-wise Precision  63.27
+Example-wise Recall     40.82
+Hamming Accuracy        71.51
+Hamming Loss            28.49
+Macro F1                45.15
+Macro Jaccard           30.11
+Macro Precision         57.81
+Macro Recall            40.45
+Micro F1                48.06
+Micro Jaccard           31.63
+Micro Precision         57.41
+Micro Recall            41.33
+Subset 0/1 Loss         84.69
+Subset Accuracy         15.31
+
+INFO Predicting for 196 test examples using a model of size 750...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 750:
+
+Example-wise F1         45.29
+Example-wise Jaccard    36.98
+Example-wise Precision  59.69
+Example-wise Recall     39.29
+Hamming Accuracy        69.56
+Hamming Loss            30.44
+Macro F1                42.31
+Macro Jaccard           27.76
+Macro Precision         53.67
+Macro Recall            39.27
+Micro F1                45.92
+Micro Jaccard           29.8
+Micro Precision         52.96
+Micro Recall            40.53
+Subset 0/1 Loss         86.73
+Subset Accuracy         13.27
+
+INFO Predicting for 196 test examples using a model of size 800...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 800:
+
+Example-wise F1         43.78
+Example-wise Jaccard    35.75
+Example-wise Precision  57.4
+Example-wise Recall     38.27
+Hamming Accuracy        68.11
+Hamming Loss            31.89
+Macro F1                41.15
+Macro Jaccard           26.58
+Macro Precision         52.47
+Macro Recall            38.74
+Micro F1                44.44
+Micro Jaccard           28.57
+Micro Precision         50
+Micro Recall            40
+Subset 0/1 Loss         87.24
+Subset Accuracy         12.76
+
+INFO Predicting for 196 test examples using a model of size 850...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 850:
+
+Example-wise F1         45.19
+Example-wise Jaccard    37.15
+Example-wise Precision  59.01
+Example-wise Recall     39.54
+Hamming Accuracy        68.54
+Hamming Loss            31.46
+Macro F1                42.38
+Macro Jaccard           27.41
+Macro Precision         56.94
+Macro Recall            39.71
+Micro F1                45.43
+Micro Jaccard           29.39
+Micro Precision         50.83
+Micro Recall            41.07
+Subset 0/1 Loss         85.71
+Subset Accuracy         14.29
+
+INFO Predicting for 196 test examples using a model of size 900...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 900:
+
+Example-wise F1         44.73
+Example-wise Jaccard    36.64
+Example-wise Precision  58.33
+Example-wise Recall     39.2
+Hamming Accuracy        68.28
+Hamming Loss            31.72
+Macro F1                41.7
+Macro Jaccard           26.95
+Macro Precision         54.81
+Macro Recall            39.31
+Micro F1                45.07
+Micro Jaccard           29.09
+Micro Precision         50.33
+Micro Recall            40.8
+Subset 0/1 Loss         86.73
+Subset Accuracy         13.27
+
+INFO Predicting for 196 test examples using a model of size 950...
+INFO Successfully predicted in 2 milliseconds
+INFO Evaluation result for test data using a model of size 950:
+
+Example-wise F1         45.39
+Example-wise Jaccard    37.32
+Example-wise Precision  58.84
+Example-wise Recall     39.88
+Hamming Accuracy        68.54
+Hamming Loss            31.46
+Macro F1                42.02
+Macro Jaccard           27.28
+Macro Precision         55.04
+Macro Recall            39.92
+Micro F1                45.59
+Micro Jaccard           29.52
+Micro Precision         50.82
+Micro Recall            41.33
+Subset 0/1 Loss         86.22
+Subset Accuracy         13.78
+
+INFO Predicting for 196 test examples using a model of size 1000...
+INFO Successfully predicted in 0 milliseconds
+INFO Evaluation result for test data using a model of size 1000:
+
+Example-wise F1         45.29
+Example-wise Jaccard    37.41
+Example-wise Precision  58.08
+Example-wise Recall     40.05
+Hamming Accuracy        68.37
+Hamming Loss            31.63
+Macro F1                42.59
+Macro Jaccard           27.63
+Macro Precision         54.81
+Macro Recall            40.68
+Micro F1                45.77
+Micro Jaccard           29.68
+Micro Precision         50.48
+Micro Recall            41.87
+Subset 0/1 Loss         85.71
+Subset Accuracy         14.29
+
+INFO Marginal probability calibration model:
+
+┌──────────────────────┬─────────────────────────┐
+│   Label 1 thresholds │   Label 1 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0.0001 │                  0      │
+│               0.0003 │                  0.037  │
+│               0.0042 │                  0.0667 │
+│               0.0115 │                  0.1843 │
+│               0.0333 │                  0.3333 │
+│               0.035  │                  0.3423 │
+│               0.3082 │                  0.4583 │
+│               0.4909 │                  0.5476 │
+│               0.874  │                  0.6667 │
+│               0.9071 │                  0.7083 │
+│               0.9876 │                  1      │
+└──────────────────────┴─────────────────────────┘
+┌──────────────────────┬─────────────────────────┐
+│   Label 2 thresholds │   Label 2 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0.0008 │                  0      │
+│               0.0034 │                  0.1333 │
+│               0.0183 │                  0.1964 │
+│               0.1121 │                  0.2292 │
+│               0.1472 │                  0.2542 │
+│               0.3183 │                  0.5    │
+│               0.4667 │                  0.5104 │
+│               0.8179 │                  0.8    │
+│               0.9054 │                  1      │
+└──────────────────────┴─────────────────────────┘
+┌──────────────────────┬─────────────────────────┐
+│   Label 3 thresholds │   Label 3 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0.0001 │                  0      │
+│               0.0314 │                  0.1667 │
+│               0.1141 │                  0.35   │
+│               0.2815 │                  0.4375 │
+│               0.508  │                  0.5292 │
+│               0.9178 │                  0.6417 │
+│               0.9708 │                  0.6667 │
+│               0.9781 │                  0.75   │
+│               0.9876 │                  1      │
+└──────────────────────┴─────────────────────────┘
+┌──────────────────────┬─────────────────────────┐
+│   Label 4 thresholds │   Label 4 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0.0001 │                  0      │
+│               0.0015 │                  0.0244 │
+│               0.0434 │                  0.2222 │
+│               0.1045 │                  0.25   │
+│               0.3039 │                  0.375  │
+│               0.7331 │                  0.5    │
+│               0.7838 │                  0.6667 │
+│               0.9026 │                  0.8571 │
+│               0.9833 │                  1      │
+└──────────────────────┴─────────────────────────┘
+┌──────────────────────┬─────────────────────────┐
+│   Label 5 thresholds │   Label 5 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0.0001 │                  0      │
+│               0.0047 │                  0.1548 │
+│               0.0112 │                  0.1875 │
+│               0.049  │                  0.2167 │
+│               0.083  │                  0.269  │
+│               0.2792 │                  0.2944 │
+│               0.7587 │                  0.5    │
+│               0.9534 │                  0.7917 │
+│               0.9921 │                  1      │
+└──────────────────────┴─────────────────────────┘
+┌──────────────────────┬─────────────────────────┐
+│   Label 6 thresholds │   Label 6 probabilities │
+├──────────────────────┼─────────────────────────┤
+│               0.0001 │                  0      │
+│               0.0044 │                  0.0476 │
+│               0.0202 │                  0.25   │
+│               0.0319 │                  0.2692 │
+│               0.1761 │                  0.3333 │
+│               0.2109 │                  0.45   │
+│               0.4829 │                  0.5513 │
+│               0.9395 │                  0.8    │
+│               0.9577 │                  1      │
+└──────────────────────┴─────────────────────────┘
+
+INFO Joint probability calibration model:
+
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 1 thresholds │   Label vector 1 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                         0      │
+│                      0.005  │                         0.0667 │
+│                      0.026  │                         0.0958 │
+│                      0.2215 │                         0.3333 │
+│                      0.3098 │                         0.4167 │
+└─────────────────────────────┴────────────────────────────────┘
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 2 thresholds │   Label vector 2 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                            0   │
+│                      0.0453 │                            0.1 │
+│                      0.0863 │                            0.5 │
+└─────────────────────────────┴────────────────────────────────┘
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 3 thresholds │   Label vector 3 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                         0.0017 │
+│                      0.008  │                         0.125  │
+│                      0.0134 │                         0.2615 │
+│                      0.0622 │                         0.3    │
+│                      0.1276 │                         0.4464 │
+└─────────────────────────────┴────────────────────────────────┘
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 4 thresholds │   Label vector 4 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                         0.005  │
+│                      0.0407 │                         0.0909 │
+│                      0.0638 │                         0.3906 │
+│                      0.1736 │                         0.5    │
+│                      0.1901 │                         0.6667 │
+│                      0.2173 │                         0.7917 │
+│                      0.5368 │                         1      │
+└─────────────────────────────┴────────────────────────────────┘
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 5 thresholds │   Label vector 5 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                         0      │
+│                      0.004  │                         0.1374 │
+│                      0.0924 │                         0.2562 │
+│                      0.244  │                         0.3333 │
+│                      0.2819 │                         0.5    │
+│                      0.4141 │                         1      │
+└─────────────────────────────┴────────────────────────────────┘
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 6 thresholds │   Label vector 6 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                         0      │
+│                      0.0059 │                         0.1167 │
+│                      0.0553 │                         0.25   │
+│                      0.0916 │                         0.3083 │
+│                      0.3116 │                         0.6667 │
+└─────────────────────────────┴────────────────────────────────┘
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 7 thresholds │   Label vector 7 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                         0      │
+│                      0.0996 │                         0.1111 │
+└─────────────────────────────┴────────────────────────────────┘
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 8 thresholds │   Label vector 8 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                         0.0032 │
+│                      0.0006 │                         0.0731 │
+│                      0.0342 │                         0.3461 │
+└─────────────────────────────┴────────────────────────────────┘
+┌─────────────────────────────┬────────────────────────────────┐
+│   Label vector 9 thresholds │   Label vector 9 probabilities │
+├─────────────────────────────┼────────────────────────────────┤
+│                      0      │                         0      │
+│                      0      │                         0.0769 │
+│                      0.0003 │                         0.0909 │
+│                      0.0043 │                         0.1667 │
+│                      0.0065 │                         0.2313 │
+│                      0.2408 │                         0.4    │
+└─────────────────────────────┴────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 10 thresholds │   Label vector 10 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0.0968 │
+│                       0      │                          0.1607 │
+│                       0.0211 │                          0.2292 │
+│                       0.0389 │                          0.2435 │
+│                       0.164  │                          0.5    │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 11 thresholds │   Label vector 11 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0      │
+│                       0.0122 │                          0.0769 │
+│                       0.0258 │                          0.1464 │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 12 thresholds │   Label vector 12 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0      │
+│                       0.0213 │                          0.1621 │
+│                       0.1546 │                          0.2792 │
+│                       0.3184 │                          0.3917 │
+│                       0.7531 │                          1      │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 13 thresholds │   Label vector 13 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0      │
+│                       0.0963 │                          0.0667 │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 14 thresholds │   Label vector 14 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0.0202 │
+│                       0.0013 │                          0.2297 │
+│                       0.0338 │                          0.2458 │
+│                       0.0578 │                          0.375  │
+│                       0.07   │                          0.5    │
+│                       0.086  │                          0.5052 │
+│                       0.2351 │                          0.6667 │
+│                       0.3011 │                          1      │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 15 thresholds │   Label vector 15 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0.0013 │
+│                       0.008  │                          0.0303 │
+│                       0.0227 │                          0.0345 │
+│                       0.0545 │                          0.0909 │
+│                       0.1048 │                          0.3333 │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 16 thresholds │   Label vector 16 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0      │
+│                       0.0058 │                          0.0208 │
+│                       0.0914 │                          0.1429 │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 17 thresholds │   Label vector 17 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0      │
+│                       0.0209 │                          0.0556 │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 18 thresholds │   Label vector 18 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                            0 │                               0 │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 19 thresholds │   Label vector 19 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0      │
+│                       0.0006 │                          0.0189 │
+│                       0.0255 │                          0.05   │
+│                       0.265  │                          0.5    │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 20 thresholds │   Label vector 20 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0      │
+│                       0.0367 │                          0.1667 │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 21 thresholds │   Label vector 21 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                            0 │                               0 │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 22 thresholds │   Label vector 22 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                            0 │                               0 │
+└──────────────────────────────┴─────────────────────────────────┘
+┌──────────────────────────────┬─────────────────────────────────┐
+│   Label vector 23 thresholds │   Label vector 23 probabilities │
+├──────────────────────────────┼─────────────────────────────────┤
+│                       0      │                          0.003  │
+│                       0.0076 │                          0.0769 │
+│                       0.0256 │                          0.1561 │
+│                       0.0826 │                          0.5    │
+│                       0.1486 │                          1      │
+└──────────────────────────────┴─────────────────────────────────┘
+
+INFO Successfully finished after 677 milliseconds

@@ -318,12 +318,11 @@ namespace boosting {
             /**
              * @see `IDistanceMeasure::measureDistance`
              */
-            float64 measureDistance(const VectorConstView<uint32>& relevantLabelIndices,
+            float64 measureDistance(uint32 labelVectorIndex, const LabelVector& labelVector,
                                     VectorView<float64>::const_iterator scoresBegin,
                                     VectorView<float64>::const_iterator scoresEnd) const override {
                 uint32 numLabels = scoresEnd - scoresBegin;
-                auto labelIterator =
-                  make_binary_forward_iterator(relevantLabelIndices.cbegin(), relevantLabelIndices.cend());
+                auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
                 return evaluateInternally(scoresBegin, labelIterator, numLabels);
             }
     };

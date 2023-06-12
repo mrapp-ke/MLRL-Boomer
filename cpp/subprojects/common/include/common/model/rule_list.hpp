@@ -324,23 +324,29 @@ class RuleList final : public IRuleList {
                        IHead::CompleteHeadVisitor completeHeadVisitor,
                        IHead::PartialHeadVisitor partialHeadVisitor) const override;
 
-        std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IBinaryPredictorFactory& factory,
-                                                                const CContiguousFeatureMatrix& featureMatrix,
-                                                                const ILabelSpaceInfo& labelSpaceInfo,
-                                                                uint32 numLabels) const override;
+        std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
+          const IBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
-        std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IBinaryPredictorFactory& factory,
-                                                                const CsrFeatureMatrix& featureMatrix,
-                                                                const ILabelSpaceInfo& labelSpaceInfo,
-                                                                uint32 numLabels) const override;
+        std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
+          const IBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
-          const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const override;
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
-          const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const override;
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const CContiguousFeatureMatrix& featureMatrix,
@@ -352,15 +358,17 @@ class RuleList final : public IRuleList {
                                                               const ILabelSpaceInfo& labelSpaceInfo,
                                                               uint32 numLabels) const override;
 
-        std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(const IProbabilityPredictorFactory& factory,
-                                                                          const CContiguousFeatureMatrix& featureMatrix,
-                                                                          const ILabelSpaceInfo& labelSpaceInfo,
-                                                                          uint32 numLabels) const override;
+        std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
+          const IProbabilityPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
-        std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(const IProbabilityPredictorFactory& factory,
-                                                                          const CsrFeatureMatrix& featureMatrix,
-                                                                          const ILabelSpaceInfo& labelSpaceInfo,
-                                                                          uint32 numLabels) const override;
+        std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
+          const IProbabilityPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
+          const ILabelSpaceInfo& labelSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 };
 
 /**
