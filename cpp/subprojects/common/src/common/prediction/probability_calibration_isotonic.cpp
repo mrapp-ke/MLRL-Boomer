@@ -33,7 +33,7 @@ static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<Tuple<floa
     bins.resize(n);
 }
 
-static inline void performIsotonicRegression(ListOfLists<Tuple<float64>>::row bins) {
+static inline void aggregateNonIncreasingBins(ListOfLists<Tuple<float64>>::row bins) {
     // We apply the "pool adjacent violators algorithm" (PAVA) to merge adjacent bins with non-increasing
     // probabilities. A temporary array `pools` is used to mark the beginning and end of subsequences with
     // non-increasing probabilities. If such a subsequence was found in range [i, j] then `pools[i] = j` and
@@ -148,7 +148,7 @@ void IsotonicProbabilityCalibrationModel::fit() {
     for (uint32 i = 0; i < numLists; i++) {
         ListOfLists<Tuple<float64>>::row bins = binsPerList_[i];
         sortByThresholdsAndEliminateDuplicates(bins);
-        performIsotonicRegression(bins);
+        aggregateNonIncreasingBins(bins);
     }
 }
 
