@@ -1,12 +1,14 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
+import os
 import shutil
 import subprocess
 
 from abc import ABC
 from functools import reduce
 from os import makedirs, path
+from sys import platform
 from typing import List, Optional
 from unittest import SkipTest, TestCase
 
@@ -73,6 +75,20 @@ HOLDOUT_RANDOM = 'random'
 HOLDOUT_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
 
 HOLDOUT_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
+
+
+def SkipTestOnCI(f):
+    """
+    A decorator that disables all annotated test case if run on a continuous integration system.
+    """
+
+    def wrapper(*args, **kwargs):
+        if os.getenv('GITHUB_ACTIONS') == 'true':
+            raise SkipTest('Temporarily disabled when run on CI')
+        else:
+            f(*args, **kwargs)
+
+    return wrapper
 
 
 class CmdBuilder:
@@ -909,6 +925,8 @@ class CommonIntegrationTests(IntegrationTests, ABC):
     def setUpClass(cls):
         if cls is CommonIntegrationTests:
             raise SkipTest(cls.__name__ + ' is an abstract base class')
+        elif not platform.startswith('linux'):
+            raise SkipTest('Integration tests are only supported on Linux')
         else:
             super(CommonIntegrationTests, cls).setUpClass()
 
