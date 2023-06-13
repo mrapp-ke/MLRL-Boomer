@@ -95,6 +95,7 @@ The following parameters allow to control the behavior of the algorithm:
   * ``'without-replacement'`` A random subset of the features is used to search for the refinements of rules. The following options may be provided using the bracket notation:
 
     * ``sample_size`` (Default value = ``0``) The percentage of features to be included in a sample. For example, a value of 0.6 corresponds to 60% of the features. Must be in (0, 1] or 0, if the sample size should be calculated as log2(A - 1) + 1), where A denotes the number of available features.
+    * ``num_retained`` (Default value = ``0``) The number of trailing features to be always included in a sample. For example, a value of 2 means that the last two features are always retained.
 
 * ``instance_sampling`` (Default value = ``'none'``)
 
