@@ -51,7 +51,7 @@ from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, Defa
     NoParallelStatisticUpdateMixin, NoPartitionSamplingMixin, NoPostProcessorMixin, NoRulePruningMixin, \
     NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, \
     ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, \
-    PrePruningMixin, RandomBiPartitionSamplingMixin, SequentialPostOptimizationMixin, \
+    PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinLabelSamplingMixin, SequentialPostOptimizationMixin, \
     SequentialRuleModelAssemblageMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
 
 from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
@@ -116,6 +116,7 @@ cdef class BoomerConfig(RuleLearnerConfig,
                         EqualWidthFeatureBinningMixin,
                         EqualFrequencyFeatureBinningMixin,
                         NoLabelSamplingMixin,
+                        RoundRobinLabelSamplingMixin,
                         LabelSamplingWithoutReplacementMixin,
                         NoInstanceSamplingMixin,
                         InstanceSamplingWithReplacementMixin,
@@ -199,6 +200,9 @@ cdef class BoomerConfig(RuleLearnerConfig,
 
     def use_no_label_sampling(self):
         self.config_ptr.get().useNoLabelSampling()
+
+    def use_round_robin_label_sampling(self):
+        self.config_ptr.get().useRoundRobinLabelSampling()
 
     def use_label_sampling_without_replacement(self) -> LabelSamplingWithoutReplacementConfig:
         cdef ILabelSamplingWithoutReplacementConfig* config_ptr = \
