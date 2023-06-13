@@ -425,13 +425,15 @@ class FeatureSamplingParameter(NominalParameter):
     A parameter that allows to configure the strategy to be used for feature sampling.
     """
 
+    OPTION_NUM_RETAINED = 'num_retained'
+
     def __init__(self):
         super().__init__(name='feature_sampling',
                          description='The name of the strategy to be used for feature sampling')
         self.add_value(name=NONE, mixin=NoFeatureSamplingMixin)
         self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
                        mixin=FeatureSamplingWithoutReplacementMixin,
-                       options={OPTION_SAMPLE_SIZE})
+                       options={OPTION_SAMPLE_SIZE, self.OPTION_NUM_RETAINED})
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == NONE:
@@ -439,6 +441,7 @@ class FeatureSamplingParameter(NominalParameter):
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
             c = config.use_feature_sampling_without_replacement()
             c.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, c.get_sample_size()))
+            c.set_num_retained(options.get_int(self.OPTION_NUM_RETAINED, c.get_num_retained()))
 
 
 class PartitionSamplingParameter(NominalParameter):
