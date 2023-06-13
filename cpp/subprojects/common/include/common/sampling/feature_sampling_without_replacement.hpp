@@ -31,6 +31,23 @@ class MLRLCOMMON_API IFeatureSamplingWithoutReplacementConfig {
          *                      further configuration of the method for sampling features
          */
         virtual IFeatureSamplingWithoutReplacementConfig& setSampleSize(float32 sampleSize) = 0;
+
+        /**
+         * Returns the number of trailing features that are always included in a sample.
+         *
+         * @return The number of trailing features that are always included in a sample
+         */
+        virtual uint32 getNumRetained() const = 0;
+
+        /**
+         * Sets the number fo trailing features that should always be included in a sample.
+         *
+         * @param numRetained   The number of trailing features that should always be included in a sample. Must be at
+         *                      least 0
+         * @return              A reference to an object of type `IFeatureSamplingWithoutReplacementConfig` that allows
+         *                      further configuration of the method for sampling features
+         */
+        virtual IFeatureSamplingWithoutReplacementConfig& setNumRetained(uint32 numRetained) = 0;
 };
 
 /**
@@ -42,6 +59,8 @@ class FeatureSamplingWithoutReplacementConfig final : public IFeatureSamplingCon
 
         float32 sampleSize_;
 
+        uint32 numRetained_;
+
     public:
 
         FeatureSamplingWithoutReplacementConfig();
@@ -49,6 +68,10 @@ class FeatureSamplingWithoutReplacementConfig final : public IFeatureSamplingCon
         float32 getSampleSize() const override;
 
         IFeatureSamplingWithoutReplacementConfig& setSampleSize(float32 sampleSize) override;
+
+        uint32 getNumRetained() const override;
+
+        IFeatureSamplingWithoutReplacementConfig& setNumRetained(uint32 numRetained) override;
 
         std::unique_ptr<IFeatureSamplingFactory> createFeatureSamplingFactory(
           const IFeatureMatrix& featureMatrix) const override;
