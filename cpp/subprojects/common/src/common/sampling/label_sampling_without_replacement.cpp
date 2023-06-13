@@ -32,7 +32,7 @@ class LabelSamplingWithoutReplacement final : public ILabelSampling {
 };
 
 /**
- * Allows to create objects of type `ILabelSampling` that select a random subset of the available features without
+ * Allows to create objects of type `ILabelSampling` that select a random subset of the available labels without
  * replacement.
  */
 class LabelSamplingWithoutReplacementFactory final : public ILabelSamplingFactory {
