@@ -25,7 +25,8 @@ class LabelSamplingWithoutReplacement final : public ILabelSampling {
             : numLabels_(numLabels), indexVector_(PartialIndexVector(numSamples)) {}
 
         const IIndexVector& sample(RNG& rng) override {
-            sampleIndicesWithoutReplacement<IndexIterator>(indexVector_, IndexIterator(numLabels_), numLabels_, rng);
+            sampleIndicesWithoutReplacement<IndexIterator>(indexVector_.begin(), indexVector_.getNumElements(),
+                                                           IndexIterator(numLabels_), numLabels_, rng);
             return indexVector_;
         }
 };
