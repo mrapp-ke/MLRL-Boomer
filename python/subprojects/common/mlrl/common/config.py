@@ -16,8 +16,8 @@ from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, Equa
     NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
     NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, \
     NoTimeStoppingCriterionMixin, ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, \
-    PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, SequentialPostOptimizationMixin, \
-    SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
+    PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinLabelSamplingMixin, \
+    SequentialPostOptimizationMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.format import format_dict_keys, format_string_set
 from mlrl.common.options import BooleanOption, Options, parse_param, parse_param_and_options
@@ -366,19 +366,24 @@ class LabelSamplingParameter(NominalParameter):
     A parameter that allows to configure the strategy to be used for label sampling.
     """
 
+    LABEL_SAMPLING_ROUND_ROBIN = 'round-robin'
+
     def __init__(self):
         super().__init__(name='label_sampling', description='The name of the strategy to be used for label sampling')
         self.add_value(name=NONE, mixin=NoFeatureSamplingMixin)
         self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
                        mixin=FeatureSamplingWithoutReplacementMixin,
                        options={OPTION_NUM_SAMPLES})
+        self.add_value(name=self.LABEL_SAMPLING_ROUND_ROBIN, mixin=RoundRobinLabelSamplingMixin)
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == NONE:
             config.use_no_label_sampling()
-        if value == SAMPLING_WITHOUT_REPLACEMENT:
+        elif value == SAMPLING_WITHOUT_REPLACEMENT:
             c = config.use_label_sampling_without_replacement()
             c.set_num_samples(options.get_int(OPTION_NUM_SAMPLES, c.get_num_samples()))
+        elif value == self.LABEL_SAMPLING_ROUND_ROBIN:
+            config.use_round_robin_label_sampling()
 
 
 class InstanceSamplingParameter(NominalParameter):

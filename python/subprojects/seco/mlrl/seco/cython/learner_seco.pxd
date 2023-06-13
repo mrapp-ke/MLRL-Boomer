@@ -10,7 +10,7 @@ from mlrl.common.cython.learner cimport IBeamSearchTopDownRuleInductionMixin, ID
     INoParallelStatisticUpdateMixin, INoPartitionSamplingMixin, INoRulePruningMixin, \
     INoSequentialPostOptimizationMixin, INoSizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
     IParallelPredictionMixin, IParallelRuleRefinementMixin, IParallelStatisticUpdateMixin, \
-    IRandomBiPartitionSamplingMixin, IRuleLearner, ISequentialPostOptimizationMixin, \
+    IRandomBiPartitionSamplingMixin, IRoundRobinLabelSamplingMixin, IRuleLearner, ISequentialPostOptimizationMixin, \
     ISequentialRuleModelAssemblageMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, RuleLearner, \
     RuleLearnerConfig
 
@@ -52,6 +52,7 @@ cdef extern from "seco/learner_seco.hpp" namespace "seco" nogil:
             IGreedyTopDownRuleInductionMixin,
             IBeamSearchTopDownRuleInductionMixin,
             INoLabelSamplingMixin,
+            IRoundRobinLabelSamplingMixin,
             ILabelSamplingWithoutReplacementMixin,
             INoInstanceSamplingMixin,
             IInstanceSamplingWithReplacementMixin,

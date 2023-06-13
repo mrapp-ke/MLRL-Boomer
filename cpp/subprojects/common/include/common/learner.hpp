@@ -39,6 +39,7 @@
 #include "common/sampling/instance_sampling_with_replacement.hpp"
 #include "common/sampling/instance_sampling_without_replacement.hpp"
 #include "common/sampling/label_sampling_no.hpp"
+#include "common/sampling/label_sampling_round_robin.hpp"
 #include "common/sampling/label_sampling_without_replacement.hpp"
 #include "common/sampling/partition_sampling_bi_random.hpp"
 #include "common/sampling/partition_sampling_bi_stratified_example_wise.hpp"
@@ -602,6 +603,25 @@ class MLRLCOMMON_API IRuleLearner {
                     ILabelSamplingWithoutReplacementConfig& ref = *ptr;
                     labelSamplingConfigPtr = std::move(ptr);
                     return ref;
+                }
+        };
+
+        /**
+         * Defines an interface for all classes that allow to configure a rule learner to sample single labels in a
+         * round-robin fashion.
+         */
+        class IRoundRobinLabelSamplingMixin : virtual public IRuleLearner::IConfig {
+            public:
+
+                virtual ~IRoundRobinLabelSamplingMixin() override {};
+
+                /**
+                 * Configures the rule learner to sample a single labels in a round-robin fashion whenever a new rule
+                 * should be learned.
+                 */
+                virtual void useRoundRobinLabelSampling() {
+                    std::unique_ptr<ILabelSamplingConfig>& labelSamplingConfigPtr = this->getLabelSamplingConfigPtr();
+                    labelSamplingConfigPtr = std::make_unique<RoundRobinLabelSamplingConfig>();
                 }
         };
 
