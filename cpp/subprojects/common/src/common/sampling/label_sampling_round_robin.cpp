@@ -23,13 +23,13 @@ class RoundRobinLabelSampling final : public ILabelSampling {
             : numLabels_(numLabels), indexVector_(PartialIndexVector(1)), nextIndex_(0) {}
 
         const IIndexVector& sample(RNG& rng) override {
+            indexVector_.begin()[0] = nextIndex_;
             nextIndex_++;
 
             if (nextIndex_ >= numLabels_) {
                 nextIndex_ = 0;
             }
 
-            indexVector_.begin()[0] = nextIndex_;
             return indexVector_;
         }
 };
