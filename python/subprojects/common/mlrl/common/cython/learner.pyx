@@ -399,6 +399,20 @@ class NoLabelSamplingMixin(ABC):
         pass
 
 
+class RoundRobinLabelSamplingMixin(ABC):
+    """
+    Allows to configure a rule learner to sample single labels in a round-robin fashion.
+    """
+
+    @abstractmethod
+    def use_round_robin_label_sampling(self):
+        """
+        Configures the rule learner to sample a single label in a round-robin fashion whenever a new rule should be
+        learned.
+        """
+        pass
+
+
 class LabelSamplingWithoutReplacementMixin(ABC):
     """
     Allows to configure a rule learner to use label sampling without replacement.

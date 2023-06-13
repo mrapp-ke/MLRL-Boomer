@@ -36,7 +36,7 @@ from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, Defa
     NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, NoPartitionSamplingMixin, NoRulePruningMixin, \
     NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, \
     ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, \
-    PrePruningMixin, RandomBiPartitionSamplingMixin, SequentialPostOptimizationMixin, \
+    PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinLabelSamplingMixin, SequentialPostOptimizationMixin, \
     SequentialRuleModelAssemblageMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
 
 from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, \
@@ -75,6 +75,7 @@ cdef class MultiLabelSeCoRuleLearnerConfig(RuleLearnerConfig,
                                            GreedyTopDownRuleInductionMixin,
                                            BeamSearchTopDownRuleInductionMixin,
                                            NoLabelSamplingMixin,
+                                           RoundRobinLabelSamplingMixin,
                                            LabelSamplingWithoutReplacementMixin,
                                            NoInstanceSamplingMixin,
                                            InstanceSamplingWithReplacementMixin,
@@ -219,6 +220,9 @@ cdef class MultiLabelSeCoRuleLearnerConfig(RuleLearnerConfig,
     def use_no_label_sampling(self):
         self.config_ptr.get().useNoLabelSampling()
 
+    def use_round_robin_label_sampling(self):
+        self.config_ptr.get().useRoundRobinLabelSampling()
+    
     def use_label_sampling_without_replacement(self) -> LabelSamplingWithoutReplacementConfig:
         cdef ILabelSamplingWithoutReplacementConfig* config_ptr = \
             &self.config_ptr.get().useLabelSamplingWithoutReplacement()

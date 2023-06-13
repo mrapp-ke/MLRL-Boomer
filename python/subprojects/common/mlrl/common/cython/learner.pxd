@@ -106,6 +106,13 @@ cdef extern from "common/learner.hpp" nogil:
         void useNoLabelSampling()
 
 
+    cdef cppclass IRoundRobinLabelSamplingMixin"IRuleLearner::IRoundRobinLabelSamplingMixin":
+
+        # Functions:
+
+        void useRoundRobinLabelSampling()
+    
+    
     cdef cppclass ILabelSamplingWithoutReplacementMixin"IRuleLearner::ILabelSamplingWithoutReplacementMixin":
 
         # Functions:

@@ -55,6 +55,7 @@ namespace seco {
                             virtual public IRuleLearner::IGreedyTopDownRuleInductionMixin,
                             virtual public IRuleLearner::IBeamSearchTopDownRuleInductionMixin,
                             virtual public IRuleLearner::INoLabelSamplingMixin,
+                            virtual public IRuleLearner::IRoundRobinLabelSamplingMixin,
                             virtual public IRuleLearner::ILabelSamplingWithoutReplacementMixin,
                             virtual public IRuleLearner::INoInstanceSamplingMixin,
                             virtual public IRuleLearner::IInstanceSamplingWithoutReplacementMixin,
