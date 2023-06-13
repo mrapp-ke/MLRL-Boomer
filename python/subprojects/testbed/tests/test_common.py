@@ -68,6 +68,8 @@ LABEL_SAMPLING_NO = 'none'
 
 LABEL_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
 
+LABEL_SAMPLING_ROUND_ROBIN = 'round-robin'
+
 HOLDOUT_NO = 'none'
 
 HOLDOUT_RANDOM = 'random'
@@ -1535,6 +1537,14 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .label_sampling(LABEL_SAMPLING_NO)
         self.run_cmd(builder, 'label-sampling-no')
+
+    def test_label_sampling_round_robin(self):
+        """
+        Tests the rule learning algorithm when using a method that samples single labels in a round-robin fashion.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .label_sampling(LABEL_SAMPLING_ROUND_ROBIN)
+        self.run_cmd(builder, 'label-sampling-round-robin')
 
     def test_label_sampling_without_replacement(self):
         """

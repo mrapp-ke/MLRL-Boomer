@@ -85,6 +85,7 @@ The following parameters allow to control the behavior of the algorithm:
 * ``label_sampling`` (Default value = ``'none'``)
 
   * ``'none'`` All labels are considered for learning a new rule.
+  * ``'round-robin'`` A single label to be considered when learning a new rule is chosen in a round-robin fashion, i.e., the first rule is concerned with the first label, the second one with the second label, and so on. When the last label was reached, the procedure restarts at the first label.
   * ``'without-replacement'`` The labels to be considered when learning a new rule are chosen randomly. The following options may be provided using the bracket notation:
   
     * ``num_samples`` (Default value = ``1``) The number of labels the be included in a sample. Must be at least 1.

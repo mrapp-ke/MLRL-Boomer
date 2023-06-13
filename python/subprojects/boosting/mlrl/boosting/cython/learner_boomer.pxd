@@ -13,9 +13,9 @@ from mlrl.common.cython.learner cimport IBeamSearchTopDownRuleInductionMixin, ID
     INoParallelStatisticUpdateMixin, INoPartitionSamplingMixin, INoPostProcessorMixin, INoRulePruningMixin, \
     INoSequentialPostOptimizationMixin, INoSizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
     IParallelPredictionMixin, IParallelRuleRefinementMixin, IParallelStatisticUpdateMixin, IPostPruningMixin, \
-    IPrePruningMixin, IRandomBiPartitionSamplingMixin, IRuleLearner, ISequentialPostOptimizationMixin, \
-    ISequentialRuleModelAssemblageMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, RuleLearner, \
-    RuleLearnerConfig
+    IPrePruningMixin, IRandomBiPartitionSamplingMixin, IRoundRobinLabelSamplingMixin, IRuleLearner, \
+    ISequentialPostOptimizationMixin, ISequentialRuleModelAssemblageMixin, ISizeStoppingCriterionMixin, \
+    ITimeStoppingCriterionMixin, RuleLearner, RuleLearnerConfig
 
 from mlrl.boosting.cython.learner cimport DdotFunction, DspmvFunction, DsysvFunction, IAutomaticBinaryPredictorMixin, \
     IAutomaticDefaultRuleMixin, IAutomaticFeatureBinningMixin, IAutomaticHeadMixin, IAutomaticLabelBinningMixin, \
@@ -80,6 +80,7 @@ cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IEqualWidthFeatureBinningMixin,
                                                             IEqualFrequencyFeatureBinningMixin,
                                                             INoLabelSamplingMixin,
+                                                            IRoundRobinLabelSamplingMixin,
                                                             ILabelSamplingWithoutReplacementMixin,
                                                             INoInstanceSamplingMixin,
                                                             IInstanceSamplingWithoutReplacementMixin,

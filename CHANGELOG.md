@@ -18,6 +18,7 @@ A major update to the BOOMER algorithm that introduces the following changes.
 * **Isotonic regression models can now be used** to calibrate marginal and joint probabilities predicted by a model via the new parameters `--marginal-probability-calibration` and `--joint-probability-calibration`.
 * **The rules in a previously learned model can now be post-optimized** by reconstructing each one of them in the context of the other rules via the new parameter `--sequential-post-optimization`.
 * **Early stopping or post-pruning can now be used** by setting the new parameter `--global-pruning` to the value `pre-pruning` or `post-pruning`.
+* **Single labels can now be sampled in a round-robin fashion** by setting the parameter `--feature-sampling` to the new value `round-robin`.
 * **A fixed number of trailing features can now be retained** when the parameter `--feature-sampling` is set to the value `without-replacement` by specifying the option `num_retained`.
 
 ### Additions to the Command Line API
