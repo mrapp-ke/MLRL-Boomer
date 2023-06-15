@@ -54,7 +54,7 @@ class Label(Attribute):
     """
 
     def __init__(self, name: str):
-        super(Label, self).__init__(name, AttributeType.BINARY, [str(0), str(1)])
+        super(Label, self).__init__(name, AttributeType.NOMINAL, [str(0), str(1)])
 
 
 class MetaData:
@@ -443,8 +443,15 @@ def __create_meta_data(attributes: list, labels: List[Attribute]) -> MetaData:
                 attribute_type = AttributeType.NOMINAL
                 nominal_values = type_definition
             else:
-                attribute_type = AttributeType.NUMERICAL
+                type_definition = str(type_definition).lower()
                 nominal_values = None
+
+                if type_definition == 'integer':
+                    attribute_type = AttributeType.ORDINAL
+                elif type_definition == 'real' or type_definition =='numeric':
+                    attribute_type = AttributeType.NUMERICAL
+                else:
+                    raise ValueError('Encountered unsupported attribute type: ' + type_definition)
 
             attribute_list.append(Attribute(attribute_name, attribute_type, nominal_values))
         elif len(attribute_list) == 0:
