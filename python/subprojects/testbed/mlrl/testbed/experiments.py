@@ -303,7 +303,7 @@ class Experiment(DataSplitter.Callback):
         # Set the indices of ordinal attributes, if supported...
         if isinstance(current_learner, OrdinalAttributeLearner):
             current_learner.ordinal_attribute_indices = meta_data.get_attribute_indices({AttributeType.ORDINAL})
-        
+
         # Set the indices of nominal attributes, if supported...
         if isinstance(current_learner, NominalAttributeLearner):
             current_learner.nominal_attribute_indices = meta_data.get_attribute_indices({AttributeType.NOMINAL})
