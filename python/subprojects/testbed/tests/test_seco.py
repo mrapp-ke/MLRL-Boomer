@@ -224,7 +224,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         builder = SeCoCmdBuilder() \
             .head_type(HEAD_TYPE_SINGLE_LABEL) \
-            .print_model_characteristics(True)
+            .print_model_characteristics()
         self.run_cmd(builder, 'single-label-heads')
 
     def test_partial_heads_no_lift_function(self):
@@ -234,7 +234,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         builder = SeCoCmdBuilder() \
             .head_type(HEAD_TYPE_PARTIAL) \
             .lift_function(LIFT_FUNCTION_NO) \
-            .print_model_characteristics(True)
+            .print_model_characteristics()
         self.run_cmd(builder, 'partial-heads_no-lift-function')
 
     def test_partial_heads_peak_lift_function(self):
@@ -244,7 +244,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         builder = SeCoCmdBuilder() \
             .head_type(HEAD_TYPE_PARTIAL) \
             .lift_function(LIFT_FUNCTION_PEAK) \
-            .print_model_characteristics(True)
+            .print_model_characteristics()
         self.run_cmd(builder, 'partial-heads_peak-lift-function')
 
     def test_partial_heads_kln_lift_function(self):
@@ -254,5 +254,5 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         builder = SeCoCmdBuilder() \
             .head_type(HEAD_TYPE_PARTIAL) \
             .lift_function(LIFT_FUNCTION_KLN) \
-            .print_model_characteristics(True)
+            .print_model_characteristics()
         self.run_cmd(builder, 'partial-heads_kln-lift-function')
