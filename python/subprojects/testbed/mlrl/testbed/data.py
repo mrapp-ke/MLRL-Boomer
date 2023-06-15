@@ -448,7 +448,7 @@ def __create_meta_data(attributes: list, labels: List[Attribute]) -> MetaData:
 
                 if type_definition == 'integer':
                     attribute_type = AttributeType.ORDINAL
-                elif type_definition == 'real' or type_definition =='numeric':
+                elif type_definition == 'real' or type_definition == 'numeric':
                     attribute_type = AttributeType.NUMERICAL
                 else:
                     raise ValueError('Encountered unsupported attribute type: ' + type_definition)
