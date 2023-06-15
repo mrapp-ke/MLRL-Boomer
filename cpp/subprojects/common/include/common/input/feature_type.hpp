@@ -12,9 +12,9 @@ class IFeatureType {
         virtual ~IFeatureType() {};
 
         /**
-         * Returns whether the feature is numerical/ordinal or not.
+         * Returns whether the feature is nominal or not.
          *
-         * @return True, if the feature is numerical/ordinal, false otherwise
+         * @return True, if the feature is nominal, false otherwise
          */
-        virtual bool isNumerical() const = 0;
+        virtual bool isNominal() const = 0;
 };
