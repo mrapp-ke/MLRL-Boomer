@@ -578,7 +578,7 @@ class CmdBuilder:
         self.args.append(prediction_type)
         return self
 
-    def sequential_post_optimization(self, sequential_post_optimization: bool = False):
+    def sequential_post_optimization(self, sequential_post_optimization: bool = True):
         """
         Configures whether the algorithm should use sequential post-optimization or not.
 
@@ -1351,7 +1351,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_numerical) \
-            .sparse_feature_format(True)
+            .sparse_feature_format()
         self.run_cmd(builder, 'numeric-features-sparse')
 
     def test_binary_features_dense(self):
@@ -1368,7 +1368,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_binary) \
-            .sparse_feature_format(True)
+            .sparse_feature_format()
         self.run_cmd(builder, 'binary-features-sparse')
 
     def test_nominal_features_dense(self):
@@ -1386,7 +1386,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_nominal) \
-            .sparse_feature_format(True)
+            .sparse_feature_format()
         self.run_cmd(builder, 'nominal-features-sparse')
 
     def test_label_format_dense(self):
@@ -1402,7 +1402,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the rule learning algorithm when using a sparse label representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .sparse_label_format(True)
+            .sparse_label_format()
         self.run_cmd(builder, 'label-format-sparse')
 
     def test_prediction_format_dense(self):
@@ -1411,7 +1411,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .sparse_prediction_format(False) \
-            .print_predictions(True)
+            .print_predictions()
         self.run_cmd(builder, 'prediction-format-dense')
 
     def test_prediction_format_sparse(self):
@@ -1419,8 +1419,8 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the rule learning algorithm when using a sparse representation of predictions.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .sparse_prediction_format(True) \
-            .print_predictions(True)
+            .sparse_prediction_format() \
+            .print_predictions()
         self.run_cmd(builder, 'prediction-format-sparse')
 
     def test_parameters_train_test(self):
@@ -1431,9 +1431,9 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .print_model_characteristics(True) \
-            .print_parameters(True) \
-            .store_parameters(True) \
+            .print_model_characteristics() \
+            .print_parameters() \
+            .store_parameters() \
             .set_output_dir() \
             .set_parameter_dir()
         self.run_cmd(builder, 'parameters_train-test')
@@ -1447,9 +1447,9 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .cross_validation() \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .print_model_characteristics(True) \
-            .print_parameters(True) \
-            .store_parameters(True) \
+            .print_model_characteristics() \
+            .print_parameters() \
+            .store_parameters() \
             .set_output_dir() \
             .set_parameter_dir()
         self.run_cmd(builder, 'parameters_cross-validation')
@@ -1463,9 +1463,9 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .cross_validation(current_fold=1) \
             .print_evaluation(False) \
             .store_evaluation(False) \
-            .print_model_characteristics(True) \
-            .print_parameters(True) \
-            .store_parameters(True) \
+            .print_model_characteristics() \
+            .print_parameters() \
+            .store_parameters() \
             .set_output_dir() \
             .set_parameter_dir()
         self.run_cmd(builder, 'parameters_single-fold')
@@ -1584,5 +1584,5 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the rule learning algorithm when using sequential post-optimization.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .sequential_post_optimization(True)
+            .sequential_post_optimization()
         self.run_cmd(builder, 'sequential-post-optimization')
