@@ -26,7 +26,7 @@ from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.cython.validation import assert_greater_or_equal
 from mlrl.common.data_types import DTYPE_FLOAT32, DTYPE_UINT8, DTYPE_UINT32
 from mlrl.common.format import format_enum_values
-from mlrl.common.learners import IncrementalLearner, Learner, NominalAttributeLearner
+from mlrl.common.learners import IncrementalLearner, Learner, NominalAttributeLearner, OrdinalAttributeLearner
 
 KWARG_MAX_RULES = 'max_rules'
 
@@ -151,7 +151,7 @@ def create_sklearn_compatible_probabilities(probabilities):
     return probabilities
 
 
-class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
+class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, IncrementalLearner, ABC):
     """
     A scikit-learn implementation of a rule learning algorithm for multi-label classification or ranking.
     """

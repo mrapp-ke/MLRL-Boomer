@@ -12,13 +12,18 @@ from sklearn.utils.validation import check_is_fitted
 KWARG_PREDICT_SCORES = 'predict_scores'
 
 
-class NominalAttributeLearner(ABC):
+class OrdinalAttributeLearner(ABC):
     """
-    A base class for all single- or multi-label classifiers or rankers that natively support ordinal and nominal
-    attributes.
+    A base class for all single- or multi-label classifiers or rankers that natively support ordinal attributes.
     """
 
     ordinal_attribute_indices: Optional[List[int]] = None
+
+
+class NominalAttributeLearner(ABC):
+    """
+    A base class for all single- or multi-label classifiers or rankers that natively support nominal attributes.
+    """
 
     nominal_attribute_indices: Optional[List[int]] = None
 
