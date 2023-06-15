@@ -26,7 +26,7 @@ from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.cython.validation import assert_greater_or_equal
 from mlrl.common.data_types import DTYPE_FLOAT32, DTYPE_UINT8, DTYPE_UINT32
 from mlrl.common.format import format_enum_values
-from mlrl.common.learners import IncrementalLearner, Learner, NominalAttributeLearner
+from mlrl.common.learners import IncrementalLearner, Learner, NominalAttributeLearner, OrdinalAttributeLearner
 
 KWARG_MAX_RULES = 'max_rules'
 
@@ -151,7 +151,7 @@ def create_sklearn_compatible_probabilities(probabilities):
     return probabilities
 
 
-class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
+class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, IncrementalLearner, ABC):
     """
     A scikit-learn implementation of a rule learning algorithm for multi-label classification or ranking.
     """
@@ -317,19 +317,19 @@ class RuleLearner(Learner, NominalAttributeLearner, IncrementalLearner, ABC):
         :param num_features:    The total number of available features
         :return:                The `FeatureInfo` that has been created
         """
-        binary_attribute_indices = self.binary_attribute_indices
+        ordinal_attribute_indices = self.ordinal_attribute_indices
         nominal_attribute_indices = self.nominal_attribute_indices
-        num_binary_features = 0 if binary_attribute_indices is None else len(binary_attribute_indices)
+        num_ordinal_features = 0 if ordinal_attribute_indices is None else len(ordinal_attribute_indices)
         num_nominal_features = 0 if nominal_attribute_indices is None else len(nominal_attribute_indices)
 
-        if num_binary_features == 0 and num_nominal_features == 0:
+        if num_ordinal_features == 0 and num_nominal_features == 0:
             return EqualFeatureInfo.create_numerical()
-        elif num_binary_features == num_features:
-            return EqualFeatureInfo.create_binary()
+        elif num_ordinal_features == num_features:
+            return EqualFeatureInfo.create_ordinal()
         elif num_nominal_features == num_features:
             return EqualFeatureInfo.create_nominal()
         else:
-            return MixedFeatureInfo(num_features, binary_attribute_indices, nominal_attribute_indices)
+            return MixedFeatureInfo(num_features, ordinal_attribute_indices, nominal_attribute_indices)
 
     def _predict_binary(self, x, **kwargs):
         learner = self._create_learner()

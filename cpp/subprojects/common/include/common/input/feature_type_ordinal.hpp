@@ -6,10 +6,10 @@
 #include "common/input/feature_type.hpp"
 
 /**
- * Represents a binary feature.
+ * Represents an ordinal feature.
  */
-class BinaryFeatureType final : public IFeatureType {
+class OrdinalFeatureType final : public IFeatureType {
     public:
 
-        bool isNumerical() const override;
+        bool isNominal() const override;
 };

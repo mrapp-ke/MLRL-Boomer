@@ -27,9 +27,9 @@ class AttributeType(Enum):
     """
     All supported types of attributes.
     """
-    BINARY = auto()
+    NUMERICAL = auto()
+    ORDINAL = auto()
     NOMINAL = auto()
-    NUMERICAL_OR_ORDINAL = auto()
 
 
 class Attribute:
@@ -54,7 +54,7 @@ class Label(Attribute):
     """
 
     def __init__(self, name: str):
-        super(Label, self).__init__(name, AttributeType.BINARY, [str(0), str(1)])
+        super(Label, self).__init__(name, AttributeType.NOMINAL, [str(0), str(1)])
 
 
 class MetaData:
@@ -187,7 +187,7 @@ def save_data_set(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nda
     """
 
     num_attributes = x.shape[1]
-    attributes = [Attribute('X' + str(i), AttributeType.NUMERICAL_OR_ORDINAL) for i in range(num_attributes)]
+    attributes = [Attribute('X' + str(i), AttributeType.NUMERICAL) for i in range(num_attributes)]
     num_labels = y.shape[1]
     labels = [Label('y' + str(i)) for i in range(num_labels)]
     meta_data = MetaData(attributes, labels, labels_at_start=False)
@@ -216,17 +216,15 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     y_prefix = 0
 
     attributes = meta_data.attributes
-    x_attributes = [
-        (u'{}'.format(attributes[i].attribute_name if len(attributes) > i else 'X' + str(i)),
-         u'NUMERIC' if len(attributes) <= i or attributes[i].nominal_values is None
-         or attributes[i].attribute_type == AttributeType.NUMERICAL_OR_ORDINAL else attributes[i].nominal_values)
-        for i in range(x.shape[1])
-    ]
+    x_attributes = [(u'{}'.format(attributes[i].attribute_name if len(attributes) > i else 'X' + str(i)),
+                     u'NUMERIC' if len(attributes) <= i or attributes[i].nominal_values is None
+                     or attributes[i].attribute_type == AttributeType.NUMERICAL else attributes[i].nominal_values)
+                    for i in range(x.shape[1])]
 
     labels = meta_data.labels
     y_attributes = [(u'{}'.format(labels[i].attribute_name if len(labels) > i else 'y' + str(i)),
                      u'NUMERIC' if len(labels) <= i or labels[i].nominal_values is None
-                     or labels[i].attribute_type == AttributeType.NUMERICAL_OR_ORDINAL else labels[i].nominal_values)
+                     or labels[i].attribute_type == AttributeType.NUMERICAL else labels[i].nominal_values)
                     for i in range(y.shape[1])]
 
     if meta_data.labels_at_start:
@@ -291,7 +289,7 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
     :return:            A `np.ndarray`, shape `(num_examples, num_encoded_features)`, representing the encoded features
                         of the given examples, the encoder that has been used, as well as the updated meta-data
     """
-    nominal_indices = meta_data.get_attribute_indices({AttributeType.BINARY, AttributeType.NOMINAL})
+    nominal_indices = meta_data.get_attribute_indices({AttributeType.NOMINAL})
     num_nominal_attributes = len(nominal_indices)
     log.info('Data set contains %s nominal and %s numerical attributes.', num_nominal_attributes,
              (len(meta_data.attributes) - num_nominal_attributes))
@@ -442,11 +440,18 @@ def __create_meta_data(attributes: list, labels: List[Attribute]) -> MetaData:
             type_definition = attribute[1]
 
             if isinstance(type_definition, list):
-                attribute_type = AttributeType.NOMINAL if len(type_definition) > 2 else AttributeType.BINARY
+                attribute_type = AttributeType.NOMINAL
                 nominal_values = type_definition
             else:
-                attribute_type = AttributeType.NUMERICAL_OR_ORDINAL
+                type_definition = str(type_definition).lower()
                 nominal_values = None
+
+                if type_definition == 'integer':
+                    attribute_type = AttributeType.ORDINAL
+                elif type_definition == 'real' or type_definition == 'numeric':
+                    attribute_type = AttributeType.NUMERICAL
+                else:
+                    raise ValueError('Encountered unsupported attribute type: ' + type_definition)
 
             attribute_list.append(Attribute(attribute_name, attribute_type, nominal_values))
         elif len(attribute_list) == 0:

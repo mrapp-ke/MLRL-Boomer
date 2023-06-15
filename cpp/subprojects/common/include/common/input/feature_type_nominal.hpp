@@ -11,5 +11,5 @@
 class NominalFeatureType final : public IFeatureType {
     public:
 
-        bool isNumerical() const override;
+        bool isNominal() const override;
 };

@@ -7,7 +7,7 @@
 
 /**
  * Defines an interface for all classes that provide information about the types of individual features in cases where
- * different types of features, i.e., binary, nominal and numerical/ordinal ones, are available.
+ * different types of features, i.e., ordinal, nominal and numerical ones, are available.
  */
 class MLRLCOMMON_API IMixedFeatureInfo : public IFeatureInfo {
     public:
@@ -15,18 +15,18 @@ class MLRLCOMMON_API IMixedFeatureInfo : public IFeatureInfo {
         virtual ~IMixedFeatureInfo() override {};
 
         /**
-         * Marks the feature at a specific index as numerical/ordinal.
+         * Marks the feature at a specific index as numerical.
          *
          * @param featureIndex The index of the feature
          */
         virtual void setNumerical(uint32 featureIndex) = 0;
 
         /**
-         * Marks the feature at a specific index as binary.
+         * Marks the feature at a specific index as ordinal.
          *
          * @param featureIndex The index of the feature
          */
-        virtual void setBinary(uint32 featureIndex) = 0;
+        virtual void setOrdinal(uint32 featureIndex) = 0;
 
         /**
          * Marks the feature at a specific index as nominal.

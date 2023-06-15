@@ -15,7 +15,7 @@ cdef extern from "common/input/feature_info_equal.hpp" nogil:
         pass
 
 
-    unique_ptr[IEqualFeatureInfo] createBinaryFeatureInfo()
+    unique_ptr[IEqualFeatureInfo] createOrdinalFeatureInfo()
 
     unique_ptr[IEqualFeatureInfo] createNominalFeatureInfo()
 
@@ -30,7 +30,7 @@ cdef extern from "common/input/feature_info_mixed.hpp" nogil:
 
         void setNumerical(uint32 featureIndex)
 
-        void setBinary(uint32 featureIndex)
+        void setOrdinal(uint32 featureIndex)
 
         void setNominal(uint32 featureIndex)
 

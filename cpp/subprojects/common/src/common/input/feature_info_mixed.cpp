@@ -1,18 +1,18 @@
 #include "common/input/feature_info_mixed.hpp"
 
 #include "common/data/vector_bit.hpp"
-#include "common/input/feature_type_binary.hpp"
 #include "common/input/feature_type_nominal.hpp"
 #include "common/input/feature_type_numerical.hpp"
+#include "common/input/feature_type_ordinal.hpp"
 
 /**
  * An implementation of the type `IMixedFeatureInfo` that uses `BitVector`s to store whether individual features are
- * binary, nominal or numerical/ordinal.
+ * ordinal, nominal or numerical.
  */
 class BitFeatureInfo final : public IMixedFeatureInfo {
     private:
 
-        BitVector binaryBitVector_;
+        BitVector ordinalBitVector_;
 
         BitVector nominalBitVector_;
 
@@ -22,11 +22,11 @@ class BitFeatureInfo final : public IMixedFeatureInfo {
          * @param numFeatures The total number of available features
          */
         BitFeatureInfo(uint32 numFeatures)
-            : binaryBitVector_(BitVector(numFeatures, true)), nominalBitVector_(BitVector(numFeatures, true)) {}
+            : ordinalBitVector_(BitVector(numFeatures, true)), nominalBitVector_(BitVector(numFeatures, true)) {}
 
         std::unique_ptr<IFeatureType> createFeatureType(uint32 featureIndex) const override {
-            if (binaryBitVector_[featureIndex]) {
-                return std::make_unique<BinaryFeatureType>();
+            if (ordinalBitVector_[featureIndex]) {
+                return std::make_unique<OrdinalFeatureType>();
             } else if (nominalBitVector_[featureIndex]) {
                 return std::make_unique<NominalFeatureType>();
             } else {
@@ -35,17 +35,17 @@ class BitFeatureInfo final : public IMixedFeatureInfo {
         }
 
         void setNumerical(uint32 featureIndex) override {
-            binaryBitVector_.set(featureIndex, false);
+            ordinalBitVector_.set(featureIndex, false);
             nominalBitVector_.set(featureIndex, false);
         }
 
-        void setBinary(uint32 featureIndex) override {
-            binaryBitVector_.set(featureIndex, true);
+        void setOrdinal(uint32 featureIndex) override {
+            ordinalBitVector_.set(featureIndex, true);
             nominalBitVector_.set(featureIndex, false);
         }
 
         void setNominal(uint32 featureIndex) override {
-            binaryBitVector_.set(featureIndex, false);
+            ordinalBitVector_.set(featureIndex, false);
             nominalBitVector_.set(featureIndex, true);
         }
 };
