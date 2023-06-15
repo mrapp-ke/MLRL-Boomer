@@ -11,5 +11,5 @@
 class OrdinalFeatureType final : public IFeatureType {
     public:
 
-        bool isNumerical() const override;
+        bool isNominal() const override;
 };
