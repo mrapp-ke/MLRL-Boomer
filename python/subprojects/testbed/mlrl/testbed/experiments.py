@@ -12,7 +12,7 @@ from typing import List, Optional
 
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 
-from mlrl.common.learners import IncrementalLearner, Learner, NominalAttributeLearner
+from mlrl.common.learners import IncrementalLearner, Learner, NominalAttributeLearner, OrdinalAttributeLearner
 
 from mlrl.testbed.data import AttributeType, MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataSplitter, DataType
@@ -300,9 +300,12 @@ class Experiment(DataSplitter.Callback):
         for output_writer in self.pre_training_output_writers:
             output_writer.write_output(meta_data, train_x, train_y, data_split, current_learner)
 
+        # Set the indices of ordinal attributes, if supported...
+        if isinstance(current_learner, OrdinalAttributeLearner):
+            current_learner.ordinal_attribute_indices = meta_data.get_attribute_indices({AttributeType.ORDINAL})
+        
         # Set the indices of nominal attributes, if supported...
         if isinstance(current_learner, NominalAttributeLearner):
-            current_learner.ordinal_attribute_indices = meta_data.get_attribute_indices({AttributeType.ORDINAL})
             current_learner.nominal_attribute_indices = meta_data.get_attribute_indices({AttributeType.NOMINAL})
 
         # Load model from disc, if possible, otherwise train a new model...
