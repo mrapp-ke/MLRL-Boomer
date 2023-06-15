@@ -16,11 +16,11 @@ class MLRLCOMMON_API IEqualFeatureInfo : public IFeatureInfo {
 };
 
 /**
- * Creates and returns a new object of type `IEqualFeatureInfo` in cases where all features are binary.
+ * Creates and returns a new object of type `IEqualFeatureInfo` in cases where all features are ordinal.
  *
  * @return An unique pointer to an object of type `IEqualFeatureInfo` that has been created
  */
-MLRLCOMMON_API std::unique_ptr<IEqualFeatureInfo> createBinaryFeatureInfo();
+MLRLCOMMON_API std::unique_ptr<IEqualFeatureInfo> createOrdinalFeatureInfo();
 
 /**
  * Creates and returns a new object of type `IEqualFeatureInfo` in cases where all features are nominal.
