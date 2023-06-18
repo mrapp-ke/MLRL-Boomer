@@ -163,7 +163,7 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
     if (numRemaining > 0) {
         // Adjust the size of the arrays that are used to store row and column indices...
         rowIndices_ = (uint32*) realloc(rowIndices_, (numNonZeroElements + numRemaining) * sizeof(uint32));
-        colIndices_ = (uint32*) realloc(colIndices_, (numCols + 1) * sizeof(uint32));
+        colIndices_ = (uint32*) realloc(colIndices_, (numCols + 2) * sizeof(uint32));
 
         // Add the number of non-zero labels that have been processed so far to the array of column indices...
         colIndices_[numCols] = numNonZeroElements;
@@ -180,7 +180,7 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
     } else {
         // Adjust the size of the arrays that are used to store row and column indices...
         rowIndices_ = (uint32*) realloc(rowIndices_, numNonZeroElements * sizeof(uint32));
-        colIndices_ = (uint32*) realloc(colIndices_, numCols * sizeof(uint32));
+        colIndices_ = (uint32*) realloc(colIndices_, (numCols + 1) * sizeof(uint32));
     }
 
     colIndices_[numCols] = numNonZeroElements;
