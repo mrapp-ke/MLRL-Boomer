@@ -13,11 +13,11 @@ INFO Successfully predicted in 0.007419428962748498 seconds
 INFO Prediction characteristics for training data:
 
 Labels                   6
-Label Density           30.86
-Label Sparsity          69.14
-Label Imbalance Ratio    4.25
-Label Cardinality        1.85
-Distinct Label Vectors  28
+Label Density           30.31
+Label Sparsity          69.69
+Label Imbalance Ratio    6.05
+Label Cardinality        1.82
+Distinct Label Vectors  27
 
 INFO Predicting for 196 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
@@ -26,10 +26,10 @@ INFO Successfully predicted in 0.005934583023190498 seconds
 INFO Prediction characteristics for test data:
 
 Labels                   6
-Label Density           31.89
-Label Sparsity          68.11
-Label Imbalance Ratio   10.5
-Label Cardinality        1.91
-Distinct Label Vectors  22
+Label Density           33.33
+Label Sparsity          66.67
+Label Imbalance Ratio   10.39
+Label Cardinality        2
+Distinct Label Vectors  26
 
 INFO Successfully finished after 0.21247219701763242 seconds
