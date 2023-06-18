@@ -36,6 +36,7 @@ A major update to the BOOMER algorithm that introduces the following changes.
 ### Bugfixes
 
 * The behavior of the parameter `--label-format` has been fixed when set to the value `auto`.
+* The behavior of the parameters `--holdout` and `--instance-sampling` has been fixed when set to the value `stratified-label-wise`.
 * The behavior of the parameter `--binary-predictor` has been fixed when set to the value `example-wise` and using a model that has been loaded from disk.
 * Rules are now guaranteed to not cover more examples than specified via the option `min_coverage`. The option is now also taken into account when using feature binning. Alternatively, the minimum coverage of rules can now also be specified as a fraction via the option `min_support`. 
 

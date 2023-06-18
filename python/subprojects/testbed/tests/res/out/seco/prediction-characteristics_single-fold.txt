@@ -14,10 +14,10 @@ INFO Successfully predicted in 0.0017615919932723045 seconds
 INFO Prediction characteristics for test data (Fold 1):
 
 Labels                   6
-Label Density           31.94
-Label Sparsity          68.06
-Label Imbalance Ratio    1.57
-Label Cardinality        1.92
-Distinct Label Vectors  17
+Label Density           30.56
+Label Sparsity          69.44
+Label Imbalance Ratio    1.66
+Label Cardinality        1.83
+Distinct Label Vectors  18
 
 INFO Successfully finished after 0.3161613629781641 seconds

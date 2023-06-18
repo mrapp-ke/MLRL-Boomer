@@ -12,20 +12,20 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 0.0007338009891100228 seconds
 INFO Evaluation result for test data:
 
-Example-wise F1         58.72
-Example-wise Jaccard    48.8
-Example-wise Precision  63.61
-Example-wise Recall     64.97
-Hamming Accuracy        74.57
-Hamming Loss            25.43
-Macro F1                53.07
-Macro Jaccard           39.39
-Macro Precision         51.57
-Macro Recall            59.6
-Micro F1                60.92
-Micro Jaccard           43.8
-Micro Precision         59.74
-Micro Recall            62.13
+Example-wise F1         57.01
+Example-wise Jaccard    47.57
+Example-wise Precision  62.73
+Example-wise Recall     64.63
+Hamming Accuracy        73.13
+Hamming Loss            26.87
+Macro F1                53.17
+Macro Jaccard           39.3
+Macro Precision         47.54
+Macro Recall            62.02
+Micro F1                60.7
+Micro Jaccard           43.57
+Micro Precision         56.88
+Micro Recall            65.07
 Subset 0/1 Loss         78.57
 Subset Accuracy         21.43
 

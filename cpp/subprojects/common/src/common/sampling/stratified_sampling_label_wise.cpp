@@ -183,8 +183,8 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
         colIndices_ = (uint32*) realloc(colIndices_, numCols * sizeof(uint32));
     }
 
-    colIndices_[numCols - 1] = numNonZeroElements;
-    numCols_ = numCols - 1;
+    colIndices_[numCols] = numNonZeroElements;
+    numCols_ = numCols;
 
     delete[] numExamplesPerLabel;
 }
