@@ -25,8 +25,6 @@ namespace boosting {
 
             const std::unique_ptr<IJointProbabilityCalibratorConfig>& jointProbabilityCalibratorConfigPtr_;
 
-            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
-
         public:
 
             /**
@@ -39,14 +37,11 @@ namespace boosting {
              * @param jointProbabilityCalibratorConfigPtr       A reference to an unique pointer that stores the
              *                                                  configuration of the calibrator that is used to fit a
              *                                                  model for the calibration of joint probabilities
-             * @param lossConfigPtr                             A reference to an unique pointer that stores the
-             *                                                  configuration of the loss function
              */
             AutomaticPartitionSamplingConfig(
               const std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr,
               const std::unique_ptr<IMarginalProbabilityCalibratorConfig>& marginalProbabilityCalibratorConfigPtr,
-              const std::unique_ptr<IJointProbabilityCalibratorConfig>& jointProbabilityCalibratorConfigPtr,
-              const std::unique_ptr<ILossConfig>& lossConfigPtr);
+              const std::unique_ptr<IJointProbabilityCalibratorConfig>& jointProbabilityCalibratorConfigPtr);
 
             /**
              * @see `IPartitionSamplingConfig::createPartitionSamplingFactory`

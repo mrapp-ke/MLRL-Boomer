@@ -137,7 +137,7 @@ namespace boosting {
                           this->getPartitionSamplingConfigPtr();
                         partitionSamplingConfigPtr = std::make_unique<AutomaticPartitionSamplingConfig>(
                           this->getGlobalPruningConfigPtr(), this->getMarginalProbabilityCalibratorConfigPtr(),
-                          this->getJointProbabilityCalibratorConfigPtr(), this->getLossConfigPtr());
+                          this->getJointProbabilityCalibratorConfigPtr());
                     }
             };
 
