@@ -29,9 +29,9 @@ Micro Recall            56.8
 Subset 0/1 Loss         78.57
 Subset Accuracy         21.43
 
-INFO Predicting for 196 test examples using a model of size 69...
+INFO Predicting for 196 test examples using a model of size 62...
 INFO Successfully predicted in 0 milliseconds
-INFO Evaluation result for test data using a model of size 69:
+INFO Evaluation result for test data using a model of size 62:
 
 Example-wise F1         54.14
 Example-wise Jaccard    45.23
