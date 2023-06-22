@@ -273,6 +273,8 @@ In addition to the mandatory arguments that must be provided to the command line
     * ``print_nominal_values`` (Default value = ``true``) ``true``, if the names of nominal values should be printed instead of their numerical representation, ``false`` otherwise.
     * ``print_bodies`` (Default value = ``true``) ``true``, if the bodies of rules should be printed, ``false`` otherwise.
     * ``print_heads`` (Default value = ``true``) ``true``, if the heads of rules should be printed, ``false`` otherwise.
+    * ``decimals_body`` (Default value = ``2``) The number of decimals to be used for numerical thresholds of conditions in a rule's body or 0, if the number of decimals should not be restricted.
+    * ``decimals_head`` (Default value = ``2``) The number of decimals to be used for predictions in a rule's head or 0, if the number of decimals should not be restricted.
 
   * ``false`` The induced rules are not printed on the console.
 
@@ -285,6 +287,8 @@ In addition to the mandatory arguments that must be provided to the command line
     * ``print_nominal_values`` (Default value = ``true``) ``true``, if the names of nominal values should be printed instead of their numerical representation, ``false`` otherwise.
     * ``print_bodies`` (Default value = ``true``) ``true``, if the bodies of rules should be printed, ``false`` otherwise.
     * ``print_heads`` (Default value = ``true``) ``true``, if the heads of rules should be printed, ``false`` otherwise.
+    * ``decimals_body`` (Default value = ``2``) The number of decimals to be used for numerical thresholds of conditions in a rule's body or 0, if the number of decimals should not be restricted.
+    * ``decimals_head`` (Default value = ``2``) The number of decimals to be used for predictions in a rule's head or 0, if the number of decimals should not be restricted.
 
   * ``false`` The induced rules are not written into a .txt file.
 
