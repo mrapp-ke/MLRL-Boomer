@@ -20,5 +20,5 @@ Distinct Label Vectors   23
 INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.2573062110000137 seconds
-INFO Successfully finished after 0.2933337479998954 seconds
+INFO Successfully fit model in 248 milliseconds
+INFO Successfully finished after 280 milliseconds

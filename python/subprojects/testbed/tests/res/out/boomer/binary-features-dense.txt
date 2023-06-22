@@ -5,11 +5,11 @@ DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/enro
 INFO Fitting model to 1140 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A sparse matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.6942235610003991 seconds
+INFO Successfully fit model in 589 milliseconds
 INFO Predicting for 562 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
-INFO Successfully predicted in 0.017883557999084587 seconds
+INFO Successfully predicted in 6 milliseconds
 INFO Evaluation result for test data:
 
 Example-wise F1         43.06
@@ -29,4 +29,4 @@ Micro Recall            36.68
 Subset 0/1 Loss         96.8
 Subset Accuracy          3.2
 
-INFO Successfully finished after 1.0923547530001088 seconds
+INFO Successfully finished after 856 milliseconds

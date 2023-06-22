@@ -7,7 +7,7 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
 INFO Predicting for 196 test examples using a model of size 50...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data using a model of size 50:
 
 Example-wise F1         50.48
@@ -28,7 +28,7 @@ Subset 0/1 Loss         98.47
 Subset Accuracy          1.53
 
 INFO Predicting for 196 test examples using a model of size 100...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 3 milliseconds
 INFO Evaluation result for test data using a model of size 100:
 
 Example-wise F1         56.36
@@ -49,7 +49,7 @@ Subset 0/1 Loss         98.47
 Subset Accuracy          1.53
 
 INFO Predicting for 196 test examples using a model of size 150...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 2 milliseconds
 INFO Evaluation result for test data using a model of size 150:
 
 Example-wise F1         58.77
@@ -91,7 +91,7 @@ Subset 0/1 Loss         95.41
 Subset Accuracy          4.59
 
 INFO Predicting for 196 test examples using a model of size 250...
-INFO Successfully predicted in 4 milliseconds
+INFO Successfully predicted in 0 milliseconds
 INFO Evaluation result for test data using a model of size 250:
 
 Example-wise F1         61.42
@@ -112,7 +112,7 @@ Subset 0/1 Loss         91.84
 Subset Accuracy          8.16
 
 INFO Predicting for 196 test examples using a model of size 300...
-INFO Successfully predicted in 4 milliseconds
+INFO Successfully predicted in 0 milliseconds
 INFO Evaluation result for test data using a model of size 300:
 
 Example-wise F1         62.4
@@ -133,7 +133,7 @@ Subset 0/1 Loss         89.8
 Subset Accuracy         10.2
 
 INFO Predicting for 196 test examples using a model of size 350...
-INFO Successfully predicted in 1 millisecond
+INFO Successfully predicted in 0 milliseconds
 INFO Evaluation result for test data using a model of size 350:
 
 Example-wise F1         60.56
@@ -175,7 +175,7 @@ Subset 0/1 Loss         87.76
 Subset Accuracy         12.24
 
 INFO Predicting for 196 test examples using a model of size 450...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 2 milliseconds
 INFO Evaluation result for test data using a model of size 450:
 
 Example-wise F1         57.92
@@ -689,4 +689,4 @@ INFO Joint probability calibration model:
 │                       0.1111 │                          0.5    │
 └──────────────────────────────┴─────────────────────────────────┘
 
-INFO Successfully finished after 593 milliseconds
+INFO Successfully finished after 353 milliseconds

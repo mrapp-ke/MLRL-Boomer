@@ -5,7 +5,7 @@ DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emot
 INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 297 milliseconds
+INFO Successfully fit model in 281 milliseconds
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Predicting for 196 test examples using a model of size 50...
@@ -114,7 +114,7 @@ Subset 0/1 Loss         72.45
 Subset Accuracy         27.55
 
 INFO Predicting for 196 test examples using a model of size 300...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data using a model of size 300:
 
 Example-wise F1         59.95
@@ -240,7 +240,7 @@ Subset 0/1 Loss         71.43
 Subset Accuracy         28.57
 
 INFO Predicting for 196 test examples using a model of size 600...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data using a model of size 600:
 
 Example-wise F1         61.97
@@ -261,7 +261,7 @@ Subset 0/1 Loss         72.96
 Subset Accuracy         27.04
 
 INFO Predicting for 196 test examples using a model of size 650...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data using a model of size 650:
 
 Example-wise F1         61.9
@@ -303,7 +303,7 @@ Subset 0/1 Loss         73.98
 Subset Accuracy         26.02
 
 INFO Predicting for 196 test examples using a model of size 750...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data using a model of size 750:
 
 Example-wise F1         61.75
@@ -324,7 +324,7 @@ Subset 0/1 Loss         73.98
 Subset Accuracy         26.02
 
 INFO Predicting for 196 test examples using a model of size 800...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 2 milliseconds
 INFO Evaluation result for test data using a model of size 800:
 
 Example-wise F1         62.26
@@ -345,7 +345,7 @@ Subset 0/1 Loss         72.45
 Subset Accuracy         27.55
 
 INFO Predicting for 196 test examples using a model of size 850...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 3 milliseconds
 INFO Evaluation result for test data using a model of size 850:
 
 Example-wise F1         62.31
@@ -366,7 +366,7 @@ Subset 0/1 Loss         72.45
 Subset Accuracy         27.55
 
 INFO Predicting for 196 test examples using a model of size 900...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data using a model of size 900:
 
 Example-wise F1         63.01
@@ -387,7 +387,7 @@ Subset 0/1 Loss         71.94
 Subset Accuracy         28.06
 
 INFO Predicting for 196 test examples using a model of size 950...
-INFO Successfully predicted in 1 millisecond
+INFO Successfully predicted in 0 milliseconds
 INFO Evaluation result for test data using a model of size 950:
 
 Example-wise F1         63.84
@@ -428,4 +428,4 @@ Micro Recall            61.33
 Subset 0/1 Loss         71.43
 Subset Accuracy         28.57
 
-INFO Successfully finished after 741 milliseconds
+INFO Successfully finished after 710 milliseconds

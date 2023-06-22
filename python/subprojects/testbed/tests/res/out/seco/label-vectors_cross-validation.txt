@@ -6,7 +6,7 @@ INFO Fold 1 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 248 milliseconds
+INFO Successfully fit model in 257 milliseconds
 INFO Label vectors (Fold 1):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -44,7 +44,7 @@ INFO Fold 2 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 256 milliseconds
+INFO Successfully fit model in 215 milliseconds
 INFO Label vectors (Fold 2):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -82,7 +82,7 @@ INFO Fold 3 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 232 milliseconds
+INFO Successfully fit model in 263 milliseconds
 INFO Label vectors (Fold 3):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -120,7 +120,7 @@ INFO Fold 4 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 243 milliseconds
+INFO Successfully fit model in 235 milliseconds
 INFO Label vectors (Fold 4):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -159,7 +159,7 @@ INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 201 milliseconds
+INFO Successfully fit model in 254 milliseconds
 INFO Label vectors (Fold 5):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -198,7 +198,7 @@ INFO Fold 6 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 273 milliseconds
+INFO Successfully fit model in 224 milliseconds
 INFO Label vectors (Fold 6):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -237,7 +237,7 @@ INFO Fold 7 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 240 milliseconds
+INFO Successfully fit model in 257 milliseconds
 INFO Label vectors (Fold 7):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -276,7 +276,7 @@ INFO Fold 8 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 551 milliseconds
+INFO Successfully fit model in 255 milliseconds
 INFO Label vectors (Fold 8):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -315,7 +315,7 @@ INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 330 milliseconds
+INFO Successfully fit model in 242 milliseconds
 INFO Label vectors (Fold 9):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -353,7 +353,7 @@ INFO Fold 10 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 238 milliseconds
+INFO Successfully fit model in 263 milliseconds
 INFO Label vectors (Fold 10):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -388,4 +388,4 @@ INFO Label vectors (Fold 10):
 │      27 │ [1 0 0 0 1 1]  │           4 │
 └─────────┴────────────────┴─────────────┘
 
-INFO Successfully finished after 2 seconds and 933 milliseconds
+INFO Successfully finished after 2 seconds and 567 milliseconds

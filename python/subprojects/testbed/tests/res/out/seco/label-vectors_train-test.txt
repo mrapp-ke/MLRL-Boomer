@@ -5,7 +5,7 @@ DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emot
 INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 137 milliseconds
+INFO Successfully fit model in 120 milliseconds
 INFO Label vectors:
 
 ┌─────────┬────────────────┬─────────────┐
@@ -36,4 +36,4 @@ INFO Label vectors:
 │      23 │ [0 0 0 1 0 0]  │           3 │
 └─────────┴────────────────┴─────────────┘
 
-INFO Successfully finished after 171 milliseconds
+INFO Successfully finished after 156 milliseconds

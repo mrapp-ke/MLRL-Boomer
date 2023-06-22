@@ -217,7 +217,7 @@ Subset 0/1 Loss         90.82
 Subset Accuracy          9.18
 
 INFO Predicting for 196 test examples using a model of size 550...
-INFO Successfully predicted in 1 millisecond
+INFO Successfully predicted in 0 milliseconds
 INFO Evaluation result for test data using a model of size 550:
 
 Example-wise F1         56.6
@@ -238,7 +238,7 @@ Subset 0/1 Loss         90.31
 Subset Accuracy          9.69
 
 INFO Predicting for 196 test examples using a model of size 600...
-INFO Successfully predicted in 1 millisecond
+INFO Successfully predicted in 0 milliseconds
 INFO Evaluation result for test data using a model of size 600:
 
 Example-wise F1         55.88
@@ -385,7 +385,7 @@ Subset 0/1 Loss         87.76
 Subset Accuracy         12.24
 
 INFO Predicting for 196 test examples using a model of size 950...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 2 milliseconds
 INFO Evaluation result for test data using a model of size 950:
 
 Example-wise F1         46.05
@@ -689,4 +689,4 @@ INFO Joint probability calibration model:
 │                       0.1111 │                          0.5    │
 └──────────────────────────────┴─────────────────────────────────┘
 
-INFO Successfully finished after 693 milliseconds
+INFO Successfully finished after 470 milliseconds

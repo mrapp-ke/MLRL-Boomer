@@ -133,7 +133,7 @@ Subset 0/1 Loss         83.67
 Subset Accuracy         16.33
 
 INFO Predicting for 196 test examples using a model of size 350...
-INFO Successfully predicted in 1 millisecond
+INFO Successfully predicted in 0 milliseconds
 INFO Evaluation result for test data using a model of size 350:
 
 Example-wise F1         52.67
@@ -406,7 +406,7 @@ Subset 0/1 Loss         82.14
 Subset Accuracy         17.86
 
 INFO Predicting for 196 test examples using a model of size 1000...
-INFO Successfully predicted in 1 millisecond
+INFO Successfully predicted in 0 milliseconds
 INFO Evaluation result for test data using a model of size 1000:
 
 Example-wise F1         53.72
@@ -500,4 +500,4 @@ INFO Marginal probability calibration model:
 │               0.9702 │                  1      │
 └──────────────────────┴─────────────────────────┘
 
-INFO Successfully finished after 651 milliseconds
+INFO Successfully finished after 438 milliseconds

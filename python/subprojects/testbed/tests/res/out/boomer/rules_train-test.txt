@@ -5,7 +5,7 @@ DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emot
 INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.24926995700025145 seconds
+INFO Successfully fit model in 272 milliseconds
 INFO Model:
 
 {} => (amazed-suprised = -0.85, happy-pleased = -0.86, relaxing-calm = -0.27, quiet-still = -1.03, sad-lonely = -0.85, angry-aggresive = -0.69)
@@ -1010,4 +1010,4 @@ INFO Model:
 {Mean_Acc1298_Std_Mem40_MFCC_12 <= 0.545451 & Mean_Acc1298_Std_Mem40_Flux <= 0.05617 & Mean_Acc1298_Std_Mem40_MFCC_3 <= 1.2294385 & Std_Acc1298_Std_Mem40_MFCC_2 <= 0.4251235 & Mean_Acc1298_Std_Mem40_MFCC_0 > 4.805209 & Std_Acc1298_Mean_Mem40_MFCC_10 > 0.16057101 & Std_Acc1298_Mean_Mem40_MFCC_1 > 0.40907001} => (amazed-suprised = -0.17)
 
 
-INFO Successfully finished after 0.3523382759995002 seconds
+INFO Successfully finished after 370 milliseconds

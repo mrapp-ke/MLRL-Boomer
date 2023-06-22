@@ -28,7 +28,7 @@ Subset 0/1 Loss         96.43
 Subset Accuracy          3.57
 
 INFO Predicting for 196 test examples using a model of size 100...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data using a model of size 100:
 
 Example-wise F1         29.25
@@ -49,7 +49,7 @@ Subset 0/1 Loss         96.43
 Subset Accuracy          3.57
 
 INFO Predicting for 196 test examples using a model of size 150...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 2 milliseconds
 INFO Evaluation result for test data using a model of size 150:
 
 Example-wise F1         31.7
@@ -70,7 +70,7 @@ Subset 0/1 Loss         93.88
 Subset Accuracy          6.12
 
 INFO Predicting for 196 test examples using a model of size 200...
-INFO Successfully predicted in 2 milliseconds
+INFO Successfully predicted in 0 milliseconds
 INFO Evaluation result for test data using a model of size 200:
 
 Example-wise F1         32.99
@@ -343,7 +343,7 @@ Subset 0/1 Loss         88.27
 Subset Accuracy         11.73
 
 INFO Predicting for 196 test examples using a model of size 850...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 2 milliseconds
 INFO Evaluation result for test data using a model of size 850:
 
 Example-wise F1         44.05
@@ -364,7 +364,7 @@ Subset 0/1 Loss         89.8
 Subset Accuracy         10.2
 
 INFO Predicting for 196 test examples using a model of size 900...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data using a model of size 900:
 
 Example-wise F1         43.72
@@ -385,7 +385,7 @@ Subset 0/1 Loss         89.29
 Subset Accuracy         10.71
 
 INFO Predicting for 196 test examples using a model of size 950...
-INFO Successfully predicted in 2 milliseconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data using a model of size 950:
 
 Example-wise F1         43.06
@@ -689,4 +689,4 @@ INFO Joint probability calibration model:
 │                       0.1111 │                          0.5    │
 └──────────────────────────────┴─────────────────────────────────┘
 
-INFO Successfully finished after 677 milliseconds
+INFO Successfully finished after 458 milliseconds

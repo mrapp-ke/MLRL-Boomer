@@ -5,5 +5,5 @@ DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/meka
 INFO Fitting model to 9 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.12637934799931827 seconds
-INFO Successfully finished after 0.13151168399963353 seconds
+INFO Successfully fit model in 1 millisecond
+INFO Successfully finished after 4 milliseconds
