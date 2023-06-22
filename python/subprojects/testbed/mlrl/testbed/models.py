@@ -20,6 +20,7 @@ from mlrl.common.options import Options
 
 from mlrl.testbed.data import Attribute, MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
+from mlrl.testbed.format import format_float
 from mlrl.testbed.output_writer import Formattable, OutputWriter
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 
@@ -32,6 +33,10 @@ OPTION_PRINT_NOMINAL_VALUES = 'print_nominal_values'
 OPTION_PRINT_BODIES = 'print_bodies'
 
 OPTION_PRINT_HEADS = 'print_heads'
+
+OPTION_DECIMALS_BODY = 'decimals_body'
+
+OPTION_DECIMALS_HEAD = 'decimals_head'
 
 
 class ModelWriter(OutputWriter, ABC):
@@ -84,6 +89,8 @@ class RuleModelWriter(ModelWriter):
             self.print_nominal_values = True
             self.print_bodies = True
             self.print_heads = True
+            self.body_decimals = 2
+            self.head_decimals = 2
 
         def visit_empty_body(self, _: EmptyBody):
             if self.print_bodies:
@@ -98,6 +105,7 @@ class RuleModelWriter(ModelWriter):
                 attributes = self.attributes
                 print_feature_names = self.print_feature_names
                 print_nominal_values = self.print_nominal_values
+                decimals = self.body_decimals
 
                 for i in range(indices.shape[0]):
                     if result > 0:
@@ -125,7 +133,7 @@ class RuleModelWriter(ModelWriter):
                         else:
                             text.write(str(nominal_value))
                     else:
-                        text.write(str(threshold))
+                        text.write(format_float(threshold, decimals=decimals))
 
                     result += 1
 
@@ -146,6 +154,7 @@ class RuleModelWriter(ModelWriter):
 
             if self.print_heads:
                 print_label_names = self.print_label_names
+                decimals = self.head_decimals
                 labels = self.labels
                 scores = head.scores
 
@@ -164,7 +173,7 @@ class RuleModelWriter(ModelWriter):
                         text.write(str(i))
 
                     text.write(' = ')
-                    text.write('{0:.2f}'.format(scores[i]))
+                    text.write(format_float(scores[i], decimals=decimals))
 
                 text.write(')\n')
             elif self.print_bodies:
@@ -175,6 +184,7 @@ class RuleModelWriter(ModelWriter):
 
             if self.print_heads:
                 print_label_names = self.print_label_names
+                decimals = self.head_decimals
                 labels = self.labels
                 indices = head.indices
                 scores = head.scores
@@ -196,7 +206,7 @@ class RuleModelWriter(ModelWriter):
                         text.write(str(label_index))
 
                     text.write(' = ')
-                    text.write('{0:.2f}'.format(scores[i]))
+                    text.write(format_float(scores[i], decimals=decimals))
 
                 text.write(')\n')
             elif self.print_bodies:
@@ -208,6 +218,8 @@ class RuleModelWriter(ModelWriter):
             self.print_nominal_values = options.get_bool(OPTION_PRINT_NOMINAL_VALUES, True)
             self.print_bodies = options.get_bool(OPTION_PRINT_BODIES, True)
             self.print_heads = options.get_bool(OPTION_PRINT_HEADS, True)
+            self.body_decimals = options.get_int(OPTION_DECIMALS_BODY, 2)
+            self.head_decimals = options.get_int(OPTION_DECIMALS_HEAD, 2)
             self.text = StringIO()
             self.model.visit_used(self)
             text = self.text.getvalue()

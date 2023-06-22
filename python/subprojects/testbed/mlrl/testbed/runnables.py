@@ -36,8 +36,9 @@ from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorSetWriter, LabelVectorWriter
 from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
-from mlrl.testbed.models import OPTION_PRINT_BODIES, OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, \
-    OPTION_PRINT_LABEL_NAMES, OPTION_PRINT_NOMINAL_VALUES, ModelWriter, RuleModelWriter
+from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTION_PRINT_BODIES, \
+    OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, OPTION_PRINT_LABEL_NAMES, OPTION_PRINT_NOMINAL_VALUES, \
+    ModelWriter, RuleModelWriter
 from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.parameters import ParameterCsvInput, ParameterInput, ParameterWriter
 from mlrl.testbed.persistence import ModelPersistence
@@ -713,7 +714,7 @@ class RuleLearnerRunnable(LearnerRunnable):
     PRINT_RULES_VALUES: Dict[str, Set[str]] = {
         BooleanOption.TRUE.value: {
             OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_LABEL_NAMES, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_BODIES,
-            OPTION_PRINT_HEADS
+            OPTION_PRINT_HEADS, OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD
         },
         BooleanOption.FALSE.value: {}
     }
