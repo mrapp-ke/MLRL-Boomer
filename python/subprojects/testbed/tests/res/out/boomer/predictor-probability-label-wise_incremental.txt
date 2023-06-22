@@ -7,7 +7,7 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted probability estimates
 INFO Predicting for 196 test examples using a model of size 50...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 3 milliseconds
 INFO Evaluation result for test data using a model of size 50:
 
 Coverage Error                    3.52
@@ -77,7 +77,7 @@ NDCG                             84.77
 Ranking Loss                      0.18
 
 INFO Predicting for 196 test examples using a model of size 300...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 3 milliseconds
 INFO Evaluation result for test data using a model of size 300:
 
 Coverage Error                    2.9
@@ -231,7 +231,7 @@ NDCG                             85.45
 Ranking Loss                      0.17
 
 INFO Predicting for 196 test examples using a model of size 850...
-INFO Successfully predicted in 1 millisecond
+INFO Successfully predicted in 0 milliseconds
 INFO Evaluation result for test data using a model of size 850:
 
 Coverage Error                    2.88
@@ -245,7 +245,7 @@ NDCG                             85.13
 Ranking Loss                      0.17
 
 INFO Predicting for 196 test examples using a model of size 900...
-INFO Successfully predicted in 1 millisecond
+INFO Successfully predicted in 0 milliseconds
 INFO Evaluation result for test data using a model of size 900:
 
 Coverage Error                    2.89
@@ -259,7 +259,7 @@ NDCG                             85.73
 Ranking Loss                      0.17
 
 INFO Predicting for 196 test examples using a model of size 950...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data using a model of size 950:
 
 Coverage Error                    2.87
@@ -360,4 +360,4 @@ INFO Marginal probability calibration model:
 │               0.9702 │                  1      │
 └──────────────────────┴─────────────────────────┘
 
-INFO Successfully finished after 1 second and 389 milliseconds
+INFO Successfully finished after 1 second and 259 milliseconds

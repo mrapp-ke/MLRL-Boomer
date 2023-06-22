@@ -6,7 +6,7 @@ INFO Fold 1 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.26512237696442753 seconds
+INFO Successfully fit model in 261 milliseconds
 INFO Model (Fold 1):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.059793} => (quiet-still = 1.00)
@@ -89,7 +89,7 @@ INFO Fold 2 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.25982291402760893 seconds
+INFO Successfully fit model in 219 milliseconds
 INFO Model (Fold 2):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.068452} => (quiet-still = 1.00)
@@ -170,7 +170,7 @@ INFO Fold 3 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.26373344199964777 seconds
+INFO Successfully fit model in 227 milliseconds
 INFO Model (Fold 3):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.0608465} => (sad-lonely = 1.00)
@@ -257,7 +257,7 @@ INFO Fold 4 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.2634794930345379 seconds
+INFO Successfully fit model in 271 milliseconds
 INFO Model (Fold 4):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.072716} => (quiet-still = 1.00)
@@ -339,7 +339,7 @@ INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.21624786005122587 seconds
+INFO Successfully fit model in 243 milliseconds
 INFO Model (Fold 5):
 
 {Std_Acc1298_Std_Mem40_MFCC_10 <= 0.0627045} => (amazed-suprised = 1.00)
@@ -428,7 +428,7 @@ INFO Fold 6 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.26099899102700874 seconds
+INFO Successfully fit model in 248 milliseconds
 INFO Model (Fold 6):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.061776} => (quiet-still = 1.00)
@@ -506,7 +506,7 @@ INFO Fold 7 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.26709167601075023 seconds
+INFO Successfully fit model in 241 milliseconds
 INFO Model (Fold 7):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.068452} => (sad-lonely = 1.00)
@@ -596,7 +596,7 @@ INFO Fold 8 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.2990257699857466 seconds
+INFO Successfully fit model in 224 milliseconds
 INFO Model (Fold 8):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.061776} => (quiet-still = 1.00)
@@ -678,7 +678,7 @@ INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.2641736990190111 seconds
+INFO Successfully fit model in 275 milliseconds
 INFO Model (Fold 9):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.0611265} => (sad-lonely = 1.00)
@@ -763,7 +763,7 @@ INFO Fold 10 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.23887656797887757 seconds
+INFO Successfully fit model in 238 milliseconds
 INFO Model (Fold 10):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.071807995} => (quiet-still = 1.00)
@@ -846,4 +846,4 @@ INFO Model (Fold 10):
 {} => (amazed-suprised = 0.00, happy-pleased = 0.00, relaxing-calm = 0.00, quiet-still = 0.00, sad-lonely = 0.00, angry-aggresive = 0.00)
 
 
-INFO Successfully finished after 2.68288376997225 seconds
+INFO Successfully finished after 2 seconds and 555 milliseconds

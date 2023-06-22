@@ -5,11 +5,11 @@ DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emot
 INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.39724482502788305 seconds
+INFO Successfully fit model in 305 milliseconds
 INFO Predicting for 196 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.00569119188003242 seconds
+INFO Successfully predicted in 0 milliseconds
 INFO Evaluation result for test data:
 
 Example-wise F1         54.8
@@ -29,4 +29,4 @@ Micro Recall            60
 Subset 0/1 Loss         80.1
 Subset Accuracy         19.9
 
-INFO Successfully finished after 0.46244681789539754 seconds
+INFO Successfully finished after 356 milliseconds

@@ -6,11 +6,11 @@ INFO Fold 1 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.4820636879885569 seconds
+INFO Successfully fit model in 359 milliseconds
 INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0028963880031369627 seconds
+INFO Successfully predicted in 2 milliseconds
 INFO Predictions for test data (Fold 1):
 
 Ground truth:
@@ -141,4 +141,4 @@ Predictions:
 
 DEBUG Saving data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_test_fold-1.arff'...
 INFO Successfully saved data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_test_fold-1.arff'.
-INFO Successfully finished after 0.5715843479847535 seconds
+INFO Successfully finished after 404 milliseconds

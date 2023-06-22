@@ -6,7 +6,7 @@ INFO Fold 1 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.29367149700010486 seconds
+INFO Successfully fit model in 367 milliseconds
 INFO Model (Fold 1):
 
 {} => (amazed-suprised = -0.86, happy-pleased = -0.86, relaxing-calm = -0.22, quiet-still = -0.99, sad-lonely = -0.88, angry-aggresive = -0.71)
@@ -1011,4 +1011,4 @@ INFO Model (Fold 1):
 {Std_Acc1298_Mean_Mem40_MFCC_1 <= 1.580405 & Mean_Acc1298_Mean_Mem40_MFCC_7 <= 1.0710065 & Std_Acc1298_Std_Mem40_MFCC_5 > 0.169192 & Mean_Acc1298_Std_Mem40_MFCC_8 > 0.51803 & Std_Acc1298_Mean_Mem40_MFCC_2 > 0.504333 & Mean_Acc1298_Std_Mem40_MFCC_11 > 0.4743805 & Std_Acc1298_Std_Mem40_MFCC_3 > 0.1743895 & Std_Acc1298_Mean_Mem40_MFCC_7 > 0.2654665 & Mean_Acc1298_Std_Mem40_MFCC_3 > 0.518853 & Mean_Acc1298_Std_Mem40_MFCC_12 > 0.43361598 & Std_Acc1298_Mean_Mem40_Centroid > 0.0143425} => (sad-lonely = -0.16)
 
 
-INFO Successfully finished after 0.36763900599999033 seconds
+INFO Successfully finished after 470 milliseconds

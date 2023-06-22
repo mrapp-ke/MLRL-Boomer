@@ -8,7 +8,7 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.005270293971989304 seconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data (Fold 1):
 
 Example-wise F1         54.33
@@ -34,7 +34,7 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0036368920118547976 seconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data (Fold 2):
 
 Example-wise F1         53.23
@@ -60,7 +60,7 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0017903620027936995 seconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data (Fold 3):
 
 Example-wise F1         53.5
@@ -86,7 +86,7 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.001761442981660366 seconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data (Fold 4):
 
 Example-wise F1         56.16
@@ -112,7 +112,7 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.004047070979140699 seconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data (Fold 5):
 
 Example-wise F1         60.77
@@ -138,7 +138,7 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0032115689828060567 seconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data (Fold 6):
 
 Example-wise F1         49.07
@@ -164,7 +164,7 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0017237330321222544 seconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data (Fold 7):
 
 Example-wise F1         57.68
@@ -190,7 +190,7 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0016760089783929288 seconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data (Fold 8):
 
 Example-wise F1         59.6
@@ -216,7 +216,7 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.0017551440396346152 seconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data (Fold 9):
 
 Example-wise F1         52.82
@@ -242,7 +242,7 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0.004026564012747258 seconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data (Fold 10):
 
 Example-wise F1         61.36
@@ -281,4 +281,4 @@ Micro Recall            60.38  ±4.37
 Subset 0/1 Loss         79.42  ±5.63
 Subset Accuracy         20.58  ±5.63
 
-INFO Successfully finished after 0.33950225403532386 seconds
+INFO Successfully finished after 288 milliseconds

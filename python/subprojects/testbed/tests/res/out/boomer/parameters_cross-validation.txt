@@ -16,7 +16,7 @@ rule_induction     top-down-greedy{max_conditions=1}
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.012552440981380641 seconds
+INFO Successfully fit model in 11 milliseconds
 INFO Model characteristics (Fold 1):
 
 ┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
@@ -54,7 +54,7 @@ rule_induction     top-down-greedy{max_conditions=1}
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.016776095988461748 seconds
+INFO Successfully fit model in 10 milliseconds
 INFO Model characteristics (Fold 2):
 
 ┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
@@ -92,7 +92,7 @@ rule_induction     top-down-greedy{max_conditions=1}
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.02748604500084184 seconds
+INFO Successfully fit model in 10 milliseconds
 INFO Model characteristics (Fold 3):
 
 ┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
@@ -130,7 +130,7 @@ rule_induction     top-down-greedy{max_conditions=1}
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.041129539982648566 seconds
+INFO Successfully fit model in 10 milliseconds
 INFO Model characteristics (Fold 4):
 
 ┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
@@ -168,7 +168,7 @@ rule_induction     top-down-greedy{max_conditions=1}
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.030212832003599033 seconds
+INFO Successfully fit model in 10 milliseconds
 INFO Model characteristics (Fold 5):
 
 ┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
@@ -206,7 +206,7 @@ rule_induction     top-down-greedy{max_conditions=1}
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.028375796013278887 seconds
+INFO Successfully fit model in 14 milliseconds
 INFO Model characteristics (Fold 6):
 
 ┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
@@ -244,7 +244,7 @@ rule_induction     top-down-greedy{max_conditions=1}
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.02934421499958262 seconds
+INFO Successfully fit model in 10 milliseconds
 INFO Model characteristics (Fold 7):
 
 ┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
@@ -282,7 +282,7 @@ rule_induction     top-down-greedy{max_conditions=1}
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.03041500799008645 seconds
+INFO Successfully fit model in 10 milliseconds
 INFO Model characteristics (Fold 8):
 
 ┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
@@ -320,7 +320,7 @@ rule_induction     top-down-greedy{max_conditions=1}
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.028202856017742306 seconds
+INFO Successfully fit model in 10 milliseconds
 INFO Model characteristics (Fold 9):
 
 ┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
@@ -358,7 +358,7 @@ rule_induction     top-down-greedy{max_conditions=1}
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 0.029230718995677307 seconds
+INFO Successfully fit model in 15 milliseconds
 INFO Model characteristics (Fold 10):
 
 ┌───────────────────────────────┬─────────┬───────────────┬──────────────┬───────────────┬───────────────┐
@@ -382,4 +382,4 @@ INFO Model characteristics (Fold 10):
 │ Predictions                 │         1 │         1 │         1 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
-INFO Successfully finished after 0.3649988149991259 seconds
+INFO Successfully finished after 186 milliseconds

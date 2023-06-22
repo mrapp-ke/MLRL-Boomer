@@ -49,7 +49,7 @@ NDCG                             82.55
 Ranking Loss                      0.22
 
 INFO Predicting for 196 test examples using a model of size 200...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in 1 millisecond
 INFO Evaluation result for test data using a model of size 200:
 
 Coverage Error                    3.06
@@ -147,7 +147,7 @@ NDCG                             82.54
 Ranking Loss                      0.28
 
 INFO Predicting for 196 test examples using a model of size 550...
-INFO Successfully predicted in 1 millisecond
+INFO Successfully predicted in 0 milliseconds
 INFO Evaluation result for test data using a model of size 550:
 
 Coverage Error                    3.3
@@ -549,4 +549,4 @@ INFO Joint probability calibration model:
 │                       0.1111 │                          0.5    │
 └──────────────────────────────┴─────────────────────────────────┘
 
-INFO Successfully finished after 1 second and 407 milliseconds
+INFO Successfully finished after 1 second and 97 milliseconds

@@ -6,7 +6,7 @@ INFO Fold 1 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 606 milliseconds
+INFO Successfully fit model in 336 milliseconds
 INFO Label vectors (Fold 1):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -44,7 +44,7 @@ INFO Fold 2 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 415 milliseconds
+INFO Successfully fit model in 412 milliseconds
 INFO Label vectors (Fold 2):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -120,7 +120,7 @@ INFO Fold 4 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 425 milliseconds
+INFO Successfully fit model in 380 milliseconds
 INFO Label vectors (Fold 4):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -159,7 +159,7 @@ INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 412 milliseconds
+INFO Successfully fit model in 415 milliseconds
 INFO Label vectors (Fold 5):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -198,7 +198,7 @@ INFO Fold 6 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 379 milliseconds
+INFO Successfully fit model in 433 milliseconds
 INFO Label vectors (Fold 6):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -237,7 +237,7 @@ INFO Fold 7 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 699 milliseconds
+INFO Successfully fit model in 372 milliseconds
 INFO Label vectors (Fold 7):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -276,7 +276,7 @@ INFO Fold 8 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 521 milliseconds
+INFO Successfully fit model in 418 milliseconds
 INFO Label vectors (Fold 8):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -315,7 +315,7 @@ INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 517 milliseconds
+INFO Successfully fit model in 426 milliseconds
 INFO Label vectors (Fold 9):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -353,7 +353,7 @@ INFO Fold 10 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 493 milliseconds
+INFO Successfully fit model in 354 milliseconds
 INFO Label vectors (Fold 10):
 
 ┌─────────┬────────────────┬─────────────┐
@@ -388,4 +388,4 @@ INFO Label vectors (Fold 10):
 │      27 │ [1 0 0 0 1 1]  │           4 │
 └─────────┴────────────────┴─────────────┘
 
-INFO Successfully finished after 5 seconds and 14 milliseconds
+INFO Successfully finished after 4 seconds and 66 milliseconds
