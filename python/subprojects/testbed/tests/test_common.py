@@ -838,6 +838,23 @@ class IntegrationTests(ABC, TestCase):
             'Command "' + self.__format_cmd(args) + '" terminated with non-zero exit code\n\n' + str(out.stderr))
         return out
 
+    def __assert_output_files_are_equal(self, stdout, args, expected_output_file, raise_error: bool = True) -> bool:
+        with open(expected_output_file, 'r') as f:
+            for i, line in enumerate(f):
+                line = line.strip('\n')
+
+                if not line.endswith('days') and not line.endswith('day') and not line.endswith(
+                        'hours') and not line.endswith('hour') and not line.endswith('minutes') and not line.endswith(
+                            'minute') and not line.endswith('seconds') and not line.endswith('second'):
+                    if raise_error:
+                        self.assertEqual(
+                            stdout[i], line,
+                            'Output of command "' + self.__format_cmd(args) + '" differs at line ' + str(i + 1))
+                    elif stdout[i] != line:
+                        return False
+
+        return True
+
     def run_cmd(self, builder: CmdBuilder, expected_output_file_name: str = None):
         """
         Runs a command that has been configured via a builder.
@@ -859,21 +876,12 @@ class IntegrationTests(ABC, TestCase):
             expected_output_file = path.join(self.expected_output_dir, expected_output_file_name + '.txt')
 
             if OVERWRITE_EXPECTED_OUTPUT_FILES:
-                with open(expected_output_file, 'w') as f:
-                    for line in stdout:
-                        f.write(line + '\n')
+                if not self.__assert_output_files_are_equal(stdout, args, expected_output_file, raise_error=False):
+                    with open(expected_output_file, 'w') as f:
+                        for line in stdout:
+                            f.write(line + '\n')
             else:
-                with open(expected_output_file, 'r') as f:
-                    for i, line in enumerate(f):
-                        line = line.strip('\n')
-
-                        if not line.endswith('days') and not line.endswith('day') \
-                                and not line.endswith('hours') and not line.endswith('hour') \
-                                and not line.endswith('minutes') and not line.endswith('minute') \
-                                and not line.endswith('seconds') and not line.endswith('second'):
-                            self.assertEqual(
-                                stdout[i], line,
-                                'Output of command "' + self.__format_cmd(args) + '" differs at line ' + str(i + 1))
+                self.__assert_output_files_are_equal(stdout, args, expected_output_file)
 
         if not OVERWRITE_EXPECTED_OUTPUT_FILES:
             self.__assert_model_files_exist(builder)
