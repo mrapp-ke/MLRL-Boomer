@@ -48,23 +48,23 @@ class DenseBinnedScoreVector final : virtual public IScoreVector {
         /**
          * An iterator that provides access to the indices that correspond to individual bins and allows to modify them.
          */
-        typedef DenseBinnedVector<float64>::index_binned_iterator index_binned_iterator;
+        typedef DenseBinnedVector<float64>::index_iterator index_binned_iterator;
 
         /**
          * An iterator that provides read-only access to the indices that correspond to individual bins.
          */
-        typedef DenseBinnedVector<float64>::index_binned_const_iterator index_binned_const_iterator;
+        typedef DenseBinnedVector<float64>::index_const_iterator index_binned_const_iterator;
 
         /**
          * An iterator that provides access to the predicted scores that correspond to individual bins and allows to
          * modify them.
          */
-        typedef DenseBinnedVector<float64>::binned_iterator score_binned_iterator;
+        typedef DenseBinnedVector<float64>::value_iterator score_binned_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores that correspond to individual bins.
          */
-        typedef DenseBinnedVector<float64>::binned_const_iterator score_binned_const_iterator;
+        typedef DenseBinnedVector<float64>::value_const_iterator score_binned_const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices that correspond to individual labels.
