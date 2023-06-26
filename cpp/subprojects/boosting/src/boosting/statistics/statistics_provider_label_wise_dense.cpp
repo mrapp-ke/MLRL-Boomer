@@ -21,8 +21,8 @@ namespace boosting {
         std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr = evaluationMeasureFactory.createEvaluationMeasure();
         std::unique_ptr<DenseLabelWiseStatisticMatrix> statisticMatrixPtr =
           std::make_unique<DenseLabelWiseStatisticMatrix>(numExamples, numLabels);
-        std::unique_ptr<NumericDenseMatrix<float64>> scoreMatrixPtr =
-          std::make_unique<NumericDenseMatrix<float64>>(numExamples, numLabels, true);
+        std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr =
+          std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numLabels, true);
         const ILabelWiseLoss* lossRawPtr = lossPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
         const CContiguousConstView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();

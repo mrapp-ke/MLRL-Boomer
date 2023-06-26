@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/matrix_dense.hpp"
+#include "common/data/matrix_c_contiguous.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
@@ -13,7 +13,7 @@ namespace seco {
      * A two-dimensional matrix that stores how often individual examples and labels have been covered in a C-contiguous
      * array.
      */
-    class DenseCoverageMatrix final : public DenseMatrix<uint32> {
+    class DenseCoverageMatrix final : public CContiguousMatrix<uint32> {
         private:
 
             float64 sumOfUncoveredWeights_;
