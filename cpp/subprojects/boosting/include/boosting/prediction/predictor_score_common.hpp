@@ -105,8 +105,8 @@ namespace boosting {
                                                 RuleList::const_iterator rulesBegin, RuleList::const_iterator rulesEnd,
                                                 CContiguousView<float64>& scoreMatrix, uint32 exampleIndex,
                                                 uint32 predictionIndex) {
-        applyRules(rulesBegin, rulesEnd, featureMatrix.row_values_cbegin(exampleIndex),
-                   featureMatrix.row_values_cend(exampleIndex), scoreMatrix.row_values_begin(predictionIndex));
+        applyRules(rulesBegin, rulesEnd, featureMatrix.values_cbegin(exampleIndex),
+                   featureMatrix.values_cend(exampleIndex), scoreMatrix.values_begin(predictionIndex));
     }
 
     static inline void aggregatePredictedScores(const CsrConstView<const float32>& featureMatrix,
@@ -114,9 +114,9 @@ namespace boosting {
                                                 CContiguousView<float64>& scoreMatrix, uint32 exampleIndex,
                                                 uint32 predictionIndex) {
         uint32 numFeatures = featureMatrix.getNumCols();
-        applyRules(rulesBegin, rulesEnd, numFeatures, featureMatrix.row_indices_cbegin(exampleIndex),
-                   featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
-                   featureMatrix.row_values_cend(exampleIndex), scoreMatrix.row_values_begin(predictionIndex));
+        applyRules(rulesBegin, rulesEnd, numFeatures, featureMatrix.indices_cbegin(exampleIndex),
+                   featureMatrix.indices_cend(exampleIndex), featureMatrix.values_cbegin(exampleIndex),
+                   featureMatrix.values_cend(exampleIndex), scoreMatrix.values_begin(predictionIndex));
     }
 
     /**

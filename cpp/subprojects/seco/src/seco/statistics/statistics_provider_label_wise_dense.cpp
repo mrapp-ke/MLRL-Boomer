@@ -58,7 +58,7 @@ namespace seco {
             uint32 numRelevant = 0;
 
             for (uint32 j = 0; j < numExamples; j++) {
-                uint8 trueLabel = labelMatrix.row_values_cbegin(j)[i];
+                uint8 trueLabel = labelMatrix.values_cbegin(j)[i];
                 numRelevant += trueLabel;
             }
 
@@ -87,8 +87,8 @@ namespace seco {
         BinarySparseArrayVector::iterator majorityIterator = majorityLabelVectorPtr->begin();
 
         for (uint32 i = 0; i < numExamples; i++) {
-            BinaryCsrConstView::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(i);
-            uint32 numElements = labelMatrix.row_indices_cend(i) - indexIterator;
+            BinaryCsrConstView::index_const_iterator indexIterator = labelMatrix.indices_cbegin(i);
+            uint32 numElements = labelMatrix.indices_cend(i) - indexIterator;
 
             for (uint32 j = 0; j < numElements; j++) {
                 uint32 index = indexIterator[j];

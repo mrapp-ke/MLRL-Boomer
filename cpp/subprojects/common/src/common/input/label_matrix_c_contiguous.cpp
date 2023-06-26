@@ -7,7 +7,7 @@
 #include "common/statistics/statistics_provider.hpp"
 
 CContiguousLabelMatrix::View::View(const CContiguousLabelMatrix& labelMatrix, uint32 row)
-    : VectorConstView<const uint8>(labelMatrix.getNumCols(), labelMatrix.row_values_cbegin(row)) {}
+    : VectorConstView<const uint8>(labelMatrix.getNumCols(), labelMatrix.values_cbegin(row)) {}
 
 CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array)
     : CContiguousConstView<const uint8>(numRows, numCols, array) {}
@@ -22,7 +22,7 @@ float32 CContiguousLabelMatrix::calculateLabelCardinality() const {
     float32 labelCardinality = 0;
 
     for (uint32 i = 0; i < numRows; i++) {
-        value_const_iterator labelIterator = this->row_values_cbegin(i);
+        value_const_iterator labelIterator = this->values_cbegin(i);
         uint32 numRelevantLabels = 0;
 
         for (uint32 j = 0; j < numCols; j++) {
@@ -45,7 +45,7 @@ std::unique_ptr<LabelVector> CContiguousLabelMatrix::createLabelVector(uint32 ro
     uint32 numCols = this->getNumCols();
     std::unique_ptr<LabelVector> labelVectorPtr = std::make_unique<LabelVector>(numCols);
     LabelVector::iterator iterator = labelVectorPtr->begin();
-    value_const_iterator labelIterator = this->row_values_cbegin(row);
+    value_const_iterator labelIterator = this->values_cbegin(row);
     uint32 n = 0;
 
     for (uint32 i = 0; i < numCols; i++) {

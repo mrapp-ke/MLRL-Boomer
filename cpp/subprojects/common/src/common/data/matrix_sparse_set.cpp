@@ -130,37 +130,37 @@ void SparseSetMatrix<T>::Row::clear() {
 template<typename T>
 SparseSetMatrix<T>::SparseSetMatrix(uint32 numRows, uint32 numCols)
     : lilMatrix_(LilMatrix<T>(numRows)), indexMatrix_(DenseMatrix<uint32>(numRows, numCols)) {
-    setArrayToValue(indexMatrix_.row_values_begin(0), numRows * numCols, MAX_INDEX);
+    setArrayToValue(indexMatrix_.values_begin(0), numRows * numCols, MAX_INDEX);
 }
 
 template<typename T>
-typename SparseSetMatrix<T>::iterator SparseSetMatrix<T>::row_begin(uint32 row) {
-    return lilMatrix_.row_begin(row);
+typename SparseSetMatrix<T>::iterator SparseSetMatrix<T>::begin(uint32 row) {
+    return lilMatrix_.begin(row);
 }
 
 template<typename T>
-typename SparseSetMatrix<T>::iterator SparseSetMatrix<T>::row_end(uint32 row) {
-    return lilMatrix_.row_end(row);
+typename SparseSetMatrix<T>::iterator SparseSetMatrix<T>::end(uint32 row) {
+    return lilMatrix_.end(row);
 }
 
 template<typename T>
-typename SparseSetMatrix<T>::const_iterator SparseSetMatrix<T>::row_cbegin(uint32 row) const {
-    return lilMatrix_.row_cbegin(row);
+typename SparseSetMatrix<T>::const_iterator SparseSetMatrix<T>::cbegin(uint32 row) const {
+    return lilMatrix_.cbegin(row);
 }
 
 template<typename T>
-typename SparseSetMatrix<T>::const_iterator SparseSetMatrix<T>::row_cend(uint32 row) const {
-    return lilMatrix_.row_cend(row);
+typename SparseSetMatrix<T>::const_iterator SparseSetMatrix<T>::cend(uint32 row) const {
+    return lilMatrix_.cend(row);
 }
 
 template<typename T>
 typename SparseSetMatrix<T>::row SparseSetMatrix<T>::operator[](uint32 row) {
-    return Row(lilMatrix_[row], indexMatrix_.row_values_begin(row));
+    return Row(lilMatrix_[row], indexMatrix_.values_begin(row));
 }
 
 template<typename T>
 typename SparseSetMatrix<T>::const_row SparseSetMatrix<T>::operator[](uint32 row) const {
-    return ConstRow(lilMatrix_[row], indexMatrix_.row_values_cbegin(row));
+    return ConstRow(lilMatrix_[row], indexMatrix_.values_cbegin(row));
 }
 
 template<typename T>
@@ -178,7 +178,7 @@ void SparseSetMatrix<T>::clear() {
     uint32 numRows = lilMatrix_.getNumRows();
 
     for (uint32 i = 0; i < numRows; i++) {
-        clearRow<T>(lilMatrix_[i], indexMatrix_.row_values_begin(i));
+        clearRow<T>(lilMatrix_[i], indexMatrix_.values_begin(i));
     }
 }
 

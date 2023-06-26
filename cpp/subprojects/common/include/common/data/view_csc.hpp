@@ -74,7 +74,7 @@ class CscConstView : virtual public ITwoDimensionalView {
          * @param col   The column
          * @return      A `value_const_iterator` to the beginning of the values
          */
-        value_const_iterator column_values_cbegin(uint32 col) const;
+        value_const_iterator values_cbegin(uint32 col) const;
 
         /**
          * Returns a `value_const_iterator` to the end of the values at a specific column.
@@ -82,7 +82,7 @@ class CscConstView : virtual public ITwoDimensionalView {
          * @param col   The column
          * @return      A `value_const_iterator` to the end of the values
          */
-        value_const_iterator column_values_cend(uint32 col) const;
+        value_const_iterator values_cend(uint32 col) const;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices at a specific column.
@@ -90,7 +90,7 @@ class CscConstView : virtual public ITwoDimensionalView {
          * @param col   The column
          * @return      An `index_const_iterator` to the beginning of the indices
          */
-        index_const_iterator column_indices_cbegin(uint32 col) const;
+        index_const_iterator indices_cbegin(uint32 col) const;
 
         /**
          * Returns an `index_const_iterator` to the end of the indices at a specific column.
@@ -98,7 +98,7 @@ class CscConstView : virtual public ITwoDimensionalView {
          * @param col   The column
          * @return      An `index_const_iterator` to the end of the indices
          */
-        index_const_iterator column_indices_cend(uint32 col) const;
+        index_const_iterator indices_cend(uint32 col) const;
 
         /**
          * Returns the number of non-zero elements in the view.
@@ -159,7 +159,7 @@ class CscView : public CscConstView<T> {
          * @param col   The column
          * @return      A `value_iterator` to the beginning of the values
          */
-        value_iterator column_values_begin(uint32 col);
+        value_iterator values_begin(uint32 col);
 
         /**
          * Returns a `value_iterator` to the end of the values at a specific column.
@@ -167,7 +167,7 @@ class CscView : public CscConstView<T> {
          * @param col   The column
          * @return      A `value_iterator` to the end of the values
          */
-        value_iterator column_values_end(uint32 col);
+        value_iterator values_end(uint32 col);
 
         /**
          * Returns an `index_iterator` to the beginning of the indices at a specific column.
@@ -175,7 +175,7 @@ class CscView : public CscConstView<T> {
          * @param col   The column
          * @return      An `index_iterator` to the beginning of the indices
          */
-        index_iterator column_indices_begin(uint32 col);
+        index_iterator indices_begin(uint32 col);
 
         /**
          * Returns an `index_iterator` to the end of the indices at a specific column.
@@ -183,5 +183,5 @@ class CscView : public CscConstView<T> {
          * @param col   The column
          * @return      An `index_iterator` to the end of the indices
          */
-        index_iterator column_indices_end(uint32 col);
+        index_iterator indices_end(uint32 col);
 };

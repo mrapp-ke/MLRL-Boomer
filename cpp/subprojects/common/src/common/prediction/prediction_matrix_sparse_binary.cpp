@@ -42,7 +42,7 @@ std::unique_ptr<BinarySparsePredictionMatrix> createBinarySparsePredictionMatrix
     for (uint32 i = 0; i < numRows; i++) {
         rowIndices[i] = n;
 
-        for (auto it = lilMatrix.row_cbegin(i); it != lilMatrix.row_cend(i); it++) {
+        for (auto it = lilMatrix.cbegin(i); it != lilMatrix.cend(i); it++) {
             colIndices[n] = *it;
             n++;
         }

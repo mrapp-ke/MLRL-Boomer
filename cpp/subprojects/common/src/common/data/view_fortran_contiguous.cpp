@@ -5,13 +5,13 @@ FortranContiguousConstView<T>::FortranContiguousConstView(uint32 numRows, uint32
     : numRows_(numRows), numCols_(numCols), array_(array) {}
 
 template<typename T>
-typename FortranContiguousConstView<T>::value_const_iterator FortranContiguousConstView<T>::column_values_cbegin(
+typename FortranContiguousConstView<T>::value_const_iterator FortranContiguousConstView<T>::values_cbegin(
   uint32 col) const {
     return &array_[col * numRows_];
 }
 
 template<typename T>
-typename FortranContiguousConstView<T>::value_const_iterator FortranContiguousConstView<T>::column_values_cend(
+typename FortranContiguousConstView<T>::value_const_iterator FortranContiguousConstView<T>::values_cend(
   uint32 col) const {
     return &array_[(col + 1) * numRows_];
 }
@@ -40,12 +40,12 @@ FortranContiguousView<T>::FortranContiguousView(uint32 numRows, uint32 numCols, 
     : FortranContiguousConstView<T>(numRows, numCols, array) {}
 
 template<typename T>
-typename FortranContiguousView<T>::value_iterator FortranContiguousView<T>::column_values_begin(uint32 col) {
+typename FortranContiguousView<T>::value_iterator FortranContiguousView<T>::values_begin(uint32 col) {
     return &FortranContiguousConstView<T>::array_[col * FortranContiguousConstView<T>::numRows_];
 }
 
 template<typename T>
-typename FortranContiguousView<T>::value_iterator FortranContiguousView<T>::column_values_end(uint32 col) {
+typename FortranContiguousView<T>::value_iterator FortranContiguousView<T>::values_end(uint32 col) {
     return &FortranContiguousConstView<T>::array_[(col + 1) * FortranContiguousConstView<T>::numRows_];
 }
 

@@ -52,7 +52,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `const_iterator` to the beginning
              */
-            const_iterator row_cbegin(uint32 row) const;
+            const_iterator cbegin(uint32 row) const;
 
             /**
              * Returns a `const_iterator` to the end of a specific row.
@@ -60,7 +60,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `const_iterator` to the end
              */
-            const_iterator row_cend(uint32 row) const;
+            const_iterator cend(uint32 row) const;
 
             /**
              * Provides read-only access to a specific row.

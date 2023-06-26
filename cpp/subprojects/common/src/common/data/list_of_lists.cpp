@@ -15,22 +15,22 @@ ListOfLists<T>::~ListOfLists() {
 }
 
 template<typename T>
-typename ListOfLists<T>::iterator ListOfLists<T>::row_begin(uint32 row) {
+typename ListOfLists<T>::iterator ListOfLists<T>::begin(uint32 row) {
     return array_[row].begin();
 }
 
 template<typename T>
-typename ListOfLists<T>::iterator ListOfLists<T>::row_end(uint32 row) {
+typename ListOfLists<T>::iterator ListOfLists<T>::end(uint32 row) {
     return array_[row].end();
 }
 
 template<typename T>
-typename ListOfLists<T>::const_iterator ListOfLists<T>::row_cbegin(uint32 row) const {
+typename ListOfLists<T>::const_iterator ListOfLists<T>::cbegin(uint32 row) const {
     return array_[row].cbegin();
 }
 
 template<typename T>
-typename ListOfLists<T>::const_iterator ListOfLists<T>::row_cend(uint32 row) const {
+typename ListOfLists<T>::const_iterator ListOfLists<T>::cend(uint32 row) const {
     return array_[row].cend();
 }
 

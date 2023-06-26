@@ -9,11 +9,11 @@ namespace boosting {
                                                                          Triple<float64>* statistics, float64* weights)
         : numRows_(numRows), numCols_(numCols), statistics_(statistics), weights_(weights) {}
 
-    SparseLabelWiseHistogramConstView::const_iterator SparseLabelWiseHistogramConstView::row_cbegin(uint32 row) const {
+    SparseLabelWiseHistogramConstView::const_iterator SparseLabelWiseHistogramConstView::cbegin(uint32 row) const {
         return &statistics_[row * numCols_];
     }
 
-    SparseLabelWiseHistogramConstView::const_iterator SparseLabelWiseHistogramConstView::row_cend(uint32 row) const {
+    SparseLabelWiseHistogramConstView::const_iterator SparseLabelWiseHistogramConstView::cend(uint32 row) const {
         return &statistics_[(row + 1) * numCols_];
     }
 

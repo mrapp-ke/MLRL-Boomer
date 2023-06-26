@@ -14,7 +14,7 @@ namespace boosting {
                                                    typename VectorConstView<T>::const_iterator end,
                                                    CompleteIndexVector::const_iterator indicesBegin,
                                                    CompleteIndexVector::const_iterator indicesEnd) {
-        typename NumericDenseMatrix<T>::value_iterator iterator = this->row_values_begin(row);
+        typename NumericDenseMatrix<T>::value_iterator iterator = this->values_begin(row);
         uint32 numCols = this->getNumCols();
 
         for (uint32 i = 0; i < numCols; i++) {
@@ -27,7 +27,7 @@ namespace boosting {
                                                    typename VectorConstView<T>::const_iterator end,
                                                    PartialIndexVector::const_iterator indicesBegin,
                                                    PartialIndexVector::const_iterator indicesEnd) {
-        typename NumericDenseMatrix<T>::value_iterator iterator = this->row_values_begin(row);
+        typename NumericDenseMatrix<T>::value_iterator iterator = this->values_begin(row);
         uint32 numCols = indicesEnd - indicesBegin;
 
         for (uint32 i = 0; i < numCols; i++) {
@@ -41,7 +41,7 @@ namespace boosting {
                                                         typename VectorConstView<T>::const_iterator end,
                                                         CompleteIndexVector::const_iterator indicesBegin,
                                                         CompleteIndexVector::const_iterator indicesEnd) {
-        typename NumericDenseMatrix<T>::value_iterator iterator = this->row_values_begin(row);
+        typename NumericDenseMatrix<T>::value_iterator iterator = this->values_begin(row);
         uint32 numCols = this->getNumCols();
 
         for (uint32 i = 0; i < numCols; i++) {
@@ -54,7 +54,7 @@ namespace boosting {
                                                         typename VectorConstView<T>::const_iterator end,
                                                         PartialIndexVector::const_iterator indicesBegin,
                                                         PartialIndexVector::const_iterator indicesEnd) {
-        typename NumericDenseMatrix<T>::value_iterator iterator = this->row_values_begin(row);
+        typename NumericDenseMatrix<T>::value_iterator iterator = this->values_begin(row);
         uint32 numCols = indicesEnd - indicesBegin;
 
         for (uint32 i = 0; i < numCols; i++) {

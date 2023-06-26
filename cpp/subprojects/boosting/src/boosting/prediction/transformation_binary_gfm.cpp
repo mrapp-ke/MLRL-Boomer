@@ -59,7 +59,7 @@ namespace boosting {
         for (uint32 i = 0; i < numLabels; i++) {
             float64 weightedProbability = 0;
 
-            for (auto it = probabilities.row_cbegin(i); it != probabilities.row_cend(i); it++) {
+            for (auto it = probabilities.cbegin(i); it != probabilities.cend(i); it++) {
                 const IndexedValue<float64>& indexedValue = *it;
                 weightedProbability += (2 * indexedValue.value) / (float64) (indexedValue.index + k + 1);
             }

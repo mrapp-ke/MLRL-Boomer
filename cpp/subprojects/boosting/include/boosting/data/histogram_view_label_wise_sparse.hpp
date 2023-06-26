@@ -64,7 +64,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `const_iterator` to the beginning of the row
              */
-            const_iterator row_cbegin(uint32 row) const;
+            const_iterator cbegin(uint32 row) const;
 
             /**
              * Returns a `const_iterator` to the end of the gradients and Hessians at a specific row.
@@ -72,7 +72,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `const_iterator` to the end of the row
              */
-            const_iterator row_cend(uint32 row) const;
+            const_iterator cend(uint32 row) const;
 
             /**
              * Returns a `weight_const_iterator` to the beginning of the weights that correspond to individual bins.

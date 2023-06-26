@@ -59,7 +59,7 @@ class MLRLCOMMON_API BinaryCsrConstView : virtual public ITwoDimensionalView {
          * @param row   The row
          * @return      An `index_const_iterator` to the beginning of the indices
          */
-        index_const_iterator row_indices_cbegin(uint32 row) const;
+        index_const_iterator indices_cbegin(uint32 row) const;
 
         /**
          * Returns an `index_const_iterator` to the end of the indices at a specific row.
@@ -67,7 +67,7 @@ class MLRLCOMMON_API BinaryCsrConstView : virtual public ITwoDimensionalView {
          * @param row   The row
          * @return      An `index_const_iterator` to the end of the indices
          */
-        index_const_iterator row_indices_cend(uint32 row) const;
+        index_const_iterator indices_cend(uint32 row) const;
 
         /**
          * Returns the number of non-zero elements in the view.
@@ -112,7 +112,7 @@ class BinaryCsrView : public BinaryCsrConstView {
          * @param row   The row
          * @return      An `index_iterator` to the beginning of the indices
          */
-        index_iterator row_indices_begin(uint32 row);
+        index_iterator indices_begin(uint32 row);
 
         /**
          * Returns an `index_iterator` to the end of the indices at a specific row.
@@ -120,5 +120,5 @@ class BinaryCsrView : public BinaryCsrConstView {
          * @param row   The row
          * @return      An `index_iterator` to the end of the indices
          */
-        index_iterator row_indices_end(uint32 row);
+        index_iterator indices_end(uint32 row);
 };
