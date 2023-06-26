@@ -40,6 +40,8 @@ class LabelWiseStratification final {
          */
         LabelWiseStratification(const LabelMatrix& labelMatrix, IndexIterator indicesBegin, IndexIterator indicesEnd);
 
+        ~LabelWiseStratification();
+
         /**
          * Randomly selects a stratified sample of the available examples and sets their weights to 1, while the
          * remaining weights are set to 0.
