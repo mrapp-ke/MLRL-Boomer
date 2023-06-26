@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/matrix_dense.hpp"
+#include "common/data/matrix_c_contiguous.hpp"
 #include "common/data/matrix_lil.hpp"
 
 /**
@@ -177,7 +177,7 @@ class SparseSetMatrix : virtual public ITwoDimensionalView {
 
         LilMatrix<T> lilMatrix_;
 
-        DenseMatrix<uint32> indexMatrix_;
+        CContiguousMatrix<uint32> indexMatrix_;
 
     public:
 

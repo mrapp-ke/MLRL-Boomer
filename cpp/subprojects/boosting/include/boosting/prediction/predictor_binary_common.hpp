@@ -6,7 +6,7 @@
 #include "boosting/prediction/predictor_score_common.hpp"
 #include "boosting/prediction/transformation_binary.hpp"
 #include "common/data/arrays.hpp"
-#include "common/data/matrix_dense.hpp"
+#include "common/data/matrix_c_contiguous.hpp"
 #include "common/prediction/predictor_binary.hpp"
 
 namespace boosting {
@@ -168,7 +168,7 @@ namespace boosting {
                                                                  binaryTransformationPtr_ == nullptr);
 
                 if (binaryTransformationPtr_) {
-                    DenseMatrix<float64> scoreMatrix(numThreads_, numLabels_);
+                    CContiguousMatrix<float64> scoreMatrix(numThreads_, numLabels_);
                     PredictionDelegate delegate(scoreMatrix, *predictionMatrixPtr, *binaryTransformationPtr_);
                     PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(
                       delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
@@ -357,7 +357,7 @@ namespace boosting {
                 uint32 numNonZeroElements;
 
                 if (binaryTransformationPtr_) {
-                    DenseMatrix<float64> scoreMatrix(numThreads_, numLabels_);
+                    CContiguousMatrix<float64> scoreMatrix(numThreads_, numLabels_);
                     PredictionDelegate delegate(scoreMatrix, predictionMatrix, *binaryTransformationPtr_);
                     numNonZeroElements = BinarySparsePredictionDispatcher<FeatureMatrix, Model>().predict(
                       delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);

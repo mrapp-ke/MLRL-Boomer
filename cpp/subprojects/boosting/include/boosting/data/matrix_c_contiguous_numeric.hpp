@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/matrix_dense.hpp"
+#include "common/data/matrix_c_contiguous.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
 
@@ -15,21 +15,21 @@ namespace boosting {
      * @tparam T The type of the values that are stored in the matrix
      */
     template<typename T>
-    class NumericDenseMatrix final : public DenseMatrix<T> {
+    class NumericCContiguousMatrix final : public CContiguousMatrix<T> {
         public:
 
             /**
              * @param numRows   The number of rows in the matrix
              * @param numCols   The number of columns in the matrix
              */
-            NumericDenseMatrix(uint32 numRows, uint32 numCols);
+            NumericCContiguousMatrix(uint32 numRows, uint32 numCols);
 
             /**
              * @param numRows   The number of rows in the matrix
              * @param numCols   The number of columns in the matrix
              * @param init      True, if all elements in the matrix should be value-initialized, false otherwise
              */
-            NumericDenseMatrix(uint32 numRows, uint32 numCols, bool init);
+            NumericCContiguousMatrix(uint32 numRows, uint32 numCols, bool init);
 
             /**
              * Adds all values in another vector to certain elements, whose positions are given as a

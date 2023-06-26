@@ -5,7 +5,7 @@
 
 #include "boosting/statistics/statistics_provider_example_wise_dense.hpp"
 
-#include "boosting/data/matrix_dense_numeric.hpp"
+#include "boosting/data/matrix_c_contiguous_numeric.hpp"
 #include "boosting/data/statistic_vector_example_wise_dense.hpp"
 #include "boosting/data/statistic_view_example_wise_dense.hpp"
 #include "boosting/math/math.hpp"
@@ -51,7 +51,7 @@ namespace boosting {
     class DenseExampleWiseStatistics final
         : public AbstractExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector,
                                                DenseExampleWiseStatisticView, DenseExampleWiseStatisticMatrix,
-                                               NumericDenseMatrix<float64>, IExampleWiseLoss, IEvaluationMeasure,
+                                               NumericCContiguousMatrix<float64>, IExampleWiseLoss, IEvaluationMeasure,
                                                IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory> {
         public:
 
@@ -68,18 +68,18 @@ namespace boosting {
              *                              to the labels of the training examples
              * @param statisticViewPtr      An unique pointer to an object of type `DenseExampleWiseStatisticView` that
              *                              provides access to the gradients and Hessians
-             * @param scoreMatrixPtr        An unique pointer to an object of type `NumericDenseMatrix` that stores the
-             *                              currently predicted scores
+             * @param scoreMatrixPtr        An unique pointer to an object of type `NumericCContiguousMatrix` that
+             *                              stores the currently predicted scores
              */
             DenseExampleWiseStatistics(std::unique_ptr<IExampleWiseLoss> lossPtr,
                                        std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr,
                                        const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory,
                                        const LabelMatrix& labelMatrix,
                                        std::unique_ptr<DenseExampleWiseStatisticView> statisticViewPtr,
-                                       std::unique_ptr<NumericDenseMatrix<float64>> scoreMatrixPtr)
+                                       std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
                 : AbstractExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector,
                                                 DenseExampleWiseStatisticView, DenseExampleWiseStatisticMatrix,
-                                                NumericDenseMatrix<float64>, IExampleWiseLoss, IEvaluationMeasure,
+                                                NumericCContiguousMatrix<float64>, IExampleWiseLoss, IEvaluationMeasure,
                                                 IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>(
                   std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
                   std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
@@ -139,8 +139,8 @@ namespace boosting {
         std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr = evaluationMeasureFactory.createEvaluationMeasure();
         std::unique_ptr<DenseExampleWiseStatisticMatrix> statisticMatrixPtr =
           std::make_unique<DenseExampleWiseStatisticMatrix>(numExamples, numLabels);
-        std::unique_ptr<NumericDenseMatrix<float64>> scoreMatrixPtr =
-          std::make_unique<NumericDenseMatrix<float64>>(numExamples, numLabels, true);
+        std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr =
+          std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numLabels, true);
         const IExampleWiseLoss* lossRawPtr = lossPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
         const CContiguousConstView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();

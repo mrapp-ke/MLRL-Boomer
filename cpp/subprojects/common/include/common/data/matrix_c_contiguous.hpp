@@ -11,21 +11,21 @@
  * @tparam T The type of the data that is stored in the matrix
  */
 template<typename T>
-class DenseMatrix : public CContiguousView<T> {
+class CContiguousMatrix : public CContiguousView<T> {
     public:
 
         /**
          * @param numRows   The number of rows in the matrix
          * @param numCols   The number of columns in the matrix
          */
-        DenseMatrix(uint32 numRows, uint32 numCols);
+        CContiguousMatrix(uint32 numRows, uint32 numCols);
 
         /**
          * @param numRows   The number of rows in the matrix
          * @param numCols   The number of columns in the matrix
          * @param init      True, if all elements in the matrix should be value-initialized, false otherwise
          */
-        DenseMatrix(uint32 numRows, uint32 numCols, bool init);
+        CContiguousMatrix(uint32 numRows, uint32 numCols, bool init);
 
-        virtual ~DenseMatrix() override;
+        virtual ~CContiguousMatrix() override;
 };
