@@ -74,42 +74,42 @@ typename DenseBinnedVector<T>::const_iterator DenseBinnedVector<T>::cend() const
 }
 
 template<typename T>
-typename DenseBinnedVector<T>::index_binned_iterator DenseBinnedVector<T>::indices_binned_begin() {
+typename DenseBinnedVector<T>::index_iterator DenseBinnedVector<T>::indices_begin() {
     return binIndices_.begin();
 }
 
 template<typename T>
-typename DenseBinnedVector<T>::index_binned_iterator DenseBinnedVector<T>::indices_binned_end() {
+typename DenseBinnedVector<T>::index_iterator DenseBinnedVector<T>::indices_end() {
     return binIndices_.end();
 }
 
 template<typename T>
-typename DenseBinnedVector<T>::index_binned_const_iterator DenseBinnedVector<T>::indices_binned_cbegin() const {
+typename DenseBinnedVector<T>::index_const_iterator DenseBinnedVector<T>::indices_cbegin() const {
     return binIndices_.cbegin();
 }
 
 template<typename T>
-typename DenseBinnedVector<T>::index_binned_const_iterator DenseBinnedVector<T>::indices_binned_cend() const {
+typename DenseBinnedVector<T>::index_const_iterator DenseBinnedVector<T>::indices_cend() const {
     return binIndices_.cend();
 }
 
 template<typename T>
-typename DenseBinnedVector<T>::binned_iterator DenseBinnedVector<T>::binned_begin() {
+typename DenseBinnedVector<T>::value_iterator DenseBinnedVector<T>::values_begin() {
     return values_.begin();
 }
 
 template<typename T>
-typename DenseBinnedVector<T>::binned_iterator DenseBinnedVector<T>::binned_end() {
+typename DenseBinnedVector<T>::value_iterator DenseBinnedVector<T>::values_end() {
     return values_.end();
 }
 
 template<typename T>
-typename DenseBinnedVector<T>::binned_const_iterator DenseBinnedVector<T>::binned_cbegin() const {
+typename DenseBinnedVector<T>::value_const_iterator DenseBinnedVector<T>::values_cbegin() const {
     return values_.cbegin();
 }
 
 template<typename T>
-typename DenseBinnedVector<T>::binned_const_iterator DenseBinnedVector<T>::binned_cend() const {
+typename DenseBinnedVector<T>::value_const_iterator DenseBinnedVector<T>::values_cend() const {
     return values_.cend();
 }
 

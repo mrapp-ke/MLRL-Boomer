@@ -32,55 +32,55 @@ typename DenseBinnedScoreVector<IndexVector>::score_const_iterator DenseBinnedSc
 template<typename IndexVector>
 typename DenseBinnedScoreVector<IndexVector>::score_const_iterator DenseBinnedScoreVector<IndexVector>::scores_cend()
   const {
-    return DenseBinnedVector<float64>::ValueConstIterator(this->indices_binned_cend(), binnedVector_.binned_cbegin());
+    return DenseBinnedVector<float64>::ValueConstIterator(this->indices_binned_cend(), binnedVector_.values_cbegin());
 }
 
 template<typename IndexVector>
 typename DenseBinnedScoreVector<IndexVector>::index_binned_iterator
   DenseBinnedScoreVector<IndexVector>::indices_binned_begin() {
-    return binnedVector_.indices_binned_begin();
+    return binnedVector_.indices_begin();
 }
 
 template<typename IndexVector>
 typename DenseBinnedScoreVector<IndexVector>::index_binned_iterator
   DenseBinnedScoreVector<IndexVector>::indices_binned_end() {
-    return &binnedVector_.indices_binned_begin()[labelIndices_.getNumElements()];
+    return &binnedVector_.indices_begin()[labelIndices_.getNumElements()];
 }
 
 template<typename IndexVector>
 typename DenseBinnedScoreVector<IndexVector>::index_binned_const_iterator
   DenseBinnedScoreVector<IndexVector>::indices_binned_cbegin() const {
-    return binnedVector_.indices_binned_cbegin();
+    return binnedVector_.indices_cbegin();
 }
 
 template<typename IndexVector>
 typename DenseBinnedScoreVector<IndexVector>::index_binned_const_iterator
   DenseBinnedScoreVector<IndexVector>::indices_binned_cend() const {
-    return &binnedVector_.indices_binned_cbegin()[labelIndices_.getNumElements()];
+    return &binnedVector_.indices_cbegin()[labelIndices_.getNumElements()];
 }
 
 template<typename IndexVector>
 typename DenseBinnedScoreVector<IndexVector>::score_binned_iterator
   DenseBinnedScoreVector<IndexVector>::scores_binned_begin() {
-    return binnedVector_.binned_begin();
+    return binnedVector_.values_begin();
 }
 
 template<typename IndexVector>
 typename DenseBinnedScoreVector<IndexVector>::score_binned_iterator
   DenseBinnedScoreVector<IndexVector>::scores_binned_end() {
-    return binnedVector_.binned_end();
+    return binnedVector_.values_end();
 }
 
 template<typename IndexVector>
 typename DenseBinnedScoreVector<IndexVector>::score_binned_const_iterator
   DenseBinnedScoreVector<IndexVector>::scores_binned_cbegin() const {
-    return binnedVector_.binned_cbegin();
+    return binnedVector_.values_cbegin();
 }
 
 template<typename IndexVector>
 typename DenseBinnedScoreVector<IndexVector>::score_binned_const_iterator
   DenseBinnedScoreVector<IndexVector>::scores_binned_cend() const {
-    return binnedVector_.binned_cend();
+    return binnedVector_.values_cend();
 }
 
 template<typename IndexVector>
