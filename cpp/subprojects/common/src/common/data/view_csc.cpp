@@ -5,22 +5,22 @@ CscConstView<T>::CscConstView(uint32 numRows, uint32 numCols, T* data, uint32* r
     : numRows_(numRows), numCols_(numCols), data_(data), rowIndices_(rowIndices), colIndices_(colIndices) {}
 
 template<typename T>
-typename CscConstView<T>::value_const_iterator CscConstView<T>::column_values_cbegin(uint32 col) const {
+typename CscConstView<T>::value_const_iterator CscConstView<T>::values_cbegin(uint32 col) const {
     return &data_[colIndices_[col]];
 }
 
 template<typename T>
-typename CscConstView<T>::value_const_iterator CscConstView<T>::column_values_cend(uint32 col) const {
+typename CscConstView<T>::value_const_iterator CscConstView<T>::values_cend(uint32 col) const {
     return &data_[colIndices_[col + 1]];
 }
 
 template<typename T>
-typename CscConstView<T>::index_const_iterator CscConstView<T>::column_indices_cbegin(uint32 col) const {
+typename CscConstView<T>::index_const_iterator CscConstView<T>::indices_cbegin(uint32 col) const {
     return &rowIndices_[colIndices_[col]];
 }
 
 template<typename T>
-typename CscConstView<T>::index_const_iterator CscConstView<T>::column_indices_cend(uint32 col) const {
+typename CscConstView<T>::index_const_iterator CscConstView<T>::indices_cend(uint32 col) const {
     return &rowIndices_[colIndices_[col + 1]];
 }
 
@@ -53,22 +53,22 @@ CscView<T>::CscView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices,
     : CscConstView<T>(numRows, numCols, data, rowIndices, colIndices) {}
 
 template<typename T>
-typename CscView<T>::value_iterator CscView<T>::column_values_begin(uint32 col) {
+typename CscView<T>::value_iterator CscView<T>::values_begin(uint32 col) {
     return &CscConstView<T>::data_[CscConstView<T>::colIndices_[col]];
 }
 
 template<typename T>
-typename CscView<T>::value_iterator CscView<T>::column_values_end(uint32 col) {
+typename CscView<T>::value_iterator CscView<T>::values_end(uint32 col) {
     return &CscConstView<T>::data_[CscConstView<T>::colIndices_[col + 1]];
 }
 
 template<typename T>
-typename CscView<T>::index_iterator CscView<T>::column_indices_begin(uint32 col) {
+typename CscView<T>::index_iterator CscView<T>::indices_begin(uint32 col) {
     return &CscConstView<T>::rowIndices_[CscConstView<T>::colIndices_[col]];
 }
 
 template<typename T>
-typename CscView<T>::index_iterator CscView<T>::column_indices_end(uint32 col) {
+typename CscView<T>::index_iterator CscView<T>::indices_end(uint32 col) {
     return &CscConstView<T>::rowIndices_[CscConstView<T>::colIndices_[col + 1]];
 }
 

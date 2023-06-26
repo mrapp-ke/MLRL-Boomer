@@ -48,10 +48,10 @@ namespace boosting {
                         ScorePredictionDelegate<FeatureMatrix, Model>(scoreMatrix_)
                           .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
                                              predictionIndex);
-                        probabilityTransformation_.apply(scoreMatrix_.row_values_cbegin(predictionIndex),
-                                                         scoreMatrix_.row_values_cend(predictionIndex),
-                                                         predictionMatrix_.row_values_begin(predictionIndex),
-                                                         predictionMatrix_.row_values_end(predictionIndex));
+                        probabilityTransformation_.apply(scoreMatrix_.values_cbegin(predictionIndex),
+                                                         scoreMatrix_.values_cend(predictionIndex),
+                                                         predictionMatrix_.values_begin(predictionIndex),
+                                                         predictionMatrix_.values_end(predictionIndex));
                     }
             };
 

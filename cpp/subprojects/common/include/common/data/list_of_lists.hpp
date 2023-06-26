@@ -55,7 +55,7 @@ class ListOfLists final {
          * @param row   The row
          * @return      An `iterator` to the beginning
          */
-        iterator row_begin(uint32 row);
+        iterator begin(uint32 row);
 
         /**
          * Returns an `iterator` to the end of a specific row.
@@ -63,7 +63,7 @@ class ListOfLists final {
          * @param row   The row
          * @return      An `iterator` to the end
          */
-        iterator row_end(uint32 row);
+        iterator end(uint32 row);
 
         /**
          * Returns a `const_iterator` to the beginning of a specific row.
@@ -71,7 +71,7 @@ class ListOfLists final {
          * @param row   The row
          * @return      A `const_iterator` to the beginning
          */
-        const_iterator row_cbegin(uint32 row) const;
+        const_iterator cbegin(uint32 row) const;
 
         /**
          * Returns a `const_iterator` to the end of a specific row.
@@ -79,7 +79,7 @@ class ListOfLists final {
          * @param row   The row
          * @return      A `const_iterator` to the end
          */
-        const_iterator row_cend(uint32 row) const;
+        const_iterator cend(uint32 row) const;
 
         /**
          * Provides access to a specific row and allows to modify its elements.

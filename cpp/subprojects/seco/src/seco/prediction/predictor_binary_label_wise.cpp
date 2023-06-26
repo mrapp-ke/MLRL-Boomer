@@ -62,10 +62,9 @@ namespace seco {
             const RuleList::Rule& rule = *rulesBegin;
             const IBody& body = rule.getBody();
 
-            if (body.covers(featureMatrix.row_values_cbegin(exampleIndex),
-                            featureMatrix.row_values_cend(exampleIndex))) {
+            if (body.covers(featureMatrix.values_cbegin(exampleIndex), featureMatrix.values_cend(exampleIndex))) {
                 const IHead& head = rule.getHead();
-                applyHead(head, predictionMatrix.row_values_begin(predictionIndex), mask);
+                applyHead(head, predictionMatrix.values_begin(predictionIndex), mask);
             }
         }
     }
@@ -86,11 +85,11 @@ namespace seco {
             const RuleList::Rule& rule = *rulesBegin;
             const IBody& body = rule.getBody();
 
-            if (body.covers(featureMatrix.row_indices_cbegin(exampleIndex),
-                            featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
-                            featureMatrix.row_values_cend(exampleIndex), &tmpArray1[0], &tmpArray2[0], n)) {
+            if (body.covers(featureMatrix.indices_cbegin(exampleIndex), featureMatrix.indices_cend(exampleIndex),
+                            featureMatrix.values_cbegin(exampleIndex), featureMatrix.values_cend(exampleIndex),
+                            &tmpArray1[0], &tmpArray2[0], n)) {
                 const IHead& head = rule.getHead();
-                applyHead(head, predictionMatrix.row_values_begin(predictionIndex), mask);
+                applyHead(head, predictionMatrix.values_begin(predictionIndex), mask);
             }
 
             n++;
@@ -310,8 +309,7 @@ namespace seco {
             const RuleList::Rule& rule = *rulesBegin;
             const IBody& body = rule.getBody();
 
-            if (body.covers(featureMatrix.row_values_cbegin(exampleIndex),
-                            featureMatrix.row_values_cend(exampleIndex))) {
+            if (body.covers(featureMatrix.values_cbegin(exampleIndex), featureMatrix.values_cend(exampleIndex))) {
                 const IHead& head = rule.getHead();
                 applyHead(head, predictionRow, numLabels);
             }
@@ -332,9 +330,9 @@ namespace seco {
             const RuleList::Rule& rule = *rulesBegin;
             const IBody& body = rule.getBody();
 
-            if (body.covers(featureMatrix.row_indices_cbegin(exampleIndex),
-                            featureMatrix.row_indices_cend(exampleIndex), featureMatrix.row_values_cbegin(exampleIndex),
-                            featureMatrix.row_values_cend(exampleIndex), &tmpArray1[0], &tmpArray2[0], n)) {
+            if (body.covers(featureMatrix.indices_cbegin(exampleIndex), featureMatrix.indices_cend(exampleIndex),
+                            featureMatrix.values_cbegin(exampleIndex), featureMatrix.values_cend(exampleIndex),
+                            &tmpArray1[0], &tmpArray2[0], n)) {
                 const IHead& head = rule.getHead();
                 applyHead(head, predictionRow, numLabels);
             }

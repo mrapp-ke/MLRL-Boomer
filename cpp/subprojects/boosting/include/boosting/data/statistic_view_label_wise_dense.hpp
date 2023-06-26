@@ -52,7 +52,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `const_iterator` to the beginning
              */
-            const_iterator row_cbegin(uint32 row) const;
+            const_iterator cbegin(uint32 row) const;
 
             /**
              * Returns a `const_iterator` to the end of a specific row.
@@ -60,7 +60,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `const_iterator` to the end
              */
-            const_iterator row_cend(uint32 row) const;
+            const_iterator cend(uint32 row) const;
 
             /**
              * Returns the number of rows in the view.
@@ -105,7 +105,7 @@ namespace boosting {
              * @param row   The row
              * @return      An `iterator` to the beginning
              */
-            iterator row_begin(uint32 row);
+            iterator begin(uint32 row);
 
             /**
              * Returns an `iterator` to the end of a specific row.
@@ -113,7 +113,7 @@ namespace boosting {
              * @param row   The row
              * @return      An `iterator` to the end
              */
-            iterator row_end(uint32 row);
+            iterator end(uint32 row);
 
             /**
              * Sets all gradients and Hessians in the matrix to zero.

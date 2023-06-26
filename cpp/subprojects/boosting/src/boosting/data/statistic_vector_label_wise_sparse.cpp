@@ -103,34 +103,34 @@ namespace boosting {
 
     void SparseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticConstView& view, uint32 row) {
         sumOfWeights_ += 1;
-        addToSparseLabelWiseStatisticVector(statistics_, view.row_cbegin(row), view.row_cend(row));
+        addToSparseLabelWiseStatisticVector(statistics_, view.cbegin(row), view.cend(row));
     }
 
     void SparseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticConstView& view, uint32 row,
                                              float64 weight) {
         if (weight != 0) {
             sumOfWeights_ += weight;
-            addToSparseLabelWiseStatisticVector(statistics_, view.row_cbegin(row), view.row_cend(row), weight);
+            addToSparseLabelWiseStatisticVector(statistics_, view.cbegin(row), view.cend(row), weight);
         }
     }
 
     void SparseLabelWiseStatisticVector::remove(const SparseLabelWiseStatisticConstView& view, uint32 row) {
         sumOfWeights_ -= 1;
-        removeFromSparseLabelWiseStatisticVector(statistics_, view.row_cbegin(row), view.row_cend(row));
+        removeFromSparseLabelWiseStatisticVector(statistics_, view.cbegin(row), view.cend(row));
     }
 
     void SparseLabelWiseStatisticVector::remove(const SparseLabelWiseStatisticConstView& view, uint32 row,
                                                 float64 weight) {
         if (weight != 0) {
             sumOfWeights_ -= weight;
-            removeFromSparseLabelWiseStatisticVector(statistics_, view.row_cbegin(row), view.row_cend(row), weight);
+            removeFromSparseLabelWiseStatisticVector(statistics_, view.cbegin(row), view.cend(row), weight);
         }
     }
 
     void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
                                                      const CompleteIndexVector& indices) {
         sumOfWeights_ += 1;
-        addToSparseLabelWiseStatisticVector(statistics_, view.row_cbegin(row), view.row_cend(row));
+        addToSparseLabelWiseStatisticVector(statistics_, view.cbegin(row), view.cend(row));
     }
 
     void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
@@ -158,7 +158,7 @@ namespace boosting {
                                                      const CompleteIndexVector& indices, float64 weight) {
         if (weight != 0) {
             sumOfWeights_ += weight;
-            addToSparseLabelWiseStatisticVector(statistics_, view.row_cbegin(row), view.row_cend(row), weight);
+            addToSparseLabelWiseStatisticVector(statistics_, view.cbegin(row), view.cend(row), weight);
         }
     }
 
@@ -192,7 +192,7 @@ namespace boosting {
 
         if (binWeight != 0) {
             sumOfWeights_ += binWeight;
-            addToArray(statistics_, view.row_cbegin(row), numElements_);
+            addToArray(statistics_, view.cbegin(row), numElements_);
         }
     }
 
@@ -203,7 +203,7 @@ namespace boosting {
 
         if (binWeight != 0) {
             sumOfWeights_ += binWeight;
-            addToArray(statistics_, view.row_cbegin(row), indices.cbegin(), indices.getNumElements());
+            addToArray(statistics_, view.cbegin(row), indices.cbegin(), indices.getNumElements());
         }
     }
 
@@ -214,7 +214,7 @@ namespace boosting {
 
         if (binWeight != 0) {
             sumOfWeights_ += binWeight;
-            addToArray(statistics_, view.row_cbegin(row), numElements_, weight);
+            addToArray(statistics_, view.cbegin(row), numElements_, weight);
         }
     }
 
@@ -225,7 +225,7 @@ namespace boosting {
 
         if (binWeight != 0) {
             sumOfWeights_ += binWeight;
-            addToArray(statistics_, view.row_cbegin(row), indices.cbegin(), indices.getNumElements(), weight);
+            addToArray(statistics_, view.cbegin(row), indices.cbegin(), indices.getNumElements(), weight);
         }
     }
 

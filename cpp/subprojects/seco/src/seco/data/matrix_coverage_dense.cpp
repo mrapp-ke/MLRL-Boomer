@@ -17,7 +17,7 @@ namespace seco {
                                                CompleteIndexVector::const_iterator indicesBegin,
                                                CompleteIndexVector::const_iterator indicesEnd) {
         uint32 numCols = this->getNumCols();
-        value_iterator coverageIterator = this->row_values_begin(row);
+        value_iterator coverageIterator = this->values_begin(row);
         auto majorityIterator =
           make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
 
@@ -45,7 +45,7 @@ namespace seco {
                                                PartialIndexVector::const_iterator indicesBegin,
                                                PartialIndexVector::const_iterator indicesEnd) {
         uint32 numPredictions = indicesEnd - indicesBegin;
-        value_iterator coverageIterator = this->row_values_begin(row);
+        value_iterator coverageIterator = this->values_begin(row);
         auto majorityIterator =
           make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
         uint32 previousIndex = 0;
@@ -76,7 +76,7 @@ namespace seco {
                                                CompleteIndexVector::const_iterator indicesBegin,
                                                CompleteIndexVector::const_iterator indicesEnd) {
         uint32 numCols = this->getNumCols();
-        value_iterator coverageIterator = this->row_values_begin(row);
+        value_iterator coverageIterator = this->values_begin(row);
         auto majorityIterator =
           make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
 
@@ -104,7 +104,7 @@ namespace seco {
                                                PartialIndexVector::const_iterator indicesBegin,
                                                PartialIndexVector::const_iterator indicesEnd) {
         uint32 numPredictions = indicesEnd - indicesBegin;
-        value_iterator coverageIterator = this->row_values_begin(row);
+        value_iterator coverageIterator = this->values_begin(row);
         auto majorityIterator =
           make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
         uint32 previousIndex = 0;

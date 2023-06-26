@@ -8,8 +8,8 @@
 #include "common/statistics/statistics_provider.hpp"
 
 CsrLabelMatrix::View::View(const CsrLabelMatrix& labelMatrix, uint32 row)
-    : VectorConstView<const uint32>(labelMatrix.row_indices_cend(row) - labelMatrix.row_indices_cbegin(row),
-                                    labelMatrix.row_indices_cbegin(row)) {}
+    : VectorConstView<const uint32>(labelMatrix.indices_cend(row) - labelMatrix.indices_cbegin(row),
+                                    labelMatrix.indices_cbegin(row)) {}
 
 CsrLabelMatrix::CsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices)
     : BinaryCsrConstView(numRows, numCols, rowIndices, colIndices) {}
@@ -23,8 +23,8 @@ float32 CsrLabelMatrix::calculateLabelCardinality() const {
     float32 labelCardinality = 0;
 
     for (uint32 i = 0; i < numRows; i++) {
-        index_const_iterator indicesBegin = this->row_indices_cbegin(i);
-        index_const_iterator indicesEnd = this->row_indices_cend(i);
+        index_const_iterator indicesBegin = this->indices_cbegin(i);
+        index_const_iterator indicesEnd = this->indices_cend(i);
         uint32 numRelevantLabels = indicesEnd - indicesBegin;
         labelCardinality = iterativeArithmeticMean(i + 1, (float32) numRelevantLabels, labelCardinality);
     }
@@ -37,8 +37,8 @@ CsrLabelMatrix::view_type CsrLabelMatrix::createView(uint32 row) const {
 }
 
 std::unique_ptr<LabelVector> CsrLabelMatrix::createLabelVector(uint32 row) const {
-    index_const_iterator indexIterator = this->row_indices_cbegin(row);
-    index_const_iterator indicesEnd = this->row_indices_cend(row);
+    index_const_iterator indexIterator = this->indices_cbegin(row);
+    index_const_iterator indicesEnd = this->indices_cend(row);
     uint32 numElements = indicesEnd - indexIterator;
     std::unique_ptr<LabelVector> labelVectorPtr = std::make_unique<LabelVector>(numElements);
     LabelVector::iterator iterator = labelVectorPtr->begin();

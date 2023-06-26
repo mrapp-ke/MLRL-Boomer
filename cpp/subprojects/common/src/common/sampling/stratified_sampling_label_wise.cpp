@@ -33,7 +33,7 @@ struct CompareIndexedValue final {
 static inline void updateNumExamplesPerLabel(const CContiguousLabelMatrix& labelMatrix, uint32 exampleIndex,
                                              uint32* numExamplesPerLabel,
                                              std::unordered_map<uint32, uint32>& affectedLabelIndices) {
-    CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.row_values_cbegin(exampleIndex);
+    CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.values_cbegin(exampleIndex);
     uint32 numLabels = labelMatrix.getNumCols();
 
     for (uint32 i = 0; i < numLabels; i++) {
@@ -48,8 +48,8 @@ static inline void updateNumExamplesPerLabel(const CContiguousLabelMatrix& label
 static inline void updateNumExamplesPerLabel(const CsrLabelMatrix& labelMatrix, uint32 exampleIndex,
                                              uint32* numExamplesPerLabel,
                                              std::unordered_map<uint32, uint32>& affectedLabelIndices) {
-    CsrLabelMatrix::index_const_iterator indexIterator = labelMatrix.row_indices_cbegin(exampleIndex);
-    uint32 numLabels = labelMatrix.row_indices_cend(exampleIndex) - indexIterator;
+    CsrLabelMatrix::index_const_iterator indexIterator = labelMatrix.indices_cbegin(exampleIndex);
+    uint32 numLabels = labelMatrix.indices_cend(exampleIndex) - indexIterator;
 
     for (uint32 i = 0; i < numLabels; i++) {
         uint32 labelIndex = indexIterator[i];
@@ -75,7 +75,7 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
     SortedSet sortedLabelIndices;
 
     for (uint32 i = 0; i < numLabels; i++) {
-        uint32 numExamples = cscLabelMatrix.column_indices_cend(i) - cscLabelMatrix.column_indices_cbegin(i);
+        uint32 numExamples = cscLabelMatrix.indices_cend(i) - cscLabelMatrix.indices_cbegin(i);
         numExamplesPerLabel[i] = numExamples;
 
         if (numExamples > 0) {
@@ -116,8 +116,8 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
         numCols++;
 
         // Iterate the examples that are associated with the current label, if no weight has been set yet...
-        CscLabelMatrix::index_const_iterator indexIterator = cscLabelMatrix.column_indices_cbegin(labelIndex);
-        uint32 numExamples = cscLabelMatrix.column_indices_cend(labelIndex) - indexIterator;
+        CscLabelMatrix::index_const_iterator indexIterator = cscLabelMatrix.indices_cbegin(labelIndex);
+        uint32 numExamples = cscLabelMatrix.indices_cend(labelIndex) - indexIterator;
 
         for (uint32 i = 0; i < numExamples; i++) {
             uint32 exampleIndex = indexIterator[i];

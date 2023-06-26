@@ -52,7 +52,7 @@ class FortranContiguousConstView : virtual public ITwoDimensionalView {
          * @param col   The column
          * @return      A `value_const_iterator` to the beginning
          */
-        value_const_iterator column_values_cbegin(uint32 col) const;
+        value_const_iterator values_cbegin(uint32 col) const;
 
         /**
          * Returns a `value_const_iterator` to the end of a specific column.
@@ -60,7 +60,7 @@ class FortranContiguousConstView : virtual public ITwoDimensionalView {
          * @param col   The column
          * @return      A `value_const_iterator` to the end
          */
-        value_const_iterator column_values_cend(uint32 col) const;
+        value_const_iterator values_cend(uint32 col) const;
 
         /**
          * @see `ITwoDimensionalView::getNumRows`
@@ -104,7 +104,7 @@ class FortranContiguousView : public FortranContiguousConstView<T> {
          * @param col   The column
          * @return      A `value_iterator` to the beginning
          */
-        value_iterator column_values_begin(uint32 col);
+        value_iterator values_begin(uint32 col);
 
         /**
          * Returns a `value_iterator` to the end of a specific column.
@@ -112,5 +112,5 @@ class FortranContiguousView : public FortranContiguousConstView<T> {
          * @param col   The column
          * @return      A `value_iterator` to the end
          */
-        value_iterator column_values_end(uint32 col);
+        value_iterator values_end(uint32 col);
 };

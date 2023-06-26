@@ -52,7 +52,7 @@ class MLRLCOMMON_API CContiguousConstView : virtual public ITwoDimensionalView {
          * @param row   The row
          * @return      A `value_const_iterator` to the beginning of the given row
          */
-        value_const_iterator row_values_cbegin(uint32 row) const;
+        value_const_iterator values_cbegin(uint32 row) const;
 
         /**
          * Returns a `value_const_iterator` to the end of a specific row.
@@ -60,7 +60,7 @@ class MLRLCOMMON_API CContiguousConstView : virtual public ITwoDimensionalView {
          * @param row   The row
          * @return      A `value_const_iterator` to the end of the given row
          */
-        value_const_iterator row_values_cend(uint32 row) const;
+        value_const_iterator values_cend(uint32 row) const;
 
         /**
          * @see `ITwoDimensionalView::getNumRows`
@@ -103,7 +103,7 @@ class MLRLCOMMON_API CContiguousView : public CContiguousConstView<T> {
          * @param row   The row
          * @return      A `value_iterator` to the beginning of the given row
          */
-        value_iterator row_values_begin(uint32 row);
+        value_iterator values_begin(uint32 row);
 
         /**
          * Returns a `value_iterator` to the end of a specific row.
@@ -111,5 +111,5 @@ class MLRLCOMMON_API CContiguousView : public CContiguousConstView<T> {
          * @param row   The row
          * @return      A `value_iterator` to the end of the given row
          */
-        value_iterator row_values_end(uint32 row);
+        value_iterator values_end(uint32 row);
 };

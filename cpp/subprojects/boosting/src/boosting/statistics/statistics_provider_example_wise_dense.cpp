@@ -107,11 +107,11 @@ namespace boosting {
 #pragma omp parallel for firstprivate(numRows) firstprivate(numCols) firstprivate(labelWiseStatisticMatrixRawPtr) \
   firstprivate(exampleWiseStatisticViewRawPtr) schedule(dynamic) num_threads(numThreads)
                 for (int64 i = 0; i < numRows; i++) {
-                    DenseLabelWiseStatisticView::iterator iterator = labelWiseStatisticMatrixRawPtr->row_begin(i);
+                    DenseLabelWiseStatisticView::iterator iterator = labelWiseStatisticMatrixRawPtr->begin(i);
                     DenseExampleWiseStatisticView::gradient_const_iterator gradientIterator =
-                      exampleWiseStatisticViewRawPtr->gradients_row_cbegin(i);
+                      exampleWiseStatisticViewRawPtr->gradients_cbegin(i);
                     DenseExampleWiseStatisticView::hessian_diagonal_const_iterator hessianIterator =
-                      exampleWiseStatisticViewRawPtr->hessians_diagonal_row_cbegin(i);
+                      exampleWiseStatisticViewRawPtr->hessians_diagonal_cbegin(i);
 
                     for (uint32 j = 0; j < numCols; j++) {
                         Tuple<float64>& tuple = iterator[j];

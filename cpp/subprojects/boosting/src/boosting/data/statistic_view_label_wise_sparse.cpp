@@ -6,12 +6,12 @@ namespace boosting {
                                                                          SparseSetMatrix<Tuple<float64>>* statistics)
         : numCols_(numCols), statistics_(statistics) {}
 
-    SparseLabelWiseStatisticConstView::const_iterator SparseLabelWiseStatisticConstView::row_cbegin(uint32 row) const {
-        return statistics_->row_cbegin(row);
+    SparseLabelWiseStatisticConstView::const_iterator SparseLabelWiseStatisticConstView::cbegin(uint32 row) const {
+        return statistics_->cbegin(row);
     }
 
-    SparseLabelWiseStatisticConstView::const_iterator SparseLabelWiseStatisticConstView::row_cend(uint32 row) const {
-        return statistics_->row_cend(row);
+    SparseLabelWiseStatisticConstView::const_iterator SparseLabelWiseStatisticConstView::cend(uint32 row) const {
+        return statistics_->cend(row);
     }
 
     SparseLabelWiseStatisticConstView::const_row SparseLabelWiseStatisticConstView::operator[](uint32 row) const {

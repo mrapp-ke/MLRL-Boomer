@@ -11,33 +11,33 @@ namespace boosting {
         : numRows_(numRows), numGradients_(numGradients), numHessians_(numHessians), gradients_(gradients),
           hessians_(hessians) {}
 
-    DenseExampleWiseStatisticConstView::gradient_const_iterator
-      DenseExampleWiseStatisticConstView::gradients_row_cbegin(uint32 row) const {
+    DenseExampleWiseStatisticConstView::gradient_const_iterator DenseExampleWiseStatisticConstView::gradients_cbegin(
+      uint32 row) const {
         return &gradients_[row * numGradients_];
     }
 
-    DenseExampleWiseStatisticConstView::gradient_const_iterator DenseExampleWiseStatisticConstView::gradients_row_cend(
+    DenseExampleWiseStatisticConstView::gradient_const_iterator DenseExampleWiseStatisticConstView::gradients_cend(
       uint32 row) const {
         return &gradients_[(row + 1) * numGradients_];
     }
 
-    DenseExampleWiseStatisticConstView::hessian_const_iterator DenseExampleWiseStatisticConstView::hessians_row_cbegin(
+    DenseExampleWiseStatisticConstView::hessian_const_iterator DenseExampleWiseStatisticConstView::hessians_cbegin(
       uint32 row) const {
         return &hessians_[row * numHessians_];
     }
 
-    DenseExampleWiseStatisticConstView::hessian_const_iterator DenseExampleWiseStatisticConstView::hessians_row_cend(
+    DenseExampleWiseStatisticConstView::hessian_const_iterator DenseExampleWiseStatisticConstView::hessians_cend(
       uint32 row) const {
         return &hessians_[(row + 1) * numHessians_];
     }
 
     DenseExampleWiseStatisticConstView::hessian_diagonal_const_iterator
-      DenseExampleWiseStatisticConstView::hessians_diagonal_row_cbegin(uint32 row) const {
+      DenseExampleWiseStatisticConstView::hessians_diagonal_cbegin(uint32 row) const {
         return DiagonalConstIterator<float64>(&hessians_[row * numHessians_], 0);
     }
 
     DenseExampleWiseStatisticConstView::hessian_diagonal_const_iterator
-      DenseExampleWiseStatisticConstView::hessians_diagonal_row_cend(uint32 row) const {
+      DenseExampleWiseStatisticConstView::hessians_diagonal_cend(uint32 row) const {
         return DiagonalConstIterator<float64>(&hessians_[row * numHessians_], numGradients_);
     }
 
@@ -54,19 +54,19 @@ namespace boosting {
                                                                  float64* hessians)
         : DenseExampleWiseStatisticConstView(numRows, numGradients, numHessians, gradients, hessians) {}
 
-    DenseExampleWiseStatisticView::gradient_iterator DenseExampleWiseStatisticView::gradients_row_begin(uint32 row) {
+    DenseExampleWiseStatisticView::gradient_iterator DenseExampleWiseStatisticView::gradients_begin(uint32 row) {
         return &gradients_[row * numGradients_];
     }
 
-    DenseExampleWiseStatisticView::gradient_iterator DenseExampleWiseStatisticView::gradients_row_end(uint32 row) {
+    DenseExampleWiseStatisticView::gradient_iterator DenseExampleWiseStatisticView::gradients_end(uint32 row) {
         return &gradients_[(row + 1) * numGradients_];
     }
 
-    DenseExampleWiseStatisticView::hessian_iterator DenseExampleWiseStatisticView::hessians_row_begin(uint32 row) {
+    DenseExampleWiseStatisticView::hessian_iterator DenseExampleWiseStatisticView::hessians_begin(uint32 row) {
         return &hessians_[row * numHessians_];
     }
 
-    DenseExampleWiseStatisticView::hessian_iterator DenseExampleWiseStatisticView::hessians_row_end(uint32 row) {
+    DenseExampleWiseStatisticView::hessian_iterator DenseExampleWiseStatisticView::hessians_end(uint32 row) {
         return &hessians_[(row + 1) * numHessians_];
     }
 

@@ -21,10 +21,9 @@ namespace boosting {
     static inline void addExampleWiseStatisticToSubset(const EqualWeightVector& weights,
                                                        const StatisticView& statisticView, StatisticVector& vector,
                                                        const IndexVector& labelIndices, uint32 statisticIndex) {
-        vector.addToSubset(statisticView.gradients_row_cbegin(statisticIndex),
-                           statisticView.gradients_row_cend(statisticIndex),
-                           statisticView.hessians_row_cbegin(statisticIndex),
-                           statisticView.hessians_row_cend(statisticIndex), labelIndices);
+        vector.addToSubset(statisticView.gradients_cbegin(statisticIndex), statisticView.gradients_cend(statisticIndex),
+                           statisticView.hessians_cbegin(statisticIndex), statisticView.hessians_cend(statisticIndex),
+                           labelIndices);
     }
 
     template<typename WeightVector, typename StatisticView, typename StatisticVector, typename IndexVector>
@@ -32,10 +31,9 @@ namespace boosting {
                                                        StatisticVector& vector, const IndexVector& labelIndices,
                                                        uint32 statisticIndex) {
         float64 weight = weights[statisticIndex];
-        vector.addToSubset(statisticView.gradients_row_cbegin(statisticIndex),
-                           statisticView.gradients_row_cend(statisticIndex),
-                           statisticView.hessians_row_cbegin(statisticIndex),
-                           statisticView.hessians_row_cend(statisticIndex), labelIndices, weight);
+        vector.addToSubset(statisticView.gradients_cbegin(statisticIndex), statisticView.gradients_cend(statisticIndex),
+                           statisticView.hessians_cbegin(statisticIndex), statisticView.hessians_cend(statisticIndex),
+                           labelIndices, weight);
     }
 
     /**
@@ -441,10 +439,10 @@ namespace boosting {
 
                     if (binIndex != IBinIndexVector::BIN_INDEX_SPARSE) {
                         binWeightVectorPtr_->increaseWeight(binIndex);
-                        histogramPtr_->addToRow(binIndex, originalStatisticView_.gradients_row_cbegin(statisticIndex),
-                                                originalStatisticView_.gradients_row_cend(statisticIndex),
-                                                originalStatisticView_.hessians_row_cbegin(statisticIndex),
-                                                originalStatisticView_.hessians_row_cend(statisticIndex), weight);
+                        histogramPtr_->addToRow(binIndex, originalStatisticView_.gradients_cbegin(statisticIndex),
+                                                originalStatisticView_.gradients_cend(statisticIndex),
+                                                originalStatisticView_.hessians_cbegin(statisticIndex),
+                                                originalStatisticView_.hessians_cend(statisticIndex), weight);
                     }
                 }
             }
@@ -472,17 +470,17 @@ namespace boosting {
     static inline void addExampleWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
                                                StatisticVector& statisticVector, uint32 statisticIndex) {
         float64 weight = weights[statisticIndex];
-        statisticVector.add(
-          statisticView.gradients_row_cbegin(statisticIndex), statisticView.gradients_row_cend(statisticIndex),
-          statisticView.hessians_row_cbegin(statisticIndex), statisticView.hessians_row_cend(statisticIndex), weight);
+        statisticVector.add(statisticView.gradients_cbegin(statisticIndex),
+                            statisticView.gradients_cend(statisticIndex), statisticView.hessians_cbegin(statisticIndex),
+                            statisticView.hessians_cend(statisticIndex), weight);
     }
 
     template<typename StatisticView, typename StatisticVector>
     static inline void addExampleWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
                                                StatisticVector& statisticVector, uint32 statisticIndex) {
-        statisticVector.add(
-          statisticView.gradients_row_cbegin(statisticIndex), statisticView.gradients_row_cend(statisticIndex),
-          statisticView.hessians_row_cbegin(statisticIndex), statisticView.hessians_row_cend(statisticIndex));
+        statisticVector.add(statisticView.gradients_cbegin(statisticIndex),
+                            statisticView.gradients_cend(statisticIndex), statisticView.hessians_cbegin(statisticIndex),
+                            statisticView.hessians_cend(statisticIndex));
     }
 
     template<typename WeightVector, typename StatisticView, typename StatisticVector>
@@ -490,16 +488,16 @@ namespace boosting {
                                                   StatisticVector& statisticVector, uint32 statisticIndex) {
         float64 weight = weights[statisticIndex];
         statisticVector.remove(
-          statisticView.gradients_row_cbegin(statisticIndex), statisticView.gradients_row_cend(statisticIndex),
-          statisticView.hessians_row_cbegin(statisticIndex), statisticView.hessians_row_cend(statisticIndex), weight);
+          statisticView.gradients_cbegin(statisticIndex), statisticView.gradients_cend(statisticIndex),
+          statisticView.hessians_cbegin(statisticIndex), statisticView.hessians_cend(statisticIndex), weight);
     }
 
     template<typename StatisticView, typename StatisticVector>
     static inline void removeExampleWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
                                                   StatisticVector& statisticVector, uint32 statisticIndex) {
         statisticVector.remove(
-          statisticView.gradients_row_cbegin(statisticIndex), statisticView.gradients_row_cend(statisticIndex),
-          statisticView.hessians_row_cbegin(statisticIndex), statisticView.hessians_row_cend(statisticIndex));
+          statisticView.gradients_cbegin(statisticIndex), statisticView.gradients_cend(statisticIndex),
+          statisticView.hessians_cbegin(statisticIndex), statisticView.hessians_cend(statisticIndex));
     }
 
     template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
