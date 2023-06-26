@@ -2,8 +2,6 @@
 
 #include "common/data/arrays.hpp"
 
-#include <cstdlib>
-
 template<typename IndexIterator>
 static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* colIndices,
                                       const CContiguousConstView<const uint8>& labelMatrix, IndexIterator indicesBegin,
@@ -90,9 +88,8 @@ static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* colIndices, co
 CscLabelMatrix::CscLabelMatrix(const CContiguousConstView<const uint8>& labelMatrix,
                                CompleteIndexVector::const_iterator indicesBegin,
                                CompleteIndexVector::const_iterator indicesEnd)
-    : BinaryCscConstView(labelMatrix.getNumRows(), labelMatrix.getNumCols(),
-                         (uint32*) malloc(labelMatrix.getNumRows() * labelMatrix.getNumCols() * sizeof(uint32)),
-                         (uint32*) malloc((labelMatrix.getNumCols() + 1) * sizeof(uint32))) {
+    : BinaryCscMatrix(labelMatrix.getNumRows(), labelMatrix.getNumCols(),
+                      labelMatrix.getNumRows() * labelMatrix.getNumCols()) {
     this->rowIndices_ = copyLabelMatrix<CompleteIndexVector::const_iterator>(this->rowIndices_, this->colIndices_,
                                                                              labelMatrix, indicesBegin, indicesEnd);
 }
@@ -100,32 +97,22 @@ CscLabelMatrix::CscLabelMatrix(const CContiguousConstView<const uint8>& labelMat
 CscLabelMatrix::CscLabelMatrix(const CContiguousConstView<const uint8>& labelMatrix,
                                PartialIndexVector::const_iterator indicesBegin,
                                PartialIndexVector::const_iterator indicesEnd)
-    : BinaryCscConstView(labelMatrix.getNumRows(), labelMatrix.getNumCols(),
-                         (uint32*) malloc(labelMatrix.getNumRows() * labelMatrix.getNumCols() * sizeof(uint32)),
-                         (uint32*) malloc((labelMatrix.getNumCols() + 1) * sizeof(uint32))) {
+    : BinaryCscMatrix(labelMatrix.getNumRows(), labelMatrix.getNumCols(),
+                      labelMatrix.getNumRows() * labelMatrix.getNumCols()) {
     this->rowIndices_ = copyLabelMatrix<PartialIndexVector::const_iterator>(this->rowIndices_, this->colIndices_,
                                                                             labelMatrix, indicesBegin, indicesEnd);
 }
 
 CscLabelMatrix::CscLabelMatrix(const BinaryCsrConstView& labelMatrix, CompleteIndexVector::const_iterator indicesBegin,
                                CompleteIndexVector::const_iterator indicesEnd)
-    : BinaryCscConstView(labelMatrix.getNumRows(), labelMatrix.getNumCols(),
-                         (uint32*) malloc(labelMatrix.getNumNonZeroElements() * sizeof(uint32)),
-                         (uint32*) malloc((labelMatrix.getNumCols() + 1) * sizeof(uint32))) {
+    : BinaryCscMatrix(labelMatrix.getNumRows(), labelMatrix.getNumCols(), labelMatrix.getNumNonZeroElements()) {
     this->rowIndices_ = copyLabelMatrix<CompleteIndexVector::const_iterator>(this->rowIndices_, this->colIndices_,
                                                                              labelMatrix, indicesBegin, indicesEnd);
 }
 
 CscLabelMatrix::CscLabelMatrix(const BinaryCsrConstView& labelMatrix, PartialIndexVector::const_iterator indicesBegin,
                                PartialIndexVector::const_iterator indicesEnd)
-    : BinaryCscConstView(labelMatrix.getNumRows(), labelMatrix.getNumCols(),
-                         (uint32*) malloc(labelMatrix.getNumNonZeroElements() * sizeof(uint32)),
-                         (uint32*) malloc((labelMatrix.getNumCols() + 1) * sizeof(uint32))) {
+    : BinaryCscMatrix(labelMatrix.getNumRows(), labelMatrix.getNumCols(), labelMatrix.getNumNonZeroElements()) {
     this->rowIndices_ = copyLabelMatrix<PartialIndexVector::const_iterator>(this->rowIndices_, this->colIndices_,
                                                                             labelMatrix, indicesBegin, indicesEnd);
-}
-
-CscLabelMatrix::~CscLabelMatrix() {
-    free(this->rowIndices_);
-    free(this->colIndices_);
 }
