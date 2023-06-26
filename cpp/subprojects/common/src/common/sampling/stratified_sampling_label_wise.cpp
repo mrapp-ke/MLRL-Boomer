@@ -190,6 +190,12 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
 }
 
 template<typename LabelMatrix, typename IndexIterator>
+LabelWiseStratification<LabelMatrix, IndexIterator>::~LabelWiseStratification() {
+    free(rowIndices_);
+    free(colIndices_);
+}
+
+template<typename LabelMatrix, typename IndexIterator>
 void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWeightVector& weightVector,
                                                                         float32 sampleSize, RNG& rng) const {
     uint32 numTotalSamples = (uint32) std::round(sampleSize * numRows_);
