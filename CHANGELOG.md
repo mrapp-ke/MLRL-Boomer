@@ -1,6 +1,6 @@
 # Release Notes
 
-## Version 0.9.0 (to be released)
+## Version 0.9.0 (Jul. 2nd, 2023)
 
 A major update to the BOOMER algorithm that introduces the following changes.
 
