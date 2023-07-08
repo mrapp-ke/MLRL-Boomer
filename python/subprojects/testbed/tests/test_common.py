@@ -853,10 +853,12 @@ class IntegrationTests(ABC, TestCase):
 
     def __assert_output_files_are_equal(self, stdout, args, expected_output_file):
         with open(expected_output_file, 'r') as f:
-            for i, line in enumerate(f):
+            for i, expected_line in enumerate(f):
+                expected_line = expected_line.strip('\n')
+                line = stdout[i]
                 line = line.strip('\n')
                 line = self.__replace_durations_with_placeholders(line)
-                self.assertEqual(line, stdout[i],
+                self.assertEqual(expected_line, line,
                                  'Output of command "' + self.__format_cmd(args) + '" differs at line ' + str(i + 1))
 
     def run_cmd(self, builder: CmdBuilder, expected_output_file_name: str = None):
