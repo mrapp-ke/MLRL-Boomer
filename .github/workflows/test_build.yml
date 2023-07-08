@@ -51,7 +51,7 @@ jobs:
       - name: Prepare MSVC
         uses: ilammy/msvc-dev-cmd@v1
       - name: Remove conflicting link.exe
-        uses: JesseTG/rm@v1
+        uses: JesseTG/rm@v1.0.3
         with:
           path: C:\Program Files\Git\usr\bin\link.EXE
       - name: Compile via MSVC

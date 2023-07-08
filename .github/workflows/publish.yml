@@ -46,7 +46,7 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
       - name: Remove conflicting link.exe
         if: matrix.os == 'windows-latest'
-        uses: JesseTG/rm@v1
+        uses: JesseTG/rm@v1.0.3
         with:
           path: C:\Program Files\Git\usr\bin\link.EXE
       - name: Build package mlrl-common
