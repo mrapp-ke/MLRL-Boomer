@@ -22,7 +22,7 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 2 milliseconds
 INFO Evaluation result for test data (Fold 1):
 
-Example-wise F1         63.67
+Example-wise F1         67.06
 Example-wise Jaccard    54.38
 Example-wise Precision  82.2
 Example-wise Recall     65.25
@@ -50,7 +50,7 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 2 milliseconds
 INFO Evaluation result for test data (Fold 2):
 
-Example-wise F1         59.55
+Example-wise F1         74.8
 Example-wise Jaccard    54.24
 Example-wise Precision  77.97
 Example-wise Recall     59.32
@@ -78,7 +78,7 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 2 milliseconds
 INFO Evaluation result for test data (Fold 3):
 
-Example-wise F1         58.06
+Example-wise F1         63.06
 Example-wise Jaccard    49.03
 Example-wise Precision  82.78
 Example-wise Recall     57.22
@@ -106,7 +106,7 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 2 milliseconds
 INFO Evaluation result for test data (Fold 4):
 
-Example-wise F1         61.98
+Example-wise F1         73.84
 Example-wise Jaccard    55.08
 Example-wise Precision  77.68
 Example-wise Recall     62.99
@@ -134,7 +134,7 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 2 milliseconds
 INFO Evaluation result for test data (Fold 5):
 
-Example-wise F1         63.67
+Example-wise F1         78.93
 Example-wise Jaccard    56.78
 Example-wise Precision  77.68
 Example-wise Recall     63.28
@@ -162,7 +162,7 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 2 milliseconds
 INFO Evaluation result for test data (Fold 6):
 
-Example-wise F1         64.97
+Example-wise F1         78.53
 Example-wise Jaccard    57.06
 Example-wise Precision  72.03
 Example-wise Recall     68.08
@@ -190,7 +190,7 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 2 milliseconds
 INFO Evaluation result for test data (Fold 7):
 
-Example-wise F1         60.5
+Example-wise F1         73.83
 Example-wise Jaccard    52.78
 Example-wise Precision  74.72
 Example-wise Recall     60.83
@@ -218,7 +218,7 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 2 milliseconds
 INFO Evaluation result for test data (Fold 8):
 
-Example-wise F1         62.6
+Example-wise F1         74.46
 Example-wise Jaccard    54.1
 Example-wise Precision  73.45
 Example-wise Recall     66.67
@@ -246,7 +246,7 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 2 milliseconds
 INFO Evaluation result for test data (Fold 9):
 
-Example-wise F1         55.82
+Example-wise F1         65.99
 Example-wise Jaccard    48.02
 Example-wise Precision  77.4
 Example-wise Recall     57.91
@@ -274,7 +274,7 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 2 milliseconds
 INFO Evaluation result for test data (Fold 10):
 
-Example-wise F1         57.39
+Example-wise F1         74.06
 Example-wise Jaccard    49.31
 Example-wise Precision  70.28
 Example-wise Recall     58.06
@@ -293,7 +293,7 @@ Subset Accuracy         25
 
 INFO Evaluation result for test data (Average across 10 folds):
 
-Example-wise F1         60.82  ±2.90
+Example-wise F1         72.46  ±5.04
 Example-wise Jaccard    53.08  ±3.07
 Example-wise Precision  76.62  ±3.86
 Example-wise Recall     61.96  ±3.68

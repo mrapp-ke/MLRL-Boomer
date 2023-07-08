@@ -12,7 +12,7 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in 11 milliseconds
 INFO Evaluation result for training data:
 
-Example-wise F1         66.76
+Example-wise F1         73.67
 Example-wise Jaccard    57.48
 Example-wise Precision  75.77
 Example-wise Recall     70.4
