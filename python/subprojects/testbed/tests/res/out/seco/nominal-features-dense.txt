@@ -18,7 +18,7 @@ Example-wise Precision   90
 Example-wise Recall      30
 Hamming Accuracy         60
 Hamming Loss             40
-Macro F1                 38.89
+Macro F1                 72.22
 Macro Jaccard            27.78
 Macro Precision          66.67
 Macro Recall             27.78
