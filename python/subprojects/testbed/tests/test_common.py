@@ -2,6 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 import os
+import re
 import shutil
 import subprocess
 
@@ -838,22 +839,25 @@ class IntegrationTests(ABC, TestCase):
             'Command "' + self.__format_cmd(args) + '" terminated with non-zero exit code\n\n' + str(out.stderr))
         return out
 
-    def __assert_output_files_are_equal(self, stdout, args, expected_output_file, raise_error: bool = True) -> bool:
+    def __replace_durations_with_placeholders(self, line: str) -> str:
+        regex_duration = '(\d+ (day(s)*|hour(s)*|minute(s)*|second(s)*|millisecond(s)*))'
+        return re.sub(regex_duration + '((, )' + regex_duration + ')*' + '(( and )' + regex_duration + ')?',
+                      '<duration>', line)
+
+    def __overwrite_output_file(self, stdout, expected_output_file):
+        with open(expected_output_file, 'w') as f:
+            for line in stdout:
+                line = self.__replace_durations_with_placeholders(line)
+                line = line + '\n'
+                f.write(line)
+
+    def __assert_output_files_are_equal(self, stdout, args, expected_output_file):
         with open(expected_output_file, 'r') as f:
             for i, line in enumerate(f):
                 line = line.strip('\n')
-
-                if not line.endswith('days') and not line.endswith('day') and not line.endswith(
-                        'hours') and not line.endswith('hour') and not line.endswith('minutes') and not line.endswith(
-                            'minute') and not line.endswith('seconds') and not line.endswith('second'):
-                    if raise_error:
-                        self.assertEqual(
-                            line, stdout[i],
-                            'Output of command "' + self.__format_cmd(args) + '" differs at line ' + str(i + 1))
-                    elif line != stdout[i]:
-                        return False
-
-        return True
+                line = self.__replace_durations_with_placeholders(line)
+                self.assertEqual(line, stdout[i],
+                                 'Output of command "' + self.__format_cmd(args) + '" differs at line ' + str(i + 1))
 
     def run_cmd(self, builder: CmdBuilder, expected_output_file_name: str = None):
         """
@@ -876,10 +880,7 @@ class IntegrationTests(ABC, TestCase):
             expected_output_file = path.join(self.expected_output_dir, expected_output_file_name + '.txt')
 
             if OVERWRITE_EXPECTED_OUTPUT_FILES:
-                if not self.__assert_output_files_are_equal(stdout, args, expected_output_file, raise_error=False):
-                    with open(expected_output_file, 'w') as f:
-                        for line in stdout:
-                            f.write(line + '\n')
+                self.__overwrite_output_file(stdout, expected_output_file)
             else:
                 self.__assert_output_files_are_equal(stdout, args, expected_output_file)
 

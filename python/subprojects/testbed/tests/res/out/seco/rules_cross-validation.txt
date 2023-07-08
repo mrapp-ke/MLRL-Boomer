@@ -6,7 +6,7 @@ INFO Fold 1 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 261 milliseconds
+INFO Successfully fit model in <duration>
 INFO Model (Fold 1):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (quiet-still = 1.00)
@@ -89,7 +89,7 @@ INFO Fold 2 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 219 milliseconds
+INFO Successfully fit model in <duration>
 INFO Model (Fold 2):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.07} => (quiet-still = 1.00)
@@ -170,7 +170,7 @@ INFO Fold 3 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 227 milliseconds
+INFO Successfully fit model in <duration>
 INFO Model (Fold 3):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (sad-lonely = 1.00)
@@ -257,7 +257,7 @@ INFO Fold 4 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 271 milliseconds
+INFO Successfully fit model in <duration>
 INFO Model (Fold 4):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.07} => (quiet-still = 1.00)
@@ -339,7 +339,7 @@ INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 243 milliseconds
+INFO Successfully fit model in <duration>
 INFO Model (Fold 5):
 
 {Std_Acc1298_Std_Mem40_MFCC_10 <= 0.06} => (amazed-suprised = 1.00)
@@ -428,7 +428,7 @@ INFO Fold 6 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 248 milliseconds
+INFO Successfully fit model in <duration>
 INFO Model (Fold 6):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (quiet-still = 1.00)
@@ -506,7 +506,7 @@ INFO Fold 7 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 241 milliseconds
+INFO Successfully fit model in <duration>
 INFO Model (Fold 7):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.07} => (sad-lonely = 1.00)
@@ -596,7 +596,7 @@ INFO Fold 8 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 224 milliseconds
+INFO Successfully fit model in <duration>
 INFO Model (Fold 8):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (quiet-still = 1.00)
@@ -678,7 +678,7 @@ INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 275 milliseconds
+INFO Successfully fit model in <duration>
 INFO Model (Fold 9):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.06} => (sad-lonely = 1.00)
@@ -763,7 +763,7 @@ INFO Fold 10 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 238 milliseconds
+INFO Successfully fit model in <duration>
 INFO Model (Fold 10):
 
 {Mean_Acc1298_Mean_Mem40_Rolloff <= 0.07} => (quiet-still = 1.00)
@@ -846,4 +846,4 @@ INFO Model (Fold 10):
 {} => (amazed-suprised = 0.00, happy-pleased = 0.00, relaxing-calm = 0.00, quiet-still = 0.00, sad-lonely = 0.00, angry-aggresive = 0.00)
 
 
-INFO Successfully finished after 2 seconds and 555 milliseconds
+INFO Successfully finished after <duration>

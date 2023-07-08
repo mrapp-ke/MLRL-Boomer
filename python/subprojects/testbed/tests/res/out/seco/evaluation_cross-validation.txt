@@ -6,11 +6,11 @@ INFO Fold 1 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 233 milliseconds
+INFO Successfully fit model in <duration>
 INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 2 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 1):
 
 Example-wise F1         67.67
@@ -34,11 +34,11 @@ INFO Fold 2 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 240 milliseconds
+INFO Successfully fit model in <duration>
 INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 1 millisecond
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 2):
 
 Example-wise F1         71.56
@@ -62,11 +62,11 @@ INFO Fold 3 / 10:
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 242 milliseconds
+INFO Successfully fit model in <duration>
 INFO Predicting for 60 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 2 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 3):
 
 Example-wise F1         68.5
@@ -90,11 +90,11 @@ INFO Fold 4 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 228 milliseconds
+INFO Successfully fit model in <duration>
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 1 millisecond
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 4):
 
 Example-wise F1         69.72
@@ -118,11 +118,11 @@ INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 243 milliseconds
+INFO Successfully fit model in <duration>
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 2 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 5):
 
 Example-wise F1         74.33
@@ -146,11 +146,11 @@ INFO Fold 6 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 209 milliseconds
+INFO Successfully fit model in <duration>
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 2 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 6):
 
 Example-wise F1         67.72
@@ -174,11 +174,11 @@ INFO Fold 7 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 259 milliseconds
+INFO Successfully fit model in <duration>
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 2 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 7):
 
 Example-wise F1         67.85
@@ -202,11 +202,11 @@ INFO Fold 8 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 303 milliseconds
+INFO Successfully fit model in <duration>
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 2 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 8):
 
 Example-wise F1         79.94
@@ -230,11 +230,11 @@ INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 245 milliseconds
+INFO Successfully fit model in <duration>
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 4 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 9):
 
 Example-wise F1         73.16
@@ -258,11 +258,11 @@ INFO Fold 10 / 10:
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 243 milliseconds
+INFO Successfully fit model in <duration>
 INFO Predicting for 59 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 2 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 10):
 
 Example-wise F1         76.61
@@ -301,4 +301,4 @@ Micro Recall            60.38  ±4.37
 Subset 0/1 Loss         79.42  ±5.63
 Subset Accuracy         20.58  ±5.63
 
-INFO Successfully finished after 2 seconds and 759 milliseconds
+INFO Successfully finished after <duration>

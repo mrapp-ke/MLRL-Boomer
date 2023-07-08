@@ -5,11 +5,11 @@ DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/lang
 INFO Fitting model to 978 training examples...
 DEBUG A sparse matrix is used to store the feature values of the training examples
 DEBUG A sparse matrix is used to store the labels of the training examples
-INFO Successfully fit model in 355 milliseconds
+INFO Successfully fit model in <duration>
 INFO Predicting for 482 test examples...
 DEBUG A sparse matrix is used to store the feature values of the query examples
 DEBUG A sparse matrix is used to store the predicted labels
-INFO Successfully predicted in 24 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
 Example-wise F1         21.96
@@ -29,4 +29,4 @@ Micro Recall             4.8
 Subset 0/1 Loss         81.74
 Subset Accuracy         18.26
 
-INFO Successfully finished after 727 milliseconds
+INFO Successfully finished after <duration>

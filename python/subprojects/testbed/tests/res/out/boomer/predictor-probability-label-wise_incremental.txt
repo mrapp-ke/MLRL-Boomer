@@ -7,7 +7,7 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted probability estimates
 INFO Predicting for 196 test examples using a model of size 50...
-INFO Successfully predicted in 3 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 50:
 
 Coverage Error                    3.52
@@ -21,7 +21,7 @@ NDCG                             79.7
 Ranking Loss                      0.27
 
 INFO Predicting for 196 test examples using a model of size 100...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 100:
 
 Coverage Error                    3.19
@@ -35,7 +35,7 @@ NDCG                             83
 Ranking Loss                      0.22
 
 INFO Predicting for 196 test examples using a model of size 150...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 150:
 
 Coverage Error                    3.04
@@ -49,7 +49,7 @@ NDCG                             84
 Ranking Loss                      0.2
 
 INFO Predicting for 196 test examples using a model of size 200...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 200:
 
 Coverage Error                    2.96
@@ -63,7 +63,7 @@ NDCG                             84.61
 Ranking Loss                      0.19
 
 INFO Predicting for 196 test examples using a model of size 250...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 250:
 
 Coverage Error                    2.9
@@ -77,7 +77,7 @@ NDCG                             84.77
 Ranking Loss                      0.18
 
 INFO Predicting for 196 test examples using a model of size 300...
-INFO Successfully predicted in 3 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 300:
 
 Coverage Error                    2.9
@@ -91,7 +91,7 @@ NDCG                             84.79
 Ranking Loss                      0.18
 
 INFO Predicting for 196 test examples using a model of size 350...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 350:
 
 Coverage Error                    2.91
@@ -105,7 +105,7 @@ NDCG                             85.31
 Ranking Loss                      0.18
 
 INFO Predicting for 196 test examples using a model of size 400...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 400:
 
 Coverage Error                    2.91
@@ -119,7 +119,7 @@ NDCG                             85.19
 Ranking Loss                      0.18
 
 INFO Predicting for 196 test examples using a model of size 450...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 450:
 
 Coverage Error                    2.91
@@ -133,7 +133,7 @@ NDCG                             85.18
 Ranking Loss                      0.18
 
 INFO Predicting for 196 test examples using a model of size 500...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 500:
 
 Coverage Error                    2.88
@@ -147,7 +147,7 @@ NDCG                             85.41
 Ranking Loss                      0.17
 
 INFO Predicting for 196 test examples using a model of size 550...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 550:
 
 Coverage Error                    2.88
@@ -161,7 +161,7 @@ NDCG                             85.37
 Ranking Loss                      0.17
 
 INFO Predicting for 196 test examples using a model of size 600...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 600:
 
 Coverage Error                    2.88
@@ -175,7 +175,7 @@ NDCG                             85.25
 Ranking Loss                      0.17
 
 INFO Predicting for 196 test examples using a model of size 650...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 650:
 
 Coverage Error                    2.86
@@ -189,7 +189,7 @@ NDCG                             85.18
 Ranking Loss                      0.17
 
 INFO Predicting for 196 test examples using a model of size 700...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 700:
 
 Coverage Error                    2.87
@@ -203,7 +203,7 @@ NDCG                             85.32
 Ranking Loss                      0.17
 
 INFO Predicting for 196 test examples using a model of size 750...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 750:
 
 Coverage Error                    2.89
@@ -217,7 +217,7 @@ NDCG                             85.53
 Ranking Loss                      0.17
 
 INFO Predicting for 196 test examples using a model of size 800...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 800:
 
 Coverage Error                    2.87
@@ -231,7 +231,7 @@ NDCG                             85.45
 Ranking Loss                      0.17
 
 INFO Predicting for 196 test examples using a model of size 850...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 850:
 
 Coverage Error                    2.88
@@ -245,7 +245,7 @@ NDCG                             85.13
 Ranking Loss                      0.17
 
 INFO Predicting for 196 test examples using a model of size 900...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 900:
 
 Coverage Error                    2.89
@@ -259,7 +259,7 @@ NDCG                             85.73
 Ranking Loss                      0.17
 
 INFO Predicting for 196 test examples using a model of size 950...
-INFO Successfully predicted in 1 millisecond
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 950:
 
 Coverage Error                    2.87
@@ -273,7 +273,7 @@ NDCG                             85.66
 Ranking Loss                      0.17
 
 INFO Predicting for 196 test examples using a model of size 1000...
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 1000:
 
 Coverage Error                    2.88
@@ -360,4 +360,4 @@ INFO Marginal probability calibration model:
 │               0.9702 │                  1      │
 └──────────────────────┴─────────────────────────┘
 
-INFO Successfully finished after 1 second and 259 milliseconds
+INFO Successfully finished after <duration>
