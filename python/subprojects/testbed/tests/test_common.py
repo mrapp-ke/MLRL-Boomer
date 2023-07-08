@@ -848,9 +848,9 @@ class IntegrationTests(ABC, TestCase):
                             'minute') and not line.endswith('seconds') and not line.endswith('second'):
                     if raise_error:
                         self.assertEqual(
-                            stdout[i], line,
+                            line, stdout[i],
                             'Output of command "' + self.__format_cmd(args) + '" differs at line ' + str(i + 1))
-                    elif stdout[i] != line:
+                    elif line != stdout[i]:
                         return False
 
         return True
