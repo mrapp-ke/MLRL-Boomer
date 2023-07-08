@@ -5,11 +5,11 @@ DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emot
 INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
-INFO Successfully fit model in 144 milliseconds
+INFO Successfully fit model in <duration>
 INFO Predicting for 196 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
-INFO Successfully predicted in 0 milliseconds
+INFO Successfully predicted in <duration>
 INFO Predictions for test data:
 
 Ground truth:
@@ -412,4 +412,4 @@ Predictions:
 
 DEBUG Saving data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_test_overall.arff'...
 INFO Successfully saved data set to file 'python/subprojects/testbed/tests/res/tmp/results/predictions_test_overall.arff'.
-INFO Successfully finished after 211 milliseconds
+INFO Successfully finished after <duration>

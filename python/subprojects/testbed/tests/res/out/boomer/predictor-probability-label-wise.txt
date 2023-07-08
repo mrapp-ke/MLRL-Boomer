@@ -7,7 +7,7 @@ INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/t
 INFO Predicting for 196 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted probability estimates
-INFO Successfully predicted in 1 millisecond
+INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
 Coverage Error                    2.88
@@ -494,4 +494,4 @@ INFO Marginal probability calibration model:
 │               0.9702 │                  1      │
 └──────────────────────┴─────────────────────────┘
 
-INFO Successfully finished after 161 milliseconds
+INFO Successfully finished after <duration>
