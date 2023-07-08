@@ -19,7 +19,7 @@ jobs:
           python3 -m build --wheel python/subprojects/testbed/
           cp python/subprojects/testbed/dist/*.whl wheelhouse/
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           path: './wheelhouse/*.whl'
           if-no-files-found: error
@@ -46,11 +46,11 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
       - name: Remove conflicting link.exe
         if: matrix.os == 'windows-latest'
-        uses: JesseTG/rm@v1.0.2
+        uses: JesseTG/rm@v1
         with:
           path: C:\Program Files\Git\usr\bin\link.EXE
       - name: Build package mlrl-common
-        uses: pypa/cibuildwheel@v2.3.0
+        uses: pypa/cibuildwheel@v2
         env:
           CIBW_BEFORE_ALL_MACOS: brew install libomp && brew link libomp --force
           CIBW_BEFORE_BUILD: make clean install_cpp install_cython
@@ -60,7 +60,7 @@ jobs:
         with:
           package-dir: python/subprojects/common
       - name: Build package mlrl-boosting
-        uses: pypa/cibuildwheel@v2.3.0
+        uses: pypa/cibuildwheel@v2
         env:
           CIBW_BEFORE_ALL_MACOS: brew install libomp && brew link libomp --force
           CIBW_BEFORE_BUILD: make clean install_cpp install_cython
@@ -70,7 +70,7 @@ jobs:
         with:
           package-dir: python/subprojects/boosting
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           path: './wheelhouse/*.whl'
           if-no-files-found: error
@@ -95,11 +95,11 @@ jobs:
         uses: actions/checkout@v3
       - name: Set up QEMU
         if: runner.os == 'Linux'
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
         with:
           platforms: all
       - name: Build package mlrl-common
-        uses: pypa/cibuildwheel@v2.3.0
+        uses: pypa/cibuildwheel@v2
         env:
           CIBW_BEFORE_BUILD: make clean install_cpp install_cython
           CIBW_BUILD_FRONTEND: build
@@ -108,7 +108,7 @@ jobs:
         with:
           package-dir: python/subprojects/common
       - name: Build package mlrl-boosting
-        uses: pypa/cibuildwheel@v2.3.0
+        uses: pypa/cibuildwheel@v2
         env:
           CIBW_BEFORE_BUILD: make clean install_cpp install_cython
           CIBW_BUILD_FRONTEND: build
@@ -117,7 +117,7 @@ jobs:
         with:
           package-dir: python/subprojects/boosting
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           path: './wheelhouse/*.whl'
           if-no-files-found: error
