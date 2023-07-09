@@ -62,10 +62,10 @@ static inline void updateNumExamplesPerLabel(const CsrLabelMatrix& labelMatrix, 
 template<typename LabelMatrix, typename IndexIterator>
 LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(const LabelMatrix& labelMatrix,
                                                                              IndexIterator indicesBegin,
-                                                                             IndexIterator indicesEnd)
-    : numRows_(indicesEnd - indicesBegin) {
+                                                                             IndexIterator indicesEnd) {
     // Convert the given label matrix into the CSC format...
     const CscLabelMatrix cscLabelMatrix(labelMatrix, indicesBegin, indicesEnd);
+    numRows_ = cscLabelMatrix.getNumRows();
 
     // Create an array that stores for each label the number of examples that are associated with the label, as well as
     // a sorted map that stores all label indices in increasing order of the number of associated examples...
@@ -86,7 +86,7 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
     // Allocate arrays for storing the row and column indices of the labels to be processed by the sampling method in
     // the CSC format...
     rowIndices_ = (uint32*) malloc(cscLabelMatrix.getNumNonZeroElements() * sizeof(uint32));
-    colIndices_ = (uint32*) malloc((sortedLabelIndices.size() + 1) * sizeof(uint32));
+    indptr_ = (uint32*) malloc((sortedLabelIndices.size() + 1) * sizeof(uint32));
     uint32 numNonZeroElements = 0;
     uint32 numCols = 0;
 
@@ -112,7 +112,7 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
         sortedLabelIndices.erase(firstEntry);
 
         // Add the number of non-zero labels that have been processed so far to the array of column indices...
-        colIndices_[numCols] = numNonZeroElements;
+        indptr_[numCols] = numNonZeroElements;
         numCols++;
 
         // Iterate the examples that are associated with the current label, if no weight has been set yet...
@@ -163,10 +163,10 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
     if (numRemaining > 0) {
         // Adjust the size of the arrays that are used to store row and column indices...
         rowIndices_ = (uint32*) realloc(rowIndices_, (numNonZeroElements + numRemaining) * sizeof(uint32));
-        colIndices_ = (uint32*) realloc(colIndices_, (numCols + 2) * sizeof(uint32));
+        indptr_ = (uint32*) realloc(indptr_, (numCols + 2) * sizeof(uint32));
 
         // Add the number of non-zero labels that have been processed so far to the array of column indices...
-        colIndices_[numCols] = numNonZeroElements;
+        indptr_[numCols] = numNonZeroElements;
         numCols++;
 
         // Iterate the weights of all examples to find those whose weight has not been set yet...
@@ -180,10 +180,10 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
     } else {
         // Adjust the size of the arrays that are used to store row and column indices...
         rowIndices_ = (uint32*) realloc(rowIndices_, numNonZeroElements * sizeof(uint32));
-        colIndices_ = (uint32*) realloc(colIndices_, (numCols + 1) * sizeof(uint32));
+        indptr_ = (uint32*) realloc(indptr_, (numCols + 1) * sizeof(uint32));
     }
 
-    colIndices_[numCols] = numNonZeroElements;
+    indptr_[numCols] = numNonZeroElements;
     numCols_ = numCols;
 
     delete[] numExamplesPerLabel;
@@ -192,7 +192,7 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
 template<typename LabelMatrix, typename IndexIterator>
 LabelWiseStratification<LabelMatrix, IndexIterator>::~LabelWiseStratification() {
     free(rowIndices_);
-    free(colIndices_);
+    free(indptr_);
 }
 
 template<typename LabelMatrix, typename IndexIterator>
@@ -205,9 +205,9 @@ void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWeigh
 
     // For each column, assign a weight to the corresponding examples...
     for (uint32 i = 0; i < numCols_; i++) {
-        uint32 start = colIndices_[i];
+        uint32 start = indptr_[i];
         uint32* exampleIndices = &rowIndices_[start];
-        uint32 end = colIndices_[i + 1];
+        uint32 end = indptr_[i + 1];
         uint32 numExamples = end - start;
         float32 numSamplesDecimal = sampleSize * numExamples;
         uint32 numDesiredSamples = numTotalSamples - numNonZeroWeights;
@@ -246,9 +246,9 @@ void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleBiPartition(BiPa
     uint32 numSecond = partition.getNumSecond();
 
     for (uint32 i = 0; i < numCols_; i++) {
-        uint32 start = colIndices_[i];
+        uint32 start = indptr_[i];
         uint32* exampleIndices = &rowIndices_[start];
-        uint32 end = colIndices_[i + 1];
+        uint32 end = indptr_[i + 1];
         uint32 numExamples = end - start;
 
         float32 sampleSize = (float32) numFirst / (float32) (numFirst + numSecond);

@@ -22,13 +22,13 @@ template<typename LabelMatrix, typename IndexIterator>
 class LabelWiseStratification final {
     private:
 
-        const uint32 numRows_;
+        uint32 numRows_;
 
         uint32 numCols_;
 
         uint32* rowIndices_;
 
-        uint32* colIndices_;
+        uint32* indptr_;
 
     public:
 
