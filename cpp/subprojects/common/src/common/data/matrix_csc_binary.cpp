@@ -10,3 +10,19 @@ BinaryCscMatrix::~BinaryCscMatrix() {
     free(rowIndices_);
     free(indptr_);
 }
+
+BinaryCscMatrix::index_const_iterator BinaryCscMatrix::indptr_cbegin() const {
+    return indptr_;
+}
+
+BinaryCscMatrix::index_const_iterator BinaryCscMatrix::indptr_cend() const {
+    return &indptr_[numCols_ + 1];
+}
+
+BinaryCscMatrix::index_iterator BinaryCscMatrix::indptr_begin() {
+    return indptr_;
+}
+
+BinaryCscMatrix::index_iterator BinaryCscMatrix::indptr_end() {
+    return &indptr_[numCols_ + 1];
+}

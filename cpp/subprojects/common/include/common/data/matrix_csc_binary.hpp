@@ -20,4 +20,36 @@ class BinaryCscMatrix : public BinaryCscView {
         BinaryCscMatrix(uint32 numRows, uint32 numCols, uint32 numNonZeroElements);
 
         virtual ~BinaryCscMatrix() override;
+
+        /**
+         * Returns an `index_const_iterator` to the beginning of the array that stores the indices of the first element
+         * in `rowIndices` that corresponds to a certain column.
+         *
+         * @return An `index_const_iterator` to the beginning
+         */
+        index_const_iterator indptr_cbegin() const;
+
+        /**
+         * Returns an `index_const_iterator` to the end of the array that stores the indices of the first element in
+         * `rowIndices` that corresponds to a certain column.
+         *
+         * @return An `index_const_iterator` to the end
+         */
+        index_const_iterator indptr_cend() const;
+
+        /**
+         * Returns an `index_iterator` to the beginning of the array that stores the indices of the first element in
+         * `rowIndices` that corresponds to a certain column.
+         *
+         * @return An `index_iterator` to the beginning
+         */
+        index_iterator indptr_begin();
+
+        /**
+         * Returns an `index_iterator` to the end of the array that stores the indices of the first element in
+         * `rowIndices` that corresponds to a certain column.
+         *
+         * @return An `index_iterator` to the end
+         */
+        index_iterator indptr_end();
 };
