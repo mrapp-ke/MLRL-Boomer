@@ -83,13 +83,13 @@ class CsrLabelMatrix final : public BinaryCsrConstView,
         /**
          * @param numRows       The number of rows in the label matrix
          * @param numCols       The number of columns in the label matrix
+         * @param colIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
+         *                      column-indices, the relevant labels correspond to
          * @param indptr        A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices
          *                      of the first element in `colIndices` that corresponds to a certain row. The index at the
          *                      last position is equal to `num_non_zero_values`
-         * @param colIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
-         *                      column-indices, the relevant labels correspond to
          */
-        CsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* indptr, uint32* colIndices);
+        CsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* colIndices, uint32* indptr);
 
         /**
          * The type of the view that provides access to the values that are stored in a single row of the label matrix.
@@ -146,15 +146,15 @@ class CsrLabelMatrix final : public BinaryCsrConstView,
  *
  * @param numRows       The number of rows in the label matrix
  * @param numCols       The number of columns in the label matrix
+ * @param colIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
+ *                      column-indices, the relevant labels correspond to
  * @param indptr        A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices of the
  *                      first element in `colIndices` that corresponds to a certain row. The index at the last position
  *                      is equal to `num_non_zero_values`
- * @param colIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
- *                      column-indices, the relevant labels correspond to
  * @return              An unique pointer to an object of type `ICsrLabelMatrix` that has been created
  */
-MLRLCOMMON_API std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* indptr,
-                                                                     uint32* colIndices);
+MLRLCOMMON_API std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* colIndices,
+                                                                     uint32* indptr);
 
 #ifdef _WIN32
     #pragma warning(pop)
