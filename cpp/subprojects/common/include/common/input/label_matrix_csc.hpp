@@ -3,8 +3,8 @@
  */
 #pragma once
 
+#include "common/data/matrix_csc_binary.hpp"
 #include "common/data/view_c_contiguous.hpp"
-#include "common/data/view_csc_binary.hpp"
 #include "common/data/view_csr_binary.hpp"
 #include "common/indices/index_vector_complete.hpp"
 #include "common/indices/index_vector_partial.hpp"
@@ -17,7 +17,7 @@
  * or a `BinaryCsrConstView`, which provides row-wise access to the labels of the training examples. These constructors
  * expect the indices of the examples to be considered when copying the existing label matrix to be provided.
  */
-class CscLabelMatrix final : public BinaryCscConstView {
+class CscLabelMatrix final : public BinaryCscMatrix {
     public:
 
         /**
@@ -60,6 +60,4 @@ class CscLabelMatrix final : public BinaryCscConstView {
          */
         CscLabelMatrix(const BinaryCsrConstView& labelMatrix, PartialIndexVector::const_iterator indicesBegin,
                        PartialIndexVector::const_iterator indicesEnd);
-
-        ~CscLabelMatrix() override;
 };
