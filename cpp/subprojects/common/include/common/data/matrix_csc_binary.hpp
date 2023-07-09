@@ -10,6 +10,10 @@
  * (CSC) format.
  */
 class BinaryCscMatrix : public BinaryCscView {
+    private:
+
+        uint32 maxCapacity_;
+
     public:
 
         /**
@@ -52,4 +56,12 @@ class BinaryCscMatrix : public BinaryCscView {
          * @return An `index_iterator` to the end
          */
         index_iterator indptr_end();
+
+        /**
+         * Sets the number of non-zero elements in the matrix.
+         *
+         * @param numElements   The number of non-zero elements to be set
+         * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
+         */
+        void setNumNonZeroElements(uint32 numNonZeroElements, bool freeMemory);
 };
