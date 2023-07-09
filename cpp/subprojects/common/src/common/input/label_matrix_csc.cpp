@@ -89,7 +89,7 @@ CscLabelMatrix::CscLabelMatrix(const CContiguousConstView<const uint8>& labelMat
                                CompleteIndexVector::const_iterator indicesBegin,
                                CompleteIndexVector::const_iterator indicesEnd)
     : BinaryCscMatrix(labelMatrix.getNumRows(), labelMatrix.getNumCols(),
-                      labelMatrix.getNumRows() * labelMatrix.getNumCols()) {
+                      ((uint32) (indicesEnd - indicesBegin)) * labelMatrix.getNumCols()) {
     uint32 numNonZeroElements = copyLabelMatrix<CompleteIndexVector::const_iterator>(
       this->rowIndices_, this->indptr_, labelMatrix, indicesBegin, indicesEnd);
     this->setNumNonZeroElements(numNonZeroElements, true);
@@ -99,7 +99,7 @@ CscLabelMatrix::CscLabelMatrix(const CContiguousConstView<const uint8>& labelMat
                                PartialIndexVector::const_iterator indicesBegin,
                                PartialIndexVector::const_iterator indicesEnd)
     : BinaryCscMatrix(labelMatrix.getNumRows(), labelMatrix.getNumCols(),
-                      labelMatrix.getNumRows() * labelMatrix.getNumCols()) {
+                      ((uint32) (indicesEnd - indicesBegin)) * labelMatrix.getNumCols()) {
     uint32 numNonZeroElements = copyLabelMatrix<PartialIndexVector::const_iterator>(
       this->rowIndices_, this->indptr_, labelMatrix, indicesBegin, indicesEnd);
     this->setNumNonZeroElements(numNonZeroElements, true);
