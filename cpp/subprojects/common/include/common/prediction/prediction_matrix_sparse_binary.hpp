@@ -12,15 +12,15 @@
  * A sparse matrix that provides read-only access to binary predictions that are stored in the compressed sparse row
  * (CSR) format.
  *
- * The matrix maintains two arrays, referred to as `rowIndices` and `colIndices`. The latter stores a column-index for
- * each of the `numNonZeroValues` non-zero elements in the matrix. The former stores `numRows + 1` row-indices that
- * specify the first element in `colIndices` that correspond to a certain row. The index at the last position is equal
- * to the number of non-zero values in the matrix.
+ * The matrix maintains two arrays, referred to as `indptr` and `colIndices`. The latter stores a column-index for each
+ * of the `numNonZeroValues` non-zero elements in the matrix. The former stores `numRows + 1` row-indices that specify
+ * the first element in `colIndices` that correspond to a certain row. The index at the last position is equal to the
+ * number of non-zero values in the matrix.
  */
 class MLRLCOMMON_API BinarySparsePredictionMatrix final : public BinaryCsrConstView {
     private:
 
-        uint32* rowIndices_;
+        uint32* indptr_;
 
         uint32* colIndices_;
 
@@ -29,30 +29,30 @@ class MLRLCOMMON_API BinarySparsePredictionMatrix final : public BinaryCsrConstV
         /**
          * @param numRows       The number of rows in the matrix
          * @param numCols       The number of columns in the matrix
-         * @param rowIndices    A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices
+         * @param indptr        A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices
          *                      of the first element in `colIndices` that corresponds to a certain row. The index at the
          *                      last position is equal to `numNonZeroValues`
          * @param colIndices    A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the
          *                      column-indices, the non-zero elements correspond to
          */
-        BinarySparsePredictionMatrix(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices);
+        BinarySparsePredictionMatrix(uint32 numRows, uint32 numCols, uint32* indptr, uint32* colIndices);
 
         ~BinarySparsePredictionMatrix() override;
 
         /**
-         * Returns a pointer to the array `rowIndices`.
+         * Returns a pointer to the array `indptr`.
          *
-         * @return A pointer to the array `rowIndices`
+         * @return A pointer to the array `indptr`
          */
-        uint32* getRowIndices();
+        uint32* getIndptr();
 
         /**
-         * Releases the ownership of the array `rowIndices`. The caller is responsible for freeing the memory that is
+         * Releases the ownership of the array `indptr`. The caller is responsible for freeing the memory that is
          * occupied by the array.
          *
-         * @return A pointer to the array `rowIndices`
+         * @return A pointer to the array `indptr`
          */
-        uint32* releaseRowIndices();
+        uint32* releaseIndptr();
 
         /**
          * Returns a pointer to the array `colIndices`.
