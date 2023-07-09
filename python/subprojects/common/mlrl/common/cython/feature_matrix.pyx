@@ -75,7 +75,7 @@ cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
     """
 
     def __cinit__(self, uint32 num_examples, uint32 num_features, const float32[::1] data not None,
-                  uint32[::1] row_indices not None, uint32[::1] col_indices not None):
+                  uint32[::1] row_indices not None, uint32[::1] indptr not None):
         """
         :param num_examples:    The total number of examples
         :param num_features:    The total number of features
@@ -83,15 +83,15 @@ cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
                                 feature values
         :param row_indices:     An array of type `uint32`, shape `(num_non_zero_values)`, that stores the row-indices,
                                 the values in `data` correspond to
-        :param col_indices:     An array of type `uint32`, shape `(num_features + 1)`, that stores the indices of the
+        :param indptr:          An array of type `uint32`, shape `(num_features + 1)`, that stores the indices of the
                                 first element in `data` and `row_indices` that corresponds to a certain feature. The
                                 index at the last position is equal to `num_non_zero_values`
         """
         self.data = data
         self.row_indices = row_indices
-        self.col_indices = col_indices
+        self.indptr = indptr
         self.feature_matrix_ptr = createCscFeatureMatrix(num_examples, num_features, &data[0], &row_indices[0],
-                                                         &col_indices[0])
+                                                         &indptr[0])
 
     cdef IFeatureMatrix* get_feature_matrix_ptr(self):
         return self.feature_matrix_ptr.get()

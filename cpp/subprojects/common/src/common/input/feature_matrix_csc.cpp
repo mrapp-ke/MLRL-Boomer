@@ -22,12 +22,12 @@ class CscFeatureMatrix final : public CscConstView<const float32>,
          *                      non-zero feature values
          * @param rowIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
          *                      row-indices, the values in `data` correspond to
-         * @param colIndices    A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices
+         * @param indptr        A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices
          *                      of the first element in `data` and `rowIndices` that corresponds to a certain column.
          *                      The index at the last position is equal to `num_non_zero_values`
          */
-        CscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices, uint32* colIndices)
-            : CscConstView<const float32>(numRows, numCols, data, rowIndices, colIndices) {}
+        CscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices, uint32* indptr)
+            : CscConstView<const float32>(numRows, numCols, data, rowIndices, indptr) {}
 
         bool isSparse() const override {
             return true;
@@ -60,8 +60,8 @@ class CscFeatureMatrix final : public CscConstView<const float32>,
 };
 
 std::unique_ptr<ICscFeatureMatrix> createCscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,
-                                                          uint32* rowIndices, uint32* colIndices) {
-    return std::make_unique<CscFeatureMatrix>(numRows, numCols, data, rowIndices, colIndices);
+                                                          uint32* rowIndices, uint32* indptr) {
+    return std::make_unique<CscFeatureMatrix>(numRows, numCols, data, rowIndices, indptr);
 }
 
 #ifdef _WIN32

@@ -40,7 +40,7 @@ cdef extern from "common/input/feature_matrix_csc.hpp" nogil:
 
 
     unique_ptr[ICscFeatureMatrix] createCscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,
-                                                         uint32* rowIndices, uint32* colIndices)
+                                                         uint32* rowIndices, uint32* indptr)
 
 
 cdef extern from "common/input/feature_matrix_row_wise.hpp" nogil:
@@ -100,7 +100,7 @@ cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
 
     cdef uint32[::1] row_indices
 
-    cdef uint32[::1] col_indices
+    cdef uint32[::1] indptr
 
     cdef unique_ptr[ICscFeatureMatrix] feature_matrix_ptr
 
