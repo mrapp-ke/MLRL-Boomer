@@ -34,7 +34,7 @@ class CsrConstView : virtual public ITwoDimensionalView {
          * A pointer to an array that stores the indices of the first element in `data_` and `colIndices_` that
          * corresponds to a certain row.
          */
-        uint32* rowIndices_;
+        uint32* indptr_;
 
         /**
          * A pointer to an array that stores the column-indices, the values in `data_` correspond to.
@@ -48,13 +48,13 @@ class CsrConstView : virtual public ITwoDimensionalView {
          * @param numCols       The number of columns in the view
          * @param data          A pointer to an array of template type `T`, shape `(num_non_zero_values)`, that stores
          *                      all non-zero values
-         * @param rowIndices    A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices
+         * @param indptr        A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices
          *                      of the first element in `data` and `colIndices` that corresponds to a certain row. The
          *                      index at the last position is equal to `num_non_zero_values`
          * @param colIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
          *                      column-indices, the values in `data` correspond to
          */
-        CsrConstView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* colIndices);
+        CsrConstView(uint32 numRows, uint32 numCols, T* data, uint32* indptr, uint32* colIndices);
 
         virtual ~CsrConstView() override {};
 
