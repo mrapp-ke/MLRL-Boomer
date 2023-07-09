@@ -39,7 +39,7 @@ class CscConstView : virtual public ITwoDimensionalView {
          * A pointer to an array that stores the indices of the first element in `data_` and `rowIndices_` that
          * corresponds to a certain column.
          */
-        uint32* colIndices_;
+        uint32* indptr_;
 
     public:
 
@@ -50,11 +50,11 @@ class CscConstView : virtual public ITwoDimensionalView {
          *                      all non-zero values
          * @param rowIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
          *                      row-indices, the values in `data` correspond to
-         * @param colIndices    A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices
+         * @param indptr        A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices
          *                      of the first element in `data` and `rowIndices` that corresponds to a certain column.
          *                      The index at the last position is equal to `num_non_zero_values`
          */
-        CscConstView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* colIndices);
+        CscConstView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* indptr);
 
         virtual ~CscConstView() override {};
 
@@ -135,11 +135,11 @@ class CscView : public CscConstView<T> {
          *                      all non-zero values
          * @param rowIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
          *                      row-indices, the values in `data` correspond to
-         * @param colIndices    A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices
+         * @param indptr        A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices
          *                      of the first element in `data` and `rowIndices` that corresponds to a certain column.
          *                      The index at the last position is equal to `num_non_zero_values`
          */
-        CscView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* colIndices);
+        CscView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* indptr);
 
         virtual ~CscView() override {};
 

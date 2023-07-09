@@ -266,8 +266,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             log.debug('A sparse matrix is used to store the feature values of the training examples')
             x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
             x_row_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
-            x_col_indices = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
-            feature_matrix = CscFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_col_indices)
+            x_indptr = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
+            feature_matrix = CscFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_indptr)
         else:
             log.debug('A dense matrix is used to store the feature values of the training examples')
             feature_matrix = FortranContiguousFeatureMatrix(x)
