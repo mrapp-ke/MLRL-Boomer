@@ -92,7 +92,7 @@ std::unique_ptr<IJointProbabilityCalibrationModel> CsrLabelMatrix::fitJointProba
     return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
 }
 
-std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* indptr,
-                                                      uint32* colIndices) {
-    return std::make_unique<CsrLabelMatrix>(numRows, numCols, indptr, colIndices);
+std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* colIndices,
+                                                      uint32* indptr) {
+    return std::make_unique<CsrLabelMatrix>(numRows, numCols, colIndices, indptr);
 }

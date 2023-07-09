@@ -23,28 +23,28 @@ class MLRLCOMMON_API BinaryCsrConstView : virtual public ITwoDimensionalView {
         const uint32 numCols_;
 
         /**
+         * A pointer to an array that stores the column-indices, the non-zero elements correspond to.
+         */
+        uint32* colIndices_;
+
+        /**
          * A pointer to an array that stores the indices of the first element in `colIndices_` that corresponds to a
          * certain row.
          */
         uint32* indptr_;
-
-        /**
-         * A pointer to an array that stores the column-indices, the non-zero elements correspond to.
-         */
-        uint32* colIndices_;
 
     public:
 
         /**
          * @param numRows       The number of rows in the view
          * @param numCols       The number of columns in the view
+         * @param colIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
+         *                      column-indices, the non-zero elements correspond to
          * @param indptr        A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices
          *                      of the first element in `colIndices` that corresponds to a certain row. The index at the
          *                      last position is equal to `num_non_zero_values`
-         * @param colIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
-         *                      column-indices, the non-zero elements correspond to
          */
-        BinaryCsrConstView(uint32 numRows, uint32 numCols, uint32* indptr, uint32* colIndices);
+        BinaryCsrConstView(uint32 numRows, uint32 numCols, uint32* colIndices, uint32* indptr);
 
         virtual ~BinaryCsrConstView() override {};
 
@@ -91,13 +91,13 @@ class BinaryCsrView : public BinaryCsrConstView {
         /**
          * @param numRows       The number of rows in the view
          * @param numCols       The number of columns in the view
+         * @param colIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
+         *                      column-indices, the non-zero elements correspond to
          * @param indptr        A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices
          *                      of the first element in `colIndices` that corresponds to a certain row. The index at the
          *                      last position is equal to `num_non_zero_values`
-         * @param colIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
-         *                      column-indices, the non-zero elements correspond to
          */
-        BinaryCsrView(uint32 numRows, uint32 numCols, uint32* indptr, uint32* colIndices);
+        BinaryCsrView(uint32 numRows, uint32 numCols, uint32* colIndices, uint32* indptr);
 
         virtual ~BinaryCsrView() override {};
 

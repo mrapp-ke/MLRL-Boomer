@@ -41,7 +41,7 @@ cdef extern from "common/input/label_matrix_csr.hpp" nogil:
         pass
 
 
-    unique_ptr[ICsrLabelMatrix] createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* indptr, uint32* colIndices)
+    unique_ptr[ICsrLabelMatrix] createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* colIndices, uint32* indptr)
 
 
 cdef class LabelMatrix:
@@ -71,8 +71,8 @@ cdef class CsrLabelMatrix(RowWiseLabelMatrix):
 
     # Attributes:
 
-    cdef uint32[::1] indptr
-
     cdef uint32[::1] col_indices
+
+    cdef uint32[::1] indptr
 
     cdef unique_ptr[ICsrLabelMatrix] label_matrix_ptr
