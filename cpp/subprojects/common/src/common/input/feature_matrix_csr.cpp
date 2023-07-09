@@ -4,9 +4,9 @@
 #include "common/prediction/predictor_probability.hpp"
 #include "common/prediction/predictor_score.hpp"
 
-CsrFeatureMatrix::CsrFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, uint32* indptr,
-                                   uint32* colIndices)
-    : CsrConstView<const float32>(numRows, numCols, data, indptr, colIndices) {}
+CsrFeatureMatrix::CsrFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, uint32* colIndices,
+                                   uint32* indptr)
+    : CsrConstView<const float32>(numRows, numCols, data, colIndices, indptr) {}
 
 bool CsrFeatureMatrix::isSparse() const {
     return true;
@@ -44,6 +44,6 @@ std::unique_ptr<IProbabilityPredictor> CsrFeatureMatrix::createProbabilityPredic
 }
 
 std::unique_ptr<ICsrFeatureMatrix> createCsrFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,
-                                                          uint32* indptr, uint32* colIndices) {
-    return std::make_unique<CsrFeatureMatrix>(numRows, numCols, data, indptr, colIndices);
+                                                          uint32* colIndices, uint32* indptr) {
+    return std::make_unique<CsrFeatureMatrix>(numRows, numCols, data, colIndices, indptr);
 }

@@ -1,8 +1,8 @@
 #include "common/data/view_csr.hpp"
 
 template<typename T>
-CsrConstView<T>::CsrConstView(uint32 numRows, uint32 numCols, T* data, uint32* indptr, uint32* colIndices)
-    : numRows_(numRows), numCols_(numCols), data_(data), indptr_(indptr), colIndices_(colIndices) {}
+CsrConstView<T>::CsrConstView(uint32 numRows, uint32 numCols, T* data, uint32* colIndices, uint32* indptr)
+    : numRows_(numRows), numCols_(numCols), data_(data), colIndices_(colIndices), indptr_(indptr) {}
 
 template<typename T>
 typename CsrConstView<T>::value_const_iterator CsrConstView<T>::values_cbegin(uint32 row) const {
@@ -49,8 +49,8 @@ template class CsrConstView<float64>;
 template class CsrConstView<const float64>;
 
 template<typename T>
-CsrView<T>::CsrView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* colIndices)
-    : CsrConstView<T>(numRows, numCols, data, rowIndices, colIndices) {}
+CsrView<T>::CsrView(uint32 numRows, uint32 numCols, T* data, uint32* colIndices, uint32* indptr)
+    : CsrConstView<T>(numRows, numCols, data, colIndices, indptr) {}
 
 template<typename T>
 typename CsrView<T>::value_iterator CsrView<T>::values_begin(uint32 row) {
