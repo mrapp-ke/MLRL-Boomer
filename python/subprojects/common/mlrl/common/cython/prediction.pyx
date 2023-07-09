@@ -132,12 +132,12 @@ cdef class IncrementalSparseBinaryPredictor:
         cdef uint32 num_rows = prediction_matrix_ptr.getNumRows()
         cdef uint32 num_cols = prediction_matrix_ptr.getNumCols()
         cdef uint32 num_non_zero_elements = prediction_matrix_ptr.getNumNonZeroElements()
-        cdef uint32* row_indices = prediction_matrix_ptr.getRowIndices()
         cdef uint32* col_indices = prediction_matrix_ptr.getColIndices()
+        cdef uint32* indptr = prediction_matrix_ptr.getIndptr()
         data = np.ones(shape=(num_non_zero_elements), dtype=np.uint8) if num_non_zero_elements > 0 else np.asarray([])
         indices = np.asarray(view_uint32(col_indices, num_non_zero_elements) if num_non_zero_elements > 0 else [])
-        indptr = np.asarray(view_uint32(row_indices, num_rows + 1))
-        return csr_matrix((data, indices, indptr), shape=(num_rows, num_cols))
+        pred_indptr = np.asarray(view_uint32(indptr, num_rows + 1))
+        return csr_matrix((data, indices, pred_indptr), shape=(num_rows, num_cols))
 
 
 cdef class SparseBinaryPredictor:
@@ -159,12 +159,12 @@ cdef class SparseBinaryPredictor:
         cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
         cdef uint32 num_non_zero_elements = prediction_matrix_ptr.get().getNumNonZeroElements()
-        cdef uint32* row_indices = prediction_matrix_ptr.get().releaseRowIndices()
         cdef uint32* col_indices = prediction_matrix_ptr.get().releaseColIndices()
+        cdef uint32* indptr = prediction_matrix_ptr.get().releaseIndptr()
         data = np.ones(shape=(num_non_zero_elements), dtype=np.uint8) if num_non_zero_elements > 0 else np.asarray([])
         indices = np.asarray(array_uint32(col_indices, num_non_zero_elements) if num_non_zero_elements > 0 else [])
-        indptr = np.asarray(array_uint32(row_indices, num_rows + 1))
-        return csr_matrix((data, indices, indptr), shape=(num_rows, num_cols))
+        pred_indptr = np.asarray(array_uint32(indptr, num_rows + 1))
+        return csr_matrix((data, indices, pred_indptr), shape=(num_rows, num_cols))
 
     def can_predict_incrementally(self) -> bool:
         """
