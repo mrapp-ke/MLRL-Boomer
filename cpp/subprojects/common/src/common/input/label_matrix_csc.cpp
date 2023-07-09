@@ -3,47 +3,50 @@
 #include "common/data/arrays.hpp"
 
 template<typename IndexIterator>
-static inline uint32 copyLabelMatrix(uint32* rowIndices, uint32* indptr,
-                                     const CContiguousConstView<const uint8>& labelMatrix, IndexIterator indicesBegin,
-                                     IndexIterator indicesEnd) {
-    uint32 numExamples = indicesEnd - indicesBegin;
-    uint32 numLabels = labelMatrix.getNumCols();
+static inline void copyLabelMatrix(BinaryCscMatrix& cscMatrix, const CContiguousConstView<const uint8>& labelMatrix,
+                                   IndexIterator indexIterator) {
+    uint32 numExamples = cscMatrix.getNumRows();
+    uint32 numLabels = cscMatrix.getNumCols();
+    BinaryCscMatrix::index_iterator indptrIterator = cscMatrix.indptr_begin();
+    indptrIterator[0] = 0;
+    BinaryCscMatrix::index_iterator rowIndexIterator = cscMatrix.indices_begin(0);
     uint32 n = 0;
 
     for (uint32 i = 0; i < numLabels; i++) {
-        indptr[i] = n;
+        indptrIterator[i] = n;
 
         for (uint32 j = 0; j < numExamples; j++) {
-            uint32 exampleIndex = indicesBegin[j];
+            uint32 exampleIndex = indexIterator[j];
 
             if (labelMatrix.values_cbegin(exampleIndex)[i]) {
-                rowIndices[n] = exampleIndex;
+                rowIndexIterator[n] = exampleIndex;
                 n++;
             }
         }
     }
 
-    return n;
+    cscMatrix.setNumNonZeroElements(n, true);
 }
 
 template<typename IndexIterator>
-static inline uint32 copyLabelMatrix(uint32* rowIndices, uint32* indptr, const BinaryCsrConstView& labelMatrix,
-                                     IndexIterator indicesBegin, IndexIterator indicesEnd) {
-    uint32 numExamples = indicesEnd - indicesBegin;
-    uint32 numLabels = labelMatrix.getNumCols();
+static inline void copyLabelMatrix(BinaryCscMatrix& cscMatrix, const BinaryCsrConstView& labelMatrix,
+                                   IndexIterator indexIterator) {
+    uint32 numExamples = cscMatrix.getNumRows();
+    uint32 numLabels = cscMatrix.getNumCols();
+    BinaryCscMatrix::index_iterator indptrIterator = cscMatrix.indptr_begin();
 
     // Set column indices of the CSC matrix to zero...
-    setArrayToZeros(indptr, numLabels);
+    setArrayToZeros(indptrIterator, numLabels);
 
     // Determine the number of non-zero elements per column...
     for (uint32 i = 0; i < numExamples; i++) {
-        uint32 exampleIndex = indicesBegin[i];
+        uint32 exampleIndex = indexIterator[i];
         BinaryCsrConstView::index_const_iterator labelIndexIterator = labelMatrix.indices_cbegin(exampleIndex);
         uint32 numRelevantLabels = labelMatrix.indices_cend(exampleIndex) - labelIndexIterator;
 
         for (uint32 j = 0; j < numRelevantLabels; j++) {
             uint32 labelIndex = labelIndexIterator[j];
-            indptr[labelIndex]++;
+            indptrIterator[labelIndex]++;
         }
     }
 
@@ -52,22 +55,24 @@ static inline uint32 copyLabelMatrix(uint32* rowIndices, uint32* indptr, const B
     uint32 tmp = 0;
 
     for (uint32 i = 0; i < numLabels; i++) {
-        uint32 labelIndex = indptr[i];
-        indptr[i] = tmp;
+        uint32 labelIndex = indptrIterator[i];
+        indptrIterator[i] = tmp;
         tmp += labelIndex;
     }
 
     // Set the row indices of the CSC matrix. This will modify the column indices...
+    BinaryCscMatrix::index_iterator rowIndexIterator = cscMatrix.indices_begin(0);
+
     for (uint32 i = 0; i < numExamples; i++) {
-        uint32 exampleIndex = indicesBegin[i];
+        uint32 exampleIndex = indexIterator[i];
         BinaryCsrConstView::index_const_iterator labelIndexIterator = labelMatrix.indices_cbegin(exampleIndex);
         uint32 numRelevantLabels = labelMatrix.indices_cend(exampleIndex) - labelIndexIterator;
 
         for (uint32 j = 0; j < numRelevantLabels; j++) {
             uint32 originalLabelIndex = labelIndexIterator[j];
-            uint32 labelIndex = indptr[originalLabelIndex];
-            rowIndices[labelIndex] = exampleIndex;
-            indptr[originalLabelIndex]++;
+            uint32 labelIndex = indptrIterator[originalLabelIndex];
+            rowIndexIterator[labelIndex] = exampleIndex;
+            indptrIterator[originalLabelIndex]++;
         }
     }
 
@@ -75,12 +80,12 @@ static inline uint32 copyLabelMatrix(uint32* rowIndices, uint32* indptr, const B
     tmp = 0;
 
     for (uint32 i = 0; i < numLabels; i++) {
-        uint32 labelIndex = indptr[i];
-        indptr[i] = tmp;
+        uint32 labelIndex = indptrIterator[i];
+        indptrIterator[i] = tmp;
         tmp = labelIndex;
     }
 
-    return tmp;
+    cscMatrix.setNumNonZeroElements(tmp, true);
 }
 
 CscLabelMatrix::CscLabelMatrix(const CContiguousConstView<const uint8>& labelMatrix,
@@ -88,9 +93,7 @@ CscLabelMatrix::CscLabelMatrix(const CContiguousConstView<const uint8>& labelMat
                                CompleteIndexVector::const_iterator indicesEnd)
     : BinaryCscMatrix((uint32) (indicesEnd - indicesBegin), labelMatrix.getNumCols(),
                       ((uint32) (indicesEnd - indicesBegin)) * labelMatrix.getNumCols()) {
-    uint32 numNonZeroElements = copyLabelMatrix<CompleteIndexVector::const_iterator>(
-      this->rowIndices_, this->indptr_, labelMatrix, indicesBegin, indicesEnd);
-    this->setNumNonZeroElements(numNonZeroElements, true);
+    copyLabelMatrix<CompleteIndexVector::const_iterator>(*this, labelMatrix, indicesBegin);
 }
 
 CscLabelMatrix::CscLabelMatrix(const CContiguousConstView<const uint8>& labelMatrix,
@@ -98,25 +101,19 @@ CscLabelMatrix::CscLabelMatrix(const CContiguousConstView<const uint8>& labelMat
                                PartialIndexVector::const_iterator indicesEnd)
     : BinaryCscMatrix((uint32) (indicesEnd - indicesBegin), labelMatrix.getNumCols(),
                       ((uint32) (indicesEnd - indicesBegin)) * labelMatrix.getNumCols()) {
-    uint32 numNonZeroElements = copyLabelMatrix<PartialIndexVector::const_iterator>(
-      this->rowIndices_, this->indptr_, labelMatrix, indicesBegin, indicesEnd);
-    this->setNumNonZeroElements(numNonZeroElements, true);
+    copyLabelMatrix<PartialIndexVector::const_iterator>(*this, labelMatrix, indicesBegin);
 }
 
 CscLabelMatrix::CscLabelMatrix(const BinaryCsrConstView& labelMatrix, CompleteIndexVector::const_iterator indicesBegin,
                                CompleteIndexVector::const_iterator indicesEnd)
     : BinaryCscMatrix((uint32) (indicesEnd - indicesBegin), labelMatrix.getNumCols(),
                       labelMatrix.getNumNonZeroElements()) {
-    uint32 numNonZeroElements = copyLabelMatrix<CompleteIndexVector::const_iterator>(
-      this->rowIndices_, this->indptr_, labelMatrix, indicesBegin, indicesEnd);
-    this->setNumNonZeroElements(numNonZeroElements, true);
+    copyLabelMatrix<CompleteIndexVector::const_iterator>(*this, labelMatrix, indicesBegin);
 }
 
 CscLabelMatrix::CscLabelMatrix(const BinaryCsrConstView& labelMatrix, PartialIndexVector::const_iterator indicesBegin,
                                PartialIndexVector::const_iterator indicesEnd)
     : BinaryCscMatrix((uint32) (indicesEnd - indicesBegin), labelMatrix.getNumCols(),
                       labelMatrix.getNumNonZeroElements()) {
-    uint32 numNonZeroElements = copyLabelMatrix<PartialIndexVector::const_iterator>(
-      this->rowIndices_, this->indptr_, labelMatrix, indicesBegin, indicesEnd);
-    this->setNumNonZeroElements(numNonZeroElements, true);
+    copyLabelMatrix<PartialIndexVector::const_iterator>(*this, labelMatrix, indicesBegin);
 }
