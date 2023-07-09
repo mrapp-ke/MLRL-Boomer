@@ -20,39 +20,24 @@
 class MLRLCOMMON_API BinarySparsePredictionMatrix final : public BinaryCsrConstView {
     private:
 
-        uint32* indptr_;
-
         uint32* colIndices_;
+
+        uint32* indptr_;
 
     public:
 
         /**
          * @param numRows       The number of rows in the matrix
          * @param numCols       The number of columns in the matrix
+         * @param colIndices    A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the
+         *                      column-indices, the non-zero elements correspond to
          * @param indptr        A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices
          *                      of the first element in `colIndices` that corresponds to a certain row. The index at the
          *                      last position is equal to `numNonZeroValues`
-         * @param colIndices    A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the
-         *                      column-indices, the non-zero elements correspond to
          */
-        BinarySparsePredictionMatrix(uint32 numRows, uint32 numCols, uint32* indptr, uint32* colIndices);
+        BinarySparsePredictionMatrix(uint32 numRows, uint32 numCols, uint32* colIndices, uint32* indptr);
 
         ~BinarySparsePredictionMatrix() override;
-
-        /**
-         * Returns a pointer to the array `indptr`.
-         *
-         * @return A pointer to the array `indptr`
-         */
-        uint32* getIndptr();
-
-        /**
-         * Releases the ownership of the array `indptr`. The caller is responsible for freeing the memory that is
-         * occupied by the array.
-         *
-         * @return A pointer to the array `indptr`
-         */
-        uint32* releaseIndptr();
 
         /**
          * Returns a pointer to the array `colIndices`.
@@ -68,6 +53,21 @@ class MLRLCOMMON_API BinarySparsePredictionMatrix final : public BinaryCsrConstV
          * @return A pointer to the array `colIndices`
          */
         uint32* releaseColIndices();
+
+        /**
+         * Returns a pointer to the array `indptr`.
+         *
+         * @return A pointer to the array `indptr`
+         */
+        uint32* getIndptr();
+
+        /**
+         * Releases the ownership of the array `indptr`. The caller is responsible for freeing the memory that is
+         * occupied by the array.
+         *
+         * @return A pointer to the array `indptr`
+         */
+        uint32* releaseIndptr();
 };
 
 /**

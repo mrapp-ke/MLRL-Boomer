@@ -2,23 +2,13 @@
 
 #include <cstdlib>
 
-BinarySparsePredictionMatrix::BinarySparsePredictionMatrix(uint32 numRows, uint32 numCols, uint32* indptr,
-                                                           uint32* colIndices)
-    : BinaryCsrConstView(numRows, numCols, colIndices, indptr), indptr_(indptr), colIndices_(colIndices) {}
+BinarySparsePredictionMatrix::BinarySparsePredictionMatrix(uint32 numRows, uint32 numCols, uint32* colIndices,
+                                                           uint32* indptr)
+    : BinaryCsrConstView(numRows, numCols, colIndices, indptr), colIndices_(colIndices), indptr_(indptr) {}
 
 BinarySparsePredictionMatrix::~BinarySparsePredictionMatrix() {
-    free(indptr_);
     free(colIndices_);
-}
-
-uint32* BinarySparsePredictionMatrix::getIndptr() {
-    return indptr_;
-}
-
-uint32* BinarySparsePredictionMatrix::releaseIndptr() {
-    uint32* ptr = indptr_;
-    indptr_ = nullptr;
-    return ptr;
+    free(indptr_);
 }
 
 uint32* BinarySparsePredictionMatrix::getColIndices() {
@@ -28,6 +18,16 @@ uint32* BinarySparsePredictionMatrix::getColIndices() {
 uint32* BinarySparsePredictionMatrix::releaseColIndices() {
     uint32* ptr = colIndices_;
     colIndices_ = nullptr;
+    return ptr;
+}
+
+uint32* BinarySparsePredictionMatrix::getIndptr() {
+    return indptr_;
+}
+
+uint32* BinarySparsePredictionMatrix::releaseIndptr() {
+    uint32* ptr = indptr_;
+    indptr_ = nullptr;
     return ptr;
 }
 
@@ -49,5 +49,5 @@ std::unique_ptr<BinarySparsePredictionMatrix> createBinarySparsePredictionMatrix
     }
 
     indptr[numRows] = n;
-    return std::make_unique<BinarySparsePredictionMatrix>(numRows, numCols, indptr, colIndices);
+    return std::make_unique<BinarySparsePredictionMatrix>(numRows, numCols, colIndices, indptr);
 }
