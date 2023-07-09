@@ -31,7 +31,7 @@ class BinaryCscConstView : virtual public ITwoDimensionalView {
          * A pointer to an array that stores the indices of the first element in `rowIndices_` that corresponds to a
          * certain column.
          */
-        uint32* colIndices_;
+        uint32* indptr_;
 
     public:
 
@@ -40,11 +40,11 @@ class BinaryCscConstView : virtual public ITwoDimensionalView {
          * @param numCols       The number of columns in the view
          * @param rowIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
          *                      row-indices, the non-zero elements correspond to
-         * @param colIndices    A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices
+         * @param indptr        A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices
          *                      of the first element in `rowIndices` that corresponds to a certain column. The index at
          *                      the last position is equal to `num_non_zero_values`
          */
-        BinaryCscConstView(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices);
+        BinaryCscConstView(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* indptr);
 
         virtual ~BinaryCscConstView() override {};
 
@@ -93,11 +93,11 @@ class BinaryCscView : public BinaryCscConstView {
          * @param numCols       The number of columns in the view
          * @param rowIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
          *                      row-indices, the non-zero elements correspond to
-         * @param colIndices    A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices
+         * @param indptr        A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices
          *                      of the first element in `rowIndices` that corresponds to a certain column. The index at
          *                      the last position is equal to `num_non_zero_values`
          */
-        BinaryCscView(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* colIndices);
+        BinaryCscView(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* indptr);
 
         virtual ~BinaryCscView() override {};
 

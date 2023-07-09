@@ -5,7 +5,7 @@
 #include <cstdlib>
 
 template<typename IndexIterator>
-static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* colIndices,
+static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* indptr,
                                       const CContiguousConstView<const uint8>& labelMatrix, IndexIterator indicesBegin,
                                       IndexIterator indicesEnd) {
     uint32 numExamples = indicesEnd - indicesBegin;
@@ -13,7 +13,7 @@ static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* colIndices,
     uint32 n = 0;
 
     for (uint32 i = 0; i < numLabels; i++) {
-        colIndices[i] = n;
+        indptr[i] = n;
 
         for (uint32 j = 0; j < numExamples; j++) {
             uint32 exampleIndex = indicesBegin[j];
@@ -25,18 +25,18 @@ static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* colIndices,
         }
     }
 
-    colIndices[numLabels] = n;
+    indptr[numLabels] = n;
     return (uint32*) realloc(rowIndices, n * sizeof(uint32));
 }
 
 template<typename IndexIterator>
-static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* colIndices, const BinaryCsrConstView& labelMatrix,
+static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* indptr, const BinaryCsrConstView& labelMatrix,
                                       IndexIterator indicesBegin, IndexIterator indicesEnd) {
     uint32 numExamples = indicesEnd - indicesBegin;
     uint32 numLabels = labelMatrix.getNumCols();
 
     // Set column indices of the CSC matrix to zero...
-    setArrayToZeros(colIndices, numLabels);
+    setArrayToZeros(indptr, numLabels);
 
     // Determine the number of non-zero elements per column...
     for (uint32 i = 0; i < numExamples; i++) {
@@ -46,7 +46,7 @@ static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* colIndices, co
 
         for (uint32 j = 0; j < numRelevantLabels; j++) {
             uint32 labelIndex = labelIndexIterator[j];
-            colIndices[labelIndex]++;
+            indptr[labelIndex]++;
         }
     }
 
@@ -55,8 +55,8 @@ static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* colIndices, co
     uint32 tmp = 0;
 
     for (uint32 i = 0; i < numLabels; i++) {
-        uint32 labelIndex = colIndices[i];
-        colIndices[i] = tmp;
+        uint32 labelIndex = indptr[i];
+        indptr[i] = tmp;
         tmp += labelIndex;
     }
 
@@ -68,9 +68,9 @@ static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* colIndices, co
 
         for (uint32 j = 0; j < numRelevantLabels; j++) {
             uint32 originalLabelIndex = labelIndexIterator[j];
-            uint32 labelIndex = colIndices[originalLabelIndex];
+            uint32 labelIndex = indptr[originalLabelIndex];
             rowIndices[labelIndex] = exampleIndex;
-            colIndices[originalLabelIndex]++;
+            indptr[originalLabelIndex]++;
         }
     }
 
@@ -78,12 +78,12 @@ static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* colIndices, co
     tmp = 0;
 
     for (uint32 i = 0; i < numLabels; i++) {
-        uint32 labelIndex = colIndices[i];
-        colIndices[i] = tmp;
+        uint32 labelIndex = indptr[i];
+        indptr[i] = tmp;
         tmp = labelIndex;
     }
 
-    colIndices[numLabels] = tmp;
+    indptr[numLabels] = tmp;
     return (uint32*) realloc(rowIndices, tmp * sizeof(uint32));
 }
 
@@ -93,7 +93,7 @@ CscLabelMatrix::CscLabelMatrix(const CContiguousConstView<const uint8>& labelMat
     : BinaryCscConstView(labelMatrix.getNumRows(), labelMatrix.getNumCols(),
                          (uint32*) malloc(labelMatrix.getNumRows() * labelMatrix.getNumCols() * sizeof(uint32)),
                          (uint32*) malloc((labelMatrix.getNumCols() + 1) * sizeof(uint32))) {
-    this->rowIndices_ = copyLabelMatrix<CompleteIndexVector::const_iterator>(this->rowIndices_, this->colIndices_,
+    this->rowIndices_ = copyLabelMatrix<CompleteIndexVector::const_iterator>(this->rowIndices_, this->indptr_,
                                                                              labelMatrix, indicesBegin, indicesEnd);
 }
 
@@ -103,7 +103,7 @@ CscLabelMatrix::CscLabelMatrix(const CContiguousConstView<const uint8>& labelMat
     : BinaryCscConstView(labelMatrix.getNumRows(), labelMatrix.getNumCols(),
                          (uint32*) malloc(labelMatrix.getNumRows() * labelMatrix.getNumCols() * sizeof(uint32)),
                          (uint32*) malloc((labelMatrix.getNumCols() + 1) * sizeof(uint32))) {
-    this->rowIndices_ = copyLabelMatrix<PartialIndexVector::const_iterator>(this->rowIndices_, this->colIndices_,
+    this->rowIndices_ = copyLabelMatrix<PartialIndexVector::const_iterator>(this->rowIndices_, this->indptr_,
                                                                             labelMatrix, indicesBegin, indicesEnd);
 }
 
@@ -112,7 +112,7 @@ CscLabelMatrix::CscLabelMatrix(const BinaryCsrConstView& labelMatrix, CompleteIn
     : BinaryCscConstView(labelMatrix.getNumRows(), labelMatrix.getNumCols(),
                          (uint32*) malloc(labelMatrix.getNumNonZeroElements() * sizeof(uint32)),
                          (uint32*) malloc((labelMatrix.getNumCols() + 1) * sizeof(uint32))) {
-    this->rowIndices_ = copyLabelMatrix<CompleteIndexVector::const_iterator>(this->rowIndices_, this->colIndices_,
+    this->rowIndices_ = copyLabelMatrix<CompleteIndexVector::const_iterator>(this->rowIndices_, this->indptr_,
                                                                              labelMatrix, indicesBegin, indicesEnd);
 }
 
@@ -121,11 +121,11 @@ CscLabelMatrix::CscLabelMatrix(const BinaryCsrConstView& labelMatrix, PartialInd
     : BinaryCscConstView(labelMatrix.getNumRows(), labelMatrix.getNumCols(),
                          (uint32*) malloc(labelMatrix.getNumNonZeroElements() * sizeof(uint32)),
                          (uint32*) malloc((labelMatrix.getNumCols() + 1) * sizeof(uint32))) {
-    this->rowIndices_ = copyLabelMatrix<PartialIndexVector::const_iterator>(this->rowIndices_, this->colIndices_,
+    this->rowIndices_ = copyLabelMatrix<PartialIndexVector::const_iterator>(this->rowIndices_, this->indptr_,
                                                                             labelMatrix, indicesBegin, indicesEnd);
 }
 
 CscLabelMatrix::~CscLabelMatrix() {
     free(this->rowIndices_);
-    free(this->colIndices_);
+    free(this->indptr_);
 }
