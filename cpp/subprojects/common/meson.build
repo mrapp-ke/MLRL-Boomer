@@ -123,17 +123,18 @@ include_directories = include_directories('include')
 install_root = meson.current_source_dir() / '../../../python/subprojects'
 install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name() / 'cython/'
 
-# Library version
+# Library name and version
+lib_name = 'mlrl' + meson.project_name()
 fs = import('fs')
 version = fs.read('../../../VERSION')
 
 # Set configuration options
 configuration = configuration_data()
+configuration.set('mlrlcommon_library_name', lib_name)
 configuration.set('mlrlcommon_library_version', version)
 configure_file(input : 'include/common/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
 # Library declaration
-lib_name = 'mlrl' + meson.project_name()
 cpp_args = ['-fopenmp']
 link_args = ['-fopenmp']
 

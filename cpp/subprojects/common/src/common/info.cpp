@@ -8,6 +8,10 @@
 class CommonLibraryInfo final : public ILibraryInfo {
     public:
 
+        std::string getLibraryName() const override {
+            return MLRLCOMMON_LIBRARY_NAME;
+        }
+
         std::string getLibraryVersion() const override {
             return MLRLCOMMON_LIBRARY_VERSION;
         }
