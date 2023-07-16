@@ -4,6 +4,7 @@ project('seco', 'cython', 'cpp')
 cython_dir = 'cython'
 cython_module_names = [
     'heuristic',
+    'info',
     'learner_seco',
     'learner',
     'lift_function',
