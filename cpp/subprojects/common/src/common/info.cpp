@@ -15,6 +15,10 @@ class CommonLibraryInfo final : public ILibraryInfo {
         std::string getLibraryVersion() const override {
             return MLRLCOMMON_LIBRARY_VERSION;
         }
+
+        std::string getTargetArchitecture() const override {
+            return MLRLCOMMON_TARGET_ARCHITECTURE;
+        }
 };
 
 const CommonLibraryInfo COMMON_LIBRARY_INFO = CommonLibraryInfo();

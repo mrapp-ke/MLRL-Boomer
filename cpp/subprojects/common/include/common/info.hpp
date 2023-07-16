@@ -26,6 +26,13 @@ class MLRLCOMMON_API ILibraryInfo {
          * @return A string that specifies the library version
          */
         virtual std::string getLibraryVersion() const = 0;
+
+        /**
+         * Returns the architecture that is targeted by the C++ library.
+         *
+         * @return A string that specifies the target architecture
+         */
+        virtual std::string getTargetArchitecture() const = 0;
 };
 
 /**

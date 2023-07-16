@@ -9,6 +9,8 @@ cdef extern from "common/info.hpp" nogil:
 
         string getLibraryVersion() const
 
+        string getTargetArchitecture() const
+
     const ILibraryInfo& getCommonLibraryInfo()
 
 

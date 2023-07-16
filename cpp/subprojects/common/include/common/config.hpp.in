@@ -3,3 +3,4 @@
  */
 #define MLRLCOMMON_LIBRARY_NAME "@mlrlcommon_library_name@"
 #define MLRLCOMMON_LIBRARY_VERSION "@mlrlcommon_library_version@"
+#define MLRLCOMMON_TARGET_ARCHITECTURE "@mlrlcommon_target_architecture@"

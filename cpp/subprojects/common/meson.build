@@ -132,6 +132,7 @@ version = fs.read('../../../VERSION')
 configuration = configuration_data()
 configuration.set('mlrlcommon_library_name', lib_name)
 configuration.set('mlrlcommon_library_version', version)
+configuration.set('mlrlcommon_target_architecture', host_machine.cpu_family() + '-' + host_machine.system())
 configure_file(input : 'include/common/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
 # Library declaration
