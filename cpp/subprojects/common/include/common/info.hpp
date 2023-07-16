@@ -15,7 +15,7 @@ class MLRLCOMMON_API ILibraryInfo {
 
         /**
          * Returns the name of the C++ library.
-         * 
+         *
          * @return A string that specifies the library name
          */
         virtual std::string getLibraryName() const = 0;
