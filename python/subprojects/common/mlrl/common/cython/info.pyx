@@ -27,8 +27,17 @@ cdef class CppLibraryInfo:
         cdef string library_version = self.library_info_ptr.getLibraryVersion()
         return library_version.decode('UTF-8')
 
+    def get_target_architecture(self) -> str:
+        """
+        Returns the architecture that is targeted by the C++ library.
+
+        :return: A string that specifies the target architecture
+        """
+        cdef string target_architecture = self.library_info_ptr.getTargetArchitecture()
+        return target_architecture.decode('UTF-8')
+
     def __str__(self) -> str:
-        return self.get_library_name + ' ' + self.get_library_version()
+        return self.get_library_name() + ' ' + self.get_library_version() + ' (' + self.get_target_architecture() + ')'
 
 
 def get_common_cpp_library_info() -> CppLibraryInfo:
