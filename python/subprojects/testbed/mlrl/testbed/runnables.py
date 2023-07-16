@@ -13,8 +13,8 @@ from typing import Dict, List, Optional, Set
 
 from mlrl.common.config import NONE, Parameter, configure_argument_parser, create_kwargs_from_parameters
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
-from mlrl.common.format import format_dict_keys, format_enum_values
-from mlrl.common.info import get_cpp_library_info as get_common_cpp_library_info
+from mlrl.common.format import format_dict_keys, format_enum_values, format_string_iterable
+from mlrl.common.info import PythonPackageInfo
 from mlrl.common.options import BooleanOption, parse_param_and_options
 from mlrl.common.rule_learners import SparsePolicy
 
@@ -34,6 +34,7 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
     BinaryEvaluationWriter, EvaluationWriter, ProbabilityEvaluationWriter, ScoreEvaluationWriter
 from mlrl.testbed.experiments import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE
+from mlrl.testbed.info import get_package_info as get_testbed_package_info
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorSetWriter, LabelVectorWriter
 from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
@@ -85,11 +86,52 @@ class Runnable(ABC):
     A base class for all programs that can be configured via command line arguments.
     """
 
-    def __init__(self, description: str):
+    class ProgramInfo:
         """
-        :param description: A description of the program
+        Provides information about a program.
+        """
+
+        def __init__(self,
+                     name: str,
+                     version: str,
+                     year: Optional[str] = None,
+                     authors: Set[str] = set(),
+                     python_packages: List[PythonPackageInfo] = []):
+            """
+            :param name:            A string that specifies the program name
+            :param version:         A string that specifies the program version
+            :param year:            A string that specifies the year when the program was released
+            :param author:          A set that contains the names of each author of the program
+            :param python_packages: A list that contains a `PythonPackageInfo` for each Python package that is used by
+                                    the program
+            """
+            self.name = name
+            self.version = version
+            self.year = year
+            self.authors = authors
+            self.python_packages = [get_testbed_package_info()] + python_packages
+
+        def __str__(self) -> str:
+            result = self.name + ' ' + self.version
+
+            if self.year is not None or len(self.authors) > 0:
+                result += '\n\nCopyright (c)'
+
+                if self.year is not None:
+                    result += ' ' + self.year
+
+                if len(self.authors) > 0:
+                    result += ' ' + format_string_iterable(self.authors)
+
+            return result
+
+    def __init__(self, description: str, program_info: Optional[ProgramInfo] = None):
+        """
+        :param description:     A description of the program
+        :param program_info:    Optional information about the program
         """
         self.parser = ArgumentParser(description=description, formatter_class=RawDescriptionHelpFormatter)
+        self.program_info = program_info
 
     def run(self):
         parser = self.parser
@@ -113,24 +155,28 @@ class Runnable(ABC):
 
         :param parser:  An `ArgumentParser` that is used for parsing command line arguments
         """
-        parser.add_argument('-v',
-                            '--version',
-                            action='version',
-                            version=self._get_version(),
-                            help='Display information about the program\'s version.')
+        if self.program_info is not None:
+            parser.add_argument('-v',
+                                '--version',
+                                action='version',
+                                version=self._get_version(),
+                                help='Display information about the program\'s version.')
+
         parser.add_argument('--log-level',
                             type=LogLevel.parse,
                             default=LogLevel.INFO.value,
                             help='The log level to be used. Must be one of ' + format_enum_values(LogLevel) + '.')
 
-    @abstractmethod
     def _get_version(self) -> str:
         """
-        Must be implemented by subclasses in order to provide information about the program's version.
+        May be overridden by subclasses in order to provide information about the program's version.
 
         :return: A string that provides information about the program's version
         """
-        pass
+        if self.program_info is not None:
+            return str(self.program_info)
+
+        raise RuntimeError('No information about the program version is available')
 
     @abstractmethod
     def _run(self, args):
@@ -267,11 +313,11 @@ class LearnerRunnable(Runnable, ABC):
 
     PARAM_PREDICTION_TYPE = '--prediction-type'
 
-    def __init__(self, description: str, learner_name: str):
+    def __init__(self, description: str, learner_name: str, program_info: Optional[Runnable.ProgramInfo] = None):
         """
         :param learner_name: The name of the learner
         """
-        super().__init__(description)
+        super().__init__(description=description, program_info=program_info)
         self.learner_name = learner_name
 
     def __create_prediction_type(self, args) -> PredictionType:
@@ -434,9 +480,6 @@ class LearnerRunnable(Runnable, ABC):
                             default=PredictionType.BINARY.value,
                             help='The type of predictions that should be obtained from the learner. Must be one of '
                             + format_enum_values(PredictionType) + '.')
-
-    def _get_version(self) -> str:
-        return self.learner_name
 
     def _run(self, args):
         prediction_type = self.__create_prediction_type(args)
@@ -763,14 +806,19 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES = PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES
 
-    def __init__(self, description: str, learner_name: str, learner_type: type, config_type: type,
-                 parameters: Set[Parameter]):
+    def __init__(self,
+                 description: str,
+                 learner_name: str,
+                 learner_type: type,
+                 config_type: type,
+                 parameters: Set[Parameter],
+                 program_info: Optional[Runnable.ProgramInfo] = None):
         """
         :param learner_type:    The type of the rule learner
         :param config_type:     The type of the rule learner's configuration
         :param parameters:      A set that contains the parameters that may be supported by the rule learner
         """
-        super().__init__(description=description, learner_name=learner_name)
+        super().__init__(description=description, learner_name=learner_name, program_info=program_info)
         self.learner_type = learner_type
         self.config_type = config_type
         self.parameters = parameters
@@ -849,9 +897,6 @@ class RuleLearnerRunnable(LearnerRunnable):
                             help='The format to be used for the representation of predictions. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
         configure_argument_parser(parser, self.config_type, self.parameters)
-
-    def _get_version(self) -> str:
-        return super()._get_version() + ' ' + str(get_common_cpp_library_info())
 
     def _create_learner(self, args):
         kwargs = create_kwargs_from_parameters(args, self.parameters)
