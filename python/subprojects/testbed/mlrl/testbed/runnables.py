@@ -7,7 +7,7 @@ import logging as log
 import sys
 
 from abc import ABC, abstractmethod
-from argparse import ArgumentParser
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from enum import Enum
 from typing import Dict, List, Optional, Set
 
@@ -89,7 +89,7 @@ class Runnable(ABC):
         """
         :param description: A description of the program
         """
-        self.parser = ArgumentParser(description=description)
+        self.parser = ArgumentParser(description=description, formatter_class=RawDescriptionHelpFormatter)
 
     def run(self):
         parser = self.parser
@@ -117,7 +117,7 @@ class Runnable(ABC):
                             '--version',
                             action='version',
                             version=self._get_version(),
-                            help='Display version information.')
+                            help='Display information about the program\'s version.')
         parser.add_argument('--log-level',
                             type=LogLevel.parse,
                             default=LogLevel.INFO.value,
