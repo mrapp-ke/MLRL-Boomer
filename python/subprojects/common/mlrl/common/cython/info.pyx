@@ -18,6 +18,9 @@ cdef class CppLibraryInfo:
         cdef string library_version = self.library_info_ptr.getLibraryVersion()
         return library_version.decode('UTF-8')
 
+    def __str__(self) -> str:
+        return self.get_library_version()
+
 
 def get_common_cpp_library_info() -> CppLibraryInfo:
     """
