@@ -123,16 +123,17 @@ include_directories = include_directories('include')
 install_root = meson.current_source_dir() / '../../../python/subprojects'
 install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name() / 'cython/'
 
-# Library name and version
+# Obtain information about the library
 lib_name = 'mlrl' + meson.project_name()
 fs = import('fs')
 version = fs.read('../../../VERSION')
+target_architecture = host_machine.cpu_family() + '-' + host_machine.system()
 
 # Set configuration options
 configuration = configuration_data()
 configuration.set('mlrlcommon_library_name', lib_name)
 configuration.set('mlrlcommon_library_version', version)
-configuration.set('mlrlcommon_target_architecture', host_machine.cpu_family() + '-' + host_machine.system())
+configuration.set('mlrlcommon_target_architecture', target_architecture)
 configure_file(input : 'include/common/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
 # Library declaration
