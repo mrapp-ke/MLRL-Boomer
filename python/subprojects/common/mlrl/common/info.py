@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides utility functions for retrieving information about the version of the Python module.
+Provides utility functions for retrieving information about this Python module.
 """
 from mlrl.common.cython.info import CppLibraryInfo, get_common_cpp_library_info
 
