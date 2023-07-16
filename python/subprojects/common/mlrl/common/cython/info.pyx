@@ -4,7 +4,7 @@
 from cython.operator cimport dereference
 
 
-cdef class LibraryInfo:
+cdef class CppLibraryInfo:
     """
     Provides information about a C++ library.
     """
@@ -19,12 +19,12 @@ cdef class LibraryInfo:
         return library_version.decode('UTF-8')
 
 
-def get_common_library_info() -> LibraryInfo:
+def get_common_cpp_library_info() -> CppLibraryInfo:
     """
     Returns information about the C++ library "libmlrlcommon".
 
     :return: A `LibraryInfo` that provides information about the C++ library
     """
-    cdef LibraryInfo library_info = LibraryInfo()
+    cdef CppLibraryInfo library_info = CppLibraryInfo()
     library_info.library_info_ptr = &getCommonLibraryInfo()
     return library_info

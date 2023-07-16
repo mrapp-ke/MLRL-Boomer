@@ -10,7 +10,7 @@ cdef extern from "common/info.hpp" nogil:
     const ILibraryInfo& getCommonLibraryInfo()
 
 
-cdef class LibraryInfo:
+cdef class CppLibraryInfo:
     
     # Attributes:
 
