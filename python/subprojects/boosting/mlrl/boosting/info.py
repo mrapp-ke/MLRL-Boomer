@@ -15,7 +15,7 @@ def get_package_info() -> PythonPackageInfo:
 
     :return: A `PythonPackageInfo` that provides information about the Python package
     """
-    return PythonPackageInfo(package_name='mlrl-boosting',
+    return PythonPackageInfo(package_name='mlrl-boomer',
                              python_packages=[get_common_package_info()],
                              cpp_libraries=[get_common_cpp_library_info(),
                                             get_boosting_cpp_library_info()])
