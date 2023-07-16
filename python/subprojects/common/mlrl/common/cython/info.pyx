@@ -41,7 +41,7 @@ cdef class CppLibraryInfo:
 
 def get_common_cpp_library_info() -> CppLibraryInfo:
     """
-    Returns information about the C++ library "libmlrlcommon".
+    Returns information about the C++ library that is wrapped by this Cython package.
 
     :return: A `CppLibraryInfo` that provides information about the C++ library
     """

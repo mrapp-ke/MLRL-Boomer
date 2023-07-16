@@ -5,7 +5,7 @@
 namespace boosting {
 
     /**
-     * An implementation of the type `ILibraryInfo` that provides information about the C++ library "libmlrlboosting".
+     * An implementation of the type `ILibraryInfo` that provides information about this C++ library.
      */
     class BoostingLibraryInfo final : public ILibraryInfo {
         public:

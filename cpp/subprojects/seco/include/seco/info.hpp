@@ -9,7 +9,7 @@
 namespace seco {
 
     /**
-     * Returns an object of type `ILibraryVersion` that provides information about the C++ library "libmlrlseco".
+     * Returns an object of type `ILibraryVersion` that provides information about this C++ library.
      *
      * @return A reference to an object of type `ILibraryVersion`
      */

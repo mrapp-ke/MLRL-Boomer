@@ -6,7 +6,7 @@ from mlrl.common.cython.info cimport CppLibraryInfo
 
 def get_seco_cpp_library_info() -> CppLibraryInfo:
     """
-    Returns information about the C++ library "libmlrlseco".
+    Returns information about the C++ library that is wrapped by this Cython package.
 
     :return: A `CppLibraryInfo` that provides information about the C++ library
     """

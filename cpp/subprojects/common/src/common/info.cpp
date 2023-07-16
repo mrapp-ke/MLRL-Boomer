@@ -3,7 +3,7 @@
 #include "config.hpp"
 
 /**
- * An implementation of the type `ILibraryInfo` that provides information about the C++ library "libmlrlcommon".
+ * An implementation of the type `ILibraryInfo` that provides information about this C++ library.
  */
 class CommonLibraryInfo final : public ILibraryInfo {
     public:
