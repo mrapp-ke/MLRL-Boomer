@@ -129,7 +129,7 @@ version = fs.read('../../../VERSION')
 
 # Set configuration options
 configuration = configuration_data()
-configuration.set('mlrlcommon_version', version)
+configuration.set('mlrlcommon_library_version', version)
 configure_file(input : 'include/common/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
 # Library declaration

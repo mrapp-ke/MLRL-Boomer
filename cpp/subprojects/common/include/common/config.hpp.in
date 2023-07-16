@@ -1,4 +1,4 @@
 /*
  * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
-#define MLRLCOMMON_VERSION "@mlrlcommon_version@"
+#define MLRLCOMMON_LIBRARY_VERSION "@mlrlcommon_library_version@"
