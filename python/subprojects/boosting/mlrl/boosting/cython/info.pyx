@@ -1,0 +1,15 @@
+"""
+@author: Michael Rapp (michael.rapp.ml@gmail.com)
+"""
+from mlrl.common.cython.info cimport CppLibraryInfo
+
+
+def get_boosting_cpp_library_info() -> CppLibraryInfo:
+    """
+    Returns information about the C++ library "libmlrlboosting".
+
+    :return: A `CppLibraryInfo` that provides information about the C++ library
+    """
+    cdef CppLibraryInfo library_info = CppLibraryInfo()
+    library_info.library_info_ptr = &getBoostingLibraryInfo()
+    return library_info
