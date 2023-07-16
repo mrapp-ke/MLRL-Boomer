@@ -13,4 +13,4 @@ def get_package_info() -> PythonPackageInfo:
 
     :return: A `PythonPackageInfo` that provides information about the Python package
     """
-    return PythonPackageInfo('mlrl-testbed', cpp_libraries=[get_common_cpp_library_info])
+    return PythonPackageInfo('mlrl-testbed', cpp_libraries=[get_common_cpp_library_info()])
