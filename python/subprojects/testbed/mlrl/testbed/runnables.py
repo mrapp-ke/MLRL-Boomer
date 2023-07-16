@@ -14,6 +14,7 @@ from typing import Dict, List, Optional, Set
 from mlrl.common.config import NONE, Parameter, configure_argument_parser, create_kwargs_from_parameters
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.format import format_dict_keys, format_enum_values
+from mlrl.common.info import get_cpp_library_info as get_common_cpp_library_info
 from mlrl.common.options import BooleanOption, parse_param_and_options
 from mlrl.common.rule_learners import SparsePolicy
 
@@ -112,10 +113,24 @@ class Runnable(ABC):
 
         :param parser:  An `ArgumentParser` that is used for parsing command line arguments
         """
+        parser.add_argument('-v',
+                            '--version',
+                            action='version',
+                            version=self._get_version(),
+                            help='Display version information.')
         parser.add_argument('--log-level',
                             type=LogLevel.parse,
                             default=LogLevel.INFO.value,
                             help='The log level to be used. Must be one of ' + format_enum_values(LogLevel) + '.')
+
+    @abstractmethod
+    def _get_version(self) -> str:
+        """
+        Must be implemented by subclasses in order to provide information about the program's version.
+
+        :return: A string that provides information about the program's version
+        """
+        pass
 
     @abstractmethod
     def _run(self, args):
@@ -419,6 +434,9 @@ class LearnerRunnable(Runnable, ABC):
                             default=PredictionType.BINARY.value,
                             help='The type of predictions that should be obtained from the learner. Must be one of '
                             + format_enum_values(PredictionType) + '.')
+
+    def _get_version(self) -> str:
+        return self.learner_name
 
     def _run(self, args):
         prediction_type = self.__create_prediction_type(args)
@@ -831,6 +849,9 @@ class RuleLearnerRunnable(LearnerRunnable):
                             help='The format to be used for the representation of predictions. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
         configure_argument_parser(parser, self.config_type, self.parameters)
+
+    def _get_version(self) -> str:
+        return super()._get_version() + ' ' + str(get_common_cpp_library_info())
 
     def _create_learner(self, args):
         kwargs = create_kwargs_from_parameters(args, self.parameters)
