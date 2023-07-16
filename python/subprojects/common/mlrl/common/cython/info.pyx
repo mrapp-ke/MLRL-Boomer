@@ -43,7 +43,7 @@ def get_common_cpp_library_info() -> CppLibraryInfo:
     """
     Returns information about the C++ library "libmlrlcommon".
 
-    :return: A `LibraryInfo` that provides information about the C++ library
+    :return: A `CppLibraryInfo` that provides information about the C++ library
     """
     cdef CppLibraryInfo library_info = CppLibraryInfo()
     library_info.library_info_ptr = &getCommonLibraryInfo()
