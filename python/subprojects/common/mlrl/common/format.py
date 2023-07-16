@@ -26,7 +26,7 @@ def format_enum_values(enum) -> str:
     :param enum:    The enum to be formatted
     :return:        The textual representation that has been created
     """
-    return '{' + format_string_iterable([x.value for x in enum], delimiter='"') + '}'
+    return format_string_set({x.value for x in enum})
 
 
 def format_string_set(strings: Set[str]) -> str:
@@ -46,4 +46,4 @@ def format_dict_keys(dictionary: Dict[str, Set[str]]) -> str:
     :param dictionary:  The dictionary to be formatted
     :return:            The textual representation that has been created
     """
-    return format_string_set(set(dictionary.keys()))
+    return format_string_set({key for key in dictionary.keys()})
