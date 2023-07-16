@@ -9,7 +9,7 @@ class CommonLibraryInfo final : public ILibraryInfo {
     public:
 
         std::string getLibraryVersion() const override {
-            return MLRLCOMMON_VERSION;
+            return MLRLCOMMON_LIBRARY_VERSION;
         }
 };
 
