@@ -1,6 +1,8 @@
 /*
  * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
+#pragma once
+
 #include "common/macros.hpp"
 
 #include <string>
