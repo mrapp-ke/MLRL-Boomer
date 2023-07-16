@@ -5,6 +5,8 @@ cdef extern from "common/info.hpp" nogil:
 
     cdef cppclass ILibraryInfo:
 
+        string getLibraryName() const
+
         string getLibraryVersion() const
 
     const ILibraryInfo& getCommonLibraryInfo()

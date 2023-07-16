@@ -9,17 +9,26 @@ cdef class CppLibraryInfo:
     Provides information about a C++ library.
     """
 
+    def get_library_name(self) -> str:
+        """
+        Returns the name of the C++ library.
+
+        :return: A string that specifies the library name
+        """
+        cdef string library_name = self.library_info_ptr.getLibraryName()
+        return library_name.decode('UTF-8')
+
     def get_library_version(self) -> str:
         """
         Returns the version of the C++ library.
 
-        :return: A string that specifies the version
+        :return: A string that specifies the library version
         """
         cdef string library_version = self.library_info_ptr.getLibraryVersion()
         return library_version.decode('UTF-8')
 
     def __str__(self) -> str:
-        return self.get_library_version()
+        return self.get_library_name + ' ' + self.get_library_version()
 
 
 def get_common_cpp_library_info() -> CppLibraryInfo:
