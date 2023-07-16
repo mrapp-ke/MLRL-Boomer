@@ -5,7 +5,7 @@
 namespace seco {
 
     /**
-     * An implementation of the type `ILibraryInfo` that provides information about the C++ library "libmlrlseco".
+     * An implementation of the type `ILibraryInfo` that provides information about this C++ library.
      */
     class SeCoLibraryInfo final : public ILibraryInfo {
         public:

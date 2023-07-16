@@ -10,7 +10,7 @@ from mlrl.boosting.cython.info import get_boosting_cpp_library_info
 
 def get_cpp_library_info() -> CppLibraryInfo:
     """
-    Returns information about the C++ library "libmlrlboosting".
+    Returns information about the C++ library that is used by this Python package.
 
     :return: A `CppLibraryInfo` that provides information about the C++ library
     """
