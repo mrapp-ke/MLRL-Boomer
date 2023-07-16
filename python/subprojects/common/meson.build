@@ -7,6 +7,7 @@ cython_module_names = [
     'feature_info',
     'feature_matrix',
     'feature_sampling',
+    'info',
     'instance_sampling',
     'label_sampling',
     'label_matrix',
