@@ -1,7 +1,6 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from cython.operator cimport dereference
 
 
 cdef class CppLibraryInfo:
