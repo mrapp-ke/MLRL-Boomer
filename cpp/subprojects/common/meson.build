@@ -126,6 +126,11 @@ install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name(
 fs = import('fs')
 version = fs.read('../../../VERSION')
 
+# Set configuration options
+configuration = configuration_data()
+configuration.set('mlrlcommon_version', version)
+configure_file(input : 'include/common/config.hpp.in', output : 'config.hpp', configuration: configuration)
+
 # Library declaration
 lib_name = 'mlrl' + meson.project_name()
 cpp_args = ['-fopenmp']
