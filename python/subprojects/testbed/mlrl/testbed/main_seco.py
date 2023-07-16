@@ -14,7 +14,8 @@ def create_program_info() -> RuleLearnerRunnable.ProgramInfo:
     return RuleLearnerRunnable.ProgramInfo(name='Multi-label SeCo',
                                            version=package_info.get_package_version(),
                                            year='2020 - 2023',
-                                           authors=['Michael Rapp et al.'])
+                                           authors=['Michael Rapp et al.'],
+                                           python_packages=[package_info])
 
 
 def main():
