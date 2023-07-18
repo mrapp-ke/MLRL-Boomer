@@ -8,6 +8,7 @@ import sys
 
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, List, Optional, Set
 
@@ -86,30 +87,52 @@ class Runnable(ABC):
     A base class for all programs that can be configured via command line arguments.
     """
 
+    @dataclass
     class ProgramInfo:
         """
         Provides information about a program.
-        """
 
-        def __init__(self,
-                     name: str,
-                     version: str,
-                     year: Optional[str] = None,
-                     authors: Set[str] = set(),
-                     python_packages: List[PythonPackageInfo] = []):
+        Arguments:
+            name:               A string that speicfies the program name
+            version:            A string that specifies the program version
+            year:               A string that specifies the year when the program was released
+            authors:            A set that contains the name of each author of the program
+            python_packages:    A list that contains a `PythonPackageInfo` for each Python package that is used by the
+                                program
+        """
+        name: str
+        version: str
+        year: Optional[str] = None,
+        authors: Set[str] = field(default_factory=set)
+        python_packages: List[PythonPackageInfo] = field(default_factory=list)
+
+        @property
+        def all_python_packages(self) -> List[PythonPackageInfo]:
             """
-            :param name:            A string that specifies the program name
-            :param version:         A string that specifies the program version
-            :param year:            A string that specifies the year when the program was released
-            :param author:          A set that contains the names of each author of the program
-            :param python_packages: A list that contains a `PythonPackageInfo` for each Python package that is used by
-                                    the program
+            A list that contains a `PythonPackageInfo` for each Python package that is used by the program, as well as
+            for the testbed package.
             """
-            self.name = name
-            self.version = version
-            self.year = year
-            self.authors = authors
-            self.python_packages = [get_testbed_package_info()] + python_packages
+            return [get_testbed_package_info()] + self.python_packages
+
+        def __collect_python_packages(self, python_packages: List[PythonPackageInfo]) -> Set[str]:
+            unique_packages = set()
+
+            for package in python_packages:
+                unique_packages.add(str(package))
+                unique_packages.update(self.__collect_python_packages(package.python_packages))
+
+            return unique_packages
+
+        def __collect_cpp_libraries(self, python_packages: List[PythonPackageInfo]) -> Set[str]:
+            unique_libraries = set()
+
+            for package in python_packages:
+                for library in package.cpp_libraries:
+                    unique_libraries.add(str(library))
+
+                unique_libraries.update(self.__collect_cpp_libraries(package.python_packages))
+
+            return unique_libraries
 
         def __str__(self) -> str:
             result = self.name + ' ' + self.version
@@ -122,6 +145,12 @@ class Runnable(ABC):
 
                 if len(self.authors) > 0:
                     result += ' ' + format_string_iterable(self.authors)
+
+            python_packages = sorted(self.__collect_python_packages(self.all_python_packages))
+            result += '\n' + str(python_packages)
+
+            cpp_libraries = sorted(self.__collect_cpp_libraries(self.all_python_packages))
+            result += '\n' + str(cpp_libraries)
 
             return result
 
