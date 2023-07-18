@@ -22,6 +22,7 @@ source_files = [
     'src/seco/rule_evaluation/rule_evaluation_label_wise_single.cpp',
     'src/seco/statistics/statistics_provider_label_wise_dense.cpp',
     'src/seco/stopping/stopping_criterion_coverage.cpp',
+    'src/seco/info.cpp',
     'src/seco/learner.cpp',
     'src/seco/learner_seco.cpp'
 ]
@@ -41,8 +42,17 @@ include_directories = include_directories('include')
 install_root = common_project.get_variable('install_root')
 install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name() / 'cython/'
 
-# Library version
+# Obtain information about the library
+lib_name = 'mlrl' + meson.project_name()
 version = common_project.get_variable('version')
+target_architecture = common_project.get_variable('target_architecture')
+
+# Set configuration options
+configuration = configuration_data()
+configuration.set('mlrlseco_library_name', 'lib' + lib_name)
+configuration.set('mlrlseco_library_version', version)
+configuration.set('mlrlseco_target_architecture', target_architecture)
+configure_file(input : 'include/seco/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
 # Library declaration
 cpp_args = common_project.get_variable('cpp_args')
@@ -52,6 +62,6 @@ if host_machine.system() == 'windows'
     cpp_args += '-DMLRLSECO_EXPORTS'
 endif
 
-seco_lib = library('mlrl' + meson.project_name(), source_files, include_directories : include_directories,
-                   dependencies : dependencies, cpp_args : cpp_args, link_args : link_args, version : version,
-                   install : true, install_dir : install_dir)
+seco_lib = library(lib_name, source_files, include_directories : include_directories, dependencies : dependencies,
+                   cpp_args : cpp_args, link_args : link_args, version : version, install : true,
+                   install_dir : install_dir)

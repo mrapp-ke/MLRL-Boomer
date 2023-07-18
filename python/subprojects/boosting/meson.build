@@ -4,6 +4,7 @@ project('boosting', 'cython', 'cpp')
 cython_dir = 'cython'
 cython_module_names = [
     'head_type',
+    'info',
     'label_binning',
     'learner_boomer',
     'learner',
