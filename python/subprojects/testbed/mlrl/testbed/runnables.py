@@ -34,7 +34,7 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
     OPTION_RECALL, OPTION_SUBSET_ACCURACY, OPTION_SUBSET_ZERO_ONE_LOSS, OPTION_TRAINING_TIME, OPTION_ZERO_ONE_LOSS, \
     BinaryEvaluationWriter, EvaluationWriter, ProbabilityEvaluationWriter, ScoreEvaluationWriter
 from mlrl.testbed.experiments import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
-from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE
+from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
 from mlrl.testbed.info import get_package_info as get_testbed_package_info
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorSetWriter, LabelVectorWriter
@@ -114,43 +114,62 @@ class Runnable(ABC):
             """
             return [get_testbed_package_info()] + self.python_packages
 
+        def __format_copyright(self) -> str:
+            result = ''
+            year = self.year
+
+            if year is not None:
+                result += ' ' + year
+
+            authors = self.authors
+
+            if len(authors) > 0:
+                result += ' ' + format_string_iterable(authors)
+
+            return ('Copyright (c)' if len(result) > 0 else '') + result
+
         def __collect_python_packages(self, python_packages: List[PythonPackageInfo]) -> Set[str]:
             unique_packages = set()
 
-            for package in python_packages:
-                unique_packages.add(str(package))
-                unique_packages.update(self.__collect_python_packages(package.python_packages))
+            for python_package in python_packages:
+                unique_packages.add(str(python_package))
+                unique_packages.update(self.__collect_python_packages(python_package.python_packages))
 
             return unique_packages
 
         def __collect_cpp_libraries(self, python_packages: List[PythonPackageInfo]) -> Set[str]:
             unique_libraries = set()
 
-            for package in python_packages:
-                for library in package.cpp_libraries:
-                    unique_libraries.add(str(library))
+            for python_package in python_packages:
+                for cpp_library in python_package.cpp_libraries:
+                    unique_libraries.add(str(cpp_library))
 
-                unique_libraries.update(self.__collect_cpp_libraries(package.python_packages))
+                unique_libraries.update(self.__collect_cpp_libraries(python_package.python_packages))
 
             return unique_libraries
 
+        def __format_python_packages_and_cpp_libraries(self) -> str:
+            rows = []
+
+            for i, python_package in enumerate(sorted(self.__collect_python_packages(self.all_python_packages))):
+                rows.append(['' if i > 0 else 'Python packages:', str(python_package)])
+
+            for i, cpp_library in enumerate(sorted(self.__collect_cpp_libraries(self.all_python_packages))):
+                rows.append(['' if i > 0 else 'Shared libraries:', str(cpp_library)])
+
+            return format_table(rows) if len(rows) > 0 else ''
+
         def __str__(self) -> str:
             result = self.name + ' ' + self.version
+            copyright = self.__format_copyright()
 
-            if self.year is not None or len(self.authors) > 0:
-                result += '\n\nCopyright (c)'
+            if len(copyright) > 0:
+                result += '\n\n' + copyright
 
-                if self.year is not None:
-                    result += ' ' + self.year
+            package_info = self.__format_python_packages_and_cpp_libraries()
 
-                if len(self.authors) > 0:
-                    result += ' ' + format_string_iterable(self.authors)
-
-            python_packages = sorted(self.__collect_python_packages(self.all_python_packages))
-            result += '\n' + str(python_packages)
-
-            cpp_libraries = sorted(self.__collect_cpp_libraries(self.all_python_packages))
-            result += '\n' + str(cpp_libraries)
+            if len(package_info) > 0:
+                result += '\n\n' + package_info
 
             return result
 
