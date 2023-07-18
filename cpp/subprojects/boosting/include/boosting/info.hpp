@@ -13,6 +13,6 @@ namespace boosting {
      *
      * @return An unique pointer to an object of type `ILibraryVersion`
      */
-    MLRLBOOSTING_API std::unique_ptr<ILibraryInfo> getBoostingLibraryInfo();
+    MLRLBOOSTING_API std::unique_ptr<ILibraryInfo> getLibraryInfo();
 
 }

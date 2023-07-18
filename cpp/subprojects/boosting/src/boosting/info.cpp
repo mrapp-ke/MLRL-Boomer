@@ -23,7 +23,7 @@ namespace boosting {
             }
     };
 
-    std::unique_ptr<ILibraryInfo> getBoostingLibraryInfo() {
+    std::unique_ptr<ILibraryInfo> getLibraryInfo() {
         return std::make_unique<BoostingLibraryInfo>();
     }
 

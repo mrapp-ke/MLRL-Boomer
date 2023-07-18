@@ -12,7 +12,7 @@ cdef extern from "common/info.hpp" nogil:
 
         string getTargetArchitecture() const
 
-    unique_ptr[ILibraryInfo] getCommonLibraryInfo()
+    unique_ptr[ILibraryInfo] getLibraryInfo()
 
 
 cdef class CppLibraryInfo:

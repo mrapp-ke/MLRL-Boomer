@@ -43,4 +43,4 @@ class MLRLCOMMON_API ILibraryInfo {
  *
  * @return An unique pointer to an object of type `ILibraryVersion`
  */
-MLRLCOMMON_API std::unique_ptr<ILibraryInfo> getCommonLibraryInfo();
+MLRLCOMMON_API std::unique_ptr<ILibraryInfo> getLibraryInfo();
