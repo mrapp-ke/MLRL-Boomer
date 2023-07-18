@@ -6,7 +6,7 @@ from libcpp.utility cimport move
 from mlrl.common.cython.info cimport CppLibraryInfo
 
 
-def get_seco_cpp_library_info() -> CppLibraryInfo:
+def get_cpp_library_info() -> CppLibraryInfo:
     """
     Returns information about the C++ library that is wrapped by this Cython package.
 

@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for retrieving information about this Python package.
 """
-from mlrl.common.cython.info import get_common_cpp_library_info
+from mlrl.common.cython.info import get_cpp_library_info as get_common_cpp_library_info
 from mlrl.common.info import PythonPackageInfo
 
 
