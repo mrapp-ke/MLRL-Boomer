@@ -49,7 +49,7 @@ target_architecture = common_project.get_variable('target_architecture')
 
 # Set configuration options
 configuration = configuration_data()
-configuration.set('mlrlseco_library_name', lib_name)
+configuration.set('mlrlseco_library_name', 'lib' + lib_name)
 configuration.set('mlrlseco_library_version', version)
 configuration.set('mlrlseco_target_architecture', target_architecture)
 configure_file(input : 'include/seco/config.hpp.in', output : 'config.hpp', configuration: configuration)
