@@ -10,14 +10,23 @@ namespace boosting {
     class BoostingLibraryInfo final : public ILibraryInfo {
         public:
 
+            /**
+             * @see `ILibraryInfo::getLibraryName`
+             */
             std::string getLibraryName() const override {
                 return MLRLBOOSTING_LIBRARY_NAME;
             }
 
+            /**
+             * @see `ILibraryInfo::getLibraryVersion`
+             */
             std::string getLibraryVersion() const override {
                 return MLRLBOOSTING_LIBRARY_VERSION;
             }
 
+            /**
+             * @see `ILibraryInfo::getTargetArchitecture`
+             */
             std::string getTargetArchitecture() const override {
                 return MLRLBOOSTING_TARGET_ARCHITECTURE;
             }
