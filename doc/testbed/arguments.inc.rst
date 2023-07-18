@@ -5,6 +5,10 @@ Command Line Arguments
 
 In addition to the mandatory arguments that must be provided to the command line API to specify the dataset to be used for training, a wide variety of optional arguments are available as well. In the following, we provide an overview of these arguments and discuss their respective purposes.
 
+* ``-h`` or ``--help`` prints a description of all available command line arguments.
+
+* ``-v`` or ``--version`` prints information about the program, including the program's version and the version of Python packages and shared libraries it uses.
+
 * ``--data-split`` (Default value = ``train-test``)
 
   * ``train-test`` The available data is split into a single training and test set. Given that ``dataset-name`` is provided as the value of the argument ``--dataset``, the training data must be stored in a file named ``dataset-name_training.arff``, whereas the test data must be stored in a file named ``dataset-name_test.arff``. If no such files are available, the program will look for a file with the name ``dataset-name.arff`` and split it into training and test data automatically. The following options may be specified via the bracket notation (see :ref:`parameters`):
