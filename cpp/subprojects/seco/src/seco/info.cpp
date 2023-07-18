@@ -23,7 +23,7 @@ namespace seco {
             }
     };
 
-    std::unique_ptr<ILibraryInfo> getSeCoLibraryInfo() {
+    std::unique_ptr<ILibraryInfo> getLibraryInfo() {
         return std::make_unique<SeCoLibraryInfo>();
     }
 

@@ -21,6 +21,6 @@ class CommonLibraryInfo final : public ILibraryInfo {
         }
 };
 
-std::unique_ptr<ILibraryInfo> getCommonLibraryInfo() {
+std::unique_ptr<ILibraryInfo> getLibraryInfo() {
     return std::make_unique<CommonLibraryInfo>();
 }

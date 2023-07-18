@@ -13,6 +13,6 @@ namespace seco {
      *
      * @return An unique pointer to an object of type `ILibraryVersion`
      */
-    MLRLSECO_API std::unique_ptr<ILibraryInfo> getSeCoLibraryInfo();
+    MLRLSECO_API std::unique_ptr<ILibraryInfo> getLibraryInfo();
 
 }

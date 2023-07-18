@@ -44,5 +44,5 @@ def get_cpp_library_info() -> CppLibraryInfo:
     :return: A `CppLibraryInfo` that provides information about the C++ library
     """
     cdef CppLibraryInfo library_info = CppLibraryInfo()
-    library_info.library_info_ptr = move(getCommonLibraryInfo())
+    library_info.library_info_ptr = move(getLibraryInfo())
     return library_info
