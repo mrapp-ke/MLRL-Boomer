@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for retrieving information about this Python package.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List
 
 import pkg_resources
@@ -23,8 +23,8 @@ class PythonPackageInfo:
         cpp_libraries:      A list that contains a `CppLibraryInfo` for each C++ library used by this package
     """
     package_name: str
-    python_packages: List['PythonPackageInfo'] = []
-    cpp_libraries: List[CppLibraryInfo] = []
+    python_packages: List['PythonPackageInfo'] = field(default_factory=list)
+    cpp_libraries: List[CppLibraryInfo] = field(default_factory=list)
 
     @property
     def package_version(self) -> str:
@@ -34,7 +34,7 @@ class PythonPackageInfo:
         return pkg_resources.get_distribution(self.package_name).version
 
     def __str__(self) -> str:
-        return self.get_package_name() + ' ' + self.get_package_version()
+        return self.package_name + ' ' + self.package_version
 
 
 def get_package_info() -> PythonPackageInfo:
