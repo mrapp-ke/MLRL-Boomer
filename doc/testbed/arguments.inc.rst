@@ -7,7 +7,7 @@ In addition to the mandatory arguments that must be provided to the command line
 
 * ``-h`` or ``--help`` prints a description of all available command line arguments.
 
-* ``-v`` or ``--version`` prints information about the program, including the program's version and the version of Python packages and shared libraries it uses.
+* ``-v`` or ``--version`` prints information about the program's version, as well as the Python packages, shared libraries and third-party dependencies it uses.
 
 * ``--data-split`` (Default value = ``train-test``)
 

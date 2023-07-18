@@ -36,6 +36,12 @@ cdef class CppLibraryInfo:
     def __str__(self) -> str:
         return self.library_name + ' ' + self.library_version + ' (' + self.target_architecture + ')'
 
+    def __eq__(self, other):
+        return str(self) == str(other)
+
+    def __hash__(self):
+        return hash(str(self))
+
 
 def get_cpp_library_info() -> CppLibraryInfo:
     """
