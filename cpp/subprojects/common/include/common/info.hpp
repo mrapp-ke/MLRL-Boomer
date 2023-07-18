@@ -5,6 +5,7 @@
 
 #include "common/macros.hpp"
 
+#include <memory>
 #include <string>
 
 /**
@@ -40,6 +41,6 @@ class MLRLCOMMON_API ILibraryInfo {
 /**
  * Returns an object of type `ILibraryVersion` that provides information about this C++ library.
  *
- * @return A reference to an object of type `ILibraryVersion`
+ * @return An unique pointer to an object of type `ILibraryVersion`
  */
-MLRLCOMMON_API const ILibraryInfo& getCommonLibraryInfo();
+MLRLCOMMON_API std::unique_ptr<ILibraryInfo> getCommonLibraryInfo();

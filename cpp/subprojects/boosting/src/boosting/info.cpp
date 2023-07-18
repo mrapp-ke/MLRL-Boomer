@@ -23,10 +23,8 @@ namespace boosting {
             }
     };
 
-    const BoostingLibraryInfo BOOSTING_LIBRARY_INFO = BoostingLibraryInfo();
-
-    const ILibraryInfo& getBoostingLibraryInfo() {
-        return BOOSTING_LIBRARY_INFO;
+    std::unique_ptr<ILibraryInfo> getBoostingLibraryInfo() {
+        return std::make_unique<BoostingLibraryInfo>();
     }
 
 }
