@@ -11,8 +11,8 @@ namespace seco {
     /**
      * Returns an object of type `ILibraryVersion` that provides information about this C++ library.
      *
-     * @return A reference to an object of type `ILibraryVersion`
+     * @return An unique pointer to an object of type `ILibraryVersion`
      */
-    MLRLSECO_API const ILibraryInfo& getSeCoLibraryInfo();
+    MLRLSECO_API std::unique_ptr<ILibraryInfo> getSeCoLibraryInfo();
 
 }

@@ -23,10 +23,8 @@ namespace seco {
             }
     };
 
-    const SeCoLibraryInfo SECO_LIBRARY_INFO = SeCoLibraryInfo();
-
-    const ILibraryInfo& getSeCoLibraryInfo() {
-        return SECO_LIBRARY_INFO;
+    std::unique_ptr<ILibraryInfo> getSeCoLibraryInfo() {
+        return std::make_unique<SeCoLibraryInfo>();
     }
 
 }

@@ -1,3 +1,4 @@
+from libcpp.memory cimport unique_ptr
 from libcpp.string cimport string
 
 
@@ -11,11 +12,11 @@ cdef extern from "common/info.hpp" nogil:
 
         string getTargetArchitecture() const
 
-    const ILibraryInfo& getCommonLibraryInfo()
+    unique_ptr[ILibraryInfo] getCommonLibraryInfo()
 
 
 cdef class CppLibraryInfo:
     
     # Attributes:
 
-    cdef const ILibraryInfo* library_info_ptr
+    cdef unique_ptr[ILibraryInfo] library_info_ptr

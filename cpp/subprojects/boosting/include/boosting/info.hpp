@@ -11,8 +11,8 @@ namespace boosting {
     /**
      * Returns an object of type `ILibraryVersion` that provides information about this C++ library.
      *
-     * @return A reference to an object of type `ILibraryVersion`
+     * @return An unique pointer to an object of type `ILibraryVersion`
      */
-    MLRLBOOSTING_API const ILibraryInfo& getBoostingLibraryInfo();
+    MLRLBOOSTING_API std::unique_ptr<ILibraryInfo> getBoostingLibraryInfo();
 
 }
