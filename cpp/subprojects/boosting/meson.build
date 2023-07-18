@@ -74,6 +74,7 @@ source_files = [
     'src/boosting/statistics/statistics_provider_example_wise_dense.cpp',
     'src/boosting/statistics/statistics_provider_label_wise_dense.cpp',
     'src/boosting/statistics/statistics_provider_label_wise_sparse.cpp',
+    'src/boosting/info.cpp',
     'src/boosting/learner.cpp',
     'src/boosting/learner_boomer.cpp'
 ]
@@ -93,8 +94,17 @@ include_directories = include_directories('include')
 install_root = common_project.get_variable('install_root')
 install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name() / 'cython/'
 
-# Library version
+# Obtain information about the library
+lib_name = 'mlrl' + meson.project_name()
 version = common_project.get_variable('version')
+target_architecture = common_project.get_variable('target_architecture')
+
+# Set configuration options
+configuration = configuration_data()
+configuration.set('mlrlboosting_library_name', 'lib' + lib_name)
+configuration.set('mlrlboosting_library_version', version)
+configuration.set('mlrlboosting_target_architecture', target_architecture)
+configure_file(input : 'include/boosting/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
 # Library declaration
 cpp_args = common_project.get_variable('cpp_args')
@@ -104,6 +114,6 @@ if host_machine.system() == 'windows'
     cpp_args += '-DMLRLBOOSTING_EXPORTS'
 endif
 
-boosting_lib = library('mlrl' + meson.project_name(), source_files, include_directories : include_directories,
-                       dependencies : dependencies, cpp_args : cpp_args, link_args : link_args, version : version,
-                       install : true, install_dir : install_dir)
+boosting_lib = library(lib_name, source_files, include_directories : include_directories, dependencies : dependencies,
+                       cpp_args : cpp_args, link_args : link_args, version : version, install : true,
+                       install_dir : install_dir)

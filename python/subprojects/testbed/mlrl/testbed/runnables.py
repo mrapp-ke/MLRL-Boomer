@@ -7,13 +7,15 @@ import logging as log
 import sys
 
 from abc import ABC, abstractmethod
-from argparse import ArgumentParser
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, List, Optional, Set
+from typing import Dict, Iterable, List, Optional, Set
 
 from mlrl.common.config import NONE, Parameter, configure_argument_parser, create_kwargs_from_parameters
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
-from mlrl.common.format import format_dict_keys, format_enum_values
+from mlrl.common.format import format_dict_keys, format_enum_values, format_string_iterable
+from mlrl.common.info import PythonPackageInfo
 from mlrl.common.options import BooleanOption, parse_param_and_options
 from mlrl.common.rule_learners import SparsePolicy
 
@@ -32,7 +34,8 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
     OPTION_RECALL, OPTION_SUBSET_ACCURACY, OPTION_SUBSET_ZERO_ONE_LOSS, OPTION_TRAINING_TIME, OPTION_ZERO_ONE_LOSS, \
     BinaryEvaluationWriter, EvaluationWriter, ProbabilityEvaluationWriter, ScoreEvaluationWriter
 from mlrl.testbed.experiments import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
-from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE
+from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
+from mlrl.testbed.info import get_package_info as get_testbed_package_info
 from mlrl.testbed.io import clear_directory
 from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorSetWriter, LabelVectorWriter
 from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
@@ -84,11 +87,118 @@ class Runnable(ABC):
     A base class for all programs that can be configured via command line arguments.
     """
 
-    def __init__(self, description: str):
+    @dataclass
+    class ProgramInfo:
         """
-        :param description: A description of the program
+        Provides information about a program.
+
+        Arguments:
+            name:               A string that speicfies the program name
+            version:            A string that specifies the program version
+            year:               A string that specifies the year when the program was released
+            authors:            A set that contains the name of each author of the program
+            python_packages:    A list that contains a `PythonPackageInfo` for each Python package that is used by the
+                                program
         """
-        self.parser = ArgumentParser(description=description)
+        name: str
+        version: str
+        year: Optional[str] = None,
+        authors: Set[str] = field(default_factory=set)
+        python_packages: List[PythonPackageInfo] = field(default_factory=list)
+
+        @property
+        def all_python_packages(self) -> List[PythonPackageInfo]:
+            """
+            A list that contains a `PythonPackageInfo` for each Python package that is used by the program, as well as
+            for the testbed package.
+            """
+            return [get_testbed_package_info()] + self.python_packages
+
+        def __format_copyright(self) -> str:
+            result = ''
+            year = self.year
+
+            if year is not None:
+                result += ' ' + year
+
+            authors = self.authors
+
+            if len(authors) > 0:
+                result += ' ' + format_string_iterable(authors)
+
+            return ('Copyright (c)' if len(result) > 0 else '') + result
+
+        def __collect_python_packages(self, python_packages: Iterable[PythonPackageInfo]) -> Set[str]:
+            unique_packages = set()
+
+            for python_package in python_packages:
+                unique_packages.add(str(python_package))
+                unique_packages.update(self.__collect_python_packages(python_package.python_packages))
+
+            return unique_packages
+
+        def __collect_cpp_libraries(self, python_packages: Iterable[PythonPackageInfo]) -> Set[str]:
+            unique_libraries = set()
+
+            for python_package in python_packages:
+                for cpp_library in python_package.cpp_libraries:
+                    unique_libraries.add(str(cpp_library))
+
+                unique_libraries.update(self.__collect_cpp_libraries(python_package.python_packages))
+
+            return unique_libraries
+
+        def __collect_dependencies(self, python_packages: Iterable[PythonPackageInfo]) -> Set[str]:
+            unique_dependencies = set()
+
+            for python_package in python_packages:
+                for dependency in python_package.dependencies:
+                    unique_dependencies.add(str(dependency))
+
+                unique_dependencies.update(self.__collect_dependencies(python_package.python_packages))
+
+            return unique_dependencies
+
+        def __format_package_info(self) -> str:
+            python_packages = self.all_python_packages
+            rows = []
+
+            for i, python_package in enumerate(sorted(self.__collect_python_packages(python_packages))):
+                rows.append(['' if i > 0 else 'Python packages:', python_package])
+
+            rows.append(['', ''])
+
+            for i, cpp_library in enumerate(sorted(self.__collect_cpp_libraries(python_packages))):
+                rows.append(['' if i > 0 else 'Shared libraries:', cpp_library])
+
+            rows.append(['', ''])
+
+            for i, dependency in enumerate(sorted(self.__collect_dependencies(python_packages))):
+                rows.append(['' if i > 0 else 'Dependencies:', dependency])
+
+            return format_table(rows) if len(rows) > 0 else ''
+
+        def __str__(self) -> str:
+            result = self.name + ' ' + self.version
+            copyright = self.__format_copyright()
+
+            if len(copyright) > 0:
+                result += '\n\n' + copyright
+
+            package_info = self.__format_package_info()
+
+            if len(package_info) > 0:
+                result += '\n\n' + package_info
+
+            return result
+
+    def __init__(self, description: str, program_info: Optional[ProgramInfo] = None):
+        """
+        :param description:     A description of the program
+        :param program_info:    Optional information about the program
+        """
+        self.parser = ArgumentParser(description=description, formatter_class=RawDescriptionHelpFormatter)
+        self.program_info = program_info
 
     def run(self):
         parser = self.parser
@@ -112,10 +222,28 @@ class Runnable(ABC):
 
         :param parser:  An `ArgumentParser` that is used for parsing command line arguments
         """
+        if self.program_info is not None:
+            parser.add_argument('-v',
+                                '--version',
+                                action='version',
+                                version=self._get_version(),
+                                help='Display information about the program\'s version.')
+
         parser.add_argument('--log-level',
                             type=LogLevel.parse,
                             default=LogLevel.INFO.value,
                             help='The log level to be used. Must be one of ' + format_enum_values(LogLevel) + '.')
+
+    def _get_version(self) -> str:
+        """
+        May be overridden by subclasses in order to provide information about the program's version.
+
+        :return: A string that provides information about the program's version
+        """
+        if self.program_info is not None:
+            return str(self.program_info)
+
+        raise RuntimeError('No information about the program version is available')
 
     @abstractmethod
     def _run(self, args):
@@ -252,11 +380,11 @@ class LearnerRunnable(Runnable, ABC):
 
     PARAM_PREDICTION_TYPE = '--prediction-type'
 
-    def __init__(self, description: str, learner_name: str):
+    def __init__(self, description: str, learner_name: str, program_info: Optional[Runnable.ProgramInfo] = None):
         """
         :param learner_name: The name of the learner
         """
-        super().__init__(description)
+        super().__init__(description=description, program_info=program_info)
         self.learner_name = learner_name
 
     def __create_prediction_type(self, args) -> PredictionType:
@@ -745,14 +873,19 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES = PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES
 
-    def __init__(self, description: str, learner_name: str, learner_type: type, config_type: type,
-                 parameters: Set[Parameter]):
+    def __init__(self,
+                 description: str,
+                 learner_name: str,
+                 learner_type: type,
+                 config_type: type,
+                 parameters: Set[Parameter],
+                 program_info: Optional[Runnable.ProgramInfo] = None):
         """
         :param learner_type:    The type of the rule learner
         :param config_type:     The type of the rule learner's configuration
         :param parameters:      A set that contains the parameters that may be supported by the rule learner
         """
-        super().__init__(description=description, learner_name=learner_name)
+        super().__init__(description=description, learner_name=learner_name, program_info=program_info)
         self.learner_type = learner_type
         self.config_type = config_type
         self.parameters = parameters

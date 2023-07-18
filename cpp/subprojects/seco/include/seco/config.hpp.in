@@ -1,0 +1,8 @@
+/*
+ * @author Michael Rapp (michael.rapp.ml@gmail.com)
+ */
+#pragma once
+
+#define MLRLSECO_LIBRARY_NAME "@mlrlseco_library_name@"
+#define MLRLSECO_LIBRARY_VERSION "@mlrlseco_library_version@"
+#define MLRLSECO_TARGET_ARCHITECTURE "@mlrlseco_target_architecture@"

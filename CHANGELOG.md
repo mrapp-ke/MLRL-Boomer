@@ -2,7 +2,11 @@
 
 ## Version 0.10.0 (to be released)
 
-No changes yet.
+A major update to the BOOMER algorithm that introduces the following changes.
+
+### Additions to the Command Line API
+
+* **Information about the program can now be printed** via the argument `-v` or `--version`.
 
 ## Version 0.9.0 (Jul. 2nd, 2023)
 
