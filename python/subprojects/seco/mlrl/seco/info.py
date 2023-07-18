@@ -3,10 +3,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for retrieving information about this Python package.
 """
-from mlrl.common.cython.info import get_common_cpp_library_info
+from mlrl.common.cython.info import get_cpp_library_info as get_common_cpp_library_info
 from mlrl.common.info import PythonPackageInfo, get_package_info as get_common_package_info
 
-from mlrl.seco.cython.info import get_seco_cpp_library_info
+from mlrl.seco.cython.info import get_cpp_library_info
 
 
 def get_package_info() -> PythonPackageInfo:
@@ -18,4 +18,4 @@ def get_package_info() -> PythonPackageInfo:
     return PythonPackageInfo(package_name='mlrl-seco',
                              python_packages=[get_common_package_info()],
                              cpp_libraries=[get_common_cpp_library_info(),
-                                            get_seco_cpp_library_info()])
+                                            get_cpp_library_info()])
