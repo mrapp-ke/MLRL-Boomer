@@ -12,7 +12,7 @@ from mlrl.testbed.runnables import RuleLearnerRunnable
 def create_program_info() -> RuleLearnerRunnable.ProgramInfo:
     package_info = get_package_info()
     return RuleLearnerRunnable.ProgramInfo(name='Multi-label SeCo',
-                                           version=package_info.get_package_version(),
+                                           version=package_info.package_version,
                                            year='2020 - 2023',
                                            authors=['Michael Rapp et al.'],
                                            python_packages=[package_info])
