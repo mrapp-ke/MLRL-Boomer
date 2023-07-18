@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for retrieving information about this Python package.
 """
 from dataclasses import dataclass, field
-from typing import List
+from typing import Set
 
 import pkg_resources
 
@@ -19,12 +19,12 @@ class PythonPackageInfo:
     Attributes:
         package_name:       A string that specifies the package name
         package_version:    A string that specifies the package version
-        python_packages:    A list that contains a `PythonPackageInfo` for each Python package used by this package
-        cpp_libraries:      A list that contains a `CppLibraryInfo` for each C++ library used by this package
+        python_packages:    A set that contains a `PythonPackageInfo` for each Python package used by this package
+        cpp_libraries:      A set that contains a `CppLibraryInfo` for each C++ library used by this package
     """
     package_name: str
-    python_packages: List['PythonPackageInfo'] = field(default_factory=list)
-    cpp_libraries: List[CppLibraryInfo] = field(default_factory=list)
+    python_packages: Set['PythonPackageInfo'] = field(default_factory=set)
+    cpp_libraries: Set[CppLibraryInfo] = field(default_factory=set)
 
     @property
     def package_version(self) -> str:
@@ -33,8 +33,27 @@ class PythonPackageInfo:
         """
         return pkg_resources.get_distribution(self.package_name).version
 
+    @property
+    def dependencies(self) -> Set['PythonPackageInfo']:
+        """
+        A set that contains a `PythonPackageInfo` for each dependency of this package.
+        """
+        dependencies = pkg_resources.get_distribution(self.package_name).requires()
+        package_infos = {PythonPackageInfo(package_name=dependency.project_name) for dependency in dependencies}
+
+        for python_package in self.python_packages:
+            package_infos.discard(python_package)
+
+        return package_infos
+
     def __str__(self) -> str:
         return self.package_name + ' ' + self.package_version
+
+    def __eq__(self, other):
+        return str(self) == str(other)
+
+    def __hash__(self):
+        return hash(str(self))
 
 
 def get_package_info() -> PythonPackageInfo:

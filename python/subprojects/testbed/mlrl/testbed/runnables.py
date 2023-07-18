@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, List, Optional, Set
+from typing import Dict, Iterable, List, Optional, Set
 
 from mlrl.common.config import NONE, Parameter, configure_argument_parser, create_kwargs_from_parameters
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
@@ -128,7 +128,7 @@ class Runnable(ABC):
 
             return ('Copyright (c)' if len(result) > 0 else '') + result
 
-        def __collect_python_packages(self, python_packages: List[PythonPackageInfo]) -> Set[str]:
+        def __collect_python_packages(self, python_packages: Iterable[PythonPackageInfo]) -> Set[str]:
             unique_packages = set()
 
             for python_package in python_packages:
@@ -137,7 +137,7 @@ class Runnable(ABC):
 
             return unique_packages
 
-        def __collect_cpp_libraries(self, python_packages: List[PythonPackageInfo]) -> Set[str]:
+        def __collect_cpp_libraries(self, python_packages: Iterable[PythonPackageInfo]) -> Set[str]:
             unique_libraries = set()
 
             for python_package in python_packages:
@@ -148,14 +148,33 @@ class Runnable(ABC):
 
             return unique_libraries
 
-        def __format_python_packages_and_cpp_libraries(self) -> str:
+        def __collect_dependencies(self, python_packages: Iterable[PythonPackageInfo]) -> Set[str]:
+            unique_dependencies = set()
+
+            for python_package in python_packages:
+                for dependency in python_package.dependencies:
+                    unique_dependencies.add(str(dependency))
+
+                unique_dependencies.update(self.__collect_dependencies(python_package.python_packages))
+
+            return unique_dependencies
+
+        def __format_package_info(self) -> str:
+            python_packages = self.all_python_packages
             rows = []
 
-            for i, python_package in enumerate(sorted(self.__collect_python_packages(self.all_python_packages))):
-                rows.append(['' if i > 0 else 'Python packages:', str(python_package)])
+            for i, python_package in enumerate(sorted(self.__collect_python_packages(python_packages))):
+                rows.append(['' if i > 0 else 'Python packages:', python_package])
 
-            for i, cpp_library in enumerate(sorted(self.__collect_cpp_libraries(self.all_python_packages))):
-                rows.append(['' if i > 0 else 'Shared libraries:', str(cpp_library)])
+            rows.append(['', ''])
+
+            for i, cpp_library in enumerate(sorted(self.__collect_cpp_libraries(python_packages))):
+                rows.append(['' if i > 0 else 'Shared libraries:', cpp_library])
+
+            rows.append(['', ''])
+
+            for i, dependency in enumerate(sorted(self.__collect_dependencies(python_packages))):
+                rows.append(['' if i > 0 else 'Dependencies:', dependency])
 
             return format_table(rows) if len(rows) > 0 else ''
 
@@ -166,7 +185,7 @@ class Runnable(ABC):
             if len(copyright) > 0:
                 result += '\n\n' + copyright
 
-            package_info = self.__format_python_packages_and_cpp_libraries()
+            package_info = self.__format_package_info()
 
             if len(package_info) > 0:
                 result += '\n\n' + package_info
