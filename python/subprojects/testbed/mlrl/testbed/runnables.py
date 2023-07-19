@@ -137,44 +137,58 @@ class Runnable(ABC):
 
             return unique_packages
 
-        def __collect_cpp_libraries(self, python_packages: Iterable[PythonPackageInfo]) -> Set[str]:
-            unique_libraries = set()
+        def __collect_cpp_libraries(self, python_packages: Iterable[PythonPackageInfo]) -> Dict[str, Set[str]]:
+            unique_libraries = {}
 
             for python_package in python_packages:
                 for cpp_library in python_package.cpp_libraries:
-                    unique_libraries.add(str(cpp_library))
+                    parent_packages = unique_libraries.setdefault(str(cpp_library), set())
+                    parent_packages.add(str(python_package))
 
-                unique_libraries.update(self.__collect_cpp_libraries(python_package.python_packages))
+                for key, value in self.__collect_cpp_libraries(python_package.python_packages).items():
+                    parent_packages = unique_libraries.setdefault(key, set())
+                    parent_packages.update(value)
 
             return unique_libraries
 
-        def __collect_dependencies(self, python_packages: Iterable[PythonPackageInfo]) -> Set[str]:
-            unique_dependencies = set()
+        def __collect_dependencies(self, python_packages: Iterable[PythonPackageInfo]) -> Dict[str, Set[str]]:
+            unique_dependencies = {}
 
             for python_package in python_packages:
                 for dependency in python_package.dependencies:
-                    unique_dependencies.add(str(dependency))
+                    parent_packages = unique_dependencies.setdefault(str(dependency), set())
+                    parent_packages.add(str(python_package))
 
-                unique_dependencies.update(self.__collect_dependencies(python_package.python_packages))
+                for key, value in self.__collect_dependencies(python_package.python_packages).items():
+                    parent_packages = unique_dependencies.setdefault(key, set())
+                    parent_packages.update(value)
 
             return unique_dependencies
+
+        @staticmethod
+        def __format_parent_packages(parent_packages: Set[str]) -> str:
+            return 'used by ' + format_string_iterable(parent_packages) if len(parent_packages) > 0 else ''
 
         def __format_package_info(self) -> str:
             python_packages = self.all_python_packages
             rows = []
 
             for i, python_package in enumerate(sorted(self.__collect_python_packages(python_packages))):
-                rows.append(['' if i > 0 else 'Python packages:', python_package])
+                rows.append(['' if i > 0 else 'Python packages:', python_package, ''])
 
-            rows.append(['', ''])
+            rows.append(['', '', ''])
+            cpp_libraries = self.__collect_cpp_libraries(python_packages)
 
-            for i, cpp_library in enumerate(sorted(self.__collect_cpp_libraries(python_packages))):
-                rows.append(['' if i > 0 else 'Shared libraries:', cpp_library])
+            for i, cpp_library in enumerate(sorted(cpp_libraries.keys())):
+                parent_packages = self.__format_parent_packages(cpp_libraries[cpp_library])
+                rows.append(['' if i > 0 else 'Shared libraries:', cpp_library, parent_packages])
 
-            rows.append(['', ''])
+            rows.append(['', '', ''])
+            dependencies = self.__collect_dependencies(python_packages)
 
-            for i, dependency in enumerate(sorted(self.__collect_dependencies(python_packages))):
-                rows.append(['' if i > 0 else 'Dependencies:', dependency])
+            for i, dependency in enumerate(sorted(dependencies.keys())):
+                parent_packages = self.__format_parent_packages(dependencies[dependency])
+                rows.append(['' if i > 0 else 'Dependencies:', dependency, parent_packages])
 
             return format_table(rows) if len(rows) > 0 else ''
 
