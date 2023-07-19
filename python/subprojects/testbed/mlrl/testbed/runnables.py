@@ -143,7 +143,7 @@ class Runnable(ABC):
             for python_package in python_packages:
                 for cpp_library in python_package.cpp_libraries:
                     parent_packages = unique_libraries.setdefault(str(cpp_library), set())
-                    parent_packages.add(str(python_package))
+                    parent_packages.add(python_package.package_name)
 
                 for key, value in self.__collect_cpp_libraries(python_package.python_packages).items():
                     parent_packages = unique_libraries.setdefault(key, set())
@@ -157,7 +157,7 @@ class Runnable(ABC):
             for python_package in python_packages:
                 for dependency in python_package.dependencies:
                     parent_packages = unique_dependencies.setdefault(str(dependency), set())
-                    parent_packages.add(str(python_package))
+                    parent_packages.add(python_package.package_name)
 
                 for key, value in self.__collect_dependencies(python_package.python_packages).items():
                     parent_packages = unique_dependencies.setdefault(key, set())
