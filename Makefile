@@ -28,7 +28,7 @@ PIP_INSTALL = python -m pip install --prefer-binary
 ISORT = isort --settings-path . --virtual-env ${VENV_DIR} --skip-gitignore
 ISORT_DRYRUN = ${ISORT} --check
 ISORT_INPLACE = ${ISORT} --overwrite-in-place
-YAPF = yapf -r -p --style=.style.yapf --verbose
+YAPF = yapf -r -p --style=.style.yapf --verbose --exclude '**/build/*.py'
 YAPF_DRYRUN = ${YAPF} --diff
 YAPF_INPLACE = ${YAPF} -i
 CLANG_FORMAT = clang-format --style=file --verbose
