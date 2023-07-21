@@ -10,17 +10,8 @@ good-names=x,
 
 [DESIGN]
 
-# Maximum number of arguments for function / method.
-max-args=10
-
-# Maximum number of attributes for a class (see R0902).
-max-attributes=10
-
-# Maximum number of locals for function / method body.
-max-locals=25
-
 # Minimum number of public methods for a class (see R0903).
-min-public-methods=1
+min-public-methods=0
 
 [FORMAT]
 
@@ -39,7 +30,11 @@ max-line-length=120
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
 disable=no-name-in-module,
-        import-error
+        import-error,
+        too-many-ancestors,
+        too-many-instance-attributes,
+        too-many-arguments,
+        too-many-locals
 
 [STRING]
 
