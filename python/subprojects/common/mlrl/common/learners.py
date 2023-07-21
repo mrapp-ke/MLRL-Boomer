@@ -19,6 +19,14 @@ class OrdinalAttributeLearner(ABC):
 
     ordinal_attribute_indices: Optional[List[int]] = None
 
+    def set_ordinal_attribute_indices(self, indices):
+        """
+        Sets the indices of all ordinal attributes.
+
+        :param indices: A `np.ndarray` or `Iterable` that stores the indices to be set
+        """
+        self.ordinal_attribute_indices = None if indices is None else list(indices)
+
 
 class NominalAttributeLearner(ABC):
     """
@@ -26,6 +34,14 @@ class NominalAttributeLearner(ABC):
     """
 
     nominal_attribute_indices: Optional[List[int]] = None
+
+    def set_nominal_attribute_indices(self, indices):
+        """
+        Sets the indices of all nominal attributes.
+        
+        :param indices: A `np.ndarray` or `Iterable` that stores the indices to be set
+        """
+        self.nominal_attribute_indices = None if indices is None else list(indices)
 
 
 class IncrementalLearner(ABC):
