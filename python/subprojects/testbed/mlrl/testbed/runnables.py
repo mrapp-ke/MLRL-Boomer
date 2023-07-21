@@ -102,7 +102,7 @@ class Runnable(ABC):
         """
         name: str
         version: str
-        year: Optional[str] = None,
+        year: Optional[str] = None
         authors: Set[str] = field(default_factory=set)
         python_packages: List[PythonPackageInfo] = field(default_factory=list)
 
