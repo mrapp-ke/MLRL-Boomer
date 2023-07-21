@@ -235,6 +235,13 @@ class DataSplitter(ABC):
 
 
 def check_if_files_exist(directory: str, file_names: List[str]) -> bool:
+    """
+    Returns whether all given files exist or not. If some of the files are missing, an `IOError` is raised.
+
+    :param directory:   The path to the directory where the files should be located
+    :param file_names:  A list that contains the names of all files to be checked
+    :return:            True, if all files exist, False, if all files are missing
+    """
     missing_files = []
 
     for file_name in file_names:
