@@ -18,6 +18,9 @@ from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 
 
 class ParameterInput(ABC):
+    """
+    An abstract base class for all classes that read parameters from an input.
+    """
 
     @abstractmethod
     def read_parameters(self, data_split: DataSplit) -> dict:
