@@ -54,7 +54,7 @@ class ModelPersistence:
         """
         file_name = get_file_name_per_fold(model_name, SUFFIX_MODEL, data_split.get_fold())
         file_path = path.join(self.model_dir, file_name)
-        log.debug("Loading model from file \"%s\"...", file_path)
+        log.debug('Loading model from file \"%s\"...', file_path)
 
         try:
             with open(file_path, mode='rb') as input_stream:
