@@ -34,7 +34,8 @@ disable=no-name-in-module,
         too-many-ancestors,
         too-many-instance-attributes,
         too-many-arguments,
-        too-many-locals
+        too-many-locals,
+        too-many-lines
 
 [STRING]
 
