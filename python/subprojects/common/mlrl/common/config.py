@@ -165,7 +165,7 @@ class NominalParameter(Parameter, ABC):
                 supported_values[parameter_value.name] = options
 
         if num_options == 0:
-            supported_values = {value for value in supported_values.keys()}
+            supported_values = set(supported_values.keys())
 
         return supported_values
 
@@ -193,7 +193,7 @@ class NominalParameter(Parameter, ABC):
             if isinstance(supported_values, dict):
                 description += format_dict_keys(supported_values)
                 suffix = ' For additional options refer to the documentation.'
-                supported_values = {value for value in supported_values.keys()}
+                supported_values = set(supported_values.keys())
             else:
                 description += format_string_set(supported_values)
                 suffix = ''
