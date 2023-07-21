@@ -162,6 +162,7 @@ class DataCharacteristicsWriter(OutputWriter):
         def __init__(self, output_dir: str, options: Options = Options()):
             super().__init__(output_dir=output_dir, file_name='data_characteristics', options=options)
 
+    # pylint: disable=unused-argument
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
