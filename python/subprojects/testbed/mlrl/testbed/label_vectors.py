@@ -77,7 +77,7 @@ class LabelVectorWriter(OutputWriter):
             dense_label_vector[sparse_label_vector] = 1
             return str(dense_label_vector)
 
-        def format(self, options: Options, **kwargs) -> str:
+        def format(self, options: Options) -> str:
             """
             See :func:`mlrl.testbed.output_writer.Formattable.format`
             """
@@ -90,7 +90,7 @@ class LabelVectorWriter(OutputWriter):
 
             return format_table(rows, header=header)
 
-        def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+        def tabularize(self, options: Options) -> Optional[List[Dict[str, str]]]:
             """
             See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
             """
