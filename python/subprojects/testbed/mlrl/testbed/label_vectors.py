@@ -72,12 +72,15 @@ class LabelVectorWriter(OutputWriter):
         def __format_label_vector(self, sparse_label_vector: np.ndarray, sparse: bool) -> str:
             if sparse:
                 return str(sparse_label_vector)
-            
+
             dense_label_vector = np.zeros(shape=self.num_labels, dtype=Uint8)
             dense_label_vector[sparse_label_vector] = 1
             return str(dense_label_vector)
 
         def format(self, options: Options, **kwargs) -> str:
+            """
+            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            """
             sparse = options.get_bool(OPTION_SPARSE, False)
             header = [self.COLUMN_INDEX, self.COLUMN_LABEL_VECTOR, self.COLUMN_FREQUENCY]
             rows = []
@@ -88,6 +91,9 @@ class LabelVectorWriter(OutputWriter):
             return format_table(rows, header=header)
 
         def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+            """
+            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            """
             sparse = options.get_bool(OPTION_SPARSE, False)
             rows = []
 
