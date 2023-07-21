@@ -544,10 +544,9 @@ class GlobalPruningParameter(NominalParameter):
 
         if value == self.AGGREGATION_FUNCTION_MIN:
             return AggregationFunction.MIN
-        elif value == self.AGGREGATION_FUNCTION_MAX:
+        if value == self.AGGREGATION_FUNCTION_MAX:
             return AggregationFunction.MAX
-        elif value == self.AGGREGATION_FUNCTION_ARITHMETIC_MEAN:
-            return AggregationFunction.ARITHMETIC_MEAN
+        return AggregationFunction.ARITHMETIC_MEAN
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == NONE:
