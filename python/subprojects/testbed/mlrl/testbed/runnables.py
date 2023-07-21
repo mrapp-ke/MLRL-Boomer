@@ -446,13 +446,13 @@ class LearnerRunnable(Runnable, ABC):
                                            num_folds=num_folds,
                                            current_fold=current_fold - 1,
                                            random_state=args.random_state)
-        elif value == self.DATA_SPLIT_TRAIN_TEST:
+        if value == self.DATA_SPLIT_TRAIN_TEST:
             test_size = options.get_float(self.OPTION_TEST_SIZE, 0.33)
             assert_greater(self.OPTION_TEST_SIZE, test_size, 0)
             assert_less(self.OPTION_TEST_SIZE, test_size, 1)
             return TrainTestSplitter(data_set, test_size=test_size, random_state=args.random_state)
-        else:
-            return NoSplitter(data_set)
+        
+        return NoSplitter(data_set)
 
     @staticmethod
     def __create_pre_execution_hook(args, data_splitter: DataSplitter) -> Optional[Experiment.ExecutionHook]:
