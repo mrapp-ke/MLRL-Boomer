@@ -226,6 +226,9 @@ class Runnable(ABC):
         self.program_info = program_info
 
     def run(self):
+        """
+        Executes the runnable.
+        """
         parser = self.parser
         self._configure_arguments(parser)
         args = parser.parse_args()
