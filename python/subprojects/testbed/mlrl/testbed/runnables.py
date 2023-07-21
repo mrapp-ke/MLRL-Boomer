@@ -451,7 +451,7 @@ class LearnerRunnable(Runnable, ABC):
             assert_greater(self.OPTION_TEST_SIZE, test_size, 0)
             assert_less(self.OPTION_TEST_SIZE, test_size, 1)
             return TrainTestSplitter(data_set, test_size=test_size, random_state=args.random_state)
-        
+
         return NoSplitter(data_set)
 
     @staticmethod
