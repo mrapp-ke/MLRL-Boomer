@@ -482,4 +482,3 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
 
         :return: The implementation of the rule learner that has been created
         """
-        pass

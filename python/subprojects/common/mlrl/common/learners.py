@@ -55,7 +55,6 @@ class IncrementalLearner(ABC):
 
             :return: The number of remaining ensemble members
             """
-            pass
 
         @abstractmethod
         def apply_next(self, step_size: int):
@@ -67,7 +66,6 @@ class IncrementalLearner(ABC):
             :return:            A `numpy.ndarray` or `scipy.sparse` matrix of shape `(num_examples, num_labels)`, that
                                 stores the updated prediction for individual examples and labels
             """
-            pass
 
     def predict_incrementally(self, x, **kwargs) -> IncrementalPredictor:
         """
@@ -191,7 +189,6 @@ class Learner(BaseEstimator, ABC):
                     labels of the training examples according to the ground truth
         :return:    The model that has been trained
         """
-        pass
 
     def _predict_binary(self, x, **kwargs):
         """

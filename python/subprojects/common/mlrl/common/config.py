@@ -76,7 +76,6 @@ class Parameter(ABC):
         :param config:  The configuration to be modified
         :param value:   The value to be set
         """
-        pass
 
     @abstractmethod
     def add_to_argument_parser(self, parser: ArgumentParser, config_type: type):
@@ -84,7 +83,6 @@ class Parameter(ABC):
         Adds a command line argument that corresponds to this parameter to an `ArgumentParser` if it is supported by a
         configuration of a specific type.
         """
-        pass
 
     def __eq__(self, other):
         return self.name == other.name
@@ -152,7 +150,6 @@ class NominalParameter(Parameter, ABC):
         :param value:   The nominal value to be set
         :param options: Additional options that have eventually been specified
         """
-        pass
 
     def __get_supported_values(self, config_type: type):
         num_options = 0
@@ -234,7 +231,6 @@ class NumericalParameter(Parameter, ABC):
         :param config:  The configuration to be modified
         :param value:   The numerical value to be set
         """
-        pass
 
     def __is_supported(self, config_type: type):
         return issubclass(config_type, self.mixin)
