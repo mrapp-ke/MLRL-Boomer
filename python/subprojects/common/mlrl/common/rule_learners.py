@@ -42,38 +42,38 @@ class SparseFormat(Enum):
     CSR = 'csr'
 
 
-def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
+def create_sparse_policy(parameter_name: str, value: str) -> SparsePolicy:
     try:
-        return SparsePolicy(policy)
+        return SparsePolicy(value)
     except ValueError:
         raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                         + format_enum_values(SparsePolicy) + ', but is "' + str(policy) + '"')
+                         + format_enum_values(SparsePolicy) + ', but is "' + str(value) + '"')
 
 
-def is_sparse(m, sparse_format: SparseFormat, dtype, sparse_values: bool = True) -> bool:
+def is_sparse(matrix, sparse_format: SparseFormat, dtype, sparse_values: bool = True) -> bool:
     """
     Returns whether a given matrix is considered sparse or not. A matrix is considered sparse if it is given in a sparse
     format and is expected to occupy less memory than a dense matrix.
 
-    :param m:               A `np.ndarray` or `scipy.sparse.matrix` to be checked
+    :param matrix:          A `np.ndarray` or `scipy.sparse.matrix` to be checked
     :param sparse_format:   The `SparseFormat` to be used
     :param dtype:           The type of the values that should be stored in the matrix
     :param sparse_values:   True, if the values must explicitly be stored when using a sparse format, False otherwise
     :return:                True, if the given matrix is considered sparse, False otherwise
     """
-    if issparse(m):
-        num_pointers = m.shape[1 if sparse_format == SparseFormat.CSC else 0]
+    if issparse(matrix):
+        num_pointers = matrix.shape[1 if sparse_format == SparseFormat.CSC else 0]
         size_int = np.dtype(DTYPE_UINT32).itemsize
         size_data = np.dtype(dtype).itemsize
         size_sparse_data = size_data if sparse_values else 0
-        num_non_zero = m.nnz
+        num_non_zero = matrix.nnz
         size_sparse = (num_non_zero * size_sparse_data) + (num_non_zero * size_int) + (num_pointers * size_int)
-        size_dense = np.prod(m.shape) * size_data
+        size_dense = np.prod(matrix.shape) * size_data
         return size_sparse < size_dense
     return False
 
 
-def should_enforce_sparse(m,
+def should_enforce_sparse(matrix,
                           sparse_format: SparseFormat,
                           policy: SparsePolicy,
                           dtype,
@@ -92,7 +92,7 @@ def should_enforce_sparse(m,
 
     If the given policy is `SparsePolicy.FORCE_DENSE`, the matrix will always be converted into a dense matrix.
 
-    :param m:               A `np.ndarray` or `scipy.sparse.matrix` to be checked
+    :param matrix:          A `np.ndarray` or `scipy.sparse.matrix` to be checked
     :param sparse_format:   The `SparseFormat` to be used
     :param policy:          The `SparsePolicy` to be used
     :param dtype:           The type of the values that should be stored in the matrix
@@ -100,17 +100,17 @@ def should_enforce_sparse(m,
     :return:                True, if it is preferable to convert the matrix into a sparse matrix of the given format,
                             False otherwise
     """
-    if not issparse(m):
+    if not issparse(matrix):
         # Given matrix is dense
         return policy == SparsePolicy.FORCE_SPARSE
-    elif isspmatrix_lil(m) or isspmatrix_coo(m) or isspmatrix_dok(m) or isspmatrix_csr(m) or isspmatrix_csc(m):
+    if isspmatrix_lil(matrix) or isspmatrix_coo(matrix) or isspmatrix_dok(matrix) or isspmatrix_csr(
+            matrix) or isspmatrix_csc(matrix):
         # Given matrix is in a format that might be converted into the specified sparse format
         if policy == SparsePolicy.AUTO:
-            return is_sparse(m, sparse_format=sparse_format, dtype=dtype, sparse_values=sparse_values)
-        else:
-            return policy == SparsePolicy.FORCE_SPARSE
+            return is_sparse(matrix, sparse_format=sparse_format, dtype=dtype, sparse_values=sparse_values)
+        return policy == SparsePolicy.FORCE_SPARSE
 
-    raise ValueError('Matrix of type ' + type(m).__name__ + ' cannot be converted to format "' + str(sparse_format)
+    raise ValueError('Matrix of type ' + type(matrix).__name__ + ' cannot be converted to format "' + str(sparse_format)
                      + '"')
 
 
