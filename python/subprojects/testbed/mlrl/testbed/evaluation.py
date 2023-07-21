@@ -389,8 +389,8 @@ class BinaryEvaluationWriter(EvaluationWriter):
     def __init__(self, sinks: List[OutputWriter.Sink]):
         super().__init__(sinks)
         options = [sink.options for sink in sinks]
-        self.multi_Label_evaluation_functions = filter_formatters(MULTI_LABEL_EVALUATION_MEASURES, options)
-        self.single_Label_evaluation_functions = filter_formatters(SINGLE_LABEL_EVALUATION_MEASURES, options)
+        self.multi_label_evaluation_functions = filter_formatters(MULTI_LABEL_EVALUATION_MEASURES, options)
+        self.single_label_evaluation_functions = filter_formatters(SINGLE_LABEL_EVALUATION_MEASURES, options)
 
     def _populate_result(self, data_split: DataSplit, result: EvaluationWriter.EvaluationResult, predictions,
                          ground_truth):
@@ -398,11 +398,11 @@ class BinaryEvaluationWriter(EvaluationWriter):
         fold = data_split.get_fold()
 
         if is_multilabel(ground_truth):
-            evaluation_functions = self.multi_Label_evaluation_functions
+            evaluation_functions = self.multi_label_evaluation_functions
         else:
             predictions = np.ravel(enforce_dense(predictions, order='C', dtype=Uint8))
             ground_truth = np.ravel(enforce_dense(ground_truth, order='C', dtype=Uint8))
-            evaluation_functions = self.single_Label_evaluation_functions
+            evaluation_functions = self.single_label_evaluation_functions
 
         for evaluation_function in evaluation_functions:
             if isinstance(evaluation_function, EvaluationFunction):
