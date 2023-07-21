@@ -141,9 +141,9 @@ class Options:
 
             try:
                 value = int(value)
-            except ValueError:
+            except ValueError as error:
                 raise ValueError('Value for key "' + key + '" is expected to be an integer, but is "' + str(value)
-                                 + '"')
+                                 + '"') from error
 
             return value
 
@@ -162,8 +162,9 @@ class Options:
 
             try:
                 value = float(value)
-            except ValueError:
-                raise ValueError('Value for key "' + key + '" is expected to be a float, but is "' + str(value) + '"')
+            except ValueError as error:
+                raise ValueError('Value for key "' + key + '" is expected to be a float, but is "' + str(value)
+                                 + '"') from error
 
             return value
 
@@ -205,9 +206,9 @@ def parse_param_and_options(parameter_name: str, value: str,
             if len(suffix) > 0:
                 try:
                     return allowed_value, Options.create(suffix, allowed_options)
-                except ValueError as e:
+                except ValueError as error:
                     raise ValueError('Invalid options specified for parameter "' + parameter_name + '" with value "'
-                                     + allowed_value + '": ' + str(e))
+                                     + allowed_value + '": ' + str(error)) from error
 
             return allowed_value, Options()
 

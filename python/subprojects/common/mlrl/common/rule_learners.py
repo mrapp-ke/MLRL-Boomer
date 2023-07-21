@@ -60,9 +60,9 @@ def parse_sparse_policy(parameter_name: str, value: str) -> SparsePolicy:
     """
     try:
         return SparsePolicy(value)
-    except ValueError:
+    except ValueError as error:
         raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                         + format_enum_values(SparsePolicy) + ', but is "' + str(value) + '"')
+                         + format_enum_values(SparsePolicy) + ', but is "' + str(value) + '"') from error
 
 
 def is_sparse(matrix, sparse_format: SparseFormat, dtype, sparse_values: bool = True) -> bool:
