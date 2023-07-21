@@ -425,9 +425,10 @@ class LearnerRunnable(Runnable, ABC):
 
         try:
             return PredictionType(prediction_type)
-        except ValueError:
+        except ValueError as error:
             raise ValueError('Invalid value given for parameter "' + self.PARAM_PREDICTION_TYPE + '": Must be one of '
-                             + format_enum_values(PredictionType) + ', but is "' + str(prediction_type) + '"')
+                             + format_enum_values(PredictionType) + ', but is "' + str(prediction_type)
+                             + '"') from error
 
     def __create_data_splitter(self, args) -> DataSplitter:
         data_set = DataSet(data_dir=args.data_dir,
