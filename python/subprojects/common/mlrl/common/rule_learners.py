@@ -152,10 +152,9 @@ def create_binary_predictor(learner: RuleLearnerWrapper, model: RuleModel, label
         return learner.create_sparse_binary_predictor(feature_matrix, model, label_space_info,
                                                       marginal_probability_calibration_model,
                                                       joint_probability_calibration_model, num_labels)
-    else:
-        return learner.create_binary_predictor(feature_matrix, model, label_space_info,
-                                               marginal_probability_calibration_model,
-                                               joint_probability_calibration_model, num_labels)
+    return learner.create_binary_predictor(feature_matrix, model, label_space_info,
+                                           marginal_probability_calibration_model, joint_probability_calibration_model,
+                                           num_labels)
 
 
 def create_score_predictor(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
@@ -377,12 +376,11 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
 
         if num_ordinal_features == 0 and num_nominal_features == 0:
             return EqualFeatureInfo.create_numerical()
-        elif num_ordinal_features == num_features:
+        if num_ordinal_features == num_features:
             return EqualFeatureInfo.create_ordinal()
-        elif num_nominal_features == num_features:
+        if num_nominal_features == num_features:
             return EqualFeatureInfo.create_nominal()
-        else:
-            return MixedFeatureInfo(num_features, ordinal_attribute_indices, nominal_attribute_indices)
+        return MixedFeatureInfo(num_features, ordinal_attribute_indices, nominal_attribute_indices)
 
     def _predict_binary(self, x, **kwargs):
         learner = self._create_learner()
@@ -397,8 +395,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
                                            self.marginal_probability_calibration_model_,
                                            self.joint_probability_calibration_model_, num_labels, feature_matrix,
                                            sparse_predictions).predict(max_rules)
-        else:
-            return super()._predict_binary(x, **kwargs)
+
+        return super()._predict_binary(x, **kwargs)
 
     def _predict_binary_incrementally(self, x, **kwargs):
         """
@@ -422,10 +420,9 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             if predictor.can_predict_incrementally():
                 return RuleLearner.NativeIncrementalPredictor(feature_matrix,
                                                               predictor.create_incremental_predictor(max_rules))
-            else:
-                return RuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
-        else:
-            return super()._predict_binary_incrementally(x, **kwargs)
+            return RuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
+
+        return super()._predict_binary_incrementally(x, **kwargs)
 
     def _predict_scores(self, x, **kwargs):
         learner = self._create_learner()
@@ -437,8 +434,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
             return create_score_predictor(learner, self.model_, self.label_space_info_, num_labels,
                                           feature_matrix).predict(max_rules)
-        else:
-            return super()._predict_scores(x, **kwargs)
+
+        return super()._predict_scores(x, **kwargs)
 
     def _predict_scores_incrementally(self, x, **kwargs):
         """
@@ -458,10 +455,9 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             if predictor.can_predict_incrementally():
                 return RuleLearner.NativeIncrementalPredictor(feature_matrix,
                                                               predictor.create_incremental_predictor(max_rules))
-            else:
-                return RuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
-        else:
-            return super()._predict_scores_incrementally(x, **kwargs)
+            return RuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
+
+        return super()._predict_scores_incrementally(x, **kwargs)
 
     def _predict_proba(self, x, **kwargs):
         learner = self._create_learner()
@@ -476,8 +472,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
                                              self.marginal_probability_calibration_model_,
                                              self.joint_probability_calibration_model_, num_labels,
                                              feature_matrix).predict(max_rules))
-        else:
-            return super()._predict_proba(x, **kwargs)
+
+        return super()._predict_proba(x, **kwargs)
 
     def _predict_proba_incrementally(self, x, **kwargs):
         """
@@ -500,10 +496,9 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             if predictor.can_predict_incrementally():
                 return RuleLearner.NativeIncrementalProbabilityPredictor(
                     feature_matrix, predictor.create_incremental_predictor(max_rules))
-            else:
-                return RuleLearner.IncrementalProbabilityPredictor(feature_matrix, model, max_rules, predictor)
-        else:
-            return super().predict_proba_incrementally(x, **kwargs)
+            return RuleLearner.IncrementalProbabilityPredictor(feature_matrix, model, max_rules, predictor)
+
+        return super().predict_proba_incrementally(x, **kwargs)
 
     def __create_row_wise_feature_matrix(self, x) -> RowWiseFeatureMatrix:
         sparse_format = SparseFormat.CSR
@@ -524,9 +519,9 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
             x_indptr = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
             return CsrFeatureMatrix(x.shape[0], x.shape[1], x_data, x_col_indices, x_indptr)
-        else:
-            log.debug('A dense matrix is used to store the feature values of the query examples')
-            return CContiguousFeatureMatrix(x)
+
+        log.debug('A dense matrix is used to store the feature values of the query examples')
+        return CContiguousFeatureMatrix(x)
 
     @abstractmethod
     def _create_learner(self) -> RuleLearnerWrapper:

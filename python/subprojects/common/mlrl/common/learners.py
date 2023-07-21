@@ -97,8 +97,7 @@ class IncrementalLearner(ABC):
 
         if bool(kwargs.get(KWARG_PREDICT_SCORES, False)):
             return self._predict_scores_incrementally(x, **kwargs)
-        else:
-            return self._predict_binary_incrementally(x, **kwargs)
+        return self._predict_binary_incrementally(x, **kwargs)
 
     def predict_proba_incrementally(self, x, **kwargs) -> IncrementalPredictor:
         """
@@ -178,8 +177,7 @@ class Learner(BaseEstimator, ABC):
 
         if bool(kwargs.get(KWARG_PREDICT_SCORES, False)):
             return self._predict_scores(x, **kwargs)
-        else:
-            return self._predict_binary(x, **kwargs)
+        return self._predict_binary(x, **kwargs)
 
     def predict_proba(self, x, **kwargs):
         """

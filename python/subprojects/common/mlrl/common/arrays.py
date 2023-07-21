@@ -20,8 +20,7 @@ def enforce_dense(array, order: str, dtype) -> np.ndarray:
     """
     if issparse(array):
         return np.require(array.toarray(order=order), dtype=dtype)
-    else:
-        return np.require(array, dtype=dtype, requirements=[order])
+    return np.require(array, dtype=dtype, requirements=[order])
 
 
 def enforce_2d(array: np.ndarray) -> np.ndarray:
@@ -33,5 +32,4 @@ def enforce_2d(array: np.ndarray) -> np.ndarray:
     """
     if array.ndim == 1:
         return np.expand_dims(array, axis=1)
-    else:
-        return array
+    return array
