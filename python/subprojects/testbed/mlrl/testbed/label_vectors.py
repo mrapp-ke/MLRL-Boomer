@@ -148,6 +148,9 @@ class LabelVectorSetWriter(LabelVectorWriter):
             self.label_vectors = LabelVectorWriter.LabelVectors(num_labels=num_labels)
 
         def visit_label_vector(self, label_vector: np.ndarray, frequency: int):
+            """
+            See :func:`mlrl.common.cython.label_space_info.LabelVectorSetVisitor.visit_label_vector`
+            """
             self.label_vectors.unique_label_vectors.append((label_vector, frequency))
 
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
