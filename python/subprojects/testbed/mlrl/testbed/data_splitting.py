@@ -50,7 +50,6 @@ class DataSplit(ABC):
 
         :return: True, if the training data is separated from the test data, False otherwise
         """
-        pass
 
     @abstractmethod
     def get_num_folds(self) -> int:
@@ -59,7 +58,6 @@ class DataSplit(ABC):
 
         :return: The total number of cross validation folds or 1, if no cross validation is used
         """
-        pass
 
     @abstractmethod
     def get_fold(self) -> Optional[int]:
@@ -68,7 +66,6 @@ class DataSplit(ABC):
 
         :return: The cross validation fold, starting at 0, or None, if no cross validation is used
         """
-        pass
 
     @abstractmethod
     def is_last_fold(self) -> bool:
@@ -77,7 +74,6 @@ class DataSplit(ABC):
 
         :return: True, if this split corresponds to the last fold, False otherwise
         """
-        pass
 
     def is_cross_validation_used(self) -> bool:
         """
@@ -218,7 +214,6 @@ class DataSplitter(ABC):
             :param test_x:      The feature matrix of the test examples
             :param test_y:      The label matrix of the test examples
             """
-            pass
 
     def run(self, callback: Callback):
         """
@@ -237,7 +232,6 @@ class DataSplitter(ABC):
 
         :param callback: The callback that should be used for training and evaluating models
         """
-        pass
 
 
 def check_if_files_exist(directory: str, file_names: List[str]) -> bool:
