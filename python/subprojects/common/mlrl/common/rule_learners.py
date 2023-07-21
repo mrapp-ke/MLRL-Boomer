@@ -32,17 +32,32 @@ KWARG_MAX_RULES = 'max_rules'
 
 
 class SparsePolicy(Enum):
+    """
+    Specifies all valid textual representation of policies to be used for converting matrices into sparse or dense
+    formats.
+    """
     AUTO = 'auto'
     FORCE_SPARSE = 'sparse'
     FORCE_DENSE = 'dense'
 
 
 class SparseFormat(Enum):
+    """
+    Specifies all valid textual representations of sparse matrix formats.
+    """
     CSC = 'csc'
     CSR = 'csr'
 
 
 def parse_sparse_policy(parameter_name: str, value: str) -> SparsePolicy:
+    """
+    Parses and returns a parameter value that specifies a `SparsePolicy` to be used for converting matrixes into sparse
+    or dense formats. If the given value is invalid, a `ValueError` is raised.
+
+    :param parameter_name:  The name of the parameter
+    :param value:           The value to be parsed
+    :return:                A `SparsePolicy`
+    """
     try:
         return SparsePolicy(value)
     except ValueError:
@@ -118,6 +133,21 @@ def create_binary_predictor(learner: RuleLearnerWrapper, model: RuleModel, label
                             marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
                             joint_probability_calibration_model: JointProbabilityCalibrationModel, num_labels: int,
                             feature_matrix: RowWiseFeatureMatrix, sparse: bool):
+    """
+    Creates and returns a predictor for predicting binary labels.
+
+    :param learner:                                 The learner for which the predictor should be created
+    :param model:                                   The model to be used for prediction
+    :param label_space_info:                        Information about the label space that may be used for prediction
+    :param marginal_probability_calibration_model:  A model for the calibration of marginal probabilities
+    :param joint_probability_calibration_model:     A model for the calibration of joint probabilities
+    :param num_labels:                              The total number of labels to predict for
+    :param feature_matrix:                          A feature matrix that provides row-wise access to the features of
+                                                    the query examples
+    :param sparse:                                  True, if a sparse matrix should be used for storing predictions,
+                                                    False otherwise
+    :return:                                        The predictor that has been created
+    """
     if sparse:
         return learner.create_sparse_binary_predictor(feature_matrix, model, label_space_info,
                                                       marginal_probability_calibration_model,
@@ -130,6 +160,16 @@ def create_binary_predictor(learner: RuleLearnerWrapper, model: RuleModel, label
 
 def create_score_predictor(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
                            num_labels: int, feature_matrix: RowWiseFeatureMatrix):
+    """
+    Creates and returns a predictor for predicting regression scores.
+
+    :param learner:             The learner for which the predictor should be created
+    :param model:               The model to be used for prediction
+    :param label_space_info:    Information about the label space that may be used for prediction
+    :param num_labels:          The total number of labels to predict for
+    :param feature_matrix:      A feature matrix that provides row-wise access to the features of the query examples
+    :return:                    The predictor that has been created
+    """
     return learner.create_score_predictor(feature_matrix, model, label_space_info, num_labels)
 
 
@@ -137,6 +177,19 @@ def create_probability_predictor(learner: RuleLearnerWrapper, model: RuleModel, 
                                  marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
                                  joint_probability_calibration_model: JointProbabilityCalibrationModel, num_labels: int,
                                  feature_matrix: RowWiseFeatureMatrix):
+    """
+    Creates and returns a predictor for predicting probability estimates.
+
+    :param learner:                                 The learner for which the predictor should be created
+    :param model:                                   The model to be used for prediction
+    :param label_space_info:                        Information about the label space that may be used for prediction
+    :param marginal_probability_calibration_model:  A model for the calibration of marginal probabilities
+    :param joint_probability_calibration_model:     A model for the calibration of joint probabilities
+    :param num_labels:                              The total number of labels to predict for
+    :param feature_matrix:                          A feature matrix that provides row-wise access to the features of
+                                                    the query examples
+    :return:                                        The predictor that has been created
+    """
     return learner.create_probability_predictor(feature_matrix, model, label_space_info,
                                                 marginal_probability_calibration_model,
                                                 joint_probability_calibration_model, num_labels)
