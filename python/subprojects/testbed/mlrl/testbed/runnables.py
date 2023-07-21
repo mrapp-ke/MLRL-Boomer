@@ -55,6 +55,9 @@ LOG_FORMAT = '%(levelname)s %(message)s'
 
 
 class LogLevel(Enum):
+    """
+    Specifies all valid textual representations of log levels.
+    """
     DEBUG = 'debug'
     INFO = 'info'
     WARN = 'warn'
@@ -64,22 +67,29 @@ class LogLevel(Enum):
     FATAL = 'fatal'
     NOTSET = 'notset'
 
-    def parse(s):
-        s = s.lower()
-        if s == LogLevel.DEBUG.value:
+    def parse(text):
+        """
+        Parses a given text that represents a log level. If the given text does not represent a valid log level, a
+        `ValueError` is raised.
+
+        :param text:    The text to be parsed
+        :return:        A log level, depending on the given text
+        """
+        text = text.lower()
+        if text == LogLevel.DEBUG.value:
             return log.DEBUG
-        elif s == LogLevel.INFO.value:
+        if text == LogLevel.INFO.value:
             return log.INFO
-        elif s == LogLevel.WARN.value or s == LogLevel.WARNING.value:
+        if text == LogLevel.WARN.value or text == LogLevel.WARNING.value:
             return log.WARN
-        elif s == LogLevel.ERROR.value:
+        if text == LogLevel.ERROR.value:
             return log.ERROR
-        elif s == LogLevel.CRITICAL.value or s == LogLevel.FATAL.value:
+        if text == LogLevel.CRITICAL.value or text == LogLevel.FATAL.value:
             return log.CRITICAL
-        elif s == LogLevel.NOTSET.value:
+        if text == LogLevel.NOTSET.value:
             return log.NOTSET
         raise ValueError('Invalid log level given. Must be one of ' + format_enum_values(LogLevel) + ', but is "'
-                         + str(s) + '".')
+                         + str(text) + '".')
 
 
 class Runnable(ABC):
