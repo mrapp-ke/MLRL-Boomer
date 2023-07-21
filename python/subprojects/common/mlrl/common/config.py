@@ -84,15 +84,18 @@ class Parameter(ABC):
         configuration of a specific type.
         """
 
+    @property
+    def argument_name(self) -> str:
+        """
+        The name of a command line argument that corresponds to the parameter.
+        """
+        return '--' + self.name.replace('_', '-')
+
     def __eq__(self, other):
         return self.name == other.name
 
     def __hash__(self):
         return hash(self.name)
-
-    @property
-    def argument_name(self) -> str:
-        return '--' + self.name.replace('_', '-')
 
 
 class NominalParameter(Parameter, ABC):
