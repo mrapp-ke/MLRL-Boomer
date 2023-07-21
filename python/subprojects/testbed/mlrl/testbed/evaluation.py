@@ -289,6 +289,9 @@ class EvaluationWriter(OutputWriter, ABC):
             return result
 
         def format(self, options: Options, **kwargs) -> str:
+            """
+            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            """
             fold = kwargs.get(EvaluationWriter.KWARG_FOLD)
             percentage = options.get_bool(OPTION_PERCENTAGE, True)
             decimals = options.get_int(OPTION_DECIMALS, 2)
@@ -308,6 +311,9 @@ class EvaluationWriter(OutputWriter, ABC):
             return format_table(rows)
 
         def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+            """
+            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            """
             fold = kwargs.get(EvaluationWriter.KWARG_FOLD)
             percentage = options.get_bool(OPTION_PERCENTAGE, True)
             decimals = options.get_int(OPTION_DECIMALS, 0)
@@ -336,6 +342,9 @@ class EvaluationWriter(OutputWriter, ABC):
 
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
                          prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+            """
+            See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
+            """
             fold = data_split.get_fold() if data_split.is_cross_validation_used() else 0
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold}}
             super().write_output(meta_data, data_split, data_type, prediction_scope, output_data, **new_kwargs)
@@ -354,6 +363,9 @@ class EvaluationWriter(OutputWriter, ABC):
 
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
                          prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+            """
+            See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
+            """
             fold = data_split.get_fold() if data_split.is_cross_validation_used() else 0
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold}}
             super().write_output(meta_data, data_split, data_type, prediction_scope, output_data, **new_kwargs)
