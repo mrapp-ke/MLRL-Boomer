@@ -18,7 +18,7 @@ from scipy.sparse import coo_matrix, csc_matrix, dok_matrix, issparse, lil_matri
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 
-from mlrl.common.data_types import DTYPE_FLOAT32, DTYPE_UINT8
+from mlrl.common.data_types import Float32, Uint8
 
 from mlrl.testbed.io import write_xml_file
 
@@ -90,8 +90,8 @@ class MetaData:
 def load_data_set_and_meta_data(data_dir: str,
                                 arff_file_name: str,
                                 xml_file_name: str,
-                                feature_dtype=DTYPE_FLOAT32,
-                                label_dtype=DTYPE_UINT8) -> Tuple[lil_matrix, lil_matrix, MetaData]:
+                                feature_dtype=Float32,
+                                label_dtype=Uint8) -> Tuple[lil_matrix, lil_matrix, MetaData]:
     """
     Loads a multi-label data set from an ARFF file and the corresponding Mulan XML file.
 
@@ -131,8 +131,8 @@ def load_data_set_and_meta_data(data_dir: str,
 def load_data_set(data_dir: str,
                   arff_file_name: str,
                   meta_data: MetaData,
-                  feature_dtype=DTYPE_FLOAT32,
-                  label_dtype=DTYPE_UINT8) -> Tuple[lil_matrix, lil_matrix]:
+                  feature_dtype=Float32,
+                  label_dtype=Uint8) -> Tuple[lil_matrix, lil_matrix]:
     """
     Loads a multi-label data set from an ARFF file given its meta-data.
 

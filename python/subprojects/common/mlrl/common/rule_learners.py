@@ -24,7 +24,7 @@ from mlrl.common.cython.probability_calibration import JointProbabilityCalibrati
     MarginalProbabilityCalibrationModel
 from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.cython.validation import assert_greater_or_equal
-from mlrl.common.data_types import DTYPE_FLOAT32, DTYPE_UINT8, DTYPE_UINT32
+from mlrl.common.data_types import Float32, Uint8, Uint32
 from mlrl.common.format import format_enum_values
 from mlrl.common.learners import IncrementalLearner, Learner, NominalAttributeLearner, OrdinalAttributeLearner
 
@@ -78,7 +78,7 @@ def is_sparse(matrix, sparse_format: SparseFormat, dtype, sparse_values: bool = 
     """
     if issparse(matrix):
         num_pointers = matrix.shape[1 if sparse_format == SparseFormat.CSC else 0]
-        size_int = np.dtype(DTYPE_UINT32).itemsize
+        size_int = np.dtype(Uint32).itemsize
         size_data = np.dtype(dtype).itemsize
         size_sparse_data = size_data if sparse_values else 0
         num_non_zero = matrix.nnz
@@ -301,18 +301,17 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         x_enforce_sparse = should_enforce_sparse(x,
                                                  sparse_format=x_sparse_format,
                                                  policy=x_sparse_policy,
-                                                 dtype=DTYPE_FLOAT32)
-        x = self._validate_data(
-            (x if x_enforce_sparse else enforce_2d(enforce_dense(x, order='F', dtype=DTYPE_FLOAT32))),
-            accept_sparse=(x_sparse_format.value if x_enforce_sparse else False),
-            dtype=DTYPE_FLOAT32,
-            force_all_finite='allow-nan')
+                                                 dtype=Float32)
+        x = self._validate_data((x if x_enforce_sparse else enforce_2d(enforce_dense(x, order='F', dtype=Float32))),
+                                accept_sparse=(x_sparse_format.value if x_enforce_sparse else False),
+                                dtype=Float32,
+                                force_all_finite='allow-nan')
 
         if issparse(x):
             log.debug('A sparse matrix is used to store the feature values of the training examples')
-            x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
-            x_row_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
-            x_indptr = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
+            x_data = np.ascontiguousarray(x.data, dtype=Float32)
+            x_row_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
+            x_indptr = np.ascontiguousarray(x.indptr, dtype=Uint32)
             feature_matrix = CscFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_indptr)
         else:
             log.debug('A dense matrix is used to store the feature values of the training examples')
@@ -323,22 +322,22 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         prediction_sparse_policy = parse_sparse_policy('prediction_format', self.prediction_format)
         self.sparse_predictions_ = prediction_sparse_policy != SparsePolicy.FORCE_DENSE and (
             prediction_sparse_policy == SparsePolicy.FORCE_SPARSE
-            or is_sparse(y, sparse_format=y_sparse_format, dtype=DTYPE_UINT8, sparse_values=False))
+            or is_sparse(y, sparse_format=y_sparse_format, dtype=Uint8, sparse_values=False))
 
         y_sparse_policy = parse_sparse_policy('label_format', self.label_format)
         y_enforce_sparse = should_enforce_sparse(y,
                                                  sparse_format=y_sparse_format,
                                                  policy=y_sparse_policy,
-                                                 dtype=DTYPE_UINT8,
+                                                 dtype=Uint8,
                                                  sparse_values=False)
-        y = check_array((y if y_enforce_sparse else enforce_2d(enforce_dense(y, order='C', dtype=DTYPE_UINT8))),
+        y = check_array((y if y_enforce_sparse else enforce_2d(enforce_dense(y, order='C', dtype=Uint8))),
                         accept_sparse=(y_sparse_format.value if y_enforce_sparse else False),
-                        dtype=DTYPE_UINT8)
+                        dtype=Uint8)
 
         if issparse(y):
             log.debug('A sparse matrix is used to store the labels of the training examples')
-            y_col_indices = np.ascontiguousarray(y.indices, dtype=DTYPE_UINT32)
-            y_indptr = np.ascontiguousarray(y.indptr, dtype=DTYPE_UINT32)
+            y_col_indices = np.ascontiguousarray(y.indices, dtype=Uint32)
+            y_indptr = np.ascontiguousarray(y.indptr, dtype=Uint32)
             label_matrix = CsrLabelMatrix(y.shape[0], y.shape[1], y_col_indices, y_indptr)
         else:
             log.debug('A dense matrix is used to store the labels of the training examples')
@@ -497,21 +496,18 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
     def __create_row_wise_feature_matrix(self, x) -> RowWiseFeatureMatrix:
         sparse_format = SparseFormat.CSR
         sparse_policy = parse_sparse_policy('feature_format', self.feature_format)
-        enforce_sparse = should_enforce_sparse(x,
-                                               sparse_format=sparse_format,
-                                               policy=sparse_policy,
-                                               dtype=DTYPE_FLOAT32)
-        x = self._validate_data(x if enforce_sparse else enforce_2d(enforce_dense(x, order='C', dtype=DTYPE_FLOAT32)),
+        enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy, dtype=Float32)
+        x = self._validate_data(x if enforce_sparse else enforce_2d(enforce_dense(x, order='C', dtype=Float32)),
                                 reset=False,
                                 accept_sparse=(sparse_format.value if enforce_sparse else False),
-                                dtype=DTYPE_FLOAT32,
+                                dtype=Float32,
                                 force_all_finite='allow-nan')
 
         if issparse(x):
             log.debug('A sparse matrix is used to store the feature values of the query examples')
-            x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
-            x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
-            x_indptr = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
+            x_data = np.ascontiguousarray(x.data, dtype=Float32)
+            x_col_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
+            x_indptr = np.ascontiguousarray(x.indptr, dtype=Uint32)
             return CsrFeatureMatrix(x.shape[0], x.shape[1], x_data, x_col_indices, x_indptr)
 
         log.debug('A dense matrix is used to store the feature values of the query examples')

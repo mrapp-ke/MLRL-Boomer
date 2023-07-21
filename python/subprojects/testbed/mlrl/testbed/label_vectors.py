@@ -11,7 +11,7 @@ import numpy as np
 from scipy.sparse import lil_matrix
 
 from mlrl.common.cython.label_space_info import LabelVectorSet, LabelVectorSetVisitor
-from mlrl.common.data_types import DTYPE_UINT8
+from mlrl.common.data_types import Uint8
 from mlrl.common.options import Options
 from mlrl.common.rule_learners import RuleLearner
 
@@ -73,7 +73,7 @@ class LabelVectorWriter(OutputWriter):
             if sparse:
                 return str(sparse_label_vector)
             else:
-                dense_label_vector = np.zeros(shape=self.num_labels, dtype=DTYPE_UINT8)
+                dense_label_vector = np.zeros(shape=self.num_labels, dtype=Uint8)
                 dense_label_vector[sparse_label_vector] = 1
                 return str(dense_label_vector)
 
