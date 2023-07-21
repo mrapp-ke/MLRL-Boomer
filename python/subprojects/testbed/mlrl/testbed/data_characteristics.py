@@ -105,6 +105,9 @@ class DataCharacteristicsWriter(OutputWriter):
             self.label_characteristics = label_characteristics
 
         def format(self, options: Options, **kwargs) -> str:
+            """
+            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            """
             percentage = options.get_bool(OPTION_PERCENTAGE, True)
             decimals = options.get_int(OPTION_DECIMALS, 2)
             rows = []
@@ -124,6 +127,9 @@ class DataCharacteristicsWriter(OutputWriter):
             return format_table(rows)
 
         def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+            """
+            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            """
             percentage = options.get_bool(OPTION_PERCENTAGE, True)
             decimals = options.get_int(OPTION_DECIMALS, 0)
             columns = {}
