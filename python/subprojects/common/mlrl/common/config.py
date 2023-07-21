@@ -5,7 +5,7 @@ Provides utilities that ease the configuration of rule learning algorithms.
 """
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
-from typing import Dict, Optional, Set
+from typing import Optional, Set
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, EqualFrequencyFeatureBinningMixin, \
     EqualWidthFeatureBinningMixin, ExampleWiseStratifiedBiPartitionSamplingMixin, \
