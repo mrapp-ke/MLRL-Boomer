@@ -277,7 +277,6 @@ class Runnable(ABC):
 
         :param args: The command line arguments
         """
-        pass
 
 
 class LearnerRunnable(Runnable, ABC):
@@ -841,7 +840,6 @@ class LearnerRunnable(Runnable, ABC):
         :param args:    The command line arguments
         :return:        The learner that has been created
         """
-        pass
 
 
 class RuleLearnerRunnable(LearnerRunnable):
