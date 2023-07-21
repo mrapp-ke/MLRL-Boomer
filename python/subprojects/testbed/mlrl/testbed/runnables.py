@@ -205,15 +205,15 @@ class Runnable(ABC):
 
         def __str__(self) -> str:
             result = self.name + ' ' + self.version
-            copyright = self.__format_copyright()
+            formatted_copyright = self.__format_copyright()
 
-            if len(copyright) > 0:
-                result += '\n\n' + copyright
+            if len(formatted_copyright) > 0:
+                result += '\n\n' + formatted_copyright
 
-            package_info = self.__format_package_info()
+            formatted_package_info = self.__format_package_info()
 
-            if len(package_info) > 0:
-                result += '\n\n' + package_info
+            if len(formatted_package_info) > 0:
+                result += '\n\n' + formatted_package_info
 
             return result
 
