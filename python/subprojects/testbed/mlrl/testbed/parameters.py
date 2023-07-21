@@ -27,7 +27,6 @@ class ParameterInput(ABC):
         :param data_split:  Information about the split of the available data, the parameter setting corresponds to
         :return:            A dictionary that stores the parameters
         """
-        pass
 
 
 class ParameterCsvInput(ParameterInput):
