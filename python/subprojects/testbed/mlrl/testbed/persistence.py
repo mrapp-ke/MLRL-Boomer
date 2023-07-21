@@ -4,7 +4,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for saving/loading models to/from disk.
 """
 import logging as log
-import os.path as path
+
+from os import path
 
 import _pickle as pickle
 
