@@ -675,6 +675,7 @@ class LearnerRunnable(Runnable, ABC):
         """
         return None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
 
+    # pylint: disable=unused-argument
     def _create_evaluation(self, args, prediction_type: PredictionType,
                            output_writers: List[OutputWriter]) -> Optional[Evaluation]:
         """
