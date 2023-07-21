@@ -31,6 +31,7 @@ ISORT_INPLACE = ${ISORT} --overwrite-in-place
 YAPF = yapf -r -p --style=.style.yapf --verbose --exclude '**/build/*.py'
 YAPF_DRYRUN = ${YAPF} --diff
 YAPF_INPLACE = ${YAPF} -i
+PYLINT = pylint -j 0 --recursive=y --ignore=build
 CLANG_FORMAT = clang-format --style=file --verbose
 CLANG_FORMAT_DRYRUN = ${CLANG_FORMAT} -n --Werror
 CLANG_FORMAT_INPLACE = ${CLANG_FORMAT} -i
@@ -138,6 +139,7 @@ test_format_python: venv
 	${VENV_ACTIVATE} \
 	    && ${ISORT_DRYRUN} ${PYTHON_PACKAGE_DIR} \
 	    && ${YAPF_DRYRUN} ${PYTHON_PACKAGE_DIR} \
+		&& ${PYLINT} ${PYTHON_PACKAGE_DIR} \
 	    && ${VENV_DEACTIVATE}
 
 test_format_cpp: venv
