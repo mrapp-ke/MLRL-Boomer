@@ -68,7 +68,7 @@ class LogLevel(Enum):
     NOTSET = 'notset'
 
     @staticmethod
-    def parse(text):
+    def parse(text: str):
         """
         Parses a given text that represents a log level. If the given text does not represent a valid log level, a
         `ValueError` is raised.
