@@ -10,6 +10,11 @@ from mlrl.testbed.runnables import RuleLearnerRunnable
 
 
 def create_program_info() -> RuleLearnerRunnable.ProgramInfo:
+    """
+    Creates and returns information about the program.
+
+    :return: The information that has been created
+    """
     package_info = get_package_info()
     return RuleLearnerRunnable.ProgramInfo(name='Multi-label SeCo',
                                            version=package_info.package_version,
@@ -19,6 +24,9 @@ def create_program_info() -> RuleLearnerRunnable.ProgramInfo:
 
 
 def main():
+    """
+    The main function to be executed when the program starts.
+    """
     RuleLearnerRunnable(description='Allows to run experiments using the Separate-and-Conquer algorithm',
                         learner_name='seco',
                         program_info=create_program_info(),
