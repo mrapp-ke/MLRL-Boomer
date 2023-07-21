@@ -76,18 +76,18 @@ class LogLevel(Enum):
         :param text:    The text to be parsed
         :return:        A log level, depending on the given text
         """
-        text = text.lower()
-        if text == LogLevel.DEBUG.value:
+        lower_text = text.lower()
+        if lower_text == LogLevel.DEBUG.value:
             return log.DEBUG
-        if text == LogLevel.INFO.value:
+        if lower_text == LogLevel.INFO.value:
             return log.INFO
-        if text == LogLevel.WARN.value or text == LogLevel.WARNING.value:
+        if lower_text == LogLevel.WARN.value or lower_text == LogLevel.WARNING.value:
             return log.WARN
-        if text == LogLevel.ERROR.value:
+        if lower_text == LogLevel.ERROR.value:
             return log.ERROR
-        if text == LogLevel.CRITICAL.value or text == LogLevel.FATAL.value:
+        if lower_text == LogLevel.CRITICAL.value or lower_text == LogLevel.FATAL.value:
             return log.CRITICAL
-        if text == LogLevel.NOTSET.value:
+        if lower_text == LogLevel.NOTSET.value:
             return log.NOTSET
         raise ValueError('Invalid log level given. Must be one of ' + format_enum_values(LogLevel) + ', but is "'
                          + str(text) + '".')
