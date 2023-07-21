@@ -104,7 +104,7 @@ class DataCharacteristicsWriter(OutputWriter):
             self.feature_characteristics = feature_characteristics
             self.label_characteristics = label_characteristics
 
-        def format(self, options: Options, **kwargs) -> str:
+        def format(self, options: Options, **_) -> str:
             """
             See :func:`mlrl.testbed.output_writer.Formattable.format`
             """
@@ -126,7 +126,7 @@ class DataCharacteristicsWriter(OutputWriter):
 
             return format_table(rows)
 
-        def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
             """
             See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
             """
