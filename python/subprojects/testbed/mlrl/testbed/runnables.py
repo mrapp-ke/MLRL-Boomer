@@ -714,12 +714,11 @@ class LearnerRunnable(Runnable, ABC):
 
         if len(sinks) == 0:
             return None
-        elif prediction_type == PredictionType.SCORES:
+        if prediction_type == PredictionType.SCORES:
             return ScoreEvaluationWriter(sinks)
-        elif prediction_type == PredictionType.PROBABILITIES:
+        if prediction_type == PredictionType.PROBABILITIES:
             return ProbabilityEvaluationWriter(sinks)
-        else:
-            return BinaryEvaluationWriter(sinks)
+        return BinaryEvaluationWriter(sinks)
 
     def _create_parameter_input(self, args) -> Optional[ParameterInput]:
         """
@@ -1111,8 +1110,8 @@ class RuleLearnerRunnable(LearnerRunnable):
             return IncrementalEvaluation(
                 prediction_type, output_writers, min_size=min_size, max_size=max_size,
                 step_size=step_size) if len(output_writers) > 0 else None
-        else:
-            return super()._create_evaluation(args, prediction_type, output_writers)
+
+        return super()._create_evaluation(args, prediction_type, output_writers)
 
     def _create_label_vector_writer(self, args) -> Optional[OutputWriter]:
         sinks = []
