@@ -264,15 +264,15 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             self.num_total_rules = min(model.get_num_used_rules(),
                                        max_rules) if max_rules > 0 else model.get_num_used_rules()
             self.predictor = predictor
-            self.n = 0
+            self.num_considered_rules = 0
 
         def get_num_next(self) -> int:
-            return self.num_total_rules - self.n
+            return self.num_total_rules - self.num_considered_rules
 
         def apply_next(self, step_size: int):
             assert_greater_or_equal('step_size', step_size, 1)
-            self.n = min(self.num_total_rules, self.n + step_size)
-            return self.predictor.predict(self.n)
+            self.num_considered_rules = min(self.num_total_rules, self.num_considered_rules + step_size)
+            return self.predictor.predict(self.num_considered_rules)
 
     class IncrementalProbabilityPredictor(IncrementalPredictor):
         """
