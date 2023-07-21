@@ -247,11 +247,10 @@ def check_if_files_exist(directory: str, file_names: List[str]) -> bool:
 
     if num_missing_files == 0:
         return True
-    elif num_missing_files == len(file_names):
+    if num_missing_files == len(file_names):
         return False
-    else:
-        raise IOError('The following files do not exist: '
-                      + reduce(lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b + '"', missing_files, ''))
+    raise IOError('The following files do not exist: '
+                  + reduce(lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b + '"', missing_files, ''))
 
 
 class NoSplitter(DataSplitter):
