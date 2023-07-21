@@ -81,11 +81,11 @@ class LogLevel(Enum):
             return log.DEBUG
         if lower_text == LogLevel.INFO.value:
             return log.INFO
-        if lower_text == LogLevel.WARN.value or lower_text == LogLevel.WARNING.value:
+        if lower_text in (LogLevel.WARN.value, LogLevel.WARNING.value):
             return log.WARN
         if lower_text == LogLevel.ERROR.value:
             return log.ERROR
-        if lower_text == LogLevel.CRITICAL.value or lower_text == LogLevel.FATAL.value:
+        if lower_text in (LogLevel.CRITICAL.value, LogLevel.FATAL.value):
             return log.CRITICAL
         if lower_text == LogLevel.NOTSET.value:
             return log.NOTSET
