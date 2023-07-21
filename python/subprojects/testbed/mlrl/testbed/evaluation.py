@@ -447,6 +447,3 @@ class ProbabilityEvaluationWriter(ScoreEvaluationWriter):
     Evaluates the quality of probability estimates provided by a single- or multi-label classifier according to commonly
     used regression and ranking measures.
     """
-
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
