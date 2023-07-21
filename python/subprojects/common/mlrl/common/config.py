@@ -175,7 +175,7 @@ class NominalParameter(Parameter, ABC):
         if len(supported_values) > 0:
             value = str(value)
 
-            if type(supported_values) == dict:
+            if isinstance(supported_values, dict):
                 value, options = parse_param_and_options(self.name, value, supported_values)
             else:
                 value = parse_param(self.name, value, supported_values)
@@ -190,7 +190,7 @@ class NominalParameter(Parameter, ABC):
             description = self.description
             description += '. Must be one of '
 
-            if type(supported_values) == dict:
+            if isinstance(supported_values, dict):
                 description += format_dict_keys(supported_values)
                 suffix = ' For additional options refer to the documentation.'
                 supported_values = {value for value in supported_values.keys()}
