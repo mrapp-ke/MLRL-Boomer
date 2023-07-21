@@ -4,6 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 import os
 import shutil
 
+from dataclasses import dataclass
 from pathlib import Path
 
 from pkg_resources import parse_requirements
@@ -13,17 +14,28 @@ from setuptools.command.build_ext import build_ext
 VERSION = (Path(__file__).resolve().parent.parent.parent.parent / 'VERSION').read_text()
 
 
+@dataclass
 class PrecompiledExtension(Extension):
+    """
+    Represents a pre-compiled extension module.
 
-    def __init__(self, name, path):
-        super().__init__(name, [])
-        self.name = name
-        self.path = path
+    Attributes:
+        name:   The name of the extension module
+        path:   The path of the extension module
+    """
+    name: str
+    path: Path
 
 
 class PrecompiledExtensionBuilder(build_ext):
+    """
+    Copies pre-compiled extension modules into the build directory.
+    """
 
     def build_extension(self, ext):
+        """
+        See :func:`setuptools.command.build_ext.build_extension`
+        """
         if isinstance(ext, PrecompiledExtension):
             build_dir = Path(self.get_ext_fullpath(ext.name)).parent
             target_file = Path(os.path.join(build_dir, ext.path))
@@ -34,6 +46,11 @@ class PrecompiledExtensionBuilder(build_ext):
 
 
 def find_extensions(directory):
+    """
+    Finds and returns all pre-compiled extension modules.
+
+    :return: A list that contains all pre-comiled extension modules that have been found
+    """
     extensions = []
 
     for path, _, file_names in os.walk(directory):
@@ -48,6 +65,13 @@ def find_extensions(directory):
 
 
 def find_dependencies(requirements_file, dependency_names):
+    """
+    Finds and returns dependencies with given names.
+
+    :param requirements_file:   The path to the requirements.txt file where the dependency versions are specified
+    :param dependency_names:    A list that contains the names of the dependencies to be found
+    :return:                    A list that contains all dependencies that have been found
+    """
     requirements = {
         requirement.key: requirement
         for requirement in parse_requirements(requirements_file.read_text().split('\n'))
