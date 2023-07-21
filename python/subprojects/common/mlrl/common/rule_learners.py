@@ -42,7 +42,7 @@ class SparseFormat(Enum):
     CSR = 'csr'
 
 
-def create_sparse_policy(parameter_name: str, value: str) -> SparsePolicy:
+def parse_sparse_policy(parameter_name: str, value: str) -> SparsePolicy:
     try:
         return SparsePolicy(value)
     except ValueError:
@@ -251,7 +251,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
     def _fit(self, x, y, **kwargs):
         # Validate feature matrix and convert it to the preferred format...
         x_sparse_format = SparseFormat.CSC
-        x_sparse_policy = create_sparse_policy('feature_format', self.feature_format)
+        x_sparse_policy = parse_sparse_policy('feature_format', self.feature_format)
         x_enforce_sparse = should_enforce_sparse(x,
                                                  sparse_format=x_sparse_format,
                                                  policy=x_sparse_policy,
@@ -274,12 +274,12 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
 
         # Validate label matrix and convert it to the preferred format...
         y_sparse_format = SparseFormat.CSR
-        prediction_sparse_policy = create_sparse_policy('prediction_format', self.prediction_format)
+        prediction_sparse_policy = parse_sparse_policy('prediction_format', self.prediction_format)
         self.sparse_predictions_ = prediction_sparse_policy != SparsePolicy.FORCE_DENSE and (
             prediction_sparse_policy == SparsePolicy.FORCE_SPARSE
             or is_sparse(y, sparse_format=y_sparse_format, dtype=DTYPE_UINT8, sparse_values=False))
 
-        y_sparse_policy = create_sparse_policy('label_format', self.label_format)
+        y_sparse_policy = parse_sparse_policy('label_format', self.label_format)
         y_enforce_sparse = should_enforce_sparse(y,
                                                  sparse_format=y_sparse_format,
                                                  policy=y_sparse_policy,
@@ -454,7 +454,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
 
     def __create_row_wise_feature_matrix(self, x) -> RowWiseFeatureMatrix:
         sparse_format = SparseFormat.CSR
-        sparse_policy = create_sparse_policy('feature_format', self.feature_format)
+        sparse_policy = parse_sparse_policy('feature_format', self.feature_format)
         enforce_sparse = should_enforce_sparse(x,
                                                sparse_format=sparse_format,
                                                policy=sparse_policy,
