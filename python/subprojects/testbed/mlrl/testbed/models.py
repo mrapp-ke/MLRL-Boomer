@@ -224,7 +224,7 @@ class RuleModelWriter(ModelWriter):
             elif self.print_bodies:
                 text.write('\n')
 
-        def format(self, options: Options, **kwargs) -> str:
+        def format(self, options: Options, **_) -> str:
             """
             See :func:`mlrl.testbed.output_writer.Formattable.format`
             """
