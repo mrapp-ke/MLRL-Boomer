@@ -293,9 +293,15 @@ class LearnerRunnable(Runnable, ABC):
         """
 
         def __init__(self, output_dir: str):
+            """
+            :param output_dir: The path of the output directory from which the files should be deleted
+            """
             self.output_dir = output_dir
 
         def execute(self):
+            """
+            See :func:`mlrl.testbed.experiments.Experiment.ExecutionHook.execute`
+            """
             clear_directory(self.output_dir)
 
     PARAM_DATA_SPLIT = '--data-split'
