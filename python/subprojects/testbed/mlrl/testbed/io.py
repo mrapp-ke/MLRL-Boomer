@@ -66,7 +66,7 @@ def open_writable_txt_file(directory: str, file_name: str, fold: Optional[int] =
     """
     file = path.join(directory, get_file_name_per_fold(file_name, SUFFIX_TEXT, fold))
     write_mode = 'a' if append and path.isfile(file) else 'w'
-    return open(file, mode=write_mode)
+    return open(file, mode=write_mode, encoding='UTF-8')
 
 
 def open_readable_csv_file(directory: str, file_name: str, fold: Optional[int] = None):
@@ -80,7 +80,7 @@ def open_readable_csv_file(directory: str, file_name: str, fold: Optional[int] =
     :return:            The file that has been opened
     """
     file = path.join(directory, get_file_name_per_fold(file_name, SUFFIX_CSV, fold))
-    return open(file, mode='r', newline='')
+    return open(file, mode='r', newline='', encoding='UTF-8')
 
 
 def open_writable_csv_file(directory: str, file_name: str, fold: Optional[int] = None, append: bool = False):
@@ -96,7 +96,7 @@ def open_writable_csv_file(directory: str, file_name: str, fold: Optional[int] =
     """
     file = path.join(directory, get_file_name_per_fold(file_name, SUFFIX_CSV, fold))
     write_mode = 'a' if append and path.isfile(file) else 'w'
-    return open(file, mode=write_mode)
+    return open(file, mode=write_mode, encoding='UTF-8')
 
 
 def create_csv_dict_reader(csv_file) -> DictReader:
@@ -138,7 +138,7 @@ def write_xml_file(xml_file, root_element: XmlTree.Element, encoding='utf-8'):
     :param root_element:    The root element of the XML structure
     :param encoding:        The encoding to be used
     """
-    with open(xml_file, mode='w') as file:
+    with open(xml_file, mode='w', encoding='UTF-8') as file:
         xml_string = minidom.parseString(XmlTree.tostring(root_element)).toprettyxml(encoding=encoding)
         file.write(xml_string.decode(encoding))
 
