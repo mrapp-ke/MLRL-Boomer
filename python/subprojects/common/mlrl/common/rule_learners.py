@@ -238,9 +238,6 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         functionality.
         """
 
-        def __init__(self, feature_matrix: RowWiseFeatureMatrix, incremental_predictor):
-            super().__init__(feature_matrix, incremental_predictor)
-
         def apply_next(self, step_size: int):
             return create_sklearn_compatible_probabilities(super().apply_next(step_size))
 
@@ -277,9 +274,6 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         """
         Allows to obtain probability estimates from a `RuleLearner` incrementally.
         """
-
-        def __init__(self, feature_matrix: RowWiseFeatureMatrix, model: RuleModel, max_rules: int, predictor):
-            super().__init__(feature_matrix, model, max_rules, predictor)
 
         def apply_next(self, step_size: int):
             return create_sklearn_compatible_probabilities(super().apply_next(step_size))
