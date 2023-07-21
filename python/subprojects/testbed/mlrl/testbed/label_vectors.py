@@ -72,10 +72,10 @@ class LabelVectorWriter(OutputWriter):
         def __format_label_vector(self, sparse_label_vector: np.ndarray, sparse: bool) -> str:
             if sparse:
                 return str(sparse_label_vector)
-            else:
-                dense_label_vector = np.zeros(shape=self.num_labels, dtype=Uint8)
-                dense_label_vector[sparse_label_vector] = 1
-                return str(dense_label_vector)
+            
+            dense_label_vector = np.zeros(shape=self.num_labels, dtype=Uint8)
+            dense_label_vector[sparse_label_vector] = 1
+            return str(dense_label_vector)
 
         def format(self, options: Options, **kwargs) -> str:
             sparse = options.get_bool(OPTION_SPARSE, False)
