@@ -17,7 +17,7 @@ class BooleanOption(Enum):
     FALSE = 'false'
 
     @staticmethod
-    def parse(text) -> bool:
+    def parse(text: str) -> bool:
         """
         Parses a given text that represents a boolean value. If the given text does not represent a valid boolean value,
         a `ValueError` is raised.
