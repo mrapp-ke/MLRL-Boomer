@@ -61,10 +61,7 @@ def format_float(value: float, decimals: int = 2) -> str:
     :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
     :return:            The textual representation that has been created
     """
-    if decimals > 0:
-        return ('{:.' + str(decimals) + 'f}').format(round(value, decimals))
-    else:
-        return str(value)
+    return ('{:.' + str(decimals) + 'f}').format(round(value, decimals)) if decimals > 0 else str(value)
 
 
 def format_percentage(value: float, decimals: int = 2) -> str:
@@ -90,8 +87,7 @@ def format_table(rows, header=None, alignment=None) -> str:
     """
     if header is None:
         return tabulate(rows, colalign=alignment, tablefmt='plain')
-    else:
-        return tabulate(rows, headers=header, colalign=alignment, tablefmt='simple_outline')
+    return tabulate(rows, headers=header, colalign=alignment, tablefmt='simple_outline')
 
 
 class Formatter:
