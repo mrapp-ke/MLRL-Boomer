@@ -14,13 +14,13 @@ class BooleanOption(Enum):
     FALSE = 'false'
 
     @staticmethod
-    def parse(s) -> bool:
-        if s == BooleanOption.TRUE.value:
+    def parse(text) -> bool:
+        if text == BooleanOption.TRUE.value:
             return True
-        elif s == BooleanOption.FALSE.value:
+        if text == BooleanOption.FALSE.value:
             return False
         raise ValueError('Invalid boolean value given. Must be one of ' + format_enum_values(BooleanOption)
-                         + ', but is "' + str(s) + '".')
+                         + ', but is "' + str(text) + '".')
 
 
 class Options:
