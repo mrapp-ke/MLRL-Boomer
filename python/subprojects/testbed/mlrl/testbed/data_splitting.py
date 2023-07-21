@@ -5,11 +5,11 @@ Provides classes for training and evaluating multi-label classifiers using eithe
 and test sets.
 """
 import logging as log
-import os.path as path
 
 from abc import ABC, abstractmethod
 from enum import Enum
 from functools import reduce
+from os import path
 from timeit import default_timer as timer
 from typing import List, Optional
 
