@@ -232,10 +232,10 @@ class LabelBinningParameter(NominalParameter):
         if value == NONE:
             config.use_no_label_binning()
         elif value == BINNING_EQUAL_WIDTH:
-            c = config.use_equal_width_label_binning()
-            c.set_bin_ratio(options.get_float(OPTION_BIN_RATIO, c.get_bin_ratio()))
-            c.set_min_bins(options.get_int(OPTION_MIN_BINS, c.get_min_bins()))
-            c.set_max_bins(options.get_int(OPTION_MAX_BINS, c.get_max_bins()))
+            conf = config.use_equal_width_label_binning()
+            conf.set_bin_ratio(options.get_float(OPTION_BIN_RATIO, conf.get_bin_ratio()))
+            conf.set_min_bins(options.get_int(OPTION_MIN_BINS, conf.get_min_bins()))
+            conf.set_max_bins(options.get_int(OPTION_MAX_BINS, conf.get_max_bins()))
         elif value == AUTOMATIC:
             config.use_automatic_label_binning()
 
@@ -319,14 +319,14 @@ class HeadTypeParameter(NominalParameter):
         if value == self.HEAD_TYPE_SINGLE:
             config.use_single_label_heads()
         elif value == self.HEAD_TYPE_PARTIAL_FIXED:
-            c = config.use_fixed_partial_heads()
-            c.set_label_ratio(options.get_float(self.OPTION_LABEL_RATIO, c.get_label_ratio()))
-            c.set_min_labels(options.get_int(self.OPTION_MIN_LABELS, c.get_min_labels()))
-            c.set_max_labels(options.get_int(self.OPTION_MAX_LABELS, c.get_max_labels()))
+            conf = config.use_fixed_partial_heads()
+            conf.set_label_ratio(options.get_float(self.OPTION_LABEL_RATIO, conf.get_label_ratio()))
+            conf.set_min_labels(options.get_int(self.OPTION_MIN_LABELS, conf.get_min_labels()))
+            conf.set_max_labels(options.get_int(self.OPTION_MAX_LABELS, conf.get_max_labels()))
         elif value == self.HEAD_TYPE_PARTIAL_DYNAMIC:
-            c = config.use_dynamic_partial_heads()
-            c.set_threshold(options.get_float(self.OPTION_THRESHOLD, c.get_threshold()))
-            c.set_exponent(options.get_float(self.OPTION_EXPONENT, c.get_exponent()))
+            conf = config.use_dynamic_partial_heads()
+            conf.set_threshold(options.get_float(self.OPTION_THRESHOLD, conf.get_threshold()))
+            conf.set_exponent(options.get_float(self.OPTION_EXPONENT, conf.get_exponent()))
         elif value == self.HEAD_TYPE_COMPLETE:
             config.use_complete_heads()
         elif value == AUTOMATIC:
@@ -350,8 +350,8 @@ class MarginalProbabilityCalibrationParameter(NominalParameter):
         if value == NONE:
             config.use_no_marginal_probability_calibration()
         if value == PROBABILITY_CALIBRATION_ISOTONIC:
-            c = config.use_isotonic_marginal_probability_calibration()
-            c.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, c.is_holdout_set_used()))
+            conf = config.use_isotonic_marginal_probability_calibration()
+            conf.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, conf.is_holdout_set_used()))
 
 
 class JointProbabilityCalibrationParameter(NominalParameter):
@@ -371,8 +371,8 @@ class JointProbabilityCalibrationParameter(NominalParameter):
         if value == NONE:
             config.use_no_joint_probability_calibration()
         if value == PROBABILITY_CALIBRATION_ISOTONIC:
-            c = config.use_isotonic_joint_probability_calibration()
-            c.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, c.is_holdout_set_used()))
+            conf = config.use_isotonic_joint_probability_calibration()
+            conf.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, conf.is_holdout_set_used()))
 
 
 class BinaryPredictorParameter(NominalParameter):
@@ -405,19 +405,24 @@ class BinaryPredictorParameter(NominalParameter):
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == self.BINARY_PREDICTOR_LABEL_WISE:
-            c = config.use_label_wise_binary_predictor()
-            c.set_based_on_probabilities(options.get_bool(OPTION_BASED_ON_PROBABILITIES, c.is_based_on_probabilities()))
-            c.set_use_probability_calibration_model(
-                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL, c.is_probability_calibration_model_used()))
+            conf = config.use_label_wise_binary_predictor()
+            conf.set_based_on_probabilities(
+                options.get_bool(OPTION_BASED_ON_PROBABILITIES, conf.is_based_on_probabilities()))
+            conf.set_use_probability_calibration_model(
+                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL,
+                                 conf.is_probability_calibration_model_used()))
         elif value == self.BINARY_PREDICTOR_EXAMPLE_WISE:
-            c = config.use_example_wise_binary_predictor()
-            c.set_based_on_probabilities(options.get_bool(OPTION_BASED_ON_PROBABILITIES, c.is_based_on_probabilities()))
-            c.set_use_probability_calibration_model(
-                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL, c.is_probability_calibration_model_used()))
+            conf = config.use_example_wise_binary_predictor()
+            conf.set_based_on_probabilities(
+                options.get_bool(OPTION_BASED_ON_PROBABILITIES, conf.is_based_on_probabilities()))
+            conf.set_use_probability_calibration_model(
+                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL,
+                                 conf.is_probability_calibration_model_used()))
         elif value == self.BINARY_PREDICTOR_GFM:
-            c = config.use_gfm_binary_predictor()
-            c.set_use_probability_calibration_model(
-                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL, c.is_probability_calibration_model_used()))
+            conf = config.use_gfm_binary_predictor()
+            conf.set_use_probability_calibration_model(
+                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL,
+                                 conf.is_probability_calibration_model_used()))
         elif value == AUTOMATIC:
             config.use_automatic_binary_predictor()
 
@@ -447,13 +452,15 @@ class ProbabilityPredictorParameter(NominalParameter):
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == self.PROBABILITY_PREDICTOR_LABEL_WISE:
-            c = config.use_label_wise_probability_predictor()
-            c.set_use_probability_calibration_model(
-                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL, c.is_probability_calibration_model_used()))
+            conf = config.use_label_wise_probability_predictor()
+            conf.set_use_probability_calibration_model(
+                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL,
+                                 conf.is_probability_calibration_model_used()))
         elif value == self.PROBABILITY_PREDICTOR_MARGINALIZED:
-            c = config.use_marginalized_probability_predictor()
-            c.set_use_probability_calibration_model(
-                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL, c.is_probability_calibration_model_used()))
+            conf = config.use_marginalized_probability_predictor()
+            conf.set_use_probability_calibration_model(
+                options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL,
+                                 conf.is_probability_calibration_model_used()))
         elif value == AUTOMATIC:
             config.use_automatic_probability_predictor()
 
