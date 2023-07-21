@@ -13,7 +13,7 @@ import sklearn.metrics as metrics
 from sklearn.utils.multiclass import is_multilabel
 
 from mlrl.common.arrays import enforce_dense
-from mlrl.common.data_types import DTYPE_UINT8
+from mlrl.common.data_types import Uint8
 from mlrl.common.options import Options
 
 from mlrl.testbed.data import MetaData
@@ -407,8 +407,8 @@ class BinaryEvaluationWriter(EvaluationWriter):
         if is_multilabel(ground_truth):
             evaluation_functions = self.multi_Label_evaluation_functions
         else:
-            predictions = np.ravel(enforce_dense(predictions, order='C', dtype=DTYPE_UINT8))
-            ground_truth = np.ravel(enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8))
+            predictions = np.ravel(enforce_dense(predictions, order='C', dtype=Uint8))
+            ground_truth = np.ravel(enforce_dense(ground_truth, order='C', dtype=Uint8))
             evaluation_functions = self.single_Label_evaluation_functions
 
         for evaluation_function in evaluation_functions:
@@ -433,7 +433,7 @@ class ScoreEvaluationWriter(EvaluationWriter):
                          ground_truth):
         num_folds = data_split.get_num_folds()
         fold = data_split.get_fold()
-        ground_truth = enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8)
+        ground_truth = enforce_dense(ground_truth, order='C', dtype=Uint8)
 
         if is_multilabel(ground_truth):
             evaluation_functions = self.ranking_evaluation_functions + self.regression_evaluation_functions
