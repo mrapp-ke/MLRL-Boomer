@@ -8,8 +8,8 @@ from abc import ABC
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
-import sklearn.metrics as metrics
 
+from sklearn import metrics
 from sklearn.utils.multiclass import is_multilabel
 
 from mlrl.common.arrays import enforce_dense
@@ -267,14 +267,7 @@ class EvaluationWriter(OutputWriter, ABC):
             :param measure: The measure
             :return:        A tuple consisting of textual representations of the averaged score and standard deviation
             """
-            values = []
-
-            for i in range(len(self.results)):
-                results = self.results[i]
-
-                if len(results) > 0:
-                    values.append(results[measure])
-
+            values = [results[measure] for results in self.results if len(results) > 0]
             values = np.array(values)
             return measure.format(np.average(values), **kwargs), measure.format(np.std(values), **kwargs)
 
