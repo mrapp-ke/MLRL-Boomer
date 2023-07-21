@@ -47,19 +47,31 @@ class FeatureCharacteristics:
 
     @cached_property
     def num_nominal_features(self):
+        """
+        The total number of nominal features.
+        """
         return reduce(lambda num, attribute: num + (1 if attribute.attribute_type == AttributeType.NOMINAL else 0),
                       self._meta_data.attributes, 0)
 
     @property
     def num_numerical_features(self):
+        """
+        The total number of numerical features.
+        """
         return self.num_features - self.num_nominal_features
 
     @cached_property
     def feature_density(self):
+        """
+        The feature density.
+        """
         return density(self._x)
 
     @property
     def feature_sparsity(self):
+        """
+        The feature sparsity.
+        """
         return 1 - self.feature_density
 
 
