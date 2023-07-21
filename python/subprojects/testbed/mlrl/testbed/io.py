@@ -3,11 +3,10 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides functions for writing and reading files.
 """
-import os
-import os.path as path
 import xml.etree.ElementTree as XmlTree
 
 from csv import QUOTE_MINIMAL, DictReader, DictWriter
+from os import listdir, path, unlink
 from typing import Optional
 from xml.dom import minidom
 
@@ -150,8 +149,8 @@ def clear_directory(directory: str):
 
     :param directory: The directory to be cleared
     """
-    for file in os.listdir(directory):
+    for file in listdir(directory):
         file_path = path.join(directory, file)
 
         if path.isfile(file_path):
-            os.unlink(file_path)
+            unlink(file_path)
