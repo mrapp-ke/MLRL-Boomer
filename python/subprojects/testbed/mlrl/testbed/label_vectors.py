@@ -123,9 +123,6 @@ class LabelVectorWriter(OutputWriter):
         def __init__(self, output_dir: str, options: Options = Options()):
             super().__init__(output_dir=output_dir, file_name='label_vectors', options=options)
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
-
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
@@ -152,9 +149,6 @@ class LabelVectorSetWriter(LabelVectorWriter):
 
         def visit_label_vector(self, label_vector: np.ndarray, frequency: int):
             self.label_vectors.unique_label_vectors.append((label_vector, frequency))
-
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
 
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
