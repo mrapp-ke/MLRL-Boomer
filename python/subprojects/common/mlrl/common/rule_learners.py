@@ -300,6 +300,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         self.label_format = label_format
         self.prediction_format = prediction_format
 
+    # pylint: disable=attribute-defined-outside-init
     def _fit(self, x, y, **kwargs):
         # Validate feature matrix and convert it to the preferred format...
         x_sparse_format = SparseFormat.CSC
