@@ -72,6 +72,9 @@ class PredictionWriter(OutputWriter):
 
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
                          prediction_scope: Optional[PredictionScope], output_data, **_):
+            """
+            See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
+            """
             decimals = self.options.get_int(OPTION_DECIMALS, 0)
             ground_truth = output_data.ground_truth
             predictions = output_data.predictions
