@@ -131,7 +131,7 @@ class GlobalEvaluation(Evaluation):
 
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
                              learner, x, y):
-        log.info('Predicting for %s ' + data_type.value + ' examples...', x.shape[0])
+        log.info('Predicting for %s %s examples...', x.shape[0], data_type.value)
         start_time = timer()
         predictions = self._invoke_prediction_function(learner, learner.predict, learner.predict_proba, x)
         end_time = timer()
@@ -192,7 +192,7 @@ class IncrementalEvaluation(Evaluation):
             current_size = min(next_step_size, total_size)
 
             while incremental_predictor.has_next():
-                log.info('Predicting for %s ' + data_type.value + ' examples using a model of size %s...', x.shape[0],
+                log.info('Predicting for %s %s examples using a model of size %s...', x.shape[0], data_type.value,
                          current_size)
                 start_time = timer()
                 predictions = incremental_predictor.apply_next(next_step_size)

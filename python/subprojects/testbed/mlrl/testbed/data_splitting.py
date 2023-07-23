@@ -377,9 +377,8 @@ class CrossValidationSplitter(DataSplitter):
     def _split_data(self, callback: DataSplitter.Callback):
         num_folds = self.num_folds
         current_fold = self.current_fold
-        log.info(
-            'Performing ' + ('full' if current_fold < 0 else
-                             ('fold ' + str(current_fold + 1) + ' of')) + ' %s-fold cross validation...', num_folds)
+        log.info('Performing %s %s-fold cross validation...',
+                 'full' if current_fold < 0 else 'fold ' + str(current_fold + 1) + ' of', num_folds)
         data_set = self.data_set
         data_dir = data_set.data_dir
         data_set_name = data_set.data_set_name

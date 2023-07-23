@@ -208,7 +208,7 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     :param meta_data:       The meta-data of the data set that should be saved
     """
     arff_file = path.join(output_dir, arff_file_name)
-    log.debug('Saving data set to file \'' + str(arff_file) + '\'...')
+    log.debug('Saving data set to file \'%s\'...', str(arff_file))
     sparse = issparse(x) and issparse(y)
     x = dok_matrix(x)
     y = dok_matrix(y)
@@ -255,7 +255,7 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
                 'attributes': attributes,
                 'data': data
             }))
-    log.info('Successfully saved data set to file \'' + str(arff_file) + '\'.')
+    log.info('Successfully saved data set to file \'%s\'.', str(arff_file))
 
 
 def save_meta_data(output_dir: str, xml_file_name: str, meta_data: MetaData):
@@ -267,9 +267,9 @@ def save_meta_data(output_dir: str, xml_file_name: str, meta_data: MetaData):
     :param meta_data:       The meta-data of the data set
     """
     xml_file = path.join(output_dir, xml_file_name)
-    log.debug('Saving meta data to file \'' + str(xml_file) + '\'...')
+    log.debug('Saving meta data to file \'%s\'...', str(xml_file))
     __write_meta_data(xml_file, meta_data)
-    log.info('Successfully saved meta data to file \'' + str(xml_file) + '\'.')
+    log.info('Successfully saved meta data to file \'%s\'.', str(xml_file))
 
 
 def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
