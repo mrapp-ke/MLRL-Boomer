@@ -247,7 +247,7 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     for keys, value in list(y.items()):
         data[keys[0]][y_prefix + keys[1]] = value
 
-    with open(arff_file, 'w') as file:
+    with open(arff_file, 'w', encoding=ENCODING_UTF8) as file:
         file.write(
             arff.dumps({
                 u'description': u'traindata',
