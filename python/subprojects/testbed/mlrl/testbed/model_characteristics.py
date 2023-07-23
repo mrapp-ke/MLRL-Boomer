@@ -90,6 +90,9 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
 
         # pylint: disable=unused-argument
         def format(self, options: Options, **_):
+            """
+            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            """
             num_predictions = self.num_pos_predictions + self.num_neg_predictions
             num_conditions = self.num_leq + self.num_gr + self.num_eq + self.num_neq
             num_total_conditions = np.sum(num_conditions)
@@ -194,6 +197,9 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
 
         # pylint: disable=unused-argument
         def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
+            """
+            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            """
             rows = []
             default_rule_index = self.default_rule_index
             num_rules = len(self.num_pos_predictions)
