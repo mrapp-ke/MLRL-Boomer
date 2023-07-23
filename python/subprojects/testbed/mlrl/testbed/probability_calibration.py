@@ -146,6 +146,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         """
         pass
 
+    # pylint: disable=unused-argument
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
