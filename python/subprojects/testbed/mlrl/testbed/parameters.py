@@ -111,9 +111,6 @@ class ParameterWriter(OutputWriter):
         def __init__(self, output_dir: str):
             super().__init__(output_dir=output_dir, file_name='parameters')
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
-
     # pylint: disable=unused-argument
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
