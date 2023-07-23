@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for printing certain characteristics of binary predictions. The characteristics can be written to one
 or several outputs, e.g., to the console or to a file.
 """
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from mlrl.common.options import Options
 
