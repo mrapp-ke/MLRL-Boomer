@@ -139,7 +139,7 @@ test_format_python: venv
 	${VENV_ACTIVATE} \
 	    && ${ISORT_DRYRUN} ${PYTHON_PACKAGE_DIR} \
 	    && ${YAPF_DRYRUN} ${PYTHON_PACKAGE_DIR} \
-		&& ${PYLINT} ${PYTHON_PACKAGE_DIR} \
+	    && ${PYLINT} ${PYTHON_PACKAGE_DIR} \
 	    && ${VENV_DEACTIVATE}
 
 test_format_cpp: venv
