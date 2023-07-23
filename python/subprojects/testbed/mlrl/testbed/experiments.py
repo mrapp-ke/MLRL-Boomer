@@ -274,6 +274,9 @@ class Experiment(DataSplitter.Callback):
         self.persistence = persistence
 
     def run(self):
+        """
+        Runs the experiment.
+        """
         log.info('Starting experiment...')
 
         # Run pre-execution hook, if necessary...
@@ -283,6 +286,17 @@ class Experiment(DataSplitter.Callback):
         self.data_splitter.run(self)
 
     def train_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, train_x, train_y, test_x, test_y):
+        """
+        Trains a model on a training set and evaluates it on a test set.
+
+        :param meta_data:   The meta-data of the training data set
+        :param data_split:  Information about the split of the available data that should be used for training and
+                            evaluating the model
+        :param train_x:     The feature matrix of the training examples
+        :param train_y:     The label matrix of the training examples
+        :param test_x:      The feature matrix of the test examples
+        :param test_y:      The label matrix of the test examples
+        """
         base_learner = self.base_learner
         current_learner = clone(base_learner)
 
