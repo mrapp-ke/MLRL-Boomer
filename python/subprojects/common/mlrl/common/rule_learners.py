@@ -194,7 +194,7 @@ def create_probability_predictor(learner: RuleLearnerWrapper, model: RuleModel, 
                                                 joint_probability_calibration_model, num_labels)
 
 
-def create_sklearn_compatible_probabilities(probabilities):
+def create_sklearn_compatible_probabilities(probabilities: np.ndarray) -> np.ndarray:
     """
     Converts given probability estimates into a format that is compatible with scikit-learn.
 
