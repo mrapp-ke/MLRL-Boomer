@@ -841,7 +841,7 @@ class IntegrationTests(ABC, TestCase):
         return out
 
     def __replace_durations_with_placeholders(self, line: str) -> str:
-        regex_duration = '(\d+ (day(s)*|hour(s)*|minute(s)*|second(s)*|millisecond(s)*))'
+        regex_duration = '(\\d+ (day(s)*|hour(s)*|minute(s)*|second(s)*|millisecond(s)*))'
         return re.sub(regex_duration + '((, )' + regex_duration + ')*' + '(( and )' + regex_duration + ')?',
                       '<duration>', line)
 
