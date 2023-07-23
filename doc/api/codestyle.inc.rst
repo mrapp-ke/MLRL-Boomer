@@ -3,7 +3,7 @@
 Code Style
 ----------
 
-We aim to enforce a consistent code style across the entire project. For formatting the C++ code, we employ `clang-format <https://clang.llvm.org/docs/ClangFormat.html>`__. The desired C++ code style is defined in the file ``.clang-format`` in project's root directory. Accordingly, we use `YAPF <https://github.com/google/yapf>`__ to enforce the Python code style defined in the file ``.style.yapf``. In addition, to keep the ordering of imports in Python and Cython source files consistent, `isort <https://github.com/PyCQA/isort>`__ is applied using the configuration in the file ``.isort.cfg``. If you have modified the project's source code, you can check whether it adheres to our style guidelines via the following command:
+We aim to enforce a consistent code style across the entire project. For formatting the C++ code, we employ `clang-format <https://clang.llvm.org/docs/ClangFormat.html>`__. The desired C++ code style is defined in the file ``.clang-format`` in project's root directory. Accordingly, we use `YAPF <https://github.com/google/yapf>`__ to enforce the Python code style defined in the file ``.style.yapf``. In addition, `isort <https://github.com/PyCQA/isort>`__ is used to keep the ordering of imports in Python and Cython source files consistent according to the configuration file ``.isort.cfg`` and `pylint <https://pylint.org/>`__ is used to check for common issues in the Python code according to the configuration file ``.pylintrc``. If you have modified the project's source code, you can check whether it adheres to our coding standards via the following command:
 
 .. code-block:: text
 
