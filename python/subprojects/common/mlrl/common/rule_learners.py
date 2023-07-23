@@ -230,12 +230,21 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             self.incremental_predictor = incremental_predictor
 
         def has_next(self) -> bool:
+            """
+            See :func:`mlrl.common.learners.IncrementalLearner.IncrementalPredictor.has_next`
+            """
             return self.incremental_predictor.has_next()
 
         def get_num_next(self) -> int:
+            """
+            See :func:`mlrl.common.learners.IncrementalLearner.IncrementalPredictor.get_num_next`
+            """
             return self.incremental_predictor.get_num_next()
 
         def apply_next(self, step_size: int):
+            """
+            See :func:`mlrl.common.learners.IncrementalLearner.IncrementalPredictor.apply_next`
+            """
             return self.incremental_predictor.apply_next(step_size)
 
     class NativeIncrementalProbabilityPredictor(NativeIncrementalPredictor):
