@@ -28,20 +28,20 @@ OPTION_LABEL_CARDINALITY = 'label_cardinality'
 OPTION_DISTINCT_LABEL_VECTORS = 'distinct_label_vectors'
 
 
-def density(m) -> float:
+def density(matrix) -> float:
     """
     Calculates and returns the density of a given feature or label matrix.
 
-    :param m:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_rows, num_cols)`, that stores the feature values
-                of training examples or their labels
-    :return:    The fraction of non-zero elements in the given matrix among all elements
+    :param matrix:  A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_rows, num_cols)`, that stores the feature
+                    values of training examples or their labels
+    :return:        The fraction of non-zero elements in the given matrix among all elements
     """
-    num_elements = m.shape[0] * m.shape[1]
+    num_elements = matrix.shape[0] * matrix.shape[1]
 
-    if issparse(m):
-        num_non_zero = m.nnz
+    if issparse(matrix):
+        num_non_zero = matrix.nnz
     else:
-        num_non_zero = np.count_nonzero(m)
+        num_non_zero = np.count_nonzero(matrix)
 
     return num_non_zero / num_elements if num_elements > 0 else 0
 
