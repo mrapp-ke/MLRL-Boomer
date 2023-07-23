@@ -96,8 +96,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
                 columns = {}
                 end = True
 
-                for list_index in bins.keys():
-                    bin_list = bins[list_index]
+                for list_index, bin_list in bins.items():
                     column_probability = self.__format_probability_column(list_index)
                     column_threshold = self.__format_threshold_column(list_index)
 
