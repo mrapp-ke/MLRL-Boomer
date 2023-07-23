@@ -150,6 +150,7 @@ class Learner(BaseEstimator, ABC):
     A base class for all single- or multi-label classifiers or rankers.
     """
 
+    # pylint: disable=attribute-defined-outside-init
     def fit(self, x, y, **kwargs):
         """
         Fits a model to given training examples and their corresponding ground truth labels.
