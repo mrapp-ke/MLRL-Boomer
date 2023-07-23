@@ -288,9 +288,6 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                 self.num_pos_predictions.append(num_pos_predictions)
                 self.num_neg_predictions.append(num_neg_predictions)
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
-
     # pylint: disable=unused-argument
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
