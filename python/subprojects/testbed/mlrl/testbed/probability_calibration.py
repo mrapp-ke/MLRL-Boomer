@@ -152,7 +152,6 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         :param learner: The rule learner
         :return:        The calibration model
         """
-        pass
 
     # pylint: disable=unused-argument
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
