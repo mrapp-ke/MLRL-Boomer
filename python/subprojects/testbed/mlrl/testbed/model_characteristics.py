@@ -88,7 +88,7 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             self.num_pos_predictions = num_pos_predictions
             self.num_neg_predictions = num_neg_predictions
 
-        def format(self, _: Options, **kwargs):
+        def format(self, options: Options, **_):
             num_predictions = self.num_pos_predictions + self.num_neg_predictions
             num_conditions = self.num_leq + self.num_gr + self.num_eq + self.num_neq
             num_total_conditions = np.sum(num_conditions)
