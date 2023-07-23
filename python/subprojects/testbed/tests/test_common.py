@@ -638,8 +638,7 @@ class IntegrationTests(ABC, TestCase):
         """
         if fold is not None:
             return name + '_fold-' + str(fold) + '.' + suffix
-        else:
-            return name + '_overall.' + suffix
+        return name + '_overall.' + suffix
 
     def __assert_file_exists(self, directory: str, file_name: str, args: List[str]):
         """
