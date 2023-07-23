@@ -195,9 +195,15 @@ def create_probability_predictor(learner: RuleLearnerWrapper, model: RuleModel, 
 
 
 def create_sklearn_compatible_probabilities(probabilities):
-    # In the case of a single-label problem, scikit-learn expects probability estimates to be given for the negative and
-    # positive class...
+    """
+    Converts given probability estimates into a format that is compatible with scikit-learn.
+
+    :param probabilities: A `np.ndarray` that stores probability estimates
+    :return:              A `np.ndarray` that is compatible with scikit-learn
+    """
     if probabilities.shape[1] == 1:
+        # In the case of a single-label problem, scikit-learn expects probability estimates to be given for the negative
+        # and positive class...
         probabilities = np.hstack((1 - probabilities, probabilities))
 
     return probabilities
