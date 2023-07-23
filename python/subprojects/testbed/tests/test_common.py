@@ -13,6 +13,8 @@ from sys import platform
 from typing import List, Optional
 from unittest import SkipTest, TestCase
 
+from mlrl.testbed.io import ENCODING_UTF8
+
 OVERWRITE_EXPECTED_OUTPUT_FILES = False
 
 DIR_RES = 'python/subprojects/testbed/tests/res'
@@ -845,14 +847,14 @@ class IntegrationTests(ABC, TestCase):
                       '<duration>', line)
 
     def __overwrite_output_file(self, stdout, expected_output_file):
-        with open(expected_output_file, 'w') as file:
+        with open(expected_output_file, 'w', encoding=ENCODING_UTF8) as file:
             for line in stdout:
                 line = self.__replace_durations_with_placeholders(line)
                 line = line + '\n'
                 file.write(line)
 
     def __assert_output_files_are_equal(self, stdout, args, expected_output_file):
-        with open(expected_output_file, 'r') as file:
+        with open(expected_output_file, 'r', encoding=ENCODING_UTF8) as file:
             for i, expected_line in enumerate(file):
                 expected_line = expected_line.strip('\n')
                 line = stdout[i]
