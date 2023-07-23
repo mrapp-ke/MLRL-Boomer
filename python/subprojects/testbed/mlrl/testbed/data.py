@@ -433,7 +433,7 @@ def __create_meta_data(attributes: list, labels: List[Attribute]) -> MetaData:
     attribute_list = []
     labels_at_start = False
 
-    for i, attribute in enumerate(attributes):
+    for attribute in attributes:
         attribute_name = __parse_attribute_or_label_name(attribute[0])
 
         if attribute_name not in label_names:
