@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for evaluating the predictions or rankings provided by a multi-label learner according to different
 measures. The evaluation results can be written to one or several outputs, e.g., to the console or to a file.
 """
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
@@ -377,6 +377,19 @@ class EvaluationWriter(OutputWriter, ABC):
     def __init__(self, sinks: List[OutputWriter.Sink]):
         super().__init__(sinks)
         self.results: Dict[str, EvaluationWriter.EvaluationResult] = {}
+
+    @abstractmethod
+    def _populate_result(self, data_split: DataSplit, result: EvaluationResult, predictions, ground_truth):
+        """
+        Must be implemented by subclasses in order to obtain evaluation results and store them in a given
+        `EvaluationResult`.
+
+        :param data_split:      Information about the split of the available data that should be used for training and
+                                evaluating the model
+        :param result:          The `EvaluationResult` that should be used to store the results
+        :param predictions:     The predictions
+        :param ground_truth:    The ground truth
+        """
 
     # pylint: disable=unused-argument
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
