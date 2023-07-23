@@ -4,7 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 import os
 import shutil
 
-from dataclasses import dataclass
 from pathlib import Path
 
 from pkg_resources import parse_requirements
@@ -14,17 +13,19 @@ from setuptools.command.build_ext import build_ext
 VERSION = (Path(__file__).resolve().parent.parent.parent.parent / 'VERSION').read_text()
 
 
-@dataclass
 class PrecompiledExtension(Extension):
     """
     Represents a pre-compiled extension module.
-
-    Attributes:
-        name:   The name of the extension module
-        path:   The path of the extension module
     """
-    name: str
-    path: Path
+
+    def __init__(self, name: str, path: Path):
+        """
+        :param name:    The name of the extension module
+        :param path:    The path of the extension module
+        """
+        super().__init__(name, [])
+        self.name = name
+        self.path = path
 
 
 class PrecompiledExtensionBuilder(build_ext):
