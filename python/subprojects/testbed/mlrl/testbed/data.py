@@ -216,13 +216,13 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     y_prefix = 0
 
     attributes = meta_data.attributes
-    x_attributes = [('{}'.format(attributes[i].attribute_name if len(attributes) > i else 'X' + str(i)),
+    x_attributes = [(attributes[i].attribute_name if len(attributes) > i else 'X' + str(i),
                      'NUMERIC' if len(attributes) <= i or attributes[i].nominal_values is None
                      or attributes[i].attribute_type == AttributeType.NUMERICAL else attributes[i].nominal_values)
                     for i in range(x.shape[1])]
 
     labels = meta_data.labels
-    y_attributes = [('{}'.format(labels[i].attribute_name if len(labels) > i else 'y' + str(i)),
+    y_attributes = [(labels[i].attribute_name if len(labels) > i else 'y' + str(i),
                      'NUMERIC' if len(labels) <= i or labels[i].nominal_values is None
                      or labels[i].attribute_type == AttributeType.NUMERICAL else labels[i].nominal_values)
                     for i in range(y.shape[1])]
@@ -251,7 +251,7 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
         file.write(
             arff.dumps({
                 'description': 'traindata',
-                'relation': 'traindata: -C {}'.format(y.shape[1] * relation_sign),
+                'relation': 'traindata: -C ' + str(y.shape[1] * relation_sign),
                 'attributes': attributes,
                 'data': data
             }))
