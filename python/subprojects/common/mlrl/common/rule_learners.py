@@ -466,7 +466,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         if learner.can_predict_probabilities(feature_matrix, num_labels):
             log.debug('A dense matrix is used to store the predicted probability estimates')
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
-            return create_sklearn_compatible_probabilities(
+            return convert_into_sklearn_compatible_probabilities(
                 create_probability_predictor(learner, self.model_, self.label_space_info_,
                                              self.marginal_probability_calibration_model_,
                                              self.joint_probability_calibration_model_, num_labels,
