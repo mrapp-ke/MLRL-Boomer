@@ -123,13 +123,13 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         adjustments.
         """
 
-        def format(self, options: Options, **kwargs) -> str:
+        def format(self, options: Options, **_) -> str:
             """
             See :func:`mlrl.testbed.output_writer.Formattable.format`
             """
             return 'No calibration model used'
 
-        def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
             """
             See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
             """
