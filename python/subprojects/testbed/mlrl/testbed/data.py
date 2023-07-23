@@ -313,9 +313,9 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
         log.info('Original data set contained %s attributes, one-hot encoded data set contains %s attributes',
                  old_shape[1], new_shape[1])
         return x, encoder, updated_meta_data
-    else:
-        log.debug('No need to apply one-hot encoding, as the data set does not contain any nominal attributes.')
-        return x, None, meta_data
+    
+    log.debug('No need to apply one-hot encoding, as the data set does not contain any nominal attributes.')
+    return x, None, meta_data
 
 
 def __create_feature_and_label_matrix(matrix: csc_matrix, meta_data: MetaData,
