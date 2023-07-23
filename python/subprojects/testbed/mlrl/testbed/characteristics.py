@@ -142,6 +142,9 @@ class LabelCharacteristics(Formattable, Tabularizable):
 
     @cached_property
     def num_distinct_label_vectors(self):
+        """
+        The number of distinct label vectors in the label matrix.
+        """
         return distinct_label_vectors(self._y)
 
     def format(self, options: Options, **_) -> str:
@@ -184,6 +187,9 @@ class Characteristic(Formatter):
         self.getter_function = getter_function
 
     def format(self, value, **kwargs) -> str:
+        """
+        See :func:`mlrl.testbed.output_writer.Formattable.format`
+        """
         return super().format(self.getter_function(value), **kwargs)
 
 
