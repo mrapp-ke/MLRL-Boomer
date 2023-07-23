@@ -38,7 +38,7 @@ class PredictionWriter(OutputWriter):
             self.predictions = predictions
             self.ground_truth = ground_truth
 
-        def format(self, options: Options, **kwargs) -> str:
+        def format(self, options: Options, **_) -> str:
             decimals = options.get_int(OPTION_DECIMALS, 2)
             precision = decimals if decimals > 0 else None
             text = 'Ground truth:\n\n'
@@ -68,7 +68,7 @@ class PredictionWriter(OutputWriter):
             self.output_dir = output_dir
 
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
-                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+                         prediction_scope: Optional[PredictionScope], output_data, **_):
             decimals = self.options.get_int(OPTION_DECIMALS, 0)
             ground_truth = output_data.ground_truth
             predictions = output_data.predictions
