@@ -144,7 +144,7 @@ class LabelCharacteristics(Formattable, Tabularizable):
     def num_distinct_label_vectors(self):
         return distinct_label_vectors(self._y)
 
-    def format(self, options: Options, **kwargs) -> str:
+    def format(self, options: Options, **_) -> str:
         """
         See :func:`mlrl.testbed.output_writer.Formattable.format`
         """
@@ -157,7 +157,7 @@ class LabelCharacteristics(Formattable, Tabularizable):
 
         return format_table(rows)
 
-    def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+    def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
         """
         See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
         """
