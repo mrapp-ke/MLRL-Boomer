@@ -28,6 +28,9 @@ SUFFIX_ARFF = 'arff'
 # The suffix of an XML file
 SUFFIX_XML = 'xml'
 
+# UTF-8 encoding
+ENCODING_UTF8 = 'utf-8'
+
 
 def get_file_name(name: str, suffix: str) -> str:
     """
@@ -66,7 +69,7 @@ def open_writable_txt_file(directory: str, file_name: str, fold: Optional[int] =
     """
     file = path.join(directory, get_file_name_per_fold(file_name, SUFFIX_TEXT, fold))
     write_mode = 'a' if append and path.isfile(file) else 'w'
-    return open(file, mode=write_mode, encoding='UTF-8')
+    return open(file, mode=write_mode, encoding=ENCODING_UTF8)
 
 
 def open_readable_csv_file(directory: str, file_name: str, fold: Optional[int] = None):
@@ -80,7 +83,7 @@ def open_readable_csv_file(directory: str, file_name: str, fold: Optional[int] =
     :return:            The file that has been opened
     """
     file = path.join(directory, get_file_name_per_fold(file_name, SUFFIX_CSV, fold))
-    return open(file, mode='r', newline='', encoding='UTF-8')
+    return open(file, mode='r', newline='', encoding=ENCODING_UTF8)
 
 
 def open_writable_csv_file(directory: str, file_name: str, fold: Optional[int] = None, append: bool = False):
@@ -96,7 +99,7 @@ def open_writable_csv_file(directory: str, file_name: str, fold: Optional[int] =
     """
     file = path.join(directory, get_file_name_per_fold(file_name, SUFFIX_CSV, fold))
     write_mode = 'a' if append and path.isfile(file) else 'w'
-    return open(file, mode=write_mode, encoding='UTF-8')
+    return open(file, mode=write_mode, encoding=ENCODING_UTF8)
 
 
 def create_csv_dict_reader(csv_file) -> DictReader:
@@ -130,17 +133,16 @@ def create_csv_dict_writer(csv_file, header) -> DictWriter:
     return csv_writer
 
 
-def write_xml_file(xml_file, root_element: XmlTree.Element, encoding='utf-8'):
+def write_xml_file(xml_file, root_element: XmlTree.Element):
     """
     Writes an XML structure to a file.
 
     :param xml_file:        The XML file
     :param root_element:    The root element of the XML structure
-    :param encoding:        The encoding to be used
     """
-    with open(xml_file, mode='w', encoding='UTF-8') as file:
-        xml_string = minidom.parseString(XmlTree.tostring(root_element)).toprettyxml(encoding=encoding)
-        file.write(xml_string.decode(encoding))
+    with open(xml_file, mode='w', encoding=ENCODING_UTF8) as file:
+        xml_string = minidom.parseString(XmlTree.tostring(root_element)).toprettyxml(encoding=ENCODING_UTF8)
+        file.write(xml_string.decode(ENCODING_UTF8))
 
 
 def clear_directory(directory: str):
