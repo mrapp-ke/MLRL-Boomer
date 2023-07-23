@@ -39,6 +39,9 @@ class PredictionWriter(OutputWriter):
             self.ground_truth = ground_truth
 
         def format(self, options: Options, **_) -> str:
+            """
+            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            """
             decimals = options.get_int(OPTION_DECIMALS, 2)
             precision = decimals if decimals > 0 else None
             text = 'Ground truth:\n\n'
