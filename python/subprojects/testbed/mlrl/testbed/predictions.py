@@ -83,9 +83,6 @@ class PredictionWriter(OutputWriter):
             prediction_meta_data = MetaData(attributes, labels, labels_at_start=False)
             save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
-
     # pylint: disable=unused-argument
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
