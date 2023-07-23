@@ -114,18 +114,30 @@ class LabelCharacteristics(Formattable, Tabularizable):
 
     @cached_property
     def label_density(self):
+        """
+        The density of the label matrix.
+        """
         return density(self._y)
 
     @property
     def label_sparsity(self):
+        """
+        The sparsity of the label matrix.
+        """
         return 1 - self.label_density
 
     @cached_property
     def avg_label_imbalance_ratio(self):
+        """
+        The average label imbalance ratio of the label matrix.
+        """
         return label_imbalance_ratio(self._y)
 
     @cached_property
     def avg_label_cardinality(self):
+        """
+        The average label cardinality of the label matrix.
+        """
         return label_cardinality(self._y)
 
     @cached_property
@@ -133,6 +145,9 @@ class LabelCharacteristics(Formattable, Tabularizable):
         return distinct_label_vectors(self._y)
 
     def format(self, options: Options, **kwargs) -> str:
+        """
+        See :func:`mlrl.testbed.output_writer.Formattable.format`
+        """
         percentage = options.get_bool(OPTION_PERCENTAGE, True)
         decimals = options.get_int(OPTION_DECIMALS, 2)
         rows = []
@@ -143,6 +158,9 @@ class LabelCharacteristics(Formattable, Tabularizable):
         return format_table(rows)
 
     def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+        """
+        See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+        """
         percentage = options.get_bool(OPTION_PERCENTAGE, True)
         decimals = options.get_int(OPTION_DECIMALS, 0)
         columns = {}
