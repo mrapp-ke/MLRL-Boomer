@@ -4,10 +4,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides functions for handling multi-label data.
 """
 import logging as log
-import os.path as path
 import xml.etree.ElementTree as XmlTree
 
 from enum import Enum, auto
+from os import path
 from typing import List, Optional, Set, Tuple
 from xml.dom import minidom
 
