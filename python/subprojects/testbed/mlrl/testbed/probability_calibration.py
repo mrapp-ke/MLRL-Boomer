@@ -164,7 +164,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
             if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
                 return ProbabilityCalibrationModelWriter.IsotonicProbabilityCalibrationModelFormattable(
                     calibration_model=calibration_model, list_title=self.list_title)
-            elif isinstance(calibration_model, NoProbabilityCalibrationModel):
+            if isinstance(calibration_model, NoProbabilityCalibrationModel):
                 return ProbabilityCalibrationModelWriter.NoProbabilityCalibrationModelFormattable()
 
         log.error('The learner does not support to create a textual representation of the calibration model')
