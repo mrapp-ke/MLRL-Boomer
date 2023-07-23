@@ -938,10 +938,10 @@ class CommonIntegrationTests(IntegrationTests, ABC):
     def setUpClass(cls):
         if cls is CommonIntegrationTests:
             raise SkipTest(cls.__name__ + ' is an abstract base class')
-        elif not platform.startswith('linux'):
+        if not platform.startswith('linux'):
             raise SkipTest('Integration tests are only supported on Linux')
-        else:
-            super(CommonIntegrationTests, cls).setUpClass()
+
+        super(CommonIntegrationTests, cls).setUpClass()
 
     def test_meka_format(self):
         """
