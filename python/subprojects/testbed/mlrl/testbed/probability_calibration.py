@@ -50,10 +50,16 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
             return self.list_title + ' ' + str(list_index + 1) + ' probabilities'
 
         def visit_bin(self, list_index: int, threshold: float, probability: float):
+            """
+            See :func:`mlrl.common.cython.probability_calibration.IsotonicProbabilityCalibrationModelVisitor.visit_bin`
+            """
             bin_list = self.bins.setdefault(list_index, [])
             bin_list.append((threshold, probability))
 
         def format(self, options: Options, **kwargs) -> str:
+            """
+            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            """
             self.calibration_model.visit(self)
             decimals = options.get_int(OPTION_DECIMALS, 4)
             bins = self.bins
@@ -76,6 +82,9 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
             return result
 
         def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+            """
+            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            """
             self.calibration_model.visit(self)
             decimals = options.get_int(OPTION_DECIMALS, 0)
             bins = self.bins
