@@ -834,7 +834,7 @@ class IntegrationTests(ABC, TestCase):
         :param args:    A list that stores the command, as well as its arguments
         :return:        The output of the command
         """
-        out = subprocess.run(args, capture_output=True, text=True)
+        out = subprocess.run(args, capture_output=True, text=True, check=False)
         self.assertEqual(
             out.returncode, 0,
             'Command "' + self.__format_cmd(args) + '" terminated with non-zero exit code\n\n' + str(out.stderr))
