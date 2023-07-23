@@ -203,12 +203,11 @@ class DataSplitter(ABC):
         @abstractmethod
         def train_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, train_x, train_y, test_x, test_y):
             """
-            The function that is invoked to build a multi-label classifier or ranker on a training set and evaluate it
-            on a test set.
+            The function that is invoked to train a model on a training set and evaluate it on a test set.
 
             :param meta_data:   The meta-data of the training data set
-            :param data_split:  Information about the split of the available data that should be used for building and
-                                evaluating a classifier or ranker
+            :param data_split:  Information about the split of the available data that should be used for training and
+                                evaluating the model
             :param train_x:     The feature matrix of the training examples
             :param train_y:     The label matrix of the training examples
             :param test_x:      The feature matrix of the test examples
