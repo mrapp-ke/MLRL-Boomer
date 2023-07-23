@@ -123,12 +123,14 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         adjustments.
         """
 
+        # pylint: disable=unused-argument
         def format(self, options: Options, **_) -> str:
             """
             See :func:`mlrl.testbed.output_writer.Formattable.format`
             """
             return 'No calibration model used'
 
+        # pylint: disable=unused-argument
         def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
             """
             See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
