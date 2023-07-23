@@ -621,7 +621,7 @@ class IntegrationTests(ABC, TestCase):
         :param expected_output_dir: The path of the directory that contains the file with the expected output
         :param methodName:          The name of the test method to be executed
         """
-        super(IntegrationTests, self).__init__(methodName)
+        super().__init__(methodName)
         self.expected_output_dir = expected_output_dir
 
     @staticmethod
@@ -926,7 +926,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         :param expected_output_dir:     The path of the directory that contains the file with the expected output
         :param methodName:              The name of the test method to be executed
         """
-        super(CommonIntegrationTests, self).__init__(expected_output_dir, methodName)
+        super().__init__(expected_output_dir, methodName)
         self.cmd = cmd
         self.dataset_default = dataset_default
         self.dataset_numerical = dataset_numerical
@@ -941,7 +941,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         if not platform.startswith('linux'):
             raise SkipTest('Integration tests are only supported on Linux')
 
-        super(CommonIntegrationTests, cls).setUpClass()
+        super().setUpClass()
 
     def test_meka_format(self):
         """
