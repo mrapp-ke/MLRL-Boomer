@@ -8,6 +8,10 @@ A major update to the BOOMER algorithm that introduces the following changes.
 
 * **Information about the program can now be printed** via the argument `-v` or `--version`.
 
+### Quality-of-Life Improvements
+
+* The Python code is now checked for common issues by applying `pylint` via continuous integration.
+
 ## Version 0.9.0 (Jul. 2nd, 2023)
 
 A major update to the BOOMER algorithm that introduces the following changes.
