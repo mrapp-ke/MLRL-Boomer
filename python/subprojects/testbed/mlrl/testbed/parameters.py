@@ -65,6 +65,7 @@ class ParameterWriter(OutputWriter):
             """
             self.params = learner.get_params()
 
+        # pylint: disable=unused-argument
         def format(self, options: Options, **_):
             """
             See :func:`mlrl.testbed.output_writer.Formattable.format`
@@ -80,6 +81,7 @@ class ParameterWriter(OutputWriter):
 
             return format_table(rows)
 
+        # pylint: disable=unused-argument
         def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
             """
             See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
@@ -112,6 +114,7 @@ class ParameterWriter(OutputWriter):
     def __init__(self, sinks: List[OutputWriter.Sink]):
         super().__init__(sinks)
 
+    # pylint: disable=unused-argument
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
