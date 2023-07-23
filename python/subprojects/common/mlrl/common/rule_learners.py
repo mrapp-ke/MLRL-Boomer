@@ -194,7 +194,7 @@ def create_probability_predictor(learner: RuleLearnerWrapper, model: RuleModel, 
                                                 joint_probability_calibration_model, num_labels)
 
 
-def create_sklearn_compatible_probabilities(probabilities: np.ndarray) -> np.ndarray:
+def convert_into_sklearn_compatible_probabilities(probabilities: np.ndarray) -> np.ndarray:
     """
     Converts given probability estimates into a format that is compatible with scikit-learn.
 
@@ -245,7 +245,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         """
 
         def apply_next(self, step_size: int):
-            return create_sklearn_compatible_probabilities(super().apply_next(step_size))
+            return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
 
     class IncrementalPredictor(IncrementalLearner.IncrementalPredictor):
         """
@@ -282,7 +282,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         """
 
         def apply_next(self, step_size: int):
-            return create_sklearn_compatible_probabilities(super().apply_next(step_size))
+            return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
 
     def __init__(self, random_state: int, feature_format: str, label_format: str, prediction_format: str):
         """
