@@ -18,6 +18,9 @@ from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 
 
 class ParameterInput(ABC):
+    """
+    An abstract base class for all classes that read parameters from an input.
+    """
 
     @abstractmethod
     def read_parameters(self, data_split: DataSplit) -> dict:
@@ -27,7 +30,6 @@ class ParameterInput(ABC):
         :param data_split:  Information about the split of the available data, the parameter setting corresponds to
         :return:            A dictionary that stores the parameters
         """
-        pass
 
 
 class ParameterCsvInput(ParameterInput):
@@ -63,7 +65,11 @@ class ParameterWriter(OutputWriter):
             """
             self.params = learner.get_params()
 
-        def format(self, _: Options, **kwargs):
+        # pylint: disable=unused-argument
+        def format(self, options: Options, **_):
+            """
+            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            """
             params = self.params
             rows = []
 
@@ -75,7 +81,11 @@ class ParameterWriter(OutputWriter):
 
             return format_table(rows)
 
-        def tabularize(self, _: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+        # pylint: disable=unused-argument
+        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
+            """
+            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            """
             params = self.params
             columns = {}
 
@@ -101,9 +111,7 @@ class ParameterWriter(OutputWriter):
         def __init__(self, output_dir: str):
             super().__init__(output_dir=output_dir, file_name='parameters')
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
-
+    # pylint: disable=unused-argument
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],

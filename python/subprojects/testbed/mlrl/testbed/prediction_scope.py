@@ -28,7 +28,6 @@ class PredictionScope(ABC):
 
         :return: True, if the predictions have been obtained from a global model, False otherwise
         """
-        pass
 
     @abstractmethod
     def get_model_size(self) -> int:
@@ -37,7 +36,6 @@ class PredictionScope(ABC):
 
         :return: The size of the model or 0, if the predictions have been obtained from a global model
         """
-        pass
 
     @abstractmethod
     def get_file_name(self, name: str) -> str:
@@ -47,7 +45,6 @@ class PredictionScope(ABC):
         :param name:    The name of the file (without suffix)
         :return:        The file name
         """
-        pass
 
 
 class GlobalPrediction(PredictionScope):

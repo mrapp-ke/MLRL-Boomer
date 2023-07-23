@@ -4,16 +4,16 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for evaluating the predictions or rankings provided by a multi-label learner according to different
 measures. The evaluation results can be written to one or several outputs, e.g., to the console or to a file.
 """
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
-import sklearn.metrics as metrics
 
+from sklearn import metrics
 from sklearn.utils.multiclass import is_multilabel
 
 from mlrl.common.arrays import enforce_dense
-from mlrl.common.data_types import DTYPE_UINT8
+from mlrl.common.data_types import Uint8
 from mlrl.common.options import Options
 
 from mlrl.testbed.data import MetaData
@@ -267,14 +267,7 @@ class EvaluationWriter(OutputWriter, ABC):
             :param measure: The measure
             :return:        A tuple consisting of textual representations of the averaged score and standard deviation
             """
-            values = []
-
-            for i in range(len(self.results)):
-                results = self.results[i]
-
-                if len(results) > 0:
-                    values.append(results[measure])
-
+            values = [results[measure] for results in self.results if len(results) > 0]
             values = np.array(values)
             return measure.format(np.average(values), **kwargs), measure.format(np.std(values), **kwargs)
 
@@ -296,6 +289,9 @@ class EvaluationWriter(OutputWriter, ABC):
             return result
 
         def format(self, options: Options, **kwargs) -> str:
+            """
+            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            """
             fold = kwargs.get(EvaluationWriter.KWARG_FOLD)
             percentage = options.get_bool(OPTION_PERCENTAGE, True)
             decimals = options.get_int(OPTION_DECIMALS, 2)
@@ -315,6 +311,9 @@ class EvaluationWriter(OutputWriter, ABC):
             return format_table(rows)
 
         def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+            """
+            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            """
             fold = kwargs.get(EvaluationWriter.KWARG_FOLD)
             percentage = options.get_bool(OPTION_PERCENTAGE, True)
             decimals = options.get_int(OPTION_DECIMALS, 0)
@@ -343,6 +342,9 @@ class EvaluationWriter(OutputWriter, ABC):
 
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
                          prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+            """
+            See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
+            """
             fold = data_split.get_fold() if data_split.is_cross_validation_used() else 0
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold}}
             super().write_output(meta_data, data_split, data_type, prediction_scope, output_data, **new_kwargs)
@@ -361,6 +363,9 @@ class EvaluationWriter(OutputWriter, ABC):
 
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
                          prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+            """
+            See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
+            """
             fold = data_split.get_fold() if data_split.is_cross_validation_used() else 0
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold}}
             super().write_output(meta_data, data_split, data_type, prediction_scope, output_data, **new_kwargs)
@@ -373,6 +378,20 @@ class EvaluationWriter(OutputWriter, ABC):
         super().__init__(sinks)
         self.results: Dict[str, EvaluationWriter.EvaluationResult] = {}
 
+    @abstractmethod
+    def _populate_result(self, data_split: DataSplit, result: EvaluationResult, predictions, ground_truth):
+        """
+        Must be implemented by subclasses in order to obtain evaluation results and store them in a given
+        `EvaluationResult`.
+
+        :param data_split:      Information about the split of the available data that should be used for training and
+                                evaluating the model
+        :param result:          The `EvaluationResult` that should be used to store the results
+        :param predictions:     The predictions
+        :param ground_truth:    The ground truth
+        """
+
+    # pylint: disable=unused-argument
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
@@ -396,8 +415,8 @@ class BinaryEvaluationWriter(EvaluationWriter):
     def __init__(self, sinks: List[OutputWriter.Sink]):
         super().__init__(sinks)
         options = [sink.options for sink in sinks]
-        self.multi_Label_evaluation_functions = filter_formatters(MULTI_LABEL_EVALUATION_MEASURES, options)
-        self.single_Label_evaluation_functions = filter_formatters(SINGLE_LABEL_EVALUATION_MEASURES, options)
+        self.multi_label_evaluation_functions = filter_formatters(MULTI_LABEL_EVALUATION_MEASURES, options)
+        self.single_label_evaluation_functions = filter_formatters(SINGLE_LABEL_EVALUATION_MEASURES, options)
 
     def _populate_result(self, data_split: DataSplit, result: EvaluationWriter.EvaluationResult, predictions,
                          ground_truth):
@@ -405,11 +424,11 @@ class BinaryEvaluationWriter(EvaluationWriter):
         fold = data_split.get_fold()
 
         if is_multilabel(ground_truth):
-            evaluation_functions = self.multi_Label_evaluation_functions
+            evaluation_functions = self.multi_label_evaluation_functions
         else:
-            predictions = np.ravel(enforce_dense(predictions, order='C', dtype=DTYPE_UINT8))
-            ground_truth = np.ravel(enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8))
-            evaluation_functions = self.single_Label_evaluation_functions
+            predictions = np.ravel(enforce_dense(predictions, order='C', dtype=Uint8))
+            ground_truth = np.ravel(enforce_dense(ground_truth, order='C', dtype=Uint8))
+            evaluation_functions = self.single_label_evaluation_functions
 
         for evaluation_function in evaluation_functions:
             if isinstance(evaluation_function, EvaluationFunction):
@@ -433,7 +452,7 @@ class ScoreEvaluationWriter(EvaluationWriter):
                          ground_truth):
         num_folds = data_split.get_num_folds()
         fold = data_split.get_fold()
-        ground_truth = enforce_dense(ground_truth, order='C', dtype=DTYPE_UINT8)
+        ground_truth = enforce_dense(ground_truth, order='C', dtype=Uint8)
 
         if is_multilabel(ground_truth):
             evaluation_functions = self.ranking_evaluation_functions + self.regression_evaluation_functions
@@ -454,6 +473,3 @@ class ProbabilityEvaluationWriter(ScoreEvaluationWriter):
     Evaluates the quality of probability estimates provided by a single- or multi-label classifier according to commonly
     used regression and ranking measures.
     """
-
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)

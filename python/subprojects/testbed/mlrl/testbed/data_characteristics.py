@@ -47,19 +47,31 @@ class FeatureCharacteristics:
 
     @cached_property
     def num_nominal_features(self):
+        """
+        The total number of nominal features.
+        """
         return reduce(lambda num, attribute: num + (1 if attribute.attribute_type == AttributeType.NOMINAL else 0),
                       self._meta_data.attributes, 0)
 
     @property
     def num_numerical_features(self):
+        """
+        The total number of numerical features.
+        """
         return self.num_features - self.num_nominal_features
 
     @cached_property
     def feature_density(self):
+        """
+        The feature density.
+        """
         return density(self._x)
 
     @property
     def feature_sparsity(self):
+        """
+        The feature sparsity.
+        """
         return 1 - self.feature_density
 
 
@@ -92,7 +104,10 @@ class DataCharacteristicsWriter(OutputWriter):
             self.feature_characteristics = feature_characteristics
             self.label_characteristics = label_characteristics
 
-        def format(self, options: Options, **kwargs) -> str:
+        def format(self, options: Options, **_) -> str:
+            """
+            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            """
             percentage = options.get_bool(OPTION_PERCENTAGE, True)
             decimals = options.get_int(OPTION_DECIMALS, 2)
             rows = []
@@ -111,7 +126,10 @@ class DataCharacteristicsWriter(OutputWriter):
 
             return format_table(rows)
 
-        def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
+            """
+            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            """
             percentage = options.get_bool(OPTION_PERCENTAGE, True)
             decimals = options.get_int(OPTION_DECIMALS, 0)
             columns = {}
@@ -144,9 +162,7 @@ class DataCharacteristicsWriter(OutputWriter):
         def __init__(self, output_dir: str, options: Options = Options()):
             super().__init__(output_dir=output_dir, file_name='data_characteristics', options=options)
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
-
+    # pylint: disable=unused-argument
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],

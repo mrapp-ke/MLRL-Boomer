@@ -55,6 +55,9 @@ LOG_FORMAT = '%(levelname)s %(message)s'
 
 
 class LogLevel(Enum):
+    """
+    Specifies all valid textual representations of log levels.
+    """
     DEBUG = 'debug'
     INFO = 'info'
     WARN = 'warn'
@@ -64,22 +67,30 @@ class LogLevel(Enum):
     FATAL = 'fatal'
     NOTSET = 'notset'
 
-    def parse(s):
-        s = s.lower()
-        if s == LogLevel.DEBUG.value:
+    @staticmethod
+    def parse(text: str):
+        """
+        Parses a given text that represents a log level. If the given text does not represent a valid log level, a
+        `ValueError` is raised.
+
+        :param text:    The text to be parsed
+        :return:        A log level, depending on the given text
+        """
+        lower_text = text.lower()
+        if lower_text == LogLevel.DEBUG.value:
             return log.DEBUG
-        elif s == LogLevel.INFO.value:
+        if lower_text == LogLevel.INFO.value:
             return log.INFO
-        elif s == LogLevel.WARN.value or s == LogLevel.WARNING.value:
+        if lower_text in (LogLevel.WARN.value, LogLevel.WARNING.value):
             return log.WARN
-        elif s == LogLevel.ERROR.value:
+        if lower_text == LogLevel.ERROR.value:
             return log.ERROR
-        elif s == LogLevel.CRITICAL.value or s == LogLevel.FATAL.value:
+        if lower_text in (LogLevel.CRITICAL.value, LogLevel.FATAL.value):
             return log.CRITICAL
-        elif s == LogLevel.NOTSET.value:
+        if lower_text == LogLevel.NOTSET.value:
             return log.NOTSET
         raise ValueError('Invalid log level given. Must be one of ' + format_enum_values(LogLevel) + ', but is "'
-                         + str(s) + '".')
+                         + str(text) + '".')
 
 
 class Runnable(ABC):
@@ -102,7 +113,7 @@ class Runnable(ABC):
         """
         name: str
         version: str
-        year: Optional[str] = None,
+        year: Optional[str] = None
         authors: Set[str] = field(default_factory=set)
         python_packages: List[PythonPackageInfo] = field(default_factory=list)
 
@@ -194,15 +205,15 @@ class Runnable(ABC):
 
         def __str__(self) -> str:
             result = self.name + ' ' + self.version
-            copyright = self.__format_copyright()
+            formatted_copyright = self.__format_copyright()
 
-            if len(copyright) > 0:
-                result += '\n\n' + copyright
+            if len(formatted_copyright) > 0:
+                result += '\n\n' + formatted_copyright
 
-            package_info = self.__format_package_info()
+            formatted_package_info = self.__format_package_info()
 
-            if len(package_info) > 0:
-                result += '\n\n' + package_info
+            if len(formatted_package_info) > 0:
+                result += '\n\n' + formatted_package_info
 
             return result
 
@@ -215,6 +226,9 @@ class Runnable(ABC):
         self.program_info = program_info
 
     def run(self):
+        """
+        Executes the runnable.
+        """
         parser = self.parser
         self._configure_arguments(parser)
         args = parser.parse_args()
@@ -266,7 +280,6 @@ class Runnable(ABC):
 
         :param args: The command line arguments
         """
-        pass
 
 
 class LearnerRunnable(Runnable, ABC):
@@ -280,9 +293,15 @@ class LearnerRunnable(Runnable, ABC):
         """
 
         def __init__(self, output_dir: str):
+            """
+            :param output_dir: The path of the output directory from which the files should be deleted
+            """
             self.output_dir = output_dir
 
         def execute(self):
+            """
+            See :func:`mlrl.testbed.experiments.Experiment.ExecutionHook.execute`
+            """
             clear_directory(self.output_dir)
 
     PARAM_DATA_SPLIT = '--data-split'
@@ -406,9 +425,10 @@ class LearnerRunnable(Runnable, ABC):
 
         try:
             return PredictionType(prediction_type)
-        except ValueError:
+        except ValueError as error:
             raise ValueError('Invalid value given for parameter "' + self.PARAM_PREDICTION_TYPE + '": Must be one of '
-                             + format_enum_values(PredictionType) + ', but is "' + str(prediction_type) + '"')
+                             + format_enum_values(PredictionType) + ', but is "' + str(prediction_type)
+                             + '"') from error
 
     def __create_data_splitter(self, args) -> DataSplitter:
         data_set = DataSet(data_dir=args.data_dir,
@@ -427,13 +447,13 @@ class LearnerRunnable(Runnable, ABC):
                                            num_folds=num_folds,
                                            current_fold=current_fold - 1,
                                            random_state=args.random_state)
-        elif value == self.DATA_SPLIT_TRAIN_TEST:
+        if value == self.DATA_SPLIT_TRAIN_TEST:
             test_size = options.get_float(self.OPTION_TEST_SIZE, 0.33)
             assert_greater(self.OPTION_TEST_SIZE, test_size, 0)
             assert_less(self.OPTION_TEST_SIZE, test_size, 1)
             return TrainTestSplitter(data_set, test_size=test_size, random_state=args.random_state)
-        else:
-            return NoSplitter(data_set)
+
+        return NoSplitter(data_set)
 
     @staticmethod
     def __create_pre_execution_hook(args, data_splitter: DataSplitter) -> Optional[Experiment.ExecutionHook]:
@@ -656,6 +676,7 @@ class LearnerRunnable(Runnable, ABC):
         """
         return None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
 
+    # pylint: disable=unused-argument
     def _create_evaluation(self, args, prediction_type: PredictionType,
                            output_writers: List[OutputWriter]) -> Optional[Evaluation]:
         """
@@ -694,12 +715,11 @@ class LearnerRunnable(Runnable, ABC):
 
         if len(sinks) == 0:
             return None
-        elif prediction_type == PredictionType.SCORES:
+        if prediction_type == PredictionType.SCORES:
             return ScoreEvaluationWriter(sinks)
-        elif prediction_type == PredictionType.PROBABILITIES:
+        if prediction_type == PredictionType.PROBABILITIES:
             return ProbabilityEvaluationWriter(sinks)
-        else:
-            return BinaryEvaluationWriter(sinks)
+        return BinaryEvaluationWriter(sinks)
 
     def _create_parameter_input(self, args) -> Optional[ParameterInput]:
         """
@@ -830,7 +850,6 @@ class LearnerRunnable(Runnable, ABC):
         :param args:    The command line arguments
         :return:        The learner that has been created
         """
-        pass
 
 
 class RuleLearnerRunnable(LearnerRunnable):
@@ -1092,8 +1111,8 @@ class RuleLearnerRunnable(LearnerRunnable):
             return IncrementalEvaluation(
                 prediction_type, output_writers, min_size=min_size, max_size=max_size,
                 step_size=step_size) if len(output_writers) > 0 else None
-        else:
-            return super()._create_evaluation(args, prediction_type, output_writers)
+
+        return super()._create_evaluation(args, prediction_type, output_writers)
 
     def _create_label_vector_writer(self, args) -> Optional[OutputWriter]:
         sinks = []

@@ -10,6 +10,13 @@ VERSION = (Path(__file__).resolve().parent.parent.parent.parent / 'VERSION').rea
 
 
 def find_dependencies(requirements_file, dependency_names):
+    """
+    Finds and returns dependencies with given names.
+
+    :param requirements_file:   The path to the requirements.txt file where the dependency versions are specified
+    :param dependency_names:    A list that contains the names of the dependencies to be found
+    :return:                    A list that contains all dependencies that have been found
+    """
     requirements = {
         requirement.key: requirement
         for requirement in parse_requirements(requirements_file.read_text().split('\n'))

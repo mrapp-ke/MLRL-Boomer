@@ -13,6 +13,8 @@ from sys import platform
 from typing import List, Optional
 from unittest import SkipTest, TestCase
 
+from mlrl.testbed.io import ENCODING_UTF8
+
 OVERWRITE_EXPECTED_OUTPUT_FILES = False
 
 DIR_RES = 'python/subprojects/testbed/tests/res'
@@ -80,7 +82,7 @@ HOLDOUT_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
 HOLDOUT_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
 
-def SkipTestOnCI(f):
+def skip_test_on_ci(decorated_function):
     """
     A decorator that disables all annotated test case if run on a continuous integration system.
     """
@@ -88,8 +90,8 @@ def SkipTestOnCI(f):
     def wrapper(*args, **kwargs):
         if os.getenv('GITHUB_ACTIONS') == 'true':
             raise SkipTest('Temporarily disabled when run on CI')
-        else:
-            f(*args, **kwargs)
+
+        decorated_function(*args, **kwargs)
 
     return wrapper
 
@@ -621,7 +623,7 @@ class IntegrationTests(ABC, TestCase):
         :param expected_output_dir: The path of the directory that contains the file with the expected output
         :param methodName:          The name of the test method to be executed
         """
-        super(IntegrationTests, self).__init__(methodName)
+        super().__init__(methodName)
         self.expected_output_dir = expected_output_dir
 
     @staticmethod
@@ -636,8 +638,7 @@ class IntegrationTests(ABC, TestCase):
         """
         if fold is not None:
             return name + '_fold-' + str(fold) + '.' + suffix
-        else:
-            return name + '_overall.' + suffix
+        return name + '_overall.' + suffix
 
     def __assert_file_exists(self, directory: str, file_name: str, args: List[str]):
         """
@@ -833,27 +834,27 @@ class IntegrationTests(ABC, TestCase):
         :param args:    A list that stores the command, as well as its arguments
         :return:        The output of the command
         """
-        out = subprocess.run(args, capture_output=True, text=True)
+        out = subprocess.run(args, capture_output=True, text=True, check=False)
         self.assertEqual(
             out.returncode, 0,
             'Command "' + self.__format_cmd(args) + '" terminated with non-zero exit code\n\n' + str(out.stderr))
         return out
 
     def __replace_durations_with_placeholders(self, line: str) -> str:
-        regex_duration = '(\d+ (day(s)*|hour(s)*|minute(s)*|second(s)*|millisecond(s)*))'
+        regex_duration = '(\\d+ (day(s)*|hour(s)*|minute(s)*|second(s)*|millisecond(s)*))'
         return re.sub(regex_duration + '((, )' + regex_duration + ')*' + '(( and )' + regex_duration + ')?',
                       '<duration>', line)
 
     def __overwrite_output_file(self, stdout, expected_output_file):
-        with open(expected_output_file, 'w') as f:
+        with open(expected_output_file, 'w', encoding=ENCODING_UTF8) as file:
             for line in stdout:
                 line = self.__replace_durations_with_placeholders(line)
                 line = line + '\n'
-                f.write(line)
+                file.write(line)
 
     def __assert_output_files_are_equal(self, stdout, args, expected_output_file):
-        with open(expected_output_file, 'r') as f:
-            for i, expected_line in enumerate(f):
+        with open(expected_output_file, 'r', encoding=ENCODING_UTF8) as file:
+            for i, expected_line in enumerate(file):
                 expected_line = expected_line.strip('\n')
                 line = stdout[i]
                 line = line.strip('\n')
@@ -926,7 +927,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         :param expected_output_dir:     The path of the directory that contains the file with the expected output
         :param methodName:              The name of the test method to be executed
         """
-        super(CommonIntegrationTests, self).__init__(expected_output_dir, methodName)
+        super().__init__(expected_output_dir, methodName)
         self.cmd = cmd
         self.dataset_default = dataset_default
         self.dataset_numerical = dataset_numerical
@@ -938,10 +939,10 @@ class CommonIntegrationTests(IntegrationTests, ABC):
     def setUpClass(cls):
         if cls is CommonIntegrationTests:
             raise SkipTest(cls.__name__ + ' is an abstract base class')
-        elif not platform.startswith('linux'):
+        if not platform.startswith('linux'):
             raise SkipTest('Integration tests are only supported on Linux')
-        else:
-            super(CommonIntegrationTests, cls).setUpClass()
+
+        super().setUpClass()
 
     def test_meka_format(self):
         """

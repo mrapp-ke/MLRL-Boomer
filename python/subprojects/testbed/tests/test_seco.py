@@ -38,7 +38,7 @@ class SeCoCmdBuilder(CmdBuilder):
     """
 
     def __init__(self, data_dir: str = DIR_DATA, dataset: str = DATASET_EMOTIONS):
-        super(SeCoCmdBuilder, self).__init__(cmd=CMD_SECO, data_dir=data_dir, dataset=dataset)
+        super().__init__(cmd=CMD_SECO, data_dir=data_dir, dataset=dataset)
 
     def heuristic(self, heuristic: str = HEURISTIC_F_MEASURE):
         """
@@ -95,9 +95,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         :param methodName: The name of the test method to be executed
         """
-        super(SeCoIntegrationTests, self).__init__(cmd=CMD_SECO,
-                                                   expected_output_dir=path.join(DIR_OUT, CMD_SECO),
-                                                   methodName=methodName)
+        super().__init__(cmd=CMD_SECO, expected_output_dir=path.join(DIR_OUT, CMD_SECO), methodName=methodName)
 
     def test_heuristic_accuracy(self):
         """

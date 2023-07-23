@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for printing certain characteristics of binary predictions. The characteristics can be written to one
 or several outputs, e.g., to the console or to a file.
 """
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from mlrl.common.options import Options
 
@@ -36,9 +36,7 @@ class PredictionCharacteristicsWriter(OutputWriter):
         def __init__(self, output_dir: str, options: Options = Options()):
             super().__init__(output_dir=output_dir, file_name='prediction_characteristics', options=options)
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
-
+    # pylint: disable=unused-argument
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],

@@ -24,7 +24,7 @@ from mlrl.common.cython.probability_calibration import JointProbabilityCalibrati
     MarginalProbabilityCalibrationModel
 from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.cython.validation import assert_greater_or_equal
-from mlrl.common.data_types import DTYPE_FLOAT32, DTYPE_UINT8, DTYPE_UINT32
+from mlrl.common.data_types import Float32, Uint8, Uint32
 from mlrl.common.format import format_enum_values
 from mlrl.common.learners import IncrementalLearner, Learner, NominalAttributeLearner, OrdinalAttributeLearner
 
@@ -32,48 +32,63 @@ KWARG_MAX_RULES = 'max_rules'
 
 
 class SparsePolicy(Enum):
+    """
+    Specifies all valid textual representation of policies to be used for converting matrices into sparse or dense
+    formats.
+    """
     AUTO = 'auto'
     FORCE_SPARSE = 'sparse'
     FORCE_DENSE = 'dense'
 
 
 class SparseFormat(Enum):
+    """
+    Specifies all valid textual representations of sparse matrix formats.
+    """
     CSC = 'csc'
     CSR = 'csr'
 
 
-def create_sparse_policy(parameter_name: str, policy: str) -> SparsePolicy:
+def parse_sparse_policy(parameter_name: str, value: str) -> SparsePolicy:
+    """
+    Parses and returns a parameter value that specifies a `SparsePolicy` to be used for converting matrixes into sparse
+    or dense formats. If the given value is invalid, a `ValueError` is raised.
+
+    :param parameter_name:  The name of the parameter
+    :param value:           The value to be parsed
+    :return:                A `SparsePolicy`
+    """
     try:
-        return SparsePolicy(policy)
-    except ValueError:
+        return SparsePolicy(value)
+    except ValueError as error:
         raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                         + format_enum_values(SparsePolicy) + ', but is "' + str(policy) + '"')
+                         + format_enum_values(SparsePolicy) + ', but is "' + str(value) + '"') from error
 
 
-def is_sparse(m, sparse_format: SparseFormat, dtype, sparse_values: bool = True) -> bool:
+def is_sparse(matrix, sparse_format: SparseFormat, dtype, sparse_values: bool = True) -> bool:
     """
     Returns whether a given matrix is considered sparse or not. A matrix is considered sparse if it is given in a sparse
     format and is expected to occupy less memory than a dense matrix.
 
-    :param m:               A `np.ndarray` or `scipy.sparse.matrix` to be checked
+    :param matrix:          A `np.ndarray` or `scipy.sparse.matrix` to be checked
     :param sparse_format:   The `SparseFormat` to be used
     :param dtype:           The type of the values that should be stored in the matrix
     :param sparse_values:   True, if the values must explicitly be stored when using a sparse format, False otherwise
     :return:                True, if the given matrix is considered sparse, False otherwise
     """
-    if issparse(m):
-        num_pointers = m.shape[1 if sparse_format == SparseFormat.CSC else 0]
-        size_int = np.dtype(DTYPE_UINT32).itemsize
+    if issparse(matrix):
+        num_pointers = matrix.shape[1 if sparse_format == SparseFormat.CSC else 0]
+        size_int = np.dtype(Uint32).itemsize
         size_data = np.dtype(dtype).itemsize
         size_sparse_data = size_data if sparse_values else 0
-        num_non_zero = m.nnz
+        num_non_zero = matrix.nnz
         size_sparse = (num_non_zero * size_sparse_data) + (num_non_zero * size_int) + (num_pointers * size_int)
-        size_dense = np.prod(m.shape) * size_data
+        size_dense = np.prod(matrix.shape) * size_data
         return size_sparse < size_dense
     return False
 
 
-def should_enforce_sparse(m,
+def should_enforce_sparse(matrix,
                           sparse_format: SparseFormat,
                           policy: SparsePolicy,
                           dtype,
@@ -92,7 +107,7 @@ def should_enforce_sparse(m,
 
     If the given policy is `SparsePolicy.FORCE_DENSE`, the matrix will always be converted into a dense matrix.
 
-    :param m:               A `np.ndarray` or `scipy.sparse.matrix` to be checked
+    :param matrix:          A `np.ndarray` or `scipy.sparse.matrix` to be checked
     :param sparse_format:   The `SparseFormat` to be used
     :param policy:          The `SparsePolicy` to be used
     :param dtype:           The type of the values that should be stored in the matrix
@@ -100,17 +115,17 @@ def should_enforce_sparse(m,
     :return:                True, if it is preferable to convert the matrix into a sparse matrix of the given format,
                             False otherwise
     """
-    if not issparse(m):
+    if not issparse(matrix):
         # Given matrix is dense
         return policy == SparsePolicy.FORCE_SPARSE
-    elif isspmatrix_lil(m) or isspmatrix_coo(m) or isspmatrix_dok(m) or isspmatrix_csr(m) or isspmatrix_csc(m):
+    if isspmatrix_lil(matrix) or isspmatrix_coo(matrix) or isspmatrix_dok(matrix) or isspmatrix_csr(
+            matrix) or isspmatrix_csc(matrix):
         # Given matrix is in a format that might be converted into the specified sparse format
         if policy == SparsePolicy.AUTO:
-            return is_sparse(m, sparse_format=sparse_format, dtype=dtype, sparse_values=sparse_values)
-        else:
-            return policy == SparsePolicy.FORCE_SPARSE
+            return is_sparse(matrix, sparse_format=sparse_format, dtype=dtype, sparse_values=sparse_values)
+        return policy == SparsePolicy.FORCE_SPARSE
 
-    raise ValueError('Matrix of type ' + type(m).__name__ + ' cannot be converted to format "' + str(sparse_format)
+    raise ValueError('Matrix of type ' + type(matrix).__name__ + ' cannot be converted to format "' + str(sparse_format)
                      + '"')
 
 
@@ -118,18 +133,42 @@ def create_binary_predictor(learner: RuleLearnerWrapper, model: RuleModel, label
                             marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
                             joint_probability_calibration_model: JointProbabilityCalibrationModel, num_labels: int,
                             feature_matrix: RowWiseFeatureMatrix, sparse: bool):
+    """
+    Creates and returns a predictor for predicting binary labels.
+
+    :param learner:                                 The learner for which the predictor should be created
+    :param model:                                   The model to be used for prediction
+    :param label_space_info:                        Information about the label space that may be used for prediction
+    :param marginal_probability_calibration_model:  A model for the calibration of marginal probabilities
+    :param joint_probability_calibration_model:     A model for the calibration of joint probabilities
+    :param num_labels:                              The total number of labels to predict for
+    :param feature_matrix:                          A feature matrix that provides row-wise access to the features of
+                                                    the query examples
+    :param sparse:                                  True, if a sparse matrix should be used for storing predictions,
+                                                    False otherwise
+    :return:                                        The predictor that has been created
+    """
     if sparse:
         return learner.create_sparse_binary_predictor(feature_matrix, model, label_space_info,
                                                       marginal_probability_calibration_model,
                                                       joint_probability_calibration_model, num_labels)
-    else:
-        return learner.create_binary_predictor(feature_matrix, model, label_space_info,
-                                               marginal_probability_calibration_model,
-                                               joint_probability_calibration_model, num_labels)
+    return learner.create_binary_predictor(feature_matrix, model, label_space_info,
+                                           marginal_probability_calibration_model, joint_probability_calibration_model,
+                                           num_labels)
 
 
 def create_score_predictor(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
                            num_labels: int, feature_matrix: RowWiseFeatureMatrix):
+    """
+    Creates and returns a predictor for predicting regression scores.
+
+    :param learner:             The learner for which the predictor should be created
+    :param model:               The model to be used for prediction
+    :param label_space_info:    Information about the label space that may be used for prediction
+    :param num_labels:          The total number of labels to predict for
+    :param feature_matrix:      A feature matrix that provides row-wise access to the features of the query examples
+    :return:                    The predictor that has been created
+    """
     return learner.create_score_predictor(feature_matrix, model, label_space_info, num_labels)
 
 
@@ -137,15 +176,34 @@ def create_probability_predictor(learner: RuleLearnerWrapper, model: RuleModel, 
                                  marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
                                  joint_probability_calibration_model: JointProbabilityCalibrationModel, num_labels: int,
                                  feature_matrix: RowWiseFeatureMatrix):
+    """
+    Creates and returns a predictor for predicting probability estimates.
+
+    :param learner:                                 The learner for which the predictor should be created
+    :param model:                                   The model to be used for prediction
+    :param label_space_info:                        Information about the label space that may be used for prediction
+    :param marginal_probability_calibration_model:  A model for the calibration of marginal probabilities
+    :param joint_probability_calibration_model:     A model for the calibration of joint probabilities
+    :param num_labels:                              The total number of labels to predict for
+    :param feature_matrix:                          A feature matrix that provides row-wise access to the features of
+                                                    the query examples
+    :return:                                        The predictor that has been created
+    """
     return learner.create_probability_predictor(feature_matrix, model, label_space_info,
                                                 marginal_probability_calibration_model,
                                                 joint_probability_calibration_model, num_labels)
 
 
-def create_sklearn_compatible_probabilities(probabilities):
-    # In the case of a single-label problem, scikit-learn expects probability estimates to be given for the negative and
-    # positive class...
+def convert_into_sklearn_compatible_probabilities(probabilities: np.ndarray) -> np.ndarray:
+    """
+    Converts given probability estimates into a format that is compatible with scikit-learn.
+
+    :param probabilities: A `np.ndarray` that stores probability estimates
+    :return:              A `np.ndarray` that is compatible with scikit-learn
+    """
     if probabilities.shape[1] == 1:
+        # In the case of a single-label problem, scikit-learn expects probability estimates to be given for the negative
+        # and positive class...
         probabilities = np.hstack((1 - probabilities, probabilities))
 
     return probabilities
@@ -172,12 +230,21 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             self.incremental_predictor = incremental_predictor
 
         def has_next(self) -> bool:
+            """
+            See :func:`mlrl.common.learners.IncrementalLearner.IncrementalPredictor.has_next`
+            """
             return self.incremental_predictor.has_next()
 
         def get_num_next(self) -> int:
+            """
+            See :func:`mlrl.common.learners.IncrementalLearner.IncrementalPredictor.get_num_next`
+            """
             return self.incremental_predictor.get_num_next()
 
         def apply_next(self, step_size: int):
+            """
+            See :func:`mlrl.common.learners.IncrementalLearner.IncrementalPredictor.apply_next`
+            """
             return self.incremental_predictor.apply_next(step_size)
 
     class NativeIncrementalProbabilityPredictor(NativeIncrementalPredictor):
@@ -186,11 +253,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         functionality.
         """
 
-        def __init__(self, feature_matrix: RowWiseFeatureMatrix, incremental_predictor):
-            super().__init__(feature_matrix, incremental_predictor)
-
         def apply_next(self, step_size: int):
-            return create_sklearn_compatible_probabilities(super().apply_next(step_size))
+            return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
 
     class IncrementalPredictor(IncrementalLearner.IncrementalPredictor):
         """
@@ -211,26 +275,29 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             self.num_total_rules = min(model.get_num_used_rules(),
                                        max_rules) if max_rules > 0 else model.get_num_used_rules()
             self.predictor = predictor
-            self.n = 0
+            self.num_considered_rules = 0
 
         def get_num_next(self) -> int:
-            return self.num_total_rules - self.n
+            """
+            See :func:`mlrl.common.learners.IncrementalLearner.IncrementalPredictor.get_num_next`
+            """
+            return self.num_total_rules - self.num_considered_rules
 
         def apply_next(self, step_size: int):
+            """
+            See :func:`mlrl.common.learners.IncrementalLearner.IncrementalPredictor.apply_next`
+            """
             assert_greater_or_equal('step_size', step_size, 1)
-            self.n = min(self.num_total_rules, self.n + step_size)
-            return self.predictor.predict(self.n)
+            self.num_considered_rules = min(self.num_total_rules, self.num_considered_rules + step_size)
+            return self.predictor.predict(self.num_considered_rules)
 
     class IncrementalProbabilityPredictor(IncrementalPredictor):
         """
         Allows to obtain probability estimates from a `RuleLearner` incrementally.
         """
 
-        def __init__(self, feature_matrix: RowWiseFeatureMatrix, model: RuleModel, max_rules: int, predictor):
-            super().__init__(feature_matrix, model, max_rules, predictor)
-
         def apply_next(self, step_size: int):
-            return create_sklearn_compatible_probabilities(super().apply_next(step_size))
+            return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
 
     def __init__(self, random_state: int, feature_format: str, label_format: str, prediction_format: str):
         """
@@ -248,25 +315,25 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         self.label_format = label_format
         self.prediction_format = prediction_format
 
-    def _fit(self, x, y, **kwargs):
+    # pylint: disable=attribute-defined-outside-init
+    def _fit(self, x, y, **_):
         # Validate feature matrix and convert it to the preferred format...
         x_sparse_format = SparseFormat.CSC
-        x_sparse_policy = create_sparse_policy('feature_format', self.feature_format)
+        x_sparse_policy = parse_sparse_policy('feature_format', self.feature_format)
         x_enforce_sparse = should_enforce_sparse(x,
                                                  sparse_format=x_sparse_format,
                                                  policy=x_sparse_policy,
-                                                 dtype=DTYPE_FLOAT32)
-        x = self._validate_data(
-            (x if x_enforce_sparse else enforce_2d(enforce_dense(x, order='F', dtype=DTYPE_FLOAT32))),
-            accept_sparse=(x_sparse_format.value if x_enforce_sparse else False),
-            dtype=DTYPE_FLOAT32,
-            force_all_finite='allow-nan')
+                                                 dtype=Float32)
+        x = self._validate_data((x if x_enforce_sparse else enforce_2d(enforce_dense(x, order='F', dtype=Float32))),
+                                accept_sparse=(x_sparse_format.value if x_enforce_sparse else False),
+                                dtype=Float32,
+                                force_all_finite='allow-nan')
 
         if issparse(x):
             log.debug('A sparse matrix is used to store the feature values of the training examples')
-            x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
-            x_row_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
-            x_indptr = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
+            x_data = np.ascontiguousarray(x.data, dtype=Float32)
+            x_row_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
+            x_indptr = np.ascontiguousarray(x.indptr, dtype=Uint32)
             feature_matrix = CscFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_indptr)
         else:
             log.debug('A dense matrix is used to store the feature values of the training examples')
@@ -274,25 +341,25 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
 
         # Validate label matrix and convert it to the preferred format...
         y_sparse_format = SparseFormat.CSR
-        prediction_sparse_policy = create_sparse_policy('prediction_format', self.prediction_format)
+        prediction_sparse_policy = parse_sparse_policy('prediction_format', self.prediction_format)
         self.sparse_predictions_ = prediction_sparse_policy != SparsePolicy.FORCE_DENSE and (
             prediction_sparse_policy == SparsePolicy.FORCE_SPARSE
-            or is_sparse(y, sparse_format=y_sparse_format, dtype=DTYPE_UINT8, sparse_values=False))
+            or is_sparse(y, sparse_format=y_sparse_format, dtype=Uint8, sparse_values=False))
 
-        y_sparse_policy = create_sparse_policy('label_format', self.label_format)
+        y_sparse_policy = parse_sparse_policy('label_format', self.label_format)
         y_enforce_sparse = should_enforce_sparse(y,
                                                  sparse_format=y_sparse_format,
                                                  policy=y_sparse_policy,
-                                                 dtype=DTYPE_UINT8,
+                                                 dtype=Uint8,
                                                  sparse_values=False)
-        y = check_array((y if y_enforce_sparse else enforce_2d(enforce_dense(y, order='C', dtype=DTYPE_UINT8))),
+        y = check_array((y if y_enforce_sparse else enforce_2d(enforce_dense(y, order='C', dtype=Uint8))),
                         accept_sparse=(y_sparse_format.value if y_enforce_sparse else False),
-                        dtype=DTYPE_UINT8)
+                        dtype=Uint8)
 
         if issparse(y):
             log.debug('A sparse matrix is used to store the labels of the training examples')
-            y_col_indices = np.ascontiguousarray(y.indices, dtype=DTYPE_UINT32)
-            y_indptr = np.ascontiguousarray(y.indptr, dtype=DTYPE_UINT32)
+            y_col_indices = np.ascontiguousarray(y.indices, dtype=Uint32)
+            y_indptr = np.ascontiguousarray(y.indptr, dtype=Uint32)
             label_matrix = CsrLabelMatrix(y.shape[0], y.shape[1], y_col_indices, y_indptr)
         else:
             log.debug('A dense matrix is used to store the labels of the training examples')
@@ -324,12 +391,11 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
 
         if num_ordinal_features == 0 and num_nominal_features == 0:
             return EqualFeatureInfo.create_numerical()
-        elif num_ordinal_features == num_features:
+        if num_ordinal_features == num_features:
             return EqualFeatureInfo.create_ordinal()
-        elif num_nominal_features == num_features:
+        if num_nominal_features == num_features:
             return EqualFeatureInfo.create_nominal()
-        else:
-            return MixedFeatureInfo(num_features, ordinal_attribute_indices, nominal_attribute_indices)
+        return MixedFeatureInfo(num_features, ordinal_attribute_indices, nominal_attribute_indices)
 
     def _predict_binary(self, x, **kwargs):
         learner = self._create_learner()
@@ -344,8 +410,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
                                            self.marginal_probability_calibration_model_,
                                            self.joint_probability_calibration_model_, num_labels, feature_matrix,
                                            sparse_predictions).predict(max_rules)
-        else:
-            return super()._predict_binary(x, **kwargs)
+
+        return super()._predict_binary(x, **kwargs)
 
     def _predict_binary_incrementally(self, x, **kwargs):
         """
@@ -369,10 +435,9 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             if predictor.can_predict_incrementally():
                 return RuleLearner.NativeIncrementalPredictor(feature_matrix,
                                                               predictor.create_incremental_predictor(max_rules))
-            else:
-                return RuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
-        else:
-            return super()._predict_binary_incrementally(x, **kwargs)
+            return RuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
+
+        return super()._predict_binary_incrementally(x, **kwargs)
 
     def _predict_scores(self, x, **kwargs):
         learner = self._create_learner()
@@ -384,8 +449,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
             return create_score_predictor(learner, self.model_, self.label_space_info_, num_labels,
                                           feature_matrix).predict(max_rules)
-        else:
-            return super()._predict_scores(x, **kwargs)
+
+        return super()._predict_scores(x, **kwargs)
 
     def _predict_scores_incrementally(self, x, **kwargs):
         """
@@ -405,10 +470,9 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             if predictor.can_predict_incrementally():
                 return RuleLearner.NativeIncrementalPredictor(feature_matrix,
                                                               predictor.create_incremental_predictor(max_rules))
-            else:
-                return RuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
-        else:
-            return super()._predict_scores_incrementally(x, **kwargs)
+            return RuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
+
+        return super()._predict_scores_incrementally(x, **kwargs)
 
     def _predict_proba(self, x, **kwargs):
         learner = self._create_learner()
@@ -418,13 +482,13 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         if learner.can_predict_probabilities(feature_matrix, num_labels):
             log.debug('A dense matrix is used to store the predicted probability estimates')
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
-            return create_sklearn_compatible_probabilities(
+            return convert_into_sklearn_compatible_probabilities(
                 create_probability_predictor(learner, self.model_, self.label_space_info_,
                                              self.marginal_probability_calibration_model_,
                                              self.joint_probability_calibration_model_, num_labels,
                                              feature_matrix).predict(max_rules))
-        else:
-            return super()._predict_proba(x, **kwargs)
+
+        return super()._predict_proba(x, **kwargs)
 
     def _predict_proba_incrementally(self, x, **kwargs):
         """
@@ -447,33 +511,29 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             if predictor.can_predict_incrementally():
                 return RuleLearner.NativeIncrementalProbabilityPredictor(
                     feature_matrix, predictor.create_incremental_predictor(max_rules))
-            else:
-                return RuleLearner.IncrementalProbabilityPredictor(feature_matrix, model, max_rules, predictor)
-        else:
-            return super().predict_proba_incrementally(x, **kwargs)
+            return RuleLearner.IncrementalProbabilityPredictor(feature_matrix, model, max_rules, predictor)
+
+        return super().predict_proba_incrementally(x, **kwargs)
 
     def __create_row_wise_feature_matrix(self, x) -> RowWiseFeatureMatrix:
         sparse_format = SparseFormat.CSR
-        sparse_policy = create_sparse_policy('feature_format', self.feature_format)
-        enforce_sparse = should_enforce_sparse(x,
-                                               sparse_format=sparse_format,
-                                               policy=sparse_policy,
-                                               dtype=DTYPE_FLOAT32)
-        x = self._validate_data(x if enforce_sparse else enforce_2d(enforce_dense(x, order='C', dtype=DTYPE_FLOAT32)),
+        sparse_policy = parse_sparse_policy('feature_format', self.feature_format)
+        enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy, dtype=Float32)
+        x = self._validate_data(x if enforce_sparse else enforce_2d(enforce_dense(x, order='C', dtype=Float32)),
                                 reset=False,
                                 accept_sparse=(sparse_format.value if enforce_sparse else False),
-                                dtype=DTYPE_FLOAT32,
+                                dtype=Float32,
                                 force_all_finite='allow-nan')
 
         if issparse(x):
             log.debug('A sparse matrix is used to store the feature values of the query examples')
-            x_data = np.ascontiguousarray(x.data, dtype=DTYPE_FLOAT32)
-            x_col_indices = np.ascontiguousarray(x.indices, dtype=DTYPE_UINT32)
-            x_indptr = np.ascontiguousarray(x.indptr, dtype=DTYPE_UINT32)
+            x_data = np.ascontiguousarray(x.data, dtype=Float32)
+            x_col_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
+            x_indptr = np.ascontiguousarray(x.indptr, dtype=Uint32)
             return CsrFeatureMatrix(x.shape[0], x.shape[1], x_data, x_col_indices, x_indptr)
-        else:
-            log.debug('A dense matrix is used to store the feature values of the query examples')
-            return CContiguousFeatureMatrix(x)
+
+        log.debug('A dense matrix is used to store the feature values of the query examples')
+        return CContiguousFeatureMatrix(x)
 
     @abstractmethod
     def _create_learner(self) -> RuleLearnerWrapper:
@@ -482,4 +542,3 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
 
         :return: The implementation of the rule learner that has been created
         """
-        pass

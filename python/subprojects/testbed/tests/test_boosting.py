@@ -5,7 +5,7 @@ from os import path
 
 from test_common import DATASET_EMOTIONS, DIR_DATA, DIR_OUT, HOLDOUT_NO, HOLDOUT_RANDOM, \
     HOLDOUT_STRATIFIED_EXAMPLE_WISE, HOLDOUT_STRATIFIED_LABEL_WISE, PREDICTION_TYPE_PROBABILITIES, \
-    PREDICTION_TYPE_SCORES, CmdBuilder, CommonIntegrationTests, SkipTestOnCI
+    PREDICTION_TYPE_SCORES, CmdBuilder, CommonIntegrationTests, skip_test_on_ci
 
 CMD_BOOMER = 'boomer'
 
@@ -68,7 +68,7 @@ class BoostingCmdBuilder(CmdBuilder):
     """
 
     def __init__(self, data_dir: str = DIR_DATA, dataset: str = DATASET_EMOTIONS):
-        super(BoostingCmdBuilder, self).__init__(cmd=CMD_BOOMER, data_dir=data_dir, dataset=dataset)
+        super().__init__(cmd=CMD_BOOMER, data_dir=data_dir, dataset=dataset)
 
     def feature_binning(self, feature_binning: str = FEATURE_BINNING_EQUAL_WIDTH):
         """
@@ -201,9 +201,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         :param methodName: The name of the test method to be executed
         """
-        super(BoostingIntegrationTests, self).__init__(cmd=CMD_BOOMER,
-                                                       expected_output_dir=path.join(DIR_OUT, CMD_BOOMER),
-                                                       methodName=methodName)
+        super().__init__(cmd=CMD_BOOMER, expected_output_dir=path.join(DIR_OUT, CMD_BOOMER), methodName=methodName)
 
     def test_single_label_regression(self):
         """
@@ -352,7 +350,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .loss(LOSS_LOGISTIC_LABEL_WISE)
         self.run_cmd(builder, 'loss-logistic-label-wise')
 
-    @SkipTestOnCI
+    @skip_test_on_ci
     def test_loss_logistic_example_wise(self):
         """
         Tests the BOOMER algorithm when using the example-wise logistic loss function.
@@ -369,7 +367,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .loss(LOSS_SQUARED_HINGE_LABEL_WISE)
         self.run_cmd(builder, 'loss-squared-hinge-label-wise')
 
-    @SkipTestOnCI
+    @skip_test_on_ci
     def test_loss_squared_hinge_example_wise(self):
         """
         Tests the BOOMER algorithm when using the example-wise squared hinge loss function.
@@ -386,7 +384,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .loss(LOSS_SQUARED_ERROR_LABEL_WISE)
         self.run_cmd(builder, 'loss-squared-error-label-wise')
 
-    @SkipTestOnCI
+    @skip_test_on_ci
     def test_loss_squared_error_example_wise(self):
         """
         Tests the BOOMER algorithm when using the example-wise squared error loss function.
@@ -871,7 +869,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_model_characteristics()
         self.run_cmd(builder, 'example-wise-single-label-heads')
 
-    @SkipTestOnCI
+    @skip_test_on_ci
     def test_example_wise_complete_heads(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules with complete
@@ -884,7 +882,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_model_characteristics()
         self.run_cmd(builder, 'example-wise-complete-heads')
 
-    @SkipTestOnCI
+    @skip_test_on_ci
     def test_example_wise_complete_heads_equal_width_label_binning(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function and equal-width label binning for the
@@ -897,7 +895,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_model_characteristics()
         self.run_cmd(builder, 'example-wise-complete-heads_equal-width-label-binning')
 
-    @SkipTestOnCI
+    @skip_test_on_ci
     def test_example_wise_partial_fixed_heads(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules that predict
@@ -910,7 +908,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_model_characteristics()
         self.run_cmd(builder, 'example-wise-partial-fixed-heads')
 
-    @SkipTestOnCI
+    @skip_test_on_ci
     def test_example_wise_partial_fixed_heads_equal_width_label_binning(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function and equal-width label binning for the
@@ -923,7 +921,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_model_characteristics()
         self.run_cmd(builder, 'example-wise-partial-fixed-heads_equal-width-label-binning')
 
-    @SkipTestOnCI
+    @skip_test_on_ci
     def test_example_wise_partial_dynamic_heads(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules that predict
@@ -936,7 +934,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_model_characteristics()
         self.run_cmd(builder, 'example-wise-partial-dynamic-heads')
 
-    @SkipTestOnCI
+    @skip_test_on_ci
     def test_example_wise_partial_dynamic_heads_equal_width_label_binning(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function and equal-width label binning for the

@@ -50,10 +50,16 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
             return self.list_title + ' ' + str(list_index + 1) + ' probabilities'
 
         def visit_bin(self, list_index: int, threshold: float, probability: float):
+            """
+            See :func:`mlrl.common.cython.probability_calibration.IsotonicProbabilityCalibrationModelVisitor.visit_bin`
+            """
             bin_list = self.bins.setdefault(list_index, [])
             bin_list.append((threshold, probability))
 
-        def format(self, options: Options, **kwargs) -> str:
+        def format(self, options: Options, **_) -> str:
+            """
+            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            """
             self.calibration_model.visit(self)
             decimals = options.get_int(OPTION_DECIMALS, 4)
             bins = self.bins
@@ -75,7 +81,10 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
 
             return result
 
-        def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
+            """
+            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            """
             self.calibration_model.visit(self)
             decimals = options.get_int(OPTION_DECIMALS, 0)
             bins = self.bins
@@ -87,8 +96,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
                 columns = {}
                 end = True
 
-                for list_index in bins.keys():
-                    bin_list = bins[list_index]
+                for list_index, bin_list in bins.items():
                     column_probability = self.__format_probability_column(list_index)
                     column_threshold = self.__format_threshold_column(list_index)
 
@@ -114,10 +122,18 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         adjustments.
         """
 
-        def format(self, options: Options, **kwargs) -> str:
+        # pylint: disable=unused-argument
+        def format(self, options: Options, **_) -> str:
+            """
+            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            """
             return 'No calibration model used'
 
-        def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+        # pylint: disable=unused-argument
+        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
+            """
+            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            """
             return None
 
     def __init__(self, sinks: List[OutputWriter.Sink], list_title: str):
@@ -135,8 +151,8 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         :param learner: The rule learner
         :return:        The calibration model
         """
-        pass
 
+    # pylint: disable=unused-argument
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
@@ -147,7 +163,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
             if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
                 return ProbabilityCalibrationModelWriter.IsotonicProbabilityCalibrationModelFormattable(
                     calibration_model=calibration_model, list_title=self.list_title)
-            elif isinstance(calibration_model, NoProbabilityCalibrationModel):
+            if isinstance(calibration_model, NoProbabilityCalibrationModel):
                 return ProbabilityCalibrationModelWriter.NoProbabilityCalibrationModelFormattable()
 
         log.error('The learner does not support to create a textual representation of the calibration model')

@@ -122,7 +122,6 @@ class Evaluation(ABC):
         :param y:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores
                             the ground truth labels of the query examples
         """
-        pass
 
 
 class GlobalEvaluation(Evaluation):
@@ -130,12 +129,9 @@ class GlobalEvaluation(Evaluation):
     Obtains and evaluates predictions from a previously trained global model.
     """
 
-    def __init__(self, prediction_type: PredictionType, output_writers: List[OutputWriter]):
-        super().__init__(prediction_type, output_writers)
-
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
                              learner, x, y):
-        log.info('Predicting for %s ' + data_type.value + ' examples...', x.shape[0])
+        log.info('Predicting for %s %s examples...', x.shape[0], data_type.value)
         start_time = timer()
         predictions = self._invoke_prediction_function(learner, learner.predict, learner.predict_proba, x)
         end_time = timer()
@@ -196,7 +192,7 @@ class IncrementalEvaluation(Evaluation):
             current_size = min(next_step_size, total_size)
 
             while incremental_predictor.has_next():
-                log.info('Predicting for %s ' + data_type.value + ' examples using a model of size %s...', x.shape[0],
+                log.info('Predicting for %s %s examples using a model of size %s...', x.shape[0], data_type.value,
                          current_size)
                 start_time = timer()
                 predictions = incremental_predictor.apply_next(next_step_size)
@@ -236,7 +232,6 @@ class Experiment(DataSplitter.Callback):
             """
             Must be overridden by subclasses in order to execute the operation.
             """
-            pass
 
     def __init__(self,
                  base_learner: BaseEstimator,
@@ -276,6 +271,9 @@ class Experiment(DataSplitter.Callback):
         self.persistence = persistence
 
     def run(self):
+        """
+        Runs the experiment.
+        """
         log.info('Starting experiment...')
 
         # Run pre-execution hook, if necessary...
@@ -285,6 +283,17 @@ class Experiment(DataSplitter.Callback):
         self.data_splitter.run(self)
 
     def train_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, train_x, train_y, test_x, test_y):
+        """
+        Trains a model on a training set and evaluates it on a test set.
+
+        :param meta_data:   The meta-data of the training data set
+        :param data_split:  Information about the split of the available data that should be used for training and
+                            evaluating the model
+        :param train_x:     The feature matrix of the training examples
+        :param train_y:     The label matrix of the training examples
+        :param test_x:      The feature matrix of the test examples
+        :param test_y:      The label matrix of the test examples
+        """
         base_learner = self.base_learner
         current_learner = clone(base_learner)
 

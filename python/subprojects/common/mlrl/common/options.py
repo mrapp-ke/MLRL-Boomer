@@ -10,17 +10,27 @@ from mlrl.common.format import format_dict_keys, format_enum_values, format_stri
 
 
 class BooleanOption(Enum):
+    """
+    Specifies all valid textual representations of boolean values.
+    """
     TRUE = 'true'
     FALSE = 'false'
 
     @staticmethod
-    def parse(s) -> bool:
-        if s == BooleanOption.TRUE.value:
+    def parse(text: str) -> bool:
+        """
+        Parses a given text that represents a boolean value. If the given text does not represent a valid boolean value,
+        a `ValueError` is raised.
+
+        :param text:    The text to be parsed
+        :return:        True or false, depending on the given text
+        """
+        if text == BooleanOption.TRUE.value:
             return True
-        elif s == BooleanOption.FALSE.value:
+        if text == BooleanOption.FALSE.value:
             return False
         raise ValueError('Invalid boolean value given. Must be one of ' + format_enum_values(BooleanOption)
-                         + ', but is "' + str(s) + '".')
+                         + ', but is "' + str(text) + '".')
 
 
 class Options:
@@ -131,9 +141,9 @@ class Options:
 
             try:
                 value = int(value)
-            except ValueError:
+            except ValueError as error:
                 raise ValueError('Value for key "' + key + '" is expected to be an integer, but is "' + str(value)
-                                 + '"')
+                                 + '"') from error
 
             return value
 
@@ -152,8 +162,9 @@ class Options:
 
             try:
                 value = float(value)
-            except ValueError:
-                raise ValueError('Value for key "' + key + '" is expected to be a float, but is "' + str(value) + '"')
+            except ValueError as error:
+                raise ValueError('Value for key "' + key + '" is expected to be a float, but is "' + str(value)
+                                 + '"') from error
 
             return value
 
@@ -161,6 +172,14 @@ class Options:
 
 
 def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> str:
+    """
+    Parses and returns a parameter value. If the given value is invalid, a `ValueError` is raised.
+
+    :param parameter_name:  The name of the parameter
+    :param value:           The value to be parsed
+    :allowed_values:        A set that contains all valid values
+    :return:                The value that has been parsed
+    """
     if value in allowed_values:
         return value
 
@@ -170,6 +189,16 @@ def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> st
 
 def parse_param_and_options(parameter_name: str, value: str,
                             allowed_values_and_options: Dict[str, Set[str]]) -> Tuple[str, Options]:
+    """
+    Parses and returns a parameter value, as well as additional `Options` that may be associated with it. If the given
+    value is invalid, a `ValueError` is raised.
+    
+    :param parameter_name:              The name of the parameter
+    :param value:                       The value to be parsed
+    :param allowed_values_and_options:  A dictionary that contains all valid values, as well as their options
+    :return:                            A tuple that contains the value that has been parsed, as well as additional
+                                        `Options`.
+    """
     for allowed_value, allowed_options in allowed_values_and_options.items():
         if value.startswith(allowed_value):
             suffix = value[len(allowed_value):].strip()
@@ -177,9 +206,9 @@ def parse_param_and_options(parameter_name: str, value: str,
             if len(suffix) > 0:
                 try:
                     return allowed_value, Options.create(suffix, allowed_options)
-                except ValueError as e:
+                except ValueError as error:
                     raise ValueError('Invalid options specified for parameter "' + parameter_name + '" with value "'
-                                     + allowed_value + '": ' + str(e))
+                                     + allowed_value + '": ' + str(error)) from error
 
             return allowed_value, Options()
 
