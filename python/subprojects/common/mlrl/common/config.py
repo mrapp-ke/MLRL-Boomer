@@ -109,11 +109,12 @@ class NominalParameter(Parameter, ABC):
         A value that can be set for a nominal parameter.
         """
 
-        def __init__(self, name: str, mixin: type, options: Set[str], description: Optional[str]):
+        def __init__(self, name: str, mixin: type, options: Optional[Set[str]], description: Optional[str]):
             """
             :param name:        The name of the value
             :param mixin:       The type of the mixin that must be implemented by a rule learner to support this value
-            :param options:     A set that contains the names of additional options that may be specified
+            :param options:     A set that contains the names of additional options that may be specified or None, if no
+                                additional options are available
             :param description: A textual description of the value
             """
             self.name = name
@@ -131,13 +132,14 @@ class NominalParameter(Parameter, ABC):
         super().__init__(name, description)
         self.values = {}
 
-    def add_value(self, name: str, mixin: type, options: Set[str] = set(), description: Optional[str] = None):
+    def add_value(self, name: str, mixin: type, options: Optional[Set[str]] = None, description: Optional[str] = None):
         """
         Adds a new value to the parameter.
 
         :param name:        The name of the value to be added
         :param mixin:       The type of the mixin that must be implemented by a rule learner to support the value
-        :param options:     A set that contains the names of additional options that may be specified
+        :param options:     A set that contains the names of additional options that may be specified or None, if no
+                            additional options are available
         :param description: A textual description of the value
         :return:            The parameter itself
         """
@@ -161,8 +163,8 @@ class NominalParameter(Parameter, ABC):
         for parameter_value in self.values.values():
             if issubclass(config_type, parameter_value.mixin):
                 options = parameter_value.options
-                num_options += len(options)
-                supported_values[parameter_value.name] = options
+                num_options += 0 if options is None else len(options)
+                supported_values[parameter_value.name] = set() if options is None else options
 
         if num_options == 0:
             supported_values = set(supported_values.keys())
