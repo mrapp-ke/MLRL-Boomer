@@ -56,7 +56,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
             bin_list = self.bins.setdefault(list_index, [])
             bin_list.append((threshold, probability))
 
-        def format(self, options: Options, **kwargs) -> str:
+        def format(self, options: Options, **_) -> str:
             """
             See :func:`mlrl.testbed.output_writer.Formattable.format`
             """
@@ -81,7 +81,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
 
             return result
 
-        def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
             """
             See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
             """
