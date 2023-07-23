@@ -82,7 +82,7 @@ HOLDOUT_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
 HOLDOUT_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
 
-def SkipTestOnCi(decorated_function):
+def skip_test_on_ci(decorated_function):
     """
     A decorator that disables all annotated test case if run on a continuous integration system.
     """
