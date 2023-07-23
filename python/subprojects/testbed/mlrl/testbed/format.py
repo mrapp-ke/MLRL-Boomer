@@ -140,7 +140,7 @@ def filter_formatters(formatters: List[Formatter], options: List[Options]) -> Li
     filtered: List[Formatter] = []
 
     for formatter in formatters:
-        if reduce(lambda a, b: a | b.get_bool(formatter.option, True), options, False):
+        if reduce(lambda aggr, options, option=formatter.option: aggr | options.get_bool(option, True), options, False):
             filtered.append(formatter)
 
     return filtered
