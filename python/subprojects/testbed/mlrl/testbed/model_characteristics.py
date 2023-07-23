@@ -198,7 +198,7 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             default_rule_index = self.default_rule_index
             num_rules = len(self.num_pos_predictions)
             num_total_rules = num_rules if default_rule_index is None else num_rules + 1
-            n = 0
+            j = 0
 
             for i in range(num_total_rules):
                 rule_name = 'Rule ' + str(i + 1)
@@ -212,13 +212,13 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                     num_pos_predictions = self.default_rule_pos_predictions
                     num_neg_predictions = self.default_rule_neg_predictions
                 else:
-                    num_leq = self.num_leq[n]
-                    num_gr = self.num_gr[n]
-                    num_eq = self.num_eq[n]
-                    num_neq = self.num_neq[n]
-                    num_pos_predictions = self.num_pos_predictions[n]
-                    num_neg_predictions = self.num_neg_predictions[n]
-                    n += 1
+                    num_leq = self.num_leq[j]
+                    num_gr = self.num_gr[j]
+                    num_eq = self.num_eq[j]
+                    num_neq = self.num_neq[j]
+                    num_pos_predictions = self.num_pos_predictions[j]
+                    num_neg_predictions = self.num_neg_predictions[j]
+                    j += 1
 
                 num_numerical = num_leq + num_gr
                 num_nominal = num_eq + num_neq
