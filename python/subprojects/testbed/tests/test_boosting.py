@@ -68,7 +68,7 @@ class BoostingCmdBuilder(CmdBuilder):
     """
 
     def __init__(self, data_dir: str = DIR_DATA, dataset: str = DATASET_EMOTIONS):
-        super(BoostingCmdBuilder, self).__init__(cmd=CMD_BOOMER, data_dir=data_dir, dataset=dataset)
+        super().__init__(cmd=CMD_BOOMER, data_dir=data_dir, dataset=dataset)
 
     def feature_binning(self, feature_binning: str = FEATURE_BINNING_EQUAL_WIDTH):
         """
@@ -201,9 +201,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         :param methodName: The name of the test method to be executed
         """
-        super(BoostingIntegrationTests, self).__init__(cmd=CMD_BOOMER,
-                                                       expected_output_dir=path.join(DIR_OUT, CMD_BOOMER),
-                                                       methodName=methodName)
+        super().__init__(cmd=CMD_BOOMER, expected_output_dir=path.join(DIR_OUT, CMD_BOOMER), methodName=methodName)
 
     def test_single_label_regression(self):
         """
