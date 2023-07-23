@@ -88,7 +88,11 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             self.num_pos_predictions = num_pos_predictions
             self.num_neg_predictions = num_neg_predictions
 
-        def format(self, _: Options, **kwargs):
+        # pylint: disable=unused-argument
+        def format(self, options: Options, **_):
+            """
+            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            """
             num_predictions = self.num_pos_predictions + self.num_neg_predictions
             num_conditions = self.num_leq + self.num_gr + self.num_eq + self.num_neq
             num_total_conditions = np.sum(num_conditions)
@@ -191,12 +195,16 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             ])
             return text + format_table(rows, header=header)
 
-        def tabularize(self, _: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+        # pylint: disable=unused-argument
+        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
+            """
+            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            """
             rows = []
             default_rule_index = self.default_rule_index
             num_rules = len(self.num_pos_predictions)
             num_total_rules = num_rules if default_rule_index is None else num_rules + 1
-            n = 0
+            j = 0
 
             for i in range(num_total_rules):
                 rule_name = 'Rule ' + str(i + 1)
@@ -210,13 +218,13 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                     num_pos_predictions = self.default_rule_pos_predictions
                     num_neg_predictions = self.default_rule_neg_predictions
                 else:
-                    num_leq = self.num_leq[n]
-                    num_gr = self.num_gr[n]
-                    num_eq = self.num_eq[n]
-                    num_neq = self.num_neq[n]
-                    num_pos_predictions = self.num_pos_predictions[n]
-                    num_neg_predictions = self.num_neg_predictions[n]
-                    n += 1
+                    num_leq = self.num_leq[j]
+                    num_gr = self.num_gr[j]
+                    num_eq = self.num_eq[j]
+                    num_neq = self.num_neq[j]
+                    num_pos_predictions = self.num_pos_predictions[j]
+                    num_neg_predictions = self.num_neg_predictions[j]
+                    j += 1
 
                 num_numerical = num_leq + num_gr
                 num_nominal = num_eq + num_neq
@@ -256,10 +264,16 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             self.index = -1
 
         def visit_empty_body(self, _: EmptyBody):
+            """
+            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_empty_body`
+            """
             self.index += 1
             self.default_rule_index = self.index
 
         def visit_conjunctive_body(self, body: ConjunctiveBody):
+            """
+            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_conjunctive_body`
+            """
             self.index += 1
             self.num_leq.append(body.leq_indices.shape[0] if body.leq_indices is not None else 0)
             self.num_gr.append(body.gr_indices.shape[0] if body.gr_indices is not None else 0)
@@ -267,6 +281,9 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             self.num_neq.append(body.neq_indices.shape[0] if body.neq_indices is not None else 0)
 
         def visit_complete_head(self, head: CompleteHead):
+            """
+            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_complete_head`
+            """
             num_pos_predictions = np.count_nonzero(head.scores > 0)
             num_neg_predictions = head.scores.shape[0] - num_pos_predictions
 
@@ -278,6 +295,9 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                 self.num_neg_predictions.append(num_neg_predictions)
 
         def visit_partial_head(self, head: PartialHead):
+            """
+            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_partial_head`
+            """
             num_pos_predictions = np.count_nonzero(head.scores > 0)
             num_neg_predictions = head.scores.shape[0] - num_pos_predictions
 
@@ -288,9 +308,7 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                 self.num_pos_predictions.append(num_pos_predictions)
                 self.num_neg_predictions.append(num_neg_predictions)
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
-
+    # pylint: disable=unused-argument
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],

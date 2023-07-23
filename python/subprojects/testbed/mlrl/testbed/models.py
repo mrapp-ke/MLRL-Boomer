@@ -93,6 +93,9 @@ class RuleModelWriter(ModelWriter):
             self.head_decimals = 2
 
         def visit_empty_body(self, _: EmptyBody):
+            """
+            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_empty_body`
+            """
             if self.print_bodies:
                 self.text.write('{}')
 
@@ -140,6 +143,9 @@ class RuleModelWriter(ModelWriter):
             return result
 
         def visit_conjunctive_body(self, body: ConjunctiveBody):
+            """
+            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_conjunctive_body`
+            """
             if self.print_bodies:
                 text = self.text
                 text.write('{')
@@ -150,6 +156,9 @@ class RuleModelWriter(ModelWriter):
                 text.write('}')
 
         def visit_complete_head(self, head: CompleteHead):
+            """
+            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_complete_head`
+            """
             text = self.text
 
             if self.print_heads:
@@ -180,6 +189,9 @@ class RuleModelWriter(ModelWriter):
                 text.write('\n')
 
         def visit_partial_head(self, head: PartialHead):
+            """
+            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_partial_head`
+            """
             text = self.text
 
             if self.print_heads:
@@ -212,7 +224,10 @@ class RuleModelWriter(ModelWriter):
             elif self.print_bodies:
                 text.write('\n')
 
-        def format(self, options: Options, **kwargs) -> str:
+        def format(self, options: Options, **_) -> str:
+            """
+            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            """
             self.print_feature_names = options.get_bool(OPTION_PRINT_FEATURE_NAMES, True)
             self.print_label_names = options.get_bool(OPTION_PRINT_LABEL_NAMES, True)
             self.print_nominal_values = options.get_bool(OPTION_PRINT_NOMINAL_VALUES, True)
@@ -226,9 +241,7 @@ class RuleModelWriter(ModelWriter):
             self.text.close()
             return text
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
-
+    # pylint: disable=unused-argument
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],

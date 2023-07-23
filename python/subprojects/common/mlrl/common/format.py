@@ -46,4 +46,4 @@ def format_dict_keys(dictionary: Dict[str, Set[str]]) -> str:
     :param dictionary:  The dictionary to be formatted
     :return:            The textual representation that has been created
     """
-    return format_string_set({key for key in dictionary.keys()})
+    return format_string_set(dictionary.keys())

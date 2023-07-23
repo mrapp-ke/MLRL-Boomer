@@ -28,20 +28,20 @@ OPTION_LABEL_CARDINALITY = 'label_cardinality'
 OPTION_DISTINCT_LABEL_VECTORS = 'distinct_label_vectors'
 
 
-def density(m) -> float:
+def density(matrix) -> float:
     """
     Calculates and returns the density of a given feature or label matrix.
 
-    :param m:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_rows, num_cols)`, that stores the feature values
-                of training examples or their labels
-    :return:    The fraction of non-zero elements in the given matrix among all elements
+    :param matrix:  A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_rows, num_cols)`, that stores the feature
+                    values of training examples or their labels
+    :return:        The fraction of non-zero elements in the given matrix among all elements
     """
-    num_elements = m.shape[0] * m.shape[1]
+    num_elements = matrix.shape[0] * matrix.shape[1]
 
-    if issparse(m):
-        num_non_zero = m.nnz
+    if issparse(matrix):
+        num_non_zero = matrix.nnz
     else:
-        num_non_zero = np.count_nonzero(m)
+        num_non_zero = np.count_nonzero(matrix)
 
     return num_non_zero / num_elements if num_elements > 0 else 0
 
@@ -74,8 +74,8 @@ def distinct_label_vectors(y) -> int:
     if issparse(y):
         y = y.tolil()
         return np.unique(y.rows).shape[0]
-    else:
-        return np.unique(y, axis=0).shape[0]
+
+    return np.unique(y, axis=0).shape[0]
 
 
 def label_imbalance_ratio(y) -> float:
@@ -96,8 +96,8 @@ def label_imbalance_ratio(y) -> float:
 
     if num_relevant_per_label.shape[0] > 0:
         return np.average(np.max(num_relevant_per_label) / num_relevant_per_label)
-    else:
-        return 0.0
+
+    return 0.0
 
 
 class LabelCharacteristics(Formattable, Tabularizable):
@@ -114,25 +114,43 @@ class LabelCharacteristics(Formattable, Tabularizable):
 
     @cached_property
     def label_density(self):
+        """
+        The density of the label matrix.
+        """
         return density(self._y)
 
     @property
     def label_sparsity(self):
+        """
+        The sparsity of the label matrix.
+        """
         return 1 - self.label_density
 
     @cached_property
     def avg_label_imbalance_ratio(self):
+        """
+        The average label imbalance ratio of the label matrix.
+        """
         return label_imbalance_ratio(self._y)
 
     @cached_property
     def avg_label_cardinality(self):
+        """
+        The average label cardinality of the label matrix.
+        """
         return label_cardinality(self._y)
 
     @cached_property
     def num_distinct_label_vectors(self):
+        """
+        The number of distinct label vectors in the label matrix.
+        """
         return distinct_label_vectors(self._y)
 
-    def format(self, options: Options, **kwargs) -> str:
+    def format(self, options: Options, **_) -> str:
+        """
+        See :func:`mlrl.testbed.output_writer.Formattable.format`
+        """
         percentage = options.get_bool(OPTION_PERCENTAGE, True)
         decimals = options.get_int(OPTION_DECIMALS, 2)
         rows = []
@@ -142,7 +160,10 @@ class LabelCharacteristics(Formattable, Tabularizable):
 
         return format_table(rows)
 
-    def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+    def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
+        """
+        See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+        """
         percentage = options.get_bool(OPTION_PERCENTAGE, True)
         decimals = options.get_int(OPTION_DECIMALS, 0)
         columns = {}
@@ -166,6 +187,9 @@ class Characteristic(Formatter):
         self.getter_function = getter_function
 
     def format(self, value, **kwargs) -> str:
+        """
+        See :func:`mlrl.testbed.output_writer.Formattable.format`
+        """
         return super().format(self.getter_function(value), **kwargs)
 
 

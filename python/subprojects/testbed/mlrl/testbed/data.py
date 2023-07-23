@@ -4,10 +4,10 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides functions for handling multi-label data.
 """
 import logging as log
-import os.path as path
 import xml.etree.ElementTree as XmlTree
 
 from enum import Enum, auto
+from os import path
 from typing import List, Optional, Set, Tuple
 from xml.dom import minidom
 
@@ -18,9 +18,9 @@ from scipy.sparse import coo_matrix, csc_matrix, dok_matrix, issparse, lil_matri
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 
-from mlrl.common.data_types import DTYPE_FLOAT32, DTYPE_UINT8
+from mlrl.common.data_types import Float32, Uint8
 
-from mlrl.testbed.io import write_xml_file
+from mlrl.testbed.io import ENCODING_UTF8, write_xml_file
 
 
 class AttributeType(Enum):
@@ -54,7 +54,7 @@ class Label(Attribute):
     """
 
     def __init__(self, name: str):
-        super(Label, self).__init__(name, AttributeType.NOMINAL, [str(0), str(1)])
+        super().__init__(name, AttributeType.NOMINAL, [str(0), str(1)])
 
 
 class MetaData:
@@ -90,8 +90,8 @@ class MetaData:
 def load_data_set_and_meta_data(data_dir: str,
                                 arff_file_name: str,
                                 xml_file_name: str,
-                                feature_dtype=DTYPE_FLOAT32,
-                                label_dtype=DTYPE_UINT8) -> Tuple[lil_matrix, lil_matrix, MetaData]:
+                                feature_dtype=Float32,
+                                label_dtype=Uint8) -> Tuple[lil_matrix, lil_matrix, MetaData]:
     """
     Loads a multi-label data set from an ARFF file and the corresponding Mulan XML file.
 
@@ -131,8 +131,8 @@ def load_data_set_and_meta_data(data_dir: str,
 def load_data_set(data_dir: str,
                   arff_file_name: str,
                   meta_data: MetaData,
-                  feature_dtype=DTYPE_FLOAT32,
-                  label_dtype=DTYPE_UINT8) -> Tuple[lil_matrix, lil_matrix]:
+                  feature_dtype=Float32,
+                  label_dtype=Uint8) -> Tuple[lil_matrix, lil_matrix]:
     """
     Loads a multi-label data set from an ARFF file given its meta-data.
 
@@ -208,7 +208,7 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     :param meta_data:       The meta-data of the data set that should be saved
     """
     arff_file = path.join(output_dir, arff_file_name)
-    log.debug('Saving data set to file \'' + str(arff_file) + '\'...')
+    log.debug('Saving data set to file \'%s\'...', str(arff_file))
     sparse = issparse(x) and issparse(y)
     x = dok_matrix(x)
     y = dok_matrix(y)
@@ -216,14 +216,14 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     y_prefix = 0
 
     attributes = meta_data.attributes
-    x_attributes = [(u'{}'.format(attributes[i].attribute_name if len(attributes) > i else 'X' + str(i)),
-                     u'NUMERIC' if len(attributes) <= i or attributes[i].nominal_values is None
+    x_attributes = [(attributes[i].attribute_name if len(attributes) > i else 'X' + str(i),
+                     'NUMERIC' if len(attributes) <= i or attributes[i].nominal_values is None
                      or attributes[i].attribute_type == AttributeType.NUMERICAL else attributes[i].nominal_values)
                     for i in range(x.shape[1])]
 
     labels = meta_data.labels
-    y_attributes = [(u'{}'.format(labels[i].attribute_name if len(labels) > i else 'y' + str(i)),
-                     u'NUMERIC' if len(labels) <= i or labels[i].nominal_values is None
+    y_attributes = [(labels[i].attribute_name if len(labels) > i else 'y' + str(i),
+                     'NUMERIC' if len(labels) <= i or labels[i].nominal_values is None
                      or labels[i].attribute_type == AttributeType.NUMERICAL else labels[i].nominal_values)
                     for i in range(y.shape[1])]
 
@@ -247,15 +247,15 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     for keys, value in list(y.items()):
         data[keys[0]][y_prefix + keys[1]] = value
 
-    with open(arff_file, 'w') as file:
+    with open(arff_file, 'w', encoding=ENCODING_UTF8) as file:
         file.write(
             arff.dumps({
-                u'description': u'traindata',
-                u'relation': u'traindata: -C {}'.format(y.shape[1] * relation_sign),
-                u'attributes': attributes,
-                u'data': data
+                'description': 'traindata',
+                'relation': 'traindata: -C ' + str(y.shape[1] * relation_sign),
+                'attributes': attributes,
+                'data': data
             }))
-    log.info('Successfully saved data set to file \'' + str(arff_file) + '\'.')
+    log.info('Successfully saved data set to file \'%s\'.', str(arff_file))
 
 
 def save_meta_data(output_dir: str, xml_file_name: str, meta_data: MetaData):
@@ -267,9 +267,9 @@ def save_meta_data(output_dir: str, xml_file_name: str, meta_data: MetaData):
     :param meta_data:       The meta-data of the data set
     """
     xml_file = path.join(output_dir, xml_file_name)
-    log.debug('Saving meta data to file \'' + str(xml_file) + '\'...')
+    log.debug('Saving meta data to file \'%s\'...', str(xml_file))
     __write_meta_data(xml_file, meta_data)
-    log.info('Successfully saved meta data to file \'' + str(xml_file) + '\'.')
+    log.info('Successfully saved meta data to file \'%s\'.', str(xml_file))
 
 
 def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
@@ -313,9 +313,9 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
         log.info('Original data set contained %s attributes, one-hot encoded data set contains %s attributes',
                  old_shape[1], new_shape[1])
         return x, encoder, updated_meta_data
-    else:
-        log.debug('No need to apply one-hot encoding, as the data set does not contain any nominal attributes.')
-        return x, None, meta_data
+
+    log.debug('No need to apply one-hot encoding, as the data set does not contain any nominal attributes.')
+    return x, None, meta_data
 
 
 def __create_feature_and_label_matrix(matrix: csc_matrix, meta_data: MetaData,
@@ -383,7 +383,7 @@ def __load_arff_as_dict(arff_file: str, sparse: bool) -> dict:
                         incorrect, a `arff.BadLayout` will be raised
     :return:            A dictionary that stores the content of the ARFF file
     """
-    with open(arff_file, 'r') as file:
+    with open(arff_file, 'r', encoding=ENCODING_UTF8) as file:
         sparse_format = arff.COO if sparse else arff.DENSE
         return arff.load(file, encode_nominal=True, return_type=sparse_format)
 
@@ -433,7 +433,7 @@ def __create_meta_data(attributes: list, labels: List[Attribute]) -> MetaData:
     attribute_list = []
     labels_at_start = False
 
-    for i, attribute in enumerate(attributes):
+    for attribute in attributes:
         attribute_name = __parse_attribute_or_label_name(attribute[0])
 
         if attribute_name not in label_names:
@@ -448,7 +448,7 @@ def __create_meta_data(attributes: list, labels: List[Attribute]) -> MetaData:
 
                 if type_definition == 'integer':
                     attribute_type = AttributeType.ORDINAL
-                elif type_definition == 'real' or type_definition == 'numeric':
+                elif type_definition in ('real', 'numeric'):
                     attribute_type = AttributeType.NUMERICAL
                 else:
                     raise ValueError('Encountered unsupported attribute type: ' + type_definition)

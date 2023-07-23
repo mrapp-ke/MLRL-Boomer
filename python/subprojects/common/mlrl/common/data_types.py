@@ -5,12 +5,12 @@ Provides type definitions.
 """
 import numpy as np
 
-DTYPE_INT64 = np.int64
+Int64 = np.int64
 
-DTYPE_UINT8 = np.uint8
+Uint8 = np.uint8
 
-DTYPE_UINT32 = np.uint32
+Uint32 = np.uint32
 
-DTYPE_FLOAT32 = np.float32
+Float32 = np.float32
 
-DTYPE_FLOAT64 = np.float64
+Float64 = np.float64

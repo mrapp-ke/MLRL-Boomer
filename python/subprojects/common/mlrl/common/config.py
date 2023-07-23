@@ -5,7 +5,7 @@ Provides utilities that ease the configuration of rule learning algorithms.
 """
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
-from typing import Dict, Optional, Set
+from typing import Optional, Set
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, EqualFrequencyFeatureBinningMixin, \
     EqualWidthFeatureBinningMixin, ExampleWiseStratifiedBiPartitionSamplingMixin, \
@@ -76,7 +76,6 @@ class Parameter(ABC):
         :param config:  The configuration to be modified
         :param value:   The value to be set
         """
-        pass
 
     @abstractmethod
     def add_to_argument_parser(self, parser: ArgumentParser, config_type: type):
@@ -84,17 +83,19 @@ class Parameter(ABC):
         Adds a command line argument that corresponds to this parameter to an `ArgumentParser` if it is supported by a
         configuration of a specific type.
         """
-        pass
+
+    @property
+    def argument_name(self) -> str:
+        """
+        The name of a command line argument that corresponds to the parameter.
+        """
+        return '--' + self.name.replace('_', '-')
 
     def __eq__(self, other):
         return self.name == other.name
 
     def __hash__(self):
         return hash(self.name)
-
-    @property
-    def argument_name(self) -> str:
-        return '--' + self.name.replace('_', '-')
 
 
 class NominalParameter(Parameter, ABC):
@@ -108,11 +109,12 @@ class NominalParameter(Parameter, ABC):
         A value that can be set for a nominal parameter.
         """
 
-        def __init__(self, name: str, mixin: type, options: Set[str], description: Optional[str]):
+        def __init__(self, name: str, mixin: type, options: Optional[Set[str]], description: Optional[str]):
             """
             :param name:        The name of the value
             :param mixin:       The type of the mixin that must be implemented by a rule learner to support this value
-            :param options:     A set that contains the names of additional options that may be specified
+            :param options:     A set that contains the names of additional options that may be specified or None, if no
+                                additional options are available
             :param description: A textual description of the value
             """
             self.name = name
@@ -130,13 +132,14 @@ class NominalParameter(Parameter, ABC):
         super().__init__(name, description)
         self.values = {}
 
-    def add_value(self, name: str, mixin: type, options: Set[str] = set(), description: Optional[str] = None):
+    def add_value(self, name: str, mixin: type, options: Optional[Set[str]] = None, description: Optional[str] = None):
         """
         Adds a new value to the parameter.
 
         :param name:        The name of the value to be added
         :param mixin:       The type of the mixin that must be implemented by a rule learner to support the value
-        :param options:     A set that contains the names of additional options that may be specified
+        :param options:     A set that contains the names of additional options that may be specified or None, if no
+                            additional options are available
         :param description: A textual description of the value
         :return:            The parameter itself
         """
@@ -152,7 +155,6 @@ class NominalParameter(Parameter, ABC):
         :param value:   The nominal value to be set
         :param options: Additional options that have eventually been specified
         """
-        pass
 
     def __get_supported_values(self, config_type: type):
         num_options = 0
@@ -161,11 +163,11 @@ class NominalParameter(Parameter, ABC):
         for parameter_value in self.values.values():
             if issubclass(config_type, parameter_value.mixin):
                 options = parameter_value.options
-                num_options += len(options)
-                supported_values[parameter_value.name] = options
+                num_options += 0 if options is None else len(options)
+                supported_values[parameter_value.name] = set() if options is None else options
 
         if num_options == 0:
-            supported_values = {value for value in supported_values.keys()}
+            supported_values = set(supported_values.keys())
 
         return supported_values
 
@@ -175,7 +177,7 @@ class NominalParameter(Parameter, ABC):
         if len(supported_values) > 0:
             value = str(value)
 
-            if type(supported_values) == dict:
+            if isinstance(supported_values, dict):
                 value, options = parse_param_and_options(self.name, value, supported_values)
             else:
                 value = parse_param(self.name, value, supported_values)
@@ -190,10 +192,10 @@ class NominalParameter(Parameter, ABC):
             description = self.description
             description += '. Must be one of '
 
-            if type(supported_values) == dict:
+            if isinstance(supported_values, dict):
                 description += format_dict_keys(supported_values)
                 suffix = ' For additional options refer to the documentation.'
-                supported_values = {value for value in supported_values.keys()}
+                supported_values = set(supported_values.keys())
             else:
                 description += format_string_set(supported_values)
                 suffix = ''
@@ -234,7 +236,6 @@ class NumericalParameter(Parameter, ABC):
         :param config:  The configuration to be modified
         :param value:   The numerical value to be set
         """
-        pass
 
     def __is_supported(self, config_type: type):
         return issubclass(config_type, self.mixin)
@@ -312,23 +313,25 @@ class RuleInductionParameter(NominalParameter):
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == self.RULE_INDUCTION_TOP_DOWN_GREEDY:
-            c = config.use_greedy_top_down_rule_induction()
-            c.set_min_coverage(options.get_int(self.OPTION_MIN_COVERAGE, c.get_min_coverage()))
-            c.set_min_support(options.get_float(self.OPTION_MIN_SUPPORT, c.get_min_support()))
-            c.set_max_conditions(options.get_int(self.OPTION_MAX_CONDITIONS, c.get_max_conditions()))
-            c.set_max_head_refinements(options.get_int(self.OPTION_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))
-            c.set_recalculate_predictions(
-                options.get_bool(self.OPTION_RECALCULATE_PREDICTIONS, c.are_predictions_recalculated()))
+            conf = config.use_greedy_top_down_rule_induction()
+            conf.set_min_coverage(options.get_int(self.OPTION_MIN_COVERAGE, conf.get_min_coverage()))
+            conf.set_min_support(options.get_float(self.OPTION_MIN_SUPPORT, conf.get_min_support()))
+            conf.set_max_conditions(options.get_int(self.OPTION_MAX_CONDITIONS, conf.get_max_conditions()))
+            conf.set_max_head_refinements(
+                options.get_int(self.OPTION_MAX_HEAD_REFINEMENTS, conf.get_max_head_refinements()))
+            conf.set_recalculate_predictions(
+                options.get_bool(self.OPTION_RECALCULATE_PREDICTIONS, conf.are_predictions_recalculated()))
         elif value == self.RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH:
-            c = config.use_beam_search_top_down_rule_induction()
-            c.set_min_coverage(options.get_int(self.OPTION_MIN_COVERAGE, c.get_min_coverage()))
-            c.set_min_support(options.get_float(self.OPTION_MIN_SUPPORT, c.get_min_support()))
-            c.set_max_conditions(options.get_int(self.OPTION_MAX_CONDITIONS, c.get_max_conditions()))
-            c.set_max_head_refinements(options.get_int(self.OPTION_MAX_HEAD_REFINEMENTS, c.get_max_head_refinements()))
-            c.set_recalculate_predictions(
-                options.get_bool(self.OPTION_RECALCULATE_PREDICTIONS, c.are_predictions_recalculated()))
-            c.set_beam_width(options.get_int(self.OPTION_BEAM_WIDTH, c.get_beam_width()))
-            c.set_resample_features(options.get_bool(OPTION_RESAMPLE_FEATURES, c.are_features_resampled()))
+            conf = config.use_beam_search_top_down_rule_induction()
+            conf.set_min_coverage(options.get_int(self.OPTION_MIN_COVERAGE, conf.get_min_coverage()))
+            conf.set_min_support(options.get_float(self.OPTION_MIN_SUPPORT, conf.get_min_support()))
+            conf.set_max_conditions(options.get_int(self.OPTION_MAX_CONDITIONS, conf.get_max_conditions()))
+            conf.set_max_head_refinements(
+                options.get_int(self.OPTION_MAX_HEAD_REFINEMENTS, conf.get_max_head_refinements()))
+            conf.set_recalculate_predictions(
+                options.get_bool(self.OPTION_RECALCULATE_PREDICTIONS, conf.are_predictions_recalculated()))
+            conf.set_beam_width(options.get_int(self.OPTION_BEAM_WIDTH, conf.get_beam_width()))
+            conf.set_resample_features(options.get_bool(OPTION_RESAMPLE_FEATURES, conf.are_features_resampled()))
 
 
 class FeatureBinningParameter(NominalParameter):
@@ -350,15 +353,15 @@ class FeatureBinningParameter(NominalParameter):
         if value == NONE:
             config.use_no_feature_binning()
         elif value == BINNING_EQUAL_FREQUENCY:
-            c = config.use_equal_frequency_feature_binning()
-            c.set_bin_ratio(options.get_float(OPTION_BIN_RATIO, c.get_bin_ratio()))
-            c.set_min_bins(options.get_int(OPTION_MIN_BINS, c.get_min_bins()))
-            c.set_max_bins(options.get_int(OPTION_MAX_BINS, c.get_max_bins()))
+            conf = config.use_equal_frequency_feature_binning()
+            conf.set_bin_ratio(options.get_float(OPTION_BIN_RATIO, conf.get_bin_ratio()))
+            conf.set_min_bins(options.get_int(OPTION_MIN_BINS, conf.get_min_bins()))
+            conf.set_max_bins(options.get_int(OPTION_MAX_BINS, conf.get_max_bins()))
         elif value == BINNING_EQUAL_WIDTH:
-            c = config.use_equal_width_feature_binning()
-            c.set_bin_ratio(options.get_float(OPTION_BIN_RATIO, c.get_bin_ratio()))
-            c.set_min_bins(options.get_int(OPTION_MIN_BINS, c.get_min_bins()))
-            c.set_max_bins(options.get_int(OPTION_MAX_BINS, c.get_max_bins()))
+            conf = config.use_equal_width_feature_binning()
+            conf.set_bin_ratio(options.get_float(OPTION_BIN_RATIO, conf.get_bin_ratio()))
+            conf.set_min_bins(options.get_int(OPTION_MIN_BINS, conf.get_min_bins()))
+            conf.set_max_bins(options.get_int(OPTION_MAX_BINS, conf.get_max_bins()))
 
 
 class LabelSamplingParameter(NominalParameter):
@@ -380,8 +383,8 @@ class LabelSamplingParameter(NominalParameter):
         if value == NONE:
             config.use_no_label_sampling()
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
-            c = config.use_label_sampling_without_replacement()
-            c.set_num_samples(options.get_int(OPTION_NUM_SAMPLES, c.get_num_samples()))
+            conf = config.use_label_sampling_without_replacement()
+            conf.set_num_samples(options.get_int(OPTION_NUM_SAMPLES, conf.get_num_samples()))
         elif value == self.LABEL_SAMPLING_ROUND_ROBIN:
             config.use_round_robin_label_sampling()
 
@@ -412,17 +415,17 @@ class InstanceSamplingParameter(NominalParameter):
         if value == NONE:
             config.use_no_instance_sampling()
         elif value == SAMPLING_WITH_REPLACEMENT:
-            c = config.use_instance_sampling_with_replacement()
-            c.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, c.get_sample_size()))
+            conf = config.use_instance_sampling_with_replacement()
+            conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
-            c = config.use_instance_sampling_without_replacement()
-            c.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, c.get_sample_size()))
+            conf = config.use_instance_sampling_without_replacement()
+            conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
         elif value == SAMPLING_STRATIFIED_LABEL_WISE:
-            c = config.use_label_wise_stratified_instance_sampling()
-            c.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, c.get_sample_size()))
+            conf = config.use_label_wise_stratified_instance_sampling()
+            conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
         elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
-            c = config.use_example_wise_stratified_instance_sampling()
-            c.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, c.get_sample_size()))
+            conf = config.use_example_wise_stratified_instance_sampling()
+            conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
 
 
 class FeatureSamplingParameter(NominalParameter):
@@ -444,9 +447,9 @@ class FeatureSamplingParameter(NominalParameter):
         if value == NONE:
             config.use_no_feature_sampling()
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
-            c = config.use_feature_sampling_without_replacement()
-            c.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, c.get_sample_size()))
-            c.set_num_retained(options.get_int(self.OPTION_NUM_RETAINED, c.get_num_retained()))
+            conf = config.use_feature_sampling_without_replacement()
+            conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
+            conf.set_num_retained(options.get_int(self.OPTION_NUM_RETAINED, conf.get_num_retained()))
 
 
 class PartitionSamplingParameter(NominalParameter):
@@ -475,14 +478,14 @@ class PartitionSamplingParameter(NominalParameter):
         if value == NONE:
             config.use_no_partition_sampling()
         elif value == self.PARTITION_SAMPLING_RANDOM:
-            c = config.use_random_bi_partition_sampling()
-            c.set_holdout_set_size(options.get_float(self.OPTION_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
+            conf = config.use_random_bi_partition_sampling()
+            conf.set_holdout_set_size(options.get_float(self.OPTION_HOLDOUT_SET_SIZE, conf.get_holdout_set_size()))
         elif value == SAMPLING_STRATIFIED_LABEL_WISE:
-            c = config.use_label_wise_stratified_bi_partition_sampling()
-            c.set_holdout_set_size(options.get_float(self.OPTION_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
+            conf = config.use_label_wise_stratified_bi_partition_sampling()
+            conf.set_holdout_set_size(options.get_float(self.OPTION_HOLDOUT_SET_SIZE, conf.get_holdout_set_size()))
         elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
-            c = config.use_example_wise_stratified_bi_partition_sampling()
-            c.set_holdout_set_size(options.get_float(self.OPTION_HOLDOUT_SET_SIZE, c.get_holdout_set_size()))
+            conf = config.use_example_wise_stratified_bi_partition_sampling()
+            conf.set_holdout_set_size(options.get_float(self.OPTION_HOLDOUT_SET_SIZE, conf.get_holdout_set_size()))
 
 
 class GlobalPruningParameter(NominalParameter):
@@ -543,34 +546,35 @@ class GlobalPruningParameter(NominalParameter):
 
         if value == self.AGGREGATION_FUNCTION_MIN:
             return AggregationFunction.MIN
-        elif value == self.AGGREGATION_FUNCTION_MAX:
+        if value == self.AGGREGATION_FUNCTION_MAX:
             return AggregationFunction.MAX
-        elif value == self.AGGREGATION_FUNCTION_ARITHMETIC_MEAN:
-            return AggregationFunction.ARITHMETIC_MEAN
+        return AggregationFunction.ARITHMETIC_MEAN
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == NONE:
             config.use_no_global_pruning()
         elif value == self.GLOBAL_PRUNING_POST:
-            c = config.use_global_post_pruning()
-            c.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, c.is_holdout_set_used()))
-            c.set_remove_unused_rules(options.get_bool(self.OPTION_REMOVE_UNUSED_RULES, c.is_remove_unused_rules()))
-            c.set_min_rules(options.get_int(self.OPTION_MIN_RULES, c.get_min_rules()))
-            c.set_interval(options.get_int(self.OPTION_INTERVAL, c.get_interval()))
+            conf = config.use_global_post_pruning()
+            conf.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, conf.is_holdout_set_used()))
+            conf.set_remove_unused_rules(
+                options.get_bool(self.OPTION_REMOVE_UNUSED_RULES, conf.is_remove_unused_rules()))
+            conf.set_min_rules(options.get_int(self.OPTION_MIN_RULES, conf.get_min_rules()))
+            conf.set_interval(options.get_int(self.OPTION_INTERVAL, conf.get_interval()))
         elif value == self.GLOBAL_PRUNING_PRE:
-            c = config.use_global_pre_pruning()
-            c.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, c.is_holdout_set_used()))
-            c.set_remove_unused_rules(options.get_bool(self.OPTION_REMOVE_UNUSED_RULES, c.is_remove_unused_rules()))
-            c.set_min_rules(options.get_int(self.OPTION_MIN_RULES, c.get_min_rules()))
+            conf = config.use_global_pre_pruning()
+            conf.set_use_holdout_set(options.get_bool(OPTION_USE_HOLDOUT_SET, conf.is_holdout_set_used()))
+            conf.set_remove_unused_rules(
+                options.get_bool(self.OPTION_REMOVE_UNUSED_RULES, conf.is_remove_unused_rules()))
+            conf.set_min_rules(options.get_int(self.OPTION_MIN_RULES, conf.get_min_rules()))
             aggregation_function = options.get_string(self.OPTION_AGGREGATION_FUNCTION, None)
-            c.set_aggregation_function(
-                self.__create_aggregation_function(aggregation_function) if aggregation_function is not None else c
+            conf.set_aggregation_function(
+                self.__create_aggregation_function(aggregation_function) if aggregation_function is not None else conf
                 .get_aggregation_function())
-            c.set_update_interval(options.get_int(self.OPTION_UPDATE_INTERVAL, c.get_update_interval()))
-            c.set_stop_interval(options.get_int(self.OPTION_STOP_INTERVAL, c.get_stop_interval()))
-            c.set_num_past(options.get_int(self.OPTION_NUM_PAST, c.get_num_past()))
-            c.set_num_current(options.get_int(self.OPTION_NUM_RECENT, c.get_num_current()))
-            c.set_min_improvement(options.get_float(self.OPTION_MIN_IMPROVEMENT, c.get_min_improvement()))
+            conf.set_update_interval(options.get_int(self.OPTION_UPDATE_INTERVAL, conf.get_update_interval()))
+            conf.set_stop_interval(options.get_int(self.OPTION_STOP_INTERVAL, conf.get_stop_interval()))
+            conf.set_num_past(options.get_int(self.OPTION_NUM_PAST, conf.get_num_past()))
+            conf.set_num_current(options.get_int(self.OPTION_NUM_RECENT, conf.get_num_current()))
+            conf.set_min_improvement(options.get_float(self.OPTION_MIN_IMPROVEMENT, conf.get_min_improvement()))
 
 
 class RulePruningParameter(NominalParameter):
@@ -609,8 +613,8 @@ class ParallelRuleRefinementParameter(NominalParameter):
         if value == BooleanOption.FALSE.value:
             config.use_no_parallel_rule_refinement()
         else:
-            c = config.use_parallel_rule_refinement()
-            c.set_num_threads(options.get_int(OPTION_NUM_THREADS, c.get_num_threads()))
+            conf = config.use_parallel_rule_refinement()
+            conf.set_num_threads(options.get_int(OPTION_NUM_THREADS, conf.get_num_threads()))
 
 
 class ParallelStatisticUpdateParameter(NominalParameter):
@@ -630,8 +634,8 @@ class ParallelStatisticUpdateParameter(NominalParameter):
         if value == BooleanOption.FALSE.value:
             config.use_no_parallel_statistic_update()
         else:
-            c = config.use_parallel_statistic_update()
-            c.set_num_threads(options.get_int(OPTION_NUM_THREADS, c.get_num_threads()))
+            conf = config.use_parallel_statistic_update()
+            conf.set_num_threads(options.get_int(OPTION_NUM_THREADS, conf.get_num_threads()))
 
 
 class ParallelPredictionParameter(NominalParameter):
@@ -650,8 +654,8 @@ class ParallelPredictionParameter(NominalParameter):
         if value == BooleanOption.FALSE.value:
             config.use_no_parallel_prediction()
         else:
-            c = config.use_parallel_prediction()
-            c.set_num_threads(options.get_int(OPTION_NUM_THREADS, c.get_num_threads()))
+            conf = config.use_parallel_prediction()
+            conf.set_num_threads(options.get_int(OPTION_NUM_THREADS, conf.get_num_threads()))
 
 
 class SizeStoppingCriterionParameter(IntParameter):
@@ -716,10 +720,10 @@ class SequentialPostOptimizationParameter(NominalParameter):
         if value == BooleanOption.FALSE.value:
             config.use_no_sequential_post_optimization()
         elif value == BooleanOption.TRUE.value:
-            c = config.use_sequential_post_optimization()
-            c.set_num_iterations(options.get_int(self.OPTION_NUM_ITERATIONS, c.get_num_iterations()))
-            c.set_refine_heads(options.get_bool(self.OPTION_REFINE_HEADS, c.are_heads_refined()))
-            c.set_resample_features(options.get_bool(OPTION_RESAMPLE_FEATURES, c.are_features_resampled()))
+            conf = config.use_sequential_post_optimization()
+            conf.set_num_iterations(options.get_int(self.OPTION_NUM_ITERATIONS, conf.get_num_iterations()))
+            conf.set_refine_heads(options.get_bool(self.OPTION_REFINE_HEADS, conf.are_heads_refined()))
+            conf.set_resample_features(options.get_bool(OPTION_RESAMPLE_FEATURES, conf.are_features_resampled()))
 
 
 RULE_LEARNER_PARAMETERS = {

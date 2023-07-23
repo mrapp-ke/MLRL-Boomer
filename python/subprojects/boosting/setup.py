@@ -13,16 +13,29 @@ VERSION = (Path(__file__).resolve().parent.parent.parent.parent / 'VERSION').rea
 
 
 class PrecompiledExtension(Extension):
+    """
+    Represents a pre-compiled extension module.
+    """
 
-    def __init__(self, name, path):
+    def __init__(self, name: str, path: Path):
+        """
+        :param name:    The name of the extension module
+        :param path:    The path of the extension module
+        """
         super().__init__(name, [])
         self.name = name
         self.path = path
 
 
 class PrecompiledExtensionBuilder(build_ext):
+    """
+    Copies pre-compiled extension modules into the build directory.
+    """
 
     def build_extension(self, ext):
+        """
+        See :func:`setuptools.command.build_ext.build_extension`
+        """
         if isinstance(ext, PrecompiledExtension):
             build_dir = Path(self.get_ext_fullpath(ext.name)).parent
             target_file = Path(os.path.join(build_dir, ext.path))
@@ -33,6 +46,11 @@ class PrecompiledExtensionBuilder(build_ext):
 
 
 def find_extensions(directory):
+    """
+    Finds and returns all pre-compiled extension modules.
+
+    :return: A list that contains all pre-comiled extension modules that have been found
+    """
     extensions = []
 
     for path, _, file_names in os.walk(directory):
@@ -41,7 +59,7 @@ def find_extensions(directory):
                     or '.dll' in file_name:
                 extension_path = Path(os.path.join(path, file_name))
                 extension_name = file_name[:file_name.find('.')]
-                extensions.append(PrecompiledExtension(extension_name, extension_path))
+                extensions.append(PrecompiledExtension(name=extension_name, path=extension_path))
 
     return extensions
 

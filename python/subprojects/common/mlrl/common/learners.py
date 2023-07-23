@@ -19,6 +19,14 @@ class OrdinalAttributeLearner(ABC):
 
     ordinal_attribute_indices: Optional[List[int]] = None
 
+    def set_ordinal_attribute_indices(self, indices):
+        """
+        Sets the indices of all ordinal attributes.
+
+        :param indices: A `np.ndarray` or `Iterable` that stores the indices to be set
+        """
+        self.ordinal_attribute_indices = None if indices is None else list(indices)
+
 
 class NominalAttributeLearner(ABC):
     """
@@ -26,6 +34,14 @@ class NominalAttributeLearner(ABC):
     """
 
     nominal_attribute_indices: Optional[List[int]] = None
+
+    def set_nominal_attribute_indices(self, indices):
+        """
+        Sets the indices of all nominal attributes.
+        
+        :param indices: A `np.ndarray` or `Iterable` that stores the indices to be set
+        """
+        self.nominal_attribute_indices = None if indices is None else list(indices)
 
 
 class IncrementalLearner(ABC):
@@ -55,7 +71,6 @@ class IncrementalLearner(ABC):
 
             :return: The number of remaining ensemble members
             """
-            pass
 
         @abstractmethod
         def apply_next(self, step_size: int):
@@ -67,7 +82,6 @@ class IncrementalLearner(ABC):
             :return:            A `numpy.ndarray` or `scipy.sparse` matrix of shape `(num_examples, num_labels)`, that
                                 stores the updated prediction for individual examples and labels
             """
-            pass
 
     def predict_incrementally(self, x, **kwargs) -> IncrementalPredictor:
         """
@@ -83,8 +97,7 @@ class IncrementalLearner(ABC):
 
         if bool(kwargs.get(KWARG_PREDICT_SCORES, False)):
             return self._predict_scores_incrementally(x, **kwargs)
-        else:
-            return self._predict_binary_incrementally(x, **kwargs)
+        return self._predict_binary_incrementally(x, **kwargs)
 
     def predict_proba_incrementally(self, x, **kwargs) -> IncrementalPredictor:
         """
@@ -137,6 +150,7 @@ class Learner(BaseEstimator, ABC):
     A base class for all single- or multi-label classifiers or rankers.
     """
 
+    # pylint: disable=attribute-defined-outside-init
     def fit(self, x, y, **kwargs):
         """
         Fits a model to given training examples and their corresponding ground truth labels.
@@ -164,8 +178,7 @@ class Learner(BaseEstimator, ABC):
 
         if bool(kwargs.get(KWARG_PREDICT_SCORES, False)):
             return self._predict_scores(x, **kwargs)
-        else:
-            return self._predict_binary(x, **kwargs)
+        return self._predict_binary(x, **kwargs)
 
     def predict_proba(self, x, **kwargs):
         """
@@ -191,7 +204,6 @@ class Learner(BaseEstimator, ABC):
                     labels of the training examples according to the ground truth
         :return:    The model that has been trained
         """
-        pass
 
     def _predict_binary(self, x, **kwargs):
         """

@@ -6,7 +6,7 @@ e.g., to the console or to a file.
 """
 import sys
 
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 import numpy as np
 
@@ -38,7 +38,10 @@ class PredictionWriter(OutputWriter):
             self.predictions = predictions
             self.ground_truth = ground_truth
 
-        def format(self, options: Options, **kwargs) -> str:
+        def format(self, options: Options, **_) -> str:
+            """
+            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            """
             decimals = options.get_int(OPTION_DECIMALS, 2)
             precision = decimals if decimals > 0 else None
             text = 'Ground truth:\n\n'
@@ -68,7 +71,10 @@ class PredictionWriter(OutputWriter):
             self.output_dir = output_dir
 
         def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
-                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+                         prediction_scope: Optional[PredictionScope], output_data, **_):
+            """
+            See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
+            """
             decimals = self.options.get_int(OPTION_DECIMALS, 0)
             ground_truth = output_data.ground_truth
             predictions = output_data.predictions
@@ -83,9 +89,7 @@ class PredictionWriter(OutputWriter):
             prediction_meta_data = MetaData(attributes, labels, labels_at_start=False)
             save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
-
+    # pylint: disable=unused-argument
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],

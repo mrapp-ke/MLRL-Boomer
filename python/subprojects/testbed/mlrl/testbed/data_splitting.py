@@ -5,11 +5,11 @@ Provides classes for training and evaluating multi-label classifiers using eithe
 and test sets.
 """
 import logging as log
-import os.path as path
 
 from abc import ABC, abstractmethod
 from enum import Enum
 from functools import reduce
+from os import path
 from timeit import default_timer as timer
 from typing import List, Optional
 
@@ -50,7 +50,6 @@ class DataSplit(ABC):
 
         :return: True, if the training data is separated from the test data, False otherwise
         """
-        pass
 
     @abstractmethod
     def get_num_folds(self) -> int:
@@ -59,7 +58,6 @@ class DataSplit(ABC):
 
         :return: The total number of cross validation folds or 1, if no cross validation is used
         """
-        pass
 
     @abstractmethod
     def get_fold(self) -> Optional[int]:
@@ -68,7 +66,6 @@ class DataSplit(ABC):
 
         :return: The cross validation fold, starting at 0, or None, if no cross validation is used
         """
-        pass
 
     @abstractmethod
     def is_last_fold(self) -> bool:
@@ -77,7 +74,6 @@ class DataSplit(ABC):
 
         :return: True, if this split corresponds to the last fold, False otherwise
         """
-        pass
 
     def is_cross_validation_used(self) -> bool:
         """
@@ -207,18 +203,16 @@ class DataSplitter(ABC):
         @abstractmethod
         def train_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, train_x, train_y, test_x, test_y):
             """
-            The function that is invoked to build a multi-label classifier or ranker on a training set and evaluate it
-            on a test set.
+            The function that is invoked to train a model on a training set and evaluate it on a test set.
 
             :param meta_data:   The meta-data of the training data set
-            :param data_split:  Information about the split of the available data that should be used for building and
-                                evaluating a classifier or ranker
+            :param data_split:  Information about the split of the available data that should be used for training and
+                                evaluating the model
             :param train_x:     The feature matrix of the training examples
             :param train_y:     The label matrix of the training examples
             :param test_x:      The feature matrix of the test examples
             :param test_y:      The label matrix of the test examples
             """
-            pass
 
     def run(self, callback: Callback):
         """
@@ -237,10 +231,16 @@ class DataSplitter(ABC):
 
         :param callback: The callback that should be used for training and evaluating models
         """
-        pass
 
 
 def check_if_files_exist(directory: str, file_names: List[str]) -> bool:
+    """
+    Returns whether all given files exist or not. If some of the files are missing, an `IOError` is raised.
+
+    :param directory:   The path to the directory where the files should be located
+    :param file_names:  A list that contains the names of all files to be checked
+    :return:            True, if all files exist, False, if all files are missing
+    """
     missing_files = []
 
     for file_name in file_names:
@@ -253,11 +253,10 @@ def check_if_files_exist(directory: str, file_names: List[str]) -> bool:
 
     if num_missing_files == 0:
         return True
-    elif num_missing_files == len(file_names):
+    if num_missing_files == len(file_names):
         return False
-    else:
-        raise IOError('The following files do not exist: '
-                      + reduce(lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b + '"', missing_files, ''))
+    raise IOError('The following files do not exist: '
+                  + reduce(lambda a, b: a + (', ' if len(a) > 0 else '') + '"' + b + '"', missing_files, ''))
 
 
 class NoSplitter(DataSplitter):
@@ -378,9 +377,8 @@ class CrossValidationSplitter(DataSplitter):
     def _split_data(self, callback: DataSplitter.Callback):
         num_folds = self.num_folds
         current_fold = self.current_fold
-        log.info(
-            'Performing ' + ('full' if current_fold < 0 else
-                             ('fold ' + str(current_fold + 1) + ' of')) + ' %s-fold cross validation...', num_folds)
+        log.info('Performing %s %s-fold cross validation...',
+                 'full' if current_fold < 0 else 'fold ' + str(current_fold + 1) + ' of', num_folds)
         data_set = self.data_set
         data_dir = data_set.data_dir
         data_set_name = data_set.data_set_name

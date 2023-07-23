@@ -84,13 +84,13 @@ class LiftFunctionParameter(NominalParameter):
         if value == NONE:
             config.use_no_lift_function()
         elif value == self.LIFT_FUNCTION_PEAK:
-            c = config.use_peak_lift_function()
-            c.set_peak_label(options.get_int(self.OPTION_PEAK_LABEL, c.get_peak_label()))
-            c.set_max_lift(options.get_float(self.OPTION_MAX_LIFT, c.get_max_lift()))
-            c.set_curvature(options.get_float(self.OPTION_CURVATURE, c.get_curvature()))
+            conf = config.use_peak_lift_function()
+            conf.set_peak_label(options.get_int(self.OPTION_PEAK_LABEL, conf.get_peak_label()))
+            conf.set_max_lift(options.get_float(self.OPTION_MAX_LIFT, conf.get_max_lift()))
+            conf.set_curvature(options.get_float(self.OPTION_CURVATURE, conf.get_curvature()))
         elif value == self.LIFT_FUNCTION_KLN:
-            c = config.use_kln_lift_function()
-            c.set_k(options.get_float(self.OPTION_K, c.get_k()))
+            conf = config.use_kln_lift_function()
+            conf.set_k(options.get_float(self.OPTION_K, conf.get_k()))
 
 
 class HeuristicParameter(NominalParameter):
@@ -120,11 +120,11 @@ class HeuristicParameter(NominalParameter):
         elif value == HEURISTIC_WRA:
             config.use_wra_heuristic()
         elif value == HEURISTIC_F_MEASURE:
-            c = config.use_f_measure_heuristic()
-            c.set_beta(options.get_float(OPTION_BETA, c.get_beta()))
+            conf = config.use_f_measure_heuristic()
+            conf.set_beta(options.get_float(OPTION_BETA, conf.get_beta()))
         elif value == HEURISTIC_M_ESTIMATE:
-            c = config.use_m_estimate_heuristic()
-            c.set_m(options.get_float(OPTION_M, c.get_m()))
+            conf = config.use_m_estimate_heuristic()
+            conf.set_m(options.get_float(OPTION_M, conf.get_m()))
 
 
 class PruningHeuristicParameter(NominalParameter):
@@ -155,11 +155,11 @@ class PruningHeuristicParameter(NominalParameter):
         elif value == HEURISTIC_WRA:
             config.use_wra_pruning_heuristic()
         elif value == HEURISTIC_F_MEASURE:
-            c = config.use_f_measure_pruning_heuristic()
-            c.set_beta(options.get_float(OPTION_BETA, c.get_beta()))
+            conf = config.use_f_measure_pruning_heuristic()
+            conf.set_beta(options.get_float(OPTION_BETA, conf.get_beta()))
         elif value == HEURISTIC_M_ESTIMATE:
-            c = config.use_m_estimate_pruning_heuristic()
-            c.set_m(options.get_float(OPTION_M, c.get_m()))
+            conf = config.use_m_estimate_pruning_heuristic()
+            conf.set_m(options.get_float(OPTION_M, conf.get_m()))
 
 
 SECO_RULE_LEARNER_PARAMETERS = RULE_LEARNER_PARAMETERS | {

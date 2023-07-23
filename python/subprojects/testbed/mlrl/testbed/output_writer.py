@@ -29,7 +29,6 @@ class Formattable(ABC):
         :param options: Options to be taken into account
         :return:        The textual representation that has been created
         """
-        pass
 
 
 class Tabularizable(ABC):
@@ -45,7 +44,6 @@ class Tabularizable(ABC):
         :param options: Options to be taken into account
         :return:        The tabular representation that has been created
         """
-        pass
 
 
 class OutputWriter(ABC):
@@ -82,7 +80,6 @@ class OutputWriter(ABC):
                                         incrementally or None, if no predictions have been obtained
             :param output_data:         The output data that should be written to the sink
             """
-            pass
 
     class LogSink(Sink):
         """
@@ -210,7 +207,6 @@ class OutputWriter(ABC):
         :param predict_time:        The time needed for prediction or 0, if no predictions have been obtained
         :return:                    The output data that has been generated or None, if no output data was generated
         """
-        pass
 
     def write_output(self,
                      meta_data: MetaData,

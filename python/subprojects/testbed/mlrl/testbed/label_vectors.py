@@ -11,7 +11,7 @@ import numpy as np
 from scipy.sparse import lil_matrix
 
 from mlrl.common.cython.label_space_info import LabelVectorSet, LabelVectorSetVisitor
-from mlrl.common.data_types import DTYPE_UINT8
+from mlrl.common.data_types import Uint8
 from mlrl.common.options import Options
 from mlrl.common.rule_learners import RuleLearner
 
@@ -72,12 +72,15 @@ class LabelVectorWriter(OutputWriter):
         def __format_label_vector(self, sparse_label_vector: np.ndarray, sparse: bool) -> str:
             if sparse:
                 return str(sparse_label_vector)
-            else:
-                dense_label_vector = np.zeros(shape=self.num_labels, dtype=DTYPE_UINT8)
-                dense_label_vector[sparse_label_vector] = 1
-                return str(dense_label_vector)
 
-        def format(self, options: Options, **kwargs) -> str:
+            dense_label_vector = np.zeros(shape=self.num_labels, dtype=Uint8)
+            dense_label_vector[sparse_label_vector] = 1
+            return str(dense_label_vector)
+
+        def format(self, options: Options, **_) -> str:
+            """
+            See :func:`mlrl.testbed.output_writer.Formattable.format`
+            """
             sparse = options.get_bool(OPTION_SPARSE, False)
             header = [self.COLUMN_INDEX, self.COLUMN_LABEL_VECTOR, self.COLUMN_FREQUENCY]
             rows = []
@@ -87,7 +90,10 @@ class LabelVectorWriter(OutputWriter):
 
             return format_table(rows, header=header)
 
-        def tabularize(self, options: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
+            """
+            See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
+            """
             sparse = options.get_bool(OPTION_SPARSE, False)
             rows = []
 
@@ -117,9 +123,7 @@ class LabelVectorWriter(OutputWriter):
         def __init__(self, output_dir: str, options: Options = Options()):
             super().__init__(output_dir=output_dir, file_name='label_vectors', options=options)
 
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
-
+    # pylint: disable=unused-argument
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
@@ -145,10 +149,10 @@ class LabelVectorSetWriter(LabelVectorWriter):
             self.label_vectors = LabelVectorWriter.LabelVectors(num_labels=num_labels)
 
         def visit_label_vector(self, label_vector: np.ndarray, frequency: int):
+            """
+            See :func:`mlrl.common.cython.label_space_info.LabelVectorSetVisitor.visit_label_vector`
+            """
             self.label_vectors.unique_label_vectors.append((label_vector, frequency))
-
-    def __init__(self, sinks: List[OutputWriter.Sink]):
-        super().__init__(sinks)
 
     def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
