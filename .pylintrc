@@ -36,7 +36,8 @@ disable=no-name-in-module,
         too-many-arguments,
         too-many-locals,
         too-many-lines,
-        too-many-public-methods
+        too-many-public-methods,
+        too-many-statements
 
 [STRING]
 
