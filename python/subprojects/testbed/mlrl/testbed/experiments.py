@@ -129,9 +129,6 @@ class GlobalEvaluation(Evaluation):
     Obtains and evaluates predictions from a previously trained global model.
     """
 
-    def __init__(self, prediction_type: PredictionType, output_writers: List[OutputWriter]):
-        super().__init__(prediction_type, output_writers)
-
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
                              learner, x, y):
         log.info('Predicting for %s ' + data_type.value + ' examples...', x.shape[0])
