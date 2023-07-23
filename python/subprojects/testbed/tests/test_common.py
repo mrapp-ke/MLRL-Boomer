@@ -90,8 +90,8 @@ def skip_test_on_ci(decorated_function):
     def wrapper(*args, **kwargs):
         if os.getenv('GITHUB_ACTIONS') == 'true':
             raise SkipTest('Temporarily disabled when run on CI')
-        else:
-            decorated_function(*args, **kwargs)
+
+        decorated_function(*args, **kwargs)
 
     return wrapper
 
