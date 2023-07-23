@@ -278,9 +278,15 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             self.num_considered_rules = 0
 
         def get_num_next(self) -> int:
+            """
+            See :func:`mlrl.common.learners.IncrementalLearner.IncrementalPredictor.get_num_next`
+            """
             return self.num_total_rules - self.num_considered_rules
 
         def apply_next(self, step_size: int):
+            """
+            See :func:`mlrl.common.learners.IncrementalLearner.IncrementalPredictor.apply_next`
+            """
             assert_greater_or_equal('step_size', step_size, 1)
             self.num_considered_rules = min(self.num_total_rules, self.num_considered_rules + step_size)
             return self.predictor.predict(self.num_considered_rules)
