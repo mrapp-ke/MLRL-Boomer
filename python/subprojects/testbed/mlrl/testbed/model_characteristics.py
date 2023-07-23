@@ -191,6 +191,7 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             ])
             return text + format_table(rows, header=header)
 
+        # pylint: disable=unused-argument
         def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
             rows = []
             default_rule_index = self.default_rule_index
