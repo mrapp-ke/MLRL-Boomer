@@ -191,7 +191,7 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             ])
             return text + format_table(rows, header=header)
 
-        def tabularize(self, _: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
             rows = []
             default_rule_index = self.default_rule_index
             num_rules = len(self.num_pos_predictions)
@@ -256,10 +256,16 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             self.index = -1
 
         def visit_empty_body(self, _: EmptyBody):
+            """
+            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_empty_body`
+            """
             self.index += 1
             self.default_rule_index = self.index
 
         def visit_conjunctive_body(self, body: ConjunctiveBody):
+            """
+            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_conjunctive_body`
+            """
             self.index += 1
             self.num_leq.append(body.leq_indices.shape[0] if body.leq_indices is not None else 0)
             self.num_gr.append(body.gr_indices.shape[0] if body.gr_indices is not None else 0)
@@ -267,6 +273,9 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             self.num_neq.append(body.neq_indices.shape[0] if body.neq_indices is not None else 0)
 
         def visit_complete_head(self, head: CompleteHead):
+            """
+            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_complete_head`
+            """
             num_pos_predictions = np.count_nonzero(head.scores > 0)
             num_neg_predictions = head.scores.shape[0] - num_pos_predictions
 
@@ -278,6 +287,9 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                 self.num_neg_predictions.append(num_neg_predictions)
 
         def visit_partial_head(self, head: PartialHead):
+            """
+            See :func:`mlrl.common.cython.rule_model.RuleModelVisitor.visit_partial_head`
+            """
             num_pos_predictions = np.count_nonzero(head.scores > 0)
             num_neg_predictions = head.scores.shape[0] - num_pos_predictions
 
