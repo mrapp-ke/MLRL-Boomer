@@ -65,7 +65,7 @@ class ParameterWriter(OutputWriter):
             """
             self.params = learner.get_params()
 
-        def format(self, _: Options, **kwargs):
+        def format(self, options: Options, **_):
             """
             See :func:`mlrl.testbed.output_writer.Formattable.format`
             """
@@ -80,7 +80,7 @@ class ParameterWriter(OutputWriter):
 
             return format_table(rows)
 
-        def tabularize(self, _: Options, **kwargs) -> Optional[List[Dict[str, str]]]:
+        def tabularize(self, options: Options, **_) -> Optional[List[Dict[str, str]]]:
             """
             See :func:`mlrl.testbed.output_writer.Tabularizable.tabularize`
             """
