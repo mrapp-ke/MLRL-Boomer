@@ -6,7 +6,7 @@ e.g., to the console or to a file.
 """
 import sys
 
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 import numpy as np
 
