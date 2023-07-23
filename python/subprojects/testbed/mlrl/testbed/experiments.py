@@ -122,7 +122,6 @@ class Evaluation(ABC):
         :param y:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores
                             the ground truth labels of the query examples
         """
-        pass
 
 
 class GlobalEvaluation(Evaluation):
@@ -236,7 +235,6 @@ class Experiment(DataSplitter.Callback):
             """
             Must be overridden by subclasses in order to execute the operation.
             """
-            pass
 
     def __init__(self,
                  base_learner: BaseEstimator,
