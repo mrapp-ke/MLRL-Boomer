@@ -383,7 +383,7 @@ def __load_arff_as_dict(arff_file: str, sparse: bool) -> dict:
                         incorrect, a `arff.BadLayout` will be raised
     :return:            A dictionary that stores the content of the ARFF file
     """
-    with open(arff_file, 'r', econding=ENCODING_UTF8) as file:
+    with open(arff_file, 'r', encoding=ENCODING_UTF8) as file:
         sparse_format = arff.COO if sparse else arff.DENSE
         return arff.load(file, encode_nominal=True, return_type=sparse_format)
 
