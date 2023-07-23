@@ -82,7 +82,7 @@ HOLDOUT_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
 HOLDOUT_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
 
-def SkipTestOnCi(f):
+def SkipTestOnCi(function):
     """
     A decorator that disables all annotated test case if run on a continuous integration system.
     """
@@ -91,7 +91,7 @@ def SkipTestOnCi(f):
         if os.getenv('GITHUB_ACTIONS') == 'true':
             raise SkipTest('Temporarily disabled when run on CI')
         else:
-            f(*args, **kwargs)
+            function(*args, **kwargs)
 
     return wrapper
 
