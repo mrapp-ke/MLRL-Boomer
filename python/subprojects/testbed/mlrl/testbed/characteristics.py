@@ -74,8 +74,8 @@ def distinct_label_vectors(y) -> int:
     if issparse(y):
         y = y.tolil()
         return np.unique(y.rows).shape[0]
-    else:
-        return np.unique(y, axis=0).shape[0]
+
+    return np.unique(y, axis=0).shape[0]
 
 
 def label_imbalance_ratio(y) -> float:
@@ -96,8 +96,8 @@ def label_imbalance_ratio(y) -> float:
 
     if num_relevant_per_label.shape[0] > 0:
         return np.average(np.max(num_relevant_per_label) / num_relevant_per_label)
-    else:
-        return 0.0
+
+    return 0.0
 
 
 class LabelCharacteristics(Formattable, Tabularizable):
