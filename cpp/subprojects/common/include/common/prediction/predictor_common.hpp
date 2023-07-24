@@ -3,8 +3,8 @@
  */
 #pragma once
 
+#include "common/omp.hpp"
 #include "common/prediction/predictor.hpp"
-#include "omp.h"
 
 /**
  * Allows to obtain predictions for multiple query examples by delegating the prediction for individual examples to
@@ -70,10 +70,16 @@ class PredictionDispatcher final {
             const IPredictionDelegate* delegatePtr = &delegate;
             const FeatureMatrix* featureMatrixPtr = &featureMatrix;
 
-#pragma omp parallel for firstprivate(numExamples) firstprivate(delegatePtr) firstprivate(rulesBegin) \
-  firstprivate(rulesEnd) firstprivate(featureMatrixPtr) schedule(dynamic) num_threads(numThreads)
+#if MULTI_THREADING_SUPPORT_ENABLED
+    #pragma omp parallel for firstprivate(numExamples) firstprivate(delegatePtr) firstprivate(rulesBegin) \
+      firstprivate(rulesEnd) firstprivate(featureMatrixPtr) schedule(dynamic) num_threads(numThreads)
+#endif
             for (int64 i = 0; i < numExamples; i++) {
+#if MULTI_THREADING_SUPPORT_ENABLED
                 uint32 threadIndex = (uint32) omp_get_thread_num();
+#else
+                uint32 threadIndex = 1;
+#endif
                 delegatePtr->predictForExample(*featureMatrixPtr, rulesBegin, rulesEnd, threadIndex, i, i);
             }
         }
@@ -145,11 +151,17 @@ class BinarySparsePredictionDispatcher final {
             const FeatureMatrix* featureMatrixPtr = &featureMatrix;
             uint32 numNonZeroElements = 0;
 
-#pragma omp parallel for reduction(+ : numNonZeroElements) firstprivate(numExamples) firstprivate(delegatePtr) \
-  firstprivate(rulesBegin) firstprivate(rulesEnd) firstprivate(featureMatrixPtr) schedule(dynamic) \
-  num_threads(numThreads)
+#if MULTI_THREADING_SUPPORT_ENABLED
+    #pragma omp parallel for reduction(+ : numNonZeroElements) firstprivate(numExamples) firstprivate(delegatePtr) \
+      firstprivate(rulesBegin) firstprivate(rulesEnd) firstprivate(featureMatrixPtr) schedule(dynamic) \
+      num_threads(numThreads)
+#endif
             for (int64 i = 0; i < numExamples; i++) {
+#if MULTI_THREADING_SUPPORT_ENABLED
                 uint32 threadIndex = (uint32) omp_get_thread_num();
+#else
+                uint32 threadIndex = 1;
+#endif
                 numNonZeroElements +=
                   delegatePtr->predictForExample(*featureMatrixPtr, rulesBegin, rulesEnd, threadIndex, i, i);
             }

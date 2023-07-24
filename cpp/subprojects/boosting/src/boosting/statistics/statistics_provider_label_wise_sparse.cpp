@@ -7,7 +7,7 @@
 
 #include "boosting/data/histogram_view_label_wise_sparse.hpp"
 #include "boosting/data/matrix_sparse_set_numeric.hpp"
-#include "omp.h"
+#include "common/omp.hpp"
 #include "statistics_label_wise_common.hpp"
 #include "statistics_provider_label_wise.hpp"
 
@@ -125,8 +125,10 @@ namespace boosting {
         const SparseSetMatrix<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
         SparseLabelWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
-#pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(labelMatrixPtr) \
-  firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+#if MULTI_THREADING_SUPPORT_ENABLED
+    #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(labelMatrixPtr) \
+      firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+#endif
         for (int64 i = 0; i < numExamples; i++) {
             lossRawPtr->updateLabelWiseStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr, IndexIterator(),
                                                   IndexIterator(labelMatrixPtr->getNumCols()), *statisticMatrixRawPtr);

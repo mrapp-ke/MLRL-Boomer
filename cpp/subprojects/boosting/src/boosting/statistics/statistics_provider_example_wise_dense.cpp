@@ -9,7 +9,7 @@
 #include "boosting/data/statistic_vector_example_wise_dense.hpp"
 #include "boosting/data/statistic_view_example_wise_dense.hpp"
 #include "boosting/math/math.hpp"
-#include "omp.h"
+#include "common/omp.hpp"
 #include "statistics_example_wise_common.hpp"
 #include "statistics_label_wise_dense.hpp"
 #include "statistics_provider_example_wise.hpp"
@@ -104,8 +104,10 @@ namespace boosting {
                 DenseLabelWiseStatisticView* labelWiseStatisticMatrixRawPtr = labelWiseStatisticMatrixPtr.get();
                 DenseExampleWiseStatisticView* exampleWiseStatisticViewRawPtr = this->statisticViewPtr_.get();
 
-#pragma omp parallel for firstprivate(numRows) firstprivate(numCols) firstprivate(labelWiseStatisticMatrixRawPtr) \
-  firstprivate(exampleWiseStatisticViewRawPtr) schedule(dynamic) num_threads(numThreads)
+#if MULTI_THREADING_SUPPORT_ENABLED
+    #pragma omp parallel for firstprivate(numRows) firstprivate(numCols) firstprivate(labelWiseStatisticMatrixRawPtr) \
+      firstprivate(exampleWiseStatisticViewRawPtr) schedule(dynamic) num_threads(numThreads)
+#endif
                 for (int64 i = 0; i < numRows; i++) {
                     DenseLabelWiseStatisticView::iterator iterator = labelWiseStatisticMatrixRawPtr->begin(i);
                     DenseExampleWiseStatisticView::gradient_const_iterator gradientIterator =
@@ -146,8 +148,10 @@ namespace boosting {
         const CContiguousConstView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
         DenseExampleWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
-#pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(labelMatrixPtr) \
-  firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+#if MULTI_THREADING_SUPPORT_ENABLED
+    #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(labelMatrixPtr) \
+      firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+#endif
         for (int64 i = 0; i < numExamples; i++) {
             lossRawPtr->updateExampleWiseStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr, *statisticMatrixRawPtr);
         }
