@@ -1,5 +1,6 @@
 #include "common/thresholds/thresholds_approximate.hpp"
 
+#include "common/omp.hpp"
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
 #include "thresholds_common.hpp"
 
@@ -319,10 +320,11 @@ class ApproximateThresholds final : public AbstractThresholds {
                     CoverageSet::const_iterator iterator = coverageSet_.cbegin();
                     const AbstractPrediction* predictionPtr = &prediction;
                     IStatistics* statisticsPtr = &thresholds_.statisticsProvider_.get();
-                    uint32 numThreads = thresholds_.numThreads_;
 
-#pragma omp parallel for firstprivate(numCovered) firstprivate(iterator) firstprivate(predictionPtr) \
-  firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
+#if MULTI_THREADING_SUPPORT_ENABLED
+    #pragma omp parallel for firstprivate(numCovered) firstprivate(iterator) firstprivate(predictionPtr) \
+      firstprivate(statisticsPtr) schedule(dynamic) num_threads(thresholds_.numThreads_)
+#endif
                     for (int64 i = 0; i < numCovered; i++) {
                         uint32 exampleIndex = iterator[i];
                         predictionPtr->apply(*statisticsPtr, exampleIndex);
@@ -334,10 +336,11 @@ class ApproximateThresholds final : public AbstractThresholds {
                     CoverageSet::const_iterator iterator = coverageSet_.cbegin();
                     const AbstractPrediction* predictionPtr = &prediction;
                     IStatistics* statisticsPtr = &thresholds_.statisticsProvider_.get();
-                    uint32 numThreads = thresholds_.numThreads_;
 
-#pragma omp parallel for firstprivate(numCovered) firstprivate(iterator) firstprivate(predictionPtr) \
-  firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
+#if MULTI_THREADING_SUPPORT_ENABLED
+    #pragma omp parallel for firstprivate(numCovered) firstprivate(iterator) firstprivate(predictionPtr) \
+      firstprivate(statisticsPtr) schedule(dynamic) num_threads(thresholds_.numThreads_)
+#endif
                     for (int64 i = 0; i < numCovered; i++) {
                         uint32 exampleIndex = iterator[i];
                         predictionPtr->revert(*statisticsPtr, exampleIndex);

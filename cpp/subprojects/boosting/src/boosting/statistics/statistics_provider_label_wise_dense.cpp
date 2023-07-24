@@ -5,7 +5,7 @@
 
 #include "boosting/statistics/statistics_provider_label_wise_dense.hpp"
 
-#include "omp.h"
+#include "common/omp.hpp"
 #include "statistics_label_wise_dense.hpp"
 #include "statistics_provider_label_wise.hpp"
 
@@ -28,8 +28,10 @@ namespace boosting {
         const CContiguousConstView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
         DenseLabelWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
-#pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(labelMatrixPtr) \
-  firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+#if MULTI_THREADING_SUPPORT_ENABLED
+    #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(labelMatrixPtr) \
+      firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
+#endif
         for (int64 i = 0; i < numExamples; i++) {
             lossRawPtr->updateLabelWiseStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr, IndexIterator(),
                                                   IndexIterator(labelMatrixPtr->getNumCols()), *statisticMatrixRawPtr);
