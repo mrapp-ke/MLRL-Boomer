@@ -264,10 +264,12 @@ cdef class RuleList(RuleModel):
         rule_state[1] = head_state
 
     cdef unique_ptr[IBody] __deserialize_body(self, object body_state):
-        if body_state is None:
-            return unique_ptr[IBody]()
-        else:
-            return self.__deserialize_conjunctive_body(body_state)
+        cdef unique_ptr[IBody] body_ptr
+
+        if body_state is not None:
+            body_ptr = move(self.__deserialize_conjunctive_body(body_state))
+
+        return move(body_ptr)
 
     cdef unique_ptr[IBody] __deserialize_conjunctive_body(self, object body_state):
         cdef const float32[::1] leq_thresholds = body_state[0]
@@ -317,9 +319,9 @@ cdef class RuleList(RuleModel):
 
     cdef unique_ptr[IHead] __deserialize_head(self, object head_state):
         if len(head_state) > 1:
-            return self.__deserialize_partial_head(head_state)
+            return move(self.__deserialize_partial_head(head_state))
         else:
-            return self.__deserialize_complete_head(head_state)
+            return move(self.__deserialize_complete_head(head_state))
 
     cdef unique_ptr[IHead] __deserialize_complete_head(self, object head_state):
         cdef const float64[::1] scores = head_state[0]
