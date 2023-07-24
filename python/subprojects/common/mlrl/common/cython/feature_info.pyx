@@ -22,19 +22,19 @@ cdef class EqualFeatureInfo(FeatureInfo):
     """
 
     @classmethod
-    def create_ordinal(cls) -> 'EqualFeatureInfo':
+    def create_ordinal(cls) -> EqualFeatureInfo:
         cdef EqualFeatureInfo equal_feature_info = EqualFeatureInfo.__new__(EqualFeatureInfo)
         equal_feature_info.feature_info_ptr = createOrdinalFeatureInfo()
         return equal_feature_info
 
     @classmethod
-    def create_nominal(cls) -> 'EqualFeatureInfo':
+    def create_nominal(cls) -> EqualFeatureInfo:
         cdef EqualFeatureInfo equal_feature_info = EqualFeatureInfo.__new__(EqualFeatureInfo)
         equal_feature_info.feature_info_ptr = createNominalFeatureInfo()
         return equal_feature_info
 
     @classmethod
-    def create_numerical(cls) -> 'EqualFeatureInfo':
+    def create_numerical(cls) -> EqualFeatureInfo:
         cdef EqualFeatureInfo equal_feature_info = EqualFeatureInfo.__new__(EqualFeatureInfo)
         equal_feature_info.feature_info_ptr = createNumericalFeatureInfo()
         return equal_feature_info
