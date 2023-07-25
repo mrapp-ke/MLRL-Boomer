@@ -15,6 +15,6 @@ namespace boosting {
         } else {
             return 1;
         }
-    };
+    }
 
 }
