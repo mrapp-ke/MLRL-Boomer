@@ -1,5 +1,6 @@
 #include "common/thresholds/thresholds_exact.hpp"
 
+#include "common/omp.hpp"
 #include "common/rule_refinement/rule_refinement_exact.hpp"
 #include "thresholds_common.hpp"
 
@@ -457,10 +458,11 @@ class ExactThresholds final : public AbstractThresholds {
                     const CoverageMask* coverageMaskPtr = &coverageMask_;
                     const AbstractPrediction* predictionPtr = &prediction;
                     IStatistics* statisticsPtr = &statistics;
-                    uint32 numThreads = thresholds_.numThreads_;
 
-#pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(predictionPtr) \
-  firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
+#if MULTI_THREADING_SUPPORT_ENABLED
+    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(predictionPtr) \
+      firstprivate(statisticsPtr) schedule(dynamic) num_threads(thresholds_.numThreads_)
+#endif
                     for (int64 i = 0; i < numStatistics; i++) {
                         if (coverageMaskPtr->isCovered(i)) {
                             predictionPtr->apply(*statisticsPtr, i);
@@ -474,10 +476,11 @@ class ExactThresholds final : public AbstractThresholds {
                     const CoverageMask* coverageMaskPtr = &coverageMask_;
                     const AbstractPrediction* predictionPtr = &prediction;
                     IStatistics* statisticsPtr = &statistics;
-                    uint32 numThreads = thresholds_.numThreads_;
 
-#pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(predictionPtr) \
-  firstprivate(statisticsPtr) schedule(dynamic) num_threads(numThreads)
+#if MULTI_THREADING_SUPPORT_ENABLED
+    #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(predictionPtr) \
+      firstprivate(statisticsPtr) schedule(dynamic) num_threads(thresholds_.numThreads_)
+#endif
                     for (int64 i = 0; i < numStatistics; i++) {
                         if (coverageMaskPtr->isCovered(i)) {
                             predictionPtr->revert(*statisticsPtr, i);

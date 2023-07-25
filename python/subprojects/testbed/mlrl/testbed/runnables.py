@@ -162,6 +162,21 @@ class Runnable(ABC):
 
             return unique_libraries
 
+        def __collect_build_options(self, python_packages: Iterable[PythonPackageInfo]) -> Dict[str, Set[str]]:
+            unique_build_options = {}
+
+            for python_package in python_packages:
+                for cpp_library in python_package.cpp_libraries:
+                    for build_option in cpp_library.build_options:
+                        parent_libraries = unique_build_options.setdefault(str(build_option), set())
+                        parent_libraries.add(cpp_library.library_name)
+
+                for key, value in self.__collect_build_options(python_package.python_packages).items():
+                    parent_libraries = unique_build_options.setdefault(key, set())
+                    parent_libraries.update(value)
+
+            return unique_build_options
+
         def __collect_dependencies(self, python_packages: Iterable[PythonPackageInfo]) -> Dict[str, Set[str]]:
             unique_dependencies = {}
 
@@ -181,25 +196,38 @@ class Runnable(ABC):
             return 'used by ' + format_string_iterable(parent_packages) if len(parent_packages) > 0 else ''
 
         def __format_package_info(self) -> str:
-            python_packages = self.all_python_packages
             rows = []
+            python_packages = self.all_python_packages
 
             for i, python_package in enumerate(sorted(self.__collect_python_packages(python_packages))):
                 rows.append(['' if i > 0 else 'Python packages:', python_package, ''])
 
-            rows.append(['', '', ''])
+            if len(python_packages) > 0:
+                rows.append(['', '', ''])
+
+            dependencies = self.__collect_dependencies(python_packages)
+
+            for i, dependency in enumerate(sorted(dependencies.keys())):
+                parent_packages = self.__format_parent_packages(dependencies[dependency])
+                rows.append(['' if i > 0 else 'Dependencies:', dependency, parent_packages])
+
+            if len(dependencies) > 0:
+                rows.append(['', '', ''])
+
             cpp_libraries = self.__collect_cpp_libraries(python_packages)
 
             for i, cpp_library in enumerate(sorted(cpp_libraries.keys())):
                 parent_packages = self.__format_parent_packages(cpp_libraries[cpp_library])
                 rows.append(['' if i > 0 else 'Shared libraries:', cpp_library, parent_packages])
 
-            rows.append(['', '', ''])
-            dependencies = self.__collect_dependencies(python_packages)
+            if len(cpp_libraries) > 0:
+                rows.append(['', '', ''])
 
-            for i, dependency in enumerate(sorted(dependencies.keys())):
-                parent_packages = self.__format_parent_packages(dependencies[dependency])
-                rows.append(['' if i > 0 else 'Dependencies:', dependency, parent_packages])
+            build_options = self.__collect_build_options(python_packages)
+
+            for i, build_option in enumerate(sorted(build_options.keys())):
+                parent_libraries = self.__format_parent_packages(build_options[build_option])
+                rows.append(['' if i > 0 else 'Build options:', build_option, parent_libraries])
 
             return format_table(rows) if len(rows) > 0 else ''
 

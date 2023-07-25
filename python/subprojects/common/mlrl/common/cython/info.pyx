@@ -3,11 +3,40 @@
 """
 from libcpp.utility cimport move
 
+from dataclasses import dataclass
+from typing import List
+
+
+@dataclass
+class CppBuildOption:
+    """
+    Represents a build option for configuring a C++ library at compile-time.
+
+    Attributes:
+        option:         The name of the build option
+        description:    A human-legible description of the build option
+        value:          The value that has been set for the build option at compile-time
+    """
+    option: str
+    description: str
+    value: str
+
+    def __str__(self) -> str:
+        return self.description + ' (' + self.value + ')'
+
 
 cdef class CppLibraryInfo:
     """
     Provides information about a C++ library.
     """
+
+    cdef __visit_build_option(self, const BuildOption& build_option):
+        cdef string option = build_option.option
+        cdef string description = build_option.description
+        cdef string value = build_option.value
+        self.__build_options.append(CppBuildOption(option=option.decode('UTF-8'),
+                                                   description=description.decode('UTF-8'),
+                                                   value=value.decode('UTF-8')))
 
     @property
     def library_name(self) -> str:
@@ -32,6 +61,16 @@ cdef class CppLibraryInfo:
         """
         cdef string target_architecture = self.library_info_ptr.get().getTargetArchitecture()
         return target_architecture.decode('UTF-8')
+
+    @property
+    def build_options(self) -> List[CppBuildOption]:
+        """
+        The build options for configuring the C++ library at compile-time.
+        """
+        self.__build_options = []
+        self.library_info_ptr.get().visitBuildOptions(
+            wrapBuildOptionVisitor(<void*>self, <BuildOptionCythonVisitor>self.__visit_build_option))
+        return self.__build_options
 
     def __str__(self) -> str:
         return self.library_name + ' ' + self.library_version + ' (' + self.target_architecture + ')'
