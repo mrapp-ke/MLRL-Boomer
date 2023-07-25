@@ -33,7 +33,7 @@ class CommonLibraryInfo final : public ILibraryInfo {
          * @see `ILibraryInfo::visitBuildOptions`
          */
         void visitBuildOptions(BuildOptionVisitor visitor) const override {
-            BuildOption multiThreadingBuildOption("MULTI_THREADING_SUPPORT_ENABLED", "Multi-threading support",
+            BuildOption multiThreadingBuildOption("MULTI_THREADING_SUPPORT_ENABLED", "multi-threading support",
                                                   MULTI_THREADING_SUPPORT_ENABLED ? "enabled" : "disabled");
             visitor(multiThreadingBuildOption);
         }
