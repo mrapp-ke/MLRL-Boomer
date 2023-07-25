@@ -5,6 +5,7 @@
 
 #include "common/macros.hpp"
 
+#include <functional>
 #include <memory>
 #include <string>
 
@@ -13,6 +14,31 @@
  */
 class MLRLCOMMON_API ILibraryInfo {
     public:
+
+        /**
+         * Represents a build option for configuring a library at compile-time.
+         */
+        struct BuildOption {
+                /**
+                 * The name of the build option.
+                 */
+                std::string option;
+
+                /**
+                 * A human-legible description of the build option.
+                 */
+                std::string description;
+
+                /**
+                 * The value that has been set for the build option at compile-time.
+                 */
+                std::string value;
+        };
+
+        /**
+         * A visitor function for handling objects of the type `BuildOption`.
+         */
+        typedef std::function<void(const BuildOption&)> BuildOptionVisitor;
 
         virtual ~ILibraryInfo() {};
 
@@ -36,6 +62,13 @@ class MLRLCOMMON_API ILibraryInfo {
          * @return A string that specifies the target architecture
          */
         virtual std::string getTargetArchitecture() const = 0;
+
+        /**
+         * Invokes a given visitor function for each available build option.
+         *
+         * @param visitor A visitor function for handling objects of the type `BuildOption`
+         */
+        virtual void visitBuildOptions(BuildOptionVisitor visitor) const = 0;
 };
 
 /**
