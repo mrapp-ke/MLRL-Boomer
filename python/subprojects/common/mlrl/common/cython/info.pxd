@@ -4,6 +4,20 @@ from libcpp.string cimport string
 
 cdef extern from "common/info.hpp" nogil:
 
+    cdef cppclass BuildOption"ILibraryInfo::BuildOption":
+
+        string option
+
+        string description
+
+        string value
+
+
+ctypedef void (*BuildOptionVisitor)(const BuildOption&)
+
+
+cdef extern from "common/info.hpp" nogil:
+
     cdef cppclass ILibraryInfo:
 
         string getLibraryName() const
@@ -11,6 +25,8 @@ cdef extern from "common/info.hpp" nogil:
         string getLibraryVersion() const
 
         string getTargetArchitecture() const
+
+        void visitBuildOption(BuildOptionVisitor visitor) const
 
     unique_ptr[ILibraryInfo] getLibraryInfo()
 
