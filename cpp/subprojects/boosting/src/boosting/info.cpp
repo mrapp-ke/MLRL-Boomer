@@ -30,6 +30,13 @@ namespace boosting {
             std::string getTargetArchitecture() const override {
                 return MLRLBOOSTING_TARGET_ARCHITECTURE;
             }
+
+            /**
+             * @see `ILibraryInfo::visitBuildOptions`
+             */
+            void visitBuildOptions(BuildOptionVisitor visitor) const override {
+                
+            }
     };
 
     std::unique_ptr<ILibraryInfo> getLibraryInfo() {
