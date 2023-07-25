@@ -10,6 +10,7 @@ A major update to the BOOMER algorithm that introduces the following changes.
 
 ### Quality-of-Life Improvements
 
+* A build option that allows to disable multi-threading support via OpenMP at compile-time has been added.
 * The Python code is now checked for common issues by applying `pylint` via continuous integration.
 
 ## Version 0.9.0 (Jul. 2nd, 2023)

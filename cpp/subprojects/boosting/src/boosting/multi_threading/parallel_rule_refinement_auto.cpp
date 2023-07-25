@@ -19,6 +19,6 @@ namespace boosting {
         } else {
             return getNumAvailableThreads(0);
         }
-    };
+    }
 
 }

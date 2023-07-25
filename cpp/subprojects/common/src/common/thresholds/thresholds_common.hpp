@@ -7,7 +7,6 @@
 #include "common/input/feature_matrix.hpp"
 #include "common/iterator/binary_forward_iterator.hpp"
 #include "common/thresholds/thresholds.hpp"
-#include "omp.h"
 
 template<typename IndexIterator, typename WeightVector>
 static inline Quality evaluateOutOfSampleInternally(IndexIterator indexIterator, uint32 numExamples,

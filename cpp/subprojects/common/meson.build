@@ -129,25 +129,41 @@ fs = import('fs')
 version = fs.read('../../../VERSION')
 target_architecture = host_machine.cpu_family() + '-' + host_machine.system()
 
+# Check build options
+multi_threading_support_enabled = get_option('multi_threading_support').enabled()
+
 # Set configuration options
 configuration = configuration_data()
 configuration.set('mlrlcommon_library_name', 'lib' + lib_name)
 configuration.set('mlrlcommon_library_version', version)
 configuration.set('mlrlcommon_target_architecture', target_architecture)
+configuration.set10('multi_threading_support_enabled', multi_threading_support_enabled)
 configure_file(input : 'include/common/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
-# Library declaration
-cpp_args = ['-fopenmp']
-link_args = ['-fopenmp']
+# Compiler and linker arguments
+cpp_args = []
+link_args = []
 
 if host_machine.system() == 'windows'
-    cpp_args = ['/openmp', '-DMLRLCOMMON_EXPORTS']
-    link_args = []
+    cpp_args += '-DMLRLCOMMON_EXPORTS'
+
+    if multi_threading_support_enabled
+        cpp_args += '/openmp'
+    endif
 elif host_machine.system() == 'darwin'
-    cpp_args = ['-Xclang', '-fopenmp']
-    link_args = ['-lomp']
+    if multi_threading_support_enabled
+        cpp_args += '-Xclang'
+        cpp_args += '-fopenmp'
+        link_args += '-lomp'
+    endif
+else
+    if multi_threading_support_enabled
+        cpp_args += '-fopenmp'
+        link_args += '-fopenmp'
+    endif
 endif
 
+# Library declaration
 library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args, link_args : link_args,
         version : version, install : true, install_dir : install_dir)
 common_lib = static_library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args,

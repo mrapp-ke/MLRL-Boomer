@@ -28,6 +28,15 @@ class CommonLibraryInfo final : public ILibraryInfo {
         std::string getTargetArchitecture() const override {
             return MLRLCOMMON_TARGET_ARCHITECTURE;
         }
+
+        /**
+         * @see `ILibraryInfo::visitBuildOptions`
+         */
+        void visitBuildOptions(BuildOptionVisitor visitor) const override {
+            BuildOption multiThreadingBuildOption("MULTI_THREADING_SUPPORT_ENABLED", "multi-threading support",
+                                                  MULTI_THREADING_SUPPORT_ENABLED ? "enabled" : "disabled");
+            visitor(multiThreadingBuildOption);
+        }
 };
 
 std::unique_ptr<ILibraryInfo> getLibraryInfo() {
