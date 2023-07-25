@@ -196,27 +196,33 @@ class Runnable(ABC):
             return 'used by ' + format_string_iterable(parent_packages) if len(parent_packages) > 0 else ''
 
         def __format_package_info(self) -> str:
-            python_packages = self.all_python_packages
             rows = []
+            python_packages = self.all_python_packages
 
             for i, python_package in enumerate(sorted(self.__collect_python_packages(python_packages))):
                 rows.append(['' if i > 0 else 'Python packages:', python_package, ''])
 
-            rows.append(['', '', ''])
-            cpp_libraries = self.__collect_cpp_libraries(python_packages)
+            if len(python_packages) > 0:
+                rows.append(['', '', ''])
 
-            for i, cpp_library in enumerate(sorted(cpp_libraries.keys())):
-                parent_packages = self.__format_parent_packages(cpp_libraries[cpp_library])
-                rows.append(['' if i > 0 else 'Shared libraries:', cpp_library, parent_packages])
-
-            rows.append(['', '', ''])
             dependencies = self.__collect_dependencies(python_packages)
 
             for i, dependency in enumerate(sorted(dependencies.keys())):
                 parent_packages = self.__format_parent_packages(dependencies[dependency])
                 rows.append(['' if i > 0 else 'Dependencies:', dependency, parent_packages])
 
-            rows.append(['', '', ''])
+            if len(dependencies) > 0:
+                rows.append(['', '', ''])
+
+            cpp_libraries = self.__collect_cpp_libraries(python_packages)
+
+            for i, cpp_library in enumerate(sorted(cpp_libraries.keys())):
+                parent_packages = self.__format_parent_packages(cpp_libraries[cpp_library])
+                rows.append(['' if i > 0 else 'Shared libraries:', cpp_library, parent_packages])
+
+            if len(cpp_libraries) > 0:
+                rows.append(['', '', ''])
+
             build_options = self.__collect_build_options(python_packages)
 
             for i, build_option in enumerate(sorted(build_options.keys())):
