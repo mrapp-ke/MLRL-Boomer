@@ -20,19 +20,26 @@ class MLRLCOMMON_API ILibraryInfo {
          */
         struct BuildOption {
                 /**
+                 * @param o The name of the build option
+                 * @param d A human-legible description of the build option
+                 * @param v The value that has been set for the build option at compile-time
+                 */
+                BuildOption(std::string o, std::string d, std::string v) : option(o), description(d), value(v) {}
+
+                /**
                  * The name of the build option.
                  */
-                std::string option;
+                const std::string option;
 
                 /**
                  * A human-legible description of the build option.
                  */
-                std::string description;
+                const std::string description;
 
                 /**
                  * The value that has been set for the build option at compile-time.
                  */
-                std::string value;
+                const std::string value;
         };
 
         /**

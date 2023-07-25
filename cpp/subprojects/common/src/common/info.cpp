@@ -6,17 +6,7 @@
  * An implementation of the type `ILibraryInfo` that provides information about this C++ library.
  */
 class CommonLibraryInfo final : public ILibraryInfo {
-    private:
-
-        BuildOption multiThreadingBuildOption_;
-
     public:
-
-        CommonLibraryInfo() {
-            multiThreadingBuildOption_.option = "MULTI_THREADING_SUPPORT_ENABLED";
-            multiThreadingBuildOption_.description = "Multi-threading support";
-            multiThreadingBuildOption_.value = MULTI_THREADING_SUPPORT_ENABLED ? "enabled" : "disabled";
-        }
 
         /**
          * @see `ILibraryInfo::getLibraryName`
@@ -43,7 +33,9 @@ class CommonLibraryInfo final : public ILibraryInfo {
          * @see `ILibraryInfo::visitBuildOptions`
          */
         void visitBuildOptions(BuildOptionVisitor visitor) const override {
-            visitor(multiThreadingBuildOption_);
+            BuildOption multiThreadingBuildOption("MULTI_THREADING_SUPPORT_ENABLED", "Multi-threading support",
+                                                  MULTI_THREADING_SUPPORT_ENABLED ? "enabled" : "disabled");
+            visitor(multiThreadingBuildOption);
         }
 };
 
