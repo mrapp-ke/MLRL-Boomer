@@ -34,9 +34,7 @@ namespace boosting {
             /**
              * @see `ILibraryInfo::visitBuildOptions`
              */
-            void visitBuildOptions(BuildOptionVisitor visitor) const override {
-                
-            }
+            void visitBuildOptions(BuildOptionVisitor visitor) const override {}
     };
 
     std::unique_ptr<ILibraryInfo> getLibraryInfo() {
