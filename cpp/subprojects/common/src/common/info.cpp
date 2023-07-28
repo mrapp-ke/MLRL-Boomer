@@ -1,5 +1,6 @@
 #include "common/info.hpp"
 
+#include "common/util/threads.hpp"
 #include "config.hpp"
 
 /**
@@ -45,4 +46,8 @@ std::unique_ptr<ILibraryInfo> getLibraryInfo() {
 
 bool isMultiThreadingSupportEnabled() {
     return MULTI_THREADING_SUPPORT_ENABLED ? true : false;
+}
+
+uint32 getNumCpuCores() {
+    return getNumAvailableCpuCores();
 }
