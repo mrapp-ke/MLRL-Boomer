@@ -2,6 +2,8 @@ from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
 from libcpp.string cimport string
 
+from mlrl.common.cython._types cimport uint32
+
 
 cdef extern from "common/info.hpp" nogil:
 
@@ -32,6 +34,8 @@ cdef extern from "common/info.hpp" nogil:
     unique_ptr[ILibraryInfo] getLibraryInfo()
 
     bool isMultiThreadingSupportEnabled()
+
+    uint32 getNumCpuCores()
 
 
 cdef extern from *:

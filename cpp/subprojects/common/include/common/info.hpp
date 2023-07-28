@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "common/data/types.hpp"
 #include "common/macros.hpp"
 
 #include <functional>
@@ -91,3 +92,11 @@ MLRLCOMMON_API std::unique_ptr<ILibraryInfo> getLibraryInfo();
  * @return True if multi-threading support is enabled, false otherwise
  */
 MLRLCOMMON_API bool isMultiThreadingSupportEnabled();
+
+/**
+ * Returns the number of CPU cores available on the machine, regardless of whether multi-threading support is enabled or
+ * not.
+ *
+ * @return The number of CPU cores available on the machine
+ */
+MLRLCOMMON_API uint32 getNumCpuCores();

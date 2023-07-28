@@ -100,3 +100,13 @@ def is_multi_threading_support_enabled() -> bool:
     :return: True, if the multi-threading support is enabled, False otherwise
     """
     return isMultiThreadingSupportEnabled()
+
+
+def get_num_cpu_cores() -> int:
+    """
+    Returns the number of CPU cores available on the machine, regardless of whether multi-threading support is enabled
+    or not.
+
+    :return: The number of CPU cores available on the machine
+    """
+    return getNumCpuCores()
