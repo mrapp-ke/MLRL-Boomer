@@ -1,3 +1,4 @@
+from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
 from libcpp.string cimport string
 
@@ -29,6 +30,8 @@ cdef extern from "common/info.hpp" nogil:
         void visitBuildOptions(BuildOptionVisitor visitor) const
 
     unique_ptr[ILibraryInfo] getLibraryInfo()
+
+    bool isMultiThreadingSupportEnabled()
 
 
 cdef extern from *:

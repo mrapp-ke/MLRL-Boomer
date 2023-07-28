@@ -84,3 +84,10 @@ class MLRLCOMMON_API ILibraryInfo {
  * @return An unique pointer to an object of type `ILibraryVersion`
  */
 MLRLCOMMON_API std::unique_ptr<ILibraryInfo> getLibraryInfo();
+
+/**
+ * Returns whether multi-threading support was enabled at compile-time or not.
+ *
+ * @return True if multi-threading support is enabled, false otherwise
+ */
+MLRLCOMMON_API bool isMultiThreadingSupportEnabled();

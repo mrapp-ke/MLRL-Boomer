@@ -91,3 +91,12 @@ def get_cpp_library_info() -> CppLibraryInfo:
     cdef CppLibraryInfo library_info = CppLibraryInfo()
     library_info.library_info_ptr = move(getLibraryInfo())
     return library_info
+
+
+def is_multi_threading_support_enabled() -> bool:
+    """
+    Returns whether multi-threading support was enabled at compile-time or not.
+
+    :return: True, if the multi-threading support is enabled, False otherwise
+    """
+    return isMultiThreadingSupportEnabled()
