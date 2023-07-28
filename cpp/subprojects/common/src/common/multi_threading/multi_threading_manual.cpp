@@ -3,18 +3,18 @@
 #include "common/util/threads.hpp"
 #include "common/util/validation.hpp"
 
-ManualMultiThreadingConfig::ManualMultiThreadingConfig() : numThreads_(0) {}
+ManualMultiThreadingConfig::ManualMultiThreadingConfig() : numPreferredThreads_(0) {}
 
-uint32 ManualMultiThreadingConfig::getNumThreads() const {
-    return numThreads_;
+uint32 ManualMultiThreadingConfig::getNumPreferredThreads() const {
+    return numPreferredThreads_;
 }
 
-IManualMultiThreadingConfig& ManualMultiThreadingConfig::setNumThreads(uint32 numThreads) {
-    if (numThreads != 0) assertGreaterOrEqual<uint32>("numThreads", numThreads, 1);
-    numThreads_ = numThreads;
+IManualMultiThreadingConfig& ManualMultiThreadingConfig::setNumPreferredThreads(uint32 numPreferredThreads) {
+    if (numPreferredThreads != 0) assertGreaterOrEqual<uint32>("numPreferredThreads", numPreferredThreads, 1);
+    numPreferredThreads_ = numPreferredThreads;
     return *this;
 }
 
 uint32 ManualMultiThreadingConfig::getNumThreads(const IFeatureMatrix& featureMatrix, uint32 numLabels) const {
-    return getNumAvailableThreads(numThreads_);
+    return getNumAvailableThreads(numPreferredThreads_);
 }

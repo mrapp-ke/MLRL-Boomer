@@ -7,9 +7,9 @@ cdef extern from "common/multi_threading/multi_threading_manual.hpp" nogil:
 
         # Functions:
 
-        uint32 getNumThreads() const
+        uint32 getNumPreferredThreads() const
 
-        IManualMultiThreadingConfig& setNumThreads(uint32 numThreads) except +
+        IManualMultiThreadingConfig& setNumPreferredThreads(uint32 numPreferredThreads) except +
 
 
 cdef class ManualMultiThreadingConfig:
