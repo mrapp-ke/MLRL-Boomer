@@ -3,10 +3,13 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utilities that ease the configuration of rule learning algorithms.
 """
+import logging as log
+
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser
 from typing import Optional, Set
 
+from mlrl.common.cython.info import get_num_cpu_cores, is_multi_threading_support_enabled
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, EqualFrequencyFeatureBinningMixin, \
     EqualWidthFeatureBinningMixin, ExampleWiseStratifiedBiPartitionSamplingMixin, \
     ExampleWiseStratifiedInstanceSamplingMixin, FeatureSamplingWithoutReplacementMixin, \
@@ -616,8 +619,14 @@ class ParallelRuleRefinementParameter(NominalParameter):
             config.use_no_parallel_rule_refinement()
         else:
             conf = config.use_parallel_rule_refinement()
-            conf.set_num_preferred_threads(
-                options.get_int(OPTION_NUM_PREFERRED_THREADS, conf.get_num_preferred_threads()))
+            num_preferred_threads = options.get_int(OPTION_NUM_PREFERRED_THREADS, conf.get_num_preferred_threads())
+            conf.set_num_preferred_threads(num_preferred_threads)
+            if num_preferred_threads > 1 and not is_multi_threading_support_enabled():
+                log.warning('%s threads should be used for rule refinement, but multi-threading support is disabled',
+                            num_preferred_threads)
+            elif num_preferred_threads > get_num_cpu_cores():
+                log.warning('%s threads should be used for rule refinement, but only %s CPU cores are available',
+                            num_preferred_threads, get_num_cpu_cores())
 
 
 class ParallelStatisticUpdateParameter(NominalParameter):
@@ -640,8 +649,14 @@ class ParallelStatisticUpdateParameter(NominalParameter):
             config.use_no_parallel_statistic_update()
         else:
             conf = config.use_parallel_statistic_update()
-            conf.set_num_preferred_threads(
-                options.get_int(OPTION_NUM_PREFERRED_THREADS, conf.get_num_preferred_threads()))
+            num_preferred_threads = options.get_int(OPTION_NUM_PREFERRED_THREADS, conf.get_num_preferred_threads())
+            conf.set_num_preferred_threads(num_preferred_threads)
+            if num_preferred_threads > 1 and not is_multi_threading_support_enabled():
+                log.warning('%s threads should be used for statistic updates, but multi-threading support is disabled',
+                            num_preferred_threads)
+            elif num_preferred_threads > get_num_cpu_cores():
+                log.warning('%s threads should be used for statistic updates, but only %s CPU cores are available',
+                            num_preferred_threads, get_num_cpu_cores())
 
 
 class ParallelPredictionParameter(NominalParameter):
@@ -663,8 +678,14 @@ class ParallelPredictionParameter(NominalParameter):
             config.use_no_parallel_prediction()
         else:
             conf = config.use_parallel_prediction()
-            conf.set_num_preferred_threads(
-                options.get_int(OPTION_NUM_PREFERRED_THREADS, conf.get_num_preferred_threads()))
+            num_preferred_threads = options.get_int(OPTION_NUM_PREFERRED_THREADS, conf.get_num_preferred_threads())
+            conf.set_num_preferred_threads(num_preferred_threads)
+            if num_preferred_threads > 1 and not is_multi_threading_support_enabled():
+                log.warning('%s threads should be used for prediction, but multi-threading support is disabled',
+                            num_preferred_threads)
+            elif num_preferred_threads > get_num_cpu_cores():
+                log.warning('%s threads should be used for prediction, but only %s CPU cores are available',
+                            num_preferred_threads, get_num_cpu_cores())
 
 
 class SizeStoppingCriterionParameter(IntParameter):

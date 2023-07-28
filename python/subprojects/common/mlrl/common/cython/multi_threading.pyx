@@ -1,10 +1,6 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython.info cimport isMultiThreadingSupportEnabled
-
-import logging as log
-
 from mlrl.common.cython.validation import assert_greater_or_equal
 
 
@@ -34,7 +30,5 @@ cdef class ManualMultiThreadingConfig:
         """
         if num_preferred_threads != 0:
             assert_greater_or_equal('num_preferred_threads', num_preferred_threads, 1)
-        if num_preferred_threads != 1 and not isMultiThreadingSupportEnabled():
-            log.warning('%s threads should be used, but multi-threading support is disabled')
         self.config_ptr.setNumPreferredThreads(num_preferred_threads)
         return self
