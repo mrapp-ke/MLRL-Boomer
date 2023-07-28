@@ -50,7 +50,7 @@ OPTION_MIN_BINS = 'min_bins'
 
 OPTION_MAX_BINS = 'max_bins'
 
-OPTION_NUM_THREADS = 'num_threads'
+OPTION_NUM_PREFERRED_THREADS = 'num_preferred_threads'
 
 OPTION_USE_HOLDOUT_SET = 'use_holdout_set'
 
@@ -607,14 +607,17 @@ class ParallelRuleRefinementParameter(NominalParameter):
         super().__init__(name='parallel_rule_refinement',
                          description='Whether potential refinements of rules should be searched for in parallel or not')
         self.add_value(name=BooleanOption.FALSE.value, mixin=NoParallelRuleRefinementMixin)
-        self.add_value(name=BooleanOption.TRUE.value, mixin=ParallelRuleRefinementMixin, options={OPTION_NUM_THREADS})
+        self.add_value(name=BooleanOption.TRUE.value,
+                       mixin=ParallelRuleRefinementMixin,
+                       options={OPTION_NUM_PREFERRED_THREADS})
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == BooleanOption.FALSE.value:
             config.use_no_parallel_rule_refinement()
         else:
             conf = config.use_parallel_rule_refinement()
-            conf.set_num_threads(options.get_int(OPTION_NUM_THREADS, conf.get_num_threads()))
+            conf.set_num_preferred_threads(
+                options.get_int(OPTION_NUM_PREFERRED_THREADS, conf.get_num_preferred_threads()))
 
 
 class ParallelStatisticUpdateParameter(NominalParameter):
@@ -628,14 +631,17 @@ class ParallelStatisticUpdateParameter(NominalParameter):
             name='parallel_statistic_update',
             description='Whether the statistics for different examples should be updated in parallel or not')
         self.add_value(name=BooleanOption.FALSE.value, mixin=NoParallelStatisticUpdateMixin)
-        self.add_value(name=BooleanOption.TRUE.value, mixin=ParallelStatisticUpdateMixin, options={OPTION_NUM_THREADS})
+        self.add_value(name=BooleanOption.TRUE.value,
+                       mixin=ParallelStatisticUpdateMixin,
+                       options={OPTION_NUM_PREFERRED_THREADS})
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == BooleanOption.FALSE.value:
             config.use_no_parallel_statistic_update()
         else:
             conf = config.use_parallel_statistic_update()
-            conf.set_num_threads(options.get_int(OPTION_NUM_THREADS, conf.get_num_threads()))
+            conf.set_num_preferred_threads(
+                options.get_int(OPTION_NUM_PREFERRED_THREADS, conf.get_num_preferred_threads()))
 
 
 class ParallelPredictionParameter(NominalParameter):
@@ -648,14 +654,17 @@ class ParallelPredictionParameter(NominalParameter):
         super().__init__(name='parallel_prediction',
                          description='Whether predictions for different examples should be obtained in parallel or not')
         self.add_value(name=BooleanOption.FALSE.value, mixin=NoParallelPredictionMixin)
-        self.add_value(name=BooleanOption.TRUE.value, mixin=ParallelPredictionMixin, options={OPTION_NUM_THREADS})
+        self.add_value(name=BooleanOption.TRUE.value,
+                       mixin=ParallelPredictionMixin,
+                       options={OPTION_NUM_PREFERRED_THREADS})
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == BooleanOption.FALSE.value:
             config.use_no_parallel_prediction()
         else:
             conf = config.use_parallel_prediction()
-            conf.set_num_threads(options.get_int(OPTION_NUM_THREADS, conf.get_num_threads()))
+            conf.set_num_preferred_threads(
+                options.get_int(OPTION_NUM_PREFERRED_THREADS, conf.get_num_preferred_threads()))
 
 
 class SizeStoppingCriterionParameter(IntParameter):

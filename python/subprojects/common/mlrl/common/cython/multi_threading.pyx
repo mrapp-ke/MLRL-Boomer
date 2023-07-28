@@ -10,24 +10,25 @@ cdef class ManualMultiThreadingConfig:
     threads to be used.
     """
 
-    def get_num_threads(self) -> int:
+    def get_num_preferred_threads(self) -> int:
         """
-        Returns the number of threads that are used.
+        Returns the number of preferred threads.
 
-        :return: The number of threads that are used or 0, if all available CPU cores are utilized
+        :return: The number of preferred threads or 0, if all available CPU cores are utilized
         """
-        return self.config_ptr.getNumThreads()
+        return self.config_ptr.getNumPreferredThreads()
 
-    def set_num_threads(self, num_threads: int) -> ManualMultiThreadingConfig:
+    def set_num_preferred_threads(self, num_preferred_threads: int) -> ManualMultiThreadingConfig:
         """
-        Sets the number of threads that should be used.
+        Sets the number of preferred threads. If not enough CPU cores are available or if multi-threading support was
+        disabled at compile-time, as many threads as possible will be used.
 
-        :param num_threads: The number of threads that should be used. Must be at least 1 or 0, if all available CPU
-                            cores should be utilized
-        :return:            A `ManualMultiThreadingConfig` that allows further configuration of the multi-threading
-                            behavior
+        :param num_preferred_threads:   The preferred number of threads. Must be at least 1 or 0, if all available CPU
+                                        cores should be utilized
+        :return:                        A `ManualMultiThreadingConfig` that allows further configuration of the
+                                        multi-threading behavior
         """
-        if num_threads != 0:
-            assert_greater_or_equal('num_threads', num_threads, 1)
-        self.config_ptr.setNumThreads(num_threads)
+        if num_preferred_threads != 0:
+            assert_greater_or_equal('num_preferred_threads', num_preferred_threads, 1)
+        self.config_ptr.setNumPreferredThreads(num_preferred_threads)
         return self
