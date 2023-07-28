@@ -290,7 +290,7 @@ The following parameters allow to specify whether multi-threading should be used
   * ``'false'`` No multi-threading is used to search for potential refinements of rules.
   * ``'true'`` Multi-threading is used to search for potential refinements of rules in parallel. The following options may be provided using the bracket notation:
 
-    * ``num_threads`` (Default value = ``0``) The number of threads to be used. Must be at least 1 or 0, if the number of cores available on the machine should be used.
+    * ``num_preferred_threads`` (Default value = ``0``) The number of preferred threads. Must be at least 1 or 0, if the number of cores available on the machine should be used. If not enough CPU cores are available or if multi-threading support is disabled, as many threads as possible will be used.
 
 * ``parallel_statistic_update`` (Default value = ``'auto'``)
 
@@ -298,11 +298,11 @@ The following parameters allow to specify whether multi-threading should be used
   * ``'false'`` No multi-threading is used to calculate the gradients and Hessians of different examples.
   * ``'true'`` Multi-threading is used to calculate the gradients and Hessians of different examples in parallel. The following options may be provided using the bracket notation:
 
-    * ``num_threads`` (Default value = ``0``) The number of threads to be used. Must be at least 1 or 0, if the number of cores available on the machine should be used.
+    * ``num_preferred_threads`` (Default value = ``0``) The number of preferred threads. Must be at least 1 or 0, if the number of cores available on the machine should be used. If not enough CPU cores are available or if multi-threading support is disabled, as many threads as possible will be used.
 
 * ``parallel_prediction`` (Default value = ``'true'``)
 
   * ``'false'`` No multi-threading is used to obtain predictions for different examples.
   * ``'true'`` Multi-threading is used to obtain predictions for different examples in parallel. The following options may be provided using the bracket notation:
 
-    * ``num_threads`` (Default value = ``0``) The number of threads to be used. Must be at least 1 or 0, if the number of cores available on the machine should be used.
+    * ``num_preferred_threads`` (Default value = ``0``) The number of preferred threads. Must be at least 1 or 0, if the number of cores available on the machine should be used. If not enough CPU cores are available or if multi-threading support is disabled, as many threads as possible will be used.
