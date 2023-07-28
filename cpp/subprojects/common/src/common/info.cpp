@@ -42,3 +42,7 @@ class CommonLibraryInfo final : public ILibraryInfo {
 std::unique_ptr<ILibraryInfo> getLibraryInfo() {
     return std::make_unique<CommonLibraryInfo>();
 }
+
+bool isMultiThreadingSupportEnabled() {
+    return MULTI_THREADING_SUPPORT_ENABLED ? true : false;
+}
