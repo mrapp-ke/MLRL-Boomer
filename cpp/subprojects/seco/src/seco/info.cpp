@@ -10,14 +10,23 @@ namespace seco {
     class SeCoLibraryInfo final : public ILibraryInfo {
         public:
 
+            /**
+             * @see `ILibraryInfo::getLibraryName`
+             */
             std::string getLibraryName() const override {
                 return MLRLSECO_LIBRARY_NAME;
             }
 
+            /**
+             * @see `ILibraryInfo::getLibraryVersion`
+             */
             std::string getLibraryVersion() const override {
                 return MLRLSECO_LIBRARY_VERSION;
             }
 
+            /**
+             * @see `ILibraryInfo::getTargetArchitecture`
+             */
             std::string getTargetArchitecture() const override {
                 return MLRLSECO_TARGET_ARCHITECTURE;
             }
