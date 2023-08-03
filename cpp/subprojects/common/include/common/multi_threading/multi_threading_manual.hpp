@@ -16,21 +16,22 @@ class MLRLCOMMON_API IManualMultiThreadingConfig {
         virtual ~IManualMultiThreadingConfig() {};
 
         /**
-         * Returns the number of threads that are used.
+         * Returns the number of preferred threads.
          *
-         * @return The number of threads that are used or 0, if all available CPU cores are utilized
+         * @return The number of preferred threads or 0, if all available CPU cores are utilized
          */
-        virtual uint32 getNumThreads() const = 0;
+        virtual uint32 getNumPreferredThreads() const = 0;
 
         /**
-         * Sets the number of threads that should be used.
+         * Sets the number of preferred threads. If not enough CPU cores are available or if multi-threading support was
+         * disabled at compile-time, as many threads as possible will be used.
          *
-         * @param numThreads    The number of threads that should be used. Must be at least 1 or 0, if all available CPU
-         *                      cores should be utilized
-         * @return              A reference to an object of type `IManualMultiThreadingConfig` that allows further
-         *                      configuration of the multi-threading behavior
+         * @param numPreferredThreads   The preferred number of threads. Must be at least 1 or 0, if all available CPU
+         *                              cores should be utilized
+         * @return                      A reference to an object of type `IManualMultiThreadingConfig` that allows
+         *                              further configuration of the multi-threading behavior
          */
-        virtual IManualMultiThreadingConfig& setNumThreads(uint32 numThreads) = 0;
+        virtual IManualMultiThreadingConfig& setNumPreferredThreads(uint32 numPreferredThreads) = 0;
 };
 
 /**
@@ -41,15 +42,15 @@ class ManualMultiThreadingConfig final : public IMultiThreadingConfig,
                                          public IManualMultiThreadingConfig {
     private:
 
-        uint32 numThreads_;
+        uint32 numPreferredThreads_;
 
     public:
 
         ManualMultiThreadingConfig();
 
-        uint32 getNumThreads() const override;
+        uint32 getNumPreferredThreads() const override;
 
-        IManualMultiThreadingConfig& setNumThreads(uint32 numThreads) override;
+        IManualMultiThreadingConfig& setNumPreferredThreads(uint32 numPreferredThreads) override;
 
         uint32 getNumThreads(const IFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 };

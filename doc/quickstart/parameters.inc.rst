@@ -282,6 +282,9 @@ The following parameters allow to control the behavior of the algorithm:
 
 **Multi-Threading**
 
+.. note::
+    To be able to use the algorithm's multi-threading capabilities, it must have been compiled with multi-threading support enabled, which should be the case with pre-built packages available on `PyPI <https://pypi.org/>`__. Please refer to the section :ref:`buildoptions` if you intend to compile the program yourself, or if you want to check if multi-threading support is enabled for your installation.
+
 The following parameters allow to specify whether multi-threading should be used for different aspects of the algorithm:
 
 * ``parallel_rule_refinement`` (Default value = ``'auto'``)
@@ -290,7 +293,7 @@ The following parameters allow to specify whether multi-threading should be used
   * ``'false'`` No multi-threading is used to search for potential refinements of rules.
   * ``'true'`` Multi-threading is used to search for potential refinements of rules in parallel. The following options may be provided using the bracket notation:
 
-    * ``num_threads`` (Default value = ``0``) The number of threads to be used. Must be at least 1 or 0, if the number of cores available on the machine should be used.
+    * ``num_preferred_threads`` (Default value = ``0``) The number of preferred threads. Must be at least 1 or 0, if the number of cores available on the machine should be used. If not enough CPU cores are available or if multi-threading support is disabled, as many threads as possible will be used.
 
 * ``parallel_statistic_update`` (Default value = ``'auto'``)
 
@@ -298,11 +301,11 @@ The following parameters allow to specify whether multi-threading should be used
   * ``'false'`` No multi-threading is used to calculate the gradients and Hessians of different examples.
   * ``'true'`` Multi-threading is used to calculate the gradients and Hessians of different examples in parallel. The following options may be provided using the bracket notation:
 
-    * ``num_threads`` (Default value = ``0``) The number of threads to be used. Must be at least 1 or 0, if the number of cores available on the machine should be used.
+    * ``num_preferred_threads`` (Default value = ``0``) The number of preferred threads. Must be at least 1 or 0, if the number of cores available on the machine should be used. If not enough CPU cores are available or if multi-threading support is disabled, as many threads as possible will be used.
 
 * ``parallel_prediction`` (Default value = ``'true'``)
 
   * ``'false'`` No multi-threading is used to obtain predictions for different examples.
   * ``'true'`` Multi-threading is used to obtain predictions for different examples in parallel. The following options may be provided using the bracket notation:
 
-    * ``num_threads`` (Default value = ``0``) The number of threads to be used. Must be at least 1 or 0, if the number of cores available on the machine should be used.
+    * ``num_preferred_threads`` (Default value = ``0``) The number of preferred threads. Must be at least 1 or 0, if the number of cores available on the machine should be used. If not enough CPU cores are available or if multi-threading support is disabled, as many threads as possible will be used.

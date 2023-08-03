@@ -4,9 +4,15 @@
 
 A major update to the BOOMER algorithm that introduces the following changes.
 
+***This release comes with several API changes. For an updated overview of the available parameters and command line arguments, please refer to the [documentation](https://mlrl-boomer.readthedocs.io/en/0.10.0/).***
+
 ### Additions to the Command Line API
 
 * **Information about the program can now be printed** via the argument `-v` or `--version`.
+
+### API Changes
+
+* The option `num_threads` of the parameters `--parallel-rule-refinement`, `--parallel-statistic-update` and `--parallel-prediction` has been renamed to `num_preferred_threads`.
 
 ### Quality-of-Life Improvements
 
