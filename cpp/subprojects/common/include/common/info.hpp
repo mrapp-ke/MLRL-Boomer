@@ -72,11 +72,11 @@ class MLRLCOMMON_API ILibraryInfo {
         virtual std::string getTargetArchitecture() const = 0;
 
         /**
-         * Invokes a given visitor function for each available build option.
+         * May be overridden by subclasses in order to invoke a given visitor function for each available build option.
          *
          * @param visitor A visitor function for handling objects of the type `BuildOption`
          */
-        virtual void visitBuildOptions(BuildOptionVisitor visitor) const = 0;
+        virtual void visitBuildOptions(BuildOptionVisitor visitor) const {};
 };
 
 /**
