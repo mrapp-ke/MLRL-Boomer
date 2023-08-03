@@ -26,6 +26,11 @@ class CommonLibraryInfo final : public ILibraryInfo {
                                                   MULTI_THREADING_SUPPORT_ENABLED ? "enabled" : "disabled");
             visitor(multiThreadingBuildOption);
         }
+
+        void visitHardwareResources(HardwareResourceVisitor visitor) const override {
+            HardwareResource cpuHardwareResource("available CPU cores", std::to_string(getNumCpuCores()));
+            visitor(cpuHardwareResource);
+        }
 };
 
 std::unique_ptr<ILibraryInfo> getLibraryInfo() {
