@@ -148,6 +148,20 @@ class Runnable(ABC):
 
             return unique_packages
 
+        def __collect_dependencies(self, python_packages: Iterable[PythonPackageInfo]) -> Dict[str, Set[str]]:
+            unique_dependencies = {}
+
+            for python_package in python_packages:
+                for dependency in python_package.dependencies:
+                    parent_packages = unique_dependencies.setdefault(str(dependency), set())
+                    parent_packages.add(python_package.package_name)
+
+                for key, value in self.__collect_dependencies(python_package.python_packages).items():
+                    parent_packages = unique_dependencies.setdefault(key, set())
+                    parent_packages.update(value)
+
+            return unique_dependencies
+
         def __collect_cpp_libraries(self, python_packages: Iterable[PythonPackageInfo]) -> Dict[str, Set[str]]:
             unique_libraries = {}
 
@@ -176,20 +190,6 @@ class Runnable(ABC):
                     parent_libraries.update(value)
 
             return unique_build_options
-
-        def __collect_dependencies(self, python_packages: Iterable[PythonPackageInfo]) -> Dict[str, Set[str]]:
-            unique_dependencies = {}
-
-            for python_package in python_packages:
-                for dependency in python_package.dependencies:
-                    parent_packages = unique_dependencies.setdefault(str(dependency), set())
-                    parent_packages.add(python_package.package_name)
-
-                for key, value in self.__collect_dependencies(python_package.python_packages).items():
-                    parent_packages = unique_dependencies.setdefault(key, set())
-                    parent_packages.update(value)
-
-            return unique_dependencies
 
         @staticmethod
         def __format_parent_packages(parent_packages: Set[str]) -> str:
