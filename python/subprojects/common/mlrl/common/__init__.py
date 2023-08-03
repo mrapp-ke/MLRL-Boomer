@@ -1,0 +1,4 @@
+"""
+This module provides common functionality for multi-label rule learning algorithms.
+"""
+from mlrl.common.cython.info import get_num_cpu_cores, is_multi_threading_support_enabled
