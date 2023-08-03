@@ -148,6 +148,20 @@ class Runnable(ABC):
 
             return unique_packages
 
+        def __collect_dependencies(self, python_packages: Iterable[PythonPackageInfo]) -> Dict[str, Set[str]]:
+            unique_dependencies = {}
+
+            for python_package in python_packages:
+                for dependency in python_package.dependencies:
+                    parent_packages = unique_dependencies.setdefault(str(dependency), set())
+                    parent_packages.add(python_package.package_name)
+
+                for key, value in self.__collect_dependencies(python_package.python_packages).items():
+                    parent_packages = unique_dependencies.setdefault(key, set())
+                    parent_packages.update(value)
+
+            return unique_dependencies
+
         def __collect_cpp_libraries(self, python_packages: Iterable[PythonPackageInfo]) -> Dict[str, Set[str]]:
             unique_libraries = {}
 
@@ -177,19 +191,20 @@ class Runnable(ABC):
 
             return unique_build_options
 
-        def __collect_dependencies(self, python_packages: Iterable[PythonPackageInfo]) -> Dict[str, Set[str]]:
-            unique_dependencies = {}
+        def __collect_hardware_resources(self, python_packages: Iterable[PythonPackageInfo]) -> Dict[str, Set[str]]:
+            unique_hardware_resources = {}
 
             for python_package in python_packages:
-                for dependency in python_package.dependencies:
-                    parent_packages = unique_dependencies.setdefault(str(dependency), set())
-                    parent_packages.add(python_package.package_name)
+                for cpp_library in python_package.cpp_libraries:
+                    for hardware_resource in cpp_library.hardware_resources:
+                        info = unique_hardware_resources.setdefault(hardware_resource.resource, set())
+                        info.add(hardware_resource.info)
 
-                for key, value in self.__collect_dependencies(python_package.python_packages).items():
-                    parent_packages = unique_dependencies.setdefault(key, set())
-                    parent_packages.update(value)
+                for key, value in self.__collect_hardware_resources(python_package.python_packages).items():
+                    info = unique_hardware_resources.setdefault(key, set())
+                    info.update(value)
 
-            return unique_dependencies
+            return unique_hardware_resources
 
         @staticmethod
         def __format_parent_packages(parent_packages: Set[str]) -> str:
@@ -228,6 +243,15 @@ class Runnable(ABC):
             for i, build_option in enumerate(sorted(build_options.keys())):
                 parent_libraries = self.__format_parent_packages(build_options[build_option])
                 rows.append(['' if i > 0 else 'Build options:', build_option, parent_libraries])
+
+            if len(build_options) > 0:
+                rows.append(['', '', ''])
+
+            hardware_resources = self.__collect_hardware_resources(python_packages)
+
+            for i, hardware_resource in enumerate(sorted(hardware_resources.keys())):
+                for j, info in enumerate(sorted(hardware_resources[hardware_resource])):
+                    rows.append(['' if i > 0 else 'Hardware resources:', '' if j > 0 else hardware_resource, info])
 
             return format_table(rows) if len(rows) > 0 else ''
 

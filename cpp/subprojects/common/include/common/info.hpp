@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "common/data/types.hpp"
 #include "common/macros.hpp"
 
 #include <functional>
@@ -43,9 +44,35 @@ class MLRLCOMMON_API ILibraryInfo {
         };
 
         /**
+         * Provides information about a certain hardware resource.
+         */
+        struct HardwareResource {
+                /**
+                 * @param r A human-legible name of the hardware resource
+                 * @param i The information associated with the hardware resource
+                 */
+                HardwareResource(std::string r, std::string i) : resource(r), info(i) {}
+
+                /**
+                 * A human-legible name of the hardware resource.
+                 */
+                const std::string resource;
+
+                /**
+                 * The information associated with the hardware resource.
+                 */
+                const std::string info;
+        };
+
+        /**
          * A visitor function for handling objects of the type `BuildOption`.
          */
         typedef std::function<void(const BuildOption&)> BuildOptionVisitor;
+
+        /**
+         * A visitor function for handling objects of the type `HardwareResource`.
+         */
+        typedef std::function<void(const HardwareResource&)> HardwareResourceVisitor;
 
         virtual ~ILibraryInfo() {};
 
@@ -71,11 +98,19 @@ class MLRLCOMMON_API ILibraryInfo {
         virtual std::string getTargetArchitecture() const = 0;
 
         /**
-         * Invokes a given visitor function for each available build option.
+         * May be overridden by subclasses in order to invoke a given visitor function for each available build option.
          *
          * @param visitor A visitor function for handling objects of the type `BuildOption`
          */
-        virtual void visitBuildOptions(BuildOptionVisitor visitor) const = 0;
+        virtual void visitBuildOptions(BuildOptionVisitor visitor) const {};
+
+        /**
+         * May be overridden by subclasses in order to invoke a given visitor function for each available hardware
+         * resource.
+         *
+         * @param visitor A visitor function for handling objects of the type `HardwareResource`
+         */
+        virtual void visitHardwareResources(HardwareResourceVisitor visitor) const {};
 };
 
 /**
@@ -84,3 +119,18 @@ class MLRLCOMMON_API ILibraryInfo {
  * @return An unique pointer to an object of type `ILibraryVersion`
  */
 MLRLCOMMON_API std::unique_ptr<ILibraryInfo> getLibraryInfo();
+
+/**
+ * Returns whether multi-threading support was enabled at compile-time or not.
+ *
+ * @return True if multi-threading support is enabled, false otherwise
+ */
+MLRLCOMMON_API bool isMultiThreadingSupportEnabled();
+
+/**
+ * Returns the number of CPU cores available on the machine, regardless of whether multi-threading support is enabled or
+ * not.
+ *
+ * @return The number of CPU cores available on the machine
+ */
+MLRLCOMMON_API uint32 getNumCpuCores();
