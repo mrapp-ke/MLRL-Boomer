@@ -25,6 +25,19 @@ class CppBuildOption:
         return self.description + ' (' + self.value + ')'
 
 
+@dataclass
+class CppHardwareResource:
+    """
+    Provides information about a certain hardware resource used by a C++ library.
+
+    Attributes:
+        resource:   A human-legible name of the hardware resource
+        info:       The information associated with the hardware resource
+    """
+    resource: str
+    info: str
+
+
 cdef class CppLibraryInfo:
     """
     Provides information about a C++ library.
@@ -37,6 +50,12 @@ cdef class CppLibraryInfo:
         self.__build_options.append(CppBuildOption(option=option.decode('UTF-8'),
                                                    description=description.decode('UTF-8'),
                                                    value=value.decode('UTF-8')))
+
+    cdef __visit_hardware_resource(self, const HardwareResource& hardware_resource):
+        cdef string resource = hardware_resource.resource
+        cdef string info = hardware_resource.info
+        self.__hardware_resources.append(CppHardwareResource(resource=resource.decode('UTF-8'),
+                                                             info=info.decode('UTF-8')))
 
     @property
     def library_name(self) -> str:
@@ -71,6 +90,16 @@ cdef class CppLibraryInfo:
         self.library_info_ptr.get().visitBuildOptions(
             wrapBuildOptionVisitor(<void*>self, <BuildOptionCythonVisitor>self.__visit_build_option))
         return self.__build_options
+
+    @property
+    def hardware_resources(self) -> List[CppHardwareResource]:
+        """
+        Information about the hardware resources that are used by the C++ library.
+        """
+        self.__hardware_resources = []
+        self.library_info_ptr.get().visitHardwareResources(
+            wrapHardwareResourceVisitor(<void*>self, <HardwareResourceCythonVisitor>self.__visit_hardware_resource))
+        return self.__hardware_resources
 
     def __str__(self) -> str:
         return self.library_name + ' ' + self.library_version + ' (' + self.target_architecture + ')'
