@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/boosting/dll_exports.hpp"
 #include "mlrl/boosting/rule_evaluation/regularization.hpp"
+#include "mlrl/boosting/util/dll_exports.hpp"
 
 namespace boosting {
 
