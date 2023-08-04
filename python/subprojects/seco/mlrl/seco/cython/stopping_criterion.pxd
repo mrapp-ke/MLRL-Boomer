@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport float64
 
 
-cdef extern from "seco/stopping/stopping_criterion_coverage.hpp" namespace "seco" nogil:
+cdef extern from "mlrl/seco/stopping/stopping_criterion_coverage.hpp" namespace "seco" nogil:
 
     cdef cppclass ICoverageStoppingCriterionConfig:
 

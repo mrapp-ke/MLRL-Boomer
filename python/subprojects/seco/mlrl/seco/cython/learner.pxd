@@ -3,7 +3,7 @@ from mlrl.seco.cython.lift_function cimport IKlnLiftFunctionConfig, IPeakLiftFun
 from mlrl.seco.cython.stopping_criterion cimport ICoverageStoppingCriterionConfig
 
 
-cdef extern from "seco/learner.hpp" namespace "seco" nogil:
+cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
 
     cdef cppclass INoCoverageStoppingCriterionMixin"seco::ISeCoRuleLearner::INoCoverageStoppingCriterionMixin":
 

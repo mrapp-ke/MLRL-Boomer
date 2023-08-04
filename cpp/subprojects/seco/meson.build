@@ -2,29 +2,29 @@ project('seco', 'cpp')
 
 # Source files
 source_files = [
-    'src/seco/data/matrix_coverage_dense.cpp',
-    'src/seco/data/vector_confusion_matrix_dense.cpp',
-    'src/seco/heuristics/heuristic_accuracy.cpp',
-    'src/seco/heuristics/heuristic_f_measure.cpp',
-    'src/seco/heuristics/heuristic_laplace.cpp',
-    'src/seco/heuristics/heuristic_m_estimate.cpp',
-    'src/seco/heuristics/heuristic_precision.cpp',
-    'src/seco/heuristics/heuristic_recall.cpp',
-    'src/seco/heuristics/heuristic_wra.cpp',
-    'src/seco/lift_functions/lift_function_kln.cpp',
-    'src/seco/lift_functions/lift_function_no.cpp',
-    'src/seco/lift_functions/lift_function_peak.cpp',
-    'src/seco/model/decision_list_builder.cpp',
-    'src/seco/prediction/predictor_binary_label_wise.cpp',
-    'src/seco/rule_evaluation/head_type_partial.cpp',
-    'src/seco/rule_evaluation/head_type_single.cpp',
-    'src/seco/rule_evaluation/rule_evaluation_label_wise_partial.cpp',
-    'src/seco/rule_evaluation/rule_evaluation_label_wise_single.cpp',
-    'src/seco/statistics/statistics_provider_label_wise_dense.cpp',
-    'src/seco/stopping/stopping_criterion_coverage.cpp',
-    'src/seco/info.cpp',
-    'src/seco/learner.cpp',
-    'src/seco/learner_seco.cpp'
+    'src/mlrl/seco/data/matrix_coverage_dense.cpp',
+    'src/mlrl/seco/data/vector_confusion_matrix_dense.cpp',
+    'src/mlrl/seco/heuristics/heuristic_accuracy.cpp',
+    'src/mlrl/seco/heuristics/heuristic_f_measure.cpp',
+    'src/mlrl/seco/heuristics/heuristic_laplace.cpp',
+    'src/mlrl/seco/heuristics/heuristic_m_estimate.cpp',
+    'src/mlrl/seco/heuristics/heuristic_precision.cpp',
+    'src/mlrl/seco/heuristics/heuristic_recall.cpp',
+    'src/mlrl/seco/heuristics/heuristic_wra.cpp',
+    'src/mlrl/seco/lift_functions/lift_function_kln.cpp',
+    'src/mlrl/seco/lift_functions/lift_function_no.cpp',
+    'src/mlrl/seco/lift_functions/lift_function_peak.cpp',
+    'src/mlrl/seco/model/decision_list_builder.cpp',
+    'src/mlrl/seco/prediction/predictor_binary_label_wise.cpp',
+    'src/mlrl/seco/rule_evaluation/head_type_partial.cpp',
+    'src/mlrl/seco/rule_evaluation/head_type_single.cpp',
+    'src/mlrl/seco/rule_evaluation/rule_evaluation_label_wise_partial.cpp',
+    'src/mlrl/seco/rule_evaluation/rule_evaluation_label_wise_single.cpp',
+    'src/mlrl/seco/statistics/statistics_provider_label_wise_dense.cpp',
+    'src/mlrl/seco/stopping/stopping_criterion_coverage.cpp',
+    'src/mlrl/seco/info.cpp',
+    'src/mlrl/seco/learner.cpp',
+    'src/mlrl/seco/learner_seco.cpp'
 ]
 
 # Dependencies
@@ -52,7 +52,7 @@ configuration = configuration_data()
 configuration.set('mlrlseco_library_name', 'lib' + lib_name)
 configuration.set('mlrlseco_library_version', version)
 configuration.set('mlrlseco_target_architecture', target_architecture)
-configure_file(input : 'include/seco/config.hpp.in', output : 'config.hpp', configuration: configuration)
+configure_file(input : 'include/mlrl/seco/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
 # Library declaration
 cpp_args = common_project.get_variable('cpp_args')

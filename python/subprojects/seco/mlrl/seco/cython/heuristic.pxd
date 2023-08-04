@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport float64
 
 
-cdef extern from "seco/heuristics/heuristic_f_measure.hpp" namespace "seco" nogil:
+cdef extern from "mlrl/seco/heuristics/heuristic_f_measure.hpp" namespace "seco" nogil:
 
     cdef cppclass IFMeasureConfig:
 
@@ -12,7 +12,7 @@ cdef extern from "seco/heuristics/heuristic_f_measure.hpp" namespace "seco" nogi
         IFMeasureConfig& setBeta(float64 beta) except +
 
 
-cdef extern from "seco/heuristics/heuristic_m_estimate.hpp" namespace "seco" nogil:
+cdef extern from "mlrl/seco/heuristics/heuristic_m_estimate.hpp" namespace "seco" nogil:
 
     cdef cppclass IMEstimateConfig:
 
