@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/types.hpp"
-#include "mlrl/common/macros.hpp"
+#include "mlrl/common/dll_exports.hpp"
 
 /**
  * Defines an interface for all two-dimensional views.

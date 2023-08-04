@@ -5,7 +5,7 @@
 #pragma once
 
 #include "mlrl/common/binning/feature_binning.hpp"
-#include "mlrl/common/macros.hpp"
+#include "mlrl/common/dll_exports.hpp"
 #include "mlrl/common/multi_threading/multi_threading.hpp"
 
 /**

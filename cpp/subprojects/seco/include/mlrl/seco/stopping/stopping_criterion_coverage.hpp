@@ -5,7 +5,7 @@
 #pragma once
 
 #include "mlrl/common/stopping/stopping_criterion.hpp"
-#include "mlrl/seco/macros.hpp"
+#include "mlrl/seco/dll_exports.hpp"
 
 namespace seco {
 

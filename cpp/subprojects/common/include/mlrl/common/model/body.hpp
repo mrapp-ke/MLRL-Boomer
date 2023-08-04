@@ -5,7 +5,7 @@
 
 #include "mlrl/common/data/view_csr.hpp"
 #include "mlrl/common/data/view_vector.hpp"
-#include "mlrl/common/macros.hpp"
+#include "mlrl/common/dll_exports.hpp"
 
 #include <functional>
 

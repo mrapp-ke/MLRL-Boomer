@@ -3,8 +3,8 @@
  */
 #pragma once
 
+#include "mlrl/boosting/dll_exports.hpp"
 #include "mlrl/boosting/losses/loss.hpp"
-#include "mlrl/boosting/macros.hpp"
 #include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/prediction/predictor_binary.hpp"
 

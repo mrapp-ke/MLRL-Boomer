@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/types.hpp"
-#include "mlrl/common/macros.hpp"
+#include "mlrl/common/dll_exports.hpp"
 
 /**
  * Specifies different types of aggregation functions that allow to aggregate the values that are stored in a buffer.

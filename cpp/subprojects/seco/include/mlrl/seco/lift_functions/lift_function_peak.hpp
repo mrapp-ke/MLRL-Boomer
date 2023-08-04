@@ -4,8 +4,8 @@
  */
 #pragma once
 
+#include "mlrl/seco/dll_exports.hpp"
 #include "mlrl/seco/lift_functions/lift_function.hpp"
-#include "mlrl/seco/macros.hpp"
 
 namespace seco {
 
