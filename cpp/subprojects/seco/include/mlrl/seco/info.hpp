@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/info.hpp"
-#include "mlrl/seco/macros.hpp"
+#include "mlrl/seco/dll_exports.hpp"
 
 namespace seco {
 

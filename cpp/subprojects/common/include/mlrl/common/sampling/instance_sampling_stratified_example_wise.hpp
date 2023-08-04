@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include "mlrl/common/macros.hpp"
+#include "mlrl/common/dll_exports.hpp"
 #include "mlrl/common/sampling/instance_sampling.hpp"
 
 /**

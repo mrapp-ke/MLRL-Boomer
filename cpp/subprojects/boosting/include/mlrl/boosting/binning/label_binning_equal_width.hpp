@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/boosting/binning/label_binning.hpp"
-#include "mlrl/boosting/macros.hpp"
+#include "mlrl/boosting/dll_exports.hpp"
 #include "mlrl/boosting/rule_evaluation/regularization.hpp"
 
 namespace boosting {

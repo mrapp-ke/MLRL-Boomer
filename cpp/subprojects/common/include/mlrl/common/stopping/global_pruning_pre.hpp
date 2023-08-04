@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/macros.hpp"
+#include "mlrl/common/dll_exports.hpp"
 #include "mlrl/common/stopping/aggregation_function.hpp"
 #include "mlrl/common/stopping/global_pruning.hpp"
 
