@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport float64
 
 
-cdef extern from "boosting/post_processing/shrinkage_constant.hpp" namespace "boosting" nogil:
+cdef extern from "mlrl/boosting/post_processing/shrinkage_constant.hpp" namespace "boosting" nogil:
 
     cdef cppclass IConstantShrinkageConfig:
 

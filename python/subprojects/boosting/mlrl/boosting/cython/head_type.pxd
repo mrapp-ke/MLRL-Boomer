@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport float32, uint32
 
 
-cdef extern from "boosting/rule_evaluation/head_type_partial_fixed.hpp" namespace "boosting" nogil:
+cdef extern from "mlrl/boosting/rule_evaluation/head_type_partial_fixed.hpp" namespace "boosting" nogil:
 
     cdef cppclass IFixedPartialHeadConfig:
 
@@ -20,7 +20,7 @@ cdef extern from "boosting/rule_evaluation/head_type_partial_fixed.hpp" namespac
         IFixedPartialHeadConfig& setMaxLabels(uint32 maxLabels) except +
 
 
-cdef extern from "boosting/rule_evaluation/head_type_partial_dynamic.hpp" namespace "boosting" nogil:
+cdef extern from "mlrl/boosting/rule_evaluation/head_type_partial_dynamic.hpp" namespace "boosting" nogil:
 
     cdef cppclass IDynamicPartialHeadConfig:
 

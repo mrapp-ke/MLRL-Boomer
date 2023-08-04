@@ -31,7 +31,7 @@ from mlrl.boosting.cython.learner cimport DdotFunction, DspmvFunction, DsysvFunc
     INoLabelBinningMixin, ISingleLabelHeadMixin, ISparseStatisticsMixin
 
 
-cdef extern from "boosting/learner_boomer.hpp" namespace "boosting" nogil:
+cdef extern from "mlrl/boosting/learner_boomer.hpp" namespace "boosting" nogil:
 
     cdef cppclass IBoomerConfig"boosting::IBoomer::IConfig"(IAutomaticPartitionSamplingMixin,
                                                             IAutomaticFeatureBinningMixin,
