@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/openmp.hpp"
 #include "common/prediction/predictor.hpp"
+#include "common/util/openmp.hpp"
 
 /**
  * Allows to obtain predictions for multiple query examples by delegating the prediction for individual examples to

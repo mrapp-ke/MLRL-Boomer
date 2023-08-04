@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/openmp.hpp"
 #include "common/thresholds/thresholds_subset.hpp"
+#include "common/util/openmp.hpp"
 
 /**
  * Stores an unique pointer to an object of type `IRuleRefinement` that may be used to search for potential refinements

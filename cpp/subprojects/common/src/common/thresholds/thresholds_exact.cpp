@@ -1,7 +1,7 @@
 #include "common/thresholds/thresholds_exact.hpp"
 
-#include "common/openmp.hpp"
 #include "common/rule_refinement/rule_refinement_exact.hpp"
+#include "common/util/openmp.hpp"
 #include "thresholds_common.hpp"
 
 #include <unordered_map>
