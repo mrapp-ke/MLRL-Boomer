@@ -1,7 +1,7 @@
 #include "mlrl/seco/heuristics/heuristic_m_estimate.hpp"
 
-#include "common/util/validation.hpp"
 #include "heuristic_common.hpp"
+#include "mlrl/common/util/validation.hpp"
 
 namespace seco {
 

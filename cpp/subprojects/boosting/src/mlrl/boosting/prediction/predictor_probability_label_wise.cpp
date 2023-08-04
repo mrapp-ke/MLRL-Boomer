@@ -1,8 +1,8 @@
 #include "mlrl/boosting/prediction/predictor_probability_label_wise.hpp"
 
-#include "common/prediction/probability_calibration_no.hpp"
 #include "mlrl/boosting/prediction/predictor_probability_common.hpp"
 #include "mlrl/boosting/prediction/transformation_probability_label_wise.hpp"
+#include "mlrl/common/prediction/probability_calibration_no.hpp"
 
 namespace boosting {
 

@@ -26,7 +26,7 @@ from mlrl.common.cython.stopping_criterion cimport IPostPruningConfig, IPrePruni
     ISizeStoppingCriterionConfig, ITimeStoppingCriterionConfig
 
 
-cdef extern from "common/learner.hpp" nogil:
+cdef extern from "mlrl/common/learner.hpp" nogil:
 
     cdef cppclass ITrainingResult:
 

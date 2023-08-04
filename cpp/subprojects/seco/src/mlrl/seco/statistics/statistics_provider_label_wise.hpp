@@ -1,7 +1,7 @@
 /*
  * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
-#include "common/statistics/statistics_provider.hpp"
+#include "mlrl/common/statistics/statistics_provider.hpp"
 #include "mlrl/seco/statistics/statistics_label_wise.hpp"
 
 namespace seco {

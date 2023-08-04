@@ -3,10 +3,10 @@
  */
 #pragma once
 
-#include "common/multi_threading/multi_threading.hpp"
-#include "common/prediction/predictor_probability.hpp"
 #include "mlrl/boosting/losses/loss.hpp"
 #include "mlrl/boosting/macros.hpp"
+#include "mlrl/common/multi_threading/multi_threading.hpp"
+#include "mlrl/common/prediction/predictor_probability.hpp"
 
 namespace boosting {
 

@@ -3,11 +3,11 @@
  */
 #pragma once
 
-#include "common/data/triple.hpp"
-#include "common/indices/index_vector_complete.hpp"
-#include "common/indices/index_vector_partial.hpp"
 #include "mlrl/boosting/data/histogram_view_label_wise_sparse.hpp"
 #include "mlrl/boosting/data/statistic_view_label_wise_sparse.hpp"
+#include "mlrl/common/data/triple.hpp"
+#include "mlrl/common/indices/index_vector_complete.hpp"
+#include "mlrl/common/indices/index_vector_partial.hpp"
 
 namespace boosting {
 

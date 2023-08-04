@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include "common/measures/measure_distance.hpp"
-#include "common/prediction/label_vector_set.hpp"
 #include "mlrl/boosting/prediction/transformation_binary.hpp"
+#include "mlrl/common/measures/measure_distance.hpp"
+#include "mlrl/common/prediction/label_vector_set.hpp"
 
 namespace boosting {
 

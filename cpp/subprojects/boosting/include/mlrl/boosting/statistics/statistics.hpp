@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include "common/data/matrix_sparse_set.hpp"
-#include "common/data/view_c_contiguous.hpp"
-#include "common/statistics/statistics.hpp"
+#include "mlrl/common/data/matrix_sparse_set.hpp"
+#include "mlrl/common/data/view_c_contiguous.hpp"
+#include "mlrl/common/statistics/statistics.hpp"
 
 #include <functional>
 

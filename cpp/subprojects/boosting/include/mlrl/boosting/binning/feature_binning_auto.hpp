@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/binning/feature_binning.hpp"
-#include "common/multi_threading/multi_threading.hpp"
+#include "mlrl/common/binning/feature_binning.hpp"
+#include "mlrl/common/multi_threading/multi_threading.hpp"
 
 namespace boosting {
 

@@ -24,7 +24,7 @@ Similarly, the same information can also be accessed when using the C++ API prog
 
 .. code-block:: cpp
 
-   #include "common/info.hpp"
+   #include "mlrl/common/info.hpp"
 
    bool multiThreadingSupportEnabled = isMultiThreadingSupportEnabled();
    uint32 numCpuCores = getNumCpuCores();

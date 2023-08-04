@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/rule_evaluation/rule_compare_function.hpp"
+#include "mlrl/common/rule_evaluation/rule_compare_function.hpp"
 
 namespace seco {
 

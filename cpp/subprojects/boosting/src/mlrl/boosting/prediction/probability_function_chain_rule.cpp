@@ -1,6 +1,6 @@
 #include "mlrl/boosting/prediction/probability_function_chain_rule.hpp"
 
-#include "common/iterator/binary_forward_iterator.hpp"
+#include "mlrl/common/iterator/binary_forward_iterator.hpp"
 
 namespace boosting {
 

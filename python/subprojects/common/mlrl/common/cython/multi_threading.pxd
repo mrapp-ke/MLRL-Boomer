@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport uint32
 
 
-cdef extern from "common/multi_threading/multi_threading_manual.hpp" nogil:
+cdef extern from "mlrl/common/multi_threading/multi_threading_manual.hpp" nogil:
 
     cdef cppclass IManualMultiThreadingConfig:
 

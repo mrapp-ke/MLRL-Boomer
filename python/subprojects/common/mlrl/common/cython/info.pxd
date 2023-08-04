@@ -5,7 +5,7 @@ from libcpp.string cimport string
 from mlrl.common.cython._types cimport uint32
 
 
-cdef extern from "common/info.hpp" nogil:
+cdef extern from "mlrl/common/info.hpp" nogil:
 
     cdef cppclass BuildOption"ILibraryInfo::BuildOption":
 
@@ -28,7 +28,7 @@ ctypedef void (*BuildOptionVisitor)(const BuildOption&)
 ctypedef void (*HardwareResourceVisitor)(const HardwareResource&)
 
 
-cdef extern from "common/info.hpp" nogil:
+cdef extern from "mlrl/common/info.hpp" nogil:
 
     cdef cppclass ILibraryInfo:
 
@@ -52,7 +52,7 @@ cdef extern from "common/info.hpp" nogil:
 
 cdef extern from *:
     """
-    #include "common/info.hpp"
+    #include "mlrl/common/info.hpp"
 
 
     typedef void (*BuildOptionCythonVisitor)(void*, const ILibraryInfo::BuildOption&);

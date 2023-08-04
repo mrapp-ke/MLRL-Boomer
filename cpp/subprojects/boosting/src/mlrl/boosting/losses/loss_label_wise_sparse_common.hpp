@@ -8,9 +8,9 @@
     #pragma warning(disable : 4250)
 #endif
 
-#include "common/iterator/non_zero_index_forward_iterator.hpp"
 #include "loss_label_wise_common.hpp"
 #include "mlrl/boosting/losses/loss_label_wise_sparse.hpp"
+#include "mlrl/common/iterator/non_zero_index_forward_iterator.hpp"
 
 #include <algorithm>
 

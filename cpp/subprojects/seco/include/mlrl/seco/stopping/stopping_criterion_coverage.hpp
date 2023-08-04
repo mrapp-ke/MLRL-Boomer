@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include "common/stopping/stopping_criterion.hpp"
+#include "mlrl/common/stopping/stopping_criterion.hpp"
 #include "mlrl/seco/macros.hpp"
 
 namespace seco {

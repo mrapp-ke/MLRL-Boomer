@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/data/triple.hpp"
 #include "mlrl/boosting/data/statistic_view_label_wise_sparse.hpp"
+#include "mlrl/common/data/triple.hpp"
 
 namespace boosting {
 

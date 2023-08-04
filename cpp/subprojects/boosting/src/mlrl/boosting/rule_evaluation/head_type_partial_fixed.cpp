@@ -1,9 +1,9 @@
 #include "mlrl/boosting/rule_evaluation/head_type_partial_fixed.hpp"
 
-#include "common/util/validation.hpp"
 #include "mlrl/boosting/statistics/statistics_provider_example_wise_dense.hpp"
 #include "mlrl/boosting/statistics/statistics_provider_label_wise_dense.hpp"
 #include "mlrl/boosting/statistics/statistics_provider_label_wise_sparse.hpp"
+#include "mlrl/common/util/validation.hpp"
 
 namespace boosting {
 

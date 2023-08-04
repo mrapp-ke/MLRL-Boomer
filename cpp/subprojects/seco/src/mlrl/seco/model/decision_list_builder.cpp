@@ -1,6 +1,6 @@
 #include "mlrl/seco/model/decision_list_builder.hpp"
 
-#include "common/model/rule_list.hpp"
+#include "mlrl/common/model/rule_list.hpp"
 
 namespace seco {
 

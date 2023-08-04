@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport float32
 
 
-cdef extern from "common/sampling/partition_sampling_bi_stratified_example_wise.hpp" nogil:
+cdef extern from "mlrl/common/sampling/partition_sampling_bi_stratified_example_wise.hpp" nogil:
 
     cdef cppclass IExampleWiseStratifiedBiPartitionSamplingConfig:
 
@@ -12,7 +12,7 @@ cdef extern from "common/sampling/partition_sampling_bi_stratified_example_wise.
         IExampleWiseStratifiedBiPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize) except +
 
 
-cdef extern from "common/sampling/partition_sampling_bi_stratified_label_wise.hpp" nogil:
+cdef extern from "mlrl/common/sampling/partition_sampling_bi_stratified_label_wise.hpp" nogil:
 
     cdef cppclass ILabelWiseStratifiedBiPartitionSamplingConfig:
 
@@ -23,7 +23,7 @@ cdef extern from "common/sampling/partition_sampling_bi_stratified_label_wise.hp
         ILabelWiseStratifiedBiPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize) except +
 
 
-cdef extern from "common/sampling/partition_sampling_bi_random.hpp" nogil:
+cdef extern from "mlrl/common/sampling/partition_sampling_bi_random.hpp" nogil:
 
     cdef cppclass IRandomBiPartitionSamplingConfig:
 

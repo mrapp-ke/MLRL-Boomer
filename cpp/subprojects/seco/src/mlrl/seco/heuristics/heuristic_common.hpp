@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include "common/math/math.hpp"
+#include "mlrl/common/math/math.hpp"
 
 namespace seco {
 

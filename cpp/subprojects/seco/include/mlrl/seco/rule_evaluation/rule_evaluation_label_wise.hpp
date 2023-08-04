@@ -4,8 +4,8 @@
  */
 #pragma once
 
-#include "common/indices/index_vector_complete.hpp"
-#include "common/indices/index_vector_partial.hpp"
+#include "mlrl/common/indices/index_vector_complete.hpp"
+#include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/seco/rule_evaluation/rule_evaluation.hpp"
 
 #include <memory>

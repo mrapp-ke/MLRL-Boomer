@@ -3,7 +3,7 @@ from libcpp cimport bool
 from mlrl.common.cython._types cimport float32, uint32
 
 
-cdef extern from "common/rule_induction/rule_induction_top_down_greedy.hpp" nogil:
+cdef extern from "mlrl/common/rule_induction/rule_induction_top_down_greedy.hpp" nogil:
 
     cdef cppclass IGreedyTopDownRuleInductionConfig:
 
@@ -30,7 +30,7 @@ cdef extern from "common/rule_induction/rule_induction_top_down_greedy.hpp" nogi
         bool arePredictionsRecalculated() const
 
 
-cdef extern from "common/rule_induction/rule_induction_top_down_beam_search.hpp" nogil:
+cdef extern from "mlrl/common/rule_induction/rule_induction_top_down_beam_search.hpp" nogil:
 
     cdef cppclass IBeamSearchTopDownRuleInductionConfig:
 

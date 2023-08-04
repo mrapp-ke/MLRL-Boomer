@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include "common/statistics/statistics_provider.hpp"
+#include "mlrl/common/statistics/statistics_provider.hpp"
 #include "mlrl/seco/statistics/statistics_label_wise.hpp"
 
 namespace seco {

@@ -4,7 +4,7 @@ from libcpp.memory cimport unique_ptr
 from mlrl.common.cython._types cimport float32, uint8, uint32
 
 
-cdef extern from "common/input/label_matrix.hpp" nogil:
+cdef extern from "mlrl/common/input/label_matrix.hpp" nogil:
 
     cdef cppclass ILabelMatrix:
 
@@ -17,7 +17,7 @@ cdef extern from "common/input/label_matrix.hpp" nogil:
         bool isSparse() const
 
 
-cdef extern from "common/input/label_matrix_row_wise.hpp" nogil:
+cdef extern from "mlrl/common/input/label_matrix_row_wise.hpp" nogil:
 
     cdef cppclass IRowWiseLabelMatrix(ILabelMatrix):
 
@@ -26,7 +26,7 @@ cdef extern from "common/input/label_matrix_row_wise.hpp" nogil:
         float32 calculateLabelCardinality() const
 
 
-cdef extern from "common/input/label_matrix_c_contiguous.hpp" nogil:
+cdef extern from "mlrl/common/input/label_matrix_c_contiguous.hpp" nogil:
 
     cdef cppclass ICContiguousLabelMatrix(IRowWiseLabelMatrix):
         pass
@@ -35,7 +35,7 @@ cdef extern from "common/input/label_matrix_c_contiguous.hpp" nogil:
     unique_ptr[ICContiguousLabelMatrix] createCContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array)
 
 
-cdef extern from "common/input/label_matrix_csr.hpp" nogil:
+cdef extern from "mlrl/common/input/label_matrix_csr.hpp" nogil:
 
     cdef cppclass ICsrLabelMatrix(IRowWiseLabelMatrix):
         pass

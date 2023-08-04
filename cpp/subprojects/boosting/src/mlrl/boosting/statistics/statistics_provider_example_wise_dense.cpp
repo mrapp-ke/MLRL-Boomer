@@ -5,11 +5,11 @@
 
 #include "mlrl/boosting/statistics/statistics_provider_example_wise_dense.hpp"
 
-#include "common/util/openmp.hpp"
 #include "mlrl/boosting/data/matrix_c_contiguous_numeric.hpp"
 #include "mlrl/boosting/data/statistic_vector_example_wise_dense.hpp"
 #include "mlrl/boosting/data/statistic_view_example_wise_dense.hpp"
 #include "mlrl/boosting/math/math.hpp"
+#include "mlrl/common/util/openmp.hpp"
 #include "statistics_example_wise_common.hpp"
 #include "statistics_label_wise_dense.hpp"
 #include "statistics_provider_example_wise.hpp"

@@ -3,13 +3,13 @@ from libcpp.memory cimport unique_ptr
 from mlrl.common.cython._types cimport uint32
 
 
-cdef extern from "common/input/feature_info.hpp" nogil:
+cdef extern from "mlrl/common/input/feature_info.hpp" nogil:
 
     cdef cppclass IFeatureInfo:
         pass
 
 
-cdef extern from "common/input/feature_info_equal.hpp" nogil:
+cdef extern from "mlrl/common/input/feature_info_equal.hpp" nogil:
 
     cdef cppclass IEqualFeatureInfo(IFeatureInfo):
         pass
@@ -22,7 +22,7 @@ cdef extern from "common/input/feature_info_equal.hpp" nogil:
     unique_ptr[IEqualFeatureInfo] createNumericalFeatureInfo()
 
 
-cdef extern from "common/input/feature_info_mixed.hpp" nogil:
+cdef extern from "mlrl/common/input/feature_info_mixed.hpp" nogil:
 
     cdef cppclass IMixedFeatureInfo(IFeatureInfo):
 

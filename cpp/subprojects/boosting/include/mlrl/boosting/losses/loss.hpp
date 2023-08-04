@@ -3,15 +3,15 @@
  */
 #pragma once
 
-#include "common/input/feature_matrix.hpp"
-#include "common/input/label_matrix_row_wise.hpp"
-#include "common/measures/measure_distance.hpp"
-#include "common/measures/measure_evaluation.hpp"
-#include "common/statistics/statistics_provider.hpp"
 #include "mlrl/boosting/math/blas.hpp"
 #include "mlrl/boosting/math/lapack.hpp"
 #include "mlrl/boosting/prediction/probability_function_joint.hpp"
 #include "mlrl/boosting/prediction/probability_function_marginal.hpp"
+#include "mlrl/common/input/feature_matrix.hpp"
+#include "mlrl/common/input/label_matrix_row_wise.hpp"
+#include "mlrl/common/measures/measure_distance.hpp"
+#include "mlrl/common/measures/measure_evaluation.hpp"
+#include "mlrl/common/statistics/statistics_provider.hpp"
 
 namespace boosting {
 

@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include "common/data/matrix_c_contiguous.hpp"
-#include "common/indices/index_vector_complete.hpp"
-#include "common/indices/index_vector_partial.hpp"
+#include "mlrl/common/data/matrix_c_contiguous.hpp"
+#include "mlrl/common/indices/index_vector_complete.hpp"
+#include "mlrl/common/indices/index_vector_partial.hpp"
 
 namespace seco {
 

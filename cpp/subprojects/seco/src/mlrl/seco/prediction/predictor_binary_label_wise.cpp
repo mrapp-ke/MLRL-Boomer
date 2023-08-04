@@ -1,11 +1,11 @@
 #include "mlrl/seco/prediction/predictor_binary_label_wise.hpp"
 
-#include "common/data/vector_bit.hpp"
-#include "common/iterator/index_iterator.hpp"
-#include "common/iterator/non_zero_index_forward_iterator.hpp"
-#include "common/model/head_complete.hpp"
-#include "common/model/head_partial.hpp"
-#include "common/prediction/predictor_common.hpp"
+#include "mlrl/common/data/vector_bit.hpp"
+#include "mlrl/common/iterator/index_iterator.hpp"
+#include "mlrl/common/iterator/non_zero_index_forward_iterator.hpp"
+#include "mlrl/common/model/head_complete.hpp"
+#include "mlrl/common/model/head_partial.hpp"
+#include "mlrl/common/prediction/predictor_common.hpp"
 
 #include <stdexcept>
 

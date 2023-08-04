@@ -7,19 +7,19 @@ from libcpp.memory cimport unique_ptr
 from mlrl.common.cython._types cimport float32, float64, uint32
 
 
-cdef extern from "common/model/body.hpp" nogil:
+cdef extern from "mlrl/common/model/body.hpp" nogil:
 
     cdef cppclass IBody:
         pass
 
 
-cdef extern from "common/model/body_empty.hpp" nogil:
+cdef extern from "mlrl/common/model/body_empty.hpp" nogil:
 
     cdef cppclass EmptyBodyImpl"EmptyBody"(IBody):
         pass
 
 
-cdef extern from "common/model/body_conjunctive.hpp" nogil:
+cdef extern from "mlrl/common/model/body_conjunctive.hpp" nogil:
 
     cdef cppclass ConjunctiveBodyImpl"ConjunctiveBody"(IBody):
 
@@ -78,13 +78,13 @@ cdef extern from "common/model/body_conjunctive.hpp" nogil:
         index_const_iterator neq_indices_cbegin() const
 
 
-cdef extern from "common/model/head.hpp" nogil:
+cdef extern from "mlrl/common/model/head.hpp" nogil:
 
     cdef cppclass IHead:
         pass
 
 
-cdef extern from "common/model/head_complete.hpp" nogil:
+cdef extern from "mlrl/common/model/head_complete.hpp" nogil:
 
     cdef cppclass CompleteHeadImpl"CompleteHead"(IHead):
 
@@ -101,7 +101,7 @@ cdef extern from "common/model/head_complete.hpp" nogil:
         score_const_iterator scores_cbegin() const
 
 
-cdef extern from "common/model/head_partial.hpp" nogil:
+cdef extern from "mlrl/common/model/head_partial.hpp" nogil:
 
     cdef cppclass PartialHeadImpl"PartialHead"(IHead):
 
@@ -135,7 +135,7 @@ ctypedef void (*CompleteHeadVisitor)(const CompleteHeadImpl&)
 ctypedef void (*PartialHeadVisitor)(const PartialHeadImpl&)
 
 
-cdef extern from "common/model/rule_model.hpp" nogil:
+cdef extern from "mlrl/common/model/rule_model.hpp" nogil:
 
     cdef cppclass IRuleModel:
 
@@ -148,7 +148,7 @@ cdef extern from "common/model/rule_model.hpp" nogil:
         void setNumUsedRules(uint32 numUsedRules)
 
 
-cdef extern from "common/model/rule_list.hpp" nogil:
+cdef extern from "mlrl/common/model/rule_list.hpp" nogil:
 
     cdef cppclass IRuleList(IRuleModel):
 
@@ -177,8 +177,8 @@ ctypedef IRuleList* RuleListPtr
 
 cdef extern from *:
     """
-    #include "common/model/body.hpp"
-    #include "common/model/head.hpp"
+    #include "mlrl/common/model/body.hpp"
+    #include "mlrl/common/model/head.hpp"
 
 
     typedef void (*EmptyBodyCythonVisitor)(void*, const EmptyBody&);

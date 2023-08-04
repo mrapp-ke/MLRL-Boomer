@@ -3,10 +3,10 @@
  */
 #pragma once
 
-#include "common/rule_model_assemblage/default_rule.hpp"
 #include "mlrl/boosting/losses/loss.hpp"
 #include "mlrl/boosting/rule_evaluation/head_type.hpp"
 #include "mlrl/boosting/statistics/statistic_format.hpp"
+#include "mlrl/common/rule_model_assemblage/default_rule.hpp"
 
 namespace boosting {
 

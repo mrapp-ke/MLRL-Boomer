@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/multi_threading/multi_threading.hpp"
-#include "common/prediction/predictor_score.hpp"
+#include "mlrl/common/multi_threading/multi_threading.hpp"
+#include "mlrl/common/prediction/predictor_score.hpp"
 
 namespace boosting {
 

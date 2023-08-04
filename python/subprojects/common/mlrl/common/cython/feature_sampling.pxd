@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport float32, uint32
 
 
-cdef extern from "common/sampling/feature_sampling_without_replacement.hpp" nogil:
+cdef extern from "mlrl/common/sampling/feature_sampling_without_replacement.hpp" nogil:
 
     cdef cppclass IFeatureSamplingWithoutReplacementConfig:
 

@@ -1,10 +1,10 @@
 #include "mlrl/boosting/prediction/predictor_binary_label_wise.hpp"
 
-#include "common/prediction/probability_calibration_no.hpp"
 #include "mlrl/boosting/prediction/discretization_function_probability.hpp"
 #include "mlrl/boosting/prediction/discretization_function_score.hpp"
 #include "mlrl/boosting/prediction/predictor_binary_common.hpp"
 #include "mlrl/boosting/prediction/transformation_binary_label_wise.hpp"
+#include "mlrl/common/prediction/probability_calibration_no.hpp"
 
 namespace boosting {
 

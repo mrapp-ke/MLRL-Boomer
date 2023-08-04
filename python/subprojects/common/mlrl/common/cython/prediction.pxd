@@ -4,7 +4,7 @@ from libcpp.memory cimport unique_ptr
 from mlrl.common.cython._types cimport float64, uint8, uint32
 
 
-cdef extern from "common/prediction/prediction_matrix_dense.hpp" nogil:
+cdef extern from "mlrl/common/prediction/prediction_matrix_dense.hpp" nogil:
 
     cdef cppclass DensePredictionMatrix[T]:
 
@@ -19,7 +19,7 @@ cdef extern from "common/prediction/prediction_matrix_dense.hpp" nogil:
         T* release()
 
 
-cdef extern from "common/prediction/prediction_matrix_sparse_binary.hpp" nogil:
+cdef extern from "mlrl/common/prediction/prediction_matrix_sparse_binary.hpp" nogil:
 
     cdef cppclass BinarySparsePredictionMatrix:
 
@@ -41,7 +41,7 @@ cdef extern from "common/prediction/prediction_matrix_sparse_binary.hpp" nogil:
 
 
 
-cdef extern from "common/prediction/predictor.hpp" nogil:
+cdef extern from "mlrl/common/prediction/predictor.hpp" nogil:
 
     cdef cppclass IIncrementalPredictor[PredictionMatrix]:
 
@@ -65,7 +65,7 @@ cdef extern from "common/prediction/predictor.hpp" nogil:
         unique_ptr[IIncrementalPredictor[PredictionMatrix]] createIncrementalPredictor(uint32 maxRules) except +
 
 
-cdef extern from "common/prediction/predictor_binary.hpp" nogil:
+cdef extern from "mlrl/common/prediction/predictor_binary.hpp" nogil:
 
     cdef cppclass IBinaryPredictor(IPredictor[DensePredictionMatrix[uint8]]):
         pass
@@ -75,13 +75,13 @@ cdef extern from "common/prediction/predictor_binary.hpp" nogil:
         pass
 
 
-cdef extern from "common/prediction/predictor_score.hpp" nogil:
+cdef extern from "mlrl/common/prediction/predictor_score.hpp" nogil:
 
     cdef cppclass IScorePredictor(IPredictor[DensePredictionMatrix[float64]]):
         pass
 
 
-cdef extern from "common/prediction/predictor_probability.hpp" nogil:
+cdef extern from "mlrl/common/prediction/predictor_probability.hpp" nogil:
 
     cdef cppclass IProbabilityPredictor(IPredictor[DensePredictionMatrix[float64]]):
         pass

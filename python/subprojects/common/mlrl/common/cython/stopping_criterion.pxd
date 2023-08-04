@@ -3,7 +3,7 @@ from libcpp cimport bool
 from mlrl.common.cython._types cimport float64, uint8, uint32
 
 
-cdef extern from "common/stopping/stopping_criterion_size.hpp" nogil:
+cdef extern from "mlrl/common/stopping/stopping_criterion_size.hpp" nogil:
 
     cdef cppclass ISizeStoppingCriterionConfig:
 
@@ -14,7 +14,7 @@ cdef extern from "common/stopping/stopping_criterion_size.hpp" nogil:
         ISizeStoppingCriterionConfig& setMaxRules(uint32 maxRules) except +
 
 
-cdef extern from "common/stopping/stopping_criterion_time.hpp" nogil:
+cdef extern from "mlrl/common/stopping/stopping_criterion_time.hpp" nogil:
 
     cdef cppclass ITimeStoppingCriterionConfig:
 
@@ -25,7 +25,7 @@ cdef extern from "common/stopping/stopping_criterion_time.hpp" nogil:
         ITimeStoppingCriterionConfig& setTimeLimit(uint32 timeLimit) except +
 
 
-cdef extern from "common/stopping/aggregation_function.hpp" nogil:
+cdef extern from "mlrl/common/stopping/aggregation_function.hpp" nogil:
 
     cpdef enum AggregationFunctionImpl"AggregationFunction":
 
@@ -36,7 +36,7 @@ cdef extern from "common/stopping/aggregation_function.hpp" nogil:
         ARITHMETIC_MEAN"AggregationFunction::ARITHMETIC_MEAN" = 2
 
 
-cdef extern from "common/stopping/global_pruning_pre.hpp" nogil:
+cdef extern from "mlrl/common/stopping/global_pruning_pre.hpp" nogil:
 
     cdef cppclass IPrePruningConfig:
 
@@ -79,7 +79,7 @@ cdef extern from "common/stopping/global_pruning_pre.hpp" nogil:
         IPrePruningConfig& setMinImprovement(float64 minImprovement) except +
 
 
-cdef extern from "common/stopping/global_pruning_post.hpp" nogil:
+cdef extern from "mlrl/common/stopping/global_pruning_post.hpp" nogil:
 
     cdef cppclass IPostPruningConfig:
 

@@ -4,13 +4,13 @@ from libcpp.memory cimport unique_ptr
 from mlrl.common.cython._types cimport uint32
 
 
-cdef extern from "common/prediction/label_space_info.hpp" nogil:
+cdef extern from "mlrl/common/prediction/label_space_info.hpp" nogil:
 
     cdef cppclass ILabelSpaceInfo:
         pass
 
 
-cdef extern from "common/prediction/label_space_info_no.hpp" nogil:
+cdef extern from "mlrl/common/prediction/label_space_info_no.hpp" nogil:
 
     cdef cppclass INoLabelSpaceInfo(ILabelSpaceInfo):
         pass
@@ -19,7 +19,7 @@ cdef extern from "common/prediction/label_space_info_no.hpp" nogil:
     unique_ptr[INoLabelSpaceInfo] createNoLabelSpaceInfo()
 
 
-cdef extern from "common/input/label_vector.hpp" nogil:
+cdef extern from "mlrl/common/input/label_vector.hpp" nogil:
 
     cdef cppclass LabelVector:
 
@@ -43,7 +43,7 @@ cdef extern from "common/input/label_vector.hpp" nogil:
 ctypedef void (*LabelVectorVisitor)(const LabelVector&, uint32)
 
 
-cdef extern from "common/prediction/label_vector_set.hpp" nogil:
+cdef extern from "mlrl/common/prediction/label_vector_set.hpp" nogil:
 
     cdef cppclass ILabelVectorSet(ILabelSpaceInfo):
 
@@ -64,7 +64,7 @@ ctypedef ILabelVectorSet* LabelVectorSetPtr
 
 cdef extern from *:
     """
-    #include "common/prediction/label_vector_set.hpp"
+    #include "mlrl/common/prediction/label_vector_set.hpp"
 
 
     typedef void (*LabelVectorCythonVisitor)(void*, const LabelVector&, uint32);

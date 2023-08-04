@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/info.hpp"
 #include "mlrl/boosting/macros.hpp"
+#include "mlrl/common/info.hpp"
 
 namespace boosting {
 
