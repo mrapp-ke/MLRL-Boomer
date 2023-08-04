@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport float64, uint32
 
 
-cdef extern from "seco/lift_functions/lift_function_peak.hpp" namespace "seco" nogil:
+cdef extern from "mlrl/seco/lift_functions/lift_function_peak.hpp" namespace "seco" nogil:
 
     cdef cppclass IPeakLiftFunctionConfig:
 
@@ -20,7 +20,7 @@ cdef extern from "seco/lift_functions/lift_function_peak.hpp" namespace "seco" n
         IPeakLiftFunctionConfig& setCurvature(float64 curvature) except +
 
 
-cdef extern from "seco/lift_functions/lift_function_kln.hpp" namespace "seco" nogil:
+cdef extern from "mlrl/seco/lift_functions/lift_function_kln.hpp" namespace "seco" nogil:
 
     cdef cppclass IKlnLiftFunctionConfig:
 
