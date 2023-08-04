@@ -8,7 +8,6 @@
     #pragma warning(disable : 4250)
 #endif
 
-#include "common/learner.hpp"
 #include "mlrl/boosting/binning/feature_binning_auto.hpp"
 #include "mlrl/boosting/binning/label_binning_auto.hpp"
 #include "mlrl/boosting/binning/label_binning_equal_width.hpp"
@@ -46,6 +45,7 @@
 #include "mlrl/boosting/statistics/statistic_format_auto.hpp"
 #include "mlrl/boosting/statistics/statistic_format_dense.hpp"
 #include "mlrl/boosting/statistics/statistic_format_sparse.hpp"
+#include "mlrl/common/learner.hpp"
 
 namespace boosting {
 

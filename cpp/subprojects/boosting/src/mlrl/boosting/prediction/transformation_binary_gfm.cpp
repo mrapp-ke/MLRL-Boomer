@@ -1,8 +1,8 @@
 #include "mlrl/boosting/prediction/transformation_binary_gfm.hpp"
 
-#include "common/data/arrays.hpp"
-#include "common/data/matrix_sparse_set.hpp"
-#include "common/data/vector_sparse_array.hpp"
+#include "mlrl/common/data/arrays.hpp"
+#include "mlrl/common/data/matrix_sparse_set.hpp"
+#include "mlrl/common/data/vector_sparse_array.hpp"
 
 #include <algorithm>
 

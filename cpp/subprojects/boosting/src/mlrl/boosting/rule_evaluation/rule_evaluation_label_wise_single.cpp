@@ -1,6 +1,6 @@
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_label_wise_single.hpp"
 
-#include "common/rule_evaluation/score_vector_dense.hpp"
+#include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
 
 namespace boosting {

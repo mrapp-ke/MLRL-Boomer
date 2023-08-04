@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include "common/statistics/statistics.hpp"
+#include "mlrl/common/statistics/statistics.hpp"
 
 namespace seco {
 

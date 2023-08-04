@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/data/view_c_contiguous.hpp"
-#include "common/data/view_csr_binary.hpp"
+#include "mlrl/common/data/view_c_contiguous.hpp"
+#include "mlrl/common/data/view_csr_binary.hpp"
 #include "mlrl/seco/data/confusion_matrix.hpp"
 #include "mlrl/seco/data/matrix_coverage_dense.hpp"
 

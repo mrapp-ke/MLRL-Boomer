@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include "common/prediction/predictor_probability.hpp"
 #include "mlrl/boosting/prediction/predictor_score_common.hpp"
 #include "mlrl/boosting/prediction/transformation_probability.hpp"
+#include "mlrl/common/prediction/predictor_probability.hpp"
 
 namespace boosting {
 

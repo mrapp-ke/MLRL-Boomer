@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport uint32
 
 
-cdef extern from "common/sampling/label_sampling_without_replacement.hpp" nogil:
+cdef extern from "mlrl/common/sampling/label_sampling_without_replacement.hpp" nogil:
 
     cdef cppclass ILabelSamplingWithoutReplacementConfig:
 

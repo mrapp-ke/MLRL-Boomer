@@ -4,7 +4,7 @@ from libcpp.memory cimport unique_ptr
 from mlrl.common.cython._types cimport float32, uint32
 
 
-cdef extern from "common/input/feature_matrix.hpp" nogil:
+cdef extern from "mlrl/common/input/feature_matrix.hpp" nogil:
 
     cdef cppclass IFeatureMatrix:
 
@@ -17,13 +17,13 @@ cdef extern from "common/input/feature_matrix.hpp" nogil:
         bool isSparse() const
 
 
-cdef extern from "common/input/feature_matrix_column_wise.hpp" nogil:
+cdef extern from "mlrl/common/input/feature_matrix_column_wise.hpp" nogil:
 
     cdef cppclass IColumnWiseFeatureMatrix(IFeatureMatrix):
         pass
 
 
-cdef extern from "common/input/feature_matrix_fortran_contiguous.hpp" nogil:
+cdef extern from "mlrl/common/input/feature_matrix_fortran_contiguous.hpp" nogil:
 
     cdef cppclass IFortranContiguousFeatureMatrix(IColumnWiseFeatureMatrix):
         pass
@@ -33,7 +33,7 @@ cdef extern from "common/input/feature_matrix_fortran_contiguous.hpp" nogil:
                                                                                      const float32* array)
 
 
-cdef extern from "common/input/feature_matrix_csc.hpp" nogil:
+cdef extern from "mlrl/common/input/feature_matrix_csc.hpp" nogil:
 
     cdef cppclass ICscFeatureMatrix(IColumnWiseFeatureMatrix):
         pass
@@ -43,13 +43,13 @@ cdef extern from "common/input/feature_matrix_csc.hpp" nogil:
                                                          uint32* rowIndices, uint32* indptr)
 
 
-cdef extern from "common/input/feature_matrix_row_wise.hpp" nogil:
+cdef extern from "mlrl/common/input/feature_matrix_row_wise.hpp" nogil:
 
     cdef cppclass IRowWiseFeatureMatrix(IFeatureMatrix):
         pass
 
 
-cdef extern from "common/input/feature_matrix_c_contiguous.hpp" nogil:
+cdef extern from "mlrl/common/input/feature_matrix_c_contiguous.hpp" nogil:
 
     cdef cppclass ICContiguousFeatureMatrix(IRowWiseFeatureMatrix):
         pass
@@ -59,7 +59,7 @@ cdef extern from "common/input/feature_matrix_c_contiguous.hpp" nogil:
                                                                          const float32* array)
 
 
-cdef extern from "common/input/feature_matrix_csr.hpp" nogil:
+cdef extern from "mlrl/common/input/feature_matrix_csr.hpp" nogil:
 
     cdef cppclass ICsrFeatureMatrix(IRowWiseFeatureMatrix):
         pass

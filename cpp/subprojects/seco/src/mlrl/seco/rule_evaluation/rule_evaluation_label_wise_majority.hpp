@@ -4,8 +4,8 @@
  */
 #pragma once
 
-#include "common/iterator/binary_forward_iterator.hpp"
-#include "common/rule_evaluation/score_vector_dense.hpp"
+#include "mlrl/common/iterator/binary_forward_iterator.hpp"
+#include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 #include "mlrl/seco/rule_evaluation/rule_evaluation_label_wise.hpp"
 
 namespace seco {

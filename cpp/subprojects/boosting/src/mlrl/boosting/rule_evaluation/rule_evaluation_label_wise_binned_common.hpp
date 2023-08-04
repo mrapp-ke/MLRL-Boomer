@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include "common/data/arrays.hpp"
-#include "common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "mlrl/boosting/data/statistic_vector_label_wise_dense.hpp"
+#include "mlrl/common/data/arrays.hpp"
+#include "mlrl/common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
 
 namespace boosting {

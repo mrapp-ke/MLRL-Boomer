@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/binning/bin_weight_vector.hpp"
 #include "mlrl/boosting/statistics/statistics_label_wise.hpp"
+#include "mlrl/common/binning/bin_weight_vector.hpp"
 
 namespace boosting {
 

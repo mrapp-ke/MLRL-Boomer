@@ -1,13 +1,13 @@
 #include "mlrl/boosting/binning/label_binning_equal_width.hpp"
 
-#include "common/math/math.hpp"
-#include "common/util/validation.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_example_wise_complete_binned.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_example_wise_partial_dynamic_binned.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_example_wise_partial_fixed_binned.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_label_wise_complete_binned.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_label_wise_partial_dynamic_binned.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_label_wise_partial_fixed_binned.hpp"
+#include "mlrl/common/math/math.hpp"
+#include "mlrl/common/util/validation.hpp"
 
 namespace boosting {
 

@@ -1,6 +1,6 @@
 #include "mlrl/seco/lift_functions/lift_function_kln.hpp"
 
-#include "common/util/validation.hpp"
+#include "mlrl/common/util/validation.hpp"
 
 namespace seco {
 

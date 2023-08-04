@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/model/model_builder.hpp"
+#include "mlrl/common/model/model_builder.hpp"
 
 namespace seco {
 

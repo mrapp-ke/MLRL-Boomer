@@ -3,11 +3,11 @@
  */
 #pragma once
 
-#include "common/model/head_complete.hpp"
-#include "common/model/head_partial.hpp"
-#include "common/prediction/predictor_common.hpp"
-#include "common/prediction/predictor_score.hpp"
-#include "common/util/validation.hpp"
+#include "mlrl/common/model/head_complete.hpp"
+#include "mlrl/common/model/head_partial.hpp"
+#include "mlrl/common/prediction/predictor_common.hpp"
+#include "mlrl/common/prediction/predictor_score.hpp"
+#include "mlrl/common/util/validation.hpp"
 
 namespace boosting {
 

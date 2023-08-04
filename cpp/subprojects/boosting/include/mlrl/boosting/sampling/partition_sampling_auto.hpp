@@ -3,11 +3,11 @@
  */
 #pragma once
 
-#include "common/prediction/probability_calibration_joint.hpp"
-#include "common/prediction/probability_calibration_marginal.hpp"
-#include "common/sampling/partition_sampling.hpp"
-#include "common/stopping/global_pruning.hpp"
 #include "mlrl/boosting/losses/loss.hpp"
+#include "mlrl/common/prediction/probability_calibration_joint.hpp"
+#include "mlrl/common/prediction/probability_calibration_marginal.hpp"
+#include "mlrl/common/sampling/partition_sampling.hpp"
+#include "mlrl/common/stopping/global_pruning.hpp"
 
 namespace boosting {
 

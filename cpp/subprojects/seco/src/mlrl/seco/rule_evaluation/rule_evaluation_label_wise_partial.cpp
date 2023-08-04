@@ -1,10 +1,10 @@
 #include "mlrl/seco/rule_evaluation/rule_evaluation_label_wise_partial.hpp"
 
-#include "common/data/tuple.hpp"
-#include "common/data/vector_sparse_array.hpp"
-#include "common/indices/index_vector_partial.hpp"
-#include "common/iterator/binary_forward_iterator.hpp"
-#include "common/rule_evaluation/score_vector_dense.hpp"
+#include "mlrl/common/data/tuple.hpp"
+#include "mlrl/common/data/vector_sparse_array.hpp"
+#include "mlrl/common/indices/index_vector_partial.hpp"
+#include "mlrl/common/iterator/binary_forward_iterator.hpp"
+#include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
 
 #include <algorithm>

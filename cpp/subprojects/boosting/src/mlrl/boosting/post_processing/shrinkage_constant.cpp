@@ -1,6 +1,6 @@
 #include "mlrl/boosting/post_processing/shrinkage_constant.hpp"
 
-#include "common/util/validation.hpp"
+#include "mlrl/common/util/validation.hpp"
 
 namespace boosting {
 

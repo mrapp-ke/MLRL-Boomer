@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/view_vector.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 
 namespace boosting {
 

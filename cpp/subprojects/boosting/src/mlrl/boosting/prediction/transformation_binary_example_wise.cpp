@@ -1,6 +1,6 @@
 #include "mlrl/boosting/prediction/transformation_binary_example_wise.hpp"
 
-#include "common/iterator/binary_forward_iterator.hpp"
+#include "mlrl/common/iterator/binary_forward_iterator.hpp"
 
 namespace boosting {
 

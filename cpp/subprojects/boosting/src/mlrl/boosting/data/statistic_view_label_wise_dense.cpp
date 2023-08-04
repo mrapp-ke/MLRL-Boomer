@@ -1,7 +1,7 @@
 #include "mlrl/boosting/data/statistic_view_label_wise_dense.hpp"
 
-#include "common/data/arrays.hpp"
 #include "mlrl/boosting/data/arrays.hpp"
+#include "mlrl/common/data/arrays.hpp"
 
 namespace boosting {
 

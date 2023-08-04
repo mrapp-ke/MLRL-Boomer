@@ -1,6 +1,6 @@
 #include "mlrl/boosting/rule_evaluation/regularization_manual.hpp"
 
-#include "common/util/validation.hpp"
+#include "mlrl/common/util/validation.hpp"
 
 #include <iostream>
 

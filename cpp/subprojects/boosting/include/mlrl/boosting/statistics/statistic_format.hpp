@@ -3,11 +3,11 @@
  */
 #pragma once
 
-#include "common/input/feature_matrix.hpp"
-#include "common/input/label_matrix_row_wise.hpp"
-#include "common/statistics/statistics_provider.hpp"
 #include "mlrl/boosting/math/blas.hpp"
 #include "mlrl/boosting/math/lapack.hpp"
+#include "mlrl/common/input/feature_matrix.hpp"
+#include "mlrl/common/input/label_matrix_row_wise.hpp"
+#include "mlrl/common/statistics/statistics_provider.hpp"
 
 namespace boosting {
 

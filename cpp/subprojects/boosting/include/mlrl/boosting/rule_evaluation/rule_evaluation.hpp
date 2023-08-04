@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/rule_evaluation/score_vector.hpp"
+#include "mlrl/common/rule_evaluation/score_vector.hpp"
 
 #include <memory>
 

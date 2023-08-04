@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/info.hpp"
+#include "mlrl/common/info.hpp"
 #include "mlrl/seco/macros.hpp"
 
 namespace seco {

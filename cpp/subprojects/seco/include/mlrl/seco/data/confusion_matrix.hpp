@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/types.hpp"
+#include "mlrl/common/data/types.hpp"
 
 /**
  * A confusion matrix.

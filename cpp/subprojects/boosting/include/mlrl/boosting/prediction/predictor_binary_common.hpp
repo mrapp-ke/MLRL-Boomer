@@ -3,11 +3,11 @@
  */
 #pragma once
 
-#include "common/data/arrays.hpp"
-#include "common/data/matrix_c_contiguous.hpp"
-#include "common/prediction/predictor_binary.hpp"
 #include "mlrl/boosting/prediction/predictor_score_common.hpp"
 #include "mlrl/boosting/prediction/transformation_binary.hpp"
+#include "mlrl/common/data/arrays.hpp"
+#include "mlrl/common/data/matrix_c_contiguous.hpp"
+#include "mlrl/common/prediction/predictor_binary.hpp"
 
 namespace boosting {
 

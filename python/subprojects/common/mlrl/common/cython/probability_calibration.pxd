@@ -6,19 +6,19 @@ from mlrl.common.cython._types cimport float64, uint32
 ctypedef void (*BinVisitor)(uint32, float64, float64)
 
 
-cdef extern from "common/prediction/probability_calibration_marginal.hpp" nogil:
+cdef extern from "mlrl/common/prediction/probability_calibration_marginal.hpp" nogil:
 
     cdef cppclass IMarginalProbabilityCalibrationModel:
         pass        
 
 
-cdef extern from "common/prediction/probability_calibration_joint.hpp" nogil:
+cdef extern from "mlrl/common/prediction/probability_calibration_joint.hpp" nogil:
 
     cdef cppclass IJointProbabilityCalibrationModel:
         pass
 
 
-cdef extern from "common/prediction/probability_calibration_no.hpp" nogil:
+cdef extern from "mlrl/common/prediction/probability_calibration_no.hpp" nogil:
 
     cdef cppclass INoProbabilityCalibrationModel(IMarginalProbabilityCalibrationModel,
                                                  IJointProbabilityCalibrationModel):
@@ -30,7 +30,7 @@ cdef extern from "common/prediction/probability_calibration_no.hpp" nogil:
 ctypedef INoProbabilityCalibrationModel* NoProbabilityCalibrationModelPtr
 
 
-cdef extern from "common/prediction/probability_calibration_isotonic.hpp" nogil:
+cdef extern from "mlrl/common/prediction/probability_calibration_isotonic.hpp" nogil:
 
     cdef cppclass IIsotonicProbabilityCalibrationModel(IMarginalProbabilityCalibrationModel,
                                                        IJointProbabilityCalibrationModel):
@@ -52,7 +52,7 @@ ctypedef IIsotonicProbabilityCalibrationModel* IsotonicProbabilityCalibrationMod
 
 cdef extern from *:
     """
-    #include "common/prediction/probability_calibration_isotonic.hpp"
+    #include "mlrl/common/prediction/probability_calibration_isotonic.hpp"
 
     typedef void (*BinCythonVisitor)(void*, uint32, float64, float64);
 

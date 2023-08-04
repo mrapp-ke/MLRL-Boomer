@@ -3,11 +3,11 @@
  */
 #pragma once
 
-#include "common/data/matrix_sparse_set.hpp"
-#include "common/data/vector_dense.hpp"
-#include "common/math/math.hpp"
-#include "common/measures/measure_distance.hpp"
 #include "mlrl/boosting/prediction/probability_function_marginal.hpp"
+#include "mlrl/common/data/matrix_sparse_set.hpp"
+#include "mlrl/common/data/vector_dense.hpp"
+#include "mlrl/common/math/math.hpp"
+#include "mlrl/common/measures/measure_distance.hpp"
 
 namespace boosting {
 

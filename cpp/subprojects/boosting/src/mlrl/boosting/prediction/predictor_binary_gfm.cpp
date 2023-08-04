@@ -1,8 +1,8 @@
 #include "mlrl/boosting/prediction/predictor_binary_gfm.hpp"
 
-#include "common/prediction/probability_calibration_no.hpp"
 #include "mlrl/boosting/prediction/predictor_binary_common.hpp"
 #include "mlrl/boosting/prediction/transformation_binary_gfm.hpp"
+#include "mlrl/common/prediction/probability_calibration_no.hpp"
 
 #include <stdexcept>
 

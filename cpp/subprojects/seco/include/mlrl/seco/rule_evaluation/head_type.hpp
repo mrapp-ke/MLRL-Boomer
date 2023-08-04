@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "common/input/label_matrix_row_wise.hpp"
-#include "common/statistics/statistics_provider.hpp"
+#include "mlrl/common/input/label_matrix_row_wise.hpp"
+#include "mlrl/common/statistics/statistics_provider.hpp"
 
 namespace seco {
 

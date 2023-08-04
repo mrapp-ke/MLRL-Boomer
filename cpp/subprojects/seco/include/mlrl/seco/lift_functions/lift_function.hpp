@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include "common/input/label_matrix_row_wise.hpp"
+#include "mlrl/common/input/label_matrix_row_wise.hpp"
 
 #include <memory>
 

@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/data/vector_sparse_array_binary.hpp"
+#include "mlrl/common/data/vector_sparse_array_binary.hpp"
 #include "mlrl/seco/statistics/statistics_label_wise.hpp"
 
 namespace seco {

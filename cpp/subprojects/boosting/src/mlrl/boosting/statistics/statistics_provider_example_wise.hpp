@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include "common/statistics/statistics_provider.hpp"
 #include "mlrl/boosting/statistics/statistics_example_wise.hpp"
 #include "mlrl/boosting/statistics/statistics_label_wise.hpp"
+#include "mlrl/common/statistics/statistics_provider.hpp"
 
 namespace boosting {
 

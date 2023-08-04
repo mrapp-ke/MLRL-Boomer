@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include "common/indices/index_vector_complete.hpp"
-#include "common/indices/index_vector_partial.hpp"
 #include "mlrl/boosting/iterator/diagonal_iterator.hpp"
+#include "mlrl/common/indices/index_vector_complete.hpp"
+#include "mlrl/common/indices/index_vector_partial.hpp"
 
 namespace boosting {
 

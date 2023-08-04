@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include "common/rule_evaluation/score_vector.hpp"
+#include "mlrl/common/rule_evaluation/score_vector.hpp"
 #include "mlrl/seco/data/vector_confusion_matrix_dense.hpp"
 
 namespace seco {
