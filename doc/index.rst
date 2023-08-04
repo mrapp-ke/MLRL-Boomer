@@ -1,4 +1,4 @@
-.. image:: _static/logo.png
+.. image:: _static/logo.svg
   :align: center
   :alt: BOOMER: Gradient Boosted Multi-Label Classification Rules
 
