@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "common/omp.hpp"
+#include "common/openmp.hpp"
 #include "common/prediction/predictor.hpp"
 
 /**

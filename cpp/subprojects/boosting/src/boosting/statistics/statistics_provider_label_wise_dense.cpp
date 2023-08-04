@@ -5,7 +5,7 @@
 
 #include "boosting/statistics/statistics_provider_label_wise_dense.hpp"
 
-#include "common/omp.hpp"
+#include "common/openmp.hpp"
 #include "statistics_label_wise_dense.hpp"
 #include "statistics_provider_label_wise.hpp"
 
