@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/types.hpp"
-#include "mlrl/common/dll_exports.hpp"
+#include "mlrl/common/util/dll_exports.hpp"
 
 #include <functional>
 #include <memory>

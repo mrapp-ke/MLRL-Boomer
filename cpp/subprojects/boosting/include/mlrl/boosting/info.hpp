@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/dll_exports.hpp"
+#include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/info.hpp"
 
 namespace boosting {

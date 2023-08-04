@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/seco/dll_exports.hpp"
 #include "mlrl/seco/lift_functions/lift_function.hpp"
+#include "mlrl/seco/util/dll_exports.hpp"
 
 namespace seco {
 

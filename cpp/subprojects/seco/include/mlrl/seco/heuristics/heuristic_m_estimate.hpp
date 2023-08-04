@@ -4,8 +4,8 @@
  */
 #pragma once
 
-#include "mlrl/seco/dll_exports.hpp"
 #include "mlrl/seco/heuristics/heuristic.hpp"
+#include "mlrl/seco/util/dll_exports.hpp"
 
 namespace seco {
 

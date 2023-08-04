@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/common/dll_exports.hpp"
 #include "mlrl/common/sampling/label_sampling.hpp"
+#include "mlrl/common/util/dll_exports.hpp"
 
 /**
  * Allows to configure a method for sampling labels in a round-robin fashion.
