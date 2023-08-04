@@ -1,6 +1,6 @@
 #include "common/thresholds/thresholds_approximate.hpp"
 
-#include "common/omp.hpp"
+#include "common/openmp.hpp"
 #include "common/rule_refinement/rule_refinement_approximate.hpp"
 #include "thresholds_common.hpp"
 
