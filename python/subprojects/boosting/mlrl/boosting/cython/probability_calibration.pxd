@@ -1,7 +1,7 @@
 from libcpp cimport bool
 
 
-cdef extern from "boosting/prediction/probability_calibration_isotonic.hpp" namespace "boosting" nogil:
+cdef extern from "mlrl/boosting/prediction/probability_calibration_isotonic.hpp" namespace "boosting" nogil:
 
     cdef cppclass IIsotonicMarginalProbabilityCalibratorConfig:
         

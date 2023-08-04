@@ -16,7 +16,7 @@ ctypedef void (*DsysvFunction)(char* uplo, int* n, int* nrhs, double* a, int* ld
                                double* work, int* lwork, int* info)
 
 
-cdef extern from "boosting/learner.hpp" namespace "boosting" nogil:
+cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
 
     cdef cppclass IAutomaticPartitionSamplingMixin"boosting::IBoostingRuleLearner::IAutomaticPartitionSamplingMixin":
 

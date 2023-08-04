@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport float64
 
 
-cdef extern from "boosting/rule_evaluation/regularization_manual.hpp" namespace "boosting" nogil:
+cdef extern from "mlrl/boosting/rule_evaluation/regularization_manual.hpp" namespace "boosting" nogil:
 
     cdef cppclass IManualRegularizationConfig:
 

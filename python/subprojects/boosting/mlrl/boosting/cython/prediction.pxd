@@ -1,7 +1,7 @@
 from libcpp cimport bool
 
 
-cdef extern from "boosting/prediction/predictor_probability_label_wise.hpp" namespace "boosting" nogil:
+cdef extern from "mlrl/boosting/prediction/predictor_probability_label_wise.hpp" namespace "boosting" nogil:
 
     cdef cppclass ILabelWiseProbabilityPredictorConfig:
 
@@ -12,7 +12,7 @@ cdef extern from "boosting/prediction/predictor_probability_label_wise.hpp" name
         ILabelWiseProbabilityPredictorConfig& setUseProbabilityCalibrationModel(bool useProbabilityCalibrationModel)
 
 
-cdef extern from "boosting/prediction/predictor_probability_marginalized.hpp" namespace "boosting" nogil:
+cdef extern from "mlrl/boosting/prediction/predictor_probability_marginalized.hpp" namespace "boosting" nogil:
 
     cdef cppclass IMarginalizedProbabilityPredictorConfig:
 
@@ -23,7 +23,7 @@ cdef extern from "boosting/prediction/predictor_probability_marginalized.hpp" na
         IMarginalizedProbabilityPredictorConfig& setUseProbabilityCalibrationModel(bool useProbabilityCalibrationModel)
 
 
-cdef extern from "boosting/prediction/predictor_binary_example_wise.hpp" namespace "boosting" nogil:
+cdef extern from "mlrl/boosting/prediction/predictor_binary_example_wise.hpp" namespace "boosting" nogil:
 
     cdef cppclass IExampleWiseBinaryPredictorConfig:
 
@@ -38,7 +38,7 @@ cdef extern from "boosting/prediction/predictor_binary_example_wise.hpp" namespa
         IExampleWiseBinaryPredictorConfig& setUseProbabilityCalibrationModel(bool useProbabilityCalibrationModel)
 
 
-cdef extern from "boosting/prediction/predictor_binary_label_wise.hpp" namespace "boosting" nogil:
+cdef extern from "mlrl/boosting/prediction/predictor_binary_label_wise.hpp" namespace "boosting" nogil:
 
     cdef cppclass ILabelWiseBinaryPredictorConfig:
 
@@ -53,7 +53,7 @@ cdef extern from "boosting/prediction/predictor_binary_label_wise.hpp" namespace
         IExampleWiseBinaryPredictorConfig& setUseProbabilityCalibrationModel(bool useProbabilityCalibrationModel)
 
 
-cdef extern from "boosting/prediction/predictor_binary_gfm.hpp" namespace "boosting" nogil:
+cdef extern from "mlrl/boosting/prediction/predictor_binary_gfm.hpp" namespace "boosting" nogil:
 
     cdef cppclass IGfmBinaryPredictorConfig:
 

@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport float32, uint32
 
 
-cdef extern from "boosting/binning/label_binning_equal_width.hpp" namespace "boosting" nogil:
+cdef extern from "mlrl/boosting/binning/label_binning_equal_width.hpp" namespace "boosting" nogil:
 
     cdef cppclass IEqualWidthLabelBinningConfig:
 
