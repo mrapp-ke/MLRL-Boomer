@@ -33,7 +33,7 @@ Similarly, the same information can also be accessed when using the C++ API prog
 
 GPU support via `OpenCL <https://www.khronos.org/opencl/>`__ is enabled by default when building the project. However, it can be disabled at compile-time by setting the build option ``gpu_support`` to ``disabled`` instead of ``enabled``.
 
-An easy way to check whether the program was built with GPU support enabled or not, is to run the `boomer --version` or ``boomer -v```command that is provided by the :ref:`testbed`. It will print the build options used for compiling the program, together with a list of supported GPUs available on your machine.
+An easy way to check whether the program was built with GPU support enabled or not, is to run the ``boomer --version`` or ``boomer -v`` command that is provided by the :ref:`testbed`. It will print the build options used for compiling the program, together with a list of supported GPUs available on your machine.
 
 Alternatively, this information can be retrieved programmatically in your own Python code as shown below (see :ref:`pythonapi`):
 
