@@ -53,11 +53,15 @@ class CommonLibraryInfo final : public ILibraryInfo {
         }
 
         void visitHardwareResources(HardwareResourceVisitor visitor) const override {
-            HardwareResource cpuHardwareResource("available CPU cores", std::to_string(getNumCpuCores()));
-            visitor(cpuHardwareResource);
+            if (MULTI_THREADING_SUPPORT_ENABLED) {
+                HardwareResource cpuHardwareResource("available CPU cores", std::to_string(getNumCpuCores()));
+                visitor(cpuHardwareResource);
+            }
 
-            HardwareResource gpuHardwareResource("supported GPU devices", formatGpuDevices());
-            visitor(gpuHardwareResource);
+            if (GPU_SUPPORT_ENABLED) {
+                HardwareResource gpuHardwareResource("supported GPU devices", formatGpuDevices());
+                visitor(gpuHardwareResource);
+            }
         }
 };
 
