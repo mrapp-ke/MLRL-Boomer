@@ -25,6 +25,10 @@ class CommonLibraryInfo final : public ILibraryInfo {
             BuildOption multiThreadingBuildOption("MULTI_THREADING_SUPPORT_ENABLED", "multi-threading support",
                                                   MULTI_THREADING_SUPPORT_ENABLED ? "enabled" : "disabled");
             visitor(multiThreadingBuildOption);
+
+            BuildOption gpuBuildOption("GPU_SUPPORT_ENABLED", "GPU support",
+                                       GPU_SUPPORT_ENABLED ? "enabled" : "disabled");
+            visitor(gpuBuildOption);
         }
 
         void visitHardwareResources(HardwareResourceVisitor visitor) const override {
@@ -43,4 +47,8 @@ bool isMultiThreadingSupportEnabled() {
 
 uint32 getNumCpuCores() {
     return getNumAvailableCpuCores();
+}
+
+bool isGpuSupportEnabled() {
+    return GPU_SUPPORT_ENABLED ? true : false;
 }

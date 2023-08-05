@@ -49,6 +49,8 @@ cdef extern from "mlrl/common/info.hpp" nogil:
 
     uint32 getNumCpuCores()
 
+    bool isGpuSupportEnabled()
+
 
 cdef extern from *:
     """

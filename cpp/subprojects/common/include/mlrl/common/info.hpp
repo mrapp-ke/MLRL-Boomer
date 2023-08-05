@@ -123,7 +123,7 @@ MLRLCOMMON_API std::unique_ptr<ILibraryInfo> getLibraryInfo();
 /**
  * Returns whether multi-threading support was enabled at compile-time or not.
  *
- * @return True if multi-threading support is enabled, false otherwise
+ * @return True, if multi-threading support is enabled, false otherwise
  */
 MLRLCOMMON_API bool isMultiThreadingSupportEnabled();
 
@@ -134,3 +134,10 @@ MLRLCOMMON_API bool isMultiThreadingSupportEnabled();
  * @return The number of CPU cores available on the machine
  */
 MLRLCOMMON_API uint32 getNumCpuCores();
+
+/**
+ * Returns whether GPU support was enabled at compile-time or not.
+ *
+ * @return True, if GPU support is enabled, false otherwise
+ */
+MLRLCOMMON_API bool isGpuSupportEnabled();
