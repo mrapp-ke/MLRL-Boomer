@@ -22,6 +22,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Install OpenCL
         run: |
+          sudo apt update
           sudo apt install -y opencl-headers ocl-icd-opencl-dev
       - name: Compile via GCC
         run: |
