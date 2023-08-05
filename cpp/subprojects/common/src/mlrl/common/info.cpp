@@ -77,6 +77,10 @@ bool isGpuSupportEnabled() {
     return GPU_SUPPORT_ENABLED ? true : false;
 }
 
+bool isGpuAvailable() {
+    return !getSupportedGpuDevices().empty();
+}
+
 std::vector<std::string> getGpuDevices() {
     return getSupportedGpuDevices();
 }

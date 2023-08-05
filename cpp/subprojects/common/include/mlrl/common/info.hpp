@@ -144,7 +144,14 @@ MLRLCOMMON_API uint32 getNumCpuCores();
 MLRLCOMMON_API bool isGpuSupportEnabled();
 
 /**
- * Returns the names of all supported GPUs.
+ * Returns whether any supported GPUs are available on the machine or not.
+ *
+ * @return True, if at least one supported GPU is available, false otherwise
+ */
+MLRLCOMMON_API bool isGpuAvailable();
+
+/**
+ * Returns the names of all supported GPUs available on the machine.
  *
  * @return An `std::vector` that contains the names of all supported GPUs
  */

@@ -52,6 +52,8 @@ cdef extern from "mlrl/common/info.hpp" nogil:
 
     bool isGpuSupportEnabled()
 
+    bool isGpuAvailable()
+
     vector[string] getGpuDevices()
 
 
