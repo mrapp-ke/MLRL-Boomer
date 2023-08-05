@@ -131,6 +131,7 @@ target_architecture = host_machine.cpu_family() + '-' + host_machine.system()
 
 # Check build options
 multi_threading_support_enabled = get_option('multi_threading_support').enabled()
+gpu_support_enabled = get_option('gpu_support').enabled()
 
 # Set configuration options
 configuration = configuration_data()
@@ -138,6 +139,7 @@ configuration.set('mlrlcommon_library_name', 'lib' + lib_name)
 configuration.set('mlrlcommon_library_version', version)
 configuration.set('mlrlcommon_target_architecture', target_architecture)
 configuration.set10('multi_threading_support_enabled', multi_threading_support_enabled)
+configuration.set10('gpu_support_enabled', gpu_support_enabled)
 configure_file(input : 'include/mlrl/common/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
 # Compiler and linker arguments

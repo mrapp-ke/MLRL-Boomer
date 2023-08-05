@@ -139,3 +139,12 @@ def get_num_cpu_cores() -> int:
     :return: The number of CPU cores available on the machine
     """
     return getNumCpuCores()
+
+
+def is_gpu_support_enabled() -> bool:
+    """
+    Returns whether multi-threading support was enabled at compile-time or not.
+
+    :return: True, if the GPU support is enabled, False otherwise
+    """
+    return isGpuSupportEnabled()
