@@ -148,3 +148,12 @@ def is_gpu_support_enabled() -> bool:
     :return: True, if the GPU support is enabled, False otherwise
     """
     return isGpuSupportEnabled()
+
+
+def get_gpu_devices() -> List[str]:
+    """
+    Returns the names of all supported GPUs.
+
+    :return: A list that contains the names of all supported GPUs
+    """
+    return getGpuDevices()

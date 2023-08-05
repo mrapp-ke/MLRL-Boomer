@@ -76,3 +76,7 @@ uint32 getNumCpuCores() {
 bool isGpuSupportEnabled() {
     return GPU_SUPPORT_ENABLED ? true : false;
 }
+
+std::vector<std::string> getGpuDevices() {
+    return getSupportedGpuDevices();
+}
