@@ -20,9 +20,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Install OpenCL Headers
+      - name: Install OpenCL
         run: |
-          sudo apt install -y opencl-headers
+          sudo apt install -y opencl-headers ocl-icd-opencl-dev
       - name: Compile via GCC
         run: |
           make compile
