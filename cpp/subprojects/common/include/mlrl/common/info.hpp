@@ -9,6 +9,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <vector>
 
 /**
  * Defines an interface for all classes that provide information about a C++ library.
@@ -141,3 +142,10 @@ MLRLCOMMON_API uint32 getNumCpuCores();
  * @return True, if GPU support is enabled, false otherwise
  */
 MLRLCOMMON_API bool isGpuSupportEnabled();
+
+/**
+ * Returns the names of all supported GPUs.
+ *
+ * @return An `std::vector` that contains the names of all supported GPUs
+ */
+MLRLCOMMON_API std::vector<std::string> getGpuDevices();
