@@ -1,7 +1,28 @@
 #include "mlrl/common/info.hpp"
 
 #include "config.hpp"
+#include "mlrl/common/util/opencl.hpp"
 #include "mlrl/common/util/threads.hpp"
+
+static inline std::string formatGpuDevices() {
+    std::vector<std::string> devices = getSupportedGpuDevices();
+
+    if (!devices.empty()) {
+        std::string result = "";
+
+        for (auto it = devices.cbegin(); it != devices.cend(); it++) {
+            if (!result.empty()) {
+                result += ", ";
+            }
+
+            result += *it;
+        }
+
+        return result;
+    }
+
+    return "none";
+}
 
 /**
  * An implementation of the type `ILibraryInfo` that provides information about this C++ library.
@@ -34,6 +55,9 @@ class CommonLibraryInfo final : public ILibraryInfo {
         void visitHardwareResources(HardwareResourceVisitor visitor) const override {
             HardwareResource cpuHardwareResource("available CPU cores", std::to_string(getNumCpuCores()));
             visitor(cpuHardwareResource);
+
+            HardwareResource gpuHardwareResource("supported GPU devices", formatGpuDevices());
+            visitor(gpuHardwareResource);
         }
 };
 
