@@ -28,3 +28,30 @@ Similarly, the same information can also be accessed when using the C++ API prog
 
    bool multiThreadingSupportEnabled = isMultiThreadingSupportEnabled();
    uint32 numCpuCores = getNumCpuCores();
+
+**GPU support**
+
+GPU support via `OpenCL <https://www.khronos.org/opencl/>`__ is enabled by default when building the project. However, it can be disabled at compile-time by setting the build option ``gpu_support`` to ``disabled`` instead of ``enabled``.
+
+An easy way to check whether the program was built with GPU support enabled or not, is to run the `boomer --version` or ``boomer -v```command that is provided by the :ref:`testbed`. It will print the build options used for compiling the program, together with a list of supported GPUs available on your machine.
+
+Alternatively, this information can be retrieved programmatically in your own Python code as shown below (see :ref:`pythonapi`):
+
+.. code-block:: python
+
+   from mlrl.common import get_gpu_devices, is_gpu_available, is_gpu_support_enabled
+   from typing import List
+
+   gpu_support_enabled: bool = is_gpu_support_enabled()
+   gpu_available: bool = is_gpu_available()
+   gpu_devices: List[str] = get_gpu_devices()
+
+Similar functions are also provided by the C++ API (see :ref:`cppapi`):
+
+.. code-block:: cpp
+
+   #include "mlrl/common/info.hpp"
+
+   bool gpuSupportEnabled = isGpuSupportEnabled();
+   bool gpuAvailable = isGpuAvailable();
+   std::vector<std::string> gpuDevices = getGpuDevices();
