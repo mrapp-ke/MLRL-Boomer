@@ -63,6 +63,14 @@ jobs:
         uses: JesseTG/rm@v1.0.3
         with:
           path: C:\Program Files\Git\usr\bin\link.EXE
+      - name: Install OpenCL
+        uses: johnwason/vcpkg-action@v5
+        with:
+          pkgs: opencl
+          triplet: x64-windows
+          token: ${{ github.token }}
       - name: Compile via MSVC
         run: |
+          $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\include"
+          $env:LIB += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\lib"
           make compile

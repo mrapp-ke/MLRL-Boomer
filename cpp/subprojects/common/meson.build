@@ -154,7 +154,7 @@ if host_machine.system() == 'windows'
     endif
 
     if gpu_support_enabled
-        link_args += '-lOpenCL'
+        link_args += 'OpenCL.lib'
     endif
 elif host_machine.system() == 'darwin'
     cpp_args += '-Xclang'
