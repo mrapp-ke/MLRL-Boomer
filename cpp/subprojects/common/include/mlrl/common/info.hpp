@@ -9,6 +9,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <vector>
 
 /**
  * Defines an interface for all classes that provide information about a C++ library.
@@ -123,7 +124,7 @@ MLRLCOMMON_API std::unique_ptr<ILibraryInfo> getLibraryInfo();
 /**
  * Returns whether multi-threading support was enabled at compile-time or not.
  *
- * @return True if multi-threading support is enabled, false otherwise
+ * @return True, if multi-threading support is enabled, false otherwise
  */
 MLRLCOMMON_API bool isMultiThreadingSupportEnabled();
 
@@ -134,3 +135,24 @@ MLRLCOMMON_API bool isMultiThreadingSupportEnabled();
  * @return The number of CPU cores available on the machine
  */
 MLRLCOMMON_API uint32 getNumCpuCores();
+
+/**
+ * Returns whether GPU support was enabled at compile-time or not.
+ *
+ * @return True, if GPU support is enabled, false otherwise
+ */
+MLRLCOMMON_API bool isGpuSupportEnabled();
+
+/**
+ * Returns whether any supported GPUs are available on the machine or not.
+ *
+ * @return True, if at least one supported GPU is available, false otherwise
+ */
+MLRLCOMMON_API bool isGpuAvailable();
+
+/**
+ * Returns the names of all supported GPUs available on the machine.
+ *
+ * @return An `std::vector` that contains the names of all supported GPUs
+ */
+MLRLCOMMON_API std::vector<std::string> getGpuDevices();

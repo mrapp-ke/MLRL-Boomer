@@ -131,6 +131,7 @@ target_architecture = host_machine.cpu_family() + '-' + host_machine.system()
 
 # Check build options
 multi_threading_support_enabled = get_option('multi_threading_support').enabled()
+gpu_support_enabled = get_option('gpu_support').enabled()
 
 # Set configuration options
 configuration = configuration_data()
@@ -138,6 +139,7 @@ configuration.set('mlrlcommon_library_name', 'lib' + lib_name)
 configuration.set('mlrlcommon_library_version', version)
 configuration.set('mlrlcommon_target_architecture', target_architecture)
 configuration.set10('multi_threading_support_enabled', multi_threading_support_enabled)
+configuration.set10('gpu_support_enabled', gpu_support_enabled)
 configure_file(input : 'include/mlrl/common/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
 # Compiler and linker arguments
@@ -150,16 +152,30 @@ if host_machine.system() == 'windows'
     if multi_threading_support_enabled
         cpp_args += '/openmp'
     endif
+
+    if gpu_support_enabled
+        link_args += 'OpenCL.lib'
+    endif
 elif host_machine.system() == 'darwin'
+    cpp_args += '-Xclang'
+
     if multi_threading_support_enabled
-        cpp_args += '-Xclang'
         cpp_args += '-fopenmp'
         link_args += '-lomp'
+    endif
+
+    if gpu_support_enabled
+        link_args += '-framework'
+        link_args += 'OpenCL'
     endif
 else
     if multi_threading_support_enabled
         cpp_args += '-fopenmp'
         link_args += '-fopenmp'
+    endif
+
+    if gpu_support_enabled
+        link_args += '-lOpenCL'
     endif
 endif
 

@@ -1,6 +1,7 @@
 from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
 from libcpp.string cimport string
+from libcpp.vector cimport vector
 
 from mlrl.common.cython._types cimport uint32
 
@@ -48,6 +49,12 @@ cdef extern from "mlrl/common/info.hpp" nogil:
     bool isMultiThreadingSupportEnabled()
 
     uint32 getNumCpuCores()
+
+    bool isGpuSupportEnabled()
+
+    bool isGpuAvailable()
+
+    vector[string] getGpuDevices()
 
 
 cdef extern from *:
