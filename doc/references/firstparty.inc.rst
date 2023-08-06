@@ -71,3 +71,19 @@ An extensive discussion of the BOOMER algorithm, including a presentation of the
     year={2022},
     school={Technische Universit{\"a}t Darmstadt}
   }
+
+**On the Efficient Implementation of Classification Rule Learning**
+
+A detailed discussion of algorithmic concepts and approximation techniques used by the BOOMER algorithm can be found in the following `paper <https://doi.org/10.1007/s11634-023-00553-7>`__.
+
+*Michael Rapp, Johannes Fürnkranz and Eyke Hüllermeier. On the efficient implementation of classification rule learning. In: Advances in Data Analysis and Classification, 2023, pages 1-42, Springer.*
+
+.. code-block:: bibtex
+
+   @article{rapp2023,
+     title={On the efficient implementation of classification rule learning},
+     author={Rapp, Michael and F{\"u}rnkranz, Johannes and H{\"u}llermeier, Eyke},
+     journal={Advances in Data Analysis and Classification},
+     pages={1--42},
+     year={2023},
+     publisher={Springer}
