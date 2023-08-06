@@ -1,1 +1,2 @@
 option('multi_threading_support', type : 'feature', value : 'enabled')
+option('gpu_support', type : 'feature', value : 'enabled')

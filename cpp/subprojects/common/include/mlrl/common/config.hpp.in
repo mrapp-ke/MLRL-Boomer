@@ -8,3 +8,4 @@
 #define MLRLCOMMON_TARGET_ARCHITECTURE "@mlrlcommon_target_architecture@"
 
 #define MULTI_THREADING_SUPPORT_ENABLED @multi_threading_support_enabled@
+#define GPU_SUPPORT_ENABLED @gpu_support_enabled@
