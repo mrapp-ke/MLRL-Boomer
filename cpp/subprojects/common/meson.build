@@ -165,7 +165,8 @@ elif host_machine.system() == 'darwin'
     endif
 
     if gpu_support_enabled
-        link_args += '-lOpenCL'
+        link_args += '-framework'
+        link_args += 'OpenCL'
     endif
 else
     if multi_threading_support_enabled

@@ -41,11 +41,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Compile via Clang
+      - name: Install OpenMP
         run: |
           brew install libomp
           brew link libomp --force
-          make compile
+      - name: Install OpenCL
+        run: |
+          brew install opencl-clhpp-headers
+      - name: Compile via Clang
+        run: |
+          CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include make compile
   windows_build:
     name: Test Windows build
     runs-on: windows-latest
