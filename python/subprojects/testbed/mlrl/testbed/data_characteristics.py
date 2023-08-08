@@ -22,6 +22,8 @@ OPTION_FEATURES = 'features'
 
 OPTION_NUMERICAL_FEATURES = 'numerical_features'
 
+OPTION_ORDINAL_FEATURES = 'ordinal_features'
+
 OPTION_NOMINAL_FEATURES = 'nominal_features'
 
 OPTION_FEATURE_DENSITY = 'feature_density'
@@ -91,6 +93,7 @@ FEATURE_CHARACTERISTICS: List[Characteristic] = [
     Characteristic(OPTION_EXAMPLES, 'Examples', lambda x: x.num_examples),
     Characteristic(OPTION_FEATURES, 'Features', lambda x: x.num_features),
     Characteristic(OPTION_NUMERICAL_FEATURES, 'Numerical Features', lambda x: x.num_nominal_features),
+    Characteristic(OPTION_ORDINAL_FEATURES, 'Ordinal Features', lambda x: x.num_ordinal_features),
     Characteristic(OPTION_NOMINAL_FEATURES, 'Nominal Features', lambda x: x.num_numerical_features),
     Characteristic(OPTION_FEATURE_DENSITY, 'Feature Density', lambda x: x.feature_density, percentage=True),
     Characteristic(OPTION_FEATURE_SPARSITY, 'Feature Sparsity', lambda x: x.feature_sparsity, percentage=True),
