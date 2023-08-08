@@ -58,7 +58,14 @@ class FeatureCharacteristics:
         """
         return self._meta_data.get_num_attributes(AttributeType.NOMINAL)
 
-    @property
+    @cached_property
+    def num_ordinal_features(self):
+        """
+        The total number of ordinal features.
+        """
+        return self._meta_data.get_num_attributes(AttributeType.ORDINAL)
+
+    @cached_property
     def num_numerical_features(self):
         """
         The total number of numerical features.
