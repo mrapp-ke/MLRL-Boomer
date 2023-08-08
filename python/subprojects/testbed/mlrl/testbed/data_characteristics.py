@@ -58,21 +58,21 @@ class FeatureCharacteristics:
         """
         The total number of nominal features.
         """
-        return self._meta_data.get_num_attributes(AttributeType.NOMINAL)
+        return self._meta_data.get_num_attributes({AttributeType.NOMINAL})
 
     @cached_property
     def num_ordinal_features(self):
         """
         The total number of ordinal features.
         """
-        return self._meta_data.get_num_attributes(AttributeType.ORDINAL)
+        return self._meta_data.get_num_attributes({AttributeType.ORDINAL})
 
     @cached_property
     def num_numerical_features(self):
         """
         The total number of numerical features.
         """
-        return self._meta_data.get_num_attributes(AttributeType.NUMERICAL)
+        return self._meta_data.get_num_attributes({AttributeType.NUMERICAL})
 
     @cached_property
     def feature_density(self):
