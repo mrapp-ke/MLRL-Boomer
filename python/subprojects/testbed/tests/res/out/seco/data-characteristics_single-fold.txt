@@ -7,8 +7,9 @@ INFO Data characteristics (Fold 1):
 
 Examples                533
 Features                 72
-Numerical Features        0
-Nominal Features         72
+Numerical Features       72
+Ordinal Features          0
+Nominal Features          0
 Feature Density          99.67
 Feature Sparsity          0.33
 Labels                    6
