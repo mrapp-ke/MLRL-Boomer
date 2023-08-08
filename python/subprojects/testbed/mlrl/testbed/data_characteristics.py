@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for printing certain characteristics of multi-label data sets. The characteristics can be written to
 one or several outputs, e.g., to the console or to a file.
 """
-from functools import cached_property, reduce
+from functools import cached_property
 from typing import Any, Dict, List, Optional
 
 from mlrl.common.options import Options
@@ -21,6 +21,8 @@ OPTION_EXAMPLES = 'examples'
 OPTION_FEATURES = 'features'
 
 OPTION_NUMERICAL_FEATURES = 'numerical_features'
+
+OPTION_ORDINAL_FEATURES = 'ordinal_features'
 
 OPTION_NOMINAL_FEATURES = 'nominal_features'
 
@@ -43,22 +45,34 @@ class FeatureCharacteristics:
         self._x = x
         self._meta_data = meta_data
         self.num_examples = x.shape[0]
-        self.num_features = x.shape[1]
+
+    @property
+    def num_features(self):
+        """
+        The total number of features.
+        """
+        return self._meta_data.get_num_attributes()
 
     @cached_property
     def num_nominal_features(self):
         """
         The total number of nominal features.
         """
-        return reduce(lambda num, attribute: num + (1 if attribute.attribute_type == AttributeType.NOMINAL else 0),
-                      self._meta_data.attributes, 0)
+        return self._meta_data.get_num_attributes({AttributeType.NOMINAL})
 
-    @property
+    @cached_property
+    def num_ordinal_features(self):
+        """
+        The total number of ordinal features.
+        """
+        return self._meta_data.get_num_attributes({AttributeType.ORDINAL})
+
+    @cached_property
     def num_numerical_features(self):
         """
         The total number of numerical features.
         """
-        return self.num_features - self.num_nominal_features
+        return self._meta_data.get_num_attributes({AttributeType.NUMERICAL})
 
     @cached_property
     def feature_density(self):
@@ -78,8 +92,9 @@ class FeatureCharacteristics:
 FEATURE_CHARACTERISTICS: List[Characteristic] = [
     Characteristic(OPTION_EXAMPLES, 'Examples', lambda x: x.num_examples),
     Characteristic(OPTION_FEATURES, 'Features', lambda x: x.num_features),
-    Characteristic(OPTION_NUMERICAL_FEATURES, 'Numerical Features', lambda x: x.num_nominal_features),
-    Characteristic(OPTION_NOMINAL_FEATURES, 'Nominal Features', lambda x: x.num_numerical_features),
+    Characteristic(OPTION_NUMERICAL_FEATURES, 'Numerical Features', lambda x: x.num_numerical_features),
+    Characteristic(OPTION_ORDINAL_FEATURES, 'Ordinal Features', lambda x: x.num_ordinal_features),
+    Characteristic(OPTION_NOMINAL_FEATURES, 'Nominal Features', lambda x: x.num_nominal_features),
     Characteristic(OPTION_FEATURE_DENSITY, 'Feature Density', lambda x: x.feature_density, percentage=True),
     Characteristic(OPTION_FEATURE_SPARSITY, 'Feature Sparsity', lambda x: x.feature_sparsity, percentage=True),
 ]
