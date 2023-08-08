@@ -107,7 +107,7 @@ static inline void filterCurrentVector(const FeatureVector& vector, FilteredCach
             statistics.removeCoveredStatistic(index);
         }
 
-        if (conditionComparator == NEQ) {
+        if (conditionComparator == NOMINAL_NEQ) {
             // Retain the indices at positions [currentStart, currentEnd), while leaving the corresponding values in
             // `coverageMask` untouched, such that all previously covered examples in said range are still marked
             // as covered, while previously uncovered examples are still marked as uncovered...
