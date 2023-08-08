@@ -12,39 +12,39 @@
 class MLRLCOMMON_API ConjunctiveBody final : public IBody {
     private:
 
-        const uint32 numLeq_;
+        const uint32 numNumericalLeq_;
 
-        uint32* leqFeatureIndices_;
+        uint32* numericalLeqFeatureIndices_;
 
-        float32* leqThresholds_;
+        float32* numericalLeqThresholds_;
 
-        const uint32 numGr_;
+        const uint32 numNumericalGr_;
 
-        uint32* grFeatureIndices_;
+        uint32* numericalGrFeatureIndices_;
 
-        float32* grThresholds_;
+        float32* numericalGrThresholds_;
 
-        const uint32 numEq_;
+        const uint32 numNominalEq_;
 
-        uint32* eqFeatureIndices_;
+        uint32* nominalEqFeatureIndices_;
 
-        float32* eqThresholds_;
+        float32* nominalEqThresholds_;
 
-        const uint32 numNeq_;
+        const uint32 numNominalNeq_;
 
-        uint32* neqFeatureIndices_;
+        uint32* nominalNeqFeatureIndices_;
 
-        float32* neqThresholds_;
+        float32* nominalNeqThresholds_;
 
     public:
 
         /**
-         * @param numLeq    The number of conditions that use the <= operator
-         * @param numGr     The number of conditions that use the > operator
-         * @param numEq     The number of conditions that use the == operator
-         * @param numNeq    The number of conditions that use the != operator
+         * @param numNumericalLeq   The number of numerical conditions that use the <= operator
+         * @param numNumericalGr    The number of numerical conditions that use the > operator
+         * @param numNominalEq      The number of nominal conditions that use the == operator
+         * @param numNominalNeq     The number of nominal conditions that use the != operator
          */
-        ConjunctiveBody(uint32 numLeq, uint32 numGr, uint32 numEq, uint32 numNeq);
+        ConjunctiveBody(uint32 numNumericalLeq, uint32 numNumericalGr, uint32 numNominalEq, uint32 numNominalNeq);
 
         ~ConjunctiveBody() override;
 
@@ -72,288 +72,288 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         typedef const uint32* index_const_iterator;
 
         /**
-         * Returns the number of conditions that use the <= operator.
+         * Returns the number of numerical conditions that use the <= operator.
          *
          * @return The number of conditions
          */
-        uint32 getNumLeq() const;
+        uint32 getNumNumericalLeq() const;
 
         /**
-         * Returns a `threshold_iterator` to the beginning of the thresholds that correspond to conditions that use the
-         * <= operator.
+         * Returns a `threshold_iterator` to the beginning of the thresholds that correspond to numerical conditions
+         * that use the <= operator.
          *
          * @return A `threshold_iterator` to the beginning
          */
-        threshold_iterator leq_thresholds_begin();
+        threshold_iterator numerical_leq_thresholds_begin();
 
         /**
-         * Returns a `threshold_iterator` to the end of the thresholds that correspond to conditions that use the <=
-         * operator.
-         *
-         * @return A `threshold_iterator` to the end
-         */
-        threshold_iterator leq_thresholds_end();
-
-        /**
-         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to conditions that
-         * use the <= operator.
-         *
-         * @return A `threshold_const_iterator` to the beginning
-         */
-        threshold_const_iterator leq_thresholds_cbegin() const;
-
-        /**
-         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to conditions that use the
-         * <= operator.
-         *
-         * @return A `threshold_const_iterator` to the end
-         */
-        threshold_const_iterator leq_thresholds_cend() const;
-
-        /**
-         * Returns an `index_iterator` to the beginning of the feature indices that correspond to conditions that use
+         * Returns a `threshold_iterator` to the end of the thresholds that correspond to numerical conditions that use
          * the <= operator.
          *
+         * @return A `threshold_iterator` to the end
+         */
+        threshold_iterator numerical_leq_thresholds_end();
+
+        /**
+         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to numerical
+         * conditions that use the <= operator.
+         *
+         * @return A `threshold_const_iterator` to the beginning
+         */
+        threshold_const_iterator numerical_leq_thresholds_cbegin() const;
+
+        /**
+         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to numerical conditions
+         * that use the <= operator.
+         *
+         * @return A `threshold_const_iterator` to the end
+         */
+        threshold_const_iterator numerical_leq_thresholds_cend() const;
+
+        /**
+         * Returns an `index_iterator` to the beginning of the feature indices that correspond to numerical conditions
+         * that use the <= operator.
+         *
          * @return An `index_iterator` to the beginning
          */
-        index_iterator leq_indices_begin();
+        index_iterator numerical_leq_indices_begin();
 
         /**
-         * Returns an `index_iterator` to the end of the feature indices that correspond to conditions that use the <=
-         * operator.
-         *
-         * @return An `index_iterator` to the end
-         */
-        index_iterator leq_indices_end();
-
-        /**
-         * Returns an `index_const_iterator` to the beginning of the feature indices that correspond to conditions that
+         * Returns an `index_iterator` to the end of the feature indices that correspond to numerical conditions that
          * use the <= operator.
          *
-         * @return An `index_const_iterator` to the beginning
+         * @return An `index_iterator` to the end
          */
-        index_const_iterator leq_indices_cbegin() const;
+        index_iterator numerical_leq_indices_end();
 
         /**
-         * Returns an `index_const_iterator` to the end of the feature indices that correspond to conditions that use
-         * the <= operator.
+         * Returns an `index_const_iterator` to the beginning of the feature indices that correspond to numerical
+         * conditions that use the <= operator.
+         *
+         * @return An `index_const_iterator` to the beginning
+         */
+        index_const_iterator numerical_leq_indices_cbegin() const;
+
+        /**
+         * Returns an `index_const_iterator` to the end of the feature indices that correspond to numerical conditions
+         * that use the <= operator.
          *
          * @return An `index_const_iterator` to the end
          */
-        index_const_iterator leq_indices_cend() const;
+        index_const_iterator numerical_leq_indices_cend() const;
 
         /**
-         * Returns the number of conditions that use the > operator.
+         * Returns the number of numerical conditions that use the > operator.
          *
          * @return The number of conditions
          */
-        uint32 getNumGr() const;
+        uint32 getNumNumericalGr() const;
 
         /**
-         * Returns a `threshold_iterator` to the beginning of the thresholds that correspond to conditions that use the
-         * > operator.
+         * Returns a `threshold_iterator` to the beginning of the thresholds that correspond to numerical conditions
+         * that use the > operator.
          *
          * @return A `threshold_iterator` to the beginning
          */
-        threshold_iterator gr_thresholds_begin();
+        threshold_iterator numerical_gr_thresholds_begin();
 
         /**
-         * Returns a `threshold_iterator` to the end of the thresholds that correspond to conditions that use the >
-         * operator.
-         *
-         * @return A `threshold_iterator` to the end
-         */
-        threshold_iterator gr_thresholds_end();
-
-        /**
-         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to conditions that
-         * use the > operator.
-         *
-         * @return A `threshold_const_iterator` to the beginning
-         */
-        threshold_const_iterator gr_thresholds_cbegin() const;
-
-        /**
-         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to conditions that use the
-         * > operator.
-         *
-         * @return A `threshold_const_iterator` to the end
-         */
-        threshold_const_iterator gr_thresholds_cend() const;
-
-        /**
-         * Returns an `index_iterator` to the beginning of the feature indices that correspond to conditions that use
+         * Returns a `threshold_iterator` to the end of the thresholds that correspond to numerical conditions that use
          * the > operator.
          *
+         * @return A `threshold_iterator` to the end
+         */
+        threshold_iterator numerical_gr_thresholds_end();
+
+        /**
+         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to numerical
+         * conditions that use the > operator.
+         *
+         * @return A `threshold_const_iterator` to the beginning
+         */
+        threshold_const_iterator numerical_gr_thresholds_cbegin() const;
+
+        /**
+         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to numerical conditions
+         * that use the > operator.
+         *
+         * @return A `threshold_const_iterator` to the end
+         */
+        threshold_const_iterator numerical_gr_thresholds_cend() const;
+
+        /**
+         * Returns an `index_iterator` to the beginning of the feature indices that correspond to numerical conditions
+         * that use the > operator.
+         *
          * @return An `index_iterator` to the beginning
          */
-        index_iterator gr_indices_begin();
+        index_iterator numerical_gr_indices_begin();
 
         /**
-         * Returns an `index_iterator` to the end of the feature indices that correspond to conditions that use the >
-         * operator.
-         *
-         * @return An `index_iterator` to the end
-         */
-        index_iterator gr_indices_end();
-
-        /**
-         * Returns an `index_const_iterator` to the beginning of the feature indices that correspond to conditions that
+         * Returns an `index_iterator` to the end of the feature indices that correspond to numerical conditions that
          * use the > operator.
          *
-         * @return An `index_const_iterator` to the beginning
+         * @return An `index_iterator` to the end
          */
-        index_const_iterator gr_indices_cbegin() const;
+        index_iterator numerical_gr_indices_end();
 
         /**
-         * Returns an `index_const_iterator` to the end of the feature indices that correspond to conditions that use
-         * the > operator.
+         * Returns an `index_const_iterator` to the beginning of the feature indices that correspond to numerical
+         * conditions that use the > operator.
+         *
+         * @return An `index_const_iterator` to the beginning
+         */
+        index_const_iterator numerical_gr_indices_cbegin() const;
+
+        /**
+         * Returns an `index_const_iterator` to the end of the feature indices that correspond to numerical conditions
+         * that use the > operator.
          *
          * @return An `index_const_iterator` to the end
          */
-        index_const_iterator gr_indices_cend() const;
+        index_const_iterator numerical_gr_indices_cend() const;
 
         /**
-         * Returns the number of conditions that use the == operator.
+         * Returns the number of nominal conditions that use the == operator.
          *
          * @return The number of conditions
          */
-        uint32 getNumEq() const;
+        uint32 getNumNominalEq() const;
 
         /**
-         * Returns a `threshold_iterator` to the beginning of the thresholds that correspond to conditions that use the
-         * == operator.
+         * Returns a `threshold_iterator` to the beginning of the thresholds that correspond to nominal conditions that
+         * use the == operator.
          *
          * @return A `threshold_iterator` to the beginning
          */
-        threshold_iterator eq_thresholds_begin();
+        threshold_iterator nominal_eq_thresholds_begin();
 
         /**
-         * Returns a `threshold_iterator` to the end of the thresholds that correspond to conditions that use the ==
-         * operator.
+         * Returns a `threshold_iterator` to the end of the thresholds that correspond to nominal conditions that use
+         * the == operator.
          *
          * @return A `threshold_iterator` to the end
          */
-        threshold_iterator eq_thresholds_end();
+        threshold_iterator nominal_eq_thresholds_end();
 
         /**
-         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to conditions that
-         * use the == operator.
+         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to nominal conditions
+         * that use the == operator.
          *
          * @return A `threshold_const_iterator` to the beginning
          */
-        threshold_const_iterator eq_thresholds_cbegin() const;
+        threshold_const_iterator nominal_eq_thresholds_cbegin() const;
 
         /**
-         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to conditions that use the
-         * == operator.
+         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to nominal conditions that
+         * use the == operator.
          *
          * @return A `threshold_const_iterator` to the end
          */
-        threshold_const_iterator eq_thresholds_cend() const;
+        threshold_const_iterator nominal_eq_thresholds_cend() const;
 
         /**
-         * Returns an `index_iterator` to the beginning of the feature indices that correspond to conditions that use
-         * the == operator.
+         * Returns an `index_iterator` to the beginning of the feature indices that correspond to nominal conditions
+         * that use the == operator.
          *
          * @return An `index_iterator` to the beginning
          */
-        index_iterator eq_indices_begin();
+        index_iterator nominal_eq_indices_begin();
 
         /**
-         * Returns an `index_iterator` to the end of the feature indices that correspond to conditions that use the ==
-         * operator.
+         * Returns an `index_iterator` to the end of the feature indices that correspond to nominal conditions that use
+         * the == operator.
          *
          * @return An `index_iterator` to the end
          */
-        index_iterator eq_indices_end();
+        index_iterator nominal_eq_indices_end();
 
         /**
-         * Returns an `index_const_iterator` to the beginning of the feature indices that correspond to conditions that
-         * use the == operator.
+         * Returns an `index_const_iterator` to the beginning of the feature indices that correspond to nominal
+         * conditions that use the == operator.
          *
          * @return An `index_const_iterator` to the beginning
          */
-        index_const_iterator eq_indices_cbegin() const;
+        index_const_iterator nominal_eq_indices_cbegin() const;
 
         /**
-         * Returns an `index_const_iterator` to the end of the feature indices that correspond to conditions that use
-         * the == operator.
+         * Returns an `index_const_iterator` to the end of the feature indices that correspond to nominal conditions
+         * that use the == operator.
          *
          * @return An `index_const_iterator` to the end
          */
-        index_const_iterator eq_indices_cend() const;
+        index_const_iterator nominal_eq_indices_cend() const;
 
         /**
-         * Returns the number of conditions that use the != operator.
+         * Returns the number of nominal conditions that use the != operator.
          *
          * @return The number of conditions
          */
-        uint32 getNumNeq() const;
+        uint32 getNumNominalNeq() const;
 
         /**
-         * Returns a `threshold_iterator` to the beginning of the thresholds that correspond to conditions that use the
-         * != operator.
+         * Returns a `threshold_iterator` to the beginning of the thresholds that correspond to nominal conditions that
+         * use the != operator.
          *
          * @return A `threshold_iterator` to the beginning
          */
-        threshold_iterator neq_thresholds_begin();
+        threshold_iterator nominal_neq_thresholds_begin();
 
         /**
-         * Returns a `threshold_iterator` to the end of the thresholds that correspond to conditions that use the !=
-         * operator.
+         * Returns a `threshold_iterator` to the end of the thresholds that correspond to nominal conditions that use
+         * the != operator.
          *
          * @return A `threshold_iterator` to the end
          */
-        threshold_iterator neq_thresholds_end();
+        threshold_iterator nominal_neq_thresholds_end();
 
         /**
-         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to conditions that
-         * use the != operator.
+         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to nominal conditions
+         * that use the != operator.
          *
          * @return A `threshold_const_iterator` to the beginning
          */
-        threshold_const_iterator neq_thresholds_cbegin() const;
+        threshold_const_iterator nominal_neq_thresholds_cbegin() const;
 
         /**
-         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to conditions that use the
-         * != operator.
+         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to nominal conditions that
+         * use the != operator.
          *
          * @return A `threshold_const_iterator` to the end
          */
-        threshold_const_iterator neq_thresholds_cend() const;
+        threshold_const_iterator nominal_neq_thresholds_cend() const;
 
         /**
-         * Returns an `index_iterator` to the beginning of the feature indices that correspond to conditions that use
-         * the != operator.
+         * Returns an `index_iterator` to the beginning of the feature indices that correspond to nominal conditions
+         * that use the != operator.
          *
          * @return An `index_iterator` to the beginning
          */
-        index_iterator neq_indices_begin();
+        index_iterator nominal_neq_indices_begin();
 
         /**
-         * Returns an `index_iterator` to the end of the feature indices that correspond to conditions that use the !=
-         * operator.
+         * Returns an `index_iterator` to the end of the feature indices that correspond to nominal conditions that use
+         * the != operator.
          *
          * @return An `index_iterator` to the end
          */
-        index_iterator neq_indices_end();
+        index_iterator nominal_neq_indices_end();
 
         /**
-         * Returns an `index_const_iterator` to the beginning of the feature indices that correspond to conditions that
-         * use the != operator.
+         * Returns an `index_const_iterator` to the beginning of the feature indices that correspond to nominal
+         * conditions that use the != operator.
          *
          * @return An `index_const_iterator` to the beginning
          */
-        index_const_iterator neq_indices_cbegin() const;
+        index_const_iterator nominal_neq_indices_cbegin() const;
 
         /**
-         * Returns an `index_const_iterator` to the end of the feature indices that correspond to conditions that use
-         * the != operator.
+         * Returns an `index_const_iterator` to the end of the feature indices that correspond to nominal conditions
+         * that use the != operator.
          *
          * @return An `index_const_iterator` to the end
          */
-        index_const_iterator neq_indices_cend() const;
+        index_const_iterator nominal_neq_indices_cend() const;
 
         /**
          * @see `IBody::covers`
