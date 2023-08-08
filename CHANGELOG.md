@@ -9,6 +9,11 @@ A major update to the BOOMER algorithm that introduces the following changes.
 ### Additions to the Command Line API
 
 * **Information about the program can now be printed** via the argument `-v` or `--version`.
+* **Data characteristics do now include the number of ordinal attributes** when printed on the console or written to a file via the command line argument `--print-data-characteristics` or `--store-data-characteristics`.
+
+### Bugfixes
+
+* An issue has been fixed that caused the number of numerical and ordinal features to be swapped when using the command line arguments `--print-data-characteristics` or `--store-data-characteristics`.
 
 ### API Changes
 
