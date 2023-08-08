@@ -43,7 +43,13 @@ class FeatureCharacteristics:
         self._x = x
         self._meta_data = meta_data
         self.num_examples = x.shape[0]
-        self.num_features = x.shape[1]
+
+    @property
+    def num_features(self):
+        """
+        The total number of features.
+        """
+        return self._meta_data.get_num_attributes()
 
     @cached_property
     def num_nominal_features(self):
@@ -57,7 +63,7 @@ class FeatureCharacteristics:
         """
         The total number of numerical features.
         """
-        return self.num_features - self.num_nominal_features
+        return self._meta_data.get_num_attributes(AttributeType.NUMERICAL)
 
     @cached_property
     def feature_density(self):
