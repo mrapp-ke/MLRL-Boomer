@@ -32,9 +32,9 @@ void ConditionList::removeLastCondition() {
 };
 
 std::unique_ptr<ConjunctiveBody> ConditionList::createConjunctiveBody() const {
-    std::unique_ptr<ConjunctiveBody> bodyPtr =
-      std::make_unique<ConjunctiveBody>(numConditionsPerComparator_[LEQ], numConditionsPerComparator_[GR],
-                                        numConditionsPerComparator_[EQ], numConditionsPerComparator_[NEQ]);
+    std::unique_ptr<ConjunctiveBody> bodyPtr = std::make_unique<ConjunctiveBody>(
+      numConditionsPerComparator_[NUMERICAL_LEQ], numConditionsPerComparator_[NUMERICAL_GR],
+      numConditionsPerComparator_[NOMINAL_EQ], numConditionsPerComparator_[NOMINAL_NEQ]);
     uint32 numericalLeqIndex = 0;
     uint32 numericalGrIndex = 0;
     uint32 nominalEqIndex = 0;
@@ -46,25 +46,25 @@ std::unique_ptr<ConjunctiveBody> ConditionList::createConjunctiveBody() const {
         float32 threshold = condition.threshold;
 
         switch (condition.comparator) {
-            case LEQ: {
+            case NUMERICAL_LEQ: {
                 bodyPtr->numerical_leq_indices_begin()[numericalLeqIndex] = featureIndex;
                 bodyPtr->numerical_leq_thresholds_begin()[numericalLeqIndex] = threshold;
                 numericalLeqIndex++;
                 break;
             }
-            case GR: {
+            case NUMERICAL_GR: {
                 bodyPtr->numerical_gr_indices_begin()[numericalGrIndex] = featureIndex;
                 bodyPtr->numerical_gr_thresholds_begin()[numericalGrIndex] = threshold;
                 numericalGrIndex++;
                 break;
             }
-            case EQ: {
+            case NOMINAL_EQ: {
                 bodyPtr->nominal_eq_indices_begin()[nominalEqIndex] = featureIndex;
                 bodyPtr->nominal_eq_thresholds_begin()[nominalEqIndex] = threshold;
                 nominalEqIndex++;
                 break;
             }
-            case NEQ: {
+            case NOMINAL_NEQ: {
                 bodyPtr->nominal_neq_indices_begin()[nominalNeqIndex] = featureIndex;
                 bodyPtr->nominal_neq_thresholds_begin()[nominalNeqIndex] = threshold;
                 nominalNeqIndex++;

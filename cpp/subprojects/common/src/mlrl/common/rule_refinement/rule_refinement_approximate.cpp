@@ -66,7 +66,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.numCovered = numCovered;
                         refinement.covered = true;
                         refinement.threshold = thresholdIterator[r - 1];
-                        refinement.comparator = nominal ? EQ : LEQ;
+                        refinement.comparator = nominal ? NOMINAL_EQ : NUMERICAL_LEQ;
                         comparator.pushRefinement(refinement, scoreVector);
                     }
                 }
@@ -86,7 +86,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.numCovered = coverage;
                         refinement.covered = false;
                         refinement.threshold = thresholdIterator[r - 1];
-                        refinement.comparator = nominal ? NEQ : GR;
+                        refinement.comparator = nominal ? NOMINAL_NEQ : NUMERICAL_GR;
                         comparator.pushRefinement(refinement, scoreVector);
                     }
                 }
@@ -122,7 +122,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                     refinement.numCovered = numCovered;
                     refinement.covered = true;
                     refinement.threshold = thresholdIterator[sparseBinIndex - 1];
-                    refinement.comparator = nominal ? EQ : LEQ;
+                    refinement.comparator = nominal ? NOMINAL_EQ : NUMERICAL_LEQ;
                     comparator.pushRefinement(refinement, scoreVector);
                 }
             }
@@ -142,7 +142,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                     refinement.numCovered = coverage;
                     refinement.covered = false;
                     refinement.threshold = thresholdIterator[sparseBinIndex - 1];
-                    refinement.comparator = nominal ? NEQ : GR;
+                    refinement.comparator = nominal ? NOMINAL_NEQ : NUMERICAL_GR;
                     comparator.pushRefinement(refinement, scoreVector);
                 }
             }
@@ -194,10 +194,10 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
 
                         if (nominal) {
                             refinement.threshold = thresholdIterator[firstR];
-                            refinement.comparator = EQ;
+                            refinement.comparator = NOMINAL_EQ;
                         } else {
                             refinement.threshold = thresholdIterator[r];
-                            refinement.comparator = GR;
+                            refinement.comparator = NUMERICAL_GR;
                         }
 
                         comparator.pushRefinement(refinement, scoreVector);
@@ -221,10 +221,10 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
 
                         if (nominal) {
                             refinement.threshold = thresholdIterator[firstR];
-                            refinement.comparator = NEQ;
+                            refinement.comparator = NOMINAL_NEQ;
                         } else {
                             refinement.threshold = thresholdIterator[r];
-                            refinement.comparator = LEQ;
+                            refinement.comparator = NUMERICAL_LEQ;
                         }
 
                         comparator.pushRefinement(refinement, scoreVector);
@@ -264,10 +264,10 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
 
                     if (nominal) {
                         refinement.threshold = thresholdIterator[firstR];
-                        refinement.comparator = EQ;
+                        refinement.comparator = NOMINAL_EQ;
                     } else {
                         refinement.threshold = thresholdIterator[sparseBinIndex];
-                        refinement.comparator = GR;
+                        refinement.comparator = NUMERICAL_GR;
                     }
 
                     comparator.pushRefinement(refinement, scoreVector);
@@ -291,10 +291,10 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
 
                     if (nominal) {
                         refinement.threshold = thresholdIterator[firstR];
-                        refinement.comparator = NEQ;
+                        refinement.comparator = NOMINAL_NEQ;
                     } else {
                         refinement.threshold = thresholdIterator[sparseBinIndex];
-                        refinement.comparator = LEQ;
+                        refinement.comparator = NUMERICAL_LEQ;
                     }
 
                     comparator.pushRefinement(refinement, scoreVector);
@@ -323,7 +323,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.numCovered = coverage;
                         refinement.covered = false;
                         refinement.threshold = thresholdIterator[sparseBinIndex];
-                        refinement.comparator = NEQ;
+                        refinement.comparator = NOMINAL_NEQ;
                         comparator.pushRefinement(refinement, scoreVector);
                     }
                 }
@@ -343,7 +343,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.numCovered = coverage;
                         refinement.covered = true;
                         refinement.threshold = thresholdIterator[sparseBinIndex];
-                        refinement.comparator = EQ;
+                        refinement.comparator = NOMINAL_EQ;
                         comparator.pushRefinement(refinement, scoreVector);
                     }
                 }
