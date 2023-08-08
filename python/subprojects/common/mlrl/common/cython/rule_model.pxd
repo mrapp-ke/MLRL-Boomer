@@ -33,49 +33,49 @@ cdef extern from "mlrl/common/model/body_conjunctive.hpp" nogil:
 
         # Constructors:
 
-        ConjunctiveBodyImpl(uint32 numLeq, uint32 numGr, uint32 numEq, uint32 numNeq)
+        ConjunctiveBodyImpl(uint32 numNumericalLeq, uint32 numNumericalGr, uint32 numNominalEq, uint32 numNominalNeq)
 
         # Functions:
 
-        uint32 getNumLeq() const
+        uint32 getNumNumericalLeq() const
 
-        threshold_iterator leq_thresholds_begin()
+        threshold_iterator numerical_leq_thresholds_begin()
 
-        threshold_const_iterator leq_thresholds_cbegin() const
+        threshold_const_iterator numerical_leq_thresholds_cbegin() const
 
-        index_iterator leq_indices_begin()
+        index_iterator numerical_leq_indices_begin()
 
-        index_const_iterator leq_indices_cbegin() const
+        index_const_iterator numerical_leq_indices_cbegin() const
 
-        uint32 getNumGr() const
+        uint32 getNumNumericalGr() const
 
-        threshold_iterator gr_thresholds_begin()
+        threshold_iterator numerical_gr_thresholds_begin()
 
-        threshold_const_iterator gr_thresholds_cbegin() const
+        threshold_const_iterator numerical_gr_thresholds_cbegin() const
 
-        index_iterator gr_indices_begin()
+        index_iterator numerical_gr_indices_begin()
 
-        index_const_iterator gr_indices_cbegin() const
+        index_const_iterator numerical_gr_indices_cbegin() const
 
-        uint32 getNumEq() const
+        uint32 getNumNominalEq() const
 
-        threshold_iterator eq_thresholds_begin()
+        threshold_iterator nominal_eq_thresholds_begin()
 
-        threshold_const_iterator eq_thresholds_cbegin() const
+        threshold_const_iterator nominal_eq_thresholds_cbegin() const
 
-        index_iterator eq_indices_begin()
+        index_iterator nominal_eq_indices_begin()
 
-        index_const_iterator eq_indices_cbegin() const
+        index_const_iterator nominal_eq_indices_cbegin() const
 
-        uint32 getNumNeq() const
+        uint32 getNumNominalNeq() const
 
-        threshold_iterator neq_thresholds_begin()
+        threshold_iterator nominal_neq_thresholds_begin()
 
-        threshold_const_iterator neq_thresholds_cbegin() const
+        threshold_const_iterator nominal_neq_thresholds_cbegin() const
 
-        index_iterator neq_indices_begin()
+        index_iterator nominal_neq_indices_begin()
 
-        index_const_iterator neq_indices_cbegin() const
+        index_const_iterator nominal_neq_indices_cbegin() const
 
 
 cdef extern from "mlrl/common/model/head.hpp" nogil:
@@ -240,21 +240,21 @@ cdef class ConjunctiveBody:
 
     # Attributes:
 
-    cdef readonly npc.ndarray leq_indices
+    cdef readonly npc.ndarray numerical_leq_indices
 
-    cdef readonly npc.ndarray leq_thresholds
+    cdef readonly npc.ndarray numerical_leq_thresholds
 
-    cdef readonly npc.ndarray gr_indices
+    cdef readonly npc.ndarray numerical_gr_indices
 
-    cdef readonly npc.ndarray gr_thresholds
+    cdef readonly npc.ndarray numerical_gr_thresholds
 
-    cdef readonly npc.ndarray eq_indices
+    cdef readonly npc.ndarray nominal_eq_indices
 
-    cdef readonly npc.ndarray eq_thresholds
+    cdef readonly npc.ndarray nominal_eq_thresholds
 
-    cdef readonly npc.ndarray neq_indices
+    cdef readonly npc.ndarray nominal_neq_indices
 
-    cdef readonly npc.ndarray neq_thresholds
+    cdef readonly npc.ndarray nominal_neq_thresholds
 
 
 cdef class CompleteHead:

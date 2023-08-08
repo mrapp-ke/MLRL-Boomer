@@ -35,10 +35,10 @@ std::unique_ptr<ConjunctiveBody> ConditionList::createConjunctiveBody() const {
     std::unique_ptr<ConjunctiveBody> bodyPtr =
       std::make_unique<ConjunctiveBody>(numConditionsPerComparator_[LEQ], numConditionsPerComparator_[GR],
                                         numConditionsPerComparator_[EQ], numConditionsPerComparator_[NEQ]);
-    uint32 leqIndex = 0;
-    uint32 grIndex = 0;
-    uint32 eqIndex = 0;
-    uint32 neqIndex = 0;
+    uint32 numericalLeqIndex = 0;
+    uint32 numericalGrIndex = 0;
+    uint32 nominalEqIndex = 0;
+    uint32 nominalNeqIndex = 0;
 
     for (auto it = vector_.cbegin(); it != vector_.cend(); it++) {
         const Condition& condition = *it;
@@ -47,27 +47,27 @@ std::unique_ptr<ConjunctiveBody> ConditionList::createConjunctiveBody() const {
 
         switch (condition.comparator) {
             case LEQ: {
-                bodyPtr->leq_indices_begin()[leqIndex] = featureIndex;
-                bodyPtr->leq_thresholds_begin()[leqIndex] = threshold;
-                leqIndex++;
+                bodyPtr->numerical_leq_indices_begin()[numericalLeqIndex] = featureIndex;
+                bodyPtr->numerical_leq_thresholds_begin()[numericalLeqIndex] = threshold;
+                numericalLeqIndex++;
                 break;
             }
             case GR: {
-                bodyPtr->gr_indices_begin()[grIndex] = featureIndex;
-                bodyPtr->gr_thresholds_begin()[grIndex] = threshold;
-                grIndex++;
+                bodyPtr->numerical_gr_indices_begin()[numericalGrIndex] = featureIndex;
+                bodyPtr->numerical_gr_thresholds_begin()[numericalGrIndex] = threshold;
+                numericalGrIndex++;
                 break;
             }
             case EQ: {
-                bodyPtr->eq_indices_begin()[eqIndex] = featureIndex;
-                bodyPtr->eq_thresholds_begin()[eqIndex] = threshold;
-                eqIndex++;
+                bodyPtr->nominal_eq_indices_begin()[nominalEqIndex] = featureIndex;
+                bodyPtr->nominal_eq_thresholds_begin()[nominalEqIndex] = threshold;
+                nominalEqIndex++;
                 break;
             }
             case NEQ: {
-                bodyPtr->neq_indices_begin()[neqIndex] = featureIndex;
-                bodyPtr->neq_thresholds_begin()[neqIndex] = threshold;
-                neqIndex++;
+                bodyPtr->nominal_neq_indices_begin()[nominalNeqIndex] = featureIndex;
+                bodyPtr->nominal_neq_thresholds_begin()[nominalNeqIndex] = threshold;
+                nominalNeqIndex++;
                 break;
             }
             default: {
