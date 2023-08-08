@@ -7,6 +7,7 @@ import logging as log
 import xml.etree.ElementTree as XmlTree
 
 from enum import Enum, auto
+from functools import reduce
 from os import path
 from typing import List, Optional, Set, Tuple
 from xml.dom import minidom
@@ -72,9 +73,24 @@ class MetaData:
         self.labels = labels
         self.labels_at_start = labels_at_start
 
+    def get_num_attributes(self, attribute_types: Optional[Set[AttributeType]] = None) -> int:
+        """
+        Returns the number of attributes with one out of a given set of types.
+
+        :param attribute_types: A set that contains the types of the attributes to be counted or None, if all attributes
+                                should be counted
+        :return:                The number of attributes of the given types    
+        """
+        if attribute_types is None:
+            return len(self.attributes)
+        if len(attribute_types) == 0:
+            return 0
+        return reduce(lambda num, attribute: num + (1 if attribute.attribute_type in attribute_types else 0),
+                      self.attributes, 0)
+
     def get_attribute_indices(self, attribute_types: Optional[Set[AttributeType]] = None) -> List[int]:
         """
-        Returns a list that contains the indices of all attributes with one out of a set of given types (in ascending
+        Returns a list that contains the indices of all attributes with one out of a given set of types (in ascending
         order).
 
         :param attribute_types: A set that contains the types of the attributes whose indices should be returned or

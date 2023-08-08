@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for printing certain characteristics of multi-label data sets. The characteristics can be written to
 one or several outputs, e.g., to the console or to a file.
 """
-from functools import cached_property, reduce
+from functools import cached_property
 from typing import Any, Dict, List, Optional
 
 from mlrl.common.options import Options
@@ -50,8 +50,7 @@ class FeatureCharacteristics:
         """
         The total number of nominal features.
         """
-        return reduce(lambda num, attribute: num + (1 if attribute.attribute_type == AttributeType.NOMINAL else 0),
-                      self._meta_data.attributes, 0)
+        return self._meta_data.get_num_attributes(AttributeType.NOMINAL)
 
     @property
     def num_numerical_features(self):
