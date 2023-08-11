@@ -133,15 +133,15 @@
          style="font-size:24px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect32155);display:inline"><tspan
            x="370"
            y="180.77163"
-           id="tspan1">...</tspan></text>
+           id="tspan2">...</tspan></text>
       <text
          xml:space="preserve"
-         style="font-size:6.35px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         style="font-size:6.35px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;stroke-width:0.264583;fill:#d1d1d1;fill-opacity:1"
          x="164.41518"
          y="52.493332"
          id="text43158"><tspan
            id="tspan43156"
-           style="font-size:6.35px;stroke-width:0.264583"
+           style="font-size:6.35px;stroke-width:0.264583;fill:#d1d1d1;fill-opacity:1"
            x="164.41518"
            y="52.493332">C++</tspan></text>
       <rect
@@ -197,26 +197,26 @@
            y="20.965584">mlrl-testbed</tspan></text>
       <text
          xml:space="preserve"
-         style="font-size:6.35px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         style="font-size:6.35px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;stroke-width:0.264583;fill:#d1d1d1;fill-opacity:1"
          x="164.38919"
          y="20.298834"
          id="text68758"><tspan
            id="tspan68756"
-           style="font-size:6.35px;stroke-width:0.264583"
+           style="font-size:6.35px;stroke-width:0.264583;fill:#d1d1d1;fill-opacity:1"
            x="164.38919"
            y="20.298834">Python</tspan></text>
       <path
-         style="fill:none;stroke:#545454;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1, 4;stroke-dashoffset:0;stroke-opacity:1"
+         style="fill:none;stroke:#d1d1d1;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1, 4;stroke-dashoffset:0;stroke-opacity:1"
          d="M 161.39583,34.395833 H -2.6458333"
          id="path72981" />
       <text
          xml:space="preserve"
-         style="font-size:6.35px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;stroke-width:0.264583"
+         style="font-size:6.35px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;stroke-width:0.264583;fill:#d1d1d1;fill-opacity:1"
          x="164.08121"
          y="36.173832"
          id="text86071"><tspan
            id="tspan86069"
-           style="font-size:6.35px;stroke-width:0.264583"
+           style="font-size:6.35px;stroke-width:0.264583;fill:#d1d1d1;fill-opacity:1"
            x="164.08121"
            y="36.173832">Cython</tspan></text>
       <text

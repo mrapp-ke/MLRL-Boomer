@@ -7,7 +7,12 @@ The BOOMER algorithm follows a unified framework for the implementation of diffe
 
 Furthermore, the algorithm's implementation is split into several components. For maximum efficiency, all aspects of the core algorithm are written in `C++ <https://en.wikipedia.org/wiki/C%2B%2B>`__. To provide a user-friendly interface and to integrate the algorithm with the widely used `scikit-learn <https://scikit-learn.org>`__ framework, a `Python <https://en.wikipedia.org/wiki/Python_(programming_language)>`__ API is provided. It relies on the `Cython <https://en.wikipedia.org/wiki/Cython>`__ programming language to interact with the underlying C++ implementation. A schematic depiction of the project's structure is shown in the following.
 
-.. image:: ../_static/project_structure.svg
+.. image:: ../_static/project_structure_light.svg
+  :class: only-light
+  :align: center
+  :alt: Structure of the project
+.. image:: ../_static/project_structure_dark.svg
+  :class: only-dark
   :align: center
   :alt: Structure of the project
 
