@@ -28,7 +28,7 @@ release = (Path(__file__).resolve().parent.parent / 'VERSION').read_text()
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['myst_parser']
+extensions = ['myst_parser', 'sphinxext.opengraph']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
