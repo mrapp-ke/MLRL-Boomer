@@ -7,14 +7,20 @@ BOOMER is an algorithm for learning ensembles of gradient boosted multi-label cl
 This document is intended for users and developers who are interested in the algorithm's implementation. For a detailed description of the used methodology, please refer to the publications that are listed under :ref:`references`.
 
 .. toctree::
+   :hidden:
    :maxdepth: 2
-   :caption: Contents
 
    quickstart/index
 
    testbed/index
 
    api/index
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: Further Information
 
    references/index
 
