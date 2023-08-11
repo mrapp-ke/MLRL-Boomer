@@ -1,4 +1,9 @@
-.. image:: _static/logo.svg
+.. image:: _static/logo_light.svg
+  :class: only-light
+  :align: center
+  :alt: BOOMER: Gradient Boosted Multi-Label Classification Rules
+.. image:: _static/logo_dark.svg
+  :class: only-dark
   :align: center
   :alt: BOOMER: Gradient Boosted Multi-Label Classification Rules
 
