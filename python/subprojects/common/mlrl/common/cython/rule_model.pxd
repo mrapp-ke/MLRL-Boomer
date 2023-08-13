@@ -57,6 +57,26 @@ cdef extern from "mlrl/common/model/body_conjunctive.hpp" nogil:
 
         index_const_iterator numerical_gr_indices_cbegin() const
 
+        uint32 getNumOrdinalLeq() const
+
+        threshold_iterator ordinal_leq_thresholds_begin()
+
+        threshold_const_iterator ordinal_leq_thresholds_cbegin() const
+
+        index_iterator ordinal_leq_indices_begin()
+
+        index_const_iterator ordinal_leq_indices_cbegin() const
+
+        uint32 getNumOrdinalGr() const
+
+        threshold_iterator ordinal_gr_thresholds_begin()
+
+        threshold_const_iterator ordinal_gr_thresholds_cbegin() const
+
+        index_iterator ordinal_gr_indices_begin()
+
+        index_const_iterator ordinal_gr_indices_cbegin() const
+
         uint32 getNumNominalEq() const
 
         threshold_iterator nominal_eq_thresholds_begin()
@@ -247,6 +267,14 @@ cdef class ConjunctiveBody:
     cdef readonly npc.ndarray numerical_gr_indices
 
     cdef readonly npc.ndarray numerical_gr_thresholds
+
+    cdef readonly npc.ndarray ordinal_leq_indices
+
+    cdef readonly npc.ndarray ordinal_leq_thresholds
+
+    cdef readonly npc.ndarray ordinal_gr_indices
+
+    cdef readonly npc.ndarray ordinal_gr_thresholds
 
     cdef readonly npc.ndarray nominal_eq_indices
 

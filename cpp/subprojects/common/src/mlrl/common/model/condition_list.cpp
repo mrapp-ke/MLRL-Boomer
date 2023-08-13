@@ -1,12 +1,13 @@
 #include "mlrl/common/model/condition_list.hpp"
 
-ConditionList::ConditionList() : numConditionsPerComparator_({0, 0, 0, 0}) {}
+ConditionList::ConditionList() : numConditionsPerComparator_({0, 0, 0, 0, 0, 0}) {}
 
 ConditionList::ConditionList(const ConditionList& conditionList)
     : vector_(conditionList.vector_),
       numConditionsPerComparator_(
         {conditionList.numConditionsPerComparator_[0], conditionList.numConditionsPerComparator_[1],
-         conditionList.numConditionsPerComparator_[2], conditionList.numConditionsPerComparator_[3]}) {}
+         conditionList.numConditionsPerComparator_[2], conditionList.numConditionsPerComparator_[3],
+         conditionList.numConditionsPerComparator_[4], conditionList.numConditionsPerComparator_[4]}) {}
 
 ConditionList::const_iterator ConditionList::cbegin() const {
     return vector_.cbegin();
@@ -34,9 +35,12 @@ void ConditionList::removeLastCondition() {
 std::unique_ptr<ConjunctiveBody> ConditionList::createConjunctiveBody() const {
     std::unique_ptr<ConjunctiveBody> bodyPtr = std::make_unique<ConjunctiveBody>(
       numConditionsPerComparator_[NUMERICAL_LEQ], numConditionsPerComparator_[NUMERICAL_GR],
+      numConditionsPerComparator_[ORDINAL_LEQ], numConditionsPerComparator_[ORDINAL_GR],
       numConditionsPerComparator_[NOMINAL_EQ], numConditionsPerComparator_[NOMINAL_NEQ]);
     uint32 numericalLeqIndex = 0;
     uint32 numericalGrIndex = 0;
+    uint32 ordinalLeqIndex = 0;
+    uint32 ordinalGrIndex = 0;
     uint32 nominalEqIndex = 0;
     uint32 nominalNeqIndex = 0;
 
@@ -56,6 +60,18 @@ std::unique_ptr<ConjunctiveBody> ConditionList::createConjunctiveBody() const {
                 bodyPtr->numerical_gr_indices_begin()[numericalGrIndex] = featureIndex;
                 bodyPtr->numerical_gr_thresholds_begin()[numericalGrIndex] = threshold;
                 numericalGrIndex++;
+                break;
+            }
+            case ORDINAL_LEQ: {
+                bodyPtr->ordinal_leq_indices_begin()[ordinalLeqIndex] = featureIndex;
+                bodyPtr->ordinal_leq_thresholds_begin()[ordinalLeqIndex] = threshold;
+                ordinalLeqIndex++;
+                break;
+            }
+            case ORDINAL_GR: {
+                bodyPtr->ordinal_gr_indices_begin()[ordinalGrIndex] = featureIndex;
+                bodyPtr->ordinal_gr_thresholds_begin()[ordinalGrIndex] = threshold;
+                ordinalGrIndex++;
                 break;
             }
             case NOMINAL_EQ: {

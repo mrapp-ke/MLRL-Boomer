@@ -8,7 +8,7 @@ from abc import abstractmethod
 
 import numpy as np
 
-SERIALIZATION_VERSION = 3
+SERIALIZATION_VERSION = 4
 
 
 cdef class EmptyBody:
@@ -25,6 +25,8 @@ cdef class ConjunctiveBody:
 
     def __cinit__(self, const uint32[::1] numerical_leq_indices, const float32[::1] numerical_leq_thresholds,
                   const uint32[::1] numerical_gr_indices, const float32[::1] numerical_gr_thresholds,
+                  const uint32[::1] ordinal_leq_indices, const float32[::1] ordinal_leq_thresholds,
+                  const uint32[::1] ordinal_gr_indices, const float32[::1] ordinal_gr_thresholds,
                   const uint32[::1] nominal_eq_indices, const float32[::1] nominal_eq_thresholds,
                   const uint32[::1] nominal_neq_indices, const float32[::1] nominal_neq_thresholds):
         """
@@ -40,6 +42,18 @@ cdef class ConjunctiveBody:
         :param numerical_gr_thresholds:     A contiguous array of type `float32`, shape `(num_numerical_gr_conditions)`
                                             that stores the thresholds of the numerical conditions that use the >
                                             operator or None, if no such conditions are available
+        :param ordinal_leq_indices:         A contiguous array of type `uint32`, shape `(num_ordinal_leq_conditions)`,
+                                            that stores the feature indices of the oridnal conditions that use the <=
+                                            operator or None, if no such conditions are available
+        :param ordinal_leq_thresholds:      A contiguous array of type `float32`, shape `(num_ordinal_leq_conditions)`
+                                            that stores the thresholds of the ordinal conditions that use the <=
+                                            operator or None, if no such conditions are available
+        :param ordinal_gr_indices:          A contiguous array of type `uint32`, shape `(num_ordinal_gr_conditions)`,
+                                            that stores the feature indices of the ordinal conditions that use the >
+                                            operator or None, if no such conditions are available
+        :param ordinal_gr_thresholds:       A contiguous array of type `float32`, shape `(num_ordinal_gr_conditions)`
+                                            that stores the thresholds of the ordinal conditions that use the > operator
+                                            or None, if no such conditions are available
         :param nominal_eq_indices:          A contiguous array of type `uint32`, shape `(num_nominal_eq_conditions)`,
                                             that stores the feature indices of the nominal conditions that use the ==
                                             operator or None, if no such conditions are available
@@ -59,6 +73,10 @@ cdef class ConjunctiveBody:
         self.numerical_gr_indices = np.asarray(numerical_gr_indices) if numerical_gr_indices is not None else None
         self.numerical_gr_thresholds = \
             np.asarray(numerical_gr_thresholds) if numerical_gr_thresholds is not None else None
+        self.ordinal_leq_indices = np.asarray(ordinal_leq_indices) if ordinal_leq_indices is not None else None
+        self.ordinal_leq_thresholds = np.asarray(ordinal_leq_thresholds) if ordinal_leq_thresholds is not None else None
+        self.ordinal_gr_indices = np.asarray(ordinal_gr_indices) if ordinal_gr_indices is not None else None
+        self.ordinal_gr_thresholds = np.asarray(ordinal_gr_thresholds) if ordinal_gr_thresholds is not None else None
         self.nominal_eq_indices = np.asarray(nominal_eq_indices) if nominal_eq_indices is not None else None
         self.nominal_eq_thresholds = np.asarray(nominal_eq_thresholds) if nominal_eq_thresholds is not None else None
         self.nominal_neq_indices = np.asarray(nominal_neq_indices) if nominal_neq_indices is not None else None
@@ -215,6 +233,18 @@ cdef class RuleList(RuleModel):
         cdef const float32[::1] numerical_gr_thresholds = \
             <float32[:num_numerical_gr]>body.numerical_gr_thresholds_cbegin() if num_numerical_gr > 0 else None
 
+        cdef uint32 num_ordinal_leq = body.getNumOrdinalLeq()
+        cdef const uint32[::1] ordinal_leq_indices = \
+            <uint32[:num_ordinal_leq]>body.ordinal_leq_indices_cbegin() if num_ordinal_leq > 0 else None
+        cdef const float32[::1] ordinal_leq_thresholds = \
+            <float32[:num_ordinal_leq]>body.ordinal_leq_thresholds_cbegin() if num_ordinal_leq > 0 else None
+
+        cdef uint32 num_ordinal_gr = body.getNumOrdinalGr()
+        cdef const uint32[::1] ordinal_gr_indices = \
+            <uint32[:num_ordinal_gr]>body.ordinal_gr_indices_cbegin() if num_ordinal_gr > 0 else None
+        cdef const float32[::1] ordinal_gr_thresholds = \
+            <float32[:num_ordinal_gr]>body.ordinal_gr_thresholds_cbegin() if num_ordinal_gr > 0 else None
+
         cdef uint32 num_nominal_eq = body.getNumNominalEq()
         cdef const uint32[::1] nominal_eq_indices = \
             <uint32[:num_nominal_eq]>body.nominal_eq_indices_cbegin() if num_nominal_eq > 0 else None
@@ -229,8 +259,10 @@ cdef class RuleList(RuleModel):
 
         self.visitor.visit_conjunctive_body(
             ConjunctiveBody.__new__(ConjunctiveBody, numerical_leq_indices, numerical_leq_thresholds,
-                                    numerical_gr_indices, numerical_gr_thresholds, nominal_eq_indices, 
-                                    nominal_eq_thresholds, nominal_neq_indices, nominal_neq_thresholds))
+                                    numerical_gr_indices, numerical_gr_thresholds, ordinal_leq_indices,
+                                    ordinal_leq_thresholds, ordinal_gr_indices, ordinal_gr_thresholds,
+                                    nominal_eq_indices, nominal_eq_thresholds, nominal_neq_indices,
+                                    nominal_neq_thresholds))
 
     cdef __visit_complete_head(self, const CompleteHeadImpl& head):
         cdef uint32 num_elements = head.getNumElements()
@@ -251,6 +283,8 @@ cdef class RuleList(RuleModel):
     cdef __serialize_conjunctive_body(self, const ConjunctiveBodyImpl& body):
         cdef uint32 num_numerical_leq = body.getNumNumericalLeq()
         cdef uint32 num_numerical_gr = body.getNumNumericalGr()
+        cdef uint32 num_ordinal_leq = body.getNumOrdinalLeq()
+        cdef uint32 num_ordinal_gr = body.getNumOrdinalGr()
         cdef uint32 num_nominal_eq = body.getNumNominalEq()
         cdef uint32 num_nominal_neq = body.getNumNominalNeq()
         cdef object body_state = (
@@ -262,6 +296,14 @@ cdef class RuleList(RuleModel):
                 if num_numerical_gr > 0 else None,
             np.asarray(<uint32[:num_numerical_gr]>body.numerical_gr_indices_cbegin()) \
                 if num_numerical_gr > 0 else None,
+            np.asarray(<float32[:num_ordinal_leq]>body.ordinal_leq_thresholds_cbegin()) \
+                if num_ordinal_leq > 0 else None,
+            np.asarray(<uint32[:num_ordinal_leq]>body.ordinal_leq_indices_cbegin()) \
+                if num_ordinal_leq > 0 else None,
+            np.asarray(<float32[:num_ordinal_gr]>body.ordinal_gr_thresholds_cbegin()) \
+                if num_ordinal_gr > 0 else None,
+            np.asarray(<uint32[:num_ordinal_gr]>body.ordinal_gr_indices_cbegin()) \
+                if num_ordinal_gr > 0 else None,
             np.asarray(<float32[:num_nominal_eq]>body.nominal_eq_thresholds_cbegin()) \
                 if num_nominal_eq > 0 else None,
             np.asarray(<uint32[:num_nominal_eq]>body.nominal_eq_indices_cbegin()) \
@@ -300,16 +342,22 @@ cdef class RuleList(RuleModel):
         cdef const uint32[::1] numerical_leq_indices = body_state[1]
         cdef const float32[::1] numerical_gr_thresholds = body_state[2]
         cdef const uint32[::1] numerical_gr_indices = body_state[3]
-        cdef const float32[::1] nominal_eq_thresholds = body_state[4]
-        cdef const uint32[::1] nominal_eq_indices = body_state[5]
-        cdef const float32[::1] nominal_neq_thresholds = body_state[6]
-        cdef const uint32[::1] nominal_neq_indices = body_state[7]
+        cdef const float32[::1] ordinal_leq_thresholds = body_state[4]
+        cdef const uint32[::1] ordinal_leq_indices = body_state[5]
+        cdef const float32[::1] ordinal_gr_thresholds = body_state[6]
+        cdef const uint32[::1] ordinal_gr_indices = body_state[7]
+        cdef const float32[::1] nominal_eq_thresholds = body_state[8]
+        cdef const uint32[::1] nominal_eq_indices = body_state[9]
+        cdef const float32[::1] nominal_neq_thresholds = body_state[10]
+        cdef const uint32[::1] nominal_neq_indices = body_state[11]
         cdef uint32 num_numerical_leq = numerical_leq_thresholds.shape[0] if numerical_leq_thresholds is not None else 0
         cdef uint32 num_numerical_gr = numerical_gr_thresholds.shape[0] if numerical_gr_thresholds is not None else 0
+        cdef uint32 num_ordinal_leq = ordinal_leq_thresholds.shape[0] if ordinal_leq_thresholds is not None else 0
+        cdef uint32 num_ordinal_gr = ordinal_gr_thresholds.shape[0] if ordinal_gr_thresholds is not None else 0
         cdef uint32 num_nominal_eq = nominal_eq_thresholds.shape[0] if nominal_eq_thresholds is not None else 0
         cdef uint32 num_nominal_neq = nominal_neq_thresholds.shape[0] if nominal_neq_thresholds is not None else 0
         cdef unique_ptr[ConjunctiveBodyImpl] body_ptr = make_unique[ConjunctiveBodyImpl](
-            num_numerical_leq, num_numerical_gr, num_nominal_eq, num_nominal_neq)
+            num_numerical_leq, num_numerical_gr, num_ordinal_leq, num_ordinal_gr, num_nominal_eq, num_nominal_neq)
         cdef ConjunctiveBodyImpl.threshold_iterator threshold_iterator = body_ptr.get().numerical_leq_thresholds_begin()
         cdef ConjunctiveBodyImpl.index_iterator index_iterator = body_ptr.get().numerical_leq_indices_begin()
         cdef uint32 i
@@ -324,6 +372,20 @@ cdef class RuleList(RuleModel):
         for i in range(num_numerical_gr):
             threshold_iterator[i] = numerical_gr_thresholds[i]
             index_iterator[i] = numerical_gr_indices[i]
+
+        threshold_iterator = body_ptr.get().ordinal_leq_thresholds_begin()
+        index_iterator = body_ptr.get().ordinal_leq_indices_begin()
+
+        for i in range(num_ordinal_leq):
+            threshold_iterator[i] = ordinal_leq_thresholds[i]
+            index_iterator[i] = ordinal_leq_indices[i]
+
+        threshold_iterator = body_ptr.get().ordinal_gr_thresholds_begin()
+        index_iterator = body_ptr.get().ordinal_gr_indices_begin()
+
+        for i in range(num_ordinal_gr):
+            threshold_iterator[i] = ordinal_gr_thresholds[i]
+            index_iterator[i] = ordinal_gr_indices[i]
 
         threshold_iterator = body_ptr.get().nominal_eq_thresholds_begin()
         index_iterator = body_ptr.get().nominal_eq_indices_begin()

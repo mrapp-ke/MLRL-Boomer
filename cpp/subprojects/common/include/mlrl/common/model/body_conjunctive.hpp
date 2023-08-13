@@ -86,6 +86,42 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         };
 
         /**
+         * Allows to compare ordinal feature values to threshold using the <= operator.
+         */
+        struct CompareOrdinalLeq final {
+            public:
+
+                /**
+                 * Returns whether a given feature value satisfies a specific threshold or not.
+                 *
+                 * @param featureValue  The feature value
+                 * @param threshold     The threshold
+                 * @return              True, if the feature value satisfies the threshold, false otherwise
+                 */
+                inline bool operator()(const float32& featureValue, const float32& threshold) const {
+                    return featureValue <= threshold;
+                }
+        };
+
+        /**
+         * Allows to compare ordinal feature values to threshold using the > operator.
+         */
+        struct CompareOrdinalGr final {
+            public:
+
+                /**
+                 * Returns whether a given feature value satisfies a specific threshold or not.
+                 *
+                 * @param featureValue  The feature value
+                 * @param threshold     The threshold
+                 * @return              True, if the feature value satisfies the threshold, false otherwise
+                 */
+                inline bool operator()(const float32& featureValue, const float32& threshold) const {
+                    return featureValue > threshold;
+                }
+        };
+
+        /**
          * Allows to compare nominal feature values to threshold using the == operator.
          */
         struct CompareNominalEq final {
@@ -125,6 +161,10 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
 
         ConditionVector<float32, CompareNumericalGr> numericalGrVector_;
 
+        ConditionVector<float32, CompareOrdinalLeq> ordinalLeqVector_;
+
+        ConditionVector<float32, CompareOrdinalGr> ordinalGrVector_;
+
         ConditionVector<float32, CompareNominalEq> nominalEqVector_;
 
         ConditionVector<float32, CompareNominalNeq> nominalNeqVector_;
@@ -134,10 +174,13 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         /**
          * @param numNumericalLeq   The number of numerical conditions that use the <= operator
          * @param numNumericalGr    The number of numerical conditions that use the > operator
+         * @param numOrdinalLeq     The number of ordinal conditions that use the <= operator
+         * @param numOrdinalGr      The number of ordinal conditions that use the > operator
          * @param numNominalEq      The number of nominal conditions that use the == operator
          * @param numNominalNeq     The number of nominal conditions that use the != operator
          */
-        ConjunctiveBody(uint32 numNumericalLeq, uint32 numNumericalGr, uint32 numNominalEq, uint32 numNominalNeq);
+        ConjunctiveBody(uint32 numNumericalLeq, uint32 numNumericalGr, uint32 numOrdinalLeq, uint32 numOrdinalGr,
+                        uint32 numNominalEq, uint32 numNominalNeq);
 
         /**
          * An iterator that provides access to the thresholds that are used by the conditions in the body and allows to
@@ -303,6 +346,148 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
          * @return An `index_const_iterator` to the end
          */
         index_const_iterator numerical_gr_indices_cend() const;
+
+        /**
+         * Returns the number of ordinal conditions that use the <= operator.
+         *
+         * @return The number of conditions
+         */
+        uint32 getNumOrdinalLeq() const;
+
+        /**
+         * Returns a `threshold_iterator` to the beginning of the thresholds that correspond to ordinal conditions that
+         * use the <= operator.
+         *
+         * @return A `threshold_iterator` to the beginning
+         */
+        threshold_iterator ordinal_leq_thresholds_begin();
+
+        /**
+         * Returns a `threshold_iterator` to the end of the thresholds that correspond to ordinal conditions that use
+         * the <= operator.
+         *
+         * @return A `threshold_iterator` to the end
+         */
+        threshold_iterator ordinal_leq_thresholds_end();
+
+        /**
+         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to ordinal conditions
+         * that use the <= operator.
+         *
+         * @return A `threshold_const_iterator` to the beginning
+         */
+        threshold_const_iterator ordinal_leq_thresholds_cbegin() const;
+
+        /**
+         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to ordinal conditions that
+         * use the <= operator.
+         *
+         * @return A `threshold_const_iterator` to the end
+         */
+        threshold_const_iterator ordinal_leq_thresholds_cend() const;
+
+        /**
+         * Returns an `index_iterator` to the beginning of the feature indices that correspond to ordinal conditions
+         * that use the <= operator.
+         *
+         * @return An `index_iterator` to the beginning
+         */
+        index_iterator ordinal_leq_indices_begin();
+
+        /**
+         * Returns an `index_iterator` to the end of the feature indices that correspond to ordinal conditions that use
+         * the <= operator.
+         *
+         * @return An `index_iterator` to the end
+         */
+        index_iterator ordinal_leq_indices_end();
+
+        /**
+         * Returns an `index_const_iterator` to the beginning of the feature indices that correspond to ordinal
+         * conditions that use the <= operator.
+         *
+         * @return An `index_const_iterator` to the beginning
+         */
+        index_const_iterator ordinal_leq_indices_cbegin() const;
+
+        /**
+         * Returns an `index_const_iterator` to the end of the feature indices that correspond to ordinal conditions
+         * that use the <= operator.
+         *
+         * @return An `index_const_iterator` to the end
+         */
+        index_const_iterator ordinal_leq_indices_cend() const;
+
+        /**
+         * Returns the number of ordinal conditions that use the > operator.
+         *
+         * @return The number of conditions
+         */
+        uint32 getNumOrdinalGr() const;
+
+        /**
+         * Returns a `threshold_iterator` to the beginning of the thresholds that correspond to ordinal conditions that
+         * use the > operator.
+         *
+         * @return A `threshold_iterator` to the beginning
+         */
+        threshold_iterator ordinal_gr_thresholds_begin();
+
+        /**
+         * Returns a `threshold_iterator` to the end of the thresholds that correspond to ordinal conditions that use
+         * the > operator.
+         *
+         * @return A `threshold_iterator` to the end
+         */
+        threshold_iterator ordinal_gr_thresholds_end();
+
+        /**
+         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to ordinal conditions
+         * that use the > operator.
+         *
+         * @return A `threshold_const_iterator` to the beginning
+         */
+        threshold_const_iterator ordinal_gr_thresholds_cbegin() const;
+
+        /**
+         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to ordinal conditions that
+         * use the > operator.
+         *
+         * @return A `threshold_const_iterator` to the end
+         */
+        threshold_const_iterator ordinal_gr_thresholds_cend() const;
+
+        /**
+         * Returns an `index_iterator` to the beginning of the feature indices that correspond to ordinal conditions
+         * that use the > operator.
+         *
+         * @return An `index_iterator` to the beginning
+         */
+        index_iterator ordinal_gr_indices_begin();
+
+        /**
+         * Returns an `index_iterator` to the end of the feature indices that correspond to ordinal conditions that use
+         * the > operator.
+         *
+         * @return An `index_iterator` to the end
+         */
+        index_iterator ordinal_gr_indices_end();
+
+        /**
+         * Returns an `index_const_iterator` to the beginning of the feature indices that correspond to ordinal
+         * conditions that use the > operator.
+         *
+         * @return An `index_const_iterator` to the beginning
+         */
+        index_const_iterator ordinal_gr_indices_cbegin() const;
+
+        /**
+         * Returns an `index_const_iterator` to the end of the feature indices that correspond to ordinal conditions
+         * that use the > operator.
+         *
+         * @return An `index_const_iterator` to the end
+         */
+        index_const_iterator ordinal_gr_indices_cend() const;
 
         /**
          * Returns the number of nominal conditions that use the == operator.
