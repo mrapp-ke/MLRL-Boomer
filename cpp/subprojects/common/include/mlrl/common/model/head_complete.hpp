@@ -12,7 +12,7 @@
 class MLRLCOMMON_API CompleteHead final : public IHead {
     private:
 
-        DenseVector<float64> scores_;
+        DenseVector<float64> vector_;
 
     public:
 
