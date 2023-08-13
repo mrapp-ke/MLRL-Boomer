@@ -47,10 +47,12 @@ bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(
     return true;
 }
 
-ConjunctiveBody::ConjunctiveBody(uint32 numNumericalLeq, uint32 numNumericalGr, uint32 numNominalEq,
-                                 uint32 numNominalNeq)
+ConjunctiveBody::ConjunctiveBody(uint32 numNumericalLeq, uint32 numNumericalGr, uint32 numOrdinalLeq,
+                                 uint32 numOrdinalGr, uint32 numNominalEq, uint32 numNominalNeq)
     : numericalLeqVector_(ConditionVector<float32, CompareNumericalLeq>(numNumericalLeq)),
       numericalGrVector_(ConditionVector<float32, CompareNumericalGr>(numNumericalGr)),
+      ordinalLeqVector_(ConditionVector<float32, CompareOrdinalLeq>(numOrdinalLeq)),
+      ordinalGrVector_(ConditionVector<float32, CompareOrdinalGr>(numOrdinalGr)),
       nominalEqVector_(ConditionVector<float32, CompareNominalEq>(numNominalEq)),
       nominalNeqVector_(ConditionVector<float32, CompareNominalNeq>(numNominalNeq)) {}
 
@@ -124,6 +126,78 @@ ConjunctiveBody::index_const_iterator ConjunctiveBody::numerical_gr_indices_cbeg
 
 ConjunctiveBody::index_const_iterator ConjunctiveBody::numerical_gr_indices_cend() const {
     return numericalGrVector_.indices_cend();
+}
+
+uint32 ConjunctiveBody::getNumOrdinalLeq() const {
+    return ordinalLeqVector_.getNumElements();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::ordinal_leq_thresholds_begin() {
+    return ordinalLeqVector_.values_begin();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::ordinal_leq_thresholds_end() {
+    return ordinalLeqVector_.values_end();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::ordinal_leq_thresholds_cbegin() const {
+    return ordinalLeqVector_.values_cbegin();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::ordinal_leq_thresholds_cend() const {
+    return ordinalLeqVector_.values_cend();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::ordinal_leq_indices_begin() {
+    return ordinalLeqVector_.indices_begin();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::ordinal_leq_indices_end() {
+    return ordinalLeqVector_.indices_end();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::ordinal_leq_indices_cbegin() const {
+    return ordinalLeqVector_.indices_cbegin();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::ordinal_leq_indices_cend() const {
+    return ordinalLeqVector_.indices_cend();
+}
+
+uint32 ConjunctiveBody::getNumOrdinalGr() const {
+    return ordinalGrVector_.getNumElements();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::ordinal_gr_thresholds_begin() {
+    return ordinalGrVector_.values_begin();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::ordinal_gr_thresholds_end() {
+    return ordinalGrVector_.values_end();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::ordinal_gr_thresholds_cbegin() const {
+    return ordinalGrVector_.values_cbegin();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::ordinal_gr_thresholds_cend() const {
+    return ordinalGrVector_.values_cend();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::ordinal_gr_indices_begin() {
+    return ordinalGrVector_.indices_begin();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::ordinal_gr_indices_end() {
+    return ordinalGrVector_.indices_end();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::ordinal_gr_indices_cbegin() const {
+    return ordinalGrVector_.indices_cbegin();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::ordinal_gr_indices_cend() const {
+    return ordinalGrVector_.indices_cend();
 }
 
 uint32 ConjunctiveBody::getNumNominalEq() const {
@@ -201,6 +275,7 @@ ConjunctiveBody::index_const_iterator ConjunctiveBody::nominal_neq_indices_cend(
 bool ConjunctiveBody::covers(VectorConstView<const float32>::const_iterator begin,
                              VectorConstView<const float32>::const_iterator end) const {
     return numericalLeqVector_.covers(begin, end) && numericalGrVector_.covers(begin, end)
+           && ordinalLeqVector_.covers(begin, end) && ordinalGrVector_.covers(begin, end)
            && nominalEqVector_.covers(begin, end) && nominalNeqVector_.covers(begin, end);
 }
 
@@ -221,6 +296,8 @@ bool ConjunctiveBody::covers(CsrConstView<const float32>::index_const_iterator i
 
     return numericalLeqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
            && numericalGrVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
+           && ordinalLeqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
+           && ordinalGrVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
            && nominalEqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
            && nominalNeqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n);
 }

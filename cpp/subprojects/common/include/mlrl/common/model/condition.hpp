@@ -11,8 +11,10 @@
 enum Comparator : uint8 {
     NUMERICAL_LEQ = 0,
     NUMERICAL_GR = 1,
-    NOMINAL_EQ = 2,
-    NOMINAL_NEQ = 3
+    ORDINAL_LEQ = 2,
+    ORDINAL_GR = 3,
+    NOMINAL_EQ = 4,
+    NOMINAL_NEQ = 5
 };
 
 /**

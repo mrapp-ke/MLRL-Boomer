@@ -18,7 +18,7 @@ class ConditionList final {
 
         std::vector<Condition> vector_;
 
-        std::array<uint32, 4> numConditionsPerComparator_;
+        std::array<uint32, 6> numConditionsPerComparator_;
 
     public:
 
