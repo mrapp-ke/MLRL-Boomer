@@ -153,6 +153,10 @@ class RuleModelWriter(ModelWriter):
                                                           '<=')
                 num_conditions = self.__format_conditions(num_conditions, body.numerical_gr_indices,
                                                           body.numerical_gr_thresholds, '>')
+                num_conditions = self.__format_conditions(num_conditions, body.ordinal_leq_indices,
+                                                          body.ordinal_leq_thresholds, '<=')
+                num_conditions = self.__format_conditions(num_conditions, body.ordinal_gr_indices,
+                                                          body.ordinal_gr_thresholds, '>')
                 num_conditions = self.__format_conditions(num_conditions, body.nominal_eq_indices,
                                                           body.nominal_eq_thresholds, '==')
                 self.__format_conditions(num_conditions, body.nominal_neq_indices, body.nominal_neq_thresholds, '!=')

@@ -60,8 +60,8 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
 
         def __init__(self, default_rule_index: int, default_rule_pos_predictions: int,
                      default_rule_neg_predictions: int, num_numerical_leq: np.ndarray, num_numerical_gr: np.ndarray,
-                     num_nominal_eq: np.ndarray, num_nominal_neq: np.ndarray, num_pos_predictions: np.ndarray,
-                     num_neg_predictions: np.ndarray):
+                     num_ordinal_leq: np.ndarray, num_ordinal_gr: np.ndarray, num_nominal_eq: np.ndarray,
+                     num_nominal_neq: np.ndarray, num_pos_predictions: np.ndarray, num_neg_predictions: np.ndarray):
             """
             :param default_rule_index:              The index of the default rule or None, if no default rule is used
             :param default_rule_pos_predictions:    The number of positive predictions of the default rule, if any
@@ -70,6 +70,10 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                                                     numerical conditions that use the <= operator per rule
             :param num_numerical_gr:                A `np.ndarray`, shape `(num_rules)` that stores the number of
                                                     numerical conditions that use the > operator per rule
+            :param num_ordinal_leq:                 A `np.ndarray`, shape `(num_rules)` that stores the number of
+                                                    ordinal conditions that use the <= operator per rule
+            :param num_ordinal_gr:                  A `np.ndarray`, shape `(num_rules)` that stores the number of
+                                                    ordinal conditions that use the > operator per rule
             :param num_nominal_eq:                  A `np.ndarray`, shape `(num_rules)` that stores the number of
                                                     nominal conditions that use the == operator per rule
             :param num_nominal_neq:                 A `np.ndarray`, shape `(num_rules)` that stores the number of
@@ -84,6 +88,8 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             self.default_rule_neg_predictions = default_rule_neg_predictions
             self.num_numerical_leq = num_numerical_leq
             self.num_numerical_gr = num_numerical_gr
+            self.num_ordinal_leq = num_ordinal_leq
+            self.num_ordinal_gr = num_ordinal_gr
             self.num_nominal_eq = num_nominal_eq
             self.num_nominal_neq = num_nominal_neq
             self.num_pos_predictions = num_pos_predictions
@@ -95,12 +101,14 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             See :func:`mlrl.testbed.output_writer.Formattable.format`
             """
             num_predictions = self.num_pos_predictions + self.num_neg_predictions
-            num_conditions = self.num_numerical_leq + self.num_numerical_gr + self.num_nominal_eq + self.num_nominal_neq
+            num_conditions = self.num_numerical_leq + self.num_numerical_gr + self.num_ordinal_leq + self.num_ordinal_gr + self.num_nominal_eq + self.num_nominal_neq
             num_total_conditions = np.sum(num_conditions)
 
             if num_total_conditions > 0:
                 frac_numerical_leq = np.sum(self.num_numerical_leq) / num_total_conditions * 100
                 frac_numerical_gr = np.sum(self.num_numerical_gr) / num_total_conditions * 100
+                frac_ordinal_leq = np.sum(self.num_ordinal_leq) / num_total_conditions * 100
+                frac_ordinal_gr = np.sum(self.num_ordinal_gr) / num_total_conditions * 100
                 frac_nominal_eq = np.sum(self.num_nominal_eq) / num_total_conditions * 100
                 frac_nominal_neq = np.sum(self.num_nominal_neq) / num_total_conditions * 100
                 num_conditions_mean = np.mean(num_conditions)
@@ -110,6 +118,8 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             else:
                 frac_numerical_leq = 0.0
                 frac_numerical_gr = 0.0
+                frac_ordinal_leq = 0.0
+                frac_ordinal_gr = 0.0
                 frac_nominal_eq = 0.0
                 frac_nominal_neq = 0.0
                 num_conditions_mean = 0.0
@@ -133,14 +143,19 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
 
             num_rules = num_predictions.shape[0]
 
-            header = ['Statistics about conditions', 'Total', '<= operator', '> operator', '== operator', '!= operator']
-            alignment = ['left', 'right', 'right', 'right', 'right', 'right']
+            header = [
+                'Statistics about conditions', 'Total', 'Numerical <= operator', 'Numerical > operator',
+                'Ordinal <= operator', 'Ordinal > operator', 'Nominal == operator', 'Nominal != operator'
+            ]
+            alignment = ['left', 'right', 'right', 'right', 'right', 'right', 'right', 'right']
             rows = []
 
             if self.default_rule_index is not None:
                 rows.append([
                     'Default rule',
                     str(0),
+                    format_percentage(0),
+                    format_percentage(0),
                     format_percentage(0),
                     format_percentage(0),
                     format_percentage(0),
@@ -152,6 +167,8 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                 str(num_total_conditions),
                 format_percentage(frac_numerical_leq),
                 format_percentage(frac_numerical_gr),
+                format_percentage(frac_ordinal_leq),
+                format_percentage(frac_ordinal_gr),
                 format_percentage(frac_nominal_eq),
                 format_percentage(frac_nominal_neq)
             ])
@@ -214,6 +231,8 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                     rule_name += ' (Default rule)'
                     num_numerical_leq = 0
                     num_numerical_gr = 0
+                    num_ordinal_leq = 0
+                    num_ordinal_gr = 0
                     num_nominal_eq = 0
                     num_nominal_neq = 0
                     num_pos_predictions = self.default_rule_pos_predictions
@@ -221,6 +240,8 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                 else:
                     num_numerical_leq = self.num_numerical_leq[j]
                     num_numerical_gr = self.num_numerical_gr[j]
+                    num_ordinal_leq = self.num_ordinal_leq[j]
+                    num_ordinal_gr = self.num_ordinal_gr[j]
                     num_nominal_eq = self.num_nominal_eq[j]
                     num_nominal_neq = self.num_nominal_neq[j]
                     num_pos_predictions = self.num_pos_predictions[j]
@@ -228,8 +249,9 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                     j += 1
 
                 num_numerical = num_numerical_leq + num_numerical_gr
+                num_ordinal = num_ordinal_leq + num_ordinal_gr
                 num_nominal = num_nominal_eq + num_nominal_neq
-                num_conditions = num_numerical + num_nominal
+                num_conditions = num_numerical + num_ordinal + num_nominal
                 num_predictions = num_pos_predictions + num_neg_predictions
                 rows.append({
                     'Rule': rule_name,
@@ -237,6 +259,9 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                     'numerical conditions': num_numerical,
                     'conditions using <= operator': num_numerical_leq,
                     'conditions using > operator': num_numerical_gr,
+                    'ordinal conditions': num_ordinal,
+                    'conditions using <= operator': num_ordinal_leq,
+                    'conditions using > operator': num_ordinal_gr,
                     'nominal conditions': num_nominal,
                     'conditions using == operator': num_nominal_eq,
                     'conditions using != operator': num_nominal_neq,
@@ -255,6 +280,8 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
         def __init__(self):
             self.num_numerical_leq = []
             self.num_numerical_gr = []
+            self.num_ordinal_leq = []
+            self.num_ordinal_gr = []
             self.num_nominal_eq = []
             self.num_nominal_neq = []
             self.num_pos_predictions = []
@@ -280,6 +307,9 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                 body.numerical_leq_indices.shape[0] if body.numerical_leq_indices is not None else 0)
             self.num_numerical_gr.append(
                 body.numerical_gr_indices.shape[0] if body.numerical_gr_indices is not None else 0)
+            self.num_ordinal_leq.append(
+                body.ordinal_leq_indices.shape[0] if body.ordinal_leq_indices is not None else 0)
+            self.num_ordinal_gr.append(body.ordinal_gr_indices.shape[0] if body.ordinal_gr_indices is not None else 0)
             self.num_nominal_eq.append(body.nominal_eq_indices.shape[0] if body.nominal_eq_indices is not None else 0)
             self.num_nominal_neq.append(
                 body.nominal_neq_indices.shape[0] if body.nominal_neq_indices is not None else 0)
@@ -329,6 +359,8 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                     default_rule_neg_predictions=visitor.default_rule_neg_predictions,
                     num_numerical_leq=np.asarray(visitor.num_numerical_leq),
                     num_numerical_gr=np.asarray(visitor.num_numerical_gr),
+                    num_ordinal_leq=np.asarray(visitor.num_ordinal_leq),
+                    num_ordinal_gr=np.asarray(visitor.num_ordinal_gr),
                     num_nominal_eq=np.asarray(visitor.num_nominal_eq),
                     num_nominal_neq=np.asarray(visitor.num_nominal_neq),
                     num_pos_predictions=np.asarray(visitor.num_pos_predictions),
