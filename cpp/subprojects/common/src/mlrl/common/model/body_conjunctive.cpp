@@ -1,212 +1,207 @@
 #include "mlrl/common/model/body_conjunctive.hpp"
 
-ConjunctiveBody::ConjunctiveBody(uint32 numNumericalLeq, uint32 numNumericalGr, uint32 numNominalEq,
-                                 uint32 numNominalNeq)
-    : numNumericalLeq_(numNumericalLeq), numericalLeqFeatureIndices_(new uint32[numNumericalLeq_]),
-      numericalLeqThresholds_(new float32[numNumericalLeq_]), numNumericalGr_(numNumericalGr),
-      numericalGrFeatureIndices_(new uint32[numNumericalGr_]), numericalGrThresholds_(new float32[numNumericalGr_]),
-      numNominalEq_(numNominalEq), nominalEqFeatureIndices_(new uint32[numNominalEq_]),
-      nominalEqThresholds_(new float32[numNominalEq_]), numNominalNeq_(numNominalNeq),
-      nominalNeqFeatureIndices_(new uint32[numNominalNeq_]), nominalNeqThresholds_(new float32[numNominalNeq_]) {}
+template<typename Threshold, typename Compare>
+ConjunctiveBody::ConditionVector<Threshold, Compare>::ConditionVector(uint32 numConditions)
+    : SparseArraysVector<Threshold>(numConditions) {}
 
-ConjunctiveBody::~ConjunctiveBody() {
-    delete[] numericalLeqFeatureIndices_;
-    delete[] numericalLeqThresholds_;
-    delete[] numericalGrFeatureIndices_;
-    delete[] numericalGrThresholds_;
-    delete[] nominalEqFeatureIndices_;
-    delete[] nominalEqThresholds_;
-    delete[] nominalNeqFeatureIndices_;
-    delete[] nominalNeqThresholds_;
-}
+template<typename Threshold, typename Compare>
+bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(
+  VectorConstView<const float32>::const_iterator begin, VectorConstView<const float32>::const_iterator end) const {
+    uint32 numConditions = this->getNumElements();
+    typename SparseArraysVector<Threshold>::index_const_iterator featureIndexIterator = this->indices_cbegin();
+    typename SparseArraysVector<Threshold>::value_const_iterator thresholdIterator = this->values_cbegin();
 
-uint32 ConjunctiveBody::getNumNumericalLeq() const {
-    return numNumericalLeq_;
-}
+    for (uint32 i = 0; i < numConditions; i++) {
+        uint32 featureIndex = featureIndexIterator[i];
+        float32 threshold = thresholdIterator[i];
+        float32 featureValue = begin[featureIndex];
 
-ConjunctiveBody::threshold_iterator ConjunctiveBody::numerical_leq_thresholds_begin() {
-    return numericalLeqThresholds_;
-}
-
-ConjunctiveBody::threshold_iterator ConjunctiveBody::numerical_leq_thresholds_end() {
-    return &numericalLeqThresholds_[numNumericalLeq_];
-}
-
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::numerical_leq_thresholds_cbegin() const {
-    return numericalLeqThresholds_;
-}
-
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::numerical_leq_thresholds_cend() const {
-    return &numericalLeqThresholds_[numNumericalLeq_];
-}
-
-ConjunctiveBody::index_iterator ConjunctiveBody::numerical_leq_indices_begin() {
-    return numericalLeqFeatureIndices_;
-}
-
-ConjunctiveBody::index_iterator ConjunctiveBody::numerical_leq_indices_end() {
-    return &numericalLeqFeatureIndices_[numNumericalLeq_];
-}
-
-ConjunctiveBody::index_const_iterator ConjunctiveBody::numerical_leq_indices_cbegin() const {
-    return numericalLeqFeatureIndices_;
-}
-
-ConjunctiveBody::index_const_iterator ConjunctiveBody::numerical_leq_indices_cend() const {
-    return &numericalLeqFeatureIndices_[numNumericalLeq_];
-}
-
-uint32 ConjunctiveBody::getNumNumericalGr() const {
-    return numNumericalGr_;
-}
-
-ConjunctiveBody::threshold_iterator ConjunctiveBody::numerical_gr_thresholds_begin() {
-    return numericalGrThresholds_;
-}
-
-ConjunctiveBody::threshold_iterator ConjunctiveBody::numerical_gr_thresholds_end() {
-    return &numericalGrThresholds_[numNumericalLeq_];
-}
-
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::numerical_gr_thresholds_cbegin() const {
-    return numericalGrThresholds_;
-}
-
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::numerical_gr_thresholds_cend() const {
-    return &numericalGrThresholds_[numNumericalLeq_];
-}
-
-ConjunctiveBody::index_iterator ConjunctiveBody::numerical_gr_indices_begin() {
-    return numericalGrFeatureIndices_;
-}
-
-ConjunctiveBody::index_iterator ConjunctiveBody::numerical_gr_indices_end() {
-    return &numericalGrFeatureIndices_[numNumericalLeq_];
-}
-
-ConjunctiveBody::index_const_iterator ConjunctiveBody::numerical_gr_indices_cbegin() const {
-    return numericalGrFeatureIndices_;
-}
-
-ConjunctiveBody::index_const_iterator ConjunctiveBody::numerical_gr_indices_cend() const {
-    return &numericalGrFeatureIndices_[numNumericalLeq_];
-}
-
-uint32 ConjunctiveBody::getNumNominalEq() const {
-    return numNominalEq_;
-}
-
-ConjunctiveBody::threshold_iterator ConjunctiveBody::nominal_eq_thresholds_begin() {
-    return nominalEqThresholds_;
-}
-
-ConjunctiveBody::threshold_iterator ConjunctiveBody::nominal_eq_thresholds_end() {
-    return &nominalEqThresholds_[numNominalEq_];
-}
-
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::nominal_eq_thresholds_cbegin() const {
-    return nominalEqThresholds_;
-}
-
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::nominal_eq_thresholds_cend() const {
-    return &nominalEqThresholds_[numNominalEq_];
-}
-
-ConjunctiveBody::index_iterator ConjunctiveBody::nominal_eq_indices_begin() {
-    return nominalEqFeatureIndices_;
-}
-
-ConjunctiveBody::index_iterator ConjunctiveBody::nominal_eq_indices_end() {
-    return &nominalEqFeatureIndices_[numNominalEq_];
-}
-
-ConjunctiveBody::index_const_iterator ConjunctiveBody::nominal_eq_indices_cbegin() const {
-    return nominalEqFeatureIndices_;
-}
-
-ConjunctiveBody::index_const_iterator ConjunctiveBody::nominal_eq_indices_cend() const {
-    return &nominalEqFeatureIndices_[numNominalEq_];
-}
-
-uint32 ConjunctiveBody::getNumNominalNeq() const {
-    return numNominalNeq_;
-}
-
-ConjunctiveBody::threshold_iterator ConjunctiveBody::nominal_neq_thresholds_begin() {
-    return nominalNeqThresholds_;
-}
-
-ConjunctiveBody::threshold_iterator ConjunctiveBody::nominal_neq_thresholds_end() {
-    return &nominalNeqThresholds_[numNominalNeq_];
-}
-
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::nominal_neq_thresholds_cbegin() const {
-    return nominalNeqThresholds_;
-}
-
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::nominal_neq_thresholds_cend() const {
-    return &nominalNeqThresholds_[numNominalNeq_];
-}
-
-ConjunctiveBody::index_iterator ConjunctiveBody::nominal_neq_indices_begin() {
-    return nominalNeqFeatureIndices_;
-}
-
-ConjunctiveBody::index_iterator ConjunctiveBody::nominal_neq_indices_end() {
-    return &nominalNeqFeatureIndices_[numNominalNeq_];
-}
-
-ConjunctiveBody::index_const_iterator ConjunctiveBody::nominal_neq_indices_cbegin() const {
-    return nominalNeqFeatureIndices_;
-}
-
-ConjunctiveBody::index_const_iterator ConjunctiveBody::nominal_neq_indices_cend() const {
-    return &nominalNeqFeatureIndices_[numNominalNeq_];
-}
-
-bool ConjunctiveBody::covers(VectorConstView<const float32>::const_iterator begin,
-                             VectorConstView<const float32>::const_iterator end) const {
-    // Test numerical conditions using the <= operator...
-    for (uint32 i = 0; i < numNumericalLeq_; i++) {
-        uint32 featureIndex = numericalLeqFeatureIndices_[i];
-        float32 threshold = numericalLeqThresholds_[i];
-
-        if (begin[featureIndex] > threshold) {
-            return false;
-        }
-    }
-
-    // Test numerical conditions using the > operator...
-    for (uint32 i = 0; i < numNumericalGr_; i++) {
-        uint32 featureIndex = numericalGrFeatureIndices_[i];
-        float32 threshold = numericalGrThresholds_[i];
-
-        if (begin[featureIndex] <= threshold) {
-            return false;
-        }
-    }
-
-    // Test nominal conditions using the == operator...
-    for (uint32 i = 0; i < numNominalEq_; i++) {
-        uint32 featureIndex = nominalEqFeatureIndices_[i];
-        float32 threshold = nominalEqThresholds_[i];
-
-        if (begin[featureIndex] != threshold) {
-            return false;
-        }
-    }
-
-    // Test nominal conditions using the != operator...
-    for (uint32 i = 0; i < numNominalNeq_; i++) {
-        uint32 featureIndex = nominalNeqFeatureIndices_[i];
-        float32 threshold = nominalNeqThresholds_[i];
-
-        if (begin[featureIndex] == threshold) {
+        if (!compare_(featureValue, threshold)) {
             return false;
         }
     }
 
     return true;
+}
+
+template<typename Threshold, typename Compare>
+bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(
+  CsrConstView<const float32>::index_const_iterator indicesBegin,
+  CsrConstView<const float32>::index_const_iterator indicesEnd,
+  CsrConstView<const float32>::value_const_iterator valuesBegin,
+  CsrConstView<const float32>::value_const_iterator valuesEnd, float32* tmpArray1, uint32* tmpArray2, uint32 n) const {
+    uint32 numConditions = this->getNumElements();
+    typename SparseArraysVector<Threshold>::index_const_iterator featureIndexIterator = this->indices_cbegin();
+    typename SparseArraysVector<Threshold>::value_const_iterator thresholdIterator = this->values_cbegin();
+
+    for (uint32 i = 0; i < numConditions; i++) {
+        uint32 featureIndex = featureIndexIterator[i];
+        float32 threshold = thresholdIterator[i];
+        float32 featureValue = tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : 0;
+
+        if (!compare_(featureValue, threshold)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+ConjunctiveBody::ConjunctiveBody(uint32 numNumericalLeq, uint32 numNumericalGr, uint32 numNominalEq,
+                                 uint32 numNominalNeq)
+    : numericalLeqVector_(ConditionVector<float32, CompareNumericalLeq>(numNumericalLeq)),
+      numericalGrVector_(ConditionVector<float32, CompareNumericalGr>(numNumericalGr)),
+      nominalEqVector_(ConditionVector<float32, CompareNominalEq>(numNominalEq)),
+      nominalNeqVector_(ConditionVector<float32, CompareNominalNeq>(numNominalNeq)) {}
+
+uint32 ConjunctiveBody::getNumNumericalLeq() const {
+    return numericalLeqVector_.getNumElements();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::numerical_leq_thresholds_begin() {
+    return numericalLeqVector_.values_begin();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::numerical_leq_thresholds_end() {
+    return numericalLeqVector_.values_end();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::numerical_leq_thresholds_cbegin() const {
+    return numericalLeqVector_.values_cbegin();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::numerical_leq_thresholds_cend() const {
+    return numericalLeqVector_.values_cend();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::numerical_leq_indices_begin() {
+    return numericalLeqVector_.indices_begin();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::numerical_leq_indices_end() {
+    return numericalLeqVector_.indices_end();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::numerical_leq_indices_cbegin() const {
+    return numericalLeqVector_.indices_cbegin();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::numerical_leq_indices_cend() const {
+    return numericalLeqVector_.indices_cend();
+}
+
+uint32 ConjunctiveBody::getNumNumericalGr() const {
+    return numericalGrVector_.getNumElements();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::numerical_gr_thresholds_begin() {
+    return numericalGrVector_.values_begin();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::numerical_gr_thresholds_end() {
+    return numericalGrVector_.values_end();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::numerical_gr_thresholds_cbegin() const {
+    return numericalGrVector_.values_cbegin();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::numerical_gr_thresholds_cend() const {
+    return numericalGrVector_.values_cend();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::numerical_gr_indices_begin() {
+    return numericalGrVector_.indices_begin();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::numerical_gr_indices_end() {
+    return numericalGrVector_.indices_end();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::numerical_gr_indices_cbegin() const {
+    return numericalGrVector_.indices_cbegin();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::numerical_gr_indices_cend() const {
+    return numericalGrVector_.indices_cend();
+}
+
+uint32 ConjunctiveBody::getNumNominalEq() const {
+    return nominalEqVector_.getNumElements();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::nominal_eq_thresholds_begin() {
+    return nominalEqVector_.values_begin();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::nominal_eq_thresholds_end() {
+    return nominalEqVector_.values_end();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::nominal_eq_thresholds_cbegin() const {
+    return nominalEqVector_.values_cbegin();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::nominal_eq_thresholds_cend() const {
+    return nominalEqVector_.values_cend();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::nominal_eq_indices_begin() {
+    return nominalEqVector_.indices_begin();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::nominal_eq_indices_end() {
+    return nominalEqVector_.indices_end();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::nominal_eq_indices_cbegin() const {
+    return nominalEqVector_.indices_cbegin();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::nominal_eq_indices_cend() const {
+    return nominalEqVector_.indices_cend();
+}
+
+uint32 ConjunctiveBody::getNumNominalNeq() const {
+    return nominalNeqVector_.getNumElements();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::nominal_neq_thresholds_begin() {
+    return nominalNeqVector_.values_begin();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::nominal_neq_thresholds_end() {
+    return nominalNeqVector_.values_end();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::nominal_neq_thresholds_cbegin() const {
+    return nominalNeqVector_.values_cbegin();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::nominal_neq_thresholds_cend() const {
+    return nominalNeqVector_.values_cend();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::nominal_neq_indices_begin() {
+    return nominalNeqVector_.indices_begin();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::nominal_neq_indices_end() {
+    return nominalNeqVector_.indices_end();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::nominal_neq_indices_cbegin() const {
+    return nominalNeqVector_.indices_cbegin();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::nominal_neq_indices_cend() const {
+    return nominalNeqVector_.indices_cend();
+}
+
+bool ConjunctiveBody::covers(VectorConstView<const float32>::const_iterator begin,
+                             VectorConstView<const float32>::const_iterator end) const {
+    return numericalLeqVector_.covers(begin, end) && numericalGrVector_.covers(begin, end)
+           && nominalEqVector_.covers(begin, end) && nominalNeqVector_.covers(begin, end);
 }
 
 bool ConjunctiveBody::covers(CsrConstView<const float32>::index_const_iterator indicesBegin,
@@ -215,61 +210,19 @@ bool ConjunctiveBody::covers(CsrConstView<const float32>::index_const_iterator i
                              CsrConstView<const float32>::value_const_iterator valuesEnd, float32* tmpArray1,
                              uint32* tmpArray2, uint32 n) const {
     // Copy non-zero feature values to the temporary arrays...
-    auto valueIterator = valuesBegin;
+    uint32 numNonZeroFeatureValues = valuesEnd - valuesBegin;
 
-    for (auto indexIterator = indicesBegin; indexIterator != indicesEnd; indexIterator++) {
-        uint32 featureIndex = *indexIterator;
-        float32 featureValue = *valueIterator;
+    for (uint32 i = 0; i < numNonZeroFeatureValues; i++) {
+        uint32 featureIndex = indicesBegin[i];
+        float32 featureValue = valuesBegin[i];
         tmpArray1[featureIndex] = featureValue;
         tmpArray2[featureIndex] = n;
-        valueIterator++;
     }
 
-    // Test numerical conditions using the <= operator...
-    for (uint32 i = 0; i < numNumericalLeq_; i++) {
-        uint32 featureIndex = numericalLeqFeatureIndices_[i];
-        float32 threshold = numericalLeqThresholds_[i];
-        float32 featureValue = tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : 0;
-
-        if (featureValue > threshold) {
-            return false;
-        }
-    }
-
-    // Test numerical conditions using the > operator...
-    for (uint32 i = 0; i < numNumericalGr_; i++) {
-        uint32 featureIndex = numericalGrFeatureIndices_[i];
-        float32 threshold = numericalGrThresholds_[i];
-        float32 featureValue = tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : 0;
-
-        if (featureValue <= threshold) {
-            return false;
-        }
-    }
-
-    // Test nominal conditions using the == operator...
-    for (uint32 i = 0; i < numNominalEq_; i++) {
-        uint32 featureIndex = nominalEqFeatureIndices_[i];
-        float32 threshold = nominalEqThresholds_[i];
-        float32 featureValue = tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : 0;
-
-        if (featureValue != threshold) {
-            return false;
-        }
-    }
-
-    // Test nominal conditions using the != operator...
-    for (uint32 i = 0; i < numNominalNeq_; i++) {
-        uint32 featureIndex = nominalNeqFeatureIndices_[i];
-        float32 threshold = nominalNeqThresholds_[i];
-        float32 featureValue = tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : 0;
-
-        if (featureValue == threshold) {
-            return false;
-        }
-    }
-
-    return true;
+    return numericalLeqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
+           && numericalGrVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
+           && nominalEqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
+           && nominalNeqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n);
 }
 
 void ConjunctiveBody::visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const {

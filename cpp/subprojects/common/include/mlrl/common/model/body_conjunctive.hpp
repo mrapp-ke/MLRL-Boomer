@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/data/vector_sparse_arrays.hpp"
 #include "mlrl/common/model/body.hpp"
 
 /**
@@ -12,29 +13,121 @@
 class MLRLCOMMON_API ConjunctiveBody final : public IBody {
     private:
 
-        const uint32 numNumericalLeq_;
+        /**
+         * A vector that stores conditions of a specific type.
+         *
+         * @tparam Threshold    The type of the thresholds used by the conditions
+         * @tparam Compare      The type of the comparator that should be used to compare thresholds to feature values
+         */
+        template<typename Threshold, typename Compare>
+        class ConditionVector final : public SparseArraysVector<Threshold>,
+                                      public IConditional {
+            private:
 
-        uint32* numericalLeqFeatureIndices_;
+                Compare compare_;
 
-        float32* numericalLeqThresholds_;
+            public:
 
-        const uint32 numNumericalGr_;
+                /**
+                 * @param numConditions The number of conditions
+                 */
+                ConditionVector(uint32 numConditions);
 
-        uint32* numericalGrFeatureIndices_;
+                /**
+                 * @see `IConditional::covers`
+                 */
+                bool covers(VectorConstView<const float32>::const_iterator begin,
+                            VectorConstView<const float32>::const_iterator end) const override;
 
-        float32* numericalGrThresholds_;
+                /**
+                 * @see `IConditional::covers`
+                 */
+                bool covers(CsrConstView<const float32>::index_const_iterator indicesBegin,
+                            CsrConstView<const float32>::index_const_iterator indicesEnd,
+                            CsrConstView<const float32>::value_const_iterator valuesBegin,
+                            CsrConstView<const float32>::value_const_iterator valuesEnd, float32* tmpArray1,
+                            uint32* tmpArray2, uint32 n) const override;
+        };
 
-        const uint32 numNominalEq_;
+        /**
+         * Allows to compare numerical feature values to threshold using the <= operator.
+         */
+        struct CompareNumericalLeq final {
+            public:
 
-        uint32* nominalEqFeatureIndices_;
+                /**
+                 * Returns whether a given feature value satisfies a specific threshold or not.
+                 *
+                 * @param featureValue  The feature value
+                 * @param threshold     The threshold
+                 * @return              True, if the feature value satisfies the threshold, false otherwise
+                 */
+                inline bool operator()(const float32& featureValue, const float32& threshold) const {
+                    return featureValue <= threshold;
+                }
+        };
 
-        float32* nominalEqThresholds_;
+        /**
+         * Allows to compare numerical feature values to threshold using the > operator.
+         */
+        struct CompareNumericalGr final {
+            public:
 
-        const uint32 numNominalNeq_;
+                /**
+                 * Returns whether a given feature value satisfies a specific threshold or not.
+                 *
+                 * @param featureValue  The feature value
+                 * @param threshold     The threshold
+                 * @return              True, if the feature value satisfies the threshold, false otherwise
+                 */
+                inline bool operator()(const float32& featureValue, const float32& threshold) const {
+                    return featureValue > threshold;
+                }
+        };
 
-        uint32* nominalNeqFeatureIndices_;
+        /**
+         * Allows to compare nominal feature values to threshold using the == operator.
+         */
+        struct CompareNominalEq final {
+            public:
 
-        float32* nominalNeqThresholds_;
+                /**
+                 * Returns whether a given feature value satisfies a specific threshold or not.
+                 *
+                 * @param featureValue  The feature value
+                 * @param threshold     The threshold
+                 * @return              True, if the feature value satisfies the threshold, false otherwise
+                 */
+                inline bool operator()(const float32& featureValue, const float32& threshold) const {
+                    return featureValue == threshold;
+                }
+        };
+
+        /**
+         * Allows to compare nominal feature values to threshold using the != operator.
+         */
+        struct CompareNominalNeq final {
+            public:
+
+                /**
+                 * Returns whether a given feature value satisfies a specific threshold or not.
+                 *
+                 * @param featureValue  The feature value
+                 * @param threshold     The threshold
+                 * @return              True, if the feature value satisfies the threshold, false otherwise
+                 */
+                inline bool operator()(const float32& featureValue, const float32& threshold) const {
+                    return featureValue != threshold;
+                }
+        };
+
+        ConditionVector<float32, CompareNumericalLeq> numericalLeqVector_;
+
+        ConditionVector<float32, CompareNumericalGr> numericalGrVector_;
+
+        ConditionVector<float32, CompareNominalEq> nominalEqVector_;
+
+        ConditionVector<float32, CompareNominalNeq> nominalNeqVector_;
 
     public:
 
@@ -46,30 +139,28 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
          */
         ConjunctiveBody(uint32 numNumericalLeq, uint32 numNumericalGr, uint32 numNominalEq, uint32 numNominalNeq);
 
-        ~ConjunctiveBody() override;
-
         /**
          * An iterator that provides access to the thresholds that are used by the conditions in the body and allows to
          * modify them.
          */
-        typedef float32* threshold_iterator;
+        typedef SparseArraysVector<float32>::value_iterator threshold_iterator;
 
         /**
          * An iterator that provides read-only access to the thresholds that are used by the conditions in the body.
          */
-        typedef const float32* threshold_const_iterator;
+        typedef SparseArraysVector<float32>::value_const_iterator threshold_const_iterator;
 
         /**
          * An iterator that provides access to the feature indices that correspond to the conditions in the body and
          * allows to modify them.
          */
-        typedef uint32* index_iterator;
+        typedef SparseArraysVector<float32>::index_iterator index_iterator;
 
         /**
          * An iterator that provides read-only access to the feature indices that correspond to the conditions in the
          * body.
          */
-        typedef const uint32* index_const_iterator;
+        typedef SparseArraysVector<float32>::index_const_iterator index_const_iterator;
 
         /**
          * Returns the number of numerical conditions that use the <= operator.
@@ -356,13 +447,13 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         index_const_iterator nominal_neq_indices_cend() const;
 
         /**
-         * @see `IBody::covers`
+         * @see `IConditional::covers`
          */
         bool covers(VectorConstView<const float32>::const_iterator begin,
                     VectorConstView<const float32>::const_iterator end) const override;
 
         /**
-         * @see `IBody::covers`
+         * @see `IConditional::covers`
          */
         bool covers(CsrConstView<const float32>::index_const_iterator indicesBegin,
                     CsrConstView<const float32>::index_const_iterator indicesEnd,
