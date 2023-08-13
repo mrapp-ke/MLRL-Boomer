@@ -316,10 +316,11 @@ class ExactThresholds final : public AbstractThresholds {
 
                     std::unique_ptr<IFeatureType> featureTypePtr =
                       thresholds_.featureInfo_.createFeatureType(featureIndex);
+                    bool ordinal = featureTypePtr->isOrdinal();
                     bool nominal = featureTypePtr->isNominal();
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex);
                     return std::make_unique<ExactRuleRefinement<IndexVector>>(
-                      labelIndices, numCoveredExamples_, featureIndex, nominal, weights_.hasZeroWeights(),
+                      labelIndices, numCoveredExamples_, featureIndex, ordinal, nominal, weights_.hasZeroWeights(),
                       std::move(callbackPtr));
                 }
 
