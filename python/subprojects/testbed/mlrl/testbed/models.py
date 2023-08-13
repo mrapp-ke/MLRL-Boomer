@@ -149,10 +149,17 @@ class RuleModelWriter(ModelWriter):
             if self.print_bodies:
                 text = self.text
                 text.write('{')
-                num_conditions = self.__format_conditions(0, body.leq_indices, body.leq_thresholds, '<=')
-                num_conditions = self.__format_conditions(num_conditions, body.gr_indices, body.gr_thresholds, '>')
-                num_conditions = self.__format_conditions(num_conditions, body.eq_indices, body.eq_thresholds, '==')
-                self.__format_conditions(num_conditions, body.neq_indices, body.neq_thresholds, '!=')
+                num_conditions = self.__format_conditions(0, body.numerical_leq_indices, body.numerical_leq_thresholds,
+                                                          '<=')
+                num_conditions = self.__format_conditions(num_conditions, body.numerical_gr_indices,
+                                                          body.numerical_gr_thresholds, '>')
+                num_conditions = self.__format_conditions(num_conditions, body.ordinal_leq_indices,
+                                                          body.ordinal_leq_thresholds, '<=')
+                num_conditions = self.__format_conditions(num_conditions, body.ordinal_gr_indices,
+                                                          body.ordinal_gr_thresholds, '>')
+                num_conditions = self.__format_conditions(num_conditions, body.nominal_eq_indices,
+                                                          body.nominal_eq_thresholds, '==')
+                self.__format_conditions(num_conditions, body.nominal_neq_indices, body.nominal_neq_thresholds, '!=')
                 text.write('}')
 
         def visit_complete_head(self, head: CompleteHead):

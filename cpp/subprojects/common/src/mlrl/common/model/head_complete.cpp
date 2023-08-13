@@ -1,29 +1,25 @@
 #include "mlrl/common/model/head_complete.hpp"
 
-CompleteHead::CompleteHead(uint32 numElements) : numElements_(numElements), scores_(new float64[numElements]) {}
-
-CompleteHead::~CompleteHead() {
-    delete[] scores_;
-}
+CompleteHead::CompleteHead(uint32 numElements) : vector_(DenseVector<float64>(numElements)) {}
 
 uint32 CompleteHead::getNumElements() const {
-    return numElements_;
+    return vector_.getNumElements();
 }
 
 CompleteHead::score_iterator CompleteHead::scores_begin() {
-    return scores_;
+    return vector_.begin();
 }
 
 CompleteHead::score_iterator CompleteHead::scores_end() {
-    return &scores_[numElements_];
+    return vector_.end();
 }
 
 CompleteHead::score_const_iterator CompleteHead::scores_cbegin() const {
-    return scores_;
+    return vector_.cbegin();
 }
 
 CompleteHead::score_const_iterator CompleteHead::scores_cend() const {
-    return &scores_[numElements_];
+    return vector_.cend();
 }
 
 void CompleteHead::visit(CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const {

@@ -32,9 +32,9 @@ static inline void adjustRefinement(Refinement& refinement, FeatureVector::const
 
 template<typename IndexIterator, typename RefinementComparator>
 static inline void findRefinementInternally(
-  const IndexIterator& labelIndices, uint32 numExamples, uint32 featureIndex, bool nominal, uint32 minCoverage,
-  bool hasZeroWeights, IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector>& callback,
-  RefinementComparator& comparator) {
+  const IndexIterator& labelIndices, uint32 numExamples, uint32 featureIndex, bool ordinal, bool nominal,
+  uint32 minCoverage, bool hasZeroWeights,
+  IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector>& callback, RefinementComparator& comparator) {
     Refinement refinement;
     refinement.featureIndex = featureIndex;
 
@@ -116,10 +116,10 @@ static inline void findRefinementInternally(
                             refinement.covered = true;
 
                             if (nominal) {
-                                refinement.comparator = EQ;
+                                refinement.comparator = NOMINAL_EQ;
                                 refinement.threshold = previousThreshold;
                             } else {
-                                refinement.comparator = LEQ;
+                                refinement.comparator = ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ;
                                 refinement.threshold = arithmeticMean(previousThreshold, currentThreshold);
                             }
 
@@ -144,10 +144,10 @@ static inline void findRefinementInternally(
                             refinement.covered = false;
 
                             if (nominal) {
-                                refinement.comparator = NEQ;
+                                refinement.comparator = NOMINAL_NEQ;
                                 refinement.threshold = previousThreshold;
                             } else {
-                                refinement.comparator = GR;
+                                refinement.comparator = ordinal ? ORDINAL_GR : NUMERICAL_GR;
                                 refinement.threshold = arithmeticMean(previousThreshold, currentThreshold);
                             }
 
@@ -190,7 +190,7 @@ static inline void findRefinementInternally(
                     refinement.previous = previousR;
                     refinement.numCovered = numCovered;
                     refinement.covered = true;
-                    refinement.comparator = EQ;
+                    refinement.comparator = NOMINAL_EQ;
                     refinement.threshold = previousThreshold;
                     comparator.pushRefinement(refinement, scoreVector);
                 }
@@ -210,7 +210,7 @@ static inline void findRefinementInternally(
                     refinement.previous = previousR;
                     refinement.numCovered = coverage;
                     refinement.covered = false;
-                    refinement.comparator = NEQ;
+                    refinement.comparator = NOMINAL_NEQ;
                     refinement.threshold = previousThreshold;
                     comparator.pushRefinement(refinement, scoreVector);
                 }
@@ -272,10 +272,10 @@ static inline void findRefinementInternally(
                             refinement.covered = true;
 
                             if (nominal) {
-                                refinement.comparator = EQ;
+                                refinement.comparator = NOMINAL_EQ;
                                 refinement.threshold = previousThreshold;
                             } else {
-                                refinement.comparator = GR;
+                                refinement.comparator = ordinal ? ORDINAL_GR : NUMERICAL_GR;
                                 refinement.threshold = arithmeticMean(currentThreshold, previousThreshold);
                             }
 
@@ -300,10 +300,10 @@ static inline void findRefinementInternally(
                             refinement.covered = false;
 
                             if (nominal) {
-                                refinement.comparator = NEQ;
+                                refinement.comparator = NOMINAL_NEQ;
                                 refinement.threshold = previousThreshold;
                             } else {
-                                refinement.comparator = LEQ;
+                                refinement.comparator = ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ;
                                 refinement.threshold = arithmeticMean(currentThreshold, previousThreshold);
                             }
 
@@ -347,7 +347,7 @@ static inline void findRefinementInternally(
                 refinement.previous = previousR;
                 refinement.numCovered = numCovered;
                 refinement.covered = true;
-                refinement.comparator = EQ;
+                refinement.comparator = NOMINAL_EQ;
                 refinement.threshold = previousThreshold;
                 comparator.pushRefinement(refinement, scoreVector);
             }
@@ -367,7 +367,7 @@ static inline void findRefinementInternally(
                 refinement.previous = previousR;
                 refinement.numCovered = coverage;
                 refinement.covered = false;
-                refinement.comparator = NEQ;
+                refinement.comparator = NOMINAL_NEQ;
                 refinement.threshold = previousThreshold;
                 comparator.pushRefinement(refinement, scoreVector);
             }
@@ -406,12 +406,12 @@ static inline void findRefinementInternally(
                 if (nominal) {
                     refinement.end = -1;
                     refinement.previous = -1;
-                    refinement.comparator = NEQ;
+                    refinement.comparator = NOMINAL_NEQ;
                     refinement.threshold = 0.0;
                 } else {
                     refinement.end = lastNegativeR;
                     refinement.previous = previousR;
-                    refinement.comparator = GR;
+                    refinement.comparator = ordinal ? ORDINAL_GR : NUMERICAL_GR;
                     refinement.threshold = previousThreshold * 0.5;
                 }
 
@@ -437,13 +437,13 @@ static inline void findRefinementInternally(
                 if (nominal) {
                     refinement.end = -1;
                     refinement.previous = -1;
-                    refinement.comparator = EQ;
+                    refinement.comparator = NOMINAL_EQ;
                     refinement.threshold = 0.0;
                 } else {
                     refinement.end = lastNegativeR;
                     refinement.previous = previousR;
                     refinement.numCovered = (numExamples - numAccumulated);
-                    refinement.comparator = LEQ;
+                    refinement.comparator = ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ;
                     refinement.threshold = previousThreshold * 0.5;
                 }
 
@@ -470,7 +470,7 @@ static inline void findRefinementInternally(
                 refinement.previous = previousRNegative;
                 refinement.numCovered = numAccumulatedNegative;
                 refinement.covered = true;
-                refinement.comparator = LEQ;
+                refinement.comparator = ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ;
 
                 if (numAccumulatedTotal < numExamples) {
                     // If the condition separates an example with feature value < 0 from an (sparse) example with
@@ -500,7 +500,7 @@ static inline void findRefinementInternally(
                 refinement.previous = previousRNegative;
                 refinement.numCovered = coverage;
                 refinement.covered = false;
-                refinement.comparator = GR;
+                refinement.comparator = ordinal ? ORDINAL_GR : NUMERICAL_GR;
 
                 if (numAccumulatedTotal < numExamples) {
                     // If the condition separates an example with feature value < 0 from an (sparse) example with
@@ -530,21 +530,21 @@ static inline void findRefinementInternally(
 
 template<typename IndexVector>
 ExactRuleRefinement<IndexVector>::ExactRuleRefinement(const IndexVector& labelIndices, uint32 numExamples,
-                                                      uint32 featureIndex, bool nominal, bool hasZeroWeights,
-                                                      std::unique_ptr<Callback> callbackPtr)
-    : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), nominal_(nominal),
-      hasZeroWeights_(hasZeroWeights), callbackPtr_(std::move(callbackPtr)) {}
+                                                      uint32 featureIndex, bool ordinal, bool nominal,
+                                                      bool hasZeroWeights, std::unique_ptr<Callback> callbackPtr)
+    : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), ordinal_(ordinal),
+      nominal_(nominal), hasZeroWeights_(hasZeroWeights), callbackPtr_(std::move(callbackPtr)) {}
 
 template<typename IndexVector>
 void ExactRuleRefinement<IndexVector>::findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) {
-    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, minCoverage, hasZeroWeights_,
-                             *callbackPtr_, comparator);
+    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, ordinal_, nominal_, minCoverage,
+                             hasZeroWeights_, *callbackPtr_, comparator);
 }
 
 template<typename IndexVector>
 void ExactRuleRefinement<IndexVector>::findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) {
-    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, minCoverage, hasZeroWeights_,
-                             *callbackPtr_, comparator);
+    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, ordinal_, nominal_, minCoverage,
+                             hasZeroWeights_, *callbackPtr_, comparator);
 }
 
 template class ExactRuleRefinement<CompleteIndexVector>;
