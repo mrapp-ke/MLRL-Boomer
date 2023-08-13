@@ -13,7 +13,7 @@
  * @tparam T The type of the data that is stored in the vector
  */
 template<typename T>
-class SparseArraysVector final : public IOneDimensionalView {
+class MLRLCOMMON_API SparseArraysVector final : public IOneDimensionalView {
     private:
 
         DenseVector<uint32> indices_;
