@@ -15,7 +15,7 @@
  * @tparam T The type of the data that is stored in the vector
  */
 template<typename T>
-class SparseArrayVector final : public DenseVector<IndexedValue<T>> {
+class MLRLCOMMON_API SparseArrayVector final : public DenseVector<IndexedValue<T>> {
     private:
 
         /**
