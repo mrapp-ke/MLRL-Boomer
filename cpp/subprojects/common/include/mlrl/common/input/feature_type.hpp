@@ -12,6 +12,13 @@ class IFeatureType {
         virtual ~IFeatureType() {};
 
         /**
+         * Returns whether the feature is ordinal or not.
+         * 
+         * @return True, if the feature is ordinal, false otherwise 
+         */
+        virtual bool isOrdinal() const = 0;
+
+        /**
          * Returns whether the feature is nominal or not.
          *
          * @return True, if the feature is nominal, false otherwise
