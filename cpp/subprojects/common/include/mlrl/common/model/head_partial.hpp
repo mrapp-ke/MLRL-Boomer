@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/types.hpp"
+#include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/model/head.hpp"
 
 /**
@@ -12,11 +12,9 @@
 class MLRLCOMMON_API PartialHead final : public IHead {
     private:
 
-        const uint32 numElements_;
+        DenseVector<float64> scores_;
 
-        float64* scores_;
-
-        uint32* labelIndices_;
+        DenseVector<uint32> labelIndices_;
 
     public:
 
@@ -25,29 +23,27 @@ class MLRLCOMMON_API PartialHead final : public IHead {
          */
         PartialHead(uint32 numElements);
 
-        ~PartialHead() override;
-
         /**
          * An iterator that provides access to the scores that are contained by the head and allows to modify them.
          */
-        typedef float64* score_iterator;
+        typedef DenseVector<float64>::iterator score_iterator;
 
         /**
          * An iterator that provides read-only access to the scores that are contained by the head.
          */
-        typedef const float64* score_const_iterator;
+        typedef DenseVector<float64>::const_iterator score_const_iterator;
 
         /**
          * An iterator that provides access to the indices, the scores that are contained by the head, correspond to and
          * allows to modify them.
          */
-        typedef uint32* index_iterator;
+        typedef DenseVector<uint32>::iterator index_iterator;
 
         /**
          * An iterator that provides read-only access to the indices, the scores that are contained by the head,
          * correspond to.
          */
-        typedef const uint32* index_const_iterator;
+        typedef DenseVector<uint32>::const_iterator index_const_iterator;
 
         /**
          * Returns the number of scores that are contained by the head.
