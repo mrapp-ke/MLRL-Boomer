@@ -13,7 +13,7 @@
  * @tparam T The type of the data that is stored in the vector
  */
 template<typename T>
-class MLRLCOMMON_API SparseArraysVector final : public IOneDimensionalView {
+class MLRLCOMMON_API SparseArraysVector : public IOneDimensionalView {
     private:
 
         DenseVector<uint32> indices_;
@@ -26,6 +26,8 @@ class MLRLCOMMON_API SparseArraysVector final : public IOneDimensionalView {
          * @param numElements The number of elements in the vector
          */
         SparseArraysVector(uint32 numElements);
+
+        virtual ~SparseArraysVector() override {};
 
         /**
          * An iterator that provides access to the indices in the vector and allows to modify them.
