@@ -1,209 +1,282 @@
 #include "mlrl/common/model/body_conjunctive.hpp"
 
-ConjunctiveBody::ConjunctiveBody(uint32 numLeq, uint32 numGr, uint32 numEq, uint32 numNeq)
-    : numLeq_(numLeq), leqFeatureIndices_(new uint32[numLeq_]), leqThresholds_(new float32[numLeq_]), numGr_(numGr),
-      grFeatureIndices_(new uint32[numGr_]), grThresholds_(new float32[numGr_]), numEq_(numEq),
-      eqFeatureIndices_(new uint32[numEq_]), eqThresholds_(new float32[numEq_]), numNeq_(numNeq),
-      neqFeatureIndices_(new uint32[numNeq_]), neqThresholds_(new float32[numNeq_]) {}
+template<typename Threshold, typename Compare>
+ConjunctiveBody::ConditionVector<Threshold, Compare>::ConditionVector(uint32 numConditions)
+    : SparseArraysVector<Threshold>(numConditions) {}
 
-ConjunctiveBody::~ConjunctiveBody() {
-    delete[] leqFeatureIndices_;
-    delete[] leqThresholds_;
-    delete[] grFeatureIndices_;
-    delete[] grThresholds_;
-    delete[] eqFeatureIndices_;
-    delete[] eqThresholds_;
-    delete[] neqFeatureIndices_;
-    delete[] neqThresholds_;
-}
+template<typename Threshold, typename Compare>
+bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(
+  VectorConstView<const float32>::const_iterator begin, VectorConstView<const float32>::const_iterator end) const {
+    uint32 numConditions = this->getNumElements();
+    typename SparseArraysVector<Threshold>::index_const_iterator featureIndexIterator = this->indices_cbegin();
+    typename SparseArraysVector<Threshold>::value_const_iterator thresholdIterator = this->values_cbegin();
 
-uint32 ConjunctiveBody::getNumLeq() const {
-    return numLeq_;
-}
+    for (uint32 i = 0; i < numConditions; i++) {
+        uint32 featureIndex = featureIndexIterator[i];
+        float32 threshold = thresholdIterator[i];
+        float32 featureValue = begin[featureIndex];
 
-ConjunctiveBody::threshold_iterator ConjunctiveBody::leq_thresholds_begin() {
-    return leqThresholds_;
-}
-
-ConjunctiveBody::threshold_iterator ConjunctiveBody::leq_thresholds_end() {
-    return &leqThresholds_[numLeq_];
-}
-
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::leq_thresholds_cbegin() const {
-    return leqThresholds_;
-}
-
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::leq_thresholds_cend() const {
-    return &leqThresholds_[numLeq_];
-}
-
-ConjunctiveBody::index_iterator ConjunctiveBody::leq_indices_begin() {
-    return leqFeatureIndices_;
-}
-
-ConjunctiveBody::index_iterator ConjunctiveBody::leq_indices_end() {
-    return &leqFeatureIndices_[numLeq_];
-}
-
-ConjunctiveBody::index_const_iterator ConjunctiveBody::leq_indices_cbegin() const {
-    return leqFeatureIndices_;
-}
-
-ConjunctiveBody::index_const_iterator ConjunctiveBody::leq_indices_cend() const {
-    return &leqFeatureIndices_[numLeq_];
-}
-
-uint32 ConjunctiveBody::getNumGr() const {
-    return numGr_;
-}
-
-ConjunctiveBody::threshold_iterator ConjunctiveBody::gr_thresholds_begin() {
-    return grThresholds_;
-}
-
-ConjunctiveBody::threshold_iterator ConjunctiveBody::gr_thresholds_end() {
-    return &grThresholds_[numLeq_];
-}
-
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::gr_thresholds_cbegin() const {
-    return grThresholds_;
-}
-
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::gr_thresholds_cend() const {
-    return &grThresholds_[numLeq_];
-}
-
-ConjunctiveBody::index_iterator ConjunctiveBody::gr_indices_begin() {
-    return grFeatureIndices_;
-}
-
-ConjunctiveBody::index_iterator ConjunctiveBody::gr_indices_end() {
-    return &grFeatureIndices_[numLeq_];
-}
-
-ConjunctiveBody::index_const_iterator ConjunctiveBody::gr_indices_cbegin() const {
-    return grFeatureIndices_;
-}
-
-ConjunctiveBody::index_const_iterator ConjunctiveBody::gr_indices_cend() const {
-    return &grFeatureIndices_[numLeq_];
-}
-
-uint32 ConjunctiveBody::getNumEq() const {
-    return numEq_;
-}
-
-ConjunctiveBody::threshold_iterator ConjunctiveBody::eq_thresholds_begin() {
-    return eqThresholds_;
-}
-
-ConjunctiveBody::threshold_iterator ConjunctiveBody::eq_thresholds_end() {
-    return &eqThresholds_[numLeq_];
-}
-
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::eq_thresholds_cbegin() const {
-    return eqThresholds_;
-}
-
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::eq_thresholds_cend() const {
-    return &eqThresholds_[numLeq_];
-}
-
-ConjunctiveBody::index_iterator ConjunctiveBody::eq_indices_begin() {
-    return eqFeatureIndices_;
-}
-
-ConjunctiveBody::index_iterator ConjunctiveBody::eq_indices_end() {
-    return &eqFeatureIndices_[numLeq_];
-}
-
-ConjunctiveBody::index_const_iterator ConjunctiveBody::eq_indices_cbegin() const {
-    return eqFeatureIndices_;
-}
-
-ConjunctiveBody::index_const_iterator ConjunctiveBody::eq_indices_cend() const {
-    return &eqFeatureIndices_[numLeq_];
-}
-
-uint32 ConjunctiveBody::getNumNeq() const {
-    return numNeq_;
-}
-
-ConjunctiveBody::threshold_iterator ConjunctiveBody::neq_thresholds_begin() {
-    return neqThresholds_;
-}
-
-ConjunctiveBody::threshold_iterator ConjunctiveBody::neq_thresholds_end() {
-    return &neqThresholds_[numLeq_];
-}
-
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::neq_thresholds_cbegin() const {
-    return neqThresholds_;
-}
-
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::neq_thresholds_cend() const {
-    return &neqThresholds_[numLeq_];
-}
-
-ConjunctiveBody::index_iterator ConjunctiveBody::neq_indices_begin() {
-    return neqFeatureIndices_;
-}
-
-ConjunctiveBody::index_iterator ConjunctiveBody::neq_indices_end() {
-    return &neqFeatureIndices_[numLeq_];
-}
-
-ConjunctiveBody::index_const_iterator ConjunctiveBody::neq_indices_cbegin() const {
-    return neqFeatureIndices_;
-}
-
-ConjunctiveBody::index_const_iterator ConjunctiveBody::neq_indices_cend() const {
-    return &neqFeatureIndices_[numLeq_];
-}
-
-bool ConjunctiveBody::covers(VectorConstView<const float32>::const_iterator begin,
-                             VectorConstView<const float32>::const_iterator end) const {
-    // Test conditions using the <= operator...
-    for (uint32 i = 0; i < numLeq_; i++) {
-        uint32 featureIndex = leqFeatureIndices_[i];
-        float32 threshold = leqThresholds_[i];
-
-        if (begin[featureIndex] > threshold) {
-            return false;
-        }
-    }
-
-    // Test conditions using the > operator...
-    for (uint32 i = 0; i < numGr_; i++) {
-        uint32 featureIndex = grFeatureIndices_[i];
-        float32 threshold = grThresholds_[i];
-
-        if (begin[featureIndex] <= threshold) {
-            return false;
-        }
-    }
-
-    // Test conditions using the == operator...
-    for (uint32 i = 0; i < numEq_; i++) {
-        uint32 featureIndex = eqFeatureIndices_[i];
-        float32 threshold = eqThresholds_[i];
-
-        if (begin[featureIndex] != threshold) {
-            return false;
-        }
-    }
-
-    // Test conditions using the != operator...
-    for (uint32 i = 0; i < numNeq_; i++) {
-        uint32 featureIndex = neqFeatureIndices_[i];
-        float32 threshold = neqThresholds_[i];
-
-        if (begin[featureIndex] == threshold) {
+        if (!compare_(featureValue, threshold)) {
             return false;
         }
     }
 
     return true;
+}
+
+template<typename Threshold, typename Compare>
+bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(
+  CsrConstView<const float32>::index_const_iterator indicesBegin,
+  CsrConstView<const float32>::index_const_iterator indicesEnd,
+  CsrConstView<const float32>::value_const_iterator valuesBegin,
+  CsrConstView<const float32>::value_const_iterator valuesEnd, float32* tmpArray1, uint32* tmpArray2, uint32 n) const {
+    uint32 numConditions = this->getNumElements();
+    typename SparseArraysVector<Threshold>::index_const_iterator featureIndexIterator = this->indices_cbegin();
+    typename SparseArraysVector<Threshold>::value_const_iterator thresholdIterator = this->values_cbegin();
+
+    for (uint32 i = 0; i < numConditions; i++) {
+        uint32 featureIndex = featureIndexIterator[i];
+        float32 threshold = thresholdIterator[i];
+        float32 featureValue = tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : 0;
+
+        if (!compare_(featureValue, threshold)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+ConjunctiveBody::ConjunctiveBody(uint32 numNumericalLeq, uint32 numNumericalGr, uint32 numOrdinalLeq,
+                                 uint32 numOrdinalGr, uint32 numNominalEq, uint32 numNominalNeq)
+    : numericalLeqVector_(ConditionVector<float32, CompareNumericalLeq>(numNumericalLeq)),
+      numericalGrVector_(ConditionVector<float32, CompareNumericalGr>(numNumericalGr)),
+      ordinalLeqVector_(ConditionVector<float32, CompareOrdinalLeq>(numOrdinalLeq)),
+      ordinalGrVector_(ConditionVector<float32, CompareOrdinalGr>(numOrdinalGr)),
+      nominalEqVector_(ConditionVector<float32, CompareNominalEq>(numNominalEq)),
+      nominalNeqVector_(ConditionVector<float32, CompareNominalNeq>(numNominalNeq)) {}
+
+uint32 ConjunctiveBody::getNumNumericalLeq() const {
+    return numericalLeqVector_.getNumElements();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::numerical_leq_thresholds_begin() {
+    return numericalLeqVector_.values_begin();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::numerical_leq_thresholds_end() {
+    return numericalLeqVector_.values_end();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::numerical_leq_thresholds_cbegin() const {
+    return numericalLeqVector_.values_cbegin();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::numerical_leq_thresholds_cend() const {
+    return numericalLeqVector_.values_cend();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::numerical_leq_indices_begin() {
+    return numericalLeqVector_.indices_begin();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::numerical_leq_indices_end() {
+    return numericalLeqVector_.indices_end();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::numerical_leq_indices_cbegin() const {
+    return numericalLeqVector_.indices_cbegin();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::numerical_leq_indices_cend() const {
+    return numericalLeqVector_.indices_cend();
+}
+
+uint32 ConjunctiveBody::getNumNumericalGr() const {
+    return numericalGrVector_.getNumElements();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::numerical_gr_thresholds_begin() {
+    return numericalGrVector_.values_begin();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::numerical_gr_thresholds_end() {
+    return numericalGrVector_.values_end();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::numerical_gr_thresholds_cbegin() const {
+    return numericalGrVector_.values_cbegin();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::numerical_gr_thresholds_cend() const {
+    return numericalGrVector_.values_cend();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::numerical_gr_indices_begin() {
+    return numericalGrVector_.indices_begin();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::numerical_gr_indices_end() {
+    return numericalGrVector_.indices_end();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::numerical_gr_indices_cbegin() const {
+    return numericalGrVector_.indices_cbegin();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::numerical_gr_indices_cend() const {
+    return numericalGrVector_.indices_cend();
+}
+
+uint32 ConjunctiveBody::getNumOrdinalLeq() const {
+    return ordinalLeqVector_.getNumElements();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::ordinal_leq_thresholds_begin() {
+    return ordinalLeqVector_.values_begin();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::ordinal_leq_thresholds_end() {
+    return ordinalLeqVector_.values_end();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::ordinal_leq_thresholds_cbegin() const {
+    return ordinalLeqVector_.values_cbegin();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::ordinal_leq_thresholds_cend() const {
+    return ordinalLeqVector_.values_cend();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::ordinal_leq_indices_begin() {
+    return ordinalLeqVector_.indices_begin();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::ordinal_leq_indices_end() {
+    return ordinalLeqVector_.indices_end();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::ordinal_leq_indices_cbegin() const {
+    return ordinalLeqVector_.indices_cbegin();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::ordinal_leq_indices_cend() const {
+    return ordinalLeqVector_.indices_cend();
+}
+
+uint32 ConjunctiveBody::getNumOrdinalGr() const {
+    return ordinalGrVector_.getNumElements();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::ordinal_gr_thresholds_begin() {
+    return ordinalGrVector_.values_begin();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::ordinal_gr_thresholds_end() {
+    return ordinalGrVector_.values_end();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::ordinal_gr_thresholds_cbegin() const {
+    return ordinalGrVector_.values_cbegin();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::ordinal_gr_thresholds_cend() const {
+    return ordinalGrVector_.values_cend();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::ordinal_gr_indices_begin() {
+    return ordinalGrVector_.indices_begin();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::ordinal_gr_indices_end() {
+    return ordinalGrVector_.indices_end();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::ordinal_gr_indices_cbegin() const {
+    return ordinalGrVector_.indices_cbegin();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::ordinal_gr_indices_cend() const {
+    return ordinalGrVector_.indices_cend();
+}
+
+uint32 ConjunctiveBody::getNumNominalEq() const {
+    return nominalEqVector_.getNumElements();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::nominal_eq_thresholds_begin() {
+    return nominalEqVector_.values_begin();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::nominal_eq_thresholds_end() {
+    return nominalEqVector_.values_end();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::nominal_eq_thresholds_cbegin() const {
+    return nominalEqVector_.values_cbegin();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::nominal_eq_thresholds_cend() const {
+    return nominalEqVector_.values_cend();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::nominal_eq_indices_begin() {
+    return nominalEqVector_.indices_begin();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::nominal_eq_indices_end() {
+    return nominalEqVector_.indices_end();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::nominal_eq_indices_cbegin() const {
+    return nominalEqVector_.indices_cbegin();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::nominal_eq_indices_cend() const {
+    return nominalEqVector_.indices_cend();
+}
+
+uint32 ConjunctiveBody::getNumNominalNeq() const {
+    return nominalNeqVector_.getNumElements();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::nominal_neq_thresholds_begin() {
+    return nominalNeqVector_.values_begin();
+}
+
+ConjunctiveBody::threshold_iterator ConjunctiveBody::nominal_neq_thresholds_end() {
+    return nominalNeqVector_.values_end();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::nominal_neq_thresholds_cbegin() const {
+    return nominalNeqVector_.values_cbegin();
+}
+
+ConjunctiveBody::threshold_const_iterator ConjunctiveBody::nominal_neq_thresholds_cend() const {
+    return nominalNeqVector_.values_cend();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::nominal_neq_indices_begin() {
+    return nominalNeqVector_.indices_begin();
+}
+
+ConjunctiveBody::index_iterator ConjunctiveBody::nominal_neq_indices_end() {
+    return nominalNeqVector_.indices_end();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::nominal_neq_indices_cbegin() const {
+    return nominalNeqVector_.indices_cbegin();
+}
+
+ConjunctiveBody::index_const_iterator ConjunctiveBody::nominal_neq_indices_cend() const {
+    return nominalNeqVector_.indices_cend();
+}
+
+bool ConjunctiveBody::covers(VectorConstView<const float32>::const_iterator begin,
+                             VectorConstView<const float32>::const_iterator end) const {
+    return numericalLeqVector_.covers(begin, end) && numericalGrVector_.covers(begin, end)
+           && ordinalLeqVector_.covers(begin, end) && ordinalGrVector_.covers(begin, end)
+           && nominalEqVector_.covers(begin, end) && nominalNeqVector_.covers(begin, end);
 }
 
 bool ConjunctiveBody::covers(CsrConstView<const float32>::index_const_iterator indicesBegin,
@@ -212,61 +285,21 @@ bool ConjunctiveBody::covers(CsrConstView<const float32>::index_const_iterator i
                              CsrConstView<const float32>::value_const_iterator valuesEnd, float32* tmpArray1,
                              uint32* tmpArray2, uint32 n) const {
     // Copy non-zero feature values to the temporary arrays...
-    auto valueIterator = valuesBegin;
+    uint32 numNonZeroFeatureValues = valuesEnd - valuesBegin;
 
-    for (auto indexIterator = indicesBegin; indexIterator != indicesEnd; indexIterator++) {
-        uint32 featureIndex = *indexIterator;
-        float32 featureValue = *valueIterator;
+    for (uint32 i = 0; i < numNonZeroFeatureValues; i++) {
+        uint32 featureIndex = indicesBegin[i];
+        float32 featureValue = valuesBegin[i];
         tmpArray1[featureIndex] = featureValue;
         tmpArray2[featureIndex] = n;
-        valueIterator++;
     }
 
-    // Test conditions using the <= operator...
-    for (uint32 i = 0; i < numLeq_; i++) {
-        uint32 featureIndex = leqFeatureIndices_[i];
-        float32 threshold = leqThresholds_[i];
-        float32 featureValue = tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : 0;
-
-        if (featureValue > threshold) {
-            return false;
-        }
-    }
-
-    // Test conditions using the > operator...
-    for (uint32 i = 0; i < numGr_; i++) {
-        uint32 featureIndex = grFeatureIndices_[i];
-        float32 threshold = grThresholds_[i];
-        float32 featureValue = tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : 0;
-
-        if (featureValue <= threshold) {
-            return false;
-        }
-    }
-
-    // Test conditions using the == operator...
-    for (uint32 i = 0; i < numEq_; i++) {
-        uint32 featureIndex = eqFeatureIndices_[i];
-        float32 threshold = eqThresholds_[i];
-        float32 featureValue = tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : 0;
-
-        if (featureValue != threshold) {
-            return false;
-        }
-    }
-
-    // Test conditions using the != operator...
-    for (uint32 i = 0; i < numNeq_; i++) {
-        uint32 featureIndex = neqFeatureIndices_[i];
-        float32 threshold = neqThresholds_[i];
-        float32 featureValue = tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : 0;
-
-        if (featureValue == threshold) {
-            return false;
-        }
-    }
-
-    return true;
+    return numericalLeqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
+           && numericalGrVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
+           && ordinalLeqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
+           && ordinalGrVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
+           && nominalEqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
+           && nominalNeqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n);
 }
 
 void ConjunctiveBody::visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const {

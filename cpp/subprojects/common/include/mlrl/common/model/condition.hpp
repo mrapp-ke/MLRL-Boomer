@@ -9,10 +9,12 @@
  * An enum that specifies all possible types of operators used by a condition of a rule.
  */
 enum Comparator : uint8 {
-    LEQ = 0,
-    GR = 1,
-    EQ = 2,
-    NEQ = 3
+    NUMERICAL_LEQ = 0,
+    NUMERICAL_GR = 1,
+    ORDINAL_LEQ = 2,
+    ORDINAL_GR = 3,
+    NOMINAL_EQ = 4,
+    NOMINAL_NEQ = 5
 };
 
 /**

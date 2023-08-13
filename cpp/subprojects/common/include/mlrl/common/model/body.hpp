@@ -14,26 +14,15 @@ class EmptyBody;
 class ConjunctiveBody;
 
 /**
- * Defines an interface for all classes that represent the body of a rule.
+ * Defines an interface for all classes that allow to check whether an example is covered or not.
  */
-class MLRLCOMMON_API IBody {
+class MLRLCOMMON_API IConditional {
     public:
 
-        virtual ~IBody() {};
+        virtual ~IConditional() {};
 
         /**
-         * A visitor function for handling objects of the type `EmptyBody`.
-         */
-        typedef std::function<void(const EmptyBody&)> EmptyBodyVisitor;
-
-        /**
-         * A visitor function for handling objects of the type `ConjunctiveBody`.
-         */
-        typedef std::function<void(const ConjunctiveBody&)> ConjunctiveBodyVisitor;
-
-        /**
-         * Returns whether an individual example, which is stored in a C-contiguous matrix, is covered by the body or
-         * not.
+         * Returns whether an individual example, which is stored in a C-contiguous matrix, is covered or not.
          *
          * @param begin A `VectorConstView::const_iterator` to the beginning of the example's feature values
          * @param end   A `VectorConstView::const_iterator` to the end of the example's feature values
@@ -43,7 +32,7 @@ class MLRLCOMMON_API IBody {
                             VectorConstView<const float32>::const_iterator end) const = 0;
 
         /**
-         * Returns whether an individual example, which is stored in a CSR sparse matrix, is covered by the body or not.
+         * Returns whether an individual example, which is stored in a CSR sparse matrix, is covered or not.
          *
          * @param indicesBegin  An iterator to the beginning of the example's feature values
          * @param indicesEnd    An iterator to the end of the example's feature values
@@ -64,6 +53,25 @@ class MLRLCOMMON_API IBody {
                             CsrConstView<const float32>::value_const_iterator valuesBegin,
                             CsrConstView<const float32>::value_const_iterator valuesEnd, float32* tmpArray1,
                             uint32* tmpArray2, uint32 n) const = 0;
+};
+
+/**
+ * Defines an interface for all classes that represent the body of a rule.
+ */
+class MLRLCOMMON_API IBody : public IConditional {
+    public:
+
+        virtual ~IBody() override {};
+
+        /**
+         * A visitor function for handling objects of the type `EmptyBody`.
+         */
+        typedef std::function<void(const EmptyBody&)> EmptyBodyVisitor;
+
+        /**
+         * A visitor function for handling objects of the type `ConjunctiveBody`.
+         */
+        typedef std::function<void(const ConjunctiveBody&)> ConjunctiveBodyVisitor;
 
         /**
          * Invokes one of the given visitor functions, depending on which one is able to handle this particular type of
