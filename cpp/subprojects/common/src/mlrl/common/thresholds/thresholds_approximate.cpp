@@ -202,10 +202,12 @@ class ApproximateThresholds final : public AbstractThresholds {
 
                     std::unique_ptr<IFeatureType> featureTypePtr =
                       thresholds_.featureInfo_.createFeatureType(featureIndex);
+                    bool ordinal = featureTypePtr->isOrdinal();
                     bool nominal = featureTypePtr->isNominal();
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex, nominal);
                     return std::make_unique<ApproximateRuleRefinement<IndexVector>>(
-                      labelIndices, coverageSet_.getNumCovered(), featureIndex, nominal, std::move(callbackPtr));
+                      labelIndices, coverageSet_.getNumCovered(), featureIndex, ordinal, nominal,
+                      std::move(callbackPtr));
                 }
 
             public:

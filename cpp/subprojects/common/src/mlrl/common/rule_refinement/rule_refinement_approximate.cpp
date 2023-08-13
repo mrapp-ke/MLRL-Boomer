@@ -4,7 +4,7 @@
 
 template<typename IndexVector, typename RefinementComparator>
 static inline void findRefinementInternally(const IndexVector& labelIndices, uint32 numExamples, uint32 featureIndex,
-                                            bool nominal, uint32 minCoverage,
+                                            bool ordinal, bool nominal, uint32 minCoverage,
                                             IRuleRefinementCallback<IHistogram, ThresholdVector>& callback,
                                             RefinementComparator& comparator) {
     Refinement refinement;
@@ -66,7 +66,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.numCovered = numCovered;
                         refinement.covered = true;
                         refinement.threshold = thresholdIterator[r - 1];
-                        refinement.comparator = nominal ? NOMINAL_EQ : NUMERICAL_LEQ;
+                        refinement.comparator = nominal ? NOMINAL_EQ : (ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ);
                         comparator.pushRefinement(refinement, scoreVector);
                     }
                 }
@@ -86,7 +86,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.numCovered = coverage;
                         refinement.covered = false;
                         refinement.threshold = thresholdIterator[r - 1];
-                        refinement.comparator = nominal ? NOMINAL_NEQ : NUMERICAL_GR;
+                        refinement.comparator = nominal ? NOMINAL_NEQ : (ordinal ? ORDINAL_GR : NUMERICAL_GR);
                         comparator.pushRefinement(refinement, scoreVector);
                     }
                 }
@@ -122,7 +122,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                     refinement.numCovered = numCovered;
                     refinement.covered = true;
                     refinement.threshold = thresholdIterator[sparseBinIndex - 1];
-                    refinement.comparator = nominal ? NOMINAL_EQ : NUMERICAL_LEQ;
+                    refinement.comparator = nominal ? NOMINAL_EQ : (ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ);
                     comparator.pushRefinement(refinement, scoreVector);
                 }
             }
@@ -142,7 +142,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                     refinement.numCovered = coverage;
                     refinement.covered = false;
                     refinement.threshold = thresholdIterator[sparseBinIndex - 1];
-                    refinement.comparator = nominal ? NOMINAL_NEQ : NUMERICAL_GR;
+                    refinement.comparator = nominal ? NOMINAL_NEQ : (ordinal ? ORDINAL_GR : NUMERICAL_GR);
                     comparator.pushRefinement(refinement, scoreVector);
                 }
             }
@@ -197,7 +197,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                             refinement.comparator = NOMINAL_EQ;
                         } else {
                             refinement.threshold = thresholdIterator[r];
-                            refinement.comparator = NUMERICAL_GR;
+                            refinement.comparator = ordinal ? ORDINAL_GR : NUMERICAL_GR;
                         }
 
                         comparator.pushRefinement(refinement, scoreVector);
@@ -224,7 +224,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                             refinement.comparator = NOMINAL_NEQ;
                         } else {
                             refinement.threshold = thresholdIterator[r];
-                            refinement.comparator = NUMERICAL_LEQ;
+                            refinement.comparator = ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ;
                         }
 
                         comparator.pushRefinement(refinement, scoreVector);
@@ -267,7 +267,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.comparator = NOMINAL_EQ;
                     } else {
                         refinement.threshold = thresholdIterator[sparseBinIndex];
-                        refinement.comparator = NUMERICAL_GR;
+                        refinement.comparator = ordinal ? ORDINAL_GR : NUMERICAL_GR;
                     }
 
                     comparator.pushRefinement(refinement, scoreVector);
@@ -294,7 +294,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.comparator = NOMINAL_NEQ;
                     } else {
                         refinement.threshold = thresholdIterator[sparseBinIndex];
-                        refinement.comparator = NUMERICAL_LEQ;
+                        refinement.comparator = ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ;
                     }
 
                     comparator.pushRefinement(refinement, scoreVector);
@@ -354,21 +354,21 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
 
 template<typename IndexVector>
 ApproximateRuleRefinement<IndexVector>::ApproximateRuleRefinement(const IndexVector& labelIndices, uint32 numExamples,
-                                                                  uint32 featureIndex, bool nominal,
+                                                                  uint32 featureIndex, bool ordinal, bool nominal,
                                                                   std::unique_ptr<Callback> callbackPtr)
-    : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), nominal_(nominal),
-      callbackPtr_(std::move(callbackPtr)) {}
+    : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), ordinal_(ordinal),
+      nominal_(nominal), callbackPtr_(std::move(callbackPtr)) {}
 
 template<typename IndexVector>
 void ApproximateRuleRefinement<IndexVector>::findRefinement(SingleRefinementComparator& comparator,
                                                             uint32 minCoverage) {
-    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, minCoverage, *callbackPtr_,
+    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, ordinal_, nominal_, minCoverage, *callbackPtr_,
                              comparator);
 }
 
 template<typename IndexVector>
 void ApproximateRuleRefinement<IndexVector>::findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) {
-    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, nominal_, minCoverage, *callbackPtr_,
+    findRefinementInternally(labelIndices_, numExamples_, featureIndex_, ordinal_, nominal_, minCoverage, *callbackPtr_,
                              comparator);
 }
 
