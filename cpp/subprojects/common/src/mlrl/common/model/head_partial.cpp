@@ -1,42 +1,41 @@
 #include "mlrl/common/model/head_partial.hpp"
 
-PartialHead::PartialHead(uint32 numElements)
-    : scores_(DenseVector<float64>(numElements)), labelIndices_(DenseVector<uint32>(numElements)) {}
+PartialHead::PartialHead(uint32 numElements) : vector_(SparseArraysVector<float64>(numElements)) {}
 
 uint32 PartialHead::getNumElements() const {
-    return scores_.getNumElements();
+    return vector_.getNumElements();
 }
 
 PartialHead::score_iterator PartialHead::scores_begin() {
-    return scores_.begin();
+    return vector_.values_begin();
 }
 
 PartialHead::score_iterator PartialHead::scores_end() {
-    return scores_.end();
+    return vector_.values_end();
 }
 
 PartialHead::score_const_iterator PartialHead::scores_cbegin() const {
-    return scores_.cbegin();
+    return vector_.values_cbegin();
 }
 
 PartialHead::score_const_iterator PartialHead::scores_cend() const {
-    return scores_.cend();
+    return vector_.values_cend();
 }
 
 PartialHead::index_iterator PartialHead::indices_begin() {
-    return labelIndices_.begin();
+    return vector_.indices_begin();
 }
 
 PartialHead::index_iterator PartialHead::indices_end() {
-    return labelIndices_.end();
+    return vector_.indices_end();
 }
 
 PartialHead::index_const_iterator PartialHead::indices_cbegin() const {
-    return labelIndices_.cbegin();
+    return vector_.indices_cbegin();
 }
 
 PartialHead::index_const_iterator PartialHead::indices_cend() const {
-    return labelIndices_.cend();
+    return vector_.indices_cend();
 }
 
 void PartialHead::visit(CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const {

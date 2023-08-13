@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_dense.hpp"
+#include "mlrl/common/data/vector_sparse_arrays.hpp"
 #include "mlrl/common/model/head.hpp"
 
 /**
@@ -12,9 +12,7 @@
 class MLRLCOMMON_API PartialHead final : public IHead {
     private:
 
-        DenseVector<float64> scores_;
-
-        DenseVector<uint32> labelIndices_;
+        SparseArraysVector<float64> vector_;
 
     public:
 
@@ -26,24 +24,24 @@ class MLRLCOMMON_API PartialHead final : public IHead {
         /**
          * An iterator that provides access to the scores that are contained by the head and allows to modify them.
          */
-        typedef DenseVector<float64>::iterator score_iterator;
+        typedef SparseArraysVector<float64>::value_iterator score_iterator;
 
         /**
          * An iterator that provides read-only access to the scores that are contained by the head.
          */
-        typedef DenseVector<float64>::const_iterator score_const_iterator;
+        typedef SparseArraysVector<float64>::value_const_iterator score_const_iterator;
 
         /**
          * An iterator that provides access to the indices, the scores that are contained by the head, correspond to and
          * allows to modify them.
          */
-        typedef DenseVector<uint32>::iterator index_iterator;
+        typedef SparseArraysVector<float64>::index_iterator index_iterator;
 
         /**
          * An iterator that provides read-only access to the indices, the scores that are contained by the head,
          * correspond to.
          */
-        typedef DenseVector<uint32>::const_iterator index_const_iterator;
+        typedef SparseArraysVector<float64>::index_const_iterator index_const_iterator;
 
         /**
          * Returns the number of scores that are contained by the head.
