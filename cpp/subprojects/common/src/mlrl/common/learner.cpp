@@ -246,22 +246,22 @@ std::unique_ptr<IPostProcessorFactory> AbstractRuleLearner::createPostProcessorF
 
 std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createSizeStoppingCriterionFactory() const {
     std::unique_ptr<SizeStoppingCriterionConfig>& configPtr = config_.getSizeStoppingCriterionConfigPtr();
-    return configPtr.get() != nullptr ? configPtr->createStoppingCriterionFactory() : nullptr;
+    return configPtr ? configPtr->createStoppingCriterionFactory() : nullptr;
 }
 
 std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createTimeStoppingCriterionFactory() const {
     std::unique_ptr<TimeStoppingCriterionConfig>& configPtr = config_.getTimeStoppingCriterionConfigPtr();
-    return configPtr.get() != nullptr ? configPtr->createStoppingCriterionFactory() : nullptr;
+    return configPtr ? configPtr->createStoppingCriterionFactory() : nullptr;
 }
 
 std::unique_ptr<IStoppingCriterionFactory> AbstractRuleLearner::createGlobalPruningFactory() const {
     std::unique_ptr<IGlobalPruningConfig>& configPtr = config_.getGlobalPruningConfigPtr();
-    return configPtr.get() != nullptr ? configPtr->createStoppingCriterionFactory() : nullptr;
+    return configPtr ? configPtr->createStoppingCriterionFactory() : nullptr;
 }
 
 std::unique_ptr<IPostOptimizationPhaseFactory> AbstractRuleLearner::createSequentialPostOptimizationFactory() const {
     std::unique_ptr<SequentialPostOptimizationConfig>& configPtr = config_.getSequentialPostOptimizationConfigPtr();
-    return configPtr.get() != nullptr ? configPtr->createPostOptimizationPhaseFactory() : nullptr;
+    return configPtr ? configPtr->createPostOptimizationPhaseFactory() : nullptr;
 }
 
 std::unique_ptr<IPostOptimizationPhaseFactory> AbstractRuleLearner::createUnusedRuleRemovalFactory() const {

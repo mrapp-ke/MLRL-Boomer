@@ -13,11 +13,11 @@ SingleRefinementComparator::iterator SingleRefinementComparator::begin() {
 }
 
 SingleRefinementComparator::iterator SingleRefinementComparator::end() {
-    return bestRefinement_.headPtr != nullptr ? &bestRefinement_ + 1 : &bestRefinement_;
+    return bestRefinement_.headPtr ? &bestRefinement_ + 1 : &bestRefinement_;
 }
 
 uint32 SingleRefinementComparator::getNumElements() const {
-    return bestRefinement_.headPtr != nullptr ? 1 : 0;
+    return bestRefinement_.headPtr ? 1 : 0;
 }
 
 bool SingleRefinementComparator::isImprovement(const IScoreVector& scoreVector) const {

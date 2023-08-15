@@ -38,7 +38,7 @@ namespace seco {
 
     std::unique_ptr<IStoppingCriterionFactory> AbstractSeCoRuleLearner::createCoverageStoppingCriterionFactory() const {
         std::unique_ptr<CoverageStoppingCriterionConfig>& configPtr = config_.getCoverageStoppingCriterionConfigPtr();
-        return configPtr.get() != nullptr ? configPtr->createStoppingCriterionFactory() : nullptr;
+        return configPtr ? configPtr->createStoppingCriterionFactory() : nullptr;
     }
 
     void AbstractSeCoRuleLearner::createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const {
