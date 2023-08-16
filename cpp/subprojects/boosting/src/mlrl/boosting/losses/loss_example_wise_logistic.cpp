@@ -292,43 +292,9 @@ namespace boosting {
             float64 measureDistance(uint32 labelVectorIndex, const LabelVector& labelVector,
                                     VectorView<float64>::const_iterator scoresBegin,
                                     VectorView<float64>::const_iterator scoresEnd) const override {
-                // The example-wise logistic loss calculates as
-                // `log(1 + exp(-expectedScore_1 * predictedScore_1) + ... + exp(-expectedScore_2 * predictedScore_2)
-                // + ...)`. In the following, we exploit the identity `log(exp(x_1) + exp(x_2) + ...) =
-                // max + log(exp(x_1 - max) + exp(x_2 - max) + ...)`, where `max = max(x_1, x_2, ...)`, to increase
-                // numerical stability (see, e.g., section "Log-sum-exp for computing the log-distribution" in
-                // https://timvieira.github.io/blog/post/2014/02/11/exp-normalize-trick/).
-                uint32 numLabels = scoresEnd - scoresBegin;
                 auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
-                float64 max = 0;
-
-                // For each label `i`, calculate `x = -expectedScore_i * predictedScore_i` and find the largest value
-                // (that must be greater than 0, because `exp(1) = 0`) among all of them...
-                for (uint32 i = 0; i < numLabels; i++) {
-                    float64 predictedScore = scoresBegin[i];
-                    bool trueLabel = *labelIterator;
-                    float64 x = trueLabel ? -predictedScore : predictedScore;
-
-                    if (x > max) {
-                        max = x;
-                    }
-
-                    labelIterator++;
-                }
-
-                // Calculate the example-wise loss as `max + log(exp(0 - max) + exp(x_1 - max) + ...)`...
-                float64 sumExp = std::exp(0 - max);
-                labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
-
-                for (uint32 i = 0; i < numLabels; i++) {
-                    float64 predictedScore = scoresBegin[i];
-                    bool trueLabel = *labelIterator;
-                    float64 x = trueLabel ? -predictedScore : predictedScore;
-                    sumExp += std::exp(x - max);
-                    labelIterator++;
-                }
-
-                return max + std::log(sumExp);
+                uint32 numLabels = scoresEnd - scoresBegin;
+                return evaluateInternally(scoresBegin, labelIterator, numLabels);
             }
     };
 
