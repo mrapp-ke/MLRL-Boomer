@@ -101,7 +101,8 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
             See :func:`mlrl.testbed.output_writer.Formattable.format`
             """
             num_predictions = self.num_pos_predictions + self.num_neg_predictions
-            num_conditions = self.num_numerical_leq + self.num_numerical_gr + self.num_ordinal_leq + self.num_ordinal_gr + self.num_nominal_eq + self.num_nominal_neq
+            num_conditions = self.num_numerical_leq + self.num_numerical_gr + self.num_ordinal_leq + \
+                self.num_ordinal_gr + self.num_nominal_eq + self.num_nominal_neq
             num_total_conditions = np.sum(num_conditions)
 
             if num_total_conditions > 0:
@@ -257,14 +258,14 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                     'Rule': rule_name,
                     'conditions': num_conditions,
                     'numerical conditions': num_numerical,
-                    'conditions using <= operator': num_numerical_leq,
-                    'conditions using > operator': num_numerical_gr,
+                    'numerical <= operator': num_numerical_leq,
+                    'numerical > operator': num_numerical_gr,
                     'ordinal conditions': num_ordinal,
-                    'conditions using <= operator': num_ordinal_leq,
-                    'conditions using > operator': num_ordinal_gr,
+                    'ordinal <= operator': num_ordinal_leq,
+                    'ordinal > operator': num_ordinal_gr,
                     'nominal conditions': num_nominal,
-                    'conditions using == operator': num_nominal_eq,
-                    'conditions using != operator': num_nominal_neq,
+                    'nominal == operator': num_nominal_eq,
+                    'nominal != operator': num_nominal_neq,
                     'predictions': num_predictions,
                     'pos. predictions': num_pos_predictions,
                     'neg. predictions': num_neg_predictions
