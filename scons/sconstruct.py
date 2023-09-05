@@ -41,7 +41,7 @@ if invalid_targets:
 
 # Create temporary file ".sconsign.dblite" in the build directory...
 env = SConsEnvironment()
-env.SConsignFile(name=path.join(BUILD_MODULE.build_dir, '.sconsign'))
+env.SConsignFile(name=path.relpath(path.join(BUILD_MODULE.build_dir, '.sconsign'), BUILD_MODULE.root_dir))
 
 # Define targets for checking code style definitions...
 target_test_format_python = __create_phony_target(env, TARGET_NAME_TEST_FORMAT_PYTHON, action=check_python_code_style)
