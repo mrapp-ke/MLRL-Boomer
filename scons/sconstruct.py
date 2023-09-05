@@ -109,3 +109,20 @@ env.Depends(target_install_cython, target_compile_cython)
 
 target_install = env.Alias(TARGET_NAME_INSTALL, None, None)
 env.Depends(target_install, [target_install_cpp, target_install_cython])
+
+# Define targets for removing shared libraries and extension modules from the source tree...
+if not COMMAND_LINE_TARGETS \
+        or TARGET_NAME_INSTALL_CPP in COMMAND_LINE_TARGETS \
+        or TARGET_NAME_INSTALL in COMMAND_LINE_TARGETS:
+    __print_if_clean(env, 'Removing shared libraries from source tree...')
+
+    for subproject in PYTHON_MODULE.find_subprojects():
+        env.Clean([target_install_cpp, DEFAULT_TARGET], subproject.find_shared_libraries())
+
+if not COMMAND_LINE_TARGETS \
+        or TARGET_NAME_INSTALL_CYTHON in COMMAND_LINE_TARGETS \
+        or TARGET_NAME_INSTALL in COMMAND_LINE_TARGETS:
+    __print_if_clean(env, 'Removing extension modules from source tree...')
+
+    for subproject in PYTHON_MODULE.find_subprojects():
+        env.Clean([target_install_cython, DEFAULT_TARGET], subproject.find_extension_modules())
