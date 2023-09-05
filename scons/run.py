@@ -87,6 +87,11 @@ def __install_dependencies(requirements_file: str, *dependencies: str):
 
 
 def install_build_dependencies(*dependencies: str):
+    """
+    Installs one or several dependencies that are required by the build system.
+
+    :param dependencies: The names of the dependencies that should be installed
+    """
     __install_dependencies(BUILD_MODULE.requirements_file, *dependencies)
 
 
@@ -95,6 +100,15 @@ def run_program(program: str,
                 print_args: bool = False,
                 additional_dependencies: Optional[List[str]] = None,
                 requirements_file: str = BUILD_MODULE.requirements_file):
+    """
+    Runs an external program.
+
+    :param program:                 The name of the program to be run
+    :param args:                    Optional arguments that should be passed to the program
+    :param print_args:              True, if the arguments should be included in log statements, False otherwise
+    :param additional_dependencies: The names of dependencies that should be installed before running the program
+    :param requirements_file:       The path of the requirements.txt file that specifies the dependency versions
+    """
     dependencies = [program]
 
     if additional_dependencies:
