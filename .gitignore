@@ -1,7 +1,6 @@
 # Build files
-cpp/build/
+__pycache__/
 python/**/build/
-python/**/__pycache__/
 python/**/dist/
 python/**/*egg-info/
 python/**/cython/*.so*
@@ -10,6 +9,7 @@ python/**/cython/*.dll
 python/**/cython/*.lib
 python/**/cython/*.pyd
 python/**/tests/res/tmp/
+cpp/build/
 .cpp_files.tmp
 
 # Documentation files
