@@ -9,7 +9,7 @@ from functools import reduce
 from os import path
 
 from code_style import check_cpp_code_style, check_python_code_style, enforce_cpp_code_style, enforce_python_code_style
-from compilation import compile_cpp, compile_cython, setup_cpp, setup_cython
+from compilation import compile_cpp, compile_cython, install_cpp, setup_cpp, setup_cython
 from modules import BUILD_MODULE, CPP_MODULE, PYTHON_MODULE
 from run import install_runtime_dependencies
 from SCons.Script import COMMAND_LINE_TARGETS
@@ -36,11 +36,13 @@ TARGET_NAME_VENV = 'venv'
 TARGET_NAME_COMPILE = 'compile'
 TARGET_NAME_COMPILE_CPP = TARGET_NAME_COMPILE + '_cpp'
 TARGET_NAME_COMPILE_CYTHON = TARGET_NAME_COMPILE + '_cython'
+TARGET_NAME_INSTALL = 'install'
+TARGET_NAME_INSTALL_CPP = TARGET_NAME_INSTALL + '_cpp'
 
 VALID_TARGETS = {
     TARGET_NAME_TEST_FORMAT, TARGET_NAME_TEST_FORMAT_PYTHON, TARGET_NAME_TEST_FORMAT_CPP, TARGET_NAME_FORMAT,
     TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP, TARGET_NAME_VENV, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP,
-    TARGET_NAME_COMPILE_CYTHON
+    TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL, TARGET_NAME_INSTALL_CPP
 }
 
 DEFAULT_TARGET = 'undefined'
@@ -96,3 +98,7 @@ if not COMMAND_LINE_TARGETS \
         or TARGET_NAME_COMPILE in COMMAND_LINE_TARGETS:
     __print_if_clean(env, 'Removing Cython build files...')
     env.Clean([target_compile_cython, DEFAULT_TARGET], PYTHON_MODULE.build_dir)
+
+# Define targets for installing shared libraries and extension modules into the source tree...
+target_install_cpp = __create_phony_target(env, TARGET_NAME_INSTALL_CPP, action=install_cpp)
+env.Depends(target_install_cpp, target_compile_cpp)

@@ -18,6 +18,10 @@ def __meson_compile(build_dir: str):
     run_program('meson', 'compile', '-C', build_dir, print_args=True)
 
 
+def __meson_install(build_dir: str):
+    run_program('meson', 'install', '--no-rebuild', '--only-changed', '-C', build_dir, print_args=True)
+
+
 def setup_cpp(**_):
     """
     Sets up the build system for compiling the C++ code.
@@ -31,6 +35,14 @@ def compile_cpp(**_):
     """
     print('Compiling C++ code...')
     __meson_compile(CPP_MODULE.build_dir)
+
+
+def install_cpp(**_):
+    """
+    Installs shared libraries into the source tree.
+    """
+    print('Installing shared libraries into source tree...')
+    __meson_install(CPP_MODULE.build_dir)
 
 
 def setup_cython(**_):
