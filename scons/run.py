@@ -50,13 +50,13 @@ def __is_dependency_outdated(dependency: str) -> bool:
 
 
 def __find_dependencies(requirements_file: str, *dependencies: str) -> List[str]:
-    with open(requirements_file, mode='r', encoding='utf-8') as f:
-        dependency_dict = {dependency.key: str(dependency) for dependency in parse_requirements(f.read())}
+    with open(requirements_file, mode='r', encoding='utf-8') as file:
+        dependency_dict = {dependency.key: str(dependency) for dependency in parse_requirements(file.read())}
 
     if dependencies:
         return [dependency_dict[dependency] for dependency in dependencies if dependency in dependency_dict]
 
-    return [dependency for dependency in dependency_dict.values()]
+    return list(dependency_dict.values())
 
 
 def __find_missing_and_outdated_dependencies(requirements_file: str, *dependencies: str) -> Tuple[List[str], List[str]]:
