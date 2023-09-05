@@ -66,6 +66,15 @@ def enforce_python_code_style(**_):
         __yapf(directory, enforce_changes=True)
 
 
+def check_cpp_code_style(**_):
+    """
+    Checks if the C++ source files adhere to the code style definitions. If this is not the case, an error is raised.
+    """
+    directory = CPP_MODULE.root_dir
+    print('Checking C++ code style in directory "' + directory + '"...')
+    __clang_format(directory)
+
+
 def enforce_cpp_code_style(**_):
     """
     Enforces the C++ source files to adhere to the code style definitions.
