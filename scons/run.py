@@ -5,12 +5,12 @@ Provides utility functions for installing and running external programs during t
 """
 import subprocess
 import sys
-from functools import reduce
-from typing import List, Tuple
 
-from pkg_resources import DistributionNotFound, VersionConflict, parse_requirements, require
+from functools import reduce
+from typing import List, Optional, Tuple
 
 from modules import BUILD_MODULE
+from pkg_resources import DistributionNotFound, VersionConflict, parse_requirements, require
 
 
 def __run_command(cmd: str, *args, print_args: bool = False):
@@ -88,3 +88,17 @@ def __install_dependencies(requirements_file: str, *dependencies: str):
 
 def install_build_dependencies(*dependencies: str):
     __install_dependencies(BUILD_MODULE.requirements_file, *dependencies)
+
+
+def run_program(program: str,
+                *args,
+                print_args: bool = False,
+                additional_dependencies: Optional[List[str]] = None,
+                requirements_file: str = BUILD_MODULE.requirements_file):
+    dependencies = [program]
+
+    if additional_dependencies:
+        dependencies.extend(additional_dependencies)
+
+    __install_dependencies(requirements_file, *dependencies)
+    __run_command(program, *args, print_args=print_args)
