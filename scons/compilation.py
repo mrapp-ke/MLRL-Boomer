@@ -1,6 +1,11 @@
+"""
+Author: Michael Rapp (michael.rapp.ml@gmail.com)
+
+Provides utility functions for compiling C++ and Cython code.
+"""
 from typing import List, Optional
 
-from modules import CPP_MODULE, Module
+from modules import CPP_MODULE, PYTHON_MODULE
 from run import run_program
 
 
@@ -26,3 +31,18 @@ def compile_cpp(**_):
     """
     print('Compiling C++ code...')
     __meson_compile(CPP_MODULE.build_dir)
+
+
+def setup_cython(**_):
+    """
+    Sets up the build system for compiling the Cython code.
+    """
+    __meson_setup(PYTHON_MODULE.root_dir, PYTHON_MODULE.build_dir, dependencies=['cython'])
+
+
+def compile_cython(**_):
+    """
+    Compiles the Cython code.
+    """
+    print('Compiling Cython code...')
+    __meson_compile(PYTHON_MODULE.build_dir)

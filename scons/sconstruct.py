@@ -9,8 +9,8 @@ from functools import reduce
 from os import path
 
 from code_style import check_cpp_code_style, check_python_code_style, enforce_cpp_code_style, enforce_python_code_style
-from compilation import compile_cpp, setup_cpp
-from modules import BUILD_MODULE, CPP_MODULE
+from compilation import compile_cpp, compile_cython, setup_cpp, setup_cython
+from modules import BUILD_MODULE, CPP_MODULE, PYTHON_MODULE
 from run import install_runtime_dependencies
 from SCons.Script import COMMAND_LINE_TARGETS
 from SCons.Script.SConscript import SConsEnvironment
@@ -30,10 +30,12 @@ TARGET_NAME_FORMAT_CPP = TARGET_NAME_FORMAT + '_cpp'
 TARGET_NAME_VENV = 'venv'
 TARGET_NAME_COMPILE = 'compile'
 TARGET_NAME_COMPILE_CPP = TARGET_NAME_COMPILE + '_cpp'
+TARGET_NAME_COMPILE_CYTHON = TARGET_NAME_COMPILE + '_cython'
 
 VALID_TARGETS = {
     TARGET_NAME_TEST_FORMAT, TARGET_NAME_TEST_FORMAT_PYTHON, TARGET_NAME_TEST_FORMAT_CPP, TARGET_NAME_FORMAT,
-    TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP, TARGET_NAME_VENV, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP
+    TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP, TARGET_NAME_VENV, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP,
+    TARGET_NAME_COMPILE_CYTHON
 }
 
 # Raise an error if any invalid targets are given...
@@ -67,3 +69,10 @@ target_venv = __create_phony_target(env, TARGET_NAME_VENV, action=install_runtim
 env.Command(CPP_MODULE.build_dir, None, action=setup_cpp)
 target_compile_cpp = __create_phony_target(env, TARGET_NAME_COMPILE_CPP, action=compile_cpp)
 env.Depends(target_compile_cpp, [target_venv, CPP_MODULE.build_dir])
+
+env.Command(PYTHON_MODULE.build_dir, None, action=setup_cython)
+target_compile_cython = __create_phony_target(env, TARGET_NAME_COMPILE_CYTHON, action=compile_cython)
+env.Depends(target_compile_cython, [target_compile_cpp, PYTHON_MODULE.build_dir])
+
+target_compile = __create_phony_target(env, TARGET_NAME_COMPILE)
+env.Depends(target_compile, [target_compile_cpp, target_compile_cython])
