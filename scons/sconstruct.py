@@ -10,6 +10,7 @@ from os import path
 
 from code_style import check_cpp_code_style, check_python_code_style, enforce_cpp_code_style, enforce_python_code_style
 from modules import BUILD_MODULE
+from run import install_runtime_dependencies
 from SCons.Script import COMMAND_LINE_TARGETS
 from SCons.Script.SConscript import SConsEnvironment
 
@@ -25,10 +26,11 @@ TARGET_NAME_TEST_FORMAT_CPP = TARGET_NAME_TEST_FORMAT + '_cpp'
 TARGET_NAME_FORMAT = 'format'
 TARGET_NAME_FORMAT_PYTHON = TARGET_NAME_FORMAT + '_python'
 TARGET_NAME_FORMAT_CPP = TARGET_NAME_FORMAT + '_cpp'
+TARGET_NAME_VENV = 'venv'
 
 VALID_TARGETS = {
     TARGET_NAME_TEST_FORMAT, TARGET_NAME_TEST_FORMAT_PYTHON, TARGET_NAME_TEST_FORMAT_CPP, TARGET_NAME_FORMAT,
-    TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP
+    TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP, TARGET_NAME_VENV
 }
 
 # Raise an error if any invalid targets are given...
@@ -54,3 +56,6 @@ target_format_python = __create_phony_target(env, TARGET_NAME_FORMAT_PYTHON, act
 target_format_cpp = __create_phony_target(env, TARGET_NAME_FORMAT_CPP, action=enforce_cpp_code_style)
 target_format = __create_phony_target(env, TARGET_NAME_FORMAT)
 env.Depends(target_format, [target_format_python, target_format_cpp])
+
+# Define target for installing runtime dependencies...
+target_venv = __create_phony_target(env, TARGET_NAME_VENV, action=install_runtime_dependencies)
