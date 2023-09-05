@@ -44,6 +44,16 @@ class PythonModule(Module):
         return 'python'
 
 
+class CppModule(Module):
+    """
+    Provides access to directories and files that belong to the project's C++ code.
+    """
+
+    @property
+    def root_dir(self) -> str:
+        return 'cpp'
+
+
 class BuildModule(Module):
     """
     Provides access to directories and files that belong to the build system.
@@ -61,3 +71,5 @@ class BuildModule(Module):
 BUILD_MODULE = BuildModule()
 
 PYTHON_MODULE = PythonModule()
+
+CPP_MODULE = CppModule()
