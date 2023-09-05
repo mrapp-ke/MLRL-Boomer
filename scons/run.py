@@ -7,9 +7,10 @@ import subprocess
 import sys
 
 from functools import reduce
+from os import path
 from typing import List, Optional, Tuple
 
-from modules import BUILD_MODULE
+from modules import BUILD_MODULE, CPP_MODULE, PYTHON_MODULE
 from pkg_resources import DistributionNotFound, VersionConflict, parse_requirements, require
 
 
@@ -93,6 +94,17 @@ def install_build_dependencies(*dependencies: str):
     :param dependencies: The names of the dependencies that should be installed
     """
     __install_dependencies(BUILD_MODULE.requirements_file, *dependencies)
+
+
+def install_runtime_dependencies(**_):
+    """
+    Installs all runtime dependencies that are required by the Python and C++ module.
+    """
+    for module in [PYTHON_MODULE, CPP_MODULE]:
+        requirements_file = module.requirements_file
+
+        if path.isfile(requirements_file):
+            __install_dependencies(requirements_file)
 
 
 def run_program(program: str,
