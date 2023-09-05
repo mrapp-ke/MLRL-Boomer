@@ -63,10 +63,6 @@ class BuildModule(Module):
     def root_dir(self) -> str:
         return 'scons'
 
-    @property
-    def build_dir(self) -> str:
-        return 'build'
-
 
 BUILD_MODULE = BuildModule()
 
