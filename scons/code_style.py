@@ -26,9 +26,21 @@ def __pylint(directory: str):
     run_program('pylint', *args, directory)
 
 
+def check_python_code_style(**_):
+    """
+    Checks if the Python source files adhere to the code style definitions. If this is not the case, an error is raised.
+    """
+    for module in [BUILD_MODULE, PYTHON_MODULE]:
+        directory = module.root_dir
+        print('Checking Python code style in directory "' + directory + '"...')
+        __isort(directory)
+        __yapf(directory)
+        __pylint(directory)
+
+
 def enforce_python_code_style(**_):
     """
-    Enforces Python source files to adhere to the code style definitions.
+    Enforces the Python source files to adhere to the code style definitions.
     """
     for module in [BUILD_MODULE, PYTHON_MODULE]:
         directory = module.root_dir
