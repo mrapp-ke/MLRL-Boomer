@@ -58,3 +58,11 @@ def compile_cython(**_):
     """
     print('Compiling Cython code...')
     __meson_compile(PYTHON_MODULE.build_dir)
+
+
+def install_cython(**_):
+    """
+    Installs extension modules into the source tree.
+    """
+    print('Installing extension modules into source tree...')
+    __meson_install(PYTHON_MODULE.build_dir)
