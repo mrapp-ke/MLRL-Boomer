@@ -20,6 +20,11 @@ def __create_phony_target(environment, target, action=None):
     return environment.AlwaysBuild(environment.Alias(target, None, action))
 
 
+def __print_if_clean(environment, message: str):
+    if environment.GetOption('clean'):
+        print(message)
+
+
 # Define target names...
 TARGET_NAME_TEST_FORMAT = 'test_format'
 TARGET_NAME_TEST_FORMAT_PYTHON = TARGET_NAME_TEST_FORMAT + '_python'
@@ -37,6 +42,8 @@ VALID_TARGETS = {
     TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP, TARGET_NAME_VENV, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP,
     TARGET_NAME_COMPILE_CYTHON
 }
+
+DEFAULT_TARGET = 'undefined'
 
 # Raise an error if any invalid targets are given...
 invalid_targets = [target for target in COMMAND_LINE_TARGETS if target not in VALID_TARGETS]
@@ -76,3 +83,16 @@ env.Depends(target_compile_cython, [target_compile_cpp, PYTHON_MODULE.build_dir]
 
 target_compile = __create_phony_target(env, TARGET_NAME_COMPILE)
 env.Depends(target_compile, [target_compile_cpp, target_compile_cython])
+
+# Define targets for cleaning up C++ and Cython build directories...
+if not COMMAND_LINE_TARGETS \
+        or TARGET_NAME_COMPILE_CPP in COMMAND_LINE_TARGETS \
+        or TARGET_NAME_COMPILE in COMMAND_LINE_TARGETS:
+    __print_if_clean(env, 'Removing C++ build files...')
+    env.Clean([target_compile_cpp, DEFAULT_TARGET], CPP_MODULE.build_dir)
+
+if not COMMAND_LINE_TARGETS \
+        or TARGET_NAME_COMPILE_CYTHON in COMMAND_LINE_TARGETS \
+        or TARGET_NAME_COMPILE in COMMAND_LINE_TARGETS:
+    __print_if_clean(env, 'Removing Cython build files...')
+    env.Clean([target_compile_cython, DEFAULT_TARGET], PYTHON_MODULE.build_dir)
