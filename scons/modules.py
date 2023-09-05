@@ -18,7 +18,6 @@ class Module(ABC):
         """
         The path to the module's root directory.
         """
-        pass
 
     @property
     def build_dir(self) -> str:
