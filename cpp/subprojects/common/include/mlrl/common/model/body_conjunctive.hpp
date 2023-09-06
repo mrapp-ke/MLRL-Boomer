@@ -20,8 +20,8 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
          * @tparam Compare      The type of the comparator that should be used to compare thresholds to feature values
          */
         template<typename Threshold, typename Compare>
-        class ConditionVector final : public SparseArraysVector<Threshold>,
-                                      public IConditional {
+        class MLRLCOMMON_API ConditionVector final : public SparseArraysVector<Threshold>,
+                                                     public IConditional {
             private:
 
                 Compare compare_;
@@ -52,7 +52,7 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         /**
          * Allows to compare numerical feature values to threshold using the <= operator.
          */
-        struct CompareNumericalLeq final {
+        struct MLRLCOMMON_API CompareNumericalLeq final {
             public:
 
                 /**
@@ -70,7 +70,7 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         /**
          * Allows to compare numerical feature values to threshold using the > operator.
          */
-        struct CompareNumericalGr final {
+        struct MLRLCOMMON_API CompareNumericalGr final {
             public:
 
                 /**
@@ -88,7 +88,7 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         /**
          * Allows to compare ordinal feature values to threshold using the <= operator.
          */
-        struct CompareOrdinalLeq final {
+        struct MLRLCOMMON_API CompareOrdinalLeq final {
             public:
 
                 /**
@@ -106,7 +106,7 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         /**
          * Allows to compare ordinal feature values to threshold using the > operator.
          */
-        struct CompareOrdinalGr final {
+        struct MLRLCOMMON_API CompareOrdinalGr final {
             public:
 
                 /**
@@ -124,7 +124,7 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         /**
          * Allows to compare nominal feature values to threshold using the == operator.
          */
-        struct CompareNominalEq final {
+        struct MLRLCOMMON_API CompareNominalEq final {
             public:
 
                 /**
@@ -142,7 +142,7 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         /**
          * Allows to compare nominal feature values to threshold using the != operator.
          */
-        struct CompareNominalNeq final {
+        struct MLRLCOMMON_API CompareNominalNeq final {
             public:
 
                 /**
