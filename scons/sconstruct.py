@@ -214,3 +214,31 @@ command_doc = env.Command(targets_doc, [DOC_MODULE.config_file] + DOC_MODULE.fin
 env.Depends(command_doc, target_apidoc)
 target_doc = env.Alias(TARGET_NAME_DOC, None, None)
 env.Depends(target_doc, command_doc)
+
+# Define target for cleaning up the documentation and associated build directories...
+if not COMMAND_LINE_TARGETS \
+        or TARGET_NAME_APIDOC_CPP in COMMAND_LINE_TARGETS \
+        or TARGET_NAME_APIDOC in COMMAND_LINE_TARGETS \
+        or TARGET_NAME_DOC in COMMAND_LINE_TARGETS:
+    __print_if_clean(env, 'Removing C++ API documentation...')
+
+    for subproject in CPP_MODULE.find_subprojects():
+        apidoc_subproject = DOC_MODULE.get_cpp_apidoc_subproject(subproject)
+        env.Clean([target_apidoc_cpp, DEFAULT_TARGET], apidoc_subproject.find_build_files())
+
+if not COMMAND_LINE_TARGETS \
+        or TARGET_NAME_APIDOC_PYTHON in COMMAND_LINE_TARGETS \
+        or TARGET_NAME_APIDOC in COMMAND_LINE_TARGETS \
+        or TARGET_NAME_DOC in COMMAND_LINE_TARGETS:
+    __print_if_clean(env, 'Removing Python API documentation...')
+
+    for subproject in PYTHON_MODULE.find_subprojects():
+        apidoc_subproject = DOC_MODULE.get_python_apidoc_subproject(subproject)
+        env.Clean([target_apidoc_python, DEFAULT_TARGET], apidoc_subproject.find_build_files())
+
+if not COMMAND_LINE_TARGETS or TARGET_NAME_APIDOC in COMMAND_LINE_TARGETS or TARGET_NAME_DOC in COMMAND_LINE_TARGETS:
+    env.Clean([target_apidoc, DEFAULT_TARGET], DOC_MODULE.apidoc_dir)
+
+if not COMMAND_LINE_TARGETS or TARGET_NAME_DOC in COMMAND_LINE_TARGETS:
+    __print_if_clean(env, 'Removing documentation...')
+    env.Clean([target_doc, DEFAULT_TARGET], DOC_MODULE.build_dir)
