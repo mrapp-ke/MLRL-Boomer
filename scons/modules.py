@@ -47,7 +47,7 @@ class Module(ABC):
     @property
     def build_dir(self) -> str:
         """
-        The path to the directory, where build files should be stored.
+        The path to the directory, where build files are stored.
         """
         return path.join(self.root_dir, 'build')
 
@@ -100,6 +100,13 @@ class PythonModule(Module):
             The directory that contains all wheel packages that have been built for the subproject.
             """
             return path.join(self.root_dir, 'dist')
+
+        @property
+        def build_dirs(self) -> List[str]:
+            """
+            A list that contains all directories, where the subproject's build files are stored.
+            """
+            return [self.dist_dir, path.join(self.root_dir, 'build')] + glob(path.join(self.root_dir, '*.egg-info'))
 
         def find_wheels(self) -> List[str]:
             """

@@ -151,3 +151,10 @@ env.Depends(target_build_wheels, [target_install] + commands_build_wheels)
 
 target_install_wheels = env.Alias(TARGET_NAME_INSTALL_WHEELS, None, None)
 env.Depends(target_install_wheels, [target_install] + commands_install_wheels)
+
+# Define target for cleaning up Python wheels and associated build directories...
+if not COMMAND_LINE_TARGETS or TARGET_NAME_BUILD_WHEELS in COMMAND_LINE_TARGETS:
+    __print_if_clean(env, 'Removing Python wheels...')
+
+    for subproject in PYTHON_MODULE.find_subprojects():
+        env.Clean([target_build_wheels, DEFAULT_TARGET], subproject.build_dirs)
