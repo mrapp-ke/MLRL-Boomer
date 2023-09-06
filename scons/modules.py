@@ -95,6 +95,13 @@ class PythonModule(Module):
             return path.join(self.root_dir, 'mlrl')
 
         @property
+        def test_dir(self) -> str:
+            """
+            The directory that contains the subproject's automated tests.
+            """
+            return path.join(self.root_dir, 'tests')
+
+        @property
         def dist_dir(self) -> str:
             """
             The directory that contains all wheel packages that have been built for the subproject.

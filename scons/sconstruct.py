@@ -13,6 +13,7 @@ from compilation import compile_cpp, compile_cython, install_cpp, install_cython
 from modules import BUILD_MODULE, CPP_MODULE, PYTHON_MODULE
 from packaging import build_python_wheel, install_python_wheels
 from run import install_runtime_dependencies
+from testing import run_tests
 from SCons.Script import COMMAND_LINE_TARGETS
 from SCons.Script.SConscript import SConsEnvironment
 
@@ -42,12 +43,13 @@ TARGET_NAME_INSTALL_CPP = TARGET_NAME_INSTALL + '_cpp'
 TARGET_NAME_INSTALL_CYTHON = TARGET_NAME_INSTALL + '_cython'
 TARGET_NAME_BUILD_WHEELS = 'build_wheels'
 TARGET_NAME_INSTALL_WHEELS = 'install_wheels'
+TARGET_NAME_TESTS = 'tests'
 
 VALID_TARGETS = {
     TARGET_NAME_TEST_FORMAT, TARGET_NAME_TEST_FORMAT_PYTHON, TARGET_NAME_TEST_FORMAT_CPP, TARGET_NAME_FORMAT,
     TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP, TARGET_NAME_VENV, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP,
     TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL, TARGET_NAME_INSTALL_CPP, TARGET_NAME_INSTALL_CYTHON,
-    TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS
+    TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS, TARGET_NAME_TESTS
 }
 
 DEFAULT_TARGET = 'undefined'
@@ -158,3 +160,7 @@ if not COMMAND_LINE_TARGETS or TARGET_NAME_BUILD_WHEELS in COMMAND_LINE_TARGETS:
 
     for subproject in PYTHON_MODULE.find_subprojects():
         env.Clean([target_build_wheels, DEFAULT_TARGET], subproject.build_dirs)
+
+# Define targets for running automated tests...
+target_test = __create_phony_target(env, TARGET_NAME_TESTS, action=run_tests)
+env.Depends(target_test, target_install_wheels)
