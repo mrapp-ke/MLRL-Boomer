@@ -59,25 +59,24 @@ class Module(ABC):
         return path.join(self.root_dir, 'requirements.txt')
 
 
-class PythonModule(Module):
+class SourceModule(Module, ABC):
     """
-    Provides access to directories and files that belong to the project's Python code.
+    An abstract base class for all classes that provide access to directories and files that belong to a module, which
+    contains source code.
     """
 
-    class Subproject:
+    class Subproject(ABC):
         """
-        Provides access to directories and files that belong to an individual subproject that is part of the project's
-        Python code.
+        An abstract base class for all classes that provide access to directories and files that belong to an individual
+        subproject that is part of a module, which contains source files.
         """
 
-        @staticmethod
-        def __filter_pycache_directories(directory: str) -> bool:
-            return directory != '__pycache__'
-
-        def __init__(self, root_dir: str):
+        def __init__(self, parent_module: 'SourceModule', root_dir: str):
             """
-            :param root_dir: The root directory of the subproject
+            :param parent_module:   The `SourceModule`, the subproject belongs to
+            :param root_dir:        The root directory of the suproject
             """
+            self.parent_module = parent_module
             self.root_dir = root_dir
 
         @property
@@ -86,6 +85,22 @@ class PythonModule(Module):
             The name of the subproject.
             """
             return path.basename(self.root_dir)
+
+
+class PythonModule(SourceModule):
+    """
+    Provides access to directories and files that belong to the project's Python code.
+    """
+
+    class Subproject(SourceModule.Subproject):
+        """
+        Provides access to directories and files that belong to an individual subproject that is part of the project's
+        Python code.
+        """
+
+        @staticmethod
+        def __filter_pycache_directories(directory: str) -> bool:
+            return directory != '__pycache__'
 
         @property
         def source_dir(self) -> str:
@@ -175,7 +190,7 @@ class PythonModule(Module):
         :return: A list that contains all subrojects that have been found
         """
         return [
-            PythonModule.Subproject(file) for file in glob(path.join(self.root_dir, 'subprojects', '*'))
+            PythonModule.Subproject(self, file) for file in glob(path.join(self.root_dir, 'subprojects', '*'))
             if path.isdir(file)
         ]
 
@@ -193,14 +208,43 @@ class PythonModule(Module):
         raise ValueError('File "' + file + '" does not belong to a Python subproject')
 
 
-class CppModule(Module):
+class CppModule(SourceModule):
     """
     Provides access to directories and files that belong to the project's C++ code.
     """
 
+    class Subproject(SourceModule.Subproject):
+        """
+        Provides access to directories and files that belong to an individual subproject that is part of the project's
+        C++ code.
+        """
+
+        def find_source_files(self) -> List[str]:
+            """
+            Finds and returns all source files that are contained by the subproject.
+
+            :return: A list that contains the paths of the source files that have been found
+            """
+
+            def file_filter(file) -> bool:
+                return file.endswith('.hpp') or file.endswith('.cpp')
+
+            return find_files_recursively(self.root_dir, file_filter=file_filter)
+
     @property
     def root_dir(self) -> str:
         return 'cpp'
+
+    def find_subprojects(self) -> List[Subproject]:
+        """
+        Finds and returns all subprojects that are part of the C++ code.
+
+        :return: A list that contains all subrojects that have been found
+        """
+        return [
+            CppModule.Subproject(self, file) for file in glob(path.join(self.root_dir, 'subprojects', '*'))
+            if path.isdir(file)
+        ]
 
 
 class BuildModule(Module):
@@ -213,8 +257,184 @@ class BuildModule(Module):
         return 'scons'
 
 
+class DocumentationModule(Module):
+    """
+    Provides access to directories and files that belong to the project's documentation.
+    """
+
+    class ApidocSubproject(ABC):
+        """
+        An abstract base class for all classes that provide access to directories and files that are needed for building
+        the API documentation of a certain C++ or Python subproject.
+        """
+
+        def __init__(self, parent_module: 'DocumentationModule', source_subproject: SourceModule.Subproject):
+            """
+            :param parent_module:       The `DocumentationModule` this subproject belongs to
+            :param source_subproject:   The subproject of which the API documentation should be built
+            """
+            self.parent_module = parent_module
+            self.source_subproject = source_subproject
+
+        @property
+        def name(self) -> str:
+            """
+            The name of the subproject of which the API documentation should be built.
+            """
+            return self.source_subproject.name
+
+        @property
+        def apidoc_dir(self) -> str:
+            """
+            The directory, where the API documentation should be stored.
+            """
+            return path.join(self.parent_module.apidoc_dir, 'api', self.source_subproject.parent_module.root_dir,
+                             self.name)
+
+        def find_apidoc_files(self) -> List[str]:
+            """
+            Finds and returns all files that belong to the API documentation that has been built.
+
+            :return: A list that contains the paths of the build files that have been found
+            """
+            return find_files_recursively(self.apidoc_dir)
+
+    class CppApidocSubproject(ApidocSubproject):
+        """
+        Provides access to the directories and files that are necessary for building the API documentation of a certain
+        C++ subproject.
+        """
+
+        @property
+        def config_file(self) -> str:
+            """
+            The config file, which should be used for building the API documentation.
+            """
+            return path.join(self.parent_module.root_dir, 'Doxyfile_' + self.name)
+
+    class PythonApidocSubproject(ApidocSubproject):
+        """
+        Provides access to the directories and files that are necessary for building the API documentation of a certain
+        Python subproject.
+        """
+
+        @property
+        def config_file(self) -> str:
+            """
+            The config file, which should be used for building the API documentation.
+            """
+            return path.join(self.build_dir, 'conf.py')
+
+        @property
+        def build_dir(self) -> str:
+            """
+            The directory, where build files should be stored.
+            """
+            return path.join(self.parent_module.root_dir, 'python', self.name)
+
+    @property
+    def root_dir(self) -> str:
+        return 'doc'
+
+    @property
+    def config_file(self) -> str:
+        """
+        The config file that should be used for building the documentation.
+        """
+        return path.join(self.root_dir, 'conf.py')
+
+    @property
+    def apidoc_dir(self) -> str:
+        """
+        The directory, where API documentations should be stored.
+        """
+        return path.join(self.root_dir, 'apidoc')
+
+    @property
+    def build_dir(self) -> str:
+        """
+        The directory, where the documentation should be stored.
+        """
+        return path.join(self.root_dir, '_build')
+
+    def find_build_files(self) -> List[str]:
+        """
+        Finds and returns all files that belong to the documentation that has been built.
+
+        :return: A list that contains the paths of the build files that have been found
+        """
+        return find_files_recursively(self.build_dir)
+
+    def find_source_files(self) -> List[str]:
+        """
+        Finds and returns all source files from which the documentation is built.
+
+        :return: A list that contains the paths of the source files that have been found
+        """
+
+        def directory_filter(directory: str) -> bool:
+            return directory != path.basename(self.build_dir) \
+                and directory != path.basename(self.apidoc_dir) \
+                and directory != 'python'
+
+        def file_filter(file: str) -> bool:
+            return not file.startswith('Doxyfile') and not file == 'requirements.txt' and not file == 'conf.py'
+
+        return find_files_recursively(self.root_dir, directory_filter=directory_filter, file_filter=file_filter)
+
+    def get_cpp_apidoc_subproject(self, cpp_subproject: CppModule.Subproject) -> CppApidocSubproject:
+        """
+        Returns a `CppApidocSubproject` for building the API documentation of a given C++ subproject.
+
+        :param cpp_subproject:  The C++ subproject of which the API documentation should be built
+        :return:                A `CppApidocSubproject`
+        """
+        return DocumentationModule.CppApidocSubproject(self, cpp_subproject)
+
+    def get_python_apidoc_subproject(self, python_subproject: PythonModule.Subproject) -> PythonApidocSubproject:
+        """
+        Returns a `PythonApidocSubproject` for building the API documentation of a given Python subproject.
+
+        :param python_subproject:   The Python subproject of which the API documentation should be built
+        :return:                    A `PythonApidocSubproject`
+        """
+        return DocumentationModule.PythonApidocSubproject(self, python_subproject)
+
+    def find_cpp_apidoc_subproject(self, file: str) -> CppApidocSubproject:
+        """
+        Finds and returns the `CppApidocSubproject` to which a given file belongs.
+
+        :param file:    The path of the file
+        :return:        The `CppApiSubproject` to which the given file belongs
+        """
+        for subproject in CPP_MODULE.find_subprojects():
+            apidoc_subproject = self.get_cpp_apidoc_subproject(subproject)
+
+            if file.startswith(apidoc_subproject.apidoc_dir):
+                return apidoc_subproject
+
+        raise ValueError('File "' + file + '" does not belong to a C++ API documentation subproject')
+
+    def find_python_apidoc_subproject(self, file: str) -> PythonApidocSubproject:
+        """
+        Finds and returns the `PythonApidocSubproject` to which a given file belongs.
+
+        :param file:    The path of the file
+        :return:        The `PythonApidocSubproject` to which the given file belongs
+        """
+        for subproject in PYTHON_MODULE.find_subprojects():
+            apidoc_subproject = self.get_python_apidoc_subproject(subproject)
+
+            if file.startswith(apidoc_subproject.apidoc_dir):
+                return apidoc_subproject
+
+        raise ValueError('File "' + file + '" does not belong to a Python API documentation subproject')
+
+
 BUILD_MODULE = BuildModule()
 
 PYTHON_MODULE = PythonModule()
 
 CPP_MODULE = CppModule()
+
+DOC_MODULE = DocumentationModule()
