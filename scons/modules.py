@@ -299,6 +299,14 @@ class DocumentationModule(Module):
             """
             return find_files_recursively(self.apidoc_dir)
 
+        def find_build_files(self) -> List[str]:
+            """
+            Finds and returns all build files that have been created when building the API documentation.
+
+            :return: A list that contains the paths of all build files that have been found
+            """
+            return [self.apidoc_dir]
+
     class CppApidocSubproject(ApidocSubproject):
         """
         Provides access to the directories and files that are necessary for building the API documentation of a certain
@@ -331,6 +339,13 @@ class DocumentationModule(Module):
             The directory, where build files should be stored.
             """
             return path.join(self.parent_module.root_dir, 'python', self.name)
+
+        def find_build_files(self) -> List[str]:
+
+            def file_filter(file) -> bool:
+                return file.endswith('.rst')
+
+            return find_files_recursively(self.build_dir, file_filter=file_filter) + super().find_build_files()
 
     @property
     def root_dir(self) -> str:
