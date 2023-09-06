@@ -128,3 +128,26 @@ def run_program(program: str,
 
     __install_dependencies(requirements_file, *dependencies)
     __run_command(program, *args, print_args=print_args)
+
+
+def run_python_program(program: str,
+                       *args,
+                       print_args: bool = False,
+                       additional_dependencies: Optional[List[str]] = None,
+                       requirements_file: str = BUILD_MODULE.requirements_file):
+    """
+    Runs an external Python program.
+
+    :param program:                 The name of the program to be run
+    :param args:                    Optional arguments that should be passed to the program
+    :param print_args:              True, if the arguments should be included in log statements, False otherwise
+    :param additional_dependencies: The names of dependencies that should be installed before running the program
+    :param requirements_file:       The path of the requirements.txt file that specifies the dependency versions
+    """
+    dependencies = [program]
+
+    if additional_dependencies:
+        dependencies.extend(additional_dependencies)
+
+    __install_dependencies(requirements_file, *dependencies)
+    __run_command('python', '-m', program, *args, print_args=print_args)

@@ -94,6 +94,29 @@ class PythonModule(Module):
             """
             return path.join(self.root_dir, 'mlrl')
 
+        @property
+        def dist_dir(self) -> str:
+            """
+            The directory that contains all wheel packages that have been built for the subproject.
+            """
+            return path.join(self.root_dir, 'dist')
+
+        def find_wheels(self) -> List[str]:
+            """
+            Finds and returns all wheel packages that have been built for the subproject.
+
+            :return: A list that contains the paths of the wheel packages that have been found
+            """
+            return glob(path.join(self.dist_dir, '*.whl'))
+
+        def find_source_files(self) -> List[str]:
+            """
+            Finds and returns all source files that are contained by the subproject.
+
+            :return: A list that contains the paths of the source files that have been found
+            """
+            return find_files_recursively(self.source_dir, directory_filter=self.__filter_pycache_directories)
+
         def find_shared_libraries(self) -> List[str]:
             """
             Finds and returns all shared libraries that are contained in the subproject's source tree.
@@ -141,6 +164,19 @@ class PythonModule(Module):
             PythonModule.Subproject(file) for file in glob(path.join(self.root_dir, 'subprojects', '*'))
             if path.isdir(file)
         ]
+
+    def find_subproject(self, file: str) -> Subproject:
+        """
+        Finds and returns the subproject to which a given file belongs.
+
+        :param file:    The path of the file
+        :return:        The subproject to which the given file belongs
+        """
+        for subproject in self.find_subprojects():
+            if file.startswith(subproject.root_dir):
+                return subproject
+
+        raise ValueError('File "' + file + '" does not belong to a Python subproject')
 
 
 class CppModule(Module):

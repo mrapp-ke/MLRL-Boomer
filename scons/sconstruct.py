@@ -11,6 +11,7 @@ from os import path
 from code_style import check_cpp_code_style, check_python_code_style, enforce_cpp_code_style, enforce_python_code_style
 from compilation import compile_cpp, compile_cython, install_cpp, install_cython, setup_cpp, setup_cython
 from modules import BUILD_MODULE, CPP_MODULE, PYTHON_MODULE
+from packaging import build_python_wheel, install_python_wheels
 from run import install_runtime_dependencies
 from SCons.Script import COMMAND_LINE_TARGETS
 from SCons.Script.SConscript import SConsEnvironment
@@ -39,11 +40,14 @@ TARGET_NAME_COMPILE_CYTHON = TARGET_NAME_COMPILE + '_cython'
 TARGET_NAME_INSTALL = 'install'
 TARGET_NAME_INSTALL_CPP = TARGET_NAME_INSTALL + '_cpp'
 TARGET_NAME_INSTALL_CYTHON = TARGET_NAME_INSTALL + '_cython'
+TARGET_NAME_BUILD_WHEELS = 'build_wheels'
+TARGET_NAME_INSTALL_WHEELS = 'install_wheels'
 
 VALID_TARGETS = {
     TARGET_NAME_TEST_FORMAT, TARGET_NAME_TEST_FORMAT_PYTHON, TARGET_NAME_TEST_FORMAT_CPP, TARGET_NAME_FORMAT,
     TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP, TARGET_NAME_VENV, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP,
-    TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL, TARGET_NAME_INSTALL_CPP, TARGET_NAME_INSTALL_CYTHON
+    TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL, TARGET_NAME_INSTALL_CPP, TARGET_NAME_INSTALL_CYTHON,
+    TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS
 }
 
 DEFAULT_TARGET = 'undefined'
@@ -126,3 +130,24 @@ if not COMMAND_LINE_TARGETS \
 
     for subproject in PYTHON_MODULE.find_subprojects():
         env.Clean([target_install_cython, DEFAULT_TARGET], subproject.find_extension_modules())
+
+# Define targets for building and installing Python wheels...
+commands_build_wheels = []
+commands_install_wheels = []
+
+for subproject in PYTHON_MODULE.find_subprojects():
+    wheels = subproject.find_wheels()
+    targets_build_wheels = wheels if wheels else subproject.dist_dir
+
+    command_build_wheels = env.Command(targets_build_wheels, subproject.find_source_files(), action=build_python_wheel)
+    commands_build_wheels.append(command_build_wheels)
+
+    command_install_wheels = env.Command(subproject.root_dir, targets_build_wheels, action=install_python_wheels)
+    env.Depends(command_install_wheels, command_build_wheels)
+    commands_install_wheels.append(command_install_wheels)
+
+target_build_wheels = env.Alias(TARGET_NAME_BUILD_WHEELS, None, None)
+env.Depends(target_build_wheels, [target_install] + commands_build_wheels)
+
+target_install_wheels = env.Alias(TARGET_NAME_INSTALL_WHEELS, None, None)
+env.Depends(target_install_wheels, [target_install] + commands_install_wheels)
