@@ -59,7 +59,7 @@ VALID_TARGETS = {
     TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
 }
 
-DEFAULT_TARGET = 'undefined'
+DEFAULT_TARGET = TARGET_NAME_INSTALL_WHEELS
 
 # Raise an error if any invalid targets are given...
 invalid_targets = [target for target in COMMAND_LINE_TARGETS if target not in VALID_TARGETS]
@@ -242,3 +242,6 @@ if not COMMAND_LINE_TARGETS or TARGET_NAME_APIDOC in COMMAND_LINE_TARGETS or TAR
 if not COMMAND_LINE_TARGETS or TARGET_NAME_DOC in COMMAND_LINE_TARGETS:
     __print_if_clean(env, 'Removing documentation...')
     env.Clean([target_doc, DEFAULT_TARGET], DOC_MODULE.build_dir)
+
+# Set the default target...
+env.Default(DEFAULT_TARGET)
