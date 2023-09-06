@@ -10,7 +10,8 @@ from os import path
 
 from code_style import check_cpp_code_style, check_python_code_style, enforce_cpp_code_style, enforce_python_code_style
 from compilation import compile_cpp, compile_cython, install_cpp, install_cython, setup_cpp, setup_cython
-from modules import BUILD_MODULE, CPP_MODULE, PYTHON_MODULE
+from documentation import apidoc_cpp, apidoc_python, doc
+from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from packaging import build_python_wheel, install_python_wheels
 from run import install_runtime_dependencies
 from testing import run_tests
@@ -45,12 +46,17 @@ TARGET_NAME_INSTALL_CYTHON = TARGET_NAME_INSTALL + '_cython'
 TARGET_NAME_BUILD_WHEELS = 'build_wheels'
 TARGET_NAME_INSTALL_WHEELS = 'install_wheels'
 TARGET_NAME_TESTS = 'tests'
+TARGET_NAME_APIDOC = 'apidoc'
+TARGET_NAME_APIDOC_CPP = TARGET_NAME_APIDOC + '_cpp'
+TARGET_NAME_APIDOC_PYTHON = TARGET_NAME_APIDOC + '_python'
+TARGET_NAME_DOC = 'doc'
 
 VALID_TARGETS = {
     TARGET_NAME_TEST_FORMAT, TARGET_NAME_TEST_FORMAT_PYTHON, TARGET_NAME_TEST_FORMAT_CPP, TARGET_NAME_FORMAT,
     TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP, TARGET_NAME_VENV, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP,
     TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL, TARGET_NAME_INSTALL_CPP, TARGET_NAME_INSTALL_CYTHON,
-    TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS, TARGET_NAME_TESTS
+    TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS, TARGET_NAME_TESTS, TARGET_NAME_APIDOC, TARGET_NAME_APIDOC_CPP,
+    TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
 }
 
 DEFAULT_TARGET = 'undefined'
@@ -165,3 +171,46 @@ if not COMMAND_LINE_TARGETS or TARGET_NAME_BUILD_WHEELS in COMMAND_LINE_TARGETS:
 # Define targets for running automated tests...
 target_test = __create_phony_target(env, TARGET_NAME_TESTS, action=run_tests)
 env.Depends(target_test, target_install_wheels)
+
+# Define targets for generating the documentation...
+commands_apidoc_cpp = []
+commands_apidoc_python = []
+
+for subproject in CPP_MODULE.find_subprojects():
+    apidoc_subproject = DOC_MODULE.get_cpp_apidoc_subproject(subproject)
+    config_file = apidoc_subproject.config_file
+
+    if path.isfile(config_file):
+        apidoc_files = apidoc_subproject.find_apidoc_files()
+        targets_apidoc_cpp = apidoc_files if apidoc_files else apidoc_subproject.apidoc_dir
+        source_files = [config_file] + subproject.find_source_files()
+        command_apidoc_cpp = env.Command(targets_apidoc_cpp, source_files, action=apidoc_cpp)
+        commands_apidoc_cpp.append(command_apidoc_cpp)
+
+target_apidoc_cpp = env.Alias(TARGET_NAME_APIDOC_CPP, None, None)
+env.Depends(target_apidoc_cpp, commands_apidoc_cpp)
+
+for subproject in PYTHON_MODULE.find_subprojects():
+    apidoc_subproject = DOC_MODULE.get_python_apidoc_subproject(subproject)
+    config_file = apidoc_subproject.config_file
+
+    if path.isfile(config_file):
+        apidoc_files = apidoc_subproject.find_apidoc_files()
+        targets_apidoc_python = apidoc_files if apidoc_files else apidoc_subproject.apidoc_dir
+        source_files = [config_file] + subproject.find_source_files()
+        command_apidoc_python = env.Command(targets_apidoc_python, source_files, action=apidoc_python)
+        env.Depends(command_apidoc_python, target_install_wheels)
+        commands_apidoc_python.append(command_apidoc_python)
+
+target_apidoc_python = env.Alias(TARGET_NAME_APIDOC_PYTHON, None, None)
+env.Depends(target_apidoc_python, commands_apidoc_python)
+
+target_apidoc = env.Alias(TARGET_NAME_APIDOC, None, None)
+env.Depends(target_apidoc, [target_apidoc_cpp, target_apidoc_python])
+
+doc_files = DOC_MODULE.find_build_files()
+targets_doc = doc_files if doc_files else DOC_MODULE.build_dir
+command_doc = env.Command(targets_doc, [DOC_MODULE.config_file] + DOC_MODULE.find_source_files(), action=doc)
+env.Depends(command_doc, target_apidoc)
+target_doc = env.Alias(TARGET_NAME_DOC, None, None)
+env.Depends(target_doc, command_doc)
