@@ -14,6 +14,7 @@ from modules import BUILD_MODULE, CPP_MODULE, PYTHON_MODULE
 from packaging import build_python_wheel, install_python_wheels
 from run import install_runtime_dependencies
 from testing import run_tests
+
 from SCons.Script import COMMAND_LINE_TARGETS
 from SCons.Script.SConscript import SConsEnvironment
 
