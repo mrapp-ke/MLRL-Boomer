@@ -8,8 +8,8 @@ on:
       - '**/*.pyx'
       - '**/*.py'
       - '**/*.build'
-      - 'Makefile'
-      - 'python/requirements.txt'
+      - 'build'
+      - '**/requirements.txt'
       - 'doc/**'
       - 'python/subprojects/testbed/tests/**'
       - '.github/workflows/test_build.yml'
@@ -26,15 +26,15 @@ jobs:
           sudo apt install -y opencl-headers ocl-icd-opencl-dev
       - name: Compile via GCC
         run: |
-          make compile
+          ./build compile
       - name: Run Tests
         run: |
-          make tests
+          ./build tests
       - name: Install Doxygen
         uses: ssciwr/doxygen-install@v1
       - name: Generate Documentation
         run: |
-          make doc
+          ./build doc
   macos_build:
     name: Test MacOS build
     runs-on: macos-latest
@@ -50,7 +50,7 @@ jobs:
           brew install opencl-clhpp-headers
       - name: Compile via Clang
         run: |
-          CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include make compile
+          CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
   windows_build:
     name: Test Windows build
     runs-on: windows-latest
