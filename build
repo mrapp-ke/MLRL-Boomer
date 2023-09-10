@@ -19,7 +19,7 @@ if [ ! -d $VENV_DIR ] && [ $CLEAN = false ]; then
 fi
 
 if [ -d "$VENV_DIR" ]; then
-    source $VENV_DIR/bin/activate \
+    . $VENV_DIR/bin/activate \
         && python -c "import sys; sys.path.append('$SCONS_DIR'); import run; run.install_build_dependencies('scons')" \
         && scons --enable-virtualenv --silent --file $SCONS_DIR/sconstruct.py $@ \
         && deactivate
