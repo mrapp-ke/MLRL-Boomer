@@ -32,6 +32,9 @@ jobs:
           ./build tests
       - name: Install Doxygen
         uses: ssciwr/doxygen-install@v1
+      - name: Install Roboto font
+        run: |
+          sudo apt install -y fonts-roboto
       - name: Generate Documentation
         run: |
           ./build doc
