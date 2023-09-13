@@ -24,6 +24,7 @@ A major update to the BOOMER algorithm that introduces the following changes.
 * The documentation has been updated to a more modern theme supporting light and dark theme variants.
 * A build option that allows to disable multi-threading support via OpenMP at compile-time has been added.
 * The Python code is now checked for common issues by applying `pylint` via continuous integration.
+* The Makefile has been replaced with wrapper scripts triggering a [SCons](https://scons.org/) build.  
 
 ## Version 0.9.0 (Jul. 2nd, 2023)
 
