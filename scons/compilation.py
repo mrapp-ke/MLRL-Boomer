@@ -6,20 +6,20 @@ Provides utility functions for compiling C++ and Cython code.
 from typing import List, Optional
 
 from modules import CPP_MODULE, PYTHON_MODULE
-from run import run_program
+from run import run_venv_program
 
 
 def __meson_setup(root_dir: str, build_dir: str, dependencies: Optional[List[str]] = None):
     print('Setting up build directory "' + build_dir + '"...')
-    run_program('meson', 'setup', build_dir, root_dir, print_args=True, additional_dependencies=dependencies)
+    run_venv_program('meson', 'setup', build_dir, root_dir, print_args=True, additional_dependencies=dependencies)
 
 
 def __meson_compile(build_dir: str):
-    run_program('meson', 'compile', '-C', build_dir, print_args=True)
+    run_venv_program('meson', 'compile', '-C', build_dir, print_args=True)
 
 
 def __meson_install(build_dir: str):
-    run_program('meson', 'install', '--no-rebuild', '--only-changed', '-C', build_dir, print_args=True)
+    run_venv_program('meson', 'install', '--no-rebuild', '--only-changed', '-C', build_dir, print_args=True)
 
 
 def setup_cpp(**_):
