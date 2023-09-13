@@ -7,7 +7,7 @@ from glob import glob
 from os import path
 
 from modules import BUILD_MODULE, CPP_MODULE, PYTHON_MODULE
-from run import run_program
+from run import run_venv_program
 
 
 def __isort(directory: str, enforce_changes: bool = False):
@@ -16,17 +16,17 @@ def __isort(directory: str, enforce_changes: bool = False):
     if not enforce_changes:
         args.append('--check')
 
-    run_program('isort', *args, directory)
+    run_venv_program('isort', *args, directory)
 
 
 def __yapf(directory: str, enforce_changes: bool = False):
     args = ['-r', '-p', '--style=.style.yapf', '--exclude', '**/build/*.py', '-i' if enforce_changes else '--diff']
-    run_program('yapf', *args, directory)
+    run_venv_program('yapf', *args, directory)
 
 
 def __pylint(directory: str):
     args = ['--jobs=0', '--recursive=y', '--ignore=build', '--rcfile=.pylintrc', '--score=n']
-    run_program('pylint', *args, directory)
+    run_venv_program('pylint', *args, directory)
 
 
 def __clang_format(directory: str, enforce_changes: bool = True):
@@ -40,7 +40,7 @@ def __clang_format(directory: str, enforce_changes: bool = True):
         args.append('-n')
         args.append('--Werror')
 
-    run_program('clang-format', *args, *cpp_header_files, *cpp_source_files)
+    run_venv_program('clang-format', *args, *cpp_header_files, *cpp_source_files)
 
 
 def check_python_code_style(**_):
