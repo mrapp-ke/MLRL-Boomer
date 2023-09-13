@@ -76,4 +76,4 @@ jobs:
         run: |
           $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\include"
           $env:LIB += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\lib"
-          make compile
+          ./build.bat compile
