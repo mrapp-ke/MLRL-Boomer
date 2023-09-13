@@ -3,6 +3,7 @@
 set "VENV_DIR=venv"
 set "SCONS_DIR=scons"
 set "CLEAN=false"
+set "EXIT_CODE=0"
 
 if not "%1"=="" if "%2"=="" (
     if "%1"=="--clean" (
@@ -19,10 +20,11 @@ if not exist "%VENV_DIR%" if "%CLEAN%"=="false" (
 )
 
 if exist "%VENV_DIR%" (
-    call %VENV_DIR%\Scripts\activate ^
-        && python -c "import sys;sys.path.append('%SCONS_DIR%'); import run; run.install_build_dependencies('scons')" ^
-        && scons --silent --file %SCONS_DIR%\sconstruct.py %* ^
-        && call deactivate
+    call %VENV_DIR%\Scripts\activate
+    python -c "import sys;sys.path.append('%SCONS_DIR%'); import run; run.install_build_dependencies('scons')"
+    scons --silent --file %SCONS_DIR%\sconstruct.py %*
+    set "EXIT_CODE=%ERRORLEVEL%"
+    call deactivate
 )
 
 if "%CLEAN%"=="true" if exist "%VENV_DIR%" (
@@ -33,3 +35,5 @@ if "%CLEAN%"=="true" if exist "%VENV_DIR%" (
         rd /s /q "%SCONS_DIR%\build"
     )
 )
+
+exit /b "%EXIT_CODE%"
