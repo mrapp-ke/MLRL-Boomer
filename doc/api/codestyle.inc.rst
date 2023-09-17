@@ -5,20 +5,48 @@ Code Style
 
 We aim to enforce a consistent code style across the entire project. For formatting the C++ code, we employ `clang-format <https://clang.llvm.org/docs/ClangFormat.html>`__. The desired C++ code style is defined in the file ``.clang-format`` in project's root directory. Accordingly, we use `YAPF <https://github.com/google/yapf>`__ to enforce the Python code style defined in the file ``.style.yapf``. In addition, `isort <https://github.com/PyCQA/isort>`__ is used to keep the ordering of imports in Python and Cython source files consistent according to the configuration file ``.isort.cfg`` and `pylint <https://pylint.org/>`__ is used to check for common issues in the Python code according to the configuration file ``.pylintrc``. If you have modified the project's source code, you can check whether it adheres to our coding standards via the following command:
 
-.. code-block:: text
+.. tab:: Linux
 
-   make test_format
+   .. code-block:: text
+
+      ./build test_format
+
+.. tab:: MacOS
+
+   .. code-block:: text
+
+      ./build test_format
+
+.. tab:: Windows
+
+   .. code-block:: text
+
+      build.bat test_format
 
 .. note::
-    If you want to check for compliance with the C++ or Python code style independently, you can alternatively use the command ``make test_format_cpp`` or ``make test_format_python``.
+    If you want to check for compliance with the C++ or Python code style independently, you can use the build target ``test_format_cpp`` or ``test_format_python`` instead of ``test_format``.
 
 In order to automatically format the project's source files according to our style guidelines, the following command can be used:
 
-.. code-block:: text
+.. tab:: Linux
 
-   make format
+   .. code-block:: text
+
+      ./build format
+
+.. tab:: MacOS
+
+   .. code-block:: text
+
+      ./build format
+
+.. tab:: Windows
+
+   .. code-block:: text
+
+      build.bat format
 
 .. note::
-    If you want to format only the C++ source files, you can run the command ``make format_cpp`` instead. Accordingly, the command ``make format_python`` may be used to format only the Python source files.
+    If you want to format only the C++ source files, you can specify the build target ``format_cpp`` instead of ``format``. Accordingly, the target ``format_python`` may be used to format only the Python source files.
 
 Whenever any source files have been modified, a `Github Action <https://docs.github.com/en/actions>`__ is run automatically to verify if they adhere to our code style guidelines. The result of these runs can be found in the `Github repository <https://github.com/mrapp-ke/Boomer/actions>`__.
