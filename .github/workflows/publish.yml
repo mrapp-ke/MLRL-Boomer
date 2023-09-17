@@ -41,6 +41,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Install OpenCL
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt update
+          sudo apt install -y opencl-headers ocl-icd-opencl-dev
+      - name: Install OpenMP
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install libomp
+          brew link libomp --force
+      - name: Install OpenCL
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install opencl-clhpp-headers
       - name: Prepare MSVC
         if: matrix.os == 'windows-latest'
         uses: ilammy/msvc-dev-cmd@v1
@@ -52,8 +66,9 @@ jobs:
       - name: Build package mlrl-common
         uses: pypa/cibuildwheel@v2
         env:
-          CIBW_BEFORE_ALL_MACOS: brew install libomp && brew link libomp --force
-          CIBW_BEFORE_BUILD: make clean install_cpp install_cython
+          CIBW_BEFORE_BUILD_LINUX: ./build --clean && ./build install
+          CIBW_BEFORE_BUILD_MACOS: ./build --clean && CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build install
+          CIBW_BEFORE_BUILD_WINDOWS: ./build.bat --clean && ./build.bat install
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS: auto64
           CIBW_SKIP: 'pp* *musllinux*'
@@ -62,8 +77,9 @@ jobs:
       - name: Build package mlrl-boosting
         uses: pypa/cibuildwheel@v2
         env:
-          CIBW_BEFORE_ALL_MACOS: brew install libomp && brew link libomp --force
-          CIBW_BEFORE_BUILD: make clean install_cpp install_cython
+          CIBW_BEFORE_BUILD_LINUX: ./build --clean && ./build install
+          CIBW_BEFORE_BUILD_MACOS: ./build --clean && CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build install
+          CIBW_BEFORE_BUILD_WINDOWS: ./build.bat --clean && ./build.bat install
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS: auto64
           CIBW_SKIP: 'pp* *musllinux*'
@@ -101,7 +117,7 @@ jobs:
       - name: Build package mlrl-common
         uses: pypa/cibuildwheel@v2
         env:
-          CIBW_BEFORE_BUILD: make clean install_cpp install_cython
+          CIBW_BEFORE_BUILD: ./build --clean && ./build install
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS_LINUX: aarch64
           CIBW_SKIP: 'pp* *musllinux*'
@@ -110,7 +126,7 @@ jobs:
       - name: Build package mlrl-boosting
         uses: pypa/cibuildwheel@v2
         env:
-          CIBW_BEFORE_BUILD: make clean install_cpp install_cython
+          CIBW_BEFORE_BUILD: ./build --clean && ./build install
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS_LINUX: aarch64
           CIBW_SKIP: 'pp* *musllinux*'
