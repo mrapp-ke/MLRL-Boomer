@@ -14,13 +14,24 @@ This document is intended for users and developers who are interested in the alg
 .. toctree::
    :hidden:
    :maxdepth: 2
+   :caption: Quickstart
 
-   quickstart/index
+   quickstart/installation
+   quickstart/usage
+   quickstart/parameters
+   quickstart/testbed
 
-   testbed/index
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: For Developers
 
-   api/index
-
+   api/structure
+   api/compilation
+   api/buildoptions
+   api/documentation
+   api/standards
+   api/apidoc
 
 .. toctree::
    :hidden:
@@ -28,9 +39,6 @@ This document is intended for users and developers who are interested in the alg
    :caption: Further Information
 
    references/index
-
    source/CHANGELOG.md
-
    source/CONTRIBUTORS.md
-
    source/LICENSE.md

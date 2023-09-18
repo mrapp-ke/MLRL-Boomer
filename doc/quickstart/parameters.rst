@@ -1,7 +1,7 @@
 .. _parameters:
 
-Parameters
-----------
+Configuration and Parameters
+============================
 
 The behavior of the BOOMER algorithm can be controlled in a fine-grained manner via a large number of parameters. Values for these parameters may be provided as constructor arguments to the class ``Boomer`` as shown in the section :ref:`usage`. They can also be used to configure the algorithm when using the :ref:`testbed`.
 
@@ -18,7 +18,8 @@ All of the parameters that are mentioned below are optional. If not specified ma
 
     ``'equal-width{bin_ratio=0.33,min_bins=2,max_bins=64}'``
 
-**Data Format**
+Data Format
+-----------
 
 The following parameters allow to specify the preferred format for the representation of the training data:
 
@@ -40,7 +41,8 @@ The following parameters allow to specify the preferred format for the represent
   * ``'dense'`` Enforces that predictions are stored using a dense format.
   * ``'sparse'`` Enforces that predictions are stored using a sparse format, if supported. Using a sparse format may reduce the memory footprint on some data sets.
 
-**Algorithmic Parameters**
+Algorithmic Parameters
+----------------------
 
 The following parameters allow to control the behavior of the algorithm:
 
@@ -280,7 +282,8 @@ The following parameters allow to control the behavior of the algorithm:
 
   * The weight of the L2 regularization. Must be at least 0. If 0 is used, the L2 regularization is turned off entirely. Increasing the value causes the model to become more conservative.
 
-**Multi-Threading**
+Multi-Threading
+---------------
 
 .. note::
     To be able to use the algorithm's multi-threading capabilities, it must have been compiled with multi-threading support enabled, which should be the case with pre-built packages available on `PyPI <https://pypi.org/>`__. Please refer to the section :ref:`buildoptions` if you intend to compile the program yourself, or if you want to check if multi-threading support is enabled for your installation.
