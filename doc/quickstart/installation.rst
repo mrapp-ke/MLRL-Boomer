@@ -1,7 +1,7 @@
 .. _installation:
 
 Installation
-------------
+============
 
 The BOOMER algorithm is provided as part of the Python package `mlrl-boomer <https://pypi.org/project/mlrl-boomer/>`__. It can be installed via `pip <https://en.wikipedia.org/wiki/Pip_(package_manager)>`_:
 
