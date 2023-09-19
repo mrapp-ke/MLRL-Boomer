@@ -8,6 +8,16 @@
 #include "mlrl/common/input/missing_feature_vector.hpp"
 
 /**
+ * Defines an interface for all one-dimensional vectors that store the values of training examples for a certain
+ * feature.
+ */
+class IFeatureVector : public IOneDimensionalView {
+    public:
+
+        virtual ~IFeatureVector() override {};
+};
+
+/**
  * An one-dimensional sparse vector that stores the values of training examples for a certain feature, as well as the
  * indices of examples with missing feature values.
  */
