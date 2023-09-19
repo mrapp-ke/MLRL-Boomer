@@ -4,33 +4,25 @@
 #pragma once
 
 #include "mlrl/common/data/vector_sparse_array.hpp"
-#include "mlrl/common/input/missing_feature_vector.hpp"
+#include "mlrl/common/input/feature_vector_common.hpp"
 
 /**
- * Defines an interface for all one-dimensional vectors that store the values of training examples for a certain
- * feature.
+ * A feature vector that stores the values of training examples for a certain numerical feature.
  */
-class IFeatureVector : public IOneDimensionalView {
-    public:
-
-        virtual ~IFeatureVector() override {};
-};
-
-/**
- * An one-dimensional sparse vector that stores the values of training examples for a certain feature, as well as the
- * indices of examples with missing feature values.
- */
-class FeatureVector final : public MissingFeatureVector {
+class NumericalFeatureVector final : public AbstractFeatureVector {
     private:
 
         SparseArrayVector<float32> vector_;
 
+        const float32 sparseValue_;
+
     public:
 
         /**
-         * @param numElements The number of elements in the vector
+         * @param numElements   The number of elements in the vector
+         * @param sparseValue   The value of sparse elements not explicitly stored in the vector
          */
-        FeatureVector(uint32 numElements);
+        NumericalFeatureVector(uint32 numElements, float32 sparseValue);
 
         /**
          * An iterator that provides access to the feature values in the vector and allows to modify them.
@@ -71,11 +63,16 @@ class FeatureVector final : public MissingFeatureVector {
         const_iterator cend() const;
 
         /**
-         * Returns the number of elements in the vector.
+         * Returns the value of sparse elements not explicitly stored in the vector.
          *
-         * @return The number of elements in the vector
+         * @return The value of sparse elements
          */
-        uint32 getNumElements() const;
+        float32 getSparseValue() const;
+
+        /**
+         * Sorts the elements in the vector in ascending order based on their values.
+         */
+        void sortByValues();
 
         /**
          * Sets the number of elements in the vector.
@@ -85,8 +82,5 @@ class FeatureVector final : public MissingFeatureVector {
          */
         void setNumElements(uint32 numElements, bool freeMemory);
 
-        /**
-         * Sorts the elements in the vector in ascending order based on their values.
-         */
-        void sortByValues();
+        uint32 getNumElements() const override;
 };
