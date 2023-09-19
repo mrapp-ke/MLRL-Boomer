@@ -41,6 +41,7 @@ source_files = [
     'src/mlrl/common/input/feature_type_ordinal.cpp',
     'src/mlrl/common/input/feature_vector.cpp',
     'src/mlrl/common/input/feature_vector_common.cpp',
+    'src/mlrl/common/input/feature_vector_numerical.cpp',
     'src/mlrl/common/input/label_matrix_c_contiguous.cpp',
     'src/mlrl/common/input/label_matrix_csc.cpp',
     'src/mlrl/common/input/label_matrix_csr.cpp',
