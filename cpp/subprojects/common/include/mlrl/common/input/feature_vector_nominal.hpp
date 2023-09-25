@@ -22,6 +22,9 @@ class NominalFeatureVector : public AbstractFeatureVector {
 
     protected:
 
+        /**
+         * The number of distinct values of the nominal feature, excluding the majority value.
+         */
         const uint32 numValues_;
 
     public:
