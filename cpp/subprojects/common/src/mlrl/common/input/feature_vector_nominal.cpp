@@ -2,7 +2,7 @@
 
 NominalFeatureVector::NominalFeatureVector(uint32 numValues, uint32 numElements, int32 majorityValue)
     : values_(new int32[numValues]), indices_(new uint32[numElements]), indptr_(new uint32[numValues + 1]),
-      numValues_(numValues), majorityValue_(majorityValue) {
+      majorityValue_(majorityValue), numValues_(numValues) {
     indptr_[numValues] = numElements;
 }
 

@@ -18,9 +18,11 @@ class NominalFeatureVector : public AbstractFeatureVector {
 
         uint32* indptr_;
 
-        const uint32 numValues_;
-
         const int32 majorityValue_;
+
+    protected:
+
+        const uint32 numValues_;
 
     public:
 
