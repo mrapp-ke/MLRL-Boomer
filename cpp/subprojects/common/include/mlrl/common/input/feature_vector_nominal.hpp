@@ -9,7 +9,7 @@
  * A feature vector that stores the indices of the examples that are associated with each value, except for the majority
  * value, i.e., the most frequent value, of a nominal feature.
  */
-class NominalFeatureVector final : public AbstractFeatureVector {
+class NominalFeatureVector : public AbstractFeatureVector {
     private:
 
         int32* values_;
