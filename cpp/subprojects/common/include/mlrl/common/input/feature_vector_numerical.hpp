@@ -7,7 +7,8 @@
 #include "mlrl/common/input/feature_vector_common.hpp"
 
 /**
- * A feature vector that stores the values of training examples for a certain numerical feature.
+ * A feature vector that stores the values of training examples for a certain numerical feature, except for the examples
+ * associated with a sparse value.
  */
 class NumericalFeatureVector final : public AbstractFeatureVector {
     private:
@@ -19,7 +20,7 @@ class NumericalFeatureVector final : public AbstractFeatureVector {
     public:
 
         /**
-         * @param numElements   The number of elements in the vector
+         * @param numElements   The number of elements in the vector, excluding those associated with the sparse value
          * @param sparseValue   The value of sparse elements not explicitly stored in the vector
          */
         NumericalFeatureVector(uint32 numElements, float32 sparseValue);
