@@ -16,6 +16,7 @@ class IFeatureType {
          *
          * @return True, if the feature is ordinal, false otherwise
          */
+        // TODO Remove
         virtual bool isOrdinal() const = 0;
 
         /**
@@ -23,5 +24,6 @@ class IFeatureType {
          *
          * @return True, if the feature is nominal, false otherwise
          */
+        // TODO Remove
         virtual bool isNominal() const = 0;
 };
