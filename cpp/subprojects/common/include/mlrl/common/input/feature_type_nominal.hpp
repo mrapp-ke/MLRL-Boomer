@@ -14,4 +14,10 @@ class NominalFeatureType final : public IFeatureType {
         bool isOrdinal() const override;
 
         bool isNominal() const override;
+
+        std::unique_ptr<IFeatureVector> createFeatureVector(
+          uint32 featureIndex, const FortranContiguousConstView<const float32>& featureMatrix) const override;
+
+        std::unique_ptr<IFeatureVector> createFeatureVector(
+          uint32 featureIndex, const CscConstView<const float32>& featureMatrix) const override;
 };
