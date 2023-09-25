@@ -1,9 +1,9 @@
 #include "mlrl/common/input/feature_vector_nominal.hpp"
 
-NominalFeatureVector::NominalFeatureVector(uint32 numValues, uint32 numExamples, int32 minorityValue)
-    : values_(new int32[numValues]), indices_(new uint32[numExamples]), indptr_(new uint32[numValues + 1]),
-      numValues_(numValues), minorityValue_(minorityValue) {
-    indptr_[numValues] = numExamples;
+NominalFeatureVector::NominalFeatureVector(uint32 numValues, uint32 numElements, int32 majorityValue)
+    : values_(new int32[numValues]), indices_(new uint32[numElements]), indptr_(new uint32[numValues + 1]),
+      numValues_(numValues), majorityValue_(majorityValue) {
+    indptr_[numValues] = numElements;
 }
 
 NominalFeatureVector::~NominalFeatureVector() {
@@ -52,8 +52,8 @@ NominalFeatureVector::indptr_iterator NominalFeatureVector::indptr_end() {
     return &indptr_[numValues_];
 }
 
-int32 NominalFeatureVector::getMinorityValue() const {
-    return minorityValue_;
+int32 NominalFeatureVector::getMajorityValue() const {
+    return majorityValue_;
 }
 
 uint32 NominalFeatureVector::getNumElements() const {
