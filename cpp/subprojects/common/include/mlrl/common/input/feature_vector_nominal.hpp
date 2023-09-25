@@ -26,10 +26,11 @@ class NominalFeatureVector : public AbstractFeatureVector {
 
         /**
          * @param numValues     The number of distinct values of the nominal feature, excluding the majority value
-         * @param numExamples   The total number of examples, excluding those associated with the majority value
+         * @param numElements   The number of elements in the vector, i.e., the number of examples not associated with
+         *                      the majority value
          * @param majorityValue The majority value, i.e., the most frequent value, of the nominal feature
          */
-        NominalFeatureVector(uint32 numValues, uint32 numExamples, int32 majorityValue);
+        NominalFeatureVector(uint32 numValues, uint32 numElements, int32 majorityValue);
 
         ~NominalFeatureVector() override;
 
