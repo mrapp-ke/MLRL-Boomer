@@ -26,7 +26,7 @@ class NominalFeatureVector final : public AbstractFeatureVector {
 
         /**
          * @param numValues     The number of distinct values of the nominal feature, excluding the minority value
-         * @param numExamples   The total number of examples
+         * @param numExamples   The total number of examples, excluding those associated with the minority value
          * @param minorityValue The minority value, i.e., the least frequent value, of the nominal feature
          */
         NominalFeatureVector(uint32 numValues, uint32 numExamples, int32 minorityValue);
@@ -45,13 +45,13 @@ class NominalFeatureVector final : public AbstractFeatureVector {
 
         /**
          * An iterator that provides access to the indices of the examples that are associated with each value of the
-         * nominal feature and allows to modify them.
+         * nominal feature, except for the minority value, and allows to modify them.
          */
         typedef uint32* index_iterator;
 
         /**
          * An iterator that provides read-only access to the indices of the examples that are associated with each value
-         * of the nominal feature.
+         * of the nominal feature, except for the minority value.
          */
         typedef const uint32* index_const_iterator;
 
@@ -127,7 +127,7 @@ class NominalFeatureVector final : public AbstractFeatureVector {
 
         /**
          * Returns an `indptr_iterator` to the beginning of the indices that specify the first element in the array of
-         * example indices that corresponds to each value of the nominal feature.
+         * example indices that corresponds to each value of the nominal feature, except for the minority value.
          *
          * @return An `indptr_iterator` to the beginning
          */
@@ -135,7 +135,7 @@ class NominalFeatureVector final : public AbstractFeatureVector {
 
         /**
          * Returns an `indptr_iterator` to the end of the indices that specify the first element in the array of example
-         * indices that corresponds to each value of the nominal feature.
+         * indices that corresponds to each value of the nominal feature, except for the minority value.
          *
          * @return An `indptr_iterator` to the end
          */
