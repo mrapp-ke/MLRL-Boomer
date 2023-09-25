@@ -6,8 +6,8 @@
 #include "mlrl/common/input/feature_vector_common.hpp"
 
 /**
- * A feature vector that stores the indices of the examples that are associated with each value, except for the minority
- * value, i.e., the least frequent value, of a nominal feature.
+ * A feature vector that stores the indices of the examples that are associated with each value, except for the majority
+ * value, i.e., the most frequent value, of a nominal feature.
  */
 class NominalFeatureVector final : public AbstractFeatureVector {
     private:
@@ -20,16 +20,16 @@ class NominalFeatureVector final : public AbstractFeatureVector {
 
         const uint32 numValues_;
 
-        const int32 minorityValue_;
+        const int32 majorityValue_;
 
     public:
 
         /**
-         * @param numValues     The number of distinct values of the nominal feature, excluding the minority value
-         * @param numExamples   The total number of examples, excluding those associated with the minority value
-         * @param minorityValue The minority value, i.e., the least frequent value, of the nominal feature
+         * @param numValues     The number of distinct values of the nominal feature, excluding the majority value
+         * @param numExamples   The total number of examples, excluding those associated with the majority value
+         * @param majorityValue The majority value, i.e., the most frequent value, of the nominal feature
          */
-        NominalFeatureVector(uint32 numValues, uint32 numExamples, int32 minorityValue);
+        NominalFeatureVector(uint32 numValues, uint32 numExamples, int32 majorityValue);
 
         ~NominalFeatureVector() override;
 
@@ -45,13 +45,13 @@ class NominalFeatureVector final : public AbstractFeatureVector {
 
         /**
          * An iterator that provides access to the indices of the examples that are associated with each value of the
-         * nominal feature, except for the minority value, and allows to modify them.
+         * nominal feature, except for the majority value, and allows to modify them.
          */
         typedef uint32* index_iterator;
 
         /**
          * An iterator that provides read-only access to the indices of the examples that are associated with each value
-         * of the nominal feature, except for the minority value.
+         * of the nominal feature, except for the majority value.
          */
         typedef const uint32* index_const_iterator;
 
@@ -127,7 +127,7 @@ class NominalFeatureVector final : public AbstractFeatureVector {
 
         /**
          * Returns an `indptr_iterator` to the beginning of the indices that specify the first element in the array of
-         * example indices that corresponds to each value of the nominal feature, except for the minority value.
+         * example indices that corresponds to each value of the nominal feature, except for the majority value.
          *
          * @return An `indptr_iterator` to the beginning
          */
@@ -135,18 +135,18 @@ class NominalFeatureVector final : public AbstractFeatureVector {
 
         /**
          * Returns an `indptr_iterator` to the end of the indices that specify the first element in the array of example
-         * indices that corresponds to each value of the nominal feature, except for the minority value.
+         * indices that corresponds to each value of the nominal feature, except for the majority value.
          *
          * @return An `indptr_iterator` to the end
          */
         indptr_iterator indptr_end();
 
         /**
-         * Returns the minority value, i.e., the least frequent value, of the nominal feature.
+         * Returns the majority value, i.e., the least frequent value, of the nominal feature.
          *
-         * @return The minority value
+         * @return The majority value
          */
-        int32 getMinorityValue() const;
+        int32 getMajorityValue() const;
 
         uint32 getNumElements() const override;
 };
