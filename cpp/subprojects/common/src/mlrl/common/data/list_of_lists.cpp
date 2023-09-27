@@ -7,7 +7,7 @@
 template<typename T>
 ListOfLists<T>::ListOfLists(uint32 numRows)
     : numRows_(numRows), array_(new std::vector<T>[numRows] {
-      }) {}
+}) {}
 
 template<typename T>
 ListOfLists<T>::~ListOfLists() {
