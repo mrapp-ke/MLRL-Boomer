@@ -1,5 +1,5 @@
 build >= 1.0, < 1.1
-clang-format >= 16.0, < 16.1
+clang-format >= 17.0, < 17.1
 cython >= 3.0, < 3.1
 isort >= 5.12, < 5.13
 meson >= 1.2, < 1.3

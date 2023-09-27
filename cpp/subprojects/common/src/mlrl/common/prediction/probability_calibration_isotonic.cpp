@@ -106,8 +106,8 @@ static inline float64 calibrateProbability(ListOfLists<Tuple<float64>>::const_ro
     ListOfLists<Tuple<float64>>::const_iterator end = bins.cend();
     ListOfLists<Tuple<float64>>::const_iterator it =
       std::lower_bound(begin, end, probability, [=](const Tuple<float64>& lhs, const float64& rhs) {
-          return lhs.first < rhs;
-      });
+        return lhs.first < rhs;
+    });
     uint32 offset = it - begin;
     Tuple<float64> lowerBound;
     Tuple<float64> upperBound;
