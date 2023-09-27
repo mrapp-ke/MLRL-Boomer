@@ -285,7 +285,7 @@ The following parameters allow to control the behavior of the algorithm:
 Multi-Threading
 ---------------
 
-.. note::
+.. warning::
     To be able to use the algorithm's multi-threading capabilities, it must have been compiled with multi-threading support enabled, which should be the case with pre-built packages available on `PyPI <https://pypi.org/>`__. Please refer to the section :ref:`buildoptions` if you intend to compile the program yourself, or if you want to check if multi-threading support is enabled for your installation.
 
 The following parameters allow to specify whether multi-threading should be used for different aspects of the algorithm:
