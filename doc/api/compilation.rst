@@ -51,6 +51,30 @@ As a prerequisite, a supported version of Python, a suitable C++ compiler, as we
 
 Additional build- or run-time dependencies will automatically be installed when following the instructions below and must not be installed manually.
 
+
+.. note::
+    Instead of following the instructions below step by step, the following command, which automatically executes all necessary steps, can be used for simplicity.
+
+    .. tab:: Linux
+
+       .. code-block:: text
+
+          ./build
+
+    .. tab:: MacOS
+
+       .. code-block:: text
+
+          ./build
+
+    .. tab:: Windows
+
+       .. code-block:: text
+
+          build.bat
+    
+    Whenever any C++, Cython or Python source files have been modified, the above command must be run again in order to rebuild modified files and install updated wheel packages into the virtual environment. If any compilation files do already exist, this will only result in the affected parts of the code to be rebuilt.
+
 Creating a Virtual Environment
 ------------------------------
 
@@ -231,29 +255,6 @@ The wheel packages that have previously been created can finally be installed in
       build.bat install_wheels
 
 After this final step has completed, the Python packages can be used from within the virtual environment once it has been `activated <https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#activating-a-virtual-environment>`__. To ensure that the installation of the wheel packages was successful, check if a `mlrl/` directory has been created in the `lib/` directory of the virtual environment (depending on the Python version, it should be located at `venv/lib/python3.9/site-packages/mlrl/` or similar). If this is the case, the algorithm can be used from within your own Python code. Alternatively, the command line API can be used to start an experiment (see :ref:`testbed`).
-
-.. note::
-    Instead of following the above instructions step by step, the following command, which automatically executes all necessary steps, can be used for simplicity:
-
-    .. tab:: Linux
-
-       .. code-block:: text
-
-          ./build
-
-    .. tab:: MacOS
-
-       .. code-block:: text
-
-          ./build
-
-    .. tab:: Windows
-
-       .. code-block:: text
-
-          build.bat
-    
-    Whenever any C++, Cython or Python source files have been modified, the above command must be run again in order to rebuild modified files and install updated wheel packages into the virtual environment. If any compilation files do already exist, this will only result in the affected parts of the code to be rebuilt.
 
 Cleaning up Build Files
 -----------------------

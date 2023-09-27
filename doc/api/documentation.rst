@@ -10,6 +10,29 @@ Prerequisites
 
 In order to generate the documentation, `Doxygen <https://sourceforge.net/projects/doxygen/>`__ must be installed on the host system beforehand. It is used to generate an API documentation from the C++ source files. In addition, the `Roboto <https://fonts.google.com/specimen/Roboto>`__ font should be available on your system. If this is not the case, another font will be used as a fallback.
 
+.. note::
+    It is not necessary to execute the steps below one after the other. Instead, running the following command should suffice to create the entire documentation, including files that describe the C++ and Python API.
+
+    .. tab:: Linux
+
+       .. code-block:: text
+
+          ./build doc
+
+    .. tab:: MacOS
+
+       .. code-block:: text
+
+          ./build doc
+
+    .. tab:: Windows
+
+       .. code-block:: text
+
+          build.bat doc
+
+    Whenever the documentation was updated or any C++ or Python source files have been modified, the above command must be run again in order to generate an updated version of the documentation that reflects the respective changes.
+
 Building the C++ Apidocs
 ------------------------
 
@@ -85,9 +108,6 @@ To generate the final documentation's HTML files via `sphinx <https://www.sphinx
       build.bat doc
 
 Afterwards, the generated files can be found in the directory `doc/build_/html/`.
-
-.. note::
-    It should further be noted that it is not necessary to run the above steps one after the other. Executing a single command with the build target ``doc`` should suffice to create the entire documentation, including files that describe the C++ and Python API.
 
 Cleaning up Build Files
 -----------------------
