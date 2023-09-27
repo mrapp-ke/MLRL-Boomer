@@ -164,12 +164,12 @@ The following parameters allow to control the behavior of the algorithm:
 
 * ``sequential_post_optimization`` (Default value = ``'false'``)
 
-    * ``'false'`` Sequential post-optimization is not used.
-    * ``'true'`` Each rule in a previously learned model is optimized by being relearned in the context of the other rules. The following options may be provided using the bracket notation:
+  * ``'false'`` Sequential post-optimization is not used.
+  * ``'true'`` Each rule in a previously learned model is optimized by being relearned in the context of the other rules. The following options may be provided using the bracket notation:
 
-      * ``num_iterations`` (Default value = ``2``) The number of times each rule should be relearned. Must be at least 1.
-      * ``refine_heads`` (Default value = ``'false'``) ``'true'``, if the heads of rules may be refined when being relearned, ``'false'``, if the relearned rules should be predict for the same labels as the original rules.
-      * ``resample_features`` (Default value = ``'true'``) ``'true'``, if a new sample of the available features should be created whenever a new rule is refined, ``'false'``, if the conditions of the new rule should use the same features as the original rule
+    * ``num_iterations`` (Default value = ``2``) The number of times each rule should be relearned. Must be at least 1.
+    * ``refine_heads`` (Default value = ``'false'``) ``'true'``, if the heads of rules may be refined when being relearned, ``'false'``, if the relearned rules should be predict for the same labels as the original rules.
+    * ``resample_features`` (Default value = ``'true'``) ``'true'``, if a new sample of the available features should be created whenever a new rule is refined, ``'false'``, if the conditions of the new rule should use the same features as the original rule
 
 * ``feature_binning`` (Default value = ``'none'``)
 
