@@ -10,7 +10,7 @@ Prerequisites
 
 In order to generate the documentation, `Doxygen <https://sourceforge.net/projects/doxygen/>`__ must be installed on the host system beforehand. It is used to generate an API documentation from the C++ source files. In addition, the `Roboto <https://fonts.google.com/specimen/Roboto>`__ font should be available on your system. If this is not the case, another font will be used as a fallback.
 
-.. note::
+.. tip::
     It is not necessary to execute the steps below one after the other. Instead, running the following command should suffice to create the entire documentation, including files that describe the C++ and Python API.
 
     .. tab:: Linux

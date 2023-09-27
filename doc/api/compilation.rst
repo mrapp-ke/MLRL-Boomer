@@ -52,7 +52,7 @@ As a prerequisite, a supported version of Python, a suitable C++ compiler, as we
 Additional build- or run-time dependencies will automatically be installed when following the instructions below and must not be installed manually.
 
 
-.. note::
+.. tip::
     Instead of following the instructions below step by step, the following command, which automatically executes all necessary steps, can be used for simplicity.
 
     .. tab:: Linux
