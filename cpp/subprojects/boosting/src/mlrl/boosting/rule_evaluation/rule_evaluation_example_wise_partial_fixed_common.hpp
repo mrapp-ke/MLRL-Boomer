@@ -17,7 +17,7 @@ namespace boosting {
      * @param gradientIterator          An iterator that provides access to the gradient for each label
      * @param hessianIterator           An iterator that provides access to the Hessian for each label
      * @param numLabels                 The total number of available labels
-     * @param numPrediction             The number of the best-rated predictions to be determined
+     * @param numPredictions            The number of the best-rated predictions to be determined
      * @param l1RegularizationWeight    The l2 regularization weight
      * @param l2RegularizationWeight    The L1 regularization weight
      */

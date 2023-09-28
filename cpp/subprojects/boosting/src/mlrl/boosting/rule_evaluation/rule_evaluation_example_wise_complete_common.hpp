@@ -36,7 +36,7 @@ namespace boosting {
      *
      * @param coefficients              A pointer to an array of type `float64`, shape `(n * n)`, the regularization
      *                                  weight should be added to
-     * @param n                         The number of coefficients on the diagonal
+     * @param numPredictions            The number of coefficients on the diagonal
      * @param l2RegularizationWeight    The L2 regularization weight to be added to the coefficients
      */
     static inline void addL2RegularizationWeight(float64* coefficients, uint32 numPredictions,
