@@ -41,7 +41,7 @@ namespace boosting {
      *                                  used to store the sorted scores and their original indices
      * @param statisticIterator         An iterator that provides access to the gradients and Hessians for each label
      * @param numLabels                 The total number of available labels
-     * @param numPrediction             The number of the best-rated predictions to be determined
+     * @param numPredictions            The number of the best-rated predictions to be determined
      * @param l1RegularizationWeight    The l2 regularization weight
      * @param l2RegularizationWeight    The L1 regularization weight
      */
