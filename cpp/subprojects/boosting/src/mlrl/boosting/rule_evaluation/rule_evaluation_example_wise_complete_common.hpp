@@ -69,12 +69,13 @@ namespace boosting {
      *
      * @param ordinates                 A pointer to an array of type `float64`, shape `(n)`, the L1 regularization
      *                                  weight should be added to
-     * @param n                         The number of ordinates
+     * @param numPredictions            The number of ordinates
      * @param l1RegularizationWeight    The L1 regularization weight to be added to the ordinates
      **/
-    static inline void addL1RegularizationWeight(float64* ordinates, uint32 n, float64 l1RegularizationWeight) {
+    static inline void addL1RegularizationWeight(float64* ordinates, uint32 numPredictions,
+                                                 float64 l1RegularizationWeight) {
         if (l1RegularizationWeight > 0) {
-            for (uint32 i = 0; i < n; i++) {
+            for (uint32 i = 0; i < numPredictions; i++) {
                 float64 gradient = ordinates[i];
                 ordinates[i] += getL1RegularizationWeight(gradient, l1RegularizationWeight);
             }
