@@ -119,7 +119,7 @@ source_files = [
 
 # Test files
 test_files = [
-    'test/mlrl/common/test.cpp'
+    'test/mlrl/common/info.cpp'
 ]
 
 # Directory containing public headers
