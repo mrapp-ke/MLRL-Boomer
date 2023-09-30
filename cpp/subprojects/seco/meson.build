@@ -73,13 +73,14 @@ seco_lib = library(lib_name, source_files, include_directories : include_directo
 test_support_enabled = common_project.get_variable('test_support_enabled')
 
 if test_support_enabled
-    gtest_dep = common_project.get_variable('gtest_dep')
-    seco_dep = declare_dependency(include_directories : include_directories, link_with : seco_lib)
+    gtest_test_dep = common_project.get_variable('gtest_test_dep')
+    common_test_dep = common_project.get_variable('common_test_dep')
+    seco_test_dep = declare_dependency(include_directories : include_directories, link_with : seco_lib)
 
     test_dependencies = [
-        gtest_dep,
-        common_dep,
-        seco_dep
+        gtest_test_dep,
+        common_test_dep,
+        seco_test_dep
     ]
 
     test_name = lib_name + 'tests'

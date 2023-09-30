@@ -125,13 +125,14 @@ boosting_lib = library(lib_name, source_files, include_directories : include_dir
 test_support_enabled = common_project.get_variable('test_support_enabled')
 
 if test_support_enabled
-    gtest_dep = common_project.get_variable('gtest_dep')
-    boosting_dep = declare_dependency(include_directories : include_directories, link_with : boosting_lib)
+    gtest_test_dep = common_project.get_variable('gtest_test_dep')
+    common_test_dep = common_project.get_variable('common_test_dep')
+    boosting_test_dep = declare_dependency(include_directories : include_directories, link_with : boosting_lib)
 
     test_dependencies = [
-        gtest_dep,
-        common_dep,
-        boosting_dep   
+        gtest_test_dep,
+        common_test_dep,
+        boosting_test_dep   
     ]
 
     test_name = lib_name + 'tests'
