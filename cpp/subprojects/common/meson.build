@@ -186,8 +186,8 @@ else
 endif
 
 # Library declaration
-library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args, link_args : link_args,
-        version : version, install : true, install_dir : install_dir)
+common_shared_lib = library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args,
+                            link_args : link_args, version : version, install : true, install_dir : install_dir)
 common_lib = static_library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args,
                             link_args : link_args)
 common_dep = declare_dependency(include_directories : include_directories, link_with : common_lib)
@@ -196,11 +196,12 @@ common_dep = declare_dependency(include_directories : include_directories, link_
 test_support_enabled = get_option('test_support').enabled()
 
 if test_support_enabled
-    gtest_dep = dependency('gtest', main : true)
+    gtest_test_dep = dependency('gtest', main : true)
+    common_test_dep = declare_dependency(include_directories : include_directories, link_with : common_shared_lib)
 
     test_dependencies = [
-        gtest_dep,
-        common_dep
+        gtest_test_dep,
+        common_test_dep
     ]
 
     test_name = lib_name + 'tests'
