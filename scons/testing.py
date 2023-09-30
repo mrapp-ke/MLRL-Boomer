@@ -10,7 +10,7 @@ from run import run_python_program, run_venv_program
 
 
 def __meson_test(build_dir: str):
-    run_venv_program('meson', 'test', '-C', build_dir, print_args=True)
+    run_venv_program('meson', 'test', '-C', build_dir, '-v', print_args=True)
 
 def __python_unittest(directory: str):
     run_python_program('unittest', 'discover', '-v', '-f', '-s', directory)
