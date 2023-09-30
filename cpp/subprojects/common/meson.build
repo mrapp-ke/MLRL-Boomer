@@ -118,7 +118,9 @@ source_files = [
 ]
 
 # Test files
-test_files = []
+test_files = [
+    'test/mlrl/common/test.cpp'
+]
 
 # Directory containing public headers
 include_directories = include_directories('include')
@@ -195,7 +197,13 @@ test_support_enabled = get_option('test_support').enabled()
 
 if test_support_enabled
     gtest_dep = dependency('gtest', main : true)
+
+    test_dependencies = [
+        gtest_dep,
+        common_dep
+    ]
+
     test_name = lib_name + 'tests'
-    common_tests = executable(test_name, test_files, dependencies : gtest_dep)
+    common_tests = executable(test_name, test_files, dependencies : test_dependencies)
     test(test_name, common_tests)
 endif
