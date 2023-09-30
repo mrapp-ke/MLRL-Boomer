@@ -191,7 +191,11 @@ common_lib = static_library(lib_name, source_files, include_directories : includ
 common_dep = declare_dependency(include_directories : include_directories, link_with : common_lib)
 
 # Test declaration
-gtest_dep = dependency('gtest', main : true)
-test_name = lib_name + 'tests'
-common_tests = executable(test_name, test_files, dependencies : gtest_dep)
-test(test_name, common_tests)
+test_support_enabled = get_option('test_support').enabled()
+
+if test_support_enabled
+    gtest_dep = dependency('gtest', main : true)
+    test_name = lib_name + 'tests'
+    common_tests = executable(test_name, test_files, dependencies : gtest_dep)
+    test(test_name, common_tests)
+endif
