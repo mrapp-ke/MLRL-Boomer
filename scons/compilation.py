@@ -102,7 +102,7 @@ def __meson_configure(build_dir: str, build_options: BuildOptions):
     args = build_options.to_args()
 
     if args:
-        print('Configuring build according to environment variables...')
+        print('Configuring build options according to environment variables...')
         run_venv_program('meson', 'configure', *args, build_dir, print_args=True)
 
 
