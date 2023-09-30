@@ -5,6 +5,11 @@ Build Options
 
 Certain functionalities of the project can be enabled or disabled at compile-time via so-called build options. They can be specified in the configuration file `cpp/subprojects/common/meson.options`.
 
+Testing Support
+---------------
+
+This project comes with unit tests for the C++ code it contains (see :ref:`testing`). They are based on the `GoogleTest <https://github.com/google/googletest>`__ framework. When building the project, the testing code is compiled and linked against the shared libraries it is supposed to test. In order to prevent the testing code from being compiled, e.g., because the `GoogleTest <https://github.com/google/googletest>`__ framework is not available on your system, the build option ``test_support`` can be set to ``disabled`` instead of ``enabled``.
+
 Multi-Threading Support
 -----------------------
 

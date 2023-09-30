@@ -5,6 +5,8 @@ Coding Standards
 
 As it is common for Open Source projects, where everyone is invited to contribute, we rely on coding standards to ensure that new code works as expected, does not break existing functionality, and adheres to best practices we agreed on. These coding standards are described in the following.
 
+.. _testing:
+
 Testing the Code
 ----------------
 
@@ -30,6 +32,8 @@ To be able to detect problems with the project's source code early during develo
 
 
 The integration tests are also run automatically on a `CI server <https://en.wikipedia.org/wiki/Continuous_integration>`__ whenever relevant parts of the source code have been modified. For this purpose, we rely on the infrastructure provided by `Github Actions <https://docs.github.com/en/actions>`__. A track record of past test runs can be found in the `Github repository <https://github.com/mrapp-ke/Boomer/actions>`__.
+
+.. _codestyle:
 
 Code Style
 ----------
