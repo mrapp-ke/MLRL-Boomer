@@ -74,7 +74,15 @@ test_support_enabled = common_project.get_variable('test_support_enabled')
 
 if test_support_enabled
     gtest_dep = common_project.get_variable('gtest_dep')
+    seco_dep = declare_dependency(include_directories : include_directories, link_with : seco_lib)
+
+    test_dependencies = [
+        gtest_dep,
+        common_dep,
+        seco_dep
+    ]
+
     test_name = lib_name + 'tests'
-    seco_tests = executable(test_name, test_files, dependencies : gtest_dep)
+    seco_tests = executable(test_name, test_files, dependencies : test_dependencies)
     test(test_name, seco_tests)
 endif

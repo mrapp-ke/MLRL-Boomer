@@ -126,7 +126,15 @@ test_support_enabled = common_project.get_variable('test_support_enabled')
 
 if test_support_enabled
     gtest_dep = common_project.get_variable('gtest_dep')
+    boosting_dep = declare_dependency(include_directories : include_directories, link_with : boosting_lib)
+
+    test_dependencies = [
+        gtest_dep,
+        common_dep,
+        boosting_dep   
+    ]
+
     test_name = lib_name + 'tests'
-    boosting_tests = executable(test_name, test_files, dependencies : gtest_dep)
+    boosting_tests = executable(test_name, test_files, dependencies : test_dependencies)
     test(test_name, boosting_tests)
 endif
