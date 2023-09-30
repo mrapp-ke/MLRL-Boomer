@@ -28,7 +28,9 @@ source_files = [
 ]
 
 # Test files
-test_files = []
+test_files = [
+    'test/mlrl/seco/info.cpp'
+]
 
 # Dependencies
 common_project = subproject('common')
