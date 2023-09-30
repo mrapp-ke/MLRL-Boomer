@@ -77,9 +77,25 @@ class BuildOptions:
         return args
 
 
-def __meson_setup(root_dir: str, build_dir: str, dependencies: Optional[List[str]] = None):
+CPP_BUILD_OPTIONS = BuildOptions() \
+        .add_feature(subpackage='common', name='test_support') \
+        .add_feature(subpackage='common', name='multi_threading_support') \
+        .add_feature(subpackage='common', name='gpu_support')
+
+
+def __meson_setup(root_dir: str,
+                  build_dir: str,
+                  build_options: BuildOptions = BuildOptions(),
+                  dependencies: Optional[List[str]] = None):
     print('Setting up build directory "' + build_dir + '"...')
-    run_venv_program('meson', 'setup', build_dir, root_dir, print_args=True, additional_dependencies=dependencies)
+    args = build_options.to_args()
+    run_venv_program('meson',
+                     'setup',
+                     *args,
+                     build_dir,
+                     root_dir,
+                     print_args=True,
+                     additional_dependencies=dependencies)
 
 
 def __meson_configure(build_dir: str, build_options: BuildOptions):
@@ -102,18 +118,14 @@ def setup_cpp(**_):
     """
     Sets up the build system for compiling the C++ code.
     """
-    __meson_setup(CPP_MODULE.root_dir, CPP_MODULE.build_dir, dependencies=['ninja'])
+    __meson_setup(CPP_MODULE.root_dir, CPP_MODULE.build_dir, CPP_BUILD_OPTIONS, dependencies=['ninja'])
 
 
 def compile_cpp(**_):
     """
     Compiles the C++ code.
     """
-    build_options = BuildOptions() \
-        .add_feature(subpackage='common', name='test_support') \
-        .add_feature(subpackage='common', name='multi_threading_support') \
-        .add_feature(subpackage='common', name='gpu_support')
-    __meson_configure(CPP_MODULE.build_dir, build_options)
+    __meson_configure(CPP_MODULE.build_dir, CPP_BUILD_OPTIONS)
     print('Compiling C++ code...')
     __meson_compile(CPP_MODULE.build_dir)
 
