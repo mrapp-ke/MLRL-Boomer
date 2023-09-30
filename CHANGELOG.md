@@ -23,6 +23,8 @@ A major update to the BOOMER algorithm that introduces the following changes.
 
 * The documentation has been updated to a more modern theme supporting light and dark theme variants.
 * A build option that allows to disable multi-threading support via OpenMP at compile-time has been added.
+* The groundwork for GPU support was layed. It can be disabled at compile-time via a build option.
+* Added support for unit testing the project's C++ code. Compilation of the tests can be disabled via a build option.
 * The Python code is now checked for common issues by applying `pylint` via continuous integration.
 * The Makefile has been replaced with wrapper scripts triggering a [SCons](https://scons.org/) build.  
 
