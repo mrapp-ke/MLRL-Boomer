@@ -73,9 +73,7 @@ class BuildOptions:
         args = []
 
         for build_option in self.build_options:
-            print(build_option.name)
             value = build_option.get_value()
-            print(str(value))
 
             if value:
                 args.append('-D')
