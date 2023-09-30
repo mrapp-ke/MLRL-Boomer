@@ -27,9 +27,12 @@ jobs:
       - name: Compile via GCC
         run: |
           ./build compile
-      - name: Run Tests
+      - name: Test C++ code
         run: |
-          ./build tests
+          ./build tests_cpp
+      - name: Test Python code
+        run: |
+          ./build tests_python
       - name: Install Doxygen
         uses: ssciwr/doxygen-install@v1
       - name: Install Roboto font
