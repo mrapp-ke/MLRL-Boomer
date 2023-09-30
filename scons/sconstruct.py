@@ -14,7 +14,7 @@ from documentation import apidoc_cpp, apidoc_python, doc
 from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from packaging import build_python_wheel, install_python_wheels
 from run import install_runtime_dependencies
-from testing import run_tests
+from testing import tests_cpp, tests_python
 
 from SCons.Script import COMMAND_LINE_TARGETS
 from SCons.Script.SConscript import SConsEnvironment
@@ -46,6 +46,8 @@ TARGET_NAME_INSTALL_CYTHON = TARGET_NAME_INSTALL + '_cython'
 TARGET_NAME_BUILD_WHEELS = 'build_wheels'
 TARGET_NAME_INSTALL_WHEELS = 'install_wheels'
 TARGET_NAME_TESTS = 'tests'
+TARGET_NAME_TESTS_CPP = TARGET_NAME_TESTS + '_cpp'
+TARGET_NAME_TESTS_PYTHON = TARGET_NAME_TESTS + '_python'
 TARGET_NAME_APIDOC = 'apidoc'
 TARGET_NAME_APIDOC_CPP = TARGET_NAME_APIDOC + '_cpp'
 TARGET_NAME_APIDOC_PYTHON = TARGET_NAME_APIDOC + '_python'
@@ -55,8 +57,8 @@ VALID_TARGETS = {
     TARGET_NAME_TEST_FORMAT, TARGET_NAME_TEST_FORMAT_PYTHON, TARGET_NAME_TEST_FORMAT_CPP, TARGET_NAME_FORMAT,
     TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP, TARGET_NAME_VENV, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP,
     TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL, TARGET_NAME_INSTALL_CPP, TARGET_NAME_INSTALL_CYTHON,
-    TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS, TARGET_NAME_TESTS, TARGET_NAME_APIDOC, TARGET_NAME_APIDOC_CPP,
-    TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
+    TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS, TARGET_NAME_TESTS, TARGET_NAME_TESTS_CPP,
+    TARGET_NAME_TESTS_PYTHON, TARGET_NAME_APIDOC, TARGET_NAME_APIDOC_CPP, TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
 }
 
 DEFAULT_TARGET = TARGET_NAME_INSTALL_WHEELS
@@ -169,8 +171,14 @@ if not COMMAND_LINE_TARGETS or TARGET_NAME_BUILD_WHEELS in COMMAND_LINE_TARGETS:
         env.Clean([target_build_wheels, DEFAULT_TARGET], subproject.build_dirs)
 
 # Define targets for running automated tests...
-target_test = __create_phony_target(env, TARGET_NAME_TESTS, action=run_tests)
-env.Depends(target_test, target_install_wheels)
+target_tests_cpp = __create_phony_target(env, TARGET_NAME_TESTS_CPP, action=tests_cpp)
+env.Depends(target_tests_cpp, target_compile_cpp)
+
+target_tests_python = __create_phony_target(env, TARGET_NAME_TESTS, action=tests_python)
+env.Depends(target_tests_python, target_install_wheels)
+
+target_tests = __create_phony_target(env, TARGET_NAME_TESTS)
+env.Depends(target_tests, [target_tests_cpp, target_tests_python])
 
 # Define targets for generating the documentation...
 commands_apidoc_cpp = []
