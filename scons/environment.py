@@ -21,6 +21,6 @@ def get_string_env(name: str, accepted_values: Optional[Set[str]] = None) -> Opt
 
     if value and accepted_values:
         if not value in accepted_values:
-            raise ValueError('Invalid value given for environment variable "' + name + '"')
+            raise ValueError('Invalid value given for environment variable "' + name + '": ' + str(value))
 
     return value
