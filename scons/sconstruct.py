@@ -174,7 +174,7 @@ if not COMMAND_LINE_TARGETS or TARGET_NAME_BUILD_WHEELS in COMMAND_LINE_TARGETS:
 target_tests_cpp = __create_phony_target(env, TARGET_NAME_TESTS_CPP, action=tests_cpp)
 env.Depends(target_tests_cpp, target_compile_cpp)
 
-target_tests_python = __create_phony_target(env, TARGET_NAME_TESTS, action=tests_python)
+target_tests_python = __create_phony_target(env, TARGET_NAME_TESTS_PYTHON, action=tests_python)
 env.Depends(target_tests_python, target_install_wheels)
 
 target_tests = __create_phony_target(env, TARGET_NAME_TESTS)
