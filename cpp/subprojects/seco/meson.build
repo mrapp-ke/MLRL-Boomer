@@ -27,6 +27,9 @@ source_files = [
     'src/mlrl/seco/learner_seco.cpp'
 ]
 
+# Test files
+test_files = []
+
 # Dependencies
 common_project = subproject('common')
 common_dep = common_project.get_variable('common_dep')
@@ -65,3 +68,9 @@ endif
 seco_lib = library(lib_name, source_files, include_directories : include_directories, dependencies : dependencies,
                    cpp_args : cpp_args, link_args : link_args, version : version, install : true,
                    install_dir : install_dir)
+
+# Test declaration
+gtest_dep = common_project.get_variable('gtest_dep')
+test_name = lib_name + 'tests'
+seco_tests = executable(test_name, test_files, dependencies : gtest_dep)
+test(test_name, seco_tests)
