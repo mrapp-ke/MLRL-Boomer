@@ -117,6 +117,9 @@ source_files = [
     'src/mlrl/common/learner.cpp'
 ]
 
+# Test files
+test_files = []
+
 # Directory containing public headers
 include_directories = include_directories('include')
 
@@ -186,3 +189,9 @@ library(lib_name, source_files, include_directories : include_directories, cpp_a
 common_lib = static_library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args,
                             link_args : link_args)
 common_dep = declare_dependency(include_directories : include_directories, link_with : common_lib)
+
+# Test declaration
+gtest_dep = dependency('gtest', main : true)
+test_name = lib_name + 'tests'
+common_tests = executable(test_name, test_files, dependencies : gtest_dep)
+test(test_name, common_tests)
