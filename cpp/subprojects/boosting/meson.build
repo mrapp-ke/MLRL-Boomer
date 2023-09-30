@@ -122,7 +122,11 @@ boosting_lib = library(lib_name, source_files, include_directories : include_dir
                        install_dir : install_dir)
 
 # Test declaration
-gtest_dep = common_project.get_variable('gtest_dep')
-test_name = lib_name + 'tests'
-boosting_tests = executable(test_name, test_files, dependencies : gtest_dep)
-test(test_name, boosting_tests)
+test_support_enabled = common_project.get_variable('test_support_enabled')
+
+if test_support_enabled
+    gtest_dep = common_project.get_variable('gtest_dep')
+    test_name = lib_name + 'tests'
+    boosting_tests = executable(test_name, test_files, dependencies : gtest_dep)
+    test(test_name, boosting_tests)
+endif
