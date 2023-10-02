@@ -6,7 +6,7 @@ Provides utility functions for compiling C++ and Cython code.
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from environment import get_string_env
+from os import environ
 from modules import CPP_MODULE, PYTHON_MODULE
 from run import run_program
 
@@ -43,7 +43,7 @@ class BuildOptions:
         """
 
         def get_value(self) -> Optional[str]:
-            return get_string_env(self.name.upper(), accepted_values={'enabled', 'disabled'})
+            return environ.get(self.name.upper(), None)
 
     def __init__(self):
         self.build_options = []
