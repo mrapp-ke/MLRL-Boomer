@@ -7,7 +7,7 @@ from os import makedirs, path
 from typing import List, Optional
 
 from modules import DOC_MODULE
-from run import run_program, run_venv_program
+from run import run_program
 
 
 def __doxygen(config_file: str, output_dir: str):
@@ -16,28 +16,28 @@ def __doxygen(config_file: str, output_dir: str):
 
 
 def __sphinx_apidoc(source_dir: str, output_dir: str):
-    run_venv_program('sphinx-apidoc',
-                     '--tocfile',
-                     'index',
-                     '-f',
-                     '-o',
-                     output_dir,
-                     source_dir,
-                     '**/cython',
-                     print_args=True,
-                     additional_dependencies=['sphinx', 'furo'],
-                     requirements_file=DOC_MODULE.requirements_file)
+    run_program('sphinx-apidoc',
+                '--tocfile',
+                'index',
+                '-f',
+                '-o',
+                output_dir,
+                source_dir,
+                '**/cython',
+                print_args=True,
+                additional_dependencies=['sphinx', 'furo'],
+                requirements_file=DOC_MODULE.requirements_file)
 
 
 def __sphinx_build(source_dir: str, output_dir: str, additional_dependencies: Optional[List[str]] = None):
-    run_venv_program('sphinx-build',
-                     '-M',
-                     'html',
-                     source_dir,
-                     output_dir,
-                     print_args=True,
-                     additional_dependencies=additional_dependencies,
-                     requirements_file=DOC_MODULE.requirements_file)
+    run_program('sphinx-build',
+                '-M',
+                'html',
+                source_dir,
+                output_dir,
+                print_args=True,
+                additional_dependencies=additional_dependencies,
+                requirements_file=DOC_MODULE.requirements_file)
 
 
 # pylint: disable=unused-argument
