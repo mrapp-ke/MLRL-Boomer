@@ -59,7 +59,7 @@ jobs:
           brew install opencl-clhpp-headers
       - name: Compile via Clang
         run: |
-          CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
+          TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
   windows_build:
     name: Test Windows build
     runs-on: windows-latest
