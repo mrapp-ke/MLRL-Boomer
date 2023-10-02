@@ -15,8 +15,7 @@ from pkg_resources import DistributionNotFound, VersionConflict, parse_requireme
 
 
 def __run_command(cmd: str, *args, print_args: bool = False):
-    cmd_formatted = path.basename(cmd) + (reduce(lambda aggr, argument: aggr + ' ' + argument, args, '')
-                                          if print_args else '')
+    cmd_formatted = cmd + (reduce(lambda aggr, argument: aggr + ' ' + argument, args, '') if print_args else '')
     print('Running external command "' + cmd_formatted + '"...')
     cmd_args = [cmd]
 
