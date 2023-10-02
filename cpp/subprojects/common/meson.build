@@ -187,7 +187,7 @@ endif
 
 # Library declaration
 common_lib = library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args,
-                     link_args : link_args)
+                     link_args : link_args, version : version, install : true, install_dir : install_dir)
 common_dep = declare_dependency(include_directories : include_directories, link_with : common_lib)
 
 # Test declaration
