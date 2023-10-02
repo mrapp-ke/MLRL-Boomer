@@ -4,9 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for compiling C++ and Cython code.
 """
 from abc import ABC, abstractmethod
+from os import environ
 from typing import List, Optional
 
-from os import environ
 from modules import CPP_MODULE, PYTHON_MODULE
 from run import run_program
 
