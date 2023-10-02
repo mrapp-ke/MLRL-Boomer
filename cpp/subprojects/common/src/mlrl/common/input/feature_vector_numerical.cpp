@@ -19,6 +19,10 @@ NumericalFeatureVector::const_iterator NumericalFeatureVector::cend() const {
     return vector_.cend();
 }
 
+float32 NumericalFeatureVector::getSparseValue() const {
+    return sparseValue_;
+}
+
 void NumericalFeatureVector::setNumElements(uint32 numElements, bool freeMemory) {
     return vector_.setNumElements(numElements, freeMemory);
 }
