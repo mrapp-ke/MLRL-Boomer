@@ -110,14 +110,14 @@ namespace boosting {
      *
      * @param ordinates                 A pointer to an array of type `float64`, shape `(n)`, the L1 regularization
      *                                  weight should be added to
-     * @param n                         The number of ordinates
+     * @param numPredictions            The number of ordinates
      * @param weights                   A pointer to an array of type `uint32`, shape `(n)` that stores the weight of
      *                                  each ordinate
      * @param l1RegularizationWeight    The L1 regularization weight to be added to the ordinates
      */
-    static inline void addL1RegularizationWeight(float64* ordinates, uint32 n, const uint32* weights,
+    static inline void addL1RegularizationWeight(float64* ordinates, uint32 numPredictions, const uint32* weights,
                                                  float64 l1RegularizationWeight) {
-        for (uint32 i = 0; i < n; i++) {
+        for (uint32 i = 0; i < numPredictions; i++) {
             uint32 weight = weights[i];
             float64 gradient = ordinates[i];
             ordinates[i] += (weight * getL1RegularizationWeight(gradient, l1RegularizationWeight));
@@ -129,7 +129,7 @@ namespace boosting {
      *
      * @param coefficients              A pointer to an array of type `float64`, shape `(n * n)`, the regularization
      *                                  weight should be added to
-     * @param n                         The number of coefficients on the diagonal
+     * @param numPredictions            The number of coefficients on the diagonal
      * @param weights                   A pointer to an array of type `uint32`, shape `(n)`, that stores the weight of
      *                                  each coefficient
      * @param l2RegularizationWeight    The L2 regularization weight to be added to the coefficients

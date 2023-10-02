@@ -3,12 +3,21 @@
 Build Options
 =============
 
-Certain functionalities of the project can be enabled or disabled at compile-time via so-called build options. They can be specified in the configuration file `cpp/subprojects/common/meson.options`.
+Certain functionalities of the project can be enabled or disabled at compile-time via so-called build options. They can be specified in the configuration file `cpp/subprojects/common/meson.options` or set via environment variables.
 
-Multi-threading Support
+.. _testingsupport:
+
+Testing Support
+---------------
+
+This project comes with unit tests for the C++ code it contains (see :ref:`testing`). They are based on the `GoogleTest <https://github.com/google/googletest>`__ framework. When building the project, the testing code is compiled and linked against the shared libraries it is supposed to test. In order to prevent the testing code from being compiled, e.g., because the `GoogleTest <https://github.com/google/googletest>`__ framework is not available on your system, the build option ``test_support`` can be set to ``disabled`` instead of ``enabled``. Alternatively, the desired value can be specified via the environment variable ``TEST_SUPPORT``.
+
+.. _multithreadingsupport:
+
+Multi-Threading Support
 -----------------------
 
-By default, the project is built with multi-threading support enabled. This requires `OpenMP <https://www.openmp.org/>`__ to be available on the host system. In order to compile the project without multi-threading support, e.g., because OpenMP is not available, the build option ``multi_threading_support`` can be set to ``disabled`` instead of ``enabled``.
+By default, the project is built with multi-threading support enabled. This requires `OpenMP <https://www.openmp.org/>`__ to be available on the host system. In order to compile the project without multi-threading support, e.g., because OpenMP is not available, the build option ``multi_threading_support`` can be set to ``disabled`` instead of ``enabled``.  Alternatively, the desired value can be specified via the environment variable ``MULTI_THREADING_SUPPORT``.
 
 When using the :ref:`testbed`, the command ``boomer --version`` or ``boomer -v`` can be executed to check whether the program was built with multi-threading support enabled or not. It will print the build options used for compilation, as well as information about the CPU cores available on the system for multi-threading.
 
@@ -32,10 +41,12 @@ If you need to access this information programmatically in your own Python or C+
       bool multiThreadingSupportEnabled = isMultiThreadingSupportEnabled();
       uint32 numCpuCores = getNumCpuCores();
 
-GPU support
+.. _gpusupport:
+
+GPU Support
 -----------
 
-GPU support via `OpenCL <https://www.khronos.org/opencl/>`__ is enabled by default when building the project. However, it can be disabled at compile-time by setting the build option ``gpu_support`` to ``disabled`` instead of ``enabled``.
+GPU support via `OpenCL <https://www.khronos.org/opencl/>`__ is enabled by default when building the project. However, it can be disabled at compile-time by setting the build option ``gpu_support`` to ``disabled`` instead of ``enabled``.  Alternatively, the desired value can be specified via the environment variable ``GPU_SUPPORT``.
 
 An easy way to check whether the program was built with GPU support enabled or not, is to run the ``boomer --version`` or ``boomer -v`` command that is provided by the :ref:`testbed`. It will print the build options used for compiling the program, together with a list of supported GPUs available on your machine.
 

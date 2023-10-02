@@ -24,12 +24,18 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y opencl-headers ocl-icd-opencl-dev
+      - name: Install GoogleTest
+        run: |
+          sudo apt install -y googletest
       - name: Compile via GCC
         run: |
           ./build compile
-      - name: Run Tests
+      - name: Test C++ code
         run: |
-          ./build tests
+          ./build tests_cpp
+      - name: Test Python code
+        run: |
+          ./build tests_python
       - name: Install Doxygen
         uses: ssciwr/doxygen-install@v1
       - name: Install Roboto font
@@ -53,7 +59,7 @@ jobs:
           brew install opencl-clhpp-headers
       - name: Compile via Clang
         run: |
-          CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
+          TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
   windows_build:
     name: Test Windows build
     runs-on: windows-latest
@@ -74,6 +80,7 @@ jobs:
           token: ${{ github.token }}
       - name: Compile via MSVC
         run: |
+          $env:TEST_SUPPORT = "disabled"
           $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\include"
           $env:LIB += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\lib"
           ./build.bat compile

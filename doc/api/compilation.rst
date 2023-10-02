@@ -19,37 +19,68 @@ As a prerequisite, a supported version of Python, a suitable C++ compiler, as we
    +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
    | **C++ compiler** | Most Linux distributions provide the `GNU Compiler Collection <https://gcc.gnu.org/>`__ (GCC), which includes a C++ compiler, as part of their software repositories. If this is the case, it can be installed via the distribution's package manager.                                                                                                                      |
    +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | **OpenMP**       | `OpenMP <https://en.wikipedia.org/wiki/OpenMP>`__, which is optionally required for multi-threading support, should be installable via your Linux distribution's package manager.                                                                                                                                                                                           |
+   | **GoogleTest**   | The `GoogleTest <https://github.com/google/googletest>`__ framework must optionally be available in order to compile the project with :ref:`testingsupport` enabled. It should be possible to install it via the package manager of your Linux distribution.                                                                                                                |
    +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | **OpenCL**       | If the project should be compiled with GPU support enabled, `OpenCL <https://www.khronos.org/opencl/>`__ must be available. On Linux, it should be installable via your distribution's package manager.                                                                                                                                                                     |
+   | **OpenMP**       | `OpenMP <https://en.wikipedia.org/wiki/OpenMP>`__, which is optionally required for :ref:`multithreadingsupport`, should be installable via your Linux distribution's package manager.                                                                                                                                                                                      |
    +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | **OpenCL**       | If the project should be compiled with :ref:`gpusupport`, `OpenCL <https://www.khronos.org/opencl/>`__ must be available. On Linux, it should be installable via your distribution's package manager.                                                                                                                                                                       |
+   +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   
 
 
 .. tab:: MacOS
 
-   +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | **Python**       | Recent versions of MacOS do not include Python by default. A suitable Python version can manually be downloaded from the `project's website <https://www.python.org/downloads/macos/>`__. Alternatively, the package manager `Homebrew <https://en.wikipedia.org/wiki/Homebrew_(package_manager)>`__ can be used for installation via the command ``brew install python``.              |
-   +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | **C++ compiler** | MacOS relies on the `Clang <https://en.wikipedia.org/wiki/Clang>`__ compiler for building C++ code. It is part of the `Xcode <https://developer.apple.com/support/xcode/>`__ developer toolset.                                                                                                                                                                                         |
-   +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | **OpenMP**       | If the project should be compiled with multi-threading support enabled, the `OpenMP <https://en.wikipedia.org/wiki/OpenMP>`__ library must be installed. We recommend to install it via Homebrew by running the command ``brew install libomp``.                                                                                                                                        |
-   +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | **OpenCL**       | The `Xcode <https://developer.apple.com/support/xcode/>`__ developer toolset should include `OpenCL <https://www.khronos.org/opencl/>`__, which is needed for GPU support. However, the `OpenCL C++ headers <https://github.com/KhronosGroup/OpenCL-Headers>`__ must be installed manually. The easiest way to do so is via the Homebrew command ``brew install opencl-clhpp-headers``. |
-   +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   +------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | **Python**       | Recent versions of MacOS do not include Python by default. A suitable Python version can manually be downloaded from the `project's website <https://www.python.org/downloads/macos/>`__. Alternatively, the package manager `Homebrew <https://en.wikipedia.org/wiki/Homebrew_(package_manager)>`__ can be used for installation via the command ``brew install python``.                                                                                   |
+   +------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | **C++ compiler** | MacOS relies on the `Clang <https://en.wikipedia.org/wiki/Clang>`__ compiler for building C++ code. It is part of the `Xcode <https://developer.apple.com/support/xcode/>`__ developer toolset.                                                                                                                                                                                                                                                              |
+   +------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | **GoogleTest**   | The `GoogleTest <https://github.com/google/googletest>`__ framework must optionally be installed in order to compile the project with :ref:`testingsupport` enabled. It can easily be installed via `Homebrew <https://en.wikipedia.org/wiki/Homebrew_(package_manager)>`__ by runnig the command ``brew install googletest``.                                                                                                                               |
+   +------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | **OpenMP**       | If the project should be compiled with :ref:`multithreadingsupport` enabled, the `OpenMP <https://en.wikipedia.org/wiki/OpenMP>`__ library must be installed. We recommend to install it via `Homebrew <https://en.wikipedia.org/wiki/Homebrew_(package_manager)>`__ by running the command ``brew install libomp``.                                                                                                                                         |
+   +------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | **OpenCL**       | The `Xcode <https://developer.apple.com/support/xcode/>`__ developer toolset should include `OpenCL <https://www.khronos.org/opencl/>`__, which is needed for :ref:`gpusupport`. However, the `OpenCL C++ headers <https://github.com/KhronosGroup/OpenCL-Headers>`__ must be installed manually. The easiest way to do so is via the `Homebrew <https://en.wikipedia.org/wiki/Homebrew_(package_manager)>`__ command ``brew install opencl-clhpp-headers``. |
+   +------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. tab:: Windows
 
-   +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | **Python**       | Python releases for Windows are available at the `project's website <https://www.python.org/downloads/windows/>`__, where you can download an installer.                                                                                                                                                                                                                                |
-   +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | **C++ compiler** | For the compilation of the project's source code, the MSVC compiler must be used. It is included in the `Build Tools for Visual Studio <https://visualstudio.microsoft.com/downloads/>`__.                                                                                                                                                                                              |
-   +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | **OpenMP**       | The `Build Tools for Visual Studio <https://visualstudio.microsoft.com/downloads/>`__ also include the `OpenMP <https://en.wikipedia.org/wiki/OpenMP>`__ library, which is utilized by the project for multi-theading support.                                                                                                                                                          |
-   +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | **OpenCL**       | If you intend to compile the project with GPU support enabled, `OpenCL <https://www.khronos.org/opencl/>`__ must be installed manually. In order to do so, we recommend to install the package ``opencl`` via the package manager `vcpkg <https://github.com/microsoft/vcpkg>`__.                                                                                                       |
-   +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | **Python**       | Python releases for Windows are available at the `project's website <https://www.python.org/downloads/windows/>`__, where you can download an installer.                                                                                                                                                                                            |
+   +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | **C++ compiler** | For the compilation of the project's source code, the MSVC compiler must be used. It is included in `Visual Studio <https://visualstudio.microsoft.com/downloads/>`__.                                                                                                                                                                              |
+   +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | **GoogleTest**   | The `GoogleTest <https://github.com/google/googletest>`__ framework must optionally be available on your system to compile the project with :ref:`testingsupport` enabled. It should already be included in recent versions of `Visual Studio <https://learn.microsoft.com/en-us/visualstudio/test/how-to-use-google-test-for-cpp?view=vs-2022>`__. |
+   +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | **OpenMP**       | The `Build Tools for Visual Studio <https://visualstudio.microsoft.com/downloads/>`__ also include the `OpenMP <https://en.wikipedia.org/wiki/OpenMP>`__ library, which is utilized by the project for :ref:`multithreadingsupport`.                                                                                                                |
+   +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | **OpenCL**       | If you intend to compile the project with :ref:`gpusupport` enabled, `OpenCL <https://www.khronos.org/opencl/>`__ must be installed manually. In order to do so, we recommend to install the package ``opencl`` via the package manager `vcpkg <https://github.com/microsoft/vcpkg>`__.                                                             |
+   +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 Additional build- or run-time dependencies will automatically be installed when following the instructions below and must not be installed manually.
+
+
+.. tip::
+    Instead of following the instructions below step by step, the following command, which automatically executes all necessary steps, can be used for simplicity.
+
+    .. tab:: Linux
+
+       .. code-block:: text
+
+          ./build
+
+    .. tab:: MacOS
+
+       .. code-block:: text
+
+          ./build
+
+    .. tab:: Windows
+
+       .. code-block:: text
+
+          build.bat
+    
+    Whenever any C++, Cython or Python source files have been modified, the above command must be run again in order to rebuild modified files and install updated wheel packages into the virtual environment. If any compilation files do already exist, this will only result in the affected parts of the code to be rebuilt.
 
 Creating a Virtual Environment
 ------------------------------
@@ -231,29 +262,6 @@ The wheel packages that have previously been created can finally be installed in
       build.bat install_wheels
 
 After this final step has completed, the Python packages can be used from within the virtual environment once it has been `activated <https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#activating-a-virtual-environment>`__. To ensure that the installation of the wheel packages was successful, check if a `mlrl/` directory has been created in the `lib/` directory of the virtual environment (depending on the Python version, it should be located at `venv/lib/python3.9/site-packages/mlrl/` or similar). If this is the case, the algorithm can be used from within your own Python code. Alternatively, the command line API can be used to start an experiment (see :ref:`testbed`).
-
-.. note::
-    Instead of following the above instructions step by step, the following command, which automatically executes all necessary steps, can be used for simplicity:
-
-    .. tab:: Linux
-
-       .. code-block:: text
-
-          ./build
-
-    .. tab:: MacOS
-
-       .. code-block:: text
-
-          ./build
-
-    .. tab:: Windows
-
-       .. code-block:: text
-
-          build.bat
-    
-    Whenever any C++, Cython or Python source files have been modified, the above command must be run again in order to rebuild modified files and install updated wheel packages into the virtual environment. If any compilation files do already exist, this will only result in the affected parts of the code to be rebuilt.
 
 Cleaning up Build Files
 -----------------------

@@ -123,6 +123,11 @@ source_files = [
     'src/mlrl/common/learner.cpp'
 ]
 
+# Test files
+test_files = [
+    'test/mlrl/common/info.cpp'
+]
+
 # Directory containing public headers
 include_directories = include_directories('include')
 
@@ -187,8 +192,25 @@ else
 endif
 
 # Library declaration
-library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args, link_args : link_args,
-        version : version, install : true, install_dir : install_dir)
+common_shared_lib = library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args,
+                            link_args : link_args, version : version, install : true, install_dir : install_dir)
 common_lib = static_library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args,
                             link_args : link_args)
 common_dep = declare_dependency(include_directories : include_directories, link_with : common_lib)
+
+# Test declaration
+test_support_enabled = get_option('test_support').enabled()
+
+if test_support_enabled
+    gtest_test_dep = dependency('gtest', main : true)
+    common_test_dep = declare_dependency(include_directories : include_directories, link_with : common_shared_lib)
+
+    test_dependencies = [
+        gtest_test_dep,
+        common_test_dep
+    ]
+
+    test_name = lib_name + 'tests'
+    common_tests = executable(test_name, test_files, dependencies : test_dependencies)
+    test(test_name, common_tests)
+endif

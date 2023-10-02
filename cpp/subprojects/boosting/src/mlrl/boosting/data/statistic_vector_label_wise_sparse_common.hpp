@@ -13,7 +13,7 @@ namespace boosting {
      * @param statistics    A pointer to an array the statistics should be added to
      * @param begin         A `SparseLabelWiseStatisticsConstView::const_iterator` to the beginning of the statistics to
      *                      be added
-     * @param begin         A `SparseLabelWiseStatisticsConstView::const_iterator` to the end of the statistics to be
+     * @param end           A `SparseLabelWiseStatisticsConstView::const_iterator` to the end of the statistics to be
      *                      added
      */
     static inline void addToSparseLabelWiseStatisticVector(Triple<float64>* statistics,
@@ -38,7 +38,7 @@ namespace boosting {
      * @param statistics    A pointer to an array the statistics should be added to
      * @param begin         A `SparseLabelWiseStatisticsConstView::const_iterator` to the beginning of the statistics to
      *                      be added
-     * @param begin         A `SparseLabelWiseStatisticsConstView::const_iterator` to the end of the statistics to be
+     * @param end           A `SparseLabelWiseStatisticsConstView::const_iterator` to the end of the statistics to be
      *                      added
      * @param weight        The weight, the statistics should be multiplied by
      */
@@ -65,7 +65,7 @@ namespace boosting {
      * @param statistics    A pointer to an array the statistics should be removed from
      * @param begin         A `SparseLabelWiseStatisticsConstView::const_iterator` to the beginning of the statistics to
      *                      be removed
-     * @param begin         A `SparseLabelWiseStatisticsConstView::const_iterator` to the end of the statistics to be
+     * @param end           A `SparseLabelWiseStatisticsConstView::const_iterator` to the end of the statistics to be
      *                      removed
      */
     static inline void removeFromSparseLabelWiseStatisticVector(Triple<float64>* statistics,
@@ -90,7 +90,7 @@ namespace boosting {
      * @param statistics    A pointer to an array the statistics should be remove from
      * @param begin         A `SparseLabelWiseStatisticsConstView::const_iterator` to the beginning of the statistics to
      *                      be removed
-     * @param begin         A `SparseLabelWiseStatisticsConstView::const_iterator` to the end of the statistics to be
+     * @param end           A `SparseLabelWiseStatisticsConstView::const_iterator` to the end of the statistics to be
      *                      removed
      * @param weight        The weight, the statistics should be multiplied by
      */
