@@ -10,7 +10,12 @@ from run import run_python_program
 
 
 def __build_python_wheel(package_dir: str):
-    run_python_program('build', '--wheel', package_dir, print_args=True)
+    run_python_program('build',
+                       '--no-isolation',
+                       '--wheel',
+                       package_dir,
+                       print_args=True,
+                       additional_dependencies=['wheel'])
 
 
 def __install_python_wheels(wheels: List[str]):
