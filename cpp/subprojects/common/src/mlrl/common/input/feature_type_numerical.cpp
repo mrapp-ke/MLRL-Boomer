@@ -37,7 +37,7 @@ static inline std::unique_ptr<NumericalFeatureVector> createNumericalFeatureVect
     FortranContiguousConstView<const float32>::value_const_iterator valueIterator =
       featureMatrix.values_cbegin(featureIndex);
     uint32 numElements = featureMatrix.getNumRows();
-    return createNumericalFeatureVector(valueIterator, IndexIterator(), numElements);
+    return createNumericalFeatureVector(IndexIterator(), valueIterator, numElements);
 }
 
 static inline std::unique_ptr<NumericalFeatureVector> createNumericalFeatureVector(
