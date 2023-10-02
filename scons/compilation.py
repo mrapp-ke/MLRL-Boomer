@@ -8,7 +8,7 @@ from typing import List, Optional
 
 from environment import get_string_env
 from modules import CPP_MODULE, PYTHON_MODULE
-from run import run_venv_program
+from run import run_program
 
 
 class BuildOptions:
@@ -89,13 +89,7 @@ def __meson_setup(root_dir: str,
                   dependencies: Optional[List[str]] = None):
     print('Setting up build directory "' + build_dir + '"...')
     args = build_options.to_args()
-    run_venv_program('meson',
-                     'setup',
-                     *args,
-                     build_dir,
-                     root_dir,
-                     print_args=True,
-                     additional_dependencies=dependencies)
+    run_program('meson', 'setup', *args, build_dir, root_dir, print_args=True, additional_dependencies=dependencies)
 
 
 def __meson_configure(build_dir: str, build_options: BuildOptions):
@@ -103,15 +97,15 @@ def __meson_configure(build_dir: str, build_options: BuildOptions):
 
     if args:
         print('Configuring build options according to environment variables...')
-        run_venv_program('meson', 'configure', *args, build_dir, print_args=True)
+        run_program('meson', 'configure', *args, build_dir, print_args=True)
 
 
 def __meson_compile(build_dir: str):
-    run_venv_program('meson', 'compile', '-C', build_dir, print_args=True)
+    run_program('meson', 'compile', '-C', build_dir, print_args=True)
 
 
 def __meson_install(build_dir: str):
-    run_venv_program('meson', 'install', '--no-rebuild', '--only-changed', '-C', build_dir, print_args=True)
+    run_program('meson', 'install', '--no-rebuild', '--only-changed', '-C', build_dir, print_args=True)
 
 
 def setup_cpp(**_):

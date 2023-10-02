@@ -6,11 +6,11 @@ Provides utility functions for running automated tests.
 from os import path
 
 from modules import CPP_MODULE, PYTHON_MODULE
-from run import run_python_program, run_venv_program
+from run import run_program, run_python_program
 
 
 def __meson_test(build_dir: str):
-    run_venv_program('meson', 'test', '-C', build_dir, '-v', print_args=True)
+    run_program('meson', 'test', '-C', build_dir, '-v', print_args=True)
 
 
 def __python_unittest(directory: str):
