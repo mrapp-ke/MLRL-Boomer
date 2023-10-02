@@ -15,8 +15,7 @@ from pkg_resources import DistributionNotFound, VersionConflict, parse_requireme
 
 
 def __run_command(cmd: str, *args, print_args: bool = False):
-    cmd_formatted = path.basename(cmd) + (reduce(lambda aggr, argument: aggr + ' ' + argument, args, '')
-                                          if print_args else '')
+    cmd_formatted = cmd + (reduce(lambda aggr, argument: aggr + ' ' + argument, args, '') if print_args else '')
     print('Running external command "' + cmd_formatted + '"...')
     cmd_args = [cmd]
 
@@ -129,29 +128,6 @@ def run_program(program: str,
 
     __install_dependencies(requirements_file, *dependencies)
     __run_command(program, *args, print_args=print_args)
-
-
-def run_venv_program(program: str,
-                     *args,
-                     print_args: bool = False,
-                     additional_dependencies: Optional[List[str]] = None,
-                     requirements_file: str = BUILD_MODULE.requirements_file):
-    """
-    Runs an external program that has been installed into the virtual environment.
-
-    :param program:                 The name of the program to be run
-    :param args:                    Optional arguments that should be passed to the program
-    :param print_args:              True, if the arguments should be included in log statements, False otherwise
-    :param additional_dependencies: The names of dependencies that should be installed before running the program
-    :param requirements_file:       The path of the requirements.txt file that specifies the dependency versions
-    """
-    dependencies = [program]
-
-    if additional_dependencies:
-        dependencies.extend(additional_dependencies)
-
-    __install_dependencies(requirements_file, *dependencies)
-    __run_command(path.join(path.dirname(sys.executable), program), *args, print_args=print_args)
 
 
 def run_python_program(program: str,

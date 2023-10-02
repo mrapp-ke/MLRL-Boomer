@@ -79,6 +79,11 @@ source_files = [
     'src/mlrl/boosting/learner_boomer.cpp'
 ]
 
+# Test files
+test_files = [
+    'test/mlrl/boosting/info.cpp'
+]
+
 # Dependencies
 common_project = subproject('common')
 common_dep = common_project.get_variable('common_dep')
@@ -117,3 +122,22 @@ endif
 boosting_lib = library(lib_name, source_files, include_directories : include_directories, dependencies : dependencies,
                        cpp_args : cpp_args, link_args : link_args, version : version, install : true,
                        install_dir : install_dir)
+
+# Test declaration
+test_support_enabled = common_project.get_variable('test_support_enabled')
+
+if test_support_enabled
+    gtest_test_dep = common_project.get_variable('gtest_test_dep')
+    common_test_dep = common_project.get_variable('common_test_dep')
+    boosting_test_dep = declare_dependency(include_directories : include_directories, link_with : boosting_lib)
+
+    test_dependencies = [
+        gtest_test_dep,
+        common_test_dep,
+        boosting_test_dep   
+    ]
+
+    test_name = lib_name + 'tests'
+    boosting_tests = executable(test_name, test_files, dependencies : test_dependencies)
+    test(test_name, boosting_tests)
+endif
