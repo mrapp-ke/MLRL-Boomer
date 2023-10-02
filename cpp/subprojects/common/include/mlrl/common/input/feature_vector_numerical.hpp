@@ -71,11 +71,6 @@ class NumericalFeatureVector final : public AbstractFeatureVector {
         float32 getSparseValue() const;
 
         /**
-         * Sorts the elements in the vector in ascending order based on their values.
-         */
-        void sortByValues();
-
-        /**
          * Sets the number of elements in the vector.
          *
          * @param numElements   The number of elements to be set
