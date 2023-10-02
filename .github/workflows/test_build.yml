@@ -24,6 +24,9 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y opencl-headers ocl-icd-opencl-dev
+      - name: Install GoogleTest
+        run: |
+          sudo apt install -y googletest
       - name: Compile via GCC
         run: |
           ./build compile
