@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from pathlib import Path
 
-from pkg_resources import parse_requirements
 from setuptools import find_packages, setup
 
 VERSION = (Path(__file__).resolve().parent.parent.parent.parent / 'VERSION').read_text()
@@ -17,10 +16,7 @@ def find_dependencies(requirements_file, dependency_names):
     :param dependency_names:    A list that contains the names of the dependencies to be found
     :return:                    A list that contains all dependencies that have been found
     """
-    requirements = {
-        requirement.key: requirement
-        for requirement in parse_requirements(requirements_file.read_text().split('\n'))
-    }
+    requirements = {line.split(' ')[0]: line for line in requirements_file.read_text().split('\n')}
     dependencies = []
 
     for dependency_name in dependency_names:
@@ -29,7 +25,7 @@ def find_dependencies(requirements_file, dependency_names):
         if match is None:
             raise RuntimeError('Failed to determine required version of dependency "' + dependency_name + '"')
 
-        dependencies.append(str(match))
+        dependencies.append(match)
 
     return dependencies
 
