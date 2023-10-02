@@ -125,6 +125,7 @@ source_files = [
 
 # Test files
 test_files = [
+    'test/mlrl/common/input/feature_type_numerical.cpp',
     'test/mlrl/common/info.cpp'
 ]
 
