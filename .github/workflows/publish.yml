@@ -66,9 +66,9 @@ jobs:
       - name: Build package mlrl-common
         uses: pypa/cibuildwheel@v2
         env:
-          CIBW_BEFORE_BUILD_LINUX: ./build --clean && ./build install
-          CIBW_BEFORE_BUILD_MACOS: ./build --clean && CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build install
-          CIBW_BEFORE_BUILD_WINDOWS: ./build.bat --clean && ./build.bat install
+          CIBW_BEFORE_BUILD_LINUX: ./build --clean && TEST_SUPPORT=disabled ./build install
+          CIBW_BEFORE_BUILD_MACOS: ./build --clean && TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build install
+          CIBW_BEFORE_BUILD_WINDOWS: ./build.bat --clean && $env:TEST_SUPPORT = "disabled"; ./build.bat install
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS: auto64
           CIBW_SKIP: 'pp* *musllinux*'
@@ -77,9 +77,9 @@ jobs:
       - name: Build package mlrl-boosting
         uses: pypa/cibuildwheel@v2
         env:
-          CIBW_BEFORE_BUILD_LINUX: ./build --clean && ./build install
-          CIBW_BEFORE_BUILD_MACOS: ./build --clean && CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build install
-          CIBW_BEFORE_BUILD_WINDOWS: ./build.bat --clean && ./build.bat install
+          CIBW_BEFORE_BUILD_LINUX: ./build --clean && TEST_SUPPORT=disabled ./build install
+          CIBW_BEFORE_BUILD_MACOS: ./build --clean && TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build install
+          CIBW_BEFORE_BUILD_WINDOWS: ./build.bat --clean && $env:TEST_SUPPORT = "disabled"; ./build.bat install
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS: auto64
           CIBW_SKIP: 'pp* *musllinux*'
@@ -117,7 +117,7 @@ jobs:
       - name: Build package mlrl-common
         uses: pypa/cibuildwheel@v2
         env:
-          CIBW_BEFORE_BUILD: ./build --clean && ./build install
+          CIBW_BEFORE_BUILD: ./build --clean && TEST_SUPPORT=disabled ./build install
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS_LINUX: aarch64
           CIBW_SKIP: 'pp* *musllinux*'
@@ -126,7 +126,7 @@ jobs:
       - name: Build package mlrl-boosting
         uses: pypa/cibuildwheel@v2
         env:
-          CIBW_BEFORE_BUILD: ./build --clean && ./build install
+          CIBW_BEFORE_BUILD: ./build --clean && TEST_SUPPORT=disabled ./build install
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS_LINUX: aarch64
           CIBW_SKIP: 'pp* *musllinux*'
