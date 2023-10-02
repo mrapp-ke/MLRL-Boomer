@@ -28,8 +28,8 @@ TEST(NumericalFeatureTypeTest, createNumericalFeatureVectorFromFortranContiguous
     EXPECT_TRUE(featureVector != nullptr);
 
     // Check dimensionality of feature vector...
-    EXPECT_EQ(featureVector->getSparseValue(), 0.0);
-    EXPECT_EQ(featureVector->getNumElements(), 5);
+    EXPECT_FLOAT_EQ(featureVector->getSparseValue(), 0.0);
+    EXPECT_EQ(featureVector->getNumElements(), (uint32) 5);
 
     // Check for missing feature values....
     EXPECT_TRUE(featureVector->isMissing(2));
@@ -38,15 +38,15 @@ TEST(NumericalFeatureTypeTest, createNumericalFeatureVectorFromFortranContiguous
     // Check if regular feature values are sorted...
     NumericalFeatureVector::const_iterator iterator = featureVector->cbegin();
     EXPECT_FLOAT_EQ(iterator[0].value, -0.2);
-    EXPECT_EQ(iterator[0].index, 3);
+    EXPECT_EQ(iterator[0].index, (uint32) 3);
     EXPECT_FLOAT_EQ(iterator[1].value, -0.1);
-    EXPECT_EQ(iterator[1].index, 1);
+    EXPECT_EQ(iterator[1].index, (uint32) 1);
     EXPECT_FLOAT_EQ(iterator[2].value, 0.0);
-    EXPECT_EQ(iterator[2].index, 4);
+    EXPECT_EQ(iterator[2].index, (uint32) 4);
     EXPECT_FLOAT_EQ(iterator[3].value, 0.1);
-    EXPECT_EQ(iterator[3].index, 6);
+    EXPECT_EQ(iterator[3].index, (uint32) 6);
     EXPECT_FLOAT_EQ(iterator[4].value, 0.2);
-    EXPECT_EQ(iterator[4].index, 0);
+    EXPECT_EQ(iterator[4].index, (uint32) 0);
 
     delete[] features;
 }
@@ -101,8 +101,8 @@ TEST(NumericalFeatureTypeTest, createNumericalFeatureVectorFromCscView) {
     EXPECT_TRUE(featureVector != nullptr);
 
     // Check dimensionality of feature vector...
-    EXPECT_EQ(featureVector->getSparseValue(), 0.0);
-    EXPECT_EQ(featureVector->getNumElements(), 5);
+    EXPECT_FLOAT_EQ(featureVector->getSparseValue(), 0.0);
+    EXPECT_EQ(featureVector->getNumElements(), (uint32) 5);
 
     // Check for missing feature values....
     EXPECT_TRUE(featureVector->isMissing(3));
@@ -111,15 +111,15 @@ TEST(NumericalFeatureTypeTest, createNumericalFeatureVectorFromCscView) {
     // Check if regular feature values are sorted...
     NumericalFeatureVector::const_iterator iterator = featureVector->cbegin();
     EXPECT_FLOAT_EQ(iterator[0].value, -0.2);
-    EXPECT_EQ(iterator[0].index, 5);
+    EXPECT_EQ(iterator[0].index, (uint32) 5);
     EXPECT_FLOAT_EQ(iterator[1].value, -0.1);
-    EXPECT_EQ(iterator[1].index, 2);
+    EXPECT_EQ(iterator[1].index, (uint32) 2);
     EXPECT_FLOAT_EQ(iterator[2].value, 0.0);
-    EXPECT_EQ(iterator[2].index, 6);
+    EXPECT_EQ(iterator[2].index, (uint32) 6);
     EXPECT_FLOAT_EQ(iterator[3].value, 0.1);
-    EXPECT_EQ(iterator[3].index, 9);
+    EXPECT_EQ(iterator[3].index, (uint32) 9);
     EXPECT_FLOAT_EQ(iterator[4].value, 0.2);
-    EXPECT_EQ(iterator[4].index, 0);
+    EXPECT_EQ(iterator[4].index, (uint32) 0);
 
     delete[] data;
     delete[] rowIndices;
