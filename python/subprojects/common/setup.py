@@ -6,7 +6,6 @@ import shutil
 
 from pathlib import Path
 
-from pkg_resources import parse_requirements
 from setuptools import Extension, find_packages, setup
 from setuptools.command.build_ext import build_ext
 
@@ -73,10 +72,7 @@ def find_dependencies(requirements_file, dependency_names):
     :param dependency_names:    A list that contains the names of the dependencies to be found
     :return:                    A list that contains all dependencies that have been found
     """
-    requirements = {
-        requirement.key: requirement
-        for requirement in parse_requirements(requirements_file.read_text().split('\n'))
-    }
+    requirements = {line.split(' ')[0]: line for line in requirements_file.read_text().split('\n')}
     dependencies = []
 
     for dependency_name in dependency_names:
