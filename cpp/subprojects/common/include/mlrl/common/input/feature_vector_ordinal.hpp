@@ -18,11 +18,11 @@ class OrdinalFeatureVector : public NominalFeatureVector {
 
         /**
          * @param numValues     The number of distinct values of the ordinal feature, excluding the majority value
-         * @param numElements   The number of elements in the vector, i.e., the number of examples not associated with
+         * @param numExamples   The number of elements in the vector, i.e., the number of examples not associated with
          *                      the majority value
          * @param majorityValue The majority value, i.e., the most frequent value, of the ordinal feature
          */
-        OrdinalFeatureVector(uint32 numValues, uint32 numElements, int32 majorityValue);
+        OrdinalFeatureVector(uint32 numValues, uint32 numExamples, int32 majorityValue);
 
         ~OrdinalFeatureVector() override;
 
