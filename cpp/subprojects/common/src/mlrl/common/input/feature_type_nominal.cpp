@@ -19,13 +19,14 @@ static inline uint32 createMapping(ValueIterator valueIterator, uint32 numElemen
 
         if (!std::isnan(value)) {
             int32 nominalValue = (int32) value;
-            auto it = mapping.find(nominalValue);
+            auto it = mapping.emplace(nominalValue, Tuple<uint32> {numValues, 1});
 
-            if (it != mapping.end()) {
-                it->second.second++;
-            } else {
-                mapping.emplace(nominalValue, Tuple<uint32> {numValues, 1});
+            if (it.second) {
                 numValues++;
+            } else {
+                auto& entry = *(it.first);
+                Tuple<uint32>& tuple = entry.second;
+                tuple.second++;
             }
 
             numExamples++;
