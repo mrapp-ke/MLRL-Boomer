@@ -18,24 +18,19 @@ class NominalFeatureVector : public AbstractFeatureVector {
 
         uint32* indptr_;
 
-        const int32 majorityValue_;
-
-    protected:
-
-        /**
-         * The number of distinct values of the nominal feature, excluding the majority value.
-         */
         const uint32 numValues_;
+
+        const int32 majorityValue_;
 
     public:
 
         /**
          * @param numValues     The number of distinct values of the nominal feature, excluding the majority value
-         * @param numElements   The number of elements in the vector, i.e., the number of examples not associated with
+         * @param numExamples   The number of elements in the vector, i.e., the number of examples not associated with
          *                      the majority value
          * @param majorityValue The majority value, i.e., the most frequent value, of the nominal feature
          */
-        NominalFeatureVector(uint32 numValues, uint32 numElements, int32 majorityValue);
+        NominalFeatureVector(uint32 numValues, uint32 numExamples, int32 majorityValue);
 
         ~NominalFeatureVector() override;
 
