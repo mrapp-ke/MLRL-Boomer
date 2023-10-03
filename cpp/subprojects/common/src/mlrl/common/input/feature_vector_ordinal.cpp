@@ -12,7 +12,7 @@ OrdinalFeatureVector::index_iterator OrdinalFeatureVector::order_begin(uint32 in
 }
 
 OrdinalFeatureVector::index_iterator OrdinalFeatureVector::order_end(uint32 index) {
-    return &order_[numValues_];
+    return &order_[this->getNumElements()];
 }
 
 OrdinalFeatureVector::index_const_iterator OrdinalFeatureVector::order_cbegin(uint32 index) const {
@@ -20,5 +20,5 @@ OrdinalFeatureVector::index_const_iterator OrdinalFeatureVector::order_cbegin(ui
 }
 
 OrdinalFeatureVector::index_const_iterator OrdinalFeatureVector::order_cend(uint32 index) const {
-    return &order_[numValues_];
+    return &order_[this->getNumElements()];
 }
