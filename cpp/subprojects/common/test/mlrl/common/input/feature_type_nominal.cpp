@@ -55,10 +55,10 @@ TEST(NominalFeatureTypeTest, createNominalFeatureVectorFromFortranContiguousView
         }
 
         if (value == -1) {
-            EXPECT_EQ(indices.size(), 1);
+            EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 1);
             EXPECT_TRUE(indices.find(6) != indices.end());
         } else {
-            EXPECT_EQ(indices.size(), 2);
+            EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
             EXPECT_TRUE(indices.find(0) != indices.end());
             EXPECT_TRUE(indices.find(3) != indices.end());
         }
@@ -106,7 +106,7 @@ TEST(NominalFeatureTypeTest, createBinaryFeatureVectorFromFortranContiguousView)
         indices.emplace(*it);
     }
 
-    EXPECT_EQ(indices.size(), 2);
+    EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
     EXPECT_TRUE(indices.find(0) != indices.end());
     EXPECT_TRUE(indices.find(3) != indices.end());
 
@@ -192,10 +192,10 @@ TEST(NominalFeatureTypeTest, createNominalFeatureVectorFromDenseCscView) {
         }
 
         if (value == -1) {
-            EXPECT_EQ(indices.size(), 1);
+            EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 1);
             EXPECT_TRUE(indices.find(6) != indices.end());
         } else {
-            EXPECT_EQ(indices.size(), 2);
+            EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
             EXPECT_TRUE(indices.find(0) != indices.end());
             EXPECT_TRUE(indices.find(3) != indices.end());
         }
@@ -256,7 +256,7 @@ TEST(NominalFeatureTypeTest, createBinaryFeatureVectorFromDenseCscView) {
         indices.emplace(*it);
     }
 
-    EXPECT_EQ(indices.size(), 2);
+    EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
     EXPECT_TRUE(indices.find(0) != indices.end());
     EXPECT_TRUE(indices.find(3) != indices.end());
 
@@ -346,10 +346,10 @@ TEST(NominalFeatureTypeTest, createNominalFeatureVectorFromCscView) {
         }
 
         if (value == -1) {
-            EXPECT_EQ(indices.size(), 1);
+            EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 1);
             EXPECT_TRUE(indices.find(6) != indices.end());
         } else {
-            EXPECT_EQ(indices.size(), 2);
+            EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
             EXPECT_TRUE(indices.find(0) != indices.end());
             EXPECT_TRUE(indices.find(3) != indices.end());
         }
@@ -404,7 +404,7 @@ TEST(NominalFeatureTypeTest, createBinaryFeatureVectorFromCscView) {
         indices.emplace(*it);
     }
 
-    EXPECT_EQ(indices.size(), 2);
+    EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
     EXPECT_TRUE(indices.find(0) != indices.end());
     EXPECT_TRUE(indices.find(3) != indices.end());
 
