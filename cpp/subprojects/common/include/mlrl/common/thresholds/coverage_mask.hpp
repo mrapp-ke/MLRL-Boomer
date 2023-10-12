@@ -11,6 +11,7 @@
  * C-contiguous array that may be updated when the rule is refined. If the value that corresponds to a certain example
  * is equal to the "indicator value", it is considered to be covered.
  */
+// TODO: Delete base class and move into directory "data"
 class CoverageMask final : public DenseVectorDecorator<AllocatedVector<uint32>>,
                            public ICoverageState {
     private:
