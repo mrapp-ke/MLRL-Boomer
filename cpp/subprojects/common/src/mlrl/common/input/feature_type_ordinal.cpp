@@ -87,8 +87,8 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
   std::unordered_map<int32, Tuple<uint32>>& mapping, uint32 numValues, uint32 numExamples, bool sparse) {
     if (numValues > 2) {
-        // TODO
-        return nullptr;
+        return createOrdinalFeatureVector(indexIterator, valueIterator, numElements, mapping, numValues, numExamples,
+                                          sparse);
     } else if (numValues > 1) {
         return createBinaryFeatureVector(indexIterator, valueIterator, numElements, mapping, sparse);
     } else {
