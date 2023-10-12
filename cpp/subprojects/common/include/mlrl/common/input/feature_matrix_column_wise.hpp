@@ -24,6 +24,7 @@ class MLRLCOMMON_API IColumnWiseFeatureMatrix : public IFeatureMatrix {
          * @param featureVectorPtr  An unique pointer to an object of type `FeatureVector` that should be used to store
          *                          the feature vector
          */
+        // TODO Remove
         virtual void fetchFeatureVector(uint32 featureIndex,
                                         std::unique_ptr<FeatureVector>& featureVectorPtr) const = 0;
 };
