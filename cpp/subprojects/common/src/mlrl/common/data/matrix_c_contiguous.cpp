@@ -18,6 +18,7 @@ CContiguousMatrix<T>::~CContiguousMatrix() {
 
 template class CContiguousMatrix<uint8>;
 template class CContiguousMatrix<uint32>;
+template class CContiguousMatrix<int32>;
 template class CContiguousMatrix<int64>;
 template class CContiguousMatrix<float32>;
 template class CContiguousMatrix<float64>;

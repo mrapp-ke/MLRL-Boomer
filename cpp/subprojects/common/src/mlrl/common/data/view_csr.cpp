@@ -45,6 +45,8 @@ template class CsrConstView<uint32>;
 template class CsrConstView<const uint32>;
 template class CsrConstView<int64>;
 template class CsrConstView<const int64>;
+template class CsrConstView<int32>;
+template class CsrConstView<const int32>;
 template class CsrConstView<float32>;
 template class CsrConstView<const float32>;
 template class CsrConstView<float64>;
@@ -76,6 +78,7 @@ typename CsrView<T>::index_iterator CsrView<T>::indices_end(uint32 row) {
 
 template class CsrView<uint8>;
 template class CsrView<uint32>;
+template class CsrView<int32>;
 template class CsrView<int64>;
 template class CsrView<float32>;
 template class CsrView<float64>;

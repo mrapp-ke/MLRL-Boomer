@@ -31,6 +31,7 @@ T* DensePredictionMatrix<T>::release() {
 
 template class DensePredictionMatrix<uint8>;
 template class DensePredictionMatrix<uint32>;
+template class DensePredictionMatrix<int32>;
 template class DensePredictionMatrix<int64>;
 template class DensePredictionMatrix<float32>;
 template class DensePredictionMatrix<float64>;

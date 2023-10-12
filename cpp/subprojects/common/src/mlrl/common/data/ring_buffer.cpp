@@ -51,6 +51,7 @@ std::pair<bool, T> RingBuffer<T>::push(T value) {
 
 template class RingBuffer<uint8>;
 template class RingBuffer<uint32>;
+template class RingBuffer<int32>;
 template class RingBuffer<int64>;
 template class RingBuffer<float32>;
 template class RingBuffer<float64>;
