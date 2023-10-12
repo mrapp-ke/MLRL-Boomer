@@ -1,5 +1,6 @@
 #include "mlrl/common/data/vector_sparse_array.hpp"
 
+#include "mlrl/common/data/triple.hpp"
 #include "mlrl/common/data/tuple.hpp"
 
 template<typename T>
@@ -279,3 +280,8 @@ template class SparseArrayVector<Tuple<uint32>>;
 template class SparseArrayVector<Tuple<int64>>;
 template class SparseArrayVector<Tuple<float32>>;
 template class SparseArrayVector<Tuple<float64>>;
+template class SparseArrayVector<Triple<uint8>>;
+template class SparseArrayVector<Triple<uint32>>;
+template class SparseArrayVector<Triple<int64>>;
+template class SparseArrayVector<Triple<float32>>;
+template class SparseArrayVector<Triple<float64>>;
