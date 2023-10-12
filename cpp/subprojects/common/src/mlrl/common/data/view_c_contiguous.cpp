@@ -28,6 +28,10 @@ template class CContiguousConstView<uint8>;
 template class CContiguousConstView<const uint8>;
 template class CContiguousConstView<uint32>;
 template class CContiguousConstView<const uint32>;
+template class CContiguousConstView<int32>;
+template class CContiguousConstView<const int32>;
+template class CContiguousConstView<int64>;
+template class CContiguousConstView<const int64>;
 template class CContiguousConstView<float32>;
 template class CContiguousConstView<const float32>;
 template class CContiguousConstView<float64>;
@@ -49,5 +53,7 @@ typename CContiguousView<T>::value_iterator CContiguousView<T>::values_end(uint3
 
 template class CContiguousView<uint8>;
 template class CContiguousView<uint32>;
+template class CContiguousView<int32>;
+template class CContiguousView<int64>;
 template class CContiguousView<float32>;
 template class CContiguousView<float64>;

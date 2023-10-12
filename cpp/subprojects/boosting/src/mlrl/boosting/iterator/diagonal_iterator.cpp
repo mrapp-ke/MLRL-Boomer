@@ -59,6 +59,8 @@ namespace boosting {
 
     template class DiagonalConstIterator<uint8>;
     template class DiagonalConstIterator<uint32>;
+    template class DiagonalConstIterator<int32>;
+    template class DiagonalConstIterator<int64>;
     template class DiagonalConstIterator<float32>;
     template class DiagonalConstIterator<float64>;
 

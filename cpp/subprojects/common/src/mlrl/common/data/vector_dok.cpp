@@ -45,5 +45,7 @@ void DokVector<T>::clear() {
 
 template class DokVector<uint8>;
 template class DokVector<uint32>;
+template class DokVector<int32>;
+template class DokVector<int64>;
 template class DokVector<float32>;
 template class DokVector<float64>;

@@ -70,6 +70,8 @@ namespace boosting {
 
     template class NumericSparseSetMatrix<uint8>;
     template class NumericSparseSetMatrix<uint32>;
+    template class NumericSparseSetMatrix<int32>;
+    template class NumericSparseSetMatrix<int64>;
     template class NumericSparseSetMatrix<float32>;
     template class NumericSparseSetMatrix<float64>;
 

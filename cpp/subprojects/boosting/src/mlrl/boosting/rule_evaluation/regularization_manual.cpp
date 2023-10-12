@@ -2,8 +2,6 @@
 
 #include "mlrl/common/util/validation.hpp"
 
-#include <iostream>
-
 namespace boosting {
 
     ManualRegularizationConfig::ManualRegularizationConfig() : regularizationWeight_(1) {}

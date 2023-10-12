@@ -43,6 +43,10 @@ template class CscConstView<uint8>;
 template class CscConstView<const uint8>;
 template class CscConstView<uint32>;
 template class CscConstView<const uint32>;
+template class CscConstView<int64>;
+template class CscConstView<const int64>;
+template class CscConstView<int32>;
+template class CscConstView<const int32>;
 template class CscConstView<float32>;
 template class CscConstView<const float32>;
 template class CscConstView<float64>;
@@ -74,5 +78,7 @@ typename CscView<T>::index_iterator CscView<T>::indices_end(uint32 col) {
 
 template class CscView<uint8>;
 template class CscView<uint32>;
+template class CscView<int32>;
+template class CscView<int64>;
 template class CscView<float32>;
 template class CscView<float64>;

@@ -184,13 +184,19 @@ void SparseSetMatrix<T>::clear() {
 
 template class SparseSetMatrix<uint8>;
 template class SparseSetMatrix<uint32>;
+template class SparseSetMatrix<int32>;
+template class SparseSetMatrix<int64>;
 template class SparseSetMatrix<float32>;
 template class SparseSetMatrix<float64>;
 template class SparseSetMatrix<Tuple<uint8>>;
 template class SparseSetMatrix<Tuple<uint32>>;
+template class SparseSetMatrix<Tuple<int32>>;
+template class SparseSetMatrix<Tuple<int64>>;
 template class SparseSetMatrix<Tuple<float32>>;
 template class SparseSetMatrix<Tuple<float64>>;
 template class SparseSetMatrix<Triple<uint8>>;
 template class SparseSetMatrix<Triple<uint32>>;
+template class SparseSetMatrix<Triple<int32>>;
+template class SparseSetMatrix<Triple<int64>>;
 template class SparseSetMatrix<Triple<float32>>;
 template class SparseSetMatrix<Triple<float64>>;
