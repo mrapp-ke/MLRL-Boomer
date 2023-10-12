@@ -79,4 +79,10 @@ class NumericalFeatureVector final : public AbstractFeatureVector {
         void setNumElements(uint32 numElements, bool freeMemory);
 
         uint32 getNumElements() const override;
+
+        std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
+                                                                    uint32 start, uint32 end) const override;
+
+        std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
+                                                                    const CoverageMask& coverageMask) const override;
 };
