@@ -19,4 +19,10 @@ class BinaryFeatureVector final : public NominalFeatureVector {
          * @param majorityValue         The majority value, i.e., the most frequent value, of the binary feature
          */
         BinaryFeatureVector(uint32 numMinorityExamples, int32 minorityValue, int32 majorityValue);
+
+        std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
+                                                                    uint32 start, uint32 end) const override;
+
+        std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
+                                                                    const CoverageMask& coverageMask) const override;
 };

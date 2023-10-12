@@ -5,3 +5,15 @@ BinaryFeatureVector::BinaryFeatureVector(uint32 numMinorityExamples, int32 minor
     this->values_begin()[0] = minorityValue;
     this->indptr_begin()[0] = 0;
 }
+
+std::unique_ptr<IFeatureVector> BinaryFeatureVector::createFilteredFeatureVector(
+  std::unique_ptr<IFeatureVector>& existing, uint32 start, uint32 end) const {
+    // TODO Implement
+    return nullptr;
+}
+
+std::unique_ptr<IFeatureVector> BinaryFeatureVector::createFilteredFeatureVector(
+  std::unique_ptr<IFeatureVector>& existing, const CoverageMask& coverageMask) const {
+    // TODO Implement
+    return nullptr;
+}
