@@ -1,7 +1,5 @@
 #include "mlrl/common/rule_refinement/rule_refinement_approximate.hpp"
 
-#include <iostream>
-
 template<typename IndexVector, typename RefinementComparator>
 static inline void findRefinementInternally(const IndexVector& labelIndices, uint32 numExamples, uint32 featureIndex,
                                             bool ordinal, bool nominal, uint32 minCoverage,
