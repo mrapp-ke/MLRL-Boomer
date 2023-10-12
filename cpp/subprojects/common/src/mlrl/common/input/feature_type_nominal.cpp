@@ -5,7 +5,6 @@
 #include "mlrl/common/input/feature_vector_equal.hpp"
 #include "mlrl/common/iterator/index_iterator.hpp"
 
-#include <iostream>
 #include <unordered_map>
 
 template<typename ValueIterator>
