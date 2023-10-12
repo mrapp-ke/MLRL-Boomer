@@ -1,6 +1,7 @@
 #include "mlrl/common/data/view_vector.hpp"
 
 #include "mlrl/common/data/indexed_value.hpp"
+#include "mlrl/common/data/triple.hpp"
 #include "mlrl/common/data/tuple.hpp"
 
 template<typename T>
@@ -41,11 +42,26 @@ template class VectorConstView<IndexedValue<uint32>>;
 template class VectorConstView<IndexedValue<int64>>;
 template class VectorConstView<IndexedValue<float32>>;
 template class VectorConstView<IndexedValue<float64>>;
+template class VectorConstView<Tuple<uint8>>;
+template class VectorConstView<Tuple<uint32>>;
+template class VectorConstView<Tuple<int64>>;
+template class VectorConstView<Tuple<float32>>;
+template class VectorConstView<Tuple<float64>>;
 template class VectorConstView<IndexedValue<Tuple<uint8>>>;
 template class VectorConstView<IndexedValue<Tuple<uint32>>>;
 template class VectorConstView<IndexedValue<Tuple<int64>>>;
 template class VectorConstView<IndexedValue<Tuple<float32>>>;
 template class VectorConstView<IndexedValue<Tuple<float64>>>;
+template class VectorConstView<Triple<uint8>>;
+template class VectorConstView<Triple<uint32>>;
+template class VectorConstView<Triple<int64>>;
+template class VectorConstView<Triple<float32>>;
+template class VectorConstView<Triple<float64>>;
+template class VectorConstView<IndexedValue<Triple<uint8>>>;
+template class VectorConstView<IndexedValue<Triple<uint32>>>;
+template class VectorConstView<IndexedValue<Triple<int64>>>;
+template class VectorConstView<IndexedValue<Triple<float32>>>;
+template class VectorConstView<IndexedValue<Triple<float64>>>;
 
 template<typename T>
 VectorView<T>::VectorView(uint32 numElements, T* array) : VectorConstView<T>(numElements, array) {}
@@ -80,8 +96,23 @@ template class VectorView<IndexedValue<uint32>>;
 template class VectorView<IndexedValue<int64>>;
 template class VectorView<IndexedValue<float32>>;
 template class VectorView<IndexedValue<float64>>;
+template class VectorView<Tuple<uint8>>;
+template class VectorView<Tuple<uint32>>;
+template class VectorView<Tuple<int64>>;
+template class VectorView<Tuple<float32>>;
+template class VectorView<Tuple<float64>>;
 template class VectorView<IndexedValue<Tuple<uint8>>>;
 template class VectorView<IndexedValue<Tuple<uint32>>>;
 template class VectorView<IndexedValue<Tuple<int64>>>;
 template class VectorView<IndexedValue<Tuple<float32>>>;
 template class VectorView<IndexedValue<Tuple<float64>>>;
+template class VectorView<Triple<uint8>>;
+template class VectorView<Triple<uint32>>;
+template class VectorView<Triple<int64>>;
+template class VectorView<Triple<float32>>;
+template class VectorView<Triple<float64>>;
+template class VectorView<IndexedValue<Triple<uint8>>>;
+template class VectorView<IndexedValue<Triple<uint32>>>;
+template class VectorView<IndexedValue<Triple<int64>>>;
+template class VectorView<IndexedValue<Triple<float32>>>;
+template class VectorView<IndexedValue<Triple<float64>>>;
