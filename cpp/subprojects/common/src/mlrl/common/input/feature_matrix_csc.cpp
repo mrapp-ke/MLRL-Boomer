@@ -57,6 +57,11 @@ class CscFeatureMatrix final : public CscConstView<const float32>,
 
             featureVectorPtr->setNumElements(i, true);
         }
+
+        std::unique_ptr<IFeatureVector> createFeatureVector(uint32 featureIndex,
+                                                            const IFeatureType& featureType) const override {
+            return featureType.createFeatureVector(featureIndex, *this);
+        }
 };
 
 std::unique_ptr<ICscFeatureMatrix> createCscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,
