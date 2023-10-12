@@ -68,6 +68,7 @@ namespace boosting {
 
     template class NumericCContiguousMatrix<uint8>;
     template class NumericCContiguousMatrix<uint32>;
+    template class NumericCContiguousMatrix<int64>;
     template class NumericCContiguousMatrix<float32>;
     template class NumericCContiguousMatrix<float64>;
 

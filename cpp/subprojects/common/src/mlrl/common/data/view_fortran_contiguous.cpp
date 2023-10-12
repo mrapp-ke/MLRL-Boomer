@@ -30,6 +30,8 @@ template class FortranContiguousConstView<uint8>;
 template class FortranContiguousConstView<const uint8>;
 template class FortranContiguousConstView<uint32>;
 template class FortranContiguousConstView<const uint32>;
+template class FortranContiguousConstView<int64>;
+template class FortranContiguousConstView<const int64>;
 template class FortranContiguousConstView<float32>;
 template class FortranContiguousConstView<const float32>;
 template class FortranContiguousConstView<float64>;
@@ -51,5 +53,6 @@ typename FortranContiguousView<T>::value_iterator FortranContiguousView<T>::valu
 
 template class FortranContiguousView<uint8>;
 template class FortranContiguousView<uint32>;
+template class FortranContiguousView<int64>;
 template class FortranContiguousView<float32>;
 template class FortranContiguousView<float64>;

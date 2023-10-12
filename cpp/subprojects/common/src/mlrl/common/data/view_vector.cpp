@@ -30,16 +30,20 @@ template class VectorConstView<uint8>;
 template class VectorConstView<const uint8>;
 template class VectorConstView<uint32>;
 template class VectorConstView<const uint32>;
+template class VectorConstView<int64>;
+template class VectorConstView<const int64>;
 template class VectorConstView<float32>;
 template class VectorConstView<const float32>;
 template class VectorConstView<float64>;
 template class VectorConstView<const float64>;
 template class VectorConstView<IndexedValue<uint8>>;
 template class VectorConstView<IndexedValue<uint32>>;
+template class VectorConstView<IndexedValue<int64>>;
 template class VectorConstView<IndexedValue<float32>>;
 template class VectorConstView<IndexedValue<float64>>;
 template class VectorConstView<IndexedValue<Tuple<uint8>>>;
 template class VectorConstView<IndexedValue<Tuple<uint32>>>;
+template class VectorConstView<IndexedValue<Tuple<int64>>>;
 template class VectorConstView<IndexedValue<Tuple<float32>>>;
 template class VectorConstView<IndexedValue<Tuple<float64>>>;
 
@@ -68,13 +72,16 @@ T& VectorView<T>::operator[](uint32 pos) {
 
 template class VectorView<uint8>;
 template class VectorView<uint32>;
+template class VectorView<int64>;
 template class VectorView<float32>;
 template class VectorView<float64>;
 template class VectorView<IndexedValue<uint8>>;
 template class VectorView<IndexedValue<uint32>>;
+template class VectorView<IndexedValue<int64>>;
 template class VectorView<IndexedValue<float32>>;
 template class VectorView<IndexedValue<float64>>;
 template class VectorView<IndexedValue<Tuple<uint8>>>;
 template class VectorView<IndexedValue<Tuple<uint32>>>;
+template class VectorView<IndexedValue<Tuple<int64>>>;
 template class VectorView<IndexedValue<Tuple<float32>>>;
 template class VectorView<IndexedValue<Tuple<float64>>>;

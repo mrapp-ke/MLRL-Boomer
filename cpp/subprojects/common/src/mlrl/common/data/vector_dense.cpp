@@ -35,13 +35,16 @@ void DenseVector<T>::setNumElements(uint32 numElements, bool freeMemory) {
 
 template class DenseVector<uint8>;
 template class DenseVector<uint32>;
+template class DenseVector<int64>;
 template class DenseVector<float32>;
 template class DenseVector<float64>;
 template class DenseVector<IndexedValue<uint8>>;
 template class DenseVector<IndexedValue<uint32>>;
+template class DenseVector<IndexedValue<int64>>;
 template class DenseVector<IndexedValue<float32>>;
 template class DenseVector<IndexedValue<float64>>;
 template class DenseVector<IndexedValue<Tuple<uint8>>>;
 template class DenseVector<IndexedValue<Tuple<uint32>>>;
+template class DenseVector<IndexedValue<Tuple<int64>>>;
 template class DenseVector<IndexedValue<Tuple<float32>>>;
 template class DenseVector<IndexedValue<Tuple<float64>>>;
