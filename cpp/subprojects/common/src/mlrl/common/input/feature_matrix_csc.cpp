@@ -66,6 +66,11 @@ class CscFeatureMatrix final : public IterableSparseMatrixDecorator<MatrixDecora
 
             featureVectorPtr->setNumElements(i, true);
         }
+
+        std::unique_ptr<IFeatureVector> createFeatureVector(uint32 featureIndex,
+                                                            const IFeatureType& featureType) const override {
+            return featureType.createFeatureVector(featureIndex, *this);
+        }
 };
 
 std::unique_ptr<ICscFeatureMatrix> createCscFeatureMatrix(const float32* values, uint32* indices, uint32* indptr,
