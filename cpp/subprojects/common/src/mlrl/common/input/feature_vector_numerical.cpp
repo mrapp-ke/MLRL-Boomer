@@ -30,3 +30,15 @@ void NumericalFeatureVector::setNumElements(uint32 numElements, bool freeMemory)
 uint32 NumericalFeatureVector::getNumElements() const {
     return vector_.getNumElements();
 }
+
+std::unique_ptr<IFeatureVector> NumericalFeatureVector::createFilteredFeatureVector(
+  std::unique_ptr<IFeatureVector>& existing, uint32 start, uint32 end) const {
+    // TODO Implement
+    return nullptr;
+}
+
+std::unique_ptr<IFeatureVector> NumericalFeatureVector::createFilteredFeatureVector(
+  std::unique_ptr<IFeatureVector>& existing, const CoverageMask& coverageMask) const {
+    // TODO Implement
+    return nullptr;
+}
