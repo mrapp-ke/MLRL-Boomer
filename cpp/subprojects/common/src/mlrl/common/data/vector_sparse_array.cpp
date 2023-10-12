@@ -271,9 +271,11 @@ typename SparseArrayVector<T>::value_const_iterator SparseArrayVector<T>::values
 
 template class SparseArrayVector<uint8>;
 template class SparseArrayVector<uint32>;
+template class SparseArrayVector<int64>;
 template class SparseArrayVector<float32>;
 template class SparseArrayVector<float64>;
 template class SparseArrayVector<Tuple<uint8>>;
 template class SparseArrayVector<Tuple<uint32>>;
+template class SparseArrayVector<Tuple<int64>>;
 template class SparseArrayVector<Tuple<float32>>;
 template class SparseArrayVector<Tuple<float64>>;

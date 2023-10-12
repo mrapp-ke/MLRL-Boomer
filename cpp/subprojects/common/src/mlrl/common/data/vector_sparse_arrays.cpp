@@ -51,5 +51,6 @@ uint32 SparseArraysVector<T>::getNumElements() const {
 
 template class SparseArraysVector<uint8>;
 template class SparseArraysVector<uint32>;
+template class SparseArraysVector<int64>;
 template class SparseArraysVector<float32>;
 template class SparseArraysVector<float64>;
