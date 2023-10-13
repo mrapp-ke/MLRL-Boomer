@@ -383,17 +383,17 @@ Output of Experimental Results
 
   * ``false`` The model for the calibration of joint probabilities is not written into a .csv file.
 
-Overwriting Algorithmic Parameters
-----------------------------------
+Setting Algorithmic Parameters
+------------------------------
 
-In addition to the command line arguments that are discussed above, it is often desirable to not use the default configuration of the BOOMER algorithm in an experiment, but to customize some of its parameters. For this purpose, all of the algorithmic parameters that are discussed in the section :ref:`parameters` may be overwritten by providing corresponding arguments to the command line API.
+In addition to the command line arguments that are discussed above, it is often desirable to not rely on the default configuration of the BOOMER algorithm in an experiment, but to use a custom configuration. For this purpose, all of the algorithmic parameters that are discussed in the section :ref:`parameters` may be set by providing corresponding arguments to the command line API.
 
-To be in accordance with the syntax that is typically used by command line programs, the parameter names must be given according to the following syntax that slightly differs from the names that are used by the programmatic Python API:
+In accordance with the syntax that is typically used by command line programs, the parameter names must be given according to the following syntax that slightly differs from the names that are used by the programmatic Python API:
 
 * All argument names must start with two leading dashes (``--``).
 * Underscores (``_``) must be replaced with dashes (``-``).
 
-For example, the value of the parameter ``feature_binning`` may be overwritten as follows:
+For example, the value of the parameter ``feature_binning`` may be set as follows:
 
 .. code-block:: text
 
