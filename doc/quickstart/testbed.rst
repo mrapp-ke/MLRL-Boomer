@@ -46,7 +46,7 @@ In addition to the mandatory arguments that must be provided to the command line
     When running the program with the argument ``-v`` or ``--version``, the version of the software package is printed. The output also includes information about third-party dependencies it uses, the :ref:`buildoptions` that have been used for building the package, as well as information about hardware resources it may utilize.
 
 .. note::
-    The argument ``--log-level`` controls the level of detail used for log messages (Default value = ``info``). It can be set to the values ``debug``, ``info``, ``warn``, ``warning``, ``error``, ``critical``, ``fatal`` or ``notset``, where the first one provides the greatest level of detail and the last one turns of logging entirely.
+    The argument ``--log-level`` controls the level of detail used for log messages (Default value = ``info``). It can be set to the values ``debug``, ``info``, ``warn``, ``warning``, ``error``, ``critical``, ``fatal`` or ``notset``, where the first one provides the greatest level of detail and the last one disables logging entirely.
 
 Evaluation of Predictive Performance
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
