@@ -1,3 +1,7 @@
+---
+tocdepth: 2
+---
+
 # Release Notes
 
 ## Version 0.10.0 (to be released)
