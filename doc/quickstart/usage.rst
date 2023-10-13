@@ -1,6 +1,6 @@
 .. _usage:
 
-Usage in your own Code
+Usage in Your Own Code
 ======================
 
 The BOOMER algorithm is implemented by the class ``Boomer`` that is part of the `mlrl-boomer <https://pypi.org/project/mlrl-boomer/>`__ package (see :ref:`installation`). As it follows the conventions of a scikit-learn `estimator <https://scikit-learn.org/stable/glossary.html#term-estimators>`_, it can be used similarly to other classification methods that are included in this popular machine learning framework. The `getting started guide <https://scikit-learn.org/stable/getting_started.html>`_ that is provided by the scikit-learn developers is a good starting point for learning about the framework's functionalities and how to use them.
