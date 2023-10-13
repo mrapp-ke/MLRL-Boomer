@@ -22,7 +22,7 @@ In the following, a minimal working example of how to use the command line API f
 
 Both arguments that are included in the above command are mandatory:
 
-* ``--data-dir``: The path of the directory where the data set files are located.
+* ``--data-dir``: An absolute or relative path to the directory where the data set files are located.
 * ``--dataset``: The name of the data set files (without suffix).
 
 The program expects the data set files to be provided in the `Mulan format <http://mulan.sourceforge.net/format.html>`_. It requires two files to be present in the specified directory:
@@ -50,6 +50,8 @@ In addition to the mandatory arguments that must be provided to the command line
 
 Evaluation of Predictive Performance
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+One of the most important capabilities of the command line API is to train machine learning models and obtain an unbiased estimate of their predictive performance. For this purpose, the available data must be split into training and test data. The former is used to train models and the latter is used for evaluation afterwards, whereas the evaluation metrics depend on the type of predictions provided by a model.
 
 * ``--data-split`` (Default value = ``train-test``)
 
@@ -88,6 +90,8 @@ Evaluation of Predictive Performance
 Data Pre-Processing
 ^^^^^^^^^^^^^^^^^^^
 
+Depending on the characteristics of a dataset, it might be desirable to apply one of the following pre-processing techniques before training and evaluating machine learning models.
+
 * ``--one-hot-encoding`` (Default value = ``false``)
 
   * ``true`` One-hot-encoding is used to encode nominal attributes.
@@ -96,16 +100,20 @@ Data Pre-Processing
 Saving and Loading Models
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Because the training of models can be time-consuming, it might be desirable to store them on disk for later use. This requires to specify the path of a directory where models should be saved.
+
 * ``--model-dir`` (Default value = ``None``)
 
-  * The path of the directory where models should be stored. If such models are found in the specified directory, they will be used instead of learning a new model from scratch. If no models are available, the trained models will be saved in the specified directory once training has completed.
+  * An absolute or relative path to the directory where models should be stored. If such models are found in the specified directory, they will be used instead of learning a new model from scratch. If no models are available, the trained models will be saved in the specified directory once training has completed.
 
 Saving and Loading Parameter Settings
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+As an alternative to storing the models learned by an algorithm, the algorithmic parameters used for training can be saved to disk. This may help to remember the configuration used for training a model and enables to reload the same parameter setting for additional experiments.
+
 * ``--parameter-dir`` (Default value = ``None``)
 
-  * The path of the directory where configuration files, which specify the parameters to be used by the algorithm, are located. If such files are found in the specified directory, the specified parameter settings are used instead of the parameters that are provided via command line arguments.
+  * An absolute or relative path to the directory where configuration files, which specify the parameters to be used by the algorithm, are located. If such files are found in the specified directory, the specified parameter settings are used instead of the parameters that are provided via command line arguments.
 
 * ``--print-parameters`` (Default value = ``false``)
 
@@ -121,9 +129,11 @@ Saving and Loading Parameter Settings
 Output of Experimental Results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+To provide valuable insights into the models learned by an algorithm, the predictions they provide, or the data they have been derived from, a wide variety of experimental results can be written to output files or printed on the console.
+
 * ``--output-dir`` (Default value = ``None``)
 
-  * The path of the directory where experimental results should be saved.
+  * An absolute or relative path to the directory where experimental results should be saved.
 
 * ``--print-evaluation`` (Default value = ``true``)
 
