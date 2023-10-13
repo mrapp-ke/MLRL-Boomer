@@ -1,15 +1,18 @@
 #include "mlrl/common/input/feature_vector_nominal.hpp"
 
+#include <cstdlib>
+
 NominalFeatureVector::NominalFeatureVector(uint32 numValues, uint32 numExamples, int32 majorityValue)
-    : values_(new int32[numValues]), indices_(new uint32[numExamples]), numValues_(numValues),
-      majorityValue_(majorityValue), indptr_(new uint32[numValues + 1]) {
+    : values_((int32*) malloc(numValues * sizeof(int32))), numValues_(numValues), majorityValue_(majorityValue),
+      indices_((uint32*) malloc(numExamples * sizeof(uint32))),
+      indptr_((uint32*) malloc((numValues + 1) * sizeof(uint32))) {
     indptr_[numValues] = numExamples;
 }
 
 NominalFeatureVector::~NominalFeatureVector() {
-    delete[] values_;
-    delete[] indices_;
-    delete[] indptr_;
+    free(values_);
+    free(indices_);
+    free(indptr_);
 }
 
 NominalFeatureVector::value_iterator NominalFeatureVector::values_begin() {

@@ -14,13 +14,16 @@ class NominalFeatureVector : public AbstractFeatureVector {
 
         int32* values_;
 
-        uint32* indices_;
-
         const uint32 numValues_;
 
         const int32 majorityValue_;
 
     protected:
+
+        /**
+         * A pointer to an array that stores the indices of all examples not associated with the majority value.
+         */
+        uint32* indices_;
 
         /**
          * A pointer to an array that stores the indices of the first element in `indices_` that corresponds to a
