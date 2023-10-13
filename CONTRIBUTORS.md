@@ -19,4 +19,4 @@ We highly appreciate the efforts of the following persons (listed in alphabetica
 
 ## Special Thanks
 
-We would also like to thank Johannes Fürnkranz and Eyke Hüllermeier for making the project possible in the first place and sharing their extensive knowledge. 
+We would also like to thank Johannes Fürnkranz for making the project possible in the first place and sharing his extensive knowledge. 
