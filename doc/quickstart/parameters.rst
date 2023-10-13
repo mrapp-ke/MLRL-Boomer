@@ -23,7 +23,7 @@ All of the parameters that are mentioned below are optional. If not specified ma
 Data Format
 -----------
 
-The following parameters allow to specify the preferred format for the representation of the training data.
+The following parameters allow to specify the preferred format for representing the training data. Depending on the characteristics of a dataset, these parameters may help to reduce the memory footprint of the algorithm or the time it needs for training.
 
 * ``feature_format`` (Default value = ``'auto'``)
 
@@ -46,7 +46,7 @@ The following parameters allow to specify the preferred format for the represent
 Algorithmic Parameters
 ----------------------
 
-The following parameters allow to control the behavior of the algorithm.
+The following parameters may be used to control the behavior of the algorithm. They should be carefully adjusted to the machine learning task one aims to solve in order to achieve optimal results in terms of training efficiency and predictive performance.
 
 Loss Minimization and Regularization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -311,10 +311,10 @@ Prediction
 Multi-Threading
 ---------------
 
+The following parameters allow to specify whether multi-threading should be used for different aspects of the algorithm. Depending on your hardware, they may help to reduce the time needed for training or prediction.
+
 .. warning::
     To be able to use the algorithm's multi-threading capabilities, it must have been compiled with multi-threading support enabled, which should be the case with pre-built packages available on `PyPI <https://pypi.org/>`__. Please refer to the section :ref:`buildoptions` if you intend to compile the program yourself, or if you want to check if multi-threading support is enabled for your installation.
-
-The following parameters allow to specify whether multi-threading should be used for different aspects of the algorithm.
 
 * ``parallel_rule_refinement`` (Default value = ``'auto'``)
 
