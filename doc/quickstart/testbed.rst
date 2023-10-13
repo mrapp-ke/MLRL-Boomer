@@ -1,3 +1,5 @@
+:tocdepth: 2
+
 .. _testbed:
 
 Using the Command Line API
@@ -43,6 +45,12 @@ In addition to the mandatory arguments that must be provided to the command line
 .. note::
     When running the program with the argument ``-v`` or ``--version``, the version of the software package is printed. The output also includes information about third-party dependencies it uses, the :ref:`buildoptions` that have been used for building the package, as well as information about hardware resources it may utilize.
 
+.. note::
+    The argument ``--log-level`` controls the level of detail used for log messages (Default value = ``info``). It can be set to the values ``debug``, ``info``, ``warn``, ``warning``, ``error``, ``critical``, ``fatal`` or ``notset``, where the first one provides the greatest level of detail and the last one turns of logging entirely.
+
+Evaluation of Predictive Performance
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 * ``--data-split`` (Default value = ``train-test``)
 
   * ``train-test`` The available data is split into a single training and test set. Given that ``dataset-name`` is provided as the value of the argument ``--dataset``, the training data must be stored in a file named ``dataset-name_training.arff``, whereas the test data must be stored in a file named ``dataset-name_test.arff``. If no such files are available, the program will look for a file with the name ``dataset-name.arff`` and split it into training and test data automatically. The following options may be specified via the bracket notation (see :ref:`parameters`):
@@ -55,12 +63,6 @@ In addition to the mandatory arguments that must be provided to the command line
     * ``current_fold`` (Default value = ``0``) The cross validation fold to be performed. Must be in [1, ``num_folds``] or 0, if all folds should be performed.
 
   * ``none`` The available data is not split into separate training and test sets, but the entire data is used for training and evaluation. This strategy should only be used for testing purposes, as the evaluation results will be highly biased and overly optimistic. Given that ``dataset-name`` is provided as the value of the argument ``--dataset``, the data must be stored in a file named ``dataset-name.arff``.
-
-* ``--prediction-type`` (Default value = ``binary``)
-
-  * ``binary`` The learner is instructed to predict binary labels. In this case, bipartition evaluation measures are used for evaluation.
-  * ``scores`` The learner is instructed to predict regression scores. In this case, ranking measures are used for evaluation.
-  * ``probabilities`` The learner is instructed to predict probability estimates. In this case, ranking measures are used for evaluation.
 
 * ``--evaluate-training-data`` (Default value = ``false``)
 
@@ -77,18 +79,47 @@ In addition to the mandatory arguments that must be provided to the command line
 
   * ``false`` Models are evaluated only once as a whole.
 
+* ``--prediction-type`` (Default value = ``binary``)
+
+  * ``binary`` The learner is instructed to predict binary labels. In this case, bipartition evaluation measures are used for evaluation.
+  * ``scores`` The learner is instructed to predict regression scores. In this case, ranking measures are used for evaluation.
+  * ``probabilities`` The learner is instructed to predict probability estimates. In this case, ranking measures are used for evaluation.
+
+Data Pre-Processing
+^^^^^^^^^^^^^^^^^^^
+
 * ``--one-hot-encoding`` (Default value = ``false``)
 
   * ``true`` One-hot-encoding is used to encode nominal attributes.
   * ``false`` The algorithm's ability to natively handle nominal attributes is used.
 
+Saving and Loading Models
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
 * ``--model-dir`` (Default value = ``None``)
 
   * The path of the directory where models should be stored. If such models are found in the specified directory, they will be used instead of learning a new model from scratch. If no models are available, the trained models will be saved in the specified directory once training has completed.
 
+Saving and Loading Parameter Settings
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 * ``--parameter-dir`` (Default value = ``None``)
 
   * The path of the directory where configuration files, which specify the parameters to be used by the algorithm, are located. If such files are found in the specified directory, the specified parameter settings are used instead of the parameters that are provided via command line arguments.
+
+* ``--print-parameters`` (Default value = ``false``)
+
+  * ``true`` Algorithmic parameters are printed on the console.
+  * ``false`` Algorithmic parameters are not printed on the console.
+
+* ``--store-parameters`` (Default value = ``false``)
+
+  * ``true`` Algorithmic parameters that have been set by the user are written into .csv files. Does only have an effect if the parameter ``--output-dir`` is specified.
+  * ``false`` Algorithmic parameters that have been set by the user are not written into .csv files.
+
+
+Output of Experimental Results
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * ``--output-dir`` (Default value = ``None``)
 
@@ -177,16 +208,6 @@ In addition to the mandatory arguments that must be provided to the command line
     * ``prediction_time`` (Default value = ``true``) ``true``, if the time that was needed for prediction should be stored, ``false`` otherwise.
 
   * ``false`` The evaluation results are not written into .csv files.
-
-* ``--print-parameters`` (Default value = ``false``)
-
-  * ``true`` Algorithmic parameters are printed on the console.
-  * ``false`` Algorithmic parameters are not printed on the console.
-
-* ``--store-parameters`` (Default value = ``false``)
-
-  * ``true`` Algorithmic parameters that have been set by the user are written into .csv files. Does only have an effect if the parameter ``--output-dir`` is specified.
-  * ``false`` Algorithmic parameters that have been set by the user are not written into .csv files.
 
 * ``--print-predictions`` (Default value = ``false``)
 
@@ -361,10 +382,6 @@ In addition to the mandatory arguments that must be provided to the command line
     * ``decimals`` (Default value = ``2``) The number of decimals to be used for thresholds and probabilities or 0, if the number of decimals should not be restricted.
 
   * ``false`` The model for the calibration of joint probabilities is not written into a .csv file.
-
-* ``--log-level`` (Default value = ``info``)
-
-  * The log level to be used. Must be ``debug``, ``info``, ``warn``, ``warning``, ``error``, ``critical``, ``fatal`` or ``notset``.
 
 Overwriting Algorithmic Parameters
 ----------------------------------
