@@ -1,9 +1,9 @@
 .. _apidoc:
 
-API Documentation
-=================
+API Reference
+=============
 
-For those who are interested in modifying the project's source code or want to use it in their own Python or C++ projects, we provide a documentation of all public classes, functions, etc., that can be used. The API documentation of the project's C++ and Python modules can be found under the links below.
+For those who are interested in modifying the project's source code or want to use it in their own Python or C++ projects, we provide a documentation of all public classes, functions, etc., that can be used. The API reference of the project's C++ and Python modules can be found under the links below.
 
 C++ API
 -------
