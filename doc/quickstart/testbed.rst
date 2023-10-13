@@ -37,9 +37,11 @@ Command Line Arguments
 
 In addition to the mandatory arguments that must be provided to the command line API to specify the dataset to be used for training, a wide variety of optional arguments are available as well. In the following, we provide an overview of these arguments and discuss their respective purposes.
 
-* ``-h`` or ``--help`` prints a description of all available command line arguments.
+.. note::
+    The arguments ``-h`` or ``--help`` result in a description of all available command line arguments being printed.
 
-* ``-v`` or ``--version`` prints information about the program's version, as well as the Python packages, shared libraries and third-party dependencies it uses.
+.. note::
+    When running the program with the argument ``-v`` or ``--version``, the version of the software package is printed. The output also includes information about third-party dependencies it uses, the :ref:`buildoptions` that have been used for building the package, as well as information about hardware resources it may utilize.
 
 * ``--data-split`` (Default value = ``train-test``)
 
