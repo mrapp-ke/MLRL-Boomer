@@ -86,6 +86,9 @@ class MLRLCOMMON_API VectorView : public VectorConstView<T> {
 
         virtual ~VectorView() override {};
 
+        // Keep functions from the parent class rather than hiding them
+        using VectorConstView<T>::operator[];
+
         /**
          * An iterator that provides access to the elements in the view and allows to modify them.
          */
@@ -104,14 +107,6 @@ class MLRLCOMMON_API VectorView : public VectorConstView<T> {
          * @return An `iterator` to the end
          */
         iterator end();
-
-        /**
-         * Returns a const reference to the element at a specific position.
-         *
-         * @param pos   The position of the element
-         * @return      A const reference to the specified element
-         */
-        const T& operator[](uint32 pos) const;
 
         /**
          * Returns a reference to the element at a specific position.
