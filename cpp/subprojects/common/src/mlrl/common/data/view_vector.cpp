@@ -77,11 +77,6 @@ typename VectorView<T>::iterator VectorView<T>::end() {
 }
 
 template<typename T>
-const T& VectorView<T>::operator[](uint32 pos) const {
-    return VectorConstView<T>::array_[pos];
-}
-
-template<typename T>
 T& VectorView<T>::operator[](uint32 pos) {
     return VectorConstView<T>::array_[pos];
 }
