@@ -12,12 +12,12 @@
 namespace seco {
 
     static inline void applyHead(const CompleteHead& head, VectorView<uint8>::iterator iterator, BitVector& mask) {
-        CompleteHead::score_const_iterator scoreIterator = head.scores_cbegin();
+        CompleteHead::value_const_iterator valueIterator = head.values_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
             if (!mask[i]) {
-                uint8 prediction = scoreIterator[i] > 0;
+                uint8 prediction = valueIterator[i] > 0;
                 iterator[i] = prediction;
                 mask.set(i, true);
             }
@@ -288,8 +288,8 @@ namespace seco {
 
     static inline void applyHead(const IHead& head, BinaryLilMatrix::row predictionRow, uint32 numLabels) {
         auto completeHeadVisitor = [&](const CompleteHead& head) {
-            applyHead(make_non_zero_index_forward_iterator(head.scores_cbegin(), head.scores_cend()),
-                      make_non_zero_index_forward_iterator(head.scores_cend(), head.scores_cend()), IndexIterator(0),
+            applyHead(make_non_zero_index_forward_iterator(head.values_cbegin(), head.values_cend()),
+                      make_non_zero_index_forward_iterator(head.values_cend(), head.values_cend()), IndexIterator(0),
                       predictionRow, numLabels);
         };
         auto partialHeadVisitor = [&](const PartialHead& head) {
