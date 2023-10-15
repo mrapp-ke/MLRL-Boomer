@@ -21,13 +21,13 @@ namespace boosting {
     }
 
     static inline void applyHead(const PartialHead& head, VectorView<float64>::iterator iterator) {
-        PartialHead::score_const_iterator scoreIterator = head.scores_cbegin();
+        PartialHead::value_const_iterator valueIterator = head.values_cbegin();
         PartialHead::index_const_iterator indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indexIterator[i];
-            iterator[index] += scoreIterator[i];
+            iterator[index] += valueIterator[i];
         }
     }
 
