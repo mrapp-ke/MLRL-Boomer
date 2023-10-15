@@ -61,7 +61,7 @@ namespace boosting {
                 float64 minAbsScore = pair.first;
                 float64 threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
+                DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
                 typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
                 float64 quality = 0;
                 uint32 n = 0;
@@ -73,7 +73,7 @@ namespace boosting {
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) > threshold) {
                         indexIterator[n] = labelIndexIterator[i];
-                        scoreIterator[n] = score;
+                        valueIterator[n] = score;
                         quality += calculateLabelWiseQuality(score, tuple.first, tuple.second, l1RegularizationWeight_,
                                                              l2RegularizationWeight_);
                         n++;

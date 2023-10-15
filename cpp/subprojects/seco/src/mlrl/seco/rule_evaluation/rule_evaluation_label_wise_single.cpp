@@ -63,7 +63,7 @@ namespace seco {
                 auto labelIterator =
                   make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
                 std::advance(labelIterator, bestIndex);
-                scoreVector_.scores_begin()[0] = (float64) !(*labelIterator);
+                scoreVector_.values_begin()[0] = (float64) !(*labelIterator);
                 indexVector_.begin()[0] = bestIndex;
                 scoreVector_.quality = bestQuality;
                 return scoreVector_;

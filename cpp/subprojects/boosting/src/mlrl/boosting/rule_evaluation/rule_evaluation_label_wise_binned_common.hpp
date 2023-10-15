@@ -113,7 +113,7 @@ namespace boosting {
                   binningPtr_(std::move(binningPtr)) {
                 // The last bin is used for labels for which the corresponding criterion is zero. For this particular
                 // bin, the prediction is always zero.
-                scoreVector_.scores_binned_begin()[maxBins_] = 0;
+                scoreVector_.values_binned_begin()[maxBins_] = 0;
             }
 
             virtual ~AbstractLabelWiseBinnedRuleEvaluation() override {
@@ -156,10 +156,10 @@ namespace boosting {
                 binningPtr_->createBins(labelInfo, criteria_, numCriteria, callback, zeroCallback);
 
                 // Compute predictions, as well as their overall quality...
-                typename DenseBinnedScoreVector<IndexVector>::score_binned_iterator scoreIterator =
-                  scoreVector_.scores_binned_begin();
+                typename DenseBinnedScoreVector<IndexVector>::value_binned_iterator valueIterator =
+                  scoreVector_.values_binned_begin();
                 scoreVector_.quality =
-                  calculateBinnedScores(aggregatedStatisticIterator, scoreIterator, numElementsPerBin_, numBins,
+                  calculateBinnedScores(aggregatedStatisticIterator, valueIterator, numElementsPerBin_, numBins,
                                         l1RegularizationWeight_, l2RegularizationWeight_);
                 return scoreVector_;
             }

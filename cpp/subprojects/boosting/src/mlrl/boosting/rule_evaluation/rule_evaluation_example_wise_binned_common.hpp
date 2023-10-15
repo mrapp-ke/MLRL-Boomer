@@ -261,7 +261,7 @@ namespace boosting {
                   binningPtr_(std::move(binningPtr)), blas_(blas), lapack_(lapack) {
                 // The last bin is used for labels for which the corresponding criterion is zero. For this particular
                 // bin, the prediction is always zero.
-                scoreVector_.scores_binned_begin()[maxBins_] = 0;
+                scoreVector_.values_binned_begin()[maxBins_] = 0;
             }
 
             virtual ~AbstractExampleWiseBinnedRuleEvaluation() override {
@@ -319,22 +319,22 @@ namespace boosting {
                                               l2RegularizationWeight_);
 
                     // Copy gradients to the vector of ordinates...
-                    typename DenseBinnedScoreVector<IndexVector>::score_binned_iterator scoreIterator =
-                      scoreVector_.scores_binned_begin();
-                    copyOrdinates(aggregatedGradients_, scoreIterator, numBins);
-                    addL1RegularizationWeight(scoreIterator, numBins, numElementsPerBin_, l1RegularizationWeight_);
+                    typename DenseBinnedScoreVector<IndexVector>::value_binned_iterator valueIterator =
+                      scoreVector_.values_binned_begin();
+                    copyOrdinates(aggregatedGradients_, valueIterator, numBins);
+                    addL1RegularizationWeight(valueIterator, numBins, numElementsPerBin_, l1RegularizationWeight_);
 
                     // Calculate the scores to be predicted for the individual labels by solving a system of linear
                     // equations...
-                    lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, scoreIterator,
+                    lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, valueIterator,
                                   numBins, this->dsysvLwork_);
 
                     // Calculate the overall quality...
-                    float64 quality = calculateOverallQuality(scoreIterator, aggregatedGradients_, aggregatedHessians_,
+                    float64 quality = calculateOverallQuality(valueIterator, aggregatedGradients_, aggregatedHessians_,
                                                               this->dspmvTmpArray_, numBins, blas_);
 
                     // Evaluate regularization term...
-                    quality += calculateRegularizationTerm(scoreIterator, numElementsPerBin_, numBins,
+                    quality += calculateRegularizationTerm(valueIterator, numElementsPerBin_, numBins,
                                                            l1RegularizationWeight_, l2RegularizationWeight_);
 
                     scoreVector_.quality = quality;
