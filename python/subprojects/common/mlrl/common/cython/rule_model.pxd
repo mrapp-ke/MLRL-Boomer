@@ -108,26 +108,26 @@ cdef extern from "mlrl/common/model/head_complete.hpp" nogil:
 
     cdef cppclass CompleteHeadImpl"CompleteHead"(IHead):
 
-        ctypedef float64* score_iterator
+        ctypedef float64* value_iterator
 
-        ctypedef const float64* score_const_iterator
+        ctypedef const float64* value_const_iterator
 
         # Functions:
 
         uint32 getNumElements() const
 
-        score_iterator scores_begin()
+        value_iterator values_begin()
 
-        score_const_iterator scores_cbegin() const
+        value_const_iterator values_cbegin() const
 
 
 cdef extern from "mlrl/common/model/head_partial.hpp" nogil:
 
     cdef cppclass PartialHeadImpl"PartialHead"(IHead):
 
-        ctypedef float64* score_iterator
+        ctypedef float64* value_iterator
 
-        ctypedef const float64* score_const_iterator
+        ctypedef const float64* value_const_iterator
 
         ctypedef uint32* index_iterator
 
@@ -137,9 +137,9 @@ cdef extern from "mlrl/common/model/head_partial.hpp" nogil:
 
         uint32 getNumElements() const
 
-        score_iterator scores_begin()
+        value_iterator values_begin()
 
-        score_const_iterator scores_cbegin() const
+        value_const_iterator values_cbegin() const
 
         index_iterator indices_begin()
 
