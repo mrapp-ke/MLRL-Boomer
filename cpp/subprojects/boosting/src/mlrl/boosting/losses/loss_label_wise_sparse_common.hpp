@@ -152,9 +152,8 @@ namespace boosting {
             SparseLabelWiseLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction)
                 : LabelWiseLoss(updateFunction, evaluateFunction) {}
 
-            /**
-             * Keep "updateLabelWiseStatistics" functions from the parent class rather than hiding them.
-             */
+            // Keep functions from the parent class rather than hiding them.
+            using LabelWiseLoss::evaluate;
             using LabelWiseLoss::updateLabelWiseStatistics;
 
             void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
@@ -238,9 +237,6 @@ namespace boosting {
                     }
                 }
             }
-
-            // Keep "evaluate" functions from the parent class rather than hiding them
-            using LabelWiseLoss::evaluate;
 
             /**
              * @see `IEvaluationMeasure::evaluate`

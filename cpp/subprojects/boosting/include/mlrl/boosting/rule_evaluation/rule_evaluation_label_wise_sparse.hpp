@@ -18,7 +18,7 @@ namespace boosting {
 
             virtual ~ISparseLabelWiseRuleEvaluationFactory() override {};
 
-            // Keep "create" functions from the parent class rather than hiding them
+            // Keep functions from the parent class rather than hiding them
             using ILabelWiseRuleEvaluationFactory::create;
 
             /**
