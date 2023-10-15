@@ -8,24 +8,24 @@ uint32 AbstractPrediction::getNumElements() const {
     return predictedScoreVector_.getNumElements();
 }
 
-AbstractPrediction::score_iterator AbstractPrediction::scores_begin() {
+AbstractPrediction::value_iterator AbstractPrediction::values_begin() {
     return predictedScoreVector_.begin();
 }
 
-AbstractPrediction::score_iterator AbstractPrediction::scores_end() {
+AbstractPrediction::value_iterator AbstractPrediction::values_end() {
     return predictedScoreVector_.end();
 }
 
-AbstractPrediction::score_const_iterator AbstractPrediction::scores_cbegin() const {
+AbstractPrediction::value_const_iterator AbstractPrediction::values_cbegin() const {
     return predictedScoreVector_.cbegin();
 }
 
-AbstractPrediction::score_const_iterator AbstractPrediction::scores_cend() const {
+AbstractPrediction::value_const_iterator AbstractPrediction::values_cend() const {
     return predictedScoreVector_.cend();
 }
 
-void AbstractPrediction::set(AbstractPrediction::score_const_iterator begin,
-                             AbstractPrediction::score_const_iterator end) {
+void AbstractPrediction::set(AbstractPrediction::value_const_iterator begin,
+                             AbstractPrediction::value_const_iterator end) {
     copyArray(begin, predictedScoreVector_.begin(), predictedScoreVector_.getNumElements());
 }
 

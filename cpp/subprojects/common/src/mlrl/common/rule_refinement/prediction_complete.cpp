@@ -72,6 +72,6 @@ void CompletePrediction::sort() {}
 std::unique_ptr<IHead> CompletePrediction::createHead() const {
     uint32 numElements = this->getNumElements();
     std::unique_ptr<CompleteHead> headPtr = std::make_unique<CompleteHead>(numElements);
-    copyArray(this->scores_cbegin(), headPtr->scores_begin(), numElements);
+    copyArray(this->values_cbegin(), headPtr->scores_begin(), numElements);
     return headPtr;
 }

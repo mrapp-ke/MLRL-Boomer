@@ -672,14 +672,14 @@ namespace boosting {
     template<typename Prediction, typename ScoreMatrix>
     static inline void applyPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
                                                  ScoreMatrix& scoreMatrix) {
-        scoreMatrix.addToRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
+        scoreMatrix.addToRowFromSubset(statisticIndex, prediction.values_cbegin(), prediction.values_cend(),
                                        prediction.indices_cbegin(), prediction.indices_cend());
     }
 
     template<typename Prediction, typename ScoreMatrix>
     static inline void revertPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
                                                   ScoreMatrix& scoreMatrix) {
-        scoreMatrix.removeFromRowFromSubset(statisticIndex, prediction.scores_cbegin(), prediction.scores_cend(),
+        scoreMatrix.removeFromRowFromSubset(statisticIndex, prediction.values_cbegin(), prediction.values_cend(),
                                             prediction.indices_cbegin(), prediction.indices_cend());
     }
 
