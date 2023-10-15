@@ -12,11 +12,11 @@
 namespace boosting {
 
     static inline void applyHead(const CompleteHead& head, VectorView<float64>::iterator iterator) {
-        CompleteHead::score_const_iterator scoreIterator = head.scores_cbegin();
+        CompleteHead::value_const_iterator valueIterator = head.values_cbegin();
         uint32 numElements = head.getNumElements();
 
         for (uint32 i = 0; i < numElements; i++) {
-            iterator[i] += scoreIterator[i];
+            iterator[i] += valueIterator[i];
         }
     }
 

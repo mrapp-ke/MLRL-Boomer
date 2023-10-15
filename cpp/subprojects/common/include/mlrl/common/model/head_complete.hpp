@@ -24,12 +24,12 @@ class MLRLCOMMON_API CompleteHead final : public IHead {
         /**
          * An iterator that provides access to the scores the are contained by the head and allows to modify them.
          */
-        typedef DenseVector<float64>::iterator score_iterator;
+        typedef DenseVector<float64>::iterator value_iterator;
 
         /**
          * An iterator that provides read-only access to the scores that are contained by the head.
          */
-        typedef DenseVector<float64>::const_iterator score_const_iterator;
+        typedef DenseVector<float64>::const_iterator value_const_iterator;
 
         /**
          * Returns the number of scores that are contained by the head.
@@ -39,32 +39,32 @@ class MLRLCOMMON_API CompleteHead final : public IHead {
         uint32 getNumElements() const;
 
         /**
-         * Returns a `score_iterator` to the beginning of the scores that are contained by the head.
+         * Returns a `value_iterator` to the beginning of the scores that are contained by the head.
          *
-         * @return A `score_iterator` to the beginning
+         * @return A `value_iterator` to the beginning
          */
-        score_iterator scores_begin();
+        value_iterator values_begin();
 
         /**
-         * Returns a `score_iterator` to the end of the scores that are contained by the head.
+         * Returns a `value_iterator` to the end of the scores that are contained by the head.
          *
-         * @return A `score_iterator` to the end
+         * @return A `value_iterator` to the end
          */
-        score_iterator scores_end();
+        value_iterator values_end();
 
         /**
-         * Returns a `score_const_iterator` to the beginning of the scores that are contained by the head.
+         * Returns a `value_const_iterator` to the beginning of the scores that are contained by the head.
          *
-         * @return A `score_const_iterator` to the beginning
+         * @return A `value_const_iterator` to the beginning
          */
-        score_const_iterator scores_cbegin() const;
+        value_const_iterator values_cbegin() const;
 
         /**
-         * Returns a `score_const_iterator` to the end of the scores that are contained by the head.
+         * Returns a `value_const_iterator` to the end of the scores that are contained by the head.
          *
-         * @return A `score_const_iterator` to the end
+         * @return A `value_const_iterator` to the end
          */
-        score_const_iterator scores_cend() const;
+        value_const_iterator values_cend() const;
 
         void visit(CompleteHeadVisitor completeHeadVisitor, PartialHeadVisitor partialHeadVisitor) const override;
 };
