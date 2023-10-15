@@ -188,21 +188,21 @@ namespace boosting {
                 addL2RegularizationWeight(this->dsysvTmpArray1_, numPredictions, l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
-                typename DenseScoreVector<IndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
-                copyOrdinates(statisticVector.gradients_cbegin(), scoreIterator, numPredictions);
-                addL1RegularizationWeight(scoreIterator, numPredictions, l1RegularizationWeight_);
+                typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
+                copyOrdinates(statisticVector.gradients_cbegin(), valueIterator, numPredictions);
+                addL1RegularizationWeight(valueIterator, numPredictions, l1RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual labels by solving a system of linear equations...
-                lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, scoreIterator,
+                lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, valueIterator,
                               numPredictions, this->dsysvLwork_);
 
                 // Calculate the overall quality...
-                float64 quality = calculateOverallQuality(scoreIterator, statisticVector.gradients_begin(),
+                float64 quality = calculateOverallQuality(valueIterator, statisticVector.gradients_begin(),
                                                           statisticVector.hessians_begin(), this->dspmvTmpArray_,
                                                           numPredictions, blas_);
 
                 // Evaluate regularization term...
-                quality += calculateRegularizationTerm(scoreIterator, numPredictions, l1RegularizationWeight_,
+                quality += calculateRegularizationTerm(valueIterator, numPredictions, l1RegularizationWeight_,
                                                        l2RegularizationWeight_);
 
                 scoreVector_.quality = quality;

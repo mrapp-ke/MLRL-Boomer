@@ -76,17 +76,17 @@ namespace boosting {
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
-                typename DenseScoreVector<IndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
+                typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
                 typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
 
                 for (uint32 i = 0; i < numPredictions; i++) {
                     const IndexedValue<float64>& entry = tmpIterator[i];
                     uint32 index = entry.index;
                     indexIterator[i] = labelIndexIterator[index];
-                    scoreIterator[i] = -gradientIterator[index];
+                    valueIterator[i] = -gradientIterator[index];
                 }
 
-                addL1RegularizationWeight(scoreIterator, numPredictions, l1RegularizationWeight_);
+                addL1RegularizationWeight(valueIterator, numPredictions, l1RegularizationWeight_);
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
                 copyCoefficients(statisticVector.hessians_cbegin(), indexIterator, this->dsysvTmpArray1_,
@@ -94,16 +94,16 @@ namespace boosting {
                 addL2RegularizationWeight(this->dsysvTmpArray1_, numPredictions, l2RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual labels by solving a system of linear equations...
-                lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, scoreIterator,
+                lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, valueIterator,
                               numPredictions, this->dsysvLwork_);
 
                 // Calculate the overall quality...
-                float64 quality = calculateOverallQuality(scoreIterator, statisticVector.gradients_begin(),
+                float64 quality = calculateOverallQuality(valueIterator, statisticVector.gradients_begin(),
                                                           statisticVector.hessians_begin(), this->dspmvTmpArray_,
                                                           numPredictions, blas_);
 
                 // Evaluate regularization term...
-                quality += calculateRegularizationTerm(scoreIterator, numPredictions, l1RegularizationWeight_,
+                quality += calculateRegularizationTerm(valueIterator, numPredictions, l1RegularizationWeight_,
                                                        l2RegularizationWeight_);
 
                 scoreVector_.quality = quality;

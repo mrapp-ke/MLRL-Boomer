@@ -21,22 +21,22 @@ typename DenseScoreVector<IndexVector>::index_const_iterator DenseScoreVector<In
 }
 
 template<typename IndexVector>
-typename DenseScoreVector<IndexVector>::score_iterator DenseScoreVector<IndexVector>::scores_begin() {
+typename DenseScoreVector<IndexVector>::value_iterator DenseScoreVector<IndexVector>::values_begin() {
     return predictedScoreVector_.begin();
 }
 
 template<typename IndexVector>
-typename DenseScoreVector<IndexVector>::score_iterator DenseScoreVector<IndexVector>::scores_end() {
+typename DenseScoreVector<IndexVector>::value_iterator DenseScoreVector<IndexVector>::values_end() {
     return &predictedScoreVector_.begin()[labelIndices_.getNumElements()];
 }
 
 template<typename IndexVector>
-typename DenseScoreVector<IndexVector>::score_const_iterator DenseScoreVector<IndexVector>::scores_cbegin() const {
+typename DenseScoreVector<IndexVector>::value_const_iterator DenseScoreVector<IndexVector>::values_cbegin() const {
     return predictedScoreVector_.cbegin();
 }
 
 template<typename IndexVector>
-typename DenseScoreVector<IndexVector>::score_const_iterator DenseScoreVector<IndexVector>::scores_cend() const {
+typename DenseScoreVector<IndexVector>::value_const_iterator DenseScoreVector<IndexVector>::values_cend() const {
     return &predictedScoreVector_.cbegin()[labelIndices_.getNumElements()];
 }
 
@@ -57,7 +57,7 @@ bool DenseScoreVector<IndexVector>::isSorted() const {
 
 template<typename IndexVector>
 void DenseScoreVector<IndexVector>::updatePrediction(AbstractPrediction& prediction) const {
-    prediction.set(this->scores_cbegin(), this->scores_cend());
+    prediction.set(this->values_cbegin(), this->values_cend());
 }
 
 template<typename IndexVector>

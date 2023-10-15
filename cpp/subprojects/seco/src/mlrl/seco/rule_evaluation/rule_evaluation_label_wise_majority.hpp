@@ -36,7 +36,7 @@ namespace seco {
             const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,
                                                 const DenseConfusionMatrixVector& confusionMatricesTotal,
                                                 const DenseConfusionMatrixVector& confusionMatricesCovered) override {
-                typename DenseScoreVector<T>::score_iterator scoreIterator = scoreVector_.scores_begin();
+                typename DenseScoreVector<T>::value_iterator valueIterator = scoreVector_.values_begin();
                 typename DenseScoreVector<T>::index_const_iterator indexIterator = scoreVector_.indices_cbegin();
                 auto labelIterator =
                   make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
@@ -46,7 +46,7 @@ namespace seco {
                 for (uint32 i = 0; i < numElements; i++) {
                     uint32 index = indexIterator[i];
                     std::advance(labelIterator, index - previousIndex);
-                    scoreIterator[i] = (float64) *labelIterator;
+                    valueIterator[i] = (float64) *labelIterator;
                     previousIndex = index;
                 }
 

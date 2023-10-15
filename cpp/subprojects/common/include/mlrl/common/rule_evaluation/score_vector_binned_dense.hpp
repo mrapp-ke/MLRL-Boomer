@@ -43,7 +43,7 @@ class DenseBinnedScoreVector final : virtual public IScoreVector {
         /**
          * An iterator that provides read-only access to the predicted scores that correspond to individual labels.
          */
-        typedef DenseBinnedVector<float64>::const_iterator score_const_iterator;
+        typedef DenseBinnedVector<float64>::const_iterator value_const_iterator;
 
         /**
          * An iterator that provides access to the indices that correspond to individual bins and allows to modify them.
@@ -59,12 +59,12 @@ class DenseBinnedScoreVector final : virtual public IScoreVector {
          * An iterator that provides access to the predicted scores that correspond to individual bins and allows to
          * modify them.
          */
-        typedef DenseBinnedVector<float64>::value_iterator score_binned_iterator;
+        typedef DenseBinnedVector<float64>::value_iterator value_binned_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores that correspond to individual bins.
          */
-        typedef DenseBinnedVector<float64>::value_const_iterator score_binned_const_iterator;
+        typedef DenseBinnedVector<float64>::value_const_iterator value_binned_const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices that correspond to individual labels.
@@ -81,19 +81,19 @@ class DenseBinnedScoreVector final : virtual public IScoreVector {
         index_const_iterator indices_cend() const;
 
         /**
-         * Returns a `score_const_iterator` to the beginning of the predicted scores that correspond to individual
+         * Returns a `value_const_iterator` to the beginning of the predicted scores that correspond to individual
          * labels.
          *
-         * @return A `score_const_iterator` to the beginning
+         * @return A `value_const_iterator` to the beginning
          */
-        score_const_iterator scores_cbegin() const;
+        value_const_iterator values_cbegin() const;
 
         /**
-         * Returns a `score_const_iterator` to the end of the predicted scores that correspond to individual labels.
+         * Returns a `value_const_iterator` to the end of the predicted scores that correspond to individual labels.
          *
-         * @return A `score_const_iterator` to the end
+         * @return A `value_const_iterator` to the end
          */
-        score_const_iterator scores_cend() const;
+        value_const_iterator values_cend() const;
 
         /**
          * Returns an `index_binned_iterator` to the beginning of the indices that correspond to individual bins.
@@ -124,35 +124,35 @@ class DenseBinnedScoreVector final : virtual public IScoreVector {
         index_binned_const_iterator indices_binned_cend() const;
 
         /**
-         * Returns a `score_binned_iterator` to the beginning of the predicted scores that correspond to individual
+         * Returns a `value_binned_iterator` to the beginning of the predicted scores that correspond to individual
          * bins.
          *
-         * @return A `score_binned_iterator` to the beginning
+         * @return A `value_binned_iterator` to the beginning
          */
-        score_binned_iterator scores_binned_begin();
+        value_binned_iterator values_binned_begin();
 
         /**
-         * Returns a `score_binned_iterator` to the end of the predicted scores that correspond to individual bins.
+         * Returns a `value_binned_iterator` to the end of the predicted scores that correspond to individual bins.
          *
-         * @return A `score_binned_iterator` to the end
+         * @return A `value_binned_iterator` to the end
          */
-        score_binned_iterator scores_binned_end();
+        value_binned_iterator values_binned_end();
 
         /**
-         * Returns a `score_binned_const_iterator` to the beginning of the predicted scores that correspond to
+         * Returns a `value_binned_const_iterator` to the beginning of the predicted scores that correspond to
          * individual bins.
          *
-         * @return A `score_binned_const_iterator` to the beginning
+         * @return A `value_binned_const_iterator` to the beginning
          */
-        score_binned_const_iterator scores_binned_cbegin() const;
+        value_binned_const_iterator values_binned_cbegin() const;
 
         /**
-         * Returns a `score_binned_const_iterator` to the end of the predicted scores that correspond to individual
+         * Returns a `value_binned_const_iterator` to the end of the predicted scores that correspond to individual
          * bins.
          *
-         * @return A `score_binned_const_iterator` to the end
+         * @return A `value_binned_const_iterator` to the end
          */
-        score_binned_const_iterator scores_binned_cend() const;
+        value_binned_const_iterator values_binned_cend() const;
 
         /**
          * Returns the number of labels for which the rule may predict.

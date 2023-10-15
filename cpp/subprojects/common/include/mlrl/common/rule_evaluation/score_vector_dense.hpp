@@ -41,12 +41,12 @@ class DenseScoreVector final : virtual public IScoreVector {
         /**
          * An iterator that provides access to the predicted scores and allows to modify them.
          */
-        typedef DenseVector<float64>::iterator score_iterator;
+        typedef DenseVector<float64>::iterator value_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores.
          */
-        typedef DenseVector<float64>::const_iterator score_const_iterator;
+        typedef DenseVector<float64>::const_iterator value_const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices.
@@ -63,32 +63,32 @@ class DenseScoreVector final : virtual public IScoreVector {
         index_const_iterator indices_cend() const;
 
         /**
-         * Returns a `score_iterator` to the beginning of the predicted scores.
+         * Returns a `value_iterator` to the beginning of the predicted scores.
          *
-         * @return A `score_iterator` to the beginning
+         * @return A `value_iterator` to the beginning
          */
-        score_iterator scores_begin();
+        value_iterator values_begin();
 
         /**
-         * Returns a `score_iterator` to the end of the predicted scores.
+         * Returns a `value_iterator` to the end of the predicted scores.
          *
-         * @return A `score_iterator` to the end
+         * @return A `value_iterator` to the end
          */
-        score_iterator scores_end();
+        value_iterator values_end();
 
         /**
-         * Returns a `score_const_iterator` to the beginning of the predicted scores.
+         * Returns a `value_const_iterator` to the beginning of the predicted scores.
          *
-         * @return A `score_const_iterator` to the beginning
+         * @return A `value_const_iterator` to the beginning
          */
-        score_const_iterator scores_cbegin() const;
+        value_const_iterator values_cbegin() const;
 
         /**
-         * Returns a `const_iterator` to the end of the predicted scores.
+         * Returns a `value_const_iterator` to the end of the predicted scores.
          *
-         * @return A `const_iterator` to the end
+         * @return A `value_const_iterator` to the end
          */
-        score_const_iterator scores_cend() const;
+        value_const_iterator values_cend() const;
 
         /**
          * Returns the number of labels for which the rule may predict.

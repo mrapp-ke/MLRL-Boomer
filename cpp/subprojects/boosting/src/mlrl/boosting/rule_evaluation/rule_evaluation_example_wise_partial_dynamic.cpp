@@ -75,9 +75,9 @@ namespace boosting {
                   statisticVector.gradients_cbegin();
                 DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
-                typename DenseScoreVector<IndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
+                typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
                 const std::pair<float64, float64> pair =
-                  getMinAndMaxScore(scoreIterator, gradientIterator, hessianIterator, numLabels,
+                  getMinAndMaxScore(valueIterator, gradientIterator, hessianIterator, numLabels,
                                     l1RegularizationWeight_, l2RegularizationWeight_);
                 float64 minAbsScore = pair.first;
 
@@ -88,34 +88,34 @@ namespace boosting {
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numLabels; i++) {
-                    float64 score = scoreIterator[i];
+                    float64 score = valueIterator[i];
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) > threshold) {
                         indexIterator[n] = labelIndexIterator[i];
-                        scoreIterator[n] = -gradientIterator[i];
+                        valueIterator[n] = -gradientIterator[i];
                         n++;
                     }
                 }
 
                 indexVector_.setNumElements(n, false);
-                addL1RegularizationWeight(scoreIterator, n, l1RegularizationWeight_);
+                addL1RegularizationWeight(valueIterator, n, l1RegularizationWeight_);
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
                 copyCoefficients(statisticVector.hessians_cbegin(), indexIterator, this->dsysvTmpArray1_, n);
                 addL2RegularizationWeight(this->dsysvTmpArray1_, n, l2RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual labels by solving a system of linear equations...
-                lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, scoreIterator, n,
+                lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, valueIterator, n,
                               this->dsysvLwork_);
 
                 // Calculate the overall quality...
                 float64 quality =
-                  calculateOverallQuality(scoreIterator, statisticVector.gradients_begin(),
+                  calculateOverallQuality(valueIterator, statisticVector.gradients_begin(),
                                           statisticVector.hessians_begin(), this->dspmvTmpArray_, n, blas_);
 
                 // Evaluate regularization term...
                 quality +=
-                  calculateRegularizationTerm(scoreIterator, n, l1RegularizationWeight_, l2RegularizationWeight_);
+                  calculateRegularizationTerm(valueIterator, n, l1RegularizationWeight_, l2RegularizationWeight_);
 
                 scoreVector_.quality = quality;
                 return scoreVector_;

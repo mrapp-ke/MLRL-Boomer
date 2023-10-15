@@ -56,14 +56,14 @@ namespace seco {
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
                 auto labelIterator =
                   make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
-                DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
+                DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
                 float64 sumOfQualities = 0;
                 uint32 previousIndex = 0;
 
                 for (uint32 i = 0; i < numElements; i++) {
                     uint32 index = indexIterator[i];
                     std::advance(labelIterator, index - previousIndex);
-                    scoreIterator[i] = (float64) !(*labelIterator);
+                    valueIterator[i] = (float64) !(*labelIterator);
                     sumOfQualities +=
                       calculateLabelWiseQuality(totalIterator[index], coveredIterator[i], *heuristicPtr_);
                     previousIndex = index;
@@ -169,13 +169,13 @@ namespace seco {
 
                 indexVector_.setNumElements(bestNumPredictions, false);
                 scoreVector_.quality = bestQuality;
-                DenseScoreVector<PartialIndexVector>::score_iterator scoreIterator = scoreVector_.scores_begin();
+                DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
                 PartialIndexVector::iterator predictedIndexIterator = indexVector_.begin();
 
                 for (uint32 i = 0; i < bestNumPredictions; i++) {
                     const IndexedValue<Tuple<float64>>& entry = sortedIterator[i];
                     predictedIndexIterator[i] = entry.index;
-                    scoreIterator[i] = entry.value.second;
+                    valueIterator[i] = entry.value.second;
                 }
 
                 return scoreVector_;
