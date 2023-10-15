@@ -93,12 +93,12 @@ void PartialPrediction::sort() {
             SparseArrayVector<float64> sortedVector(numElements);
             SparseArrayVector<float64>::iterator sortedIterator = sortedVector.begin();
             index_iterator indexIterator = this->indices_begin();
-            score_iterator scoreIterator = this->scores_begin();
+            value_iterator valueIterator = this->values_begin();
 
             for (uint32 i = 0; i < numElements; i++) {
                 IndexedValue<float64>& entry = sortedIterator[i];
                 entry.index = indexIterator[i];
-                entry.value = scoreIterator[i];
+                entry.value = valueIterator[i];
             }
 
             std::sort(sortedIterator, sortedVector.end(), IndexedValue<float64>::CompareIndex());
@@ -106,7 +106,7 @@ void PartialPrediction::sort() {
             for (uint32 i = 0; i < numElements; i++) {
                 const IndexedValue<float64>& entry = sortedIterator[i];
                 indexIterator[i] = entry.index;
-                scoreIterator[i] = entry.value;
+                valueIterator[i] = entry.value;
             }
         }
 
@@ -117,7 +117,7 @@ void PartialPrediction::sort() {
 std::unique_ptr<IHead> PartialPrediction::createHead() const {
     uint32 numElements = this->getNumElements();
     std::unique_ptr<PartialHead> headPtr = std::make_unique<PartialHead>(numElements);
-    copyArray(this->scores_cbegin(), headPtr->scores_begin(), numElements);
+    copyArray(this->values_cbegin(), headPtr->scores_begin(), numElements);
     copyArray(this->indices_cbegin(), headPtr->indices_begin(), numElements);
     return headPtr;
 }

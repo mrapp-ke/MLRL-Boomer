@@ -544,8 +544,8 @@ namespace seco {
     static inline void applyLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
                                                           CoverageMatrix& coverageMatrix,
                                                           const VectorConstView<uint32>& majorityLabelIndices) {
-        coverageMatrix.increaseCoverage(statisticIndex, majorityLabelIndices, prediction.scores_cbegin(),
-                                        prediction.scores_cend(), prediction.indices_cbegin(),
+        coverageMatrix.increaseCoverage(statisticIndex, majorityLabelIndices, prediction.values_cbegin(),
+                                        prediction.values_cend(), prediction.indices_cbegin(),
                                         prediction.indices_cend());
     }
 
@@ -553,8 +553,8 @@ namespace seco {
     static inline void revertLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
                                                            CoverageMatrix& coverageMatrix,
                                                            const VectorConstView<uint32>& majorityLabelIndices) {
-        coverageMatrix.decreaseCoverage(statisticIndex, majorityLabelIndices, prediction.scores_cbegin(),
-                                        prediction.scores_cend(), prediction.indices_cbegin(),
+        coverageMatrix.decreaseCoverage(statisticIndex, majorityLabelIndices, prediction.values_cbegin(),
+                                        prediction.values_cend(), prediction.indices_cbegin(),
                                         prediction.indices_cend());
     }
 

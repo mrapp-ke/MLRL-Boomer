@@ -24,7 +24,7 @@ namespace boosting {
              */
             void postProcess(AbstractPrediction& prediction) const override {
                 uint32 numElements = prediction.getNumElements();
-                AbstractPrediction::score_iterator iterator = prediction.scores_begin();
+                AbstractPrediction::value_iterator iterator = prediction.values_begin();
 
                 for (uint32 i = 0; i < numElements; i++) {
                     iterator[i] *= shrinkage_;

@@ -39,48 +39,48 @@ class AbstractPrediction : public IIndexVector {
         /**
          * An iterator that provides access to the predicted scores and allows to modify them.
          */
-        typedef DenseVector<float64>::iterator score_iterator;
+        typedef DenseVector<float64>::iterator value_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores.
          */
-        typedef DenseVector<float64>::const_iterator score_const_iterator;
+        typedef DenseVector<float64>::const_iterator value_const_iterator;
 
         /**
-         * Returns a `score_iterator` to the beginning of the predicted scores.
+         * Returns a `value_iterator` to the beginning of the predicted scores.
          *
-         * @return A `score_iterator` to the beginning
+         * @return A `value_iterator` to the beginning
          */
-        score_iterator scores_begin();
+        value_iterator values_begin();
 
         /**
-         * Returns a `score_iterator` to the end of the predicted scores.
+         * Returns a `value_iterator` to the end of the predicted scores.
          *
-         * @return A `score_iterator` to the end
+         * @return A `value_iterator` to the end
          */
-        score_iterator scores_end();
+        value_iterator values_end();
 
         /**
-         * Returns a `score_const_iterator` to the beginning of the predicted scores.
+         * Returns a `value_const_iterator` to the beginning of the predicted scores.
          *
-         * @return A `score_const_iterator` to the beginning
+         * @return A `value_const_iterator` to the beginning
          */
-        score_const_iterator scores_cbegin() const;
+        value_const_iterator values_cbegin() const;
 
         /**
-         * Returns a `score_const_iterator` to the end of the predicted scores.
+         * Returns a `const_iterator` to the end of the predicted scores.
          *
-         * @return A `score_const_iterator` to the end
+         * @return A `const_iterator` to the end
          */
-        score_const_iterator scores_cend() const;
+        value_const_iterator values_cend() const;
 
         /**
          * Sets the predicted scores in another vector to this vector.
          *
-         * @param begin A `score_const_iterator` to the beginning of the predicted scores
-         * @param end   A `score_const_iterator` to the end of the predicted scores
+         * @param begin A `value_const_iterator` to the beginning of the predicted scores
+         * @param end   A `value_const_iterator` to the end of the predicted scores
          */
-        void set(score_const_iterator begin, score_const_iterator end);
+        void set(value_const_iterator begin, value_const_iterator end);
 
         /**
          * Sets the predicted scores in another vector to this vector.
