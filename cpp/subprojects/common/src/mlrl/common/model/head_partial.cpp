@@ -6,19 +6,19 @@ uint32 PartialHead::getNumElements() const {
     return vector_.getNumElements();
 }
 
-PartialHead::score_iterator PartialHead::scores_begin() {
+PartialHead::value_iterator PartialHead::values_begin() {
     return vector_.values_begin();
 }
 
-PartialHead::score_iterator PartialHead::scores_end() {
+PartialHead::value_iterator PartialHead::values_end() {
     return vector_.values_end();
 }
 
-PartialHead::score_const_iterator PartialHead::scores_cbegin() const {
+PartialHead::value_const_iterator PartialHead::values_cbegin() const {
     return vector_.values_cbegin();
 }
 
-PartialHead::score_const_iterator PartialHead::scores_cend() const {
+PartialHead::value_const_iterator PartialHead::values_cend() const {
     return vector_.values_cend();
 }
 

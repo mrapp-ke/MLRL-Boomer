@@ -117,7 +117,7 @@ void PartialPrediction::sort() {
 std::unique_ptr<IHead> PartialPrediction::createHead() const {
     uint32 numElements = this->getNumElements();
     std::unique_ptr<PartialHead> headPtr = std::make_unique<PartialHead>(numElements);
-    copyArray(this->values_cbegin(), headPtr->scores_begin(), numElements);
+    copyArray(this->values_cbegin(), headPtr->values_begin(), numElements);
     copyArray(this->indices_cbegin(), headPtr->indices_begin(), numElements);
     return headPtr;
 }
