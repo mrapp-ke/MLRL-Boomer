@@ -1,8 +1,8 @@
 #include "mlrl/common/thresholds/coverage_mask.hpp"
 
-#include "mlrl/common/data/arrays.hpp"
 #include "mlrl/common/rule_refinement/prediction.hpp"
 #include "mlrl/common/thresholds/thresholds_subset.hpp"
+#include "mlrl/common/util/arrays.hpp"
 
 CoverageMask::CoverageMask(uint32 numElements)
     : array_(new uint32[numElements] {0}), numElements_(numElements), indicatorValue_(0) {}

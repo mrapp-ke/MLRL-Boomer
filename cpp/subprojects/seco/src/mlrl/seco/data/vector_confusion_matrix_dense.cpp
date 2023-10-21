@@ -1,7 +1,7 @@
 #include "mlrl/seco/data/vector_confusion_matrix_dense.hpp"
 
-#include "mlrl/common/data/arrays.hpp"
 #include "mlrl/common/iterator/binary_forward_iterator.hpp"
+#include "mlrl/common/util/arrays.hpp"
 
 #include <algorithm>
 #include <cstdlib>

@@ -4,8 +4,8 @@
 #pragma once
 
 #include "mlrl/boosting/math/math.hpp"
-#include "mlrl/common/data/arrays.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_binned_dense.hpp"
+#include "mlrl/common/util/arrays.hpp"
 #include "rule_evaluation_example_wise_complete_common.hpp"
 
 namespace boosting {

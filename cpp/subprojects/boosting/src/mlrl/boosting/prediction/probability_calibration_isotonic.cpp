@@ -1,10 +1,10 @@
 #include "mlrl/boosting/prediction/probability_calibration_isotonic.hpp"
 
 #include "mlrl/boosting/statistics/statistics.hpp"
-#include "mlrl/common/data/arrays.hpp"
 #include "mlrl/common/iterator/binary_forward_iterator.hpp"
 #include "mlrl/common/iterator/non_zero_index_forward_iterator.hpp"
 #include "mlrl/common/prediction/probability_calibration_no.hpp"
+#include "mlrl/common/util/arrays.hpp"
 
 #include <algorithm>
 #include <stdexcept>

@@ -8,10 +8,10 @@
     #pragma warning(disable : 4250)
 #endif
 
-#include "mlrl/common/data/arrays.hpp"
 #include "mlrl/common/data/view_csr_binary.hpp"
 #include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/input/label_matrix_row_wise.hpp"
+#include "mlrl/common/util/arrays.hpp"
 
 /**
  * Defines an interface for all label matrices that provide row-wise access to the labels of individual examples that
