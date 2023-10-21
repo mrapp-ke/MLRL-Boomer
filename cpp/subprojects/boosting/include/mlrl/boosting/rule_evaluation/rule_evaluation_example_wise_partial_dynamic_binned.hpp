@@ -5,8 +5,8 @@
 
 #include "mlrl/boosting/binning/label_binning.hpp"
 #include "mlrl/boosting/math/blas.hpp"
-#include "mlrl/boosting/math/lapack.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
+#include "mlrl/boosting/util/lapack.hpp"
 
 namespace boosting {
 
