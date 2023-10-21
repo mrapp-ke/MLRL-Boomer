@@ -23,7 +23,6 @@ source_files = [
     'src/mlrl/boosting/losses/loss_label_wise_squared_error.cpp',
     'src/mlrl/boosting/losses/loss_label_wise_squared_hinge.cpp',
     'src/mlrl/boosting/math/blas.cpp',
-    'src/mlrl/boosting/math/lapack.cpp',
     'src/mlrl/boosting/model/rule_list_builder.cpp',
     'src/mlrl/boosting/multi_threading/parallel_rule_refinement_auto.cpp',
     'src/mlrl/boosting/multi_threading/parallel_statistic_update_auto.cpp',
@@ -74,6 +73,7 @@ source_files = [
     'src/mlrl/boosting/statistics/statistics_provider_example_wise_dense.cpp',
     'src/mlrl/boosting/statistics/statistics_provider_label_wise_dense.cpp',
     'src/mlrl/boosting/statistics/statistics_provider_label_wise_sparse.cpp',
+    'src/mlrl/boosting/util/lapack.cpp',
     'src/mlrl/boosting/info.cpp',
     'src/mlrl/boosting/learner.cpp',
     'src/mlrl/boosting/learner_boomer.cpp'
