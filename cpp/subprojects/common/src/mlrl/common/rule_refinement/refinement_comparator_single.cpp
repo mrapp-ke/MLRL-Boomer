@@ -2,11 +2,11 @@
 
 SingleRefinementComparator::SingleRefinementComparator(RuleCompareFunction ruleCompareFunction)
     : ruleCompareFunction_(ruleCompareFunction), bestQuality_(ruleCompareFunction.minQuality),
-      scoreProcessor_(ScoreProcessor(bestRefinement_.headPtr)) {}
+      scoreProcessor_(bestRefinement_.headPtr) {}
 
 SingleRefinementComparator::SingleRefinementComparator(const SingleRefinementComparator& comparator)
     : ruleCompareFunction_(comparator.ruleCompareFunction_), bestQuality_(comparator.bestQuality_),
-      scoreProcessor_(ScoreProcessor(bestRefinement_.headPtr)) {}
+      scoreProcessor_(bestRefinement_.headPtr) {}
 
 SingleRefinementComparator::iterator SingleRefinementComparator::begin() {
     return &bestRefinement_;

@@ -130,8 +130,7 @@ static inline float64 calibrateProbability(ListOfLists<Tuple<float64>>::const_ro
     return lowerBound.second + (t * (upperBound.second - lowerBound.second));
 }
 
-IsotonicProbabilityCalibrationModel::IsotonicProbabilityCalibrationModel(uint32 numLists)
-    : binsPerList_(ListOfLists<Tuple<float64>>(numLists)) {}
+IsotonicProbabilityCalibrationModel::IsotonicProbabilityCalibrationModel(uint32 numLists) : binsPerList_(numLists) {}
 
 IsotonicProbabilityCalibrationModel::bin_list IsotonicProbabilityCalibrationModel::operator[](uint32 listIndex) {
     return binsPerList_[listIndex];

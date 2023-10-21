@@ -38,8 +38,8 @@ namespace boosting {
              */
             LabelWiseCompleteRuleEvaluation(const IndexVector& labelIndices, float64 l1RegularizationWeight,
                                             float64 l2RegularizationWeight)
-                : scoreVector_(DenseScoreVector<IndexVector>(labelIndices, true)),
-                  l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
+                : scoreVector_(labelIndices, true), l1RegularizationWeight_(l1RegularizationWeight),
+                  l2RegularizationWeight_(l2RegularizationWeight) {}
 
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();

@@ -43,8 +43,8 @@ namespace seco {
             LabelWiseCompleteRuleEvaluation(const PartialIndexVector& labelIndices,
                                             std::unique_ptr<IHeuristic> heuristicPtr,
                                             std::unique_ptr<ILiftFunction> liftFunctionPtr)
-                : scoreVector_(DenseScoreVector<PartialIndexVector>(labelIndices, true)),
-                  heuristicPtr_(std::move(heuristicPtr)), liftFunctionPtr_(std::move(liftFunctionPtr)) {}
+                : scoreVector_(labelIndices, true), heuristicPtr_(std::move(heuristicPtr)),
+                  liftFunctionPtr_(std::move(liftFunctionPtr)) {}
 
             const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,
                                                 const DenseConfusionMatrixVector& confusionMatricesTotal,
@@ -109,9 +109,8 @@ namespace seco {
              */
             LabelWisePartialRuleEvaluation(const T& labelIndices, std::unique_ptr<IHeuristic> heuristicPtr,
                                            std::unique_ptr<ILiftFunction> liftFunctionPtr)
-                : labelIndices_(labelIndices), indexVector_(PartialIndexVector(labelIndices.getNumElements())),
-                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, false)),
-                  sortedVector_(SparseArrayVector<Tuple<float64>>(labelIndices.getNumElements())),
+                : labelIndices_(labelIndices), indexVector_(labelIndices.getNumElements()),
+                  scoreVector_(indexVector_, false), sortedVector_(labelIndices.getNumElements()),
                   heuristicPtr_(std::move(heuristicPtr)), liftFunctionPtr_(std::move(liftFunctionPtr)) {}
 
             const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,

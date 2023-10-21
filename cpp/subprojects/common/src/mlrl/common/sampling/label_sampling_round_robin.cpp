@@ -19,8 +19,7 @@ class RoundRobinLabelSampling final : public ILabelSampling {
         /**
          * @param numLabels The total number of available labels
          */
-        RoundRobinLabelSampling(uint32 numLabels)
-            : numLabels_(numLabels), indexVector_(PartialIndexVector(1)), nextIndex_(0) {}
+        RoundRobinLabelSampling(uint32 numLabels) : numLabels_(numLabels), indexVector_(1), nextIndex_(0) {}
 
         const IIndexVector& sample(RNG& rng) override {
             indexVector_.begin()[0] = nextIndex_;

@@ -82,8 +82,7 @@ class InstanceSamplingWithReplacement final : public IInstanceSampling {
          *                   60 % of the available examples). Must be in (0, 1]
          */
         InstanceSamplingWithReplacement(Partition& partition, float32 sampleSize)
-            : partition_(partition), sampleSize_(sampleSize),
-              weightVector_(DenseWeightVector<uint32>(partition.getNumElements())) {}
+            : partition_(partition), sampleSize_(sampleSize), weightVector_(partition.getNumElements()) {}
 
         const IWeightVector& sample(RNG& rng) override {
             sampleInternally(partition_, sampleSize_, weightVector_, rng);

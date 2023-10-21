@@ -68,7 +68,7 @@ namespace boosting {
                 : AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, PartialIndexVector>(
                   *indexVectorPtr, false, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)),
                   labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)),
-                  tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())) {}
+                  tmpVector_(labelIndices.getNumElements()) {}
     };
 
     LabelWiseFixedPartialBinnedRuleEvaluationFactory::LabelWiseFixedPartialBinnedRuleEvaluationFactory(

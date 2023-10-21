@@ -224,7 +224,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                  std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr,
                                  const WeightVector& weights)
                     : thresholds_(thresholds), weightedStatisticsPtr_(std::move(weightedStatisticsPtr)),
-                      weights_(weights), coverageSet_(CoverageSet(thresholds.featureMatrix_.getNumRows())) {}
+                      weights_(weights), coverageSet_(thresholds.featureMatrix_.getNumRows()) {}
 
                 /**
                  * @param thresholdsSubset A reference to an object of type `ThresholdsSubset` to be copied
@@ -232,7 +232,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                 ThresholdsSubset(const ThresholdsSubset& thresholdsSubset)
                     : thresholds_(thresholdsSubset.thresholds_),
                       weightedStatisticsPtr_(thresholdsSubset.weightedStatisticsPtr_->copy()),
-                      weights_(thresholdsSubset.weights_), coverageSet_(CoverageSet(thresholdsSubset.coverageSet_)) {}
+                      weights_(thresholdsSubset.weights_), coverageSet_(thresholdsSubset.coverageSet_) {}
 
                 std::unique_ptr<IThresholdsSubset> copy() const override {
                     return std::make_unique<ThresholdsSubset<WeightVector>>(*this);

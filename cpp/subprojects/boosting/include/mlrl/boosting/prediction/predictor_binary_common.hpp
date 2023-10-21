@@ -88,12 +88,10 @@ namespace boosting {
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<uint8>>(
                           predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
                           binaryTransformationPtr_(binaryTransformationPtr),
-                          realMatrix_(DensePredictionMatrix<float64>(predictor.featureMatrix_.getNumRows(),
-                                                                     predictor.numLabels_,
-                                                                     binaryTransformationPtr_ != nullptr)),
-                          predictionMatrix_(DensePredictionMatrix<uint8>(predictor.featureMatrix_.getNumRows(),
-                                                                         predictor.numLabels_,
-                                                                         binaryTransformationPtr_ == nullptr)) {}
+                          realMatrix_(predictor.featureMatrix_.getNumRows(), predictor.numLabels_,
+                                      binaryTransformationPtr_ != nullptr),
+                          predictionMatrix_(predictor.featureMatrix_.getNumRows(), predictor.numLabels_,
+                                            binaryTransformationPtr_ == nullptr) {}
             };
 
             class PredictionDelegate final
@@ -280,10 +278,9 @@ namespace boosting {
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, BinarySparsePredictionMatrix>(
                           predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
                           binaryTransformationPtr_(binaryTransformationPtr),
-                          realMatrix_(DensePredictionMatrix<float64>(predictor.featureMatrix_.getNumRows(),
-                                                                     predictor.numLabels_,
-                                                                     binaryTransformationPtr_ != nullptr)),
-                          predictionMatrix_(BinaryLilMatrix(predictor.featureMatrix_.getNumRows())) {}
+                          realMatrix_(predictor.featureMatrix_.getNumRows(), predictor.numLabels_,
+                                      binaryTransformationPtr_ != nullptr),
+                          predictionMatrix_(predictor.featureMatrix_.getNumRows()) {}
             };
 
             class PredictionDelegate final

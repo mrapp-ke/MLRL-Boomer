@@ -43,10 +43,9 @@ namespace boosting {
              */
             LabelWiseFixedPartialRuleEvaluation(const IndexVector& labelIndices, uint32 numPredictions,
                                                 float64 l1RegularizationWeight, float64 l2RegularizationWeight)
-                : labelIndices_(labelIndices), indexVector_(PartialIndexVector(numPredictions)),
-                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, false)),
+                : labelIndices_(labelIndices), indexVector_(numPredictions), scoreVector_(indexVector_, false),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-                  tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())) {}
+                  tmpVector_(labelIndices.getNumElements()) {}
 
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
                 uint32 numElements = statisticVector.getNumElements();
