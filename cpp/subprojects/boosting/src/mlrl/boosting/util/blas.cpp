@@ -1,4 +1,4 @@
-#include "mlrl/boosting/math/blas.hpp"
+#include "mlrl/boosting/util/blas.hpp"
 
 namespace boosting {
 
