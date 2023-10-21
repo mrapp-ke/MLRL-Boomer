@@ -1,6 +1,6 @@
 #include "mlrl/common/rule_refinement/prediction.hpp"
 
-#include "mlrl/common/data/arrays.hpp"
+#include "mlrl/common/util/arrays.hpp"
 
 AbstractPrediction::AbstractPrediction(uint32 numElements) : predictedScoreVector_(numElements) {}
 

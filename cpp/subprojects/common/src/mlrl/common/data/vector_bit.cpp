@@ -1,6 +1,6 @@
 #include "mlrl/common/data/vector_bit.hpp"
 
-#include "mlrl/common/data/arrays.hpp"
+#include "mlrl/common/util/arrays.hpp"
 
 #include <climits>
 

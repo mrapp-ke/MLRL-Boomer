@@ -1,8 +1,8 @@
 #include "mlrl/common/rule_refinement/score_processor.hpp"
 
-#include "mlrl/common/data/arrays.hpp"
 #include "mlrl/common/rule_refinement/prediction_complete.hpp"
 #include "mlrl/common/rule_refinement/prediction_partial.hpp"
+#include "mlrl/common/util/arrays.hpp"
 
 template<typename T>
 static inline void processCompleteScores(std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr,

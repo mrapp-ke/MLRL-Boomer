@@ -1,6 +1,6 @@
 #include "mlrl/boosting/prediction/transformation_probability_marginalized.hpp"
 
-#include "mlrl/common/data/arrays.hpp"
+#include "mlrl/common/util/arrays.hpp"
 
 namespace boosting {
 

@@ -1,8 +1,8 @@
 #include "mlrl/common/data/matrix_sparse_set.hpp"
 
-#include "mlrl/common/data/arrays.hpp"
 #include "mlrl/common/data/triple.hpp"
 #include "mlrl/common/data/tuple.hpp"
+#include "mlrl/common/util/arrays.hpp"
 
 static const uint32 MAX_INDEX = std::numeric_limits<uint32>::max();
 

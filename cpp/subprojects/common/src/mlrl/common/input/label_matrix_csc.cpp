@@ -1,6 +1,6 @@
 #include "mlrl/common/input/label_matrix_csc.hpp"
 
-#include "mlrl/common/data/arrays.hpp"
+#include "mlrl/common/util/arrays.hpp"
 
 #include <cstdlib>
 
