@@ -8,7 +8,7 @@ DenseWeightVector<T>::DenseWeightVector(uint32 numElements) : DenseWeightVector<
 
 template<typename T>
 DenseWeightVector<T>::DenseWeightVector(uint32 numElements, bool init)
-    : vector_(DenseVector<T>(numElements, init)), numNonZeroWeights_(0) {}
+    : vector_(numElements, init), numNonZeroWeights_(0) {}
 
 template<typename T>
 typename DenseWeightVector<T>::iterator DenseWeightVector<T>::begin() {

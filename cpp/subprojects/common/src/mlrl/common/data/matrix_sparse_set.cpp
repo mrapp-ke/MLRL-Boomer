@@ -129,7 +129,7 @@ void SparseSetMatrix<T>::Row::clear() {
 
 template<typename T>
 SparseSetMatrix<T>::SparseSetMatrix(uint32 numRows, uint32 numCols)
-    : lilMatrix_(LilMatrix<T>(numRows)), indexMatrix_(CContiguousMatrix<uint32>(numRows, numCols)) {
+    : lilMatrix_(numRows), indexMatrix_(numRows, numCols) {
     setArrayToValue(indexMatrix_.values_begin(0), numRows * numCols, MAX_INDEX);
 }
 

@@ -79,7 +79,7 @@ namespace boosting {
                   *indexVectorPtr, false, maxBins, l1RegularizationWeight, l2RegularizationWeight,
                   std::move(binningPtr), blas, lapack),
                   labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)),
-                  tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())) {}
+                  tmpVector_(labelIndices.getNumElements()) {}
     };
 
     ExampleWiseFixedPartialBinnedRuleEvaluationFactory::ExampleWiseFixedPartialBinnedRuleEvaluationFactory(

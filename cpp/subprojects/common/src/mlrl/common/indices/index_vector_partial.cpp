@@ -4,8 +4,7 @@
 
 PartialIndexVector::PartialIndexVector(uint32 numElements) : PartialIndexVector(numElements, false) {}
 
-PartialIndexVector::PartialIndexVector(uint32 numElements, bool init)
-    : vector_(DenseVector<uint32>(numElements, init)) {}
+PartialIndexVector::PartialIndexVector(uint32 numElements, bool init) : vector_(numElements, init) {}
 
 bool PartialIndexVector::isPartial() const {
     return true;

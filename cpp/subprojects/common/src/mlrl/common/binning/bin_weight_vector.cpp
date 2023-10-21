@@ -2,7 +2,7 @@
 
 #include "mlrl/common/data/arrays.hpp"
 
-BinWeightVector::BinWeightVector(uint32 numElements) : vector_(DenseVector<uint32>(numElements)) {}
+BinWeightVector::BinWeightVector(uint32 numElements) : vector_(numElements) {}
 
 void BinWeightVector::clear() {
     setArrayToZeros(vector_.begin(), vector_.getNumElements());

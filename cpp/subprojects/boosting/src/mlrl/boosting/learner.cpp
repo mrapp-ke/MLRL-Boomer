@@ -44,8 +44,7 @@ namespace boosting {
                                                              Blas::DdotFunction ddotFunction,
                                                              Blas::DspmvFunction dspmvFunction,
                                                              Lapack::DsysvFunction dsysvFunction)
-        : AbstractRuleLearner(config), config_(config), blas_(Blas(ddotFunction, dspmvFunction)),
-          lapack_(Lapack(dsysvFunction)) {}
+        : AbstractRuleLearner(config), config_(config), blas_(ddotFunction, dspmvFunction), lapack_(dsysvFunction) {}
 
     std::unique_ptr<IStatisticsProviderFactory> AbstractBoostingRuleLearner::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const {

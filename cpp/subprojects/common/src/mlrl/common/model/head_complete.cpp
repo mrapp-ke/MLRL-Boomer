@@ -1,6 +1,6 @@
 #include "mlrl/common/model/head_complete.hpp"
 
-CompleteHead::CompleteHead(uint32 numElements) : vector_(DenseVector<float64>(numElements)) {}
+CompleteHead::CompleteHead(uint32 numElements) : vector_(numElements) {}
 
 uint32 CompleteHead::getNumElements() const {
     return vector_.getNumElements();

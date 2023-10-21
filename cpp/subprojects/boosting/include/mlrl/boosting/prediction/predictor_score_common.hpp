@@ -188,8 +188,7 @@ namespace boosting {
                     IncrementalPredictor(const ScorePredictor& predictor, uint32 maxRules)
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<float64>>(
                           predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
-                          predictionMatrix_(DensePredictionMatrix<float64>(predictor.featureMatrix_.getNumRows(),
-                                                                           predictor.numLabels_, true)) {}
+                          predictionMatrix_(predictor.featureMatrix_.getNumRows(), predictor.numLabels_, true) {}
             };
 
             const FeatureMatrix& featureMatrix_;

@@ -100,8 +100,8 @@ namespace boosting {
             ExampleWiseStatisticsSubset(const StatisticView& statisticView,
                                         const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights,
                                         const IndexVector& labelIndices)
-                : sumVector_(StatisticVector(labelIndices.getNumElements(), true)), statisticView_(statisticView),
-                  weights_(weights), labelIndices_(labelIndices),
+                : sumVector_(labelIndices.getNumElements(), true), statisticView_(statisticView), weights_(weights),
+                  labelIndices_(labelIndices),
                   ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, labelIndices)) {}
 
             /**
@@ -186,8 +186,7 @@ namespace boosting {
                                                       WeightVector, IndexVector>(statistics.statisticView_,
                                                                                  statistics.ruleEvaluationFactory_,
                                                                                  statistics.weights_, labelIndices),
-                          tmpVector_(StatisticVector(labelIndices.getNumElements())), totalSumVector_(&totalSumVector) {
-                    }
+                          tmpVector_(labelIndices.getNumElements()), totalSumVector_(&totalSumVector) {}
 
                     /**
                      * @see `IWeightedStatisticsSubset::resetSubset`

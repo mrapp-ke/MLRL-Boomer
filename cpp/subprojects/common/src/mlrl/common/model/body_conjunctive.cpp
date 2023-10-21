@@ -49,12 +49,8 @@ bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(
 
 ConjunctiveBody::ConjunctiveBody(uint32 numNumericalLeq, uint32 numNumericalGr, uint32 numOrdinalLeq,
                                  uint32 numOrdinalGr, uint32 numNominalEq, uint32 numNominalNeq)
-    : numericalLeqVector_(ConditionVector<float32, CompareNumericalLeq>(numNumericalLeq)),
-      numericalGrVector_(ConditionVector<float32, CompareNumericalGr>(numNumericalGr)),
-      ordinalLeqVector_(ConditionVector<float32, CompareOrdinalLeq>(numOrdinalLeq)),
-      ordinalGrVector_(ConditionVector<float32, CompareOrdinalGr>(numOrdinalGr)),
-      nominalEqVector_(ConditionVector<float32, CompareNominalEq>(numNominalEq)),
-      nominalNeqVector_(ConditionVector<float32, CompareNominalNeq>(numNominalNeq)) {}
+    : numericalLeqVector_(numNumericalLeq), numericalGrVector_(numNumericalGr), ordinalLeqVector_(numOrdinalLeq),
+      ordinalGrVector_(numOrdinalGr), nominalEqVector_(numNominalEq), nominalNeqVector_(numNominalNeq) {}
 
 uint32 ConjunctiveBody::getNumNumericalLeq() const {
     return numericalLeqVector_.getNumElements();
