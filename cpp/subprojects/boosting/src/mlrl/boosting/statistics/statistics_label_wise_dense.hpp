@@ -8,9 +8,8 @@
 #include "mlrl/boosting/data/statistic_view_label_wise_dense.hpp"
 #include "mlrl/boosting/losses/loss_label_wise.hpp"
 #include "mlrl/common/measures/measure_evaluation.hpp"
+#include "mlrl/common/util/memory.hpp"
 #include "statistics_label_wise_common.hpp"
-
-#include <cstdlib>
 
 namespace boosting {
 
@@ -26,11 +25,10 @@ namespace boosting {
              * @param numCols   The number of columns in the matrix
              */
             DenseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols)
-                : DenseLabelWiseStatisticView(numRows, numCols,
-                                              (Tuple<float64>*) malloc(numRows * numCols * sizeof(Tuple<float64>))) {}
+                : DenseLabelWiseStatisticView(numRows, numCols, allocateMemory<Tuple<float64>>(numRows * numCols)) {}
 
             ~DenseLabelWiseStatisticMatrix() override {
-                free(statistics_);
+                freeMemory(statistics_);
             }
     };
 

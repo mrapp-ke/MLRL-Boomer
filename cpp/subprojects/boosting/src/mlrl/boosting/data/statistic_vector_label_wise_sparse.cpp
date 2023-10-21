@@ -2,9 +2,8 @@
 
 #include "mlrl/boosting/util/arrays.hpp"
 #include "mlrl/common/util/arrays.hpp"
+#include "mlrl/common/util/memory.hpp"
 #include "statistic_vector_label_wise_sparse_common.hpp"
-
-#include <cstdlib>
 
 namespace boosting {
 
@@ -64,10 +63,8 @@ namespace boosting {
         : SparseLabelWiseStatisticVector(numElements, false) {}
 
     SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(uint32 numElements, bool init)
-        : numElements_(numElements),
-          statistics_((Triple<float64>*) (init ? calloc(numElements, sizeof(Triple<float64>))
-                                               : malloc(numElements * sizeof(Triple<float64>)))),
-          sumOfWeights_(0) {}
+        : numElements_(numElements), statistics_(allocateMemory<Triple<float64>>(numElements, init)), sumOfWeights_(0) {
+    }
 
     SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(const SparseLabelWiseStatisticVector& vector)
         : SparseLabelWiseStatisticVector(vector.numElements_) {
@@ -76,7 +73,7 @@ namespace boosting {
     }
 
     SparseLabelWiseStatisticVector::~SparseLabelWiseStatisticVector() {
-        free(statistics_);
+        freeMemory(statistics_);
     }
 
     SparseLabelWiseStatisticVector::const_iterator SparseLabelWiseStatisticVector::cbegin() const {

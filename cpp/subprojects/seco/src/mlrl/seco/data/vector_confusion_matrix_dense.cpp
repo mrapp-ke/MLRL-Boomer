@@ -2,9 +2,9 @@
 
 #include "mlrl/common/iterator/binary_forward_iterator.hpp"
 #include "mlrl/common/util/arrays.hpp"
+#include "mlrl/common/util/memory.hpp"
 
 #include <algorithm>
-#include <cstdlib>
 
 namespace seco {
 
@@ -35,9 +35,7 @@ namespace seco {
         : DenseConfusionMatrixVector(numElements, false) {}
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(uint32 numElements, bool init)
-        : array_(init ? (ConfusionMatrix*) calloc(numElements, sizeof(ConfusionMatrix))
-                      : (ConfusionMatrix*) malloc(numElements * sizeof(ConfusionMatrix))),
-          numElements_(numElements) {}
+        : array_(allocateMemory<ConfusionMatrix>(numElements, init)), numElements_(numElements) {}
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other)
         : DenseConfusionMatrixVector(other.numElements_) {
@@ -45,7 +43,7 @@ namespace seco {
     }
 
     DenseConfusionMatrixVector::~DenseConfusionMatrixVector() {
-        free(array_);
+        freeMemory(array_);
     }
 
     DenseConfusionMatrixVector::iterator DenseConfusionMatrixVector::begin() {

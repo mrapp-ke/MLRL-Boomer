@@ -14,8 +14,6 @@
 #include "statistics_label_wise_dense.hpp"
 #include "statistics_provider_example_wise.hpp"
 
-#include <cstdlib>
-
 namespace boosting {
 
     /**
@@ -30,14 +28,13 @@ namespace boosting {
              * @param numGradients  The number of gradients per row
              */
             DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numGradients)
-                : DenseExampleWiseStatisticView(
-                  numRows, numGradients, triangularNumber(numGradients),
-                  (float64*) malloc(numRows * numGradients * sizeof(float64)),
-                  (float64*) malloc(numRows * triangularNumber(numGradients) * sizeof(float64))) {}
+                : DenseExampleWiseStatisticView(numRows, numGradients, triangularNumber(numGradients),
+                                                allocateMemory<float64>(numRows * numGradients),
+                                                allocateMemory<float64>(numRows * triangularNumber(numGradients))) {}
 
             ~DenseExampleWiseStatisticMatrix() {
-                free(gradients_);
-                free(hessians_);
+                freeMemory(gradients_);
+                freeMemory(hessians_);
             }
     };
 

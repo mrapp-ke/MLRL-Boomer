@@ -1,14 +1,14 @@
 #include "mlrl/common/prediction/prediction_matrix_sparse_binary.hpp"
 
-#include <cstdlib>
+#include "mlrl/common/util/memory.hpp"
 
 BinarySparsePredictionMatrix::BinarySparsePredictionMatrix(uint32 numRows, uint32 numCols, uint32* colIndices,
                                                            uint32* indptr)
     : BinaryCsrConstView(numRows, numCols, colIndices, indptr), colIndices_(colIndices), indptr_(indptr) {}
 
 BinarySparsePredictionMatrix::~BinarySparsePredictionMatrix() {
-    free(colIndices_);
-    free(indptr_);
+    freeMemory(colIndices_);
+    freeMemory(indptr_);
 }
 
 uint32* BinarySparsePredictionMatrix::getColIndices() {
@@ -35,8 +35,8 @@ std::unique_ptr<BinarySparsePredictionMatrix> createBinarySparsePredictionMatrix
                                                                                  uint32 numCols,
                                                                                  uint32 numNonZeroElements) {
     uint32 numRows = lilMatrix.getNumRows();
-    uint32* colIndices = (uint32*) malloc(numNonZeroElements * sizeof(uint32));
-    uint32* indptr = (uint32*) malloc((numRows + 1) * sizeof(uint32));
+    uint32* colIndices = allocateMemory<uint32>(numNonZeroElements);
+    uint32* indptr = allocateMemory<uint32>(numRows + 1);
     uint32 n = 0;
 
     for (uint32 i = 0; i < numRows; i++) {
