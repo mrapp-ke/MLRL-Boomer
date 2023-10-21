@@ -7,7 +7,7 @@
 #include "mlrl/common/statistics/statistics.hpp"
 
 PartialPrediction::PartialPrediction(uint32 numElements, bool sorted)
-    : AbstractEvaluatedPrediction(numElements), indexVector_(PartialIndexVector(numElements)), sorted_(sorted) {}
+    : AbstractEvaluatedPrediction(numElements), indexVector_(numElements), sorted_(sorted) {}
 
 PartialPrediction::index_iterator PartialPrediction::indices_begin() {
     return indexVector_.begin();

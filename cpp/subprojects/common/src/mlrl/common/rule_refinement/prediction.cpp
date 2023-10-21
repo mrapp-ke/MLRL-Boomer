@@ -2,7 +2,7 @@
 
 #include "mlrl/common/data/arrays.hpp"
 
-AbstractPrediction::AbstractPrediction(uint32 numElements) : predictedScoreVector_(DenseVector<float64>(numElements)) {}
+AbstractPrediction::AbstractPrediction(uint32 numElements) : predictedScoreVector_(numElements) {}
 
 uint32 AbstractPrediction::getNumElements() const {
     return predictedScoreVector_.getNumElements();

@@ -22,7 +22,7 @@ class BitFeatureInfo final : public IMixedFeatureInfo {
          * @param numFeatures The total number of available features
          */
         BitFeatureInfo(uint32 numFeatures)
-            : ordinalBitVector_(BitVector(numFeatures, true)), nominalBitVector_(BitVector(numFeatures, true)) {}
+            : ordinalBitVector_(numFeatures, true), nominalBitVector_(numFeatures, true) {}
 
         std::unique_ptr<IFeatureType> createFeatureType(uint32 featureIndex) const override {
             if (ordinalBitVector_[featureIndex]) {

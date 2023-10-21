@@ -61,7 +61,7 @@ typename DenseBinnedVector<T>::ValueConstIterator::difference_type DenseBinnedVe
 
 template<typename T>
 DenseBinnedVector<T>::DenseBinnedVector(uint32 numElements, uint32 numBins)
-    : binIndices_(DenseVector<uint32>(numElements)), values_(DenseVector<T>(numBins)) {}
+    : binIndices_(numElements), values_(numBins) {}
 
 template<typename T>
 typename DenseBinnedVector<T>::const_iterator DenseBinnedVector<T>::cbegin() const {

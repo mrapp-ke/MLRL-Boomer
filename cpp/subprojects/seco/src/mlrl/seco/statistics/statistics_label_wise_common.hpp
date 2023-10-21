@@ -130,7 +130,7 @@ namespace seco {
                                               const ConfusionMatrixVector& totalSumVector,
                                               const RuleEvaluationFactory& ruleEvaluationFactory,
                                               const WeightVector& weights, const IndexVector& labelIndices)
-                : sumVector_(ConfusionMatrixVector(labelIndices.getNumElements(), true)), labelMatrix_(labelMatrix),
+                : sumVector_(labelIndices.getNumElements(), true), labelMatrix_(labelMatrix),
                   coverageMatrix_(coverageMatrix), majorityLabelVector_(majorityLabelVector),
                   totalSumVector_(totalSumVector), weights_(weights), labelIndices_(labelIndices),
                   ruleEvaluationPtr_(ruleEvaluationFactory.create(labelIndices)) {}
@@ -336,8 +336,7 @@ namespace seco {
                           statistics.labelMatrix_, statistics.coverageMatrix_, statistics.majorityLabelVector_,
                           statistics.totalSumVector_, statistics.ruleEvaluationFactory_, statistics.weights_,
                           labelIndices),
-                          subsetSumVector_(&statistics.subsetSumVector_),
-                          tmpVector_(ConfusionMatrixVector(labelIndices.getNumElements())) {}
+                          subsetSumVector_(&statistics.subsetSumVector_), tmpVector_(labelIndices.getNumElements()) {}
 
                     /**
                      * @see `IWeightedStatisticsSubset::addToMissing`
@@ -440,10 +439,8 @@ namespace seco {
                                         const BinarySparseArrayVector& majorityLabelVector,
                                         const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights)
                 : weights_(weights), ruleEvaluationFactory_(ruleEvaluationFactory), labelMatrix_(labelMatrix),
-                  majorityLabelVector_(majorityLabelVector),
-                  totalSumVector_(ConfusionMatrixVector(labelMatrix.getNumCols(), true)),
-                  subsetSumVector_(ConfusionMatrixVector(labelMatrix.getNumCols(), true)),
-                  coverageMatrix_(coverageMatrix) {
+                  majorityLabelVector_(majorityLabelVector), totalSumVector_(labelMatrix.getNumCols(), true),
+                  subsetSumVector_(labelMatrix.getNumCols(), true), coverageMatrix_(coverageMatrix) {
                 initializeLabelWiseStatisticVector(weights, labelMatrix, majorityLabelVector, coverageMatrix,
                                                    totalSumVector_);
                 initializeLabelWiseStatisticVector(weights, labelMatrix, majorityLabelVector, coverageMatrix,
@@ -456,8 +453,7 @@ namespace seco {
             LabelWiseWeightedStatistics(const LabelWiseWeightedStatistics& statistics)
                 : weights_(statistics.weights_), ruleEvaluationFactory_(statistics.ruleEvaluationFactory_),
                   labelMatrix_(statistics.labelMatrix_), majorityLabelVector_(statistics.majorityLabelVector_),
-                  totalSumVector_(ConfusionMatrixVector(statistics.totalSumVector_)),
-                  subsetSumVector_(ConfusionMatrixVector(statistics.subsetSumVector_)),
+                  totalSumVector_(statistics.totalSumVector_), subsetSumVector_(statistics.subsetSumVector_),
                   coverageMatrix_(statistics.coverageMatrix_) {}
 
             /**

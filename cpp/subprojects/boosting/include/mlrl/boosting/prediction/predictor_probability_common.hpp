@@ -87,12 +87,10 @@ namespace boosting {
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<float64>>(
                           predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
                           probabilityTransformationPtr_(probabilityTransformationPtr),
-                          scoreMatrix_(DensePredictionMatrix<float64>(predictor.featureMatrix_.getNumRows(),
-                                                                      predictor.numLabels_,
-                                                                      probabilityTransformationPtr_ != nullptr)),
-                          predictionMatrix_(DensePredictionMatrix<float64>(predictor.featureMatrix_.getNumRows(),
-                                                                           predictor.numLabels_,
-                                                                           probabilityTransformationPtr_ == nullptr)) {}
+                          scoreMatrix_(predictor.featureMatrix_.getNumRows(), predictor.numLabels_,
+                                       probabilityTransformationPtr_ != nullptr),
+                          predictionMatrix_(predictor.featureMatrix_.getNumRows(), predictor.numLabels_,
+                                            probabilityTransformationPtr_ == nullptr) {}
             };
 
             const FeatureMatrix& featureMatrix_;

@@ -339,7 +339,7 @@ class ExactThresholds final : public AbstractThresholds {
                                  const WeightVector& weights)
                     : thresholds_(thresholds), weightedStatisticsPtr_(std::move(weightedStatisticsPtr)),
                       weights_(weights), numCoveredExamples_(weights.getNumNonZeroWeights()),
-                      coverageMask_(CoverageMask(thresholds.featureMatrix_.getNumRows())), numModifications_(0) {}
+                      coverageMask_(thresholds.featureMatrix_.getNumRows()), numModifications_(0) {}
 
                 /**
                  * @param thresholdsSubset A reference to an object of type `ThresholdsSubset` to be copied
@@ -348,7 +348,7 @@ class ExactThresholds final : public AbstractThresholds {
                     : thresholds_(thresholdsSubset.thresholds_),
                       weightedStatisticsPtr_(thresholdsSubset.weightedStatisticsPtr_->copy()),
                       weights_(thresholdsSubset.weights_), numCoveredExamples_(thresholdsSubset.numCoveredExamples_),
-                      coverageMask_(CoverageMask(thresholdsSubset.coverageMask_)),
+                      coverageMask_(thresholdsSubset.coverageMask_),
                       numModifications_(thresholdsSubset.numModifications_) {}
 
                 std::unique_ptr<IThresholdsSubset> copy() const override {

@@ -55,10 +55,9 @@ namespace boosting {
                                                        const Blas& blas, const Lapack& lapack)
                 : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector>(numPredictions,
                                                                                                   lapack),
-                  labelIndices_(labelIndices), indexVector_(PartialIndexVector(numPredictions)),
-                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, false)),
+                  labelIndices_(labelIndices), indexVector_(numPredictions), scoreVector_(indexVector_, false),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-                  blas_(blas), lapack_(lapack), tmpVector_(SparseArrayVector<float64>(labelIndices.getNumElements())) {}
+                  blas_(blas), lapack_(lapack), tmpVector_(labelIndices.getNumElements()) {}
 
             /**
              * @see `IRuleEvaluation::evaluate`

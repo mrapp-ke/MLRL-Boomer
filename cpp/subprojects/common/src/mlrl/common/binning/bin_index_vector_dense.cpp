@@ -2,7 +2,7 @@
 
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 
-DenseBinIndexVector::DenseBinIndexVector(uint32 numElements) : vector_(DenseVector<uint32>(numElements)) {}
+DenseBinIndexVector::DenseBinIndexVector(uint32 numElements) : vector_(numElements) {}
 
 uint32 DenseBinIndexVector::getBinIndex(uint32 exampleIndex) const {
     return vector_[exampleIndex];

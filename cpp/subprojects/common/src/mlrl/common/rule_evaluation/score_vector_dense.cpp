@@ -7,8 +7,7 @@
 
 template<typename IndexVector>
 DenseScoreVector<IndexVector>::DenseScoreVector(const IndexVector& labelIndices, bool sorted)
-    : labelIndices_(labelIndices), predictedScoreVector_(DenseVector<float64>(labelIndices.getNumElements())),
-      sorted_(sorted) {}
+    : labelIndices_(labelIndices), predictedScoreVector_(labelIndices.getNumElements()), sorted_(sorted) {}
 
 template<typename IndexVector>
 typename DenseScoreVector<IndexVector>::index_const_iterator DenseScoreVector<IndexVector>::indices_cbegin() const {

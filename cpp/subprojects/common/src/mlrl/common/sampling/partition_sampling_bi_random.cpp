@@ -19,8 +19,7 @@ class RandomBiPartitionSampling final : public IPartitionSampling {
          * @param numTraining   The number of examples to be included in the training set
          * @param numHoldout    The number of examples to be included in the holdout set
          */
-        RandomBiPartitionSampling(uint32 numTraining, uint32 numHoldout)
-            : partition_(BiPartition(numTraining, numHoldout)) {}
+        RandomBiPartitionSampling(uint32 numTraining, uint32 numHoldout) : partition_(numTraining, numHoldout) {}
 
         IPartition& partition(RNG& rng) override {
             uint32 numTraining = partition_.getNumFirst();

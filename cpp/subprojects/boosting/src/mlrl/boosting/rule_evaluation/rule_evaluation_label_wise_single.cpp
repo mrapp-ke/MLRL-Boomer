@@ -39,8 +39,7 @@ namespace boosting {
              */
             LabelWiseSingleLabelRuleEvaluation(const IndexVector& labelIndices, float64 l1RegularizationWeight,
                                                float64 l2RegularizationWeight)
-                : labelIndices_(labelIndices), indexVector_(PartialIndexVector(1)),
-                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, true)),
+                : labelIndices_(labelIndices), indexVector_(1), scoreVector_(indexVector_, true),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
