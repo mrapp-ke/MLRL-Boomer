@@ -3,8 +3,8 @@
 #include "feature_binning_nominal.hpp"
 #include "mlrl/common/binning/bin_index_vector_dense.hpp"
 #include "mlrl/common/binning/bin_index_vector_dok.hpp"
-#include "mlrl/common/math/math.hpp"
 #include "mlrl/common/thresholds/thresholds_approximate.hpp"
+#include "mlrl/common/util/math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 #include <tuple>

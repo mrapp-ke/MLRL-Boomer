@@ -1,6 +1,6 @@
 #include "mlrl/common/rule_refinement/rule_refinement_exact.hpp"
 
-#include "mlrl/common/math/math.hpp"
+#include "mlrl/common/util/math.hpp"
 
 static inline uint32 upperBound(FeatureVector::const_iterator iterator, uint32 start, uint32 end, float32 threshold) {
     while (start < end) {

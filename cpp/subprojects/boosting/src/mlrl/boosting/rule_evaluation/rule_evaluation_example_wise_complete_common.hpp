@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/math/math.hpp"
+#include "mlrl/boosting/util/math.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 #include "rule_evaluation_example_wise_common.hpp"
 #include "rule_evaluation_label_wise_common.hpp"

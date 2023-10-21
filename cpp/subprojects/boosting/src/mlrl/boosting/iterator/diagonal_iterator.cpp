@@ -1,6 +1,6 @@
 #include "mlrl/boosting/iterator/diagonal_iterator.hpp"
 
-#include "mlrl/boosting/math/math.hpp"
+#include "mlrl/boosting/util/math.hpp"
 
 namespace boosting {
 
