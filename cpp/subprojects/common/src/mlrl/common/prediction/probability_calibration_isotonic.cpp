@@ -1,6 +1,6 @@
 #include "mlrl/common/prediction/probability_calibration_isotonic.hpp"
 
-#include "mlrl/common/math/math.hpp"
+#include "mlrl/common/util/math.hpp"
 
 static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<Tuple<float64>>::row bins) {
     // Sort bins in increasing order by their threshold...

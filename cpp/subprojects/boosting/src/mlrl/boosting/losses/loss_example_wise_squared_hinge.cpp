@@ -1,7 +1,7 @@
 #include "mlrl/boosting/losses/loss_example_wise_squared_hinge.hpp"
 
 #include "mlrl/common/iterator/binary_forward_iterator.hpp"
-#include "mlrl/common/math/math.hpp"
+#include "mlrl/common/util/math.hpp"
 
 namespace boosting {
 

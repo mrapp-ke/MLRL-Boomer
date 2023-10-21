@@ -1,6 +1,6 @@
 #include "mlrl/common/rule_induction/rule_induction_top_down_beam_search.hpp"
 
-#include "mlrl/common/math/math.hpp"
+#include "mlrl/common/util/math.hpp"
 #include "mlrl/common/util/validation.hpp"
 #include "rule_induction_common.hpp"
 #include "rule_induction_top_down_common.hpp"

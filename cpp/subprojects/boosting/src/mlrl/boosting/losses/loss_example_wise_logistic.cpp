@@ -3,7 +3,7 @@
 #include "mlrl/boosting/prediction/probability_function_chain_rule.hpp"
 #include "mlrl/boosting/prediction/probability_function_logistic.hpp"
 #include "mlrl/common/iterator/binary_forward_iterator.hpp"
-#include "mlrl/common/math/math.hpp"
+#include "mlrl/common/util/math.hpp"
 
 namespace boosting {
 

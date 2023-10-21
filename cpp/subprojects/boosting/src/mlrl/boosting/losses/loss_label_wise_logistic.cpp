@@ -1,9 +1,9 @@
 #include "mlrl/boosting/losses/loss_label_wise_logistic.hpp"
 
 #include "loss_label_wise_common.hpp"
-#include "mlrl/boosting/math/math.hpp"
 #include "mlrl/boosting/prediction/probability_function_chain_rule.hpp"
 #include "mlrl/boosting/prediction/probability_function_logistic.hpp"
+#include "mlrl/boosting/util/math.hpp"
 
 namespace boosting {
 

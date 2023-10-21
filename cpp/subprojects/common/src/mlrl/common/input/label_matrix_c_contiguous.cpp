@@ -1,10 +1,10 @@
 #include "mlrl/common/input/label_matrix_c_contiguous.hpp"
 
-#include "mlrl/common/math/math.hpp"
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
 #include "mlrl/common/sampling/instance_sampling.hpp"
 #include "mlrl/common/sampling/partition_sampling.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
+#include "mlrl/common/util/math.hpp"
 
 CContiguousLabelMatrix::View::View(const CContiguousLabelMatrix& labelMatrix, uint32 row)
     : VectorConstView<const uint8>(labelMatrix.getNumCols(), labelMatrix.values_cbegin(row)) {}
