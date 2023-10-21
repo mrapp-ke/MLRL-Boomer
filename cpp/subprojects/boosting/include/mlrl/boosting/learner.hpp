@@ -18,7 +18,6 @@
 #include "mlrl/boosting/losses/loss_label_wise_logistic.hpp"
 #include "mlrl/boosting/losses/loss_label_wise_squared_error.hpp"
 #include "mlrl/boosting/losses/loss_label_wise_squared_hinge.hpp"
-#include "mlrl/boosting/math/blas.hpp"
 #include "mlrl/boosting/multi_threading/parallel_rule_refinement_auto.hpp"
 #include "mlrl/boosting/multi_threading/parallel_statistic_update_auto.hpp"
 #include "mlrl/boosting/post_processing/shrinkage_constant.hpp"
@@ -44,6 +43,7 @@
 #include "mlrl/boosting/statistics/statistic_format_auto.hpp"
 #include "mlrl/boosting/statistics/statistic_format_dense.hpp"
 #include "mlrl/boosting/statistics/statistic_format_sparse.hpp"
+#include "mlrl/boosting/util/blas.hpp"
 #include "mlrl/boosting/util/lapack.hpp"
 #include "mlrl/common/learner.hpp"
 
