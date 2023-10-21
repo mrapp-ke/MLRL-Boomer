@@ -3,31 +3,29 @@
 #include "mlrl/common/data/indexed_value.hpp"
 #include "mlrl/common/data/triple.hpp"
 #include "mlrl/common/data/tuple.hpp"
-
-#include <cstdlib>
+#include "mlrl/common/util/memory.hpp"
 
 template<typename T>
 DenseVector<T>::DenseVector(uint32 numElements) : DenseVector<T>(numElements, false) {}
 
 template<typename T>
 DenseVector<T>::DenseVector(uint32 numElements, bool init)
-    : VectorView<T>(numElements, (T*) (init ? calloc(numElements, sizeof(T)) : malloc(numElements * sizeof(T)))),
-      maxCapacity_(numElements) {}
+    : VectorView<T>(numElements, allocateMemory<T>(numElements, init)), maxCapacity_(numElements) {}
 
 template<typename T>
 DenseVector<T>::~DenseVector() {
-    free(this->array_);
+    freeMemory(this->array_);
 }
 
 template<typename T>
 void DenseVector<T>::setNumElements(uint32 numElements, bool freeMemory) {
     if (numElements < maxCapacity_) {
         if (freeMemory) {
-            this->array_ = (T*) realloc(this->array_, numElements * sizeof(T));
+            this->array_ = reallocateMemory(this->array_, numElements);
             maxCapacity_ = numElements;
         }
     } else if (numElements > maxCapacity_) {
-        this->array_ = (T*) realloc(this->array_, numElements * sizeof(T));
+        this->array_ = reallocateMemory(this->array_, numElements);
         maxCapacity_ = numElements;
     }
 

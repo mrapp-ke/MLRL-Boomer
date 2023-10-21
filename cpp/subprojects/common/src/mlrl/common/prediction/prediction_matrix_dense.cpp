@@ -1,6 +1,6 @@
 #include "mlrl/common/prediction/prediction_matrix_dense.hpp"
 
-#include <cstdlib>
+#include "mlrl/common/util/memory.hpp"
 
 template<typename T>
 DensePredictionMatrix<T>::DensePredictionMatrix(uint32 numRows, uint32 numCols)
@@ -8,13 +8,12 @@ DensePredictionMatrix<T>::DensePredictionMatrix(uint32 numRows, uint32 numCols)
 
 template<typename T>
 DensePredictionMatrix<T>::DensePredictionMatrix(uint32 numRows, uint32 numCols, bool init)
-    : CContiguousView<T>(numRows, numCols,
-                         (T*) (init ? calloc(numRows * numCols, sizeof(T)) : malloc(numRows * numCols * sizeof(T)))),
+    : CContiguousView<T>(numRows, numCols, allocateMemory<T>(numRows * numCols, init)),
       array_(CContiguousView<T>::array_) {}
 
 template<typename T>
 DensePredictionMatrix<T>::~DensePredictionMatrix() {
-    free(array_);
+    freeMemory(array_);
 }
 
 template<typename T>

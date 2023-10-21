@@ -2,8 +2,7 @@
 
 #include "mlrl/boosting/util/arrays.hpp"
 #include "mlrl/common/util/arrays.hpp"
-
-#include <cstdlib>
+#include "mlrl/common/util/memory.hpp"
 
 namespace boosting {
 
@@ -11,9 +10,7 @@ namespace boosting {
         : DenseLabelWiseStatisticVector(numElements, false) {}
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(uint32 numElements, bool init)
-        : numElements_(numElements),
-          statistics_((Tuple<float64>*) (init ? calloc(numElements, sizeof(Tuple<float64>))
-                                              : malloc(numElements * sizeof(Tuple<float64>)))) {}
+        : numElements_(numElements), statistics_(allocateMemory<Tuple<float64>>(numElements, init)) {}
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(const DenseLabelWiseStatisticVector& vector)
         : DenseLabelWiseStatisticVector(vector.numElements_) {
@@ -21,7 +18,7 @@ namespace boosting {
     }
 
     DenseLabelWiseStatisticVector::~DenseLabelWiseStatisticVector() {
-        free(statistics_);
+        freeMemory(statistics_);
     }
 
     DenseLabelWiseStatisticVector::iterator DenseLabelWiseStatisticVector::begin() {

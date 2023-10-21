@@ -1,6 +1,6 @@
 #include "mlrl/common/data/matrix_c_contiguous.hpp"
 
-#include <cstdlib>
+#include "mlrl/common/util/memory.hpp"
 
 template<typename T>
 CContiguousMatrix<T>::CContiguousMatrix(uint32 numRows, uint32 numCols)
@@ -8,12 +8,11 @@ CContiguousMatrix<T>::CContiguousMatrix(uint32 numRows, uint32 numCols)
 
 template<typename T>
 CContiguousMatrix<T>::CContiguousMatrix(uint32 numRows, uint32 numCols, bool init)
-    : CContiguousView<T>(numRows, numCols,
-                         (T*) (init ? calloc(numRows * numCols, sizeof(T)) : malloc(numRows * numCols * sizeof(T)))) {}
+    : CContiguousView<T>(numRows, numCols, allocateMemory<T>(numRows * numCols, init)) {}
 
 template<typename T>
 CContiguousMatrix<T>::~CContiguousMatrix() {
-    free(this->array_);
+    freeMemory(this->array_);
 }
 
 template class CContiguousMatrix<uint8>;

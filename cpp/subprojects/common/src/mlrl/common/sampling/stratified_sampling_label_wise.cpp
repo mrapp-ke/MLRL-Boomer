@@ -5,6 +5,7 @@
 #include "mlrl/common/input/label_matrix_csc.hpp"
 #include "mlrl/common/input/label_matrix_csr.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
+#include "mlrl/common/util/memory.hpp"
 #include "stratified_sampling_common.hpp"
 
 #include <set>
@@ -85,8 +86,8 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
 
     // Allocate arrays for storing the row and column indices of the labels to be processed by the sampling method in
     // the CSC format...
-    rowIndices_ = (uint32*) malloc(cscLabelMatrix.getNumNonZeroElements() * sizeof(uint32));
-    indptr_ = (uint32*) malloc((sortedLabelIndices.size() + 1) * sizeof(uint32));
+    rowIndices_ = allocateMemory<uint32>(cscLabelMatrix.getNumNonZeroElements());
+    indptr_ = allocateMemory<uint32>(sortedLabelIndices.size() + 1);
     uint32 numNonZeroElements = 0;
     uint32 numCols = 0;
 
@@ -162,8 +163,8 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
 
     if (numRemaining > 0) {
         // Adjust the size of the arrays that are used to store row and column indices...
-        rowIndices_ = (uint32*) realloc(rowIndices_, (numNonZeroElements + numRemaining) * sizeof(uint32));
-        indptr_ = (uint32*) realloc(indptr_, (numCols + 2) * sizeof(uint32));
+        rowIndices_ = reallocateMemory(rowIndices_, numNonZeroElements + numRemaining);
+        indptr_ = reallocateMemory(indptr_, numCols + 2);
 
         // Add the number of non-zero labels that have been processed so far to the array of column indices...
         indptr_[numCols] = numNonZeroElements;
@@ -179,8 +180,8 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
         }
     } else {
         // Adjust the size of the arrays that are used to store row and column indices...
-        rowIndices_ = (uint32*) realloc(rowIndices_, numNonZeroElements * sizeof(uint32));
-        indptr_ = (uint32*) realloc(indptr_, (numCols + 1) * sizeof(uint32));
+        rowIndices_ = reallocateMemory(rowIndices_, numNonZeroElements);
+        indptr_ = reallocateMemory(indptr_, numCols + 1);
     }
 
     indptr_[numCols] = numNonZeroElements;
@@ -191,8 +192,8 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
 
 template<typename LabelMatrix, typename IndexIterator>
 LabelWiseStratification<LabelMatrix, IndexIterator>::~LabelWiseStratification() {
-    free(rowIndices_);
-    free(indptr_);
+    freeMemory(rowIndices_);
+    freeMemory(indptr_);
 }
 
 template<typename LabelMatrix, typename IndexIterator>

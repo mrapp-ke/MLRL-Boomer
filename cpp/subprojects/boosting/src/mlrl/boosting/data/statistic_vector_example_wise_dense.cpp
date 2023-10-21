@@ -3,8 +3,7 @@
 #include "mlrl/boosting/util/arrays.hpp"
 #include "mlrl/boosting/util/math.hpp"
 #include "mlrl/common/util/arrays.hpp"
-
-#include <cstdlib>
+#include "mlrl/common/util/memory.hpp"
 
 namespace boosting {
 
@@ -13,10 +12,8 @@ namespace boosting {
 
     DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(uint32 numGradients, bool init)
         : numGradients_(numGradients), numHessians_(triangularNumber(numGradients)),
-          gradients_(
-            (float64*) (init ? calloc(numGradients, sizeof(float64)) : malloc(numGradients * sizeof(float64)))),
-          hessians_(
-            (float64*) (init ? calloc(numHessians_, sizeof(float64)) : malloc(numHessians_ * sizeof(float64)))) {}
+          gradients_(allocateMemory<float64>(numGradients, init)),
+          hessians_(allocateMemory<float64>(numHessians_, init)) {}
 
     DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(const DenseExampleWiseStatisticVector& vector)
         : DenseExampleWiseStatisticVector(vector.numGradients_) {
@@ -25,8 +22,8 @@ namespace boosting {
     }
 
     DenseExampleWiseStatisticVector::~DenseExampleWiseStatisticVector() {
-        free(gradients_);
-        free(hessians_);
+        freeMemory(gradients_);
+        freeMemory(hessians_);
     }
 
     DenseExampleWiseStatisticVector::gradient_iterator DenseExampleWiseStatisticVector::gradients_begin() {
