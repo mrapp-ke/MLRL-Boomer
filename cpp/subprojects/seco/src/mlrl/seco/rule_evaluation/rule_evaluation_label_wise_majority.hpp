@@ -28,8 +28,7 @@ namespace seco {
              * @param labelIndices A reference to an object of template type `T` that provides access to the indices of
              *                     the labels for which the rules may predict
              */
-            LabelWiseMajorityRuleEvaluation(const T& labelIndices)
-                : scoreVector_(DenseScoreVector<T>(labelIndices, true)) {
+            LabelWiseMajorityRuleEvaluation(const T& labelIndices) : scoreVector_(labelIndices, true) {
                 scoreVector_.quality = 0;
             }
 

@@ -73,9 +73,8 @@ class PrePruning final : public IStoppingCriterion {
                    uint32 stopInterval, uint32 numPast, uint32 numCurrent, float64 minImprovement)
             : partition_(partition), aggregationFunctionPtr_(std::move(aggregationFunctionPtr)),
               useHoldoutSet_(useHoldoutSet), removeUnusedRules_(removeUnusedRules), updateInterval_(updateInterval),
-              stopInterval_(stopInterval), minImprovement_(minImprovement), pastBuffer_(RingBuffer<float64>(numPast)),
-              recentBuffer_(RingBuffer<float64>(numCurrent)), bestScore_(std::numeric_limits<float64>::infinity()),
-              stopped_(false) {
+              stopInterval_(stopInterval), minImprovement_(minImprovement), pastBuffer_(numPast),
+              recentBuffer_(numCurrent), bestScore_(std::numeric_limits<float64>::infinity()), stopped_(false) {
             uint32 bufferInterval = (numPast * updateInterval) + (numCurrent * updateInterval);
             offset_ = bufferInterval < minRules ? minRules - bufferInterval : 0;
         }

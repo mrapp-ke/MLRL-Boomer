@@ -1,8 +1,7 @@
 #include "mlrl/common/data/vector_sparse_arrays.hpp"
 
 template<typename T>
-SparseArraysVector<T>::SparseArraysVector(uint32 numElements)
-    : indices_(DenseVector<uint32>(numElements)), values_(DenseVector<T>(numElements)) {}
+SparseArraysVector<T>::SparseArraysVector(uint32 numElements) : indices_(numElements), values_(numElements) {}
 
 template<typename T>
 typename SparseArraysVector<T>::index_iterator SparseArraysVector<T>::indices_begin() {

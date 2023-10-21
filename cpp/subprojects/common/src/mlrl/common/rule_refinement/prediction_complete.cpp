@@ -6,7 +6,7 @@
 #include "mlrl/common/statistics/statistics.hpp"
 
 CompletePrediction::CompletePrediction(uint32 numElements)
-    : AbstractEvaluatedPrediction(numElements), indexVector_(CompleteIndexVector(numElements)) {}
+    : AbstractEvaluatedPrediction(numElements), indexVector_(numElements) {}
 
 CompletePrediction::index_const_iterator CompletePrediction::indices_cbegin() const {
     return indexVector_.cbegin();

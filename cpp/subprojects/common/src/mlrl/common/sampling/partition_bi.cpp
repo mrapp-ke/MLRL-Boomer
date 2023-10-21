@@ -9,8 +9,7 @@
 #include <algorithm>
 
 BiPartition::BiPartition(uint32 numFirst, uint32 numSecond)
-    : vector_(DenseVector<uint32>(numFirst + numSecond)), numFirst_(numFirst), firstSorted_(false),
-      secondSorted_(false) {}
+    : vector_(numFirst + numSecond), numFirst_(numFirst), firstSorted_(false), secondSorted_(false) {}
 
 BiPartition::iterator BiPartition::first_begin() {
     return vector_.begin();

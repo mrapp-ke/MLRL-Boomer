@@ -29,7 +29,7 @@ class FeatureSamplingWithoutReplacement final : public IFeatureSampling {
          */
         FeatureSamplingWithoutReplacement(uint32 numFeatures, uint32 numSamples, uint32 numRetained)
             : numFeatures_(numFeatures), numSamples_(numSamples), numRetained_(numRetained),
-              indexVector_(PartialIndexVector(numSamples + numRetained)) {
+              indexVector_(numSamples + numRetained) {
             if (numRetained > 0) {
                 PartialIndexVector::iterator iterator = indexVector_.begin();
                 uint32 offset = numFeatures - numRetained;

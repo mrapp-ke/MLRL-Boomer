@@ -4,8 +4,7 @@ ThresholdVector::ThresholdVector(MissingFeatureVector& missingFeatureVector, uin
     : ThresholdVector(missingFeatureVector, numElements, false) {}
 
 ThresholdVector::ThresholdVector(MissingFeatureVector& missingFeatureVector, uint32 numElements, bool init)
-    : MissingFeatureVector(missingFeatureVector), vector_(DenseVector<float32>(numElements, init)),
-      sparseBinIndex_(numElements) {}
+    : MissingFeatureVector(missingFeatureVector), vector_(numElements, init), sparseBinIndex_(numElements) {}
 
 ThresholdVector::iterator ThresholdVector::begin() {
     return vector_.begin();

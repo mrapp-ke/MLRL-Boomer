@@ -38,10 +38,8 @@ class ExampleWiseStratifiedSampling final : public IInstanceSampling {
         ExampleWiseStratifiedSampling(const LabelMatrix& labelMatrix, IndexIterator indicesBegin,
                                       IndexIterator indicesEnd, float32 sampleSize)
             : sampleSize_(sampleSize),
-              weightVector_(BitWeightVector(labelMatrix.getNumRows(),
-                                            (uint32) (indicesEnd - indicesBegin) < labelMatrix.getNumRows())),
-              stratification_(
-                ExampleWiseStratification<LabelMatrix, IndexIterator>(labelMatrix, indicesBegin, indicesEnd)) {}
+              weightVector_(labelMatrix.getNumRows(), (uint32) (indicesEnd - indicesBegin) < labelMatrix.getNumRows()),
+              stratification_(labelMatrix, indicesBegin, indicesEnd) {}
 
         const IWeightVector& sample(RNG& rng) override {
             stratification_.sampleWeights(weightVector_, sampleSize_, rng);

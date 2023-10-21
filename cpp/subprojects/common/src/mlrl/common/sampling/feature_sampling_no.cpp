@@ -16,7 +16,7 @@ class NoFeatureSampling final : public IFeatureSampling {
         /**
          * @param numFeatures The total number of available features
          */
-        NoFeatureSampling(uint32 numFeatures) : indexVector_(CompleteIndexVector(numFeatures)) {}
+        NoFeatureSampling(uint32 numFeatures) : indexVector_(numFeatures) {}
 
         const IIndexVector& sample(RNG& rng) override {
             return indexVector_;

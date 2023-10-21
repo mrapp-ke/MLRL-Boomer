@@ -252,8 +252,7 @@ namespace boosting {
                                                     std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
                                                     const Lapack& lapack)
                 : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector>(maxBins, lapack),
-                  maxBins_(maxBins),
-                  scoreVector_(DenseBinnedScoreVector<IndexVector>(labelIndices, maxBins + 1, indicesSorted)),
+                  maxBins_(maxBins), scoreVector_(labelIndices, maxBins + 1, indicesSorted),
                   aggregatedGradients_(new float64[maxBins]),
                   aggregatedHessians_(new float64[triangularNumber(maxBins)]), binIndices_(new uint32[maxBins]),
                   numElementsPerBin_(new uint32[maxBins]), criteria_(new float64[labelIndices.getNumElements()]),

@@ -44,8 +44,7 @@ class NoInstanceSampling final : public IInstanceSampling {
          * @param partition A reference to an object of template type `Partition` that provides access to the indices of
          *                  the examples that are included in the training set
          */
-        NoInstanceSampling(Partition& partition)
-            : partition_(partition), weightVector_(WeightVector(partition.getNumElements())) {}
+        NoInstanceSampling(Partition& partition) : partition_(partition), weightVector_(partition.getNumElements()) {}
 
         const IWeightVector& sample(RNG& rng) override {
             sampleInternally(partition_, weightVector_, rng);

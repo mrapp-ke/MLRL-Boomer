@@ -34,8 +34,7 @@ namespace seco {
              *                      be optimized
              */
             LabelWiseSingleLabelRuleEvaluation(const T& labelIndices, std::unique_ptr<IHeuristic> heuristicPtr)
-                : labelIndices_(labelIndices), indexVector_(PartialIndexVector(1)),
-                  scoreVector_(DenseScoreVector<PartialIndexVector>(indexVector_, true)),
+                : labelIndices_(labelIndices), indexVector_(1), scoreVector_(indexVector_, true),
                   heuristicPtr_(std::move(heuristicPtr)) {}
 
             const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,

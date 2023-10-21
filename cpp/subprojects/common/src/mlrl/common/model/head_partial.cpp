@@ -1,6 +1,6 @@
 #include "mlrl/common/model/head_partial.hpp"
 
-PartialHead::PartialHead(uint32 numElements) : vector_(SparseArraysVector<float64>(numElements)) {}
+PartialHead::PartialHead(uint32 numElements) : vector_(numElements) {}
 
 uint32 PartialHead::getNumElements() const {
     return vector_.getNumElements();

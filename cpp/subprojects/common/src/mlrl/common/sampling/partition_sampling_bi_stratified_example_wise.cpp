@@ -28,9 +28,8 @@ class ExampleWiseStratifiedBiPartitionSampling final : public IPartitionSampling
          * @param numHoldout    The number of examples to be included in the holdout set
          */
         ExampleWiseStratifiedBiPartitionSampling(const LabelMatrix& labelMatrix, uint32 numTraining, uint32 numHoldout)
-            : partition_(BiPartition(numTraining, numHoldout)),
-              stratification_(ExampleWiseStratification<LabelMatrix, IndexIterator>(
-                labelMatrix, IndexIterator(), IndexIterator(labelMatrix.getNumRows()))) {}
+            : partition_(numTraining, numHoldout),
+              stratification_(labelMatrix, IndexIterator(), IndexIterator(labelMatrix.getNumRows())) {}
 
         IPartition& partition(RNG& rng) override {
             stratification_.sampleBiPartition(partition_, rng);

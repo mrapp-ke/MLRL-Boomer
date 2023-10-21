@@ -22,7 +22,7 @@ class LabelSamplingWithoutReplacement final : public ILabelSampling {
          * @param numSamples    The number of labels to be included in the sample
          */
         LabelSamplingWithoutReplacement(uint32 numLabels, uint32 numSamples)
-            : numLabels_(numLabels), indexVector_(PartialIndexVector(numSamples)) {}
+            : numLabels_(numLabels), indexVector_(numSamples) {}
 
         const IIndexVector& sample(RNG& rng) override {
             sampleIndicesWithoutReplacement<IndexIterator>(indexVector_.begin(), indexVector_.getNumElements(),
