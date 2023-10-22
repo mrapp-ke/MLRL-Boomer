@@ -46,6 +46,6 @@ static inline constexpr T* reallocateMemory(T* ptr, uint32 numElements) {
 template<typename T>
 static inline constexpr void freeMemory(T* ptr) {
     if (ptr) {
-        freeMemory(ptr);
+        free(ptr);
     }
 }
