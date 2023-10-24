@@ -239,6 +239,46 @@ class ReadIterableVectorDecorator : public Vector {
 };
 
 /**
+ * Provides write access via iterators to the values stored in a vector.
+ *
+ * @tparam Vector The type of the vector
+ */
+template<typename Vector>
+class WriteIterableVectorDecorator : public Vector {
+    public:
+
+        /**
+         * @param view The view, the vector should be backed by
+         */
+        WriteIterableVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
+
+        virtual ~WriteIterableVectorDecorator() override {};
+
+        /**
+         * An iterator that provides access to the values stored in the vector and allows to modify them.
+         */
+        typedef typename Vector::view_type::iterator iterator;
+
+        /**
+         * Returns an `iterator` to the beginning of the vector.
+         *
+         * @return An `iterator` to the beginning
+         */
+        iterator begin() {
+            return Vector::view_.array;
+        }
+
+        /**
+         * Returns an `iterator` to the end of the vector.
+         *
+         * @return An `iterator` to the end
+         */
+        iterator end() {
+            return &Vector::view_.array[Vector::view_.numElements];
+        }
+};
+
+/**
  * Implements read and write access to the values that are stored in a pre-allocated C-contiguous array.
  *
  * @tparam T The type of the values
