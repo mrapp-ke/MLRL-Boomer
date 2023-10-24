@@ -3,7 +3,39 @@
  */
 #pragma once
 
+#include "mlrl/common/data/view.hpp"
 #include "mlrl/common/data/view_one_dimensional.hpp"
+
+/**
+ * A one-dimensional view that provides access to values stored in a pre-allocated array of a specific size.
+ *
+ * @tparam T The type of the values, the view provides access to
+ */
+template<typename T>
+struct OneDimensionalView : public View<T> {
+        /**
+         * The number of elements in the view.
+         */
+        uint32 numElements;
+
+        /**
+         * @param a A pointer to an array of template type `T` that stores the values, the view should provide access to
+         * @param n The number of elements in the view
+         */
+        OneDimensionalView(T* a, uint32 n) : View<T>(a), numElements(n) {}
+
+        /**
+         * @param other A const reference to an object of type `OneDimensionalView` that should be copied
+         */
+        OneDimensionalView(const OneDimensionalView<T>& other) : OneDimensionalView(other.array, other.numElements) {}
+
+        /**
+         * @param other A reference to an object of type `OneDimensionalView` that should be moved
+         */
+        OneDimensionalView(OneDimensionalView<T>&& other) : OneDimensionalView(other.array, other.numElements) {}
+
+        virtual ~OneDimensionalView() override {};
+};
 
 /**
  * Implements read-only access to the values that are stored in a pre-allocated C-contiguous array.
