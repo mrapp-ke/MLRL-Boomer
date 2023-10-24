@@ -49,10 +49,10 @@ namespace seco {
              * @param indicesBegin               An iterator to the beginning of the label indices
              * @param indicesEnd                 An iterator to the end of the label indices
              */
-            void increaseCoverage(uint32 row, VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                                  VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
-                                  VectorView<float64>::const_iterator predictionBegin,
-                                  VectorView<float64>::const_iterator predictionEnd,
+            void increaseCoverage(uint32 row, View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                  View<uint32>::const_iterator majorityLabelIndicesEnd,
+                                  View<float64>::const_iterator predictionBegin,
+                                  View<float64>::const_iterator predictionEnd,
                                   CompleteIndexVector::const_iterator indicesBegin,
                                   CompleteIndexVector::const_iterator indicesEnd);
 
@@ -70,10 +70,10 @@ namespace seco {
              * @param indicesBegin               An iterator to the beginning of the label indices
              * @param indicesEnd                 An iterator to the end of the label indices
              */
-            void increaseCoverage(uint32 row, VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                                  VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
-                                  VectorView<float64>::const_iterator predictionBegin,
-                                  VectorView<float64>::const_iterator predictionEnd,
+            void increaseCoverage(uint32 row, View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                  View<uint32>::const_iterator majorityLabelIndicesEnd,
+                                  View<float64>::const_iterator predictionBegin,
+                                  View<float64>::const_iterator predictionEnd,
                                   PartialIndexVector::const_iterator indicesBegin,
                                   PartialIndexVector::const_iterator indicesEnd);
 
@@ -91,10 +91,10 @@ namespace seco {
              * @param indicesBegin               An iterator to the beginning of the label indices
              * @param indicesEnd                 An iterator to the end of the label indices
              */
-            void decreaseCoverage(uint32 row, VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                                  VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
-                                  VectorView<float64>::const_iterator predictionBegin,
-                                  VectorView<float64>::const_iterator predictionEnd,
+            void decreaseCoverage(uint32 row, View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                  View<uint32>::const_iterator majorityLabelIndicesEnd,
+                                  View<float64>::const_iterator predictionBegin,
+                                  View<float64>::const_iterator predictionEnd,
                                   CompleteIndexVector::const_iterator indicesBegin,
                                   CompleteIndexVector::const_iterator indicesEnd);
 
@@ -112,10 +112,10 @@ namespace seco {
              * @param indicesBegin               An iterator to the beginning of the label indices
              * @param indicesEnd                 An iterator to the end of the label indices
              */
-            void decreaseCoverage(uint32 row, VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                                  VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
-                                  VectorView<float64>::const_iterator predictionBegin,
-                                  VectorView<float64>::const_iterator predictionEnd,
+            void decreaseCoverage(uint32 row, View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                  View<uint32>::const_iterator majorityLabelIndicesEnd,
+                                  View<float64>::const_iterator predictionBegin,
+                                  View<float64>::const_iterator predictionEnd,
                                   PartialIndexVector::const_iterator indicesBegin,
                                   PartialIndexVector::const_iterator indicesEnd);
     };

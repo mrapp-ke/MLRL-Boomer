@@ -4,7 +4,7 @@ namespace boosting {
 
     template<typename T, typename IndexIterator>
     static inline void addToRowFromSubsetInternally(typename NumericSparseSetMatrix<T>::row row,
-                                                    typename VectorConstView<T>::const_iterator iterator,
+                                                    typename View<T>::const_iterator iterator,
                                                     IndexIterator indexIterator, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indexIterator[i];
@@ -15,7 +15,7 @@ namespace boosting {
 
     template<typename T, typename IndexIterator>
     static inline void removeFromRowFromSubsetInternally(typename NumericSparseSetMatrix<T>::row row,
-                                                         typename VectorConstView<T>::const_iterator iterator,
+                                                         typename View<T>::const_iterator iterator,
                                                          IndexIterator indexIterator, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indexIterator[i];
@@ -29,8 +29,8 @@ namespace boosting {
         : SparseSetMatrix<T>(numRows, numCols) {}
 
     template<typename T>
-    void NumericSparseSetMatrix<T>::addToRowFromSubset(uint32 row, typename VectorConstView<T>::const_iterator begin,
-                                                       typename VectorConstView<T>::const_iterator end,
+    void NumericSparseSetMatrix<T>::addToRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
+                                                       typename View<T>::const_iterator end,
                                                        CompleteIndexVector::const_iterator indicesBegin,
                                                        CompleteIndexVector::const_iterator indicesEnd) {
         addToRowFromSubsetInternally<T, CompleteIndexVector::const_iterator>((*this)[row], begin, indicesBegin,
@@ -38,8 +38,8 @@ namespace boosting {
     }
 
     template<typename T>
-    void NumericSparseSetMatrix<T>::addToRowFromSubset(uint32 row, typename VectorConstView<T>::const_iterator begin,
-                                                       typename VectorConstView<T>::const_iterator end,
+    void NumericSparseSetMatrix<T>::addToRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
+                                                       typename View<T>::const_iterator end,
                                                        PartialIndexVector::const_iterator indicesBegin,
                                                        PartialIndexVector::const_iterator indicesEnd) {
         uint32 numElements = indicesEnd - indicesBegin;
@@ -48,9 +48,8 @@ namespace boosting {
     }
 
     template<typename T>
-    void NumericSparseSetMatrix<T>::removeFromRowFromSubset(uint32 row,
-                                                            typename VectorConstView<T>::const_iterator begin,
-                                                            typename VectorConstView<T>::const_iterator end,
+    void NumericSparseSetMatrix<T>::removeFromRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
+                                                            typename View<T>::const_iterator end,
                                                             CompleteIndexVector::const_iterator indicesBegin,
                                                             CompleteIndexVector::const_iterator indicesEnd) {
         removeFromRowFromSubsetInternally<T, CompleteIndexVector::const_iterator>((*this)[row], begin, indicesBegin,
@@ -58,9 +57,8 @@ namespace boosting {
     }
 
     template<typename T>
-    void NumericSparseSetMatrix<T>::removeFromRowFromSubset(uint32 row,
-                                                            typename VectorConstView<T>::const_iterator begin,
-                                                            typename VectorConstView<T>::const_iterator end,
+    void NumericSparseSetMatrix<T>::removeFromRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
+                                                            typename View<T>::const_iterator end,
                                                             PartialIndexVector::const_iterator indicesBegin,
                                                             PartialIndexVector::const_iterator indicesEnd) {
         uint32 numElements = indicesEnd - indicesBegin;

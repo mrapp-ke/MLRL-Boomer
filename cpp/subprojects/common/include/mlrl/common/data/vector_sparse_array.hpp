@@ -25,14 +25,14 @@ class SparseArrayVector final : public DenseVector<IndexedValue<T>> {
         class IndexConstIterator final {
             private:
 
-                typename VectorConstView<IndexedValue<T>>::const_iterator iterator_;
+                typename View<IndexedValue<T>>::const_iterator iterator_;
 
             public:
 
                 /**
                  * @param iterator An iterator that provides access to the elements in the `SparseArrayVector`
                  */
-                IndexConstIterator(typename VectorConstView<IndexedValue<T>>::const_iterator iterator);
+                IndexConstIterator(typename View<IndexedValue<T>>::const_iterator iterator);
 
                 /**
                  * The type that is used to represent the difference between two iterators.
@@ -133,14 +133,14 @@ class SparseArrayVector final : public DenseVector<IndexedValue<T>> {
         class IndexIterator final {
             private:
 
-                typename VectorView<IndexedValue<T>>::iterator iterator_;
+                typename View<IndexedValue<T>>::iterator iterator_;
 
             public:
 
                 /**
                  * @param iterator An iterator that provides access to the elements in the `SparseArrayVector`
                  */
-                IndexIterator(typename VectorView<IndexedValue<T>>::iterator iterator);
+                IndexIterator(typename View<IndexedValue<T>>::iterator iterator);
 
                 /**
                  * The type that is used to represent the difference between two iterators.
@@ -240,14 +240,14 @@ class SparseArrayVector final : public DenseVector<IndexedValue<T>> {
         class ValueConstIterator final {
             private:
 
-                typename VectorConstView<IndexedValue<T>>::const_iterator iterator_;
+                typename View<IndexedValue<T>>::const_iterator iterator_;
 
             public:
 
                 /**
                  * @param iterator An iterator that provides access to the elements in the `SparseArrayVector`
                  */
-                ValueConstIterator(typename VectorConstView<IndexedValue<T>>::const_iterator iterator);
+                ValueConstIterator(typename View<IndexedValue<T>>::const_iterator iterator);
 
                 /**
                  * The type that is used to represent the difference between two iterators.
@@ -347,14 +347,14 @@ class SparseArrayVector final : public DenseVector<IndexedValue<T>> {
         class ValueIterator final {
             private:
 
-                typename VectorView<IndexedValue<T>>::iterator iterator_;
+                typename View<IndexedValue<T>>::iterator iterator_;
 
             public:
 
                 /**
                  * @param iterator An iterator that provides access to the elements in the `SparseArrayVector`
                  */
-                ValueIterator(typename VectorView<IndexedValue<T>>::iterator iterator);
+                ValueIterator(typename View<IndexedValue<T>>::iterator iterator);
 
                 /**
                  * The type that is used to represent the difference between two iterators.

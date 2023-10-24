@@ -6,7 +6,7 @@
 namespace boosting {
 
     template<typename LabelIterator>
-    static inline void updateLabelWiseStatisticsInternally(VectorConstView<float64>::const_iterator scoreIterator,
+    static inline void updateLabelWiseStatisticsInternally(View<float64>::const_iterator scoreIterator,
                                                            LabelIterator labelIterator,
                                                            DenseLabelWiseStatisticView::iterator statisticIterator,
                                                            uint32 numLabels) {
@@ -82,7 +82,7 @@ namespace boosting {
 
     template<typename LabelIterator>
     static inline void updateExampleWiseStatisticsInternally(
-      VectorConstView<float64>::const_iterator scoreIterator, LabelIterator labelIterator,
+      View<float64>::const_iterator scoreIterator, LabelIterator labelIterator,
       DenseExampleWiseStatisticView::gradient_iterator gradientIterator,
       DenseExampleWiseStatisticView::hessian_iterator hessianIterator, uint32 numLabels) {
         LabelIterator labelIterator2 = labelIterator;
@@ -197,8 +197,8 @@ namespace boosting {
     }
 
     template<typename LabelIterator>
-    static inline float64 evaluateInternally(VectorConstView<float64>::const_iterator scoreIterator,
-                                             LabelIterator labelIterator, uint32 numLabels) {
+    static inline float64 evaluateInternally(View<float64>::const_iterator scoreIterator, LabelIterator labelIterator,
+                                             uint32 numLabels) {
         // The example-wise squared hinge loss calculates as `sqrt((L_1 + ...)` with
         // `L_i = max(1 - predictedScore_i, 0)^2` if `trueLabel_i = 1` or `L_i = max(predictedScore_i, 0)^2` if
         // `trueLabel_i = 0`.
@@ -318,8 +318,8 @@ namespace boosting {
              * @see `IDistanceMeasure::measureDistance`
              */
             float64 measureDistance(uint32 labelVectorIndex, const LabelVector& labelVector,
-                                    VectorView<float64>::const_iterator scoresBegin,
-                                    VectorView<float64>::const_iterator scoresEnd) const override {
+                                    View<float64>::const_iterator scoresBegin,
+                                    View<float64>::const_iterator scoresEnd) const override {
                 uint32 numLabels = scoresEnd - scoresBegin;
                 auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
                 return evaluateInternally(scoresBegin, labelIterator, numLabels);

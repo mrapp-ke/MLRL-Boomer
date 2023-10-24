@@ -1,7 +1,6 @@
 #include "mlrl/common/model/body_empty.hpp"
 
-bool EmptyBody::covers(VectorConstView<const float32>::const_iterator begin,
-                       VectorConstView<const float32>::const_iterator end) const {
+bool EmptyBody::covers(View<const float32>::const_iterator begin, View<const float32>::const_iterator end) const {
     return true;
 }
 

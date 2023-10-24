@@ -37,8 +37,8 @@ namespace seco {
                 : labelIndices_(labelIndices), indexVector_(1), scoreVector_(indexVector_, true),
                   heuristicPtr_(std::move(heuristicPtr)) {}
 
-            const IScoreVector& calculateScores(VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+            const IScoreVector& calculateScores(View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                                View<uint32>::const_iterator majorityLabelIndicesEnd,
                                                 const DenseConfusionMatrixVector& confusionMatricesTotal,
                                                 const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 uint32 numElements = labelIndices_.getNumElements();

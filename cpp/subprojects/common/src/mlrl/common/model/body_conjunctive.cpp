@@ -5,8 +5,8 @@ ConjunctiveBody::ConditionVector<Threshold, Compare>::ConditionVector(uint32 num
     : SparseArraysVector<Threshold>(numConditions) {}
 
 template<typename Threshold, typename Compare>
-bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(
-  VectorConstView<const float32>::const_iterator begin, VectorConstView<const float32>::const_iterator end) const {
+bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(View<const float32>::const_iterator begin,
+                                                                  View<const float32>::const_iterator end) const {
     uint32 numConditions = this->getNumElements();
     typename SparseArraysVector<Threshold>::index_const_iterator featureIndexIterator = this->indices_cbegin();
     typename SparseArraysVector<Threshold>::value_const_iterator thresholdIterator = this->values_cbegin();
@@ -268,8 +268,7 @@ ConjunctiveBody::index_const_iterator ConjunctiveBody::nominal_neq_indices_cend(
     return nominalNeqVector_.indices_cend();
 }
 
-bool ConjunctiveBody::covers(VectorConstView<const float32>::const_iterator begin,
-                             VectorConstView<const float32>::const_iterator end) const {
+bool ConjunctiveBody::covers(View<const float32>::const_iterator begin, View<const float32>::const_iterator end) const {
     return numericalLeqVector_.covers(begin, end) && numericalGrVector_.covers(begin, end)
            && ordinalLeqVector_.covers(begin, end) && ordinalGrVector_.covers(begin, end)
            && nominalEqVector_.covers(begin, end) && nominalNeqVector_.covers(begin, end);
