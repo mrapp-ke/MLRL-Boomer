@@ -34,7 +34,7 @@ class CsrLabelMatrix final : public BinaryCsrConstView,
         /**
          * Provides access to the values that are stored in a single row of a `CsrLabelMatrix``.
          */
-        class View final : public VectorConstView<const uint32> {
+        class View final : public ReadableVectorDecorator<Vector<const uint32>> {
             public:
 
                 /**
