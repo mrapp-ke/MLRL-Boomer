@@ -7,7 +7,8 @@
 #include "mlrl/common/util/math.hpp"
 
 CContiguousLabelMatrix::View::View(const CContiguousLabelMatrix& labelMatrix, uint32 row)
-    : VectorConstView<const uint8>(labelMatrix.getNumCols(), labelMatrix.values_cbegin(row)) {}
+    : ReadableVectorDecorator<Vector<const uint8>>(
+      Vector<const uint8>(labelMatrix.values_cbegin(row), labelMatrix.getNumCols())) {}
 
 CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array)
     : CContiguousConstView<const uint8>(numRows, numCols, array) {}
