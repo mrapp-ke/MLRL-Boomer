@@ -154,6 +154,43 @@ class MLRLCOMMON_API VectorConstView : public IOneDimensionalView {
 };
 
 /**
+ * Provides random write access to the values stored in a vector.
+ *
+ * @tparam Vector The type of the vector
+ */
+template<typename Vector>
+class WriteAccessibleVectorDecorator : public Vector {
+    public:
+
+        /**
+         * @param view The view, the vector should be backed by
+         */
+        WriteAccessibleVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
+
+        virtual ~WriteAccessibleVectorDecorator() override {};
+
+        /**
+         * Returns a const reference to the element at a specific position.
+         *
+         * @param pos   The position of the element
+         * @return      A const reference to the specified element
+         */
+        const typename Vector::value_type& operator[](uint32 pos) const {
+            return Vector::view_.array[pos];
+        }
+
+        /**
+         * Returns a reference to the element at a specific position.
+         *
+         * @param pos   The position of the element
+         * @return      A reference to the specified element
+         */
+        typename Vector::value_type& operator[](uint32 pos) {
+            return Vector::view_.array[pos];
+        }
+};
+
+/**
  * Implements read and write access to the values that are stored in a pre-allocated C-contiguous array.
  *
  * @tparam T The type of the values
