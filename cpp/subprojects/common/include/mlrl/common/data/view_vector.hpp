@@ -199,6 +199,46 @@ template<typename Vector>
 using AccessibleVectorDecorator = WriteAccessibleVectorDecorator<ReadAccessibleVectorDecorator<Vector>>;
 
 /**
+ * Provides read-only access via iterators to the values stored in a vector.
+ *
+ * @tparam Vector The type of the vector
+ */
+template<typename Vector>
+class ReadIterableVectorDecorator : public Vector {
+    public:
+
+        /**
+         * @param view The view, the vector should be backed by
+         */
+        ReadIterableVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
+
+        virtual ~ReadIterableVectorDecorator() override {};
+
+        /**
+         * An iterator that provides read-only access to the values stored in the vector.
+         */
+        typedef typename Vector::view_type::const_iterator const_iterator;
+
+        /**
+         * Returns a `const_iterator` to the beginning of the vector.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const {
+            return Vector::view_.array;
+        }
+
+        /**
+         * Returns a `const_iterator` to the end of the vector.
+         *
+         * @return A `const_iterator` to the end
+         */
+        const_iterator cend() const {
+            return &Vector::view_.array[Vector::view_.numElements];
+        }
+};
+
+/**
  * Implements read and write access to the values that are stored in a pre-allocated C-contiguous array.
  *
  * @tparam T The type of the values
