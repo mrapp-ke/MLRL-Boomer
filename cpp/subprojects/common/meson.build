@@ -118,6 +118,7 @@ source_files = [
 # Test files
 test_files = [
     'test/mlrl/common/data/array.cpp',
+    'test/mlrl/common/data/vector_bit.cpp',
     'test/mlrl/common/info.cpp'
 ]
 

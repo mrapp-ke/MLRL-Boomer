@@ -3,17 +3,15 @@
  */
 #pragma once
 
-#include "mlrl/common/data/types.hpp"
+#include "mlrl/common/data/array.hpp"
 
 /**
  * An one-dimension vector that stores binary data in a space-efficient way.
  */
-class BitVector final {
+class BitVector final : public VectorDecorator<AllocatedView<View<uint32>>> {
     private:
 
         const uint32 numElements_;
-
-        uint32* array_;
 
     public:
 
@@ -27,8 +25,6 @@ class BitVector final {
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
         BitVector(uint32 numElements, bool init);
-
-        ~BitVector();
 
         /**
          * Returns the value of the element at a specific position.

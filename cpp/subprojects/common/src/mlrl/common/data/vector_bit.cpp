@@ -21,21 +21,18 @@ static inline constexpr uint32 mask(uint32 pos) {
 BitVector::BitVector(uint32 numElements) : BitVector(numElements, false) {}
 
 BitVector::BitVector(uint32 numElements, bool init)
-    : numElements_(numElements), array_(init ? new uint32[size(numElements)] {} : new uint32[size(numElements)]) {}
-
-BitVector::~BitVector() {
-    delete[] array_;
-}
+    : VectorDecorator<AllocatedView<View<uint32>>>(AllocatedView<View<uint32>>(size(numElements), init)),
+      numElements_(numElements) {}
 
 bool BitVector::operator[](uint32 pos) const {
-    return array_[index(pos)] & mask(pos);
+    return this->view_.array[index(pos)] & mask(pos);
 }
 
 void BitVector::set(uint32 pos, bool value) {
     if (value) {
-        array_[index(pos)] |= mask(pos);
+        this->view_.array[index(pos)] |= mask(pos);
     } else {
-        array_[index(pos)] &= ~mask(pos);
+        this->view_.array[index(pos)] &= ~mask(pos);
     }
 }
 
@@ -44,5 +41,5 @@ uint32 BitVector::getNumElements() const {
 }
 
 void BitVector::clear() {
-    setArrayToZeros(array_, size(numElements_));
+    setArrayToZeros(this->view_.array, size(numElements_));
 }
