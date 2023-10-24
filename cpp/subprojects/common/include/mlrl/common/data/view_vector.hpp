@@ -132,7 +132,7 @@ class MLRLCOMMON_API VectorConstView : public IOneDimensionalView {
  * @tparam Vector The type of the vector
  */
 template<typename Vector>
-using AccessibleVectorDecorator = WriteAccessibleViewDecorator<ReadAccessibleViewDecorator<Vector>>;
+using AccessibleVectorDecorator = WriteAccessibleViewDecorator<ReadAccessibleViewDecorator<VectorDecorator<Vector>>>;
 
 /**
  * Provides read-only access via iterators to the values stored in a vector.
@@ -228,7 +228,7 @@ using IterableVectorDecorator = WriteIterableVectorDecorator<ReadIterableVectorD
  * @tparam Vector The type of the vector
  */
 template<typename Vector>
-using ReadableVectorDecorator = ReadIterableVectorDecorator<ReadAccessibleViewDecorator<Vector>>;
+using ReadableVectorDecorator = ReadAccessibleViewDecorator<ReadIterableVectorDecorator<VectorDecorator<Vector>>>;
 
 /**
  * Provides random read and write access, as well as read and write access via iterators, to the values stored in a

@@ -43,20 +43,19 @@ struct AllocatedView : public View {
  * @tparam T The type of the values stored in the array
  */
 template<typename T>
-class Array : public AccessibleVectorDecorator<ViewDecorator<AllocatedView<View<T>>>> {
+class Array : public AccessibleVectorDecorator<AllocatedView<View<T>>> {
     public:
 
         /**
          * @param numElements The number of elements in the array
          */
         Array(uint32 numElements)
-            : AccessibleVectorDecorator<ViewDecorator<AllocatedView<View<T>>>>(AllocatedView<View<T>>(numElements)) {}
+            : AccessibleVectorDecorator<AllocatedView<View<T>>>(AllocatedView<View<T>>(numElements)) {}
 
         /**
          * @param numElements   The number of elements in the array
          * @param init          True, if all elements in the array should be value-initialized, false otherwise
          */
         Array(uint32 numElements, bool init)
-            : AccessibleVectorDecorator<ViewDecorator<AllocatedView<View<T>>>>(
-              AllocatedView<View<T>>(numElements, init)) {}
+            : AccessibleVectorDecorator<AllocatedView<View<T>>>(AllocatedView<View<T>>(numElements, init)) {}
 };
