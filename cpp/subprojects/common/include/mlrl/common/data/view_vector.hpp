@@ -38,6 +38,32 @@ struct OneDimensionalView : public View<T> {
 };
 
 /**
+ * A vector that is backed by a one-dimensional view of a specific size.
+ *
+ * @tparam View The type of view, the vector is backed by
+ */
+template<typename View>
+class VectorDecorator : public ViewDecorator<View> {
+    public:
+
+        /**
+         * @param view The view, the vector should be backed by
+         */
+        VectorDecorator(View&& view) : ViewDecorator<View>(std::move(view)) {}
+
+        virtual ~VectorDecorator() override {};
+
+        /**
+         * Returns the number of elements in the vector.
+         *
+         * @return The number of elements in the vector
+         */
+        uint32 getNumElements() const {
+            return ViewDecorator<View>::view_.numElements;
+        }
+};
+
+/**
  * Implements read-only access to the values that are stored in a pre-allocated C-contiguous array.
  *
  * @tparam T The type of the values
