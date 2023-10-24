@@ -23,7 +23,8 @@ namespace seco {
                                                      const CoverageMatrix& coverageMatrix,
                                                      ConfusionMatrixVector& vector, const IndexVector& labelIndices,
                                                      uint32 statisticIndex) {
-        vector.addToSubset(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, labelIndices, 1);
+        vector.addToSubset(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
+                           coverageMatrix, labelIndices, 1);
     }
 
     template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
@@ -34,7 +35,8 @@ namespace seco {
                                                      ConfusionMatrixVector& vector, const IndexVector& labelIndices,
                                                      uint32 statisticIndex) {
         float64 weight = weights[statisticIndex];
-        vector.addToSubset(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, labelIndices, weight);
+        vector.addToSubset(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
+                           coverageMatrix, labelIndices, weight);
     }
 
     /**
@@ -154,7 +156,8 @@ namespace seco {
              * @see `IStatisticsSubset::calculateScores`
              */
             const IScoreVector& calculateScores() override final {
-                return ruleEvaluationPtr_->calculateScores(majorityLabelVector_, totalSumVector_, sumVector_);
+                return ruleEvaluationPtr_->calculateScores(majorityLabelVector_.cbegin(), majorityLabelVector_.cend(),
+                                                           totalSumVector_, sumVector_);
             }
     };
 
@@ -167,7 +170,8 @@ namespace seco {
         uint32 numStatistics = weights.getNumElements();
 
         for (uint32 i = 0; i < numStatistics; i++) {
-            statisticVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, 1);
+            statisticVector.add(i, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
+                                coverageMatrix, 1);
         }
     }
 
@@ -180,7 +184,8 @@ namespace seco {
 
         for (uint32 i = 0; i < numStatistics; i++) {
             float64 weight = weights[i];
-            statisticVector.add(i, labelMatrix, majorityLabelVector, coverageMatrix, weight);
+            statisticVector.add(i, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
+                                coverageMatrix, weight);
         }
     }
 
@@ -249,7 +254,8 @@ namespace seco {
                                              const BinarySparseArrayVector& majorityLabelVector,
                                              const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
                                              uint32 statisticIndex) {
-        vector.add(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, 1);
+        vector.add(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
+                   coverageMatrix, 1);
     }
 
     template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
@@ -258,7 +264,8 @@ namespace seco {
                                              const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
                                              uint32 statisticIndex) {
         float64 weight = weights[statisticIndex];
-        vector.add(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, weight);
+        vector.add(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
+                   coverageMatrix, weight);
     }
 
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
@@ -266,7 +273,8 @@ namespace seco {
                                                 const BinarySparseArrayVector& majorityLabelVector,
                                                 const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
                                                 uint32 statisticIndex) {
-        vector.remove(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, 1);
+        vector.remove(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
+                      coverageMatrix, 1);
     }
 
     template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
@@ -275,7 +283,8 @@ namespace seco {
                                                 const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
                                                 uint32 statisticIndex) {
         float64 weight = weights[statisticIndex];
-        vector.remove(statisticIndex, labelMatrix, majorityLabelVector, coverageMatrix, weight);
+        vector.remove(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
+                      coverageMatrix, weight);
     }
 
     /**
@@ -376,7 +385,8 @@ namespace seco {
                      */
                     const IScoreVector& calculateScoresAccumulated() override {
                         return this->ruleEvaluationPtr_->calculateScores(
-                          this->majorityLabelVector_, this->totalSumVector_, *accumulatedSumVectorPtr_);
+                          this->majorityLabelVector_.cbegin(), this->majorityLabelVector_.cend(), this->totalSumVector_,
+                          *accumulatedSumVectorPtr_);
                     }
 
                     /**
@@ -385,7 +395,8 @@ namespace seco {
                     const IScoreVector& calculateScoresUncovered() override {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), this->labelIndices_,
                                               this->sumVector_.cbegin(), this->sumVector_.cend());
-                        return this->ruleEvaluationPtr_->calculateScores(this->majorityLabelVector_,
+                        return this->ruleEvaluationPtr_->calculateScores(this->majorityLabelVector_.cbegin(),
+                                                                         this->majorityLabelVector_.cend(),
                                                                          this->totalSumVector_, tmpVector_);
                     }
 
@@ -395,7 +406,8 @@ namespace seco {
                     const IScoreVector& calculateScoresUncoveredAccumulated() override {
                         tmpVector_.difference(subsetSumVector_->cbegin(), subsetSumVector_->cend(), this->labelIndices_,
                                               accumulatedSumVectorPtr_->cbegin(), accumulatedSumVectorPtr_->cend());
-                        return this->ruleEvaluationPtr_->calculateScores(this->majorityLabelVector_,
+                        return this->ruleEvaluationPtr_->calculateScores(this->majorityLabelVector_.cbegin(),
+                                                                         this->majorityLabelVector_.cend(),
                                                                          this->totalSumVector_, tmpVector_);
                     }
             };
@@ -537,21 +549,23 @@ namespace seco {
     };
 
     template<typename Prediction, typename CoverageMatrix>
-    static inline void applyLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                          CoverageMatrix& coverageMatrix,
-                                                          const VectorConstView<uint32>& majorityLabelIndices) {
-        coverageMatrix.increaseCoverage(statisticIndex, majorityLabelIndices, prediction.values_cbegin(),
-                                        prediction.values_cend(), prediction.indices_cbegin(),
-                                        prediction.indices_cend());
+    static inline void applyLabelWisePredictionInternally(
+      uint32 statisticIndex, const Prediction& prediction, CoverageMatrix& coverageMatrix,
+      VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+      VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd) {
+        coverageMatrix.increaseCoverage(statisticIndex, majorityLabelIndicesBegin, majorityLabelIndicesEnd,
+                                        prediction.values_cbegin(), prediction.values_cend(),
+                                        prediction.indices_cbegin(), prediction.indices_cend());
     }
 
     template<typename Prediction, typename CoverageMatrix>
-    static inline void revertLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                           CoverageMatrix& coverageMatrix,
-                                                           const VectorConstView<uint32>& majorityLabelIndices) {
-        coverageMatrix.decreaseCoverage(statisticIndex, majorityLabelIndices, prediction.values_cbegin(),
-                                        prediction.values_cend(), prediction.indices_cbegin(),
-                                        prediction.indices_cend());
+    static inline void revertLabelWisePredictionInternally(
+      uint32 statisticIndex, const Prediction& prediction, CoverageMatrix& coverageMatrix,
+      VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+      VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd) {
+        coverageMatrix.decreaseCoverage(statisticIndex, majorityLabelIndicesBegin, majorityLabelIndicesEnd,
+                                        prediction.values_cbegin(), prediction.values_cend(),
+                                        prediction.indices_cbegin(), prediction.indices_cend());
     }
 
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
@@ -649,7 +663,8 @@ namespace seco {
              */
             void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
                 applyLabelWisePredictionInternally<CompletePrediction, CoverageMatrix>(
-                  statisticIndex, prediction, *coverageMatrixPtr_, *majorityLabelVectorPtr_);
+                  statisticIndex, prediction, *coverageMatrixPtr_, majorityLabelVectorPtr_->cbegin(),
+                  majorityLabelVectorPtr_->cend());
             }
 
             /**
@@ -657,7 +672,8 @@ namespace seco {
              */
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
                 applyLabelWisePredictionInternally<PartialPrediction, CoverageMatrix>(
-                  statisticIndex, prediction, *coverageMatrixPtr_, *majorityLabelVectorPtr_);
+                  statisticIndex, prediction, *coverageMatrixPtr_, majorityLabelVectorPtr_->cbegin(),
+                  majorityLabelVectorPtr_->cend());
             }
 
             /**
@@ -665,7 +681,8 @@ namespace seco {
              */
             void revertPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
                 revertLabelWisePredictionInternally<CompletePrediction, CoverageMatrix>(
-                  statisticIndex, prediction, *coverageMatrixPtr_, *majorityLabelVectorPtr_);
+                  statisticIndex, prediction, *coverageMatrixPtr_, majorityLabelVectorPtr_->cbegin(),
+                  majorityLabelVectorPtr_->cend());
             }
 
             /**
@@ -673,7 +690,8 @@ namespace seco {
              */
             void revertPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
                 revertLabelWisePredictionInternally<PartialPrediction, CoverageMatrix>(
-                  statisticIndex, prediction, *coverageMatrixPtr_, *majorityLabelVectorPtr_);
+                  statisticIndex, prediction, *coverageMatrixPtr_, majorityLabelVectorPtr_->cbegin(),
+                  majorityLabelVectorPtr_->cend());
             }
 
             /**

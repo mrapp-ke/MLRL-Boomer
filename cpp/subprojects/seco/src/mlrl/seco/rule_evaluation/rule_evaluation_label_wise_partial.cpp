@@ -46,7 +46,8 @@ namespace seco {
                 : scoreVector_(labelIndices, true), heuristicPtr_(std::move(heuristicPtr)),
                   liftFunctionPtr_(std::move(liftFunctionPtr)) {}
 
-            const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,
+            const IScoreVector& calculateScores(VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                                                VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
                                                 const DenseConfusionMatrixVector& confusionMatricesTotal,
                                                 const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 uint32 numElements = scoreVector_.getNumElements();
@@ -54,8 +55,7 @@ namespace seco {
                   scoreVector_.indices_cbegin();
                 DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
-                auto labelIterator =
-                  make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
+                auto labelIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
                 float64 sumOfQualities = 0;
                 uint32 previousIndex = 0;
@@ -113,15 +113,15 @@ namespace seco {
                   scoreVector_(indexVector_, false), sortedVector_(labelIndices.getNumElements()),
                   heuristicPtr_(std::move(heuristicPtr)), liftFunctionPtr_(std::move(liftFunctionPtr)) {}
 
-            const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,
+            const IScoreVector& calculateScores(VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                                                VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
                                                 const DenseConfusionMatrixVector& confusionMatricesTotal,
                                                 const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 uint32 numElements = labelIndices_.getNumElements();
                 typename T::const_iterator indexIterator = labelIndices_.cbegin();
                 DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
-                auto labelIterator =
-                  make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
+                auto labelIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 SparseArrayVector<Tuple<float64>>::iterator sortedIterator = sortedVector_.begin();
                 uint32 previousIndex = 0;
 

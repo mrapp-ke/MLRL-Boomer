@@ -11,15 +11,16 @@ namespace seco {
         return sumOfUncoveredWeights_;
     }
 
-    void DenseCoverageMatrix::increaseCoverage(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
+    void DenseCoverageMatrix::increaseCoverage(uint32 row,
+                                               VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                                               VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
                                                VectorView<float64>::const_iterator predictionBegin,
                                                VectorView<float64>::const_iterator predictionEnd,
                                                CompleteIndexVector::const_iterator indicesBegin,
                                                CompleteIndexVector::const_iterator indicesEnd) {
         uint32 numCols = this->getNumCols();
         value_iterator coverageIterator = this->values_begin(row);
-        auto majorityIterator =
-          make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
+        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
 
         for (uint32 i = 0; i < numCols; i++) {
             bool predictedLabel = predictionBegin[i];
@@ -39,15 +40,16 @@ namespace seco {
         }
     }
 
-    void DenseCoverageMatrix::increaseCoverage(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
+    void DenseCoverageMatrix::increaseCoverage(uint32 row,
+                                               VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                                               VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
                                                VectorView<float64>::const_iterator predictionBegin,
                                                VectorView<float64>::const_iterator predictionEnd,
                                                PartialIndexVector::const_iterator indicesBegin,
                                                PartialIndexVector::const_iterator indicesEnd) {
         uint32 numPredictions = indicesEnd - indicesBegin;
         value_iterator coverageIterator = this->values_begin(row);
-        auto majorityIterator =
-          make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
+        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
         uint32 previousIndex = 0;
 
         for (uint32 i = 0; i < numPredictions; i++) {
@@ -70,15 +72,16 @@ namespace seco {
         }
     }
 
-    void DenseCoverageMatrix::decreaseCoverage(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
+    void DenseCoverageMatrix::decreaseCoverage(uint32 row,
+                                               VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                                               VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
                                                VectorView<float64>::const_iterator predictionBegin,
                                                VectorView<float64>::const_iterator predictionEnd,
                                                CompleteIndexVector::const_iterator indicesBegin,
                                                CompleteIndexVector::const_iterator indicesEnd) {
         uint32 numCols = this->getNumCols();
         value_iterator coverageIterator = this->values_begin(row);
-        auto majorityIterator =
-          make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
+        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
 
         for (uint32 i = 0; i < numCols; i++) {
             bool predictedLabel = predictionBegin[i];
@@ -98,15 +101,16 @@ namespace seco {
         }
     }
 
-    void DenseCoverageMatrix::decreaseCoverage(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
+    void DenseCoverageMatrix::decreaseCoverage(uint32 row,
+                                               VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                                               VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
                                                VectorView<float64>::const_iterator predictionBegin,
                                                VectorView<float64>::const_iterator predictionEnd,
                                                PartialIndexVector::const_iterator indicesBegin,
                                                PartialIndexVector::const_iterator indicesEnd) {
         uint32 numPredictions = indicesEnd - indicesBegin;
         value_iterator coverageIterator = this->values_begin(row);
-        auto majorityIterator =
-          make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
+        auto majorityIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
         uint32 previousIndex = 0;
 
         for (uint32 i = 0; i < numPredictions; i++) {

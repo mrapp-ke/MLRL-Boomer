@@ -39,15 +39,18 @@ namespace seco {
              * Increases the number of times the elements at a specific row of this matrix are covered, given the
              * predictions of a rule that predicts for all available labels.
              *
-             * @param row                   The row
-             * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
-             *                              of the labels that are relevant to the majority of the training examples
-             * @param predictionBegin       An iterator to the beginning of the predictions
-             * @param predictionEnd         An iterator to the end of the predictions
-             * @param indicesBegin          An iterator to the beginning of the label indices
-             * @param indicesEnd            An iterator to the end of the label indices
+             * @param row                        The row
+             * @param majorityLabelIndicesBegin  An iterator to the beginning of the indices of the labels that are
+             *                                   relevant to the majority of the training examples
+             * @param majorityLabelIndicesEnd    An iterator to the end of the indices of the labels that are relevant
+             *                                   to the majority of the training examples
+             * @param predictionBegin            An iterator to the beginning of the predictions
+             * @param predictionEnd              An iterator to the end of the predictions
+             * @param indicesBegin               An iterator to the beginning of the label indices
+             * @param indicesEnd                 An iterator to the end of the label indices
              */
-            void increaseCoverage(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
+            void increaseCoverage(uint32 row, VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                                  VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
                                   VectorView<float64>::const_iterator predictionBegin,
                                   VectorView<float64>::const_iterator predictionEnd,
                                   CompleteIndexVector::const_iterator indicesBegin,
@@ -57,15 +60,18 @@ namespace seco {
              * Increases the number of times the elements at a specific row of this matrix are covered, given the
              * predictions of a rule that predicts for a subset of the available labels.
              *
-             * @param row                   The row
-             * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
-             *                              of the labels that are relevant to the majority of the training examples
-             * @param predictionBegin       An iterator to the beginning of the predictions
-             * @param predictionEnd         An iterator to the end of the predictions
-             * @param indicesBegin          An iterator to the beginning of the label indices
-             * @param indicesEnd            An iterator to the end of the label indices
+             * @param row                        The row
+             * @param majorityLabelIndicesBegin  An iterator to the beginning of the indices of the labels that are
+             *                                   relevant to the majority of the training examples
+             * @param majorityLabelIndicesEnd    An iterator to the end of the indices of the labels that are relevant
+             *                                   to the majority of the training examples
+             * @param predictionBegin            An iterator to the beginning of the predictions
+             * @param predictionEnd              An iterator to the end of the predictions
+             * @param indicesBegin               An iterator to the beginning of the label indices
+             * @param indicesEnd                 An iterator to the end of the label indices
              */
-            void increaseCoverage(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
+            void increaseCoverage(uint32 row, VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                                  VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
                                   VectorView<float64>::const_iterator predictionBegin,
                                   VectorView<float64>::const_iterator predictionEnd,
                                   PartialIndexVector::const_iterator indicesBegin,
@@ -75,15 +81,18 @@ namespace seco {
              * Decreases the number of times the elements at a specific row of this matrix are covered, given the
              * predictions of a rule that predicts for all available labels.
              *
-             * @param row                   The row
-             * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
-             *                              of the labels that are relevant to the majority of the training examples
-             * @param predictionBegin       An iterator to the beginning of the predictions
-             * @param predictionEnd         An iterator to the end of the predictions
-             * @param indicesBegin          An iterator to the beginning of the label indices
-             * @param indicesEnd            An iterator to the end of the label indices
+             * @param row                        The row
+             * @param majorityLabelIndicesBegin  An iterator to the beginning of the indices of the labels that are
+             *                                   relevant to the majority of the training examples
+             * @param majorityLabelIndicesEnd    An iterator to the end of the indices of the labels that are relevant
+             *                                   to the majority of the training examples
+             * @param predictionBegin            An iterator to the beginning of the predictions
+             * @param predictionEnd              An iterator to the end of the predictions
+             * @param indicesBegin               An iterator to the beginning of the label indices
+             * @param indicesEnd                 An iterator to the end of the label indices
              */
-            void decreaseCoverage(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
+            void decreaseCoverage(uint32 row, VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                                  VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
                                   VectorView<float64>::const_iterator predictionBegin,
                                   VectorView<float64>::const_iterator predictionEnd,
                                   CompleteIndexVector::const_iterator indicesBegin,
@@ -93,15 +102,18 @@ namespace seco {
              * Decreases the number of times the elements at a specific row of this matrix are covered, given the
              * predictions of a rule that predicts for a subset of the available labels.
              *
-             * @param row                   The row
-             * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
-             *                              of the labels that are relevant to the majority of the training examples
-             * @param predictionBegin       An iterator to the beginning of the predictions
-             * @param predictionEnd         An iterator to the end of the predictions
-             * @param indicesBegin          An iterator to the beginning of the label indices
-             * @param indicesEnd            An iterator to the end of the label indices
+             * @param row                        The row
+             * @param majorityLabelIndicesBegin  An iterator to the beginning of the indices of the labels that are
+             *                                   relevant to the majority of the training examples
+             * @param majorityLabelIndicesEnd    An iterator to the end of the indices of the labels that are relevant
+             *                                   to the majority of the training examples
+             * @param predictionBegin            An iterator to the beginning of the predictions
+             * @param predictionEnd              An iterator to the end of the predictions
+             * @param indicesBegin               An iterator to the beginning of the label indices
+             * @param indicesEnd                 An iterator to the end of the label indices
              */
-            void decreaseCoverage(uint32 row, const VectorConstView<uint32>& majorityLabelIndices,
+            void decreaseCoverage(uint32 row, VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                                  VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
                                   VectorView<float64>::const_iterator predictionBegin,
                                   VectorView<float64>::const_iterator predictionEnd,
                                   PartialIndexVector::const_iterator indicesBegin,

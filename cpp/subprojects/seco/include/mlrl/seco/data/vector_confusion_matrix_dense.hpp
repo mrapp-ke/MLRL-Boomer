@@ -102,87 +102,103 @@ namespace seco {
              * Adds the confusion matrix elements that correspond to an example at a specific index to this vector. The
              * confusion matrix elements to be added are multiplied by a specific weight.
              *
-             * @param exampleIndex          The index of the example
-             * @param labelMatrix           A reference to an object of type `CContiguousConstView` that provides random
-             *                              access to the labels of the training examples
-             * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
-             *                              of the labels that are relevant to the majority of the training examples
-             * @param coverageMatrix        A reference to an object of type `DenseCoverageMatrix` that stores how often
-             *                              individual examples and labels have been covered
-             * @param weight                The weight, the confusion matrix elements should be multiplied by
+             * @param exampleIndex              The index of the example
+             * @param labelMatrix               A reference to an object of type `CContiguousConstView` that provides
+             *                                  random access to the labels of the training examples
+             * @param majorityLabelIndicesBegin An iterator to the beginning of the indices of the labels that are
+             *                                  relevant to the majority of the training examples
+             * @param majorityLabelIndicesEnd   An iterator to the end of the indices of the labels that are relevant to
+             *                                  the majority of the training examples
+             * @param coverageMatrix            A reference to an object of type `DenseCoverageMatrix` that stores how
+             *                                  often individual examples and labels have been covered
+             * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
             void add(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                     const VectorConstView<uint32>& majorityLabelIndices, const DenseCoverageMatrix& coverageMatrix,
-                     float64 weight);
+                     VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                     VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+                     const DenseCoverageMatrix& coverageMatrix, float64 weight);
 
             /**
              * Adds the confusion matrix elements that correspond to an example at a specific index to this vector. The
              * confusion matrix elements to be added are multiplied by a specific weight.
              *
-             * @param exampleIndex          The index of the example
-             * @param labelMatrix           A reference to an object of type `BinaryCsrConstView` that provides row-wise
-             *                              access to the labels of the training examples
-             * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
-             *                              of the labels that are relevant to the majority of the training examples
-             * @param coverageMatrix        A reference to an object of type `DenseCoverageMatrix` that stores how often
-             *                              individual examples and labels have been covered
-             * @param weight                The weight, the confusion matrix elements should be multiplied by
+             * @param exampleIndex              The index of the example
+             * @param labelMatrix               A reference to an object of type `BinaryCsrConstView` that provides
+             *                                  row-wise access to the labels of the training examples
+             * @param majorityLabelIndicesBegin An iterator to the beginning of the indices of the labels that are
+             *                                  relevant to the majority of the training examples
+             * @param majorityLabelIndicesEnd   An iterator to the end of the indices of the labels that are relevant to
+             *                                  the majority of the training examples
+             * @param coverageMatrix            A reference to an object of type `DenseCoverageMatrix` that stores how
+             *                                  often individual examples and labels have been covered
+             * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
             void add(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                     const VectorConstView<uint32>& majorityLabelIndices, const DenseCoverageMatrix& coverageMatrix,
-                     float64 weight);
+                     VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                     VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+                     const DenseCoverageMatrix& coverageMatrix, float64 weight);
 
             /**
              * Removes the confusion matrix elements that correspond to an example at a specific index from this vector.
              * The confusion matrix elements to be added are multiplied by a specific weight.
              *
-             * @param exampleIndex          The index of the example
-             * @param labelMatrix           A reference to an object of type `CContiguousConstView` that provides random
-             *                              access to the labels of the training examples
-             * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
-             *                              of the labels that are relevant to the majority of the training examples
-             * @param coverageMatrix        A reference to an object of type `DenseCoverageMatrix` that stores how often
-             *                              individual examples and labels have been covered
-             * @param weight                The weight, the confusion matrix elements should be multiplied by
+             * @param exampleIndex              The index of the example
+             * @param labelMatrix               A reference to an object of type `CContiguousConstView` that provides
+             *                                  random access to the labels of the training examples
+             * @param majorityLabelIndicesBegin An iterator to the beginning of the indices of the labels that are
+             *                                  relevant to the majority of the training examples
+             * @param majorityLabelIndicesEnd   An iterator to the end of the indices of the labels that are relevant to
+             *                                  the majority of the training examples
+             * @param coverageMatrix            A reference to an object of type `DenseCoverageMatrix` that stores how
+             *                                  often individual examples and labels have been covered
+             * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
             void remove(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                        const VectorConstView<uint32>& majorityLabelIndices, const DenseCoverageMatrix& coverageMatrix,
-                        float64 weight);
+                        VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                        VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+                        const DenseCoverageMatrix& coverageMatrix, float64 weight);
 
             /**
              * Removes the confusion matrix elements that correspond to an example at a specific index from this vector.
              * The confusion matrix elements to be added are multiplied by a specific weight.
              *
-             * @param exampleIndex          The index of the example
-             * @param labelMatrix           A reference to an object of type `BinaryCsrConstView` that provides row-wise
-             *                              access to the labels of the training examples
-             * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
-             *                              of the labels that are relevant to the majority of the training examples
-             * @param coverageMatrix        A reference to an object of type `DenseCoverageMatrix` that stores how often
-             *                              individual examples and labels have been covered
-             * @param weight                The weight, the confusion matrix elements should be multiplied by
+             * @param exampleIndex              The index of the example
+             * @param labelMatrix               A reference to an object of type `BinaryCsrConstView` that provides
+             *                                  row-wise access to the labels of the training examples
+             * @param majorityLabelIndicesBegin An iterator to the beginning of the indices of the labels that are
+             *                                  relevant to the majority of the training examples
+             * @param majorityLabelIndicesEnd   An iterator to the end of the indices of the labels that are relevant to
+             *                                  the majority of the training examples
+             * @param coverageMatrix            A reference to an object of type `DenseCoverageMatrix` that stores how
+             *                                  often individual examples and labels have been covered
+             * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
             void remove(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                        const VectorConstView<uint32>& majorityLabelIndices, const DenseCoverageMatrix& coverageMatrix,
-                        float64 weight);
+                        VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                        VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+                        const DenseCoverageMatrix& coverageMatrix, float64 weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
              * `CompleteIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a
              * specific weight.
              *
-             * @param exampleIndex          The index of the example
-             * @param labelMatrix           A reference to an object of type `CContiguousConstView` that provides random
-             *                              access to the labels of the training examples
-             * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
-             *                              of the labels that are relevant to the majority of the training examples
-             * @param coverageMatrix        A reference to an object of type `DenseCoverageMatrix` that stores how often
-             *                              individual examples and labels have been covered
-             * @param indices               A reference to a `CompleteIndexVector' that provides access to the indices
-             * @param weight                The weight, the confusion matrix elements should be multiplied by
+             * @param exampleIndex              The index of the example
+             * @param labelMatrix               A reference to an object of type `CContiguousConstView` that provides
+             *                                  random access to the labels of the training examples
+             * @param majorityLabelIndicesBegin An iterator to the beginning of the indices of the labels that are
+             *                                  relevant to the majority of the training examples
+             * @param majorityLabelIndicesEnd   An iterator to the end of the indices of the labels that are relevant to
+             *                                  the majority of the training examples
+             * @param coverageMatrix            A reference to an object of type `DenseCoverageMatrix` that stores how
+             *                                  often individual examples and labels have been covered
+             * @param indices                   A reference to a `CompleteIndexVector' that provides access to the
+             *                                  indices
+             * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                             const VectorConstView<uint32>& majorityLabelIndices,
+                             VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                             VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const CompleteIndexVector& indices,
                              float64 weight);
 
@@ -191,18 +207,22 @@ namespace seco {
              * `CompleteIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a
              * specific weight.
              *
-             * @param exampleIndex          The index of the example
-             * @param labelMatrix           A reference to an object of type `BinaryCsrConstView` that provides row-wise
-             *                              access to the labels of the training examples
-             * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
-             *                              of the labels that are relevant to the majority of the training examples
-             * @param coverageMatrix        A reference to an object of type `DenseCoverageMatrix` that stores how often
-             *                              individual examples and labels have been covered
-             * @param indices               A reference to a `CompleteIndexVector' that provides access to the indices
-             * @param weight                The weight, the confusion matrix elements should be multiplied by
+             * @param exampleIndex              The index of the example
+             * @param labelMatrix               A reference to an object of type `BinaryCsrConstView` that provides
+             *                                  row-wise access to the labels of the training examples
+             * @param majorityLabelIndicesBegin An iterator to the beginning of the indices of the labels that are
+             *                                  relevant to the majority of the training examples
+             * @param majorityLabelIndicesEnd   An iterator to the end of the indices of the labels that are relevant to
+             *                                  the majority of the training examples
+             * @param coverageMatrix            A reference to an object of type `DenseCoverageMatrix` that stores how
+             *                                  often individual examples and labels have been covered
+             * @param indices                   A reference to a `CompleteIndexVector' that provides access to the
+             *                                  indices
+             * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                             const VectorConstView<uint32>& majorityLabelIndices,
+                             VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                             VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const CompleteIndexVector& indices,
                              float64 weight);
 
@@ -211,18 +231,22 @@ namespace seco {
              * `CompleteIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a
              * specific weight.
              *
-             * @param exampleIndex          The index of the example
-             * @param labelMatrix           A reference to an object of type `CContiguousConstView` that provides random
-             *                              access to the labels of the training examples
-             * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
-             *                              of the labels that are relevant to the majority of the training examples
-             * @param coverageMatrix        A reference to an object of type `DenseCoverageMatrix` that stores how often
-             *                              individual examples and labels have been covered
-             * @param indices               A reference to a `PartialIndexVector' that provides access to the indices
-             * @param weight                The weight, the confusion matrix elements should be multiplied by
+             * @param exampleIndex              The index of the example
+             * @param labelMatrix               A reference to an object of type `CContiguousConstView` that provides
+             *                                  random access to the labels of the training examples
+             * @param majorityLabelIndicesBegin An iterator to the beginning of the indices of the labels that are
+             *                                  relevant to the majority of the training examples
+             * @param majorityLabelIndicesEnd   An iterator to the end of the indices of the labels that are relevant to
+             *                                  the majority of the training examples
+             * @param coverageMatrix            A reference to an object of type `DenseCoverageMatrix` that stores how
+             *                                  often individual examples and labels have been covered
+             * @param indices                   A reference to a `PartialIndexVector' that provides access to the
+             *                                  indices
+             * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                             const VectorConstView<uint32>& majorityLabelIndices,
+                             VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                             VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const PartialIndexVector& indices,
                              float64 weight);
 
@@ -231,18 +255,22 @@ namespace seco {
              * `PartialIndexVector`, to this vector. The confusion matrix elements to be added are multiplied by a
              * specific weight.
              *
-             * @param exampleIndex          The index of the example
-             * @param labelMatrix           A reference to an object of type `BinaryCsrConstView` that provides row-wise
-             *                              access to the labels of the training examples
-             * @param majorityLabelIndices  A reference to an object of type `VectorConstView` that stores the indices
-             *                              of the labels that are relevant to the majority of the training examples
-             * @param coverageMatrix        A reference to an object of type `DenseCoverageMatrix` that stores how often
-             *                              individual examples and labels have been covered
-             * @param indices               A reference to a `PartialIndexVector' that provides access to the indices
-             * @param weight                The weight, the confusion matrix elements should be multiplied by
+             * @param exampleIndex              The index of the example
+             * @param labelMatrix               A reference to an object of type `BinaryCsrConstView` that provides
+             *                                  row-wise access to the labels of the training examples
+             * @param majorityLabelIndicesBegin An iterator to the beginning of the indices of the labels that are
+             *                                  relevant to the majority of the training examples
+             * @param majorityLabelIndicesEnd   An iterator to the end of the indices of the labels that are relevant to
+             *                                  to the majority of the training examples
+             * @param coverageMatrix            A reference to an object of type `DenseCoverageMatrix` that stores how
+             *                                  often individual examples and labels have been covered
+             * @param indices                   A reference to a `PartialIndexVector' that provides access to the
+             *                                  indices
+             * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                             const VectorConstView<uint32>& majorityLabelIndices,
+                             VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                             VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const PartialIndexVector& indices,
                              float64 weight);
 
