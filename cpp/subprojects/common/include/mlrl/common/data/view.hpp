@@ -21,8 +21,9 @@ struct View {
 
         /**
          * @param a A pointer to an array of template type `T` that stores the values, the view should provide access to
+         * @param n The number of elements in the view
          */
-        View(T* a) : array(a) {}
+        View(T* a, uint32 n) : array(a) {}
 
         /**
          * @param other A const reference to an object of type `View` that should be copied
