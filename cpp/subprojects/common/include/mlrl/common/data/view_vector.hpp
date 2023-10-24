@@ -191,6 +191,14 @@ class WriteAccessibleVectorDecorator : public Vector {
 };
 
 /**
+ * Provides random read and write access to the values stored in a vector.
+ *
+ * @tparam Vector The type of the vector
+ */
+template<typename Vector>
+using AccessibleVectorDecorator = WriteAccessibleVectorDecorator<ReadAccessibleVectorDecorator<Vector>>;
+
+/**
  * Implements read and write access to the values that are stored in a pre-allocated C-contiguous array.
  *
  * @tparam T The type of the values
