@@ -86,3 +86,30 @@ class ViewDecorator {
          */
         typedef typename View::value_type value_type;
 };
+
+/**
+ * Provides random read-only access to the values stored in a view.
+ *
+ * @tparam View The type of the view
+ */
+template<typename View>
+class ReadAccessibleViewDecorator : public View {
+    public:
+
+        /**
+         * @param view The view, the vector should be backed by
+         */
+        ReadAccessibleViewDecorator(typename View::view_type&& view) : View(std::move(view)) {}
+
+        virtual ~ReadAccessibleViewDecorator() override {};
+
+        /**
+         * Returns a const reference to the element at a specific position.
+         *
+         * @param pos   The position of the element
+         * @return      A const reference to the specified element
+         */
+        const typename View::value_type& operator[](uint32 pos) const {
+            return View::view_.array[pos];
+        }
+};

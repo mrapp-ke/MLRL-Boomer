@@ -64,33 +64,6 @@ class VectorDecorator : public ViewDecorator<View> {
 };
 
 /**
- * Provides random read-only access to the values stored in a vector.
- *
- * @tparam Base The type of the vector
- */
-template<typename Vector>
-class ReadAccessibleVectorDecorator : public Vector {
-    public:
-
-        /**
-         * @param view The view, the vector should be backed by
-         */
-        ReadAccessibleVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
-
-        virtual ~ReadAccessibleVectorDecorator() override {};
-
-        /**
-         * Returns a const reference to the element at a specific position.
-         *
-         * @param pos   The position of the element
-         * @return      A const reference to the specified element
-         */
-        const typename Vector::value_type& operator[](uint32 pos) const {
-            return Vector::view_.array[pos];
-        }
-};
-
-/**
  * Implements read-only access to the values that are stored in a pre-allocated C-contiguous array.
  *
  * @tparam T The type of the values
@@ -196,7 +169,7 @@ class WriteAccessibleVectorDecorator : public Vector {
  * @tparam Vector The type of the vector
  */
 template<typename Vector>
-using AccessibleVectorDecorator = WriteAccessibleVectorDecorator<ReadAccessibleVectorDecorator<Vector>>;
+using AccessibleVectorDecorator = WriteAccessibleVectorDecorator<ReadAccessibleViewDecorator<Vector>>;
 
 /**
  * Provides read-only access via iterators to the values stored in a vector.
@@ -292,7 +265,7 @@ using IterableVectorDecorator = WriteIterableVectorDecorator<ReadIterableVectorD
  * @tparam Vector The type of the vector
  */
 template<typename Vector>
-using ReadableVectorDecorator = ReadIterableVectorDecorator<ReadAccessibleVectorDecorator<Vector>>;
+using ReadableVectorDecorator = ReadIterableVectorDecorator<ReadAccessibleViewDecorator<Vector>>;
 
 /**
  * Provides random read and write access, as well as read and write access via iterators, to the values stored in a
