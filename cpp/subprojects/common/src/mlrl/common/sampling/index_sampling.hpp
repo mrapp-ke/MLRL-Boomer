@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/data/array.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
 #include <unordered_set>
@@ -121,7 +122,7 @@ template<typename TotalIterator>
 static inline void sampleIndicesWithoutReplacementViaRandomPermutation(PartialIndexVector::iterator sampleIterator,
                                                                        uint32 numSamples, TotalIterator totalIterator,
                                                                        uint32 numTotal, RNG& rng) {
-    uint32* unusedIndices = new uint32[numTotal - numSamples];
+    Array<uint32> unusedIndices(numTotal - numSamples);
 
     for (uint32 i = 0; i < numSamples; i++) {
         sampleIterator[i] = totalIterator[i];
@@ -131,9 +132,7 @@ static inline void sampleIndicesWithoutReplacementViaRandomPermutation(PartialIn
         unusedIndices[i - numSamples] = totalIterator[i];
     }
 
-    randomPermutation<PartialIndexVector::iterator, uint32*>(sampleIterator, &unusedIndices[0], numSamples, numTotal,
-                                                             numSamples, rng);
-    delete[] unusedIndices;
+    randomPermutation(sampleIterator, &unusedIndices[0], numSamples, numTotal, numSamples, rng);
 }
 
 /**

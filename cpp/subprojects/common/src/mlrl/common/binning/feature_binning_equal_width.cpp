@@ -3,6 +3,7 @@
 #include "feature_binning_nominal.hpp"
 #include "mlrl/common/binning/bin_index_vector_dense.hpp"
 #include "mlrl/common/binning/bin_index_vector_dok.hpp"
+#include "mlrl/common/data/array.hpp"
 #include "mlrl/common/thresholds/thresholds_approximate.hpp"
 #include "mlrl/common/util/math.hpp"
 #include "mlrl/common/util/validation.hpp"
@@ -138,7 +139,7 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
                 }
 
                 // Remove empty bins and calculate thresholds...
-                uint32* mapping = new uint32[numBins];
+                Array<uint32> mapping(numBins);
                 uint32 n = 0;
 
                 for (uint32 i = 0; i < numBins; i++) {
@@ -166,8 +167,6 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
                         binIndices.setBinIndex(i, mapping[binIndex]);
                     }
                 }
-
-                delete[] mapping;
             }
 
             return result;

@@ -190,15 +190,15 @@ namespace boosting {
 
             DenseBinnedScoreVector<IndexVector> scoreVector_;
 
-            float64* aggregatedGradients_;
+            Array<float64> aggregatedGradients_;
 
-            float64* aggregatedHessians_;
+            Array<float64> aggregatedHessians_;
 
-            uint32* binIndices_;
+            Array<uint32> binIndices_;
 
-            uint32* numElementsPerBin_;
+            Array<uint32> numElementsPerBin_;
 
-            float64* criteria_;
+            Array<float64> criteria_;
 
             const float64 l1RegularizationWeight_;
 
@@ -253,22 +253,13 @@ namespace boosting {
                                                     const Lapack& lapack)
                 : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector>(maxBins, lapack),
                   maxBins_(maxBins), scoreVector_(labelIndices, maxBins + 1, indicesSorted),
-                  aggregatedGradients_(new float64[maxBins]),
-                  aggregatedHessians_(new float64[triangularNumber(maxBins)]), binIndices_(new uint32[maxBins]),
-                  numElementsPerBin_(new uint32[maxBins]), criteria_(new float64[labelIndices.getNumElements()]),
+                  aggregatedGradients_(maxBins), aggregatedHessians_(triangularNumber(maxBins)), binIndices_(maxBins),
+                  numElementsPerBin_(maxBins), criteria_(labelIndices.getNumElements()),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
                   binningPtr_(std::move(binningPtr)), blas_(blas), lapack_(lapack) {
                 // The last bin is used for labels for which the corresponding criterion is zero. For this particular
                 // bin, the prediction is always zero.
                 scoreVector_.values_binned_begin()[maxBins_] = 0;
-            }
-
-            virtual ~AbstractExampleWiseBinnedRuleEvaluation() override {
-                delete[] aggregatedGradients_;
-                delete[] aggregatedHessians_;
-                delete[] binIndices_;
-                delete[] numElementsPerBin_;
-                delete[] criteria_;
             }
 
             /**
@@ -277,16 +268,16 @@ namespace boosting {
             const IScoreVector& calculateScores(DenseExampleWiseStatisticVector& statisticVector) override final {
                 // Calculate label-wise criteria...
                 uint32 numCriteria =
-                  this->calculateLabelWiseCriteria(statisticVector, criteria_, scoreVector_.getNumElements(),
+                  this->calculateLabelWiseCriteria(statisticVector, &criteria_[0], scoreVector_.getNumElements(),
                                                    l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
-                LabelInfo labelInfo = binningPtr_->getLabelInfo(criteria_, numCriteria);
+                LabelInfo labelInfo = binningPtr_->getLabelInfo(&criteria_[0], numCriteria);
                 uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
 
                 if (numBins > 0) {
                     // Reset arrays to zero...
-                    setArrayToZeros(numElementsPerBin_, numBins);
+                    setArrayToZeros(&numElementsPerBin_[0], numBins);
 
                     // Apply binning method in order to aggregate the gradients and Hessians that belong to the same
                     // bins...
@@ -299,41 +290,42 @@ namespace boosting {
                     auto zeroCallback = [=](uint32 labelIndex) {
                         binIndexIterator[labelIndex] = maxBins_;
                     };
-                    binningPtr_->createBins(labelInfo, criteria_, numCriteria, callback, zeroCallback);
+                    binningPtr_->createBins(labelInfo, &criteria_[0], numCriteria, callback, zeroCallback);
 
                     // Determine number of non-empty bins...
-                    numBins = removeEmptyBins(numElementsPerBin_, binIndices_, numBins);
+                    numBins = removeEmptyBins(&numElementsPerBin_[0], &binIndices_[0], numBins);
                     scoreVector_.setNumBins(numBins, false);
 
                     // Aggregate gradients and Hessians...
-                    setArrayToZeros(aggregatedGradients_, numBins);
-                    setArrayToZeros(aggregatedHessians_, triangularNumber(numBins));
+                    setArrayToZeros(&aggregatedGradients_[0], numBins);
+                    setArrayToZeros(&aggregatedHessians_[0], triangularNumber(numBins));
                     aggregateGradientsAndHessians(statisticVector.gradients_cbegin(), statisticVector.hessians_cbegin(),
-                                                  numCriteria, binIndexIterator, binIndices_, aggregatedGradients_,
-                                                  aggregatedHessians_, maxBins_);
+                                                  numCriteria, binIndexIterator, &binIndices_[0],
+                                                  &aggregatedGradients_[0], &aggregatedHessians_[0], maxBins_);
 
                     // Copy Hessians to the matrix of coefficients and add regularization weight to its diagonal...
-                    copyCoefficients(aggregatedHessians_, this->dsysvTmpArray1_, numBins);
-                    addL2RegularizationWeight(this->dsysvTmpArray1_, numBins, numElementsPerBin_,
+                    copyCoefficients(&aggregatedHessians_[0], &this->dsysvTmpArray1_[0], numBins);
+                    addL2RegularizationWeight(&this->dsysvTmpArray1_[0], numBins, &numElementsPerBin_[0],
                                               l2RegularizationWeight_);
 
                     // Copy gradients to the vector of ordinates...
                     typename DenseBinnedScoreVector<IndexVector>::value_binned_iterator valueIterator =
                       scoreVector_.values_binned_begin();
-                    copyOrdinates(aggregatedGradients_, valueIterator, numBins);
-                    addL1RegularizationWeight(valueIterator, numBins, numElementsPerBin_, l1RegularizationWeight_);
+                    copyOrdinates(&aggregatedGradients_[0], valueIterator, numBins);
+                    addL1RegularizationWeight(valueIterator, numBins, &numElementsPerBin_[0], l1RegularizationWeight_);
 
                     // Calculate the scores to be predicted for the individual labels by solving a system of linear
                     // equations...
-                    lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, valueIterator,
-                                  numBins, this->dsysvLwork_);
+                    lapack_.dsysv(&this->dsysvTmpArray1_[0], &this->dsysvTmpArray2_[0], &this->dsysvTmpArray3_[0],
+                                  valueIterator, numBins, this->dsysvLwork_);
 
                     // Calculate the overall quality...
-                    float64 quality = calculateOverallQuality(valueIterator, aggregatedGradients_, aggregatedHessians_,
-                                                              this->dspmvTmpArray_, numBins, blas_);
+                    float64 quality =
+                      calculateOverallQuality(valueIterator, &aggregatedGradients_[0], &aggregatedHessians_[0],
+                                              &this->dspmvTmpArray_[0], numBins, blas_);
 
                     // Evaluate regularization term...
-                    quality += calculateRegularizationTerm(valueIterator, numElementsPerBin_, numBins,
+                    quality += calculateRegularizationTerm(valueIterator, &numElementsPerBin_[0], numBins,
                                                            l1RegularizationWeight_, l2RegularizationWeight_);
 
                     scoreVector_.quality = quality;
