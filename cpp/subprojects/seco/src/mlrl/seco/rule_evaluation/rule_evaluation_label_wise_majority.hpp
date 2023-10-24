@@ -32,8 +32,8 @@ namespace seco {
                 scoreVector_.quality = 0;
             }
 
-            const IScoreVector& calculateScores(VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+            const IScoreVector& calculateScores(View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                                View<uint32>::const_iterator majorityLabelIndicesEnd,
                                                 const DenseConfusionMatrixVector& confusionMatricesTotal,
                                                 const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 typename DenseScoreVector<T>::value_iterator valueIterator = scoreVector_.values_begin();

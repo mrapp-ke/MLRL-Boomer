@@ -31,10 +31,9 @@ namespace boosting {
                 : marginalProbabilityFunctionPtr_(std::move(marginalProbabilityFunctionPtr)),
                   jointProbabilityCalibrationModel_(jointProbabilityCalibrationModel) {}
 
-            float64 transformScoresIntoJointProbability(
-              uint32 labelVectorIndex, const LabelVector& labelVector,
-              VectorConstView<float64>::const_iterator scoresBegin,
-              VectorConstView<float64>::const_iterator scoresEnd) const override {
+            float64 transformScoresIntoJointProbability(uint32 labelVectorIndex, const LabelVector& labelVector,
+                                                        View<float64>::const_iterator scoresBegin,
+                                                        View<float64>::const_iterator scoresEnd) const override {
                 auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
                 uint32 numLabels = scoresEnd - scoresBegin;
                 float64 jointProbability = 1;

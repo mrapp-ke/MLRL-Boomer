@@ -25,9 +25,9 @@ namespace boosting {
         return maxLabelCardinality;
     }
 
-    static inline float64 calculateMarginalizedProbabilities(
-      SparseSetMatrix<float64>& probabilities, uint32 numLabels,
-      VectorConstView<float64>::const_iterator jointProbabilityIterator, const LabelVectorSet& labelVectorSet) {
+    static inline float64 calculateMarginalizedProbabilities(SparseSetMatrix<float64>& probabilities, uint32 numLabels,
+                                                             View<float64>::const_iterator jointProbabilityIterator,
+                                                             const LabelVectorSet& labelVectorSet) {
         LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
         float64 nullVectorProbability = 0;
@@ -84,7 +84,7 @@ namespace boosting {
     }
 
     static inline void storePrediction(const SparseArrayVector<float64>& tmpVector,
-                                       VectorView<uint8>::iterator predictionIterator, uint32 numLabels) {
+                                       View<uint8>::iterator predictionIterator, uint32 numLabels) {
         setArrayToZeros(predictionIterator, numLabels);
         uint32 numRelevantLabels = tmpVector.getNumElements();
         SparseArrayVector<float64>::const_iterator iterator = tmpVector.cbegin();
@@ -111,9 +111,8 @@ namespace boosting {
     }
 
     template<typename Prediction>
-    static inline void predictGfm(VectorConstView<float64>::const_iterator scoresBegin,
-                                  VectorConstView<float64>::const_iterator scoresEnd, Prediction prediction,
-                                  const IJointProbabilityFunction& jointProbabilityFunction,
+    static inline void predictGfm(View<float64>::const_iterator scoresBegin, View<float64>::const_iterator scoresEnd,
+                                  Prediction prediction, const IJointProbabilityFunction& jointProbabilityFunction,
                                   const LabelVectorSet& labelVectorSet, uint32 maxLabelCardinality) {
         std::unique_ptr<DenseVector<float64>> jointProbabilityVectorPtr =
           jointProbabilityFunction.transformScoresIntoJointProbabilities(labelVectorSet, scoresBegin, scoresEnd);
@@ -150,16 +149,15 @@ namespace boosting {
         : labelVectorSet_(labelVectorSet), maxLabelCardinality_(getMaxLabelCardinality(labelVectorSet)),
           jointProbabilityFunctionPtr_(std::move(jointProbabilityFunctionPtr)) {}
 
-    void GfmBinaryTransformation::apply(VectorConstView<float64>::const_iterator scoresBegin,
-                                        VectorConstView<float64>::const_iterator scoresEnd,
-                                        VectorView<uint8>::iterator predictionBegin,
-                                        VectorView<uint8>::iterator predictionEnd) const {
+    void GfmBinaryTransformation::apply(View<float64>::const_iterator scoresBegin,
+                                        View<float64>::const_iterator scoresEnd, View<uint8>::iterator predictionBegin,
+                                        View<uint8>::iterator predictionEnd) const {
         predictGfm(scoresBegin, scoresEnd, predictionBegin, *jointProbabilityFunctionPtr_, labelVectorSet_,
                    maxLabelCardinality_);
     }
 
-    void GfmBinaryTransformation::apply(VectorConstView<float64>::const_iterator scoresBegin,
-                                        VectorConstView<float64>::const_iterator scoresEnd,
+    void GfmBinaryTransformation::apply(View<float64>::const_iterator scoresBegin,
+                                        View<float64>::const_iterator scoresEnd,
                                         BinaryLilMatrix::row predictionRow) const {
         predictGfm<BinaryLilMatrix::row>(scoresBegin, scoresEnd, predictionRow, *jointProbabilityFunctionPtr_,
                                          labelVectorSet_, maxLabelCardinality_);

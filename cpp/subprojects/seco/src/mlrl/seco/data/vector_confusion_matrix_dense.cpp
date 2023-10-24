@@ -10,8 +10,8 @@ namespace seco {
 
     template<typename LabelIterator>
     static inline void addInternally(LabelIterator labelIterator,
-                                     VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                                     VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+                                     View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                     View<uint32>::const_iterator majorityLabelIndicesEnd,
                                      DenseCoverageMatrix::value_const_iterator coverageIterator, float64 weight,
                                      ConfusionMatrix* confusionMatrices, uint32 numLabels) {
         auto majorityIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
@@ -78,16 +78,16 @@ namespace seco {
     }
 
     void DenseConfusionMatrixVector::add(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                                         VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                                         VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+                                         View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                         View<uint32>::const_iterator majorityLabelIndicesEnd,
                                          const DenseCoverageMatrix& coverageMatrix, float64 weight) {
         addInternally(labelMatrix.values_cbegin(exampleIndex), majorityLabelIndicesBegin, majorityLabelIndicesEnd,
                       coverageMatrix.values_cbegin(exampleIndex), weight, array_, numElements_);
     }
 
     void DenseConfusionMatrixVector::add(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                                         VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                                         VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+                                         View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                         View<uint32>::const_iterator majorityLabelIndicesEnd,
                                          const DenseCoverageMatrix& coverageMatrix, float64 weight) {
         auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                           labelMatrix.indices_cend(exampleIndex));
@@ -96,16 +96,16 @@ namespace seco {
     }
 
     void DenseConfusionMatrixVector::remove(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                                            VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                                            VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+                                            View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                            View<uint32>::const_iterator majorityLabelIndicesEnd,
                                             const DenseCoverageMatrix& coverageMatrix, float64 weight) {
         addInternally(labelMatrix.values_cbegin(exampleIndex), majorityLabelIndicesBegin, majorityLabelIndicesEnd,
                       coverageMatrix.values_cbegin(exampleIndex), -weight, array_, numElements_);
     }
 
     void DenseConfusionMatrixVector::remove(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                                            VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                                            VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+                                            View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                            View<uint32>::const_iterator majorityLabelIndicesEnd,
                                             const DenseCoverageMatrix& coverageMatrix, float64 weight) {
         auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                           labelMatrix.indices_cend(exampleIndex));
@@ -115,8 +115,8 @@ namespace seco {
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex,
                                                  const CContiguousConstView<const uint8>& labelMatrix,
-                                                 VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                 VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+                                                 View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                                 View<uint32>::const_iterator majorityLabelIndicesEnd,
                                                  const DenseCoverageMatrix& coverageMatrix,
                                                  const CompleteIndexVector& indices, float64 weight) {
         addInternally(labelMatrix.values_cbegin(exampleIndex), majorityLabelIndicesBegin, majorityLabelIndicesEnd,
@@ -124,8 +124,8 @@ namespace seco {
     }
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                                                 VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                 VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+                                                 View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                                 View<uint32>::const_iterator majorityLabelIndicesEnd,
                                                  const DenseCoverageMatrix& coverageMatrix,
                                                  const CompleteIndexVector& indices, float64 weight) {
         auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
@@ -136,8 +136,8 @@ namespace seco {
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex,
                                                  const CContiguousConstView<const uint8>& labelMatrix,
-                                                 VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                 VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+                                                 View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                                 View<uint32>::const_iterator majorityLabelIndicesEnd,
                                                  const DenseCoverageMatrix& coverageMatrix,
                                                  const PartialIndexVector& indices, float64 weight) {
         auto majorityIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
@@ -165,8 +165,8 @@ namespace seco {
     }
 
     void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                                                 VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                 VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+                                                 View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                                 View<uint32>::const_iterator majorityLabelIndicesEnd,
                                                  const DenseCoverageMatrix& coverageMatrix,
                                                  const PartialIndexVector& indices, float64 weight) {
         auto majorityIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);

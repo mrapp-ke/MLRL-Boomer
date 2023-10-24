@@ -4,8 +4,7 @@
 #include "mlrl/common/data/tuple.hpp"
 
 template<typename T>
-SparseArrayVector<T>::IndexConstIterator::IndexConstIterator(
-  typename VectorConstView<IndexedValue<T>>::const_iterator iterator)
+SparseArrayVector<T>::IndexConstIterator::IndexConstIterator(typename View<IndexedValue<T>>::const_iterator iterator)
     : iterator_(iterator) {}
 
 template<typename T>
@@ -61,7 +60,7 @@ typename SparseArrayVector<T>::IndexConstIterator::difference_type SparseArrayVe
 }
 
 template<typename T>
-SparseArrayVector<T>::IndexIterator::IndexIterator(typename VectorView<IndexedValue<T>>::iterator iterator)
+SparseArrayVector<T>::IndexIterator::IndexIterator(typename View<IndexedValue<T>>::iterator iterator)
     : iterator_(iterator) {}
 
 template<typename T>
@@ -116,8 +115,7 @@ typename SparseArrayVector<T>::IndexIterator::difference_type SparseArrayVector<
 }
 
 template<typename T>
-SparseArrayVector<T>::ValueConstIterator::ValueConstIterator(
-  typename VectorConstView<IndexedValue<T>>::const_iterator iterator)
+SparseArrayVector<T>::ValueConstIterator::ValueConstIterator(typename View<IndexedValue<T>>::const_iterator iterator)
     : iterator_(iterator) {}
 
 template<typename T>
@@ -173,7 +171,7 @@ typename SparseArrayVector<T>::ValueConstIterator::difference_type SparseArrayVe
 }
 
 template<typename T>
-SparseArrayVector<T>::ValueIterator::ValueIterator(typename VectorView<IndexedValue<T>>::iterator iterator)
+SparseArrayVector<T>::ValueIterator::ValueIterator(typename View<IndexedValue<T>>::iterator iterator)
     : iterator_(iterator) {}
 
 template<typename T>

@@ -11,8 +11,7 @@
 class MLRLCOMMON_API EmptyBody final : public IBody {
     public:
 
-        bool covers(VectorConstView<const float32>::const_iterator begin,
-                    VectorConstView<const float32>::const_iterator end) const override;
+        bool covers(View<const float32>::const_iterator begin, View<const float32>::const_iterator end) const override;
 
         bool covers(CsrConstView<const float32>::index_const_iterator indicesBegin,
                     CsrConstView<const float32>::index_const_iterator indicesEnd,
