@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_vector.hpp"
+#include "mlrl/common/data/array.hpp"
 
 /**
  * Allows to resize a vector.
@@ -48,12 +48,14 @@ class ResizableVectorDecorator : public Vector {
 };
 
 /**
- * An one-dimensional vector that provides random access to a fixed number of elements stored in a C-contiguous array.
+ * A vector that provides random read and write access, as well as read and write access via iterators, to the values
+ * stored in a newly allocated array.
  *
- * @tparam T The type of the data that is stored in the vector
+ * @tparam T The type of the values stored in the vector
  */
 template<typename T>
-class MLRLCOMMON_API DenseVector : public VectorView<T> {
+class DenseVector
+    : public ResizableVectorDecorator<WritableVectorDecorator<VectorDecorator<AllocatedView<OneDimensionalView<T>>>>> {
     private:
 
         uint32 maxCapacity_;
@@ -63,21 +65,17 @@ class MLRLCOMMON_API DenseVector : public VectorView<T> {
         /**
          * @param numElements The number of elements in the vector
          */
-        DenseVector(uint32 numElements);
+        DenseVector(uint32 numElements)
+            : ResizableVectorDecorator<WritableVectorDecorator<VectorDecorator<AllocatedView<OneDimensionalView<T>>>>>(
+              AllocatedView<OneDimensionalView<T>>(numElements)) {}
 
         /**
          * @param numElements   The number of elements in the vector
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
-        DenseVector(uint32 numElements, bool init);
+        DenseVector(uint32 numElements, bool init)
+            : ResizableVectorDecorator<WritableVectorDecorator<VectorDecorator<AllocatedView<OneDimensionalView<T>>>>>(
+              AllocatedView<OneDimensionalView<T>>(numElements, init)) {}
 
-        virtual ~DenseVector() override;
-
-        /**
-         * Sets the number of elements in the vector.
-         *
-         * @param numElements   The number of elements to be set
-         * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
-         */
-        void setNumElements(uint32 numElements, bool freeMemory);
+        ~DenseVector() override {};
 };

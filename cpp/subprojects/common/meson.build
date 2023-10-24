@@ -15,7 +15,6 @@ source_files = [
     'src/mlrl/common/data/ring_buffer.cpp',
     'src/mlrl/common/data/vector_binned_dense.cpp',
     'src/mlrl/common/data/vector_bit.cpp',
-    'src/mlrl/common/data/vector_dense.cpp',
     'src/mlrl/common/data/vector_dok.cpp',
     'src/mlrl/common/data/vector_dok_binary.cpp',
     'src/mlrl/common/data/vector_sparse_array.cpp',
@@ -119,6 +118,7 @@ source_files = [
 test_files = [
     'test/mlrl/common/data/array.cpp',
     'test/mlrl/common/data/vector_bit.cpp',
+    'test/mlrl/common/data/vector_dense.cpp',
     'test/mlrl/common/info.cpp'
 ]
 
