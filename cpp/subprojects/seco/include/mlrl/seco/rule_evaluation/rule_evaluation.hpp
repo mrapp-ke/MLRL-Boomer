@@ -22,9 +22,10 @@ namespace seco {
              * Calculates the scores to be predicted by a rule, as well as their overall quality, based on label-wise
              * confusion matrices.
              *
-             * @param majorityLabelIndices      A reference to an object of type `VectorConstView` that stores the
-             *                                  indices of the labels that are relevant to the majority of the training
-             *                                  examples
+             * @param majorityLabelIndicesBegin An iterator to the beginning of the indices of the labels that are
+             *                                  relevant to the majority of the training examples
+             * @param majorityLabelIndicesEnd   An iterator to the end of the indices of the labels that are relevant
+             *                                  to the majority of the training examples
              * @param confusionMatricesTotal    A reference to an object of type `DenseConfusionMatrixVector` that
              *                                  stores confusion matrices that take into account all examples
              * @param confusionMatricesCovered  A reference to an object of type `DenseConfusionMatrixVector` that
@@ -33,9 +34,11 @@ namespace seco {
              * @return                          A reference to an object of type `IScoreVector` that stores the
              *                                  predicted scores, as well as their overall quality
              */
-            virtual const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,
-                                                        const DenseConfusionMatrixVector& confusionMatricesTotal,
-                                                        const DenseConfusionMatrixVector& confusionMatricesCovered) = 0;
+            virtual const IScoreVector& calculateScores(
+              VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+              VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+              const DenseConfusionMatrixVector& confusionMatricesTotal,
+              const DenseConfusionMatrixVector& confusionMatricesCovered) = 0;
     };
 
 }

@@ -37,7 +37,8 @@ namespace seco {
                 : labelIndices_(labelIndices), indexVector_(1), scoreVector_(indexVector_, true),
                   heuristicPtr_(std::move(heuristicPtr)) {}
 
-            const IScoreVector& calculateScores(const VectorConstView<uint32>& majorityLabelIndices,
+            const IScoreVector& calculateScores(VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
+                                                VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
                                                 const DenseConfusionMatrixVector& confusionMatricesTotal,
                                                 const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 uint32 numElements = labelIndices_.getNumElements();
@@ -59,8 +60,7 @@ namespace seco {
                     }
                 }
 
-                auto labelIterator =
-                  make_binary_forward_iterator(majorityLabelIndices.cbegin(), majorityLabelIndices.cend());
+                auto labelIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 std::advance(labelIterator, bestIndex);
                 scoreVector_.values_begin()[0] = (float64) !(*labelIterator);
                 indexVector_.begin()[0] = bestIndex;
