@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/vector_dense.hpp"
+#include "mlrl/common/data/view_one_dimensional.hpp"
 
 /**
  * An one-dimensional sparse vector that stores a fixed number of elements, consisting of an index and a value, in

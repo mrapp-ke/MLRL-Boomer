@@ -25,7 +25,6 @@ source_files = [
     'src/mlrl/common/data/view_csr.cpp',
     'src/mlrl/common/data/view_csr_binary.cpp',
     'src/mlrl/common/data/view_fortran_contiguous.cpp',
-    'src/mlrl/common/data/view_vector.cpp',
     'src/mlrl/common/indices/index_iterator.cpp',
     'src/mlrl/common/indices/index_vector_complete.cpp',
     'src/mlrl/common/indices/index_vector_partial.cpp',

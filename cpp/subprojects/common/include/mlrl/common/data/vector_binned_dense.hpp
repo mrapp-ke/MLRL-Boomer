@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/vector_dense.hpp"
+#include "mlrl/common/data/view_one_dimensional.hpp"
 
 #include <iterator>
 
