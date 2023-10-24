@@ -51,3 +51,37 @@ struct View {
          */
         typedef value_type* iterator;
 };
+
+/**
+ * A base class for all data structures that are backed by a view.
+ *
+ * @tparam View The type of the view, the data structure is backed by
+ */
+template<typename View>
+class ViewDecorator {
+    protected:
+
+        /**
+         * The view, the data structure is backed by.
+         */
+        View view_;
+
+        /**
+         * The type of the view, the data structure is backed by.
+         */
+        typedef View view_type;
+
+    public:
+
+        /**
+         * @param view The view, the data structure should be backed by
+         */
+        ViewDecorator(View&& view) : view_(std::move(view)) {}
+
+        virtual ~ViewDecorator() {};
+
+        /**
+         * The type of the values that are stored in the data structure.
+         */
+        typedef typename View::value_type value_type;
+};
