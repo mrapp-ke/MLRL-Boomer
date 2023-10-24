@@ -22,7 +22,7 @@ struct OneDimensionalView : public View<T> {
          * @param a A pointer to an array of template type `T` that stores the values, the view should provide access to
          * @param n The number of elements in the view
          */
-        OneDimensionalView(T* a, uint32 n) : View<T>(a), numElements(n) {}
+        OneDimensionalView(T* a, uint32 n) : View<T>(a, n), numElements(n) {}
 
         /**
          * @param other A const reference to an object of type `OneDimensionalView` that should be copied
