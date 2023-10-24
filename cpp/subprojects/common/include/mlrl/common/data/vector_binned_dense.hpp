@@ -4,7 +4,6 @@
 #pragma once
 
 #include "mlrl/common/data/vector_dense.hpp"
-#include "mlrl/common/data/view_one_dimensional.hpp"
 
 #include <iterator>
 
@@ -15,7 +14,7 @@
  * @tparam T The type of the data that is stored in the vector
  */
 template<typename T>
-class DenseBinnedVector : virtual public IOneDimensionalView {
+class DenseBinnedVector {
     private:
 
         DenseVector<uint32> binIndices_;
@@ -142,7 +141,7 @@ class DenseBinnedVector : virtual public IOneDimensionalView {
          */
         DenseBinnedVector(uint32 numElements, uint32 numBins);
 
-        virtual ~DenseBinnedVector() override {};
+        virtual ~DenseBinnedVector() {};
 
         /**
          * An iterator that provides access to the indices that correspond to individual bins and allows to modify them.
@@ -259,7 +258,9 @@ class DenseBinnedVector : virtual public IOneDimensionalView {
         void setNumBins(uint32 numBins, bool freeMemory);
 
         /**
-         * @see `IOneDimensionalView::getNumElements`
+         * Returns the number of elements in the vector.
+         *
+         * @return The number of elements in the vector
          */
-        uint32 getNumElements() const override;
+        uint32 getNumElements() const;
 };
