@@ -4,7 +4,6 @@
 #pragma once
 
 #include "mlrl/common/data/view.hpp"
-#include "mlrl/common/data/view_one_dimensional.hpp"
 
 /**
  * A one-dimensional view that provides access to values stored in a pre-allocated array of a specific size.
@@ -61,69 +60,6 @@ class VectorDecorator : public ViewDecorator<View> {
         uint32 getNumElements() const {
             return ViewDecorator<View>::view_.numElements;
         }
-};
-
-/**
- * Implements read-only access to the values that are stored in a pre-allocated C-contiguous array.
- *
- * @tparam T The type of the values
- */
-template<typename T>
-class MLRLCOMMON_API VectorConstView : public IOneDimensionalView {
-    protected:
-
-        /**
-         * The number of elements in the view.
-         */
-        uint32 numElements_;
-
-        /**
-         * A pointer to the array that stores the values, the view provides access to.
-         */
-        T* array_;
-
-    public:
-
-        /**
-         * @param numElements   The number of elements in the view
-         * @param array         A pointer to a C-contiguous array of template type `T` that stores the values, the view
-         *                      provides access to
-         */
-        VectorConstView(uint32 numElements, T* array);
-
-        virtual ~VectorConstView() override {};
-
-        /**
-         * An iterator that provides read-only access to the elements in the view.
-         */
-        typedef const T* const_iterator;
-
-        /**
-         * Returns a `const_iterator` to the beginning of the view.
-         *
-         * @return A `const_iterator` to the beginning
-         */
-        const_iterator cbegin() const;
-
-        /**
-         * Returns a `const_iterator` to the end of the view.
-         *
-         * @return A `const_iterator` to the end
-         */
-        const_iterator cend() const;
-
-        /**
-         * Returns a const reference to the element at a specific position.
-         *
-         * @param pos   The position of the element
-         * @return      A const reference to the specified element
-         */
-        const T& operator[](uint32 pos) const;
-
-        /**
-         * @see `IOneDimensionalView::getNumElements`
-         */
-        uint32 getNumElements() const override final;
 };
 
 /**
