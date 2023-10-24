@@ -287,6 +287,14 @@ template<typename Vector>
 using IterableVectorDecorator = WriteIterableVectorDecorator<ReadIterableVectorDecorator<Vector>>;
 
 /**
+ * Provides random read-only access, as well as read-only access via iterators, to the values stored in a vector.
+ *
+ * @tparam Vector The type of the vector
+ */
+template<typename Vector>
+using ReadableVectorDecorator = ReadIterableVectorDecorator<ReadAccessibleVectorDecorator<Vector>>;
+
+/**
  * Implements read and write access to the values that are stored in a pre-allocated C-contiguous array.
  *
  * @tparam T The type of the values
