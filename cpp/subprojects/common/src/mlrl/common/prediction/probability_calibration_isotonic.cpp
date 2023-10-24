@@ -1,5 +1,6 @@
 #include "mlrl/common/prediction/probability_calibration_isotonic.hpp"
 
+#include "mlrl/common/data/array.hpp"
 #include "mlrl/common/util/math.hpp"
 
 static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<Tuple<float64>>::row bins) {
@@ -39,8 +40,8 @@ static inline void aggregateNonIncreasingBins(ListOfLists<Tuple<float64>>::row b
     // non-increasing probabilities. If such a subsequence was found in range [i, j] then `pools[i] = j` and
     // `pools[j] = i`...
     uint32 numBins = (uint32) bins.size();
-    uint32* pools = new uint32[numBins];
-    setArrayToIncreasingValues<uint32>(pools, numBins, 0, 1);
+    Array<uint32> pools(numBins);
+    setArrayToIncreasingValues<uint32>(&pools[0], numBins, 0, 1);
     uint32 i = 0;
     uint32 j = 0;
 
@@ -95,7 +96,6 @@ static inline void aggregateNonIncreasingBins(ListOfLists<Tuple<float64>>::row b
         j++;
     }
 
-    delete[] pools;
     bins.resize(j);
     bins.shrink_to_fit();
 }

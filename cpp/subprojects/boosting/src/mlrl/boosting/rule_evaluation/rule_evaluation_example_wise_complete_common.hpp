@@ -183,8 +183,8 @@ namespace boosting {
                 uint32 numPredictions = scoreVector_.getNumElements();
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
-                copyCoefficients(statisticVector.hessians_cbegin(), this->dsysvTmpArray1_, numPredictions);
-                addL2RegularizationWeight(this->dsysvTmpArray1_, numPredictions, l2RegularizationWeight_);
+                copyCoefficients(statisticVector.hessians_cbegin(), &this->dsysvTmpArray1_[0], numPredictions);
+                addL2RegularizationWeight(&this->dsysvTmpArray1_[0], numPredictions, l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
@@ -192,12 +192,12 @@ namespace boosting {
                 addL1RegularizationWeight(valueIterator, numPredictions, l1RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual labels by solving a system of linear equations...
-                lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, valueIterator,
-                              numPredictions, this->dsysvLwork_);
+                lapack_.dsysv(&this->dsysvTmpArray1_[0], &this->dsysvTmpArray2_[0], &this->dsysvTmpArray3_[0],
+                              valueIterator, numPredictions, this->dsysvLwork_);
 
                 // Calculate the overall quality...
                 float64 quality = calculateOverallQuality(valueIterator, statisticVector.gradients_begin(),
-                                                          statisticVector.hessians_begin(), this->dspmvTmpArray_,
+                                                          statisticVector.hessians_begin(), &this->dspmvTmpArray_[0],
                                                           numPredictions, blas_);
 
                 // Evaluate regularization term...

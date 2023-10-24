@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/boosting/data/statistic_vector_label_wise_dense.hpp"
+#include "mlrl/common/data/array.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "mlrl/common/util/arrays.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
@@ -60,9 +61,9 @@ namespace boosting {
 
             DenseLabelWiseStatisticVector aggregatedStatisticVector_;
 
-            uint32* numElementsPerBin_;
+            Array<uint32> numElementsPerBin_;
 
-            float64* criteria_;
+            Array<float64> criteria_;
 
             const float64 l1RegularizationWeight_;
 
@@ -107,17 +108,12 @@ namespace boosting {
                                                   std::unique_ptr<ILabelBinning> binningPtr)
                 : maxBins_(binningPtr->getMaxBins(labelIndices.getNumElements())),
                   scoreVector_(labelIndices, maxBins_ + 1, indicesSorted), aggregatedStatisticVector_(maxBins_),
-                  numElementsPerBin_(new uint32[maxBins_]), criteria_(new float64[labelIndices.getNumElements()]),
+                  numElementsPerBin_(maxBins_), criteria_(labelIndices.getNumElements()),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
                   binningPtr_(std::move(binningPtr)) {
                 // The last bin is used for labels for which the corresponding criterion is zero. For this particular
                 // bin, the prediction is always zero.
                 scoreVector_.values_binned_begin()[maxBins_] = 0;
-            }
-
-            virtual ~AbstractLabelWiseBinnedRuleEvaluation() override {
-                delete[] numElementsPerBin_;
-                delete[] criteria_;
             }
 
             /**
@@ -126,11 +122,11 @@ namespace boosting {
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override final {
                 // Calculate label-wise criteria...
                 uint32 numCriteria =
-                  this->calculateLabelWiseCriteria(statisticVector, criteria_, scoreVector_.getNumElements(),
+                  this->calculateLabelWiseCriteria(statisticVector, &criteria_[0], scoreVector_.getNumElements(),
                                                    l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
-                LabelInfo labelInfo = binningPtr_->getLabelInfo(criteria_, numCriteria);
+                LabelInfo labelInfo = binningPtr_->getLabelInfo(&criteria_[0], numCriteria);
                 uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
                 scoreVector_.setNumBins(numBins, false);
 
@@ -138,7 +134,7 @@ namespace boosting {
                 DenseLabelWiseStatisticVector::iterator aggregatedStatisticIterator =
                   aggregatedStatisticVector_.begin();
                 setArrayToZeros(aggregatedStatisticIterator, numBins);
-                setArrayToZeros(numElementsPerBin_, numBins);
+                setArrayToZeros(&numElementsPerBin_[0], numBins);
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
@@ -152,13 +148,13 @@ namespace boosting {
                 auto zeroCallback = [=](uint32 labelIndex) {
                     binIndexIterator[labelIndex] = maxBins_;
                 };
-                binningPtr_->createBins(labelInfo, criteria_, numCriteria, callback, zeroCallback);
+                binningPtr_->createBins(labelInfo, &criteria_[0], numCriteria, callback, zeroCallback);
 
                 // Compute predictions, as well as their overall quality...
                 typename DenseBinnedScoreVector<IndexVector>::value_binned_iterator valueIterator =
                   scoreVector_.values_binned_begin();
                 scoreVector_.quality =
-                  calculateBinnedScores(aggregatedStatisticIterator, valueIterator, numElementsPerBin_, numBins,
+                  calculateBinnedScores(aggregatedStatisticIterator, valueIterator, &numElementsPerBin_[0], numBins,
                                         l1RegularizationWeight_, l2RegularizationWeight_);
                 return scoreVector_;
             }
