@@ -36,3 +36,27 @@ struct AllocatedView : public View {
             freeMemory(View::array);
         }
 };
+
+/**
+ * An array that provides random read and write access to newly allocated memory.
+ *
+ * @tparam T The type of the values stored in the array
+ */
+template<typename T>
+class Array : public AccessibleVectorDecorator<ViewDecorator<AllocatedView<View<T>>>> {
+    public:
+
+        /**
+         * @param numElements The number of elements in the array
+         */
+        Array(uint32 numElements)
+            : AccessibleVectorDecorator<ViewDecorator<AllocatedView<View<T>>>>(AllocatedView<View<T>>(numElements)) {}
+
+        /**
+         * @param numElements   The number of elements in the array
+         * @param init          True, if all elements in the array should be value-initialized, false otherwise
+         */
+        Array(uint32 numElements, bool init)
+            : AccessibleVectorDecorator<ViewDecorator<AllocatedView<View<T>>>>(
+              AllocatedView<View<T>>(numElements, init)) {}
+};
