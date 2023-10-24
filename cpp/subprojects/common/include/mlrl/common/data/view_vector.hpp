@@ -12,7 +12,7 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-struct OneDimensionalView : public View<T> {
+struct Vector : public View<T> {
         /**
          * The number of elements in the view.
          */
@@ -22,19 +22,19 @@ struct OneDimensionalView : public View<T> {
          * @param a A pointer to an array of template type `T` that stores the values, the view should provide access to
          * @param n The number of elements in the view
          */
-        OneDimensionalView(T* a, uint32 n) : View<T>(a, n), numElements(n) {}
+        Vector(T* a, uint32 n) : View<T>(a, n), numElements(n) {}
 
         /**
-         * @param other A const reference to an object of type `OneDimensionalView` that should be copied
+         * @param other A const reference to an object of type `Vector` that should be copied
          */
-        OneDimensionalView(const OneDimensionalView<T>& other) : OneDimensionalView(other.array, other.numElements) {}
+        Vector(const Vector<T>& other) : Vector(other.array, other.numElements) {}
 
         /**
-         * @param other A reference to an object of type `OneDimensionalView` that should be moved
+         * @param other A reference to an object of type `Vector` that should be moved
          */
-        OneDimensionalView(OneDimensionalView<T>&& other) : OneDimensionalView(other.array, other.numElements) {}
+        Vector(Vector<T>&& other) : Vector(other.array, other.numElements) {}
 
-        virtual ~OneDimensionalView() override {};
+        virtual ~Vector() override {};
 };
 
 /**
