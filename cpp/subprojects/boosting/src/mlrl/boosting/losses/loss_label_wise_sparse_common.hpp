@@ -27,15 +27,15 @@ namespace boosting {
         uint32 scoreIndex = scoreIterator == scoresEnd ? LIMIT : (*scoreIterator).index;
 
         if (scoreIndex < labelIndex) {
-            (*updateFunction)(false, (*scoreIterator).value, &tuple.first, &tuple.second);
+            (*updateFunction)(false, (*scoreIterator).value, tuple.first, tuple.second);
             scoreIterator++;
             return scoreIndex;
         } else if (labelIndex < scoreIndex) {
-            (*updateFunction)(true, 0, &tuple.first, &tuple.second);
+            (*updateFunction)(true, 0, tuple.first, tuple.second);
             indexIterator++;
             return labelIndex;
         } else if (labelIndex < LIMIT) {
-            (*updateFunction)(true, (*scoreIterator).value, &tuple.first, &tuple.second);
+            (*updateFunction)(true, (*scoreIterator).value, tuple.first, tuple.second);
             scoreIterator++;
             indexIterator++;
             return labelIndex;
@@ -187,7 +187,7 @@ namespace boosting {
                     const IndexedValue<float64>* scoreMatrixEntry = scoreMatrixRow[index];
                     float64 predictedScore = scoreMatrixEntry ? scoreMatrixEntry->value : 0;
                     bool trueLabel = labelIterator[index];
-                    (*LabelWiseLoss::updateFunction_)(trueLabel, predictedScore, &tuple.first, &tuple.second);
+                    (*LabelWiseLoss::updateFunction_)(trueLabel, predictedScore, tuple.first, tuple.second);
 
                     if (tuple.first != 0) {
                         IndexedValue<Tuple<float64>>& statisticViewEntry = statisticViewRow.emplace(index);
@@ -227,7 +227,7 @@ namespace boosting {
                     bool trueLabel = indexIterator != indicesEnd && *indexIterator == index;
                     const IndexedValue<float64>* scoreMatrixEntry = scoreMatrixRow[index];
                     float64 predictedScore = scoreMatrixEntry ? scoreMatrixEntry->value : 0;
-                    (*LabelWiseLoss::updateFunction_)(trueLabel, predictedScore, &tuple.first, &tuple.second);
+                    (*LabelWiseLoss::updateFunction_)(trueLabel, predictedScore, tuple.first, tuple.second);
 
                     if (tuple.first != 0) {
                         IndexedValue<Tuple<float64>>& statisticViewEntry = statisticViewRow.emplace(index);

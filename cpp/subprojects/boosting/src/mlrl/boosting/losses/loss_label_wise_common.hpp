@@ -15,10 +15,10 @@ namespace boosting {
 
             /**
              * A function that allows to update the gradient and Hessian for a single example and label. The function
-             * accepts the true label, the predicted score, as well as pointers to the gradient and Hessian to be
+             * accepts the true label, the predicted score, as well as references to the gradient and Hessian to be
              * updated, as arguments.
              */
-            typedef void (*UpdateFunction)(bool trueLabel, float64 predictedScore, float64* gradient, float64* hessian);
+            typedef void (*UpdateFunction)(bool trueLabel, float64 predictedScore, float64& gradient, float64& hessian);
 
             /**
              * A function that allows to calculate a numerical score that assesses the quality of the prediction for a
@@ -60,7 +60,7 @@ namespace boosting {
                     bool trueLabel = labelIterator[i];
                     float64 predictedScore = scoreIterator[i];
                     Tuple<float64>& tuple = statisticIterator[i];
-                    (*updateFunction_)(trueLabel, predictedScore, &(tuple.first), &(tuple.second));
+                    (*updateFunction_)(trueLabel, predictedScore, tuple.first, tuple.second);
                 }
             }
 
@@ -81,7 +81,7 @@ namespace boosting {
                     bool trueLabel = labelIterator[labelIndex];
                     float64 predictedScore = scoreIterator[labelIndex];
                     Tuple<float64>& tuple = statisticIterator[labelIndex];
-                    (*updateFunction_)(trueLabel, predictedScore, &(tuple.first), &(tuple.second));
+                    (*updateFunction_)(trueLabel, predictedScore, tuple.first, tuple.second);
                 }
             }
 
@@ -101,7 +101,7 @@ namespace boosting {
                     bool trueLabel = *labelIterator;
                     float64 predictedScore = scoreIterator[i];
                     Tuple<float64>& tuple = statisticIterator[i];
-                    (*updateFunction_)(trueLabel, predictedScore, &(tuple.first), &(tuple.second));
+                    (*updateFunction_)(trueLabel, predictedScore, tuple.first, tuple.second);
                     labelIterator++;
                 }
             }
@@ -124,7 +124,7 @@ namespace boosting {
                     bool trueLabel = indexIterator != indicesEnd && *indexIterator == labelIndex;
                     float64 predictedScore = scoreIterator[labelIndex];
                     Tuple<float64>& tuple = statisticIterator[labelIndex];
-                    (*updateFunction_)(trueLabel, predictedScore, &(tuple.first), &(tuple.second));
+                    (*updateFunction_)(trueLabel, predictedScore, tuple.first, tuple.second);
                 }
             }
 
