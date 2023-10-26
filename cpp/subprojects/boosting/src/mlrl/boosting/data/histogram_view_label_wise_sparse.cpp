@@ -38,8 +38,8 @@ namespace boosting {
         : SparseLabelWiseHistogramConstView(numRows, numCols, statistics, weights) {}
 
     void SparseLabelWiseHistogramView::clear() {
-        setArrayToZeros(weights_, numRows_);
-        setArrayToZeros(statistics_, numRows_ * numCols_);
+        setViewToZeros(weights_, numRows_);
+        setViewToZeros(statistics_, numRows_ * numCols_);
     }
 
     void SparseLabelWiseHistogramView::addToRow(uint32 row, SparseLabelWiseStatisticConstView::const_iterator begin,

@@ -17,7 +17,7 @@ namespace boosting {
      *
      */
     template<typename T>
-    static inline void addToArray(T* a, const T* b, uint32 numElements) {
+    static inline void addToView(T* a, const T* b, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] += b[i];
         }
@@ -36,7 +36,7 @@ namespace boosting {
      *
      */
     template<typename T, typename W>
-    static inline void addToArray(T* a, const T* b, uint32 numElements, W weight) {
+    static inline void addToView(T* a, const T* b, uint32 numElements, W weight) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] += (b[i] * weight);
         }
@@ -54,7 +54,7 @@ namespace boosting {
      *
      */
     template<typename T>
-    static inline void addToArray(T* a, const T* b, const uint32* indices, uint32 numElements) {
+    static inline void addToView(T* a, const T* b, const uint32* indices, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indices[i];
             a[i] += b[index];
@@ -77,7 +77,7 @@ namespace boosting {
      *
      */
     template<typename T, typename W>
-    static inline void addToArray(T* a, const T* b, const uint32* indices, uint32 numElements, W weight) {
+    static inline void addToView(T* a, const T* b, const uint32* indices, uint32 numElements, W weight) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indices[i];
             a[i] += (b[index] * weight);
@@ -94,7 +94,7 @@ namespace boosting {
      *
      */
     template<typename T>
-    static inline void removeFromArray(T* a, const T* b, uint32 numElements) {
+    static inline void removeFromView(T* a, const T* b, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] -= b[i];
         }
@@ -113,7 +113,7 @@ namespace boosting {
      *
      */
     template<typename T, typename W>
-    static inline void removeFromArray(T* a, const T* b, uint32 numElements, W weight) {
+    static inline void removeFromView(T* a, const T* b, uint32 numElements, W weight) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] -= (b[i] * weight);
         }

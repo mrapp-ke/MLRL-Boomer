@@ -41,5 +41,5 @@ uint32 BitVector::getNumElements() const {
 }
 
 void BitVector::clear() {
-    setArrayToZeros(this->view_.array, size(numElements_));
+    setViewToZeros(this->view_.array, size(numElements_));
 }

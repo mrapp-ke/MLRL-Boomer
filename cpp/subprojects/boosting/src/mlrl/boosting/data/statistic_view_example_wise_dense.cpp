@@ -71,16 +71,16 @@ namespace boosting {
     }
 
     void DenseExampleWiseStatisticView::clear() {
-        setArrayToZeros(gradients_, numRows_ * numGradients_);
-        setArrayToZeros(hessians_, numRows_ * numHessians_);
+        setViewToZeros(gradients_, numRows_ * numGradients_);
+        setViewToZeros(hessians_, numRows_ * numHessians_);
     }
 
     void DenseExampleWiseStatisticView::addToRow(uint32 row, gradient_const_iterator gradientsBegin,
                                                  gradient_const_iterator gradientsEnd,
                                                  hessian_const_iterator hessiansBegin,
                                                  hessian_const_iterator hessiansEnd, float64 weight) {
-        addToArray(&gradients_[row * numGradients_], gradientsBegin, numGradients_, weight);
-        addToArray(&hessians_[row * numHessians_], hessiansBegin, numHessians_, weight);
+        addToView(&gradients_[row * numGradients_], gradientsBegin, numGradients_, weight);
+        addToView(&hessians_[row * numHessians_], hessiansBegin, numHessians_, weight);
     }
 
 }

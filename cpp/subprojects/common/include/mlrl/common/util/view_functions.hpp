@@ -16,7 +16,7 @@
  * @param numElements   The number of elements in the array
  */
 template<typename T>
-static inline void setArrayToZeros(T* a, uint32 numElements) {
+static inline void setViewToZeros(T* a, uint32 numElements) {
     std::fill(a, a + numElements, 0);
 }
 
@@ -29,7 +29,7 @@ static inline void setArrayToZeros(T* a, uint32 numElements) {
  * @param value         The value to be set
  */
 template<typename T>
-static inline void setArrayToValue(T* a, uint32 numElements, T value) {
+static inline void setViewToValue(T* a, uint32 numElements, T value) {
     std::fill(a, a + numElements, value);
 }
 
@@ -43,7 +43,7 @@ static inline void setArrayToValue(T* a, uint32 numElements, T value) {
  * @param increment     The difference between the values
  */
 template<typename T>
-static inline void setArrayToIncreasingValues(T* a, uint32 numElements, T start, T increment) {
+static inline void setViewToIncreasingValues(T* a, uint32 numElements, T start, T increment) {
     T nextValue = start;
 
     for (uint32 i = 0; i < numElements; i++) {
@@ -61,7 +61,7 @@ static inline void setArrayToIncreasingValues(T* a, uint32 numElements, T start,
  * @param numElements   The number of elements to be copied
  */
 template<typename T>
-static inline void copyArray(const T* from, T* to, uint32 numElements) {
+static inline void copyView(const T* from, T* to, uint32 numElements) {
     for (uint32 i = 0; i < numElements; i++) {
         to[i] = from[i];
     }
@@ -77,7 +77,7 @@ static inline void copyArray(const T* from, T* to, uint32 numElements) {
  * @param numElements   The number of elements to be copied
  */
 template<typename FromIterator, typename T>
-static inline void copyArray(FromIterator from, T* to, uint32 numElements) {
+static inline void copyView(FromIterator from, T* to, uint32 numElements) {
     for (uint32 i = 0; i < numElements; i++) {
         to[i] = from[i];
     }
@@ -94,7 +94,7 @@ static inline void copyArray(FromIterator from, T* to, uint32 numElements) {
  * @param numElements   The number of elements in the arrays `a`, `b` and `c`
  */
 template<typename T>
-static inline void setArrayToDifference(T* a, const T* b, const T* c, uint32 numElements) {
+static inline void setViewToDifference(T* a, const T* b, const T* c, uint32 numElements) {
     for (uint32 i = 0; i < numElements; i++) {
         a[i] = b[i] - c[i];
     }
@@ -114,7 +114,7 @@ static inline void setArrayToDifference(T* a, const T* b, const T* c, uint32 num
  * @param numElements   The number of elements in the array `a`
  */
 template<typename T>
-static inline void setArrayToDifference(T* a, const T* b, const T* c, const uint32* indices, uint32 numElements) {
+static inline void setViewToDifference(T* a, const T* b, const T* c, const uint32* indices, uint32 numElements) {
     for (uint32 i = 0; i < numElements; i++) {
         uint32 index = indices[i];
         a[i] = b[index] - c[i];
@@ -128,7 +128,7 @@ static inline void setArrayToDifference(T* a, const T* b, const T* c, const uint
  * @param numElements   The number of elements in the array
  * @return              The hash value
  */
-static inline constexpr std::size_t hashArray(const uint32* a, uint32 numElements) {
+static inline constexpr std::size_t hashView(const uint32* a, uint32 numElements) {
     std::size_t hashValue = (std::size_t) numElements;
 
     for (uint32 i = 0; i < numElements; i++) {
@@ -149,7 +149,7 @@ static inline constexpr std::size_t hashArray(const uint32* a, uint32 numElement
  * @return          True, if both arrays are equal, false otherwise
  */
 template<typename T>
-static inline constexpr bool compareArrays(const T* first, uint32 numFirst, const T* second, uint32 numSecond) {
+static inline constexpr bool compareViews(const T* first, uint32 numFirst, const T* second, uint32 numSecond) {
     if (numFirst != numSecond) {
         return false;
     }

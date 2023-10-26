@@ -11,7 +11,7 @@ static inline void sampleInternally(const SinglePartition& partition, float32 sa
     uint32 numExamples = partition.getNumElements();
     uint32 numSamples = (uint32) (sampleSize * numExamples);
     typename DenseWeightVector<uint32>::iterator weightIterator = weightVector.begin();
-    setArrayToZeros(weightIterator, numExamples);
+    setViewToZeros(weightIterator, numExamples);
     uint32 numNonZeroWeights = 0;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -37,7 +37,7 @@ static inline void sampleInternally(BiPartition& partition, float32 sampleSize, 
     uint32 numSamples = (uint32) (sampleSize * numTrainingExamples);
     BiPartition::const_iterator indexIterator = partition.first_cbegin();
     typename DenseWeightVector<uint32>::iterator weightIterator = weightVector.begin();
-    setArrayToZeros(weightIterator, numExamples);
+    setViewToZeros(weightIterator, numExamples);
     uint32 numNonZeroWeights = 0;
 
     for (uint32 i = 0; i < numSamples; i++) {

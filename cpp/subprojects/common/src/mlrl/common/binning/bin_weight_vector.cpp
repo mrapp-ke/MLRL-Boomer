@@ -5,7 +5,7 @@
 BinWeightVector::BinWeightVector(uint32 numElements) : vector_(numElements) {}
 
 void BinWeightVector::clear() {
-    setArrayToZeros(vector_.begin(), vector_.getNumElements());
+    setViewToZeros(vector_.begin(), vector_.getNumElements());
 }
 
 void BinWeightVector::increaseWeight(uint32 pos) {

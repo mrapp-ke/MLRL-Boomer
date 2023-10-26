@@ -14,7 +14,7 @@ namespace boosting {
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(const DenseLabelWiseStatisticVector& vector)
         : DenseLabelWiseStatisticVector(vector.numElements_) {
-        copyArray(vector.statistics_, statistics_, numElements_);
+        copyView(vector.statistics_, statistics_, numElements_);
     }
 
     DenseLabelWiseStatisticVector::~DenseLabelWiseStatisticVector() {
@@ -42,63 +42,63 @@ namespace boosting {
     }
 
     void DenseLabelWiseStatisticVector::clear() {
-        setArrayToZeros(statistics_, numElements_);
+        setViewToZeros(statistics_, numElements_);
     }
 
     void DenseLabelWiseStatisticVector::add(const DenseLabelWiseStatisticVector& vector) {
-        addToArray(statistics_, vector.statistics_, numElements_);
+        addToView(statistics_, vector.statistics_, numElements_);
     }
 
     void DenseLabelWiseStatisticVector::add(const DenseLabelWiseStatisticConstView& view, uint32 row) {
-        addToArray(statistics_, view.cbegin(row), numElements_);
+        addToView(statistics_, view.cbegin(row), numElements_);
     }
 
     void DenseLabelWiseStatisticVector::add(const DenseLabelWiseStatisticConstView& view, uint32 row, float64 weight) {
-        addToArray(statistics_, view.cbegin(row), numElements_, weight);
+        addToView(statistics_, view.cbegin(row), numElements_, weight);
     }
 
     void DenseLabelWiseStatisticVector::remove(const DenseLabelWiseStatisticConstView& view, uint32 row) {
-        removeFromArray(statistics_, view.cbegin(row), numElements_);
+        removeFromView(statistics_, view.cbegin(row), numElements_);
     }
 
     void DenseLabelWiseStatisticVector::remove(const DenseLabelWiseStatisticConstView& view, uint32 row,
                                                float64 weight) {
-        removeFromArray(statistics_, view.cbegin(row), numElements_, weight);
+        removeFromView(statistics_, view.cbegin(row), numElements_, weight);
     }
 
     void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
                                                     const CompleteIndexVector& indices) {
-        addToArray(statistics_, view.cbegin(row), numElements_);
+        addToView(statistics_, view.cbegin(row), numElements_);
     }
 
     void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
                                                     const PartialIndexVector& indices) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        addToArray(statistics_, view.cbegin(row), indexIterator, numElements_);
+        addToView(statistics_, view.cbegin(row), indexIterator, numElements_);
     }
 
     void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
                                                     const CompleteIndexVector& indices, float64 weight) {
-        addToArray(statistics_, view.cbegin(row), numElements_, weight);
+        addToView(statistics_, view.cbegin(row), numElements_, weight);
     }
 
     void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
                                                     const PartialIndexVector& indices, float64 weight) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        addToArray(statistics_, view.cbegin(row), indexIterator, numElements_, weight);
+        addToView(statistics_, view.cbegin(row), indexIterator, numElements_, weight);
     }
 
     void DenseLabelWiseStatisticVector::difference(const DenseLabelWiseStatisticVector& first,
                                                    const CompleteIndexVector& firstIndices,
                                                    const DenseLabelWiseStatisticVector& second) {
-        setArrayToDifference(statistics_, first.cbegin(), second.cbegin(), numElements_);
+        setViewToDifference(statistics_, first.cbegin(), second.cbegin(), numElements_);
     }
 
     void DenseLabelWiseStatisticVector::difference(const DenseLabelWiseStatisticVector& first,
                                                    const PartialIndexVector& firstIndices,
                                                    const DenseLabelWiseStatisticVector& second) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
-        setArrayToDifference(statistics_, first.cbegin(), second.cbegin(), indexIterator, numElements_);
+        setViewToDifference(statistics_, first.cbegin(), second.cbegin(), indexIterator, numElements_);
     }
 
 }
