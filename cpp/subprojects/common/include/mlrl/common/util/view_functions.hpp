@@ -9,112 +9,105 @@
 #include <cstddef>
 
 /**
- * Sets all elements in an array to zero.
+ * Sets all elements in a view to zero.
  *
- * @tparam T            The type of the array
- * @param a             A pointer to an array of template type `T`
- * @param numElements   The number of elements in the array
+ * @tparam Iterator     The type of the iterator that provides access to the values in the view
+ * @param iterator      An iterator to the beginning of the view
+ * @param numElements   The number of elements in the view
  */
-template<typename T>
-static inline void setViewToZeros(T* a, uint32 numElements) {
-    std::fill(a, a + numElements, 0);
+template<typename Iterator>
+static inline void setViewToZeros(Iterator iterator, uint32 numElements) {
+    std::fill(iterator, iterator + numElements, 0);
 }
 
 /**
- * Sets all elements in an array to a specific value.
+ * Sets all elements in a view to a specific value.
  *
- * @tparam T            The type of the array
- * @param a             A pointer to an array of template type `T`
- * @param numElements   The number of elements in the array
+ * @tparam Iterator     The type of the iterator that provides access to the values in the view
+ * @tparam Value        The type of the value to be set
+ * @param iterator      An iterator to to the beginning of the view
+ * @param numElements   The number of elements in the view
  * @param value         The value to be set
  */
-template<typename T>
-static inline void setViewToValue(T* a, uint32 numElements, T value) {
-    std::fill(a, a + numElements, value);
+template<typename Iterator, typename T>
+static inline void setViewToValue(Iterator iterator, uint32 numElements, T value) {
+    std::fill(iterator, iterator + numElements, value);
 }
 
 /**
- * Sets the elements in an array to increasing values.
+ * Sets the elements in a view to increasing values.
  *
- * @tparam T            The type of the array
- * @param a             A pointer to an array of template type `T`
- * @param numElements   The number of elements in the array
+ * @tparam Iterator     The type of the iterator that provides access to the values in the view
+ * @tparam Value        The type of the values to be set
+ * @param iterator      An iterator to the beginning of the view
+ * @param numElements   The number of elements in the view
  * @param start         The value to start at
  * @param increment     The difference between the values
  */
-template<typename T>
-static inline void setViewToIncreasingValues(T* a, uint32 numElements, T start, T increment) {
-    T nextValue = start;
+template<typename Iterator, typename Value>
+static inline void setViewToIncreasingValues(Iterator iterator, uint32 numElements, Value start, Value increment) {
+    Value nextValue = start;
 
     for (uint32 i = 0; i < numElements; i++) {
-        a[i] = nextValue;
+        iterator[i] = nextValue;
         nextValue += increment;
     }
 }
 
 /**
- * Copy all elements from one array another one.
+ * Copy all elements from one view to another.
  *
- * @tparam T            The type of the arrays
- * @param from          A pointer to an array of template type `T` to be copied
- * @param to            A pointer to an array of template type `T`, the elements should be copied to
+ * @tparam FromIterator The type of the iterator that provides access to the values in the view to copy from
+ * @tparam ToIterator   The type of the iterator that provides access to the values in the view to copy to
+ * @param from          An iterator to the beginning of the view to copy from
+ * @param to            An iterator to the beginning of the view to copy to
  * @param numElements   The number of elements to be copied
  */
-template<typename T>
-static inline void copyView(const T* from, T* to, uint32 numElements) {
+template<typename FromIterator, typename ToIterator>
+static inline void copyView(FromIterator from, ToIterator to, uint32 numElements) {
     for (uint32 i = 0; i < numElements; i++) {
         to[i] = from[i];
     }
 }
 
 /**
- * Copy all elements from an iterator to an array.
- *
- * @tparam FromIterator The type of the iterator to copy from
- * @tparam T            The type of the array to copy to
- * @param from          The iterator to copy from
- * @param to            The array to copy to
- * @param numElements   The number of elements to be copied
- */
-template<typename FromIterator, typename T>
-static inline void copyView(FromIterator from, T* to, uint32 numElements) {
-    for (uint32 i = 0; i < numElements; i++) {
-        to[i] = from[i];
-    }
-}
-
-/**
- * Sets all elements in an array `a` to the difference between the elements in two other arrays `b` and `c`, such that
+ * Sets all elements in a view `a` to the difference between the elements in two other views `b` and `c`, such that
  * `a = b - c`.
  *
- * @tparam T            The type of the arrays `a`, `b` and `c`
- * @param a             A pointer to an array of template type `T` to be updated
- * @param b             A pointer to an array of template type `T`
- * @param c             A pointer to an array of template type `T`
- * @param numElements   The number of elements in the arrays `a`, `b` and `c`
+ * @tparam IteratorA    The type of the iterator that provides access to the value in the view `a`
+ * @tparam IteratorB    The type of the iterator that provides access to the value in the view `b`
+ * @tparam IteratorC    The type of the iterator that provides access to the value in the view `c`
+ * @param a             An iterator to the beginning of the view `a`
+ * @param b             An iterator to the beginning of the view `b`
+ * @param c             An iterator to the beginning of the view `c`
+ * @param numElements   The number of elements in the views `a`, `b` and `c`
  */
-template<typename T>
-static inline void setViewToDifference(T* a, const T* b, const T* c, uint32 numElements) {
+template<typename IteratorA, typename IteratorB, typename IteratorC>
+static inline void setViewToDifference(IteratorA a, IteratorB b, IteratorC c, uint32 numElements) {
     for (uint32 i = 0; i < numElements; i++) {
         a[i] = b[i] - c[i];
     }
 }
 
 /**
- * Sets all elements in an array `a` to the difference between the elements in two other array `b` and `c`, such that
- * `a = b - c`. The indices of elements in the array `b` that correspond to the elements in arrays `a` and `c` are given
- * as an additional array.
+ * Sets all elements in a view `a` to the difference between the elements in two other views `b` and `c`, such that
+ * `a = b - c`. The indices of elements in the view `b` that correspond to the elements in the views `a` and `c` are
+ * obtained from an additional view.
  *
- * @tparam T            The type of the arrays `a`, `b` and `c`
- * @param a             A pointer to an array of template type `T` to be updated
- * @param b             A pointer to an array of template type `T`
- * @param c             A pointer to an array of template type `T`
- * @param indices       A pointer to an array of type `uint32` that stores the indices of the elements in the array `b`
- *                      that correspond to the elements in arrays `a` and `c`
- * @param numElements   The number of elements in the array `a`
+ * @tparam IteratorA        The type of the iterator that provides access to the value in the view `a`
+ * @tparam IteratorB        The type of the iterator that provides access to the value in the view `b`
+ * @tparam IteratorC        The type of the iterator that provides access to the value in the view `c`
+ * @tparam IndexIterator    The type of the iterator that provides access to the indices
+ * @param a                 An iterator to the beginning of the view `a`
+ * @param b                 An iterator to the beginning of the view `b`
+ * @param c                 An iterator to the beginning of the view `c`
+ * @param indices           An iterator to the beginning of the view that provides access to the indices of the elements
+ *                          in the view `b` that correspond to the elements in the views `a` and `c`
+ * @param numElements       The number of elements in the view `a`
  */
-template<typename T>
-static inline void setViewToDifference(T* a, const T* b, const T* c, const uint32* indices, uint32 numElements) {
+template<typename IteratorA, typename IteratorB, typename IteratorC, typename IndexIterator>
+static inline void setViewToDifference(IteratorA a, const IteratorB b, const IteratorC c, IndexIterator indices,
+                                       uint32 numElements) {
     for (uint32 i = 0; i < numElements; i++) {
         uint32 index = indices[i];
         a[i] = b[index] - c[i];
@@ -122,34 +115,38 @@ static inline void setViewToDifference(T* a, const T* b, const T* c, const uint3
 }
 
 /**
- * Calculates and returns a hash value from an array of type `uint32`.
+ * Calculates and returns a hash value from a view.
  *
- * @param a             A pointer to an array of type `uint32`
- * @param numElements   The number of elements in the array
- * @return              The hash value
+ * @tparam Iterator     The type of the iterator that provides access to the values in the view
+ * @param iterator      An iterator to the beginning of the view
+ * @param numElements   The number of elements in the view
+ * @return              The hash value that has been calculated
  */
-static inline constexpr std::size_t hashView(const uint32* a, uint32 numElements) {
+template<typename Iterator>
+static inline constexpr std::size_t hashView(Iterator iterator, uint32 numElements) {
     std::size_t hashValue = (std::size_t) numElements;
 
     for (uint32 i = 0; i < numElements; i++) {
-        hashValue ^= a[i] + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2);
+        hashValue ^= iterator[i] + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2);
     }
 
     return hashValue;
 }
 
 /**
- * Returns whether two arrays are equal or not.
+ * Returns whether all elements of two views are equal or not.
  *
- * @tparam T        The type of the arrays
- * @param first     A pointer to an array of template type `T`
- * @param numFirst  The number of elements in the array `first`
- * @param second    A pointer to another array of template type `T`
- * @param numSecond The number of elements in the array `second`
- * @return          True, if both arrays are equal, false otherwise
+ * @tparam FirstIterator    The type of the iterator that provides access to the values in the first view
+ * @tparam SecondIterator   The type of the iterator that provides access to the values in the second view
+ * @param first             An iterator to the beginning of the first view
+ * @param numFirst          The number of elements in the first view
+ * @param second            An iterator to the beginning of the second view
+ * @param numSecond         The number of elements in the second view
+ * @return                  True, if all elements of both views are equal, false otherwise
  */
-template<typename T>
-static inline constexpr bool compareViews(const T* first, uint32 numFirst, const T* second, uint32 numSecond) {
+template<typename FirstIterator, typename SecondIterator>
+static inline constexpr bool compareViews(FirstIterator first, uint32 numFirst, SecondIterator second,
+                                          uint32 numSecond) {
     if (numFirst != numSecond) {
         return false;
     }

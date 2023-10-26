@@ -3,58 +3,65 @@
  */
 #pragma once
 
+#include "mlrl/common/data/types.hpp"
+
 #include <algorithm>
 
 namespace boosting {
 
     /**
-     * Adds the elements in an array `b` to the elements in another array `a`, such that `a = a + b`.
+     * Adds the elements in a view `b` to the elements in another view `a`, such that `a = a + b`.
      *
-     * @tparam T            The type of the arrays `a` and `b`
-     * @param a             A pointer to an array of template type `T` to be updated
-     * @param b             A pointer to an array of template type `T`
-     * @param numElements   The number of elements in the arrays `a` and `b`
+     * @tparam IteratorA    The type of the iterator that provides access to the values in the view `a`
+     * @tparam IteratorB    The type of the iterator that provides access to the values in the view `b`
+     * @param a             An iterator to the beginning of the view `a`
+     * @param b             An iterator to the beginning of the view `b`
+     * @param numElements   The number of elements in the views `a` and `b`
      *
      */
-    template<typename T>
-    static inline void addToView(T* a, const T* b, uint32 numElements) {
+    template<typename IteratorA, typename IteratorB>
+    static inline void addToView(IteratorA a, IteratorB b, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] += b[i];
         }
     }
 
     /**
-     * Adds the elements in an array `b` to the elements in another array `a`. The elements in the array `b` are
-     * multiplied by a given weight, such that `a = a + (b * weight)`.
+     * Adds the elements in a view `b` to the elements in another view `a`. The elements in the view `b` are multiplied
+     * by a given weight, such that `a = a + (b * weight)`.
      *
-     * @tparam T            The type of the arrays `a` and `b`
-     * @tparam W            The type of the weight
-     * @param a             A pointer to an array of template type `T` to be updated
-     * @param b             A pointer to an array of template type `T`
-     * @param numElements   The number of elements in the arrays `a` and `b`
-     * @param weight        The weight, the elements in the array `b` should be multiplied by
+     * @tparam IteratorA    The type of the iterator that provides access to the values in the view `a`
+     * @tparam IteratorB    The type of the iterator that provides access to the values in the view `b`
+     * @tparam Weight       The type of the weight
+     * @param a             An iterator to the beginning of the view `a`
+     * @param b             An iterator to the beginning of the view `b`
+     * @param numElements   The number of elements in the views `a` and `b`
+     * @param weight        The weight, the elements in the view `b` should be multiplied by
      *
      */
-    template<typename T, typename W>
-    static inline void addToView(T* a, const T* b, uint32 numElements, W weight) {
+    template<typename IteratorA, typename IteratorB, typename Weight>
+    static inline void addToView(IteratorA a, IteratorB b, uint32 numElements, Weight weight) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] += (b[i] * weight);
         }
     }
 
     /**
-     * Adds the elements in an array `b` to the elements in another array `a`, such that `a = a + b`. The indices of
-     * elements in the array `b` that correspond to the elements in array `a` are given as an additional array.
+     * Adds the elements in a view `b` to the elements in another view `a`, such that `a = a + b`. The indices of the
+     * elements in the view `b` that correspond to the elements in the view `a` are given as an additional view.
      *
-     * @param a             A pointer to an array of template type `T` to be updated
-     * @param b             A pointer to an array of template type `T`
-     * @param numElements   The number of elements in the arrays `a` and `b`
-     * @param indices       A pointer to an array of type `uint32` that stores the indices of the elements in the array
-     *                      `b` that correspond to the elements in array `a`
+     * @tparam IteratorA        The type of the iterator that provides access to the values in the view `a`
+     * @tparam IteratorB        The type of the iterator that provides access to the values in the view `b`
+     * @tparam IndexIterator    The type of the iterator that provides access to the indices
+     * @param a                 An iterator to the beginning of the view `a`
+     * @param b                 An iterator to the beginning of the view `b`
+     * @param numElements       The number of elements in the views `a` and `b`
+     * @param indices           An iterator to the beginning of a view that stores the indices of the elements in the
+     *                          view `b` that correspond to the elements in the view `a`
      *
      */
-    template<typename T>
-    static inline void addToView(T* a, const T* b, const uint32* indices, uint32 numElements) {
+    template<typename IteratorA, typename IteratorB, typename IndexIterator>
+    static inline void addToView(IteratorA a, IteratorB b, IndexIterator indices, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indices[i];
             a[i] += b[index];
@@ -62,22 +69,24 @@ namespace boosting {
     }
 
     /**
-     * Adds the elements in an array `b` to the elements in another array `a`. The elements in the array `b` are
-     * multiplied by a given weight, such that `a = a + (b * weight)`. The indices of elements in the array `b` that
-     * correspond to the elements in array `a` are given as an additional array.
+     * Adds the elements in a view `b` to the elements in another view `a`. The elements in the view `b` are multiplied
+     * by a given weight, such that `a = a + (b * weight)`. The indices of the elements in the view `b` that correspond
+     * to the elements in the view `a` are given as an additional view.
      *
-     * @tparam T            The type of the arrays `a` and `b`
-     * @tparam W            The type of the weight
-     * @param a             A pointer to an array of template type `T` to be updated
-     * @param b             A pointer to an array of template type `T`
-     * @param numElements   The number of elements in the arrays `a` and `b`
-     * @param weight        The weight, the elements in the array `b` should be multiplied by
-     * @param indices       A pointer to an array of type `uint32` that stores the indices of the elements in the array
-     *                      `b` that correspond to the elements in array `a`
+     * @tparam IteratorA        The type of the iterator that provides access to the values in the view `a`
+     * @tparam IteratorB        The type of the iterator that provides access to the values in the view `b`
+     * @tparam IndexIterator    The type of the iterator that provides access to the indices
+     * @tparam Weight           The type of the weight
+     * @param a                 An iterator to the beginning of the view `a`
+     * @param b                 An iterator to the beginning of the view `b`
+     * @param numElements       The number of elements in the views `a` and `b`
+     * @param weight            The weight, the elements in the view `b` should be multiplied by
+     * @param indices           An iterator to the beginning of a view that stores the indices of the elements in the
+     *                          view `b` that correspond to the elements in the view `a`
      *
      */
-    template<typename T, typename W>
-    static inline void addToView(T* a, const T* b, const uint32* indices, uint32 numElements, W weight) {
+    template<typename IteratorA, typename IteratorB, typename IndexIterator, typename Weight>
+    static inline void addToView(IteratorA a, IteratorB b, IndexIterator indices, uint32 numElements, Weight weight) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 index = indices[i];
             a[i] += (b[index] * weight);
@@ -85,35 +94,36 @@ namespace boosting {
     }
 
     /**
-     * Removes the elements in an array `b` from the elements in another array `a`, such that `a = a - b`.
+     * Removes the elements in a view `b` from the elements in another view `a`, such that `a = a - b`.
      *
-     * @tparam T            The type of the arrays `a` and `b`
-     * @param a             A pointer to an array of template type `T` to be updated
-     * @param b             A pointer to an array of template type `T`
-     * @param numElements   The number of elements in the arrays `a` and `b`
-     *
+     * @tparam IteratorA    The type of the iterator that provides access to the values in the view `a`
+     * @tparam IteratorB    The type of the iterator that provides access to the values in the view `b`
+     * @param a             An iterator to the beginning of the view `a`
+     * @param b             An iterator to the beginning of the view `b`
+     * @param numElements   The number of elements in the views `a` and `b`
      */
-    template<typename T>
-    static inline void removeFromView(T* a, const T* b, uint32 numElements) {
+    template<typename IteratorA, typename IteratorB>
+    static inline void removeFromView(IteratorA a, IteratorB b, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] -= b[i];
         }
     }
 
     /**
-     * Removes the elements in an array `b` from the elements in another array `a`. The elements in the array `b` are
+     * Removes the elements in a view `b` from the elements in another view `a`. The elements in the view `b` are
      * multiplied by a given weight, such that `a = a - (b * weight)`.
      *
-     * @tparam T            The type of the arrays `a` and `b`
-     * @tparam W            The type of the weight
-     * @param a             A pointer to an array of template type `T` to be updated
-     * @param b             A pointer to an array of template type `T`
-     * @param numElements   The number of elements in the arrays `a` and `b`
-     * @param weight        The weight, the elements in the array `b` should be multiplied by
+     * @tparam IteratorA    The type of the iterator that provides access to the values in the view `a`
+     * @tparam IteratorB    The type of the iterator that provides access to the values in the view `b`
+     * @tparam Weight       The type of the weight
+     * @param a             An iterator to the beginning of the view `a`
+     * @param b             An iterator to the beginning of the view `b`
+     * @param numElements   The number of elements in the views `a` and `b`
+     * @param weight        The weight, the elements in the view `b` should be multiplied by
      *
      */
-    template<typename T, typename W>
-    static inline void removeFromView(T* a, const T* b, uint32 numElements, W weight) {
+    template<typename IteratorA, typename IteratorB, typename Weight>
+    static inline void removeFromView(IteratorA a, IteratorB b, uint32 numElements, Weight weight) {
         for (uint32 i = 0; i < numElements; i++) {
             a[i] -= (b[i] * weight);
         }
