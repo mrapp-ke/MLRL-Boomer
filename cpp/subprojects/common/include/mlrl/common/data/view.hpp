@@ -104,6 +104,20 @@ class ReadAccessibleViewDecorator : public View {
         virtual ~ReadAccessibleViewDecorator() override {};
 
         /**
+         * An iterator that provides read-only access to the values stored in the view.
+         */
+        typedef typename View::view_type::const_iterator const_iterator;
+
+        /**
+         * Returns a `const_iterator` to the beginning of the view.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const {
+            return View::view_.array;
+        }
+
+        /**
          * Returns a const reference to the element at a specific position.
          *
          * @param pos   The position of the element
@@ -129,6 +143,20 @@ class WriteAccessibleViewDecorator : public View {
         WriteAccessibleViewDecorator(typename View::view_type&& view) : View(std::move(view)) {}
 
         virtual ~WriteAccessibleViewDecorator() override {};
+
+        /**
+         * An iterator that provides access to the values stored in the view and allows to modify them.
+         */
+        typedef typename View::view_type::iterator iterator;
+
+        /**
+         * Returns an `iterator` to the beginning of the view.
+         *
+         * @return An `iterator` to the beginning
+         */
+        iterator begin() {
+            return View::view_.array;
+        }
 
         /**
          * Returns a const reference to the element at a specific position.

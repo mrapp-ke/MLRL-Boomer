@@ -76,36 +76,23 @@ using AccessibleVectorDecorator = WriteAccessibleViewDecorator<ReadAccessibleVie
  * @tparam Vector The type of the vector
  */
 template<typename Vector>
-class ReadIterableVectorDecorator : public Vector {
+class ReadIterableVectorDecorator : public ReadAccessibleViewDecorator<Vector> {
     public:
 
         /**
          * @param view The view, the vector should be backed by
          */
-        ReadIterableVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
+        ReadIterableVectorDecorator(typename Vector::view_type&& view)
+            : ReadAccessibleViewDecorator<Vector>(std::move(view)) {}
 
         virtual ~ReadIterableVectorDecorator() override {};
-
-        /**
-         * An iterator that provides read-only access to the values stored in the vector.
-         */
-        typedef typename Vector::view_type::const_iterator const_iterator;
-
-        /**
-         * Returns a `const_iterator` to the beginning of the vector.
-         *
-         * @return A `const_iterator` to the beginning
-         */
-        const_iterator cbegin() const {
-            return Vector::view_.array;
-        }
 
         /**
          * Returns a `const_iterator` to the end of the vector.
          *
          * @return A `const_iterator` to the end
          */
-        const_iterator cend() const {
+        typename ReadAccessibleViewDecorator<Vector>::const_iterator cend() const {
             return &Vector::view_.array[Vector::view_.numElements];
         }
 };
@@ -116,36 +103,23 @@ class ReadIterableVectorDecorator : public Vector {
  * @tparam Vector The type of the vector
  */
 template<typename Vector>
-class WriteIterableVectorDecorator : public Vector {
+class WriteIterableVectorDecorator : public WriteAccessibleViewDecorator<Vector> {
     public:
 
         /**
          * @param view The view, the vector should be backed by
          */
-        WriteIterableVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
+        WriteIterableVectorDecorator(typename Vector::view_type&& view)
+            : WriteAccessibleViewDecorator<Vector>(std::move(view)) {}
 
         virtual ~WriteIterableVectorDecorator() override {};
-
-        /**
-         * An iterator that provides access to the values stored in the vector and allows to modify them.
-         */
-        typedef typename Vector::view_type::iterator iterator;
-
-        /**
-         * Returns an `iterator` to the beginning of the vector.
-         *
-         * @return An `iterator` to the beginning
-         */
-        iterator begin() {
-            return Vector::view_.array;
-        }
 
         /**
          * Returns an `iterator` to the end of the vector.
          *
          * @return An `iterator` to the end
          */
-        iterator end() {
+        typename WriteAccessibleViewDecorator<Vector>::iterator end() {
             return &Vector::view_.array[Vector::view_.numElements];
         }
 };
@@ -156,7 +130,7 @@ class WriteIterableVectorDecorator : public Vector {
  * @tparam Vector The type of the vector
  */
 template<typename Vector>
-using ReadableVectorDecorator = ReadAccessibleViewDecorator<ReadIterableVectorDecorator<VectorDecorator<Vector>>>;
+using ReadableVectorDecorator = ReadIterableVectorDecorator<VectorDecorator<Vector>>;
 
 /**
  * Provides random read and write access, as well as read and write access via iterators, to the values stored in a
@@ -165,5 +139,4 @@ using ReadableVectorDecorator = ReadAccessibleViewDecorator<ReadIterableVectorDe
  * @tparam Vector The type of the vector
  */
 template<typename Vector>
-using WritableVectorDecorator =
-  WriteIterableVectorDecorator<WriteAccessibleViewDecorator<ReadableVectorDecorator<Vector>>>;
+using WritableVectorDecorator = WriteIterableVectorDecorator<ReadableVectorDecorator<Vector>>;
