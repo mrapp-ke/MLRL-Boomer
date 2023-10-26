@@ -56,8 +56,8 @@ namespace boosting {
              */
             AbstractExampleWiseRuleEvaluation(uint32 numPredictions, const Lapack& lapack)
                 : dspmvTmpArray_(numPredictions), dsysvTmpArray1_(numPredictions * numPredictions),
-                  dsysvTmpArray2_(numPredictions),
-                  dsysvLwork_(lapack.queryDsysvLworkParameter(&dsysvTmpArray1_[0], &dspmvTmpArray_[0], numPredictions)),
+                  dsysvTmpArray2_(numPredictions), dsysvLwork_(lapack.queryDsysvLworkParameter(
+                                                     dsysvTmpArray1_.begin(), dspmvTmpArray_.begin(), numPredictions)),
                   dsysvTmpArray3_(dsysvLwork_) {}
     };
 

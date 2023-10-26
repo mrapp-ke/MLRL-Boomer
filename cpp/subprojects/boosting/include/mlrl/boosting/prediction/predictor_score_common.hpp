@@ -68,12 +68,12 @@ namespace boosting {
                                  CsrConstView<const float32>::index_const_iterator featureIndicesEnd,
                                  CsrConstView<const float32>::value_const_iterator featureValuesBegin,
                                  CsrConstView<const float32>::value_const_iterator featureValuesEnd,
-                                 View<float64>::iterator scoreIterator, Array<float32>& tmpArray1,
-                                 Array<uint32>& tmpArray2, uint32 n) {
+                                 View<float64>::iterator scoreIterator, View<float32>::iterator tmpArray1,
+                                 View<uint32>::iterator tmpArray2, uint32 n) {
         const IBody& body = rule.getBody();
 
-        if (body.covers(featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd, &tmpArray1[0],
-                        &tmpArray2[0], n)) {
+        if (body.covers(featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd, tmpArray1,
+                        tmpArray2, n)) {
             const IHead& head = rule.getHead();
             applyHead(head, scoreIterator);
         }
@@ -93,7 +93,7 @@ namespace boosting {
         for (; rulesBegin != rulesEnd; rulesBegin++) {
             const RuleList::Rule& rule = *rulesBegin;
             applyRule(rule, featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd, scoreIterator,
-                      tmpArray1, tmpArray2, n);
+                      tmpArray1.begin(), tmpArray2.begin(), n);
             n++;
         }
     }

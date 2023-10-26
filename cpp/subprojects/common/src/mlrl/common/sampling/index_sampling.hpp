@@ -132,7 +132,7 @@ static inline void sampleIndicesWithoutReplacementViaRandomPermutation(PartialIn
         unusedIndices[i - numSamples] = totalIterator[i];
     }
 
-    randomPermutation(sampleIterator, &unusedIndices[0], numSamples, numTotal, numSamples, rng);
+    randomPermutation(sampleIterator, unusedIndices.begin(), numSamples, numTotal, numSamples, rng);
 }
 
 /**

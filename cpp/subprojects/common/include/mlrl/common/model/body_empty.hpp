@@ -16,8 +16,8 @@ class MLRLCOMMON_API EmptyBody final : public IBody {
         bool covers(CsrConstView<const float32>::index_const_iterator indicesBegin,
                     CsrConstView<const float32>::index_const_iterator indicesEnd,
                     CsrConstView<const float32>::value_const_iterator valuesBegin,
-                    CsrConstView<const float32>::value_const_iterator valuesEnd, float32* tmpArray1, uint32* tmpArray2,
-                    uint32 n) const override;
+                    CsrConstView<const float32>::value_const_iterator valuesEnd, View<float32>::iterator tmpArray1,
+                    View<uint32>::iterator tmpArray2, uint32 n) const override;
 
         void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const override;
 };

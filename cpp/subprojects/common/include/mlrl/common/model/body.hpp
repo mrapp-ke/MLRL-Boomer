@@ -38,11 +38,10 @@ class MLRLCOMMON_API IConditional {
          * @param indicesEnd    An iterator to the end of the example's feature values
          * @param valuesBegin   An iterator to the beginning of the example's feature_indices
          * @param valuesEnd     An iterator to the end of the example's feature indices
-         * @param tmpArray1     An array of type `float32`, shape `(num_features)` that is used to temporarily store
-         *                      non-zero feature values. May contain arbitrary values
-         * @param tmpArray2     An array of type `uint32`, shape `(num_features)` that is used to temporarily keep track
-         *                      of the feature indices with non-zero feature values. Must not contain any elements with
-         *                      value `n`
+         * @param tmpArray1     An iterator that is used to temporarily store non-zero feature values. May contain
+                                arbitrary values
+         * @param tmpArray2     An iterator that is used to temporarily keep track of the feature indices with non-zero
+                                feature values. Must not contain any elements with value `n`
          * @param n             An arbitrary number. If this function is called multiple times for different examples,
          *                      but using the same `tmpArray2`, the number must be unique for each of the function
          *                      invocations
@@ -51,8 +50,8 @@ class MLRLCOMMON_API IConditional {
         virtual bool covers(CsrConstView<const float32>::index_const_iterator indicesBegin,
                             CsrConstView<const float32>::index_const_iterator indicesEnd,
                             CsrConstView<const float32>::value_const_iterator valuesBegin,
-                            CsrConstView<const float32>::value_const_iterator valuesEnd, float32* tmpArray1,
-                            uint32* tmpArray2, uint32 n) const = 0;
+                            CsrConstView<const float32>::value_const_iterator valuesEnd,
+                            View<float32>::iterator tmpArray1, View<uint32>::iterator tmpArray2, uint32 n) const = 0;
 };
 
 /**

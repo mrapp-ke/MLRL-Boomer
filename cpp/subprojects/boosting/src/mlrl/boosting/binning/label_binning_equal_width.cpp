@@ -41,18 +41,18 @@ namespace boosting {
                 return calculateBoundedFraction(numLabels, binRatio_, minBins_, maxBins_) + 1;
             }
 
-            LabelInfo getLabelInfo(const float64* criteria, uint32 numElements) const override {
+            LabelInfo getLabelInfo(View<float64>::const_iterator criteria, uint32 numCriteria) const override {
                 LabelInfo labelInfo;
                 labelInfo.numNegativeBins = 0;
                 labelInfo.numPositiveBins = 0;
 
-                if (numElements > 0) {
+                if (numCriteria > 0) {
                     labelInfo.minNegative = 0;
                     labelInfo.maxNegative = -std::numeric_limits<float64>::infinity();
                     labelInfo.minPositive = std::numeric_limits<float64>::infinity();
                     labelInfo.maxPositive = 0;
 
-                    for (uint32 i = 0; i < numElements; i++) {
+                    for (uint32 i = 0; i < numCriteria; i++) {
                         float64 criterion = criteria[i];
 
                         if (criterion < 0) {
@@ -92,8 +92,8 @@ namespace boosting {
                 return labelInfo;
             }
 
-            void createBins(LabelInfo labelInfo, const float64* criteria, uint32 numElements, Callback callback,
-                            ZeroCallback zeroCallback) const override {
+            void createBins(LabelInfo labelInfo, View<float64>::const_iterator criteria, uint32 numCriteria,
+                            Callback callback, ZeroCallback zeroCallback) const override {
                 uint32 numNegativeBins = labelInfo.numNegativeBins;
                 float64 minNegative = labelInfo.minNegative;
                 float64 maxNegative = labelInfo.maxNegative;
@@ -104,7 +104,7 @@ namespace boosting {
                 float64 spanPerNegativeBin = minNegative < 0 ? (maxNegative - minNegative) / numNegativeBins : 0;
                 float64 spanPerPositiveBin = maxPositive > 0 ? (maxPositive - minPositive) / numPositiveBins : 0;
 
-                for (uint32 i = 0; i < numElements; i++) {
+                for (uint32 i = 0; i < numCriteria; i++) {
                     float64 criterion = criteria[i];
 
                     if (criterion < 0) {

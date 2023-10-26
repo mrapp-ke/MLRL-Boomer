@@ -108,7 +108,7 @@ namespace boosting {
         }
 
         Array<uint32> numSparsePerLabel(numLabels);
-        setArrayToValue(&numSparsePerLabel[0], numLabels, numExamples);
+        setArrayToValue(numSparsePerLabel.begin(), numLabels, numExamples);
         Array<uint32> numSparseRelevantPerLabel(numLabels, true);
 
         for (uint32 i = 0; i < numExamples; i++) {
