@@ -11,7 +11,7 @@
 #include "mlrl/common/data/view_c_contiguous.hpp"
 #include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/input/label_matrix_row_wise.hpp"
-#include "mlrl/common/util/arrays.hpp"
+#include "mlrl/common/util/view_functions.hpp"
 
 /**
  * Defines an interface for all label matrices that provide row-wise access to the labels of individual examples that

@@ -1,8 +1,8 @@
 #include "mlrl/seco/data/vector_confusion_matrix_dense.hpp"
 
 #include "mlrl/common/iterator/binary_forward_iterator.hpp"
-#include "mlrl/common/util/arrays.hpp"
 #include "mlrl/common/util/memory.hpp"
+#include "mlrl/common/util/view_functions.hpp"
 
 #include <algorithm>
 

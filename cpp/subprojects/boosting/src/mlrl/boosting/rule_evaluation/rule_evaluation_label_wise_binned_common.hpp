@@ -6,7 +6,7 @@
 #include "mlrl/boosting/data/statistic_vector_label_wise_dense.hpp"
 #include "mlrl/common/data/array.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_binned_dense.hpp"
-#include "mlrl/common/util/arrays.hpp"
+#include "mlrl/common/util/view_functions.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
 
 namespace boosting {
