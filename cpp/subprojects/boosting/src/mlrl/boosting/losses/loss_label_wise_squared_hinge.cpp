@@ -4,23 +4,23 @@
 
 namespace boosting {
 
-    static inline void updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64* gradient,
-                                                float64* hessian) {
+    static inline void updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64& gradient,
+                                                float64& hessian) {
         if (trueLabel) {
             if (predictedScore < 1) {
-                *gradient = (predictedScore - 1);
+                gradient = (predictedScore - 1);
             } else {
-                *gradient = 0;
+                gradient = 0;
             }
         } else {
             if (predictedScore > 0) {
-                *gradient = predictedScore;
+                gradient = predictedScore;
             } else {
-                *gradient = 0;
+                gradient = 0;
             }
         }
 
-        *hessian = 1;
+        hessian = 1;
     }
 
     static inline float64 evaluatePrediction(bool trueLabel, float64 predictedScore) {
