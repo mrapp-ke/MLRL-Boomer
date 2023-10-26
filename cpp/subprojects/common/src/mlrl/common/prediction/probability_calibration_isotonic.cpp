@@ -41,7 +41,7 @@ static inline void aggregateNonIncreasingBins(ListOfLists<Tuple<float64>>::row b
     // `pools[j] = i`...
     uint32 numBins = (uint32) bins.size();
     Array<uint32> pools(numBins);
-    setViewToIncreasingValues<uint32>(pools.begin(), numBins, 0, 1);
+    setViewToIncreasingValues(pools.begin(), numBins, 0, 1);
     uint32 i = 0;
     uint32 j = 0;
 
