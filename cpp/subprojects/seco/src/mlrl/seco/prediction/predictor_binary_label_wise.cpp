@@ -234,11 +234,7 @@ namespace seco {
                   std::lower_bound(predictionRow.begin(), end, indexIterator[*scoresBegin]);
                 uint32 bufferSize = end - start;
                 Array<uint32> buffer(bufferSize);
-
-                for (uint32 i = 0; i < bufferSize; i++) {
-                    buffer[i] = start[i];
-                }
-
+                copyArray(start, buffer.begin(), bufferSize);
                 uint32 i = 0;
 
                 for (uint32 n = 0; n < bufferSize; n++) {
