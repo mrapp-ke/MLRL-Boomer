@@ -89,27 +89,27 @@ namespace boosting {
              * e.g. sort, the given vector. The `LabelInfo` returned by this function must be passed to the function
              * `createBins` later on.
              *
-             * @param criteria                  An array of type `float64` that stores the label-wise criteria that
-             *                                  should be used to assign individual labels to bins
-             * @param numElements               The number of elements in the array `criteria`
-             * @return                          A struct of type `LabelInfo` that stores the information
+             * @param criteria      An iterator to the label-wise criteria that should be used to assign individual
+             *                      labels to bins
+             * @param numCriteria   The number of label-wise criteria
+             * @return              A struct of type `LabelInfo` that stores the information
              */
-            virtual LabelInfo getLabelInfo(const float64* criteria, uint32 numElements) const = 0;
+            virtual LabelInfo getLabelInfo(View<float64>::const_iterator criteria, uint32 numCriteria) const = 0;
 
             /**
              * Assigns the labels to bins based on label-wise criteria.
              *
-             * @param labelInfo                 A struct of type `LabelInfo` that stores information that is required to
-             *                                  apply the binning method
-             * @param criteria                  An array of type `float64` that stores the label-wise criteria that
-             *                                  should be used to assign individual labels to bins
-             * @param numElements               The number of elements in the array `criteria`
-             * @param callback                  A callback that is invoked when a label is assigned to a bin
-             * @param zeroCallback              A callback that is invoked when a label for which the criterion is zero
-             *                                  is encountered
+             * @param labelInfo     A struct of type `LabelInfo` that stores information that is required to apply the
+             *                      binning method
+             * @param criteria      An iterator to the label-wise criteria that should be used to assign individual
+             *                      labels to bins
+             * @param numElements   The number of label-wise criteria
+             * @param callback      A callback that is invoked when a label is assigned to a bin
+             * @param zeroCallback  A callback that is invoked when a label for which the criterion is zero is
+             *                      encountered
              */
-            virtual void createBins(LabelInfo labelInfo, const float64* criteria, uint32 numElements, Callback callback,
-                                    ZeroCallback zeroCallback) const = 0;
+            virtual void createBins(LabelInfo labelInfo, View<float64>::const_iterator criteria, uint32 numCriteria,
+                                    Callback callback, ZeroCallback zeroCallback) const = 0;
     };
 
     /**

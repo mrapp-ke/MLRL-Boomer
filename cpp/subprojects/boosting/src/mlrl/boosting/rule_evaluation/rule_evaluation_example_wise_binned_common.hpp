@@ -14,13 +14,12 @@ namespace boosting {
      * Removes empty bins from an array that keeps track of the number of elements per bin, as well as an array that
      * stores the index of each bin.
      *
-     * @param numElementsPerBin A pointer to an array of type `uint32`, shape `(numBins)` that stores the number
-     *                          elements per bin
-     * @param binIndices        A pointer to an array of type `uint32`, shape `(numBins)`, that stores the index of each
-     *                          bin
+     * @param numElementsPerBin An iterator to the number of elements per bin
+     * @param binIndices        An iterator to the indices of each bin
      * @param numBins           The number of available bins
      */
-    static inline uint32 removeEmptyBins(uint32* numElementsPerBin, uint32* binIndices, uint32 numBins) {
+    static inline uint32 removeEmptyBins(View<uint32>::iterator numElementsPerBin, View<uint32>::iterator binIndices,
+                                         uint32 numBins) {
         uint32 n = 0;
 
         for (uint32 i = 0; i < numBins; i++) {
@@ -46,20 +45,17 @@ namespace boosting {
      * @param numElements       The total number of available elements
      * @param binIndexIterator  An iterator that provides random access to the indices of the bins individual elements
      *                          have been assigned to
-     * @param binIndices        A pointer to an array of type `uint32`, shape `(maxBins)` that stores the index of each
-     *                          bin
-     * @param gradients         A pointer to an array of type `float64`, shape `(numElements)`, the aggregated gradients
-     *                          should be written to
-     * @param hessians          A pointer to an array of type `float64`, shape `(numElements * numElements)`, the
-     *                          aggregated Hessians should be written to
+     * @param binIndices        An iterator to the indices of each bin
+     * @param gradients         An iterator, the aggregated gradients should be written to
+     * @param hessians          An iterator, the aggregated Hessians should be written to
      * @param maxBins           The maximum number of bins
      */
     template<typename BinIndexIterator>
     static inline void aggregateGradientsAndHessians(
       DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator,
       DenseExampleWiseStatisticVector::hessian_const_iterator hessianIterator, uint32 numElements,
-      BinIndexIterator binIndexIterator, const uint32* binIndices, float64* gradients, float64* hessians,
-      uint32 maxBins) {
+      BinIndexIterator binIndexIterator, View<uint32>::const_iterator binIndices, View<float64>::iterator gradients,
+      View<float64>::iterator hessians, uint32 maxBins) {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 originalBinIndex = binIndexIterator[i];
 
@@ -108,15 +104,13 @@ namespace boosting {
     /**
      * Adds a L1 regularization weight to a vector of ordinates.
      *
-     * @param ordinates                 A pointer to an array of type `float64`, shape `(n)`, the L1 regularization
-     *                                  weight should be added to
+     * @param ordinates                 An iterator, the L1 regularization weight should be added to
      * @param numPredictions            The number of ordinates
-     * @param weights                   A pointer to an array of type `uint32`, shape `(n)` that stores the weight of
-     *                                  each ordinate
+     * @param weights                   An iterator to the weight of each ordinate
      * @param l1RegularizationWeight    The L1 regularization weight to be added to the ordinates
      */
-    static inline void addL1RegularizationWeight(float64* ordinates, uint32 numPredictions, const uint32* weights,
-                                                 float64 l1RegularizationWeight) {
+    static inline void addL1RegularizationWeight(View<float64>::iterator ordinates, uint32 numPredictions,
+                                                 View<uint32>::const_iterator weights, float64 l1RegularizationWeight) {
         for (uint32 i = 0; i < numPredictions; i++) {
             uint32 weight = weights[i];
             float64 gradient = ordinates[i];
@@ -127,15 +121,13 @@ namespace boosting {
     /**
      * Adds a L2 regularization weight to the diagonal of a matrix of coefficients.
      *
-     * @param coefficients              A pointer to an array of type `float64`, shape `(n * n)`, the regularization
-     *                                  weight should be added to
+     * @param coefficients              An iterator, the regularization weight should be added to
      * @param numPredictions            The number of coefficients on the diagonal
-     * @param weights                   A pointer to an array of type `uint32`, shape `(n)`, that stores the weight of
-     *                                  each coefficient
+     * @param weights                   An iterator to the weight of each coefficient
      * @param l2RegularizationWeight    The L2 regularization weight to be added to the coefficients
      */
-    static inline void addL2RegularizationWeight(float64* coefficients, uint32 numPredictions, const uint32* weights,
-                                                 float64 l2RegularizationWeight) {
+    static inline void addL2RegularizationWeight(View<float64>::iterator coefficients, uint32 numPredictions,
+                                                 View<uint32>::const_iterator weights, float64 l2RegularizationWeight) {
         for (uint32 i = 0; i < numPredictions; i++) {
             uint32 weight = weights[i];
             coefficients[(i * numPredictions) + i] += (weight * l2RegularizationWeight);
@@ -147,16 +139,15 @@ namespace boosting {
      *
      * @tparam ScoreIterator            The type of the iterator that provides access to the predicted scores
      * @param scores                    An iterator that provides random access to the predicted scores
-     * @param numElementsPerBin         A pointer to an array of type `uint32`, shape `(numBins)`, that provides random
-     *                                  access to the number of elements per bin
+     * @param numElementsPerBin         An iterator to the number of elements per bin
      * @param numBins                   The number of bins
      * @param l1RegularizationWeight    The weight of the L1 regularization term
      * @param l2RegularizationWeight    The weight of the L2 regularization term
      */
     template<typename ScoreIterator>
-    static inline float64 calculateRegularizationTerm(ScoreIterator scores, const uint32* numElementsPerBin,
-                                                      uint32 numBins, float64 l1RegularizationWeight,
-                                                      float64 l2RegularizationWeight) {
+    static inline float64 calculateRegularizationTerm(ScoreIterator scores,
+                                                      View<uint32>::const_iterator numElementsPerBin, uint32 numBins,
+                                                      float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
         float64 regularizationTerm;
 
         if (l1RegularizationWeight > 0) {
@@ -218,15 +209,15 @@ namespace boosting {
              *
              * @param statisticVector           A reference to an object of template type `StatisticVector` that stores
              *                                  the gradients and Hessians
-             * @param criteria                  A pointer to an array of type `float64`, shape `(numCriteria)`, the
-             *                                  label-wise criteria should be written to
+             * @param criteria                  An iterator, the label-wise criteria should be written to
              * @param numCriteria               The number of label-wise criteria to be calculated
              * @param l1RegularizationWeight    The L1 regularization weight
              * @param l2RegularizationWeight    The L2 regularization weight
              * @return                          The number of label-wise criteria that have been calculated
              */
-            virtual uint32 calculateLabelWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
-                                                      uint32 numCriteria, float64 l1RegularizationWeight,
+            virtual uint32 calculateLabelWiseCriteria(const StatisticVector& statisticVector,
+                                                      View<float64>::iterator criteria, uint32 numCriteria,
+                                                      float64 l1RegularizationWeight,
                                                       float64 l2RegularizationWeight) = 0;
 
         public:
@@ -268,16 +259,16 @@ namespace boosting {
             const IScoreVector& calculateScores(DenseExampleWiseStatisticVector& statisticVector) override final {
                 // Calculate label-wise criteria...
                 uint32 numCriteria =
-                  this->calculateLabelWiseCriteria(statisticVector, &criteria_[0], scoreVector_.getNumElements(),
+                  this->calculateLabelWiseCriteria(statisticVector, criteria_.begin(), scoreVector_.getNumElements(),
                                                    l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
-                LabelInfo labelInfo = binningPtr_->getLabelInfo(&criteria_[0], numCriteria);
+                LabelInfo labelInfo = binningPtr_->getLabelInfo(criteria_.cbegin(), numCriteria);
                 uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
 
                 if (numBins > 0) {
                     // Reset arrays to zero...
-                    setArrayToZeros(&numElementsPerBin_[0], numBins);
+                    setArrayToZeros(numElementsPerBin_.begin(), numBins);
 
                     // Apply binning method in order to aggregate the gradients and Hessians that belong to the same
                     // bins...
@@ -290,42 +281,43 @@ namespace boosting {
                     auto zeroCallback = [=](uint32 labelIndex) {
                         binIndexIterator[labelIndex] = maxBins_;
                     };
-                    binningPtr_->createBins(labelInfo, &criteria_[0], numCriteria, callback, zeroCallback);
+                    binningPtr_->createBins(labelInfo, criteria_.cbegin(), numCriteria, callback, zeroCallback);
 
                     // Determine number of non-empty bins...
-                    numBins = removeEmptyBins(&numElementsPerBin_[0], &binIndices_[0], numBins);
+                    numBins = removeEmptyBins(numElementsPerBin_.begin(), binIndices_.begin(), numBins);
                     scoreVector_.setNumBins(numBins, false);
 
                     // Aggregate gradients and Hessians...
-                    setArrayToZeros(&aggregatedGradients_[0], numBins);
-                    setArrayToZeros(&aggregatedHessians_[0], triangularNumber(numBins));
+                    setArrayToZeros(aggregatedGradients_.begin(), numBins);
+                    setArrayToZeros(aggregatedHessians_.begin(), triangularNumber(numBins));
                     aggregateGradientsAndHessians(statisticVector.gradients_cbegin(), statisticVector.hessians_cbegin(),
-                                                  numCriteria, binIndexIterator, &binIndices_[0],
-                                                  &aggregatedGradients_[0], &aggregatedHessians_[0], maxBins_);
+                                                  numCriteria, binIndexIterator, binIndices_.cbegin(),
+                                                  aggregatedGradients_.begin(), aggregatedHessians_.begin(), maxBins_);
 
                     // Copy Hessians to the matrix of coefficients and add regularization weight to its diagonal...
-                    copyCoefficients(&aggregatedHessians_[0], &this->dsysvTmpArray1_[0], numBins);
-                    addL2RegularizationWeight(&this->dsysvTmpArray1_[0], numBins, &numElementsPerBin_[0],
+                    copyCoefficients(aggregatedHessians_.cbegin(), this->dsysvTmpArray1_.begin(), numBins);
+                    addL2RegularizationWeight(this->dsysvTmpArray1_.begin(), numBins, numElementsPerBin_.cbegin(),
                                               l2RegularizationWeight_);
 
                     // Copy gradients to the vector of ordinates...
                     typename DenseBinnedScoreVector<IndexVector>::value_binned_iterator valueIterator =
                       scoreVector_.values_binned_begin();
-                    copyOrdinates(&aggregatedGradients_[0], valueIterator, numBins);
-                    addL1RegularizationWeight(valueIterator, numBins, &numElementsPerBin_[0], l1RegularizationWeight_);
+                    copyOrdinates(aggregatedGradients_.cbegin(), valueIterator, numBins);
+                    addL1RegularizationWeight(valueIterator, numBins, numElementsPerBin_.cbegin(),
+                                              l1RegularizationWeight_);
 
                     // Calculate the scores to be predicted for the individual labels by solving a system of linear
                     // equations...
-                    lapack_.dsysv(&this->dsysvTmpArray1_[0], &this->dsysvTmpArray2_[0], &this->dsysvTmpArray3_[0],
-                                  valueIterator, numBins, this->dsysvLwork_);
+                    lapack_.dsysv(this->dsysvTmpArray1_.begin(), this->dsysvTmpArray2_.begin(),
+                                  this->dsysvTmpArray3_.begin(), valueIterator, numBins, this->dsysvLwork_);
 
                     // Calculate the overall quality...
                     float64 quality =
-                      calculateOverallQuality(valueIterator, &aggregatedGradients_[0], &aggregatedHessians_[0],
-                                              &this->dspmvTmpArray_[0], numBins, blas_);
+                      calculateOverallQuality(valueIterator, aggregatedGradients_.begin(), aggregatedHessians_.begin(),
+                                              this->dspmvTmpArray_.begin(), numBins, blas_);
 
                     // Evaluate regularization term...
-                    quality += calculateRegularizationTerm(valueIterator, &numElementsPerBin_[0], numBins,
+                    quality += calculateRegularizationTerm(valueIterator, numElementsPerBin_.cbegin(), numBins,
                                                            l1RegularizationWeight_, l2RegularizationWeight_);
 
                     scoreVector_.quality = quality;
@@ -351,9 +343,9 @@ namespace boosting {
         : public AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector> {
         protected:
 
-            uint32 calculateLabelWiseCriteria(const DenseExampleWiseStatisticVector& statisticVector, float64* criteria,
-                                              uint32 numCriteria, float64 l1RegularizationWeight,
-                                              float64 l2RegularizationWeight) override {
+            uint32 calculateLabelWiseCriteria(const DenseExampleWiseStatisticVector& statisticVector,
+                                              View<float64>::iterator criteria, uint32 numCriteria,
+                                              float64 l1RegularizationWeight, float64 l2RegularizationWeight) override {
                 DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
                   statisticVector.gradients_cbegin();
                 DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =

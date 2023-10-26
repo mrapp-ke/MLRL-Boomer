@@ -17,7 +17,7 @@ namespace boosting {
      * @tparam ScoreIterator            The type of the iterator that provides access to the gradients and Hessians
      * @param statisticIterator         An iterator that provides random access to the gradients and Hessians
      * @param scoreIterator             An iterator, the calculated scores should be written to
-     * @param weights                   An iterator that provides access to the weights of individual bins
+     * @param weights                   An iterator to the weights of individual bins
      * @param numElements               The number of bins
      * @param l1RegularizationWeight    The L1 regularization weight
      * @param l2RegularizationWeight    The L2 regularization weight
@@ -25,8 +25,9 @@ namespace boosting {
      */
     template<typename ScoreIterator>
     static inline float64 calculateBinnedScores(DenseLabelWiseStatisticVector::const_iterator statisticIterator,
-                                                ScoreIterator scoreIterator, const uint32* weights, uint32 numElements,
-                                                float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
+                                                ScoreIterator scoreIterator, View<uint32>::const_iterator weights,
+                                                uint32 numElements, float64 l1RegularizationWeight,
+                                                float64 l2RegularizationWeight) {
         float64 quality = 0;
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -79,15 +80,15 @@ namespace boosting {
              *
              * @param statisticVector           A reference to an object of template type `StatisticVector` that stores
              *                                  the gradients and Hessians
-             * @param criteria                  A pointer to an array of type `float64`, shape `(numCriteria)`, the
-             *                                  label-wise criteria should be written to
+             * @param criteria                  An iterator, the label-wise criteria should be written to
              * @param numCriteria               The number of label-wise criteria to be calculated
              * @param l1RegularizationWeight    The L1 regularization weight
              * @param l2RegularizationWeight    The L2 regularization weight
              * @return                          The number of label-wise criteria that have been calculated
              */
-            virtual uint32 calculateLabelWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
-                                                      uint32 numCriteria, float64 l1RegularizationWeight,
+            virtual uint32 calculateLabelWiseCriteria(const StatisticVector& statisticVector,
+                                                      View<float64>::iterator criteria, uint32 numCriteria,
+                                                      float64 l1RegularizationWeight,
                                                       float64 l2RegularizationWeight) = 0;
 
         public:
@@ -122,11 +123,11 @@ namespace boosting {
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override final {
                 // Calculate label-wise criteria...
                 uint32 numCriteria =
-                  this->calculateLabelWiseCriteria(statisticVector, &criteria_[0], scoreVector_.getNumElements(),
+                  this->calculateLabelWiseCriteria(statisticVector, criteria_.begin(), scoreVector_.getNumElements(),
                                                    l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
-                LabelInfo labelInfo = binningPtr_->getLabelInfo(&criteria_[0], numCriteria);
+                LabelInfo labelInfo = binningPtr_->getLabelInfo(criteria_.cbegin(), numCriteria);
                 uint32 numBins = labelInfo.numPositiveBins + labelInfo.numNegativeBins;
                 scoreVector_.setNumBins(numBins, false);
 
@@ -134,7 +135,7 @@ namespace boosting {
                 DenseLabelWiseStatisticVector::iterator aggregatedStatisticIterator =
                   aggregatedStatisticVector_.begin();
                 setArrayToZeros(aggregatedStatisticIterator, numBins);
-                setArrayToZeros(&numElementsPerBin_[0], numBins);
+                setArrayToZeros(numElementsPerBin_.begin(), numBins);
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
@@ -148,14 +149,14 @@ namespace boosting {
                 auto zeroCallback = [=](uint32 labelIndex) {
                     binIndexIterator[labelIndex] = maxBins_;
                 };
-                binningPtr_->createBins(labelInfo, &criteria_[0], numCriteria, callback, zeroCallback);
+                binningPtr_->createBins(labelInfo, criteria_.cbegin(), numCriteria, callback, zeroCallback);
 
                 // Compute predictions, as well as their overall quality...
                 typename DenseBinnedScoreVector<IndexVector>::value_binned_iterator valueIterator =
                   scoreVector_.values_binned_begin();
                 scoreVector_.quality =
-                  calculateBinnedScores(aggregatedStatisticIterator, valueIterator, &numElementsPerBin_[0], numBins,
-                                        l1RegularizationWeight_, l2RegularizationWeight_);
+                  calculateBinnedScores(aggregatedStatisticIterator, valueIterator, numElementsPerBin_.cbegin(),
+                                        numBins, l1RegularizationWeight_, l2RegularizationWeight_);
                 return scoreVector_;
             }
     };
@@ -174,7 +175,7 @@ namespace boosting {
         : public AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, IndexVector> {
         protected:
 
-            uint32 calculateLabelWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
+            uint32 calculateLabelWiseCriteria(const StatisticVector& statisticVector, View<float64>::iterator criteria,
                                               uint32 numCriteria, float64 l1RegularizationWeight,
                                               float64 l2RegularizationWeight) override {
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
