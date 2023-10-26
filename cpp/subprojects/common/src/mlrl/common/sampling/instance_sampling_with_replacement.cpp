@@ -3,8 +3,8 @@
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
-#include "mlrl/common/util/arrays.hpp"
 #include "mlrl/common/util/validation.hpp"
+#include "mlrl/common/util/view_functions.hpp"
 
 static inline void sampleInternally(const SinglePartition& partition, float32 sampleSize,
                                     DenseWeightVector<uint32>& weightVector, RNG& rng) {

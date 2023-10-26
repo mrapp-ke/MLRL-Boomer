@@ -1,7 +1,7 @@
 #include "mlrl/boosting/data/statistic_view_example_wise_dense.hpp"
 
-#include "mlrl/boosting/util/arrays.hpp"
-#include "mlrl/common/util/arrays.hpp"
+#include "mlrl/boosting/util/view_functions.hpp"
+#include "mlrl/common/util/view_functions.hpp"
 
 namespace boosting {
 

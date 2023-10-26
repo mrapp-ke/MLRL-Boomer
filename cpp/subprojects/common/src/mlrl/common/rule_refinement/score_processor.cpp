@@ -2,7 +2,7 @@
 
 #include "mlrl/common/rule_refinement/prediction_complete.hpp"
 #include "mlrl/common/rule_refinement/prediction_partial.hpp"
-#include "mlrl/common/util/arrays.hpp"
+#include "mlrl/common/util/view_functions.hpp"
 
 template<typename T>
 static inline void processCompleteScores(std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr, const T& scoreVector) {

@@ -2,7 +2,7 @@
 
 #include "mlrl/common/rule_refinement/prediction.hpp"
 #include "mlrl/common/thresholds/thresholds_subset.hpp"
-#include "mlrl/common/util/arrays.hpp"
+#include "mlrl/common/util/view_functions.hpp"
 
 CoverageSet::CoverageSet(uint32 numElements)
     : array_(new uint32[numElements]), numElements_(numElements), numCovered_(numElements) {

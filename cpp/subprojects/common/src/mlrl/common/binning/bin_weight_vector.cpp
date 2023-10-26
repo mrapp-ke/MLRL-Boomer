@@ -1,6 +1,6 @@
 #include "mlrl/common/binning/bin_weight_vector.hpp"
 
-#include "mlrl/common/util/arrays.hpp"
+#include "mlrl/common/util/view_functions.hpp"
 
 BinWeightVector::BinWeightVector(uint32 numElements) : vector_(numElements) {}
 
