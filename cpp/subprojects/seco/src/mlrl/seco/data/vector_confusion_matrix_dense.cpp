@@ -40,7 +40,7 @@ namespace seco {
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other)
         : DenseConfusionMatrixVector(other.numElements_) {
-        copyArray(other.array_, array_, numElements_);
+        copyView(other.array_, array_, numElements_);
     }
 
     DenseConfusionMatrixVector::~DenseConfusionMatrixVector() {
@@ -68,7 +68,7 @@ namespace seco {
     }
 
     void DenseConfusionMatrixVector::clear() {
-        setArrayToZeros(array_, numElements_);
+        setViewToZeros(array_, numElements_);
     }
 
     void DenseConfusionMatrixVector::add(const_iterator begin, const_iterator end) {
@@ -198,14 +198,14 @@ namespace seco {
     void DenseConfusionMatrixVector::difference(const_iterator firstBegin, const_iterator firstEnd,
                                                 const CompleteIndexVector& firstIndices, const_iterator secondBegin,
                                                 const_iterator secondEnd) {
-        setArrayToDifference(array_, firstBegin, secondBegin, numElements_);
+        setViewToDifference(array_, firstBegin, secondBegin, numElements_);
     }
 
     void DenseConfusionMatrixVector::difference(const_iterator firstBegin, const_iterator firstEnd,
                                                 const PartialIndexVector& firstIndices, const_iterator secondBegin,
                                                 const_iterator secondEnd) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
-        setArrayToDifference(array_, firstBegin, secondBegin, indexIterator, numElements_);
+        setViewToDifference(array_, firstBegin, secondBegin, indexIterator, numElements_);
     }
 
 }

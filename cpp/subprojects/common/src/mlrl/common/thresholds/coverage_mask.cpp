@@ -10,7 +10,7 @@ CoverageMask::CoverageMask(uint32 numElements)
 CoverageMask::CoverageMask(const CoverageMask& coverageMask)
     : array_(new uint32[coverageMask.numElements_]), numElements_(coverageMask.numElements_),
       indicatorValue_(coverageMask.indicatorValue_) {
-    copyArray(coverageMask.array_, array_, numElements_);
+    copyView(coverageMask.array_, array_, numElements_);
 }
 
 CoverageMask::~CoverageMask() {
@@ -47,7 +47,7 @@ void CoverageMask::setIndicatorValue(uint32 indicatorValue) {
 
 void CoverageMask::reset() {
     indicatorValue_ = 0;
-    setArrayToZeros(array_, numElements_);
+    setViewToZeros(array_, numElements_);
 }
 
 bool CoverageMask::isCovered(uint32 pos) const {

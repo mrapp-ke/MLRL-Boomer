@@ -24,7 +24,7 @@ struct LabelVectorHash final {
          * @return  The hash that has been computed
          */
         inline std::size_t operator()(const LabelVector& v) const {
-            return hashArray(v.cbegin(), v.getNumElements());
+            return hashView(v.cbegin(), v.getNumElements());
         }
 };
 
@@ -42,7 +42,7 @@ struct LabelVectorPred final {
          * @return      True, if the given objects are equal, false otherwise
          */
         inline bool operator()(const LabelVector& lhs, const LabelVector& rhs) const {
-            return compareArrays(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(), rhs.getNumElements());
+            return compareViews(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(), rhs.getNumElements());
         }
 };
 

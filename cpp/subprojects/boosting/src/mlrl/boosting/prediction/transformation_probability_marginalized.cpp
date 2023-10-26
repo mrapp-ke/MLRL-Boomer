@@ -16,7 +16,7 @@ namespace boosting {
           jointProbabilityFunctionPtr_->transformScoresIntoJointProbabilities(labelVectorSet_, scoresBegin, scoresEnd);
         DenseVector<float64>::const_iterator jointProbabilityIterator = jointProbabilityVectorPtr->cbegin();
         uint32 numLabels = probabilitiesEnd - probabilitiesBegin;
-        setArrayToZeros(probabilitiesBegin, numLabels);
+        setViewToZeros(probabilitiesBegin, numLabels);
         LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet_.cbegin();
         uint32 numLabelVectors = labelVectorSet_.getNumLabelVectors();
 

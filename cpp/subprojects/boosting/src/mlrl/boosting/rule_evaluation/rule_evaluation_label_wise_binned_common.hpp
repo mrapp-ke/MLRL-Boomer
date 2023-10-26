@@ -134,8 +134,8 @@ namespace boosting {
                 // Reset arrays to zero...
                 DenseLabelWiseStatisticVector::iterator aggregatedStatisticIterator =
                   aggregatedStatisticVector_.begin();
-                setArrayToZeros(aggregatedStatisticIterator, numBins);
-                setArrayToZeros(numElementsPerBin_.begin(), numBins);
+                setViewToZeros(aggregatedStatisticIterator, numBins);
+                setViewToZeros(numElementsPerBin_.begin(), numBins);
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();

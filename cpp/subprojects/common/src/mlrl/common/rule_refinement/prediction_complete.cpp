@@ -106,6 +106,6 @@ void CompletePrediction::revert(IStatistics& statistics, uint32 statisticIndex) 
 std::unique_ptr<IHead> CompletePrediction::createHead() const {
     uint32 numElements = this->getNumElements();
     std::unique_ptr<CompleteHead> headPtr = std::make_unique<CompleteHead>(numElements);
-    copyArray(this->values_cbegin(), headPtr->values_begin(), numElements);
+    copyView(this->values_cbegin(), headPtr->values_begin(), numElements);
     return headPtr;
 }

@@ -78,8 +78,7 @@ class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>,
                          * @return      True, if the given objects are equal, false otherwise
                          */
                         inline bool operator()(const View& lhs, const View& rhs) const {
-                            return compareArrays(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(),
-                                                 rhs.getNumElements());
+                            return compareViews(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(), rhs.getNumElements());
                         }
                 };
 

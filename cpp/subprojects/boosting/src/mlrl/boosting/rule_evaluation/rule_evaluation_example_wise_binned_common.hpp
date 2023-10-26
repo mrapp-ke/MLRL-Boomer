@@ -268,7 +268,7 @@ namespace boosting {
 
                 if (numBins > 0) {
                     // Reset arrays to zero...
-                    setArrayToZeros(numElementsPerBin_.begin(), numBins);
+                    setViewToZeros(numElementsPerBin_.begin(), numBins);
 
                     // Apply binning method in order to aggregate the gradients and Hessians that belong to the same
                     // bins...
@@ -288,8 +288,8 @@ namespace boosting {
                     scoreVector_.setNumBins(numBins, false);
 
                     // Aggregate gradients and Hessians...
-                    setArrayToZeros(aggregatedGradients_.begin(), numBins);
-                    setArrayToZeros(aggregatedHessians_.begin(), triangularNumber(numBins));
+                    setViewToZeros(aggregatedGradients_.begin(), numBins);
+                    setViewToZeros(aggregatedHessians_.begin(), triangularNumber(numBins));
                     aggregateGradientsAndHessians(statisticVector.gradients_cbegin(), statisticVector.hessians_cbegin(),
                                                   numCriteria, binIndexIterator, binIndices_.cbegin(),
                                                   aggregatedGradients_.begin(), aggregatedHessians_.begin(), maxBins_);
@@ -322,7 +322,7 @@ namespace boosting {
 
                     scoreVector_.quality = quality;
                 } else {
-                    setArrayToValue(scoreVector_.indices_binned_begin(), numCriteria, maxBins_);
+                    setViewToValue(scoreVector_.indices_binned_begin(), numCriteria, maxBins_);
                     scoreVector_.quality = 0;
                 }
 
