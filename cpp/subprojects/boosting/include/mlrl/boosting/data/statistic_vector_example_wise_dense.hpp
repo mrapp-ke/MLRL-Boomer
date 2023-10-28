@@ -30,15 +30,10 @@ namespace boosting {
 
             /**
              * @param numGradients The number of gradients in the vector
-             */
-            DenseExampleWiseStatisticVector(uint32 numGradients);
-
-            /**
-             * @param numGradients The number of gradients in the vector
              * @param init         True, if all gradients and Hessians in the vector should be initialized with zero,
              *                     false otherwise
              */
-            DenseExampleWiseStatisticVector(uint32 numGradients, bool init);
+            DenseExampleWiseStatisticVector(uint32 numGradients, bool init = false);
 
             /**
              * @param vector A reference to an object of type `DenseExampleWiseStatisticVector` to be copied

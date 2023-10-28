@@ -32,9 +32,6 @@ namespace seco {
         }
     }
 
-    DenseConfusionMatrixVector::DenseConfusionMatrixVector(uint32 numElements)
-        : DenseConfusionMatrixVector(numElements, false) {}
-
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(uint32 numElements, bool init)
         : array_(allocateMemory<ConfusionMatrix>(numElements, init)), numElements_(numElements) {}
 

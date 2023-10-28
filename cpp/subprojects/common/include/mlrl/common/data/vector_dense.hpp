@@ -62,17 +62,10 @@ class DenseVector : public ResizableVectorDecorator<WritableVectorDecorator<Allo
     public:
 
         /**
-         * @param numElements The number of elements in the vector
-         */
-        DenseVector(uint32 numElements)
-            : ResizableVectorDecorator<WritableVectorDecorator<AllocatedView<Vector<T>>>>(
-              AllocatedView<Vector<T>>(numElements)) {}
-
-        /**
          * @param numElements   The number of elements in the vector
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
-        DenseVector(uint32 numElements, bool init)
+        DenseVector(uint32 numElements, bool init = false)
             : ResizableVectorDecorator<WritableVectorDecorator<AllocatedView<Vector<T>>>>(
               AllocatedView<Vector<T>>(numElements, init)) {}
 

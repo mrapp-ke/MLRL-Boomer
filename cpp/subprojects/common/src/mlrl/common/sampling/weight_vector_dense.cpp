@@ -4,9 +4,6 @@
 #include "mlrl/common/thresholds/thresholds_subset.hpp"
 
 template<typename T>
-DenseWeightVector<T>::DenseWeightVector(uint32 numElements) : DenseWeightVector<T>(numElements, false) {}
-
-template<typename T>
 DenseWeightVector<T>::DenseWeightVector(uint32 numElements, bool init)
     : WritableVectorDecorator<AllocatedView<Vector<T>>>(AllocatedView<Vector<T>>(numElements, init)),
       numNonZeroWeights_(0) {}

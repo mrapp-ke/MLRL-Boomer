@@ -59,9 +59,6 @@ namespace boosting {
         return iterator_ - rhs.iterator_;
     }
 
-    SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(uint32 numElements)
-        : SparseLabelWiseStatisticVector(numElements, false) {}
-
     SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(uint32 numElements, bool init)
         : numElements_(numElements), statistics_(allocateMemory<Triple<float64>>(numElements, init)), sumOfWeights_(0) {
     }

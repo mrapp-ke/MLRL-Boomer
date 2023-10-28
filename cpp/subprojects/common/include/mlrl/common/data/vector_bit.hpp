@@ -16,15 +16,10 @@ class BitVector final : public VectorDecorator<AllocatedView<View<uint32>>> {
     public:
 
         /**
-         * @param numElements The number of elements in the vector
-         */
-        BitVector(uint32 numElements);
-
-        /**
          * @param numElements   The number of elements in the vector
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
-        BitVector(uint32 numElements, bool init);
+        BitVector(uint32 numElements, bool init = false);
 
         /**
          * Returns the value of the element at a specific position.

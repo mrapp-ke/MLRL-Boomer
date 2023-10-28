@@ -19,15 +19,10 @@ class BitWeightVector final : public IWeightVector {
     public:
 
         /**
-         * @param numElements The number of elements in the vector
-         */
-        BitWeightVector(uint32 numElements);
-
-        /**
          * @param numElements   The number of elements in the vector
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
-        BitWeightVector(uint32 numElements, bool init);
+        BitWeightVector(uint32 numElements, bool init = false);
 
         /**
          * Returns the number of elements in the vector.

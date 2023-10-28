@@ -22,16 +22,9 @@ class ThresholdVector final : public MissingFeatureVector {
          * @param missingFeatureVector  A reference to an object of type `MissingFeatureVector` the missing indices
          *                              should be taken from
          * @param numElements           The number of elements in the vector
-         */
-        ThresholdVector(MissingFeatureVector& missingFeatureVector, uint32 numElements);
-
-        /**
-         * @param missingFeatureVector  A reference to an object of type `MissingFeatureVector` the missing indices
-         *                              should be taken from
-         * @param numElements           The number of elements in the vector
          * @param init                  True, if all elements in the vector should be value-initialized, false otherwise
          */
-        ThresholdVector(MissingFeatureVector& missingFeatureVector, uint32 numElements, bool init);
+        ThresholdVector(MissingFeatureVector& missingFeatureVector, uint32 numElements, bool init = false);
 
         /**
          * An iterator that provides access to the thresholds in the vector and allows to modify them.

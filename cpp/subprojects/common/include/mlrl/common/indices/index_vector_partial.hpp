@@ -17,15 +17,10 @@ class PartialIndexVector final : public IIndexVector {
     public:
 
         /**
-         * @param numElements The number of elements in the vector
-         */
-        PartialIndexVector(uint32 numElements);
-
-        /**
          * @param numElements   The number of elements in the vector
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
-        PartialIndexVector(uint32 numElements, bool init);
+        PartialIndexVector(uint32 numElements, bool init = false);
 
         /**
          * An iterator that provides access to the indices in the vector and allows to modify them.

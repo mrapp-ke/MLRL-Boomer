@@ -141,16 +141,11 @@ namespace boosting {
         public:
 
             /**
-             * @param numElements The number of gradients and Hessians in the vector
-             */
-            SparseLabelWiseStatisticVector(uint32 numElements);
-
-            /**
              * @param numElements   The number of gradients and Hessians in the vector
              * @param init          True, if all gradients and Hessians in the vector should be initialized with zero,
              *                      false otherwise
              */
-            SparseLabelWiseStatisticVector(uint32 numElements, bool init);
+            SparseLabelWiseStatisticVector(uint32 numElements, bool init = false);
 
             /**
              * @param vector A reference to an object of type `SparseLabelWiseStatisticVector` to be copied

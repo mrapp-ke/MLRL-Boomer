@@ -6,9 +6,6 @@
 
 namespace boosting {
 
-    DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(uint32 numElements)
-        : DenseLabelWiseStatisticVector(numElements, false) {}
-
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(uint32 numElements, bool init)
         : numElements_(numElements), statistics_(allocateMemory<Tuple<float64>>(numElements, init)) {}
 

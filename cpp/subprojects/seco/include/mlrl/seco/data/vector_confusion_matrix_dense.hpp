@@ -23,15 +23,10 @@ namespace seco {
         public:
 
             /**
-             * @param numElements The number of elements in the vector
-             */
-            DenseConfusionMatrixVector(uint32 numElements);
-
-            /**
              * @param numElements   The number of elements in the vector
              * @param init          True, if the elements of all confusion matrices should be value-initialized
              */
-            DenseConfusionMatrixVector(uint32 numElements, bool init);
+            DenseConfusionMatrixVector(uint32 numElements, bool init = false);
 
             /**
              * @param other A reference to an object of type `DenseConfusionMatrixVector` to be copied
