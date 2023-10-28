@@ -2,8 +2,6 @@
 
 #include "mlrl/common/thresholds/thresholds_subset.hpp"
 
-PartialIndexVector::PartialIndexVector(uint32 numElements) : PartialIndexVector(numElements, false) {}
-
 PartialIndexVector::PartialIndexVector(uint32 numElements, bool init) : vector_(numElements, init) {}
 
 bool PartialIndexVector::isPartial() const {

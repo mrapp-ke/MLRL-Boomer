@@ -3,10 +3,6 @@
 #include "mlrl/common/util/memory.hpp"
 
 template<typename T>
-DensePredictionMatrix<T>::DensePredictionMatrix(uint32 numRows, uint32 numCols)
-    : DensePredictionMatrix<T>(numRows, numCols, false) {}
-
-template<typename T>
 DensePredictionMatrix<T>::DensePredictionMatrix(uint32 numRows, uint32 numCols, bool init)
     : CContiguousView<T>(numRows, numCols, allocateMemory<T>(numRows * numCols, init)),
       array_(CContiguousView<T>::array_) {}

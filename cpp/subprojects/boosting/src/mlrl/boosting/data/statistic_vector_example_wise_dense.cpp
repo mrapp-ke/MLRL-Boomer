@@ -7,9 +7,6 @@
 
 namespace boosting {
 
-    DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(uint32 numGradients)
-        : DenseExampleWiseStatisticVector(numGradients, false) {}
-
     DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(uint32 numGradients, bool init)
         : numGradients_(numGradients), numHessians_(triangularNumber(numGradients)),
           gradients_(allocateMemory<float64>(numGradients, init)),

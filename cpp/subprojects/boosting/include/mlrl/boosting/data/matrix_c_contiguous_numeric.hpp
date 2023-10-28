@@ -21,15 +21,9 @@ namespace boosting {
             /**
              * @param numRows   The number of rows in the matrix
              * @param numCols   The number of columns in the matrix
-             */
-            NumericCContiguousMatrix(uint32 numRows, uint32 numCols);
-
-            /**
-             * @param numRows   The number of rows in the matrix
-             * @param numCols   The number of columns in the matrix
              * @param init      True, if all elements in the matrix should be value-initialized, false otherwise
              */
-            NumericCContiguousMatrix(uint32 numRows, uint32 numCols, bool init);
+            NumericCContiguousMatrix(uint32 numRows, uint32 numCols, bool init = false);
 
             /**
              * Adds all values in another vector to certain elements, whose positions are given as a

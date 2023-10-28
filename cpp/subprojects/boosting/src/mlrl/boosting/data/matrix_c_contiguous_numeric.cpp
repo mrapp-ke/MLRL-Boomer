@@ -3,10 +3,6 @@
 namespace boosting {
 
     template<typename T>
-    NumericCContiguousMatrix<T>::NumericCContiguousMatrix(uint32 numRows, uint32 numCols)
-        : CContiguousMatrix<T>(numRows, numCols) {}
-
-    template<typename T>
     NumericCContiguousMatrix<T>::NumericCContiguousMatrix(uint32 numRows, uint32 numCols, bool init)
         : CContiguousMatrix<T>(numRows, numCols, init) {}
 
