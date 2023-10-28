@@ -2,14 +2,15 @@
 
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 
-DenseBinIndexVector::DenseBinIndexVector(uint32 numElements) : vector_(numElements) {}
+DenseBinIndexVector::DenseBinIndexVector(uint32 numElements)
+    : WritableVectorDecorator<AllocatedView<Vector<uint32>>>(AllocatedView<Vector<uint32>>(numElements)) {}
 
 uint32 DenseBinIndexVector::getBinIndex(uint32 exampleIndex) const {
-    return vector_[exampleIndex];
+    return (*this)[exampleIndex];
 }
 
 void DenseBinIndexVector::setBinIndex(uint32 exampleIndex, uint32 binIndex) {
-    vector_[exampleIndex] = binIndex;
+    (*this)[exampleIndex] = binIndex;
 }
 
 std::unique_ptr<IHistogram> DenseBinIndexVector::createHistogram(const IWeightedStatistics& statistics,
