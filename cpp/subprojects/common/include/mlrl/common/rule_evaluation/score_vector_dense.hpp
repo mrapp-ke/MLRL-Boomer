@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_dense.hpp"
+#include "mlrl/common/data/array.hpp"
 #include "mlrl/common/rule_evaluation/score_vector.hpp"
 
 /**
@@ -14,12 +14,11 @@
  *                     predict
  */
 template<typename IndexVector>
-class DenseScoreVector final : virtual public IScoreVector {
+class DenseScoreVector final : public ViewDecorator<AllocatedView<View<float64>>>,
+                               virtual public IScoreVector {
     private:
 
         const IndexVector& labelIndices_;
-
-        DenseVector<float64> predictedScoreVector_;
 
         const bool sorted_;
 
@@ -41,12 +40,12 @@ class DenseScoreVector final : virtual public IScoreVector {
         /**
          * An iterator that provides access to the predicted scores and allows to modify them.
          */
-        typedef DenseVector<float64>::iterator value_iterator;
+        typedef View<float64>::iterator value_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores.
          */
-        typedef DenseVector<float64>::const_iterator value_const_iterator;
+        typedef View<float64>::const_iterator value_const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices.
