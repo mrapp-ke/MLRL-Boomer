@@ -3,16 +3,12 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_dense.hpp"
+#include "mlrl/common/data/array.hpp"
 
 /**
  * A vector that stores the weights of individual bins, i.e., how many examples have been assigned to them.
  */
-class BinWeightVector final {
-    private:
-
-        DenseVector<uint32> vector_;
-
+class BinWeightVector final : public VectorDecorator<AllocatedView<Vector<uint32>>> {
     public:
 
         /**
@@ -39,11 +35,4 @@ class BinWeightVector final {
          * @return      True, if the weight is non-zero, false otherwise
          */
         bool operator[](uint32 pos) const;
-
-        /**
-         * Returns the number of elements in the vector.
-         *
-         * @return The number of elements
-         */
-        uint32 getNumElements() const;
 };

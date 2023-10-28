@@ -2,20 +2,17 @@
 
 #include "mlrl/common/util/view_functions.hpp"
 
-BinWeightVector::BinWeightVector(uint32 numElements) : vector_(numElements) {}
+BinWeightVector::BinWeightVector(uint32 numElements)
+    : VectorDecorator<AllocatedView<Vector<uint32>>>(AllocatedView<Vector<uint32>>(numElements)) {}
 
 void BinWeightVector::clear() {
-    setViewToZeros(vector_.begin(), vector_.getNumElements());
+    setViewToZeros(this->view_.array, this->view_.numElements);
 }
 
 void BinWeightVector::increaseWeight(uint32 pos) {
-    vector_[pos] += 1;
+    this->view_.array[pos] += 1;
 }
 
 bool BinWeightVector::operator[](uint32 pos) const {
-    return vector_[pos] != 0;
-}
-
-uint32 BinWeightVector::getNumElements() const {
-    return vector_.getNumElements();
+    return this->view_.array[pos] != 0;
 }
