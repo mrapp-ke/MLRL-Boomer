@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_dense.hpp"
+#include "mlrl/common/data/array.hpp"
 #include "mlrl/common/sampling/instance_sampling.hpp"
 #include "mlrl/common/sampling/partition.hpp"
 
@@ -11,10 +11,9 @@
  * An implementation of the class `IPartition` that provides random access to the indices of elements that are included
  * two, mutually exclusive, sets.
  */
-class BiPartition final : public IPartition {
+class BiPartition final : public VectorDecorator<AllocatedView<Vector<uint32>>>,
+                          public IPartition {
     private:
-
-        DenseVector<uint32> vector_;
 
         const uint32 numFirst_;
 
@@ -34,12 +33,12 @@ class BiPartition final : public IPartition {
          * An iterator that provides access to the indices that are contained by the first or second set and allows to
          * modify them.
          */
-        typedef DenseVector<uint32>::iterator iterator;
+        typedef Vector<uint32>::iterator iterator;
 
         /**
          * An iterator that provides read-only access to the indices that are contained in the first or second set.
          */
-        typedef DenseVector<uint32>::const_iterator const_iterator;
+        typedef Vector<uint32>::const_iterator const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of the elements that are contained by the first set.
@@ -120,13 +119,6 @@ class BiPartition final : public IPartition {
          * Sorts the elements that are contained by the second set in increasing order.
          */
         void sortSecond();
-
-        /**
-         * Returns the total number of elements.
-         *
-         * @return The total number of elements
-         */
-        uint32 getNumElements() const;
 
         std::unique_ptr<IStoppingCriterion> createStoppingCriterion(const IStoppingCriterionFactory& factory) override;
 

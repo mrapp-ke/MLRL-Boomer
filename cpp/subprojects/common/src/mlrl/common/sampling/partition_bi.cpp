@@ -9,38 +9,39 @@
 #include <algorithm>
 
 BiPartition::BiPartition(uint32 numFirst, uint32 numSecond)
-    : vector_(numFirst + numSecond), numFirst_(numFirst), firstSorted_(false), secondSorted_(false) {}
+    : VectorDecorator<AllocatedView<Vector<uint32>>>(AllocatedView<Vector<uint32>>(numFirst + numSecond)),
+      numFirst_(numFirst), firstSorted_(false), secondSorted_(false) {}
 
 BiPartition::iterator BiPartition::first_begin() {
-    return vector_.begin();
+    return this->view_.array;
 }
 
 BiPartition::iterator BiPartition::first_end() {
-    return &vector_.begin()[numFirst_];
+    return &this->view_.array[numFirst_];
 }
 
 BiPartition::const_iterator BiPartition::first_cbegin() const {
-    return vector_.cbegin();
+    return this->view_.array;
 }
 
 BiPartition::const_iterator BiPartition::first_cend() const {
-    return &vector_.cbegin()[numFirst_];
+    return &this->view_.array[numFirst_];
 }
 
 BiPartition::iterator BiPartition::second_begin() {
-    return &vector_.begin()[numFirst_];
+    return &this->view_.array[numFirst_];
 }
 
 BiPartition::iterator BiPartition::second_end() {
-    return vector_.end();
+    return &this->view_.array[this->view_.numElements];
 }
 
 BiPartition::const_iterator BiPartition::second_cbegin() const {
-    return &vector_.cbegin()[numFirst_];
+    return &this->view_.array[numFirst_];
 }
 
 BiPartition::const_iterator BiPartition::second_cend() const {
-    return vector_.cend();
+    return &this->view_.array[this->view_.numElements];
 }
 
 uint32 BiPartition::getNumFirst() const {
@@ -48,11 +49,7 @@ uint32 BiPartition::getNumFirst() const {
 }
 
 uint32 BiPartition::getNumSecond() const {
-    return vector_.getNumElements() - numFirst_;
-}
-
-uint32 BiPartition::getNumElements() const {
-    return vector_.getNumElements();
+    return this->view_.numElements - numFirst_;
 }
 
 void BiPartition::sortFirst() {
