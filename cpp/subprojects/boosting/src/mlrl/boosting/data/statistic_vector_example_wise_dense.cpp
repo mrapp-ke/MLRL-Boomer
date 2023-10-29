@@ -1,108 +1,100 @@
 #include "mlrl/boosting/data/statistic_vector_example_wise_dense.hpp"
 
 #include "mlrl/boosting/util/math.hpp"
-#include "mlrl/common/util/memory.hpp"
 #include "mlrl/common/util/view_functions.hpp"
 
 namespace boosting {
 
     DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(uint32 numGradients, bool init)
-        : numGradients_(numGradients), numHessians_(triangularNumber(numGradients)),
-          gradients_(allocateMemory<float64>(numGradients, init)),
-          hessians_(allocateMemory<float64>(numHessians_, init)) {}
+        : gradients_(numGradients, init), hessians_(triangularNumber(numGradients), init) {}
 
-    DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(const DenseExampleWiseStatisticVector& vector)
-        : DenseExampleWiseStatisticVector(vector.numGradients_) {
-        copyView(vector.gradients_, gradients_, numGradients_);
-        copyView(vector.hessians_, hessians_, numHessians_);
-    }
-
-    DenseExampleWiseStatisticVector::~DenseExampleWiseStatisticVector() {
-        freeMemory(gradients_);
-        freeMemory(hessians_);
+    DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(const DenseExampleWiseStatisticVector& other)
+        : DenseExampleWiseStatisticVector(other.getNumElements()) {
+        copyView(other.gradients_cbegin(), gradients_.begin(), gradients_.getNumElements());
+        copyView(other.hessians_cbegin(), hessians_.begin(), hessians_.getNumElements());
     }
 
     DenseExampleWiseStatisticVector::gradient_iterator DenseExampleWiseStatisticVector::gradients_begin() {
-        return gradients_;
+        return gradients_.begin();
     }
 
     DenseExampleWiseStatisticVector::gradient_iterator DenseExampleWiseStatisticVector::gradients_end() {
-        return &gradients_[numGradients_];
+        return gradients_.end();
     }
 
     DenseExampleWiseStatisticVector::gradient_const_iterator DenseExampleWiseStatisticVector::gradients_cbegin() const {
-        return gradients_;
+        return gradients_.cbegin();
     }
 
     DenseExampleWiseStatisticVector::gradient_const_iterator DenseExampleWiseStatisticVector::gradients_cend() const {
-        return &gradients_[numGradients_];
+        return gradients_.cend();
     }
 
     DenseExampleWiseStatisticVector::hessian_iterator DenseExampleWiseStatisticVector::hessians_begin() {
-        return hessians_;
+        return hessians_.begin();
     }
 
     DenseExampleWiseStatisticVector::hessian_iterator DenseExampleWiseStatisticVector::hessians_end() {
-        return &hessians_[numHessians_];
+        return hessians_.end();
     }
 
     DenseExampleWiseStatisticVector::hessian_const_iterator DenseExampleWiseStatisticVector::hessians_cbegin() const {
-        return hessians_;
+        return hessians_.cbegin();
     }
 
     DenseExampleWiseStatisticVector::hessian_const_iterator DenseExampleWiseStatisticVector::hessians_cend() const {
-        return &hessians_[numHessians_];
+        return hessians_.cend();
     }
 
     DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator
       DenseExampleWiseStatisticVector::hessians_diagonal_cbegin() const {
-        return DiagonalConstIterator<float64>(hessians_, 0);
+        return DiagonalConstIterator<float64>(hessians_.cbegin(), 0);
     }
 
     DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator
       DenseExampleWiseStatisticVector::hessians_diagonal_cend() const {
-        return DiagonalConstIterator<float64>(hessians_, numGradients_);
+        return DiagonalConstIterator<float64>(hessians_.cbegin(), gradients_.getNumElements());
     }
 
     uint32 DenseExampleWiseStatisticVector::getNumElements() const {
-        return numGradients_;
+        return gradients_.getNumElements();
     }
 
     void DenseExampleWiseStatisticVector::clear() {
-        setViewToZeros(gradients_, numGradients_);
-        setViewToZeros(hessians_, numHessians_);
+        setViewToZeros(gradients_.begin(), gradients_.getNumElements());
+        setViewToZeros(hessians_.begin(), hessians_.getNumElements());
     }
 
     void DenseExampleWiseStatisticVector::add(gradient_const_iterator gradientsBegin,
                                               gradient_const_iterator gradientsEnd,
                                               hessian_const_iterator hessiansBegin,
                                               hessian_const_iterator hessiansEnd) {
-        addToView(gradients_, gradientsBegin, numGradients_);
-        addToView(hessians_, hessiansBegin, numHessians_);
+        addToView(gradients_.begin(), gradientsBegin, gradients_.getNumElements());
+        addToView(hessians_.begin(), hessiansBegin, hessians_.getNumElements());
     }
 
     void DenseExampleWiseStatisticVector::add(gradient_const_iterator gradientsBegin,
                                               gradient_const_iterator gradientsEnd,
                                               hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd,
                                               float64 weight) {
-        addToView(gradients_, gradientsBegin, numGradients_, weight);
-        addToView(hessians_, hessiansBegin, numHessians_, weight);
+        addToView(gradients_.begin(), gradientsBegin, gradients_.getNumElements(), weight);
+        addToView(hessians_.begin(), hessiansBegin, hessians_.getNumElements(), weight);
     }
 
     void DenseExampleWiseStatisticVector::remove(gradient_const_iterator gradientsBegin,
                                                  gradient_const_iterator gradientsEnd,
                                                  hessian_const_iterator hessiansBegin,
                                                  hessian_const_iterator hessiansEnd) {
-        removeFromView(gradients_, gradientsBegin, numGradients_);
-        removeFromView(hessians_, hessiansBegin, numHessians_);
+        removeFromView(gradients_.begin(), gradientsBegin, gradients_.getNumElements());
+        removeFromView(hessians_.begin(), hessiansBegin, hessians_.getNumElements());
     }
 
     void DenseExampleWiseStatisticVector::remove(gradient_const_iterator gradientsBegin,
                                                  gradient_const_iterator gradientsEnd,
                                                  hessian_const_iterator hessiansBegin,
                                                  hessian_const_iterator hessiansEnd, float64 weight) {
-        removeFromView(gradients_, gradientsBegin, numGradients_, weight);
-        removeFromView(hessians_, hessiansBegin, numHessians_, weight);
+        removeFromView(gradients_.begin(), gradientsBegin, gradients_.getNumElements(), weight);
+        removeFromView(hessians_.begin(), hessiansBegin, hessians_.getNumElements(), weight);
     }
 
     void DenseExampleWiseStatisticVector::addToSubset(gradient_const_iterator gradientsBegin,
@@ -110,8 +102,8 @@ namespace boosting {
                                                       hessian_const_iterator hessiansBegin,
                                                       hessian_const_iterator hessiansEnd,
                                                       const CompleteIndexVector& indices) {
-        addToView(gradients_, gradientsBegin, numGradients_);
-        addToView(hessians_, hessiansBegin, numHessians_);
+        addToView(gradients_.begin(), gradientsBegin, gradients_.getNumElements());
+        addToView(hessians_.begin(), hessiansBegin, hessians_.getNumElements());
     }
 
     void DenseExampleWiseStatisticVector::addToSubset(gradient_const_iterator gradientsBegin,
@@ -120,11 +112,12 @@ namespace boosting {
                                                       hessian_const_iterator hessiansEnd,
                                                       const PartialIndexVector& indices) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        addToView(gradients_, gradientsBegin, indexIterator, numGradients_);
+        addToView(gradients_.begin(), gradientsBegin, indexIterator, gradients_.getNumElements());
 
-        for (uint32 i = 0; i < numGradients_; i++) {
+        for (uint32 i = 0; i < gradients_.getNumElements(); i++) {
             uint32 index = indexIterator[i];
-            addToView(&hessians_[triangularNumber(i)], &hessiansBegin[triangularNumber(index)], indexIterator, i + 1);
+            addToView(&hessians_.begin()[triangularNumber(i)], &hessiansBegin[triangularNumber(index)], indexIterator,
+                      i + 1);
         }
     }
 
@@ -133,8 +126,8 @@ namespace boosting {
                                                       hessian_const_iterator hessiansBegin,
                                                       hessian_const_iterator hessiansEnd,
                                                       const CompleteIndexVector& indices, float64 weight) {
-        addToView(gradients_, gradientsBegin, numGradients_, weight);
-        addToView(hessians_, hessiansBegin, numHessians_, weight);
+        addToView(gradients_.begin(), gradientsBegin, hessians_.getNumElements(), weight);
+        addToView(hessians_.begin(), hessiansBegin, hessians_.getNumElements(), weight);
     }
 
     void DenseExampleWiseStatisticVector::addToSubset(gradient_const_iterator gradientsBegin,
@@ -143,12 +136,12 @@ namespace boosting {
                                                       hessian_const_iterator hessiansEnd,
                                                       const PartialIndexVector& indices, float64 weight) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        addToView(gradients_, gradientsBegin, indexIterator, numGradients_, weight);
+        addToView(gradients_.begin(), gradientsBegin, indexIterator, gradients_.getNumElements(), weight);
 
-        for (uint32 i = 0; i < numGradients_; i++) {
+        for (uint32 i = 0; i < gradients_.getNumElements(); i++) {
             uint32 index = indexIterator[i];
-            addToView(&hessians_[triangularNumber(i)], &hessiansBegin[triangularNumber(index)], indexIterator, i + 1,
-                      weight);
+            addToView(&hessians_.begin()[triangularNumber(i)], &hessiansBegin[triangularNumber(index)], indexIterator,
+                      i + 1, weight);
         }
     }
 
@@ -158,8 +151,8 @@ namespace boosting {
       const CompleteIndexVector& firstIndices, gradient_const_iterator secondGradientsBegin,
       gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
       hessian_const_iterator secondHessiansEnd) {
-        setViewToDifference(gradients_, firstGradientsBegin, secondGradientsBegin, numGradients_);
-        setViewToDifference(hessians_, firstHessiansBegin, secondHessiansBegin, numHessians_);
+        setViewToDifference(gradients_.begin(), firstGradientsBegin, secondGradientsBegin, gradients_.getNumElements());
+        setViewToDifference(hessians_.begin(), firstHessiansBegin, secondHessiansBegin, hessians_.getNumElements());
     }
 
     void DenseExampleWiseStatisticVector::difference(
@@ -169,12 +162,13 @@ namespace boosting {
       gradient_const_iterator secondGradientsEnd, hessian_const_iterator secondHessiansBegin,
       hessian_const_iterator secondHessiansEnd) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
-        setViewToDifference(gradients_, firstGradientsBegin, secondGradientsBegin, indexIterator, numGradients_);
+        setViewToDifference(gradients_.begin(), firstGradientsBegin, secondGradientsBegin, indexIterator,
+                            gradients_.getNumElements());
 
-        for (uint32 i = 0; i < numGradients_; i++) {
+        for (uint32 i = 0; i < gradients_.getNumElements(); i++) {
             uint32 offset = triangularNumber(i);
             uint32 index = indexIterator[i];
-            setViewToDifference(&hessians_[offset], &firstHessiansBegin[triangularNumber(index)],
+            setViewToDifference(&hessians_.begin()[offset], &firstHessiansBegin[triangularNumber(index)],
                                 &secondHessiansBegin[offset], indexIterator, i + 1);
         }
     }

@@ -18,13 +18,9 @@ namespace boosting {
     class DenseExampleWiseStatisticVector final {
         private:
 
-            const uint32 numGradients_;
+            DenseVector<float64> gradients_;
 
-            const uint32 numHessians_;
-
-            float64* gradients_;
-
-            float64* hessians_;
+            DenseVector<float64> hessians_;
 
         public:
 
@@ -36,31 +32,29 @@ namespace boosting {
             DenseExampleWiseStatisticVector(uint32 numGradients, bool init = false);
 
             /**
-             * @param vector A reference to an object of type `DenseExampleWiseStatisticVector` to be copied
+             * @param other A reference to an object of type `DenseExampleWiseStatisticVector` to be copied
              */
-            DenseExampleWiseStatisticVector(const DenseExampleWiseStatisticVector& vector);
-
-            ~DenseExampleWiseStatisticVector();
+            DenseExampleWiseStatisticVector(const DenseExampleWiseStatisticVector& other);
 
             /**
              * An iterator that provides access to the gradients in the vector and allows to modify them.
              */
-            typedef float64* gradient_iterator;
+            typedef DenseVector<float64>::iterator gradient_iterator;
 
             /**
              * An iterator that provides read-only access to the gradients in the vector.
              */
-            typedef const float64* gradient_const_iterator;
+            typedef DenseVector<float64>::const_iterator gradient_const_iterator;
 
             /**
              * An iterator that provides access to the Hessians in the vector and allows to modify them.
              */
-            typedef float64* hessian_iterator;
+            typedef DenseVector<float64>::iterator hessian_iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians in the vector.
              */
-            typedef const float64* hessian_const_iterator;
+            typedef DenseVector<float64>::const_iterator hessian_const_iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians that correspond to the diagonal of the Hessian
