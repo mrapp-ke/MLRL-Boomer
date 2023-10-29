@@ -1,6 +1,5 @@
 #include "mlrl/boosting/data/statistic_vector_label_wise_sparse.hpp"
 
-#include "mlrl/boosting/util/view_functions.hpp"
 #include "mlrl/common/util/memory.hpp"
 #include "mlrl/common/util/view_functions.hpp"
 #include "statistic_vector_label_wise_sparse_common.hpp"
