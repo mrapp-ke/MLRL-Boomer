@@ -5,16 +5,17 @@
 namespace boosting {
 
     template<typename T>
-    DiagonalConstIterator<T>::DiagonalConstIterator(const T* ptr, uint32 index) : ptr_(ptr), index_(index) {}
+    DiagonalConstIterator<T>::DiagonalConstIterator(typename View<T>::const_iterator iterator, uint32 index)
+        : iterator_(iterator), index_(index) {}
 
     template<typename T>
     typename DiagonalConstIterator<T>::reference DiagonalConstIterator<T>::operator[](uint32 index) const {
-        return ptr_[triangularNumber(index + 1) - 1];
+        return iterator_[triangularNumber(index + 1) - 1];
     }
 
     template<typename T>
     typename DiagonalConstIterator<T>::reference DiagonalConstIterator<T>::operator*() const {
-        return ptr_[triangularNumber(index_ + 1) - 1];
+        return iterator_[triangularNumber(index_ + 1) - 1];
     }
 
     template<typename T>
