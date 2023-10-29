@@ -16,7 +16,7 @@ namespace boosting {
      * label-wise decomposable loss function in a C-contiguous array. For each element in the vector a single gradient
      * and Hessian, as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
      */
-    class SparseLabelWiseStatisticVector final {
+    class SparseLabelWiseStatisticVector final : public VectorDecorator<AllocatedView<Vector<Triple<float64>>>> {
         private:
 
             /**
@@ -26,7 +26,7 @@ namespace boosting {
             class ConstIterator final {
                 private:
 
-                    const Triple<float64>* iterator_;
+                    Vector<Triple<float64>>::const_iterator iterator_;
 
                     const float64 sumOfWeights_;
 
@@ -37,7 +37,7 @@ namespace boosting {
                      *                      `SparseLabelWiseStatisticVector`
                      * @param sumOfWeights  The sum of the weights of all statistics that have been added to the vector
                      */
-                    ConstIterator(const Triple<float64>* iterator, float64 sumOfWeights);
+                    ConstIterator(Vector<Triple<float64>>::const_iterator iterator, float64 sumOfWeights);
 
                     /**
                      * The type that is used to represent the difference between two iterators.
@@ -132,10 +132,6 @@ namespace boosting {
                     difference_type operator-(const ConstIterator& rhs) const;
             };
 
-            const uint32 numElements_;
-
-            Triple<float64>* statistics_;
-
             float64 sumOfWeights_;
 
         public:
@@ -148,11 +144,9 @@ namespace boosting {
             SparseLabelWiseStatisticVector(uint32 numElements, bool init = false);
 
             /**
-             * @param vector A reference to an object of type `SparseLabelWiseStatisticVector` to be copied
+             * @param other A reference to an object of type `SparseLabelWiseStatisticVector` to be copied
              */
-            SparseLabelWiseStatisticVector(const SparseLabelWiseStatisticVector& vector);
-
-            ~SparseLabelWiseStatisticVector();
+            SparseLabelWiseStatisticVector(const SparseLabelWiseStatisticVector& other);
 
             /**
              * An iterator that provides read-only access to the elements in the vector.
@@ -172,13 +166,6 @@ namespace boosting {
              * @return A `const_iterator` to the end
              */
             const_iterator cend() const;
-
-            /**
-             * Returns the number of elements in the vector.
-             *
-             * @return The number of elements in the vector
-             */
-            uint32 getNumElements() const;
 
             /**
              * Sets all gradients and Hessians in the vector to zero.
