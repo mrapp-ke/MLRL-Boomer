@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/data/array.hpp"
 #include "mlrl/common/data/view_c_contiguous.hpp"
 #include "mlrl/common/data/view_csr_binary.hpp"
 #include "mlrl/seco/data/confusion_matrix.hpp"
@@ -13,13 +14,7 @@ namespace seco {
     /**
      * An one-dimensional vector that stores a fixed number of confusion matrices in a C-contiguous array.
      */
-    class DenseConfusionMatrixVector final {
-        private:
-
-            ConfusionMatrix* array_;
-
-            const uint32 numElements_;
-
+    class DenseConfusionMatrixVector final : public WritableVectorDecorator<AllocatedView<Vector<ConfusionMatrix>>> {
         public:
 
             /**
@@ -32,53 +27,6 @@ namespace seco {
              * @param other A reference to an object of type `DenseConfusionMatrixVector` to be copied
              */
             DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other);
-
-            ~DenseConfusionMatrixVector();
-
-            /**
-             * An iterator that provides access to the elements in a confusion matrix and allows to modify them.
-             */
-            typedef ConfusionMatrix* iterator;
-
-            /**
-             * An iterator that provides read-only access to the elements in a confusion matrix.
-             */
-            typedef const ConfusionMatrix* const_iterator;
-
-            /**
-             * Returns an `iterator` to the beginning of the vector.
-             *
-             * @return An `iterator` to the beginning
-             */
-            iterator begin();
-
-            /**
-             * Returns an `iterator` to the end of the vector.
-             *
-             * @return An `iterator` to the end
-             */
-            iterator end();
-
-            /**
-             * Returns a `const_iterator` to the beginning of the vector.
-             *
-             * @return A `const_iterator` to the beginning
-             */
-            const_iterator cbegin() const;
-
-            /**
-             * Returns a `const_iterator` to the end of the vector.
-             *
-             * @return A `const_iterator` to the end
-             */
-            const_iterator cend() const;
-
-            /**
-             * Returns the number of elements in the vector.
-             *
-             * @return The number of elements
-             */
-            uint32 getNumElements() const;
 
             /**
              * Sets the elements of all confusion matrices to zero.
