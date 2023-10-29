@@ -1,7 +1,6 @@
 #include "mlrl/boosting/data/statistic_vector_example_wise_dense.hpp"
 
 #include "mlrl/boosting/util/math.hpp"
-#include "mlrl/boosting/util/view_functions.hpp"
 #include "mlrl/common/util/memory.hpp"
 #include "mlrl/common/util/view_functions.hpp"
 
