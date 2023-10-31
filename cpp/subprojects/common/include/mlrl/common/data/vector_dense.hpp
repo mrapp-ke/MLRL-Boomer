@@ -32,7 +32,7 @@ class ResizableVectorDecorator : public Vector {
          * @param numElements   The number of elements to be set
          * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
          */
-        void setNumElements(uint32 numElements, bool freeMemory) {
+        virtual void setNumElements(uint32 numElements, bool freeMemory) {
             if (numElements < maxCapacity_) {
                 if (freeMemory) {
                     Vector::view_.array = reallocateMemory(Vector::view_.array, numElements);
