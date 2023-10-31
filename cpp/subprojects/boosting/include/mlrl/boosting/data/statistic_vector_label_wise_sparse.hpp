@@ -16,7 +16,7 @@ namespace boosting {
      * label-wise decomposable loss function in a C-contiguous array. For each element in the vector a single gradient
      * and Hessian, as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
      */
-    class SparseLabelWiseStatisticVector final : public VectorDecorator<AllocatedView<Vector<Triple<float64>>>> {
+    class SparseLabelWiseStatisticVector final : public VectorDecorator<AllocatedVector<Triple<float64>>> {
         private:
 
             /**

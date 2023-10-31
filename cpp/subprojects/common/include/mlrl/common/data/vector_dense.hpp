@@ -54,7 +54,7 @@ class ResizableVectorDecorator : public Vector {
  * @tparam T The type of the values stored in the vector
  */
 template<typename T>
-class DenseVector : public ResizableVectorDecorator<WritableVectorDecorator<AllocatedView<Vector<T>>>> {
+class DenseVector : public ResizableVectorDecorator<WritableVectorDecorator<AllocatedVector<T>>> {
     private:
 
         uint32 maxCapacity_;
@@ -66,8 +66,8 @@ class DenseVector : public ResizableVectorDecorator<WritableVectorDecorator<Allo
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
         DenseVector(uint32 numElements, bool init = false)
-            : ResizableVectorDecorator<WritableVectorDecorator<AllocatedView<Vector<T>>>>(
-              AllocatedView<Vector<T>>(numElements, init)) {}
+            : ResizableVectorDecorator<WritableVectorDecorator<AllocatedVector<T>>>(
+              AllocatedVector<T>(numElements, init)) {}
 
         virtual ~DenseVector() override {};
 };

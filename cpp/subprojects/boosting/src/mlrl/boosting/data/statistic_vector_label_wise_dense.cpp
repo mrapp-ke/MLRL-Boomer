@@ -5,8 +5,8 @@
 namespace boosting {
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(uint32 numElements, bool init)
-        : WritableVectorDecorator<AllocatedView<Vector<Tuple<float64>>>>(
-          AllocatedView<Vector<Tuple<float64>>>(numElements, init)) {}
+        : WritableVectorDecorator<AllocatedVector<Tuple<float64>>>(AllocatedVector<Tuple<float64>>(numElements, init)) {
+    }
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(const DenseLabelWiseStatisticVector& other)
         : DenseLabelWiseStatisticVector(other.view_.numElements) {

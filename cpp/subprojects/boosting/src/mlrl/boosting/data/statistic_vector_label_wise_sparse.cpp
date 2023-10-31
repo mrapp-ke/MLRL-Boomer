@@ -59,8 +59,7 @@ namespace boosting {
     }
 
     SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(uint32 numElements, bool init)
-        : VectorDecorator<AllocatedView<Vector<Triple<float64>>>>(
-          AllocatedView<Vector<Triple<float64>>>(numElements, init)),
+        : VectorDecorator<AllocatedVector<Triple<float64>>>(AllocatedVector<Triple<float64>>(numElements, init)),
           sumOfWeights_(0) {}
 
     SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(const SparseLabelWiseStatisticVector& other)

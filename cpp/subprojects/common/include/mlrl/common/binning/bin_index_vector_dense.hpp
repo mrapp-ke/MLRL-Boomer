@@ -9,7 +9,7 @@
 /**
  * Stores the indices of the bins, individual examples have been assigned to, using a C-contiguous array.
  */
-class DenseBinIndexVector final : public WritableVectorDecorator<AllocatedView<Vector<uint32>>>,
+class DenseBinIndexVector final : public WritableVectorDecorator<AllocatedVector<uint32>>,
                                   public IBinIndexVector {
     public:
 

@@ -9,7 +9,7 @@
 /**
  * A head that contains a numerical score for each available label.
  */
-class MLRLCOMMON_API CompleteHead final : public VectorDecorator<AllocatedView<Vector<float64>>>,
+class MLRLCOMMON_API CompleteHead final : public VectorDecorator<AllocatedVector<float64>>,
                                           public IHead {
     public:
 

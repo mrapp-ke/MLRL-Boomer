@@ -14,7 +14,7 @@
  *                     predict
  */
 template<typename IndexVector>
-class DenseScoreVector final : public ViewDecorator<AllocatedView<View<float64>>>,
+class DenseScoreVector final : public ViewDecorator<AllocatedView<float64>>,
                                virtual public IScoreVector {
     private:
 
