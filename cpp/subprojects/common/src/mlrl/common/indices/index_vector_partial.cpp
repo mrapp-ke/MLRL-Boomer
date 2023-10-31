@@ -2,38 +2,20 @@
 
 #include "mlrl/common/thresholds/thresholds_subset.hpp"
 
-PartialIndexVector::PartialIndexVector(uint32 numElements, bool init) : vector_(numElements, init) {}
+PartialIndexVector::PartialIndexVector(uint32 numElements, bool init)
+    : ResizableVectorDecorator<WritableVectorDecorator<AllocatedVector<uint32>>>(
+      AllocatedVector<uint32>(numElements, init)) {}
+
+uint32 PartialIndexVector::getNumElements() const {
+    return ResizableVectorDecorator<WritableVectorDecorator<AllocatedVector<uint32>>>::getNumElements();
+}
 
 bool PartialIndexVector::isPartial() const {
     return true;
 }
 
-uint32 PartialIndexVector::getNumElements() const {
-    return vector_.getNumElements();
-}
-
-void PartialIndexVector::setNumElements(uint32 numElements, bool freeMemory) {
-    vector_.setNumElements(numElements, freeMemory);
-}
-
 uint32 PartialIndexVector::getIndex(uint32 pos) const {
-    return vector_[pos];
-}
-
-PartialIndexVector::iterator PartialIndexVector::begin() {
-    return vector_.begin();
-}
-
-PartialIndexVector::iterator PartialIndexVector::end() {
-    return vector_.end();
-}
-
-PartialIndexVector::const_iterator PartialIndexVector::cbegin() const {
-    return vector_.cbegin();
-}
-
-PartialIndexVector::const_iterator PartialIndexVector::cend() const {
-    return vector_.cend();
+    return (*this)[pos];
 }
 
 std::unique_ptr<IRuleRefinement> PartialIndexVector::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
