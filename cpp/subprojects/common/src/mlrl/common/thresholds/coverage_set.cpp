@@ -5,38 +5,14 @@
 #include "mlrl/common/util/view_functions.hpp"
 
 CoverageSet::CoverageSet(uint32 numElements)
-    : array_(new uint32[numElements]), numElements_(numElements), numCovered_(numElements) {
-    setViewToIncreasingValues(array_, numElements, 0, 1);
+    : WritableVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(numElements)), numCovered_(numElements) {
+    setViewToIncreasingValues(this->view_.array, numElements, 0, 1);
 }
 
-CoverageSet::CoverageSet(const CoverageSet& coverageSet)
-    : array_(new uint32[coverageSet.numElements_]), numElements_(coverageSet.numElements_),
-      numCovered_(coverageSet.numCovered_) {
-    copyView(coverageSet.array_, array_, numCovered_);
-}
-
-CoverageSet::~CoverageSet() {
-    delete[] array_;
-}
-
-CoverageSet::iterator CoverageSet::begin() {
-    return array_;
-}
-
-CoverageSet::iterator CoverageSet::end() {
-    return &array_[numCovered_];
-}
-
-CoverageSet::const_iterator CoverageSet::cbegin() const {
-    return array_;
-}
-
-CoverageSet::const_iterator CoverageSet::cend() const {
-    return &array_[numCovered_];
-}
-
-uint32 CoverageSet::getNumElements() const {
-    return numElements_;
+CoverageSet::CoverageSet(const CoverageSet& other)
+    : WritableVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(other.view_.numElements)),
+      numCovered_(other.numCovered_) {
+    copyView(other.view_.array, this->view_.array, numCovered_);
 }
 
 uint32 CoverageSet::getNumCovered() const {
@@ -48,8 +24,8 @@ void CoverageSet::setNumCovered(uint32 numCovered) {
 }
 
 void CoverageSet::reset() {
-    numCovered_ = numElements_;
-    setViewToIncreasingValues(array_, numElements_, 0, 1);
+    numCovered_ = this->view_.numElements;
+    setViewToIncreasingValues(this->view_.array, this->view_.numElements, 0, 1);
 }
 
 std::unique_ptr<ICoverageState> CoverageSet::copy() const {
