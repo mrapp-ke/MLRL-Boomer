@@ -8,7 +8,7 @@
 /**
  * An one-dimension vector that stores binary data in a space-efficient way.
  */
-class BitVector final : public VectorDecorator<AllocatedView<View<uint32>>> {
+class BitVector final : public VectorDecorator<AllocatedView<uint32>> {
     private:
 
         const uint32 numElements_;

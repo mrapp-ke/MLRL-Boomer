@@ -1,7 +1,7 @@
 #include "mlrl/common/model/head_complete.hpp"
 
 CompleteHead::CompleteHead(uint32 numElements)
-    : VectorDecorator<AllocatedView<Vector<float64>>>(AllocatedView<Vector<float64>>(numElements)) {}
+    : VectorDecorator<AllocatedVector<float64>>(AllocatedVector<float64>(numElements)) {}
 
 CompleteHead::value_iterator CompleteHead::values_begin() {
     return this->view_.array;

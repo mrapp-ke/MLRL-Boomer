@@ -9,8 +9,8 @@
 #include <algorithm>
 
 BiPartition::BiPartition(uint32 numFirst, uint32 numSecond)
-    : VectorDecorator<AllocatedView<Vector<uint32>>>(AllocatedView<Vector<uint32>>(numFirst + numSecond)),
-      numFirst_(numFirst), firstSorted_(false), secondSorted_(false) {}
+    : VectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(numFirst + numSecond)), numFirst_(numFirst),
+      firstSorted_(false), secondSorted_(false) {}
 
 BiPartition::iterator BiPartition::first_begin() {
     return this->view_.array;

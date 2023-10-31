@@ -11,7 +11,7 @@
  * An implementation of the class `IPartition` that provides random access to the indices of elements that are included
  * two, mutually exclusive, sets.
  */
-class BiPartition final : public VectorDecorator<AllocatedView<Vector<uint32>>>,
+class BiPartition final : public VectorDecorator<AllocatedVector<uint32>>,
                           public IPartition {
     private:
 

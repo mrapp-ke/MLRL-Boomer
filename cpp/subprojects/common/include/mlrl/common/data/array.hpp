@@ -12,25 +12,41 @@
  * @tparam Base The type of the view
  */
 template<typename View>
-struct AllocatedView : public View {
+struct Allocator : public View {
         /**
          * @param numElements   The number of elements in the view
          * @param init          True, if all elements in the view should be value-initialized, false otherwise
          */
-        AllocatedView(uint32 numElements, bool init = false)
+        Allocator(uint32 numElements, bool init = false)
             : View(allocateMemory<typename View::value_type>(numElements, init), numElements) {}
 
         /**
-         * @param other A reference to an object of type `AllocatedView` that should be moved
+         * @param other A reference to an object of type `Allocator` that should be moved
          */
-        AllocatedView(AllocatedView<View>&& other) : View(std::move(other)) {
+        Allocator(Allocator<View>&& other) : View(std::move(other)) {
             other.array = nullptr;
         }
 
-        virtual ~AllocatedView() override {
+        virtual ~Allocator() override {
             freeMemory(View::array);
         }
 };
+
+/**
+ * Allocates the memory, a `View` provides access to
+ *
+ * @tparam T The type of the values stored in the `View`
+ */
+template<typename T>
+using AllocatedView = Allocator<View<T>>;
+
+/**
+ * Allocates the memory, a `Vector` provides access to
+ *
+ * @tparam T The type of the values stored in the `Vector`
+ */
+template<typename T>
+using AllocatedVector = Allocator<Vector<T>>;
 
 /**
  * An array that provides random read and write access to newly allocated memory.
@@ -38,7 +54,7 @@ struct AllocatedView : public View {
  * @tparam T The type of the values stored in the array
  */
 template<typename T>
-class Array : public AccessibleVectorDecorator<AllocatedView<View<T>>> {
+class Array : public AccessibleVectorDecorator<AllocatedView<T>> {
     public:
 
         /**
@@ -46,5 +62,5 @@ class Array : public AccessibleVectorDecorator<AllocatedView<View<T>>> {
          * @param init          True, if all elements in the array should be value-initialized, false otherwise
          */
         Array(uint32 numElements, bool init = false)
-            : AccessibleVectorDecorator<AllocatedView<View<T>>>(AllocatedView<View<T>>(numElements, init)) {}
+            : AccessibleVectorDecorator<AllocatedView<T>>(AllocatedView<T>(numElements, init)) {}
 };

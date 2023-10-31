@@ -12,7 +12,7 @@
  * @tparam T The type of the weights
  */
 template<typename T>
-class DenseWeightVector final : public WritableVectorDecorator<AllocatedView<Vector<T>>>,
+class DenseWeightVector final : public WritableVectorDecorator<AllocatedVector<T>>,
                                 public IWeightVector {
     private:
 

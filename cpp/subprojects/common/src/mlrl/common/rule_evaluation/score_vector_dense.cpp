@@ -7,7 +7,7 @@
 
 template<typename IndexVector>
 DenseScoreVector<IndexVector>::DenseScoreVector(const IndexVector& labelIndices, bool sorted)
-    : ViewDecorator<AllocatedView<View<float64>>>(AllocatedView<View<float64>>(labelIndices.getNumElements())),
+    : ViewDecorator<AllocatedView<float64>>(AllocatedView<float64>(labelIndices.getNumElements())),
       labelIndices_(labelIndices), sorted_(sorted) {}
 
 template<typename IndexVector>

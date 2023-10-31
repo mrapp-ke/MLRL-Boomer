@@ -3,7 +3,7 @@
 #include "mlrl/common/util/view_functions.hpp"
 
 BinWeightVector::BinWeightVector(uint32 numElements)
-    : VectorDecorator<AllocatedView<Vector<uint32>>>(AllocatedView<Vector<uint32>>(numElements)) {}
+    : VectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(numElements)) {}
 
 void BinWeightVector::clear() {
     setViewToZeros(this->view_.array, this->view_.numElements);
