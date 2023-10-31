@@ -63,14 +63,6 @@ class VectorDecorator : public ViewDecorator<View> {
 };
 
 /**
- * Provides random read and write access to the values stored in a vector.
- *
- * @tparam Vector The type of the vector
- */
-template<typename Vector>
-using AccessibleVectorDecorator = WriteAccessibleViewDecorator<ReadAccessibleViewDecorator<VectorDecorator<Vector>>>;
-
-/**
  * Provides read-only access via iterators to the values stored in a vector.
  *
  * @tparam Vector The type of the vector
