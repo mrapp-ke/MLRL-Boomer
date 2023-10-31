@@ -54,7 +54,7 @@ using AllocatedVector = Allocator<Vector<T>>;
  * @tparam T The type of the values stored in the array
  */
 template<typename T>
-class Array : public AccessibleVectorDecorator<AllocatedView<T>> {
+class Array : public WriteAccessibleViewDecorator<ReadAccessibleViewDecorator<VectorDecorator<AllocatedView<T>>>> {
     public:
 
         /**
@@ -62,5 +62,6 @@ class Array : public AccessibleVectorDecorator<AllocatedView<T>> {
          * @param init          True, if all elements in the array should be value-initialized, false otherwise
          */
         Array(uint32 numElements, bool init = false)
-            : AccessibleVectorDecorator<AllocatedView<T>>(AllocatedView<T>(numElements, init)) {}
+            : WriteAccessibleViewDecorator<ReadAccessibleViewDecorator<VectorDecorator<AllocatedView<T>>>>(
+              AllocatedView<T>(numElements, init)) {}
 };
