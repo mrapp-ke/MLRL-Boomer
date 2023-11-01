@@ -2,32 +2,10 @@
 
 #include <algorithm>
 
-FeatureVector::FeatureVector(uint32 numElements) : vector_(numElements) {}
-
-FeatureVector::iterator FeatureVector::begin() {
-    return vector_.begin();
-}
-
-FeatureVector::iterator FeatureVector::end() {
-    return vector_.end();
-}
-
-FeatureVector::const_iterator FeatureVector::cbegin() const {
-    return vector_.cbegin();
-}
-
-FeatureVector::const_iterator FeatureVector::cend() const {
-    return vector_.cend();
-}
-
-uint32 FeatureVector::getNumElements() const {
-    return vector_.getNumElements();
-}
-
-void FeatureVector::setNumElements(uint32 numElements, bool freeMemory) {
-    return vector_.setNumElements(numElements, freeMemory);
-}
+FeatureVector::FeatureVector(uint32 numElements)
+    : ResizableVectorDecorator<WritableVectorDecorator<AllocatedVector<IndexedValue<float32>>>>(
+      AllocatedVector<IndexedValue<float32>>(numElements)) {}
 
 void FeatureVector::sortByValues() {
-    std::sort(vector_.begin(), vector_.end(), IndexedValue<float32>::CompareValue());
+    std::sort(this->begin(), this->end(), IndexedValue<float32>::CompareValue());
 }
