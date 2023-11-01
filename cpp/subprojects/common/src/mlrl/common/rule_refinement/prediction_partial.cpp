@@ -5,7 +5,6 @@
 #include "mlrl/common/post_processing/post_processor.hpp"
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
-#include "mlrl/common/util/view_functions.hpp"
 
 PartialPrediction::PartialPrediction(uint32 numElements, bool sorted)
     : predictedScoreVector_(numElements), indexVector_(numElements), sorted_(sorted) {}

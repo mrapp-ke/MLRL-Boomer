@@ -16,7 +16,8 @@ namespace boosting {
      * label-wise decomposable loss function in a C-contiguous array. For each element in the vector a single gradient
      * and Hessian, as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
      */
-    class SparseLabelWiseStatisticVector final : public VectorDecorator<AllocatedVector<Triple<float64>>> {
+    class SparseLabelWiseStatisticVector final
+        : public ClearableVectorDecorator<VectorDecorator<AllocatedVector<Triple<float64>>>> {
         private:
 
             /**
@@ -166,11 +167,6 @@ namespace boosting {
              * @return A `const_iterator` to the end
              */
             const_iterator cend() const;
-
-            /**
-             * Sets all gradients and Hessians in the vector to zero.
-             */
-            void clear();
 
             /**
              * Adds all gradients and Hessians in another vector to this vector.
@@ -354,6 +350,8 @@ namespace boosting {
              */
             void difference(const SparseLabelWiseStatisticVector& first, const PartialIndexVector& firstIndices,
                             const SparseLabelWiseStatisticVector& second);
+
+            void clear() override;
     };
 
 }

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/view.hpp"
+#include "mlrl/common/util/view_functions.hpp"
 
 /**
  * A one-dimensional view that provides access to values stored in a pre-allocated array of a specific size.
@@ -132,3 +133,25 @@ using ReadableVectorDecorator = ReadIterableVectorDecorator<VectorDecorator<Vect
  */
 template<typename Vector>
 using WritableVectorDecorator = WriteIterableVectorDecorator<ReadableVectorDecorator<Vector>>;
+
+/**
+ * Allows to set all values stored in a vector to zero.
+ *
+ * @tparam Vector The type of the vector
+ */
+template<typename Vector>
+class ClearableVectorDecorator : public Vector {
+    public:
+
+        /**
+         * @param view The view, the vector should be backed by
+         */
+        ClearableVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
+
+        /**
+         * Sets all values stored in the vector to zero.
+         */
+        virtual void clear() {
+            setViewToZeros(this->view_.array, this->view_.numElements);
+        }
+};

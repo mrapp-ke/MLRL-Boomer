@@ -5,7 +5,6 @@
 
 #include "mlrl/common/input/label_matrix_row_wise.hpp"
 #include "mlrl/common/prediction/label_space_info.hpp"
-#include "mlrl/common/util/view_functions.hpp"
 
 #include <functional>
 #include <vector>

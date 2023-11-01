@@ -1,7 +1,5 @@
 #include "mlrl/common/data/vector_bit.hpp"
 
-#include "mlrl/common/util/view_functions.hpp"
-
 #include <climits>
 
 constexpr std::size_t UINT32_SIZE = CHAR_BIT * sizeof(uint32);
@@ -19,7 +17,8 @@ static inline constexpr uint32 mask(uint32 pos) {
 }
 
 BitVector::BitVector(uint32 numElements, bool init)
-    : VectorDecorator<AllocatedView<uint32>>(AllocatedView<uint32>(size(numElements), init)),
+    : ClearableVectorDecorator<VectorDecorator<AllocatedVector<uint32>>>(
+      AllocatedVector<uint32>(size(numElements), init)),
       numElements_(numElements) {}
 
 bool BitVector::operator[](uint32 pos) const {
@@ -36,8 +35,4 @@ void BitVector::set(uint32 pos, bool value) {
 
 uint32 BitVector::getNumElements() const {
     return numElements_;
-}
-
-void BitVector::clear() {
-    setViewToZeros(this->view_.array, size(numElements_));
 }

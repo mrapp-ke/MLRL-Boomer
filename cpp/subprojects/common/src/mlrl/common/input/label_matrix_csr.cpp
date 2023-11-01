@@ -5,7 +5,6 @@
 #include "mlrl/common/sampling/partition_sampling.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
 #include "mlrl/common/util/math.hpp"
-#include "mlrl/common/util/view_functions.hpp"
 
 CsrLabelMatrix::View::View(const CsrLabelMatrix& labelMatrix, uint32 row)
     : ReadableVectorDecorator<Vector<const uint32>>(Vector<const uint32>(

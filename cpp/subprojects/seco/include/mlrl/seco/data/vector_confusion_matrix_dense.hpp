@@ -14,7 +14,8 @@ namespace seco {
     /**
      * An one-dimensional vector that stores a fixed number of confusion matrices in a C-contiguous array.
      */
-    class DenseConfusionMatrixVector final : public WritableVectorDecorator<AllocatedVector<ConfusionMatrix>> {
+    class DenseConfusionMatrixVector final
+        : public ClearableVectorDecorator<WritableVectorDecorator<AllocatedVector<ConfusionMatrix>>> {
         public:
 
             /**
@@ -27,11 +28,6 @@ namespace seco {
              * @param other A reference to an object of type `DenseConfusionMatrixVector` to be copied
              */
             DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other);
-
-            /**
-             * Sets the elements of all confusion matrices to zero.
-             */
-            void clear();
 
             /**
              * Adds all confusion matrix elements in another vector to this vector.
