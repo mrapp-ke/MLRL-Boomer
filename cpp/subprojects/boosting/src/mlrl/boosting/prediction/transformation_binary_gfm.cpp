@@ -2,7 +2,6 @@
 
 #include "mlrl/common/data/matrix_sparse_set.hpp"
 #include "mlrl/common/data/vector_sparse_array.hpp"
-#include "mlrl/common/util/view_functions.hpp"
 
 #include <algorithm>
 

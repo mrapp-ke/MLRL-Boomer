@@ -1,20 +1,14 @@
 #include "mlrl/boosting/data/statistic_vector_label_wise_dense.hpp"
 
-#include "mlrl/common/util/view_functions.hpp"
-
 namespace boosting {
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(uint32 numElements, bool init)
-        : WritableVectorDecorator<AllocatedVector<Tuple<float64>>>(AllocatedVector<Tuple<float64>>(numElements, init)) {
-    }
+        : ClearableVectorDecorator<WritableVectorDecorator<AllocatedVector<Tuple<float64>>>>(
+          AllocatedVector<Tuple<float64>>(numElements, init)) {}
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(const DenseLabelWiseStatisticVector& other)
         : DenseLabelWiseStatisticVector(other.view_.numElements) {
         copyView(other.view_.array, this->view_.array, this->view_.numElements);
-    }
-
-    void DenseLabelWiseStatisticVector::clear() {
-        setViewToZeros(this->view_.array, this->view_.numElements);
     }
 
     void DenseLabelWiseStatisticVector::add(const DenseLabelWiseStatisticVector& vector) {

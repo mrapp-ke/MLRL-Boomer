@@ -7,7 +7,6 @@
 #include "mlrl/boosting/prediction/transformation_binary.hpp"
 #include "mlrl/common/data/matrix_c_contiguous.hpp"
 #include "mlrl/common/prediction/predictor_binary.hpp"
-#include "mlrl/common/util/view_functions.hpp"
 
 namespace boosting {
 

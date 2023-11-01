@@ -5,7 +5,6 @@
 #include "mlrl/common/iterator/binary_forward_iterator.hpp"
 #include "mlrl/common/iterator/non_zero_index_forward_iterator.hpp"
 #include "mlrl/common/prediction/probability_calibration_no.hpp"
-#include "mlrl/common/util/view_functions.hpp"
 
 #include <algorithm>
 #include <stdexcept>

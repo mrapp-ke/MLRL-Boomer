@@ -4,7 +4,6 @@
 #include "mlrl/common/post_processing/post_processor.hpp"
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
-#include "mlrl/common/util/view_functions.hpp"
 
 CompletePrediction::CompletePrediction(uint32 numElements)
     : predictedScoreVector_(numElements), indexVector_(numElements) {}

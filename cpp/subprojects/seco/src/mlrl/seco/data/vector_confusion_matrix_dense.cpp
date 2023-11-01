@@ -1,7 +1,6 @@
 #include "mlrl/seco/data/vector_confusion_matrix_dense.hpp"
 
 #include "mlrl/common/iterator/binary_forward_iterator.hpp"
-#include "mlrl/common/util/view_functions.hpp"
 
 #include <algorithm>
 
@@ -32,16 +31,12 @@ namespace seco {
     }
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(uint32 numElements, bool init)
-        : WritableVectorDecorator<AllocatedVector<ConfusionMatrix>>(
+        : ClearableVectorDecorator<WritableVectorDecorator<AllocatedVector<ConfusionMatrix>>>(
           AllocatedVector<ConfusionMatrix>(numElements, init)) {}
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other)
         : DenseConfusionMatrixVector(other.view_.numElements) {
         copyView(other.view_.array, this->view_.array, this->view_.numElements);
-    }
-
-    void DenseConfusionMatrixVector::clear() {
-        setViewToZeros(this->view_.array, this->view_.numElements);
     }
 
     void DenseConfusionMatrixVector::add(const_iterator begin, const_iterator end) {

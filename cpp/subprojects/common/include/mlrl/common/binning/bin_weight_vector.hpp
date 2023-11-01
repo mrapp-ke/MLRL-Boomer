@@ -8,18 +8,13 @@
 /**
  * A vector that stores the weights of individual bins, i.e., how many examples have been assigned to them.
  */
-class BinWeightVector final : public VectorDecorator<AllocatedVector<uint32>> {
+class BinWeightVector final : public ClearableVectorDecorator<VectorDecorator<AllocatedVector<uint32>>> {
     public:
 
         /**
          * @param numElements The number of elements in the vector
          */
         BinWeightVector(uint32 numElements);
-
-        /**
-         * Resets all weights to zero.
-         */
-        void clear();
 
         /**
          * Increases the weight at a specific position by one.

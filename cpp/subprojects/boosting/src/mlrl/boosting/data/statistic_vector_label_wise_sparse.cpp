@@ -1,6 +1,5 @@
 #include "mlrl/boosting/data/statistic_vector_label_wise_sparse.hpp"
 
-#include "mlrl/common/util/view_functions.hpp"
 #include "statistic_vector_label_wise_sparse_common.hpp"
 
 namespace boosting {
@@ -59,7 +58,8 @@ namespace boosting {
     }
 
     SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(uint32 numElements, bool init)
-        : VectorDecorator<AllocatedVector<Triple<float64>>>(AllocatedVector<Triple<float64>>(numElements, init)),
+        : ClearableVectorDecorator<VectorDecorator<AllocatedVector<Triple<float64>>>>(
+          AllocatedVector<Triple<float64>>(numElements, init)),
           sumOfWeights_(0) {}
 
     SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(const SparseLabelWiseStatisticVector& other)
@@ -74,11 +74,6 @@ namespace boosting {
 
     SparseLabelWiseStatisticVector::const_iterator SparseLabelWiseStatisticVector::cend() const {
         return ConstIterator(&this->view_.array[this->view_.numElements], sumOfWeights_);
-    }
-
-    void SparseLabelWiseStatisticVector::clear() {
-        sumOfWeights_ = 0;
-        setViewToZeros(this->view_.array, this->view_.numElements);
     }
 
     void SparseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticVector& vector) {
@@ -227,6 +222,11 @@ namespace boosting {
         sumOfWeights_ = first.sumOfWeights_ - second.sumOfWeights_;
         setViewToDifference(this->view_.array, first.view_.array, second.view_.array, firstIndices.cbegin(),
                             this->view_.numElements);
+    }
+
+    void SparseLabelWiseStatisticVector::clear() {
+        ClearableVectorDecorator<VectorDecorator<AllocatedVector<Triple<float64>>>>::clear();
+        sumOfWeights_ = 0;
     }
 
 }
