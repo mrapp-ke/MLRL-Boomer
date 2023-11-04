@@ -47,11 +47,11 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
 
     protected:
 
-        std::unique_ptr<IThresholdsSubset> growRule(
-          IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
-          IPartition& partition, IFeatureSampling& featureSampling, RNG& rng,
-          std::unique_ptr<ConditionList>& conditionListPtr,
-          std::unique_ptr<AbstractEvaluatedPrediction>& headPtr) const override {
+        std::unique_ptr<IThresholdsSubset> growRule(IThresholds& thresholds, const IIndexVector& labelIndices,
+                                                    const IWeightVector& weights, IPartition& partition,
+                                                    IFeatureSampling& featureSampling, RNG& rng,
+                                                    std::unique_ptr<ConditionList>& conditionListPtr,
+                                                    std::unique_ptr<IEvaluatedPrediction>& headPtr) const override {
             // The label indices for which the next refinement of the rule may predict
             const IIndexVector* currentLabelIndices = &labelIndices;
             // A list that contains the conditions in the rule's body (in the order they have been learned)

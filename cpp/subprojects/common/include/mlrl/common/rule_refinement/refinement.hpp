@@ -26,10 +26,10 @@ struct Refinement final : public Condition {
         }
 
         /**
-         * An unique pointer to an object of type `AbstractEvaluatedPrediction` that stores the scores that are
-         * predicted by the refined rule, as well as its overall quality.
+         * An unique pointer to an object of type `IEvaluatedPrediction` that stores the scores that are predicted by
+         * the refined rule, as well as its overall quality.
          */
-        std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
+        std::unique_ptr<IEvaluatedPrediction> headPtr;
 
         /**
          * The index of the last element, e.g., example or bin, that has been processed when evaluating the refined

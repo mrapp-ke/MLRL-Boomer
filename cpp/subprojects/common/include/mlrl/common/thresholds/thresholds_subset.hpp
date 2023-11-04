@@ -91,12 +91,12 @@ class IThresholdsSubset {
          *                      of the training examples that belong to the training set
          * @param coverageState A reference to an object of type `CoverageMask` that keeps track of the examples that
          *                      are covered by the rule
-         * @param head          A reference to an object of type `AbstractPrediction` that stores the scores that are
-         *                      predicted by the rule
+         * @param head          A reference to an object of type `IPrediction` that stores the scores that are predicted
+         *                      by the rule
          * @return              An object of type `Quality` that stores the calculated quality
          */
         virtual Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageState,
-                                            const AbstractPrediction& head) const = 0;
+                                            const IPrediction& head) const = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
@@ -110,12 +110,12 @@ class IThresholdsSubset {
          *                      the training examples that belong to the training set
          * @param coverageState A reference to an object of type `CoverageMask` that keeps track of the examples that
          *                      are covered by the rule
-         * @param head          A reference to an object of type `AbstractPrediction` that stores the scores that are
-         *                      predicted by the rule
+         * @param head          A reference to an object of type `IPrediction` that stores the scores that are predicted
+         *                      by the rule
          * @return              An object of type `Quality` that stores the calculated quality
          */
         virtual Quality evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
-                                            const AbstractPrediction& head) const = 0;
+                                            const IPrediction& head) const = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
@@ -129,12 +129,12 @@ class IThresholdsSubset {
          *                      of the training examples that belong to the training set
          * @param coverageState A reference to an object of type `CoverageSet` that keeps track of the examples that are
          *                      covered by the rule
-         * @param head          A reference to an object of type `AbstractPrediction` that stores the scores that are
-         *                      predicted by the rule
+         * @param head          A reference to an object of type `IPrediction` that stores the scores that are predicted
+         *                      by the rule
          * @return              An object of type `Quality` that stores the calculated quality
          */
         virtual Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
-                                            const AbstractPrediction& head) const = 0;
+                                            const IPrediction& head) const = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
@@ -148,12 +148,12 @@ class IThresholdsSubset {
          *                      the training examples that belong to the training set
          * @param coverageState A reference to an object of type `CoverageSet` that keeps track of the examples that are
          *                      covered by the rule
-         * @param head          A reference to an object of type `AbstractPrediction` that stores the scores that are
-         *                      predicted by the rule
+         * @param head          A reference to an object of type `IPrediction` that stores the scores that are predicted
+         *                      by the rule
          * @return              An object of type `Quality` that stores the calculated quality
          */
         virtual Quality evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
-                                            const AbstractPrediction& head) const = 0;
+                                            const IPrediction& head) const = 0;
 
         /**
          * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
@@ -166,10 +166,10 @@ class IThresholdsSubset {
          *                      of the training examples that belong to the training set
          * @param coverageState A reference to an object of type `CoverageMask` that keeps track of the examples that
          *                      are covered by the rule
-         * @param head          A reference to an object of type `AbstractPrediction` to be updated
+         * @param head          A reference to an object of type `IPrediction` to be updated
          */
         virtual void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageState,
-                                           AbstractPrediction& head) const = 0;
+                                           IPrediction& head) const = 0;
 
         /**
          * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
@@ -182,10 +182,10 @@ class IThresholdsSubset {
          *                      the training examples that belong to the training set
          * @param coverageState A reference to an object of type `CoverageMask` that keeps track of the examples that
          *                      are covered by the rule
-         * @param head          A reference to an object of type `AbstractPrediction` to be updated
+         * @param head          A reference to an object of type `IPrediction` to be updated
          */
         virtual void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageState,
-                                           AbstractPrediction& head) const = 0;
+                                           IPrediction& head) const = 0;
 
         /**
          * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
@@ -198,10 +198,10 @@ class IThresholdsSubset {
          *                      of the training examples that belong to the training set
          * @param coverageState A reference to an object of type `CoverageMask` that keeps track of the examples that
          *                      are covered by the rule
-         * @param head          A reference to an object of type `AbstractPrediction` to be updated
+         * @param head          A reference to an object of type `IPrediction` to be updated
          */
         virtual void recalculatePrediction(const SinglePartition& partition, const CoverageSet& coverageState,
-                                           AbstractPrediction& head) const = 0;
+                                           IPrediction& head) const = 0;
 
         /**
          * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
@@ -214,24 +214,22 @@ class IThresholdsSubset {
          *                      the training examples that belong to the training set
          * @param coverageState A reference to an object of type `CoverageSet` that keeps track of the examples that are
          *                      covered by the rule
-         * @param head          A reference to an object of type `AbstractPrediction` to be updated
+         * @param head          A reference to an object of type `IPrediction` to be updated
          */
         virtual void recalculatePrediction(BiPartition& partition, const CoverageSet& coverageState,
-                                           AbstractPrediction& head) const = 0;
+                                           IPrediction& head) const = 0;
 
         /**
          * Updates the statistics that correspond to the current subset based on the prediction of a rule.
          *
-         * @param prediction A reference to an object of type `AbstractPrediction` that stores the prediction of the
-         *                   rule
+         * @param prediction A reference to an object of type `IPrediction` that stores the prediction of the rule
          */
-        virtual void applyPrediction(const AbstractPrediction& prediction) = 0;
+        virtual void applyPrediction(const IPrediction& prediction) = 0;
 
         /**
          * Reverts the statistics that correspond to the current subset based on the predictions of a rule.
          *
-         * @param prediction A reference to an object of type `AbstractPrediction` that stores the prediction of the
-         *                   rule
+         * @param prediction A reference to an object of type `IPrediction` that stores the prediction of the rule
          */
-        virtual void revertPrediction(const AbstractPrediction& prediction) = 0;
+        virtual void revertPrediction(const IPrediction& prediction) = 0;
 };

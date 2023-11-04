@@ -18,21 +18,21 @@ class IModelBuilder {
         /**
          * Sets the default rule of the model.
          *
-         * @param predictionPtr A reference to an unique pointer of type `AbstractEvaluatedPrediction` that stores the
-         *                      scores that are predicted by the default rule
+         * @param predictionPtr A reference to an unique pointer of type `IEvaluatedPrediction` that stores the scores
+         *                      that are predicted by the default rule
          */
-        virtual void setDefaultRule(std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) = 0;
+        virtual void setDefaultRule(std::unique_ptr<IEvaluatedPrediction>& predictionPtr) = 0;
 
         /**
          * Adds a new rule to the model.
          *
          * @param conditionListPtr  A reference to an unique pointer of type `ConditionList` that stores the rule's
          *                          conditions
-         * @param predictionPtr     A reference to an unique pointer of type `AbstractEvaluatedPrediction` that stores
-         *                          the scores that are predicted by the rule
+         * @param predictionPtr     A reference to an unique pointer of type `IEvaluatedPrediction` that stores the
+         *                          scores that are predicted by the rule
          */
         virtual void addRule(std::unique_ptr<ConditionList>& conditionListPtr,
-                             std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) = 0;
+                             std::unique_ptr<IEvaluatedPrediction>& predictionPtr) = 0;
 
         /**
          * Sets the number of used rules.

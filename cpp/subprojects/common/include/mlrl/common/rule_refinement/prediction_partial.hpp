@@ -9,8 +9,10 @@
 /**
  * Stores the scores that are predicted by a rule that predicts for a subset of the available labels.
  */
-class PartialPrediction final : public AbstractEvaluatedPrediction {
+class PartialPrediction final : public IEvaluatedPrediction {
     private:
+
+        DenseVector<float64> predictedScoreVector_;
 
         PartialIndexVector indexVector_;
 
@@ -26,6 +28,16 @@ class PartialPrediction final : public AbstractEvaluatedPrediction {
         PartialPrediction(uint32 numElements, bool sorted);
 
         /**
+         * An iterator that provides access to the predicted scores and allows to modify them.
+         */
+        typedef DenseVector<float64>::iterator value_iterator;
+
+        /**
+         * An iterator that provides read-only access to the predicted scores.
+         */
+        typedef DenseVector<float64>::const_iterator value_const_iterator;
+
+        /**
          * An iterator that provides access to the indices for which the rule predicts and allows to modify them.
          */
         typedef PartialIndexVector::iterator index_iterator;
@@ -34,6 +46,34 @@ class PartialPrediction final : public AbstractEvaluatedPrediction {
          * An iterator that provides read-only access to the indices for which the rule predicts.
          */
         typedef PartialIndexVector::const_iterator index_const_iterator;
+
+        /**
+         * Returns a `value_iterator` to the beginning of the predicted scores.
+         *
+         * @return A `value_iterator` to the beginning
+         */
+        value_iterator values_begin();
+
+        /**
+         * Returns a `value_iterator` to the end of the predicted scores.
+         *
+         * @return A `value_iterator` to the end
+         */
+        value_iterator values_end();
+
+        /**
+         * Returns a `value_const_iterator` to the beginning of the predicted scores.
+         *
+         * @return A `value_const_iterator` to the beginning
+         */
+        value_const_iterator values_cbegin() const;
+
+        /**
+         * Returns a `const_iterator` to the end of the predicted scores.
+         *
+         * @return A `const_iterator` to the end
+         */
+        value_const_iterator values_cend() const;
 
         /**
          * Returns an `index_iterator` to the beginning of the indices for which the rule predicts.
@@ -80,6 +120,17 @@ class PartialPrediction final : public AbstractEvaluatedPrediction {
          */
         void setSorted(bool sorted);
 
+        uint32 getNumElements() const override;
+
+        void sort() override;
+
+        void postProcess(const IPostProcessor& postProcessor) override;
+
+        void set(DenseVector<float64>::const_iterator begin, DenseVector<float64>::const_iterator end) override final;
+
+        void set(DenseBinnedVector<float64>::const_iterator begin,
+                 DenseBinnedVector<float64>::const_iterator end) override final;
+
         bool isPartial() const override;
 
         uint32 getIndex(uint32 pos) const override;
@@ -109,8 +160,6 @@ class PartialPrediction final : public AbstractEvaluatedPrediction {
         void apply(IStatistics& statistics, uint32 statisticIndex) const override;
 
         void revert(IStatistics& statistics, uint32 statisticIndex) const override;
-
-        void sort() override;
 
         std::unique_ptr<IHead> createHead() const override;
 };

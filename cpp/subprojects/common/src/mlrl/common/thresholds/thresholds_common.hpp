@@ -11,8 +11,7 @@
 template<typename IndexIterator, typename WeightVector>
 static inline Quality evaluateOutOfSampleInternally(IndexIterator indexIterator, uint32 numExamples,
                                                     const WeightVector& weights, const CoverageMask& coverageMask,
-                                                    const IStatistics& statistics,
-                                                    const AbstractPrediction& prediction) {
+                                                    const IStatistics& statistics, const IPrediction& prediction) {
     OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
       prediction.createStatisticsSubset(statistics, outOfSampleWeights);
@@ -30,8 +29,7 @@ static inline Quality evaluateOutOfSampleInternally(IndexIterator indexIterator,
 
 template<typename WeightVector>
 static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights, const CoverageSet& coverageSet,
-                                                    const IStatistics& statistics,
-                                                    const AbstractPrediction& prediction) {
+                                                    const IStatistics& statistics, const IPrediction& prediction) {
     OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
       prediction.createStatisticsSubset(statistics, outOfSampleWeights);
@@ -52,7 +50,7 @@ static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights,
 template<typename WeightVector>
 static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights, const CoverageSet& coverageSet,
                                                     BiPartition& partition, const IStatistics& statistics,
-                                                    const AbstractPrediction& prediction) {
+                                                    const IPrediction& prediction) {
     OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
       prediction.createStatisticsSubset(statistics, outOfSampleWeights);
@@ -79,7 +77,7 @@ static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights,
 template<typename IndexIterator>
 static inline void recalculatePredictionInternally(IndexIterator indexIterator, uint32 numExamples,
                                                    const CoverageMask& coverageMask, const IStatistics& statistics,
-                                                   AbstractPrediction& prediction) {
+                                                   IPrediction& prediction) {
     EqualWeightVector weights(numExamples);
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics, weights);
 
@@ -96,7 +94,7 @@ static inline void recalculatePredictionInternally(IndexIterator indexIterator, 
 }
 
 static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, const IStatistics& statistics,
-                                                   AbstractPrediction& prediction) {
+                                                   IPrediction& prediction) {
     uint32 numStatistics = statistics.getNumStatistics();
     EqualWeightVector weights(numStatistics);
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics, weights);
@@ -113,7 +111,7 @@ static inline void recalculatePredictionInternally(const CoverageSet& coverageSe
 }
 
 static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, BiPartition& partition,
-                                                   const IStatistics& statistics, AbstractPrediction& prediction) {
+                                                   const IStatistics& statistics, IPrediction& prediction) {
     uint32 numStatistics = statistics.getNumStatistics();
     EqualWeightVector weights(numStatistics);
     std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics, weights);

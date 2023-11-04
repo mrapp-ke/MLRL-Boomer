@@ -35,16 +35,16 @@ class AbstractRuleInduction : public IRuleInduction {
          *                          to be used
          * @param conditionListPtr  A reference to an unique pointer of type `ConditionList` that should be used to
          *                          store the conditions of the rule
-         * @param headPtr           A reference to an unique pointer of type `AbstractEvaluatedPrediction` that should
-         *                          be used to store the head of the rule
+         * @param headPtr           A reference to an unique pointer of type `IEvaluatedPrediction` that should be used
+         *                          to store the head of the rule
          * @return                  An unique pointer to an object of type `IThresholdsSubset` that has been used to
          *                          grow the rule
          */
-        virtual std::unique_ptr<IThresholdsSubset> growRule(
-          IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
-          IPartition& partition, IFeatureSampling& featureSampling, RNG& rng,
-          std::unique_ptr<ConditionList>& conditionListPtr,
-          std::unique_ptr<AbstractEvaluatedPrediction>& headPtr) const = 0;
+        virtual std::unique_ptr<IThresholdsSubset> growRule(IThresholds& thresholds, const IIndexVector& labelIndices,
+                                                            const IWeightVector& weights, IPartition& partition,
+                                                            IFeatureSampling& featureSampling, RNG& rng,
+                                                            std::unique_ptr<ConditionList>& conditionListPtr,
+                                                            std::unique_ptr<IEvaluatedPrediction>& headPtr) const = 0;
 
     public:
 
@@ -68,7 +68,7 @@ class AbstractRuleInduction : public IRuleInduction {
             }
 
             const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
-            std::unique_ptr<AbstractEvaluatedPrediction> defaultPredictionPtr;
+            std::unique_ptr<IEvaluatedPrediction> defaultPredictionPtr;
             ScoreProcessor scoreProcessor(defaultPredictionPtr);
             scoreProcessor.processScores(scoreVector);
 
@@ -84,7 +84,7 @@ class AbstractRuleInduction : public IRuleInduction {
                         const IPostProcessor& postProcessor, RNG& rng,
                         IModelBuilder& modelBuilder) const override final {
             std::unique_ptr<ConditionList> conditionListPtr;
-            std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
+            std::unique_ptr<IEvaluatedPrediction> headPtr;
             std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = this->growRule(
               thresholds, labelIndices, weights, partition, featureSampling, rng, conditionListPtr, headPtr);
 
@@ -106,7 +106,7 @@ class AbstractRuleInduction : public IRuleInduction {
                 }
 
                 // Apply post-processor...
-                postProcessor.postProcess(*headPtr);
+                headPtr->postProcess(postProcessor);
 
                 // Update the statistics by applying the predictions of the new rule...
                 thresholdsSubsetPtr->applyPrediction(*headPtr);
