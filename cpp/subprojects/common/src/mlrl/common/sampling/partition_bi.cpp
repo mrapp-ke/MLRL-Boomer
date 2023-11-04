@@ -80,7 +80,7 @@ std::unique_ptr<IInstanceSampling> BiPartition::createInstanceSampling(const IIn
 }
 
 Quality BiPartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
-                                         const AbstractPrediction& head) {
+                                         const IPrediction& head) {
     return coverageState.evaluateOutOfSample(thresholdsSubset, *this, head);
 }
 

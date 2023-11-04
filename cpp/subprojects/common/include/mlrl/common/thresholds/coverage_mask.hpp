@@ -108,10 +108,10 @@ class CoverageMask final : public ICoverageState {
         std::unique_ptr<ICoverageState> copy() const override;
 
         Quality evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
-                                    const AbstractPrediction& head) const override;
+                                    const IPrediction& head) const override;
 
         Quality evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
-                                    const AbstractPrediction& head) const override;
+                                    const IPrediction& head) const override;
 
         void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
                                    AbstractPrediction& head) const override;

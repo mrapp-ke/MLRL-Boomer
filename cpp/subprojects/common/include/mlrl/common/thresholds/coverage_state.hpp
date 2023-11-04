@@ -11,6 +11,7 @@
 class IThresholdsSubset;
 class SinglePartition;
 class BiPartition;
+class IPrediction;
 class AbstractPrediction;
 
 /**
@@ -36,12 +37,12 @@ class ICoverageState {
          *                          evaluate the prediction
          * @param partition         A reference to an object of type `SinglePartition` that provides access to the
          *                          indices of the training examples that belong to the training set
-         * @param head              A reference to an object of type `AbstractPrediction` that stores the scores that
-         *                          are predicted by the rule
+         * @param head              A reference to an object of type `IPrediction` that stores the scores that are
+         *                          predicted by the rule
          * @return                  An object of type `Quality` that stores the calculated quality
          */
         virtual Quality evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
-                                            const AbstractPrediction& head) const = 0;
+                                            const IPrediction& head) const = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
@@ -51,12 +52,12 @@ class ICoverageState {
          *                          evaluate the prediction
          * @param partition         A reference to an object of type `BiPartition` that provides access to the indices
          *                          of the training examples that belong to the training set
-         * @param head              A reference to an object of type `AbstractPrediction` that stores the scores that
-         *                          are predicted by the rule
+         * @param head              A reference to an object of type `IPrediction` that stores the scores that are
+         *                          predicted by the rule
          * @return                  An object of type `Quality` that stores the calculated quality
          */
         virtual Quality evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
-                                            const AbstractPrediction& head) const = 0;
+                                            const IPrediction& head) const = 0;
 
         /**
          * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
