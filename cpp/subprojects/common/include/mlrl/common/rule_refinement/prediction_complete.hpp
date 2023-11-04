@@ -72,5 +72,7 @@ class CompletePrediction final : public AbstractEvaluatedPrediction {
 
         void sort() override;
 
+        void postProcess(const IPostProcessor& postProcessor) override;
+
         std::unique_ptr<IHead> createHead() const override;
 };

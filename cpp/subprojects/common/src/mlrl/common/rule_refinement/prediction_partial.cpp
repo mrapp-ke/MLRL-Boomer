@@ -2,6 +2,7 @@
 
 #include "mlrl/common/data/vector_sparse_array.hpp"
 #include "mlrl/common/model/head_partial.hpp"
+#include "mlrl/common/post_processing/post_processor.hpp"
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 #include "mlrl/common/util/arrays.hpp"
@@ -112,6 +113,10 @@ void PartialPrediction::sort() {
 
         sorted_ = true;
     }
+}
+
+void PartialPrediction::postProcess(const IPostProcessor& postProcessor) {
+    postProcessor.postProcess(this->values_begin(), this->values_end());
 }
 
 std::unique_ptr<IHead> PartialPrediction::createHead() const {

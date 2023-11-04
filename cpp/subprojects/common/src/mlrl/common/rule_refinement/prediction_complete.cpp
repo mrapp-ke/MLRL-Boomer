@@ -1,6 +1,7 @@
 #include "mlrl/common/rule_refinement/prediction_complete.hpp"
 
 #include "mlrl/common/model/head_complete.hpp"
+#include "mlrl/common/post_processing/post_processor.hpp"
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 #include "mlrl/common/util/arrays.hpp"
@@ -68,6 +69,10 @@ void CompletePrediction::revert(IStatistics& statistics, uint32 statisticIndex) 
 }
 
 void CompletePrediction::sort() {}
+
+void CompletePrediction::postProcess(const IPostProcessor& postProcessor) {
+    postProcessor.postProcess(this->values_begin(), this->values_end());
+}
 
 std::unique_ptr<IHead> CompletePrediction::createHead() const {
     uint32 numElements = this->getNumElements();
