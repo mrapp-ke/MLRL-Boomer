@@ -10,7 +10,8 @@
 /**
  * Stores the scores that are predicted by a rule that predicts for all available labels.
  */
-class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>>, public IEvaluatedPrediction {
+class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>>,
+                                 public IEvaluatedPrediction {
     private:
 
         const CompleteIndexVector indexVector_;
