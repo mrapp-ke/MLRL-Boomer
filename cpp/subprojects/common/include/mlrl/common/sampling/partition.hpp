@@ -17,7 +17,6 @@ class IStatistics;
 class IThresholdsSubset;
 class ICoverageState;
 class IPrediction;
-class AbstractPrediction;
 class IMarginalProbabilityCalibrationModel;
 class IMarginalProbabilityCalibrator;
 class IJointProbabilityCalibrationModel;
@@ -81,10 +80,10 @@ class IPartition {
          *                          recalculate the prediction
          * @param coverageState     A reference to an object of type `ICoverageState` that keeps track of the examples
          *                          that are covered by the rule
-         * @param head              A reference to an object of type `AbstractPrediction` to be updated
+         * @param head              A reference to an object of type `IPrediction` to be updated
          */
         virtual void recalculatePrediction(const IThresholdsSubset& thresholdsSubset,
-                                           const ICoverageState& coverageState, AbstractPrediction& head) = 0;
+                                           const ICoverageState& coverageState, IPrediction& head) = 0;
 
         /**
          * Fits and returns a model for the calibration of marginal probabilities, based on the type of this partition.

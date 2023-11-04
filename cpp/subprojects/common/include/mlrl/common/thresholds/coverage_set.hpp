@@ -105,8 +105,8 @@ class CoverageSet final : public ICoverageState {
                                     const IPrediction& head) const override;
 
         void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
-                                   AbstractPrediction& head) const override;
+                                   IPrediction& head) const override;
 
         void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
-                                   AbstractPrediction& head) const override;
+                                   IPrediction& head) const override;
 };

@@ -7,8 +7,7 @@ class NoRulePruning final : public IRulePruning {
     public:
 
         std::unique_ptr<ICoverageState> prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
-                                              ConditionList& conditions,
-                                              const AbstractPrediction& head) const override {
+                                              ConditionList& conditions, const IPrediction& head) const override {
             return nullptr;
         }
 };

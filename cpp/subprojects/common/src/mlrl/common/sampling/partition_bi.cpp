@@ -85,7 +85,7 @@ Quality BiPartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubs
 }
 
 void BiPartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
-                                        AbstractPrediction& head) {
+                                        IPrediction& head) {
     coverageState.recalculatePrediction(thresholdsSubset, *this, head);
 }
 
