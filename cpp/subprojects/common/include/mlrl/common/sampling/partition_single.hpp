@@ -55,7 +55,7 @@ class SinglePartition final : public IPartition {
                                                                   IStatistics& statistics) override;
 
         Quality evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
-                                    const AbstractPrediction& head) override;
+                                    const IPrediction& head) override;
 
         void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
                                    AbstractPrediction& head) override;

@@ -16,6 +16,7 @@ class IRowWiseLabelMatrix;
 class IStatistics;
 class IThresholdsSubset;
 class ICoverageState;
+class IPrediction;
 class AbstractPrediction;
 class IMarginalProbabilityCalibrationModel;
 class IMarginalProbabilityCalibrator;
@@ -65,12 +66,12 @@ class IPartition {
          *                          evaluate the prediction
          * @param coverageState     A reference to an object of type `ICoverageState` that keeps track of the examples
          *                          that are covered by the rule
-         * @param head              A reference to an object of type `AbstractPrediction` that stores the scores that
-         *                          are predicted by the rule
+         * @param head              A reference to an object of type `IPrediction` that stores the scores that are
+         *                          predicted by the rule
          * @return                  An object of type `Quality` that stores the calculated quality
          */
         virtual Quality evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
-                                            const ICoverageState& coverageState, const AbstractPrediction& head) = 0;
+                                            const ICoverageState& coverageState, const IPrediction& head) = 0;
 
         /**
          * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as

@@ -59,12 +59,12 @@ std::unique_ptr<ICoverageState> CoverageMask::copy() const {
 }
 
 Quality CoverageMask::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
-                                          const AbstractPrediction& head) const {
+                                          const IPrediction& head) const {
     return thresholdsSubset.evaluateOutOfSample(partition, *this, head);
 }
 
 Quality CoverageMask::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
-                                          const AbstractPrediction& head) const {
+                                          const IPrediction& head) const {
     return thresholdsSubset.evaluateOutOfSample(partition, *this, head);
 }
 

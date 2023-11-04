@@ -31,7 +31,7 @@ std::unique_ptr<IInstanceSampling> SinglePartition::createInstanceSampling(const
 }
 
 Quality SinglePartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
-                                             const ICoverageState& coverageState, const AbstractPrediction& head) {
+                                             const ICoverageState& coverageState, const IPrediction& head) {
     return coverageState.evaluateOutOfSample(thresholdsSubset, *this, head);
 }
 

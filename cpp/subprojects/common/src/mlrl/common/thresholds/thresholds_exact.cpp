@@ -403,27 +403,27 @@ class ExactThresholds final : public AbstractThresholds {
                 }
 
                 Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageState,
-                                            const AbstractPrediction& head) const override {
+                                            const IPrediction& head) const override {
                     return evaluateOutOfSampleInternally<SinglePartition::const_iterator>(
                       partition.cbegin(), partition.getNumElements(), weights_, coverageState,
                       thresholds_.statisticsProvider_.get(), head);
                 }
 
                 Quality evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
-                                            const AbstractPrediction& head) const override {
+                                            const IPrediction& head) const override {
                     return evaluateOutOfSampleInternally<BiPartition::const_iterator>(
                       partition.first_cbegin(), partition.getNumFirst(), weights_, coverageState,
                       thresholds_.statisticsProvider_.get(), head);
                 }
 
                 Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
-                                            const AbstractPrediction& head) const override {
+                                            const IPrediction& head) const override {
                     return evaluateOutOfSampleInternally(weights_, coverageState, thresholds_.statisticsProvider_.get(),
                                                          head);
                 }
 
                 Quality evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
-                                            const AbstractPrediction& head) const override {
+                                            const IPrediction& head) const override {
                     return evaluateOutOfSampleInternally(weights_, coverageState, partition,
                                                          thresholds_.statisticsProvider_.get(), head);
                 }
@@ -453,11 +453,11 @@ class ExactThresholds final : public AbstractThresholds {
                                                     head);
                 }
 
-                void applyPrediction(const AbstractPrediction& prediction) override {
+                void applyPrediction(const IPrediction& prediction) override {
                     IStatistics& statistics = thresholds_.statisticsProvider_.get();
                     uint32 numStatistics = statistics.getNumStatistics();
                     const CoverageMask* coverageMaskPtr = &coverageMask_;
-                    const AbstractPrediction* predictionPtr = &prediction;
+                    const IPrediction* predictionPtr = &prediction;
                     IStatistics* statisticsPtr = &statistics;
 
 #if MULTI_THREADING_SUPPORT_ENABLED
@@ -471,11 +471,11 @@ class ExactThresholds final : public AbstractThresholds {
                     }
                 }
 
-                void revertPrediction(const AbstractPrediction& prediction) override {
+                void revertPrediction(const IPrediction& prediction) override {
                     IStatistics& statistics = thresholds_.statisticsProvider_.get();
                     uint32 numStatistics = statistics.getNumStatistics();
                     const CoverageMask* coverageMaskPtr = &coverageMask_;
-                    const AbstractPrediction* predictionPtr = &prediction;
+                    const IPrediction* predictionPtr = &prediction;
                     IStatistics* statisticsPtr = &statistics;
 
 #if MULTI_THREADING_SUPPORT_ENABLED
