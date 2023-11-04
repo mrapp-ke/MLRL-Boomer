@@ -18,7 +18,7 @@ class IPostProcessor {
         /**
          * Post-processes the prediction of a rule.
          *
-         * @param begin An iterator to the beginning of te predictions
+         * @param begin An iterator to the beginning of the predictions
          * @param end   An iterator to the end of the predictions
          */
         virtual void postProcess(DenseVector<float64>::iterator begin, DenseVector<float64>::iterator end) const = 0;
