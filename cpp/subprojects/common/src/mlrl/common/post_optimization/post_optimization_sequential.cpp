@@ -22,10 +22,10 @@ class RuleReplacementBuilder final : public IModelBuilder {
         RuleReplacementBuilder(IntermediateModelBuilder::IntermediateRule& intermediateRule)
             : intermediateRule_(intermediateRule) {}
 
-        void setDefaultRule(std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override {}
+        void setDefaultRule(std::unique_ptr<IEvaluatedPrediction>& predictionPtr) override {}
 
         void addRule(std::unique_ptr<ConditionList>& conditionListPtr,
-                     std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override {
+                     std::unique_ptr<IEvaluatedPrediction>& predictionPtr) override {
             intermediateRule_.first = std::move(conditionListPtr);
             intermediateRule_.second = std::move(predictionPtr);
         }
@@ -75,7 +75,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                 for (auto it = modelBuilder_.begin(); it != modelBuilder_.end(); it++) {
                     IntermediateModelBuilder::IntermediateRule& intermediateRule = *it;
                     const ConditionList& conditionList = *intermediateRule.first;
-                    const AbstractEvaluatedPrediction& prediction = *intermediateRule.second;
+                    const IEvaluatedPrediction& prediction = *intermediateRule.second;
 
                     // Create a new subset of the given thresholds...
                     const IWeightVector& weights = instanceSampling.sample(rng);
