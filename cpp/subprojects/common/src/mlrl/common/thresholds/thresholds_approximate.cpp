@@ -293,26 +293,26 @@ class ApproximateThresholds final : public AbstractThresholds {
                 }
 
                 void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageState,
-                                           AbstractPrediction& head) const override {
+                                           IPrediction& head) const override {
                     recalculatePredictionInternally<SinglePartition::const_iterator>(
                       partition.cbegin(), partition.getNumElements(), coverageState,
                       thresholds_.statisticsProvider_.get(), head);
                 }
 
                 void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageState,
-                                           AbstractPrediction& head) const override {
+                                           IPrediction& head) const override {
                     recalculatePredictionInternally<BiPartition::const_iterator>(
                       partition.first_cbegin(), partition.getNumFirst(), coverageState,
                       thresholds_.statisticsProvider_.get(), head);
                 }
 
                 void recalculatePrediction(const SinglePartition& partition, const CoverageSet& coverageState,
-                                           AbstractPrediction& head) const override {
+                                           IPrediction& head) const override {
                     recalculatePredictionInternally(coverageState, thresholds_.statisticsProvider_.get(), head);
                 }
 
                 void recalculatePrediction(BiPartition& partition, const CoverageSet& coverageState,
-                                           AbstractPrediction& head) const override {
+                                           IPrediction& head) const override {
                     recalculatePredictionInternally(coverageState, partition, thresholds_.statisticsProvider_.get(),
                                                     head);
                 }

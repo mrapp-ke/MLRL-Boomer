@@ -67,11 +67,11 @@ Quality CoverageSet::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubs
 }
 
 void CoverageSet::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
-                                        AbstractPrediction& head) const {
+                                        IPrediction& head) const {
     thresholdsSubset.recalculatePrediction(partition, *this, head);
 }
 
 void CoverageSet::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
-                                        AbstractPrediction& head) const {
+                                        IPrediction& head) const {
     thresholdsSubset.recalculatePrediction(partition, *this, head);
 }

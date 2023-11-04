@@ -55,7 +55,7 @@ bool DenseScoreVector<IndexVector>::isSorted() const {
 }
 
 template<typename IndexVector>
-void DenseScoreVector<IndexVector>::updatePrediction(AbstractPrediction& prediction) const {
+void DenseScoreVector<IndexVector>::updatePrediction(IPrediction& prediction) const {
     prediction.set(this->values_cbegin(), this->values_cend());
 }
 

@@ -36,7 +36,7 @@ Quality SinglePartition::evaluateOutOfSample(const IThresholdsSubset& thresholds
 }
 
 void SinglePartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset,
-                                            const ICoverageState& coverageState, AbstractPrediction& head) {
+                                            const ICoverageState& coverageState, IPrediction& head) {
     coverageState.recalculatePrediction(thresholdsSubset, *this, head);
 }
 

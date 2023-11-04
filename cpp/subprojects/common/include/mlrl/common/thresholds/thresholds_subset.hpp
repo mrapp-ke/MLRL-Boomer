@@ -166,10 +166,10 @@ class IThresholdsSubset {
          *                      of the training examples that belong to the training set
          * @param coverageState A reference to an object of type `CoverageMask` that keeps track of the examples that
          *                      are covered by the rule
-         * @param head          A reference to an object of type `AbstractPrediction` to be updated
+         * @param head          A reference to an object of type `IPrediction` to be updated
          */
         virtual void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageState,
-                                           AbstractPrediction& head) const = 0;
+                                           IPrediction& head) const = 0;
 
         /**
          * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
@@ -182,10 +182,10 @@ class IThresholdsSubset {
          *                      the training examples that belong to the training set
          * @param coverageState A reference to an object of type `CoverageMask` that keeps track of the examples that
          *                      are covered by the rule
-         * @param head          A reference to an object of type `AbstractPrediction` to be updated
+         * @param head          A reference to an object of type `IPrediction` to be updated
          */
         virtual void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageState,
-                                           AbstractPrediction& head) const = 0;
+                                           IPrediction& head) const = 0;
 
         /**
          * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
@@ -198,10 +198,10 @@ class IThresholdsSubset {
          *                      of the training examples that belong to the training set
          * @param coverageState A reference to an object of type `CoverageMask` that keeps track of the examples that
          *                      are covered by the rule
-         * @param head          A reference to an object of type `AbstractPrediction` to be updated
+         * @param head          A reference to an object of type `IPrediction` to be updated
          */
         virtual void recalculatePrediction(const SinglePartition& partition, const CoverageSet& coverageState,
-                                           AbstractPrediction& head) const = 0;
+                                           IPrediction& head) const = 0;
 
         /**
          * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
@@ -214,10 +214,10 @@ class IThresholdsSubset {
          *                      the training examples that belong to the training set
          * @param coverageState A reference to an object of type `CoverageSet` that keeps track of the examples that are
          *                      covered by the rule
-         * @param head          A reference to an object of type `AbstractPrediction` to be updated
+         * @param head          A reference to an object of type `IPrediction` to be updated
          */
         virtual void recalculatePrediction(BiPartition& partition, const CoverageSet& coverageState,
-                                           AbstractPrediction& head) const = 0;
+                                           IPrediction& head) const = 0;
 
         /**
          * Updates the statistics that correspond to the current subset based on the prediction of a rule.
