@@ -6,22 +6,22 @@
 #include "mlrl/common/statistics/statistics.hpp"
 
 CompletePrediction::CompletePrediction(uint32 numElements)
-    : predictedScoreVector_(numElements), indexVector_(numElements) {}
+    : VectorDecorator<AllocatedVector<float64>>(AllocatedVector<float64>(numElements)), indexVector_(numElements) {}
 
 CompletePrediction::value_iterator CompletePrediction::values_begin() {
-    return predictedScoreVector_.begin();
+    return this->view_.array;
 }
 
 CompletePrediction::value_iterator CompletePrediction::values_end() {
-    return predictedScoreVector_.end();
+    return &this->view_.array[this->view_.numElements];
 }
 
 CompletePrediction::value_const_iterator CompletePrediction::values_cbegin() const {
-    return predictedScoreVector_.cbegin();
+    return this->view_.array;
 }
 
 CompletePrediction::value_const_iterator CompletePrediction::values_cend() const {
-    return predictedScoreVector_.cend();
+    return &this->view_.array[this->view_.numElements];
 }
 
 CompletePrediction::index_const_iterator CompletePrediction::indices_cbegin() const {
@@ -33,7 +33,7 @@ CompletePrediction::index_const_iterator CompletePrediction::indices_cend() cons
 }
 
 uint32 CompletePrediction::getNumElements() const {
-    return predictedScoreVector_.getNumElements();
+    return VectorDecorator<AllocatedVector<float64>>::getNumElements();
 }
 
 void CompletePrediction::sort() {}
@@ -43,12 +43,12 @@ void CompletePrediction::postProcess(const IPostProcessor& postProcessor) {
 }
 
 void CompletePrediction::set(DenseVector<float64>::const_iterator begin, DenseVector<float64>::const_iterator end) {
-    copyView(begin, predictedScoreVector_.begin(), predictedScoreVector_.getNumElements());
+    copyView(begin, this->view_.array, this->view_.numElements);
 }
 
 void CompletePrediction::set(DenseBinnedVector<float64>::const_iterator begin,
                              DenseBinnedVector<float64>::const_iterator end) {
-    copyView(begin, predictedScoreVector_.begin(), predictedScoreVector_.getNumElements());
+    copyView(begin, this->view_.array, this->view_.numElements);
 }
 
 bool CompletePrediction::isPartial() const {

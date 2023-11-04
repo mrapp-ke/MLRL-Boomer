@@ -3,16 +3,15 @@
  */
 #pragma once
 
+#include "mlrl/common/data/array.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/rule_refinement/prediction_evaluated.hpp"
 
 /**
  * Stores the scores that are predicted by a rule that predicts for all available labels.
  */
-class CompletePrediction final : public IEvaluatedPrediction {
+class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>>, public IEvaluatedPrediction {
     private:
-
-        DenseVector<float64> predictedScoreVector_;
 
         const CompleteIndexVector indexVector_;
 
@@ -26,12 +25,12 @@ class CompletePrediction final : public IEvaluatedPrediction {
         /**
          * An iterator that provides access to the predicted scores and allows to modify them.
          */
-        typedef DenseVector<float64>::iterator value_iterator;
+        typedef Vector<float64>::iterator value_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores.
          */
-        typedef DenseVector<float64>::const_iterator value_const_iterator;
+        typedef Vector<float64>::const_iterator value_const_iterator;
 
         /**
          * An iterator that provides read-only access to the indices of the labels for which the rule predicts.
