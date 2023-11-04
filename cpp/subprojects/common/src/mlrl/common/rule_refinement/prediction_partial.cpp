@@ -88,12 +88,12 @@ void PartialPrediction::postProcess(const IPostProcessor& postProcessor) {
 }
 
 void PartialPrediction::set(DenseVector<float64>::const_iterator begin, DenseVector<float64>::const_iterator end) {
-    copyArray(begin, predictedScoreVector_.begin(), predictedScoreVector_.getNumElements());
+    copyView(begin, predictedScoreVector_.begin(), predictedScoreVector_.getNumElements());
 }
 
 void PartialPrediction::set(DenseBinnedVector<float64>::const_iterator begin,
                             DenseBinnedVector<float64>::const_iterator end) {
-    copyArray(begin, predictedScoreVector_.begin(), predictedScoreVector_.getNumElements());
+    copyView(begin, predictedScoreVector_.begin(), predictedScoreVector_.getNumElements());
 }
 
 bool PartialPrediction::isPartial() const {
