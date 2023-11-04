@@ -22,12 +22,11 @@ namespace boosting {
             /**
              * @see `IPostProcessor::postProcess`
              */
-            void postProcess(AbstractPrediction& prediction) const override {
-                uint32 numElements = prediction.getNumElements();
-                AbstractPrediction::value_iterator iterator = prediction.values_begin();
+            void postProcess(DenseVector<float64>::iterator begin, DenseVector<float64>::iterator end) const override {
+                uint32 numElements = end - begin;
 
                 for (uint32 i = 0; i < numElements; i++) {
-                    iterator[i] *= shrinkage_;
+                    begin[i] *= shrinkage_;
                 }
             }
     };
