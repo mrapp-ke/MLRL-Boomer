@@ -14,6 +14,7 @@
 #include <memory>
 
 // Forward declarations
+class IPostProcessor;
 class IStatistics;
 class IStatisticsSubset;
 class IHead;
@@ -25,6 +26,19 @@ class IPrediction : public IIndexVector {
     public:
 
         virtual ~IPrediction() override {};
+
+        /**
+         * Sorts the scores that are stored by this prediction in increasing order by the indices of the labels they
+         * correspond to.
+         */
+        virtual void sort() = 0;
+
+        /**
+         * Post-processes the scores that are stored by this prediction.
+         *
+         * @param postProcessor A reference to an object of type `IPostProcessor` that sould be used for post-processing
+         */
+        virtual void postProcess(const IPostProcessor& postProcessor) = 0;
 
         /**
          * Updates given statistics by applying this prediction.
@@ -41,19 +55,6 @@ class IPrediction : public IIndexVector {
          * @param statisticIndex    The index of the statistic to be updated
          */
         virtual void revert(IStatistics& statistics, uint32 statisticIndex) const = 0;
-
-        /**
-         * Sorts the scores that are stored by this prediction in increasing order by the indices of the labels they
-         * correspond to.
-         */
-        virtual void sort() = 0;
-
-        /**
-         * Creates and returns a head that contains the scores that are stored by this prediction.
-         *
-         * @return An unique pointer to an object of type `IHead` that has been created
-         */
-        virtual std::unique_ptr<IHead> createHead() const = 0;
 
         /**
          * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
@@ -126,6 +127,13 @@ class IPrediction : public IIndexVector {
          */
         virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
           const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const = 0;
+
+        /**
+         * Creates and returns a head that contains the scores that are stored by this prediction.
+         *
+         * @return An unique pointer to an object of type `IHead` that has been created
+         */
+        virtual std::unique_ptr<IHead> createHead() const = 0;
 };
 
 /**

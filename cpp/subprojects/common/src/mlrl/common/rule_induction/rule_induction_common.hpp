@@ -106,7 +106,7 @@ class AbstractRuleInduction : public IRuleInduction {
                 }
 
                 // Apply post-processor...
-                postProcessor.postProcess(headPtr->values_begin(), headPtr->values_end());
+                headPtr->postProcess(postProcessor);
 
                 // Update the statistics by applying the predictions of the new rule...
                 thresholdsSubsetPtr->applyPrediction(*headPtr);
