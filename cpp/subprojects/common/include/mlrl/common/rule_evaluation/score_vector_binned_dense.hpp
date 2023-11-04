@@ -192,7 +192,7 @@ class DenseBinnedScoreVector final : virtual public IScoreVector {
          */
         bool isSorted() const;
 
-        void updatePrediction(AbstractPrediction& prediction) const override;
+        void updatePrediction(IPrediction& prediction) const override;
 
         void processScores(ScoreProcessor& scoreProcessor) const override;
 };

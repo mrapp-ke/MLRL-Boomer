@@ -2,12 +2,29 @@
 
 #include "mlrl/common/data/vector_sparse_array.hpp"
 #include "mlrl/common/model/head_partial.hpp"
+#include "mlrl/common/post_processing/post_processor.hpp"
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 #include "mlrl/common/util/arrays.hpp"
 
 PartialPrediction::PartialPrediction(uint32 numElements, bool sorted)
-    : AbstractEvaluatedPrediction(numElements), indexVector_(numElements), sorted_(sorted) {}
+    : predictedScoreVector_(numElements), indexVector_(numElements), sorted_(sorted) {}
+
+PartialPrediction::value_iterator PartialPrediction::values_begin() {
+    return predictedScoreVector_.begin();
+}
+
+PartialPrediction::value_iterator PartialPrediction::values_end() {
+    return predictedScoreVector_.end();
+}
+
+PartialPrediction::value_const_iterator PartialPrediction::values_cbegin() const {
+    return predictedScoreVector_.cbegin();
+}
+
+PartialPrediction::value_const_iterator PartialPrediction::values_cend() const {
+    return predictedScoreVector_.cend();
+}
 
 PartialPrediction::index_iterator PartialPrediction::indices_begin() {
     return indexVector_.begin();
@@ -25,6 +42,10 @@ PartialPrediction::index_const_iterator PartialPrediction::indices_cend() const 
     return indexVector_.cend();
 }
 
+uint32 PartialPrediction::getNumElements() const {
+    return predictedScoreVector_.getNumElements();
+}
+
 void PartialPrediction::setNumElements(uint32 numElements, bool freeMemory) {
     this->predictedScoreVector_.setNumElements(numElements, freeMemory);
     indexVector_.setNumElements(numElements, freeMemory);
@@ -32,6 +53,48 @@ void PartialPrediction::setNumElements(uint32 numElements, bool freeMemory) {
 
 void PartialPrediction::setSorted(bool sorted) {
     sorted_ = sorted;
+}
+
+void PartialPrediction::sort() {
+    if (!sorted_) {
+        uint32 numElements = this->getNumElements();
+
+        if (numElements > 1) {
+            SparseArrayVector<float64> sortedVector(numElements);
+            SparseArrayVector<float64>::iterator sortedIterator = sortedVector.begin();
+            index_iterator indexIterator = this->indices_begin();
+            value_iterator valueIterator = this->values_begin();
+
+            for (uint32 i = 0; i < numElements; i++) {
+                IndexedValue<float64>& entry = sortedIterator[i];
+                entry.index = indexIterator[i];
+                entry.value = valueIterator[i];
+            }
+
+            std::sort(sortedIterator, sortedVector.end(), IndexedValue<float64>::CompareIndex());
+
+            for (uint32 i = 0; i < numElements; i++) {
+                const IndexedValue<float64>& entry = sortedIterator[i];
+                indexIterator[i] = entry.index;
+                valueIterator[i] = entry.value;
+            }
+        }
+
+        sorted_ = true;
+    }
+}
+
+void PartialPrediction::postProcess(const IPostProcessor& postProcessor) {
+    postProcessor.postProcess(this->values_begin(), this->values_end());
+}
+
+void PartialPrediction::set(DenseVector<float64>::const_iterator begin, DenseVector<float64>::const_iterator end) {
+    copyArray(begin, predictedScoreVector_.begin(), predictedScoreVector_.getNumElements());
+}
+
+void PartialPrediction::set(DenseBinnedVector<float64>::const_iterator begin,
+                            DenseBinnedVector<float64>::const_iterator end) {
+    copyArray(begin, predictedScoreVector_.begin(), predictedScoreVector_.getNumElements());
 }
 
 bool PartialPrediction::isPartial() const {
@@ -83,35 +146,6 @@ void PartialPrediction::apply(IStatistics& statistics, uint32 statisticIndex) co
 
 void PartialPrediction::revert(IStatistics& statistics, uint32 statisticIndex) const {
     statistics.revertPrediction(statisticIndex, *this);
-}
-
-void PartialPrediction::sort() {
-    if (!sorted_) {
-        uint32 numElements = this->getNumElements();
-
-        if (numElements > 1) {
-            SparseArrayVector<float64> sortedVector(numElements);
-            SparseArrayVector<float64>::iterator sortedIterator = sortedVector.begin();
-            index_iterator indexIterator = this->indices_begin();
-            value_iterator valueIterator = this->values_begin();
-
-            for (uint32 i = 0; i < numElements; i++) {
-                IndexedValue<float64>& entry = sortedIterator[i];
-                entry.index = indexIterator[i];
-                entry.value = valueIterator[i];
-            }
-
-            std::sort(sortedIterator, sortedVector.end(), IndexedValue<float64>::CompareIndex());
-
-            for (uint32 i = 0; i < numElements; i++) {
-                const IndexedValue<float64>& entry = sortedIterator[i];
-                indexIterator[i] = entry.index;
-                valueIterator[i] = entry.value;
-            }
-        }
-
-        sorted_ = true;
-    }
 }
 
 std::unique_ptr<IHead> PartialPrediction::createHead() const {

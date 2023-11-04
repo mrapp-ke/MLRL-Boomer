@@ -108,7 +108,7 @@ bool DenseBinnedScoreVector<IndexVector>::isSorted() const {
 }
 
 template<typename IndexVector>
-void DenseBinnedScoreVector<IndexVector>::updatePrediction(AbstractPrediction& prediction) const {
+void DenseBinnedScoreVector<IndexVector>::updatePrediction(IPrediction& prediction) const {
     prediction.set(this->values_cbegin(), this->values_cend());
 }
 

@@ -11,12 +11,12 @@ IntermediateModelBuilder::iterator IntermediateModelBuilder::end() {
     return intermediateRuleList_.end();
 }
 
-void IntermediateModelBuilder::setDefaultRule(std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) {
+void IntermediateModelBuilder::setDefaultRule(std::unique_ptr<IEvaluatedPrediction>& predictionPtr) {
     defaultPredictionPtr_ = std::move(predictionPtr);
 }
 
 void IntermediateModelBuilder::addRule(std::unique_ptr<ConditionList>& conditionListPtr,
-                                       std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) {
+                                       std::unique_ptr<IEvaluatedPrediction>& predictionPtr) {
     intermediateRuleList_.emplace_back(std::move(conditionListPtr), std::move(predictionPtr));
 }
 

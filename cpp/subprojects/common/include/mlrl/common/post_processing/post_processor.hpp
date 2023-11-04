@@ -3,7 +3,9 @@
  */
 #pragma once
 
-#include "mlrl/common/rule_refinement/prediction.hpp"
+#include "mlrl/common/data/vector_dense.hpp"
+
+#include <memory>
 
 /**
  * Defines an interface for all classes that allow to post-process the predictions of rules once they have been learned.
@@ -16,9 +18,10 @@ class IPostProcessor {
         /**
          * Post-processes the prediction of a rule.
          *
-         * @param prediction A reference to an object of type `AbstractPrediction` that stores the predictions of a rule
+         * @param begin An iterator to the beginning of the predictions
+         * @param end   An iterator to the end of the predictions
          */
-        virtual void postProcess(AbstractPrediction& prediction) const = 0;
+        virtual void postProcess(DenseVector<float64>::iterator begin, DenseVector<float64>::iterator end) const = 0;
 };
 
 /**

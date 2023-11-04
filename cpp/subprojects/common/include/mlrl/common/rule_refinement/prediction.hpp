@@ -14,84 +14,51 @@
 #include <memory>
 
 // Forward declarations
+class IPostProcessor;
 class IStatistics;
 class IStatisticsSubset;
 class IHead;
 
 /**
- * An abstract base class for all classes that store the scores that are predicted by a rule.
+ * Defines an interface for all classes that store the scores that are predicted by a rule.
  */
-class AbstractPrediction : public IIndexVector {
-    protected:
-
-        /**
-         * A vector that stores the predicted scores.
-         */
-        DenseVector<float64> predictedScoreVector_;
-
+class IPrediction : public IIndexVector {
     public:
 
-        /**
-         * @param numElements The number of labels for which the rule predicts
-         */
-        AbstractPrediction(uint32 numElements);
+        virtual ~IPrediction() override {};
 
         /**
-         * An iterator that provides access to the predicted scores and allows to modify them.
+         * Sorts the scores that are stored by this prediction in increasing order by the indices of the labels they
+         * correspond to.
          */
-        typedef DenseVector<float64>::iterator value_iterator;
+        virtual void sort() = 0;
 
         /**
-         * An iterator that provides read-only access to the predicted scores.
-         */
-        typedef DenseVector<float64>::const_iterator value_const_iterator;
-
-        /**
-         * Returns a `value_iterator` to the beginning of the predicted scores.
+         * Post-processes the scores that are stored by this prediction.
          *
-         * @return A `value_iterator` to the beginning
+         * @param postProcessor A reference to an object of type `IPostProcessor` that sould be used for post-processing
          */
-        value_iterator values_begin();
+        virtual void postProcess(const IPostProcessor& postProcessor) = 0;
 
         /**
-         * Returns a `value_iterator` to the end of the predicted scores.
+         * Sets the scores that are stored by this prediction to the values in a given iterator.
          *
-         * @return A `value_iterator` to the end
+         * @param begin An iterator to the beginning of the values to be set
+         * @param end   An iterator to the end of the values to be set
          */
-        value_iterator values_end();
+        virtual void set(DenseVector<float64>::const_iterator begin, DenseVector<float64>::const_iterator end) = 0;
 
         /**
-         * Returns a `value_const_iterator` to the beginning of the predicted scores.
+         * Sets the scores that are stored by this prediction to the values in a given iterator.
          *
-         * @return A `value_const_iterator` to the beginning
+         * @param begin An iterator to the beginning of the values to be set
+         * @param end   An iterator to the end of the values to be set
          */
-        value_const_iterator values_cbegin() const;
+        virtual void set(DenseBinnedVector<float64>::const_iterator begin,
+                         DenseBinnedVector<float64>::const_iterator end) = 0;
 
         /**
-         * Returns a `const_iterator` to the end of the predicted scores.
-         *
-         * @return A `const_iterator` to the end
-         */
-        value_const_iterator values_cend() const;
-
-        /**
-         * Sets the predicted scores in another vector to this vector.
-         *
-         * @param begin A `value_const_iterator` to the beginning of the predicted scores
-         * @param end   A `value_const_iterator` to the end of the predicted scores
-         */
-        void set(value_const_iterator begin, value_const_iterator end);
-
-        /**
-         * Sets the predicted scores in another vector to this vector.
-         *
-         * @param begin An iterator to the beginning of the predicted scores
-         * @param end   An iterator to the end of the predicted scores
-         */
-        void set(DenseBinnedVector<float64>::const_iterator begin, DenseBinnedVector<float64>::const_iterator end);
-
-        /**
-         * Updates the given statistics by applying this prediction.
+         * Updates given statistics by applying this prediction.
          *
          * @param statistics        A reference to an object of type `IStatistics` to be updated
          * @param statisticIndex    The index of the statistic to be updated
@@ -99,25 +66,12 @@ class AbstractPrediction : public IIndexVector {
         virtual void apply(IStatistics& statistics, uint32 statisticIndex) const = 0;
 
         /**
-         * Updates the given statistics by reverting this prediction.
+         * Updates given statistics by reverting this prediction.
          *
          * @param statistics        A reference to an object of type `IStatistics` to be updated
          * @param statisticIndex    The index of the statistic to be updated
          */
         virtual void revert(IStatistics& statistics, uint32 statisticIndex) const = 0;
-
-        /**
-         * Sorts the scores that stored by this prediction in increasing order by the the indices of the labels they
-         * correspond to.
-         */
-        virtual void sort() = 0;
-
-        /**
-         * Creates and returns a head that contains the scores that are stored by this prediction.
-         *
-         * @return An unique pointer to an object of type `IHead` that has been created
-         */
-        virtual std::unique_ptr<IHead> createHead() const = 0;
 
         /**
          * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
@@ -191,5 +145,10 @@ class AbstractPrediction : public IIndexVector {
         virtual std::unique_ptr<IStatisticsSubset> createStatisticsSubset(
           const IStatistics& statistics, const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const = 0;
 
-        uint32 getNumElements() const override;
+        /**
+         * Creates and returns a head that contains the scores that are stored by this prediction.
+         *
+         * @return An unique pointer to an object of type `IHead` that has been created
+         */
+        virtual std::unique_ptr<IHead> createHead() const = 0;
 };

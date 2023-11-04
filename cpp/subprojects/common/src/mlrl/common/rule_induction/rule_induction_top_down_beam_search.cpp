@@ -22,10 +22,10 @@ struct BeamEntry final {
         std::unique_ptr<ConditionList> conditionListPtr;
 
         /**
-         * An unique pointer to an object of type `AbstractEvaluatedPrediction` that stores the prediction of the rule,
-         * as well as its quality.
+         * An unique pointer to an object of type `IEvaluatedPrediction` that stores the prediction of the rule, as well
+         * as its quality.
          */
-        std::unique_ptr<AbstractEvaluatedPrediction> headPtr;
+        std::unique_ptr<IEvaluatedPrediction> headPtr;
 
         /**
          * An unique pointer to an object of type `IThresholdsSubset` that may be used to search for potential
@@ -312,11 +312,11 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
     protected:
 
-        std::unique_ptr<IThresholdsSubset> growRule(
-          IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
-          IPartition& partition, IFeatureSampling& featureSampling, RNG& rng,
-          std::unique_ptr<ConditionList>& conditionListPtr,
-          std::unique_ptr<AbstractEvaluatedPrediction>& headPtr) const override {
+        std::unique_ptr<IThresholdsSubset> growRule(IThresholds& thresholds, const IIndexVector& labelIndices,
+                                                    const IWeightVector& weights, IPartition& partition,
+                                                    IFeatureSampling& featureSampling, RNG& rng,
+                                                    std::unique_ptr<ConditionList>& conditionListPtr,
+                                                    std::unique_ptr<IEvaluatedPrediction>& headPtr) const override {
             // Create a new subset of the given thresholds...
             std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = weights.createThresholdsSubset(thresholds);
 

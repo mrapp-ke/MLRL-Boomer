@@ -18,8 +18,7 @@ class Irep final : public IRulePruning {
         Irep(RuleCompareFunction ruleCompareFunction) : ruleCompareFunction_(ruleCompareFunction) {}
 
         std::unique_ptr<ICoverageState> prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
-                                              ConditionList& conditions,
-                                              const AbstractPrediction& head) const override {
+                                              ConditionList& conditions, const IPrediction& head) const override {
             uint32 numConditions = conditions.getNumConditions();
             std::unique_ptr<ICoverageState> bestCoverageStatePtr;
 

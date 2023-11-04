@@ -18,14 +18,13 @@ class IntermediateModelBuilder final : public IModelBuilder {
         /**
          * The type of a rule, which can still be modified.
          */
-        typedef std::pair<std::unique_ptr<ConditionList>, std::unique_ptr<AbstractEvaluatedPrediction>>
-          IntermediateRule;
+        typedef std::pair<std::unique_ptr<ConditionList>, std::unique_ptr<IEvaluatedPrediction>> IntermediateRule;
 
     private:
 
         const std::unique_ptr<IModelBuilder> modelBuilderPtr_;
 
-        std::unique_ptr<AbstractEvaluatedPrediction> defaultPredictionPtr_;
+        std::unique_ptr<IEvaluatedPrediction> defaultPredictionPtr_;
 
         std::vector<IntermediateRule> intermediateRuleList_;
 
@@ -79,10 +78,10 @@ class IntermediateModelBuilder final : public IModelBuilder {
 
         void setNumUsedRules(uint32 numUsedRules) override;
 
-        void setDefaultRule(std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override;
+        void setDefaultRule(std::unique_ptr<IEvaluatedPrediction>& predictionPtr) override;
 
         void addRule(std::unique_ptr<ConditionList>& conditionListPtr,
-                     std::unique_ptr<AbstractEvaluatedPrediction>& predictionPtr) override;
+                     std::unique_ptr<IEvaluatedPrediction>& predictionPtr) override;
 
         std::unique_ptr<IRuleModel> buildModel() override;
 };
