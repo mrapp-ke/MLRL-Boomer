@@ -5,8 +5,7 @@
 #include "mlrl/common/util/arrays.hpp"
 
 template<typename T>
-static inline void processCompleteScores(std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr,
-                                         const T& scoreVector) {
+static inline void processCompleteScores(std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr, const T& scoreVector) {
     CompletePrediction* existingHead = dynamic_cast<CompletePrediction*>(existingHeadPtr.get());
     uint32 numElements = scoreVector.getNumElements();
 
@@ -21,8 +20,7 @@ static inline void processCompleteScores(std::unique_ptr<AbstractEvaluatedPredic
 }
 
 template<typename T>
-static inline void processPartialScores(std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr,
-                                        const T& scoreVector) {
+static inline void processPartialScores(std::unique_ptr<IEvaluatedPrediction>& existingHeadPtr, const T& scoreVector) {
     PartialPrediction* existingHead = dynamic_cast<PartialPrediction*>(existingHeadPtr.get());
     uint32 numElements = scoreVector.getNumElements();
 
@@ -44,7 +42,7 @@ static inline void processPartialScores(std::unique_ptr<AbstractEvaluatedPredict
     existingHead->quality = scoreVector.quality;
 }
 
-ScoreProcessor::ScoreProcessor(std::unique_ptr<AbstractEvaluatedPrediction>& headPtr) : headPtr_(headPtr) {}
+ScoreProcessor::ScoreProcessor(std::unique_ptr<IEvaluatedPrediction>& headPtr) : headPtr_(headPtr) {}
 
 void ScoreProcessor::processScores(const DenseScoreVector<CompleteIndexVector>& scoreVector) {
     processCompleteScores(headPtr_, scoreVector);

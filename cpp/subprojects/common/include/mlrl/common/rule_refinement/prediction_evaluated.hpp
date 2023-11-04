@@ -7,12 +7,12 @@
 #include "mlrl/common/util/quality.hpp"
 
 /**
- * An abstract base class for all classes that store the scores that are predicted by a rule, as well as a numerical
- * score that assesses the overall quality of the rule.
+ * Defines an interface for all classes that store the scores that are predicted by a rule, as well as a numerical score
+ * that assesses the overall quality of the rule.
  */
-class AbstractEvaluatedPrediction : public IPrediction,
-                                    public Quality {
+class IEvaluatedPrediction : public IPrediction,
+                             public Quality {
     public:
 
-        virtual ~AbstractEvaluatedPrediction() override {};
+        virtual ~IEvaluatedPrediction() override {};
 };

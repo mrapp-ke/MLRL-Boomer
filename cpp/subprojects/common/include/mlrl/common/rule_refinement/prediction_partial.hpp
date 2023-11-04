@@ -9,7 +9,7 @@
 /**
  * Stores the scores that are predicted by a rule that predicts for a subset of the available labels.
  */
-class PartialPrediction final : public AbstractEvaluatedPrediction {
+class PartialPrediction final : public IEvaluatedPrediction {
     private:
 
         DenseVector<float64> predictedScoreVector_;
