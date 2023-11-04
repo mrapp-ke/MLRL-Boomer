@@ -24,8 +24,7 @@ AbstractPrediction::value_const_iterator AbstractPrediction::values_cend() const
     return predictedScoreVector_.cend();
 }
 
-void AbstractPrediction::set(AbstractPrediction::value_const_iterator begin,
-                             AbstractPrediction::value_const_iterator end) {
+void AbstractPrediction::set(DenseVector<float64>::const_iterator begin, DenseVector<float64>::const_iterator end) {
     copyArray(begin, predictedScoreVector_.begin(), predictedScoreVector_.getNumElements());
 }
 

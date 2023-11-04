@@ -41,6 +41,23 @@ class IPrediction : public IIndexVector {
         virtual void postProcess(const IPostProcessor& postProcessor) = 0;
 
         /**
+         * Sets the scores that are stored by this prediction to the values in a given iterator.
+         *
+         * @param begin An iterator to the beginning of the values to be set
+         * @param end   An iterator to the end of the values to be set
+         */
+        virtual void set(DenseVector<float64>::const_iterator begin, DenseVector<float64>::const_iterator end) = 0;
+
+        /**
+         * Sets the scores that are stored by this prediction to the values in a given iterator.
+         *
+         * @param begin An iterator to the beginning of the values to be set
+         * @param end   An iterator to the end of the values to be set
+         */
+        virtual void set(DenseBinnedVector<float64>::const_iterator begin,
+                         DenseBinnedVector<float64>::const_iterator end) = 0;
+
+        /**
          * Updates given statistics by applying this prediction.
          *
          * @param statistics        A reference to an object of type `IStatistics` to be updated
@@ -192,21 +209,10 @@ class AbstractPrediction : public IPrediction {
          */
         value_const_iterator values_cend() const;
 
-        /**
-         * Sets the predicted scores in another vector to this vector.
-         *
-         * @param begin A `value_const_iterator` to the beginning of the predicted scores
-         * @param end   A `value_const_iterator` to the end of the predicted scores
-         */
-        void set(value_const_iterator begin, value_const_iterator end);
+        void set(value_const_iterator begin, value_const_iterator end) override final;
 
-        /**
-         * Sets the predicted scores in another vector to this vector.
-         *
-         * @param begin An iterator to the beginning of the predicted scores
-         * @param end   An iterator to the end of the predicted scores
-         */
-        void set(DenseBinnedVector<float64>::const_iterator begin, DenseBinnedVector<float64>::const_iterator end);
+        void set(DenseBinnedVector<float64>::const_iterator begin,
+                 DenseBinnedVector<float64>::const_iterator end) override final;
 
         uint32 getNumElements() const override;
 };
