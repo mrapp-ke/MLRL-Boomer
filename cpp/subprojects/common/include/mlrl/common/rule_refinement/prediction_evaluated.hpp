@@ -10,12 +10,9 @@
  * An abstract base class for all classes that store the scores that are predicted by a rule, as well as a numerical
  * score that assesses the overall quality of the rule.
  */
-class AbstractEvaluatedPrediction : public AbstractPrediction,
+class AbstractEvaluatedPrediction : public IPrediction,
                                     public Quality {
     public:
 
-        /**
-         * @param numElements The number of labels for which the rule predicts
-         */
-        AbstractEvaluatedPrediction(uint32 numElements);
+        virtual ~AbstractEvaluatedPrediction() override {};
 };

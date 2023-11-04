@@ -7,7 +7,23 @@
 #include "mlrl/common/util/arrays.hpp"
 
 CompletePrediction::CompletePrediction(uint32 numElements)
-    : AbstractEvaluatedPrediction(numElements), indexVector_(numElements) {}
+    : predictedScoreVector_(numElements), indexVector_(numElements) {}
+
+CompletePrediction::value_iterator CompletePrediction::values_begin() {
+    return predictedScoreVector_.begin();
+}
+
+CompletePrediction::value_iterator CompletePrediction::values_end() {
+    return predictedScoreVector_.end();
+}
+
+CompletePrediction::value_const_iterator CompletePrediction::values_cbegin() const {
+    return predictedScoreVector_.cbegin();
+}
+
+CompletePrediction::value_const_iterator CompletePrediction::values_cend() const {
+    return predictedScoreVector_.cend();
+}
 
 CompletePrediction::index_const_iterator CompletePrediction::indices_cbegin() const {
     return indexVector_.cbegin();
@@ -15,6 +31,25 @@ CompletePrediction::index_const_iterator CompletePrediction::indices_cbegin() co
 
 CompletePrediction::index_const_iterator CompletePrediction::indices_cend() const {
     return indexVector_.cend();
+}
+
+uint32 CompletePrediction::getNumElements() const {
+    return predictedScoreVector_.getNumElements();
+}
+
+void CompletePrediction::sort() {}
+
+void CompletePrediction::postProcess(const IPostProcessor& postProcessor) {
+    postProcessor.postProcess(this->values_begin(), this->values_end());
+}
+
+void CompletePrediction::set(DenseVector<float64>::const_iterator begin, DenseVector<float64>::const_iterator end) {
+    copyArray(begin, predictedScoreVector_.begin(), predictedScoreVector_.getNumElements());
+}
+
+void CompletePrediction::set(DenseBinnedVector<float64>::const_iterator begin,
+                             DenseBinnedVector<float64>::const_iterator end) {
+    copyArray(begin, predictedScoreVector_.begin(), predictedScoreVector_.getNumElements());
 }
 
 bool CompletePrediction::isPartial() const {
@@ -66,12 +101,6 @@ void CompletePrediction::apply(IStatistics& statistics, uint32 statisticIndex) c
 
 void CompletePrediction::revert(IStatistics& statistics, uint32 statisticIndex) const {
     statistics.revertPrediction(statisticIndex, *this);
-}
-
-void CompletePrediction::sort() {}
-
-void CompletePrediction::postProcess(const IPostProcessor& postProcessor) {
-    postProcessor.postProcess(this->values_begin(), this->values_end());
 }
 
 std::unique_ptr<IHead> CompletePrediction::createHead() const {

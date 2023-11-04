@@ -7,15 +7,17 @@
 template<typename T>
 static inline void processCompleteScores(std::unique_ptr<AbstractEvaluatedPrediction>& existingHeadPtr,
                                          const T& scoreVector) {
+    CompletePrediction* existingHead = dynamic_cast<CompletePrediction*>(existingHeadPtr.get());
     uint32 numElements = scoreVector.getNumElements();
 
-    if (!existingHeadPtr) {
+    if (!existingHead) {
         // Create a new head, if necessary...
         existingHeadPtr = std::make_unique<CompletePrediction>(numElements);
+        existingHead = (CompletePrediction*) existingHeadPtr.get();
     }
 
-    copyArray(scoreVector.values_cbegin(), existingHeadPtr->values_begin(), numElements);
-    existingHeadPtr->quality = scoreVector.quality;
+    copyArray(scoreVector.values_cbegin(), existingHead->values_begin(), numElements);
+    existingHead->quality = scoreVector.quality;
 }
 
 template<typename T>
