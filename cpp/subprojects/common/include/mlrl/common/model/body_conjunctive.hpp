@@ -3,7 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_sparse_arrays.hpp"
+#include "mlrl/common/data/array.hpp"
+#include "mlrl/common/data/view_vector_indexed.hpp"
 #include "mlrl/common/model/body.hpp"
 
 /**
@@ -20,8 +21,9 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
          * @tparam Compare      The type of the comparator that should be used to compare thresholds to feature values
          */
         template<typename Threshold, typename Compare>
-        class MLRLCOMMON_API ConditionVector final : public SparseArraysVector<Threshold>,
-                                                     public IConditional {
+        class MLRLCOMMON_API ConditionVector final
+            : public WritableIndexedVectorDecorator<AllocatedVector<uint32>, AllocatedVector<Threshold>>,
+              public IConditional {
             private:
 
                 Compare compare_;
@@ -187,24 +189,24 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
          * An iterator that provides access to the thresholds that are used by the conditions in the body and allows to
          * modify them.
          */
-        typedef SparseArraysVector<float32>::value_iterator threshold_iterator;
+        typedef View<float32>::iterator threshold_iterator;
 
         /**
          * An iterator that provides read-only access to the thresholds that are used by the conditions in the body.
          */
-        typedef SparseArraysVector<float32>::value_const_iterator threshold_const_iterator;
+        typedef View<float32>::const_iterator threshold_const_iterator;
 
         /**
          * An iterator that provides access to the feature indices that correspond to the conditions in the body and
          * allows to modify them.
          */
-        typedef SparseArraysVector<float32>::index_iterator index_iterator;
+        typedef View<uint32>::iterator index_iterator;
 
         /**
          * An iterator that provides read-only access to the feature indices that correspond to the conditions in the
          * body.
          */
-        typedef SparseArraysVector<float32>::index_const_iterator index_const_iterator;
+        typedef View<uint32>::const_iterator index_const_iterator;
 
         /**
          * Returns the number of numerical conditions that use the <= operator.

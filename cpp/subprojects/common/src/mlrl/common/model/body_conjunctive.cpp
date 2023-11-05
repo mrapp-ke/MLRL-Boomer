@@ -2,14 +2,15 @@
 
 template<typename Threshold, typename Compare>
 ConjunctiveBody::ConditionVector<Threshold, Compare>::ConditionVector(uint32 numConditions)
-    : SparseArraysVector<Threshold>(numConditions) {}
+    : WritableIndexedVectorDecorator<AllocatedVector<uint32>, AllocatedVector<Threshold>>(
+      AllocatedVector<uint32>(numConditions), AllocatedVector<Threshold>(numConditions)) {}
 
 template<typename Threshold, typename Compare>
 bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(View<const float32>::const_iterator begin,
                                                                   View<const float32>::const_iterator end) const {
     uint32 numConditions = this->getNumElements();
-    typename SparseArraysVector<Threshold>::index_const_iterator featureIndexIterator = this->indices_cbegin();
-    typename SparseArraysVector<Threshold>::value_const_iterator thresholdIterator = this->values_cbegin();
+    index_const_iterator featureIndexIterator = this->indices_cbegin();
+    threshold_const_iterator thresholdIterator = this->values_cbegin();
 
     for (uint32 i = 0; i < numConditions; i++) {
         uint32 featureIndex = featureIndexIterator[i];
@@ -31,8 +32,8 @@ bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(
   CsrConstView<const float32>::value_const_iterator valuesBegin,
   CsrConstView<const float32>::value_const_iterator valuesEnd, float32* tmpArray1, uint32* tmpArray2, uint32 n) const {
     uint32 numConditions = this->getNumElements();
-    typename SparseArraysVector<Threshold>::index_const_iterator featureIndexIterator = this->indices_cbegin();
-    typename SparseArraysVector<Threshold>::value_const_iterator thresholdIterator = this->values_cbegin();
+    index_const_iterator featureIndexIterator = this->indices_cbegin();
+    threshold_const_iterator thresholdIterator = this->values_cbegin();
 
     for (uint32 i = 0; i < numConditions; i++) {
         uint32 featureIndex = featureIndexIterator[i];
