@@ -10,8 +10,7 @@
 
 /**
  * An one-dimensional sparse vector that stores a fixed number of elements, consisting of an index and a value, in a
- * C-contiguous array. Such a vector is similar to a `SparseArraysVector`, but uses a single array for storing the
- * indices and values.
+ * C-contiguous array.
  *
  * @tparam T The type of the data that is stored in the vector
  */
