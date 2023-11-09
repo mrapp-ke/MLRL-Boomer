@@ -187,7 +187,7 @@ cdef class RuleLearner:
         :param feature_matrix:  A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
                                 query examples
         :param num_labels:      The number of labels to predict for
-        return:                 True, if the rule learner is able to predict regression scores, False otherwise
+        :return:                True, if the rule learner is able to predict regression scores, False otherwise
         """
         return self.get_rule_learner_ptr().canPredictScores(
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
