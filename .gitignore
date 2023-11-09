@@ -14,8 +14,8 @@ cpp/build/
 
 # Documentation files
 doc/_build/
-doc/apidoc/
-doc/python/**/*.rst
+doc/_extra/
+doc/development/api/python/**/
 
 # Virtual Environment
 venv/
