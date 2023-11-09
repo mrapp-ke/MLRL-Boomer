@@ -103,12 +103,11 @@ class Runnable(ABC):
         """
         Provides information about a program.
 
-        Arguments:
-            name:               A string that speicfies the program name
-            version:            A string that specifies the program version
-            year:               A string that specifies the year when the program was released
-            authors:            A set that contains the name of each author of the program
-            python_packages:    A list that contains a `PythonPackageInfo` for each Python package that is used by the
+        :param name:            A string that specifies the program name
+        :param version:         A string that specifies the program version
+        :param year:            A string that specifies the year when the program was released
+        :param authors:         A set that contains the name of each author of the program
+        :param python_packages: A list that contains a `PythonPackageInfo` for each Python package that is used by the
                                 program
         """
         name: str
