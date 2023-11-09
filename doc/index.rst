@@ -26,12 +26,12 @@ This document is intended for users and developers who are interested in the alg
    :maxdepth: 2
    :caption: Developer Guide
 
-   api/structure
-   api/compilation
-   api/buildoptions
-   api/documentation
-   api/standards
-   api/apidoc
+   development/project_structure
+   development/compilation
+   development/build_options
+   development/documentation
+   development/coding_standards
+   development/apidoc
 
 .. toctree::
    :hidden:

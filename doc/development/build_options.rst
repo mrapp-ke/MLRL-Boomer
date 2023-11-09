@@ -1,4 +1,4 @@
-.. _buildoptions:
+.. _build_options:
 
 Build Options
 =============
