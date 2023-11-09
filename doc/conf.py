@@ -28,7 +28,21 @@ release = (Path(__file__).resolve().parent.parent / 'VERSION').read_text()
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['myst_parser', 'sphinx.ext.autodoc', 'sphinxext.opengraph', 'sphinx_inline_tabs', 'sphinx_copybutton']
+extensions = [
+    'myst_parser',
+    'sphinx.ext.autodoc',
+    'sphinx.ext.intersphinx',
+    'sphinxext.opengraph',
+    'sphinx_inline_tabs',
+    'sphinx_copybutton',
+]
+
+# Intersphinx configuration
+intersphinx_mapping = {
+    'sklearn': ('https://scikit-learn.org/stable/', None),
+    'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
+    'numpy': ('https://numpy.org/doc/stable/', None),
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -42,7 +56,6 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
 html_theme = 'furo'
 html_title = project + ' ' + release
 
