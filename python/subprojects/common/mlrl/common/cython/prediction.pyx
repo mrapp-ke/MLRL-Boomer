@@ -61,7 +61,7 @@ cdef class BinaryPredictor:
         """
         Obtains and returns predictions for all query examples.
 
-        :param max_rules    The maximum number of rules to be used for prediction or 0, if the number of rules should
+        :param max_rules:   The maximum number of rules to be used for prediction or 0, if the number of rules should
                             not be restricted
         :return:            A `numpy.ndarray` of type `uint8`, shape `(num_examples, num_labels)`, that stores the
                             predictions
