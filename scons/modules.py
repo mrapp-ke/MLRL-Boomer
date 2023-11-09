@@ -284,20 +284,11 @@ class DocumentationModule(Module):
             return self.source_subproject.name
 
         @property
-        def apidoc_dir(self) -> str:
+        @abstractmethod
+        def build_dir(self) -> str:
             """
-            The directory, where the API documentation should be stored.
+            The directory, where build files should be stored.
             """
-            return path.join(self.parent_module.apidoc_dir, 'api', self.source_subproject.parent_module.root_dir,
-                             self.name)
-
-        def find_apidoc_files(self) -> List[str]:
-            """
-            Finds and returns all files that belong to the API documentation that has been built.
-
-            :return: A list that contains the paths of the build files that have been found
-            """
-            return find_files_recursively(self.apidoc_dir)
 
         def find_build_files(self) -> List[str]:
             """
@@ -305,13 +296,17 @@ class DocumentationModule(Module):
 
             :return: A list that contains the paths of all build files that have been found
             """
-            return [self.apidoc_dir]
+            return find_files_recursively(self.build_dir)
 
     class CppApidocSubproject(ApidocSubproject):
         """
         Provides access to the directories and files that are necessary for building the API documentation of a certain
         C++ subproject.
         """
+
+        @property
+        def build_dir(self) -> str:
+            return path.join(self.parent_module.root_dir, '_extra', 'development', 'api', 'cpp', self.name)
 
         @property
         def config_file(self) -> str:
@@ -327,25 +322,8 @@ class DocumentationModule(Module):
         """
 
         @property
-        def config_file(self) -> str:
-            """
-            The config file, which should be used for building the API documentation.
-            """
-            return path.join(self.build_dir, 'conf.py')
-
-        @property
         def build_dir(self) -> str:
-            """
-            The directory, where build files should be stored.
-            """
-            return path.join(self.parent_module.root_dir, 'python', self.name)
-
-        def find_build_files(self) -> List[str]:
-
-            def file_filter(file) -> bool:
-                return file.endswith('.rst')
-
-            return find_files_recursively(self.build_dir, file_filter=file_filter) + super().find_build_files()
+            return path.join(self.parent_module.root_dir, 'development', 'api', 'python', self.name)
 
     @property
     def root_dir(self) -> str:
@@ -425,7 +403,7 @@ class DocumentationModule(Module):
         for subproject in CPP_MODULE.find_subprojects():
             apidoc_subproject = self.get_cpp_apidoc_subproject(subproject)
 
-            if file.startswith(apidoc_subproject.apidoc_dir):
+            if file.startswith(apidoc_subproject.build_dir):
                 return apidoc_subproject
 
         raise ValueError('File "' + file + '" does not belong to a C++ API documentation subproject')
@@ -440,7 +418,7 @@ class DocumentationModule(Module):
         for subproject in PYTHON_MODULE.find_subprojects():
             apidoc_subproject = self.get_python_apidoc_subproject(subproject)
 
-            if file.startswith(apidoc_subproject.apidoc_dir):
+            if file.startswith(apidoc_subproject.build_dir):
                 return apidoc_subproject
 
         raise ValueError('File "' + file + '" does not belong to a Python API documentation subproject')

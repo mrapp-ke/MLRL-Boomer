@@ -1,4 +1,4 @@
-.. _standards:
+.. _coding_standards:
 
 Coding Standards
 ================
@@ -34,7 +34,7 @@ To be able to detect problems with the project's source code early during develo
     If you want to execute the tests for the C++ or Python code independently, you can use the build target ``tests_cpp`` or ``tests_python`` instead of ``tests``.
 
 .. warning::
-    Tests for the C++ code are only executed if the project has been compiled with testing support enabled. As described in the section :ref:`buildoptions`, testing support is enabled by default.
+    Tests for the C++ code are only executed if the project has been compiled with testing support enabled. As described in the section :ref:`build_options`, testing support is enabled by default.
 
 The unit and integration tests are run automatically on a `CI server <https://en.wikipedia.org/wiki/Continuous_integration>`__ whenever relevant parts of the source code have been modified. For this purpose, we rely on the infrastructure provided by `Github Actions <https://docs.github.com/en/actions>`__. A track record of past test runs can be found in the `Github repository <https://github.com/mrapp-ke/Boomer/actions>`__.
 
