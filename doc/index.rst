@@ -24,7 +24,7 @@ This document is intended for users and developers who are interested in the alg
 .. toctree::
    :hidden:
    :maxdepth: 2
-   :caption: For Developers
+   :caption: Developer Guide
 
    api/structure
    api/compilation
@@ -38,7 +38,7 @@ This document is intended for users and developers who are interested in the alg
    :maxdepth: 2
    :caption: Further Information
 
-   references/index
-   source/CHANGELOG.md
-   source/CONTRIBUTORS.md
-   source/LICENSE.md
+   misc/references
+   misc/CHANGELOG.md
+   misc/CONTRIBUTORS.md
+   misc/LICENSE.md
