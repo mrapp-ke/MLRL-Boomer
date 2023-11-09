@@ -189,8 +189,8 @@ for subproject in CPP_MODULE.find_subprojects():
     config_file = apidoc_subproject.config_file
 
     if path.isfile(config_file):
-        apidoc_files = apidoc_subproject.find_apidoc_files()
-        targets_apidoc_cpp = apidoc_files if apidoc_files else apidoc_subproject.apidoc_dir
+        build_files = apidoc_subproject.find_build_files()
+        targets_apidoc_cpp = build_files if build_files else apidoc_subproject.build_dir
         source_files = [config_file] + subproject.find_source_files()
         command_apidoc_cpp = env.Command(targets_apidoc_cpp, source_files, action=apidoc_cpp)
         commands_apidoc_cpp.append(command_apidoc_cpp)
@@ -200,15 +200,12 @@ env.Depends(target_apidoc_cpp, commands_apidoc_cpp)
 
 for subproject in PYTHON_MODULE.find_subprojects():
     apidoc_subproject = DOC_MODULE.get_python_apidoc_subproject(subproject)
-    config_file = apidoc_subproject.config_file
-
-    if path.isfile(config_file):
-        apidoc_files = apidoc_subproject.find_apidoc_files()
-        targets_apidoc_python = apidoc_files if apidoc_files else apidoc_subproject.apidoc_dir
-        source_files = [config_file] + subproject.find_source_files()
-        command_apidoc_python = env.Command(targets_apidoc_python, source_files, action=apidoc_python)
-        env.Depends(command_apidoc_python, target_install_wheels)
-        commands_apidoc_python.append(command_apidoc_python)
+    build_files = apidoc_subproject.find_build_files()
+    targets_apidoc_python = build_files if build_files else apidoc_subproject.build_dir
+    source_files = subproject.find_source_files()
+    command_apidoc_python = env.Command(targets_apidoc_python, source_files, action=apidoc_python)
+    env.Depends(command_apidoc_python, target_install_wheels)
+    commands_apidoc_python.append(command_apidoc_python)
 
 target_apidoc_python = env.Alias(TARGET_NAME_APIDOC_PYTHON, None, None)
 env.Depends(target_apidoc_python, commands_apidoc_python)
@@ -232,7 +229,7 @@ if not COMMAND_LINE_TARGETS \
 
     for subproject in CPP_MODULE.find_subprojects():
         apidoc_subproject = DOC_MODULE.get_cpp_apidoc_subproject(subproject)
-        env.Clean([target_apidoc_cpp, DEFAULT_TARGET], apidoc_subproject.find_build_files())
+        env.Clean([target_apidoc_cpp, DEFAULT_TARGET], apidoc_subproject.build_dir)
 
 if not COMMAND_LINE_TARGETS \
         or TARGET_NAME_APIDOC_PYTHON in COMMAND_LINE_TARGETS \
@@ -242,7 +239,7 @@ if not COMMAND_LINE_TARGETS \
 
     for subproject in PYTHON_MODULE.find_subprojects():
         apidoc_subproject = DOC_MODULE.get_python_apidoc_subproject(subproject)
-        env.Clean([target_apidoc_python, DEFAULT_TARGET], apidoc_subproject.find_build_files())
+        env.Clean([target_apidoc_python, DEFAULT_TARGET], apidoc_subproject.build_dir)
 
 if not COMMAND_LINE_TARGETS or TARGET_NAME_APIDOC in COMMAND_LINE_TARGETS or TARGET_NAME_DOC in COMMAND_LINE_TARGETS:
     env.Clean([target_apidoc, DEFAULT_TARGET], DOC_MODULE.apidoc_dir)

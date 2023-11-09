@@ -31,7 +31,8 @@ This document is intended for users and developers who are interested in the alg
    development/build_options
    development/documentation
    development/coding_standards
-   development/apidoc
+   development/api/python/index
+   development/api/cpp/index
 
 .. toctree::
    :hidden:

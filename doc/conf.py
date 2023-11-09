@@ -28,7 +28,7 @@ release = (Path(__file__).resolve().parent.parent / 'VERSION').read_text()
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['myst_parser', 'sphinxext.opengraph', 'sphinx_inline_tabs', 'sphinx_copybutton']
+extensions = ['myst_parser', 'sphinx.ext.autodoc', 'sphinxext.opengraph', 'sphinx_inline_tabs', 'sphinx_copybutton']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -36,7 +36,7 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'python', '**/*.inc.rst']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -55,4 +55,4 @@ html_static_path = ['_static']
 # documentation, such as robots.txt or .htaccess. Relative paths are taken
 # as relative to the configuration directory. They are copied to the output
 # directory. They will overwrite any existing file of the same name.
-html_extra_path = ['apidoc']
+html_extra_path = ['_extra']
