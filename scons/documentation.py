@@ -27,11 +27,12 @@ def __sphinx_apidoc(source_dir: str, output_dir: str):
                 print_args=True,
                 additional_dependencies=['sphinx'],
                 requirements_file=DOC_MODULE.requirements_file)
-    
+
     root_rst_file = path.join(output_dir, 'mlrl.rst')
 
     if path.isfile(root_rst_file):
         remove(root_rst_file)
+
 
 def __sphinx_build(source_dir: str, output_dir: str):
     run_program('sphinx-build',
