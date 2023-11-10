@@ -2,15 +2,15 @@ name: 'Check code style'
 on:
   push:
     paths:
+      - '.github/workflows/test_format.yml'
+      - 'scons/**'
       - '**/*.hpp'
       - '**/*.cpp'
       - '**/*.py'
-      - 'scons/**'
       - '.clang-format'
       - '.isort.cfg'
       - '.pylintrc'
       - '.style.yapf'
-      - '.github/workflows/test_format.yml'
 jobs:
   test_format:
     name: Check code style
@@ -18,7 +18,25 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Detect changes
+        uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            cpp:
+              - 'scons/**'
+              - '**/*.hpp'
+              - '**/*.cpp'
+              - '.clang-format'
+            python:
+              - 'scons/**'
+              - '**/*.py'
+              - '.isort.cfg'
+              - '.pylintrc'
+              - '.style.yapf'
       - name: Check C++ code style
+        if: steps.filter.outputs.cpp == 'true'
         run: ./build test_format_cpp
       - name: Check Python code style
+        if: steps.filter.outputs.python == 'true'
         run: ./build test_format_python

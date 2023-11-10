@@ -2,43 +2,87 @@ name: 'Test build'
 on:
   push:
     paths:
-      - '**/*.hpp'
-      - '**/*.cpp'
-      - '**/*.pxd'
-      - '**/*.pyx'
-      - '**/*.py'
-      - '**/*.build'
-      - 'scons/**'
-      - '**/requirements.txt'
-      - 'doc/**'
-      - 'python/subprojects/testbed/tests/**'
       - '.github/workflows/test_build.yml'
+      - 'scons/**'
+      - 'cpp/**'
+      - 'python/**'
+      - 'doc/**'
 jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      cpp: ${{ steps.filter.outputs.cpp }}
+      cpp_tests: ${{ steps.filter.outputs.cpp_tests }}
+      python: ${{ steps.filter.outputs.python }}
+      python_tests: ${{ steps.filter.outputs.python_tests }}
+      doc: ${{ steps.filter.outputs.doc }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            cpp: &cpp
+              - 'scons/**'
+              - 'cpp/**/include/**'
+              - 'cpp/**/src/**'
+              - '**/*.pxd'
+              - '**/*.pyx'
+              - '**/meson.build'
+            cpp_tests:
+              - *cpp
+              - 'cpp/**/test/**'
+            python: &python
+              - 'scons/**'
+              - 'python/requirements.txt'
+              - 'python/**/mlrl/**'
+            python_tests:
+              - *python
+              - python/**/tests/** 
+            doc:
+              - 'scons/**'
+              - 'doc/**'
   linux_build:
+    needs: changes
     name: Test Linux build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install OpenCL
+        if: ${{ needs.changes.outputs.cpp_tests == 'true' || needs.changes.outputs.python_tests == 'true' || needs.changes.outputs.doc == 'true' }}
         run: |
           sudo apt update
           sudo apt install -y opencl-headers ocl-icd-opencl-dev
       - name: Install GoogleTest
+        if: ${{ needs.changes.outputs.cpp_tests == 'true' || needs.changes.outputs.python_tests == 'true' || needs.changes.outputs.doc == 'true' }}
         run: sudo apt install -y googletest
-      - name: Compile via GCC
-        run: ./build compile
       - name: Test C++ code
+        if: ${{ needs.changes.outputs.cpp_tests == 'true' }}
         run: ./build tests_cpp
       - name: Test Python code
+        if: ${{ needs.changes.outputs.cpp == 'true' || needs.changes.outputs.python_tests == 'true' }}
         run: ./build tests_python
       - name: Install Doxygen
+        if: ${{ needs.changes.outputs.cpp == 'true' || needs.changes.outputs.doc == 'true' }}
         uses: ssciwr/doxygen-install@v1
+      - name: Generate C++ Apidoc
+        if: ${{ needs.changes.outputs.cpp == 'true' }}
+        run: ./build apidoc_cpp
+      - name: Generate Python Apidoc
+        if: ${{ needs.changes.outputs.python == 'true' }}
+        run: ./build apidoc_python
       - name: Install Roboto font
+        if: ${{ needs.changes.outputs.doc == 'true' }}
         run: sudo apt install -y fonts-roboto
       - name: Generate Documentation
+        if: ${{ needs.changes.outputs.doc == 'true' }}
         run: ./build doc
   macos_build:
+    needs: changes
+    if: ${{ needs.changes.outputs.cpp == 'true' }}
     name: Test MacOS build
     runs-on: macos-latest
     steps:
@@ -53,6 +97,8 @@ jobs:
       - name: Compile via Clang
         run: TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
   windows_build:
+    needs: changes
+    if: ${{ needs.changes.outputs.cpp == 'true' }}
     name: Test Windows build
     runs-on: windows-latest
     steps:
