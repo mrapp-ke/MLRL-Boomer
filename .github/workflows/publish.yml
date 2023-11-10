@@ -2,7 +2,7 @@ name: 'Publish packages'
 on:
   release:
     types: [ published ]
-    branches: [ master ]
+    branches: [ main ]
 jobs:
   build_pure_wheels:
     name: Build pure wheels

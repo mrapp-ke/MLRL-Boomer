@@ -5,9 +5,10 @@ on:
       - '**/*.hpp'
       - '**/*.cpp'
       - '**/*.py'
-      - 'build'
+      - 'scons/**'
       - '.clang-format'
       - '.isort.cfg'
+      - '.pylintrc'
       - '.style.yapf'
       - '.github/workflows/test_format.yml'
 jobs:
