@@ -38,8 +38,16 @@ def __run_command(cmd: str, *args, print_cmd: bool = True, print_args: bool = Fa
 
 
 def __pip_install(requirement: str):
-    args = ['--upgrade', '--prefer-binary', '--disable-pip-version-check']
-    out = __run_command('python', '-m', 'pip', 'install', *args, requirement, print_cmd=False, capture_output=True)
+    out = __run_command('python',
+                        '-m',
+                        'pip',
+                        'install',
+                        '--upgrade',
+                        '--prefer-binary',
+                        '--disable-pip-version-check',
+                        requirement,
+                        print_cmd=False,
+                        capture_output=True)
     stdout = str(out.stdout).strip()
 
     if not reduce(lambda aggr, line: aggr & line.startswith('Requirement already satisfied'), stdout.split('\n'), True):
