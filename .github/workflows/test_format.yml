@@ -19,8 +19,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Check C++ code style
-        run: |
-          ./build test_format_cpp
+        run: ./build test_format_cpp
       - name: Check Python code style
-        run: |
-          ./build test_format_python
+        run: ./build test_format_python
