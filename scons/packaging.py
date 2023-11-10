@@ -19,7 +19,13 @@ def __build_python_wheel(package_dir: str):
 
 
 def __install_python_wheels(wheels: List[str]):
-    run_python_program('pip', 'install', '--force-reinstall', '--no-deps', *wheels, print_args=True)
+    run_python_program('pip',
+                       'install',
+                       '--force-reinstall',
+                       '--no-deps',
+                       '--disable-pip-version-check',
+                       *wheels,
+                       print_args=True)
 
 
 # pylint: disable=unused-argument

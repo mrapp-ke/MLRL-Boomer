@@ -68,7 +68,7 @@ def __find_missing_and_outdated_dependencies(requirements_file: str, *dependenci
 
 
 def __pip_install(dependencies: List[str], force_reinstall: bool = False):
-    args = ['--prefer-binary']
+    args = ['--prefer-binary', '--disable-pip-version-check']
 
     if force_reinstall:
         args.append('--force-reinstall')
