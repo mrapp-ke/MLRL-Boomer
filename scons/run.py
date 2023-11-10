@@ -8,83 +8,65 @@ import sys
 
 from functools import reduce
 from os import path
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
 from modules import BUILD_MODULE, CPP_MODULE, PYTHON_MODULE
-from pkg_resources import DistributionNotFound, VersionConflict, parse_requirements, require
 
 
-def __run_command(cmd: str, *args, print_args: bool = False):
-    cmd_formatted = cmd + (reduce(lambda aggr, argument: aggr + ' ' + argument, args, '') if print_args else '')
-    print('Running external command "' + cmd_formatted + '"...')
+def __format_command(cmd: str, *args, format_args: bool) -> str:
+    return cmd + (reduce(lambda aggr, argument: aggr + ' ' + argument, args, '') if format_args else '')
+
+
+def __run_command(cmd: str, *args, print_cmd: bool = True, print_args: bool = False, capture_output: bool = False):
+    if print_cmd:
+        print('Running external command "' + __format_command(cmd, *args, format_args=print_args) + '"...')
+
     cmd_args = [cmd]
 
     for arg in args:
         cmd_args.append(str(arg))
 
-    out = subprocess.run(cmd_args, check=False)
+    out = subprocess.run(cmd_args, check=False, text=capture_output, capture_output=capture_output)
     exit_code = out.returncode
 
     if exit_code != 0:
-        print('External command "' + cmd_formatted + '" terminated with non-zero exit code ' + str(exit_code))
+        print('External command "' + __format_command(cmd, *args, format_args=print_args)
+              + '" terminated with non-zero exit code ' + str(exit_code))
         sys.exit(exit_code)
 
-
-def __is_dependency_missing(dependency: str) -> bool:
-    try:
-        require(dependency)
-        return False
-    except DistributionNotFound:
-        return True
-    except VersionConflict:
-        return False
+    return out
 
 
-def __is_dependency_outdated(dependency: str) -> bool:
-    try:
-        require(dependency)
-        return False
-    except DistributionNotFound:
-        return False
-    except VersionConflict:
-        return True
+def __pip_install(requirement: str):
+    out = __run_command('python',
+                        '-m',
+                        'pip',
+                        'install',
+                        '--upgrade',
+                        '--prefer-binary',
+                        '--disable-pip-version-check',
+                        requirement,
+                        print_cmd=False,
+                        capture_output=True)
+    stdout = str(out.stdout).strip()
+
+    if not reduce(lambda aggr, line: aggr & line.startswith('Requirement already satisfied'), stdout.split('\n'), True):
+        print(stdout)
 
 
-def __find_dependencies(requirements_file: str, *dependencies: str) -> List[str]:
+def __find_requirements(requirements_file: str, *dependencies: str) -> List[str]:
     with open(requirements_file, mode='r', encoding='utf-8') as file:
-        dependency_dict = {dependency.key: str(dependency) for dependency in parse_requirements(file.read())}
+        requirements = {line.split(' ')[0]: line.strip() for line in file.readlines()}
 
     if dependencies:
-        return [dependency_dict[dependency] for dependency in dependencies if dependency in dependency_dict]
+        return [requirements[dependency] for dependency in dependencies if dependency in requirements]
 
-    return list(dependency_dict.values())
-
-
-def __find_missing_and_outdated_dependencies(requirements_file: str, *dependencies: str) -> Tuple[List[str], List[str]]:
-    dependencies = __find_dependencies(requirements_file, *dependencies)
-    missing_dependencies = [dependency for dependency in dependencies if __is_dependency_missing(dependency)]
-    outdated_dependencies = [dependency for dependency in dependencies if __is_dependency_outdated(dependency)]
-    return missing_dependencies, outdated_dependencies
-
-
-def __pip_install(dependencies: List[str], force_reinstall: bool = False):
-    args = ['--prefer-binary']
-
-    if force_reinstall:
-        args.append('--force-reinstall')
-
-    __run_command('python', '-m', 'pip', 'install', *args, *dependencies, print_args=True)
+    return list(requirements.values())
 
 
 def __install_dependencies(requirements_file: str, *dependencies: str):
-    missing_dependencies, outdated_dependencies = __find_missing_and_outdated_dependencies(
-        requirements_file, *dependencies)
-
-    if missing_dependencies:
-        __pip_install(missing_dependencies)
-
-    if outdated_dependencies:
-        __pip_install(outdated_dependencies, force_reinstall=True)
+    for requirement in __find_requirements(requirements_file, *dependencies):
+        __pip_install(requirement)
 
 
 def install_build_dependencies(*dependencies: str):
