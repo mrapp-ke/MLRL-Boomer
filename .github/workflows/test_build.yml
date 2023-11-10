@@ -8,7 +8,7 @@ on:
       - '**/*.pyx'
       - '**/*.py'
       - '**/*.build'
-      - 'build'
+      - 'scons/**'
       - '**/requirements.txt'
       - 'doc/**'
       - 'python/subprojects/testbed/tests/**'
