@@ -25,25 +25,19 @@ jobs:
           sudo apt update
           sudo apt install -y opencl-headers ocl-icd-opencl-dev
       - name: Install GoogleTest
-        run: |
-          sudo apt install -y googletest
+        run: sudo apt install -y googletest
       - name: Compile via GCC
-        run: |
-          ./build compile
+        run: ./build compile
       - name: Test C++ code
-        run: |
-          ./build tests_cpp
+        run: ./build tests_cpp
       - name: Test Python code
-        run: |
-          ./build tests_python
+        run: ./build tests_python
       - name: Install Doxygen
         uses: ssciwr/doxygen-install@v1
       - name: Install Roboto font
-        run: |
-          sudo apt install -y fonts-roboto
+        run: sudo apt install -y fonts-roboto
       - name: Generate Documentation
-        run: |
-          ./build doc
+        run: ./build doc
   macos_build:
     name: Test MacOS build
     runs-on: macos-latest
@@ -55,11 +49,9 @@ jobs:
           brew install libomp
           brew link libomp --force
       - name: Install OpenCL
-        run: |
-          brew install opencl-clhpp-headers
+        run: brew install opencl-clhpp-headers
       - name: Compile via Clang
-        run: |
-          TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
+        run: TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
   windows_build:
     name: Test Windows build
     runs-on: windows-latest
