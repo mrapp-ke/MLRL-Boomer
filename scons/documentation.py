@@ -35,8 +35,8 @@ def __sphinx_apidoc(source_dir: str, output_dir: str):
 
 def __sphinx_build(source_dir: str, output_dir: str):
     run_program('sphinx-build',
-                '-M',
-                'html',
+                '--jobs',
+                'auto',
                 source_dir,
                 output_dir,
                 print_args=True,
