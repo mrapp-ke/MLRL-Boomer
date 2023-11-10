@@ -19,7 +19,6 @@ def __sphinx_apidoc(source_dir: str, output_dir: str):
                 '--separate',
                 '--module-first',
                 '--no-toc',
-                '--force',
                 '-o',
                 output_dir,
                 source_dir,
