@@ -17,6 +17,7 @@ jobs:
       python: ${{ steps.filter.outputs.python }}
       python_tests: ${{ steps.filter.outputs.python_tests }}
       doc: ${{ steps.filter.outputs.doc }}
+      any: ${{ steps.filter.outputs.any }}
     steps:
       - name: Look up Git repository in cache
         uses: actions/cache/restore@v3
@@ -39,27 +40,32 @@ jobs:
               - '**/*.pxd'
               - '**/*.pyx'
               - '**/meson.build'
-            cpp_tests:
+            cpp_tests: &cpp_tests
               - *cpp
               - 'cpp/**/test/**'
             python: &python
               - 'scons/**'
               - 'python/requirements.txt'
               - 'python/**/mlrl/**'
-            python_tests:
+            python_tests: &python_tests
               - *python
               - python/**/tests/** 
-            doc:
+            doc: &doc
               - 'scons/**'
               - 'doc/**'
+            any:
+              - *cpp_tests
+              - *python_tests
+              - *doc
       - name: Save Git repository to cache
         uses: actions/cache/save@v3
-        if: always()
+        if: success() || failure()
         with:
           path: Boomer/.git/
           key: test-build-git
   linux_build:
     needs: changes
+    if: ${{ needs.changes.outputs.any == 'true' }}
     name: Test Linux build
     runs-on: ubuntu-latest
     steps:
@@ -73,13 +79,26 @@ jobs:
         with:
           path: Boomer/
       - name: Install OpenCL
-        if: ${{ needs.changes.outputs.cpp_tests == 'true' || needs.changes.outputs.python_tests == 'true' || needs.changes.outputs.doc == 'true' }}
         run: |
           sudo apt update
           sudo apt install -y opencl-headers ocl-icd-opencl-dev
       - name: Install GoogleTest
-        if: ${{ needs.changes.outputs.cpp_tests == 'true' || needs.changes.outputs.python_tests == 'true' || needs.changes.outputs.doc == 'true' }}
         run: sudo apt install -y googletest
+      - name: Look up build files in cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            - Boomer/venv/
+            - Boomer/scons/build/
+            - Boomer/cpp/build/
+            - Boomer/python/**/cython/*.so*
+            - Boomer/python/**/build/
+            - Boomer/python/**/dist/
+            - Boomer/python/**/*egg-info/
+            - Boomer/doc/_build/
+            - Boomer/doc/_extra/
+            - Boomer/doc/development/api/python/
+          key: ${{ runner.os }}-test-build-tmp-files
       - name: Test C++ code
         if: ${{ needs.changes.outputs.cpp_tests == 'true' }}
         run: ./build tests_cpp
@@ -101,6 +120,22 @@ jobs:
       - name: Generate Documentation
         if: ${{ needs.changes.outputs.doc == 'true' }}
         run: ./build doc
+      - name: Save build files to cache
+        uses: actions/cache/save@v3
+        if: success() || failure()
+        with:
+          path: |
+            - Boomer/venv/
+            - Boomer/scons/build/
+            - Boomer/cpp/build/
+            - Boomer/python/**/cython/*.so*
+            - Boomer/python/**/build/
+            - Boomer/python/**/dist/
+            - Boomer/python/**/*egg-info/
+            - Boomer/doc/_build/
+            - Boomer/doc/_extra/
+            - Boomer/doc/development/api/python/
+          key: ${{ runner.os }}-test-build-tmp-files
   macos_build:
     needs: changes
     if: ${{ needs.changes.outputs.cpp == 'true' }}
@@ -122,8 +157,25 @@ jobs:
           brew link libomp --force
       - name: Install OpenCL
         run: brew install opencl-clhpp-headers
+      - name: Look up build files in cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            - Boomer/venv/
+            - Boomer/scons/build/
+            - Boomer/cpp/build/
+          key: ${{ runner.os }}-test-build-tmp-files
       - name: Compile via Clang
         run: TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
+      - name: Save build files to cache
+        uses: actions/cache/save@v3
+        if: success() || failure()
+        with:
+          path: |
+            - Boomer/venv/
+            - Boomer/scons/build/
+            - Boomer/cpp/build/
+          key: ${{ runner.os }}-test-build-tmp-files
   windows_build:
     needs: changes
     if: ${{ needs.changes.outputs.cpp == 'true' }}
@@ -152,9 +204,26 @@ jobs:
           pkgs: opencl
           triplet: x64-windows
           token: ${{ github.token }}
+      - name: Look up build files in cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            - Boomer/venv/
+            - Boomer/scons/build/
+            - Boomer/cpp/build/
+          key: ${{ runner.os }}-test-build-tmp-files
       - name: Compile via MSVC
         run: |
           $env:TEST_SUPPORT = "disabled"
           $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\include"
           $env:LIB += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\lib"
           ./build.bat compile
+      - name: Save build files to cache
+        uses: actions/cache/save@v3
+        if: success() || failure()
+        with:
+          path: |
+            - Boomer/venv/
+            - Boomer/scons/build/
+            - Boomer/cpp/build/
+          key: ${{ runner.os }}-test-build-tmp-files
