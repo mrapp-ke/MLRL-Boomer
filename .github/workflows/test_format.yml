@@ -16,12 +16,20 @@ jobs:
     name: Check code style
     runs-on: ubuntu-latest
     steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v3
+        with:
+          path: Boomer/.git/
+          key: test-format-git
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          path: Boomer/
       - name: Detect changes
         uses: dorny/paths-filter@v2
         id: filter
         with:
+          working-directory: Boomer/
           filters: |
             cpp:
               - 'scons/**'
@@ -40,3 +48,9 @@ jobs:
       - name: Check Python code style
         if: steps.filter.outputs.python == 'true'
         run: ./build test_format_python
+      - name: Save Git repository to cache
+        uses: actions/cache/save@v3
+        if: always()
+        with:
+          path: Boomer/.git/
+          key: test-format-git
