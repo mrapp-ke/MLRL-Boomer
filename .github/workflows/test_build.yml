@@ -18,11 +18,19 @@ jobs:
       python_tests: ${{ steps.filter.outputs.python_tests }}
       doc: ${{ steps.filter.outputs.doc }}
     steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v3
+        with:
+          path: Boomer/.git/
+          key: test-build-git
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          path: Boomer/
       - uses: dorny/paths-filter@v2
         id: filter
         with:
+          working-directory: Boomer/
           filters: |
             cpp: &cpp
               - 'scons/**'
@@ -44,13 +52,26 @@ jobs:
             doc:
               - 'scons/**'
               - 'doc/**'
+      - name: Save Git repository to cache
+        uses: actions/cache/save@v3
+        if: always()
+        with:
+          path: Boomer/.git/
+          key: test-build-git
   linux_build:
     needs: changes
     name: Test Linux build
     runs-on: ubuntu-latest
     steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v3
+        with:
+          path: Boomer/.git/
+          key: test-build-git
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          path: Boomer/
       - name: Install OpenCL
         if: ${{ needs.changes.outputs.cpp_tests == 'true' || needs.changes.outputs.python_tests == 'true' || needs.changes.outputs.doc == 'true' }}
         run: |
@@ -86,8 +107,15 @@ jobs:
     name: Test MacOS build
     runs-on: macos-latest
     steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v3
+        with:
+          path: Boomer/.git/
+          key: test-build-git
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          path: Boomer/
       - name: Install OpenMP
         run: |
           brew install libomp
@@ -102,8 +130,16 @@ jobs:
     name: Test Windows build
     runs-on: windows-latest
     steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v3
+        with:
+          enableCrossOsArchive: true
+          path: Boomer/.git/
+          key: test-build-git
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          path: Boomer/
       - name: Prepare MSVC
         uses: ilammy/msvc-dev-cmd@v1
       - name: Remove conflicting link.exe
