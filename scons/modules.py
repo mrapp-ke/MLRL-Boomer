@@ -366,12 +366,10 @@ class DocumentationModule(Module):
         """
 
         def directory_filter(directory: str) -> bool:
-            return directory != path.basename(self.build_dir) \
-                and directory != path.basename(self.apidoc_dir) \
-                and directory != 'python'
+            return directory != path.basename(self.build_dir)
 
         def file_filter(file: str) -> bool:
-            return not file.startswith('Doxyfile') and not file == 'requirements.txt' and not file == 'conf.py'
+            return file == 'conf.py' or file.endswith('.rst') or file.endswith('.svg')
 
         return find_files_recursively(self.root_dir, directory_filter=directory_filter, file_filter=file_filter)
 
