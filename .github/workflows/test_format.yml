@@ -68,13 +68,9 @@ jobs:
             - venv/
             - scons/build/
           key: test-format-cache-tmp-files-${{ github.run_id }}
-          restore-keys: |
-            - test-format-cache-tmp-files
       - name: Save Git repository to cache
         uses: actions/cache/save@v3
         if: success() || failure()
         with:
           path: .git/
           key: test-format-cache-git-${{ github.run_id }}
-          restore-keys: |
-            - test-format-cache-git
