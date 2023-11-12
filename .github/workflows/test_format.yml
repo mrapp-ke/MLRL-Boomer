@@ -20,11 +20,9 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: .git/
-          key: test-format-git
+          key: test-format-cache-git
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          path: .
       - name: Detect changes
         uses: dorny/paths-filter@v2
         id: filter
@@ -51,7 +49,7 @@ jobs:
           path: |
             - venv/
             - scons/build/
-          key: test-format-tmp-files
+          key: test-format-cache-tmp-files
       - name: Check C++ code style
         if: steps.filter.outputs.cpp == 'true'
         run: ./build test_format_cpp
@@ -65,10 +63,10 @@ jobs:
           path: |
             - venv/
             - scons/build/
-          key: test-format-tmp-files
+          key: test-format-cache-tmp-files
       - name: Save Git repository to cache
         uses: actions/cache/save@v3
         if: success() || failure()
         with:
           path: .git/
-          key: test-format-git
+          key: test-format-cache-git
