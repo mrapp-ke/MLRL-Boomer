@@ -30,7 +30,8 @@ A major update to the BOOMER algorithm that introduces the following changes.
 * The groundwork for GPU support was layed. It can be disabled at compile-time via a build option.
 * Added support for unit testing the project's C++ code. Compilation of the tests can be disabled via a build option.
 * The Python code is now checked for common issues by applying `pylint` via continuous integration.
-* The Makefile has been replaced with wrapper scripts triggering a [SCons](https://scons.org/) build.  
+* The Makefile has been replaced with wrapper scripts triggering a [SCons](https://scons.org/) build.
+* The runtime of continuous integration jobs has been optimized by running individual steps only if necessary and caching files across subsequent runs.
 
 ## Version 0.9.0 (Jul. 2nd, 2023)
 
