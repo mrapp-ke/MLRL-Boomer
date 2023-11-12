@@ -24,7 +24,8 @@ jobs:
         with:
           path: .git/
           key: test-build-cache-git-${{ github.run_id }}
-          restore-keys: test-build-cache-git
+          restore-keys: |
+            - test-build-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Detect changes
@@ -62,7 +63,8 @@ jobs:
         with:
           path: .git/
           key: test-build-cache-git-${{ github.run_id }}
-          restore-keys: test-build-cache-git
+          restore-keys: |
+            - test-build-cache-git
   linux_build:
     needs: changes
     if: ${{ needs.changes.outputs.any == 'true' }}
@@ -74,7 +76,8 @@ jobs:
         with:
           path: .git/
           key: test-build-cache-git-${{ github.run_id }}
-          restore-keys: test-build-cache-git
+          restore-keys: |
+            - test-build-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install OpenCL
@@ -98,7 +101,8 @@ jobs:
             - doc/_extra/
             - doc/development/api/python/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
-          restore-keys: ${{ runner.os }}-test-build-cache-tmp-files
+          restore-keys: |
+            - ${{ runner.os }}-test-build-cache-tmp-files
       - name: Test C++ code
         if: ${{ needs.changes.outputs.cpp_tests == 'true' }}
         run: ./build tests_cpp
@@ -136,7 +140,8 @@ jobs:
             - doc/_extra/
             - doc/development/api/python/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
-          restore-keys: ${{ runner.os }}-test-build-cache-tmp-files
+          restore-keys: |
+            - ${{ runner.os }}-test-build-cache-tmp-files
   macos_build:
     needs: changes
     if: ${{ needs.changes.outputs.cpp == 'true' }}
@@ -148,7 +153,8 @@ jobs:
         with:
           path: .git/
           key: test-build-cache-git-${{ github.run_id }}
-          restore-keys: test-build-cache-git
+          restore-keys: |
+            - test-build-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install OpenMP
@@ -165,7 +171,8 @@ jobs:
             - scons/build/
             - cpp/build/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
-          restore-keys: ${{ runner.os }}-test-build-cache-tmp-files
+          restore-keys: |
+            - ${{ runner.os }}-test-build-cache-tmp-files
       - name: Compile via Clang
         run: TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
       - name: Save build files to cache
@@ -177,7 +184,8 @@ jobs:
             - scons/build/
             - cpp/build/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
-          restore-keys: ${{ runner.os }}-test-build-cache-tmp-files
+          restore-keys: |
+            - ${{ runner.os }}-test-build-cache-tmp-files
   windows_build:
     needs: changes
     if: ${{ needs.changes.outputs.cpp == 'true' }}
@@ -190,7 +198,8 @@ jobs:
           enableCrossOsArchive: true
           path: .git/
           key: test-build-cache-git-${{ github.run_id }}
-          restore-keys: test-build-cache-git
+          restore-keys: |
+            - test-build-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Prepare MSVC
@@ -213,7 +222,8 @@ jobs:
             - scons/build/
             - cpp/build/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
-          restore-keys: ${{ runner.os }}-test-build-cache-tmp-files
+          restore-keys: |
+            - ${{ runner.os }}-test-build-cache-tmp-files
       - name: Compile via MSVC
         run: |
           $env:TEST_SUPPORT = "disabled"
@@ -229,4 +239,5 @@ jobs:
             - scons/build/
             - cpp/build/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
-          restore-keys: ${{ runner.os }}-test-build-cache-tmp-files
+          restore-keys: |
+            - ${{ runner.os }}-test-build-cache-tmp-files

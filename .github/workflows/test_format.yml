@@ -21,7 +21,8 @@ jobs:
         with:
           path: .git/
           key: test-format-cache-git-${{ github.run_id }}
-          restore-keys: test-format-cache-git
+          restore-keys: |
+            - test-format-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Detect changes
@@ -51,7 +52,8 @@ jobs:
             - venv/
             - scons/build/
           key: test-format-cache-tmp-files-${{ github.run_id }}
-          restore-keys: test-format-cache-tmp-files
+          restore-keys: |
+            - test-format-cache-tmp-files
       - name: Check C++ code style
         if: steps.filter.outputs.cpp == 'true'
         run: ./build test_format_cpp
@@ -66,11 +68,13 @@ jobs:
             - venv/
             - scons/build/
           key: test-format-cache-tmp-files-${{ github.run_id }}
-          restore-keys: test-format-cache-tmp-files
+          restore-keys: |
+            - test-format-cache-tmp-files
       - name: Save Git repository to cache
         uses: actions/cache/save@v3
         if: success() || failure()
         with:
           path: .git/
           key: test-format-cache-git-${{ github.run_id }}
-          restore-keys: test-format-cache-git
+          restore-keys: |
+            - test-format-cache-git
