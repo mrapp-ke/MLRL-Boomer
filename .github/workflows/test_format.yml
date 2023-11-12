@@ -19,17 +19,16 @@ jobs:
       - name: Look up Git repository in cache
         uses: actions/cache/restore@v3
         with:
-          path: Boomer/.git/
+          path: .git/
           key: test-format-git
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: Boomer/
+          path: .
       - name: Detect changes
         uses: dorny/paths-filter@v2
         id: filter
         with:
-          working-directory: Boomer/
           filters: |
             cpp: &cpp
               - 'scons/**'
@@ -50,8 +49,8 @@ jobs:
         if: steps.filter.outputs.any == 'true'
         with:
           path: |
-            - Boomer/venv/
-            - Boomer/scons/build/
+            - venv/
+            - scons/build/
           key: test-format-tmp-files
       - name: Check C++ code style
         if: steps.filter.outputs.cpp == 'true'
@@ -64,12 +63,12 @@ jobs:
         if: (success() || failure()) && steps.filter.outputs.any == 'true'
         with:
           path: |
-            - Boomer/venv/
-            - Boomer/scons/build/
+            - venv/
+            - scons/build/
           key: test-format-tmp-files
       - name: Save Git repository to cache
         uses: actions/cache/save@v3
         if: success() || failure()
         with:
-          path: Boomer/.git/
+          path: .git/
           key: test-format-git
