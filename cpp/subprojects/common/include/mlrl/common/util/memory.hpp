@@ -33,8 +33,8 @@ static inline constexpr T* allocateMemory(uint32 numElements, bool init = false)
  * @return              A pointer to the reallocated memory
  */
 template<typename T>
-static inline constexpr T* reallocateMemory(T* ptr, uint32 numElements) {
-    return (T*) realloc(ptr, numElements * sizeof(T));
+static inline constexpr T* reallocateMemory(T* array, uint32 numElements) {
+    return (T*) realloc(array, numElements * sizeof(T));
 }
 
 /**
@@ -44,8 +44,8 @@ static inline constexpr T* reallocateMemory(T* ptr, uint32 numElements) {
  * @param array A pointer to an array of template type `T`
  */
 template<typename T>
-static inline constexpr void freeMemory(T* ptr) {
-    if (ptr) {
-        free(ptr);
+static inline constexpr void freeMemory(T* array) {
+    if (array) {
+        free(array);
     }
 }
