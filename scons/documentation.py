@@ -14,6 +14,19 @@ def __doxygen(config_file: str, output_dir: str):
     run_program('doxygen', config_file, print_args=True)
 
 
+def __breathe_apidoc(source_dir: str, output_dir: str, project: str):
+    run_program('breathe-apidoc',
+                '--members',
+                '--project',
+                project,
+                '-o',
+                output_dir,
+                source_dir,
+                print_args=True,
+                additional_dependencies=['breathe'],
+                requirements_file=DOC_MODULE.requirements_file)
+
+
 def __sphinx_apidoc(source_dir: str, output_dir: str):
     run_program('sphinx-apidoc',
                 '--separate',
@@ -61,8 +74,11 @@ def apidoc_cpp(env, target, source):
         config_file = apidoc_subproject.config_file
 
         if path.isfile(config_file):
-            print('Generating C++ API documentation for subproject "' + apidoc_subproject.name + '"...')
-            __doxygen(config_file=config_file, output_dir=apidoc_subproject.build_dir)
+            subproject_name = apidoc_subproject.name
+            print('Generating C++ API documentation for subproject "' + subproject_name + '"...')
+            build_dir = apidoc_subproject.build_dir
+            __doxygen(config_file=config_file, output_dir=build_dir)
+            __breathe_apidoc(source_dir=path.join(build_dir, 'xml'), output_dir=build_dir, project=subproject_name)
 
 
 # pylint: disable=unused-argument
