@@ -23,6 +23,6 @@ namespace seco {
      * An object of type `RuleCompareFunction` that defines the function that should be used for comparing the quality
      * of SeCo rules.
      */
-    static const RuleCompareFunction SECO_RULE_COMPARE_FUNCTION(compareSeCoRuleQuality, 0.0);
+    static const RuleCompareFunction SECO_RULE_COMPARE_FUNCTION = RuleCompareFunction(compareSeCoRuleQuality, 0.0);
 
 }

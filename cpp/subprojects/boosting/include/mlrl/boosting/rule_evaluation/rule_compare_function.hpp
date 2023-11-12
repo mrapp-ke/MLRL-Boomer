@@ -23,6 +23,7 @@ namespace boosting {
      * An object of type `RuleCompareFunction` that defines the function that should be used for comparing the quality
      * of boosted rules.
      */
-    static const RuleCompareFunction BOOSTED_RULE_COMPARE_FUNCTION(compareBoostedRuleQuality, 0.0);
+    static const RuleCompareFunction BOOSTED_RULE_COMPARE_FUNCTION =
+      RuleCompareFunction(compareBoostedRuleQuality, 0.0);
 
 }
