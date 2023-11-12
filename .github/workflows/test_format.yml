@@ -2,24 +2,74 @@ name: 'Check code style'
 on:
   push:
     paths:
+      - '.github/workflows/test_format.yml'
+      - 'scons/**'
       - '**/*.hpp'
       - '**/*.cpp'
       - '**/*.py'
-      - 'build'
       - '.clang-format'
       - '.isort.cfg'
+      - '.pylintrc'
       - '.style.yapf'
-      - '.github/workflows/test_format.yml'
 jobs:
   test_format:
     name: Check code style
     runs-on: ubuntu-latest
     steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v3
+        with:
+          path: Boomer/.git/
+          key: test-format-git
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          path: Boomer/
+      - name: Detect changes
+        uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          working-directory: Boomer/
+          filters: |
+            cpp: &cpp
+              - 'scons/**'
+              - '**/*.hpp'
+              - '**/*.cpp'
+              - '.clang-format'
+            python: &python
+              - 'scons/**'
+              - '**/*.py'
+              - '.isort.cfg'
+              - '.pylintrc'
+              - '.style.yapf'
+            any:
+              - *cpp
+              - *python
+      - name: Look up build files in cache
+        uses: actions/cache/restore@v3
+        if: steps.filter.outputs.any == 'true'
+        with:
+          path: |
+            - Boomer/venv/
+            - Boomer/scons/build/
+          key: test-format-tmp-files
       - name: Check C++ code style
-        run: |
-          ./build test_format_cpp
+        if: steps.filter.outputs.cpp == 'true'
+        run: ./build test_format_cpp
       - name: Check Python code style
-        run: |
-          ./build test_format_python
+        if: steps.filter.outputs.python == 'true'
+        run: ./build test_format_python
+      - name: Save build files to cache
+        uses: actions/cache/save@v3
+        if: (success() || failure()) && steps.filter.outputs.any == 'true'
+        with:
+          path: |
+            - Boomer/venv/
+            - Boomer/scons/build/
+          key: test-format-tmp-files
+      - name: Save Git repository to cache
+        uses: actions/cache/save@v3
+        if: success() || failure()
+        with:
+          path: Boomer/.git/
+          key: test-format-git

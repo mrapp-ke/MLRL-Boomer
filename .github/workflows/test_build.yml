@@ -2,70 +2,196 @@ name: 'Test build'
 on:
   push:
     paths:
-      - '**/*.hpp'
-      - '**/*.cpp'
-      - '**/*.pxd'
-      - '**/*.pyx'
-      - '**/*.py'
-      - '**/*.build'
-      - 'build'
-      - '**/requirements.txt'
-      - 'doc/**'
-      - 'python/subprojects/testbed/tests/**'
       - '.github/workflows/test_build.yml'
+      - 'scons/**'
+      - 'cpp/**'
+      - 'python/**'
+      - 'doc/**'
 jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      cpp: ${{ steps.filter.outputs.cpp }}
+      cpp_tests: ${{ steps.filter.outputs.cpp_tests }}
+      python: ${{ steps.filter.outputs.python }}
+      python_tests: ${{ steps.filter.outputs.python_tests }}
+      doc: ${{ steps.filter.outputs.doc }}
+      any: ${{ steps.filter.outputs.any }}
+    steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v3
+        with:
+          path: Boomer/.git/
+          key: test-build-git
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: Boomer/
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          working-directory: Boomer/
+          filters: |
+            cpp: &cpp
+              - 'scons/**'
+              - 'cpp/**/include/**'
+              - 'cpp/**/src/**'
+              - '**/*.pxd'
+              - '**/*.pyx'
+              - '**/meson.build'
+            cpp_tests: &cpp_tests
+              - *cpp
+              - 'cpp/**/test/**'
+            python: &python
+              - 'scons/**'
+              - 'python/requirements.txt'
+              - 'python/**/mlrl/**'
+            python_tests: &python_tests
+              - *python
+              - python/**/tests/** 
+            doc: &doc
+              - 'scons/**'
+              - 'doc/**'
+            any:
+              - *cpp_tests
+              - *python_tests
+              - *doc
+      - name: Save Git repository to cache
+        uses: actions/cache/save@v3
+        if: success() || failure()
+        with:
+          path: Boomer/.git/
+          key: test-build-git
   linux_build:
+    needs: changes
+    if: ${{ needs.changes.outputs.any == 'true' }}
     name: Test Linux build
     runs-on: ubuntu-latest
     steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v3
+        with:
+          path: Boomer/.git/
+          key: test-build-git
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          path: Boomer/
       - name: Install OpenCL
         run: |
           sudo apt update
           sudo apt install -y opencl-headers ocl-icd-opencl-dev
       - name: Install GoogleTest
-        run: |
-          sudo apt install -y googletest
-      - name: Compile via GCC
-        run: |
-          ./build compile
+        run: sudo apt install -y googletest
+      - name: Look up build files in cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            - Boomer/venv/
+            - Boomer/scons/build/
+            - Boomer/cpp/build/
+            - Boomer/python/**/cython/*.so*
+            - Boomer/python/**/build/
+            - Boomer/python/**/dist/
+            - Boomer/python/**/*egg-info/
+            - Boomer/doc/_build/
+            - Boomer/doc/_extra/
+            - Boomer/doc/development/api/python/
+          key: ${{ runner.os }}-test-build-tmp-files
       - name: Test C++ code
-        run: |
-          ./build tests_cpp
+        if: ${{ needs.changes.outputs.cpp_tests == 'true' }}
+        run: ./build tests_cpp
       - name: Test Python code
-        run: |
-          ./build tests_python
+        if: ${{ needs.changes.outputs.cpp == 'true' || needs.changes.outputs.python_tests == 'true' }}
+        run: ./build tests_python
       - name: Install Doxygen
+        if: ${{ needs.changes.outputs.cpp == 'true' || needs.changes.outputs.doc == 'true' }}
         uses: ssciwr/doxygen-install@v1
+      - name: Generate C++ Apidoc
+        if: ${{ needs.changes.outputs.cpp == 'true' }}
+        run: ./build apidoc_cpp
+      - name: Generate Python Apidoc
+        if: ${{ needs.changes.outputs.python == 'true' }}
+        run: ./build apidoc_python
       - name: Install Roboto font
-        run: |
-          sudo apt install -y fonts-roboto
+        if: ${{ needs.changes.outputs.doc == 'true' }}
+        run: sudo apt install -y fonts-roboto
       - name: Generate Documentation
-        run: |
-          ./build doc
+        if: ${{ needs.changes.outputs.doc == 'true' }}
+        run: ./build doc
+      - name: Save build files to cache
+        uses: actions/cache/save@v3
+        if: success() || failure()
+        with:
+          path: |
+            - Boomer/venv/
+            - Boomer/scons/build/
+            - Boomer/cpp/build/
+            - Boomer/python/**/cython/*.so*
+            - Boomer/python/**/build/
+            - Boomer/python/**/dist/
+            - Boomer/python/**/*egg-info/
+            - Boomer/doc/_build/
+            - Boomer/doc/_extra/
+            - Boomer/doc/development/api/python/
+          key: ${{ runner.os }}-test-build-tmp-files
   macos_build:
+    needs: changes
+    if: ${{ needs.changes.outputs.cpp == 'true' }}
     name: Test MacOS build
     runs-on: macos-latest
     steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v3
+        with:
+          path: Boomer/.git/
+          key: test-build-git
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          path: Boomer/
       - name: Install OpenMP
         run: |
           brew install libomp
           brew link libomp --force
       - name: Install OpenCL
-        run: |
-          brew install opencl-clhpp-headers
+        run: brew install opencl-clhpp-headers
+      - name: Look up build files in cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            - Boomer/venv/
+            - Boomer/scons/build/
+            - Boomer/cpp/build/
+          key: ${{ runner.os }}-test-build-tmp-files
       - name: Compile via Clang
-        run: |
-          TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
+        run: TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
+      - name: Save build files to cache
+        uses: actions/cache/save@v3
+        if: success() || failure()
+        with:
+          path: |
+            - Boomer/venv/
+            - Boomer/scons/build/
+            - Boomer/cpp/build/
+          key: ${{ runner.os }}-test-build-tmp-files
   windows_build:
+    needs: changes
+    if: ${{ needs.changes.outputs.cpp == 'true' }}
     name: Test Windows build
     runs-on: windows-latest
     steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v3
+        with:
+          enableCrossOsArchive: true
+          path: Boomer/.git/
+          key: test-build-git
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          path: Boomer/
       - name: Prepare MSVC
         uses: ilammy/msvc-dev-cmd@v1
       - name: Remove conflicting link.exe
@@ -78,9 +204,26 @@ jobs:
           pkgs: opencl
           triplet: x64-windows
           token: ${{ github.token }}
+      - name: Look up build files in cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            - Boomer/venv/
+            - Boomer/scons/build/
+            - Boomer/cpp/build/
+          key: ${{ runner.os }}-test-build-tmp-files
       - name: Compile via MSVC
         run: |
           $env:TEST_SUPPORT = "disabled"
           $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\include"
           $env:LIB += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\lib"
           ./build.bat compile
+      - name: Save build files to cache
+        uses: actions/cache/save@v3
+        if: success() || failure()
+        with:
+          path: |
+            - Boomer/venv/
+            - Boomer/scons/build/
+            - Boomer/cpp/build/
+          key: ${{ runner.os }}-test-build-tmp-files
