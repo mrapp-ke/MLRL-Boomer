@@ -22,7 +22,7 @@ jobs:
           path: .git/
           key: test-format-cache-git-${{ github.run_id }}
           restore-keys: |
-            - test-format-cache-git
+            test-format-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Detect changes
@@ -53,7 +53,7 @@ jobs:
             - scons/build/
           key: test-format-cache-tmp-files-${{ github.run_id }}
           restore-keys: |
-            - test-format-cache-tmp-files
+            test-format-cache-tmp-files
       - name: Check C++ code style
         if: steps.filter.outputs.cpp == 'true'
         run: ./build test_format_cpp

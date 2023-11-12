@@ -25,7 +25,7 @@ jobs:
           path: .git/
           key: test-build-cache-git-${{ github.run_id }}
           restore-keys: |
-            - test-build-cache-git
+            test-build-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Detect changes
@@ -75,7 +75,7 @@ jobs:
           path: .git/
           key: test-build-cache-git-${{ github.run_id }}
           restore-keys: |
-            - test-build-cache-git
+            test-build-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install OpenCL
@@ -100,7 +100,7 @@ jobs:
             - doc/development/api/python/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
           restore-keys: |
-            - ${{ runner.os }}-test-build-cache-tmp-files
+            ${{ runner.os }}-test-build-cache-tmp-files
       - name: Test C++ code
         if: ${{ needs.changes.outputs.cpp_tests == 'true' }}
         run: ./build tests_cpp
@@ -150,7 +150,7 @@ jobs:
           path: .git/
           key: test-build-cache-git-${{ github.run_id }}
           restore-keys: |
-            - test-build-cache-git
+            test-build-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install OpenMP
@@ -168,7 +168,7 @@ jobs:
             - cpp/build/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
           restore-keys: |
-            - ${{ runner.os }}-test-build-cache-tmp-files
+            ${{ runner.os }}-test-build-cache-tmp-files
       - name: Compile via Clang
         run: TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
       - name: Save build files to cache
@@ -193,7 +193,7 @@ jobs:
           path: .git/
           key: test-build-cache-git-${{ github.run_id }}
           restore-keys: |
-            - test-build-cache-git
+            test-build-cache-git
       - name: Checkout
         uses: actions/checkout@v4
       - name: Prepare MSVC
@@ -217,7 +217,7 @@ jobs:
             - cpp/build/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
           restore-keys: |
-            - ${{ runner.os }}-test-build-cache-tmp-files
+            ${{ runner.os }}-test-build-cache-tmp-files
       - name: Compile via MSVC
         run: |
           $env:TEST_SUPPORT = "disabled"
