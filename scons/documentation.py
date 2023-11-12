@@ -19,6 +19,8 @@ def __breathe_apidoc(source_dir: str, output_dir: str, project: str):
                 '--members',
                 '--project',
                 project,
+                '-g',
+                'file',
                 '-o',
                 output_dir,
                 source_dir,
