@@ -8,6 +8,6 @@ For those who want to use the algorithms provided by this project in their own P
 .. toctree::
    :maxdepth: 1
 
-   common/mlrl.common
-   boosting/mlrl.boosting
-   testbed/mlrl.testbed
+   Package mlrl-common <common/mlrl.common>
+   Package mlrl-boosting <boosting/mlrl.boosting>
+   Package mlrl-testbed <testbed/mlrl.testbed>
