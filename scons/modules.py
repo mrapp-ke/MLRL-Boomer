@@ -306,7 +306,7 @@ class DocumentationModule(Module):
 
         @property
         def build_dir(self) -> str:
-            return path.join(self.parent_module.root_dir, '_extra', 'development', 'api', 'cpp', self.name)
+            return path.join(self.parent_module.root_dir, 'development', 'api', 'cpp', self.name)
 
         @property
         def config_file(self) -> str:

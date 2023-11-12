@@ -95,9 +95,9 @@ jobs:
             python/**/build/
             python/**/dist/
             python/**/*egg-info/
+            doc/development/api/python/**/
+            doc/development/api/cpp/**/
             doc/_build/
-            doc/_extra/
-            doc/development/api/python/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-test-build-cache-tmp-files
@@ -134,9 +134,9 @@ jobs:
             python/**/build/
             python/**/dist/
             python/**/*egg-info/
+            doc/development/api/python/**/
+            doc/development/api/cpp/**/
             doc/_build/
-            doc/_extra/
-            doc/development/api/python/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
   macos_build:
     needs: changes
