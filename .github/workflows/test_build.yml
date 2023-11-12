@@ -22,16 +22,15 @@ jobs:
       - name: Look up Git repository in cache
         uses: actions/cache/restore@v3
         with:
-          path: Boomer/.git/
+          path: .git/
           key: test-build-git
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: Boomer/
+          path: .
       - uses: dorny/paths-filter@v2
         id: filter
         with:
-          working-directory: Boomer/
           filters: |
             cpp: &cpp
               - 'scons/**'
@@ -61,7 +60,7 @@ jobs:
         uses: actions/cache/save@v3
         if: success() || failure()
         with:
-          path: Boomer/.git/
+          path: .git/
           key: test-build-git
   linux_build:
     needs: changes
@@ -72,12 +71,12 @@ jobs:
       - name: Look up Git repository in cache
         uses: actions/cache/restore@v3
         with:
-          path: Boomer/.git/
+          path: .git/
           key: test-build-git
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: Boomer/
+          path: .
       - name: Install OpenCL
         run: |
           sudo apt update
@@ -88,16 +87,16 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: |
-            - Boomer/venv/
-            - Boomer/scons/build/
-            - Boomer/cpp/build/
-            - Boomer/python/**/cython/*.so*
-            - Boomer/python/**/build/
-            - Boomer/python/**/dist/
-            - Boomer/python/**/*egg-info/
-            - Boomer/doc/_build/
-            - Boomer/doc/_extra/
-            - Boomer/doc/development/api/python/
+            - venv/
+            - scons/build/
+            - cpp/build/
+            - python/**/cython/*.so*
+            - python/**/build/
+            - python/**/dist/
+            - python/**/*egg-info/
+            - doc/_build/
+            - doc/_extra/
+            - doc/development/api/python/
           key: ${{ runner.os }}-test-build-tmp-files
       - name: Test C++ code
         if: ${{ needs.changes.outputs.cpp_tests == 'true' }}
@@ -125,16 +124,16 @@ jobs:
         if: success() || failure()
         with:
           path: |
-            - Boomer/venv/
-            - Boomer/scons/build/
-            - Boomer/cpp/build/
-            - Boomer/python/**/cython/*.so*
-            - Boomer/python/**/build/
-            - Boomer/python/**/dist/
-            - Boomer/python/**/*egg-info/
-            - Boomer/doc/_build/
-            - Boomer/doc/_extra/
-            - Boomer/doc/development/api/python/
+            - venv/
+            - scons/build/
+            - cpp/build/
+            - python/**/cython/*.so*
+            - python/**/build/
+            - python/**/dist/
+            - python/**/*egg-info/
+            - doc/_build/
+            - doc/_extra/
+            - doc/development/api/python/
           key: ${{ runner.os }}-test-build-tmp-files
   macos_build:
     needs: changes
@@ -145,12 +144,12 @@ jobs:
       - name: Look up Git repository in cache
         uses: actions/cache/restore@v3
         with:
-          path: Boomer/.git/
+          path: .git/
           key: test-build-git
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: Boomer/
+          path: .
       - name: Install OpenMP
         run: |
           brew install libomp
@@ -161,9 +160,9 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: |
-            - Boomer/venv/
-            - Boomer/scons/build/
-            - Boomer/cpp/build/
+            - venv/
+            - scons/build/
+            - cpp/build/
           key: ${{ runner.os }}-test-build-tmp-files
       - name: Compile via Clang
         run: TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
@@ -172,9 +171,9 @@ jobs:
         if: success() || failure()
         with:
           path: |
-            - Boomer/venv/
-            - Boomer/scons/build/
-            - Boomer/cpp/build/
+            - venv/
+            - scons/build/
+            - cpp/build/
           key: ${{ runner.os }}-test-build-tmp-files
   windows_build:
     needs: changes
@@ -186,12 +185,12 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           enableCrossOsArchive: true
-          path: Boomer/.git/
+          path: .git/
           key: test-build-git
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: Boomer/
+          path: .
       - name: Prepare MSVC
         uses: ilammy/msvc-dev-cmd@v1
       - name: Remove conflicting link.exe
@@ -208,9 +207,9 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: |
-            - Boomer/venv/
-            - Boomer/scons/build/
-            - Boomer/cpp/build/
+            - venv/
+            - scons/build/
+            - cpp/build/
           key: ${{ runner.os }}-test-build-tmp-files
       - name: Compile via MSVC
         run: |
@@ -223,7 +222,7 @@ jobs:
         if: success() || failure()
         with:
           path: |
-            - Boomer/venv/
-            - Boomer/scons/build/
-            - Boomer/cpp/build/
+            - venv/
+            - scons/build/
+            - cpp/build/
           key: ${{ runner.os }}-test-build-tmp-files
