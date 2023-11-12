@@ -63,8 +63,6 @@ jobs:
         with:
           path: .git/
           key: test-build-cache-git-${{ github.run_id }}
-          restore-keys: |
-            - test-build-cache-git
   linux_build:
     needs: changes
     if: ${{ needs.changes.outputs.any == 'true' }}
@@ -140,8 +138,6 @@ jobs:
             - doc/_extra/
             - doc/development/api/python/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
-          restore-keys: |
-            - ${{ runner.os }}-test-build-cache-tmp-files
   macos_build:
     needs: changes
     if: ${{ needs.changes.outputs.cpp == 'true' }}
@@ -184,8 +180,6 @@ jobs:
             - scons/build/
             - cpp/build/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
-          restore-keys: |
-            - ${{ runner.os }}-test-build-cache-tmp-files
   windows_build:
     needs: changes
     if: ${{ needs.changes.outputs.cpp == 'true' }}
@@ -239,5 +233,3 @@ jobs:
             - scons/build/
             - cpp/build/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
-          restore-keys: |
-            - ${{ runner.os }}-test-build-cache-tmp-files
