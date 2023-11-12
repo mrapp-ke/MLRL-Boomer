@@ -29,7 +29,7 @@ If you use the algorithm in a scientific publication, we would appreciate citati
 
 ## Functionalities
 
-The algorithm that is provided by this project currently supports the following core functionalities to learn an ensemble of boosted classification rules:
+The algorithm that is provided by this project currently supports the following core functionalities for learning ensembles of boosted classification rules:
 
 * **Label-wise decomposable or non-decomposable loss functions** can be minimized in expectation.
 * **L1 and L2 regularization** can be used.
