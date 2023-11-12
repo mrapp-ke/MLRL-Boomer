@@ -49,8 +49,8 @@ jobs:
         if: steps.filter.outputs.any == 'true'
         with:
           path: |
-            - venv/
-            - scons/build/
+            venv/
+            scons/build/
           key: test-format-cache-tmp-files-${{ github.run_id }}
           restore-keys: |
             test-format-cache-tmp-files
@@ -65,8 +65,8 @@ jobs:
         if: (success() || failure()) && steps.filter.outputs.any == 'true'
         with:
           path: |
-            - venv/
-            - scons/build/
+            venv/
+            scons/build/
           key: test-format-cache-tmp-files-${{ github.run_id }}
       - name: Save Git repository to cache
         uses: actions/cache/save@v3
