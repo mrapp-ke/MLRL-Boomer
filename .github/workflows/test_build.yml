@@ -3,6 +3,8 @@ on:
   push:
     paths:
       - '.github/workflows/test_build.yml'
+      - 'build'
+      - 'build.bat'
       - 'scons/**'
       - 'cpp/**'
       - 'python/**'
@@ -34,6 +36,8 @@ jobs:
         with:
           filters: |
             cpp: &cpp
+              - 'build'
+              - 'build.bat'
               - 'scons/**'
               - 'cpp/**/include/**'
               - 'cpp/**/src/**'
@@ -44,13 +48,17 @@ jobs:
               - *cpp
               - 'cpp/**/test/**'
             python: &python
+              - 'build'
+              - 'build.bat'
               - 'scons/**'
               - 'python/requirements.txt'
               - 'python/**/mlrl/**'
             python_tests: &python_tests
               - *python
-              - python/**/tests/** 
+              - 'python/**/tests/**' 
             doc: &doc
+              - 'build'
+              - 'build.bat'
               - 'scons/**'
               - 'doc/**'
             any:
