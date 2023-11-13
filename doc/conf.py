@@ -29,6 +29,7 @@ release = (Path(__file__).resolve().parent.parent / 'VERSION').read_text()
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'breathe',
     'myst_parser',
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
@@ -39,9 +40,17 @@ extensions = [
 
 # Intersphinx configuration
 intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
     'sklearn': ('https://scikit-learn.org/stable/', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/', None),
     'numpy': ('https://numpy.org/doc/stable/', None),
+}
+
+# Breathe configuration
+breathe_default_project = 'common'
+breathe_projects = {
+    'common': 'development/api/cpp/common/xml/',
+    'boosting': 'development/api/cpp/boosting/xml/',
 }
 
 # Add any paths that contain templates here, relative to this directory.
@@ -68,4 +77,4 @@ html_static_path = ['_static']
 # documentation, such as robots.txt or .htaccess. Relative paths are taken
 # as relative to the configuration directory. They are copied to the output
 # directory. They will overwrite any existing file of the same name.
-html_extra_path = ['_extra']
+html_extra_path = []
