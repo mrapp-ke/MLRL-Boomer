@@ -40,6 +40,7 @@ extensions = [
 
 # Intersphinx configuration
 intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
     'sklearn': ('https://scikit-learn.org/stable/', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/', None),
     'numpy': ('https://numpy.org/doc/stable/', None),
