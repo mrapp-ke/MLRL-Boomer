@@ -17,41 +17,49 @@ def __format_command(cmd: str, *args, format_args: bool) -> str:
     return cmd + (reduce(lambda aggr, argument: aggr + ' ' + argument, args, '') if format_args else '')
 
 
-def __run_command(cmd: str, *args, print_cmd: bool = True, print_args: bool = False, capture_output: bool = False):
+def __run_command(cmd: str,
+                  *args,
+                  print_cmd: bool = True,
+                  print_args: bool = False,
+                  capture_output: bool = False,
+                  exit_on_error: bool = True):
     if print_cmd:
         print('Running external command "' + __format_command(cmd, *args, format_args=print_args) + '"...')
 
-    cmd_args = [cmd]
-
-    for arg in args:
-        cmd_args.append(str(arg))
-
-    out = subprocess.run(cmd_args, check=False, text=capture_output, capture_output=capture_output)
+    out = subprocess.run([cmd] + list(args), check=False, text=capture_output, capture_output=capture_output)
     exit_code = out.returncode
 
     if exit_code != 0:
-        print('External command "' + __format_command(cmd, *args, format_args=print_args)
-              + '" terminated with non-zero exit code ' + str(exit_code))
-        sys.exit(exit_code)
+        message = ('External command "' + __format_command(cmd, *args, format_args=print_args)
+                   + '" terminated with non-zero exit code ' + str(exit_code))
+
+        if exit_on_error:
+            print(message)
+            sys.exit(exit_code)
+        else:
+            raise RuntimeError(message)
 
     return out
 
 
-def __pip_install(requirement: str):
-    out = __run_command('python',
-                        '-m',
-                        'pip',
-                        'install',
-                        '--upgrade',
-                        '--prefer-binary',
-                        '--disable-pip-version-check',
-                        requirement,
-                        print_cmd=False,
-                        capture_output=True)
-    stdout = str(out.stdout).strip()
+def __run_pip_command(requirement: str, *args, **kwargs):
+    return __run_command('python', '-m', 'pip', 'install', requirement, '--upgrade', '--prefer-binary',
+                         '--disable-pip-version-check', *args, **kwargs)
 
-    if not reduce(lambda aggr, line: aggr & line.startswith('Requirement already satisfied'), stdout.split('\n'), True):
-        print(stdout)
+
+def __pip_install(requirement: str, dry_run: bool = False):
+    try:
+        args = ['--dry-run'] if dry_run else []
+        out = __run_pip_command(requirement, *args, print_cmd=False, capture_output=True, exit_on_error=not dry_run)
+        stdout = str(out.stdout).strip().split('\n')
+
+        if not reduce(lambda aggr, line: aggr & line.startswith('Requirement already satisfied'), stdout, True):
+            if dry_run:
+                __run_pip_command(requirement)
+            else:
+                print(stdout)
+    except RuntimeError:
+        __pip_install(requirement)
 
 
 def __find_requirements(requirements_file: str, *dependencies: str) -> List[str]:
@@ -66,7 +74,7 @@ def __find_requirements(requirements_file: str, *dependencies: str) -> List[str]
 
 def __install_dependencies(requirements_file: str, *dependencies: str):
     for requirement in __find_requirements(requirements_file, *dependencies):
-        __pip_install(requirement)
+        __pip_install(requirement, dry_run=True)
 
 
 def install_build_dependencies(*dependencies: str):
