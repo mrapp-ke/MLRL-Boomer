@@ -1,5 +1,3 @@
-:tocdepth: 2
-
 .. _parameters:
 
 Configuration and Parameters

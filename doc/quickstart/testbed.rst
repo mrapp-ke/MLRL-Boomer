@@ -1,5 +1,3 @@
-:tocdepth: 2
-
 .. _testbed:
 
 Using the Command Line API
