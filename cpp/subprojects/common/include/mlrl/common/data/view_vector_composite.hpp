@@ -12,7 +12,7 @@
  * @tparam ValueView    The type of the second view
  */
 template<typename FirstView, typename SecondView>
-class CompositeVectorDecorator {
+class MLRLCOMMON_API CompositeVectorDecorator {
     protected:
 
         /**
@@ -53,7 +53,7 @@ class CompositeVectorDecorator {
  * @tparam Vector The type of the vector
  */
 template<typename Vector>
-class ClearableCompositeVectorDecorator : public Vector {
+class MLRLCOMMON_API ClearableCompositeVectorDecorator : public Vector {
     public:
 
         /**

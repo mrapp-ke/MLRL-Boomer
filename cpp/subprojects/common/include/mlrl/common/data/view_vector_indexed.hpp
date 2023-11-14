@@ -12,7 +12,7 @@
  * @tparam ValueView    The type of the view, the values are backed by
  */
 template<typename IndexView, typename ValueView>
-class IndexedVectorDecorator : public CompositeVectorDecorator<IndexView, ValueView> {
+class MLRLCOMMON_API IndexedVectorDecorator : public CompositeVectorDecorator<IndexView, ValueView> {
     public:
 
         /**
@@ -50,7 +50,7 @@ class IndexedVectorDecorator : public CompositeVectorDecorator<IndexView, ValueV
  * @tparam Vector The type of the vector
  */
 template<typename Vector>
-class IterableIndexedVectorDecorator : public Vector {
+class MLRLCOMMON_API IterableIndexedVectorDecorator : public Vector {
     public:
 
         /**
