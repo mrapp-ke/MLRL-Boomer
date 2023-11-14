@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/util/memory.hpp"
+#include "mlrl/common/util/dll_exports.hpp"
 
 #include <utility>
 
@@ -13,7 +14,7 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class View {
+class MLRLCOMMON_API View {
     public:
 
         /**
@@ -80,7 +81,7 @@ class View {
  * @tparam View The type of the view
  */
 template<typename View>
-class Allocator : public View {
+class MLRLCOMMON_API Allocator : public View {
     public:
 
         /**
@@ -116,7 +117,7 @@ using AllocatedView = Allocator<View<T>>;
  * @tparam View The type of the view
  */
 template<typename View>
-class ResizableAllocator : public Allocator<View> {
+class MLRLCOMMON_API ResizableAllocator : public Allocator<View> {
     public:
 
         /**
@@ -166,7 +167,7 @@ class ResizableAllocator : public Allocator<View> {
  * @tparam View The type of the view, the data structure is backed by
  */
 template<typename View>
-class ViewDecorator {
+class MLRLCOMMON_API ViewDecorator {
     protected:
 
         /**
@@ -218,7 +219,7 @@ class ViewDecorator {
  * @tparam View The type of the view
  */
 template<typename View>
-class IndexableViewDecorator : public View {
+class MLRLCOMMON_API IndexableViewDecorator : public View {
     public:
 
         /**

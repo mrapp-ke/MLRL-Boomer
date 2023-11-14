@@ -12,7 +12,7 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class Vector : public View<T> {
+class MLRLCOMMON_API Vector : public View<T> {
     public:
 
         /**
@@ -80,7 +80,7 @@ using ResizableVector = ResizableAllocator<Vector<T>>;
  * @tparam View The type of view, the vector is backed by
  */
 template<typename View>
-class VectorDecorator : public ViewDecorator<View> {
+class MLRLCOMMON_API VectorDecorator : public ViewDecorator<View> {
     public:
 
         /**
@@ -106,7 +106,7 @@ class VectorDecorator : public ViewDecorator<View> {
  * @tparam Vector The type of the vector
  */
 template<typename Vector>
-class IterableVectorDecorator : public IndexableViewDecorator<Vector> {
+class MLRLCOMMON_API IterableVectorDecorator : public IndexableViewDecorator<Vector> {
     public:
 
         /**
@@ -141,7 +141,7 @@ class IterableVectorDecorator : public IndexableViewDecorator<Vector> {
  * @tparam Vector The type of the vector
  */
 template<typename Vector>
-class ResizableVectorDecorator : public Vector {
+class MLRLCOMMON_API ResizableVectorDecorator : public Vector {
     public:
 
         /**
@@ -168,7 +168,7 @@ class ResizableVectorDecorator : public Vector {
  * @tparam Vector The type of the vector
  */
 template<typename Vector>
-class ClearableVectorDecorator : public Vector {
+class MLRLCOMMON_API ClearableVectorDecorator : public Vector {
     public:
 
         /**
