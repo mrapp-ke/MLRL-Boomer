@@ -98,9 +98,7 @@ jobs:
           path: |
             venv/
             scons/build/
-            cpp/build/
             python/**/cython/*.so*
-            python/**/build/
             python/**/dist/
             python/**/*egg-info/
             doc/development/api/python/**/
@@ -137,9 +135,7 @@ jobs:
           path: |
             venv/
             scons/build/
-            cpp/build/
             python/**/cython/*.so*
-            python/**/build/
             python/**/dist/
             python/**/*egg-info/
             doc/development/api/python/**/
@@ -173,7 +169,6 @@ jobs:
           path: |
             venv/
             scons/build/
-            cpp/build/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-test-build-cache-tmp-files
@@ -186,7 +181,6 @@ jobs:
           path: |
             venv/
             scons/build/
-            cpp/build/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
   windows_build:
     needs: changes
@@ -222,7 +216,6 @@ jobs:
           path: |
             venv/
             scons/build/
-            cpp/build/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-test-build-cache-tmp-files
@@ -239,5 +232,4 @@ jobs:
           path: |
             venv/
             scons/build/
-            cpp/build/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
