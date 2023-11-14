@@ -186,6 +186,14 @@ endif
 # Library declaration
 common_lib = library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args,
                      link_args : link_args, version : version, install : true, install_dir : install_dir)
+
+if host_machine.system() == 'windows'
+    # On Windows, we must additionally built a static library to link against, as we cannot add DLL exports for all
+    # classes that can potentially be used by dependant libraries
+    common_lib = static_library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args,
+                                link_args : link_args)
+endif
+
 common_dep = declare_dependency(include_directories : include_directories, link_with : common_lib)
 
 # Test declaration
