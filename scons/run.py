@@ -13,7 +13,7 @@ from typing import List, Optional
 from modules import BUILD_MODULE, CPP_MODULE, PYTHON_MODULE
 
 
-def __format_command(cmd: str, *args, format_args: bool) -> str:
+def __format_command(cmd: str, *args, format_args: bool = True) -> str:
     return cmd + (reduce(lambda aggr, argument: aggr + ' ' + argument, args, '') if format_args else '')
 
 
@@ -30,8 +30,8 @@ def __run_command(cmd: str,
     exit_code = out.returncode
 
     if exit_code != 0:
-        message = ('External command "' + __format_command(cmd, *args, format_args=print_args)
-                   + '" terminated with non-zero exit code ' + str(exit_code))
+        message = ('External command "' + __format_command(cmd, *args) + '" terminated with non-zero exit code '
+                   + str(exit_code))
 
         if exit_on_error:
             print(message)
