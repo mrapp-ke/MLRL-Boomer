@@ -15,21 +15,21 @@ if not "%1"=="" if "%2"=="" (
 
 if not exist "%VENV_DIR%" if "%CLEAN%"=="false" (
     echo Creating virtual Python environment...
-    python -m venv "%VENV_DIR%" || exit /b
+    python -m venv "%VENV_DIR%" || exit
 )
 
 if exist "%VENV_DIR%" (
-    call %VENV_DIR%\Scripts\activate || exit /b
-    python -c "import sys;sys.path.append('%SCONS_DIR%');import run;run.install_build_dependencies('scons')" || exit /b
-    scons --silent --file %SCONS_DIR%\sconstruct.py %* || exit /b
-    call deactivate || exit /b
+    call %VENV_DIR%\Scripts\activate || exit
+    python -c "import sys;sys.path.append('%SCONS_DIR%');import run;run.install_build_dependencies('scons')" || exit
+    scons --silent --file %SCONS_DIR%\sconstruct.py %* || exit
+    call deactivate || exit
 )
 
 if "%CLEAN%"=="true" if exist "%VENV_DIR%" (
     echo Removing virtual Python environment...
-    rd /s /q "%VENV_DIR%" || exit /b
+    rd /s /q "%VENV_DIR%" || exit
 
     if exist "%SCONS_DIR%\build" (
-        rd /s /q "%SCONS_DIR%\build" || exit /b
+        rd /s /q "%SCONS_DIR%\build" || exit
     )
 )
