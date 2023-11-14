@@ -12,6 +12,9 @@ Prerequisites
 
 As a prerequisite, a supported version of Python, a suitable C++ compiler, as well as optional libraries for multi-threading and GPU support, must be available on the host system. The installation of these software components depends on the operation system at hand. In the following, we provide installation instructions for the supported platforms.
 
+.. tip::
+    This project uses `Meson <https://mesonbuild.com/>`_ as a build system for compiling C++ code. If available on the system, Meson automatically utilizes `Ccache <https://ccache.dev/>`__ for caching previous compilations and detecting when the same compilation is being done again. Compared to the runtime without Ccache, where changes are only detected at the level of entire files, usage of this compiler cache significantly speeds up recompilation and therefore is strongly adviced.
+
 .. tab:: Linux
 
    +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -25,8 +28,6 @@ As a prerequisite, a supported version of Python, a suitable C++ compiler, as we
    +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
    | **OpenCL**       | If the project should be compiled with :ref:`gpusupport`, `OpenCL <https://www.khronos.org/opencl/>`__ must be available. On Linux, it should be installable via your distribution's package manager.                                                                                                                                                                       |
    +------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   
-
 
 .. tab:: MacOS
 
