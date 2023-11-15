@@ -1,3 +1,4 @@
+from os import listdir
 from pathlib import Path
 
 # Configuration file for the Sphinx documentation builder.
@@ -12,7 +13,6 @@ from pathlib import Path
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-
 
 # -- Project information -----------------------------------------------------
 
@@ -47,11 +47,11 @@ intersphinx_mapping = {
 }
 
 # Breathe configuration
-breathe_default_project = 'common'
 breathe_projects = {
-    'common': 'development/api/cpp/common/xml/',
-    'boosting': 'development/api/cpp/boosting/xml/',
+    file: Path('development', 'api', 'cpp', file, 'xml')
+    for file in listdir(Path(__file__).resolve().parent.parent / 'cpp' / 'subprojects')
 }
+breathe_default_project = next(iter(breathe_projects.keys()))
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
