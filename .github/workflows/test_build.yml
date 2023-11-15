@@ -107,6 +107,10 @@ jobs:
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-test-build-cache-tmp-files
+      - name: Prepare Ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ${{ runner.os }}-test-build-ccache
       - name: Test C++ code
         if: ${{ needs.changes.outputs.cpp_tests == 'true' }}
         run: ./build tests_cpp
@@ -172,6 +176,10 @@ jobs:
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-test-build-cache-tmp-files
+      - name: Prepare Ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ${{ runner.os }}-test-build-ccache
       - name: Compile via Clang
         run: TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
       - name: Save build files to cache
@@ -219,6 +227,10 @@ jobs:
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-test-build-cache-tmp-files
+      - name: Prepare Ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ${{ runner.os }}-test-build-ccache
       - name: Compile via MSVC
         run: |
           $env:TEST_SUPPORT = "disabled"
