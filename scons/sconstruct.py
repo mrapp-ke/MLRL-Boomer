@@ -10,7 +10,7 @@ from os import path
 
 from code_style import check_cpp_code_style, check_python_code_style, enforce_cpp_code_style, enforce_python_code_style
 from compilation import compile_cpp, compile_cython, install_cpp, install_cython, setup_cpp, setup_cython
-from documentation import apidoc_cpp, apidoc_python, apidoc_python_tocfile, doc
+from documentation import apidoc_cpp, apidoc_cpp_tocfile, apidoc_python, apidoc_python_tocfile, doc
 from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from packaging import build_python_wheel, install_python_wheels
 from run import install_runtime_dependencies
@@ -183,7 +183,6 @@ env.Depends(target_tests, [target_tests_cpp, target_tests_python])
 # Define targets for generating the documentation...
 commands_apidoc_cpp = []
 commands_apidoc_python = []
-root_files_apidoc_python = []
 
 for subproject in CPP_MODULE.find_subprojects():
     apidoc_subproject = DOC_MODULE.get_cpp_apidoc_subproject(subproject)
@@ -196,8 +195,11 @@ for subproject in CPP_MODULE.find_subprojects():
         command_apidoc_cpp = env.Command(targets_apidoc_cpp, source_files, action=apidoc_cpp)
         commands_apidoc_cpp.append(command_apidoc_cpp)
 
+command_apidoc_cpp_tocfile = env.Command(DOC_MODULE.apidoc_tocfile_cpp, None, action=apidoc_cpp_tocfile)
+env.Depends(command_apidoc_cpp_tocfile, commands_apidoc_cpp)
+
 target_apidoc_cpp = env.Alias(TARGET_NAME_APIDOC_CPP, None, None)
-env.Depends(target_apidoc_cpp, commands_apidoc_cpp)
+env.Depends(target_apidoc_cpp, command_apidoc_cpp_tocfile)
 
 for subproject in PYTHON_MODULE.find_subprojects():
     apidoc_subproject = DOC_MODULE.get_python_apidoc_subproject(subproject)
@@ -207,15 +209,12 @@ for subproject in PYTHON_MODULE.find_subprojects():
     command_apidoc_python = env.Command(targets_apidoc_python, source_files, action=apidoc_python)
     env.Depends(command_apidoc_python, target_install_wheels)
     commands_apidoc_python.append(command_apidoc_python)
-    root_files_apidoc_python.append(apidoc_subproject.root_file)
 
-command_apidoc_python_tocfile = env.Command(DOC_MODULE.apidoc_tocfile_python,
-                                            root_files_apidoc_python,
-                                            action=apidoc_python_tocfile)
-commands_apidoc_python.append(command_apidoc_python_tocfile)
+command_apidoc_python_tocfile = env.Command(DOC_MODULE.apidoc_tocfile_python, None, action=apidoc_python_tocfile)
+env.Depends(command_apidoc_python_tocfile, commands_apidoc_python)
 
 target_apidoc_python = env.Alias(TARGET_NAME_APIDOC_PYTHON, None, None)
-env.Depends(target_apidoc_python, commands_apidoc_python)
+env.Depends(target_apidoc_python, command_apidoc_python_tocfile)
 
 target_apidoc = env.Alias(TARGET_NAME_APIDOC, None, None)
 env.Depends(target_apidoc, [target_apidoc_cpp, target_apidoc_python])
@@ -233,6 +232,7 @@ if not COMMAND_LINE_TARGETS \
         or TARGET_NAME_APIDOC in COMMAND_LINE_TARGETS \
         or TARGET_NAME_DOC in COMMAND_LINE_TARGETS:
     __print_if_clean(env, 'Removing C++ API documentation...')
+    env.Clean([target_apidoc_cpp, DEFAULT_TARGET], DOC_MODULE.apidoc_tocfile_cpp)
 
     for subproject in CPP_MODULE.find_subprojects():
         apidoc_subproject = DOC_MODULE.get_cpp_apidoc_subproject(subproject)
