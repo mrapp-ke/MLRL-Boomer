@@ -6,7 +6,7 @@ Provides utility functions for checking and enforcing code style definitions.
 from glob import glob
 from os import path
 
-from modules import BUILD_MODULE, CPP_MODULE, PYTHON_MODULE
+from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from run import run_program
 
 
@@ -59,7 +59,7 @@ def enforce_python_code_style(**_):
     """
     Enforces the Python source files to adhere to the code style definitions.
     """
-    for module in [BUILD_MODULE, PYTHON_MODULE]:
+    for module in [BUILD_MODULE, PYTHON_MODULE, DOC_MODULE]:
         directory = module.root_dir
         print('Formatting Python code in directory "' + directory + '"...')
         __isort(directory, enforce_changes=True)
