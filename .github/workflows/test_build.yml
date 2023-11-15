@@ -101,7 +101,9 @@ jobs:
             python/**/cython/*.so*
             python/**/dist/
             python/**/*egg-info/
+            doc/development/api/python/index.rst
             doc/development/api/python/**/
+            doc/development/api/cpp/index.rst
             doc/development/api/cpp/**/
             doc/_build/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
@@ -142,7 +144,9 @@ jobs:
             python/**/cython/*.so*
             python/**/dist/
             python/**/*egg-info/
+            doc/development/api/python/index.rst
             doc/development/api/python/**/
+            doc/development/api/cpp/index.rst
             doc/development/api/cpp/**/
             doc/_build/
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
