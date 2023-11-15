@@ -229,8 +229,7 @@ env.Depends(target_doc, command_doc)
 # Define target for cleaning up the documentation and associated build directories...
 if not COMMAND_LINE_TARGETS \
         or TARGET_NAME_APIDOC_CPP in COMMAND_LINE_TARGETS \
-        or TARGET_NAME_APIDOC in COMMAND_LINE_TARGETS \
-        or TARGET_NAME_DOC in COMMAND_LINE_TARGETS:
+        or TARGET_NAME_APIDOC in COMMAND_LINE_TARGETS:
     __print_if_clean(env, 'Removing C++ API documentation...')
     env.Clean([target_apidoc_cpp, DEFAULT_TARGET], DOC_MODULE.apidoc_tocfile_cpp)
 
@@ -240,8 +239,7 @@ if not COMMAND_LINE_TARGETS \
 
 if not COMMAND_LINE_TARGETS \
         or TARGET_NAME_APIDOC_PYTHON in COMMAND_LINE_TARGETS \
-        or TARGET_NAME_APIDOC in COMMAND_LINE_TARGETS \
-        or TARGET_NAME_DOC in COMMAND_LINE_TARGETS:
+        or TARGET_NAME_APIDOC in COMMAND_LINE_TARGETS:
     __print_if_clean(env, 'Removing Python API documentation...')
     env.Clean([target_apidoc_python, DEFAULT_TARGET], DOC_MODULE.apidoc_tocfile_python)
 
