@@ -319,13 +319,6 @@ class DocumentationModule(Module):
         def root_file(self) -> str:
             return path.join(self.build_dir, 'filelist.rst')
 
-        @property
-        def config_file(self) -> str:
-            """
-            The config file, which should be used for building the API documentation.
-            """
-            return path.join(self.parent_module.root_dir, 'Doxyfile_' + self.name)
-
     class PythonApidocSubproject(ApidocSubproject):
         """
         Provides access to the directories and files that are necessary for building the API documentation of a certain
@@ -343,6 +336,13 @@ class DocumentationModule(Module):
     @property
     def root_dir(self) -> str:
         return 'doc'
+
+    @property
+    def doxygen_config_file(self) -> str:
+        """
+        The Doxygen config file.
+        """
+        return path.join(self.root_dir, 'Doxyfile')
 
     @property
     def config_file(self) -> str:
