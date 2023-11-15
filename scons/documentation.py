@@ -79,15 +79,15 @@ def __sphinx_build(source_dir: str, output_dir: str):
                 requirements_file=DOC_MODULE.requirements_file)
 
 
-def __read_tocfile_template(dir: str) -> List[str]:
-    with open(path.join(dir, 'index.rst.template'), mode='r', encoding='utf-8') as file:
+def __read_tocfile_template(directory: str) -> List[str]:
+    with open(path.join(directory, 'index.rst.template'), mode='r', encoding='utf-8') as file:
         return file.readlines()
 
 
-def __write_tocfile(dir: str, tocfile_entries: List[str]):
-    tocfile_template = __read_tocfile_template(dir)
+def __write_tocfile(directory: str, tocfile_entries: List[str]):
+    tocfile_template = __read_tocfile_template(directory)
 
-    with open(path.join(dir, 'index.rst'), mode='w', encoding='utf-8') as file:
+    with open(path.join(directory, 'index.rst'), mode='w', encoding='utf-8') as file:
         file.writelines(tocfile_template)
         file.writelines(tocfile_entries)
 
