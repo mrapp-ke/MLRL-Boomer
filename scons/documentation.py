@@ -6,13 +6,30 @@ Provides utility functions for generating the documentation.
 from os import makedirs, path, remove
 from typing import List
 
+from environment import set_env, unset_env
 from modules import CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from run import run_program
 
+ENV_DOXYGEN_PROJECT_NAME = 'DOXYGEN_PROJECT_NAME'
 
-def __doxygen(config_file: str, output_dir: str):
+ENV_DOXYGEN_INPUT_DIR = 'DOXYGEN_INPUT_DIR'
+
+ENV_DOXYGEN_OUTPUT_DIR = 'DOXYGEN_OUTPUT_DIR'
+
+ENV_DOXYGEN_PREDEFINED = 'DOXYGEN_PREDEFINED'
+
+
+def __doxygen(project_name: str, input_dir: str, output_dir: str):
     makedirs(output_dir, exist_ok=True)
-    run_program('doxygen', config_file, print_args=True)
+    set_env(ENV_DOXYGEN_PROJECT_NAME, 'libmlrl' + project_name)
+    set_env(ENV_DOXYGEN_INPUT_DIR, input_dir)
+    set_env(ENV_DOXYGEN_OUTPUT_DIR, output_dir)
+    set_env(ENV_DOXYGEN_PREDEFINED, 'MLRL' + project_name.upper() + '_API=')
+    run_program('doxygen', DOC_MODULE.doxygen_config_file, print_args=True)
+    unset_env(ENV_DOXYGEN_PROJECT_NAME)
+    unset_env(ENV_DOXYGEN_INPUT_DIR)
+    unset_env(ENV_DOXYGEN_OUTPUT_DIR)
+    unset_env(ENV_DOXYGEN_PREDEFINED)
 
 
 def __breathe_apidoc(source_dir: str, output_dir: str, project: str):
@@ -87,14 +104,12 @@ def apidoc_cpp(env, target, source):
     """
     if target:
         apidoc_subproject = DOC_MODULE.find_cpp_apidoc_subproject(target[0].path)
-        config_file = apidoc_subproject.config_file
-
-        if path.isfile(config_file):
-            subproject_name = apidoc_subproject.name
-            print('Generating C++ API documentation for subproject "' + subproject_name + '"...')
-            build_dir = apidoc_subproject.build_dir
-            __doxygen(config_file=config_file, output_dir=build_dir)
-            __breathe_apidoc(source_dir=path.join(build_dir, 'xml'), output_dir=build_dir, project=subproject_name)
+        subproject_name = apidoc_subproject.name
+        print('Generating C++ API documentation for subproject "' + subproject_name + '"...')
+        include_dir = path.join(apidoc_subproject.source_subproject.root_dir, 'include')
+        build_dir = apidoc_subproject.build_dir
+        __doxygen(project_name=subproject_name, input_dir=include_dir, output_dir=build_dir)
+        __breathe_apidoc(source_dir=path.join(build_dir, 'xml'), output_dir=build_dir, project=subproject_name)
 
 
 def apidoc_cpp_tocfile(**_):
