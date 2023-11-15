@@ -36,5 +36,5 @@ def unset_env(name: str):
     :param name: The name of the environment variable
     """
     if name in environ:
-        del environ['']
+        del environ[name]
         print('Unset environment variable \'' + name + '\'')
