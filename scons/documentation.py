@@ -6,7 +6,7 @@ Provides utility functions for generating the documentation.
 from os import makedirs, path, remove
 from typing import List
 
-from modules import DOC_MODULE, PYTHON_MODULE
+from modules import CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from run import run_program
 
 
@@ -95,6 +95,24 @@ def apidoc_cpp(env, target, source):
             build_dir = apidoc_subproject.build_dir
             __doxygen(config_file=config_file, output_dir=build_dir)
             __breathe_apidoc(source_dir=path.join(build_dir, 'xml'), output_dir=build_dir, project=subproject_name)
+
+
+def apidoc_cpp_tocfile(**_):
+    """
+    Generates a tocfile referencing the C++ API documentation for all existing subprojects.
+    """
+    print('Generating tocfile referencing the C++ API documentation for all subprojects...')
+    tocfile_entries = ['\n']
+
+    for subproject in CPP_MODULE.find_subprojects():
+        apidoc_subproject = DOC_MODULE.get_cpp_apidoc_subproject(subproject)
+        root_file = apidoc_subproject.root_file
+
+        if path.isfile(root_file):
+            tocfile_entries.append('    Library libmlrl' + apidoc_subproject.name + ' <'
+                                   + path.relpath(root_file, DOC_MODULE.apidoc_dir_cpp) + '>\n')
+
+    __write_tocfile(DOC_MODULE.apidoc_dir_cpp, tocfile_entries)
 
 
 # pylint: disable=unused-argument
