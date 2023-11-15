@@ -4,8 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for generating the documentation.
 """
 from os import makedirs, path, remove
+from typing import List
 
-from modules import DOC_MODULE
+from modules import DOC_MODULE, PYTHON_MODULE
 from run import run_program
 
 
@@ -61,6 +62,19 @@ def __sphinx_build(source_dir: str, output_dir: str):
                 requirements_file=DOC_MODULE.requirements_file)
 
 
+def __read_tocfile_template(dir: str) -> List[str]:
+    with open(path.join(dir, 'index.rst.template'), mode='r', encoding='utf-8') as file:
+        return file.readlines()
+
+
+def __write_tocfile(dir: str, tocfile_entries: List[str]):
+    tocfile_template = __read_tocfile_template(dir)
+
+    with open(path.join(dir, 'index.rst'), mode='w', encoding='utf-8') as file:
+        file.writelines(tocfile_template)
+        file.writelines(tocfile_entries)
+
+
 # pylint: disable=unused-argument
 def apidoc_cpp(env, target, source):
     """
@@ -99,6 +113,24 @@ def apidoc_python(env, target, source):
         build_dir = apidoc_subproject.build_dir
         makedirs(build_dir, exist_ok=True)
         __sphinx_apidoc(source_dir=apidoc_subproject.source_subproject.source_dir, output_dir=build_dir)
+
+
+def apidoc_python_tocfile(**_):
+    """
+    Generates a tocfile referencing the Python API documentation for all existing subprojects.
+    """
+    print('Generating tocfile referencing the Python API documentation for all subprojects...')
+    tocfile_entries = ['\n']
+
+    for subproject in PYTHON_MODULE.find_subprojects():
+        apidoc_subproject = DOC_MODULE.get_python_apidoc_subproject(subproject)
+        root_file = apidoc_subproject.root_file
+
+        if path.isfile(root_file):
+            tocfile_entries.append('    Package mlrl-' + apidoc_subproject.name + ' <'
+                                   + path.relpath(root_file, DOC_MODULE.apidoc_dir_python) + '>\n')
+
+    __write_tocfile(DOC_MODULE.apidoc_dir_python, tocfile_entries)
 
 
 def doc(**_):
