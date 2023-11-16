@@ -62,9 +62,9 @@ In addition, the following features that may speed up training or reduce the mem
 
 An extensive user guide, as well as an API documentation for developers, is available at [https://mlrl-boomer.readthedocs.io](https://mlrl-boomer.readthedocs.io). If you are new to the project, you probably want to read about the following topics:
 
-* Instructions for [installing the software package](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/index.html#installation) or [building the project from source](https://mlrl-boomer.readthedocs.io/en/latest/api/index.html#building-from-source).
-* Examples of how to [use the algorithm](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/index.html#using-the-algorithm) in your own Python code or how to use the [command line API](https://mlrl-boomer.readthedocs.io/en/latest/testbed/index.html).
-* An overview of available [parameters](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/index.html#parameters).
+* Instructions for [installing the software package](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/installation.html) or [building the project from source](https://mlrl-boomer.readthedocs.io/en/latest/development/compilation.html).
+* Examples of how to [use the algorithm](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/usage.html) in your own Python code or how to use the [command line API](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/testbed.html).
+* An overview of available [parameters](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/parameters.html).
 
 A collection of benchmark datasets that are compatible with the algorithm are provided in a separate [repository](https://github.com/mrapp-ke/Boomer-Datasets).
 
