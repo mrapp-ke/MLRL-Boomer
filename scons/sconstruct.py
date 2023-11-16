@@ -189,9 +189,11 @@ for subproject in CPP_MODULE.find_subprojects():
     build_files = apidoc_subproject.find_build_files()
     targets_apidoc_cpp = build_files if build_files else apidoc_subproject.build_dir
     command_apidoc_cpp = env.Command(targets_apidoc_cpp, subproject.find_source_files(), action=apidoc_cpp)
+    env.NoClean(command_apidoc_cpp)
     commands_apidoc_cpp.append(command_apidoc_cpp)
 
 command_apidoc_cpp_tocfile = env.Command(DOC_MODULE.apidoc_tocfile_cpp, None, action=apidoc_cpp_tocfile)
+env.NoClean(command_apidoc_cpp_tocfile)
 env.Depends(command_apidoc_cpp_tocfile, commands_apidoc_cpp)
 
 target_apidoc_cpp = env.Alias(TARGET_NAME_APIDOC_CPP, None, None)
@@ -202,10 +204,12 @@ for subproject in PYTHON_MODULE.find_subprojects():
     build_files = apidoc_subproject.find_build_files()
     targets_apidoc_python = build_files if build_files else apidoc_subproject.build_dir
     command_apidoc_python = env.Command(targets_apidoc_python, subproject.find_source_files(), action=apidoc_python)
+    env.NoClean(command_apidoc_python)
     env.Depends(command_apidoc_python, target_install_wheels)
     commands_apidoc_python.append(command_apidoc_python)
 
 command_apidoc_python_tocfile = env.Command(DOC_MODULE.apidoc_tocfile_python, None, action=apidoc_python_tocfile)
+env.NoClean(command_apidoc_python_tocfile)
 env.Depends(command_apidoc_python_tocfile, commands_apidoc_python)
 
 target_apidoc_python = env.Alias(TARGET_NAME_APIDOC_PYTHON, None, None)
