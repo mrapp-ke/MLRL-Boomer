@@ -216,7 +216,7 @@ env.Depends(target_apidoc, [target_apidoc_cpp, target_apidoc_python])
 
 doc_files = DOC_MODULE.find_build_files()
 targets_doc = doc_files if doc_files else DOC_MODULE.build_dir
-command_doc = env.Command(targets_doc, [DOC_MODULE.config_file] + DOC_MODULE.find_source_files(), action=doc)
+command_doc = env.Command(targets_doc, DOC_MODULE.find_source_files(), action=doc)
 env.Depends(command_doc, target_apidoc)
 target_doc = env.Alias(TARGET_NAME_DOC, None, None)
 env.Depends(target_doc, command_doc)
