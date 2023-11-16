@@ -34,6 +34,9 @@ def __run_command(cmd: str,
                    + str(exit_code))
 
         if exit_on_error:
+            if capture_output:
+                print(str(out.stderr).strip())
+
             print(message)
             sys.exit(exit_code)
         else:
