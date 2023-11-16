@@ -290,6 +290,13 @@ class DocumentationModule(Module):
             The directory, where build files should be stored.
             """
 
+        @property
+        @abstractmethod
+        def root_file(self) -> str:
+            """
+            The path of the root file of the API documentation.
+            """
+
         def find_build_files(self) -> List[str]:
             """
             Finds and returns all build files that have been created when building the API documentation.
@@ -306,14 +313,11 @@ class DocumentationModule(Module):
 
         @property
         def build_dir(self) -> str:
-            return path.join(self.parent_module.root_dir, 'development', 'api', 'cpp', self.name)
+            return path.join(self.parent_module.apidoc_dir_cpp, self.name)
 
         @property
-        def config_file(self) -> str:
-            """
-            The config file, which should be used for building the API documentation.
-            """
-            return path.join(self.parent_module.root_dir, 'Doxyfile_' + self.name)
+        def root_file(self) -> str:
+            return path.join(self.build_dir, 'filelist.rst')
 
     class PythonApidocSubproject(ApidocSubproject):
         """
@@ -323,11 +327,22 @@ class DocumentationModule(Module):
 
         @property
         def build_dir(self) -> str:
-            return path.join(self.parent_module.root_dir, 'development', 'api', 'python', self.name)
+            return path.join(self.parent_module.apidoc_dir_python, self.name)
+
+        @property
+        def root_file(self) -> str:
+            return path.join(self.build_dir, 'mlrl.' + self.name + '.rst')
 
     @property
     def root_dir(self) -> str:
         return 'doc'
+
+    @property
+    def doxygen_config_file(self) -> str:
+        """
+        The Doxygen config file.
+        """
+        return path.join(self.root_dir, 'Doxyfile')
 
     @property
     def config_file(self) -> str:
@@ -341,7 +356,35 @@ class DocumentationModule(Module):
         """
         The directory, where API documentations should be stored.
         """
-        return path.join(self.root_dir, 'apidoc')
+        return path.join(self.root_dir, 'development', 'api')
+
+    @property
+    def apidoc_dir_python(self) -> str:
+        """
+        The directory, where Python API documentations should be stored.
+        """
+        return path.join(self.apidoc_dir, 'python')
+
+    @property
+    def apidoc_tocfile_python(self) -> str:
+        """
+        The tocfile referencing all Python API documentations.
+        """
+        return path.join(self.apidoc_dir_python, 'index.rst')
+
+    @property
+    def apidoc_dir_cpp(self) -> str:
+        """
+        The directory, where C++ API documentations should be stored.
+        """
+        return path.join(self.apidoc_dir, 'cpp')
+
+    @property
+    def apidoc_tocfile_cpp(self) -> str:
+        """
+        The tocfile referencing all C++ API documentations.
+        """
+        return path.join(self.apidoc_dir_cpp, 'index.rst')
 
     @property
     def build_dir(self) -> str:

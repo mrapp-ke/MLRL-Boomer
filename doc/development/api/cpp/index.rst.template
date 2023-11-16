@@ -7,6 +7,3 @@ For those who are interested in modifying the project's source code or want to u
 
 .. toctree::
    :maxdepth: 1
-
-   Library libmlrlcommon <common/filelist>
-   Library libmlrlboosting <boosting/filelist>

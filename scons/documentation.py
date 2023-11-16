@@ -4,14 +4,32 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for generating the documentation.
 """
 from os import makedirs, path, remove
+from typing import List
 
-from modules import DOC_MODULE
+from environment import set_env, unset_env
+from modules import CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from run import run_program
 
+ENV_DOXYGEN_PROJECT_NAME = 'DOXYGEN_PROJECT_NAME'
 
-def __doxygen(config_file: str, output_dir: str):
+ENV_DOXYGEN_INPUT_DIR = 'DOXYGEN_INPUT_DIR'
+
+ENV_DOXYGEN_OUTPUT_DIR = 'DOXYGEN_OUTPUT_DIR'
+
+ENV_DOXYGEN_PREDEFINED = 'DOXYGEN_PREDEFINED'
+
+
+def __doxygen(project_name: str, input_dir: str, output_dir: str):
     makedirs(output_dir, exist_ok=True)
-    run_program('doxygen', config_file, print_args=True)
+    set_env(ENV_DOXYGEN_PROJECT_NAME, 'libmlrl' + project_name)
+    set_env(ENV_DOXYGEN_INPUT_DIR, input_dir)
+    set_env(ENV_DOXYGEN_OUTPUT_DIR, output_dir)
+    set_env(ENV_DOXYGEN_PREDEFINED, 'MLRL' + project_name.upper() + '_API=')
+    run_program('doxygen', DOC_MODULE.doxygen_config_file, print_args=True)
+    unset_env(ENV_DOXYGEN_PROJECT_NAME)
+    unset_env(ENV_DOXYGEN_INPUT_DIR)
+    unset_env(ENV_DOXYGEN_OUTPUT_DIR)
+    unset_env(ENV_DOXYGEN_PREDEFINED)
 
 
 def __breathe_apidoc(source_dir: str, output_dir: str, project: str):
@@ -61,6 +79,19 @@ def __sphinx_build(source_dir: str, output_dir: str):
                 requirements_file=DOC_MODULE.requirements_file)
 
 
+def __read_tocfile_template(directory: str) -> List[str]:
+    with open(path.join(directory, 'index.rst.template'), mode='r', encoding='utf-8') as file:
+        return file.readlines()
+
+
+def __write_tocfile(directory: str, tocfile_entries: List[str]):
+    tocfile_template = __read_tocfile_template(directory)
+
+    with open(path.join(directory, 'index.rst'), mode='w', encoding='utf-8') as file:
+        file.writelines(tocfile_template)
+        file.writelines(tocfile_entries)
+
+
 # pylint: disable=unused-argument
 def apidoc_cpp(env, target, source):
     """
@@ -73,14 +104,30 @@ def apidoc_cpp(env, target, source):
     """
     if target:
         apidoc_subproject = DOC_MODULE.find_cpp_apidoc_subproject(target[0].path)
-        config_file = apidoc_subproject.config_file
+        subproject_name = apidoc_subproject.name
+        print('Generating C++ API documentation for subproject "' + subproject_name + '"...')
+        include_dir = path.join(apidoc_subproject.source_subproject.root_dir, 'include')
+        build_dir = apidoc_subproject.build_dir
+        __doxygen(project_name=subproject_name, input_dir=include_dir, output_dir=build_dir)
+        __breathe_apidoc(source_dir=path.join(build_dir, 'xml'), output_dir=build_dir, project=subproject_name)
 
-        if path.isfile(config_file):
-            subproject_name = apidoc_subproject.name
-            print('Generating C++ API documentation for subproject "' + subproject_name + '"...')
-            build_dir = apidoc_subproject.build_dir
-            __doxygen(config_file=config_file, output_dir=build_dir)
-            __breathe_apidoc(source_dir=path.join(build_dir, 'xml'), output_dir=build_dir, project=subproject_name)
+
+def apidoc_cpp_tocfile(**_):
+    """
+    Generates a tocfile referencing the C++ API documentation for all existing subprojects.
+    """
+    print('Generating tocfile referencing the C++ API documentation for all subprojects...')
+    tocfile_entries = ['\n']
+
+    for subproject in CPP_MODULE.find_subprojects():
+        apidoc_subproject = DOC_MODULE.get_cpp_apidoc_subproject(subproject)
+        root_file = apidoc_subproject.root_file
+
+        if path.isfile(root_file):
+            tocfile_entries.append('    Library libmlrl' + apidoc_subproject.name + ' <'
+                                   + path.relpath(root_file, DOC_MODULE.apidoc_dir_cpp) + '>\n')
+
+    __write_tocfile(DOC_MODULE.apidoc_dir_cpp, tocfile_entries)
 
 
 # pylint: disable=unused-argument
@@ -99,6 +146,24 @@ def apidoc_python(env, target, source):
         build_dir = apidoc_subproject.build_dir
         makedirs(build_dir, exist_ok=True)
         __sphinx_apidoc(source_dir=apidoc_subproject.source_subproject.source_dir, output_dir=build_dir)
+
+
+def apidoc_python_tocfile(**_):
+    """
+    Generates a tocfile referencing the Python API documentation for all existing subprojects.
+    """
+    print('Generating tocfile referencing the Python API documentation for all subprojects...')
+    tocfile_entries = ['\n']
+
+    for subproject in PYTHON_MODULE.find_subprojects():
+        apidoc_subproject = DOC_MODULE.get_python_apidoc_subproject(subproject)
+        root_file = apidoc_subproject.root_file
+
+        if path.isfile(root_file):
+            tocfile_entries.append('    Package mlrl-' + apidoc_subproject.name + ' <'
+                                   + path.relpath(root_file, DOC_MODULE.apidoc_dir_python) + '>\n')
+
+    __write_tocfile(DOC_MODULE.apidoc_dir_python, tocfile_entries)
 
 
 def doc(**_):

@@ -10,7 +10,7 @@ from os import path
 
 from code_style import check_cpp_code_style, check_python_code_style, enforce_cpp_code_style, enforce_python_code_style
 from compilation import compile_cpp, compile_cython, install_cpp, install_cython, setup_cpp, setup_cython
-from documentation import apidoc_cpp, apidoc_python, doc
+from documentation import apidoc_cpp, apidoc_cpp_tocfile, apidoc_python, apidoc_python_tocfile, doc
 from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from packaging import build_python_wheel, install_python_wheels
 from run import install_runtime_dependencies
@@ -186,29 +186,30 @@ commands_apidoc_python = []
 
 for subproject in CPP_MODULE.find_subprojects():
     apidoc_subproject = DOC_MODULE.get_cpp_apidoc_subproject(subproject)
-    config_file = apidoc_subproject.config_file
+    build_files = apidoc_subproject.find_build_files()
+    targets_apidoc_cpp = build_files if build_files else apidoc_subproject.build_dir
+    command_apidoc_cpp = env.Command(targets_apidoc_cpp, subproject.find_source_files(), action=apidoc_cpp)
+    commands_apidoc_cpp.append(command_apidoc_cpp)
 
-    if path.isfile(config_file):
-        build_files = apidoc_subproject.find_build_files()
-        targets_apidoc_cpp = build_files if build_files else apidoc_subproject.build_dir
-        source_files = [config_file] + subproject.find_source_files()
-        command_apidoc_cpp = env.Command(targets_apidoc_cpp, source_files, action=apidoc_cpp)
-        commands_apidoc_cpp.append(command_apidoc_cpp)
+command_apidoc_cpp_tocfile = env.Command(DOC_MODULE.apidoc_tocfile_cpp, None, action=apidoc_cpp_tocfile)
+env.Depends(command_apidoc_cpp_tocfile, commands_apidoc_cpp)
 
 target_apidoc_cpp = env.Alias(TARGET_NAME_APIDOC_CPP, None, None)
-env.Depends(target_apidoc_cpp, commands_apidoc_cpp)
+env.Depends(target_apidoc_cpp, command_apidoc_cpp_tocfile)
 
 for subproject in PYTHON_MODULE.find_subprojects():
     apidoc_subproject = DOC_MODULE.get_python_apidoc_subproject(subproject)
     build_files = apidoc_subproject.find_build_files()
     targets_apidoc_python = build_files if build_files else apidoc_subproject.build_dir
-    source_files = subproject.find_source_files()
-    command_apidoc_python = env.Command(targets_apidoc_python, source_files, action=apidoc_python)
+    command_apidoc_python = env.Command(targets_apidoc_python, subproject.find_source_files(), action=apidoc_python)
     env.Depends(command_apidoc_python, target_install_wheels)
     commands_apidoc_python.append(command_apidoc_python)
 
+command_apidoc_python_tocfile = env.Command(DOC_MODULE.apidoc_tocfile_python, None, action=apidoc_python_tocfile)
+env.Depends(command_apidoc_python_tocfile, commands_apidoc_python)
+
 target_apidoc_python = env.Alias(TARGET_NAME_APIDOC_PYTHON, None, None)
-env.Depends(target_apidoc_python, commands_apidoc_python)
+env.Depends(target_apidoc_python, command_apidoc_python_tocfile)
 
 target_apidoc = env.Alias(TARGET_NAME_APIDOC, None, None)
 env.Depends(target_apidoc, [target_apidoc_cpp, target_apidoc_python])
@@ -223,9 +224,9 @@ env.Depends(target_doc, command_doc)
 # Define target for cleaning up the documentation and associated build directories...
 if not COMMAND_LINE_TARGETS \
         or TARGET_NAME_APIDOC_CPP in COMMAND_LINE_TARGETS \
-        or TARGET_NAME_APIDOC in COMMAND_LINE_TARGETS \
-        or TARGET_NAME_DOC in COMMAND_LINE_TARGETS:
+        or TARGET_NAME_APIDOC in COMMAND_LINE_TARGETS:
     __print_if_clean(env, 'Removing C++ API documentation...')
+    env.Clean([target_apidoc_cpp, DEFAULT_TARGET], DOC_MODULE.apidoc_tocfile_cpp)
 
     for subproject in CPP_MODULE.find_subprojects():
         apidoc_subproject = DOC_MODULE.get_cpp_apidoc_subproject(subproject)
@@ -233,16 +234,13 @@ if not COMMAND_LINE_TARGETS \
 
 if not COMMAND_LINE_TARGETS \
         or TARGET_NAME_APIDOC_PYTHON in COMMAND_LINE_TARGETS \
-        or TARGET_NAME_APIDOC in COMMAND_LINE_TARGETS \
-        or TARGET_NAME_DOC in COMMAND_LINE_TARGETS:
+        or TARGET_NAME_APIDOC in COMMAND_LINE_TARGETS:
     __print_if_clean(env, 'Removing Python API documentation...')
+    env.Clean([target_apidoc_python, DEFAULT_TARGET], DOC_MODULE.apidoc_tocfile_python)
 
     for subproject in PYTHON_MODULE.find_subprojects():
         apidoc_subproject = DOC_MODULE.get_python_apidoc_subproject(subproject)
         env.Clean([target_apidoc_python, DEFAULT_TARGET], apidoc_subproject.build_dir)
-
-if not COMMAND_LINE_TARGETS or TARGET_NAME_APIDOC in COMMAND_LINE_TARGETS or TARGET_NAME_DOC in COMMAND_LINE_TARGETS:
-    env.Clean([target_apidoc, DEFAULT_TARGET], DOC_MODULE.apidoc_dir)
 
 if not COMMAND_LINE_TARGETS or TARGET_NAME_DOC in COMMAND_LINE_TARGETS:
     __print_if_clean(env, 'Removing documentation...')

@@ -28,12 +28,21 @@ namespace seco {
              */
             LabelWiseBinaryPredictorConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
+            /**
+             * @see `IPredictorConfig::createPredictorFactory`
+             */
             std::unique_ptr<IBinaryPredictorFactory> createPredictorFactory(const IRowWiseFeatureMatrix& featureMatrix,
                                                                             uint32 numLabels) const override;
 
+            /**
+             * @see `IBinaryPredictorConfig::createSparsePredictorFactory`
+             */
             std::unique_ptr<ISparseBinaryPredictorFactory> createSparsePredictorFactory(
               const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
 
+            /**
+             * @see `IPredictorConfig::isLabelVectorSetNeeded`
+             */
             bool isLabelVectorSetNeeded() const override;
     };
 
