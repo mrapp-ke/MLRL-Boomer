@@ -4,9 +4,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for compiling C++ and Cython code.
 """
 from abc import ABC, abstractmethod
-from os import environ
 from typing import List, Optional
 
+from environment import get_env
 from modules import CPP_MODULE, PYTHON_MODULE
 from run import run_program
 
@@ -43,7 +43,7 @@ class BuildOptions:
         """
 
         def get_value(self) -> Optional[str]:
-            return environ.get(self.name.upper(), None)
+            return get_env(self.name.upper(), None)
 
     def __init__(self):
         self.build_options = []

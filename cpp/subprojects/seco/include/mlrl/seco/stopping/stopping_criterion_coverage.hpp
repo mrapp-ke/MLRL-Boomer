@@ -54,6 +54,9 @@ namespace seco {
 
             ICoverageStoppingCriterionConfig& setThreshold(float64 threshold) override;
 
+            /**
+             * @see `IStoppingCriterionConfig::createStoppingCriterionFactory`
+             */
             std::unique_ptr<IStoppingCriterionFactory> createStoppingCriterionFactory() const override;
     };
 
