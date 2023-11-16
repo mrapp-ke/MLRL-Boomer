@@ -109,7 +109,7 @@ jobs:
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-test-build-cache-tmp-files
-      - name: Prepare Ccache
+      - name: Prepare ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
           key: ${{ runner.os }}-test-build-ccache
@@ -180,7 +180,7 @@ jobs:
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-test-build-cache-tmp-files
-      - name: Prepare Ccache
+      - name: Prepare ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
           key: ${{ runner.os }}-test-build-ccache
@@ -199,6 +199,8 @@ jobs:
     if: ${{ needs.changes.outputs.cpp == 'true' }}
     name: Test Windows build
     runs-on: windows-latest
+    env:
+      SCCACHE_GHA_ENABLED: "true"
     steps:
       - name: Look up Git repository in cache
         uses: actions/cache/restore@v3
@@ -231,10 +233,8 @@ jobs:
           key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-test-build-cache-tmp-files
-      - name: Prepare Ccache
-        uses: hendrikmuhs/ccache-action@v1
-        with:
-          key: ${{ runner.os }}-test-build-ccache
+      - name: Prepare sccache
+        uses: mozilla-actions/sccache-action@v0
       - name: Compile via MSVC
         run: |
           $env:TEST_SUPPORT = "disabled"
