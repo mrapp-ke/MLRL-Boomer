@@ -36,7 +36,11 @@ extensions = [
     'sphinxext.opengraph',
     'sphinx_inline_tabs',
     'sphinx_copybutton',
+    'sphinx_favicon',
 ]
+
+# Favicons
+favicons = [{"href": 'favicon.svg'}]
 
 # Intersphinx configuration
 intersphinx_mapping = {
