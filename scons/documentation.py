@@ -74,7 +74,12 @@ def __sphinx_build(source_dir: str, output_dir: str):
                 output_dir,
                 print_args=True,
                 additional_dependencies=[
-                    'furo', 'sphinxext-opengraph', 'sphinx-inline-tabs', 'sphinx-copybutton', 'myst-parser'
+                    'furo',
+                    'myst-parser',
+                    'sphinxext-opengraph',
+                    'sphinx-inline-tabs',
+                    'sphinx-copybutton',
+                    'sphinx-favicon',
                 ],
                 requirements_file=DOC_MODULE.requirements_file)
 
