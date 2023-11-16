@@ -10,8 +10,8 @@ from typing import Callable, List
 
 
 def find_files_recursively(directory: str,
-                           directory_filter: Callable[[str], bool] = lambda _: True,
-                           file_filter: Callable[[str], bool] = lambda _: True) -> List[str]:
+                           directory_filter: Callable[[str, str], bool] = lambda *_: True,
+                           file_filter: Callable[[str, str], bool] = lambda *_: True) -> List[str]:
     """
     Finds and returns files in a directory and its subdirectories that match a given filter.
 
@@ -22,12 +22,14 @@ def find_files_recursively(directory: str,
     """
     result = []
 
-    for root_directory, subdirectories, files in walk(directory, topdown=True):
-        subdirectories[:] = [subdirectory for subdirectory in subdirectories if directory_filter(subdirectory)]
+    for parent_directory, subdirectories, files in walk(directory, topdown=True):
+        subdirectories[:] = [
+            subdirectory for subdirectory in subdirectories if directory_filter(parent_directory, subdirectory)
+        ]
 
         for file in files:
-            if file_filter(file):
-                result.append(path.join(root_directory, file))
+            if file_filter(parent_directory, file):
+                result.append(path.join(parent_directory, file))
 
     return result
 
@@ -99,7 +101,7 @@ class PythonModule(SourceModule):
         """
 
         @staticmethod
-        def __filter_pycache_directories(directory: str) -> bool:
+        def __filter_pycache_directories(_: str, directory: str) -> bool:
             return directory != '__pycache__'
 
         @property
@@ -153,7 +155,7 @@ class PythonModule(SourceModule):
             :return: A list that contains all shared libraries that have been found
             """
 
-            def file_filter(file) -> bool:
+            def file_filter(_: str, file: str) -> bool:
                 return (file.startswith('lib') and file.find('.so') >= 0) \
                     or file.endswith('.dylib') \
                     or (file.startswith('mlrl') and file.endswith('.lib')) \
@@ -170,7 +172,7 @@ class PythonModule(SourceModule):
             :return: A list that contains all extension modules that have been found
             """
 
-            def file_filter(file) -> bool:
+            def file_filter(_: str, file: str) -> bool:
                 return (not file.startswith('lib') and file.endswith('.so')) \
                     or file.endswith('.pyd') \
                     or (not file.startswith('mlrl') and file.endswith('.lib'))
@@ -226,7 +228,7 @@ class CppModule(SourceModule):
             :return: A list that contains the paths of the source files that have been found
             """
 
-            def file_filter(file) -> bool:
+            def file_filter(_: str, file: str) -> bool:
                 return file.endswith('.hpp') or file.endswith('.cpp')
 
             return find_files_recursively(self.root_dir, file_filter=file_filter)
@@ -408,10 +410,10 @@ class DocumentationModule(Module):
         :return: A list that contains the paths of the source files that have been found
         """
 
-        def directory_filter(directory: str) -> bool:
-            return directory != path.basename(self.build_dir)
+        def directory_filter(parent_directory: str, directory: str) -> bool:
+            return path.join(parent_directory, directory) != self.build_dir
 
-        def file_filter(file: str) -> bool:
+        def file_filter(_: str, file: str) -> bool:
             return file == 'conf.py' or file.endswith('.rst') or file.endswith('.svg')
 
         return find_files_recursively(self.root_dir, directory_filter=directory_filter, file_filter=file_filter)
