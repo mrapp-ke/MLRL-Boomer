@@ -57,7 +57,8 @@ class ClearableCompositeVectorDecorator : public Vector {
     public:
 
         /**
-         * @param view The view, the vector should be backed by
+         * @param firstView     The first view, the vector should be backed by
+         * @param secondView    The second view, the vector should be backed by
          */
         ClearableCompositeVectorDecorator(typename Vector::first_view_type&& firstView,
                                           typename Vector::second_view_type&& secondView)
