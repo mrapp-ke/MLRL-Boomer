@@ -32,17 +32,18 @@ jobs:
         id: filter
         with:
           filters: |
-            cpp: &cpp
+            build_files: &build_files
+              - '.github/workflows/test_format.yml'
               - 'build'
               - 'build.bat'
               - 'scons/**'
+            cpp: &cpp
+              - *build_files
               - '**/*.hpp'
               - '**/*.cpp'
               - '.clang-format'
             python: &python
-              - 'build'
-              - 'build.bat'
-              - 'scons/**'
+              - *build_files
               - '**/*.py'
               - '.isort.cfg'
               - '.pylintrc'

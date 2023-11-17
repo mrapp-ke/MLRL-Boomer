@@ -35,10 +35,13 @@ jobs:
         id: filter
         with:
           filters: |
-            cpp: &cpp
+            build_files: &build_files
+              - '.github/workflows/test_build.yml'
               - 'build'
               - 'build.bat'
               - 'scons/**'
+            cpp: &cpp
+              - *build_files
               - 'cpp/**/include/**'
               - 'cpp/**/src/**'
               - '**/*.pxd'
@@ -48,18 +51,14 @@ jobs:
               - *cpp
               - 'cpp/**/test/**'
             python: &python
-              - 'build'
-              - 'build.bat'
-              - 'scons/**'
+              - *build_files
               - 'python/requirements.txt'
               - 'python/**/mlrl/**'
             python_tests: &python_tests
               - *python
               - 'python/**/tests/**' 
             doc: &doc
-              - 'build'
-              - 'build.bat'
-              - 'scons/**'
+              - *build_files
               - 'doc/**'
             any:
               - *cpp_tests
