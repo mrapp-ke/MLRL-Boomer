@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_vector.hpp"
+#include "mlrl/common/data/view_vector_composite.hpp"
 
 /**
  * A vector that is backed two one-dimensional views of a specific size, storing indices and corresponding values.
@@ -12,29 +12,7 @@
  * @tparam ValueView    The type of the view, the values are backed by
  */
 template<typename IndexView, typename ValueView>
-class IndexedVectorDecorator {
-    protected:
-
-        /**
-         * The view, the indices are backed by.
-         */
-        IndexView indexView_;
-
-        /**
-         * The view, the values are backed by.
-         */
-        ValueView valueView_;
-
-        /**
-         * The type of the view, the indices are backed by.
-         */
-        typedef IndexView index_view_type;
-
-        /**
-         * The type of the view, the values are backed by.
-         */
-        typedef ValueView value_view_type;
-
+class IndexedVectorDecorator : public CompositeVectorDecorator<IndexView, ValueView> {
     public:
 
         /**
@@ -42,9 +20,9 @@ class IndexedVectorDecorator {
          * @param valueView The view, the values should be backed by
          */
         IndexedVectorDecorator(IndexView&& indexView, ValueView&& valueView)
-            : indexView_(std::move(indexView)), valueView_(std::move(valueView)) {}
+            : CompositeVectorDecorator<IndexView, ValueView>(std::move(indexView), std::move(valueView)) {}
 
-        virtual ~IndexedVectorDecorator() {};
+        virtual ~IndexedVectorDecorator() override {};
 
         /**
          * The type of the indices that are stored in the vector.
@@ -53,7 +31,6 @@ class IndexedVectorDecorator {
 
         /**
          * The type of the values that are stored in the vector.
-         *
          */
         typedef typename ValueView::value_type value_type;
 
@@ -63,7 +40,7 @@ class IndexedVectorDecorator {
          * @return The number of elements in the vector
          */
         uint32 getNumElements() const {
-            return indexView_.numElements;
+            return this->firstView_.numElements;
         }
 };
 
@@ -80,8 +57,8 @@ class ReadIterableIndexedVectorDecorator : public Vector {
          * @param indexView The view, the indices should be backed by
          * @param valueView The view, the values should be backed by
          */
-        ReadIterableIndexedVectorDecorator(typename Vector::index_view_type&& indexView,
-                                           typename Vector::value_view_type&& valueView)
+        ReadIterableIndexedVectorDecorator(typename Vector::first_view_type&& indexView,
+                                           typename Vector::second_view_type&& valueView)
             : Vector(std::move(indexView), std::move(valueView)) {}
 
         virtual ~ReadIterableIndexedVectorDecorator() override {};
@@ -89,12 +66,12 @@ class ReadIterableIndexedVectorDecorator : public Vector {
         /**
          * An iterator that provides read-only access to the indices stored in the vector.
          */
-        typedef typename Vector::index_view_type::const_iterator index_const_iterator;
+        typedef typename Vector::first_view_type::const_iterator index_const_iterator;
 
         /**
          * An iterator that provides read-only access to the values stored in the vector.
          */
-        typedef typename Vector::value_view_type::const_iterator value_const_iterator;
+        typedef typename Vector::second_view_type::const_iterator value_const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the vector.
@@ -102,7 +79,7 @@ class ReadIterableIndexedVectorDecorator : public Vector {
          * @return An `index_const_iterator` to the beginning
          */
         index_const_iterator indices_cbegin() const {
-            return Vector::indexView_.array;
+            return Vector::firstView_.array;
         }
 
         /**
@@ -111,7 +88,7 @@ class ReadIterableIndexedVectorDecorator : public Vector {
          * @return An `index_const_iterator` to the end
          */
         index_const_iterator indices_cend() const {
-            return &Vector::indexView_.array[Vector::indexView_.numElements];
+            return &Vector::firstView_.array[Vector::firstView_.numElements];
         }
 
         /**
@@ -120,7 +97,7 @@ class ReadIterableIndexedVectorDecorator : public Vector {
          * @return A `value_const_iterator` to the beginning
          */
         value_const_iterator values_cbegin() const {
-            return Vector::valueView_.array;
+            return Vector::secondView_.array;
         }
 
         /**
@@ -129,7 +106,7 @@ class ReadIterableIndexedVectorDecorator : public Vector {
          * @return A `value_const_iterator` to the end
          */
         value_const_iterator values_cend() const {
-            return &Vector::valueView_.array[Vector::valueView_.numElements];
+            return &Vector::secondView_.array[Vector::secondView_.numElements];
         }
 };
 
@@ -146,8 +123,8 @@ class WriteIterableIndexedVectorDecorator : public Vector {
          * @param indexView The view, the indices should be backed by
          * @param valueView The view, the values should be backed by
          */
-        WriteIterableIndexedVectorDecorator(typename Vector::index_view_type&& indexView,
-                                            typename Vector::value_view_type&& valueView)
+        WriteIterableIndexedVectorDecorator(typename Vector::first_view_type&& indexView,
+                                            typename Vector::second_view_type&& valueView)
             : Vector(std::move(indexView), std::move(valueView)) {}
 
         virtual ~WriteIterableIndexedVectorDecorator() override {};
@@ -155,12 +132,12 @@ class WriteIterableIndexedVectorDecorator : public Vector {
         /**
          * An iterator that provides access to the indices stored in the vector and allows to modify them.
          */
-        typedef typename Vector::index_view_type::iterator index_iterator;
+        typedef typename Vector::first_view_type::iterator index_iterator;
 
         /**
          * An iterator that provides access to the values stored in the vector and allows to modify them.
          */
-        typedef typename Vector::value_view_type::iterator value_iterator;
+        typedef typename Vector::second_view_type::iterator value_iterator;
 
         /**
          * Returns an `index_iterator` to the beginning of the vector.
@@ -168,7 +145,7 @@ class WriteIterableIndexedVectorDecorator : public Vector {
          * @return An `index_iterator` to the beginning
          */
         index_iterator indices_begin() const {
-            return Vector::indexView_.array;
+            return Vector::firstView_.array;
         }
 
         /**
@@ -177,7 +154,7 @@ class WriteIterableIndexedVectorDecorator : public Vector {
          * @return An `index_iterator` to the end
          */
         index_iterator indices_end() const {
-            return &Vector::indexView_.array[Vector::indexView_.numElements];
+            return &Vector::firstView_.array[Vector::firstView_.numElements];
         }
 
         /**
@@ -186,7 +163,7 @@ class WriteIterableIndexedVectorDecorator : public Vector {
          * @return A `value_iterator` to the beginning
          */
         value_iterator values_begin() const {
-            return Vector::valueView_.array;
+            return Vector::secondView_.array;
         }
 
         /**
@@ -195,7 +172,7 @@ class WriteIterableIndexedVectorDecorator : public Vector {
          * @return A `value_iterator` to the end
          */
         value_iterator values_end() const {
-            return &Vector::valueView_.array[Vector::valueView_.numElements];
+            return &Vector::secondView_.array[Vector::secondView_.numElements];
         }
 };
 
