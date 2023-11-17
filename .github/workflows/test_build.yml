@@ -234,7 +234,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-test-build-cache-tmp-files
       - name: Prepare sccache
-        uses: mozilla-actions/sccache-action@v0
+        uses: mozilla-actions/sccache-action@v0.0.3
       - name: Compile via MSVC
         run: |
           $env:TEST_SUPPORT = "disabled"
