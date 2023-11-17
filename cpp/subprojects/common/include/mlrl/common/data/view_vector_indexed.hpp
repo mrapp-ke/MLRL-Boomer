@@ -79,7 +79,7 @@ class ReadIterableIndexedVectorDecorator : public Vector {
          * @return An `index_const_iterator` to the beginning
          */
         index_const_iterator indices_cbegin() const {
-            return Vector::firstView_.array;
+            return Vector::firstView_.cbegin();
         }
 
         /**
@@ -88,7 +88,7 @@ class ReadIterableIndexedVectorDecorator : public Vector {
          * @return An `index_const_iterator` to the end
          */
         index_const_iterator indices_cend() const {
-            return &Vector::firstView_.array[Vector::firstView_.numElements];
+            return Vector::firstView_.cend();
         }
 
         /**
@@ -97,7 +97,7 @@ class ReadIterableIndexedVectorDecorator : public Vector {
          * @return A `value_const_iterator` to the beginning
          */
         value_const_iterator values_cbegin() const {
-            return Vector::secondView_.array;
+            return Vector::secondView_.cbegin();
         }
 
         /**
@@ -106,7 +106,7 @@ class ReadIterableIndexedVectorDecorator : public Vector {
          * @return A `value_const_iterator` to the end
          */
         value_const_iterator values_cend() const {
-            return &Vector::secondView_.array[Vector::secondView_.numElements];
+            return Vector::secondView_.cend();
         }
 };
 
@@ -144,8 +144,8 @@ class WriteIterableIndexedVectorDecorator : public Vector {
          *
          * @return An `index_iterator` to the beginning
          */
-        index_iterator indices_begin() const {
-            return Vector::firstView_.array;
+        index_iterator indices_begin() {
+            return Vector::firstView_.begin();
         }
 
         /**
@@ -153,8 +153,8 @@ class WriteIterableIndexedVectorDecorator : public Vector {
          *
          * @return An `index_iterator` to the end
          */
-        index_iterator indices_end() const {
-            return &Vector::firstView_.array[Vector::firstView_.numElements];
+        index_iterator indices_end() {
+            return Vector::firstView_.end();
         }
 
         /**
@@ -162,8 +162,8 @@ class WriteIterableIndexedVectorDecorator : public Vector {
          *
          * @return A `value_iterator` to the beginning
          */
-        value_iterator values_begin() const {
-            return Vector::secondView_.array;
+        value_iterator values_begin() {
+            return Vector::secondView_.begin();
         }
 
         /**
@@ -171,8 +171,8 @@ class WriteIterableIndexedVectorDecorator : public Vector {
          *
          * @return A `value_iterator` to the end
          */
-        value_iterator values_end() const {
-            return &Vector::secondView_.array[Vector::secondView_.numElements];
+        value_iterator values_end() {
+            return Vector::secondView_.end();
         }
 };
 

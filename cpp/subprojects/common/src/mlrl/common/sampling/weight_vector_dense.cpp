@@ -19,7 +19,7 @@ void DenseWeightVector<T>::setNumNonZeroWeights(uint32 numNonZeroWeights) {
 
 template<typename T>
 bool DenseWeightVector<T>::hasZeroWeights() const {
-    return numNonZeroWeights_ < this->view_.numElements;
+    return numNonZeroWeights_ < this->getNumElements();
 }
 
 template<typename T>

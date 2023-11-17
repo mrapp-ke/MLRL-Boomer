@@ -11,19 +11,19 @@ PartialPrediction::PartialPrediction(uint32 numElements, bool sorted)
       indexVector_(numElements), sorted_(sorted) {}
 
 PartialPrediction::value_iterator PartialPrediction::values_begin() {
-    return this->view_.array;
+    return this->view_.begin();
 }
 
 PartialPrediction::value_iterator PartialPrediction::values_end() {
-    return &this->view_.array[this->view_.numElements];
+    return this->view_.end();
 }
 
 PartialPrediction::value_const_iterator PartialPrediction::values_cbegin() const {
-    return this->view_.array;
+    return this->view_.cbegin();
 }
 
 PartialPrediction::value_const_iterator PartialPrediction::values_cend() const {
-    return &this->view_.array[this->view_.numElements];
+    return this->view_.cend();
 }
 
 PartialPrediction::index_iterator PartialPrediction::indices_begin() {
@@ -89,12 +89,12 @@ void PartialPrediction::postProcess(const IPostProcessor& postProcessor) {
 }
 
 void PartialPrediction::set(View<float64>::const_iterator begin, View<float64>::const_iterator end) {
-    copyView(begin, this->view_.array, this->view_.numElements);
+    copyView(begin, this->view_.begin(), this->getNumElements());
 }
 
 void PartialPrediction::set(DenseBinnedVector<float64>::const_iterator begin,
                             DenseBinnedVector<float64>::const_iterator end) {
-    copyView(begin, this->view_.array, this->view_.numElements);
+    copyView(begin, this->view_.begin(), this->getNumElements());
 }
 
 bool PartialPrediction::isPartial() const {

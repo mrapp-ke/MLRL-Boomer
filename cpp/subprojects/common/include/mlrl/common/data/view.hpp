@@ -51,6 +51,24 @@ struct View {
          * An iterator that provides access to the elements in the view and allows to modify them.
          */
         typedef value_type* iterator;
+
+        /**
+         * Returns a `const_iterator` to the beginning of the view.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        const_iterator cbegin() const {
+            return array;
+        }
+
+        /**
+         * Returns an `iterator` to the beginning of the view.
+         *
+         * @return An `iterator` to the beginning
+         */
+        iterator begin() {
+            return array;
+        }
 };
 
 /**
@@ -114,7 +132,7 @@ class ReadAccessibleViewDecorator : public View {
          * @return A `const_iterator` to the beginning
          */
         const_iterator cbegin() const {
-            return View::view_.array;
+            return View::view_.cbegin();
         }
 
         /**
@@ -155,7 +173,7 @@ class WriteAccessibleViewDecorator : public View {
          * @return An `iterator` to the beginning
          */
         iterator begin() {
-            return View::view_.array;
+            return View::view_.begin();
         }
 
         /**

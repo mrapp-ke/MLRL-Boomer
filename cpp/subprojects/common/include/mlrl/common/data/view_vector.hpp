@@ -35,6 +35,24 @@ struct Vector : public View<T> {
         Vector(Vector<T>&& other) : Vector(other.array, other.numElements) {}
 
         virtual ~Vector() override {};
+
+        /**
+         * Returns a `const_iterator` to the end of the vector.
+         *
+         * @return A `const_iterator` to the end
+         */
+        typename View<T>::const_iterator cend() const {
+            return &View<T>::array[numElements];
+        }
+
+        /**
+         * Returns an `iterator` to the end of the vector.
+         *
+         * @return An `iterator` to the end
+         */
+        typename View<T>::iterator end() {
+            return &View<T>::array[numElements];
+        }
 };
 
 /**
@@ -86,7 +104,7 @@ class ReadIterableVectorDecorator : public ReadAccessibleViewDecorator<Vector> {
          * @return A `const_iterator` to the end
          */
         typename ReadAccessibleViewDecorator<Vector>::const_iterator cend() const {
-            return &Vector::view_.array[Vector::view_.numElements];
+            return Vector::view_.cend();
         }
 };
 
@@ -113,7 +131,7 @@ class WriteIterableVectorDecorator : public WriteAccessibleViewDecorator<Vector>
          * @return An `iterator` to the end
          */
         typename WriteAccessibleViewDecorator<Vector>::iterator end() {
-            return &Vector::view_.array[Vector::view_.numElements];
+            return Vector::view_.end();
         }
 };
 
@@ -152,6 +170,6 @@ class ClearableVectorDecorator : public Vector {
          * Sets all values stored in the vector to zero.
          */
         virtual void clear() {
-            setViewToZeros(this->view_.array, this->view_.numElements);
+            setViewToZeros(Vector::view_.array, Vector::view_.numElements);
         }
 };
