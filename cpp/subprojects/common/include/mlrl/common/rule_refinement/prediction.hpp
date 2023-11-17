@@ -4,7 +4,6 @@
 #pragma once
 
 #include "mlrl/common/data/vector_binned_dense.hpp"
-#include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/indices/index_vector.hpp"
 #include "mlrl/common/sampling/weight_vector_bit.hpp"
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
@@ -44,7 +43,7 @@ class IPrediction : public IIndexVector {
          * @param begin An iterator to the beginning of the values to be set
          * @param end   An iterator to the end of the values to be set
          */
-        virtual void set(DenseVector<float64>::const_iterator begin, DenseVector<float64>::const_iterator end) = 0;
+        virtual void set(View<float64>::const_iterator begin, View<float64>::const_iterator end) = 0;
 
         /**
          * Sets the scores that are stored by this prediction to the values in a given iterator.

@@ -42,7 +42,7 @@ void CompletePrediction::postProcess(const IPostProcessor& postProcessor) {
     postProcessor.postProcess(this->values_begin(), this->values_end());
 }
 
-void CompletePrediction::set(DenseVector<float64>::const_iterator begin, DenseVector<float64>::const_iterator end) {
+void CompletePrediction::set(View<float64>::const_iterator begin, View<float64>::const_iterator end) {
     copyView(begin, this->view_.array, this->view_.numElements);
 }
 

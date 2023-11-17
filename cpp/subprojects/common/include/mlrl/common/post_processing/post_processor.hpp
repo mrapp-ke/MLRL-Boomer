@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_dense.hpp"
+#include "mlrl/common/data/view.hpp"
 
 #include <memory>
 
@@ -21,7 +21,7 @@ class IPostProcessor {
          * @param begin An iterator to the beginning of the predictions
          * @param end   An iterator to the end of the predictions
          */
-        virtual void postProcess(DenseVector<float64>::iterator begin, DenseVector<float64>::iterator end) const = 0;
+        virtual void postProcess(View<float64>::iterator begin, View<float64>::iterator end) const = 0;
 };
 
 /**

@@ -86,7 +86,7 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
 
         void postProcess(const IPostProcessor& postProcessor) override;
 
-        void set(DenseVector<float64>::const_iterator begin, DenseVector<float64>::const_iterator end) override final;
+        void set(View<float64>::const_iterator begin, View<float64>::const_iterator end) override final;
 
         void set(DenseBinnedVector<float64>::const_iterator begin,
                  DenseBinnedVector<float64>::const_iterator end) override final;
