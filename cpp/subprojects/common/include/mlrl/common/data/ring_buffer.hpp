@@ -8,7 +8,7 @@
 #include <utility>
 
 /**
- * A ring buffer withcapacity_ fixed capacity.
+ * A ring buffer with fixed capacity.
  *
  * @tparam T The type of the values that are stored in the buffer
  */
