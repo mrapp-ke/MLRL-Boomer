@@ -7,7 +7,7 @@
 class NoPostProcessor final : public IPostProcessor {
     public:
 
-        void postProcess(DenseVector<float64>::iterator begin, DenseVector<float64>::iterator end) const override {}
+        void postProcess(View<float64>::iterator begin, View<float64>::iterator end) const override {}
 };
 
 /**

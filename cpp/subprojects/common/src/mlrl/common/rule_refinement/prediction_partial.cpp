@@ -88,7 +88,7 @@ void PartialPrediction::postProcess(const IPostProcessor& postProcessor) {
     postProcessor.postProcess(this->values_begin(), this->values_end());
 }
 
-void PartialPrediction::set(DenseVector<float64>::const_iterator begin, DenseVector<float64>::const_iterator end) {
+void PartialPrediction::set(View<float64>::const_iterator begin, View<float64>::const_iterator end) {
     copyView(begin, this->view_.array, this->view_.numElements);
 }
 
