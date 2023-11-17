@@ -6,7 +6,7 @@
 #include "mlrl/common/data/view_vector_composite.hpp"
 
 /**
- * A vector that is backed two one-dimensional views of a specific size, storing indices and corresponding values.
+ * A vector that is backed by two one-dimensional views of a specific size, storing indices and corresponding values.
  *
  * @tparam IndexView    The type of the view, the indices are backed by
  * @tparam ValueView    The type of the view, the values are backed by
@@ -179,8 +179,8 @@ class WriteIterableIndexedVectorDecorator : public Vector {
 /**
  * Provides read-only access via iterators to indices and corresponding values stored in a vector.
  *
- * @tparam IndexVector  The type of the view, the indices are backed by
- * @tparam ValueVector  The type of the view, the values are backed by
+ * @tparam IndexView  The type of the view, the indices are backed by
+ * @tparam ValueView  The type of the view, the values are backed by
  */
 template<typename IndexView, typename ValueView>
 using ReadableIndexedVectorDecorator = ReadIterableIndexedVectorDecorator<IndexedVectorDecorator<IndexView, ValueView>>;
@@ -188,8 +188,8 @@ using ReadableIndexedVectorDecorator = ReadIterableIndexedVectorDecorator<Indexe
 /**
  * Provides read and write access via iterators to indices and corresponding values stored in a vector.
  *
- * @tparam IndexVector  The type of the view, the indices are backed by
- * @tparam ValueVector  The type of the view, the values are backed by
+ * @tparam IndexView    The type of the view, the indices are backed by
+ * @tparam ValueView    The type of the view, the values are backed by
  */
 template<typename IndexView, typename ValueView>
 using WritableIndexedVectorDecorator =
