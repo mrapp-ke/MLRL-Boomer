@@ -5,7 +5,8 @@
 namespace boosting {
 
     DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(uint32 numGradients, bool init)
-        : CompositeVectorDecorator<AllocatedVector<float64>, AllocatedVector<float64>>(
+        : ClearableCompositeVectorDecorator<
+          CompositeVectorDecorator<AllocatedVector<float64>, AllocatedVector<float64>>>(
           AllocatedVector<float64>(numGradients, init),
           AllocatedVector<float64>(triangularNumber(numGradients), init)) {}
 
@@ -63,11 +64,6 @@ namespace boosting {
 
     uint32 DenseExampleWiseStatisticVector::getNumHessians() const {
         return this->secondView_.numElements;
-    }
-
-    void DenseExampleWiseStatisticVector::clear() {
-        setViewToZeros(this->gradients_begin(), this->getNumGradients());
-        setViewToZeros(this->hessians_begin(), this->getNumHessians());
     }
 
     void DenseExampleWiseStatisticVector::add(View<float64>::const_iterator gradientsBegin,

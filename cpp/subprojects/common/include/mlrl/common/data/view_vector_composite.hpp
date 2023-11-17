@@ -46,3 +46,28 @@ class CompositeVectorDecorator {
 
         virtual ~CompositeVectorDecorator() {};
 };
+
+/**
+ * Allows to set all values stored in a vector that is backed by two one-dimensional views to zero.
+ *
+ * @tparam Vector The type of the vector
+ */
+template<typename Vector>
+class ClearableCompositeVectorDecorator : public Vector {
+    public:
+
+        /**
+         * @param view The view, the vector should be backed by
+         */
+        ClearableCompositeVectorDecorator(typename Vector::first_view_type&& firstView,
+                                          typename Vector::second_view_type&& secondView)
+            : Vector(std::move(firstView), std::move(secondView)) {}
+
+        /**
+         * Sets all values stored in the vector to zero.
+         */
+        virtual void clear() {
+            setViewToZeros(this->firstView_.array, this->firstView_.numElements);
+            setViewToZeros(this->secondView_.array, this->secondView_.numElements);
+        }
+};
