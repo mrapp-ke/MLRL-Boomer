@@ -67,7 +67,7 @@ class ClearableCompositeVectorDecorator : public Vector {
          * Sets all values stored in the vector to zero.
          */
         virtual void clear() {
-            setViewToZeros(this->firstView_.array, this->firstView_.numElements);
-            setViewToZeros(this->secondView_.array, this->secondView_.numElements);
+            setViewToZeros(Vector::firstView_.array, Vector::firstView_.numElements);
+            setViewToZeros(Vector::secondView_.array, Vector::secondView_.numElements);
         }
 };

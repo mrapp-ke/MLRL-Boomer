@@ -27,7 +27,7 @@ namespace boosting {
             class ConstIterator final {
                 private:
 
-                    Vector<Triple<float64>>::const_iterator iterator_;
+                    View<Triple<float64>>::const_iterator iterator_;
 
                     const float64 sumOfWeights_;
 
@@ -38,7 +38,7 @@ namespace boosting {
                      *                      `SparseLabelWiseStatisticVector`
                      * @param sumOfWeights  The sum of the weights of all statistics that have been added to the vector
                      */
-                    ConstIterator(Vector<Triple<float64>>::const_iterator iterator, float64 sumOfWeights);
+                    ConstIterator(View<Triple<float64>>::const_iterator iterator, float64 sumOfWeights);
 
                     /**
                      * The type that is used to represent the difference between two iterators.

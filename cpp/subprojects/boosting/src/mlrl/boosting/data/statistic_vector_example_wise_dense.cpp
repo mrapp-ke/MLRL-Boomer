@@ -17,35 +17,35 @@ namespace boosting {
     }
 
     DenseExampleWiseStatisticVector::gradient_iterator DenseExampleWiseStatisticVector::gradients_begin() {
-        return this->firstView_.array;
+        return this->firstView_.begin();
     }
 
     DenseExampleWiseStatisticVector::gradient_iterator DenseExampleWiseStatisticVector::gradients_end() {
-        return &this->firstView_.array[firstView_.numElements];
+        return this->firstView_.end();
     }
 
     DenseExampleWiseStatisticVector::gradient_const_iterator DenseExampleWiseStatisticVector::gradients_cbegin() const {
-        return this->firstView_.array;
+        return this->firstView_.cbegin();
     }
 
     DenseExampleWiseStatisticVector::gradient_const_iterator DenseExampleWiseStatisticVector::gradients_cend() const {
-        return &this->firstView_.array[this->firstView_.numElements];
+        return this->firstView_.cend();
     }
 
     DenseExampleWiseStatisticVector::hessian_iterator DenseExampleWiseStatisticVector::hessians_begin() {
-        return this->secondView_.array;
+        return this->secondView_.begin();
     }
 
     DenseExampleWiseStatisticVector::hessian_iterator DenseExampleWiseStatisticVector::hessians_end() {
-        return &this->secondView_.array[this->secondView_.numElements];
+        return this->secondView_.end();
     }
 
     DenseExampleWiseStatisticVector::hessian_const_iterator DenseExampleWiseStatisticVector::hessians_cbegin() const {
-        return this->secondView_.array;
+        return this->secondView_.cbegin();
     }
 
     DenseExampleWiseStatisticVector::hessian_const_iterator DenseExampleWiseStatisticVector::hessians_cend() const {
-        return &this->secondView_.array[this->secondView_.numElements];
+        return this->secondView_.cend();
     }
 
     DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator

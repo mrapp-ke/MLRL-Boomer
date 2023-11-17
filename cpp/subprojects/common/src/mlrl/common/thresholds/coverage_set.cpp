@@ -5,13 +5,13 @@
 
 CoverageSet::CoverageSet(uint32 numElements)
     : WritableVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(numElements)), numCovered_(numElements) {
-    setViewToIncreasingValues(this->view_.array, numElements, 0, 1);
+    setViewToIncreasingValues(this->begin(), numElements, 0, 1);
 }
 
 CoverageSet::CoverageSet(const CoverageSet& other)
-    : WritableVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(other.view_.numElements)),
+    : WritableVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(other.getNumElements())),
       numCovered_(other.numCovered_) {
-    copyView(other.view_.array, this->view_.array, numCovered_);
+    copyView(other.cbegin(), this->begin(), numCovered_);
 }
 
 uint32 CoverageSet::getNumCovered() const {
@@ -23,8 +23,8 @@ void CoverageSet::setNumCovered(uint32 numCovered) {
 }
 
 void CoverageSet::reset() {
-    numCovered_ = this->view_.numElements;
-    setViewToIncreasingValues(this->view_.array, this->view_.numElements, 0, 1);
+    numCovered_ = this->getNumElements();
+    setViewToIncreasingValues(this->begin(), this->getNumElements(), 0, 1);
 }
 
 std::unique_ptr<ICoverageState> CoverageSet::copy() const {

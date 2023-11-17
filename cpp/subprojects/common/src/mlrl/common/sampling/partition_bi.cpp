@@ -13,7 +13,7 @@ BiPartition::BiPartition(uint32 numFirst, uint32 numSecond)
       firstSorted_(false), secondSorted_(false) {}
 
 BiPartition::iterator BiPartition::first_begin() {
-    return this->view_.array;
+    return this->view_.begin();
 }
 
 BiPartition::iterator BiPartition::first_end() {
@@ -21,7 +21,7 @@ BiPartition::iterator BiPartition::first_end() {
 }
 
 BiPartition::const_iterator BiPartition::first_cbegin() const {
-    return this->view_.array;
+    return this->view_.cbegin();
 }
 
 BiPartition::const_iterator BiPartition::first_cend() const {

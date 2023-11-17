@@ -8,9 +8,9 @@ CoverageMask::CoverageMask(uint32 numElements)
 }
 
 CoverageMask::CoverageMask(const CoverageMask& other)
-    : WritableVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(other.view_.numElements)),
+    : WritableVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(other.getNumElements())),
       indicatorValue_(other.indicatorValue_) {
-    copyView(other.view_.array, this->view_.array, this->view_.numElements);
+    copyView(other.cbegin(), this->begin(), this->getNumElements());
 }
 
 uint32 CoverageMask::getIndicatorValue() const {
@@ -23,7 +23,7 @@ void CoverageMask::setIndicatorValue(uint32 indicatorValue) {
 
 void CoverageMask::reset() {
     indicatorValue_ = 0;
-    setViewToZeros(this->view_.array, this->view_.numElements);
+    setViewToZeros(this->begin(), this->getNumElements());
 }
 
 bool CoverageMask::isCovered(uint32 pos) const {
