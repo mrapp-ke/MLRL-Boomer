@@ -21,12 +21,12 @@ class MLRLCOMMON_API CompleteHead final : public VectorDecorator<AllocatedVector
         /**
          * An iterator that provides access to the scores the are contained by the head and allows to modify them.
          */
-        typedef Vector<float64>::iterator value_iterator;
+        typedef View<float64>::iterator value_iterator;
 
         /**
          * An iterator that provides read-only access to the scores that are contained by the head.
          */
-        typedef Vector<float64>::const_iterator value_const_iterator;
+        typedef View<float64>::const_iterator value_const_iterator;
 
         /**
          * Returns a `value_iterator` to the beginning of the scores that are contained by the head.

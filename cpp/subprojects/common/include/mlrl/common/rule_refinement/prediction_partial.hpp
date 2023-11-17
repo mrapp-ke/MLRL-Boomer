@@ -30,12 +30,12 @@ class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<
         /**
          * An iterator that provides access to the predicted scores and allows to modify them.
          */
-        typedef Vector<float64>::iterator value_iterator;
+        typedef View<float64>::iterator value_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores.
          */
-        typedef Vector<float64>::const_iterator value_const_iterator;
+        typedef View<float64>::const_iterator value_const_iterator;
 
         /**
          * An iterator that provides access to the indices for which the rule predicts and allows to modify them.

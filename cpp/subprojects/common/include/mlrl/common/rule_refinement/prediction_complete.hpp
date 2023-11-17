@@ -26,12 +26,12 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
         /**
          * An iterator that provides access to the predicted scores and allows to modify them.
          */
-        typedef Vector<float64>::iterator value_iterator;
+        typedef View<float64>::iterator value_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores.
          */
-        typedef Vector<float64>::const_iterator value_const_iterator;
+        typedef View<float64>::const_iterator value_const_iterator;
 
         /**
          * An iterator that provides read-only access to the indices of the labels for which the rule predicts.
