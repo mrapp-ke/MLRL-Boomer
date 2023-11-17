@@ -29,7 +29,7 @@ namespace boosting {
             uint32 calculateLabelWiseCriteria(const DenseExampleWiseStatisticVector& statisticVector, float64* criteria,
                                               uint32 numCriteria, float64 l1RegularizationWeight,
                                               float64 l2RegularizationWeight) override {
-                uint32 numLabels = statisticVector.getNumElements();
+                uint32 numLabels = statisticVector.getNumGradients();
                 uint32 numPredictions = indexVectorPtr_->getNumElements();
                 DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
                   statisticVector.gradients_cbegin();
@@ -94,7 +94,7 @@ namespace boosting {
       ExampleWiseFixedPartialBinnedRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
                                                                  const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
-          calculateBoundedFraction(statisticVector.getNumElements(), labelRatio_, minLabels_, maxLabels_);
+          calculateBoundedFraction(statisticVector.getNumGradients(), labelRatio_, minLabels_, maxLabels_);
         std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numPredictions);
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(numPredictions);
