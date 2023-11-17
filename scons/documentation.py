@@ -3,33 +3,22 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for generating the documentation.
 """
-from os import makedirs, path, remove
+from os import environ, makedirs, path, remove
 from typing import List
 
-from environment import set_env, unset_env
+from environment import set_env
 from modules import CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from run import run_program
-
-ENV_DOXYGEN_PROJECT_NAME = 'DOXYGEN_PROJECT_NAME'
-
-ENV_DOXYGEN_INPUT_DIR = 'DOXYGEN_INPUT_DIR'
-
-ENV_DOXYGEN_OUTPUT_DIR = 'DOXYGEN_OUTPUT_DIR'
-
-ENV_DOXYGEN_PREDEFINED = 'DOXYGEN_PREDEFINED'
 
 
 def __doxygen(project_name: str, input_dir: str, output_dir: str):
     makedirs(output_dir, exist_ok=True)
-    set_env(ENV_DOXYGEN_PROJECT_NAME, 'libmlrl' + project_name)
-    set_env(ENV_DOXYGEN_INPUT_DIR, input_dir)
-    set_env(ENV_DOXYGEN_OUTPUT_DIR, output_dir)
-    set_env(ENV_DOXYGEN_PREDEFINED, 'MLRL' + project_name.upper() + '_API=')
-    run_program('doxygen', DOC_MODULE.doxygen_config_file, print_args=True)
-    unset_env(ENV_DOXYGEN_PROJECT_NAME)
-    unset_env(ENV_DOXYGEN_INPUT_DIR)
-    unset_env(ENV_DOXYGEN_OUTPUT_DIR)
-    unset_env(ENV_DOXYGEN_PREDEFINED)
+    env = environ.copy()
+    set_env('DOXYGEN_PROJECT_NAME', 'libmlrl' + project_name, env=env)
+    set_env('DOXYGEN_INPUT_DIR', input_dir, env=env)
+    set_env('DOXYGEN_OUTPUT_DIR', output_dir, env=env)
+    set_env('DOXYGEN_PREDEFINED', 'MLRL' + project_name.upper() + '_API=', env=env)
+    run_program('doxygen', DOC_MODULE.doxygen_config_file, print_args=True, env=env)
 
 
 def __breathe_apidoc(source_dir: str, output_dir: str, project: str):

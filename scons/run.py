@@ -22,11 +22,12 @@ def __run_command(cmd: str,
                   print_cmd: bool = True,
                   print_args: bool = False,
                   capture_output: bool = False,
-                  exit_on_error: bool = True):
+                  exit_on_error: bool = True,
+                  env=None):
     if print_cmd:
         print('Running external command "' + __format_command(cmd, *args, format_args=print_args) + '"...')
 
-    out = subprocess.run([cmd] + list(args), check=False, text=capture_output, capture_output=capture_output)
+    out = subprocess.run([cmd] + list(args), check=False, text=capture_output, capture_output=capture_output, env=env)
     exit_code = out.returncode
 
     if exit_code != 0:
@@ -105,7 +106,8 @@ def run_program(program: str,
                 *args,
                 print_args: bool = False,
                 additional_dependencies: Optional[List[str]] = None,
-                requirements_file: str = BUILD_MODULE.requirements_file):
+                requirements_file: str = BUILD_MODULE.requirements_file,
+                env=None):
     """
     Runs an external program that has been installed into the virtual environment.
 
@@ -114,6 +116,7 @@ def run_program(program: str,
     :param print_args:              True, if the arguments should be included in log statements, False otherwise
     :param additional_dependencies: The names of dependencies that should be installed before running the program
     :param requirements_file:       The path of the requirements.txt file that specifies the dependency versions
+    :param env:                     The environment variables to be passed to the program
     """
     dependencies = [program]
 
@@ -121,14 +124,15 @@ def run_program(program: str,
         dependencies.extend(additional_dependencies)
 
     __install_dependencies(requirements_file, *dependencies)
-    __run_command(program, *args, print_args=print_args)
+    __run_command(program, *args, print_args=print_args, env=env)
 
 
 def run_python_program(program: str,
                        *args,
                        print_args: bool = False,
                        additional_dependencies: Optional[List[str]] = None,
-                       requirements_file: str = BUILD_MODULE.requirements_file):
+                       requirements_file: str = BUILD_MODULE.requirements_file,
+                       env=None):
     """
     Runs an external Python program.
 
@@ -137,11 +141,14 @@ def run_python_program(program: str,
     :param print_args:              True, if the arguments should be included in log statements, False otherwise
     :param additional_dependencies: The names of dependencies that should be installed before running the program
     :param requirements_file:       The path of the requirements.txt file that specifies the dependency versions
+    :param env:                     The environment variable to be passed to the program
     """
-    dependencies = [program]
-
-    if additional_dependencies:
-        dependencies.extend(additional_dependencies)
-
-    __install_dependencies(requirements_file, *dependencies)
-    __run_command(path.join(path.dirname(sys.executable), 'python'), '-m', program, *args, print_args=print_args)
+    python_bin = path.join(path.dirname(sys.executable), 'python')
+    run_program(python_bin,
+                '-m',
+                program,
+                *args,
+                print_args=print_args,
+                additional_dependencies=additional_dependencies,
+                requirements_file=requirements_file,
+                env=env)
