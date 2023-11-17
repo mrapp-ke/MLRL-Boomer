@@ -17,7 +17,6 @@ source_files = [
     'src/mlrl/common/data/vector_bit.cpp',
     'src/mlrl/common/data/vector_dok.cpp',
     'src/mlrl/common/data/vector_dok_binary.cpp',
-    'src/mlrl/common/data/vector_sparse_array.cpp',
     'src/mlrl/common/data/view_c_contiguous.cpp',
     'src/mlrl/common/data/view_csc.cpp',
     'src/mlrl/common/data/view_csc_binary.cpp',
