@@ -24,7 +24,7 @@ class CoverageSet final : public WritableVectorDecorator<AllocatedVector<uint32>
         CoverageSet(uint32 numElements);
 
         /**
-         * @param coverageSet A reference to an object of type `CoverageSet` to be copied
+         * @param other A reference to an object of type `CoverageSet` to be copied
          */
         CoverageSet(const CoverageSet& other);
 
