@@ -4,8 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/vector_dense.hpp"
-
-#include <iterator>
+#include "mlrl/common/iterator/binned_iterator.hpp"
 
 /**
  * An one-dimensional vector that provides random access to a fixed number of elements, corresponding to bins, stored in
@@ -22,118 +21,6 @@ class DenseBinnedVector {
         DenseVector<T> values_;
 
     public:
-
-        /**
-         * An iterator that provides read-only access to the values of all elements in a `DenseBinnedVector`.
-         */
-        class ValueConstIterator final {
-            private:
-
-                DenseVector<uint32>::const_iterator binIndexIterator_;
-
-                typename DenseVector<T>::const_iterator valueIterator_;
-
-            public:
-
-                /**
-                 * @param binIndexIterator  An iterator to the bin indices of individual elements
-                 * @param valueIterator     An iterator to the values of individual bins
-                 */
-                ValueConstIterator(DenseVector<uint32>::const_iterator binIndexIterator,
-                                   typename DenseVector<T>::const_iterator valueIterator);
-
-                /**
-                 * The type that is used to represent the difference between two iterators.
-                 */
-                typedef int difference_type;
-
-                /**
-                 * The type of the elements, the iterator provides access to.
-                 */
-                typedef const T value_type;
-
-                /**
-                 * The type of a pointer to an element, the iterator provides access to.
-                 */
-                typedef const T* pointer;
-
-                /**
-                 * The type of a reference to an element, the iterator provides access to.
-                 */
-                typedef const T& reference;
-
-                /**
-                 * The tag that specifies the capabilities of the iterator.
-                 */
-                typedef std::random_access_iterator_tag iterator_category;
-
-                /**
-                 * Returns the element at a specific index.
-                 *
-                 * @param index The index of the element to be returned
-                 * @return      The element at the given index
-                 */
-                reference operator[](uint32 index) const;
-
-                /**
-                 * Returns the element, the iterator currently refers to.
-                 *
-                 * @return The element, the iterator currently refers to
-                 */
-                reference operator*() const;
-
-                /**
-                 * Returns an iterator to the next element.
-                 *
-                 * @return A reference to an iterator to the next element
-                 */
-                ValueConstIterator& operator++();
-
-                /**
-                 * Returns an iterator to the next element.
-                 *
-                 * @return A reference to an iterator to the next element
-                 */
-                ValueConstIterator& operator++(int n);
-
-                /**
-                 * Returns an iterator to the previous element.
-                 *
-                 * @return A reference to an iterator to the previous element
-                 */
-                ValueConstIterator& operator--();
-
-                /**
-                 * Returns an iterator to the previous element.
-                 *
-                 * @return A reference to an iterator to the previous element
-                 */
-                ValueConstIterator& operator--(int n);
-
-                /**
-                 * Returns whether this iterator and another one refer to the same element.
-                 *
-                 * @param rhs   A reference to another iterator
-                 * @return      True, if the iterators do not refer to the same element, false otherwise
-                 */
-                bool operator!=(const ValueConstIterator& rhs) const;
-
-                /**
-                 * Returns whether this iterator and another one refer to the same element.
-                 *
-                 * @param rhs   A reference to another iterator
-                 * @return      True, if the iterators refer to the same element, false otherwise
-                 */
-                bool operator==(const ValueConstIterator& rhs) const;
-
-                /**
-                 * Returns the difference between this iterator and another one.
-                 *
-                 * @param rhs   A reference to another iterator
-                 * @return      The difference between the iterators
-                 */
-                difference_type operator-(const ValueConstIterator& rhs) const;
-        };
 
         /**
          * @param numElements   The number of elements in the vector
@@ -167,7 +54,7 @@ class DenseBinnedVector {
         /**
          * An iterator that provides read-only access to the elements in the vector.
          */
-        typedef ValueConstIterator const_iterator;
+        typedef BinnedConstIterator<T> const_iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the vector.
