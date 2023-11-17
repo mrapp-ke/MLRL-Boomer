@@ -17,7 +17,8 @@ namespace boosting {
      * as a symmetric Hessian matrix with `n` rows and columns.
      */
     class DenseExampleWiseStatisticVector final
-        : public CompositeVectorDecorator<AllocatedVector<float64>, AllocatedVector<float64>> {
+        : public ClearableCompositeVectorDecorator<
+            CompositeVectorDecorator<AllocatedVector<float64>, AllocatedVector<float64>>> {
         public:
 
             /**
@@ -143,11 +144,6 @@ namespace boosting {
              + @return The number of Hessians
              */
             uint32 getNumHessians() const;
-
-            /**
-             * Sets all gradients and Hessians in the vector to zero.
-             */
-            void clear();
 
             /**
              * Adds all gradients and Hessians in another vector to this vector.
