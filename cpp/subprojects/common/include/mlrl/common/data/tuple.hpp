@@ -17,10 +17,10 @@ struct Tuple final {
         Tuple() {}
 
         /**
-         * @param f The first value
-         * @param s The second value
+         * @param first     The first value
+         * @param second    The second value
          */
-        Tuple(T f, T s) : first(f), second(s) {}
+        Tuple(T first, T second) : first(first), second(second) {}
 
         /**
          * The first value.

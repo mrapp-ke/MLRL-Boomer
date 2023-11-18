@@ -29,27 +29,26 @@ struct Condition {
         Condition() {}
 
         /**
-         * @param condition A reference to an existing condition to be copied
+         * @param other A reference to an existing condition to be copied
          */
-        Condition(const Condition& condition)
-            : featureIndex(condition.featureIndex), comparator(condition.comparator), threshold(condition.threshold),
-              start(condition.start), end(condition.end), covered(condition.covered), numCovered(condition.numCovered) {
-        }
+        Condition(const Condition& other)
+            : featureIndex(other.featureIndex), comparator(other.comparator), threshold(other.threshold),
+              start(other.start), end(other.end), covered(other.covered), numCovered(other.numCovered) {}
 
         /**
          * Assigns the properties of an existing condition to this condition.
          *
-         * @param condition A reference to the existing condition
-         * @return          A reference to the modified condition
+         * @param rhs   A reference to the existing condition
+         * @return      A reference to the modified condition
          */
-        Condition& operator=(const Condition& condition) {
-            featureIndex = condition.featureIndex;
-            comparator = condition.comparator;
-            threshold = condition.threshold;
-            start = condition.start;
-            end = condition.end;
-            covered = condition.covered;
-            numCovered = condition.numCovered;
+        Condition& operator=(const Condition& rhs) {
+            featureIndex = rhs.featureIndex;
+            comparator = rhs.comparator;
+            threshold = rhs.threshold;
+            start = rhs.start;
+            end = rhs.end;
+            covered = rhs.covered;
+            numCovered = rhs.numCovered;
             return *this;
         }
 

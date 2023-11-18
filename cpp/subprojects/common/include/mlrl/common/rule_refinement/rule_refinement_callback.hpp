@@ -22,12 +22,12 @@ class IRuleRefinementCallback {
             public:
 
                 /**
-                 * @param s A reference to an object of template type `Statistics` that should be used to search for
-                 *          potential refinements
-                 * @param v A reference to an object of template type `Vector` that should be used to search for
-                 * potential refinements
+                 * @param statistics    A reference to an object of template type `Statistics` that should be used to
+                 *                      search for potential refinements
+                 * @param vector        A reference to an object of template type `Vector` that should be used to search
+                 *                      for potential refinements
                  */
-                Result(const Statistics& s, const Vector& v) : statistics(s), vector(v) {}
+                Result(const Statistics& statistics, const Vector& vector) : statistics(statistics), vector(vector) {}
 
                 /**
                  * A reference to an object of template type `Statistics` that should be used to search for potential

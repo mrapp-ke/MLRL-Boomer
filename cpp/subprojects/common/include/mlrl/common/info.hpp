@@ -24,11 +24,12 @@ class MLRLCOMMON_API ILibraryInfo {
             public:
 
                 /**
-                 * @param o The name of the build option
-                 * @param d A human-legible description of the build option
-                 * @param v The value that has been set for the build option at compile-time
+                 * @param option        The name of the build option
+                 * @param description   A human-legible description of the build option
+                 * @param value         The value that has been set for the build option at compile-time
                  */
-                BuildOption(std::string o, std::string d, std::string v) : option(o), description(d), value(v) {}
+                BuildOption(std::string option, std::string description, std::string value)
+                    : option(option), description(description), value(value) {}
 
                 /**
                  * The name of the build option.
@@ -53,10 +54,10 @@ class MLRLCOMMON_API ILibraryInfo {
             public:
 
                 /**
-                 * @param r A human-legible name of the hardware resource
-                 * @param i The information associated with the hardware resource
+                 * @param resource  A human-legible name of the hardware resource
+                 * @param info      The information associated with the hardware resource
                  */
-                HardwareResource(std::string r, std::string i) : resource(r), info(i) {}
+                HardwareResource(std::string resource, std::string info) : resource(resource), info(info) {}
 
                 /**
                  * A human-legible name of the hardware resource.

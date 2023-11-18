@@ -53,15 +53,15 @@ struct IndexedValue final {
         IndexedValue() {}
 
         /**
-         * @param i The index
+         * @param index The index
          */
-        IndexedValue(uint32 i) : index(i) {}
+        IndexedValue(uint32 index) : index(index) {}
 
         /**
-         * @param i The index
-         * @param v The value
+         * @param index The index
+         * @param value The value
          */
-        IndexedValue(uint32 i, T v) : index(i), value(v) {}
+        IndexedValue(uint32 index, T value) : index(index), value(value) {}
 
         /**
          * The index.
