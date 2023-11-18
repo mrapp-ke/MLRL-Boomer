@@ -9,19 +9,19 @@
 /**
  * A vector that is backed by two one-dimensional views, storing bin indices and the values of the corresponding bins.
  *
- * @tparam BinIndexView The type of the view, the bin indices are backed by
- * @tparam ValueView    The type of the view, the values of the bins are backed by
+ * @tparam Vector The type of the vector
  */
-template<typename BinIndexView, typename ValueView>
-class BinnedVectorDecorator : public IndexedVectorDecorator<BinIndexView, ValueView> {
+template<typename Vector>
+class BinnedVectorDecorator : public Vector {
     public:
 
         /**
          * @param binIndexView  The view, the bin indices should be backed by
          * @param valueView     The view, the values of the bins should be backed by
          */
-        BinnedVectorDecorator(BinIndexView&& binIndexView, ValueView&& valueView)
-            : IndexedVectorDecorator<BinIndexView, ValueView>(std::move(binIndexView), std::move(valueView)) {}
+        BinnedVectorDecorator(typename Vector::first_view_type&& binIndexView,
+                              typename Vector::second_view_type&& valueView)
+            : Vector(std::move(binIndexView), std::move(valueView)) {}
 
         virtual ~BinnedVectorDecorator() override {};
 
