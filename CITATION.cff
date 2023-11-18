@@ -23,7 +23,7 @@ preferred-citation:
   - family-names: "Fürnkranz"
     given-names: "Johannes"
   title: "Learning Gradient Boosted Multi-label Classification Rules"
-  journal: "Proceedings of the European Conference on Machine Learning and Knowledge Discovery in Databases (ECML PKDD)"
+  conference: "European Conference on Machine Learning and Knowledge Discovery in Databases (ECML PKDD)"
   start: 124
   end: 140
   publisher:
