@@ -44,8 +44,9 @@ CContiguousLabelMatrix::view_type CContiguousLabelMatrix::createView(uint32 row)
 
 std::unique_ptr<LabelVector> CContiguousLabelMatrix::createLabelVector(uint32 row) const {
     uint32 numCols = this->getNumCols();
-    std::unique_ptr<LabelVector> labelVectorPtr = std::make_unique<LabelVector>(numCols);
-    LabelVector::iterator iterator = labelVectorPtr->begin();
+    std::unique_ptr<ResizableBinarySparseArrayVector> labelVectorPtr =
+      std::make_unique<ResizableBinarySparseArrayVector>(numCols);
+    ResizableBinarySparseArrayVector::iterator iterator = labelVectorPtr->begin();
     value_const_iterator labelIterator = this->values_cbegin(row);
     uint32 n = 0;
 
@@ -57,7 +58,7 @@ std::unique_ptr<LabelVector> CContiguousLabelMatrix::createLabelVector(uint32 ro
     }
 
     labelVectorPtr->setNumElements(n, true);
-    return labelVectorPtr;
+    return std::make_unique<LabelVector>(std::move(*labelVectorPtr));
 }
 
 std::unique_ptr<IStatisticsProvider> CContiguousLabelMatrix::createStatisticsProvider(
