@@ -3,7 +3,9 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_binned_dense.hpp"
+#include "mlrl/common/data/array.hpp"
+#include "mlrl/common/data/view_vector_binned.hpp"
+#include "mlrl/common/iterator/binned_iterator.hpp"
 #include "mlrl/common/rule_evaluation/score_vector.hpp"
 
 /**
@@ -15,14 +17,16 @@
  *                     predict
  */
 template<typename IndexVector>
-class DenseBinnedScoreVector final : virtual public IScoreVector {
+class DenseBinnedScoreVector final
+    : public BinnedVectorDecorator<CompositeVectorDecorator<AllocatedVector<uint32>, AllocatedVector<float64>>>,
+      virtual public IScoreVector {
     private:
 
         const IndexVector& labelIndices_;
 
-        DenseBinnedVector<float64> binnedVector_;
-
         const bool sorted_;
+
+        uint32 maxCapacity_;
 
     public:
 
@@ -43,28 +47,28 @@ class DenseBinnedScoreVector final : virtual public IScoreVector {
         /**
          * An iterator that provides read-only access to the predicted scores that correspond to individual labels.
          */
-        typedef DenseBinnedVector<float64>::const_iterator value_const_iterator;
+        typedef BinnedConstIterator<float64> value_const_iterator;
 
         /**
          * An iterator that provides access to the indices that correspond to individual bins and allows to modify them.
          */
-        typedef DenseBinnedVector<float64>::index_iterator index_binned_iterator;
+        typedef typename View<uint32>::iterator index_binned_iterator;
 
         /**
          * An iterator that provides read-only access to the indices that correspond to individual bins.
          */
-        typedef DenseBinnedVector<float64>::index_const_iterator index_binned_const_iterator;
+        typedef typename View<uint32>::const_iterator index_binned_const_iterator;
 
         /**
          * An iterator that provides access to the predicted scores that correspond to individual bins and allows to
          * modify them.
          */
-        typedef DenseBinnedVector<float64>::value_iterator value_binned_iterator;
+        typedef typename View<float64>::iterator value_binned_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores that correspond to individual bins.
          */
-        typedef DenseBinnedVector<float64>::value_const_iterator value_binned_const_iterator;
+        typedef typename View<float64>::const_iterator value_binned_const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices that correspond to individual labels.
@@ -155,21 +159,14 @@ class DenseBinnedScoreVector final : virtual public IScoreVector {
         value_binned_const_iterator values_binned_cend() const;
 
         /**
-         * Returns the number of labels for which the rule may predict.
+         * Returns the number of elements in the vector.
          *
-         * @return The number of labels
+         * @return The number of elements
          */
         uint32 getNumElements() const;
 
         /**
-         * Returns the number of bins.
-         *
-         * @return The number of bins
-         */
-        uint32 getNumBins() const;
-
-        /**
-         * Sets the number of bins.
+         * Sets the number of bins in the vector.
          *
          * @param numBins       The number of bins to be set
          * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
