@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+title: >-
+  BOOMER - An Algorithm for Learning Gradient Boosted
+  Multi-label Classification Rules
+message: 'If you use this software, please cite it as below.'
+type: software
+authors:
+  - given-names: Michael
+    family-names: Rapp
+repository-code: 'https://github.com/mrapp-ke/Boomer'
+license: MIT
+preferred-citation:
+  type: proceedings
+  authors:
+  - family-names: "Rapp"
+    given-names: "Michael"
+  - family-names: "Loza Mencía"
+    given-names: "Eneldo"
+  - family-names: "Ngyuen"
+    given-names: "Vu-Linh"
+  - family-names: "Hüllermeier"
+    given-names: "Eyke"
+  - family-names: "Fürnkranz"
+    given-names: "Johannes"
+  title: "Learning Gradient Boosted Multi-label Classification Rules"
+  journal: "Proceedings of the European Conference on Machine Learning and Knowledge Discovery in Databases (ECML PKDD)"
+  start: 124
+  end: 140
+  publisher:
+    name: "Springer"
+  year: 2020
