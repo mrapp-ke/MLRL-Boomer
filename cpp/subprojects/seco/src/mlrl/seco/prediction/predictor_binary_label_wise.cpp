@@ -1,5 +1,6 @@
 #include "mlrl/seco/prediction/predictor_binary_label_wise.hpp"
 
+#include "mlrl/common/data/array.hpp"
 #include "mlrl/common/data/vector_bit.hpp"
 #include "mlrl/common/iterator/index_iterator.hpp"
 #include "mlrl/common/iterator/non_zero_index_forward_iterator.hpp"
@@ -11,7 +12,7 @@
 
 namespace seco {
 
-    static inline void applyHead(const CompleteHead& head, VectorView<uint8>::iterator iterator, BitVector& mask) {
+    static inline void applyHead(const CompleteHead& head, View<uint8>::iterator iterator, BitVector& mask) {
         CompleteHead::value_const_iterator valueIterator = head.values_cbegin();
         uint32 numElements = head.getNumElements();
 
@@ -24,7 +25,7 @@ namespace seco {
         }
     }
 
-    static inline void applyHead(const PartialHead& head, VectorView<uint8>::iterator iterator, BitVector& mask) {
+    static inline void applyHead(const PartialHead& head, View<uint8>::iterator iterator, BitVector& mask) {
         PartialHead::value_const_iterator valueIterator = head.values_cbegin();
         PartialHead::index_const_iterator indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
@@ -40,7 +41,7 @@ namespace seco {
         }
     }
 
-    static inline void applyHead(const IHead& head, VectorView<uint8>::iterator scoreIterator, BitVector& mask) {
+    static inline void applyHead(const IHead& head, View<uint8>::iterator scoreIterator, BitVector& mask) {
         auto completeHeadVisitor = [&](const CompleteHead& head) {
             applyHead(head, scoreIterator, mask);
         };
@@ -77,8 +78,8 @@ namespace seco {
         uint32 numFeatures = featureMatrix.getNumCols();
         uint32 numLabels = predictionMatrix.getNumCols();
         BitVector mask(numLabels, true);
-        float32* tmpArray1 = new float32[numFeatures];
-        uint32* tmpArray2 = new uint32[numFeatures] {};
+        Array<float32> tmpArray1(numFeatures);
+        Array<uint32> tmpArray2(numFeatures, true);
         uint32 n = 1;
 
         for (; rulesBegin != rulesEnd; rulesBegin++) {
@@ -87,16 +88,13 @@ namespace seco {
 
             if (body.covers(featureMatrix.indices_cbegin(exampleIndex), featureMatrix.indices_cend(exampleIndex),
                             featureMatrix.values_cbegin(exampleIndex), featureMatrix.values_cend(exampleIndex),
-                            &tmpArray1[0], &tmpArray2[0], n)) {
+                            tmpArray1.begin(), tmpArray2.begin(), n)) {
                 const IHead& head = rule.getHead();
                 applyHead(head, predictionMatrix.values_begin(predictionIndex), mask);
             }
 
             n++;
         }
-
-        delete[] tmpArray1;
-        delete[] tmpArray2;
     }
 
     /**
@@ -235,12 +233,8 @@ namespace seco {
                 BinaryLilMatrix::iterator start =
                   std::lower_bound(predictionRow.begin(), end, indexIterator[*scoresBegin]);
                 uint32 bufferSize = end - start;
-                uint32* buffer = new uint32[bufferSize];
-
-                for (uint32 i = 0; i < bufferSize; i++) {
-                    buffer[i] = start[i];
-                }
-
+                Array<uint32> buffer(bufferSize);
+                copyView(start, buffer.begin(), bufferSize);
                 uint32 i = 0;
 
                 for (uint32 n = 0; n < bufferSize; n++) {
@@ -276,8 +270,6 @@ namespace seco {
                         scoresBegin++;
                     }
                 }
-
-                delete[] buffer;
             }
 
             for (; scoresBegin != scoresEnd; scoresBegin++) {
@@ -322,8 +314,8 @@ namespace seco {
                                                    BinaryLilMatrix::row predictionRow, uint32 numLabels,
                                                    uint32 exampleIndex) {
         uint32 numFeatures = featureMatrix.getNumCols();
-        float32* tmpArray1 = new float32[numFeatures];
-        uint32* tmpArray2 = new uint32[numFeatures] {};
+        Array<float32> tmpArray1(numFeatures);
+        Array<uint32> tmpArray2(numFeatures, true);
         uint32 n = 1;
 
         for (; rulesBegin != rulesEnd; rulesBegin++) {
@@ -332,16 +324,13 @@ namespace seco {
 
             if (body.covers(featureMatrix.indices_cbegin(exampleIndex), featureMatrix.indices_cend(exampleIndex),
                             featureMatrix.values_cbegin(exampleIndex), featureMatrix.values_cend(exampleIndex),
-                            &tmpArray1[0], &tmpArray2[0], n)) {
+                            tmpArray1.begin(), tmpArray2.begin(), n)) {
                 const IHead& head = rule.getHead();
                 applyHead(head, predictionRow, numLabels);
             }
 
             n++;
         }
-
-        delete[] tmpArray1;
-        delete[] tmpArray2;
     }
 
     /**

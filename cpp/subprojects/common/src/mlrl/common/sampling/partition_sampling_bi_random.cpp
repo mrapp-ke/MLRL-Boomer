@@ -25,7 +25,7 @@ class RandomBiPartitionSampling final : public IPartitionSampling {
             uint32 numTraining = partition_.getNumFirst();
             uint32 numHoldout = partition_.getNumSecond();
             BiPartition::iterator trainingIterator = partition_.first_begin();
-            setArrayToIncreasingValues<uint32>(trainingIterator, numTraining, 0, 1);
+            setViewToIncreasingValues(trainingIterator, numTraining, 0, 1);
             BiPartition::iterator holdoutIterator = partition_.second_begin();
 
             for (uint32 i = 0; i < numHoldout; i++) {

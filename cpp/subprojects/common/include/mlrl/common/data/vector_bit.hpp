@@ -3,32 +3,23 @@
  */
 #pragma once
 
-#include "mlrl/common/data/types.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 
 /**
  * An one-dimension vector that stores binary data in a space-efficient way.
  */
-class BitVector final {
+class BitVector final : public ClearableVectorDecorator<VectorDecorator<AllocatedVector<uint32>>> {
     private:
 
         const uint32 numElements_;
 
-        uint32* array_;
-
     public:
-
-        /**
-         * @param numElements The number of elements in the vector
-         */
-        BitVector(uint32 numElements);
 
         /**
          * @param numElements   The number of elements in the vector
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
-        BitVector(uint32 numElements, bool init);
-
-        ~BitVector();
+        BitVector(uint32 numElements, bool init = false);
 
         /**
          * Returns the value of the element at a specific position.
@@ -52,9 +43,4 @@ class BitVector final {
          * @return The number of elements in the vector
          */
         uint32 getNumElements() const;
-
-        /**
-         * Sets the values of all elements to zero.
-         */
-        void clear();
 };

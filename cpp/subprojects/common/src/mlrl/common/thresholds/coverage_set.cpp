@@ -2,41 +2,16 @@
 
 #include "mlrl/common/rule_refinement/prediction.hpp"
 #include "mlrl/common/thresholds/thresholds_subset.hpp"
-#include "mlrl/common/util/arrays.hpp"
 
 CoverageSet::CoverageSet(uint32 numElements)
-    : array_(new uint32[numElements]), numElements_(numElements), numCovered_(numElements) {
-    setArrayToIncreasingValues<uint32>(array_, numElements, 0, 1);
+    : WritableVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(numElements)), numCovered_(numElements) {
+    setViewToIncreasingValues(this->begin(), numElements, 0, 1);
 }
 
-CoverageSet::CoverageSet(const CoverageSet& coverageSet)
-    : array_(new uint32[coverageSet.numElements_]), numElements_(coverageSet.numElements_),
-      numCovered_(coverageSet.numCovered_) {
-    copyArray(coverageSet.array_, array_, numCovered_);
-}
-
-CoverageSet::~CoverageSet() {
-    delete[] array_;
-}
-
-CoverageSet::iterator CoverageSet::begin() {
-    return array_;
-}
-
-CoverageSet::iterator CoverageSet::end() {
-    return &array_[numCovered_];
-}
-
-CoverageSet::const_iterator CoverageSet::cbegin() const {
-    return array_;
-}
-
-CoverageSet::const_iterator CoverageSet::cend() const {
-    return &array_[numCovered_];
-}
-
-uint32 CoverageSet::getNumElements() const {
-    return numElements_;
+CoverageSet::CoverageSet(const CoverageSet& other)
+    : WritableVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(other.getNumElements())),
+      numCovered_(other.numCovered_) {
+    copyView(other.cbegin(), this->begin(), numCovered_);
 }
 
 uint32 CoverageSet::getNumCovered() const {
@@ -48,8 +23,8 @@ void CoverageSet::setNumCovered(uint32 numCovered) {
 }
 
 void CoverageSet::reset() {
-    numCovered_ = numElements_;
-    setArrayToIncreasingValues<uint32>(array_, numElements_, 0, 1);
+    numCovered_ = this->getNumElements();
+    setViewToIncreasingValues(this->begin(), this->getNumElements(), 0, 1);
 }
 
 std::unique_ptr<ICoverageState> CoverageSet::copy() const {

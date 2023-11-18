@@ -34,12 +34,10 @@ namespace boosting {
             GfmBinaryTransformation(const LabelVectorSet& labelVectorSet,
                                     std::unique_ptr<IJointProbabilityFunction> jointProbabilityFunctionPtr);
 
-            void apply(VectorConstView<float64>::const_iterator scoresBegin,
-                       VectorConstView<float64>::const_iterator scoresEnd, VectorView<uint8>::iterator predictionBegin,
-                       VectorView<uint8>::iterator predictionEnd) const override;
+            void apply(View<float64>::const_iterator scoresBegin, View<float64>::const_iterator scoresEnd,
+                       View<uint8>::iterator predictionBegin, View<uint8>::iterator predictionEnd) const override;
 
-            void apply(VectorConstView<float64>::const_iterator scoresBegin,
-                       VectorConstView<float64>::const_iterator scoresEnd,
+            void apply(View<float64>::const_iterator scoresBegin, View<float64>::const_iterator scoresEnd,
                        BinaryLilMatrix::row predictionRow) const override;
     };
 

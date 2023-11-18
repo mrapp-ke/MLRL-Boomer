@@ -177,8 +177,8 @@ namespace boosting {
              * @see `IDistanceMeasure::measureDistance`
              */
             float64 measureDistance(uint32 labelVectorIndex, const LabelVector& labelVector,
-                                    VectorView<float64>::const_iterator scoresBegin,
-                                    VectorView<float64>::const_iterator scoresEnd) const override final {
+                                    View<float64>::const_iterator scoresBegin,
+                                    View<float64>::const_iterator scoresEnd) const override final {
                 uint32 numLabels = scoresEnd - scoresBegin;
                 auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
                 float64 mean = 0;

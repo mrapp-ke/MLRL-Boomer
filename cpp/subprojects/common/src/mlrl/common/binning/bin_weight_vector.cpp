@@ -1,21 +1,12 @@
 #include "mlrl/common/binning/bin_weight_vector.hpp"
 
-#include "mlrl/common/util/arrays.hpp"
-
-BinWeightVector::BinWeightVector(uint32 numElements) : vector_(numElements) {}
-
-void BinWeightVector::clear() {
-    setArrayToZeros(vector_.begin(), vector_.getNumElements());
-}
+BinWeightVector::BinWeightVector(uint32 numElements)
+    : ClearableVectorDecorator<VectorDecorator<AllocatedVector<uint32>>>(AllocatedVector<uint32>(numElements)) {}
 
 void BinWeightVector::increaseWeight(uint32 pos) {
-    vector_[pos] += 1;
+    this->view.array[pos] += 1;
 }
 
 bool BinWeightVector::operator[](uint32 pos) const {
-    return vector_[pos] != 0;
-}
-
-uint32 BinWeightVector::getNumElements() const {
-    return vector_.getNumElements();
+    return this->view.array[pos] != 0;
 }

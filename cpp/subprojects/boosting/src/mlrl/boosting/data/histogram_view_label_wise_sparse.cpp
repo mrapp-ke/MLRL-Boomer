@@ -1,6 +1,6 @@
 #include "mlrl/boosting/data/histogram_view_label_wise_sparse.hpp"
 
-#include "mlrl/common/util/arrays.hpp"
+#include "mlrl/common/util/view_functions.hpp"
 #include "statistic_vector_label_wise_sparse_common.hpp"
 
 namespace boosting {
@@ -38,8 +38,8 @@ namespace boosting {
         : SparseLabelWiseHistogramConstView(numRows, numCols, statistics, weights) {}
 
     void SparseLabelWiseHistogramView::clear() {
-        setArrayToZeros(weights_, numRows_);
-        setArrayToZeros(statistics_, numRows_ * numCols_);
+        setViewToZeros(weights_, numRows_);
+        setViewToZeros(statistics_, numRows_ * numCols_);
     }
 
     void SparseLabelWiseHistogramView::addToRow(uint32 row, SparseLabelWiseStatisticConstView::const_iterator begin,

@@ -2,7 +2,6 @@
 
 #include "mlrl/common/data/matrix_sparse_set.hpp"
 #include "mlrl/common/data/vector_sparse_array.hpp"
-#include "mlrl/common/util/arrays.hpp"
 
 #include <algorithm>
 
@@ -25,9 +24,9 @@ namespace boosting {
         return maxLabelCardinality;
     }
 
-    static inline float64 calculateMarginalizedProbabilities(
-      SparseSetMatrix<float64>& probabilities, uint32 numLabels,
-      VectorConstView<float64>::const_iterator jointProbabilityIterator, const LabelVectorSet& labelVectorSet) {
+    static inline float64 calculateMarginalizedProbabilities(SparseSetMatrix<float64>& probabilities, uint32 numLabels,
+                                                             View<float64>::const_iterator jointProbabilityIterator,
+                                                             const LabelVectorSet& labelVectorSet) {
         LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
         float64 nullVectorProbability = 0;
@@ -54,8 +53,9 @@ namespace boosting {
         return nullVectorProbability;
     }
 
-    static inline float64 createAndEvaluateLabelVector(SparseArrayVector<float64>::iterator iterator, uint32 numLabels,
-                                                       const SparseSetMatrix<float64>& probabilities, uint32 k) {
+    static inline float64 createAndEvaluateLabelVector(ResizableSparseArrayVector<float64>::iterator iterator,
+                                                       uint32 numLabels, const SparseSetMatrix<float64>& probabilities,
+                                                       uint32 k) {
         for (uint32 i = 0; i < numLabels; i++) {
             float64 weightedProbability = 0;
 
@@ -83,11 +83,11 @@ namespace boosting {
         return quality;
     }
 
-    static inline void storePrediction(const SparseArrayVector<float64>& tmpVector,
-                                       VectorView<uint8>::iterator predictionIterator, uint32 numLabels) {
-        setArrayToZeros(predictionIterator, numLabels);
+    static inline void storePrediction(const ResizableSparseArrayVector<float64>& tmpVector,
+                                       View<uint8>::iterator predictionIterator, uint32 numLabels) {
+        setViewToZeros(predictionIterator, numLabels);
         uint32 numRelevantLabels = tmpVector.getNumElements();
-        SparseArrayVector<float64>::const_iterator iterator = tmpVector.cbegin();
+        ResizableSparseArrayVector<float64>::const_iterator iterator = tmpVector.cbegin();
 
         for (uint32 i = 0; i < numRelevantLabels; i++) {
             uint32 labelIndex = iterator[i].index;
@@ -95,12 +95,12 @@ namespace boosting {
         }
     }
 
-    static inline void storePrediction(SparseArrayVector<float64>& tmpVector, BinaryLilMatrix::row predictionRow,
-                                       uint32 numLabels) {
+    static inline void storePrediction(ResizableSparseArrayVector<float64>& tmpVector,
+                                       BinaryLilMatrix::row predictionRow, uint32 numLabels) {
         uint32 numRelevantLabels = tmpVector.getNumElements();
 
         if (numRelevantLabels > 0) {
-            SparseArrayVector<float64>::iterator iterator = tmpVector.begin();
+            ResizableSparseArrayVector<float64>::iterator iterator = tmpVector.begin();
             std::sort(iterator, tmpVector.end(), IndexedValue<float64>::CompareIndex());
             predictionRow.reserve(numRelevantLabels);
 
@@ -111,9 +111,8 @@ namespace boosting {
     }
 
     template<typename Prediction>
-    static inline void predictGfm(VectorConstView<float64>::const_iterator scoresBegin,
-                                  VectorConstView<float64>::const_iterator scoresEnd, Prediction prediction,
-                                  const IJointProbabilityFunction& jointProbabilityFunction,
+    static inline void predictGfm(View<float64>::const_iterator scoresBegin, View<float64>::const_iterator scoresEnd,
+                                  Prediction prediction, const IJointProbabilityFunction& jointProbabilityFunction,
                                   const LabelVectorSet& labelVectorSet, uint32 maxLabelCardinality) {
         std::unique_ptr<DenseVector<float64>> jointProbabilityVectorPtr =
           jointProbabilityFunction.transformScoresIntoJointProbabilities(labelVectorSet, scoresBegin, scoresEnd);
@@ -122,11 +121,11 @@ namespace boosting {
         SparseSetMatrix<float64> marginalizedProbabilities(numLabels, maxLabelCardinality);
         float64 bestQuality = calculateMarginalizedProbabilities(marginalizedProbabilities, numLabels,
                                                                  jointProbabilityIterator, labelVectorSet);
-        SparseArrayVector<float64> tmpVector1(numLabels);
+        ResizableSparseArrayVector<float64> tmpVector1(numLabels);
         tmpVector1.setNumElements(0, false);
-        SparseArrayVector<float64> tmpVector2(numLabels);
-        SparseArrayVector<float64>* bestVectorPtr = &tmpVector1;
-        SparseArrayVector<float64>* tmpVectorPtr = &tmpVector2;
+        ResizableSparseArrayVector<float64> tmpVector2(numLabels);
+        ResizableSparseArrayVector<float64>* bestVectorPtr = &tmpVector1;
+        ResizableSparseArrayVector<float64>* tmpVectorPtr = &tmpVector2;
 
         for (uint32 i = 0; i < numLabels; i++) {
             uint32 k = i + 1;
@@ -136,7 +135,7 @@ namespace boosting {
             if (quality > bestQuality) {
                 bestQuality = quality;
                 tmpVectorPtr->setNumElements(k, false);
-                SparseArrayVector<float64>* tmpPtr = bestVectorPtr;
+                ResizableSparseArrayVector<float64>* tmpPtr = bestVectorPtr;
                 bestVectorPtr = tmpVectorPtr;
                 tmpVectorPtr = tmpPtr;
             }
@@ -150,16 +149,15 @@ namespace boosting {
         : labelVectorSet_(labelVectorSet), maxLabelCardinality_(getMaxLabelCardinality(labelVectorSet)),
           jointProbabilityFunctionPtr_(std::move(jointProbabilityFunctionPtr)) {}
 
-    void GfmBinaryTransformation::apply(VectorConstView<float64>::const_iterator scoresBegin,
-                                        VectorConstView<float64>::const_iterator scoresEnd,
-                                        VectorView<uint8>::iterator predictionBegin,
-                                        VectorView<uint8>::iterator predictionEnd) const {
+    void GfmBinaryTransformation::apply(View<float64>::const_iterator scoresBegin,
+                                        View<float64>::const_iterator scoresEnd, View<uint8>::iterator predictionBegin,
+                                        View<uint8>::iterator predictionEnd) const {
         predictGfm(scoresBegin, scoresEnd, predictionBegin, *jointProbabilityFunctionPtr_, labelVectorSet_,
                    maxLabelCardinality_);
     }
 
-    void GfmBinaryTransformation::apply(VectorConstView<float64>::const_iterator scoresBegin,
-                                        VectorConstView<float64>::const_iterator scoresEnd,
+    void GfmBinaryTransformation::apply(View<float64>::const_iterator scoresBegin,
+                                        View<float64>::const_iterator scoresEnd,
                                         BinaryLilMatrix::row predictionRow) const {
         predictGfm<BinaryLilMatrix::row>(scoresBegin, scoresEnd, predictionRow, *jointProbabilityFunctionPtr_,
                                          labelVectorSet_, maxLabelCardinality_);

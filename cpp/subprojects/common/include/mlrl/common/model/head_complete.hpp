@@ -3,17 +3,14 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_dense.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/model/head.hpp"
 
 /**
  * A head that contains a numerical score for each available label.
  */
-class MLRLCOMMON_API CompleteHead final : public IHead {
-    private:
-
-        DenseVector<float64> vector_;
-
+class MLRLCOMMON_API CompleteHead final : public VectorDecorator<AllocatedVector<float64>>,
+                                          public IHead {
     public:
 
         /**
@@ -24,19 +21,12 @@ class MLRLCOMMON_API CompleteHead final : public IHead {
         /**
          * An iterator that provides access to the scores the are contained by the head and allows to modify them.
          */
-        typedef DenseVector<float64>::iterator value_iterator;
+        typedef View<float64>::iterator value_iterator;
 
         /**
          * An iterator that provides read-only access to the scores that are contained by the head.
          */
-        typedef DenseVector<float64>::const_iterator value_const_iterator;
-
-        /**
-         * Returns the number of scores that are contained by the head.
-         *
-         * @return The number of scores
-         */
-        uint32 getNumElements() const;
+        typedef View<float64>::const_iterator value_const_iterator;
 
         /**
          * Returns a `value_iterator` to the beginning of the scores that are contained by the head.

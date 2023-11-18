@@ -7,7 +7,8 @@
 #include "mlrl/common/util/math.hpp"
 
 CContiguousLabelMatrix::View::View(const CContiguousLabelMatrix& labelMatrix, uint32 row)
-    : VectorConstView<const uint8>(labelMatrix.getNumCols(), labelMatrix.values_cbegin(row)) {}
+    : ReadableVectorDecorator<Vector<const uint8>>(
+      Vector<const uint8>(labelMatrix.values_cbegin(row), labelMatrix.getNumCols())) {}
 
 CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array)
     : CContiguousConstView<const uint8>(numRows, numCols, array) {}
@@ -43,8 +44,9 @@ CContiguousLabelMatrix::view_type CContiguousLabelMatrix::createView(uint32 row)
 
 std::unique_ptr<LabelVector> CContiguousLabelMatrix::createLabelVector(uint32 row) const {
     uint32 numCols = this->getNumCols();
-    std::unique_ptr<LabelVector> labelVectorPtr = std::make_unique<LabelVector>(numCols);
-    LabelVector::iterator iterator = labelVectorPtr->begin();
+    std::unique_ptr<ResizableBinarySparseArrayVector> labelVectorPtr =
+      std::make_unique<ResizableBinarySparseArrayVector>(numCols);
+    ResizableBinarySparseArrayVector::iterator iterator = labelVectorPtr->begin();
     value_const_iterator labelIterator = this->values_cbegin(row);
     uint32 n = 0;
 
@@ -56,7 +58,7 @@ std::unique_ptr<LabelVector> CContiguousLabelMatrix::createLabelVector(uint32 ro
     }
 
     labelVectorPtr->setNumElements(n, true);
-    return labelVectorPtr;
+    return std::make_unique<LabelVector>(std::move(*labelVectorPtr));
 }
 
 std::unique_ptr<IStatisticsProvider> CContiguousLabelMatrix::createStatisticsProvider(

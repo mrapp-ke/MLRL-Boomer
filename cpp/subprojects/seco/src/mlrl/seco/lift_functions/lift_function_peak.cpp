@@ -1,5 +1,6 @@
 #include "mlrl/seco/lift_functions/lift_function_peak.hpp"
 
+#include "mlrl/common/data/array.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 #include <algorithm>
@@ -39,7 +40,7 @@ namespace seco {
 
             const float64 exponent_;
 
-            const float64* maxLiftsAfterPeak_;
+            const Array<float64>& maxLiftsAfterPeak_;
 
         public:
 
@@ -49,12 +50,12 @@ namespace seco {
              * @param maxLift           The lift at the peak label. Must be at least 1
              * @param curvature         The curvature of the lift function. A greater value results in a steeper curve,
              *                          a smaller value results in a flatter curve. Must be greater than 0
-             * @param maxLiftsAfterPeak A pointer to an array of type `float64`, shape `(numLabels - peakLabel)`, that
-             *                          specifies that maximum lifts that are possible by adding additional labels to
-             *                          heads that predict for more labels than the peak label
+             * @param maxLiftsAfterPeak A reference to an object of type `Array<float64>` that specifies that maximum
+                                        lifts that are possible by adding additional labels to heads that predict for
+                                        more labels than the peak label
              */
             PeakLiftFunction(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature,
-                             const float64* maxLiftsAfterPeak)
+                             const Array<float64>& maxLiftsAfterPeak)
                 : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), exponent_(1.0 / curvature),
                   maxLiftsAfterPeak_(maxLiftsAfterPeak) {}
 
@@ -86,8 +87,7 @@ namespace seco {
 
             const float64 curvature_;
 
-            // TODO Mark as const
-            float64* maxLiftsAfterPeak_;
+            Array<float64> maxLiftsAfterPeak_;
 
         public:
 
@@ -100,15 +100,11 @@ namespace seco {
              */
             PeakLiftFunctionFactory(uint32 numLabels, uint32 peakLabel, float64 maxLift, float64 curvature)
                 : numLabels_(numLabels), peakLabel_(peakLabel), maxLift_(maxLift), curvature_(curvature),
-                  maxLiftsAfterPeak_(new float64[numLabels - peakLabel]) {
+                  maxLiftsAfterPeak_(numLabels - peakLabel) {
                 for (uint32 i = 0; i < numLabels - peakLabel; i++) {
                     maxLiftsAfterPeak_[i] =
                       calculateLiftInternally(i + peakLabel, numLabels, peakLabel, maxLift, curvature);
                 }
-            }
-
-            ~PeakLiftFunctionFactory() {
-                delete[] maxLiftsAfterPeak_;
             }
 
             std::unique_ptr<ILiftFunction> create() const override {

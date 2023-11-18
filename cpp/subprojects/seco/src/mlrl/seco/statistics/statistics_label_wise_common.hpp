@@ -549,20 +549,20 @@ namespace seco {
     };
 
     template<typename Prediction, typename CoverageMatrix>
-    static inline void applyLabelWisePredictionInternally(
-      uint32 statisticIndex, const Prediction& prediction, CoverageMatrix& coverageMatrix,
-      VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-      VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd) {
+    static inline void applyLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                          CoverageMatrix& coverageMatrix,
+                                                          View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                                          View<uint32>::const_iterator majorityLabelIndicesEnd) {
         coverageMatrix.increaseCoverage(statisticIndex, majorityLabelIndicesBegin, majorityLabelIndicesEnd,
                                         prediction.values_cbegin(), prediction.values_cend(),
                                         prediction.indices_cbegin(), prediction.indices_cend());
     }
 
     template<typename Prediction, typename CoverageMatrix>
-    static inline void revertLabelWisePredictionInternally(
-      uint32 statisticIndex, const Prediction& prediction, CoverageMatrix& coverageMatrix,
-      VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-      VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd) {
+    static inline void revertLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                           CoverageMatrix& coverageMatrix,
+                                                           View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                                           View<uint32>::const_iterator majorityLabelIndicesEnd) {
         coverageMatrix.decreaseCoverage(statisticIndex, majorityLabelIndicesBegin, majorityLabelIndicesEnd,
                                         prediction.values_cbegin(), prediction.values_cend(),
                                         prediction.indices_cbegin(), prediction.indices_cend());

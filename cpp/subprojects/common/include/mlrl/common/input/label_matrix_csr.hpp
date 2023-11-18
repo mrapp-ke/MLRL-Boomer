@@ -11,7 +11,6 @@
 #include "mlrl/common/data/view_csr_binary.hpp"
 #include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/input/label_matrix_row_wise.hpp"
-#include "mlrl/common/util/arrays.hpp"
 
 /**
  * Defines an interface for all label matrices that provide row-wise access to the labels of individual examples that
@@ -34,7 +33,7 @@ class CsrLabelMatrix final : public BinaryCsrConstView,
         /**
          * Provides access to the values that are stored in a single row of a `CsrLabelMatrix``.
          */
-        class View final : public VectorConstView<const uint32> {
+        class View final : public ReadableVectorDecorator<Vector<const uint32>> {
             public:
 
                 /**
@@ -50,7 +49,7 @@ class CsrLabelMatrix final : public BinaryCsrConstView,
                          * @return  The hash value
                          */
                         inline std::size_t operator()(const View& v) const {
-                            return hashArray(v.cbegin(), v.getNumElements());
+                            return hashView(v.cbegin(), v.getNumElements());
                         }
                 };
 
@@ -68,8 +67,7 @@ class CsrLabelMatrix final : public BinaryCsrConstView,
                          * @return      True, if the given objects are equal, false otherwise
                          */
                         inline bool operator()(const View& lhs, const View& rhs) const {
-                            return compareArrays(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(),
-                                                 rhs.getNumElements());
+                            return compareViews(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(), rhs.getNumElements());
                         }
                 };
 

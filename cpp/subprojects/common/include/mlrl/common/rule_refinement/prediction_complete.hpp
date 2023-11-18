@@ -3,16 +3,16 @@
  */
 #pragma once
 
+#include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/rule_refinement/prediction_evaluated.hpp"
 
 /**
  * Stores the scores that are predicted by a rule that predicts for all available labels.
  */
-class CompletePrediction final : public IEvaluatedPrediction {
+class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>>,
+                                 public IEvaluatedPrediction {
     private:
-
-        DenseVector<float64> predictedScoreVector_;
 
         const CompleteIndexVector indexVector_;
 
@@ -26,12 +26,12 @@ class CompletePrediction final : public IEvaluatedPrediction {
         /**
          * An iterator that provides access to the predicted scores and allows to modify them.
          */
-        typedef DenseVector<float64>::iterator value_iterator;
+        typedef View<float64>::iterator value_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores.
          */
-        typedef DenseVector<float64>::const_iterator value_const_iterator;
+        typedef View<float64>::const_iterator value_const_iterator;
 
         /**
          * An iterator that provides read-only access to the indices of the labels for which the rule predicts.
@@ -86,10 +86,9 @@ class CompletePrediction final : public IEvaluatedPrediction {
 
         void postProcess(const IPostProcessor& postProcessor) override;
 
-        void set(DenseVector<float64>::const_iterator begin, DenseVector<float64>::const_iterator end) override final;
+        void set(View<float64>::const_iterator begin, View<float64>::const_iterator end) override final;
 
-        void set(DenseBinnedVector<float64>::const_iterator begin,
-                 DenseBinnedVector<float64>::const_iterator end) override final;
+        void set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) override final;
 
         bool isPartial() const override;
 

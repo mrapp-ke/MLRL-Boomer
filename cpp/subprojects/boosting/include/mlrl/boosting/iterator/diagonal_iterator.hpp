@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/types.hpp"
+#include "mlrl/common/data/view.hpp"
 
 #include <iterator>
 
@@ -19,7 +19,7 @@ namespace boosting {
     class DiagonalConstIterator final {
         private:
 
-            const T* ptr_;
+            typename View<T>::const_iterator iterator_;
 
             uint32 index_;
 
@@ -29,7 +29,7 @@ namespace boosting {
              * @param ptr   A pointer to a C-contiguous array of type `float64` that stores the elements of the matrix
              * @param index The index to start at
              */
-            DiagonalConstIterator(const T* ptr, uint32 index);
+            DiagonalConstIterator(typename View<T>::const_iterator iterator, uint32 index);
 
             /**
              * The type that is used to represent the difference between two iterators.

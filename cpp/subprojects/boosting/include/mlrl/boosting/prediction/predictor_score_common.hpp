@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/data/array.hpp"
 #include "mlrl/common/model/head_complete.hpp"
 #include "mlrl/common/model/head_partial.hpp"
 #include "mlrl/common/prediction/predictor_common.hpp"
@@ -11,7 +12,7 @@
 
 namespace boosting {
 
-    static inline void applyHead(const CompleteHead& head, VectorView<float64>::iterator iterator) {
+    static inline void applyHead(const CompleteHead& head, View<float64>::iterator iterator) {
         CompleteHead::value_const_iterator valueIterator = head.values_cbegin();
         uint32 numElements = head.getNumElements();
 
@@ -20,7 +21,7 @@ namespace boosting {
         }
     }
 
-    static inline void applyHead(const PartialHead& head, VectorView<float64>::iterator iterator) {
+    static inline void applyHead(const PartialHead& head, View<float64>::iterator iterator) {
         PartialHead::value_const_iterator valueIterator = head.values_cbegin();
         PartialHead::index_const_iterator indexIterator = head.indices_cbegin();
         uint32 numElements = head.getNumElements();
@@ -31,7 +32,7 @@ namespace boosting {
         }
     }
 
-    static inline void applyHead(const IHead& head, VectorView<float64>::iterator scoreIterator) {
+    static inline void applyHead(const IHead& head, View<float64>::iterator scoreIterator) {
         auto completeHeadVisitor = [=](const CompleteHead& head) {
             applyHead(head, scoreIterator);
         };
@@ -41,10 +42,9 @@ namespace boosting {
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
 
-    static inline void applyRule(const RuleList::Rule& rule,
-                                 VectorConstView<const float32>::const_iterator featureValuesBegin,
-                                 VectorConstView<const float32>::const_iterator featureValuesEnd,
-                                 VectorView<float64>::iterator scoreIterator) {
+    static inline void applyRule(const RuleList::Rule& rule, View<const float32>::const_iterator featureValuesBegin,
+                                 View<const float32>::const_iterator featureValuesEnd,
+                                 View<float64>::iterator scoreIterator) {
         const IBody& body = rule.getBody();
 
         if (body.covers(featureValuesBegin, featureValuesEnd)) {
@@ -54,9 +54,9 @@ namespace boosting {
     }
 
     static inline void applyRules(RuleList::const_iterator rulesBegin, RuleList::const_iterator rulesEnd,
-                                  VectorConstView<const float32>::const_iterator featureValuesBegin,
-                                  VectorConstView<const float32>::const_iterator featureValuesEnd,
-                                  VectorView<float64>::iterator scoreIterator) {
+                                  View<const float32>::const_iterator featureValuesBegin,
+                                  View<const float32>::const_iterator featureValuesEnd,
+                                  View<float64>::iterator scoreIterator) {
         for (; rulesBegin != rulesEnd; rulesBegin++) {
             const RuleList::Rule& rule = *rulesBegin;
             applyRule(rule, featureValuesBegin, featureValuesEnd, scoreIterator);
@@ -68,8 +68,8 @@ namespace boosting {
                                  CsrConstView<const float32>::index_const_iterator featureIndicesEnd,
                                  CsrConstView<const float32>::value_const_iterator featureValuesBegin,
                                  CsrConstView<const float32>::value_const_iterator featureValuesEnd,
-                                 VectorView<float64>::iterator scoreIterator, float32* tmpArray1, uint32* tmpArray2,
-                                 uint32 n) {
+                                 View<float64>::iterator scoreIterator, View<float32>::iterator tmpArray1,
+                                 View<uint32>::iterator tmpArray2, uint32 n) {
         const IBody& body = rule.getBody();
 
         if (body.covers(featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd, tmpArray1,
@@ -85,20 +85,17 @@ namespace boosting {
                                   CsrConstView<const float32>::index_const_iterator featureIndicesEnd,
                                   CsrConstView<const float32>::value_const_iterator featureValuesBegin,
                                   CsrConstView<const float32>::value_const_iterator featureValuesEnd,
-                                  VectorView<float64>::iterator scoreIterator) {
-        float32* tmpArray1 = new float32[numFeatures];
-        uint32* tmpArray2 = new uint32[numFeatures] {};
+                                  View<float64>::iterator scoreIterator) {
+        Array<float32> tmpArray1(numFeatures);
+        Array<uint32> tmpArray2(numFeatures, true);
         uint32 n = 1;
 
         for (; rulesBegin != rulesEnd; rulesBegin++) {
             const RuleList::Rule& rule = *rulesBegin;
             applyRule(rule, featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd, scoreIterator,
-                      &tmpArray1[0], &tmpArray2[0], n);
+                      tmpArray1.begin(), tmpArray2.begin(), n);
             n++;
         }
-
-        delete[] tmpArray1;
-        delete[] tmpArray2;
     }
 
     static inline void aggregatePredictedScores(const CContiguousConstView<const float32>& featureMatrix,

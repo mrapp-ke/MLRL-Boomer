@@ -3,16 +3,16 @@
  */
 #pragma once
 
+#include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/common/rule_refinement/prediction_evaluated.hpp"
 
 /**
  * Stores the scores that are predicted by a rule that predicts for a subset of the available labels.
  */
-class PartialPrediction final : public IEvaluatedPrediction {
+class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<ResizableVector<float64>>>,
+                                public IEvaluatedPrediction {
     private:
-
-        DenseVector<float64> predictedScoreVector_;
 
         PartialIndexVector indexVector_;
 
@@ -30,12 +30,12 @@ class PartialPrediction final : public IEvaluatedPrediction {
         /**
          * An iterator that provides access to the predicted scores and allows to modify them.
          */
-        typedef DenseVector<float64>::iterator value_iterator;
+        typedef View<float64>::iterator value_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores.
          */
-        typedef DenseVector<float64>::const_iterator value_const_iterator;
+        typedef View<float64>::const_iterator value_const_iterator;
 
         /**
          * An iterator that provides access to the indices for which the rule predicts and allows to modify them.
@@ -104,14 +104,6 @@ class PartialPrediction final : public IEvaluatedPrediction {
         index_const_iterator indices_cend() const;
 
         /**
-         * Sets the number of labels for which the rule predicts.
-         *
-         * @param numElements   The number of labels to be set
-         * @param freeMemory    True, if unused memory should be freed if possible, false otherwise
-         */
-        void setNumElements(uint32 numElements, bool freeMemory);
-
-        /**
          * Sets whether the scores that are stored by this prediction are sorted in increasing order by the
          * corresponding label indices, or not.
          *
@@ -122,14 +114,15 @@ class PartialPrediction final : public IEvaluatedPrediction {
 
         uint32 getNumElements() const override;
 
+        void setNumElements(uint32 numElements, bool freeMemory) override;
+
         void sort() override;
 
         void postProcess(const IPostProcessor& postProcessor) override;
 
-        void set(DenseVector<float64>::const_iterator begin, DenseVector<float64>::const_iterator end) override final;
+        void set(View<float64>::const_iterator begin, View<float64>::const_iterator end) override final;
 
-        void set(DenseBinnedVector<float64>::const_iterator begin,
-                 DenseBinnedVector<float64>::const_iterator end) override final;
+        void set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) override final;
 
         bool isPartial() const override;
 

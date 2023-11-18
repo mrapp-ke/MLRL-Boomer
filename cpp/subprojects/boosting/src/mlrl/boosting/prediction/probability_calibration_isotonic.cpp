@@ -1,10 +1,10 @@
 #include "mlrl/boosting/prediction/probability_calibration_isotonic.hpp"
 
 #include "mlrl/boosting/statistics/statistics.hpp"
+#include "mlrl/common/data/array.hpp"
 #include "mlrl/common/iterator/binary_forward_iterator.hpp"
 #include "mlrl/common/iterator/non_zero_index_forward_iterator.hpp"
 #include "mlrl/common/prediction/probability_calibration_no.hpp"
-#include "mlrl/common/util/arrays.hpp"
 
 #include <algorithm>
 #include <stdexcept>
@@ -64,7 +64,7 @@ namespace boosting {
             calibrationModel.addBin(i, 0, 0);
         }
 
-        uint32* numSparsePerLabel = new uint32[numLabels] {};
+        Array<uint32> numSparsePerLabel(numLabels, true);
 
         for (uint32 i = 0; i < numExamples; i++) {
             uint32 exampleIndex = indexIterator[i];
@@ -95,8 +95,6 @@ namespace boosting {
                 }
             }
         }
-
-        delete[] numSparsePerLabel;
     }
 
     template<typename IndexIterator>
@@ -108,9 +106,9 @@ namespace boosting {
             calibrationModel.addBin(i, 0, 0);
         }
 
-        uint32* numSparsePerLabel = new uint32[numLabels];
-        setArrayToValue(numSparsePerLabel, numLabels, numExamples);
-        uint32* numSparseRelevantPerLabel = new uint32[numLabels] {};
+        Array<uint32> numSparsePerLabel(numLabels);
+        setViewToValue(numSparsePerLabel.begin(), numLabels, numExamples);
+        Array<uint32> numSparseRelevantPerLabel(numLabels, true);
 
         for (uint32 i = 0; i < numExamples; i++) {
             uint32 exampleIndex = indexIterator[i];
@@ -144,9 +142,6 @@ namespace boosting {
             Tuple<float64>& firstBin = bins[0];
             firstBin.second = (float64) numSparseRelevantPerLabel[i] / (float64) numSparsePerLabel[i];
         }
-
-        delete[] numSparsePerLabel;
-        delete[] numSparseRelevantPerLabel;
     }
 
     template<typename IndexIterator, typename LabelMatrix>

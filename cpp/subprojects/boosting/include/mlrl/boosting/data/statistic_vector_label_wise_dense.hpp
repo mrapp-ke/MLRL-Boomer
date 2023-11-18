@@ -14,83 +14,21 @@ namespace boosting {
      * label-wise decomposable loss function in a C-contiguous array. For each element in the vector a single gradient
      * and Hessian is stored.
      */
-    class DenseLabelWiseStatisticVector final {
-        private:
-
-            const uint32 numElements_;
-
-            Tuple<float64>* statistics_;
-
+    class DenseLabelWiseStatisticVector final
+        : public ClearableVectorDecorator<WritableVectorDecorator<AllocatedVector<Tuple<float64>>>> {
         public:
-
-            /**
-             * @param numElements The number of gradients and Hessians in the vector
-             */
-            DenseLabelWiseStatisticVector(uint32 numElements);
 
             /**
              * @param numElements   The number of gradients and Hessians in the vector
              * @param init          True, if all gradients and Hessians in the vector should be initialized with zero,
              *                      false otherwise
              */
-            DenseLabelWiseStatisticVector(uint32 numElements, bool init);
+            DenseLabelWiseStatisticVector(uint32 numElements, bool init = false);
 
             /**
-             * @param vector A reference to an object of type `DenseLabelWiseStatisticVector` to be copied
+             * @param other A reference to an object of type `DenseLabelWiseStatisticVector` to be copied
              */
-            DenseLabelWiseStatisticVector(const DenseLabelWiseStatisticVector& vector);
-
-            ~DenseLabelWiseStatisticVector();
-
-            /**
-             * An iterator that provides access to the elements in the vector and allows to modify them.
-             */
-            typedef Tuple<float64>* iterator;
-
-            /**
-             * An iterator that provides read-only access to the elements in the vector.
-             */
-            typedef const Tuple<float64>* const_iterator;
-
-            /**
-             * Returns an `iterator` to the beginning of the vector.
-             *
-             * @return An `iterator` to the beginning
-             */
-            iterator begin();
-
-            /**
-             * Returns an `iterator` to the end of the vector.
-             *
-             * @return An `iterator` to the end
-             */
-            iterator end();
-
-            /**
-             * Returns a `const_iterator` to the beginning of the vector.
-             *
-             * @return A `const_iterator` to the beginning
-             */
-            const_iterator cbegin() const;
-
-            /**
-             * Returns a `const_iterator` to the end of the vector.
-             *
-             * @return A `const_iterator` to the end
-             */
-            const_iterator cend() const;
-
-            /**
-             * Returns the number of gradients and Hessians in the vector.
-             *
-             * @return The number of gradients and Hessians
-             */
-            uint32 getNumElements() const;
-
-            /**
-             * Sets all gradients and Hessians in the vector to zero.
-             */
-            void clear();
+            DenseLabelWiseStatisticVector(const DenseLabelWiseStatisticVector& other);
 
             /**
              * Adds all gradients and Hessians in another vector to this vector.

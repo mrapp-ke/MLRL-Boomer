@@ -5,25 +5,25 @@
 #include "mlrl/common/post_processing/post_processor.hpp"
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
-#include "mlrl/common/util/arrays.hpp"
 
 PartialPrediction::PartialPrediction(uint32 numElements, bool sorted)
-    : predictedScoreVector_(numElements), indexVector_(numElements), sorted_(sorted) {}
+    : ResizableVectorDecorator<VectorDecorator<ResizableVector<float64>>>(ResizableVector<float64>(numElements)),
+      indexVector_(numElements), sorted_(sorted) {}
 
 PartialPrediction::value_iterator PartialPrediction::values_begin() {
-    return predictedScoreVector_.begin();
+    return this->view.begin();
 }
 
 PartialPrediction::value_iterator PartialPrediction::values_end() {
-    return predictedScoreVector_.end();
+    return this->view.end();
 }
 
 PartialPrediction::value_const_iterator PartialPrediction::values_cbegin() const {
-    return predictedScoreVector_.cbegin();
+    return this->view.cbegin();
 }
 
 PartialPrediction::value_const_iterator PartialPrediction::values_cend() const {
-    return predictedScoreVector_.cend();
+    return this->view.cend();
 }
 
 PartialPrediction::index_iterator PartialPrediction::indices_begin() {
@@ -43,11 +43,11 @@ PartialPrediction::index_const_iterator PartialPrediction::indices_cend() const 
 }
 
 uint32 PartialPrediction::getNumElements() const {
-    return predictedScoreVector_.getNumElements();
+    return ResizableVectorDecorator<VectorDecorator<ResizableVector<float64>>>::getNumElements();
 }
 
 void PartialPrediction::setNumElements(uint32 numElements, bool freeMemory) {
-    this->predictedScoreVector_.setNumElements(numElements, freeMemory);
+    ResizableVectorDecorator<VectorDecorator<ResizableVector<float64>>>::setNumElements(numElements, freeMemory);
     indexVector_.setNumElements(numElements, freeMemory);
 }
 
@@ -88,13 +88,12 @@ void PartialPrediction::postProcess(const IPostProcessor& postProcessor) {
     postProcessor.postProcess(this->values_begin(), this->values_end());
 }
 
-void PartialPrediction::set(DenseVector<float64>::const_iterator begin, DenseVector<float64>::const_iterator end) {
-    copyArray(begin, predictedScoreVector_.begin(), predictedScoreVector_.getNumElements());
+void PartialPrediction::set(View<float64>::const_iterator begin, View<float64>::const_iterator end) {
+    copyView(begin, this->view.begin(), this->getNumElements());
 }
 
-void PartialPrediction::set(DenseBinnedVector<float64>::const_iterator begin,
-                            DenseBinnedVector<float64>::const_iterator end) {
-    copyArray(begin, predictedScoreVector_.begin(), predictedScoreVector_.getNumElements());
+void PartialPrediction::set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) {
+    copyView(begin, this->view.begin(), this->getNumElements());
 }
 
 bool PartialPrediction::isPartial() const {
@@ -151,7 +150,7 @@ void PartialPrediction::revert(IStatistics& statistics, uint32 statisticIndex) c
 std::unique_ptr<IHead> PartialPrediction::createHead() const {
     uint32 numElements = this->getNumElements();
     std::unique_ptr<PartialHead> headPtr = std::make_unique<PartialHead>(numElements);
-    copyArray(this->values_cbegin(), headPtr->values_begin(), numElements);
-    copyArray(this->indices_cbegin(), headPtr->indices_begin(), numElements);
+    copyView(this->values_cbegin(), headPtr->values_begin(), numElements);
+    copyView(this->indices_cbegin(), headPtr->indices_begin(), numElements);
     return headPtr;
 }

@@ -15,13 +15,12 @@ namespace boosting {
      * @tparam IndexIterator    The type of the iterator that provides access to the indices
      * @param hessianIterator   An iterator that provides random access to the Hessians
      * @param indexIterator     An iterator that provides random access to the indices
-     * @param coefficients      A pointer to an array of type `float64`, shape `(n * n)`, the Hessians should be copied
-     *                          to
+     * @param coefficients      An iterator, the Hessians should be copied to
      * @param n                 The dimensionality of the matrix of coefficients
      */
     template<typename HessianIterator, typename IndexIterator>
     static inline void copyCoefficients(HessianIterator hessianIterator, IndexIterator indexIterator,
-                                        float64* coefficients, uint32 n) {
+                                        View<float64>::iterator coefficients, uint32 n) {
         for (uint32 c = 0; c < n; c++) {
             uint32 offset = c * n;
             uint32 offset2 = triangularNumber(indexIterator[c]);

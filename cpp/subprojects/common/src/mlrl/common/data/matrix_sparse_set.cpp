@@ -2,7 +2,7 @@
 
 #include "mlrl/common/data/triple.hpp"
 #include "mlrl/common/data/tuple.hpp"
-#include "mlrl/common/util/arrays.hpp"
+#include "mlrl/common/util/view_functions.hpp"
 
 static const uint32 MAX_INDEX = std::numeric_limits<uint32>::max();
 
@@ -130,7 +130,7 @@ void SparseSetMatrix<T>::Row::clear() {
 template<typename T>
 SparseSetMatrix<T>::SparseSetMatrix(uint32 numRows, uint32 numCols)
     : lilMatrix_(numRows), indexMatrix_(numRows, numCols) {
-    setArrayToValue(indexMatrix_.values_begin(0), numRows * numCols, MAX_INDEX);
+    setViewToValue(indexMatrix_.values_begin(0), numRows * numCols, MAX_INDEX);
 }
 
 template<typename T>
