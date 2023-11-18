@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/array.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 
 /**
  * A vector that stores the weights of individual bins, i.e., how many examples have been assigned to them.

@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/array.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/rule_refinement/prediction_evaluated.hpp"
 

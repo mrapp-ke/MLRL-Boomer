@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/binning/bin_index_vector.hpp"
-#include "mlrl/common/data/array.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 
 /**
  * Stores the indices of the bins, individual examples have been assigned to, using a C-contiguous array.

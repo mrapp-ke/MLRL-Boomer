@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/array.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 
 /**
  * An one-dimension vector that stores binary data in a space-efficient way.
