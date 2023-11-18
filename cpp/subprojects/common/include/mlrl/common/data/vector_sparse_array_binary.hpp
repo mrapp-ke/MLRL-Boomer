@@ -8,4 +8,4 @@
 /**
  * An one-dimensional sparse vector that stores a fixed number of indices in a C-contiguous array.
  */
-typedef DenseVector<uint32> BinarySparseArrayVector;
+typedef ResizableDenseVector<uint32> BinarySparseArrayVector;
