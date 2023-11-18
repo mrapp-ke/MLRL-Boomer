@@ -47,9 +47,9 @@ namespace seco {
       const CContiguousConstView<const uint8>& labelMatrix) {
         uint32 numExamples = labelMatrix.getNumRows();
         uint32 numLabels = labelMatrix.getNumCols();
-        std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr =
-          std::make_unique<BinarySparseArrayVector>(numLabels);
-        BinarySparseArrayVector::iterator majorityIterator = majorityLabelVectorPtr->begin();
+        std::unique_ptr<ResizableBinarySparseArrayVector> majorityLabelVectorPtr =
+          std::make_unique<ResizableBinarySparseArrayVector>(numLabels);
+        ResizableBinarySparseArrayVector::iterator majorityIterator = majorityLabelVectorPtr->begin();
         float64 threshold = numExamples / 2.0;
         float64 sumOfUncoveredWeights = 0;
         uint32 n = 0;
@@ -75,16 +75,17 @@ namespace seco {
         std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr =
           std::make_unique<DenseCoverageMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
         return std::make_unique<DenseLabelWiseStatistics<CContiguousConstView<const uint8>>>(
-          labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr), ruleEvaluationFactory);
+          labelMatrix, std::move(coverageMatrixPtr),
+          std::make_unique<BinarySparseArrayVector>(std::move(*majorityLabelVectorPtr)), ruleEvaluationFactory);
     }
 
     static inline std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
       const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, const BinaryCsrConstView& labelMatrix) {
         uint32 numExamples = labelMatrix.getNumRows();
         uint32 numLabels = labelMatrix.getNumCols();
-        std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr =
-          std::make_unique<BinarySparseArrayVector>(numLabels, true);
-        BinarySparseArrayVector::iterator majorityIterator = majorityLabelVectorPtr->begin();
+        std::unique_ptr<ResizableBinarySparseArrayVector> majorityLabelVectorPtr =
+          std::make_unique<ResizableBinarySparseArrayVector>(numLabels, true);
+        ResizableBinarySparseArrayVector::iterator majorityIterator = majorityLabelVectorPtr->begin();
 
         for (uint32 i = 0; i < numExamples; i++) {
             BinaryCsrConstView::index_const_iterator indexIterator = labelMatrix.indices_cbegin(i);
@@ -116,7 +117,8 @@ namespace seco {
         std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr =
           std::make_unique<DenseCoverageMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
         return std::make_unique<DenseLabelWiseStatistics<BinaryCsrConstView>>(
-          labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr), ruleEvaluationFactory);
+          labelMatrix, std::move(coverageMatrixPtr),
+          std::make_unique<BinarySparseArrayVector>(std::move(*majorityLabelVectorPtr)), ruleEvaluationFactory);
     }
 
     DenseLabelWiseStatisticsProviderFactory::DenseLabelWiseStatisticsProviderFactory(
