@@ -13,4 +13,4 @@
  * @tparam T The type of the data that is stored in the vector
  */
 template<typename T>
-using SparseArrayVector = DenseVector<IndexedValue<T>>;
+using SparseArrayVector = ResizableDenseVector<IndexedValue<T>>;

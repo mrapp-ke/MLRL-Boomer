@@ -8,13 +8,6 @@ TEST(DenseVectorTest, getNumElements) {
     EXPECT_EQ(vector.getNumElements(), numElements);
 }
 
-TEST(DenseVectorTest, setNumElements) {
-    DenseVector<uint32> vector(10);
-    uint32 numElements = 15;
-    vector.setNumElements(numElements, true);
-    EXPECT_EQ(vector.getNumElements(), numElements);
-}
-
 TEST(DenseVectorTest, defaultInitialization) {
     uint32 numElements = 10;
     DenseVector<uint32> vector(numElements, true);
@@ -44,4 +37,11 @@ TEST(DenseVectorTest, iteratorAccess) {
     for (DenseVector<uint32>::const_iterator it = vector.cbegin(); it != vector.cend(); it++) {
         EXPECT_EQ(*it, (uint32) 0);
     }
+}
+
+TEST(ResizableDenseVectorTest, setNumElements) {
+    ResizableDenseVector<uint32> vector(10);
+    uint32 numElements = 15;
+    vector.setNumElements(numElements, true);
+    EXPECT_EQ(vector.getNumElements(), numElements);
 }
