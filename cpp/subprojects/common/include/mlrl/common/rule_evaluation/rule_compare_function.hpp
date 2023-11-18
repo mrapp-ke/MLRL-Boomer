@@ -20,10 +20,11 @@ struct RuleCompareFunction {
         typedef std::function<bool(const Quality&, const Quality&)> CompareFunction;
 
         /**
-         * @param c A function of type `CompareFunction` for comparing the quality of different rules
-         * @param m The minimum quality of a rule
+         * @param compareFunction   A function of type `CompareFunction` for comparing the quality of different rules
+         * @param minQuality        The minimum quality of a rule
          */
-        RuleCompareFunction(CompareFunction c, float64 m) : compare(c), minQuality(m) {}
+        RuleCompareFunction(CompareFunction compareFunction, float64 minQuality)
+            : compare(compareFunction), minQuality(minQuality) {}
 
         /**
          * A function of type `CompareFunction` for comparing the quality of different rules.

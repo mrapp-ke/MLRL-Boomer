@@ -17,11 +17,11 @@ struct Triple final {
         Triple() {}
 
         /**
-         * @param f The first value
-         * @param s The second value
-         * @param t The third value
+         * @param first     The first value
+         * @param second    The second value
+         * @param third     The third value
          */
-        Triple(T f, T s, T t) : first(f), second(s), third(t) {}
+        Triple(T first, T second, T third) : first(first), second(second), third(third) {}
 
         /**
          * The first value.
