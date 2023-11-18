@@ -13,7 +13,9 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-struct View {
+class View {
+    public:
+
         /**
          * A pointer to the array that stores the values, the view provides access to.
          */
@@ -77,7 +79,9 @@ struct View {
  * @tparam View The type of the view
  */
 template<typename View>
-struct Allocator : public View {
+class Allocator : public View {
+    public:
+
         /**
          * @param numElements   The number of elements in the view
          * @param init          True, if all elements in the view should be value-initialized, false otherwise
@@ -111,7 +115,9 @@ using AllocatedView = Allocator<View<T>>;
  * @tparam View The type of the view
  */
 template<typename View>
-struct ResizableAllocator : public Allocator<View> {
+class ResizableAllocator : public Allocator<View> {
+    public:
+
         /**
          * The maximum number of elements in the view.
          */

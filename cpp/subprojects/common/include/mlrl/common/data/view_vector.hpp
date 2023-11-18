@@ -12,7 +12,9 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-struct Vector : public View<T> {
+class Vector : public View<T> {
+    public:
+
         /**
          * The number of elements in the view.
          */
