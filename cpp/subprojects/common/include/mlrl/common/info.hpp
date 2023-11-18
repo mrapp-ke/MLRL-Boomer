@@ -21,6 +21,8 @@ class MLRLCOMMON_API ILibraryInfo {
          * Represents a build option for configuring a library at compile-time.
          */
         struct BuildOption {
+            public:
+
                 /**
                  * @param o The name of the build option
                  * @param d A human-legible description of the build option
@@ -48,6 +50,8 @@ class MLRLCOMMON_API ILibraryInfo {
          * Provides information about a certain hardware resource.
          */
         struct HardwareResource {
+            public:
+
                 /**
                  * @param r A human-legible name of the hardware resource
                  * @param i The information associated with the hardware resource
