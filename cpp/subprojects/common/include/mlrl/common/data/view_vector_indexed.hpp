@@ -22,7 +22,7 @@ class IndexedVectorDecorator : public CompositeVectorDecorator<IndexView, ValueV
         IndexedVectorDecorator(IndexView&& indexView, ValueView&& valueView)
             : CompositeVectorDecorator<IndexView, ValueView>(std::move(indexView), std::move(valueView)) {}
 
-        virtual ~IndexedVectorDecorator() override {};
+        virtual ~IndexedVectorDecorator() override {}
 
         /**
          * The type of the indices that are stored in the vector.
@@ -61,7 +61,7 @@ class ReadIterableIndexedVectorDecorator : public Vector {
                                            typename Vector::second_view_type&& valueView)
             : Vector(std::move(indexView), std::move(valueView)) {}
 
-        virtual ~ReadIterableIndexedVectorDecorator() override {};
+        virtual ~ReadIterableIndexedVectorDecorator() override {}
 
         /**
          * An iterator that provides read-only access to the indices stored in the vector.
@@ -127,7 +127,7 @@ class WriteIterableIndexedVectorDecorator : public Vector {
                                             typename Vector::second_view_type&& valueView)
             : Vector(std::move(indexView), std::move(valueView)) {}
 
-        virtual ~WriteIterableIndexedVectorDecorator() override {};
+        virtual ~WriteIterableIndexedVectorDecorator() override {}
 
         /**
          * An iterator that provides access to the indices stored in the vector and allows to modify them.

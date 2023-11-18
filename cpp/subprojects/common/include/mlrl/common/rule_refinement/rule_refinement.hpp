@@ -12,7 +12,7 @@
 class IRuleRefinement {
     public:
 
-        virtual ~IRuleRefinement() {};
+        virtual ~IRuleRefinement() {}
 
         /**
          * Finds the best refinement of an existing rule.

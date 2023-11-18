@@ -16,7 +16,7 @@ namespace boosting {
     class MLRLBOOSTING_API IEqualWidthLabelBinningConfig {
         public:
 
-            virtual ~IEqualWidthLabelBinningConfig() {};
+            virtual ~IEqualWidthLabelBinningConfig() {}
 
             /**
              * Returns the percentage that specifies how many bins are used.

@@ -18,7 +18,7 @@ namespace boosting {
     class MLRLBOOSTING_API IFixedPartialHeadConfig {
         public:
 
-            virtual ~IFixedPartialHeadConfig() {};
+            virtual ~IFixedPartialHeadConfig() {}
 
             /**
              * Returns the percentage that specifies for how many labels the rule heads predict.

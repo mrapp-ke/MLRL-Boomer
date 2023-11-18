@@ -13,7 +13,7 @@
 class MLRLCOMMON_API IInstanceSamplingWithReplacementConfig {
     public:
 
-        virtual ~IInstanceSamplingWithReplacementConfig() {};
+        virtual ~IInstanceSamplingWithReplacementConfig() {}
 
         /**
          * Returns the fraction of examples that are included in a sample.

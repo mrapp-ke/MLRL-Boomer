@@ -13,7 +13,7 @@
 class IPostProcessor {
     public:
 
-        virtual ~IPostProcessor() {};
+        virtual ~IPostProcessor() {}
 
         /**
          * Post-processes the prediction of a rule.
@@ -30,7 +30,7 @@ class IPostProcessor {
 class IPostProcessorFactory {
     public:
 
-        virtual ~IPostProcessorFactory() {};
+        virtual ~IPostProcessorFactory() {}
 
         /**
          * Creates and returns a new object of type `IPostProcessor`.
@@ -47,7 +47,7 @@ class IPostProcessorFactory {
 class IPostProcessorConfig {
     public:
 
-        virtual ~IPostProcessorConfig() {};
+        virtual ~IPostProcessorConfig() {}
 
         /**
          * Creates and returns a new object of type `IPostProcessorFactory` according to the specified configuration.

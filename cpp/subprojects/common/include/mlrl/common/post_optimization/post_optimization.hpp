@@ -17,7 +17,7 @@
 class IPostOptimizationPhase {
     public:
 
-        virtual ~IPostOptimizationPhase() {};
+        virtual ~IPostOptimizationPhase() {}
 
         /**
          * Optimizes a rule-based model globally once it has been learned.
@@ -54,7 +54,7 @@ class IPostOptimizationPhase {
 class IPostOptimizationPhaseFactory {
     public:
 
-        virtual ~IPostOptimizationPhaseFactory() {};
+        virtual ~IPostOptimizationPhaseFactory() {}
 
         /**
          * Creates and returns a new object of type `IPostOptimizationPhase`.
@@ -73,7 +73,7 @@ class IPostOptimizationPhaseFactory {
 class IPostOptimizationPhaseConfig {
     public:
 
-        virtual ~IPostOptimizationPhaseConfig() {};
+        virtual ~IPostOptimizationPhaseConfig() {}
 
         /**
          * Creates and returns a new object of type `IPostOptimizationPhaseFactory` according to the specified
@@ -91,7 +91,7 @@ class IPostOptimizationPhaseConfig {
 class IPostOptimization : public IPostOptimizationPhase {
     public:
 
-        virtual ~IPostOptimization() override {};
+        virtual ~IPostOptimization() override {}
 
         /**
          * Returns an `IModelBuilder` that is suited for post-optimization via this object. Rules that are induced
@@ -108,7 +108,7 @@ class IPostOptimization : public IPostOptimizationPhase {
 class IPostOptimizationFactory {
     public:
 
-        virtual ~IPostOptimizationFactory() {};
+        virtual ~IPostOptimizationFactory() {}
 
         /**
          * Creates and returns a new object of type `IPostOptimization`.

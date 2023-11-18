@@ -12,7 +12,7 @@ template<typename ProbabilityCalibrationModel>
 class IProbabilityCalibrator {
     public:
 
-        virtual ~IProbabilityCalibrator() {};
+        virtual ~IProbabilityCalibrator() {}
 
         /**
          * Fits and returns a model for the calibration of probabilities.

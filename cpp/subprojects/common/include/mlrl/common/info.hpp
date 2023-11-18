@@ -79,7 +79,7 @@ class MLRLCOMMON_API ILibraryInfo {
          */
         typedef std::function<void(const HardwareResource&)> HardwareResourceVisitor;
 
-        virtual ~ILibraryInfo() {};
+        virtual ~ILibraryInfo() {}
 
         /**
          * Returns the name of the C++ library.
@@ -107,7 +107,7 @@ class MLRLCOMMON_API ILibraryInfo {
          *
          * @param visitor A visitor function for handling objects of the type `BuildOption`
          */
-        virtual void visitBuildOptions(BuildOptionVisitor visitor) const {};
+        virtual void visitBuildOptions(BuildOptionVisitor visitor) const {}
 
         /**
          * May be overridden by subclasses in order to invoke a given visitor function for each available hardware
@@ -115,7 +115,7 @@ class MLRLCOMMON_API ILibraryInfo {
          *
          * @param visitor A visitor function for handling objects of the type `HardwareResource`
          */
-        virtual void visitHardwareResources(HardwareResourceVisitor visitor) const {};
+        virtual void visitHardwareResources(HardwareResourceVisitor visitor) const {}
 };
 
 /**

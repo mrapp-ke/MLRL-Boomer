@@ -15,7 +15,7 @@
 class IRulePruning {
     public:
 
-        virtual ~IRulePruning() {};
+        virtual ~IRulePruning() {}
 
         /**
          * Prunes the conditions of an existing rule by modifying a given list of conditions in-place. The rule is
@@ -46,7 +46,7 @@ class IRulePruning {
 class IRulePruningFactory {
     public:
 
-        virtual ~IRulePruningFactory() {};
+        virtual ~IRulePruningFactory() {}
 
         /**
          * Creates and returns a new object of type `IRulePruning`.
@@ -62,7 +62,7 @@ class IRulePruningFactory {
 class IRulePruningConfig {
     public:
 
-        virtual ~IRulePruningConfig() {};
+        virtual ~IRulePruningConfig() {}
 
         /**
          * Creates and returns a new object of type `IRulePruningFactory` according to the specified configuration.

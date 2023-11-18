@@ -31,7 +31,7 @@ class IProbabilityPredictorFactory;
 class MLRLCOMMON_API ILabelSpaceInfo {
     public:
 
-        virtual ~ILabelSpaceInfo() {};
+        virtual ~ILabelSpaceInfo() {}
 
         /**
          * Creates and returns a new instance of the class `IJointProbabilityCalibrator`, based on the type of this

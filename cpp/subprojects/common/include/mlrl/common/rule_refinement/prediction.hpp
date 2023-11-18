@@ -22,7 +22,7 @@ class IHead;
 class IPrediction : public IIndexVector {
     public:
 
-        virtual ~IPrediction() override {};
+        virtual ~IPrediction() override {}
 
         /**
          * Sorts the scores that are stored by this prediction in increasing order by the indices of the labels they

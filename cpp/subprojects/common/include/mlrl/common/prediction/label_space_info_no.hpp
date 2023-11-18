@@ -11,7 +11,7 @@
 class MLRLCOMMON_API INoLabelSpaceInfo : public ILabelSpaceInfo {
     public:
 
-        virtual ~INoLabelSpaceInfo() override {};
+        virtual ~INoLabelSpaceInfo() override {}
 };
 
 /**

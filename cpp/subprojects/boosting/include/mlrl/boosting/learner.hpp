@@ -117,7 +117,7 @@ namespace boosting {
 
                 public:
 
-                    virtual ~IConfig() override {};
+                    virtual ~IConfig() override {}
             };
 
             /**
@@ -127,7 +127,7 @@ namespace boosting {
             class IAutomaticPartitionSamplingMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IAutomaticPartitionSamplingMixin() override {};
+                    virtual ~IAutomaticPartitionSamplingMixin() override {}
 
                     /**
                      * Configures the rule learner to automatically decide whether a holdout set should be used or not.
@@ -148,7 +148,7 @@ namespace boosting {
             class IAutomaticFeatureBinningMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IAutomaticFeatureBinningMixin() override {};
+                    virtual ~IAutomaticFeatureBinningMixin() override {}
 
                     /**
                      * Configures the rule learner to automatically decide whether a method for the assignment of
@@ -169,7 +169,7 @@ namespace boosting {
             class IAutomaticParallelRuleRefinementMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IAutomaticParallelRuleRefinementMixin() override {};
+                    virtual ~IAutomaticParallelRuleRefinementMixin() override {}
 
                     /**
                      * Configures the rule learner to automatically decide whether multi-threading should be used for
@@ -190,7 +190,7 @@ namespace boosting {
             class IAutomaticParallelStatisticUpdateMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IAutomaticParallelStatisticUpdateMixin() override {};
+                    virtual ~IAutomaticParallelStatisticUpdateMixin() override {}
 
                     /**
                      * Configures the rule learner to automatically decide whether multi-threading should be used for
@@ -211,7 +211,7 @@ namespace boosting {
             class IConstantShrinkageMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IConstantShrinkageMixin() override {};
+                    virtual ~IConstantShrinkageMixin() override {}
 
                     /**
                      * Configures the rule learner to use a post processor that shrinks the weights of rules by a
@@ -236,7 +236,7 @@ namespace boosting {
             class INoL1RegularizationMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~INoL1RegularizationMixin() override {};
+                    virtual ~INoL1RegularizationMixin() override {}
 
                     /**
                      * Configures the rule learner to not use L1 regularization.
@@ -254,7 +254,7 @@ namespace boosting {
             class IL1RegularizationMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IL1RegularizationMixin() override {};
+                    virtual ~IL1RegularizationMixin() override {}
 
                     /**
                      * Configures the rule learner to use L1 regularization.
@@ -279,7 +279,7 @@ namespace boosting {
             class INoL2RegularizationMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~INoL2RegularizationMixin() override {};
+                    virtual ~INoL2RegularizationMixin() override {}
 
                     /**
                      * Configures the rule learner to not use L2 regularization.
@@ -297,7 +297,7 @@ namespace boosting {
             class IL2RegularizationMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IL2RegularizationMixin() override {};
+                    virtual ~IL2RegularizationMixin() override {}
 
                     /**
                      * Configures the rule learner to use L2 regularization.
@@ -322,7 +322,7 @@ namespace boosting {
             class INoDefaultRuleMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~INoDefaultRuleMixin() override {};
+                    virtual ~INoDefaultRuleMixin() override {}
 
                     /**
                      * Configures the rule learner to not induce a default rule.
@@ -340,7 +340,7 @@ namespace boosting {
             class IAutomaticDefaultRuleMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IAutomaticDefaultRuleMixin() override {};
+                    virtual ~IAutomaticDefaultRuleMixin() override {}
 
                     /**
                      * Configures the rule learner to automatically decide whether a default rule should be induced or
@@ -360,7 +360,7 @@ namespace boosting {
             class ICompleteHeadMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ICompleteHeadMixin() override {};
+                    virtual ~ICompleteHeadMixin() override {}
 
                     /**
                      * Configures the rule learner to induce rules with complete heads that predict for all available
@@ -381,7 +381,7 @@ namespace boosting {
             class IFixedPartialHeadMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IFixedPartialHeadMixin() override {};
+                    virtual ~IFixedPartialHeadMixin() override {}
 
                     /**
                      * Configures the rule learner to induce rules with partial heads that predict for a predefined
@@ -407,7 +407,7 @@ namespace boosting {
             class IDynamicPartialHeadMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IDynamicPartialHeadMixin() override {};
+                    virtual ~IDynamicPartialHeadMixin() override {}
 
                     /**
                      * Configures the rule learner to induce rules with partial heads that predict for a subset of the
@@ -434,7 +434,7 @@ namespace boosting {
             class ISingleLabelHeadMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ISingleLabelHeadMixin() override {};
+                    virtual ~ISingleLabelHeadMixin() override {}
 
                     /**
                      * Configures the rule learner to induce rules with single-label heads that predict for a single
@@ -455,7 +455,7 @@ namespace boosting {
             class IAutomaticHeadMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IAutomaticHeadMixin() override {};
+                    virtual ~IAutomaticHeadMixin() override {}
 
                     /**
                      * Configures the rule learner to automatically decide for the type of rule heads that should be
@@ -477,7 +477,7 @@ namespace boosting {
             class IDenseStatisticsMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IDenseStatisticsMixin() override {};
+                    virtual ~IDenseStatisticsMixin() override {}
 
                     /**
                      * Configures the rule learner to use a dense representation of gradients and Hessians.
@@ -495,7 +495,7 @@ namespace boosting {
             class ISparseStatisticsMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ISparseStatisticsMixin() override {};
+                    virtual ~ISparseStatisticsMixin() override {}
 
                     /**
                      * Configures the rule learner to use a sparse representation of gradients and Hessians, if
@@ -514,7 +514,7 @@ namespace boosting {
             class IAutomaticStatisticsMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IAutomaticStatisticsMixin() override {};
+                    virtual ~IAutomaticStatisticsMixin() override {}
 
                     /**
                      * Configures the rule learner to automatically decide whether a dense or sparse representation of
@@ -534,7 +534,7 @@ namespace boosting {
             class IExampleWiseLogisticLossMixin : virtual public IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IExampleWiseLogisticLossMixin() override {};
+                    virtual ~IExampleWiseLogisticLossMixin() override {}
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
@@ -553,7 +553,7 @@ namespace boosting {
             class IExampleWiseSquaredErrorLossMixin : virtual public IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IExampleWiseSquaredErrorLossMixin() override {};
+                    virtual ~IExampleWiseSquaredErrorLossMixin() override {}
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
@@ -572,7 +572,7 @@ namespace boosting {
             class IExampleWiseSquaredHingeLossMixin : virtual public IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IExampleWiseSquaredHingeLossMixin() override {};
+                    virtual ~IExampleWiseSquaredHingeLossMixin() override {}
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
@@ -591,7 +591,7 @@ namespace boosting {
             class ILabelWiseLogisticLossMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseLogisticLossMixin() override {};
+                    virtual ~ILabelWiseLogisticLossMixin() override {}
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
@@ -610,7 +610,7 @@ namespace boosting {
             class ILabelWiseSquaredErrorLossMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseSquaredErrorLossMixin() override {};
+                    virtual ~ILabelWiseSquaredErrorLossMixin() override {}
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
@@ -629,7 +629,7 @@ namespace boosting {
             class ILabelWiseSquaredHingeLossMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseSquaredHingeLossMixin() override {};
+                    virtual ~ILabelWiseSquaredHingeLossMixin() override {}
 
                     /**
                      * Configures the rule learner to use a loss function that implements a multi-label variant of the
@@ -648,7 +648,7 @@ namespace boosting {
             class INoLabelBinningMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~INoLabelBinningMixin() override {};
+                    virtual ~INoLabelBinningMixin() override {}
 
                     /**
                      * Configures the rule learner to not use any method for the assignment of labels to bins.
@@ -667,7 +667,7 @@ namespace boosting {
             class IEqualWidthLabelBinningMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IEqualWidthLabelBinningMixin() override {};
+                    virtual ~IEqualWidthLabelBinningMixin() override {}
 
                     /**
                      * Configures the rule learner to use a method for the assignment of labels to bins in a way such
@@ -695,7 +695,7 @@ namespace boosting {
             class IAutomaticLabelBinningMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IAutomaticLabelBinningMixin() override {};
+                    virtual ~IAutomaticLabelBinningMixin() override {}
 
                     /**
                      * Configures the rule learner to automatically decide whether a method for the assignment of labels
@@ -716,7 +716,7 @@ namespace boosting {
             class IIsotonicMarginalProbabilityCalibrationMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IIsotonicMarginalProbabilityCalibrationMixin() override {};
+                    virtual ~IIsotonicMarginalProbabilityCalibrationMixin() override {}
 
                     /**
                      * Configures the rule learner to calibrate marginal probabilities via isotonic regression.
@@ -742,7 +742,7 @@ namespace boosting {
             class IIsotonicJointProbabilityCalibrationMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IIsotonicJointProbabilityCalibrationMixin() override {};
+                    virtual ~IIsotonicJointProbabilityCalibrationMixin() override {}
 
                     /**
                      * Configures the rule learner to calibrate joint probabilities via isotonic regression.
@@ -769,7 +769,7 @@ namespace boosting {
             class ILabelWiseBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseBinaryPredictorMixin() override {};
+                    virtual ~ILabelWiseBinaryPredictorMixin() override {}
 
                     /**
                      * Configures the rule learner to use a predictor that predicts whether individual labels of given
@@ -799,7 +799,7 @@ namespace boosting {
             class IExampleWiseBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IExampleWiseBinaryPredictorMixin() override {};
+                    virtual ~IExampleWiseBinaryPredictorMixin() override {}
 
                     /**
                      * Configures the rule learner to use a predictor that predicts known label vectors for given query
@@ -830,7 +830,7 @@ namespace boosting {
             class IGfmBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IGfmBinaryPredictorMixin() override {};
+                    virtual ~IGfmBinaryPredictorMixin() override {}
 
                     /**
                      * Configures the rule learner to use a predictor that predicts whether individual labels of given
@@ -858,7 +858,7 @@ namespace boosting {
             class IAutomaticBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IAutomaticBinaryPredictorMixin() override {};
+                    virtual ~IAutomaticBinaryPredictorMixin() override {}
 
                     /**
                      * Configures the rule learner to automatically decide for a predictor for predicting whether
@@ -880,7 +880,7 @@ namespace boosting {
             class ILabelWiseScorePredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseScorePredictorMixin() override {};
+                    virtual ~ILabelWiseScorePredictorMixin() override {}
 
                     /**
                      * Configures the rule learner to use a predictor that predicts label-wise regression scores for
@@ -903,7 +903,7 @@ namespace boosting {
             class ILabelWiseProbabilityPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseProbabilityPredictorMixin() override {};
+                    virtual ~ILabelWiseProbabilityPredictorMixin() override {}
 
                     /**
                      * Configures the rule learner to use a predictor that predicts label-wise probabilities for given
@@ -933,7 +933,7 @@ namespace boosting {
             class IMarginalizedProbabilityPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IMarginalizedProbabilityPredictorMixin() override {};
+                    virtual ~IMarginalizedProbabilityPredictorMixin() override {}
 
                     /**
                      * Configures the rule learner to use a predictor that predicts label-wise probabilities for given
@@ -961,7 +961,7 @@ namespace boosting {
             class IAutomaticProbabilityPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IAutomaticProbabilityPredictorMixin() override {};
+                    virtual ~IAutomaticProbabilityPredictorMixin() override {}
 
                     /**
                      * Configures the rule learner to automatically decide for a predictor for predicting probability
@@ -975,7 +975,7 @@ namespace boosting {
                     }
             };
 
-            virtual ~IBoostingRuleLearner() override {};
+            virtual ~IBoostingRuleLearner() override {}
     };
 
     /**

@@ -21,7 +21,7 @@ namespace boosting {
     class IExampleWiseStatistics : virtual public IBoostingStatistics {
         public:
 
-            virtual ~IExampleWiseStatistics() override {};
+            virtual ~IExampleWiseStatistics() override {}
 
             /**
              * Sets the factory that allows to create instances of the class that is used for calculating the

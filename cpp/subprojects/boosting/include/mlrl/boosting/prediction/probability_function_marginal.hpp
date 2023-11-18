@@ -14,7 +14,7 @@ namespace boosting {
     class IMarginalProbabilityFunction {
         public:
 
-            virtual ~IMarginalProbabilityFunction() {};
+            virtual ~IMarginalProbabilityFunction() {}
 
             /**
              * Transforms the regression score that is predicted for a specific label into a probability.
@@ -32,7 +32,7 @@ namespace boosting {
     class IMarginalProbabilityFunctionFactory {
         public:
 
-            virtual ~IMarginalProbabilityFunctionFactory() {};
+            virtual ~IMarginalProbabilityFunctionFactory() {}
 
             /**
              * Creates and returns a new object of the type `IMarginalProbabilityFunction`.

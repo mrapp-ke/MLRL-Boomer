@@ -18,7 +18,7 @@
 class MLRLCOMMON_API ICsrFeatureMatrix : virtual public IRowWiseFeatureMatrix {
     public:
 
-        virtual ~ICsrFeatureMatrix() override {};
+        virtual ~ICsrFeatureMatrix() override {}
 };
 
 /**

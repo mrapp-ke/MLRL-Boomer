@@ -20,7 +20,7 @@ namespace boosting {
     class IExampleWiseRuleEvaluationFactory {
         public:
 
-            virtual ~IExampleWiseRuleEvaluationFactory() {};
+            virtual ~IExampleWiseRuleEvaluationFactory() {}
 
             /**
              * Creates and returns a new object of type `IRuleEvaluation` that allows to calculate the predictions of

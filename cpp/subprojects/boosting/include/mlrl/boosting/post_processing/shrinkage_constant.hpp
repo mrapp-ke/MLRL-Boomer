@@ -15,7 +15,7 @@ namespace boosting {
     class MLRLBOOSTING_API IConstantShrinkageConfig {
         public:
 
-            virtual ~IConstantShrinkageConfig() {};
+            virtual ~IConstantShrinkageConfig() {}
 
             /**
              * Returns the value of the "shrinkage" parameter.

@@ -19,7 +19,7 @@
 class MLRLCOMMON_API ICContiguousLabelMatrix : virtual public IRowWiseLabelMatrix {
     public:
 
-        virtual ~ICContiguousLabelMatrix() override {};
+        virtual ~ICContiguousLabelMatrix() override {}
 };
 
 /**

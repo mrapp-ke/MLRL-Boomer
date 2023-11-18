@@ -19,7 +19,7 @@
 class IStatistics {
     public:
 
-        virtual ~IStatistics() {};
+        virtual ~IStatistics() {}
 
         /**
          * Returns the number of available statistics.

@@ -16,7 +16,7 @@ namespace boosting {
     class ISparseLabelWiseRuleEvaluationFactory : public ILabelWiseRuleEvaluationFactory {
         public:
 
-            virtual ~ISparseLabelWiseRuleEvaluationFactory() override {};
+            virtual ~ISparseLabelWiseRuleEvaluationFactory() override {}
 
             // Keep functions from the parent class rather than hiding them
             using ILabelWiseRuleEvaluationFactory::create;

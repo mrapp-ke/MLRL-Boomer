@@ -13,7 +13,7 @@ class MLRLCOMMON_API INoProbabilityCalibrationModel : public IMarginalProbabilit
                                                       public IJointProbabilityCalibrationModel {
     public:
 
-        virtual ~INoProbabilityCalibrationModel() override {};
+        virtual ~INoProbabilityCalibrationModel() override {}
 };
 
 /**
@@ -23,7 +23,7 @@ class MLRLCOMMON_API INoProbabilityCalibrationModel : public IMarginalProbabilit
 class NoMarginalProbabilityCalibratorFactory final : public IMarginalProbabilityCalibratorFactory {
     public:
 
-        virtual ~NoMarginalProbabilityCalibratorFactory() {};
+        virtual ~NoMarginalProbabilityCalibratorFactory() {}
 
         std::unique_ptr<IMarginalProbabilityCalibrator> create() const override;
 };

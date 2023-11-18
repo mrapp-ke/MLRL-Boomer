@@ -16,7 +16,7 @@
 class MLRLCOMMON_API IRuleList : public IRuleModel {
     public:
 
-        virtual ~IRuleList() override {};
+        virtual ~IRuleList() override {}
 
         /**
          * Creates a new default rule from a given head and adds it to the model.

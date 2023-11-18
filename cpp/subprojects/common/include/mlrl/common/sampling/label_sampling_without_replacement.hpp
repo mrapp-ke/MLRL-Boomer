@@ -12,7 +12,7 @@
 class MLRLCOMMON_API ILabelSamplingWithoutReplacementConfig {
     public:
 
-        virtual ~ILabelSamplingWithoutReplacementConfig() {};
+        virtual ~ILabelSamplingWithoutReplacementConfig() {}
 
         /**
          * Returns the number of labels that are included in a sample.

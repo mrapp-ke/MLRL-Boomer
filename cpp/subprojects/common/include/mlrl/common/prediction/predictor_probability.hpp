@@ -17,7 +17,7 @@
 class IProbabilityPredictor : public IPredictor<DensePredictionMatrix<float64>> {
     public:
 
-        virtual ~IProbabilityPredictor() override {};
+        virtual ~IProbabilityPredictor() override {}
 };
 
 /**
@@ -26,7 +26,7 @@ class IProbabilityPredictor : public IPredictor<DensePredictionMatrix<float64>> 
 class IProbabilityPredictorFactory {
     public:
 
-        virtual ~IProbabilityPredictorFactory() {};
+        virtual ~IProbabilityPredictorFactory() {}
 
         /**
          * Creates and returns a new object of the type `IProbabilityPredictor`.
@@ -86,5 +86,5 @@ class IProbabilityPredictorFactory {
 class IProbabilityPredictorConfig : public IPredictorConfig<IProbabilityPredictorFactory> {
     public:
 
-        virtual ~IProbabilityPredictorConfig() override {};
+        virtual ~IProbabilityPredictorConfig() override {}
 };

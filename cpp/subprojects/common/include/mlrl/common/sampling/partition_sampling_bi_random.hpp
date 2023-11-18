@@ -14,7 +14,7 @@
 class MLRLCOMMON_API IRandomBiPartitionSamplingConfig {
     public:
 
-        virtual ~IRandomBiPartitionSamplingConfig() {};
+        virtual ~IRandomBiPartitionSamplingConfig() {}
 
         /**
          * Returns the fraction of examples that are included in the holdout set.

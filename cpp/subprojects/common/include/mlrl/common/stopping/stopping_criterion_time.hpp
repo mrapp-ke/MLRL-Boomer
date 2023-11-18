@@ -13,7 +13,7 @@
 class MLRLCOMMON_API ITimeStoppingCriterionConfig {
     public:
 
-        virtual ~ITimeStoppingCriterionConfig() {};
+        virtual ~ITimeStoppingCriterionConfig() {}
 
         /**
          * Returns the time limit.

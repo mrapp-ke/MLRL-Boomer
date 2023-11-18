@@ -12,7 +12,7 @@
 class MLRLCOMMON_API IJointProbabilityCalibrationModel {
     public:
 
-        virtual ~IJointProbabilityCalibrationModel() {};
+        virtual ~IJointProbabilityCalibrationModel() {}
 
         /**
          * Calibrates a joint probability.
@@ -31,7 +31,7 @@ class MLRLCOMMON_API IJointProbabilityCalibrationModel {
 class IJointProbabilityCalibrator : public IProbabilityCalibrator<IJointProbabilityCalibrationModel> {
     public:
 
-        virtual ~IJointProbabilityCalibrator() override {};
+        virtual ~IJointProbabilityCalibrator() override {}
 };
 
 /**
@@ -40,7 +40,7 @@ class IJointProbabilityCalibrator : public IProbabilityCalibrator<IJointProbabil
 class IJointProbabilityCalibratorFactory {
     public:
 
-        virtual ~IJointProbabilityCalibratorFactory() {};
+        virtual ~IJointProbabilityCalibratorFactory() {}
 
         /**
          * Creates and returns a new object of type `IJointProbabilityCalibrator`.
@@ -66,7 +66,7 @@ class IJointProbabilityCalibratorFactory {
 class IJointProbabilityCalibratorConfig {
     public:
 
-        virtual ~IJointProbabilityCalibratorConfig() {};
+        virtual ~IJointProbabilityCalibratorConfig() {}
 
         /**
          * Returns whether a holdout set should be used, if available, or not.

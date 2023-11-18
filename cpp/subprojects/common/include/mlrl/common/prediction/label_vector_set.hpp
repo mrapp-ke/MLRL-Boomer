@@ -15,7 +15,7 @@
 class MLRLCOMMON_API ILabelVectorSet : public ILabelSpaceInfo {
     public:
 
-        virtual ~ILabelVectorSet() override {};
+        virtual ~ILabelVectorSet() override {}
 
         /**
          * A visitor function for handling objects of the type `LabelVector` and their frequencies.

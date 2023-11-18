@@ -13,7 +13,7 @@
 class MLRLCOMMON_API IManualMultiThreadingConfig {
     public:
 
-        virtual ~IManualMultiThreadingConfig() {};
+        virtual ~IManualMultiThreadingConfig() {}
 
         /**
          * Returns the number of preferred threads.

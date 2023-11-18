@@ -19,7 +19,7 @@ namespace boosting {
     class ILabelWiseStatistics : virtual public IBoostingStatistics {
         public:
 
-            virtual ~ILabelWiseStatistics() override {};
+            virtual ~ILabelWiseStatistics() override {}
 
             /**
              * Sets the factory that allows to create instances of the class that is used for calculating the

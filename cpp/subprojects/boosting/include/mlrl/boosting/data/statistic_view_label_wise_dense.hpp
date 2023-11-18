@@ -39,7 +39,7 @@ namespace boosting {
              */
             DenseLabelWiseStatisticConstView(uint32 numRows, uint32 numCols, Tuple<float64>* statistics);
 
-            virtual ~DenseLabelWiseStatisticConstView() {};
+            virtual ~DenseLabelWiseStatisticConstView() {}
 
             /**
              * An iterator that provides read-only access to the elements in the view.
@@ -92,7 +92,7 @@ namespace boosting {
              */
             DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols, Tuple<float64>* statistics);
 
-            virtual ~DenseLabelWiseStatisticView() override {};
+            virtual ~DenseLabelWiseStatisticView() override {}
 
             /**
              * An iterator that provides access to the elements in the view and allows to modify them.

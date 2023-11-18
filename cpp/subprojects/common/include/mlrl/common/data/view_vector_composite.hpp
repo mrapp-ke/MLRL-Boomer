@@ -44,7 +44,7 @@ class CompositeVectorDecorator {
         CompositeVectorDecorator(FirstView&& firstView, SecondView&& secondView)
             : firstView_(std::move(firstView)), secondView_(std::move(secondView)) {}
 
-        virtual ~CompositeVectorDecorator() {};
+        virtual ~CompositeVectorDecorator() {}
 };
 
 /**

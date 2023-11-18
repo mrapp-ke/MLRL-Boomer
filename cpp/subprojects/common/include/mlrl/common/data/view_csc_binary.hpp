@@ -46,7 +46,7 @@ class BinaryCscConstView : virtual public ITwoDimensionalView {
          */
         BinaryCscConstView(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* indptr);
 
-        virtual ~BinaryCscConstView() override {};
+        virtual ~BinaryCscConstView() override {}
 
         /**
          * An iterator that provides read-only access to the indices in the view.
@@ -99,7 +99,7 @@ class BinaryCscView : public BinaryCscConstView {
          */
         BinaryCscView(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* indptr);
 
-        virtual ~BinaryCscView() override {};
+        virtual ~BinaryCscView() override {}
 
         /**
          * An iterator that provides access to the indices in the view and allows to modify them.

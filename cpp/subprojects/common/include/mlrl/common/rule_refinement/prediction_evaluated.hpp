@@ -14,5 +14,5 @@ class IEvaluatedPrediction : public IPrediction,
                              public Quality {
     public:
 
-        virtual ~IEvaluatedPrediction() override {};
+        virtual ~IEvaluatedPrediction() override {}
 };

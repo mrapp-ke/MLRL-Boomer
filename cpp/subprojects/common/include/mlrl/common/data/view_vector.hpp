@@ -36,7 +36,7 @@ class Vector : public View<T> {
          */
         Vector(Vector<T>&& other) : Vector(other.array, other.numElements) {}
 
-        virtual ~Vector() override {};
+        virtual ~Vector() override {}
 
         /**
          * Returns a `const_iterator` to the end of the vector.
@@ -87,7 +87,7 @@ class VectorDecorator : public ViewDecorator<View> {
          */
         VectorDecorator(View&& view) : ViewDecorator<View>(std::move(view)) {}
 
-        virtual ~VectorDecorator() override {};
+        virtual ~VectorDecorator() override {}
 
         /**
          * Returns the number of elements in the vector.
@@ -114,7 +114,7 @@ class ReadIterableVectorDecorator : public ReadAccessibleViewDecorator<Vector> {
         ReadIterableVectorDecorator(typename Vector::view_type&& view)
             : ReadAccessibleViewDecorator<Vector>(std::move(view)) {}
 
-        virtual ~ReadIterableVectorDecorator() override {};
+        virtual ~ReadIterableVectorDecorator() override {}
 
         /**
          * Returns a `const_iterator` to the end of the vector.
@@ -141,7 +141,7 @@ class WriteIterableVectorDecorator : public WriteAccessibleViewDecorator<Vector>
         WriteIterableVectorDecorator(typename Vector::view_type&& view)
             : WriteAccessibleViewDecorator<Vector>(std::move(view)) {}
 
-        virtual ~WriteIterableVectorDecorator() override {};
+        virtual ~WriteIterableVectorDecorator() override {}
 
         /**
          * Returns an `iterator` to the end of the vector.
@@ -184,7 +184,7 @@ class ResizableVectorDecorator : public Vector {
          */
         ResizableVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
 
-        virtual ~ResizableVectorDecorator() override {};
+        virtual ~ResizableVectorDecorator() override {}
 
         /**
          * Sets the number of elements in the vector.
@@ -211,7 +211,7 @@ class ClearableVectorDecorator : public Vector {
          */
         ClearableVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
 
-        virtual ~ClearableVectorDecorator() override {};
+        virtual ~ClearableVectorDecorator() override {}
 
         /**
          * Sets all values stored in the vector to zero.

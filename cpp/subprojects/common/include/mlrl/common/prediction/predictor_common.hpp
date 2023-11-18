@@ -26,7 +26,7 @@ class PredictionDispatcher final {
         class IPredictionDelegate {
             public:
 
-                virtual ~IPredictionDelegate() {};
+                virtual ~IPredictionDelegate() {}
 
                 /**
                  * Obtains predictions for a single query example.
@@ -104,7 +104,7 @@ class BinarySparsePredictionDispatcher final {
         class IPredictionDelegate {
             public:
 
-                virtual ~IPredictionDelegate() {};
+                virtual ~IPredictionDelegate() {}
 
                 /**
                  * Obtains predictions for a single query example.
@@ -225,7 +225,7 @@ class AbstractIncrementalPredictor : public IIncrementalPredictor<PredictionMatr
             : featureMatrix_(featureMatrix), numThreads_(numThreads), current_(model.used_cbegin(maxRules)),
               end_(model.used_cend(maxRules)) {}
 
-        virtual ~AbstractIncrementalPredictor() override {};
+        virtual ~AbstractIncrementalPredictor() override {}
 
         uint32 getNumNext() const override final {
             return (uint32) (end_ - current_);

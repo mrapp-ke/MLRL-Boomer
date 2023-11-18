@@ -37,7 +37,7 @@ class View {
          */
         View(View<T>&& other) : array(other.array) {}
 
-        virtual ~View() {};
+        virtual ~View() {}
 
         /**
          * The type of the values, the view provides access to.
@@ -156,7 +156,7 @@ class ResizableAllocator : public Allocator<View> {
             View::numElements = numElements;
         }
 
-        virtual ~ResizableAllocator() override {};
+        virtual ~ResizableAllocator() override {}
 };
 
 /**
@@ -178,7 +178,7 @@ class ViewDecorator {
          */
         ViewDecorator(View&& view) : view(std::move(view)) {}
 
-        virtual ~ViewDecorator() {};
+        virtual ~ViewDecorator() {}
 
         /**
          * The type of the view, the data structure is backed by.
@@ -205,7 +205,7 @@ class ReadAccessibleViewDecorator : public View {
          */
         ReadAccessibleViewDecorator(typename View::view_type&& view) : View(std::move(view)) {}
 
-        virtual ~ReadAccessibleViewDecorator() override {};
+        virtual ~ReadAccessibleViewDecorator() override {}
 
         /**
          * An iterator that provides read-only access to the values stored in the view.
@@ -246,7 +246,7 @@ class WriteAccessibleViewDecorator : public View {
          */
         WriteAccessibleViewDecorator(typename View::view_type&& view) : View(std::move(view)) {}
 
-        virtual ~WriteAccessibleViewDecorator() override {};
+        virtual ~WriteAccessibleViewDecorator() override {}
 
         /**
          * An iterator that provides access to the values stored in the view and allows to modify them.

@@ -187,7 +187,7 @@ class SparseSetMatrix : virtual public ITwoDimensionalView {
          */
         SparseSetMatrix(uint32 numRows, uint32 numCols);
 
-        virtual ~SparseSetMatrix() override {};
+        virtual ~SparseSetMatrix() override {}
 
         /**
          * Provides access to a row and allows to modify its elements.

@@ -14,7 +14,7 @@
 struct FilteredCacheEntry final {
     public:
 
-        FilteredCacheEntry() : numConditions(0) {};
+        FilteredCacheEntry() : numConditions(0) {}
 
         /**
          * An unique pointer to an object of type `FeatureVector` that stores feature values.

@@ -17,7 +17,7 @@
 class MLRLCOMMON_API IPostPruningConfig {
     public:
 
-        virtual ~IPostPruningConfig() {};
+        virtual ~IPostPruningConfig() {}
 
         /**
          * Returns whether the quality of the current model's predictions is measured on the holdout set, if available,

@@ -14,7 +14,7 @@
 class MLRLCOMMON_API IColumnWiseFeatureMatrix : virtual public IFeatureMatrix {
     public:
 
-        virtual ~IColumnWiseFeatureMatrix() override {};
+        virtual ~IColumnWiseFeatureMatrix() override {}
 
         /**
          * Fetches a feature vector that stores the indices of the training examples, as well as their feature values,

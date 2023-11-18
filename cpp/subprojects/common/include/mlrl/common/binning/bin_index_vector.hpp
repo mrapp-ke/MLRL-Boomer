@@ -23,7 +23,7 @@ class IBinIndexVector {
          */
         static const uint32 BIN_INDEX_SPARSE = std::numeric_limits<uint32>::max();
 
-        virtual ~IBinIndexVector() {};
+        virtual ~IBinIndexVector() {}
 
         /**
          * Returns the index of the bin, the example at a specific index has been assigned to.

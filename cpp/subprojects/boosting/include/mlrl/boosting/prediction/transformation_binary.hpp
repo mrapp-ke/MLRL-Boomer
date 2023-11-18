@@ -14,7 +14,7 @@ namespace boosting {
     class IBinaryTransformation {
         public:
 
-            virtual ~IBinaryTransformation() {};
+            virtual ~IBinaryTransformation() {}
 
             /**
              * Transforms regression scores into binary predictions.

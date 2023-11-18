@@ -22,7 +22,7 @@ class BinnedVectorDecorator : public Vector {
                               typename Vector::second_view_type&& valueView)
             : Vector(std::move(binIndexView), std::move(valueView)) {}
 
-        virtual ~BinnedVectorDecorator() override {};
+        virtual ~BinnedVectorDecorator() override {}
 
         /**
          * Returns the number of bins in the vector.

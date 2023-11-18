@@ -12,7 +12,7 @@
 class MLRLCOMMON_API IFeatureSamplingWithoutReplacementConfig {
     public:
 
-        virtual ~IFeatureSamplingWithoutReplacementConfig() {};
+        virtual ~IFeatureSamplingWithoutReplacementConfig() {}
 
         /**
          * Returns the fraction of features that are included in a sample.

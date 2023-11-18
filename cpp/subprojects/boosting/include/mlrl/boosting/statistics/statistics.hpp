@@ -18,7 +18,7 @@ namespace boosting {
     class IBoostingStatistics : public IStatistics {
         public:
 
-            virtual ~IBoostingStatistics() {};
+            virtual ~IBoostingStatistics() {}
 
             /**
              * A visitor function for handling score matrices of the type `CContiguousConstView`.

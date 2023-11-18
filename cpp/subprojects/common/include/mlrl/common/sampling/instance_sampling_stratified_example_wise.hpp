@@ -14,7 +14,7 @@
 class MLRLCOMMON_API IExampleWiseStratifiedInstanceSamplingConfig {
     public:
 
-        virtual ~IExampleWiseStratifiedInstanceSamplingConfig() {};
+        virtual ~IExampleWiseStratifiedInstanceSamplingConfig() {}
 
         /**
          * Returns the fraction of examples that are included in a sample.

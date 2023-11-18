@@ -11,7 +11,7 @@
 class IDefaultRuleConfig {
     public:
 
-        virtual ~IDefaultRuleConfig() {};
+        virtual ~IDefaultRuleConfig() {}
 
         /**
          * Returns whether a default rule is included or not.

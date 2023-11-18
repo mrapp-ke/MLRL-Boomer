@@ -19,7 +19,7 @@ class ConjunctiveBody;
 class MLRLCOMMON_API IConditional {
     public:
 
-        virtual ~IConditional() {};
+        virtual ~IConditional() {}
 
         /**
          * Returns whether an individual example, which is stored in a C-contiguous matrix, is covered or not.
@@ -60,7 +60,7 @@ class MLRLCOMMON_API IConditional {
 class MLRLCOMMON_API IBody : public IConditional {
     public:
 
-        virtual ~IBody() override {};
+        virtual ~IBody() override {}
 
         /**
          * A visitor function for handling objects of the type `EmptyBody`.

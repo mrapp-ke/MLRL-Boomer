@@ -91,10 +91,10 @@ namespace seco {
 
                 public:
 
-                    virtual ~IConfig() override {};
+                    virtual ~IConfig() override {}
             };
 
-            virtual ~ISeCoRuleLearner() override {};
+            virtual ~ISeCoRuleLearner() override {}
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to not use any stopping
@@ -104,7 +104,7 @@ namespace seco {
             class INoCoverageStoppingCriterionMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~INoCoverageStoppingCriterionMixin() override {};
+                    virtual ~INoCoverageStoppingCriterionMixin() override {}
 
                     /**
                      * Configures the rule learner to not use any stopping criterion that stops the induction of rules
@@ -126,7 +126,7 @@ namespace seco {
             class ICoverageStoppingCriterionMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~ICoverageStoppingCriterionMixin() override {};
+                    virtual ~ICoverageStoppingCriterionMixin() override {}
 
                     /**
                      * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon
@@ -153,7 +153,7 @@ namespace seco {
             class ISingleLabelHeadMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~ISingleLabelHeadMixin() override {};
+                    virtual ~ISingleLabelHeadMixin() override {}
 
                     /**
                      * Configures the rule learner to induce rules with single-label heads that predict for a single
@@ -173,7 +173,7 @@ namespace seco {
             class IPartialHeadMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IPartialHeadMixin() override {};
+                    virtual ~IPartialHeadMixin() override {}
 
                     /**
                      * Configures the rule learner to induce rules with partial heads that predict for a subset of the
@@ -193,7 +193,7 @@ namespace seco {
             class INoLiftFunctionMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~INoLiftFunctionMixin() override {};
+                    virtual ~INoLiftFunctionMixin() override {}
 
                     /**
                      * Configures the rule learner to not use a lift function.
@@ -212,7 +212,7 @@ namespace seco {
             class IPeakLiftFunctionMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IPeakLiftFunctionMixin() override {};
+                    virtual ~IPeakLiftFunctionMixin() override {}
 
                     /**
                      * Configures the rule learner to use a lift function that monotonously increases until a certain
@@ -238,7 +238,7 @@ namespace seco {
             class IKlnLiftFunctionMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IKlnLiftFunctionMixin() override {};
+                    virtual ~IKlnLiftFunctionMixin() override {}
 
                     /**
                      * Configures the rule learner to use a lift function that monotonously increases according to the
@@ -263,7 +263,7 @@ namespace seco {
             class IAccuracyHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IAccuracyHeuristicMixin() override {};
+                    virtual ~IAccuracyHeuristicMixin() override {}
 
                     /**
                      * Configures the rule learner to use the "Accuracy" heuristic for learning rules.
@@ -281,7 +281,7 @@ namespace seco {
             class IAccuracyPruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IAccuracyPruningHeuristicMixin() override {};
+                    virtual ~IAccuracyPruningHeuristicMixin() override {}
 
                     /**
                      * Configures the rule learner to use the "Accuracy" heuristic for pruning rules.
@@ -300,7 +300,7 @@ namespace seco {
             class IFMeasureHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IFMeasureHeuristicMixin() override {};
+                    virtual ~IFMeasureHeuristicMixin() override {}
 
                     /**
                      * Configures the rule learner to use the "F-Measure" heuristic for learning rules.
@@ -324,7 +324,7 @@ namespace seco {
             class IFMeasurePruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IFMeasurePruningHeuristicMixin() override {};
+                    virtual ~IFMeasurePruningHeuristicMixin() override {}
 
                     /**
                      * Configures the rule learner to use the "F-Measure" heuristic for pruning rules.
@@ -349,7 +349,7 @@ namespace seco {
             class IMEstimateHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IMEstimateHeuristicMixin() override {};
+                    virtual ~IMEstimateHeuristicMixin() override {}
 
                     /**
                      * Configures the rule learner to use the "M-Estimate" heuristic for learning rules.
@@ -373,7 +373,7 @@ namespace seco {
             class IMEstimatePruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IMEstimatePruningHeuristicMixin() override {};
+                    virtual ~IMEstimatePruningHeuristicMixin() override {}
 
                     /**
                      * Configures the rule learner to use the "M-Estimate" heuristic for pruning rules.
@@ -398,7 +398,7 @@ namespace seco {
             class ILaplaceHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILaplaceHeuristicMixin() override {};
+                    virtual ~ILaplaceHeuristicMixin() override {}
 
                     /**
                      * Configures the rule learner to use the "Laplace" heuristic for learning rules.
@@ -416,7 +416,7 @@ namespace seco {
             class ILaplacePruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILaplacePruningHeuristicMixin() override {};
+                    virtual ~ILaplacePruningHeuristicMixin() override {}
 
                     /**
                      * Configures the rule learner to use the "Laplace" heuristic for pruning rules.
@@ -435,7 +435,7 @@ namespace seco {
             class IPrecisionHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IPrecisionHeuristicMixin() override {};
+                    virtual ~IPrecisionHeuristicMixin() override {}
 
                     /**
                      * Configures the rule learner to use the "Precision" heuristic for learning rules.
@@ -453,7 +453,7 @@ namespace seco {
             class IPrecisionPruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IPrecisionPruningHeuristicMixin() override {};
+                    virtual ~IPrecisionPruningHeuristicMixin() override {}
 
                     /**
                      * Configures the rule learner to use the "Precision" heuristic for pruning rules.
@@ -472,7 +472,7 @@ namespace seco {
             class IRecallHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IRecallHeuristicMixin() override {};
+                    virtual ~IRecallHeuristicMixin() override {}
 
                     /**
                      * Configures the rule learner to use the "Recall" heuristic for learning rules.
@@ -490,7 +490,7 @@ namespace seco {
             class IRecallPruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IRecallPruningHeuristicMixin() override {};
+                    virtual ~IRecallPruningHeuristicMixin() override {}
 
                     /**
                      * Configures the rule learner to use the "Recall" heuristic for pruning rules.
@@ -509,7 +509,7 @@ namespace seco {
             class IWraHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IWraHeuristicMixin() override {};
+                    virtual ~IWraHeuristicMixin() override {}
 
                     /**
                      * Configures the rule learner to use the "Weighted Relative Accuracy" (WRA) heuristic for learning
@@ -528,7 +528,7 @@ namespace seco {
             class IWraPruningHeuristicMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~IWraPruningHeuristicMixin() override {};
+                    virtual ~IWraPruningHeuristicMixin() override {}
 
                     /**
                      * Configures the rule learner to use the "Weighted Relative Accuracy" (WRA) heuristic for pruning
@@ -550,7 +550,7 @@ namespace seco {
             class ILabelWiseBinaryPredictionMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseBinaryPredictionMixin() override {};
+                    virtual ~ILabelWiseBinaryPredictionMixin() override {}
 
                     /**
                      * Configures the rule learner to use a predictor for predicting whether individual labels of given

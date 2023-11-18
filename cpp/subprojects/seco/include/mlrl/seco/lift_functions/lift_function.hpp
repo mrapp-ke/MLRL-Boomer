@@ -17,7 +17,7 @@ namespace seco {
     class ILiftFunction {
         public:
 
-            virtual ~ILiftFunction() {};
+            virtual ~ILiftFunction() {}
 
             /**
              * Calculates and returns the lift for a specific number of labels.
@@ -43,7 +43,7 @@ namespace seco {
     class ILiftFunctionFactory {
         public:
 
-            virtual ~ILiftFunctionFactory() {};
+            virtual ~ILiftFunctionFactory() {}
 
             /**
              * Creates and returns a new object of type `ILiftFunction`.
@@ -59,7 +59,7 @@ namespace seco {
     class ILiftFunctionConfig {
         public:
 
-            virtual ~ILiftFunctionConfig() {};
+            virtual ~ILiftFunctionConfig() {}
 
             /**
              * Creates and returns a new object of type `ILiftFunctionFactory` according to the specified configuration.

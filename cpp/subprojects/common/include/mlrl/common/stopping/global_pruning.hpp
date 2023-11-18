@@ -12,7 +12,7 @@
 class IGlobalPruningConfig : public IStoppingCriterionConfig {
     public:
 
-        virtual ~IGlobalPruningConfig() override {};
+        virtual ~IGlobalPruningConfig() override {}
 
         /**
          * Returns whether a holdout set should be used, if available, or not.

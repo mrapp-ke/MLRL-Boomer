@@ -29,7 +29,7 @@ class IProbabilityPredictorFactory;
 class MLRLCOMMON_API IRuleModel {
     public:
 
-        virtual ~IRuleModel() {};
+        virtual ~IRuleModel() {}
 
         /**
          * Returns the total number of rules in the model, including the default rule, if available.

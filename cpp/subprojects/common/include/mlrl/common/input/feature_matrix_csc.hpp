@@ -12,7 +12,7 @@
 class MLRLCOMMON_API ICscFeatureMatrix : virtual public IColumnWiseFeatureMatrix {
     public:
 
-        virtual ~ICscFeatureMatrix() override {};
+        virtual ~ICscFeatureMatrix() override {}
 };
 
 /**

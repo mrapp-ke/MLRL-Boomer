@@ -14,7 +14,7 @@
 class MLRLCOMMON_API IGreedyTopDownRuleInductionConfig {
     public:
 
-        virtual ~IGreedyTopDownRuleInductionConfig() {};
+        virtual ~IGreedyTopDownRuleInductionConfig() {}
 
         /**
          * Returns the minimum number of training examples that must be covered by a rule.

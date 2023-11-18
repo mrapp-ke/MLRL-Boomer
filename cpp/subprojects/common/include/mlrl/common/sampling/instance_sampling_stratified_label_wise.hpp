@@ -15,7 +15,7 @@
 class MLRLCOMMON_API ILabelWiseStratifiedInstanceSamplingConfig {
     public:
 
-        virtual ~ILabelWiseStratifiedInstanceSamplingConfig() {};
+        virtual ~ILabelWiseStratifiedInstanceSamplingConfig() {}
 
         /**
          * Returns the fraction of examples that are included in a sample.

@@ -17,7 +17,7 @@ namespace boosting {
     class MLRLBOOSTING_API IMarginalizedProbabilityPredictorConfig {
         public:
 
-            virtual ~IMarginalizedProbabilityPredictorConfig() {};
+            virtual ~IMarginalizedProbabilityPredictorConfig() {}
 
             /**
              * Returns whether a model for the calibration of probabilities is used, if available, or not.

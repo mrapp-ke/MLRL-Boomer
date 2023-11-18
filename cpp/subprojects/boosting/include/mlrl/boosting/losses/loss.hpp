@@ -22,7 +22,7 @@ namespace boosting {
                   public IDistanceMeasure {
         public:
 
-            virtual ~ILoss() override {};
+            virtual ~ILoss() override {}
     };
 
     /**
@@ -31,7 +31,7 @@ namespace boosting {
     class ILossConfig {
         public:
 
-            virtual ~ILossConfig() {};
+            virtual ~ILossConfig() {}
 
             /**
              * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified

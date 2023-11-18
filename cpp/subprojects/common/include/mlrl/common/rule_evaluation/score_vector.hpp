@@ -16,7 +16,7 @@ class IPrediction;
 class IScoreVector : public Quality {
     public:
 
-        virtual ~IScoreVector() {};
+        virtual ~IScoreVector() {}
 
         /**
          * Sets the scores of a specific prediction to the scores that are stored in this vector.

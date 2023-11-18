@@ -15,7 +15,7 @@
 class ILabelSampling {
     public:
 
-        virtual ~ILabelSampling() {};
+        virtual ~ILabelSampling() {}
 
         /**
          * Creates and returns a sample of the available labels.
@@ -33,7 +33,7 @@ class ILabelSampling {
 class ILabelSamplingFactory {
     public:
 
-        virtual ~ILabelSamplingFactory() {};
+        virtual ~ILabelSamplingFactory() {}
 
         /**
          * Creates and returns a new object of type `ILabelSampling`.
@@ -49,7 +49,7 @@ class ILabelSamplingFactory {
 class ILabelSamplingConfig {
     public:
 
-        virtual ~ILabelSamplingConfig() {};
+        virtual ~ILabelSamplingConfig() {}
 
         /**
          * Creates and returns a new object of type `ILabelSamplingFactory` according to the specified configuration.
