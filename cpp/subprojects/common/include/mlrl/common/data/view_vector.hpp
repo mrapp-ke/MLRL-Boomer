@@ -169,6 +169,33 @@ template<typename Vector>
 using WritableVectorDecorator = WriteIterableVectorDecorator<ReadableVectorDecorator<Vector>>;
 
 /**
+ * Allows to resize a vector.
+ *
+ * @tparam Vector The type of the vector
+ */
+template<typename Vector>
+class ResizableVectorDecorator : public Vector {
+    public:
+
+        /**
+         * @param view The view, the vector should be backed by
+         */
+        ResizableVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
+
+        virtual ~ResizableVectorDecorator() override {};
+
+        /**
+         * Sets the number of elements in the vector.
+         *
+         * @param numElements   The number of elements to be set
+         * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
+         */
+        virtual void setNumElements(uint32 numElements, bool freeMemory) {
+            Vector::view_.resize(numElements, freeMemory);
+        }
+};
+
+/**
  * Allows to set all values stored in a vector to zero.
  *
  * @tparam Vector The type of the vector

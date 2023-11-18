@@ -3,13 +3,13 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_dense.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/indices/index_vector.hpp"
 
 /**
  * Provides random access to a fixed number of indices stored in a C-contiguous array.
  */
-class PartialIndexVector final : public ResizableVectorDecorator<WritableVectorDecorator<AllocatedVector<uint32>>>,
+class PartialIndexVector final : public ResizableVectorDecorator<WritableVectorDecorator<ResizableVector<uint32>>>,
                                  public IIndexVector {
     public:
 

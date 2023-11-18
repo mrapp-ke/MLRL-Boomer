@@ -7,7 +7,7 @@
 #include "mlrl/common/statistics/statistics.hpp"
 
 PartialPrediction::PartialPrediction(uint32 numElements, bool sorted)
-    : ResizableVectorDecorator<VectorDecorator<AllocatedVector<float64>>>(AllocatedVector<float64>(numElements)),
+    : ResizableVectorDecorator<VectorDecorator<ResizableVector<float64>>>(ResizableVector<float64>(numElements)),
       indexVector_(numElements), sorted_(sorted) {}
 
 PartialPrediction::value_iterator PartialPrediction::values_begin() {
@@ -43,11 +43,11 @@ PartialPrediction::index_const_iterator PartialPrediction::indices_cend() const 
 }
 
 uint32 PartialPrediction::getNumElements() const {
-    return ResizableVectorDecorator<VectorDecorator<AllocatedVector<float64>>>::getNumElements();
+    return ResizableVectorDecorator<VectorDecorator<ResizableVector<float64>>>::getNumElements();
 }
 
 void PartialPrediction::setNumElements(uint32 numElements, bool freeMemory) {
-    ResizableVectorDecorator<VectorDecorator<AllocatedVector<float64>>>::setNumElements(numElements, freeMemory);
+    ResizableVectorDecorator<VectorDecorator<ResizableVector<float64>>>::setNumElements(numElements, freeMemory);
     indexVector_.setNumElements(numElements, freeMemory);
 }
 

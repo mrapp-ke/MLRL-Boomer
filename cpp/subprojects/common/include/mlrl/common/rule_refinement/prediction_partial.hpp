@@ -3,14 +3,14 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_dense.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/common/rule_refinement/prediction_evaluated.hpp"
 
 /**
  * Stores the scores that are predicted by a rule that predicts for a subset of the available labels.
  */
-class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<AllocatedVector<float64>>>,
+class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<ResizableVector<float64>>>,
                                 public IEvaluatedPrediction {
     private:
 

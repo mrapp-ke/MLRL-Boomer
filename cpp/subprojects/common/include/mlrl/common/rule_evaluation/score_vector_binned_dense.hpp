@@ -17,7 +17,7 @@
  */
 template<typename IndexVector>
 class DenseBinnedScoreVector final
-    : public BinnedVectorDecorator<CompositeVectorDecorator<AllocatedVector<uint32>, AllocatedVector<float64>>>,
+    : public BinnedVectorDecorator<CompositeVectorDecorator<AllocatedVector<uint32>, ResizableVector<float64>>>,
       virtual public IScoreVector {
     private:
 

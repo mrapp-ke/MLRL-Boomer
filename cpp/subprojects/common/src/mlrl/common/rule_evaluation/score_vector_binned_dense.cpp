@@ -8,8 +8,8 @@
 template<typename IndexVector>
 DenseBinnedScoreVector<IndexVector>::DenseBinnedScoreVector(const IndexVector& labelIndices, uint32 numBins,
                                                             bool sorted)
-    : BinnedVectorDecorator<CompositeVectorDecorator<AllocatedVector<uint32>, AllocatedVector<float64>>>(
-      AllocatedVector<uint32>(labelIndices.getNumElements()), AllocatedVector<float64>(numBins)),
+    : BinnedVectorDecorator<CompositeVectorDecorator<AllocatedVector<uint32>, ResizableVector<float64>>>(
+      AllocatedVector<uint32>(labelIndices.getNumElements()), ResizableVector<float64>(numBins)),
       labelIndices_(labelIndices), sorted_(sorted), maxCapacity_(numBins) {}
 
 template<typename IndexVector>
@@ -90,17 +90,7 @@ uint32 DenseBinnedScoreVector<IndexVector>::getNumElements() const {
 
 template<typename IndexVector>
 void DenseBinnedScoreVector<IndexVector>::setNumBins(uint32 numBins, bool freeMemory) {
-    if (numBins < maxCapacity_) {
-        if (freeMemory) {
-            this->secondView_.array = reallocateMemory(this->secondView_.array, numBins);
-            maxCapacity_ = numBins;
-        }
-    } else if (numBins > maxCapacity_) {
-        this->secondView_.array = reallocateMemory(this->secondView_.array, numBins);
-        maxCapacity_ = numBins;
-    }
-
-    this->secondView_.numElements = numBins;
+    this->secondView_.resize(numBins, freeMemory);
 }
 
 template<typename IndexVector>

@@ -3,13 +3,13 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_dense.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/input/missing_feature_vector.hpp"
 
 /**
  * An one-dimensional vector that stores thresholds that may be used by conditions.
  */
-class ThresholdVector final : public ResizableVectorDecorator<WritableVectorDecorator<AllocatedVector<float32>>>,
+class ThresholdVector final : public ResizableVectorDecorator<WritableVectorDecorator<ResizableVector<float32>>>,
                               public MissingFeatureVector {
     private:
 
