@@ -11,7 +11,6 @@
 #include "mlrl/common/data/view_c_contiguous.hpp"
 #include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/input/label_matrix_row_wise.hpp"
-#include "mlrl/common/util/arrays.hpp"
 
 /**
  * Defines an interface for all label matrices that provide row-wise access to the labels of individual examples that
@@ -34,7 +33,7 @@ class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>,
         /**
          * Provides access to the values that are stored in a single row of a `CContiguousLabelMatrix`.
          */
-        class View final : public VectorConstView<const uint8> {
+        class View final : public ReadableVectorDecorator<Vector<const uint8>> {
             public:
 
                 /**
@@ -78,8 +77,7 @@ class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>,
                          * @return      True, if the given objects are equal, false otherwise
                          */
                         inline bool operator()(const View& lhs, const View& rhs) const {
-                            return compareArrays(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(),
-                                                 rhs.getNumElements());
+                            return compareViews(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(), rhs.getNumElements());
                         }
                 };
 

@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/types.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 
 #include <utility>
 
@@ -13,12 +13,8 @@
  * @tparam T The type of the values that are stored in the buffer
  */
 template<typename T>
-class RingBuffer final {
+class RingBuffer final : ViewDecorator<AllocatedVector<T>> {
     private:
-
-        T* array_;
-
-        const uint32 capacity_;
 
         uint32 pos_;
 
@@ -31,12 +27,10 @@ class RingBuffer final {
          */
         RingBuffer(uint32 capacity);
 
-        ~RingBuffer();
-
         /**
          * An iterator that provides read-only access to the elements in the buffer.
          */
-        typedef const T* const_iterator;
+        typedef typename View<T>::const_iterator const_iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the buffer.

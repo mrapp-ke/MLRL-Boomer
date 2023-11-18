@@ -21,15 +21,9 @@ namespace boosting {
             /**
              * @param numRows   The number of rows in the matrix
              * @param numCols   The number of columns in the matrix
-             */
-            NumericCContiguousMatrix(uint32 numRows, uint32 numCols);
-
-            /**
-             * @param numRows   The number of rows in the matrix
-             * @param numCols   The number of columns in the matrix
              * @param init      True, if all elements in the matrix should be value-initialized, false otherwise
              */
-            NumericCContiguousMatrix(uint32 numRows, uint32 numCols, bool init);
+            NumericCContiguousMatrix(uint32 numRows, uint32 numCols, bool init = false);
 
             /**
              * Adds all values in another vector to certain elements, whose positions are given as a
@@ -41,8 +35,8 @@ namespace boosting {
              * @param indicesBegin  An iterator to the beginning of the indices
              * @param indicesEnd    An iterator to the end of the indices
              */
-            void addToRowFromSubset(uint32 row, typename VectorConstView<T>::const_iterator begin,
-                                    typename VectorConstView<T>::const_iterator end,
+            void addToRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
+                                    typename View<T>::const_iterator end,
                                     CompleteIndexVector::const_iterator indicesBegin,
                                     CompleteIndexVector::const_iterator indicesEnd);
 
@@ -56,8 +50,8 @@ namespace boosting {
              * @param indicesBegin  An iterator to the beginning of the indices
              * @param indicesEnd    An iterator to the end of the indices
              */
-            void addToRowFromSubset(uint32 row, typename VectorConstView<T>::const_iterator begin,
-                                    typename VectorConstView<T>::const_iterator end,
+            void addToRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
+                                    typename View<T>::const_iterator end,
                                     PartialIndexVector::const_iterator indicesBegin,
                                     PartialIndexVector::const_iterator indicesEnd);
 
@@ -71,8 +65,8 @@ namespace boosting {
              * @param indicesBegin  An iterator to the beginning of the indices
              * @param indicesEnd    An iterator to the end of the indices
              */
-            void removeFromRowFromSubset(uint32 row, typename VectorConstView<T>::const_iterator begin,
-                                         typename VectorConstView<T>::const_iterator end,
+            void removeFromRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
+                                         typename View<T>::const_iterator end,
                                          CompleteIndexVector::const_iterator indicesBegin,
                                          CompleteIndexVector::const_iterator indicesEnd);
 
@@ -86,8 +80,8 @@ namespace boosting {
              * @param indicesBegin  An iterator to the beginning of the indices
              * @param indicesEnd    An iterator to the end of the indices
              */
-            void removeFromRowFromSubset(uint32 row, typename VectorConstView<T>::const_iterator begin,
-                                         typename VectorConstView<T>::const_iterator end,
+            void removeFromRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
+                                         typename View<T>::const_iterator end,
                                          PartialIndexVector::const_iterator indicesBegin,
                                          PartialIndexVector::const_iterator indicesEnd);
     };

@@ -4,12 +4,11 @@
 #include "mlrl/common/sampling/instance_sampling.hpp"
 #include "mlrl/common/sampling/partition_sampling.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
-#include "mlrl/common/util/arrays.hpp"
 #include "mlrl/common/util/math.hpp"
 
 CsrLabelMatrix::View::View(const CsrLabelMatrix& labelMatrix, uint32 row)
-    : VectorConstView<const uint32>(labelMatrix.indices_cend(row) - labelMatrix.indices_cbegin(row),
-                                    labelMatrix.indices_cbegin(row)) {}
+    : ReadableVectorDecorator<Vector<const uint32>>(Vector<const uint32>(
+      labelMatrix.indices_cbegin(row), labelMatrix.indices_cend(row) - labelMatrix.indices_cbegin(row))) {}
 
 CsrLabelMatrix::CsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* indptr, uint32* colIndices)
     : BinaryCsrConstView(numRows, numCols, indptr, colIndices) {}
@@ -42,7 +41,7 @@ std::unique_ptr<LabelVector> CsrLabelMatrix::createLabelVector(uint32 row) const
     uint32 numElements = indicesEnd - indexIterator;
     std::unique_ptr<LabelVector> labelVectorPtr = std::make_unique<LabelVector>(numElements);
     LabelVector::iterator iterator = labelVectorPtr->begin();
-    copyArray(indexIterator, iterator, numElements);
+    copyView(indexIterator, iterator, numElements);
     return labelVectorPtr;
 }
 

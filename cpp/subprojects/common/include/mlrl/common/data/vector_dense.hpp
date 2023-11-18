@@ -6,36 +6,44 @@
 #include "mlrl/common/data/view_vector.hpp"
 
 /**
- * An one-dimensional vector that provides random access to a fixed number of elements stored in a C-contiguous array.
+ * A vector that provides random read and write access, as well as read and write access via iterators, to the values
+ * stored in a newly allocated array.
  *
- * @tparam T The type of the data that is stored in the vector
+ * @tparam T The type of the values stored in the vector
  */
 template<typename T>
-class MLRLCOMMON_API DenseVector : public VectorView<T> {
-    private:
-
-        uint32 maxCapacity_;
-
+class DenseVector final : public WritableVectorDecorator<AllocatedVector<T>> {
     public:
-
-        /**
-         * @param numElements The number of elements in the vector
-         */
-        DenseVector(uint32 numElements);
 
         /**
          * @param numElements   The number of elements in the vector
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
-        DenseVector(uint32 numElements, bool init);
-
-        virtual ~DenseVector() override;
+        DenseVector(uint32 numElements, bool init = false)
+            : WritableVectorDecorator<AllocatedVector<T>>(AllocatedVector<T>(numElements, init)) {}
 
         /**
-         * Sets the number of elements in the vector.
-         *
-         * @param numElements   The number of elements to be set
-         * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
+         * @param other A reference to an object of type `VectorDecorator` that should be moved
          */
-        void setNumElements(uint32 numElements, bool freeMemory);
+        DenseVector(VectorDecorator<ResizableVector<T>>&& other)
+            : WritableVectorDecorator<AllocatedVector<T>>(AllocatedVector<T>(std::move(other.view))) {}
+};
+
+/**
+ * A vector that provides random read and write access, as well as read and write access via iterators, to the values
+ * stored in a newly allocated array, which can be resized.
+ *
+ * @tparam T The type of the values stored in the vector
+ */
+template<typename T>
+class ResizableDenseVector final : public ResizableVectorDecorator<WritableVectorDecorator<ResizableVector<T>>> {
+    public:
+
+        /**
+         * @param numElements   The number of elements in the vector
+         * @param init          True, if all elements in the vector should be value-initialized, false otherwise
+         */
+        ResizableDenseVector(uint32 numElements, bool init = false)
+            : ResizableVectorDecorator<WritableVectorDecorator<ResizableVector<T>>>(
+              ResizableVector<T>(numElements, init)) {}
 };

@@ -3,16 +3,12 @@
 namespace boosting {
 
     template<typename T>
-    NumericCContiguousMatrix<T>::NumericCContiguousMatrix(uint32 numRows, uint32 numCols)
-        : CContiguousMatrix<T>(numRows, numCols) {}
-
-    template<typename T>
     NumericCContiguousMatrix<T>::NumericCContiguousMatrix(uint32 numRows, uint32 numCols, bool init)
         : CContiguousMatrix<T>(numRows, numCols, init) {}
 
     template<typename T>
-    void NumericCContiguousMatrix<T>::addToRowFromSubset(uint32 row, typename VectorConstView<T>::const_iterator begin,
-                                                         typename VectorConstView<T>::const_iterator end,
+    void NumericCContiguousMatrix<T>::addToRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
+                                                         typename View<T>::const_iterator end,
                                                          CompleteIndexVector::const_iterator indicesBegin,
                                                          CompleteIndexVector::const_iterator indicesEnd) {
         typename NumericCContiguousMatrix<T>::value_iterator iterator = this->values_begin(row);
@@ -24,8 +20,8 @@ namespace boosting {
     }
 
     template<typename T>
-    void NumericCContiguousMatrix<T>::addToRowFromSubset(uint32 row, typename VectorConstView<T>::const_iterator begin,
-                                                         typename VectorConstView<T>::const_iterator end,
+    void NumericCContiguousMatrix<T>::addToRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
+                                                         typename View<T>::const_iterator end,
                                                          PartialIndexVector::const_iterator indicesBegin,
                                                          PartialIndexVector::const_iterator indicesEnd) {
         typename NumericCContiguousMatrix<T>::value_iterator iterator = this->values_begin(row);
@@ -38,9 +34,8 @@ namespace boosting {
     }
 
     template<typename T>
-    void NumericCContiguousMatrix<T>::removeFromRowFromSubset(uint32 row,
-                                                              typename VectorConstView<T>::const_iterator begin,
-                                                              typename VectorConstView<T>::const_iterator end,
+    void NumericCContiguousMatrix<T>::removeFromRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
+                                                              typename View<T>::const_iterator end,
                                                               CompleteIndexVector::const_iterator indicesBegin,
                                                               CompleteIndexVector::const_iterator indicesEnd) {
         typename NumericCContiguousMatrix<T>::value_iterator iterator = this->values_begin(row);
@@ -52,9 +47,8 @@ namespace boosting {
     }
 
     template<typename T>
-    void NumericCContiguousMatrix<T>::removeFromRowFromSubset(uint32 row,
-                                                              typename VectorConstView<T>::const_iterator begin,
-                                                              typename VectorConstView<T>::const_iterator end,
+    void NumericCContiguousMatrix<T>::removeFromRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
+                                                              typename View<T>::const_iterator end,
                                                               PartialIndexVector::const_iterator indicesBegin,
                                                               PartialIndexVector::const_iterator indicesEnd) {
         typename NumericCContiguousMatrix<T>::value_iterator iterator = this->values_begin(row);

@@ -1,5 +1,6 @@
 #include "mlrl/common/sampling/stratified_sampling_label_wise.hpp"
 
+#include "mlrl/common/data/array.hpp"
 #include "mlrl/common/data/indexed_value.hpp"
 #include "mlrl/common/input/label_matrix_c_contiguous.hpp"
 #include "mlrl/common/input/label_matrix_csc.hpp"
@@ -32,7 +33,7 @@ struct CompareIndexedValue final {
 };
 
 static inline void updateNumExamplesPerLabel(const CContiguousLabelMatrix& labelMatrix, uint32 exampleIndex,
-                                             uint32* numExamplesPerLabel,
+                                             Array<uint32>& numExamplesPerLabel,
                                              std::unordered_map<uint32, uint32>& affectedLabelIndices) {
     CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.values_cbegin(exampleIndex);
     uint32 numLabels = labelMatrix.getNumCols();
@@ -47,7 +48,7 @@ static inline void updateNumExamplesPerLabel(const CContiguousLabelMatrix& label
 }
 
 static inline void updateNumExamplesPerLabel(const CsrLabelMatrix& labelMatrix, uint32 exampleIndex,
-                                             uint32* numExamplesPerLabel,
+                                             Array<uint32>& numExamplesPerLabel,
                                              std::unordered_map<uint32, uint32>& affectedLabelIndices) {
     CsrLabelMatrix::index_const_iterator indexIterator = labelMatrix.indices_cbegin(exampleIndex);
     uint32 numLabels = labelMatrix.indices_cend(exampleIndex) - indexIterator;
@@ -71,7 +72,7 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
     // Create an array that stores for each label the number of examples that are associated with the label, as well as
     // a sorted map that stores all label indices in increasing order of the number of associated examples...
     uint32 numLabels = cscLabelMatrix.getNumCols();
-    uint32* numExamplesPerLabel = new uint32[numLabels];
+    Array<uint32> numExamplesPerLabel(numLabels);
     typedef std::set<IndexedValue<uint32>, CompareIndexedValue> SortedSet;
     SortedSet sortedLabelIndices;
 
@@ -133,7 +134,7 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
 
                 // For each label that is associated with the example, decrement the number of associated examples by
                 // one...
-                updateNumExamplesPerLabel(labelMatrix, exampleIndex, &numExamplesPerLabel[0], affectedLabelIndices);
+                updateNumExamplesPerLabel(labelMatrix, exampleIndex, numExamplesPerLabel, affectedLabelIndices);
             }
         }
 
@@ -186,8 +187,6 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
 
     indptr_[numCols] = numNonZeroElements;
     numCols_ = numCols;
-
-    delete[] numExamplesPerLabel;
 }
 
 template<typename LabelMatrix, typename IndexIterator>

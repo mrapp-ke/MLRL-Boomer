@@ -13,20 +13,15 @@ source_files = [
     'src/mlrl/common/data/matrix_c_contiguous.cpp',
     'src/mlrl/common/data/matrix_sparse_set.cpp',
     'src/mlrl/common/data/ring_buffer.cpp',
-    'src/mlrl/common/data/vector_binned_dense.cpp',
     'src/mlrl/common/data/vector_bit.cpp',
-    'src/mlrl/common/data/vector_dense.cpp',
     'src/mlrl/common/data/vector_dok.cpp',
     'src/mlrl/common/data/vector_dok_binary.cpp',
-    'src/mlrl/common/data/vector_sparse_array.cpp',
-    'src/mlrl/common/data/vector_sparse_arrays.cpp',
     'src/mlrl/common/data/view_c_contiguous.cpp',
     'src/mlrl/common/data/view_csc.cpp',
     'src/mlrl/common/data/view_csc_binary.cpp',
     'src/mlrl/common/data/view_csr.cpp',
     'src/mlrl/common/data/view_csr_binary.cpp',
     'src/mlrl/common/data/view_fortran_contiguous.cpp',
-    'src/mlrl/common/data/view_vector.cpp',
     'src/mlrl/common/indices/index_iterator.cpp',
     'src/mlrl/common/indices/index_vector_complete.cpp',
     'src/mlrl/common/indices/index_vector_partial.cpp',
@@ -117,6 +112,9 @@ source_files = [
 
 # Test files
 test_files = [
+    'test/mlrl/common/data/array.cpp',
+    'test/mlrl/common/data/vector_bit.cpp',
+    'test/mlrl/common/data/vector_dense.cpp',
     'test/mlrl/common/info.cpp'
 ]
 

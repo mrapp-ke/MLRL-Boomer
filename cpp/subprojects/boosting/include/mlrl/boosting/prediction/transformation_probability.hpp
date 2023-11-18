@@ -18,18 +18,14 @@ namespace boosting {
             /**
              * Transforms aggregated scores into probability estimates.
              *
-             * @param scoresBegin           An iterator of type `VectorConstView::const_iterator` to the beginning of
-             *                              the aggregated scores
-             * @param scoresEnd             An iterator of type `VectorConstView::const_iterator` to the end of the
-             *                              the aggregated scores
-             * @param probabilitiesBegin    An iterator of type `VectorView::iterator` to the beginning of the
-             *                              probabilities
-             * @param probabilitiesEnd      An iterator of type `VectorView::iterator` to the end of the probabilities
+             * @param scoresBegin           An iterator to the beginning of the aggregated scores
+             * @param scoresEnd             An iterator to the end of the the aggregated scores
+             * @param probabilitiesBegin    An iterator to the beginning of the probabilities
+             * @param probabilitiesEnd      An iterator to the end of the probabilities
              */
-            virtual void apply(VectorConstView<float64>::const_iterator scoresBegin,
-                               VectorConstView<float64>::const_iterator scoresEnd,
-                               VectorView<float64>::iterator probabilitiesBegin,
-                               VectorView<float64>::iterator probabilitiesEnd) const = 0;
+            virtual void apply(View<float64>::const_iterator scoresBegin, View<float64>::const_iterator scoresEnd,
+                               View<float64>::iterator probabilitiesBegin,
+                               View<float64>::iterator probabilitiesEnd) const = 0;
     };
 
 }

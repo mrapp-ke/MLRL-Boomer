@@ -32,7 +32,7 @@ namespace boosting {
             uint32 calculateLabelWiseCriteria(const DenseExampleWiseStatisticVector& statisticVector, float64* criteria,
                                               uint32 numCriteria, float64 l1RegularizationWeight,
                                               float64 l2RegularizationWeight) override {
-                uint32 numLabels = statisticVector.getNumElements();
+                uint32 numLabels = statisticVector.getNumGradients();
                 DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
                   statisticVector.gradients_cbegin();
                 DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =

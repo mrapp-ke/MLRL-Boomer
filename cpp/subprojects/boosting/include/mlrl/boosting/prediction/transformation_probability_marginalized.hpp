@@ -32,10 +32,9 @@ namespace boosting {
               const LabelVectorSet& labelVectorSet,
               std::unique_ptr<IJointProbabilityFunction> jointProbabilityFunctionPtr);
 
-            void apply(VectorConstView<float64>::const_iterator scoresBegin,
-                       VectorConstView<float64>::const_iterator scoresEnd,
-                       VectorView<float64>::iterator probabilitiesBegin,
-                       VectorView<float64>::iterator probabilitiesEnd) const override;
+            void apply(View<float64>::const_iterator scoresBegin, View<float64>::const_iterator scoresEnd,
+                       View<float64>::iterator probabilitiesBegin,
+                       View<float64>::iterator probabilitiesEnd) const override;
     };
 
 }

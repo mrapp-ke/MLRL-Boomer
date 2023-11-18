@@ -4,25 +4,24 @@
 #include "mlrl/common/post_processing/post_processor.hpp"
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
-#include "mlrl/common/util/arrays.hpp"
 
 CompletePrediction::CompletePrediction(uint32 numElements)
-    : predictedScoreVector_(numElements), indexVector_(numElements) {}
+    : VectorDecorator<AllocatedVector<float64>>(AllocatedVector<float64>(numElements)), indexVector_(numElements) {}
 
 CompletePrediction::value_iterator CompletePrediction::values_begin() {
-    return predictedScoreVector_.begin();
+    return this->view.begin();
 }
 
 CompletePrediction::value_iterator CompletePrediction::values_end() {
-    return predictedScoreVector_.end();
+    return this->view.end();
 }
 
 CompletePrediction::value_const_iterator CompletePrediction::values_cbegin() const {
-    return predictedScoreVector_.cbegin();
+    return this->view.cbegin();
 }
 
 CompletePrediction::value_const_iterator CompletePrediction::values_cend() const {
-    return predictedScoreVector_.cend();
+    return this->view.cend();
 }
 
 CompletePrediction::index_const_iterator CompletePrediction::indices_cbegin() const {
@@ -34,7 +33,7 @@ CompletePrediction::index_const_iterator CompletePrediction::indices_cend() cons
 }
 
 uint32 CompletePrediction::getNumElements() const {
-    return predictedScoreVector_.getNumElements();
+    return VectorDecorator<AllocatedVector<float64>>::getNumElements();
 }
 
 void CompletePrediction::sort() {}
@@ -43,13 +42,12 @@ void CompletePrediction::postProcess(const IPostProcessor& postProcessor) {
     postProcessor.postProcess(this->values_begin(), this->values_end());
 }
 
-void CompletePrediction::set(DenseVector<float64>::const_iterator begin, DenseVector<float64>::const_iterator end) {
-    copyArray(begin, predictedScoreVector_.begin(), predictedScoreVector_.getNumElements());
+void CompletePrediction::set(View<float64>::const_iterator begin, View<float64>::const_iterator end) {
+    copyView(begin, this->view.begin(), this->getNumElements());
 }
 
-void CompletePrediction::set(DenseBinnedVector<float64>::const_iterator begin,
-                             DenseBinnedVector<float64>::const_iterator end) {
-    copyArray(begin, predictedScoreVector_.begin(), predictedScoreVector_.getNumElements());
+void CompletePrediction::set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) {
+    copyView(begin, this->view.begin(), this->getNumElements());
 }
 
 bool CompletePrediction::isPartial() const {
@@ -106,6 +104,6 @@ void CompletePrediction::revert(IStatistics& statistics, uint32 statisticIndex) 
 std::unique_ptr<IHead> CompletePrediction::createHead() const {
     uint32 numElements = this->getNumElements();
     std::unique_ptr<CompleteHead> headPtr = std::make_unique<CompleteHead>(numElements);
-    copyArray(this->values_cbegin(), headPtr->values_begin(), numElements);
+    copyView(this->values_cbegin(), headPtr->values_begin(), numElements);
     return headPtr;
 }

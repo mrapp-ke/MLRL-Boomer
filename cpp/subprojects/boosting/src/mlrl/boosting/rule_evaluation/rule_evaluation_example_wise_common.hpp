@@ -5,6 +5,7 @@
 
 #include "mlrl/boosting/rule_evaluation/rule_evaluation.hpp"
 #include "mlrl/boosting/util/lapack.hpp"
+#include "mlrl/common/data/array.hpp"
 
 namespace boosting {
 
@@ -24,17 +25,17 @@ namespace boosting {
             /**
              * A pointer to a temporary array that is used for executing the LAPACK routine DSPMV.
              */
-            float64* dspmvTmpArray_;
+            Array<float64> dspmvTmpArray_;
 
             /**
              * A pointer to a temporary array that is used for executing the LAPACK routine DSYSV.
              */
-            float64* dsysvTmpArray1_;
+            Array<float64> dsysvTmpArray1_;
 
             /**
              * A pointer to a second temporary array that is used for executing the LAPACK routine DSYSV.
              */
-            int* dsysvTmpArray2_;
+            Array<int> dsysvTmpArray2_;
 
             /**
              * The `lwork` parameter that is used for executing the LAPACK routine DSYSV.
@@ -44,7 +45,7 @@ namespace boosting {
             /**
              * A pointer to a third temporary array that is used for executing the LAPACK routine DSYSV.
              */
-            double* dsysvTmpArray3_;
+            Array<double> dsysvTmpArray3_;
 
         public:
 
@@ -54,18 +55,10 @@ namespace boosting {
              *                          LAPACK routines
              */
             AbstractExampleWiseRuleEvaluation(uint32 numPredictions, const Lapack& lapack)
-                : dspmvTmpArray_(new float64[numPredictions]),
-                  dsysvTmpArray1_(new float64[numPredictions * numPredictions]),
-                  dsysvTmpArray2_(new int[numPredictions]),
-                  dsysvLwork_(lapack.queryDsysvLworkParameter(dsysvTmpArray1_, dspmvTmpArray_, numPredictions)),
-                  dsysvTmpArray3_(new double[dsysvLwork_]) {}
-
-            virtual ~AbstractExampleWiseRuleEvaluation() override {
-                delete[] dspmvTmpArray_;
-                delete[] dsysvTmpArray1_;
-                delete[] dsysvTmpArray2_;
-                delete[] dsysvTmpArray3_;
-            }
+                : dspmvTmpArray_(numPredictions), dsysvTmpArray1_(numPredictions * numPredictions),
+                  dsysvTmpArray2_(numPredictions), dsysvLwork_(lapack.queryDsysvLworkParameter(
+                                                     dsysvTmpArray1_.begin(), dspmvTmpArray_.begin(), numPredictions)),
+                  dsysvTmpArray3_(dsysvLwork_) {}
     };
 
 }

@@ -7,7 +7,6 @@
 #include "mlrl/boosting/prediction/transformation_binary.hpp"
 #include "mlrl/common/data/matrix_c_contiguous.hpp"
 #include "mlrl/common/prediction/predictor_binary.hpp"
-#include "mlrl/common/util/arrays.hpp"
 
 namespace boosting {
 
@@ -117,7 +116,7 @@ namespace boosting {
                                            uint32 exampleIndex, uint32 predictionIndex) const override {
                         uint32 numLabels = realMatrix_.getNumCols();
                         CContiguousView<float64>::value_iterator realIterator = realMatrix_.values_begin(threadIndex);
-                        setArrayToZeros(realIterator, numLabels);
+                        setViewToZeros(realIterator, numLabels);
                         ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
                           .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
                                              threadIndex);
@@ -306,7 +305,7 @@ namespace boosting {
                                              uint32 exampleIndex, uint32 predictionIndex) const override {
                         uint32 numLabels = realMatrix_.getNumCols();
                         CContiguousView<float64>::value_iterator realIterator = realMatrix_.values_begin(threadIndex);
-                        setArrayToZeros(realIterator, numLabels);
+                        setViewToZeros(realIterator, numLabels);
                         ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
                           .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
                                              threadIndex);

@@ -3,116 +3,220 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_one_dimensional.hpp"
+#include "mlrl/common/data/view.hpp"
+#include "mlrl/common/util/view_functions.hpp"
 
 /**
- * Implements read-only access to the values that are stored in a pre-allocated C-contiguous array.
+ * A one-dimensional view that provides access to values stored in a pre-allocated array of a specific size.
  *
- * @tparam T The type of the values
+ * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class MLRLCOMMON_API VectorConstView : public IOneDimensionalView {
-    protected:
+class Vector : public View<T> {
+    public:
 
         /**
          * The number of elements in the view.
          */
-        uint32 numElements_;
+        uint32 numElements;
 
         /**
-         * A pointer to the array that stores the values, the view provides access to.
+         * @param a A pointer to an array of template type `T` that stores the values, the view should provide access to
+         * @param n The number of elements in the view
          */
-        T* array_;
-
-    public:
+        Vector(T* a, uint32 n) : View<T>(a, n), numElements(n) {}
 
         /**
-         * @param numElements   The number of elements in the view
-         * @param array         A pointer to a C-contiguous array of template type `T` that stores the values, the view
-         *                      provides access to
+         * @param other A const reference to an object of type `Vector` that should be copied
          */
-        VectorConstView(uint32 numElements, T* array);
-
-        virtual ~VectorConstView() override {};
+        Vector(const Vector<T>& other) : Vector(other.array, other.numElements) {}
 
         /**
-         * An iterator that provides read-only access to the elements in the view.
+         * @param other A reference to an object of type `Vector` that should be moved
          */
-        typedef const T* const_iterator;
+        Vector(Vector<T>&& other) : Vector(other.array, other.numElements) {}
+
+        virtual ~Vector() override {};
 
         /**
-         * Returns a `const_iterator` to the beginning of the view.
-         *
-         * @return A `const_iterator` to the beginning
-         */
-        const_iterator cbegin() const;
-
-        /**
-         * Returns a `const_iterator` to the end of the view.
+         * Returns a `const_iterator` to the end of the vector.
          *
          * @return A `const_iterator` to the end
          */
-        const_iterator cend() const;
+        typename View<T>::const_iterator cend() const {
+            return &View<T>::array[numElements];
+        }
 
         /**
-         * Returns a const reference to the element at a specific position.
-         *
-         * @param pos   The position of the element
-         * @return      A const reference to the specified element
-         */
-        const T& operator[](uint32 pos) const;
-
-        /**
-         * @see `IOneDimensionalView::getNumElements`
-         */
-        uint32 getNumElements() const override final;
-};
-
-/**
- * Implements read and write access to the values that are stored in a pre-allocated C-contiguous array.
- *
- * @tparam T The type of the values
- */
-template<typename T>
-class MLRLCOMMON_API VectorView : public VectorConstView<T> {
-    public:
-
-        /**
-         * @param numElements   The number of elements in the view
-         * @param array         A pointer to a C-contiguous array of template type `T` that stores the values, the view
-         *                      provides access to
-         */
-        VectorView(uint32 numElements, T* array);
-
-        virtual ~VectorView() override {};
-
-        // Keep functions from the parent class rather than hiding them
-        using VectorConstView<T>::operator[];
-
-        /**
-         * An iterator that provides access to the elements in the view and allows to modify them.
-         */
-        typedef T* iterator;
-
-        /**
-         * Returns an `iterator` to the beginning of the view.
-         *
-         * @return An `iterator` to the beginning
-         */
-        iterator begin();
-
-        /**
-         * Returns an `iterator` to the end of the view.
+         * Returns an `iterator` to the end of the vector.
          *
          * @return An `iterator` to the end
          */
-        iterator end();
+        typename View<T>::iterator end() {
+            return &View<T>::array[numElements];
+        }
+};
+
+/**
+ * Allocates the memory, a `Vector` provides access to
+ *
+ * @tparam T The type of the values stored in the `Vector`
+ */
+template<typename T>
+using AllocatedVector = Allocator<Vector<T>>;
+
+/**
+ * Allocates the memory, a `Vector` provides access to, and allows to resize it afterwards.
+ *
+ * @tparam T The type of the values stored in the `Vector`
+ */
+template<typename T>
+using ResizableVector = ResizableAllocator<Vector<T>>;
+
+/**
+ * A vector that is backed by a one-dimensional view of a specific size.
+ *
+ * @tparam View The type of view, the vector is backed by
+ */
+template<typename View>
+class VectorDecorator : public ViewDecorator<View> {
+    public:
 
         /**
-         * Returns a reference to the element at a specific position.
-         *
-         * @param pos   The position of the element
-         * @return      A reference to the specified element
+         * @param view The view, the vector should be backed by
          */
-        T& operator[](uint32 pos);
+        VectorDecorator(View&& view) : ViewDecorator<View>(std::move(view)) {}
+
+        virtual ~VectorDecorator() override {};
+
+        /**
+         * Returns the number of elements in the vector.
+         *
+         * @return The number of elements in the vector
+         */
+        uint32 getNumElements() const {
+            return ViewDecorator<View>::view.numElements;
+        }
+};
+
+/**
+ * Provides read-only access via iterators to the values stored in a vector.
+ *
+ * @tparam Vector The type of the vector
+ */
+template<typename Vector>
+class ReadIterableVectorDecorator : public ReadAccessibleViewDecorator<Vector> {
+    public:
+
+        /**
+         * @param view The view, the vector should be backed by
+         */
+        ReadIterableVectorDecorator(typename Vector::view_type&& view)
+            : ReadAccessibleViewDecorator<Vector>(std::move(view)) {}
+
+        virtual ~ReadIterableVectorDecorator() override {};
+
+        /**
+         * Returns a `const_iterator` to the end of the vector.
+         *
+         * @return A `const_iterator` to the end
+         */
+        typename ReadAccessibleViewDecorator<Vector>::const_iterator cend() const {
+            return Vector::view.cend();
+        }
+};
+
+/**
+ * Provides write access via iterators to the values stored in a vector.
+ *
+ * @tparam Vector The type of the vector
+ */
+template<typename Vector>
+class WriteIterableVectorDecorator : public WriteAccessibleViewDecorator<Vector> {
+    public:
+
+        /**
+         * @param view The view, the vector should be backed by
+         */
+        WriteIterableVectorDecorator(typename Vector::view_type&& view)
+            : WriteAccessibleViewDecorator<Vector>(std::move(view)) {}
+
+        virtual ~WriteIterableVectorDecorator() override {};
+
+        /**
+         * Returns an `iterator` to the end of the vector.
+         *
+         * @return An `iterator` to the end
+         */
+        typename WriteAccessibleViewDecorator<Vector>::iterator end() {
+            return Vector::view.end();
+        }
+};
+
+/**
+ * Provides random read-only access, as well as read-only access via iterators, to the values stored in a vector.
+ *
+ * @tparam Vector The type of the vector
+ */
+template<typename Vector>
+using ReadableVectorDecorator = ReadIterableVectorDecorator<VectorDecorator<Vector>>;
+
+/**
+ * Provides random read and write access, as well as read and write access via iterators, to the values stored in a
+ * vector.
+ *
+ * @tparam Vector The type of the vector
+ */
+template<typename Vector>
+using WritableVectorDecorator = WriteIterableVectorDecorator<ReadableVectorDecorator<Vector>>;
+
+/**
+ * Allows to resize a vector.
+ *
+ * @tparam Vector The type of the vector
+ */
+template<typename Vector>
+class ResizableVectorDecorator : public Vector {
+    public:
+
+        /**
+         * @param view The view, the vector should be backed by
+         */
+        ResizableVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
+
+        virtual ~ResizableVectorDecorator() override {};
+
+        /**
+         * Sets the number of elements in the vector.
+         *
+         * @param numElements   The number of elements to be set
+         * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
+         */
+        virtual void setNumElements(uint32 numElements, bool freeMemory) {
+            Vector::view.resize(numElements, freeMemory);
+        }
+};
+
+/**
+ * Allows to set all values stored in a vector to zero.
+ *
+ * @tparam Vector The type of the vector
+ */
+template<typename Vector>
+class ClearableVectorDecorator : public Vector {
+    public:
+
+        /**
+         * @param view The view, the vector should be backed by
+         */
+        ClearableVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
+
+        virtual ~ClearableVectorDecorator() override {};
+
+        /**
+         * Sets all values stored in the vector to zero.
+         */
+        virtual void clear() {
+            setViewToZeros(Vector::view.array, Vector::view.numElements);
+        }
 };

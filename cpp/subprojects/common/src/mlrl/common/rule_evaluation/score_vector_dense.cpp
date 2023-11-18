@@ -7,7 +7,8 @@
 
 template<typename IndexVector>
 DenseScoreVector<IndexVector>::DenseScoreVector(const IndexVector& labelIndices, bool sorted)
-    : labelIndices_(labelIndices), predictedScoreVector_(labelIndices.getNumElements()), sorted_(sorted) {}
+    : ViewDecorator<AllocatedView<float64>>(AllocatedView<float64>(labelIndices.getNumElements())),
+      labelIndices_(labelIndices), sorted_(sorted) {}
 
 template<typename IndexVector>
 typename DenseScoreVector<IndexVector>::index_const_iterator DenseScoreVector<IndexVector>::indices_cbegin() const {
@@ -21,22 +22,22 @@ typename DenseScoreVector<IndexVector>::index_const_iterator DenseScoreVector<In
 
 template<typename IndexVector>
 typename DenseScoreVector<IndexVector>::value_iterator DenseScoreVector<IndexVector>::values_begin() {
-    return predictedScoreVector_.begin();
+    return this->view.begin();
 }
 
 template<typename IndexVector>
 typename DenseScoreVector<IndexVector>::value_iterator DenseScoreVector<IndexVector>::values_end() {
-    return &predictedScoreVector_.begin()[labelIndices_.getNumElements()];
+    return &this->view.array[this->getNumElements()];
 }
 
 template<typename IndexVector>
 typename DenseScoreVector<IndexVector>::value_const_iterator DenseScoreVector<IndexVector>::values_cbegin() const {
-    return predictedScoreVector_.cbegin();
+    return this->view.cbegin();
 }
 
 template<typename IndexVector>
 typename DenseScoreVector<IndexVector>::value_const_iterator DenseScoreVector<IndexVector>::values_cend() const {
-    return &predictedScoreVector_.cbegin()[labelIndices_.getNumElements()];
+    return &this->view.array[this->getNumElements()];
 }
 
 template<typename IndexVector>

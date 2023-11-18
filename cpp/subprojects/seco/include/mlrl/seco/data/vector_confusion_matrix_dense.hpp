@@ -5,6 +5,7 @@
 
 #include "mlrl/common/data/view_c_contiguous.hpp"
 #include "mlrl/common/data/view_csr_binary.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/seco/data/confusion_matrix.hpp"
 #include "mlrl/seco/data/matrix_coverage_dense.hpp"
 
@@ -13,82 +14,20 @@ namespace seco {
     /**
      * An one-dimensional vector that stores a fixed number of confusion matrices in a C-contiguous array.
      */
-    class DenseConfusionMatrixVector final {
-        private:
-
-            ConfusionMatrix* array_;
-
-            const uint32 numElements_;
-
+    class DenseConfusionMatrixVector final
+        : public ClearableVectorDecorator<WritableVectorDecorator<AllocatedVector<ConfusionMatrix>>> {
         public:
-
-            /**
-             * @param numElements The number of elements in the vector
-             */
-            DenseConfusionMatrixVector(uint32 numElements);
 
             /**
              * @param numElements   The number of elements in the vector
              * @param init          True, if the elements of all confusion matrices should be value-initialized
              */
-            DenseConfusionMatrixVector(uint32 numElements, bool init);
+            DenseConfusionMatrixVector(uint32 numElements, bool init = false);
 
             /**
              * @param other A reference to an object of type `DenseConfusionMatrixVector` to be copied
              */
             DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other);
-
-            ~DenseConfusionMatrixVector();
-
-            /**
-             * An iterator that provides access to the elements in a confusion matrix and allows to modify them.
-             */
-            typedef ConfusionMatrix* iterator;
-
-            /**
-             * An iterator that provides read-only access to the elements in a confusion matrix.
-             */
-            typedef const ConfusionMatrix* const_iterator;
-
-            /**
-             * Returns an `iterator` to the beginning of the vector.
-             *
-             * @return An `iterator` to the beginning
-             */
-            iterator begin();
-
-            /**
-             * Returns an `iterator` to the end of the vector.
-             *
-             * @return An `iterator` to the end
-             */
-            iterator end();
-
-            /**
-             * Returns a `const_iterator` to the beginning of the vector.
-             *
-             * @return A `const_iterator` to the beginning
-             */
-            const_iterator cbegin() const;
-
-            /**
-             * Returns a `const_iterator` to the end of the vector.
-             *
-             * @return A `const_iterator` to the end
-             */
-            const_iterator cend() const;
-
-            /**
-             * Returns the number of elements in the vector.
-             *
-             * @return The number of elements
-             */
-            uint32 getNumElements() const;
-
-            /**
-             * Sets the elements of all confusion matrices to zero.
-             */
-            void clear();
 
             /**
              * Adds all confusion matrix elements in another vector to this vector.
@@ -114,9 +53,9 @@ namespace seco {
              * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
             void add(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                     VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                     VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
-                     const DenseCoverageMatrix& coverageMatrix, float64 weight);
+                     View<uint32>::const_iterator majorityLabelIndicesBegin,
+                     View<uint32>::const_iterator majorityLabelIndicesEnd, const DenseCoverageMatrix& coverageMatrix,
+                     float64 weight);
 
             /**
              * Adds the confusion matrix elements that correspond to an example at a specific index to this vector. The
@@ -134,9 +73,9 @@ namespace seco {
              * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
             void add(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                     VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                     VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
-                     const DenseCoverageMatrix& coverageMatrix, float64 weight);
+                     View<uint32>::const_iterator majorityLabelIndicesBegin,
+                     View<uint32>::const_iterator majorityLabelIndicesEnd, const DenseCoverageMatrix& coverageMatrix,
+                     float64 weight);
 
             /**
              * Removes the confusion matrix elements that correspond to an example at a specific index from this vector.
@@ -154,9 +93,9 @@ namespace seco {
              * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
             void remove(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                        VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                        VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
-                        const DenseCoverageMatrix& coverageMatrix, float64 weight);
+                        View<uint32>::const_iterator majorityLabelIndicesBegin,
+                        View<uint32>::const_iterator majorityLabelIndicesEnd, const DenseCoverageMatrix& coverageMatrix,
+                        float64 weight);
 
             /**
              * Removes the confusion matrix elements that correspond to an example at a specific index from this vector.
@@ -174,9 +113,9 @@ namespace seco {
              * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
             void remove(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                        VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                        VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
-                        const DenseCoverageMatrix& coverageMatrix, float64 weight);
+                        View<uint32>::const_iterator majorityLabelIndicesBegin,
+                        View<uint32>::const_iterator majorityLabelIndicesEnd, const DenseCoverageMatrix& coverageMatrix,
+                        float64 weight);
 
             /**
              * Adds certain confusion matrix elements in another vector, whose positions are given as a
@@ -197,8 +136,8 @@ namespace seco {
              * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                             VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                             VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+                             View<uint32>::const_iterator majorityLabelIndicesBegin,
+                             View<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const CompleteIndexVector& indices,
                              float64 weight);
 
@@ -221,8 +160,8 @@ namespace seco {
              * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                             VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                             VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+                             View<uint32>::const_iterator majorityLabelIndicesBegin,
+                             View<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const CompleteIndexVector& indices,
                              float64 weight);
 
@@ -245,8 +184,8 @@ namespace seco {
              * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                             VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                             VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+                             View<uint32>::const_iterator majorityLabelIndicesBegin,
+                             View<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const PartialIndexVector& indices,
                              float64 weight);
 
@@ -269,8 +208,8 @@ namespace seco {
              * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
             void addToSubset(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                             VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                             VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+                             View<uint32>::const_iterator majorityLabelIndicesBegin,
+                             View<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const PartialIndexVector& indices,
                              float64 weight);
 

@@ -6,10 +6,10 @@ namespace boosting {
       std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr)
         : discretizationFunctionPtr_(std::move(discretizationFunctionPtr)) {}
 
-    void LabelWiseBinaryTransformation::apply(VectorConstView<float64>::const_iterator scoresBegin,
-                                              VectorConstView<float64>::const_iterator scoresEnd,
-                                              VectorView<uint8>::iterator predictionBegin,
-                                              VectorView<uint8>::iterator predictionEnd) const {
+    void LabelWiseBinaryTransformation::apply(View<float64>::const_iterator scoresBegin,
+                                              View<float64>::const_iterator scoresEnd,
+                                              View<uint8>::iterator predictionBegin,
+                                              View<uint8>::iterator predictionEnd) const {
         uint32 numPredictions = scoresEnd - scoresBegin;
 
         for (uint32 i = 0; i < numPredictions; i++) {
@@ -19,8 +19,8 @@ namespace boosting {
         }
     }
 
-    void LabelWiseBinaryTransformation::apply(VectorConstView<float64>::const_iterator scoresBegin,
-                                              VectorConstView<float64>::const_iterator scoresEnd,
+    void LabelWiseBinaryTransformation::apply(View<float64>::const_iterator scoresBegin,
+                                              View<float64>::const_iterator scoresEnd,
                                               BinaryLilMatrix::row predictionRow) const {
         uint32 numPredictions = scoresEnd - scoresBegin;
 

@@ -1,6 +1,5 @@
 #include "mlrl/common/input/label_matrix_csc.hpp"
 
-#include "mlrl/common/util/arrays.hpp"
 #include "mlrl/common/util/memory.hpp"
 
 template<typename IndexIterator>
@@ -35,7 +34,7 @@ static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* indptr, const 
     uint32 numLabels = labelMatrix.getNumCols();
 
     // Set column indices of the CSC matrix to zero...
-    setArrayToZeros(indptr, numLabels);
+    setViewToZeros(indptr, numLabels);
 
     // Determine the number of non-zero elements per column...
     for (uint32 i = 0; i < numExamples; i++) {

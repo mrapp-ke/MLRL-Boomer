@@ -3,8 +3,6 @@
 #include "mlrl/common/thresholds/thresholds.hpp"
 #include "mlrl/common/thresholds/thresholds_subset.hpp"
 
-BitWeightVector::BitWeightVector(uint32 numElements) : BitWeightVector(numElements, false) {}
-
 BitWeightVector::BitWeightVector(uint32 numElements, bool init) : vector_(numElements, init), numNonZeroWeights_(0) {}
 
 uint32 BitWeightVector::getNumElements() const {

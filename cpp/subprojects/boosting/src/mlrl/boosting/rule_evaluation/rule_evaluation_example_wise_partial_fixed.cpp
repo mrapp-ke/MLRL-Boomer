@@ -63,7 +63,7 @@ namespace boosting {
              * @see `IRuleEvaluation::evaluate`
              */
             const IScoreVector& calculateScores(DenseExampleWiseStatisticVector& statisticVector) override {
-                uint32 numLabels = statisticVector.getNumElements();
+                uint32 numLabels = statisticVector.getNumGradients();
                 uint32 numPredictions = indexVector_.getNumElements();
                 DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
                   statisticVector.gradients_cbegin();
@@ -88,18 +88,18 @@ namespace boosting {
                 addL1RegularizationWeight(valueIterator, numPredictions, l1RegularizationWeight_);
 
                 // Copy Hessians to the matrix of coefficients and add the L2 regularization weight to its diagonal...
-                copyCoefficients(statisticVector.hessians_cbegin(), indexIterator, this->dsysvTmpArray1_,
+                copyCoefficients(statisticVector.hessians_cbegin(), indexIterator, this->dsysvTmpArray1_.begin(),
                                  numPredictions);
-                addL2RegularizationWeight(this->dsysvTmpArray1_, numPredictions, l2RegularizationWeight_);
+                addL2RegularizationWeight(this->dsysvTmpArray1_.begin(), numPredictions, l2RegularizationWeight_);
 
                 // Calculate the scores to be predicted for individual labels by solving a system of linear equations...
-                lapack_.dsysv(this->dsysvTmpArray1_, this->dsysvTmpArray2_, this->dsysvTmpArray3_, valueIterator,
-                              numPredictions, this->dsysvLwork_);
+                lapack_.dsysv(this->dsysvTmpArray1_.begin(), this->dsysvTmpArray2_.begin(),
+                              this->dsysvTmpArray3_.begin(), valueIterator, numPredictions, this->dsysvLwork_);
 
                 // Calculate the overall quality...
                 float64 quality = calculateOverallQuality(valueIterator, statisticVector.gradients_begin(),
-                                                          statisticVector.hessians_begin(), this->dspmvTmpArray_,
-                                                          numPredictions, blas_);
+                                                          statisticVector.hessians_begin(),
+                                                          this->dspmvTmpArray_.begin(), numPredictions, blas_);
 
                 // Evaluate regularization term...
                 quality += calculateRegularizationTerm(valueIterator, numPredictions, l1RegularizationWeight_,

@@ -23,13 +23,13 @@ class IDistanceMeasure {
          *
          * @param labelVectorIndex  The index of the label vector, the scores should be compared to
          * @param labelVector       A reference to an object of type `LabelVector`, the scores should be compared to
-         * @param scoresBegin       A `VectorConstView::const_iterator` to the beginning of the predicted scores
-         * @param scoresEnd         A `VectorConstView::const_iterator` to the end of the predicted scores
+         * @param scoresBegin       An iterator to the beginning of the predicted scores
+         * @param scoresEnd         An iterator to the end of the predicted scores
          * @return                  The distance that has been calculated
          */
         virtual float64 measureDistance(uint32 labelVectorIndex, const LabelVector& labelVector,
-                                        VectorConstView<float64>::const_iterator scoresBegin,
-                                        VectorConstView<float64>::const_iterator scoresEnd) const = 0;
+                                        View<float64>::const_iterator scoresBegin,
+                                        View<float64>::const_iterator scoresEnd) const = 0;
 
         /**
          * Searches among the label vectors contained in a `LabelVectorSet` and returns the one that is closest to the
@@ -37,13 +37,13 @@ class IDistanceMeasure {
          *
          * @param labelVectorSet        A reference to an object of type `LabelVectorSet` that contains the label
          *                              vectors
-         * @param scoresBegin           A `VectorConstView::const_iterator` to the beginning of the predicted scores
-         * @param scoresEnd             A `VectorConstView::const_iterator` to the end of the predicted scores
+         * @param scoresBegin           An iterator to the beginning of the predicted scores
+         * @param scoresEnd             An iterator to the end of the predicted scores
          * @return                      A reference to an object of type `LabelVector` that has been found
          */
         virtual const LabelVector& getClosestLabelVector(const LabelVectorSet& labelVectorSet,
-                                                         VectorConstView<float64>::const_iterator scoresBegin,
-                                                         VectorConstView<float64>::const_iterator scoresEnd) const {
+                                                         View<float64>::const_iterator scoresBegin,
+                                                         View<float64>::const_iterator scoresEnd) const {
             LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
             LabelVectorSet::frequency_const_iterator frequencyIterator = labelVectorSet.frequencies_cbegin();
             uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();

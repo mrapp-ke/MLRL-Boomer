@@ -46,8 +46,8 @@ namespace seco {
                 : scoreVector_(labelIndices, true), heuristicPtr_(std::move(heuristicPtr)),
                   liftFunctionPtr_(std::move(liftFunctionPtr)) {}
 
-            const IScoreVector& calculateScores(VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+            const IScoreVector& calculateScores(View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                                View<uint32>::const_iterator majorityLabelIndicesEnd,
                                                 const DenseConfusionMatrixVector& confusionMatricesTotal,
                                                 const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 uint32 numElements = scoreVector_.getNumElements();
@@ -113,8 +113,8 @@ namespace seco {
                   scoreVector_(indexVector_, false), sortedVector_(labelIndices.getNumElements()),
                   heuristicPtr_(std::move(heuristicPtr)), liftFunctionPtr_(std::move(liftFunctionPtr)) {}
 
-            const IScoreVector& calculateScores(VectorConstView<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                VectorConstView<uint32>::const_iterator majorityLabelIndicesEnd,
+            const IScoreVector& calculateScores(View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                                View<uint32>::const_iterator majorityLabelIndicesEnd,
                                                 const DenseConfusionMatrixVector& confusionMatricesTotal,
                                                 const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 uint32 numElements = labelIndices_.getNumElements();

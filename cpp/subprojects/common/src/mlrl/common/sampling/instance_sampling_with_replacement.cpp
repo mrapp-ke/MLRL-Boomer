@@ -3,7 +3,6 @@
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
-#include "mlrl/common/util/arrays.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 static inline void sampleInternally(const SinglePartition& partition, float32 sampleSize,
@@ -11,7 +10,7 @@ static inline void sampleInternally(const SinglePartition& partition, float32 sa
     uint32 numExamples = partition.getNumElements();
     uint32 numSamples = (uint32) (sampleSize * numExamples);
     typename DenseWeightVector<uint32>::iterator weightIterator = weightVector.begin();
-    setArrayToZeros(weightIterator, numExamples);
+    setViewToZeros(weightIterator, numExamples);
     uint32 numNonZeroWeights = 0;
 
     for (uint32 i = 0; i < numSamples; i++) {
@@ -37,7 +36,7 @@ static inline void sampleInternally(BiPartition& partition, float32 sampleSize, 
     uint32 numSamples = (uint32) (sampleSize * numTrainingExamples);
     BiPartition::const_iterator indexIterator = partition.first_cbegin();
     typename DenseWeightVector<uint32>::iterator weightIterator = weightVector.begin();
-    setArrayToZeros(weightIterator, numExamples);
+    setViewToZeros(weightIterator, numExamples);
     uint32 numNonZeroWeights = 0;
 
     for (uint32 i = 0; i < numSamples; i++) {

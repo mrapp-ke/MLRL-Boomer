@@ -2,39 +2,15 @@
 
 #include "mlrl/common/rule_refinement/prediction.hpp"
 #include "mlrl/common/thresholds/thresholds_subset.hpp"
-#include "mlrl/common/util/arrays.hpp"
 
 CoverageMask::CoverageMask(uint32 numElements)
-    : array_(new uint32[numElements] {0}), numElements_(numElements), indicatorValue_(0) {}
-
-CoverageMask::CoverageMask(const CoverageMask& coverageMask)
-    : array_(new uint32[coverageMask.numElements_]), numElements_(coverageMask.numElements_),
-      indicatorValue_(coverageMask.indicatorValue_) {
-    copyArray(coverageMask.array_, array_, numElements_);
+    : WritableVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(numElements, true)), indicatorValue_(0) {
 }
 
-CoverageMask::~CoverageMask() {
-    delete[] array_;
-}
-
-CoverageMask::iterator CoverageMask::begin() {
-    return array_;
-}
-
-CoverageMask::iterator CoverageMask::end() {
-    return &array_[numElements_];
-}
-
-CoverageMask::const_iterator CoverageMask::cbegin() const {
-    return array_;
-}
-
-CoverageMask::const_iterator CoverageMask::cend() const {
-    return &array_[numElements_];
-}
-
-uint32 CoverageMask::getNumElements() const {
-    return numElements_;
+CoverageMask::CoverageMask(const CoverageMask& other)
+    : WritableVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(other.getNumElements())),
+      indicatorValue_(other.indicatorValue_) {
+    copyView(other.cbegin(), this->begin(), this->getNumElements());
 }
 
 uint32 CoverageMask::getIndicatorValue() const {
@@ -47,11 +23,11 @@ void CoverageMask::setIndicatorValue(uint32 indicatorValue) {
 
 void CoverageMask::reset() {
     indicatorValue_ = 0;
-    setArrayToZeros(array_, numElements_);
+    setViewToZeros(this->begin(), this->getNumElements());
 }
 
 bool CoverageMask::isCovered(uint32 pos) const {
-    return array_[pos] == indicatorValue_;
+    return this->view.array[pos] == indicatorValue_;
 }
 
 std::unique_ptr<ICoverageState> CoverageMask::copy() const {

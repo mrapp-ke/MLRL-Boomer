@@ -1,7 +1,6 @@
 #include "mlrl/boosting/data/statistic_view_label_wise_dense.hpp"
 
-#include "mlrl/boosting/util/arrays.hpp"
-#include "mlrl/common/util/arrays.hpp"
+#include "mlrl/common/util/view_functions.hpp"
 
 namespace boosting {
 
@@ -37,12 +36,12 @@ namespace boosting {
     }
 
     void DenseLabelWiseStatisticView::clear() {
-        setArrayToZeros(statistics_, numRows_ * numCols_);
+        setViewToZeros(statistics_, numRows_ * numCols_);
     }
 
     void DenseLabelWiseStatisticView::addToRow(uint32 row, const_iterator begin, const_iterator end, float64 weight) {
         uint32 offset = row * numCols_;
-        addToArray(&statistics_[offset], begin, numCols_, weight);
+        addToView(&statistics_[offset], begin, numCols_, weight);
     }
 
 }

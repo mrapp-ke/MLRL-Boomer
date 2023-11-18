@@ -3,18 +3,16 @@
  */
 #pragma once
 
+#include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/thresholds/coverage_state.hpp"
 
 /**
  * Provides access to the indices of the examples that are covered by a rule. The indices of the covered examples are
  * stored in a C-contiguous array that may be updated when the rule is refined.
  */
-class CoverageSet final : public ICoverageState {
+class CoverageSet final : public WritableVectorDecorator<AllocatedVector<uint32>>,
+                          public ICoverageState {
     private:
-
-        uint32* array_;
-
-        const uint32 numElements_;
 
         uint32 numCovered_;
 
@@ -26,56 +24,9 @@ class CoverageSet final : public ICoverageState {
         CoverageSet(uint32 numElements);
 
         /**
-         * @param coverageSet A reference to an object of type `CoverageSet` to be copied
+         * @param other A reference to an object of type `CoverageSet` to be copied
          */
-        CoverageSet(const CoverageSet& coverageSet);
-
-        ~CoverageSet() override;
-
-        /**
-         * An iterator that provides access to the indices of the covered examples and allows to modify them.
-         */
-        typedef uint32* iterator;
-
-        /**
-         * An iterator that provides read-only access to the indices of the covered examples.
-         */
-        typedef const uint32* const_iterator;
-
-        /**
-         * Returns an `iterator` to the beginning of the indices of the covered examples.
-         *
-         * @return An `iterator` to the beginning
-         */
-        iterator begin();
-
-        /**
-         * Returns an `iterator` to the end of the indices of the covered examples.
-         *
-         * @return An `iterator` to the end
-         */
-        iterator end();
-
-        /**
-         * Returns a `const_iterator` to the beginning of the indices of the covered examples.
-         *
-         * @return A `const_iterator` to the beginning
-         */
-        const_iterator cbegin() const;
-
-        /**
-         * Returns a `const_iterator` to the end of the indices of the covered examples.
-         *
-         * @return A `const_iterator` to the end
-         */
-        const_iterator cend() const;
-
-        /**
-         * Returns the total number of examples.
-         *
-         * @return The total number of examples
-         */
-        uint32 getNumElements() const;
+        CoverageSet(const CoverageSet& other);
 
         /**
          * Returns the number of covered examples.

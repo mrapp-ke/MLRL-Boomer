@@ -3,10 +3,6 @@
 #include "mlrl/common/util/memory.hpp"
 
 template<typename T>
-CContiguousMatrix<T>::CContiguousMatrix(uint32 numRows, uint32 numCols)
-    : CContiguousMatrix<T>(numRows, numCols, false) {}
-
-template<typename T>
 CContiguousMatrix<T>::CContiguousMatrix(uint32 numRows, uint32 numCols, bool init)
     : CContiguousView<T>(numRows, numCols, allocateMemory<T>(numRows * numCols, init)) {}
 

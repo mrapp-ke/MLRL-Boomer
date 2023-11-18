@@ -17,15 +17,9 @@ class CContiguousMatrix : public CContiguousView<T> {
         /**
          * @param numRows   The number of rows in the matrix
          * @param numCols   The number of columns in the matrix
-         */
-        CContiguousMatrix(uint32 numRows, uint32 numCols);
-
-        /**
-         * @param numRows   The number of rows in the matrix
-         * @param numCols   The number of columns in the matrix
          * @param init      True, if all elements in the matrix should be value-initialized, false otherwise
          */
-        CContiguousMatrix(uint32 numRows, uint32 numCols, bool init);
+        CContiguousMatrix(uint32 numRows, uint32 numCols, bool init = false);
 
         virtual ~CContiguousMatrix() override;
 };
