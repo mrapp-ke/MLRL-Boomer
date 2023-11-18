@@ -249,7 +249,7 @@ namespace boosting {
                   binningPtr_(std::move(binningPtr)), blas_(blas), lapack_(lapack) {
                 // The last bin is used for labels for which the corresponding criterion is zero. For this particular
                 // bin, the prediction is always zero.
-                scoreVector_.values_binned_begin()[maxBins_] = 0;
+                scoreVector_.bin_values_begin()[maxBins_] = 0;
             }
 
             /**
@@ -271,8 +271,8 @@ namespace boosting {
 
                     // Apply binning method in order to aggregate the gradients and Hessians that belong to the same
                     // bins...
-                    typename DenseBinnedScoreVector<IndexVector>::index_binned_iterator binIndexIterator =
-                      scoreVector_.indices_binned_begin();
+                    typename DenseBinnedScoreVector<IndexVector>::bin_index_iterator binIndexIterator =
+                      scoreVector_.bin_indices_begin();
                     auto callback = [=](uint32 binIndex, uint32 labelIndex) {
                         numElementsPerBin_[binIndex] += 1;
                         binIndexIterator[labelIndex] = binIndex;
@@ -299,29 +299,29 @@ namespace boosting {
                                               l2RegularizationWeight_);
 
                     // Copy gradients to the vector of ordinates...
-                    typename DenseBinnedScoreVector<IndexVector>::value_binned_iterator valueIterator =
-                      scoreVector_.values_binned_begin();
-                    copyOrdinates(aggregatedGradients_.cbegin(), valueIterator, numBins);
-                    addL1RegularizationWeight(valueIterator, numBins, numElementsPerBin_.cbegin(),
+                    typename DenseBinnedScoreVector<IndexVector>::bin_value_iterator binValueIterator =
+                      scoreVector_.bin_values_begin();
+                    copyOrdinates(aggregatedGradients_.cbegin(), binValueIterator, numBins);
+                    addL1RegularizationWeight(binValueIterator, numBins, numElementsPerBin_.cbegin(),
                                               l1RegularizationWeight_);
 
                     // Calculate the scores to be predicted for the individual labels by solving a system of linear
                     // equations...
                     lapack_.dsysv(this->dsysvTmpArray1_.begin(), this->dsysvTmpArray2_.begin(),
-                                  this->dsysvTmpArray3_.begin(), valueIterator, numBins, this->dsysvLwork_);
+                                  this->dsysvTmpArray3_.begin(), binValueIterator, numBins, this->dsysvLwork_);
 
                     // Calculate the overall quality...
-                    float64 quality =
-                      calculateOverallQuality(valueIterator, aggregatedGradients_.begin(), aggregatedHessians_.begin(),
-                                              this->dspmvTmpArray_.begin(), numBins, blas_);
+                    float64 quality = calculateOverallQuality(binValueIterator, aggregatedGradients_.begin(),
+                                                              aggregatedHessians_.begin(), this->dspmvTmpArray_.begin(),
+                                                              numBins, blas_);
 
                     // Evaluate regularization term...
-                    quality += calculateRegularizationTerm(valueIterator, numElementsPerBin_.cbegin(), numBins,
+                    quality += calculateRegularizationTerm(binValueIterator, numElementsPerBin_.cbegin(), numBins,
                                                            l1RegularizationWeight_, l2RegularizationWeight_);
 
                     scoreVector_.quality = quality;
                 } else {
-                    setViewToValue(scoreVector_.indices_binned_begin(), numCriteria, maxBins_);
+                    setViewToValue(scoreVector_.bin_indices_begin(), numCriteria, maxBins_);
                     scoreVector_.quality = 0;
                 }
 

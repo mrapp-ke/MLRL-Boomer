@@ -113,7 +113,7 @@ namespace boosting {
                   binningPtr_(std::move(binningPtr)) {
                 // The last bin is used for labels for which the corresponding criterion is zero. For this particular
                 // bin, the prediction is always zero.
-                scoreVector_.values_binned_begin()[maxBins_] = 0;
+                scoreVector_.bin_values_begin()[maxBins_] = 0;
             }
 
             /**
@@ -138,8 +138,8 @@ namespace boosting {
 
                 // Apply binning method in order to aggregate the gradients and Hessians that belong to the same bins...
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
-                typename DenseBinnedScoreVector<IndexVector>::index_binned_iterator binIndexIterator =
-                  scoreVector_.indices_binned_begin();
+                typename DenseBinnedScoreVector<IndexVector>::bin_index_iterator binIndexIterator =
+                  scoreVector_.bin_indices_begin();
                 auto callback = [=](uint32 binIndex, uint32 labelIndex) {
                     aggregatedStatisticIterator[binIndex] += statisticIterator[labelIndex];
                     numElementsPerBin_[binIndex] += 1;
@@ -151,10 +151,10 @@ namespace boosting {
                 binningPtr_->createBins(labelInfo, criteria_.cbegin(), numCriteria, callback, zeroCallback);
 
                 // Compute predictions, as well as their overall quality...
-                typename DenseBinnedScoreVector<IndexVector>::value_binned_iterator valueIterator =
-                  scoreVector_.values_binned_begin();
+                typename DenseBinnedScoreVector<IndexVector>::bin_value_iterator binValueIterator =
+                  scoreVector_.bin_values_begin();
                 scoreVector_.quality =
-                  calculateBinnedScores(aggregatedStatisticIterator, valueIterator, numElementsPerBin_.cbegin(),
+                  calculateBinnedScores(aggregatedStatisticIterator, binValueIterator, numElementsPerBin_.cbegin(),
                                         numBins, l1RegularizationWeight_, l2RegularizationWeight_);
                 return scoreVector_;
             }
