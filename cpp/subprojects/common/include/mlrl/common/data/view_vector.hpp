@@ -182,6 +182,8 @@ class ClearableVectorDecorator : public Vector {
          */
         ClearableVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
 
+        virtual ~ClearableVectorDecorator() override {};
+
         /**
          * Sets all values stored in the vector to zero.
          */
