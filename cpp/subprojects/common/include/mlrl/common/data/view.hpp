@@ -106,6 +106,54 @@ template<typename T>
 using AllocatedView = Allocator<View<T>>;
 
 /**
+ * Allocates the memory, a view provides access to, and allows to resize it afterwards.
+ *
+ * @tparam View The type of the view
+ */
+template<typename View>
+struct ResizableAllocator : public Allocator<View> {
+        /**
+         * The maximum number of elements in the view.
+         */
+        uint32 maxCapacity;
+
+        /**
+         * @param numElements   The number of elements in the view
+         * @param init          True, if all elements in the view should be value-initialized, false otherwise
+         */
+        ResizableAllocator(uint32 numElements, bool init = false)
+            : Allocator<View>(numElements, init), maxCapacity(numElements) {}
+
+        /**
+         * @param other A reference to an object of type `ResizableAllocator` that should be moved
+         */
+        ResizableAllocator(ResizableAllocator<View>&& other)
+            : Allocator<View>(std::move(other)), maxCapacity(other.maxCapacity) {}
+
+        /**
+         * Resizes the view by re-allocating the memory it provides access to.
+         *
+         * @param numElements   The number of elements to which the view should be resized
+         * @param freeMemory    True, if unused memory should be freed, false otherwise
+         */
+        void resize(uint32 numElements, bool freeMemory) {
+            if (numElements < maxCapacity) {
+                if (freeMemory) {
+                    View::array = reallocateMemory(View::array, numElements);
+                    maxCapacity = numElements;
+                }
+            } else if (numElements > maxCapacity) {
+                View::array = reallocateMemory(View::array, numElements);
+                maxCapacity = numElements;
+            }
+
+            View::numElements = numElements;
+        }
+
+        virtual ~ResizableAllocator() override {};
+};
+
+/**
  * A base class for all data structures that are backed by a view.
  *
  * @tparam View The type of the view, the data structure is backed by
