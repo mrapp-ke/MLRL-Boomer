@@ -22,22 +22,22 @@ typename DenseScoreVector<IndexVector>::index_const_iterator DenseScoreVector<In
 
 template<typename IndexVector>
 typename DenseScoreVector<IndexVector>::value_iterator DenseScoreVector<IndexVector>::values_begin() {
-    return this->view_.begin();
+    return this->view.begin();
 }
 
 template<typename IndexVector>
 typename DenseScoreVector<IndexVector>::value_iterator DenseScoreVector<IndexVector>::values_end() {
-    return &this->view_.array[this->getNumElements()];
+    return &this->view.array[this->getNumElements()];
 }
 
 template<typename IndexVector>
 typename DenseScoreVector<IndexVector>::value_const_iterator DenseScoreVector<IndexVector>::values_cbegin() const {
-    return this->view_.cbegin();
+    return this->view.cbegin();
 }
 
 template<typename IndexVector>
 typename DenseScoreVector<IndexVector>::value_const_iterator DenseScoreVector<IndexVector>::values_cend() const {
-    return &this->view_.array[this->getNumElements()];
+    return &this->view.array[this->getNumElements()];
 }
 
 template<typename IndexVector>

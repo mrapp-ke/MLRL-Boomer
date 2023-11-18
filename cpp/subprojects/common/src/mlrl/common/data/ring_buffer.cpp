@@ -6,17 +6,17 @@ RingBuffer<T>::RingBuffer(uint32 capacity)
 
 template<typename T>
 typename RingBuffer<T>::const_iterator RingBuffer<T>::cbegin() const {
-    return this->view_.cbegin();
+    return this->view.cbegin();
 }
 
 template<typename T>
 typename RingBuffer<T>::const_iterator RingBuffer<T>::cend() const {
-    return &this->view_.array[full_ ? this->getCapacity() : pos_];
+    return &this->view.array[full_ ? this->getCapacity() : pos_];
 }
 
 template<typename T>
 uint32 RingBuffer<T>::getCapacity() const {
-    return this->view_.numElements;
+    return this->view.numElements;
 }
 
 template<typename T>
@@ -33,8 +33,8 @@ template<typename T>
 std::pair<bool, T> RingBuffer<T>::push(T value) {
     std::pair<bool, T> result;
     result.first = full_;
-    result.second = this->view_.array[pos_];
-    this->view_.array[pos_] = value;
+    result.second = this->view.array[pos_];
+    this->view.array[pos_] = value;
     pos_++;
 
     if (pos_ >= this->getCapacity()) {
