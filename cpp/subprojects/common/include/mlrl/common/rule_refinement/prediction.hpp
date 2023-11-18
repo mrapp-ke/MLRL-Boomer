@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_binned_dense.hpp"
 #include "mlrl/common/indices/index_vector.hpp"
+#include "mlrl/common/iterator/binned_iterator.hpp"
 #include "mlrl/common/sampling/weight_vector_bit.hpp"
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
 #include "mlrl/common/sampling/weight_vector_equal.hpp"
@@ -51,8 +51,7 @@ class IPrediction : public IIndexVector {
          * @param begin An iterator to the beginning of the values to be set
          * @param end   An iterator to the end of the values to be set
          */
-        virtual void set(DenseBinnedVector<float64>::const_iterator begin,
-                         DenseBinnedVector<float64>::const_iterator end) = 0;
+        virtual void set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) = 0;
 
         /**
          * Updates given statistics by applying this prediction.
