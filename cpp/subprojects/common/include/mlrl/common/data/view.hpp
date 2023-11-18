@@ -160,7 +160,7 @@ struct ResizableAllocator : public Allocator<View> {
  */
 template<typename View>
 class ViewDecorator {
-    protected:
+    public:
 
         /**
          * The view, the data structure is backed by.
@@ -168,18 +168,16 @@ class ViewDecorator {
         View view_;
 
         /**
-         * The type of the view, the data structure is backed by.
-         */
-        typedef View view_type;
-
-    public:
-
-        /**
          * @param view The view, the data structure should be backed by
          */
         ViewDecorator(View&& view) : view_(std::move(view)) {}
 
         virtual ~ViewDecorator() {};
+
+        /**
+         * The type of the view, the data structure is backed by.
+         */
+        typedef View view_type;
 
         /**
          * The type of the values that are stored in the data structure.
