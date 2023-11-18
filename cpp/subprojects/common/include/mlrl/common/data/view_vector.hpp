@@ -56,6 +56,14 @@ struct Vector : public View<T> {
 };
 
 /**
+ * Allocates the memory, a `Vector` provides access to
+ *
+ * @tparam T The type of the values stored in the `Vector`
+ */
+template<typename T>
+using AllocatedVector = Allocator<Vector<T>>;
+
+/**
  * A vector that is backed by a one-dimensional view of a specific size.
  *
  * @tparam View The type of view, the vector is backed by

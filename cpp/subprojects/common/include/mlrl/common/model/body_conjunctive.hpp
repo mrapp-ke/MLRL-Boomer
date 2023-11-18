@@ -3,7 +3,6 @@
  */
 #pragma once
 
-#include "mlrl/common/data/array.hpp"
 #include "mlrl/common/data/view_vector_indexed.hpp"
 #include "mlrl/common/model/body.hpp"
 

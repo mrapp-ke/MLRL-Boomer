@@ -3,7 +3,6 @@
  */
 #pragma once
 
-#include "mlrl/common/data/array.hpp"
 #include "mlrl/common/data/view_vector_binned.hpp"
 #include "mlrl/common/iterator/binned_iterator.hpp"
 #include "mlrl/common/rule_evaluation/score_vector.hpp"

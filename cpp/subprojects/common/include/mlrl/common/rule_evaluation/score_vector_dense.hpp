@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/array.hpp"
+#include "mlrl/common/data/view.hpp"
 #include "mlrl/common/rule_evaluation/score_vector.hpp"
 
 /**
