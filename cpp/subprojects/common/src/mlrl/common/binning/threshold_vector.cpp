@@ -1,8 +1,8 @@
 #include "mlrl/common/binning/threshold_vector.hpp"
 
 ThresholdVector::ThresholdVector(MissingFeatureVector& missingFeatureVector, uint32 numElements, bool init)
-    : ResizableVectorDecorator<WritableVectorDecorator<AllocatedVector<float32>>>(
-      AllocatedVector<float32>(numElements, init)),
+    : ResizableVectorDecorator<WritableVectorDecorator<ResizableVector<float32>>>(
+      ResizableVector<float32>(numElements, init)),
       MissingFeatureVector(missingFeatureVector), sparseBinIndex_(numElements) {}
 
 uint32 ThresholdVector::getSparseBinIndex() const {
@@ -20,7 +20,7 @@ void ThresholdVector::setSparseBinIndex(uint32 sparseBinIndex) {
 }
 
 void ThresholdVector::setNumElements(uint32 numElements, bool freeMemory) {
-    ResizableVectorDecorator<WritableVectorDecorator<AllocatedVector<float32>>>::setNumElements(numElements,
+    ResizableVectorDecorator<WritableVectorDecorator<ResizableVector<float32>>>::setNumElements(numElements,
                                                                                                 freeMemory);
 
     if (sparseBinIndex_ > numElements) {
