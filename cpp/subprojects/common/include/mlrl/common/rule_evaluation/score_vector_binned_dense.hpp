@@ -52,23 +52,23 @@ class DenseBinnedScoreVector final
         /**
          * An iterator that provides access to the indices that correspond to individual bins and allows to modify them.
          */
-        typedef typename View<uint32>::iterator index_binned_iterator;
+        typedef typename View<uint32>::iterator bin_index_iterator;
 
         /**
          * An iterator that provides read-only access to the indices that correspond to individual bins.
          */
-        typedef typename View<uint32>::const_iterator index_binned_const_iterator;
+        typedef typename View<uint32>::const_iterator bin_index_const_iterator;
 
         /**
          * An iterator that provides access to the predicted scores that correspond to individual bins and allows to
          * modify them.
          */
-        typedef typename View<float64>::iterator value_binned_iterator;
+        typedef typename View<float64>::iterator bin_value_iterator;
 
         /**
          * An iterator that provides read-only access to the predicted scores that correspond to individual bins.
          */
-        typedef typename View<float64>::const_iterator value_binned_const_iterator;
+        typedef typename View<float64>::const_iterator bin_value_const_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices that correspond to individual labels.
@@ -100,63 +100,61 @@ class DenseBinnedScoreVector final
         value_const_iterator values_cend() const;
 
         /**
-         * Returns an `index_binned_iterator` to the beginning of the indices that correspond to individual bins.
+         * Returns an `bin_index_iterator` to the beginning of the indices that correspond to individual bins.
          *
-         * @return An `index_binned_iterator` to the beginning
+         * @return An `bin_index_iterator` to the beginning
          */
-        index_binned_iterator indices_binned_begin();
+        bin_index_iterator bin_indices_begin();
 
         /**
-         * Returns an `index_binned_iterator` to the end of the indices that correspond to individual bins.
+         * Returns an `bin_index_iterator` to the end of the indices that correspond to individual bins.
          *
-         * @return An `index_binned_iterator` to the end
+         * @return An `bin_index_iterator` to the end
          */
-        index_binned_iterator indices_binned_end();
+        bin_index_iterator bin_indices_end();
 
         /**
-         * Returns an `index_binned_const_iterator` to the beginning of the indices that correspond to individual bins.
+         * Returns an `bin_index_const_iterator` to the beginning of the indices that correspond to individual bins.
          *
-         * @return An `index_binned_const_iterator` to the beginning
+         * @return An `bin_index_const_iterator` to the beginning
          */
-        index_binned_const_iterator indices_binned_cbegin() const;
+        bin_index_const_iterator bin_indices_cbegin() const;
 
         /**
-         * Returns an `index_binned_const_iterator` to the end of the indices that correspond to individual bins.
+         * Returns an `bin_index_const_iterator` to the end of the indices that correspond to individual bins.
          *
-         * @return An `index_binned_const_iterator` to the end
+         * @return An `bin_index_const_iterator` to the end
          */
-        index_binned_const_iterator indices_binned_cend() const;
+        bin_index_const_iterator bin_indices_cend() const;
 
         /**
-         * Returns a `value_binned_iterator` to the beginning of the predicted scores that correspond to individual
+         * Returns a `bin_value_iterator` to the beginning of the predicted scores that correspond to individual bins.
+         *
+         * @return A `bin_value_iterator` to the beginning
+         */
+        bin_value_iterator bin_values_begin();
+
+        /**
+         * Returns a `bin_value_iterator` to the end of the predicted scores that correspond to individual bins.
+         *
+         * @return A `bin_value_iterator` to the end
+         */
+        bin_value_iterator bin_values_end();
+
+        /**
+         * Returns a `bin_value_const_iterator` to the beginning of the predicted scores that correspond to individual
          * bins.
          *
-         * @return A `value_binned_iterator` to the beginning
+         * @return A `bin_value_const_iterator` to the beginning
          */
-        value_binned_iterator values_binned_begin();
+        bin_value_const_iterator bin_values_cbegin() const;
 
         /**
-         * Returns a `value_binned_iterator` to the end of the predicted scores that correspond to individual bins.
+         * Returns a `bin_value_const_iterator` to the end of the predicted scores that correspond to individual bins.
          *
-         * @return A `value_binned_iterator` to the end
+         * @return A `bin_value_const_iterator` to the end
          */
-        value_binned_iterator values_binned_end();
-
-        /**
-         * Returns a `value_binned_const_iterator` to the beginning of the predicted scores that correspond to
-         * individual bins.
-         *
-         * @return A `value_binned_const_iterator` to the beginning
-         */
-        value_binned_const_iterator values_binned_cbegin() const;
-
-        /**
-         * Returns a `value_binned_const_iterator` to the end of the predicted scores that correspond to individual
-         * bins.
-         *
-         * @return A `value_binned_const_iterator` to the end
-         */
-        value_binned_const_iterator values_binned_cend() const;
+        bin_value_const_iterator bin_values_cend() const;
 
         /**
          * Returns the number of elements in the vector.
