@@ -53,8 +53,9 @@ namespace boosting {
         return nullVectorProbability;
     }
 
-    static inline float64 createAndEvaluateLabelVector(SparseArrayVector<float64>::iterator iterator, uint32 numLabels,
-                                                       const SparseSetMatrix<float64>& probabilities, uint32 k) {
+    static inline float64 createAndEvaluateLabelVector(ResizableSparseArrayVector<float64>::iterator iterator,
+                                                       uint32 numLabels, const SparseSetMatrix<float64>& probabilities,
+                                                       uint32 k) {
         for (uint32 i = 0; i < numLabels; i++) {
             float64 weightedProbability = 0;
 
@@ -82,11 +83,11 @@ namespace boosting {
         return quality;
     }
 
-    static inline void storePrediction(const SparseArrayVector<float64>& tmpVector,
+    static inline void storePrediction(const ResizableSparseArrayVector<float64>& tmpVector,
                                        View<uint8>::iterator predictionIterator, uint32 numLabels) {
         setViewToZeros(predictionIterator, numLabels);
         uint32 numRelevantLabels = tmpVector.getNumElements();
-        SparseArrayVector<float64>::const_iterator iterator = tmpVector.cbegin();
+        ResizableSparseArrayVector<float64>::const_iterator iterator = tmpVector.cbegin();
 
         for (uint32 i = 0; i < numRelevantLabels; i++) {
             uint32 labelIndex = iterator[i].index;
@@ -94,12 +95,12 @@ namespace boosting {
         }
     }
 
-    static inline void storePrediction(SparseArrayVector<float64>& tmpVector, BinaryLilMatrix::row predictionRow,
-                                       uint32 numLabels) {
+    static inline void storePrediction(ResizableSparseArrayVector<float64>& tmpVector,
+                                       BinaryLilMatrix::row predictionRow, uint32 numLabels) {
         uint32 numRelevantLabels = tmpVector.getNumElements();
 
         if (numRelevantLabels > 0) {
-            SparseArrayVector<float64>::iterator iterator = tmpVector.begin();
+            ResizableSparseArrayVector<float64>::iterator iterator = tmpVector.begin();
             std::sort(iterator, tmpVector.end(), IndexedValue<float64>::CompareIndex());
             predictionRow.reserve(numRelevantLabels);
 
@@ -120,11 +121,11 @@ namespace boosting {
         SparseSetMatrix<float64> marginalizedProbabilities(numLabels, maxLabelCardinality);
         float64 bestQuality = calculateMarginalizedProbabilities(marginalizedProbabilities, numLabels,
                                                                  jointProbabilityIterator, labelVectorSet);
-        SparseArrayVector<float64> tmpVector1(numLabels);
+        ResizableSparseArrayVector<float64> tmpVector1(numLabels);
         tmpVector1.setNumElements(0, false);
-        SparseArrayVector<float64> tmpVector2(numLabels);
-        SparseArrayVector<float64>* bestVectorPtr = &tmpVector1;
-        SparseArrayVector<float64>* tmpVectorPtr = &tmpVector2;
+        ResizableSparseArrayVector<float64> tmpVector2(numLabels);
+        ResizableSparseArrayVector<float64>* bestVectorPtr = &tmpVector1;
+        ResizableSparseArrayVector<float64>* tmpVectorPtr = &tmpVector2;
 
         for (uint32 i = 0; i < numLabels; i++) {
             uint32 k = i + 1;
@@ -134,7 +135,7 @@ namespace boosting {
             if (quality > bestQuality) {
                 bestQuality = quality;
                 tmpVectorPtr->setNumElements(k, false);
-                SparseArrayVector<float64>* tmpPtr = bestVectorPtr;
+                ResizableSparseArrayVector<float64>* tmpPtr = bestVectorPtr;
                 bestVectorPtr = tmpVectorPtr;
                 tmpVectorPtr = tmpPtr;
             }

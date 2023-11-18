@@ -7,10 +7,19 @@
 #include "mlrl/common/data/vector_dense.hpp"
 
 /**
- * An one-dimensional sparse vector that stores a fixed number of elements, consisting of an index and a value, in a
- * C-contiguous array.
+ * A vector that provides random read and write access, as well as read and write access via iterators, to elements,
+ * consisting of an index and a corresponding value, stored in a newly allocated array.
  *
  * @tparam T The type of the data that is stored in the vector
  */
 template<typename T>
-using SparseArrayVector = ResizableDenseVector<IndexedValue<T>>;
+using SparseArrayVector = DenseVector<IndexedValue<T>>;
+
+/**
+ * A vector that provides random read and write access, as well as read and write access via iterators, to elements,
+ * consisting of an index and a corresponding value, stored in a newly allocated array, which can be resized.
+ *
+ * @tparam T The type of the data that is stored in the vector
+ */
+template<typename T>
+using ResizableSparseArrayVector = ResizableDenseVector<IndexedValue<T>>;
