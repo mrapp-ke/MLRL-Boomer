@@ -74,7 +74,7 @@ struct View {
 /**
  * Allocates the memory, a view provides access to.
  *
- * @tparam Base The type of the view
+ * @tparam View The type of the view
  */
 template<typename View>
 struct Allocator : public View {
