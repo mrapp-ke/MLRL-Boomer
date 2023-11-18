@@ -9,19 +9,19 @@ CompletePrediction::CompletePrediction(uint32 numElements)
     : VectorDecorator<AllocatedVector<float64>>(AllocatedVector<float64>(numElements)), indexVector_(numElements) {}
 
 CompletePrediction::value_iterator CompletePrediction::values_begin() {
-    return this->view_.begin();
+    return this->view.begin();
 }
 
 CompletePrediction::value_iterator CompletePrediction::values_end() {
-    return this->view_.end();
+    return this->view.end();
 }
 
 CompletePrediction::value_const_iterator CompletePrediction::values_cbegin() const {
-    return this->view_.cbegin();
+    return this->view.cbegin();
 }
 
 CompletePrediction::value_const_iterator CompletePrediction::values_cend() const {
-    return this->view_.cend();
+    return this->view.cend();
 }
 
 CompletePrediction::index_const_iterator CompletePrediction::indices_cbegin() const {
@@ -43,11 +43,11 @@ void CompletePrediction::postProcess(const IPostProcessor& postProcessor) {
 }
 
 void CompletePrediction::set(View<float64>::const_iterator begin, View<float64>::const_iterator end) {
-    copyView(begin, this->view_.begin(), this->getNumElements());
+    copyView(begin, this->view.begin(), this->getNumElements());
 }
 
 void CompletePrediction::set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) {
-    copyView(begin, this->view_.begin(), this->getNumElements());
+    copyView(begin, this->view.begin(), this->getNumElements());
 }
 
 bool CompletePrediction::isPartial() const {

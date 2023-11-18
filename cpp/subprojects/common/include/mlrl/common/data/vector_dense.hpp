@@ -26,7 +26,7 @@ class DenseVector final : public WritableVectorDecorator<AllocatedVector<T>> {
          * @param other A reference to an object of type `VectorDecorator` that should be moved
          */
         DenseVector(VectorDecorator<ResizableVector<T>>&& other)
-            : WritableVectorDecorator<AllocatedVector<T>>(AllocatedVector<T>(std::move(other.view_))) {}
+            : WritableVectorDecorator<AllocatedVector<T>>(AllocatedVector<T>(std::move(other.view))) {}
 };
 
 /**

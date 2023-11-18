@@ -165,12 +165,12 @@ class ViewDecorator {
         /**
          * The view, the data structure is backed by.
          */
-        View view_;
+        View view;
 
         /**
          * @param view The view, the data structure should be backed by
          */
-        ViewDecorator(View&& view) : view_(std::move(view)) {}
+        ViewDecorator(View&& view) : view(std::move(view)) {}
 
         virtual ~ViewDecorator() {};
 
@@ -212,7 +212,7 @@ class ReadAccessibleViewDecorator : public View {
          * @return A `const_iterator` to the beginning
          */
         const_iterator cbegin() const {
-            return View::view_.cbegin();
+            return View::view.cbegin();
         }
 
         /**
@@ -222,7 +222,7 @@ class ReadAccessibleViewDecorator : public View {
          * @return      A const reference to the specified element
          */
         const typename View::value_type& operator[](uint32 pos) const {
-            return View::view_.array[pos];
+            return View::view.array[pos];
         }
 };
 
@@ -253,7 +253,7 @@ class WriteAccessibleViewDecorator : public View {
          * @return An `iterator` to the beginning
          */
         iterator begin() {
-            return View::view_.begin();
+            return View::view.begin();
         }
 
         /**
@@ -263,7 +263,7 @@ class WriteAccessibleViewDecorator : public View {
          * @return      A const reference to the specified element
          */
         const typename View::value_type& operator[](uint32 pos) const {
-            return View::view_.array[pos];
+            return View::view.array[pos];
         }
 
         /**
@@ -273,6 +273,6 @@ class WriteAccessibleViewDecorator : public View {
          * @return      A reference to the specified element
          */
         typename View::value_type& operator[](uint32 pos) {
-            return View::view_.array[pos];
+            return View::view.array[pos];
         }
 };

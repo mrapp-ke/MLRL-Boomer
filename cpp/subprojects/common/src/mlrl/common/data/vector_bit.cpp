@@ -22,14 +22,14 @@ BitVector::BitVector(uint32 numElements, bool init)
       numElements_(numElements) {}
 
 bool BitVector::operator[](uint32 pos) const {
-    return this->view_.array[index(pos)] & mask(pos);
+    return this->view.array[index(pos)] & mask(pos);
 }
 
 void BitVector::set(uint32 pos, bool value) {
     if (value) {
-        this->view_.array[index(pos)] |= mask(pos);
+        this->view.array[index(pos)] |= mask(pos);
     } else {
-        this->view_.array[index(pos)] &= ~mask(pos);
+        this->view.array[index(pos)] &= ~mask(pos);
     }
 }
 

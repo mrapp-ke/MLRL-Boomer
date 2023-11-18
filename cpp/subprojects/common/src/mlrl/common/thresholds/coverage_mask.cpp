@@ -27,7 +27,7 @@ void CoverageMask::reset() {
 }
 
 bool CoverageMask::isCovered(uint32 pos) const {
-    return this->view_.array[pos] == indicatorValue_;
+    return this->view.array[pos] == indicatorValue_;
 }
 
 std::unique_ptr<ICoverageState> CoverageMask::copy() const {

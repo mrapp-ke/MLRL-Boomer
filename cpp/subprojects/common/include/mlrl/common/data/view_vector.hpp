@@ -93,7 +93,7 @@ class VectorDecorator : public ViewDecorator<View> {
          * @return The number of elements in the vector
          */
         uint32 getNumElements() const {
-            return ViewDecorator<View>::view_.numElements;
+            return ViewDecorator<View>::view.numElements;
         }
 };
 
@@ -120,7 +120,7 @@ class ReadIterableVectorDecorator : public ReadAccessibleViewDecorator<Vector> {
          * @return A `const_iterator` to the end
          */
         typename ReadAccessibleViewDecorator<Vector>::const_iterator cend() const {
-            return Vector::view_.cend();
+            return Vector::view.cend();
         }
 };
 
@@ -147,7 +147,7 @@ class WriteIterableVectorDecorator : public WriteAccessibleViewDecorator<Vector>
          * @return An `iterator` to the end
          */
         typename WriteAccessibleViewDecorator<Vector>::iterator end() {
-            return Vector::view_.end();
+            return Vector::view.end();
         }
 };
 
@@ -191,7 +191,7 @@ class ResizableVectorDecorator : public Vector {
          * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
          */
         virtual void setNumElements(uint32 numElements, bool freeMemory) {
-            Vector::view_.resize(numElements, freeMemory);
+            Vector::view.resize(numElements, freeMemory);
         }
 };
 
@@ -215,6 +215,6 @@ class ClearableVectorDecorator : public Vector {
          * Sets all values stored in the vector to zero.
          */
         virtual void clear() {
-            setViewToZeros(Vector::view_.array, Vector::view_.numElements);
+            setViewToZeros(Vector::view.array, Vector::view.numElements);
         }
 };
