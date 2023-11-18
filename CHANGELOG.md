@@ -131,19 +131,19 @@ A major update to the BOOMER algorithm that introduces the following changes:
 * Pre-built packages for the Linux platform are now available at [PyPI](https://pypi.org/project/mlrl-boomer/).
 * The [documentation](https://mlrl-boomer.readthedocs.io) has vastly been improved.
 
-## Version 0.6.2 (Oct 4, 2021)
+## Version 0.6.2 (Oct. 4, 2021)
 
 A bugfix release that solves the following issues:
 
 * Fixes a segmentation fault when a sparse feature matrix should be used for prediction that was introduced in version 0.6.0.
 
-## Version 0.6.1 (Sep 30, 2021)
+## Version 0.6.1 (Sep. 30, 2021)
 
 A bugfix release that solves the following issues:
 
 * Fixes a mathematical problem when calculating the quality of potential single-label rules that was introduced in version 0.6.0.
 
-## Version 0.6.0 (Sep 6, 2021)
+## Version 0.6.0 (Sep. 6, 2021)
 
 A major update to the BOOMER algorithm that introduces the following changes.
 
@@ -158,13 +158,13 @@ A major update to the BOOMER algorithm that introduces the following changes.
 * A programmatic C++ API for configuring algorithms, including the validation of parameters, is now provided.
 * A documentation is now available [online](https://mlrl-boomer.readthedocs.io).
 
-## Version 0.5.0 (Jun 27, 2021)
+## Version 0.5.0 (Jun. 27, 2021)
 
 A major update to the BOOMER algorithm that introduces the following changes:
 
 * Gradient-based label binning (GBLB) can be used to assign labels to a predefined number of bins.
 
-## Version 0.4.0 (Mar 31, 2021)
+## Version 0.4.0 (Mar. 31, 2021)
 
 A major update to the BOOMER algorithm that introduces the following changes:
 
@@ -180,7 +180,7 @@ A major update to the BOOMER algorithm that introduces the following changes:
 * The loss function `label-wise-squared-hinge-loss` has been added. 
 * Experiments using single-label data sets are now supported out of the box.
 
-## Version 0.3.0 (Sep 14, 2020)
+## Version 0.3.0 (Sep. 14, 2020)
 
 A major update to the BOOMER algorithm that features the following changes:
 
@@ -189,7 +189,7 @@ A major update to the BOOMER algorithm that features the following changes:
 * Sparse ground truth label matrices can now be used for training, which may reduce the memory footprint in case of large data sets.
 * Additional parameters (`feature-format` and `label-format`) that allow to specify the preferred format of the feature and label matrix have been added.
 
-## Version 0.2.0 (Jun 28, 2020)
+## Version 0.2.0 (Jun. 28, 2020)
 
 A major update to the BOOMER algorithm that features the following changes:
 
@@ -198,7 +198,7 @@ A major update to the BOOMER algorithm that features the following changes:
 * Sparse feature matrices can now be used for training and prediction, which reduces the memory footprint and results in a significant speed-up of training times on some data sets.
 * Additional hyper-parameters (`min_coverage`, `max_conditions` and `max_head_refinements`) that provide fine-grained control over the specificity/generality of rules have been added.
 
-## Version 0.1.0 (Jun 22, 2020)
+## Version 0.1.0 (Jun. 22, 2020)
 
 The first version of the BOOMER algorithm used in the following publication:
 
