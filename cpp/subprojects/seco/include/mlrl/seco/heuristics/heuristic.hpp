@@ -24,7 +24,7 @@ namespace seco {
     class IHeuristic {
         public:
 
-            virtual ~IHeuristic() {};
+            virtual ~IHeuristic() {}
 
             /**
              * Calculates and returns a numerical score in [0, 1] given the elements of a confusion matrix. All elements
@@ -85,7 +85,7 @@ namespace seco {
     class IHeuristicFactory {
         public:
 
-            virtual ~IHeuristicFactory() {};
+            virtual ~IHeuristicFactory() {}
 
             /**
              * Creates and returns a new object of type `IHeuristic`.
@@ -101,7 +101,7 @@ namespace seco {
     class IHeuristicConfig {
         public:
 
-            virtual ~IHeuristicConfig() {};
+            virtual ~IHeuristicConfig() {}
 
             /**
              * Creates and returns a new object of type `IHeuristicFactory` according to the specified configuration.

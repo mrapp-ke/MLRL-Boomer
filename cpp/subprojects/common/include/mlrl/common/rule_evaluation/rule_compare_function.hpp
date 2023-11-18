@@ -23,7 +23,7 @@ struct RuleCompareFunction {
          * @param c A function of type `CompareFunction` for comparing the quality of different rules
          * @param m The minimum quality of a rule
          */
-        RuleCompareFunction(CompareFunction c, float64 m) : compare(c), minQuality(m) {};
+        RuleCompareFunction(CompareFunction c, float64 m) : compare(c), minQuality(m) {}
 
         /**
          * A function of type `CompareFunction` for comparing the quality of different rules.

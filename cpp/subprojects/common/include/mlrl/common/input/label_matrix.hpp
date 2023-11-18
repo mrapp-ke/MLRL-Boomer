@@ -11,7 +11,7 @@
 class MLRLCOMMON_API ILabelMatrix : virtual public ITwoDimensionalView {
     public:
 
-        virtual ~ILabelMatrix() override {};
+        virtual ~ILabelMatrix() override {}
 
         /**
          * Returns whether the label matrix is sparse or not.

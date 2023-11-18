@@ -39,7 +39,7 @@ class MLRLCOMMON_API CContiguousConstView : virtual public ITwoDimensionalView {
          */
         CContiguousConstView(uint32 numRows, uint32 numCols, T* array);
 
-        virtual ~CContiguousConstView() override {};
+        virtual ~CContiguousConstView() override {}
 
         /**
          * An iterator that provides read-only access to the elements in the view.
@@ -90,7 +90,7 @@ class MLRLCOMMON_API CContiguousView : public CContiguousConstView<T> {
          */
         CContiguousView(uint32 numRows, uint32 numCols, T* array);
 
-        virtual ~CContiguousView() override {};
+        virtual ~CContiguousView() override {}
 
         /**
          * An iterator that provides access to the elements in the view and allows to modify them.

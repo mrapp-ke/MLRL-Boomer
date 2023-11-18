@@ -19,7 +19,7 @@ class IPrediction;
 class ICoverageState {
     public:
 
-        virtual ~ICoverageState() {};
+        virtual ~ICoverageState() {}
 
         /**
          * Creates and returns a deep copy of the coverage state.

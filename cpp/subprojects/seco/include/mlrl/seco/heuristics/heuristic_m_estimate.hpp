@@ -18,7 +18,7 @@ namespace seco {
     class MLRLSECO_API IMEstimateConfig {
         public:
 
-            virtual ~IMEstimateConfig() {};
+            virtual ~IMEstimateConfig() {}
 
             /**
              * Returns the value of the "m" parameter.

@@ -18,7 +18,7 @@ namespace boosting {
     class MLRLBOOSTING_API ILabelWiseBinaryPredictorConfig {
         public:
 
-            virtual ~ILabelWiseBinaryPredictorConfig() {};
+            virtual ~ILabelWiseBinaryPredictorConfig() {}
 
             /**
              * Returns whether binary predictions are derived from probability estimates rather than regression scores

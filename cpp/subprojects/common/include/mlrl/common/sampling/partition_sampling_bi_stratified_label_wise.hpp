@@ -13,7 +13,7 @@
 class MLRLCOMMON_API ILabelWiseStratifiedBiPartitionSamplingConfig {
     public:
 
-        virtual ~ILabelWiseStratifiedBiPartitionSamplingConfig() {};
+        virtual ~ILabelWiseStratifiedBiPartitionSamplingConfig() {}
 
         /**
          * Returns the fraction of examples that are included in the holdout set.

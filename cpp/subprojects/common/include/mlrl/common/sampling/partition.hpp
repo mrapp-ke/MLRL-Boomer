@@ -29,7 +29,7 @@ class IJointProbabilityCalibrator;
 class IPartition {
     public:
 
-        virtual ~IPartition() {};
+        virtual ~IPartition() {}
 
         /**
          * Creates and returns a new instance of the class `IStoppingCriterion`, based on the type of this partition.

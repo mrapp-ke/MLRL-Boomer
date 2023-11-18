@@ -13,7 +13,7 @@
 class MLRLCOMMON_API ISizeStoppingCriterionConfig {
     public:
 
-        virtual ~ISizeStoppingCriterionConfig() {};
+        virtual ~ISizeStoppingCriterionConfig() {}
 
         /**
          * Returns the maximum number of rules that are induced.

@@ -12,7 +12,7 @@
 class MLRLCOMMON_API IEqualFeatureInfo : public IFeatureInfo {
     public:
 
-        virtual ~IEqualFeatureInfo() override {};
+        virtual ~IEqualFeatureInfo() override {}
 };
 
 /**

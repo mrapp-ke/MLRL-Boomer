@@ -18,7 +18,7 @@
 class MLRLCOMMON_API ICContiguousFeatureMatrix : virtual public IRowWiseFeatureMatrix {
     public:
 
-        virtual ~ICContiguousFeatureMatrix() override {};
+        virtual ~ICContiguousFeatureMatrix() override {}
 };
 
 /**

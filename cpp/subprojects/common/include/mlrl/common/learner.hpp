@@ -59,7 +59,7 @@
 class MLRLCOMMON_API ITrainingResult {
     public:
 
-        virtual ~ITrainingResult() {};
+        virtual ~ITrainingResult() {}
 
         /**
          * Returns the number of labels for which a model has been trained.
@@ -378,7 +378,7 @@ class MLRLCOMMON_API IRuleLearner {
 
             public:
 
-                virtual ~IConfig() {};
+                virtual ~IConfig() {}
         };
 
         /**
@@ -388,7 +388,7 @@ class MLRLCOMMON_API IRuleLearner {
         class ISequentialRuleModelAssemblageMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~ISequentialRuleModelAssemblageMixin() override {};
+                virtual ~ISequentialRuleModelAssemblageMixin() override {}
 
                 /**
                  * Configures the rule learner to use an algorithm that sequentially induces several rules, optionally
@@ -408,7 +408,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IDefaultRuleMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IDefaultRuleMixin() override {};
+                virtual ~IDefaultRuleMixin() override {}
 
                 /**
                  * Configures the rule learner to induce a default rule.
@@ -426,7 +426,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IGreedyTopDownRuleInductionMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IGreedyTopDownRuleInductionMixin() override {};
+                virtual ~IGreedyTopDownRuleInductionMixin() override {}
 
                 /**
                  * Configures the rule learner to use a greedy top-down search for the induction of individual rules.
@@ -451,7 +451,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IBeamSearchTopDownRuleInductionMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IBeamSearchTopDownRuleInductionMixin() override {};
+                virtual ~IBeamSearchTopDownRuleInductionMixin() override {}
 
                 /**
                  * Configures the rule learner to use a top-down beam search for the induction of individual rules.
@@ -476,7 +476,7 @@ class MLRLCOMMON_API IRuleLearner {
         class INoPostProcessorMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~INoPostProcessorMixin() override {};
+                virtual ~INoPostProcessorMixin() override {}
 
                 /**
                  * Configures the rule learner to not use any post processor.
@@ -494,7 +494,7 @@ class MLRLCOMMON_API IRuleLearner {
         class INoFeatureBinningMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~INoFeatureBinningMixin() override {};
+                virtual ~INoFeatureBinningMixin() override {}
 
                 /**
                  * Configures the rule learner to not use any method for the assignment of numerical feature values to
@@ -515,7 +515,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IEqualWidthFeatureBinningMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IEqualWidthFeatureBinningMixin() override {};
+                virtual ~IEqualWidthFeatureBinningMixin() override {}
 
                 /**
                  * Configures the rule learner to use a method for the assignment of numerical feature values to bins,
@@ -542,7 +542,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IEqualFrequencyFeatureBinningMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IEqualFrequencyFeatureBinningMixin() override {};
+                virtual ~IEqualFrequencyFeatureBinningMixin() override {}
 
                 /**
                  * Configures the rule learner to use a method for the assignment of numerical feature values to bins,
@@ -568,7 +568,7 @@ class MLRLCOMMON_API IRuleLearner {
         class INoLabelSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~INoLabelSamplingMixin() override {};
+                virtual ~INoLabelSamplingMixin() override {}
 
                 /**
                  * Configures the rule learner to not sample from the available labels whenever a new rule should be
@@ -587,7 +587,7 @@ class MLRLCOMMON_API IRuleLearner {
         class ILabelSamplingWithoutReplacementMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~ILabelSamplingWithoutReplacementMixin() override {};
+                virtual ~ILabelSamplingWithoutReplacementMixin() override {}
 
                 /**
                  * Configures the rule learner to sample from the available labels with replacement whenever a new rule
@@ -613,7 +613,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IRoundRobinLabelSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IRoundRobinLabelSamplingMixin() override {};
+                virtual ~IRoundRobinLabelSamplingMixin() override {}
 
                 /**
                  * Configures the rule learner to sample a single labels in a round-robin fashion whenever a new rule
@@ -631,7 +631,7 @@ class MLRLCOMMON_API IRuleLearner {
         class INoInstanceSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~INoInstanceSamplingMixin() override {};
+                virtual ~INoInstanceSamplingMixin() override {}
 
                 /**
                  * Configures the rule learner to not sample from the available training examples whenever a new rule
@@ -651,7 +651,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IInstanceSamplingWithReplacementMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IInstanceSamplingWithReplacementMixin() override {};
+                virtual ~IInstanceSamplingWithReplacementMixin() override {}
 
                 /**
                  * Configures the rule learner to sample from the available training examples with replacement whenever
@@ -678,7 +678,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IInstanceSamplingWithoutReplacementMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IInstanceSamplingWithoutReplacementMixin() override {};
+                virtual ~IInstanceSamplingWithoutReplacementMixin() override {}
 
                 /**
                  * Configures the rule learner to sample from the available training examples without replacement
@@ -705,7 +705,7 @@ class MLRLCOMMON_API IRuleLearner {
         class ILabelWiseStratifiedInstanceSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~ILabelWiseStratifiedInstanceSamplingMixin() override {};
+                virtual ~ILabelWiseStratifiedInstanceSamplingMixin() override {}
 
                 /**
                  * Configures the rule learner to sample from the available training examples using stratification, such
@@ -733,7 +733,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IExampleWiseStratifiedInstanceSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IExampleWiseStratifiedInstanceSamplingMixin() override {};
+                virtual ~IExampleWiseStratifiedInstanceSamplingMixin() override {}
 
                 /**
                  * Configures the rule learner to sample from the available training examples using stratification,
@@ -760,7 +760,7 @@ class MLRLCOMMON_API IRuleLearner {
         class INoFeatureSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~INoFeatureSamplingMixin() override {};
+                virtual ~INoFeatureSamplingMixin() override {}
 
                 /**
                  * Configures the rule learner to not sample from the available features whenever a rule should be
@@ -780,7 +780,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IFeatureSamplingWithoutReplacementMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IFeatureSamplingWithoutReplacementMixin() override {};
+                virtual ~IFeatureSamplingWithoutReplacementMixin() override {}
 
                 /**
                  * Configures the rule learner to sample from the available features with replacement whenever a rule
@@ -807,7 +807,7 @@ class MLRLCOMMON_API IRuleLearner {
         class INoPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~INoPartitionSamplingMixin() override {};
+                virtual ~INoPartitionSamplingMixin() override {}
 
                 /**
                  * Configures the rule learner to not partition the available training examples into a training set and
@@ -828,7 +828,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IRandomBiPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IRandomBiPartitionSamplingMixin() override {};
+                virtual ~IRandomBiPartitionSamplingMixin() override {}
 
                 /**
                  * Configures the rule learner to partition the available training examples into a training set and a
@@ -857,7 +857,7 @@ class MLRLCOMMON_API IRuleLearner {
         class ILabelWiseStratifiedBiPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~ILabelWiseStratifiedBiPartitionSamplingMixin() override {};
+                virtual ~ILabelWiseStratifiedBiPartitionSamplingMixin() override {}
 
                 /**
                  * Configures the rule learner to partition the available training examples into a training set and a
@@ -887,7 +887,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IExampleWiseStratifiedBiPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IExampleWiseStratifiedBiPartitionSamplingMixin() override {};
+                virtual ~IExampleWiseStratifiedBiPartitionSamplingMixin() override {}
 
                 /**
                  * Configures the rule learner to partition the available training examples into a training set and a
@@ -914,7 +914,7 @@ class MLRLCOMMON_API IRuleLearner {
         class INoRulePruningMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~INoRulePruningMixin() override {};
+                virtual ~INoRulePruningMixin() override {}
 
                 /**
                  * Configures the rule learner to not prune individual rules.
@@ -932,7 +932,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IIrepRulePruningMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IIrepRulePruningMixin() override {};
+                virtual ~IIrepRulePruningMixin() override {}
 
                 /**
                  * Configures the rule learner to prune individual rules by following the principles of "incremental
@@ -970,7 +970,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IParallelRuleRefinementMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IParallelRuleRefinementMixin() override {};
+                virtual ~IParallelRuleRefinementMixin() override {}
 
                 /**
                  * Configures the rule learner to use multi-threading for the parallel refinement of rules.
@@ -995,7 +995,7 @@ class MLRLCOMMON_API IRuleLearner {
         class INoParallelStatisticUpdateMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~INoParallelStatisticUpdateMixin() override {};
+                virtual ~INoParallelStatisticUpdateMixin() override {}
 
                 /**
                  * Configures the rule learner to not use any multi-threading for the parallel update of statistics.
@@ -1014,7 +1014,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IParallelStatisticUpdateMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IParallelStatisticUpdateMixin() override {};
+                virtual ~IParallelStatisticUpdateMixin() override {}
 
                 /**
                  * Configures the rule learner to use multi-threading for the parallel update of statistics.
@@ -1039,7 +1039,7 @@ class MLRLCOMMON_API IRuleLearner {
         class INoParallelPredictionMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~INoParallelPredictionMixin() override {};
+                virtual ~INoParallelPredictionMixin() override {}
 
                 /**
                  * Configures the rule learner to not use any multi-threading to predict for several query examples in
@@ -1059,7 +1059,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IParallelPredictionMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IParallelPredictionMixin() override {};
+                virtual ~IParallelPredictionMixin() override {}
 
                 /**
                  * Configures the rule learner to use multi-threading to predict for several query examples in parallel.
@@ -1084,7 +1084,7 @@ class MLRLCOMMON_API IRuleLearner {
         class INoSizeStoppingCriterionMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~INoSizeStoppingCriterionMixin() override {};
+                virtual ~INoSizeStoppingCriterionMixin() override {}
 
                 /**
                  * Configures the rule learner to not use a stopping criterion that ensures that the number of induced
@@ -1104,7 +1104,7 @@ class MLRLCOMMON_API IRuleLearner {
         class ISizeStoppingCriterionMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~ISizeStoppingCriterionMixin() override {};
+                virtual ~ISizeStoppingCriterionMixin() override {}
 
                 /**
                  * Configures the rule learner to use a stopping criterion that ensures that the number of induced rules
@@ -1130,7 +1130,7 @@ class MLRLCOMMON_API IRuleLearner {
         class INoTimeStoppingCriterionMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~INoTimeStoppingCriterionMixin() override {};
+                virtual ~INoTimeStoppingCriterionMixin() override {}
 
                 /**
                  * Configures the rule learner to not use a stopping criterion that ensures that a certain time limit is
@@ -1150,7 +1150,7 @@ class MLRLCOMMON_API IRuleLearner {
         class ITimeStoppingCriterionMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~ITimeStoppingCriterionMixin() override {};
+                virtual ~ITimeStoppingCriterionMixin() override {}
 
                 /**
                  * Configures the rule learner to use a stopping criterion that ensures that a certain time limit is not
@@ -1177,7 +1177,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IPrePruningMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IPrePruningMixin() override {};
+                virtual ~IPrePruningMixin() override {}
 
                 /**
                  * Configures the rule learner to use a stopping criterion that stops the induction of rules as soon as
@@ -1202,7 +1202,7 @@ class MLRLCOMMON_API IRuleLearner {
         class INoGlobalPruningMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~INoGlobalPruningMixin() override {};
+                virtual ~INoGlobalPruningMixin() override {}
 
                 /**
                  * Configures the rule learner to not use global pruning.
@@ -1221,7 +1221,7 @@ class MLRLCOMMON_API IRuleLearner {
         class IPostPruningMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IPostPruningMixin() override {};
+                virtual ~IPostPruningMixin() override {}
 
                 /**
                  * Configures the rule learner to use a stopping criterion that keeps track of the number of rules in a
@@ -1244,7 +1244,7 @@ class MLRLCOMMON_API IRuleLearner {
         class INoSequentialPostOptimizationMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~INoSequentialPostOptimizationMixin() override {};
+                virtual ~INoSequentialPostOptimizationMixin() override {}
 
                 /**
                  * Configures the rule learner to not use a post-optimization method that optimizes each rule in a model
@@ -1264,7 +1264,7 @@ class MLRLCOMMON_API IRuleLearner {
         class ISequentialPostOptimizationMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~ISequentialPostOptimizationMixin() override {};
+                virtual ~ISequentialPostOptimizationMixin() override {}
 
                 /**
                  * Configures the rule learner to use a post-optimization method that optimizes each rule in a model by
@@ -1291,7 +1291,7 @@ class MLRLCOMMON_API IRuleLearner {
         class INoMarginalProbabilityCalibrationMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~INoMarginalProbabilityCalibrationMixin() override {};
+                virtual ~INoMarginalProbabilityCalibrationMixin() override {}
 
                 /**
                  * Configures the rule learner to not calibrate marginal probabilities.
@@ -1310,7 +1310,7 @@ class MLRLCOMMON_API IRuleLearner {
         class INoJointProbabilityCalibrationMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~INoJointProbabilityCalibrationMixin() override {};
+                virtual ~INoJointProbabilityCalibrationMixin() override {}
 
                 /**
                  * Configures the rule learner to not calibrate joint probabilities.
@@ -1322,7 +1322,7 @@ class MLRLCOMMON_API IRuleLearner {
                 }
         };
 
-        virtual ~IRuleLearner() {};
+        virtual ~IRuleLearner() {}
 
         /**
          * Applies the rule learner to given training examples and corresponding ground truth labels.

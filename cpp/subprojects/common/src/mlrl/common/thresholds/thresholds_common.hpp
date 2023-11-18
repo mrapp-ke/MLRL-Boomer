@@ -175,7 +175,7 @@ class AbstractThresholds : public IThresholds {
                            IStatisticsProvider& statisticsProvider)
             : featureMatrix_(featureMatrix), featureInfo_(featureInfo), statisticsProvider_(statisticsProvider) {}
 
-        virtual ~AbstractThresholds() override {};
+        virtual ~AbstractThresholds() override {}
 
         IStatisticsProvider& getStatisticsProvider() const override final {
             return statisticsProvider_;

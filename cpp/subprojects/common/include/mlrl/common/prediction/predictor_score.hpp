@@ -16,7 +16,7 @@
 class IScorePredictor : public IPredictor<DensePredictionMatrix<float64>> {
     public:
 
-        virtual ~IScorePredictor() override {};
+        virtual ~IScorePredictor() override {}
 };
 
 /**
@@ -25,7 +25,7 @@ class IScorePredictor : public IPredictor<DensePredictionMatrix<float64>> {
 class IScorePredictorFactory {
     public:
 
-        virtual ~IScorePredictorFactory() {};
+        virtual ~IScorePredictorFactory() {}
 
         /**
          * Creates and returns a new object of the type `IScorePredictor`.
@@ -66,5 +66,5 @@ class IScorePredictorFactory {
 class IScorePredictorConfig : public IPredictorConfig<IScorePredictorFactory> {
     public:
 
-        virtual ~IScorePredictorConfig() override {};
+        virtual ~IScorePredictorConfig() override {}
 };

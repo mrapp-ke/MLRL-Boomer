@@ -18,7 +18,7 @@ namespace boosting {
     class MLRLBOOSTING_API IGfmBinaryPredictorConfig {
         public:
 
-            virtual ~IGfmBinaryPredictorConfig() {};
+            virtual ~IGfmBinaryPredictorConfig() {}
 
             /**
              * Returns whether a model for the calibration of probabilities is used, if available, or not.

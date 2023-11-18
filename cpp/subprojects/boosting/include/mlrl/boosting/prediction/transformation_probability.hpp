@@ -13,7 +13,7 @@ namespace boosting {
     class IProbabilityTransformation {
         public:
 
-            virtual ~IProbabilityTransformation() {};
+            virtual ~IProbabilityTransformation() {}
 
             /**
              * Transforms aggregated scores into probability estimates.

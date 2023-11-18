@@ -16,7 +16,7 @@ namespace seco {
     class MLRLSECO_API IPeakLiftFunctionConfig {
         public:
 
-            virtual ~IPeakLiftFunctionConfig() {};
+            virtual ~IPeakLiftFunctionConfig() {}
 
             /**
              * Returns the number of labels for which the lift is maximal.

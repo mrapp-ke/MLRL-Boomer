@@ -11,17 +11,17 @@
 struct Quality {
     public:
 
-        Quality() {};
+        Quality() {}
 
         /**
          * @param q A numerical score that represents the quality
          */
-        Quality(float64 q) : quality(q) {};
+        Quality(float64 q) : quality(q) {}
 
         /**
          * @param q A reference to an object of type `Quality` to be copied
          */
-        Quality(const Quality& q) : quality(q.quality) {};
+        Quality(const Quality& q) : quality(q.quality) {}
 
         /**
          * Assigns the numerical score of an existing object to this object.

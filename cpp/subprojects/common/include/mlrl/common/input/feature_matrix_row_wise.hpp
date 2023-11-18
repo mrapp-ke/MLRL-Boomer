@@ -27,7 +27,7 @@ class IProbabilityPredictorFactory;
 class MLRLCOMMON_API IRowWiseFeatureMatrix : virtual public IFeatureMatrix {
     public:
 
-        virtual ~IRowWiseFeatureMatrix() override {};
+        virtual ~IRowWiseFeatureMatrix() override {}
 
         /**
          * Creates and returns a new instance of the class `IBinaryPredictor`, based on the type of this feature matrix.

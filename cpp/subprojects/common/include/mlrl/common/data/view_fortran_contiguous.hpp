@@ -39,7 +39,7 @@ class FortranContiguousConstView : virtual public ITwoDimensionalView {
          */
         FortranContiguousConstView(uint32 numRows, uint32 numCols, T* array);
 
-        virtual ~FortranContiguousConstView() override {};
+        virtual ~FortranContiguousConstView() override {}
 
         /**
          * An iterator that provides read-only access to the values in the view.
@@ -91,7 +91,7 @@ class FortranContiguousView : public FortranContiguousConstView<T> {
          */
         FortranContiguousView(uint32 numRows, uint32 numCols, T* array);
 
-        virtual ~FortranContiguousView() override {};
+        virtual ~FortranContiguousView() override {}
 
         /**
          * An iterator that provides access to the values in the view and allows to modify them.

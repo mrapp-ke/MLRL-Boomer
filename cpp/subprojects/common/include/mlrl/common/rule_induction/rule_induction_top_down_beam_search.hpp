@@ -14,7 +14,7 @@
 class MLRLCOMMON_API IBeamSearchTopDownRuleInductionConfig {
     public:
 
-        virtual ~IBeamSearchTopDownRuleInductionConfig() {};
+        virtual ~IBeamSearchTopDownRuleInductionConfig() {}
 
         /**
          * Returns the width that is used by the beam search.

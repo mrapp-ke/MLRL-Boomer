@@ -12,7 +12,7 @@
 class MLRLCOMMON_API IFortranContiguousFeatureMatrix : virtual public IColumnWiseFeatureMatrix {
     public:
 
-        virtual ~IFortranContiguousFeatureMatrix() override {};
+        virtual ~IFortranContiguousFeatureMatrix() override {}
 };
 
 /**

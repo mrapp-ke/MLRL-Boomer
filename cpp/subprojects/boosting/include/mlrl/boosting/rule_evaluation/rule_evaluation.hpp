@@ -19,7 +19,7 @@ namespace boosting {
     class IRuleEvaluation {
         public:
 
-            virtual ~IRuleEvaluation() {};
+            virtual ~IRuleEvaluation() {}
 
             /**
              * Calculates the scores to be predicted by a rule, as well as its overall quality, based on the sums of

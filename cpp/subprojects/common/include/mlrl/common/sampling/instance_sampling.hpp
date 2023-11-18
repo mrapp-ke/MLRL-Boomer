@@ -21,7 +21,7 @@ class SinglePartition;
 class IInstanceSampling {
     public:
 
-        virtual ~IInstanceSampling() {};
+        virtual ~IInstanceSampling() {}
 
         /**
          * Creates and returns a sample of the available training examples.
@@ -39,7 +39,7 @@ class IInstanceSampling {
 class IInstanceSamplingFactory {
     public:
 
-        virtual ~IInstanceSamplingFactory() {};
+        virtual ~IInstanceSamplingFactory() {}
 
         /**
          * Creates and returns a new object of type `IInstanceSampling`.
@@ -108,7 +108,7 @@ class IInstanceSamplingFactory {
 class IInstanceSamplingConfig {
     public:
 
-        virtual ~IInstanceSamplingConfig() {};
+        virtual ~IInstanceSamplingConfig() {}
 
         /**
          * Creates and returns a new object of type `IInstanceSamplingFactory` according to the specified configuration.

@@ -16,7 +16,7 @@
 class IImmutableWeightedStatistics {
     public:
 
-        virtual ~IImmutableWeightedStatistics() {};
+        virtual ~IImmutableWeightedStatistics() {}
 
         /**
          * Returns the number of available statistics.

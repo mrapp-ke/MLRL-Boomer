@@ -16,7 +16,7 @@ namespace seco {
     class IRuleEvaluation {
         public:
 
-            virtual ~IRuleEvaluation() {};
+            virtual ~IRuleEvaluation() {}
 
             /**
              * Calculates the scores to be predicted by a rule, as well as their overall quality, based on label-wise

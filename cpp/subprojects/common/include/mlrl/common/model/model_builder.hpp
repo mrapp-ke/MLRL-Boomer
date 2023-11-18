@@ -13,7 +13,7 @@
 class IModelBuilder {
     public:
 
-        virtual ~IModelBuilder() {};
+        virtual ~IModelBuilder() {}
 
         /**
          * Sets the default rule of the model.
@@ -55,7 +55,7 @@ class IModelBuilder {
 class IModelBuilderFactory {
     public:
 
-        virtual ~IModelBuilderFactory() {};
+        virtual ~IModelBuilderFactory() {}
 
         /**
          * Creates and returns a new instance of type `IModelBuilder`.

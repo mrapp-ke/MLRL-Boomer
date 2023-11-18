@@ -16,7 +16,7 @@ class MLRLCOMMON_API IIsotonicProbabilityCalibrationModel : public IMarginalProb
                                                             public IJointProbabilityCalibrationModel {
     public:
 
-        virtual ~IIsotonicProbabilityCalibrationModel() override {};
+        virtual ~IIsotonicProbabilityCalibrationModel() override {}
 
         /**
          * A visitor function for handling individual bins.

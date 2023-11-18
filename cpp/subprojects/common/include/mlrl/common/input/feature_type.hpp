@@ -9,7 +9,7 @@
 class IFeatureType {
     public:
 
-        virtual ~IFeatureType() {};
+        virtual ~IFeatureType() {}
 
         /**
          * Returns whether the feature is ordinal or not.

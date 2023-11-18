@@ -17,7 +17,7 @@
 class MLRLCOMMON_API IMarginalProbabilityCalibrationModel {
     public:
 
-        virtual ~IMarginalProbabilityCalibrationModel() {};
+        virtual ~IMarginalProbabilityCalibrationModel() {}
 
         /**
          * Calibrates the marginal probability that is predicted for a specific label.
@@ -36,7 +36,7 @@ class MLRLCOMMON_API IMarginalProbabilityCalibrationModel {
 class IMarginalProbabilityCalibrator : public IProbabilityCalibrator<IMarginalProbabilityCalibrationModel> {
     public:
 
-        virtual ~IMarginalProbabilityCalibrator() override {};
+        virtual ~IMarginalProbabilityCalibrator() override {}
 };
 
 /**
@@ -45,7 +45,7 @@ class IMarginalProbabilityCalibrator : public IProbabilityCalibrator<IMarginalPr
 class IMarginalProbabilityCalibratorFactory {
     public:
 
-        virtual ~IMarginalProbabilityCalibratorFactory() {};
+        virtual ~IMarginalProbabilityCalibratorFactory() {}
 
         /**
          * Creates and returns a new object of type `IMarginalProbabilityCalibrator`.
@@ -62,7 +62,7 @@ class IMarginalProbabilityCalibratorFactory {
 class IMarginalProbabilityCalibratorConfig {
     public:
 
-        virtual ~IMarginalProbabilityCalibratorConfig() {};
+        virtual ~IMarginalProbabilityCalibratorConfig() {}
 
         /**
          * Returns whether a holdout set should be used, if available, or not.

@@ -15,7 +15,7 @@ namespace boosting {
     class IDiscretizationFunction {
         public:
 
-            virtual ~IDiscretizationFunction() {};
+            virtual ~IDiscretizationFunction() {}
 
             /**
              * Discretizes the regression score that is predicted for a specific label.
@@ -33,7 +33,7 @@ namespace boosting {
     class IDiscretizationFunctionFactory {
         public:
 
-            virtual ~IDiscretizationFunctionFactory() {};
+            virtual ~IDiscretizationFunctionFactory() {}
 
             /**
              * Creates and returns a new object of the type `IDiscretizationFunction`.

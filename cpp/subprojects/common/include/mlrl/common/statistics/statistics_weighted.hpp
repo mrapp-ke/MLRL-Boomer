@@ -15,7 +15,7 @@
 class IWeightedStatistics : virtual public IImmutableWeightedStatistics {
     public:
 
-        virtual ~IWeightedStatistics() override {};
+        virtual ~IWeightedStatistics() override {}
 
         /**
          * Creates and returns a copy of this object.

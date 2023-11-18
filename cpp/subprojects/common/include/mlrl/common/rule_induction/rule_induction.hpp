@@ -20,7 +20,7 @@
 class IRuleInduction {
     public:
 
-        virtual ~IRuleInduction() {};
+        virtual ~IRuleInduction() {}
 
         /**
          * Induces the default rule.
@@ -66,7 +66,7 @@ class IRuleInduction {
 class IRuleInductionFactory {
     public:
 
-        virtual ~IRuleInductionFactory() {};
+        virtual ~IRuleInductionFactory() {}
 
         /**
          * Creates and returns a new object of type `IRuleInduction`.
@@ -82,7 +82,7 @@ class IRuleInductionFactory {
 class IRuleInductionConfig {
     public:
 
-        virtual ~IRuleInductionConfig() {};
+        virtual ~IRuleInductionConfig() {}
 
         /**
          * Creates and returns a new object of type `IRuleInductionFactory` according to the specified configuration.

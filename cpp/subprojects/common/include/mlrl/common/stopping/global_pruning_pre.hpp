@@ -24,7 +24,7 @@
 class MLRLCOMMON_API IPrePruningConfig {
     public:
 
-        virtual ~IPrePruningConfig() {};
+        virtual ~IPrePruningConfig() {}
 
         /**
          * Returns the type of the aggregation function that is used to aggregate the values that are stored in a

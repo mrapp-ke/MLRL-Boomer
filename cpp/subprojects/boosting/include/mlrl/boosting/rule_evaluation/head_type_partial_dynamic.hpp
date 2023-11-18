@@ -19,7 +19,7 @@ namespace boosting {
     class MLRLBOOSTING_API IDynamicPartialHeadConfig {
         public:
 
-            virtual ~IDynamicPartialHeadConfig() {};
+            virtual ~IDynamicPartialHeadConfig() {}
 
             /**
              * Returns the threshold that affects for how many labels the rule heads predict.

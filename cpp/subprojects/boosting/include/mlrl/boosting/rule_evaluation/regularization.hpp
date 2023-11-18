@@ -14,7 +14,7 @@ namespace boosting {
     class IRegularizationConfig {
         public:
 
-            virtual ~IRegularizationConfig() {};
+            virtual ~IRegularizationConfig() {}
 
             /**
              * Determines and returns the weight of the regularization term according to the specified configuration.

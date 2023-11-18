@@ -13,7 +13,7 @@
 class IStatisticsProvider {
     public:
 
-        virtual ~IStatisticsProvider() {};
+        virtual ~IStatisticsProvider() {}
 
         /**
          * Returns an object of type `IStatistics`.
@@ -41,7 +41,7 @@ class IStatisticsProvider {
 class IStatisticsProviderFactory {
     public:
 
-        virtual ~IStatisticsProviderFactory() {};
+        virtual ~IStatisticsProviderFactory() {}
 
         /**
          * Creates and returns a new instance of the class `IStatisticsProvider`, based on a label matrix that provides

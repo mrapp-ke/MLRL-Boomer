@@ -18,7 +18,7 @@
 class IThresholds {
     public:
 
-        virtual ~IThresholds() {};
+        virtual ~IThresholds() {}
 
         /**
          * Creates and returns a new subset of the thresholds, which initially contains all of the thresholds.
@@ -62,7 +62,7 @@ class IThresholds {
 class IThresholdsFactory {
     public:
 
-        virtual ~IThresholdsFactory() {};
+        virtual ~IThresholdsFactory() {}
 
         /**
          * Creates and returns a new object of type `IThresholds`.

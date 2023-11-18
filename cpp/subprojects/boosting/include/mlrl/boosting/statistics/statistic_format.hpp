@@ -32,7 +32,7 @@ namespace boosting {
     class IStatisticsConfig {
         public:
 
-            virtual ~IStatisticsConfig() {};
+            virtual ~IStatisticsConfig() {}
 
             /**
              * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified

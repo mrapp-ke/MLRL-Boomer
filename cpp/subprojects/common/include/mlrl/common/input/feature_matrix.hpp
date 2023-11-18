@@ -11,7 +11,7 @@
 class MLRLCOMMON_API IFeatureMatrix : virtual public ITwoDimensionalView {
     public:
 
-        virtual ~IFeatureMatrix() override {};
+        virtual ~IFeatureMatrix() override {}
 
         /**
          * Returns whether the feature matrix is sparse or not.

@@ -15,7 +15,7 @@ namespace seco {
     class ICoverageStatistics : public IStatistics {
         public:
 
-            virtual ~ICoverageStatistics() override {};
+            virtual ~ICoverageStatistics() override {}
 
             /**
              * Returns the sum of the weights of all labels that remain to be covered.

@@ -12,7 +12,7 @@
 class MLRLCOMMON_API IMixedFeatureInfo : public IFeatureInfo {
     public:
 
-        virtual ~IMixedFeatureInfo() override {};
+        virtual ~IMixedFeatureInfo() override {}
 
         /**
          * Marks the feature at a specific index as numerical.

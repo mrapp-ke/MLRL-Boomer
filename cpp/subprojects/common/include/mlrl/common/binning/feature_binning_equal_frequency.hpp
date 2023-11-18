@@ -15,7 +15,7 @@
 class MLRLCOMMON_API IEqualFrequencyFeatureBinningConfig {
     public:
 
-        virtual ~IEqualFrequencyFeatureBinningConfig() {};
+        virtual ~IEqualFrequencyFeatureBinningConfig() {}
 
         /**
          * Returns the percentage that specifies how many bins are used.

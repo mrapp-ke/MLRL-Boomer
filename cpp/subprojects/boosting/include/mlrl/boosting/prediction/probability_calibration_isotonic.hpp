@@ -16,7 +16,7 @@ namespace boosting {
     class MLRLBOOSTING_API IIsotonicMarginalProbabilityCalibratorConfig {
         public:
 
-            virtual ~IIsotonicMarginalProbabilityCalibratorConfig() {};
+            virtual ~IIsotonicMarginalProbabilityCalibratorConfig() {}
 
             /**
              * Returns whether the calibration model is fit to the examples in the holdout set, if available, or not.
@@ -80,7 +80,7 @@ namespace boosting {
     class MLRLBOOSTING_API IIsotonicJointProbabilityCalibratorConfig {
         public:
 
-            virtual ~IIsotonicJointProbabilityCalibratorConfig() {};
+            virtual ~IIsotonicJointProbabilityCalibratorConfig() {}
 
             /**
              * Returns whether the calibration model is fit to the examples in the holdout set, if available, or not.

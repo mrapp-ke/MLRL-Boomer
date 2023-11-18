@@ -15,7 +15,7 @@ namespace seco {
     class IHeadConfig {
         public:
 
-            virtual ~IHeadConfig() {};
+            virtual ~IHeadConfig() {}
 
             /**
              * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified

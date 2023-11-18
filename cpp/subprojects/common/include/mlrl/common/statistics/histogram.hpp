@@ -12,7 +12,7 @@
 class IHistogram : virtual public IImmutableWeightedStatistics {
     public:
 
-        virtual ~IHistogram() override {};
+        virtual ~IHistogram() override {}
 
         /**
          * Sets all statistics in the histogram to zero.

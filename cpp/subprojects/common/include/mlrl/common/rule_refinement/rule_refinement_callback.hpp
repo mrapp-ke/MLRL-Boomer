@@ -42,7 +42,7 @@ class IRuleRefinementCallback {
                 const Vector& vector;
         };
 
-        virtual ~IRuleRefinementCallback() {};
+        virtual ~IRuleRefinementCallback() {}
 
         /**
          * Invokes the callback and returns its result.

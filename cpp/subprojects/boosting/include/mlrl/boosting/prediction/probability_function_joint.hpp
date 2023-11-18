@@ -18,7 +18,7 @@ namespace boosting {
     class IJointProbabilityFunction : public IDistanceMeasure {
         public:
 
-            virtual ~IJointProbabilityFunction() override {};
+            virtual ~IJointProbabilityFunction() override {}
 
             /**
              * Transforms the regression scores that are predicted for an example into a joint probability that
@@ -109,7 +109,7 @@ namespace boosting {
     class IJointProbabilityFunctionFactory : public IDistanceMeasureFactory {
         public:
 
-            virtual ~IJointProbabilityFunctionFactory() override {};
+            virtual ~IJointProbabilityFunctionFactory() override {}
 
             /**
              * Creates and returns a new object of the type `IJointProbabilityFunction`.

@@ -15,7 +15,7 @@
 class MLRLCOMMON_API IFeatureInfo {
     public:
 
-        virtual ~IFeatureInfo() {};
+        virtual ~IFeatureInfo() {}
 
         /**
          * Creates and returns a new object of type `IFeatureType` that corresponds to the type of the feature at a

@@ -16,7 +16,7 @@ template<typename PredictionMatrix>
 class IIncrementalPredictor {
     public:
 
-        virtual ~IIncrementalPredictor() {};
+        virtual ~IIncrementalPredictor() {}
 
         /**
          * Returns whether there are any remaining ensemble members that have not been used yet or not.
@@ -54,7 +54,7 @@ template<typename PredictionMatrix>
 class IPredictor {
     public:
 
-        virtual ~IPredictor() {};
+        virtual ~IPredictor() {}
 
         /**
          * Obtains and returns predictions for all query examples.
@@ -96,7 +96,7 @@ template<typename PredictorFactory>
 class IPredictorConfig {
     public:
 
-        virtual ~IPredictorConfig() {};
+        virtual ~IPredictorConfig() {}
 
         /**
          * Creates and returns a new object of type `IPredictorFactory` according to the specified configuration.

@@ -46,7 +46,7 @@ namespace boosting {
             SparseLabelWiseHistogramConstView(uint32 numRows, uint32 numCols, Triple<float64>* statistics,
                                               float64* weights);
 
-            virtual ~SparseLabelWiseHistogramConstView() {};
+            virtual ~SparseLabelWiseHistogramConstView() {}
 
             /**
              * An iterator that provides read-only access to the gradients and Hessians.
@@ -119,7 +119,7 @@ namespace boosting {
              */
             SparseLabelWiseHistogramView(uint32 numRows, uint32 numCols, Triple<float64>* statistics, float64* weights);
 
-            virtual ~SparseLabelWiseHistogramView() override {};
+            virtual ~SparseLabelWiseHistogramView() override {}
 
             /**
              * Sets all gradients and Hessians in the matrix to zero.

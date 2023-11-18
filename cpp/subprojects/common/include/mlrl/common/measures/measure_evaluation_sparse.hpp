@@ -16,7 +16,7 @@
 class ISparseEvaluationMeasure {
     public:
 
-        virtual ~ISparseEvaluationMeasure() {};
+        virtual ~ISparseEvaluationMeasure() {}
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
@@ -55,7 +55,7 @@ class ISparseEvaluationMeasure {
 class ISparseEvaluationMeasureFactory {
     public:
 
-        virtual ~ISparseEvaluationMeasureFactory() {};
+        virtual ~ISparseEvaluationMeasureFactory() {}
 
         /**
          * Creates and returns a new object of type `ISparseEvaluationMeasure`.

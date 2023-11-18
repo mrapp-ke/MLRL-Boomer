@@ -18,7 +18,7 @@ namespace boosting {
     class MLRLBOOSTING_API ILabelWiseProbabilityPredictorConfig {
         public:
 
-            virtual ~ILabelWiseProbabilityPredictorConfig() {};
+            virtual ~ILabelWiseProbabilityPredictorConfig() {}
 
             /**
              * Returns whether a model for the calibration of probabilities is used, if available, or not.

@@ -18,7 +18,7 @@ namespace seco {
     class MLRLSECO_API IFMeasureConfig {
         public:
 
-            virtual ~IFMeasureConfig() {};
+            virtual ~IFMeasureConfig() {}
 
             /**
              * Returns the value of the "beta" parameter.

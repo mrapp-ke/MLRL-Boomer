@@ -14,7 +14,7 @@
 class MLRLCOMMON_API ISequentialPostOptimizationConfig {
     public:
 
-        virtual ~ISequentialPostOptimizationConfig() {};
+        virtual ~ISequentialPostOptimizationConfig() {}
 
         /**
          * Returns the number of iterations that are performed for optimizing a model.

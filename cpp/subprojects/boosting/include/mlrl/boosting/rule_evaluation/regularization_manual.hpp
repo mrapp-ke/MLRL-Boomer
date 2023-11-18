@@ -15,7 +15,7 @@ namespace boosting {
     class MLRLBOOSTING_API IManualRegularizationConfig {
         public:
 
-            virtual ~IManualRegularizationConfig() {};
+            virtual ~IManualRegularizationConfig() {}
 
             /**
              * Returns the weight of the regularization term.

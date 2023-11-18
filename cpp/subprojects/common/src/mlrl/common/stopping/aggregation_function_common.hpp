@@ -14,7 +14,7 @@
 class IAggregationFunction {
     public:
 
-        virtual ~IAggregationFunction() {};
+        virtual ~IAggregationFunction() {}
 
         /**
          * Aggregates the values that are stored in a buffer.
@@ -102,7 +102,7 @@ class ArithmeticMeanAggregationFunction final : public IAggregationFunction {
 class IAggregationFunctionFactory {
     public:
 
-        virtual ~IAggregationFunctionFactory() {};
+        virtual ~IAggregationFunctionFactory() {}
 
         /**
          * Creates and returns a new object of type `IAggregationFunction`.

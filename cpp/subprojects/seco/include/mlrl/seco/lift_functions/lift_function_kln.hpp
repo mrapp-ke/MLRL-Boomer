@@ -15,7 +15,7 @@ namespace seco {
     class MLRLSECO_API IKlnLiftFunctionConfig {
         public:
 
-            virtual ~IKlnLiftFunctionConfig() {};
+            virtual ~IKlnLiftFunctionConfig() {}
 
             /**
              * Returns the value of the parameter "k", which affects the steepness of the lift function.

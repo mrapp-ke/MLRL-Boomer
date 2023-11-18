@@ -12,7 +12,7 @@
 class MLRLCOMMON_API ITwoDimensionalView {
     public:
 
-        virtual ~ITwoDimensionalView() {};
+        virtual ~ITwoDimensionalView() {}
 
         /**
          * Returns the number of rows in the view.

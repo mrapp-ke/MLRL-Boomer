@@ -14,7 +14,7 @@ namespace boosting {
     class IExampleWiseLoss : public ILabelWiseLoss {
         public:
 
-            virtual ~IExampleWiseLoss() override {};
+            virtual ~IExampleWiseLoss() override {}
 
             /**
              * Updates the statistics of the example at a specific index.
@@ -52,7 +52,7 @@ namespace boosting {
     class IExampleWiseLossFactory : public ILabelWiseLossFactory {
         public:
 
-            virtual ~IExampleWiseLossFactory() override {};
+            virtual ~IExampleWiseLossFactory() override {}
 
             /**
              * Creates and returns a new object of type `IExampleWiseLoss`.
@@ -73,7 +73,7 @@ namespace boosting {
     class IExampleWiseLossConfig : public ILossConfig {
         public:
 
-            virtual ~IExampleWiseLossConfig() override {};
+            virtual ~IExampleWiseLossConfig() override {}
 
             /**
              * Creates and returns a new object of type `IExampleWiseLossFactory` according to the specified

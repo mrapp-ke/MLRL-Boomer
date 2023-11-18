@@ -16,7 +16,7 @@ namespace seco {
     class MLRLSECO_API ICoverageStoppingCriterionConfig {
         public:
 
-            virtual ~ICoverageStoppingCriterionConfig() {};
+            virtual ~ICoverageStoppingCriterionConfig() {}
 
             /**
              * Returns the threshold that is used by the stopping criterion.

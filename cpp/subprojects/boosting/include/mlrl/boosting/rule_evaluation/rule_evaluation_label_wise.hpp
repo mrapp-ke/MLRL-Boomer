@@ -20,7 +20,7 @@ namespace boosting {
     class ILabelWiseRuleEvaluationFactory {
         public:
 
-            virtual ~ILabelWiseRuleEvaluationFactory() {};
+            virtual ~ILabelWiseRuleEvaluationFactory() {}
 
             /**
              * Creates a new instance of the class `IRuleEvaluation` that allows to calculate the predictions of rules

@@ -103,10 +103,10 @@ namespace boosting {
                             virtual public IRuleLearner::INoJointProbabilityCalibrationMixin {
                 public:
 
-                    virtual ~IConfig() override {};
+                    virtual ~IConfig() override {}
             };
 
-            virtual ~IBoomer() override {};
+            virtual ~IBoomer() override {}
     };
 
     /**
