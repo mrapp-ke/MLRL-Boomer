@@ -88,8 +88,7 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
 
         void set(View<float64>::const_iterator begin, View<float64>::const_iterator end) override final;
 
-        void set(DenseBinnedVector<float64>::const_iterator begin,
-                 DenseBinnedVector<float64>::const_iterator end) override final;
+        void set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) override final;
 
         bool isPartial() const override;
 

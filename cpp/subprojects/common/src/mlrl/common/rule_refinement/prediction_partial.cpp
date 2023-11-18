@@ -92,8 +92,7 @@ void PartialPrediction::set(View<float64>::const_iterator begin, View<float64>::
     copyView(begin, this->view_.begin(), this->getNumElements());
 }
 
-void PartialPrediction::set(DenseBinnedVector<float64>::const_iterator begin,
-                            DenseBinnedVector<float64>::const_iterator end) {
+void PartialPrediction::set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) {
     copyView(begin, this->view_.begin(), this->getNumElements());
 }
 

@@ -46,8 +46,7 @@ void CompletePrediction::set(View<float64>::const_iterator begin, View<float64>:
     copyView(begin, this->view_.begin(), this->getNumElements());
 }
 
-void CompletePrediction::set(DenseBinnedVector<float64>::const_iterator begin,
-                             DenseBinnedVector<float64>::const_iterator end) {
+void CompletePrediction::set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) {
     copyView(begin, this->view_.begin(), this->getNumElements());
 }
 
