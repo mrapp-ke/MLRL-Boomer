@@ -88,3 +88,11 @@ class WriteIterableCContiguousMatrixDecorator : public Matrix {
             return &Matrix::view.array[(row + 1) * Matrix::view.numCols];
         }
 };
+
+/**
+ * Provides read-only access via iterators to the values stored in a C-contiguous matrix.
+ *
+ * @tparam Matrix The type of the matrix
+ */
+template<typename Matrix>
+using ReadableCContiguousMatrixDecorator = ReadIterableCContiguousMatrixDecorator<MatrixDecorator<Matrix>>;
