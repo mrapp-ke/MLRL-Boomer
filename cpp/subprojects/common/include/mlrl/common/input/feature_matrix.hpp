@@ -19,4 +19,18 @@ class MLRLCOMMON_API IFeatureMatrix : virtual public ITwoDimensionalView {
          * @return True, if the feature matrix is sparse, false otherwise
          */
         virtual bool isSparse() const = 0;
+
+        /**
+         * Returns the number of examples in the feature matrix.
+         *
+         * @return The number of examples
+         */
+        virtual uint32 getNumExamples() const = 0;
+
+        /**
+         * Returns the number of features in the feature matrix.
+         *
+         * @return The number of features
+         */
+        virtual uint32 getNumFeatures() const = 0;
 };

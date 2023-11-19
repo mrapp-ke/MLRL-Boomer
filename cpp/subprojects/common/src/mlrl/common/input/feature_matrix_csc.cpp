@@ -33,6 +33,14 @@ class CscFeatureMatrix final : public CscConstView<const float32>,
             return true;
         }
 
+        uint32 getNumExamples() const override {
+            return this->getNumRows();
+        }
+
+        uint32 getNumFeatures() const override {
+            return this->getNumCols();
+        }
+
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override {
             CscConstView<const float32>::index_const_iterator indexIterator = this->indices_cbegin(featureIndex);
             CscConstView<const float32>::index_const_iterator indicesEnd = this->indices_cend(featureIndex);

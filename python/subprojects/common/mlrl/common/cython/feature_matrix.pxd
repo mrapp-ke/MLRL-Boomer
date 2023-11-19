@@ -10,9 +10,9 @@ cdef extern from "mlrl/common/input/feature_matrix.hpp" nogil:
 
         # Functions:
 
-        uint32 getNumRows() const
+        uint32 getNumExamples() const
 
-        uint32 getNumCols() const
+        uint32 getNumFeatures() const
 
         bool isSparse() const
 

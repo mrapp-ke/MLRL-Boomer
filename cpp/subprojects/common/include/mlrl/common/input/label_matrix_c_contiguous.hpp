@@ -111,6 +111,10 @@ class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>,
 
         bool isSparse() const override;
 
+        uint32 getNumExamples() const override;
+
+        uint32 getNumLabels() const override;
+
         float32 calculateLabelCardinality() const override;
 
         std::unique_ptr<LabelVector> createLabelVector(uint32 row) const override;

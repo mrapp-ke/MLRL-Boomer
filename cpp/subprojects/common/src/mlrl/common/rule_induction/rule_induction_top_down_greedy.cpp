@@ -213,7 +213,7 @@ IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setRecalcul
 
 std::unique_ptr<IRuleInductionFactory> GreedyTopDownRuleInductionConfig::createRuleInductionFactory(
   const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
-    uint32 numExamples = featureMatrix.getNumRows();
+    uint32 numExamples = featureMatrix.getNumExamples();
     uint32 minCoverage;
 
     if (minSupport_ > 0) {
@@ -222,7 +222,7 @@ std::unique_ptr<IRuleInductionFactory> GreedyTopDownRuleInductionConfig::createR
         minCoverage = std::min(numExamples, minCoverage_);
     }
 
-    uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
+    uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
     return std::make_unique<GreedyTopDownRuleInductionFactory>(
       ruleCompareFunction_, minCoverage, maxConditions_, maxHeadRefinements_, recalculatePredictions_, numThreads);
 }

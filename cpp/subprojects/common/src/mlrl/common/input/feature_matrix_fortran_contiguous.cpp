@@ -27,6 +27,14 @@ class FortranContiguousFeatureMatrix final : public FortranContiguousConstView<c
             return false;
         }
 
+        uint32 getNumExamples() const override {
+            return this->getNumRows();
+        }
+
+        uint32 getNumFeatures() const override {
+            return this->getNumCols();
+        }
+
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override {
             FortranContiguousConstView<const float32>::value_const_iterator columnIterator =
               this->values_cbegin(featureIndex);

@@ -70,5 +70,5 @@ ILabelSamplingWithoutReplacementConfig& LabelSamplingWithoutReplacementConfig::s
 
 std::unique_ptr<ILabelSamplingFactory> LabelSamplingWithoutReplacementConfig::createLabelSamplingFactory(
   const ILabelMatrix& labelMatrix) const {
-    return std::make_unique<LabelSamplingWithoutReplacementFactory>(labelMatrix.getNumCols(), numSamples_);
+    return std::make_unique<LabelSamplingWithoutReplacementFactory>(labelMatrix.getNumLabels(), numSamples_);
 }

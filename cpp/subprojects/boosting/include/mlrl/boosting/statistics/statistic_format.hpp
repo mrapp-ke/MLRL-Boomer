@@ -22,7 +22,7 @@ namespace boosting {
      */
     static inline bool shouldSparseStatisticsBePreferred(const IRowWiseLabelMatrix& labelMatrix, bool defaultRuleUsed,
                                                          bool partialHeadsUsed) {
-        return labelMatrix.isSparse() && labelMatrix.getNumCols() > 120 && !defaultRuleUsed && partialHeadsUsed;
+        return labelMatrix.isSparse() && labelMatrix.getNumLabels() > 120 && !defaultRuleUsed && partialHeadsUsed;
     }
 
     /**

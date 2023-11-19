@@ -11,21 +11,21 @@ cdef class FeatureMatrix:
     cdef IFeatureMatrix* get_feature_matrix_ptr(self):
         pass
 
-    def get_num_rows(self) -> int:
+    def get_num_examples(self) -> int:
         """
-        Returns the number of rows in the matrix.
+        Returns the number of examples in the feature matrix.
 
-        :return The number of rows
+        :return The number of examples
         """
-        return self.get_feature_matrix_ptr().getNumRows()
+        return self.get_feature_matrix_ptr().getNumExamples()
 
-    def get_num_cols(self) -> int:
+    def get_num_features(self) -> int:
         """
-        Returns the number of columns in the matrix.
+        Returns the number of features in the feature matrix.
 
-        :return The number of columns
+        :return The number of features
         """
-        return self.get_feature_matrix_ptr().getNumCols()
+        return self.get_feature_matrix_ptr().getNumFeatures()
 
     def is_sparse(self) -> bool:
         """

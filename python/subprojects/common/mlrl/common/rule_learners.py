@@ -366,7 +366,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             label_matrix = CContiguousLabelMatrix(y)
 
         # Obtain information about the types of the individual features...
-        feature_info = self.__create_feature_info(feature_matrix.get_num_cols())
+        feature_info = self.__create_feature_info(feature_matrix.get_num_features())
 
         # Induce rules...
         learner = self._create_learner()
