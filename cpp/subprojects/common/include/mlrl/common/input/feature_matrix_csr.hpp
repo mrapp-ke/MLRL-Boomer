@@ -44,6 +44,10 @@ class CsrFeatureMatrix final : public CsrConstView<const float32>,
 
         bool isSparse() const override;
 
+        uint32 getNumExamples() const override;
+
+        uint32 getNumFeatures() const override;
+
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IBinaryPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,

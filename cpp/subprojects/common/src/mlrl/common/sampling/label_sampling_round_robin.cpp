@@ -55,5 +55,5 @@ class RoundRobinLabelSamplingFactory final : public ILabelSamplingFactory {
 
 std::unique_ptr<ILabelSamplingFactory> RoundRobinLabelSamplingConfig::createLabelSamplingFactory(
   const ILabelMatrix& labelMatrix) const {
-    return std::make_unique<RoundRobinLabelSamplingFactory>(labelMatrix.getNumCols());
+    return std::make_unique<RoundRobinLabelSamplingFactory>(labelMatrix.getNumLabels());
 }

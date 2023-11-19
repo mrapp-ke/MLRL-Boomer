@@ -19,4 +19,18 @@ class MLRLCOMMON_API ILabelMatrix : virtual public ITwoDimensionalView {
          * @return True, if the label matrix is sparse, false otherwise
          */
         virtual bool isSparse() const = 0;
+
+        /**
+         * Returns the number of examples in the label matrix.
+         *
+         * @return The number of examples
+         */
+        virtual uint32 getNumExamples() const = 0;
+
+        /**
+         * Returns the number of labels in the label matrix.
+         *
+         * @return The number of labels
+         */
+        virtual uint32 getNumLabels() const = 0;
 };

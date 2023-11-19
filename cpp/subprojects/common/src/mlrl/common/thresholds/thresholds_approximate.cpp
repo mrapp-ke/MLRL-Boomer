@@ -146,7 +146,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                 std::unique_ptr<FeatureVector> featureVectorPtr;
                                 const IColumnWiseFeatureMatrix& featureMatrix =
                                   thresholdsSubset_.thresholds_.featureMatrix_;
-                                uint32 numExamples = featureMatrix.getNumRows();
+                                uint32 numExamples = featureMatrix.getNumExamples();
                                 featureMatrix.fetchFeatureVector(featureIndex_, featureVectorPtr);
 
                                 // Apply binning method...
@@ -224,7 +224,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                                  std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr,
                                  const WeightVector& weights)
                     : thresholds_(thresholds), weightedStatisticsPtr_(std::move(weightedStatisticsPtr)),
-                      weights_(weights), coverageSet_(thresholds.featureMatrix_.getNumRows()) {}
+                      weights_(weights), coverageSet_(thresholds.featureMatrix_.getNumExamples()) {}
 
                 /**
                  * @param thresholdsSubset A reference to an object of type `ThresholdsSubset` to be copied

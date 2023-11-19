@@ -13,19 +13,19 @@ cdef class LabelMatrix:
 
     def get_num_rows(self) -> int:
         """
-        Returns the number of rows in the matrix.
+        Returns the number of examples in the label matrix.
 
-        :return The number of rows
+        :return The number of examples
         """
-        return self.get_label_matrix_ptr().getNumRows()
+        return self.get_label_matrix_ptr().getNumExamples()
 
     def get_num_cols(self) -> int:
         """
-        Returns the number of columns in the matrix.
+        Returns the number of labels in the label matrix.
 
-        :return The number of columns
+        :return The number of labels
         """
-        return self.get_label_matrix_ptr().getNumCols()
+        return self.get_label_matrix_ptr().getNumLabels()
 
     def is_sparse(self) -> bool:
         """
