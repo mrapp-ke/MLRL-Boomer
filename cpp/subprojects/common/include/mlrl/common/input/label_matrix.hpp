@@ -3,15 +3,16 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_two_dimensional.hpp"
+#include "mlrl/common/data/types.hpp"
+#include "mlrl/common/util/dll_exports.hpp"
 
 /**
  * Defines an interface for all label matrices.
  */
-class MLRLCOMMON_API ILabelMatrix : virtual public ITwoDimensionalView {
+class MLRLCOMMON_API ILabelMatrix {
     public:
 
-        virtual ~ILabelMatrix() override {}
+        virtual ~ILabelMatrix() {}
 
         /**
          * Returns whether the label matrix is sparse or not.

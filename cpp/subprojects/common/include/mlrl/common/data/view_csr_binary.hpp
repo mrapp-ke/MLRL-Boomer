@@ -3,13 +3,14 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_two_dimensional.hpp"
+#include "mlrl/common/data/types.hpp"
+#include "mlrl/common/util/dll_exports.hpp"
 
 /**
  * Implements row-wise read-only access to binary values that are stored in a pre-allocated matrix in the compressed
  * sparse row (CSR) format.
  */
-class MLRLCOMMON_API BinaryCsrConstView : virtual public ITwoDimensionalView {
+class MLRLCOMMON_API BinaryCsrConstView {
     protected:
 
         /**
@@ -46,7 +47,7 @@ class MLRLCOMMON_API BinaryCsrConstView : virtual public ITwoDimensionalView {
          */
         BinaryCsrConstView(uint32 numRows, uint32 numCols, uint32* colIndices, uint32* indptr);
 
-        virtual ~BinaryCsrConstView() override {}
+        virtual ~BinaryCsrConstView() {}
 
         /**
          * An iterator that provides read-only access to the indices in the view.
@@ -76,9 +77,19 @@ class MLRLCOMMON_API BinaryCsrConstView : virtual public ITwoDimensionalView {
          */
         uint32 getNumNonZeroElements() const;
 
-        uint32 getNumRows() const override final;
+        /**
+         * Returns the number of rows in the view.
+         *
+         * @return The number of rows
+         */
+        uint32 getNumRows() const;
 
-        uint32 getNumCols() const override final;
+        /**
+         * Returns the number of columns in the view.
+         *
+         * @return The number of columns
+         */
+        uint32 getNumCols() const;
 };
 
 /**

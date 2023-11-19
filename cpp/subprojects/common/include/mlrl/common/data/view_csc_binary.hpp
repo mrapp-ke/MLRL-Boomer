@@ -3,13 +3,13 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_two_dimensional.hpp"
+#include "mlrl/common/data/types.hpp"
 
 /**
  * Implements column-wise read-only access to binary values that are stored in a pre-allocated matrix in the compressed
  * sparse column (CSC) format.
  */
-class BinaryCscConstView : virtual public ITwoDimensionalView {
+class BinaryCscConstView {
     protected:
 
         /**
@@ -46,7 +46,7 @@ class BinaryCscConstView : virtual public ITwoDimensionalView {
          */
         BinaryCscConstView(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* indptr);
 
-        virtual ~BinaryCscConstView() override {}
+        virtual ~BinaryCscConstView() {}
 
         /**
          * An iterator that provides read-only access to the indices in the view.
@@ -76,9 +76,19 @@ class BinaryCscConstView : virtual public ITwoDimensionalView {
          */
         uint32 getNumNonZeroElements() const;
 
-        uint32 getNumRows() const override final;
+        /**
+         * Returns the number of rows in the view.
+         *
+         * @return The number of rows
+         */
+        uint32 getNumRows() const;
 
-        uint32 getNumCols() const override final;
+        /**
+         * Returns the number of columns in the view.
+         *
+         * @return The number of columns
+         */
+        uint32 getNumCols() const;
 };
 
 /**
