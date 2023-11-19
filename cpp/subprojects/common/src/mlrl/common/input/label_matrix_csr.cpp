@@ -17,6 +17,14 @@ bool CsrLabelMatrix::isSparse() const {
     return true;
 }
 
+uint32 CsrLabelMatrix::getNumExamples() const {
+    return this->getNumRows();
+}
+
+uint32 CsrLabelMatrix::getNumLabels() const {
+    return this->getNumCols();
+}
+
 float32 CsrLabelMatrix::calculateLabelCardinality() const {
     uint32 numRows = this->getNumRows();
     float32 labelCardinality = 0;

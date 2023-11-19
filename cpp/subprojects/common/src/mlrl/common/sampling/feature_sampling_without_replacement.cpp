@@ -109,7 +109,7 @@ IFeatureSamplingWithoutReplacementConfig& FeatureSamplingWithoutReplacementConfi
 
 std::unique_ptr<IFeatureSamplingFactory> FeatureSamplingWithoutReplacementConfig::createFeatureSamplingFactory(
   const IFeatureMatrix& featureMatrix) const {
-    uint32 numFeatures = featureMatrix.getNumCols();
+    uint32 numFeatures = featureMatrix.getNumFeatures();
     uint32 numRetained = std::min(numRetained_, numFeatures);
     uint32 numRemainingFeatures = numFeatures - numRetained;
     uint32 numSamples =

@@ -50,9 +50,9 @@ LabelVectorSet::LabelVectorSet() {}
 
 LabelVectorSet::LabelVectorSet(const IRowWiseLabelMatrix& labelMatrix) {
     std::unordered_map<std::reference_wrapper<LabelVector>, uint32, LabelVectorHash, LabelVectorPred> map;
-    uint32 numRows = labelMatrix.getNumRows();
+    uint32 numExamples = labelMatrix.getNumExamples();
 
-    for (uint32 i = 0; i < numRows; i++) {
+    for (uint32 i = 0; i < numExamples; i++) {
         std::unique_ptr<LabelVector> labelVectorPtr = labelMatrix.createLabelVector(i);
         auto it = map.find(*labelVectorPtr);
 

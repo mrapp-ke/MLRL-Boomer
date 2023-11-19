@@ -17,6 +17,14 @@ bool CContiguousLabelMatrix::isSparse() const {
     return false;
 }
 
+uint32 CContiguousLabelMatrix::getNumExamples() const {
+    return this->getNumRows();
+}
+
+uint32 CContiguousLabelMatrix::getNumLabels() const {
+    return this->getNumCols();
+}
+
 float32 CContiguousLabelMatrix::calculateLabelCardinality() const {
     uint32 numRows = this->getNumRows();
     uint32 numCols = this->getNumCols();
