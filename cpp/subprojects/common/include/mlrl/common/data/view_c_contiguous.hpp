@@ -3,7 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_two_dimensional.hpp"
+#include "mlrl/common/data/types.hpp"
+#include "mlrl/common/util/dll_exports.hpp"
 
 /**
  * Implements row-wise read-only access to the values that are stored in a pre-allocated C-contiguous array.
@@ -11,7 +12,7 @@
  * @tparam T The type of the values
  */
 template<typename T>
-class MLRLCOMMON_API CContiguousConstView : virtual public ITwoDimensionalView {
+class MLRLCOMMON_API CContiguousConstView {
     protected:
 
         /**
@@ -39,7 +40,7 @@ class MLRLCOMMON_API CContiguousConstView : virtual public ITwoDimensionalView {
          */
         CContiguousConstView(uint32 numRows, uint32 numCols, T* array);
 
-        virtual ~CContiguousConstView() override {}
+        virtual ~CContiguousConstView() {}
 
         /**
          * An iterator that provides read-only access to the elements in the view.
@@ -63,14 +64,18 @@ class MLRLCOMMON_API CContiguousConstView : virtual public ITwoDimensionalView {
         value_const_iterator values_cend(uint32 row) const;
 
         /**
-         * @see `ITwoDimensionalView::getNumRows`
+         * Returns the number of rows in the view.
+         *
+         * @return The number of rows
          */
-        uint32 getNumRows() const override final;
+        uint32 getNumRows() const;
 
         /**
-         * @see `ITwoDimensionalView::getNumCols`
+         * Returns the number of columns in the view.
+         *
+         * @return The number of columns
          */
-        uint32 getNumCols() const override final;
+        uint32 getNumCols() const;
 };
 
 /**
