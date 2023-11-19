@@ -92,3 +92,11 @@ class MatrixAllocator : public Matrix {
             freeMemory(Matrix::array);
         }
 };
+
+/**
+ * Allocates the memory, a `Matrix` provides access to
+ *
+ * @tparam T The type of the values stored in the `Matrix`
+ */
+template<typename T>
+using AllocatedMatrix = MatrixAllocator<Matrix<T>>;
