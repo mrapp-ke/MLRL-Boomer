@@ -3,15 +3,16 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_two_dimensional.hpp"
+#include "mlrl/common/data/types.hpp"
+#include "mlrl/common/util/dll_exports.hpp"
 
 /**
  * Defines an interface for all feature matrices.
  */
-class MLRLCOMMON_API IFeatureMatrix : virtual public ITwoDimensionalView {
+class MLRLCOMMON_API IFeatureMatrix {
     public:
 
-        virtual ~IFeatureMatrix() override {}
+        virtual ~IFeatureMatrix() {}
 
         /**
          * Returns whether the feature matrix is sparse or not.

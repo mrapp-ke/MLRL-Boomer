@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_two_dimensional.hpp"
+#include "mlrl/common/data/types.hpp"
 
 /**
  * Implements row-wise read-only access to the values that are stored in a pre-allocated matrix in the compressed sparse
@@ -12,7 +12,7 @@
  * @tparam T The type of the values
  */
 template<typename T>
-class CsrConstView : virtual public ITwoDimensionalView {
+class CsrConstView {
     protected:
 
         /**
@@ -56,7 +56,7 @@ class CsrConstView : virtual public ITwoDimensionalView {
          */
         CsrConstView(uint32 numRows, uint32 numCols, T* data, uint32* colIndices, uint32* indptr);
 
-        virtual ~CsrConstView() override {}
+        virtual ~CsrConstView() {}
 
         /**
          * An iterator that provides read-only access to the values in the view.
@@ -108,14 +108,18 @@ class CsrConstView : virtual public ITwoDimensionalView {
         uint32 getNumNonZeroElements() const;
 
         /**
-         * @see `ITwoDimensionalView::getNumRows`
+         * Returns the number of rows in the view.
+         *
+         * @return The number of rows
          */
-        uint32 getNumRows() const override final;
+        uint32 getNumRows() const;
 
         /**
-         * @see `ITwoDimensionalView::getNumCols`
+         * Returns the number of columns in the view.
+         *
+         * @return The number of columns
          */
-        uint32 getNumCols() const override final;
+        uint32 getNumCols() const;
 };
 
 /**

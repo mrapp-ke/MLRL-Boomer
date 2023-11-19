@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_two_dimensional.hpp"
+#include "mlrl/common/data/types.hpp"
 
 /**
  * Implements column-wise read-only access to the values that are stored in a pre-allocated Fortran-contiguous array.
@@ -11,7 +11,7 @@
  * @tparam T The type of the values
  */
 template<typename T>
-class FortranContiguousConstView : virtual public ITwoDimensionalView {
+class FortranContiguousConstView {
     protected:
 
         /**
@@ -39,7 +39,7 @@ class FortranContiguousConstView : virtual public ITwoDimensionalView {
          */
         FortranContiguousConstView(uint32 numRows, uint32 numCols, T* array);
 
-        virtual ~FortranContiguousConstView() override {}
+        virtual ~FortranContiguousConstView() {}
 
         /**
          * An iterator that provides read-only access to the values in the view.
@@ -63,14 +63,18 @@ class FortranContiguousConstView : virtual public ITwoDimensionalView {
         value_const_iterator values_cend(uint32 col) const;
 
         /**
-         * @see `ITwoDimensionalView::getNumRows`
+         * Returns the number of rows in the view.
+         *
+         * @return The number of rows
          */
-        uint32 getNumRows() const override final;
+        uint32 getNumRows() const;
 
         /**
-         * @see `ITwoDimensionalView::getNumCols`
+         * Returns the number of columns in the view.
+         *
+         * @return The number of columns
          */
-        uint32 getNumCols() const override final;
+        uint32 getNumCols() const;
 };
 
 /**

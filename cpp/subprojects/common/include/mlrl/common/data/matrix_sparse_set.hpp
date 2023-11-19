@@ -20,7 +20,7 @@
  * @tparam T The type of the values that are stored in the matrix
  */
 template<typename T>
-class SparseSetMatrix : virtual public ITwoDimensionalView {
+class SparseSetMatrix {
     private:
 
         /**
@@ -187,7 +187,7 @@ class SparseSetMatrix : virtual public ITwoDimensionalView {
          */
         SparseSetMatrix(uint32 numRows, uint32 numCols);
 
-        virtual ~SparseSetMatrix() override {}
+        virtual ~SparseSetMatrix() {}
 
         /**
          * Provides access to a row and allows to modify its elements.
@@ -263,12 +263,16 @@ class SparseSetMatrix : virtual public ITwoDimensionalView {
         void clear();
 
         /**
-         * @see `ITwoDimensionalView::getNumRows`
+         * Returns the number of rows in the matrix.
+         *
+         * @return The number of rows
          */
-        uint32 getNumRows() const override;
+        uint32 getNumRows() const;
 
         /**
-         * @see `ITwoDimensionalView::getNumCols`
+         * Returns the number of columns in the matrix.
+         *
+         * @return The number of columns
          */
-        uint32 getNumCols() const override;
+        uint32 getNumCols() const;
 };
