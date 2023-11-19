@@ -100,3 +100,38 @@ class MatrixAllocator : public Matrix {
  */
 template<typename T>
 using AllocatedMatrix = MatrixAllocator<Matrix<T>>;
+
+/**
+ * A matrix that is backed by a two-dimensional view of a specific size.
+ *
+ * @tparam View The type of view, the matrix is backed by
+ */
+template<typename View>
+class MatrixDecorator : public ViewDecorator<View> {
+    public:
+
+        /**
+         * @param view The view, the matrix should be backed by
+         */
+        MatrixDecorator(View&& view) : ViewDecorator<View>(std::move(view)) {}
+
+        virtual ~MatrixDecorator() override {}
+
+        /**
+         * Returns the number of rows in the matrix.
+         *
+         * @return The number of rows in the matrix
+         */
+        uint32 getNumRows() const {
+            return ViewDecorator<View>::view.numRows;
+        }
+
+        /**
+         * Returns the number of columns in the matrix.
+         *
+         * @return The number of columns in the matrix
+         */
+        uint32 getNumCols() const {
+            return ViewDecorator<View>::view.numCols;
+        }
+};
