@@ -30,18 +30,17 @@ class Matrix : public View<T> {
          * @param numRows   The number of rows in the view
          * @param numCols   The number of columns in the view
          */
-        Matrix(T* array, uint32 numRows, uint32 numCols)
-            : View<T>(array, numRows * numCols), numRows(numRows), numCols(numCols) {}
+        Matrix(T* array, uint32 numRows, uint32 numCols) : View<T>(array), numRows(numRows), numCols(numCols) {}
 
         /**
          * @param other A const reference to an object of type `Matrix` that should be copied
          */
-        Matrix(const Matrix<T>& other) : Matrix(other.array, other.numRows, other.numCols) {}
+        Matrix(const Matrix<T>& other) : View<T>(other.array), numRows(other.numRows), numCols(other.numCols) {}
 
         /**
          * @param other A reference to an object of type `Matrix` that should be moved
          */
-        Matrix(Matrix<T>&& other) : Matrix(other.array, other.numRows, other.numCols) {}
+        Matrix(Matrix<T>&& other) : View<T>(other.array), numRows(other.numRows), numCols(other.numCols) {}
 
         virtual ~Matrix() override {}
 
