@@ -96,3 +96,12 @@ class WriteIterableCContiguousMatrixDecorator : public Matrix {
  */
 template<typename Matrix>
 using ReadableCContiguousMatrixDecorator = ReadIterableCContiguousMatrixDecorator<MatrixDecorator<Matrix>>;
+
+/**
+ * Provides read and write access via iterators to the values stored in a C-contiguous matrix.
+ *
+ * @tparam Matrix The type of the matrix
+ */
+template<typename Matrix>
+using WritableCContiguousMatrixDecorator =
+  WriteIterableCContiguousMatrixDecorator<ReadableCContiguousMatrixDecorator<Matrix>>;
