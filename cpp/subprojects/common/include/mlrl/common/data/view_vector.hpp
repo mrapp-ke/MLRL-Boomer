@@ -23,19 +23,27 @@ class MLRLCOMMON_API Vector : public View<T> {
         /**
          * @param array         A pointer to an array of template type `T` that stores the values, the view should
          *                      provide access to
+         * @param dimensions    The number of elements in each dimension of the view
+         */
+        Vector(T* array, std::initializer_list<uint32> dimensions)
+            : View<T>(array), numElements(dimensions.begin()[0]) {}
+
+        /**
+         * @param array         A pointer to an array of template type `T` that stores the values, the view should
+         *                      provide access to
          * @param numElements   The number of elements in the view
          */
-        Vector(T* array, uint32 numElements) : View<T>(array, numElements), numElements(numElements) {}
+        Vector(T* array, uint32 numElements) : View<T>(array), numElements(numElements) {}
 
         /**
          * @param other A const reference to an object of type `Vector` that should be copied
          */
-        Vector(const Vector<T>& other) : Vector(other.array, other.numElements) {}
+        Vector(const Vector<T>& other) : View<T>(other), numElements(other.numElements) {}
 
         /**
          * @param other A reference to an object of type `Vector` that should be moved
          */
-        Vector(Vector<T>&& other) : Vector(other.array, other.numElements) {}
+        Vector(Vector<T>&& other) : View<T>(std::move(other)), numElements(other.numElements) {}
 
         virtual ~Vector() override {}
 
