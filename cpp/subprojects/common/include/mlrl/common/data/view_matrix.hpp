@@ -63,3 +63,32 @@ class Matrix : public View<T> {
             return &View<T>::array[numRows * numCols];
         }
 };
+
+/**
+ * Allocates the memory, a two-dimensional view provides access to.
+ *
+ * @tparam View The type of the view
+ */
+template<typename Matrix>
+class MatrixAllocator : public Matrix {
+    public:
+
+        /**
+         * @param numRows   The number of rows in the view
+         * @param numCols   The number of columns in the view
+         * @param init      True, if all elements in the view should be value-initialized, false otherwise
+         */
+        MatrixAllocator(uint32 numRows, uint32 numCols, bool init = false)
+            : Matrix(allocateMemory<typename Matrix::value_type>(numRows * numCols, init), numRows, numCols) {}
+
+        /**
+         * @param other A reference to an object of type `MatrixAllocator` that should be moved
+         */
+        MatrixAllocator(MatrixAllocator<Matrix>&& other) : Matrix(std::move(other)) {
+            other.array = nullptr;
+        }
+
+        virtual ~MatrixAllocator() override {
+            freeMemory(Matrix::array);
+        }
+};
