@@ -45,7 +45,7 @@ class IndexedVectorDecorator : public CompositeVectorDecorator<IndexView, ValueV
 };
 
 /**
- * Provides read-only access via iterators to indices and corresponding values stored in a vector.
+ * Provides access via iterators to indices and corresponding values stored in a vector.
  *
  * @tparam Vector The type of the vector
  */
