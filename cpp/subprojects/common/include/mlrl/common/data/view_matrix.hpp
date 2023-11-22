@@ -93,14 +93,6 @@ class MatrixAllocator : public Matrix {
 };
 
 /**
- * Allocates the memory, a `Matrix` provides access to
- *
- * @tparam T The type of the values stored in the `Matrix`
- */
-template<typename T>
-using AllocatedMatrix = MatrixAllocator<Matrix<T>>;
-
-/**
  * A matrix that is backed by a two-dimensional view of a specific size.
  *
  * @tparam View The type of view, the matrix is backed by
