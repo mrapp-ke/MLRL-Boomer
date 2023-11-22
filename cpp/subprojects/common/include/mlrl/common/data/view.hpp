@@ -198,20 +198,25 @@ class ViewDecorator {
  * @tparam View The type of the view
  */
 template<typename View>
-class ReadAccessibleViewDecorator : public View {
+class IndexableViewDecorator : public View {
     public:
 
         /**
          * @param view The view, the vector should be backed by
          */
-        ReadAccessibleViewDecorator(typename View::view_type&& view) : View(std::move(view)) {}
+        IndexableViewDecorator(typename View::view_type&& view) : View(std::move(view)) {}
 
-        virtual ~ReadAccessibleViewDecorator() override {}
+        virtual ~IndexableViewDecorator() override {}
 
         /**
          * An iterator that provides read-only access to the values stored in the view.
          */
         typedef typename View::view_type::const_iterator const_iterator;
+
+        /**
+         * An iterator that provides access to the values stored in the view and allows to modify them.
+         */
+        typedef typename View::view_type::iterator iterator;
 
         /**
          * Returns a `const_iterator` to the beginning of the view.
@@ -221,38 +226,6 @@ class ReadAccessibleViewDecorator : public View {
         const_iterator cbegin() const {
             return View::view.cbegin();
         }
-
-        /**
-         * Returns a const reference to the element at a specific position.
-         *
-         * @param pos   The position of the element
-         * @return      A const reference to the specified element
-         */
-        const typename View::value_type& operator[](uint32 pos) const {
-            return View::view.array[pos];
-        }
-};
-
-/**
- * Provides random write access to the values stored in a view.
- *
- * @tparam View The type of the view
- */
-template<typename View>
-class WriteAccessibleViewDecorator : public View {
-    public:
-
-        /**
-         * @param view The view, the vector should be backed by
-         */
-        WriteAccessibleViewDecorator(typename View::view_type&& view) : View(std::move(view)) {}
-
-        virtual ~WriteAccessibleViewDecorator() override {}
-
-        /**
-         * An iterator that provides access to the values stored in the view and allows to modify them.
-         */
-        typedef typename View::view_type::iterator iterator;
 
         /**
          * Returns an `iterator` to the beginning of the view.

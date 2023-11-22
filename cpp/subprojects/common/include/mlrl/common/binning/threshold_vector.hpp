@@ -9,8 +9,9 @@
 /**
  * An one-dimensional vector that stores thresholds that may be used by conditions.
  */
-class ThresholdVector final : public ResizableVectorDecorator<WritableVectorDecorator<ResizableVector<float32>>>,
-                              public MissingFeatureVector {
+class ThresholdVector final
+    : public ResizableVectorDecorator<IterableVectorDecorator<VectorDecorator<ResizableVector<float32>>>>,
+      public MissingFeatureVector {
     private:
 
         uint32 sparseBinIndex_;

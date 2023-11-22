@@ -15,7 +15,7 @@ namespace seco {
      * An one-dimensional vector that stores a fixed number of confusion matrices in a C-contiguous array.
      */
     class DenseConfusionMatrixVector final
-        : public ClearableVectorDecorator<WritableVectorDecorator<AllocatedVector<ConfusionMatrix>>> {
+        : public ClearableVectorDecorator<IterableVectorDecorator<VectorDecorator<AllocatedVector<ConfusionMatrix>>>> {
         public:
 
             /**

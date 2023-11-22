@@ -9,8 +9,9 @@
 /**
  * Provides random access to a fixed number of indices stored in a C-contiguous array.
  */
-class PartialIndexVector final : public ResizableVectorDecorator<WritableVectorDecorator<ResizableVector<uint32>>>,
-                                 public IIndexVector {
+class PartialIndexVector final
+    : public ResizableVectorDecorator<IterableVectorDecorator<VectorDecorator<ResizableVector<uint32>>>>,
+      public IIndexVector {
     public:
 
         /**

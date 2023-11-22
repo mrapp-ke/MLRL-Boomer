@@ -11,7 +11,7 @@
  * C-contiguous array that may be updated when the rule is refined. If the value that corresponds to a certain example
  * is equal to the "indicator value", it is considered to be covered.
  */
-class CoverageMask final : public WritableVectorDecorator<AllocatedVector<uint32>>,
+class CoverageMask final : public IterableVectorDecorator<VectorDecorator<AllocatedVector<uint32>>>,
                            public ICoverageState {
     private:
 

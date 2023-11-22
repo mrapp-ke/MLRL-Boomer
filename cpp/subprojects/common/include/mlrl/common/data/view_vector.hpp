@@ -106,70 +106,34 @@ class VectorDecorator : public ViewDecorator<View> {
  * @tparam Vector The type of the vector
  */
 template<typename Vector>
-class ReadIterableVectorDecorator : public ReadAccessibleViewDecorator<Vector> {
+class IterableVectorDecorator : public IndexableViewDecorator<Vector> {
     public:
 
         /**
          * @param view The view, the vector should be backed by
          */
-        ReadIterableVectorDecorator(typename Vector::view_type&& view)
-            : ReadAccessibleViewDecorator<Vector>(std::move(view)) {}
+        IterableVectorDecorator(typename Vector::view_type&& view) : IndexableViewDecorator<Vector>(std::move(view)) {}
 
-        virtual ~ReadIterableVectorDecorator() override {}
+        virtual ~IterableVectorDecorator() override {}
 
         /**
          * Returns a `const_iterator` to the end of the vector.
          *
          * @return A `const_iterator` to the end
          */
-        typename ReadAccessibleViewDecorator<Vector>::const_iterator cend() const {
+        typename IndexableViewDecorator<Vector>::const_iterator cend() const {
             return Vector::view.cend();
         }
-};
-
-/**
- * Provides write access via iterators to the values stored in a vector.
- *
- * @tparam Vector The type of the vector
- */
-template<typename Vector>
-class WriteIterableVectorDecorator : public WriteAccessibleViewDecorator<Vector> {
-    public:
-
-        /**
-         * @param view The view, the vector should be backed by
-         */
-        WriteIterableVectorDecorator(typename Vector::view_type&& view)
-            : WriteAccessibleViewDecorator<Vector>(std::move(view)) {}
-
-        virtual ~WriteIterableVectorDecorator() override {}
 
         /**
          * Returns an `iterator` to the end of the vector.
          *
          * @return An `iterator` to the end
          */
-        typename WriteAccessibleViewDecorator<Vector>::iterator end() {
+        typename IndexableViewDecorator<Vector>::iterator end() {
             return Vector::view.end();
         }
 };
-
-/**
- * Provides random read-only access, as well as read-only access via iterators, to the values stored in a vector.
- *
- * @tparam Vector The type of the vector
- */
-template<typename Vector>
-using ReadableVectorDecorator = ReadIterableVectorDecorator<VectorDecorator<Vector>>;
-
-/**
- * Provides random read and write access, as well as read and write access via iterators, to the values stored in a
- * vector.
- *
- * @tparam Vector The type of the vector
- */
-template<typename Vector>
-using WritableVectorDecorator = WriteIterableVectorDecorator<ReadableVectorDecorator<Vector>>;
 
 /**
  * Allows to resize a vector.

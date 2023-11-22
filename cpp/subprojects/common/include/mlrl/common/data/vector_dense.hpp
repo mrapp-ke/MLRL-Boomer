@@ -12,7 +12,7 @@
  * @tparam T The type of the values stored in the vector
  */
 template<typename T>
-class DenseVector final : public WritableVectorDecorator<AllocatedVector<T>> {
+class DenseVector final : public IterableVectorDecorator<VectorDecorator<AllocatedVector<T>>> {
     public:
 
         /**
@@ -20,13 +20,13 @@ class DenseVector final : public WritableVectorDecorator<AllocatedVector<T>> {
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
         DenseVector(uint32 numElements, bool init = false)
-            : WritableVectorDecorator<AllocatedVector<T>>(AllocatedVector<T>(numElements, init)) {}
+            : IterableVectorDecorator<VectorDecorator<AllocatedVector<T>>>(AllocatedVector<T>(numElements, init)) {}
 
         /**
          * @param other A reference to an object of type `VectorDecorator` that should be moved
          */
         DenseVector(VectorDecorator<ResizableVector<T>>&& other)
-            : WritableVectorDecorator<AllocatedVector<T>>(AllocatedVector<T>(std::move(other.view))) {}
+            : IterableVectorDecorator<VectorDecorator<AllocatedVector<T>>>(AllocatedVector<T>(std::move(other.view))) {}
 };
 
 /**
@@ -36,7 +36,8 @@ class DenseVector final : public WritableVectorDecorator<AllocatedVector<T>> {
  * @tparam T The type of the values stored in the vector
  */
 template<typename T>
-class ResizableDenseVector final : public ResizableVectorDecorator<WritableVectorDecorator<ResizableVector<T>>> {
+class ResizableDenseVector final
+    : public ResizableVectorDecorator<IterableVectorDecorator<VectorDecorator<ResizableVector<T>>>> {
     public:
 
         /**
@@ -44,6 +45,6 @@ class ResizableDenseVector final : public ResizableVectorDecorator<WritableVecto
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
         ResizableDenseVector(uint32 numElements, bool init = false)
-            : ResizableVectorDecorator<WritableVectorDecorator<ResizableVector<T>>>(
+            : ResizableVectorDecorator<IterableVectorDecorator<VectorDecorator<ResizableVector<T>>>>(
               ResizableVector<T>(numElements, init)) {}
 };
