@@ -6,25 +6,30 @@
 #include "mlrl/common/data/view_matrix.hpp"
 
 /**
- * Provides row-wise read-only access via iterators to the values stored in a dense matrix.
+ * Provides row- or column-wise access via iterators to the values stored in a dense matrix.
  *
  * @tparam Matrix The type of the matrix
  */
 template<typename Matrix>
-class ReadIterableDenseMatrixDecorator : public Matrix {
+class IterableDenseMatrixDecorator : public Matrix {
     public:
 
         /**
          * @param view The view, the matrix should be backed by
          */
-        ReadIterableDenseMatrixDecorator(typename Matrix::view_type&& view) : Matrix(std::move(view)) {}
+        IterableDenseMatrixDecorator(typename Matrix::view_type&& view) : Matrix(std::move(view)) {}
 
-        virtual ~ReadIterableDenseMatrixDecorator() override {}
+        virtual ~IterableDenseMatrixDecorator() override {}
 
         /**
          * An iterator that provides read-only access to the values stored in the matrix.
          */
         typedef typename Matrix::view_type::const_iterator value_const_iterator;
+
+        /**
+         * An iterator that provides access to the values stored in the matrix and allows to modify them.
+         */
+        typedef typename Matrix::view_type::iterator value_iterator;
 
         /**
          * Returns a `value_const_iterator` to the beginning of a specific row or column in the matrix, depending on the
@@ -47,28 +52,6 @@ class ReadIterableDenseMatrixDecorator : public Matrix {
         value_const_iterator values_cend(uint32 index) const {
             return &Matrix::view.values_cend(index);
         }
-};
-
-/**
- * Provides row-wise write access via iterators to the values stored in a dense matrix.
- *
- * @tparam Matrix The type of the matrix
- */
-template<typename Matrix>
-class WriteIterableDenseMatrixDecorator : public Matrix {
-    public:
-
-        /**
-         * @param view The view, the matrix should be backed by
-         */
-        WriteIterableDenseMatrixDecorator(typename Matrix::view_type&& view) : Matrix(std::move(view)) {}
-
-        virtual ~WriteIterableDenseMatrixDecorator() override {}
-
-        /**
-         * An iterator that provides access to the values stored in the matrix and allows to modify them.
-         */
-        typedef typename Matrix::view_type::iterator value_iterator;
 
         /**
          * Returns a `value_iterator` to the beginning of a specific row or column in the matrix, depending on the
@@ -92,19 +75,3 @@ class WriteIterableDenseMatrixDecorator : public Matrix {
             return &Matrix::view.values_end(index);
         }
 };
-
-/**
- * Provides read-only access via iterators to the values stored in a C-contiguous matrix.
- *
- * @tparam Matrix The type of the matrix
- */
-template<typename Matrix>
-using ReadableDenseMatrixDecorator = ReadIterableDenseMatrixDecorator<MatrixDecorator<Matrix>>;
-
-/**
- * Provides read and write access via iterators to the values stored in a C-contiguous matrix.
- *
- * @tparam Matrix The type of the matrix
- */
-template<typename Matrix>
-using WritableDenseMatrixDecorator = WriteIterableDenseMatrixDecorator<ReadableDenseMatrixDecorator<Matrix>>;
