@@ -10,7 +10,7 @@
  * A head that contains a numerical score for a subset of the available labels.
  */
 class MLRLCOMMON_API PartialHead final
-    : public WritableIndexedVectorDecorator<AllocatedVector<uint32>, AllocatedVector<float64>>,
+    : public IterableIndexedVectorDecorator<IndexedVectorDecorator<AllocatedVector<uint32>, AllocatedVector<float64>>>,
       public IHead {
     public:
 

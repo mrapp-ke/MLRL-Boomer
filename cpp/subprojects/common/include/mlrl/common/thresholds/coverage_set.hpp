@@ -10,7 +10,7 @@
  * Provides access to the indices of the examples that are covered by a rule. The indices of the covered examples are
  * stored in a C-contiguous array that may be updated when the rule is refined.
  */
-class CoverageSet final : public WritableVectorDecorator<AllocatedVector<uint32>>,
+class CoverageSet final : public IterableVectorDecorator<VectorDecorator<AllocatedVector<uint32>>>,
                           public ICoverageState {
     private:
 

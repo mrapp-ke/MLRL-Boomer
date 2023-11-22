@@ -3,7 +3,7 @@
 #include <algorithm>
 
 FeatureVector::FeatureVector(uint32 numElements)
-    : ResizableVectorDecorator<WritableVectorDecorator<ResizableVector<IndexedValue<float32>>>>(
+    : ResizableVectorDecorator<IterableVectorDecorator<VectorDecorator<ResizableVector<IndexedValue<float32>>>>>(
       ResizableVector<IndexedValue<float32>>(numElements)) {}
 
 void FeatureVector::sortByValues() {

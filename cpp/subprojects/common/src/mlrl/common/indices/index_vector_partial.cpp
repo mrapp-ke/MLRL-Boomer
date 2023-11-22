@@ -3,11 +3,11 @@
 #include "mlrl/common/thresholds/thresholds_subset.hpp"
 
 PartialIndexVector::PartialIndexVector(uint32 numElements, bool init)
-    : ResizableVectorDecorator<WritableVectorDecorator<ResizableVector<uint32>>>(
+    : ResizableVectorDecorator<IterableVectorDecorator<VectorDecorator<ResizableVector<uint32>>>>(
       ResizableVector<uint32>(numElements, init)) {}
 
 uint32 PartialIndexVector::getNumElements() const {
-    return ResizableVectorDecorator<WritableVectorDecorator<ResizableVector<uint32>>>::getNumElements();
+    return VectorDecorator<ResizableVector<uint32>>::getNumElements();
 }
 
 bool PartialIndexVector::isPartial() const {

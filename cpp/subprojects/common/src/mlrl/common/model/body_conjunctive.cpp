@@ -2,7 +2,7 @@
 
 template<typename Threshold, typename Compare>
 ConjunctiveBody::ConditionVector<Threshold, Compare>::ConditionVector(uint32 numConditions)
-    : WritableIndexedVectorDecorator<AllocatedVector<uint32>, AllocatedVector<Threshold>>(
+    : IterableIndexedVectorDecorator<IndexedVectorDecorator<AllocatedVector<uint32>, AllocatedVector<Threshold>>>(
       AllocatedVector<uint32>(numConditions), AllocatedVector<Threshold>(numConditions)) {}
 
 template<typename Threshold, typename Compare>

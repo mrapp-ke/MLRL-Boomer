@@ -33,7 +33,7 @@ class CContiguousLabelMatrix final : public CContiguousConstView<const uint8>,
         /**
          * Provides access to the values that are stored in a single row of a `CContiguousLabelMatrix`.
          */
-        class View final : public ReadableVectorDecorator<Vector<const uint8>> {
+        class View final : public IterableVectorDecorator<VectorDecorator<Vector<const uint8>>> {
             public:
 
                 /**

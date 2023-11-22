@@ -12,7 +12,7 @@
  * indices of examples with missing feature values.
  */
 class FeatureVector final
-    : public ResizableVectorDecorator<WritableVectorDecorator<ResizableVector<IndexedValue<float32>>>>,
+    : public ResizableVectorDecorator<IterableVectorDecorator<VectorDecorator<ResizableVector<IndexedValue<float32>>>>>,
       public MissingFeatureVector {
     public:
 

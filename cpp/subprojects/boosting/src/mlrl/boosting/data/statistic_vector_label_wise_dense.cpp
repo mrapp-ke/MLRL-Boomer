@@ -3,7 +3,7 @@
 namespace boosting {
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(uint32 numElements, bool init)
-        : ClearableVectorDecorator<WritableVectorDecorator<AllocatedVector<Tuple<float64>>>>(
+        : ClearableVectorDecorator<IterableVectorDecorator<VectorDecorator<AllocatedVector<Tuple<float64>>>>>(
           AllocatedVector<Tuple<float64>>(numElements, init)) {}
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(const DenseLabelWiseStatisticVector& other)
