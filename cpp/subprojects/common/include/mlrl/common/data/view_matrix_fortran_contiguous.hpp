@@ -75,3 +75,11 @@ class FortranContiguousView : public Matrix<T> {
             return &View<T>::array[(column + 1) * Matrix<T>::numRows];
         }
 };
+
+/**
+ * Allocates the memory, a `FortranContiguousView` provides access to
+ *
+ * @tparam T The type of the values stored in the `FortranContiguousView`
+ */
+template<typename T>
+using AllocatedFortranContiguousView = MatrixAllocator<FortranContiguousView<T>>;
