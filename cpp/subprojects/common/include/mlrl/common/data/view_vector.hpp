@@ -101,7 +101,7 @@ class VectorDecorator : public ViewDecorator<View> {
 };
 
 /**
- * Provides read-only access via iterators to the values stored in a vector.
+ * Provides access via iterators to the values stored in a vector.
  *
  * @tparam Vector The type of the vector
  */

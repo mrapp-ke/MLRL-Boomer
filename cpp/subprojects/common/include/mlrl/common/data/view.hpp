@@ -193,7 +193,7 @@ class ViewDecorator {
 };
 
 /**
- * Provides random read-only access to the values stored in a view.
+ * Provides random access to the values stored in a view.
  *
  * @tparam View The type of the view
  */
