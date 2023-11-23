@@ -6,7 +6,7 @@
 #include "mlrl/common/data/view.hpp"
 
 /**
- * A two-dimensional view that provides access to values stored in a pre-allocated array of a specific size.
+ * A two-dimensional view that provides access to values stored in a matrix of a specific size.
  *
  * @tparam T The type of the values, the view provides access to
  */
@@ -43,53 +43,6 @@ class Matrix : public View<T> {
         Matrix(Matrix<T>&& other) : View<T>(other.array), numRows(other.numRows), numCols(other.numCols) {}
 
         virtual ~Matrix() override {}
-
-        /**
-         * Returns a `const_iterator` to the end of the view.
-         *
-         * @return A `const_iterator` to the end
-         */
-        typename View<T>::const_iterator cend() const {
-            return &View<T>::array[numRows * numCols];
-        }
-
-        /**
-         * Returns an `iterator` to the end of the view.
-         *
-         * @return An `iterator` to the end
-         */
-        typename View<T>::iterator end() {
-            return &View<T>::array[numRows * numCols];
-        }
-};
-
-/**
- * Allocates the memory, a two-dimensional view provides access to.
- *
- * @tparam View The type of the view
- */
-template<typename Matrix>
-class MatrixAllocator : public Matrix {
-    public:
-
-        /**
-         * @param numRows   The number of rows in the view
-         * @param numCols   The number of columns in the view
-         * @param init      True, if all elements in the view should be value-initialized, false otherwise
-         */
-        MatrixAllocator(uint32 numRows, uint32 numCols, bool init = false)
-            : Matrix(allocateMemory<typename Matrix::value_type>(numRows * numCols, init), numRows, numCols) {}
-
-        /**
-         * @param other A reference to an object of type `MatrixAllocator` that should be moved
-         */
-        MatrixAllocator(MatrixAllocator<Matrix>&& other) : Matrix(std::move(other)) {
-            other.array = nullptr;
-        }
-
-        virtual ~MatrixAllocator() override {
-            freeMemory(Matrix::array);
-        }
 };
 
 /**

@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_matrix.hpp"
+#include "mlrl/common/data/view_matrix_dense.hpp"
 
 /**
  * A two-dimensional view that provides column-wise access to values stored in a pre-allocated array of a specific size.
@@ -11,7 +11,7 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class FortranContiguousView : public Matrix<T> {
+class FortranContiguousView : public DenseMatrix<T> {
     public:
 
         /**
@@ -20,18 +20,19 @@ class FortranContiguousView : public Matrix<T> {
          * @param numRows   The number of rows in the view
          * @param numCols   The number of columns in the view
          */
-        FortranContiguousView(T* array, uint32 numRows, uint32 numCols) : Matrix<T>(array, numRows, numCols) {}
+        FortranContiguousView(T* array, uint32 numRows, uint32 numCols) : DenseMatrix<T>(array, numRows, numCols) {}
 
         /**
          * @param other A const reference to an object of type `FortranContiguousView` that should be copied
          */
         FortranContiguousView(const FortranContiguousView<T>& other)
-            : Matrix<T>(other.array, other.numRows, other.numCols) {}
+            : DenseMatrix<T>(other.array, other.numRows, other.numCols) {}
 
         /**
          * @param other A reference to an object of type `FortranContiguousView` that should be moved
          */
-        FortranContiguousView(FortranContiguousView<T>&& other) : Matrix<T>(other.array, other.numRows, other.numCols) {}
+        FortranContiguousView(FortranContiguousView<T>&& other)
+            : DenseMatrix<T>(other.array, other.numRows, other.numCols) {}
 
         virtual ~FortranContiguousView() override {}
 
@@ -82,4 +83,4 @@ class FortranContiguousView : public Matrix<T> {
  * @tparam T The type of the values stored in the `FortranContiguousView`
  */
 template<typename T>
-using AllocatedFortranContiguousView = MatrixAllocator<FortranContiguousView<T>>;
+using AllocatedFortranContiguousView = DenseMatrixAllocator<FortranContiguousView<T>>;
