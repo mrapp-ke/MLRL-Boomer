@@ -54,3 +54,128 @@ class SparseMatrix : public Matrix<T> {
 
         virtual ~SparseMatrix() override {}
 };
+
+/**
+ * Provides row- or column-wise access via iterators to the values stored in a sparse matrix.
+ *
+ * @tparam Matrix The type of the matrix
+ */
+template<typename Matrix>
+class IterableSparseMatrixDecorator : public Matrix {
+    public:
+
+        /**
+         * @param view The view, the matrix should be backed by
+         */
+        IterableSparseMatrixDecorator(typename Matrix::view_type&& view) : Matrix(std::move(view)) {}
+
+        virtual ~IterableSparseMatrixDecorator() override {}
+
+        /**
+         * An iterator that provides read-only access to the values in the view.
+         */
+        typedef typename Matrix::view_type::const_iterator value_const_iterator;
+
+        /**
+         * An iterator that provides read-only access to the indices in the view.
+         */
+        typedef const uint32* index_const_iterator;
+
+        /**
+         * An iterator that provides access to the values in the view and allows to modify them.
+         */
+        typedef typename Matrix::view_type::iterator value_iterator;
+
+        /**
+         * An iterator that provides access to the indices in the view and allows to modify them.
+         */
+        typedef uint32* index_iterator;
+
+        /**
+         * Returns a `value_const_iterator` to the beginning of the values in a specific row or column of the matrix,
+         * depending on the memory layout of the view, the matrix is backed by.
+         *
+         * @param index The index of the row or column
+         * @return      A `value_const_iterator` to the beginning of the values
+         */
+        value_const_iterator values_cbegin(uint32 index) const {
+            return Matrix::view.values_cbegin(index);
+        }
+
+        /**
+         * Returns a `value_const_iterator` to the end of the values in a specific row or column of the matrix,
+         * depending on the memory layout of the view, the matrix is backed by.
+         *
+         * @param index The index of the row or column
+         * @return      A `value_const_iterator` to the end of the values
+         */
+        value_const_iterator values_cend(uint32 index) const {
+            return Matrix::view.values_cend(index);
+        }
+
+        /**
+         * Returns an `index_const_iterator` to the beginning of the indices in a specific row or column of the matrix,
+         * depending on the memory layout of the view, the matrix is backed by.
+         *
+         * @param index The index of the row or column
+         * @return      An `index_const_iterator` to the beginning of the indices
+         */
+        index_const_iterator indices_cbegin(uint32 index) const {
+            return Matrix::view.indices_cbegin(index);
+        }
+
+        /**
+         * Returns an `index_const_iterator` to the end of the indices in a specific row or column of the matrix,
+         * depending on the memory layout of the view, the matrix is backed by.
+         *
+         * @param index The index of the row or column
+         * @return      An `index_const_iterator` to the end of the indices
+         */
+        index_const_iterator indices_cend(uint32 index) const {
+            return Matrix::view.indices_cend(index);
+        }
+
+        /**
+         * Returns a `value_iterator` to the beginning of the values in a specific row or column of the matrix,
+         * depending on the memory layout of the view, the matrix is backed by.
+         *
+         * @param index The index of the row or column
+         * @return      A `value_iterator` to the beginning of the values
+         */
+        value_iterator values_begin(uint32 index) {
+            return Matrix::view.values_begin(index);
+        }
+
+        /**
+         * Returns a `value_iterator` to the end of the values in a specific row or column of the matrix, depending on
+         * the memory layout of the view, the matrix is backed by.
+         *
+         * @param index The index of the row or column
+         * @return      A `value_iterator` to the end of the values
+         */
+        value_iterator values_end(uint32 index) {
+            return Matrix::view.values_end(index);
+        }
+
+        /**
+         * Returns an `index_iterator` to the beginning of the indices in a specific row or column of the matrix,
+         * depending on the memory layout of the view, the matrix is backed by.
+         *
+         * @param index The index of the row or column
+         * @return      An `index_iterator` to the beginning of the indices
+         */
+        index_iterator indices_begin(uint32 index) {
+            return Matrix::view.indices_begin(index);
+        }
+
+        /**
+         * Returns an `index_iterator` to the end of the indices in a specific row or column of the matrix, depending on
+         * the memory layout of the view, the matrix is backed by.
+         *
+         * @param index The index of the row or column
+         * @return      An `index_iterator` to the end of the indices
+         */
+        index_iterator indices_end(uint32 index) {
+            return Matrix::view.indices_end(index);
+        }
+};
