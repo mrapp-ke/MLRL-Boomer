@@ -25,14 +25,12 @@ class FortranContiguousView : public DenseMatrix<T> {
         /**
          * @param other A const reference to an object of type `FortranContiguousView` that should be copied
          */
-        FortranContiguousView(const FortranContiguousView<T>& other)
-            : DenseMatrix<T>(other.array, other.numRows, other.numCols) {}
+        FortranContiguousView(const FortranContiguousView<T>& other) : DenseMatrix<T>(other) {}
 
         /**
          * @param other A reference to an object of type `FortranContiguousView` that should be moved
          */
-        FortranContiguousView(FortranContiguousView<T>&& other)
-            : DenseMatrix<T>(other.array, other.numRows, other.numCols) {}
+        FortranContiguousView(FortranContiguousView<T>&& other) : DenseMatrix<T>(std::move(other)) {}
 
         virtual ~FortranContiguousView() override {}
 
@@ -42,8 +40,8 @@ class FortranContiguousView : public DenseMatrix<T> {
          * @param column    The index of the column
          * @return          A `value_const_iterator` to the beginning of the column
          */
-        typename View<T>::value_const_iterator values_cbegin(uint32 column) const {
-            return &View<T>::array[column * Matrix<T>::numRows];
+        typename DenseMatrix<T>::value_const_iterator values_cbegin(uint32 column) const {
+            return &DenseMatrix<T>::array[column * Matrix::numRows];
         }
 
         /**
@@ -52,8 +50,8 @@ class FortranContiguousView : public DenseMatrix<T> {
          * @param column    The index of the column
          * @return          A `value_const_iterator` to the end of the column
          */
-        typename View<T>::const_iterator values_cend(uint32 column) const {
-            return &View<T>::array[(column + 1) * Matrix<T>::numRows];
+        typename DenseMatrix<T>::value_const_iterator values_cend(uint32 column) const {
+            return &DenseMatrix<T>::array[(column + 1) * Matrix::numRows];
         }
 
         /**
@@ -62,8 +60,8 @@ class FortranContiguousView : public DenseMatrix<T> {
          * @param column    The index of the column
          * @return          A `value_iterator` to the beginning of the column
          */
-        typename View<T>::value_iterator values_begin(uint32 column) {
-            return &View<T>::array[column * Matrix<T>::numRows];
+        typename DenseMatrix<T>::value_iterator values_begin(uint32 column) {
+            return &DenseMatrix<T>::array[column * Matrix::numRows];
         }
 
         /**
@@ -72,8 +70,8 @@ class FortranContiguousView : public DenseMatrix<T> {
          * @param column    The index of the column
          * @return          A `value_iterator` to the end of the column
          */
-        typename View<T>::value_iterator values_end(uint32 column) {
-            return &View<T>::array[(column + 1) * Matrix<T>::numRows];
+        typename DenseMatrix<T>::value_iterator values_end(uint32 column) {
+            return &DenseMatrix<T>::array[(column + 1) * Matrix::numRows];
         }
 };
 

@@ -11,8 +11,13 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class DenseMatrix : public Matrix<T> {
+class DenseMatrix : public Matrix {
     public:
+
+        /**
+         * A pointer to the array that stores the values, the view provides access to.
+         */
+        T* array;
 
         /**
          * @param array     A pointer to an array of template type `T` that stores the values, the view should provide
@@ -20,27 +25,42 @@ class DenseMatrix : public Matrix<T> {
          * @param numRows   The number of rows in the view
          * @param numCols   The number of columns in the view
          */
-        DenseMatrix(T* array, uint32 numRows, uint32 numCols) : Matrix<T>(array, numRows, numCols) {}
+        DenseMatrix(T* array, uint32 numRows, uint32 numCols) : Matrix(numRows, numCols), array(array) {}
 
         /**
          * @param other A const reference to an object of type `DenseMatrix` that should be copied
          */
-        DenseMatrix(const DenseMatrix<T>& other) : Matrix<T>(other.array, other.numRows, other.numCols) {}
+        DenseMatrix(const DenseMatrix<T>& other) : Matrix(std::move(other)), array(other.array) {}
 
         /**
          * @param other A reference to an object of type `DenseMatrix` that should be moved
          */
-        DenseMatrix(DenseMatrix<T>&& other) : Matrix<T>(other.array, other.numRows, other.numCols) {}
+        DenseMatrix(DenseMatrix<T>&& other) : Matrix(std::move(other)), array(other.array) {}
 
         virtual ~DenseMatrix() override {}
+
+        /**
+         * The type of the values, the view provides access to.
+         */
+        typedef T value_type;
+
+        /**
+         * An iterator that provides read-only access to the values in the view.
+         */
+        typedef typename View<value_type>::const_iterator value_const_iterator;
+
+        /**
+         * An iterator that provides access to the values in the view and allows to modify them.
+         */
+        typedef typename View<value_type>::iterator value_iterator;
 
         /**
          * Returns a `const_iterator` to the end of the view.
          *
          * @return A `const_iterator` to the end
          */
-        typename View<T>::const_iterator cend() const {
-            return &View<T>::array[Matrix<T>::numRows * Matrix<T>::numCols];
+        typename DenseMatrix<T>::value_const_iterator cend() const {
+            return &array[Matrix::numRows * Matrix::numCols];
         }
 
         /**
@@ -48,8 +68,8 @@ class DenseMatrix : public Matrix<T> {
          *
          * @return An `iterator` to the end
          */
-        typename View<T>::iterator end() {
-            return &View<T>::array[Matrix<T>::numRows * Matrix<T>::numCols];
+        typename DenseMatrix<T>::value_iterator end() {
+            return &array[Matrix::numRows * Matrix::numCols];
         }
 };
 

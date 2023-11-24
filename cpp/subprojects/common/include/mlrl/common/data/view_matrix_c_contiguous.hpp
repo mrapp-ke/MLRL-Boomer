@@ -25,12 +25,12 @@ class CContiguousView : public DenseMatrix<T> {
         /**
          * @param other A const reference to an object of type `CContiguousView` that should be copied
          */
-        CContiguousView(const CContiguousView<T>& other) : DenseMatrix<T>(other.array, other.numRows, other.numCols) {}
+        CContiguousView(const CContiguousView<T>& other) : DenseMatrix<T>(other) {}
 
         /**
          * @param other A reference to an object of type `CContiguousView` that should be moved
          */
-        CContiguousView(CContiguousView<T>&& other) : DenseMatrix<T>(other.array, other.numRows, other.numCols) {}
+        CContiguousView(CContiguousView<T>&& other) : DenseMatrix<T>(std::move(other)) {}
 
         virtual ~CContiguousView() override {}
 
@@ -41,7 +41,7 @@ class CContiguousView : public DenseMatrix<T> {
          * @return      A `value_const_iterator` to the beginning of the row
          */
         typename DenseMatrix<T>::value_const_iterator values_cbegin(uint32 row) const {
-            return &View<T>::array[row * Matrix<T>::numCols];
+            return &DenseMatrix<T>::array[row * Matrix::numCols];
         }
 
         /**
@@ -50,8 +50,8 @@ class CContiguousView : public DenseMatrix<T> {
          * @param row   The index of the row
          * @return      A `value_const_iterator` to the end of the row
          */
-        typename DenseMatrix<T>::const_iterator values_cend(uint32 row) const {
-            return &View<T>::array[(row + 1) * Matrix<T>::numCols];
+        typename DenseMatrix<T>::value_const_iterator values_cend(uint32 row) const {
+            return &DenseMatrix<T>::array[(row + 1) * Matrix::numCols];
         }
 
         /**
@@ -61,7 +61,7 @@ class CContiguousView : public DenseMatrix<T> {
          * @return      A `value_iterator` to the beginning of the row
          */
         typename DenseMatrix<T>::value_iterator values_begin(uint32 row) {
-            return &View<T>::array[row * Matrix<T>::numCols];
+            return &DenseMatrix<T>::array[row * Matrix::numCols];
         }
 
         /**
@@ -71,7 +71,7 @@ class CContiguousView : public DenseMatrix<T> {
          * @return      A `value_iterator` to the end of the row
          */
         typename DenseMatrix<T>::value_iterator values_end(uint32 row) {
-            return &View<T>::array[(row + 1) * Matrix<T>::numCols];
+            return &DenseMatrix<T>::array[(row + 1) * Matrix::numCols];
         }
 };
 
