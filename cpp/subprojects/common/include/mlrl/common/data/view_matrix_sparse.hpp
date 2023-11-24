@@ -11,22 +11,27 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class SparseMatrix : public Matrix<T> {
+class SparseMatrix : public Matrix {
     public:
 
         /**
-         * A pointer to an array that stores the row or column indices, the values in `View::array` correspond to.
+         * A pointer to the array that stores the values, the view provides access to.
+         */
+        T* values;
+
+        /**
+         * A pointer to an array that stores the row or column indices, the values in `values` correspond to.
          */
         uint32* indices;
 
         /**
-         * A pointer to an array that stores the indices of the first element in `View::array` and `indices` that
-         * corresponds to a certain column, if `indices` stores row indices, or row, if `indices` stores column indices.
+         * A pointer to an array that stores the indices of the first element in `values` and `indices` that corresponds
+         * to a certain column, if `indices` stores row indices, or row, if `indices` stores column indices.
          */
         uint32* indptr;
 
         /**
-         * @param array     A pointer to an array of template type `T` that stores all non-zero values, the view should
+         * @param values    A pointer to an array of template type `T` that stores all non-zero values, the view should
          *                  provide access to
          * @param indices   A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the row or
          *                  column indices, the values in `array` correspond to
@@ -37,22 +42,52 @@ class SparseMatrix : public Matrix<T> {
          * @param numRows   The number of rows in the view
          * @param numCols   The number of columns in the view
          */
-        SparseMatrix(T* array, uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
-            : Matrix<T>(array, numRows, numCols), indices(indices), indptr(indptr) {}
+        SparseMatrix(T* values, uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
+            : Matrix(numRows, numCols), values(values), indices(indices), indptr(indptr) {}
 
         /**
          * @param other A const reference to an object of type `SparseMatrix` that should be copied
          */
         SparseMatrix(const SparseMatrix<T>& other)
-            : Matrix<T>(other.array, other.numRows, other.numCols), indices(other.indices), indptr(other.indptr) {}
+            : Matrix(other), values(other.values), indices(other.indices), indptr(other.indptr) {}
 
         /**
          * @param other A reference to an object of type `SparseMatrix` that should be moved
          */
         SparseMatrix(SparseMatrix<T>&& other)
-            : Matrix<T>(other.array, other.numRows, other.numCols), indices(other.indices), indptr(other.indptr) {}
+            : Matrix(std::move(other)), values(other.values), indices(other.indices), indptr(other.indptr) {}
 
         virtual ~SparseMatrix() override {}
+
+        /**
+         * The type of the indices, the view provides access to.
+         */
+        typedef uint32 index_type;
+
+        /**
+         * The type of the values, the view provides access to.
+         */
+        typedef T value_type;
+
+        /**
+         * An iterator that provides read-only access to the indices in the view.
+         */
+        typedef View<index_type>::const_iterator index_const_iterator;
+
+        /**
+         * An iterator that provides access to the indices in the view and allows to modify them.
+         */
+        typedef View<index_type>::iterator index_iterator;
+
+        /**
+         * An iterator that provides read-only access to the values in the view.
+         */
+        typedef typename View<value_type>::const_iterator value_const_iterator;
+
+        /**
+         * An iterator that provides access to the values in the view and allows to modify them.
+         */
+        typedef typename View<value_type>::iterator value_iterator;
 };
 
 /**
