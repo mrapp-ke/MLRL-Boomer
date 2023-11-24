@@ -16,30 +16,28 @@ class CscView : public SparseMatrix<T> {
     public:
 
         /**
-         * @param array     A pointer to an array of template type `T` that stores all non-zero values, the view should
+         * @param values    A pointer to an array of template type `T` that stores all non-zero values, the view should
          *                  provide access to
          * @param indices   A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the row
-         *                  indices, the values in `array` correspond to
+         *                  indices, the values in `values` correspond to
          * @param indptr    A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices of
-         *                  the first element in `array` and `indices` that corresponds to a certain column. The index
+         *                  the first element in `values` and `indices` that corresponds to a certain column. The index
          *                  at the last position must be equal to `numNonZeroValues`
          * @param numRows   The number of rows in the view
          * @param numCols   The number of columns in the view
          */
-        CscView(T* array, uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
-            : SparseMatrix<T>(array, indices, indptr, numRows, numCols) {}
+        CscView(T* values, uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
+            : SparseMatrix<T>(values, indices, indptr, numRows, numCols) {}
 
         /**
          * @param other A const reference to an object of type `CscView` that should be copied
          */
-        CscView(const CscView<T>& other)
-            : SparseMatrix<T>(other.array, other.indices, other.indptr, other.numRows, other.numCols) {}
+        CscView(const CscView<T>& other) : SparseMatrix<T>(other) {}
 
         /**
          * @param other A reference to an object of type `CscView` that should be moved
          */
-        CscView(CscView<T>&& other)
-            : SparseMatrix<T>(other.array, other.indices, other.indptr, other.numRows, other.numCols) {}
+        CscView(CscView<T>&& other) : SparseMatrix<T>(std::move(other)) {}
 
         virtual ~CscView() override {}
 
@@ -50,7 +48,7 @@ class CscView : public SparseMatrix<T> {
          * @return          A `value_const_iterator` to the beginning of the values
          */
         typename SparseMatrix<T>::value_const_iterator values_cbegin(uint32 column) const {
-            return &View<T>::array[SparseMatrix<T>::indptr[column]];
+            return &SparseMatrix<T>::values[SparseMatrix<T>::indptr[column]];
         }
 
         /**
@@ -60,7 +58,7 @@ class CscView : public SparseMatrix<T> {
          * @return          A `value_const_iterator` to the end of the values
          */
         typename SparseMatrix<T>::value_const_iterator values_cend(uint32 column) const {
-            return &View<T>::array[SparseMatrix<T>::indptr[column + 1]];
+            return &SparseMatrix<T>::values[SparseMatrix<T>::indptr[column + 1]];
         }
 
         /**
@@ -90,7 +88,7 @@ class CscView : public SparseMatrix<T> {
          * @return          A `value_iterator` to the beginning of the values
          */
         typename SparseMatrix<T>::value_iterator values_begin(uint32 column) {
-            return &View<T>::array[SparseMatrix<T>::indptr[column]];
+            return &SparseMatrix<T>::values[SparseMatrix<T>::indptr[column]];
         }
 
         /**
@@ -100,7 +98,7 @@ class CscView : public SparseMatrix<T> {
          * @return          A `value_iterator` to the end of the values
          */
         typename SparseMatrix<T>::value_iterator values_end(uint32 column) {
-            return &View<T>::array[SparseMatrix<T>::indptr[column + 1]];
+            return &SparseMatrix<T>::values[SparseMatrix<T>::indptr[column + 1]];
         }
 
         /**
