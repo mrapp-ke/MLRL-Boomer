@@ -198,7 +198,7 @@ namespace boosting {
                 }
             }
 
-            void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
+            void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                            const SparseSetMatrix<float64>& scoreMatrix,
                                            CompleteIndexVector::const_iterator labelIndicesBegin,
                                            CompleteIndexVector::const_iterator labelIndicesEnd,
@@ -209,14 +209,14 @@ namespace boosting {
                                                     statisticView[exampleIndex], LabelWiseLoss::updateFunction_);
             }
 
-            void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
+            void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                            const SparseSetMatrix<float64>& scoreMatrix,
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
                                            SparseLabelWiseStatisticView& statisticView) const override {
                 const SparseSetMatrix<float64>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
-                BinaryCsrConstView::index_const_iterator indexIterator = labelMatrix.indices_cbegin(exampleIndex);
-                BinaryCsrConstView::index_const_iterator indicesEnd = labelMatrix.indices_cend(exampleIndex);
+                BinaryCsrView::index_const_iterator indexIterator = labelMatrix.indices_cbegin(exampleIndex);
+                BinaryCsrView::index_const_iterator indicesEnd = labelMatrix.indices_cend(exampleIndex);
                 SparseLabelWiseStatisticView::row statisticViewRow = statisticView[exampleIndex];
                 uint32 numElements = labelIndicesEnd - labelIndicesBegin;
                 Tuple<float64> tuple;
@@ -255,7 +255,7 @@ namespace boosting {
             /**
              * @see `IEvaluationMeasure::evaluate`
              */
-            float64 evaluate(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
+            float64 evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                              const SparseSetMatrix<float64>& scoreMatrix) const override {
                 return evaluateInternally(labelMatrix.indices_cbegin(exampleIndex),
                                           labelMatrix.indices_cend(exampleIndex), scoreMatrix.cbegin(exampleIndex),

@@ -14,8 +14,8 @@
  * the compressed sparse column (CSC) format.
  *
  * This class provides copy constructors for copying an existing `CContiguousView`, which provides random access, or a
- * `BinaryCsrConstView`, which provides row-wise access to the labels of the training examples. These constructors
- * expect the indices of the examples to be considered when copying the existing label matrix to be provided.
+ * `BinaryCsrView`, which provides row-wise access to the labels of the training examples. These constructors expect the
+ * indices of the examples to be considered when copying the existing label matrix to be provided.
  */
 class CscLabelMatrix final : public BinaryCscView {
     public:
@@ -42,23 +42,23 @@ class CscLabelMatrix final : public BinaryCscView {
                        PartialIndexVector::const_iterator indicesEnd);
 
         /**
-         * @param labelMatrix   A reference to an object of type `BinaryCsrConstView` to be copied
+         * @param labelMatrix   A reference to an object of type `BinaryCsrView` to be copied
          * @param indicesBegin  A `CompleteIndexVector::const_iterator` to the beginning of the indices of the examples
          *                      to be considered
          * @param indicesEnd    A `CompleteIndexVector::const_iterator` to the end of the indices of the examples to be
          *                      considered
          */
-        CscLabelMatrix(const BinaryCsrConstView& labelMatrix, CompleteIndexVector::const_iterator indicesBegin,
+        CscLabelMatrix(const BinaryCsrView& labelMatrix, CompleteIndexVector::const_iterator indicesBegin,
                        CompleteIndexVector::const_iterator indicesEnd);
 
         /**
-         * @param labelMatrix   A reference to an object of type `BinaryCsrConstView` to be copied
+         * @param labelMatrix   A reference to an object of type `BinaryCsrView` to be copied
          * @param indicesBegin  A `PartialIndexVector::const_iterator` to the beginning of the indices of the examples
          *                      to be considered
          * @param indicesEnd    A `PartialIndexVector::const_iterator` to the end of the indices of the examples to be
          *                      considered
          */
-        CscLabelMatrix(const BinaryCsrConstView& labelMatrix, PartialIndexVector::const_iterator indicesBegin,
+        CscLabelMatrix(const BinaryCsrView& labelMatrix, PartialIndexVector::const_iterator indicesBegin,
                        PartialIndexVector::const_iterator indicesEnd);
 
         ~CscLabelMatrix() override;

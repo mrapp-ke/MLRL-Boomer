@@ -35,13 +35,13 @@ namespace boosting {
              * Updates the statistics of the example at a specific index.
              *
              * @param exampleIndex  The index of the example for which the gradients and Hessians should be updated
-             * @param labelMatrix   A reference to an object of type `BinaryCsrConstView` that provides row-wise access
-             *                      to the labels of the training examples
+             * @param labelMatrix   A reference to an object of type `BinaryCsrView` that provides row-wise access to
+             *                      the labels of the training examples
              * @param scoreMatrix   A reference to an object of type `CContiguousView` that stores the currently
              *                      predicted scores
              * @param statisticView A reference to an object of type `DenseExampleWiseStatisticView` to be updated
              */
-            virtual void updateExampleWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
+            virtual void updateExampleWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                                      const CContiguousView<float64>& scoreMatrix,
                                                      DenseExampleWiseStatisticView& statisticView) const = 0;
     };

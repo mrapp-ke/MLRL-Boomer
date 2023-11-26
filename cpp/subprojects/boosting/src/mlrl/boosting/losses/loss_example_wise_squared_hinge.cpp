@@ -251,7 +251,7 @@ namespace boosting {
                                                     statisticView.begin(exampleIndex), labelMatrix.getNumCols());
             }
 
-            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                                    const CContiguousView<float64>& scoreMatrix,
                                                    CompleteIndexVector::const_iterator labelIndicesBegin,
                                                    CompleteIndexVector::const_iterator labelIndicesEnd,
@@ -262,7 +262,7 @@ namespace boosting {
                                                     statisticView.begin(exampleIndex), labelMatrix.getNumCols());
             }
 
-            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                                    const CContiguousView<float64>& scoreMatrix,
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
@@ -282,7 +282,7 @@ namespace boosting {
                   labelMatrix.getNumCols());
             }
 
-            void updateExampleWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
+            void updateExampleWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                              const CContiguousView<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticView& statisticView) const override {
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
@@ -304,7 +304,7 @@ namespace boosting {
             /**
              * @see `IEvaluationMeasure::evaluate`
              */
-            float64 evaluate(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
+            float64 evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                              const CContiguousView<float64>& scoreMatrix) const override {
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));

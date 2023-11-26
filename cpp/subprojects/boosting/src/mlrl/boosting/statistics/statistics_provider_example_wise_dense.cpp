@@ -181,7 +181,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProvider> DenseExampleWiseStatisticsProviderFactory::create(
-      const BinaryCsrConstView& labelMatrix) const {
+      const BinaryCsrView& labelMatrix) const {
         std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>
           statisticsPtr = createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_,
                                            *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);
@@ -213,7 +213,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProvider> DenseConvertibleExampleWiseStatisticsProviderFactory::create(
-      const BinaryCsrConstView& labelMatrix) const {
+      const BinaryCsrView& labelMatrix) const {
         std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>
           statisticsPtr = createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_,
                                            *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);

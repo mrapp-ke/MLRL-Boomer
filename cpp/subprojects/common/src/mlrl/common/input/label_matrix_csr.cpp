@@ -11,7 +11,7 @@ CsrLabelMatrix::View::View(const CsrLabelMatrix& labelMatrix, uint32 row)
       labelMatrix.indices_cbegin(row), labelMatrix.indices_cend(row) - labelMatrix.indices_cbegin(row))) {}
 
 CsrLabelMatrix::CsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* indptr, uint32* colIndices)
-    : BinaryCsrConstView(numRows, numCols, indptr, colIndices) {}
+    : BinaryCsrView(numRows, numCols, indptr, colIndices) {}
 
 bool CsrLabelMatrix::isSparse() const {
     return true;

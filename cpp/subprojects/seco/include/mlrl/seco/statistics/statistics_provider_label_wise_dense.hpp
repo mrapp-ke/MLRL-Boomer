@@ -51,7 +51,7 @@ namespace seco {
             /**
              * @see `IStatisticsProviderFactory::create`
              */
-            std::unique_ptr<IStatisticsProvider> create(const BinaryCsrConstView& labelMatrix) const override;
+            std::unique_ptr<IStatisticsProvider> create(const BinaryCsrView& labelMatrix) const override;
     };
 
 }

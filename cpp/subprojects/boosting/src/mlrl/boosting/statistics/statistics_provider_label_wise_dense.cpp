@@ -63,7 +63,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
-      const BinaryCsrConstView& labelMatrix) const {
+      const BinaryCsrView& labelMatrix) const {
         std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> statisticsPtr = createStatistics(
           *lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);
         return std::make_unique<LabelWiseStatisticsProvider<ILabelWiseRuleEvaluationFactory>>(
