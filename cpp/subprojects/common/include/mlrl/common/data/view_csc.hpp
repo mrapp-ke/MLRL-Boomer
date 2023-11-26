@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/types.hpp"
+#include "mlrl/common/data/view.hpp"
 
 /**
  * Implements column-wise read and write access to the values that are stored in a pre-allocated matrix in the
@@ -61,22 +61,22 @@ class CscView {
         /**
          * An iterator that provides read-only access to the indices in the view.
          */
-        typedef const uint32* index_const_iterator;
+        typedef typename View<uint32>::const_iterator index_const_iterator;
 
         /**
          * An iterator that provides access to the indices in the view and allows to modify them.
          */
-        typedef uint32* index_iterator;
+        typedef typename View<uint32>::iterator index_iterator;
 
         /**
          * An iterator that provides read-only access to the values in the view.
          */
-        typedef const T* value_const_iterator;
+        typedef typename View<T>::const_iterator value_const_iterator;
 
         /**
          * An iterator that provides access to the values in the view and allows to modify them.
          */
-        typedef T* value_iterator;
+        typedef typename View<T>::iterator value_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices at a specific column.
