@@ -10,8 +10,8 @@ CContiguousLabelMatrix::View::View(const CContiguousLabelMatrix& labelMatrix, ui
     : IterableVectorDecorator<VectorDecorator<Vector<const uint8>>>(
       Vector<const uint8>(labelMatrix.values_cbegin(row), labelMatrix.numCols)) {}
 
-CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array)
-    : CContiguousView<const uint8>(numRows, numCols, array) {}
+CContiguousLabelMatrix::CContiguousLabelMatrix(const uint8* array, uint32 numRows, uint32 numCols)
+    : CContiguousView<const uint8>(array, numRows, numCols) {}
 
 bool CContiguousLabelMatrix::isSparse() const {
     return false;
@@ -111,7 +111,7 @@ std::unique_ptr<IJointProbabilityCalibrationModel> CContiguousLabelMatrix::fitJo
     return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
 }
 
-std::unique_ptr<ICContiguousLabelMatrix> createCContiguousLabelMatrix(uint32 numRows, uint32 numCols,
-                                                                      const uint8* array) {
-    return std::make_unique<CContiguousLabelMatrix>(numRows, numCols, array);
+std::unique_ptr<ICContiguousLabelMatrix> createCContiguousLabelMatrix(const uint8* array, uint32 numRows,
+                                                                      uint32 numCols) {
+    return std::make_unique<CContiguousLabelMatrix>(array, numRows, numCols);
 }

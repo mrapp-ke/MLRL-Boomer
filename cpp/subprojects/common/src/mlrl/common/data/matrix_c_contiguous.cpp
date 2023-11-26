@@ -4,11 +4,11 @@
 
 template<typename T>
 CContiguousMatrix<T>::CContiguousMatrix(uint32 numRows, uint32 numCols, bool init)
-    : CContiguousView<T>(numRows, numCols, allocateMemory<T>(numRows * numCols, init)) {}
+    : CContiguousView<T>(allocateMemory<T>(numRows * numCols, init), numRows, numCols) {}
 
 template<typename T>
 CContiguousMatrix<T>::~CContiguousMatrix() {
-    freeMemory(this->array_);
+    freeMemory(this->array);
 }
 
 template class CContiguousMatrix<uint8>;
