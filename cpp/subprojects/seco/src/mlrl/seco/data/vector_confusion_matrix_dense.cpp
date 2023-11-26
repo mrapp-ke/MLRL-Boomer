@@ -51,7 +51,7 @@ namespace seco {
                       coverageMatrix.values_cbegin(exampleIndex), weight, this->begin(), this->getNumElements());
     }
 
-    void DenseConfusionMatrixVector::add(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
+    void DenseConfusionMatrixVector::add(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                          View<uint32>::const_iterator majorityLabelIndicesBegin,
                                          View<uint32>::const_iterator majorityLabelIndicesEnd,
                                          const DenseCoverageMatrix& coverageMatrix, float64 weight) {
@@ -69,7 +69,7 @@ namespace seco {
                       coverageMatrix.values_cbegin(exampleIndex), -weight, this->begin(), this->getNumElements());
     }
 
-    void DenseConfusionMatrixVector::remove(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
+    void DenseConfusionMatrixVector::remove(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                             View<uint32>::const_iterator majorityLabelIndicesBegin,
                                             View<uint32>::const_iterator majorityLabelIndicesEnd,
                                             const DenseCoverageMatrix& coverageMatrix, float64 weight) {
@@ -88,7 +88,7 @@ namespace seco {
                       coverageMatrix.values_cbegin(exampleIndex), weight, this->begin(), this->getNumElements());
     }
 
-    void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
+    void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                                  View<uint32>::const_iterator majorityLabelIndicesBegin,
                                                  View<uint32>::const_iterator majorityLabelIndicesEnd,
                                                  const DenseCoverageMatrix& coverageMatrix,
@@ -128,7 +128,7 @@ namespace seco {
         }
     }
 
-    void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
+    void DenseConfusionMatrixVector::addToSubset(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                                  View<uint32>::const_iterator majorityLabelIndicesBegin,
                                                  View<uint32>::const_iterator majorityLabelIndicesEnd,
                                                  const DenseCoverageMatrix& coverageMatrix,
@@ -136,8 +136,8 @@ namespace seco {
         auto majorityIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
         typename DenseCoverageMatrix::value_const_iterator coverageIterator =
           coverageMatrix.values_cbegin(exampleIndex);
-        BinaryCsrConstView::index_const_iterator labelIndexIterator = labelMatrix.indices_cbegin(exampleIndex);
-        BinaryCsrConstView::index_const_iterator labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
+        BinaryCsrView::index_const_iterator labelIndexIterator = labelMatrix.indices_cbegin(exampleIndex);
+        BinaryCsrView::index_const_iterator labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         uint32 numElements = indices.getNumElements();
         uint32 previousIndex = 0;

@@ -38,13 +38,13 @@ class IEvaluationMeasure {
          * provides row-wise access to the labels of the training examples.
          *
          * @param exampleIndex  The index of the example for which the predictions should be evaluated
-         * @param labelMatrix   A reference to an object of type `BinaryCsrConstView` that provides row-wise access to
-         *                      the labels of the training examples
+         * @param labelMatrix   A reference to an object of type `BinaryCsrView` that provides row-wise access to the
+         *                      labels of the training examples
          * @param scoreMatrix   A reference to an object of type `CContiguousView` that stores the currently predicted
          *                      scores
          * @return              The numerical score that has been calculated
          */
-        virtual float64 evaluate(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
+        virtual float64 evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                  const CContiguousView<float64>& scoreMatrix) const = 0;
 };
 

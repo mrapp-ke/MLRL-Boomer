@@ -28,7 +28,7 @@ static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* indptr,
 }
 
 template<typename IndexIterator>
-static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* indptr, const BinaryCsrConstView& labelMatrix,
+static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* indptr, const BinaryCsrView& labelMatrix,
                                       IndexIterator indicesBegin, IndexIterator indicesEnd) {
     uint32 numExamples = indicesEnd - indicesBegin;
     uint32 numLabels = labelMatrix.getNumCols();
@@ -39,7 +39,7 @@ static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* indptr, const 
     // Determine the number of non-zero elements per column...
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = indicesBegin[i];
-        BinaryCsrConstView::index_const_iterator labelIndexIterator = labelMatrix.indices_cbegin(exampleIndex);
+        BinaryCsrView::index_const_iterator labelIndexIterator = labelMatrix.indices_cbegin(exampleIndex);
         uint32 numRelevantLabels = labelMatrix.indices_cend(exampleIndex) - labelIndexIterator;
 
         for (uint32 j = 0; j < numRelevantLabels; j++) {
@@ -61,7 +61,7 @@ static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* indptr, const 
     // Set the row indices of the CSC matrix. This will modify the column indices...
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = indicesBegin[i];
-        BinaryCsrConstView::index_const_iterator labelIndexIterator = labelMatrix.indices_cbegin(exampleIndex);
+        BinaryCsrView::index_const_iterator labelIndexIterator = labelMatrix.indices_cbegin(exampleIndex);
         uint32 numRelevantLabels = labelMatrix.indices_cend(exampleIndex) - labelIndexIterator;
 
         for (uint32 j = 0; j < numRelevantLabels; j++) {
@@ -105,7 +105,7 @@ CscLabelMatrix::CscLabelMatrix(const CContiguousView<const uint8>& labelMatrix,
                                                                             labelMatrix, indicesBegin, indicesEnd);
 }
 
-CscLabelMatrix::CscLabelMatrix(const BinaryCsrConstView& labelMatrix, CompleteIndexVector::const_iterator indicesBegin,
+CscLabelMatrix::CscLabelMatrix(const BinaryCsrView& labelMatrix, CompleteIndexVector::const_iterator indicesBegin,
                                CompleteIndexVector::const_iterator indicesEnd)
     : BinaryCscView(indicesEnd - indicesBegin, labelMatrix.getNumCols(),
                     allocateMemory<uint32>(labelMatrix.getNumNonZeroElements()),
@@ -114,7 +114,7 @@ CscLabelMatrix::CscLabelMatrix(const BinaryCsrConstView& labelMatrix, CompleteIn
                                                                              labelMatrix, indicesBegin, indicesEnd);
 }
 
-CscLabelMatrix::CscLabelMatrix(const BinaryCsrConstView& labelMatrix, PartialIndexVector::const_iterator indicesBegin,
+CscLabelMatrix::CscLabelMatrix(const BinaryCsrView& labelMatrix, PartialIndexVector::const_iterator indicesBegin,
                                PartialIndexVector::const_iterator indicesEnd)
     : BinaryCscView(indicesEnd - indicesBegin, labelMatrix.getNumCols(),
                     allocateMemory<uint32>(labelMatrix.getNumNonZeroElements()),
