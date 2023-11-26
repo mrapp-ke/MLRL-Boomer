@@ -23,10 +23,10 @@ class DenseVector final : public IterableVectorDecorator<VectorDecorator<Allocat
             : IterableVectorDecorator<VectorDecorator<AllocatedVector<T>>>(AllocatedVector<T>(numElements, init)) {}
 
         /**
-         * @param other A reference to an object of type `VectorDecorator` that should be moved
+         * @param other A reference to an object of type `AllocatedVector` that should be moved
          */
-        DenseVector(VectorDecorator<ResizableVector<T>>&& other)
-            : IterableVectorDecorator<VectorDecorator<AllocatedVector<T>>>(AllocatedVector<T>(std::move(other.view))) {}
+        DenseVector(AllocatedVector<T>&& vector)
+            : IterableVectorDecorator<VectorDecorator<AllocatedVector<T>>>(AllocatedVector<T>(std::move(vector))) {}
 };
 
 /**

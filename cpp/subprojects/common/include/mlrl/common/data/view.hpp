@@ -167,12 +167,19 @@ class ResizableAllocator : public Allocator<View> {
  */
 template<typename View>
 class ViewDecorator {
-    public:
+    protected:
 
         /**
          * The view, the data structure is backed by.
          */
         View view;
+
+        /**
+         * The type of the view, the data structure is backed by.
+         */
+        typedef View view_type;
+
+    public:
 
         /**
          * @param view The view, the data structure should be backed by
@@ -182,14 +189,27 @@ class ViewDecorator {
         virtual ~ViewDecorator() {}
 
         /**
-         * The type of the view, the data structure is backed by.
-         */
-        typedef View view_type;
-
-        /**
          * The type of the values that are stored in the data structure.
          */
         typedef typename View::value_type value_type;
+
+        /**
+         * Returns a const reference to the view, the data structure is backed by.
+         *
+         * @return A const reference to an object of template type `View`, the data structure is backed by
+         */
+        const View& getView() const {
+            return view;
+        }
+
+        /**
+         * Returns a reference to the view, the data structure is backed by.
+         *
+         * @return A reference to an object of template type `View`, the data structure is backed by
+         */
+        View& getView() {
+            return view;
+        }
 };
 
 /**

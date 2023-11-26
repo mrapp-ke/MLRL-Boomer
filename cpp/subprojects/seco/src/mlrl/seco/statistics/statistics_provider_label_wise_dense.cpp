@@ -76,7 +76,8 @@ namespace seco {
           std::make_unique<DenseCoverageMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
         return std::make_unique<DenseLabelWiseStatistics<CContiguousConstView<const uint8>>>(
           labelMatrix, std::move(coverageMatrixPtr),
-          std::make_unique<BinarySparseArrayVector>(std::move(*majorityLabelVectorPtr)), ruleEvaluationFactory);
+          std::make_unique<BinarySparseArrayVector>(std::move(majorityLabelVectorPtr->getView())),
+          ruleEvaluationFactory);
     }
 
     static inline std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
@@ -118,7 +119,8 @@ namespace seco {
           std::make_unique<DenseCoverageMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
         return std::make_unique<DenseLabelWiseStatistics<BinaryCsrConstView>>(
           labelMatrix, std::move(coverageMatrixPtr),
-          std::make_unique<BinarySparseArrayVector>(std::move(*majorityLabelVectorPtr)), ruleEvaluationFactory);
+          std::make_unique<BinarySparseArrayVector>(std::move(majorityLabelVectorPtr->getView())),
+          ruleEvaluationFactory);
     }
 
     DenseLabelWiseStatisticsProviderFactory::DenseLabelWiseStatisticsProviderFactory(
