@@ -57,9 +57,9 @@ class IStatisticsProviderFactory {
          * Creates and returns a new instance of the class `IStatisticsProvider`, based on a sparse label matrix that
          * provides row-wise access to the labels of the training examples.
          *
-         * @param labelMatrix   A reference to an object of type `BinaryCsrConstView` that provides row-wise access to
-         *                      the labels of the training examples
+         * @param labelMatrix   A reference to an object of type `BinaryCsrView` that provides row-wise access to the
+         *                      labels of the training examples
          * @return              An unique pointer to an object of type `IStatisticsProvider` that has been created
          */
-        virtual std::unique_ptr<IStatisticsProvider> create(const BinaryCsrConstView& labelMatrix) const = 0;
+        virtual std::unique_ptr<IStatisticsProvider> create(const BinaryCsrView& labelMatrix) const = 0;
 };

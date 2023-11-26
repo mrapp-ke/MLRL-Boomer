@@ -4,7 +4,7 @@
 
 BinarySparsePredictionMatrix::BinarySparsePredictionMatrix(uint32 numRows, uint32 numCols, uint32* colIndices,
                                                            uint32* indptr)
-    : BinaryCsrConstView(numRows, numCols, colIndices, indptr), colIndices_(colIndices), indptr_(indptr) {}
+    : BinaryCsrView(numRows, numCols, colIndices, indptr), colIndices_(colIndices), indptr_(indptr) {}
 
 BinarySparsePredictionMatrix::~BinarySparsePredictionMatrix() {
     freeMemory(colIndices_);

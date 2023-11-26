@@ -7,10 +7,10 @@
 #include "mlrl/common/util/dll_exports.hpp"
 
 /**
- * Implements row-wise read-only access to binary values that are stored in a pre-allocated matrix in the compressed
- * sparse row (CSR) format.
+ * Implements row-wise read and write access to binary values that are stored in a pre-allocated matrix in the
+ * compressed sparse row (CSR) format.
  */
-class MLRLCOMMON_API BinaryCsrConstView {
+class BinaryCsrView {
     protected:
 
         /**
@@ -45,14 +45,19 @@ class MLRLCOMMON_API BinaryCsrConstView {
          *                      of the first element in `colIndices` that corresponds to a certain row. The index at the
          *                      last position is equal to `num_non_zero_values`
          */
-        BinaryCsrConstView(uint32 numRows, uint32 numCols, uint32* colIndices, uint32* indptr);
+        BinaryCsrView(uint32 numRows, uint32 numCols, uint32* colIndices, uint32* indptr);
 
-        virtual ~BinaryCsrConstView() {}
+        virtual ~BinaryCsrView() {}
 
         /**
          * An iterator that provides read-only access to the indices in the view.
          */
         typedef const uint32* index_const_iterator;
+
+        /**
+         * An iterator that provides access to the indices of the view and allows to modify them.
+         */
+        typedef uint32* index_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices at a specific row.
@@ -69,6 +74,22 @@ class MLRLCOMMON_API BinaryCsrConstView {
          * @return      An `index_const_iterator` to the end of the indices
          */
         index_const_iterator indices_cend(uint32 row) const;
+
+        /**
+         * Returns an `index_iterator` to the beginning of the indices at a specific row.
+         *
+         * @param row   The row
+         * @return      An `index_iterator` to the beginning of the indices
+         */
+        index_iterator indices_begin(uint32 row);
+
+        /**
+         * Returns an `index_iterator` to the end of the indices at a specific row.
+         *
+         * @param row   The row
+         * @return      An `index_iterator` to the end of the indices
+         */
+        index_iterator indices_end(uint32 row);
 
         /**
          * Returns the number of non-zero elements in the view.
@@ -90,46 +111,4 @@ class MLRLCOMMON_API BinaryCsrConstView {
          * @return The number of columns
          */
         uint32 getNumCols() const;
-};
-
-/**
- * Implements row-wise read and write access to binary values that are stored in a pre-allocated matrix in the
- * compressed sparse row (CSR) format.
- */
-class BinaryCsrView : public BinaryCsrConstView {
-    public:
-
-        /**
-         * @param numRows       The number of rows in the view
-         * @param numCols       The number of columns in the view
-         * @param colIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
-         *                      column-indices, the non-zero elements correspond to
-         * @param indptr        A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices
-         *                      of the first element in `colIndices` that corresponds to a certain row. The index at the
-         *                      last position is equal to `num_non_zero_values`
-         */
-        BinaryCsrView(uint32 numRows, uint32 numCols, uint32* colIndices, uint32* indptr);
-
-        virtual ~BinaryCsrView() override {}
-
-        /**
-         * An iterator that provides access to the indices of the view and allows to modify them.
-         */
-        typedef uint32* index_iterator;
-
-        /**
-         * Returns an `index_iterator` to the beginning of the indices at a specific row.
-         *
-         * @param row   The row
-         * @return      An `index_iterator` to the beginning of the indices
-         */
-        index_iterator indices_begin(uint32 row);
-
-        /**
-         * Returns an `index_iterator` to the end of the indices at a specific row.
-         *
-         * @param row   The row
-         * @return      An `index_iterator` to the end of the indices
-         */
-        index_iterator indices_end(uint32 row);
 };

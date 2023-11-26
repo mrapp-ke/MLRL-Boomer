@@ -80,7 +80,7 @@ namespace seco {
     }
 
     static inline std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
-      const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, const BinaryCsrConstView& labelMatrix) {
+      const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, const BinaryCsrView& labelMatrix) {
         uint32 numExamples = labelMatrix.getNumRows();
         uint32 numLabels = labelMatrix.getNumCols();
         std::unique_ptr<ResizableBinarySparseArrayVector> majorityLabelVectorPtr =
@@ -88,7 +88,7 @@ namespace seco {
         ResizableBinarySparseArrayVector::iterator majorityIterator = majorityLabelVectorPtr->begin();
 
         for (uint32 i = 0; i < numExamples; i++) {
-            BinaryCsrConstView::index_const_iterator indexIterator = labelMatrix.indices_cbegin(i);
+            BinaryCsrView::index_const_iterator indexIterator = labelMatrix.indices_cbegin(i);
             uint32 numElements = labelMatrix.indices_cend(i) - indexIterator;
 
             for (uint32 j = 0; j < numElements; j++) {
@@ -116,7 +116,7 @@ namespace seco {
         majorityLabelVectorPtr->setNumElements(n, true);
         std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr =
           std::make_unique<DenseCoverageMatrix>(numExamples, numLabels, sumOfUncoveredWeights);
-        return std::make_unique<DenseLabelWiseStatistics<BinaryCsrConstView>>(
+        return std::make_unique<DenseLabelWiseStatistics<BinaryCsrView>>(
           labelMatrix, std::move(coverageMatrixPtr),
           std::make_unique<BinarySparseArrayVector>(std::move(majorityLabelVectorPtr->getView())),
           ruleEvaluationFactory);
@@ -139,7 +139,7 @@ namespace seco {
     }
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
-      const BinaryCsrConstView& labelMatrix) const {
+      const BinaryCsrView& labelMatrix) const {
         std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> statisticsPtr =
           createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix);
         return std::make_unique<LabelWiseStatisticsProvider<ILabelWiseRuleEvaluationFactory>>(
