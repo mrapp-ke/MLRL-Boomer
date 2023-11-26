@@ -32,7 +32,7 @@ class SparseMatrix : public BinarySparseMatrix {
          * @param numCols   The number of columns in the view
          */
         SparseMatrix(T* values, uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
-            : BinarySparseMatrix(numRows, numCols, indices, indptr), values(values) {}
+            : BinarySparseMatrix(indices, indptr, numRows, numCols), values(values) {}
 
         /**
          * @param other A const reference to an object of type `SparseMatrix` that should be copied
