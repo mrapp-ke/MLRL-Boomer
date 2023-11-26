@@ -4,8 +4,8 @@
 
 template<typename T>
 DensePredictionMatrix<T>::DensePredictionMatrix(uint32 numRows, uint32 numCols, bool init)
-    : CContiguousView<T>(numRows, numCols, allocateMemory<T>(numRows * numCols, init)),
-      array_(CContiguousView<T>::array_) {}
+    : CContiguousView<T>(allocateMemory<T>(numRows * numCols, init), numRows, numCols),
+      array_(CContiguousView<T>::array) {}
 
 template<typename T>
 DensePredictionMatrix<T>::~DensePredictionMatrix() {

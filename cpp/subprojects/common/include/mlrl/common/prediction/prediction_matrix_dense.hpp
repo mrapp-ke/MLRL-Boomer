@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/util/dll_exports.hpp"
 
 /**

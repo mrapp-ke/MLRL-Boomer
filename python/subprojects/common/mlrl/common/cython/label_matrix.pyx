@@ -61,7 +61,7 @@ cdef class CContiguousLabelMatrix(RowWiseLabelMatrix):
         self.array = array
         cdef uint32 num_examples = array.shape[0]
         cdef uint32 num_labels = array.shape[1]
-        self.label_matrix_ptr = createCContiguousLabelMatrix(num_examples, num_labels, &array[0, 0])
+        self.label_matrix_ptr = createCContiguousLabelMatrix(&array[0, 0], num_examples, num_labels)
 
     cdef ILabelMatrix* get_label_matrix_ptr(self):
         return self.label_matrix_ptr.get()

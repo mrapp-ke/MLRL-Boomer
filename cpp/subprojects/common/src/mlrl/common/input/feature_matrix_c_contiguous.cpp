@@ -4,8 +4,8 @@
 #include "mlrl/common/prediction/predictor_probability.hpp"
 #include "mlrl/common/prediction/predictor_score.hpp"
 
-CContiguousFeatureMatrix::CContiguousFeatureMatrix(uint32 numRows, uint32 numCols, const float32* array)
-    : CContiguousView<const float32>(numRows, numCols, array) {}
+CContiguousFeatureMatrix::CContiguousFeatureMatrix(const float32* array, uint32 numRows, uint32 numCols)
+    : CContiguousView<const float32>(array, numRows, numCols) {}
 
 bool CContiguousFeatureMatrix::isSparse() const {
     return false;
@@ -50,7 +50,7 @@ std::unique_ptr<IProbabilityPredictor> CContiguousFeatureMatrix::createProbabili
                                                 jointProbabilityCalibrationModel, numLabels);
 }
 
-std::unique_ptr<ICContiguousFeatureMatrix> createCContiguousFeatureMatrix(uint32 numRows, uint32 numCols,
-                                                                          const float32* array) {
-    return std::make_unique<CContiguousFeatureMatrix>(numRows, numCols, array);
+std::unique_ptr<ICContiguousFeatureMatrix> createCContiguousFeatureMatrix(const float32* array, uint32 numRows,
+                                                                          uint32 numCols) {
+    return std::make_unique<CContiguousFeatureMatrix>(array, numRows, numCols);
 }

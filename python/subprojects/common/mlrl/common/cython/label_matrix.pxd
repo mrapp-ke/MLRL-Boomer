@@ -32,7 +32,7 @@ cdef extern from "mlrl/common/input/label_matrix_c_contiguous.hpp" nogil:
         pass
 
 
-    unique_ptr[ICContiguousLabelMatrix] createCContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array)
+    unique_ptr[ICContiguousLabelMatrix] createCContiguousLabelMatrix(const uint8* array, uint32 numRows, uint32 numCols)
 
 
 cdef extern from "mlrl/common/input/label_matrix_csr.hpp" nogil:

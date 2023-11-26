@@ -8,7 +8,7 @@
     #pragma warning(disable : 4250)
 #endif
 
-#include "mlrl/common/data/view_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/input/label_matrix_row_wise.hpp"
 
@@ -90,11 +90,11 @@ class CContiguousLabelMatrix final : public CContiguousView<const uint8>,
         };
 
         /**
+         * @param array     A pointer to a C-contiguous array of type `uint8` that stores the labels
          * @param numRows   The number of rows in the label matrix
          * @param numCols   The number of columns in the label matrix
-         * @param array     A pointer to a C-contiguous array of type `uint8` that stores the labels
          */
-        CContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array);
+        CContiguousLabelMatrix(const uint8* array, uint32 numRows, uint32 numCols);
 
         /**
          * The type of the view that provides access to the values that are stored in a single row of the label matrix.
@@ -153,13 +153,13 @@ class CContiguousLabelMatrix final : public CContiguousView<const uint8>,
 /**
  * Creates and returns a new object of the type `ICContiguousLabelMatrix`.
 
+ * @param array     A pointer to a C-contiguous array of type `uint8` that stores the labels
  * @param numRows   The number of rows in the label matrix
  * @param numCols   The number of columns in the label matrix
- * @param array     A pointer to a C-contiguous array of type `uint8` that stores the labels
  * @return          An unique pointer to an object of type `ICContiguousLabelMatrix` that has been created
  */
-MLRLCOMMON_API std::unique_ptr<ICContiguousLabelMatrix> createCContiguousLabelMatrix(uint32 numRows, uint32 numCols,
-                                                                                     const uint8* array);
+MLRLCOMMON_API std::unique_ptr<ICContiguousLabelMatrix> createCContiguousLabelMatrix(const uint8* array, uint32 numRows,
+                                                                                     uint32 numCols);
 
 #ifdef _WIN32
     #pragma warning(pop)
