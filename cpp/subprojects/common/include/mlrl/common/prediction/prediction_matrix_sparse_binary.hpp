@@ -5,6 +5,7 @@
 
 #include "mlrl/common/data/matrix_lil_binary.hpp"
 #include "mlrl/common/data/view_csr_binary.hpp"
+#include "mlrl/common/util/dll_exports.hpp"
 
 #include <memory>
 

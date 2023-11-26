@@ -36,7 +36,7 @@ static inline void updateNumExamplesPerLabel(const CContiguousLabelMatrix& label
                                              Array<uint32>& numExamplesPerLabel,
                                              std::unordered_map<uint32, uint32>& affectedLabelIndices) {
     CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.values_cbegin(exampleIndex);
-    uint32 numLabels = labelMatrix.getNumCols();
+    uint32 numLabels = labelMatrix.numCols;
 
     for (uint32 i = 0; i < numLabels; i++) {
         if (labelIterator[i]) {
@@ -67,11 +67,11 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
                                                                              IndexIterator indicesEnd) {
     // Convert the given label matrix into the CSC format...
     const CscLabelMatrix cscLabelMatrix(labelMatrix, indicesBegin, indicesEnd);
-    numRows_ = cscLabelMatrix.getNumRows();
+    numRows_ = cscLabelMatrix.numRows;
 
     // Create an array that stores for each label the number of examples that are associated with the label, as well as
     // a sorted map that stores all label indices in increasing order of the number of associated examples...
-    uint32 numLabels = cscLabelMatrix.getNumCols();
+    uint32 numLabels = cscLabelMatrix.numCols;
     Array<uint32> numExamplesPerLabel(numLabels);
     typedef std::set<IndexedValue<uint32>, CompareIndexedValue> SortedSet;
     SortedSet sortedLabelIndices;
@@ -93,7 +93,7 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
     uint32 numCols = 0;
 
     // Create a boolean array that stores whether individual examples remain to be processed (1) or not (0)...
-    uint32 numTotalExamples = labelMatrix.getNumRows();
+    uint32 numTotalExamples = labelMatrix.numRows;
     BitVector mask(numTotalExamples, true);
 
     for (uint32 i = 0; i < numRows_; i++) {

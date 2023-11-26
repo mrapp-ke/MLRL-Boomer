@@ -2,7 +2,7 @@
 
 template<typename T>
 CscView<T>::CscView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* indptr)
-    : numRows_(numRows), numCols_(numCols), data_(data), rowIndices_(rowIndices), indptr_(indptr) {}
+    : Matrix(numRows, numCols), data_(data), rowIndices_(rowIndices), indptr_(indptr) {}
 
 template<typename T>
 typename CscView<T>::index_const_iterator CscView<T>::indices_cbegin(uint32 col) const {
@@ -46,17 +46,17 @@ typename CscView<T>::value_iterator CscView<T>::values_end(uint32 col) {
 
 template<typename T>
 uint32 CscView<T>::getNumNonZeroElements() const {
-    return indptr_[numCols_];
+    return indptr_[Matrix::numCols];
 }
 
 template<typename T>
 uint32 CscView<T>::getNumRows() const {
-    return numRows_;
+    return Matrix::numRows;
 }
 
 template<typename T>
 uint32 CscView<T>::getNumCols() const {
-    return numCols_;
+    return Matrix::numCols;
 }
 
 template class CscView<const uint8>;

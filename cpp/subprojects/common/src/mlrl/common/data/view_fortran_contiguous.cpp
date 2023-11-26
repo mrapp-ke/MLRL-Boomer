@@ -2,36 +2,26 @@
 
 template<typename T>
 FortranContiguousView<T>::FortranContiguousView(uint32 numRows, uint32 numCols, T* array)
-    : numRows_(numRows), numCols_(numCols), array_(array) {}
+    : Matrix(numRows, numCols), array_(array) {}
 
 template<typename T>
 typename FortranContiguousView<T>::value_const_iterator FortranContiguousView<T>::values_cbegin(uint32 col) const {
-    return &array_[col * numRows_];
+    return &array_[col * Matrix::numRows];
 }
 
 template<typename T>
 typename FortranContiguousView<T>::value_const_iterator FortranContiguousView<T>::values_cend(uint32 col) const {
-    return &array_[(col + 1) * numRows_];
+    return &array_[(col + 1) * Matrix::numRows];
 }
 
 template<typename T>
 typename FortranContiguousView<T>::value_iterator FortranContiguousView<T>::values_begin(uint32 col) {
-    return &array_[col * numRows_];
+    return &array_[col * Matrix::numRows];
 }
 
 template<typename T>
 typename FortranContiguousView<T>::value_iterator FortranContiguousView<T>::values_end(uint32 col) {
-    return &array_[(col + 1) * numRows_];
-}
-
-template<typename T>
-uint32 FortranContiguousView<T>::getNumRows() const {
-    return numRows_;
-}
-
-template<typename T>
-uint32 FortranContiguousView<T>::getNumCols() const {
-    return numCols_;
+    return &array_[(col + 1) * Matrix::numRows];
 }
 
 template class FortranContiguousView<const uint8>;

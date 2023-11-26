@@ -18,18 +18,17 @@ bool CsrLabelMatrix::isSparse() const {
 }
 
 uint32 CsrLabelMatrix::getNumExamples() const {
-    return this->getNumRows();
+    return Matrix::numRows;
 }
 
 uint32 CsrLabelMatrix::getNumLabels() const {
-    return this->getNumCols();
+    return Matrix::numCols;
 }
 
 float32 CsrLabelMatrix::calculateLabelCardinality() const {
-    uint32 numRows = this->getNumRows();
     float32 labelCardinality = 0;
 
-    for (uint32 i = 0; i < numRows; i++) {
+    for (uint32 i = 0; i < Matrix::numRows; i++) {
         index_const_iterator indicesBegin = this->indices_cbegin(i);
         index_const_iterator indicesEnd = this->indices_cend(i);
         uint32 numRelevantLabels = indicesEnd - indicesBegin;

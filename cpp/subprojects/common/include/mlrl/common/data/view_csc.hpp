@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view.hpp"
+#include "mlrl/common/data/view_matrix.hpp"
 
 /**
  * Implements column-wise read and write access to the values that are stored in a pre-allocated matrix in the
@@ -12,18 +12,8 @@
  * @tparam T The type of the values
  */
 template<typename T>
-class CscView {
+class CscView : public Matrix {
     protected:
-
-        /**
-         * The number of rows in the view.
-         */
-        const uint32 numRows_;
-
-        /**
-         * The number of columns in the view.
-         */
-        const uint32 numCols_;
 
         /**
          * A pointer to an array that stores all non-zero values.
@@ -56,7 +46,7 @@ class CscView {
          */
         CscView(uint32 numRows, uint32 numCols, T* data, uint32* rowIndices, uint32* indptr);
 
-        virtual ~CscView() {}
+        virtual ~CscView() override {}
 
         /**
          * An iterator that provides read-only access to the indices in the view.
