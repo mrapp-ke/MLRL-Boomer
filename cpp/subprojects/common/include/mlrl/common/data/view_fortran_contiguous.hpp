@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view.hpp"
+#include "mlrl/common/data/view_matrix.hpp"
 
 /**
  * Implements column-wise read and write access to the values that are stored in a pre-allocated Fortran-contiguous
@@ -12,18 +12,8 @@
  * @tparam T The type of the values
  */
 template<typename T>
-class FortranContiguousView {
+class FortranContiguousView : public Matrix {
     protected:
-
-        /**
-         * The number of rows in the view.
-         */
-        const uint32 numRows_;
-
-        /**
-         * The number of columns in the view.
-         */
-        const uint32 numCols_;
 
         /**
          * A pointer to an array that stores the values.
@@ -40,7 +30,7 @@ class FortranContiguousView {
          */
         FortranContiguousView(uint32 numRows, uint32 numCols, T* array);
 
-        virtual ~FortranContiguousView() {}
+        virtual ~FortranContiguousView() override {}
 
         /**
          * An iterator that provides read-only access to the values in the view.
@@ -83,18 +73,4 @@ class FortranContiguousView {
          * @return      A `value_iterator` to the end
          */
         value_iterator values_end(uint32 col);
-
-        /**
-         * Returns the number of rows in the view.
-         *
-         * @return The number of rows
-         */
-        uint32 getNumRows() const;
-
-        /**
-         * Returns the number of columns in the view.
-         *
-         * @return The number of columns
-         */
-        uint32 getNumCols() const;
 };

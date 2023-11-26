@@ -13,11 +13,11 @@ bool CsrFeatureMatrix::isSparse() const {
 }
 
 uint32 CsrFeatureMatrix::getNumExamples() const {
-    return this->getNumRows();
+    return Matrix::numRows;
 }
 
 uint32 CsrFeatureMatrix::getNumFeatures() const {
-    return this->getNumCols();
+    return Matrix::numCols;
 }
 
 std::unique_ptr<IBinaryPredictor> CsrFeatureMatrix::createBinaryPredictor(

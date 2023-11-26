@@ -249,7 +249,7 @@ namespace boosting {
                                                                        labelMatrix.values_cend(exampleIndex));
                 return evaluateInternally(indicesBegin, indicesEnd, scoreMatrix.cbegin(exampleIndex),
                                           scoreMatrix.cend(exampleIndex), LabelWiseLoss::evaluateFunction_,
-                                          labelMatrix.getNumCols());
+                                          labelMatrix.numCols);
             }
 
             /**
@@ -260,7 +260,7 @@ namespace boosting {
                 return evaluateInternally(labelMatrix.indices_cbegin(exampleIndex),
                                           labelMatrix.indices_cend(exampleIndex), scoreMatrix.cbegin(exampleIndex),
                                           scoreMatrix.cend(exampleIndex), LabelWiseLoss::evaluateFunction_,
-                                          labelMatrix.getNumCols());
+                                          labelMatrix.numCols);
             }
     };
 

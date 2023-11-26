@@ -45,8 +45,8 @@ cdef class IncrementalBinaryPredictor:
         """
         assert_greater_or_equal('step_size', step_size, 1)
         cdef DensePredictionMatrix[uint8]* prediction_matrix_ptr = &self.predictor_ptr.get().applyNext(step_size)
-        cdef uint32 num_rows = prediction_matrix_ptr.getNumRows()
-        cdef uint32 num_cols = prediction_matrix_ptr.getNumCols()
+        cdef uint32 num_rows = prediction_matrix_ptr.numRows
+        cdef uint32 num_cols = prediction_matrix_ptr.numCols
         cdef uint8* array = prediction_matrix_ptr.get()
         cdef uint8[:, ::1] prediction_matrix = c_view_uint8(array, num_rows, num_cols)
         return np.asarray(prediction_matrix)
@@ -68,8 +68,8 @@ cdef class BinaryPredictor:
         """
         cdef unique_ptr[DensePredictionMatrix[uint8]] prediction_matrix_ptr = \
             self.predictor_ptr.get().predict(max_rules)
-        cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
-        cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
+        cdef uint32 num_rows = prediction_matrix_ptr.get().numRows
+        cdef uint32 num_cols = prediction_matrix_ptr.get().numCols
         cdef uint8* array = prediction_matrix_ptr.get().release()
         cdef uint8[:, ::1] prediction_matrix = c_matrix_uint8(array, num_rows, num_cols)
         return np.asarray(prediction_matrix)
@@ -129,8 +129,8 @@ cdef class IncrementalSparseBinaryPredictor:
                             the predictions
         """
         cdef BinarySparsePredictionMatrix* prediction_matrix_ptr = &self.predictor_ptr.get().applyNext(step_size)
-        cdef uint32 num_rows = prediction_matrix_ptr.getNumRows()
-        cdef uint32 num_cols = prediction_matrix_ptr.getNumCols()
+        cdef uint32 num_rows = prediction_matrix_ptr.numRows
+        cdef uint32 num_cols = prediction_matrix_ptr.numCols
         cdef uint32 num_non_zero_elements = prediction_matrix_ptr.getNumNonZeroElements()
         cdef uint32* col_indices = prediction_matrix_ptr.getColIndices()
         cdef uint32* indptr = prediction_matrix_ptr.getIndptr()
@@ -156,8 +156,8 @@ cdef class SparseBinaryPredictor:
         """
         cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = \
             self.predictor_ptr.get().predict(max_rules)
-        cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
-        cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
+        cdef uint32 num_rows = prediction_matrix_ptr.get().numRows
+        cdef uint32 num_cols = prediction_matrix_ptr.get().numCols
         cdef uint32 num_non_zero_elements = prediction_matrix_ptr.get().getNumNonZeroElements()
         cdef uint32* col_indices = prediction_matrix_ptr.get().releaseColIndices()
         cdef uint32* indptr = prediction_matrix_ptr.get().releaseIndptr()
@@ -222,8 +222,8 @@ cdef class IncrementalScorePredictor:
                             updated predictions
         """
         cdef DensePredictionMatrix[float64]* prediction_matrix_ptr = &self.predictor_ptr.get().applyNext(step_size)
-        cdef uint32 num_rows = prediction_matrix_ptr.getNumRows()
-        cdef uint32 num_cols = prediction_matrix_ptr.getNumCols()
+        cdef uint32 num_rows = prediction_matrix_ptr.numRows
+        cdef uint32 num_cols = prediction_matrix_ptr.numCols
         cdef float64* array = prediction_matrix_ptr.get()
         cdef float64[:, ::1] prediction_matrix = c_view_float64(array, num_rows, num_cols)
         return np.asarray(prediction_matrix)
@@ -244,8 +244,8 @@ cdef class ScorePredictor:
         """
         cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = \
             self.predictor_ptr.get().predict(max_rules)
-        cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
-        cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
+        cdef uint32 num_rows = prediction_matrix_ptr.get().numRows
+        cdef uint32 num_cols = prediction_matrix_ptr.get().numCols
         cdef float64* array = prediction_matrix_ptr.get().release()
         cdef float64[:, ::1] prediction_matrix = c_matrix_float64(array, num_rows, num_cols)
         return np.asarray(prediction_matrix)
@@ -305,8 +305,8 @@ cdef class IncrementalProbabilityPredictor:
                             updated predictions
         """
         cdef DensePredictionMatrix[float64]* prediction_matrix_ptr = &self.predictor_ptr.get().applyNext(step_size)
-        cdef uint32 num_rows = prediction_matrix_ptr.getNumRows()
-        cdef uint32 num_cols = prediction_matrix_ptr.getNumCols()
+        cdef uint32 num_rows = prediction_matrix_ptr.numRows
+        cdef uint32 num_cols = prediction_matrix_ptr.numCols
         cdef float64* array = prediction_matrix_ptr.get()
         cdef float64[:, ::1] prediction_matrix = c_view_float64(array, num_rows, num_cols)
         return np.asarray(prediction_matrix)
@@ -328,8 +328,8 @@ cdef class ProbabilityPredictor:
         """
         cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = \
             self.predictor_ptr.get().predict(max_rules)
-        cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
-        cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
+        cdef uint32 num_rows = prediction_matrix_ptr.get().numRows
+        cdef uint32 num_cols = prediction_matrix_ptr.get().numCols
         cdef float64* array = prediction_matrix_ptr.get().release()
         cdef float64[:, ::1] prediction_matrix = c_matrix_float64(array, num_rows, num_cols)
         return np.asarray(prediction_matrix)

@@ -87,9 +87,9 @@ namespace boosting {
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<float64>>(
                           predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
                           probabilityTransformationPtr_(probabilityTransformationPtr),
-                          scoreMatrix_(predictor.featureMatrix_.getNumRows(), predictor.numLabels_,
+                          scoreMatrix_(predictor.featureMatrix_.numRows, predictor.numLabels_,
                                        probabilityTransformationPtr_ != nullptr),
-                          predictionMatrix_(predictor.featureMatrix_.getNumRows(), predictor.numLabels_,
+                          predictionMatrix_(predictor.featureMatrix_.numRows, predictor.numLabels_,
                                             probabilityTransformationPtr_ == nullptr) {}
             };
 
@@ -128,9 +128,8 @@ namespace boosting {
              * @see `IPredictor::predict`
              */
             std::unique_ptr<DensePredictionMatrix<float64>> predict(uint32 maxRules) const override {
-                uint32 numExamples = featureMatrix_.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
-                  std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels_, true);
+                  std::make_unique<DensePredictionMatrix<float64>>(featureMatrix_.numRows, numLabels_, true);
 
                 if (probabilityTransformationPtr_) {
                     PredictionDelegate delegate(*predictionMatrixPtr, *predictionMatrixPtr,

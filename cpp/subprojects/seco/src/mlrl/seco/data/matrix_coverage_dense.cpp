@@ -17,11 +17,10 @@ namespace seco {
                                                View<float64>::const_iterator predictionEnd,
                                                CompleteIndexVector::const_iterator indicesBegin,
                                                CompleteIndexVector::const_iterator indicesEnd) {
-        uint32 numCols = this->getNumCols();
         value_iterator coverageIterator = this->values_begin(row);
         auto majorityIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
 
-        for (uint32 i = 0; i < numCols; i++) {
+        for (uint32 i = 0; i < Matrix::numCols; i++) {
             bool predictedLabel = predictionBegin[i];
             bool majorityLabel = *majorityIterator;
 
@@ -76,11 +75,10 @@ namespace seco {
                                                View<float64>::const_iterator predictionEnd,
                                                CompleteIndexVector::const_iterator indicesBegin,
                                                CompleteIndexVector::const_iterator indicesEnd) {
-        uint32 numCols = this->getNumCols();
         value_iterator coverageIterator = this->values_begin(row);
         auto majorityIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
 
-        for (uint32 i = 0; i < numCols; i++) {
+        for (uint32 i = 0; i < Matrix::numCols; i++) {
             bool predictedLabel = predictionBegin[i];
             bool majorityLabel = *majorityIterator;
 

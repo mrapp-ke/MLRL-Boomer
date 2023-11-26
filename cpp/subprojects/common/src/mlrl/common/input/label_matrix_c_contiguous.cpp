@@ -8,7 +8,7 @@
 
 CContiguousLabelMatrix::View::View(const CContiguousLabelMatrix& labelMatrix, uint32 row)
     : IterableVectorDecorator<VectorDecorator<Vector<const uint8>>>(
-      Vector<const uint8>(labelMatrix.values_cbegin(row), labelMatrix.getNumCols())) {}
+      Vector<const uint8>(labelMatrix.values_cbegin(row), labelMatrix.numCols)) {}
 
 CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array)
     : CContiguousView<const uint8>(numRows, numCols, array) {}
@@ -18,23 +18,21 @@ bool CContiguousLabelMatrix::isSparse() const {
 }
 
 uint32 CContiguousLabelMatrix::getNumExamples() const {
-    return this->getNumRows();
+    return Matrix::numRows;
 }
 
 uint32 CContiguousLabelMatrix::getNumLabels() const {
-    return this->getNumCols();
+    return Matrix::numCols;
 }
 
 float32 CContiguousLabelMatrix::calculateLabelCardinality() const {
-    uint32 numRows = this->getNumRows();
-    uint32 numCols = this->getNumCols();
     float32 labelCardinality = 0;
 
-    for (uint32 i = 0; i < numRows; i++) {
+    for (uint32 i = 0; i < Matrix::numRows; i++) {
         value_const_iterator labelIterator = this->values_cbegin(i);
         uint32 numRelevantLabels = 0;
 
-        for (uint32 j = 0; j < numCols; j++) {
+        for (uint32 j = 0; j < Matrix::numCols; j++) {
             if (labelIterator[j]) {
                 numRelevantLabels++;
             }
@@ -51,7 +49,7 @@ CContiguousLabelMatrix::view_type CContiguousLabelMatrix::createView(uint32 row)
 }
 
 std::unique_ptr<LabelVector> CContiguousLabelMatrix::createLabelVector(uint32 row) const {
-    uint32 numCols = this->getNumCols();
+    uint32 numCols = Matrix::numCols;
     std::unique_ptr<ResizableBinarySparseArrayVector> labelVectorPtr =
       std::make_unique<ResizableBinarySparseArrayVector>(numCols);
     ResizableBinarySparseArrayVector::iterator iterator = labelVectorPtr->begin();

@@ -132,8 +132,8 @@ namespace boosting {
                        const IEvaluationMeasureFactory& evaluationMeasureFactory,
                        const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
                        const LabelMatrix& labelMatrix) {
-        uint32 numExamples = labelMatrix.getNumRows();
-        uint32 numLabels = labelMatrix.getNumCols();
+        uint32 numExamples = labelMatrix.numRows;
+        uint32 numLabels = labelMatrix.numCols;
         std::unique_ptr<IExampleWiseLoss> lossPtr = lossFactory.createExampleWiseLoss();
         std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr = evaluationMeasureFactory.createEvaluationMeasure();
         std::unique_ptr<DenseExampleWiseStatisticMatrix> statisticMatrixPtr =

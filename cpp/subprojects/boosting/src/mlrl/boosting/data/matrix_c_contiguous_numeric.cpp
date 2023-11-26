@@ -12,9 +12,8 @@ namespace boosting {
                                                          CompleteIndexVector::const_iterator indicesBegin,
                                                          CompleteIndexVector::const_iterator indicesEnd) {
         typename NumericCContiguousMatrix<T>::value_iterator iterator = this->values_begin(row);
-        uint32 numCols = this->getNumCols();
 
-        for (uint32 i = 0; i < numCols; i++) {
+        for (uint32 i = 0; i < Matrix::numCols; i++) {
             iterator[i] += begin[i];
         }
     }
@@ -39,9 +38,8 @@ namespace boosting {
                                                               CompleteIndexVector::const_iterator indicesBegin,
                                                               CompleteIndexVector::const_iterator indicesEnd) {
         typename NumericCContiguousMatrix<T>::value_iterator iterator = this->values_begin(row);
-        uint32 numCols = this->getNumCols();
 
-        for (uint32 i = 0; i < numCols; i++) {
+        for (uint32 i = 0; i < Matrix::numCols; i++) {
             iterator[i] -= begin[i];
         }
     }

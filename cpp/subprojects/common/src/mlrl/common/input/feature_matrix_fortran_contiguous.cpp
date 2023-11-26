@@ -28,21 +28,20 @@ class FortranContiguousFeatureMatrix final : public FortranContiguousView<const 
         }
 
         uint32 getNumExamples() const override {
-            return this->getNumRows();
+            return Matrix::numRows;
         }
 
         uint32 getNumFeatures() const override {
-            return this->getNumCols();
+            return Matrix::numCols;
         }
 
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override {
             value_const_iterator columnIterator = this->values_cbegin(featureIndex);
-            uint32 numElements = this->getNumRows();
-            featureVectorPtr = std::make_unique<FeatureVector>(numElements);
+            featureVectorPtr = std::make_unique<FeatureVector>(Matrix::numRows);
             FeatureVector::iterator vectorIterator = featureVectorPtr->begin();
             uint32 i = 0;
 
-            for (uint32 j = 0; j < numElements; j++) {
+            for (uint32 j = 0; j < Matrix::numRows; j++) {
                 float32 value = columnIterator[j];
 
                 if (std::isnan(value)) {
