@@ -58,7 +58,7 @@ std::unique_ptr<LabelVector> CContiguousLabelMatrix::createLabelVector(uint32 ro
     }
 
     labelVectorPtr->setNumElements(n, true);
-    return std::make_unique<LabelVector>(std::move(*labelVectorPtr));
+    return std::make_unique<LabelVector>(std::move(labelVectorPtr->getView()));
 }
 
 std::unique_ptr<IStatisticsProvider> CContiguousLabelMatrix::createStatisticsProvider(
