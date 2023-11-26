@@ -2,7 +2,7 @@
 
 template<typename T>
 CsrView<T>::CsrView(uint32 numRows, uint32 numCols, T* data, uint32* colIndices, uint32* indptr)
-    : numRows_(numRows), numCols_(numCols), data_(data), colIndices_(colIndices), indptr_(indptr) {}
+    : Matrix(numRows, numCols), data_(data), colIndices_(colIndices), indptr_(indptr) {}
 
 template<typename T>
 typename CsrView<T>::index_const_iterator CsrView<T>::indices_cbegin(uint32 row) const {
@@ -46,17 +46,7 @@ typename CsrView<T>::value_iterator CsrView<T>::values_end(uint32 row) {
 
 template<typename T>
 uint32 CsrView<T>::getNumNonZeroElements() const {
-    return indptr_[numCols_];
-}
-
-template<typename T>
-uint32 CsrView<T>::getNumRows() const {
-    return numRows_;
-}
-
-template<typename T>
-uint32 CsrView<T>::getNumCols() const {
-    return numCols_;
+    return indptr_[Matrix::numCols];
 }
 
 template class CsrView<const uint8>;

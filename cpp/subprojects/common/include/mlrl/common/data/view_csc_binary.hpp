@@ -3,24 +3,14 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view.hpp"
+#include "mlrl/common/data/view_matrix.hpp"
 
 /**
  * Implements column-wise read and write access to binary values that are stored in a pre-allocated matrix in the
  * compressed sparse column (CSC) format.
  */
-class BinaryCscView {
+class BinaryCscView : public Matrix {
     protected:
-
-        /**
-         * The number of rows in the view.
-         */
-        const uint32 numRows_;
-
-        /**
-         * The number of columns in the view.
-         */
-        const uint32 numCols_;
 
         /**
          * A pointer to an array that stores the row-indices, the non-zero elements correspond to.
@@ -46,7 +36,7 @@ class BinaryCscView {
          */
         BinaryCscView(uint32 numRows, uint32 numCols, uint32* rowIndices, uint32* indptr);
 
-        virtual ~BinaryCscView() {}
+        virtual ~BinaryCscView() override {}
 
         /**
          * An iterator that provides read-only access to the indices in the view.
@@ -96,18 +86,4 @@ class BinaryCscView {
          * @return The number of non-zero elements
          */
         uint32 getNumNonZeroElements() const;
-
-        /**
-         * Returns the number of rows in the view.
-         *
-         * @return The number of rows
-         */
-        uint32 getNumRows() const;
-
-        /**
-         * Returns the number of columns in the view.
-         *
-         * @return The number of columns
-         */
-        uint32 getNumCols() const;
 };

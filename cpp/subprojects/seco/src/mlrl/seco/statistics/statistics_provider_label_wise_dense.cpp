@@ -44,8 +44,8 @@ namespace seco {
 
     static inline std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
       const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, const CContiguousView<const uint8>& labelMatrix) {
-        uint32 numExamples = labelMatrix.getNumRows();
-        uint32 numLabels = labelMatrix.getNumCols();
+        uint32 numExamples = labelMatrix.numRows;
+        uint32 numLabels = labelMatrix.numCols;
         std::unique_ptr<ResizableBinarySparseArrayVector> majorityLabelVectorPtr =
           std::make_unique<ResizableBinarySparseArrayVector>(numLabels);
         ResizableBinarySparseArrayVector::iterator majorityIterator = majorityLabelVectorPtr->begin();
@@ -81,8 +81,8 @@ namespace seco {
 
     static inline std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
       const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, const BinaryCsrView& labelMatrix) {
-        uint32 numExamples = labelMatrix.getNumRows();
-        uint32 numLabels = labelMatrix.getNumCols();
+        uint32 numExamples = labelMatrix.numRows;
+        uint32 numLabels = labelMatrix.numCols;
         std::unique_ptr<ResizableBinarySparseArrayVector> majorityLabelVectorPtr =
           std::make_unique<ResizableBinarySparseArrayVector>(numLabels, true);
         ResizableBinarySparseArrayVector::iterator majorityIterator = majorityLabelVectorPtr->begin();

@@ -12,11 +12,11 @@ bool CContiguousFeatureMatrix::isSparse() const {
 }
 
 uint32 CContiguousFeatureMatrix::getNumExamples() const {
-    return this->getNumRows();
+    return Matrix::numRows;
 }
 
 uint32 CContiguousFeatureMatrix::getNumFeatures() const {
-    return this->getNumCols();
+    return Matrix::numCols;
 }
 
 std::unique_ptr<IBinaryPredictor> CContiguousFeatureMatrix::createBinaryPredictor(

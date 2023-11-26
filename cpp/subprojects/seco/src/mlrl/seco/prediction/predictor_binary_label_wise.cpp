@@ -56,8 +56,7 @@ namespace seco {
                                                    RuleList::const_iterator rulesEnd,
                                                    CContiguousView<uint8>& predictionMatrix, uint32 exampleIndex,
                                                    uint32 predictionIndex) {
-        uint32 numLabels = predictionMatrix.getNumCols();
-        BitVector mask(numLabels, true);
+        BitVector mask(predictionMatrix.numCols, true);
 
         for (; rulesBegin != rulesEnd; rulesBegin++) {
             const RuleList::Rule& rule = *rulesBegin;
@@ -75,9 +74,8 @@ namespace seco {
                                                    RuleList::const_iterator rulesEnd,
                                                    CContiguousView<uint8>& predictionMatrix, uint32 exampleIndex,
                                                    uint32 predictionIndex) {
-        uint32 numFeatures = featureMatrix.getNumCols();
-        uint32 numLabels = predictionMatrix.getNumCols();
-        BitVector mask(numLabels, true);
+        BitVector mask(predictionMatrix.numCols, true);
+        uint32 numFeatures = featureMatrix.numCols;
         Array<float32> tmpArray1(numFeatures);
         Array<uint32> tmpArray2(numFeatures, true);
         uint32 n = 1;
@@ -157,9 +155,8 @@ namespace seco {
              * @see `IPredictor::predict`
              */
             std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
-                uint32 numExamples = featureMatrix_.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-                  std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_,
+                  std::make_unique<DensePredictionMatrix<uint8>>(featureMatrix_.numRows, numLabels_,
                                                                  !model_.containsDefaultRule());
                 PredictionDelegate delegate(*predictionMatrixPtr);
                 PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(
@@ -312,7 +309,7 @@ namespace seco {
                                                    RuleList::const_iterator rulesEnd,
                                                    BinaryLilMatrix::row predictionRow, uint32 numLabels,
                                                    uint32 exampleIndex) {
-        uint32 numFeatures = featureMatrix.getNumCols();
+        uint32 numFeatures = featureMatrix.numCols;
         Array<float32> tmpArray1(numFeatures);
         Array<uint32> tmpArray2(numFeatures, true);
         uint32 n = 1;
@@ -398,8 +395,7 @@ namespace seco {
              * @see `IPredictor::predict`
              */
             std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
-                uint32 numExamples = featureMatrix_.getNumRows();
-                BinaryLilMatrix predictionMatrix(numExamples);
+                BinaryLilMatrix predictionMatrix(featureMatrix_.numRows);
                 Delegate delegate(predictionMatrix, numLabels_);
                 uint32 numNonZeroElements = Dispatcher().predict(delegate, featureMatrix_, model_.used_cbegin(maxRules),
                                                                  model_.used_cend(maxRules), numThreads_);

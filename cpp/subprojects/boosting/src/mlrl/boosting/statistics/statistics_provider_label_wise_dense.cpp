@@ -15,8 +15,8 @@ namespace boosting {
     static inline std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
       const ILabelWiseLossFactory& lossFactory, const IEvaluationMeasureFactory& evaluationMeasureFactory,
       const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads, const LabelMatrix& labelMatrix) {
-        uint32 numExamples = labelMatrix.getNumRows();
-        uint32 numLabels = labelMatrix.getNumCols();
+        uint32 numExamples = labelMatrix.numRows;
+        uint32 numLabels = labelMatrix.numCols;
         std::unique_ptr<ILabelWiseLoss> lossPtr = lossFactory.createLabelWiseLoss();
         std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr = evaluationMeasureFactory.createEvaluationMeasure();
         std::unique_ptr<DenseLabelWiseStatisticMatrix> statisticMatrixPtr =
@@ -34,7 +34,7 @@ namespace boosting {
 #endif
         for (int64 i = 0; i < numExamples; i++) {
             lossRawPtr->updateLabelWiseStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr, IndexIterator(),
-                                                  IndexIterator(labelMatrixPtr->getNumCols()), *statisticMatrixRawPtr);
+                                                  IndexIterator(labelMatrixPtr->numCols), *statisticMatrixRawPtr);
         }
 
         return std::make_unique<DenseLabelWiseStatistics<LabelMatrix>>(

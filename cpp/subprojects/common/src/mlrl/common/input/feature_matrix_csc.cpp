@@ -5,7 +5,7 @@
 
 #include "mlrl/common/input/feature_matrix_csc.hpp"
 
-#include "mlrl/common/data/view_csc.hpp"
+#include "mlrl/common/data/view_matrix_csc.hpp"
 
 /**
  * An implementation of the type `ICscFeatureMatrix` that provides column-wise read-only access to the feature values of
@@ -34,11 +34,11 @@ class CscFeatureMatrix final : public CscView<const float32>,
         }
 
         uint32 getNumExamples() const override {
-            return this->getNumRows();
+            return Matrix::numRows;
         }
 
         uint32 getNumFeatures() const override {
-            return this->getNumCols();
+            return Matrix::numCols;
         }
 
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override {

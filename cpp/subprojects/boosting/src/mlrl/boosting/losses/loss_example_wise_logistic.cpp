@@ -210,7 +210,7 @@ namespace boosting {
                                                    DenseLabelWiseStatisticView& statisticView) const override {
                 updateLabelWiseStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
                                                     labelMatrix.values_cbegin(exampleIndex),
-                                                    statisticView.begin(exampleIndex), labelMatrix.getNumCols());
+                                                    statisticView.begin(exampleIndex), labelMatrix.numCols);
             }
 
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
@@ -220,7 +220,7 @@ namespace boosting {
                                                    DenseLabelWiseStatisticView& statisticView) const override {
                 updateLabelWiseStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
                                                     labelMatrix.values_cbegin(exampleIndex),
-                                                    statisticView.begin(exampleIndex), labelMatrix.getNumCols());
+                                                    statisticView.begin(exampleIndex), labelMatrix.numCols);
             }
 
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
@@ -231,7 +231,7 @@ namespace boosting {
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));
                 updateLabelWiseStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
-                                                    statisticView.begin(exampleIndex), labelMatrix.getNumCols());
+                                                    statisticView.begin(exampleIndex), labelMatrix.numCols);
             }
 
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
@@ -242,16 +242,16 @@ namespace boosting {
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));
                 updateLabelWiseStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
-                                                    statisticView.begin(exampleIndex), labelMatrix.getNumCols());
+                                                    statisticView.begin(exampleIndex), labelMatrix.numCols);
             }
 
             void updateExampleWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                                              const CContiguousView<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticView& statisticView) const override {
-                updateExampleWiseStatisticsInternally(
-                  scoreMatrix.values_cbegin(exampleIndex), labelMatrix.values_cbegin(exampleIndex),
-                  statisticView.gradients_begin(exampleIndex), statisticView.hessians_begin(exampleIndex),
-                  labelMatrix.getNumCols());
+                updateExampleWiseStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
+                                                      labelMatrix.values_cbegin(exampleIndex),
+                                                      statisticView.gradients_begin(exampleIndex),
+                                                      statisticView.hessians_begin(exampleIndex), labelMatrix.numCols);
             }
 
             void updateExampleWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
@@ -259,9 +259,9 @@ namespace boosting {
                                              DenseExampleWiseStatisticView& statisticView) const override {
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));
-                updateExampleWiseStatisticsInternally(
-                  scoreMatrix.values_cbegin(exampleIndex), labelIterator, statisticView.gradients_begin(exampleIndex),
-                  statisticView.hessians_begin(exampleIndex), labelMatrix.getNumCols());
+                updateExampleWiseStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
+                                                      statisticView.gradients_begin(exampleIndex),
+                                                      statisticView.hessians_begin(exampleIndex), labelMatrix.numCols);
             }
 
             /**
@@ -270,7 +270,7 @@ namespace boosting {
             float64 evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                              const CContiguousView<float64>& scoreMatrix) const override {
                 return evaluateInternally(scoreMatrix.values_cbegin(exampleIndex),
-                                          labelMatrix.values_cbegin(exampleIndex), labelMatrix.getNumCols());
+                                          labelMatrix.values_cbegin(exampleIndex), labelMatrix.numCols);
             }
 
             /**
@@ -280,8 +280,7 @@ namespace boosting {
                              const CContiguousView<float64>& scoreMatrix) const override {
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));
-                return evaluateInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
-                                          labelMatrix.getNumCols());
+                return evaluateInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator, labelMatrix.numCols);
             }
 
             /**

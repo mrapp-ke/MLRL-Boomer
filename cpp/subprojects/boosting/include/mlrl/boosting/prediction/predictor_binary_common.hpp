@@ -87,9 +87,9 @@ namespace boosting {
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<uint8>>(
                           predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
                           binaryTransformationPtr_(binaryTransformationPtr),
-                          realMatrix_(predictor.featureMatrix_.getNumRows(), predictor.numLabels_,
+                          realMatrix_(predictor.featureMatrix_.numRows, predictor.numLabels_,
                                       binaryTransformationPtr_ != nullptr),
-                          predictionMatrix_(predictor.featureMatrix_.getNumRows(), predictor.numLabels_,
+                          predictionMatrix_(predictor.featureMatrix_.numRows, predictor.numLabels_,
                                             binaryTransformationPtr_ == nullptr) {}
             };
 
@@ -114,9 +114,8 @@ namespace boosting {
                                            typename Model::const_iterator rulesBegin,
                                            typename Model::const_iterator rulesEnd, uint32 threadIndex,
                                            uint32 exampleIndex, uint32 predictionIndex) const override {
-                        uint32 numLabels = realMatrix_.getNumCols();
                         CContiguousView<float64>::value_iterator realIterator = realMatrix_.values_begin(threadIndex);
-                        setViewToZeros(realIterator, numLabels);
+                        setViewToZeros(realIterator, realMatrix_.numCols);
                         ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
                           .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
                                              threadIndex);
@@ -159,9 +158,8 @@ namespace boosting {
              * @see `IPredictor::predict`
              */
             std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
-                uint32 numExamples = featureMatrix_.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-                  std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_,
+                  std::make_unique<DensePredictionMatrix<uint8>>(featureMatrix_.numRows, numLabels_,
                                                                  binaryTransformationPtr_ == nullptr);
 
                 if (binaryTransformationPtr_) {
@@ -266,7 +264,7 @@ namespace boosting {
                         }
 
                         predictionMatrixPtr_ = createBinarySparsePredictionMatrix(
-                          predictionMatrix_, realMatrix_.getNumCols(), numNonZeroElements);
+                          predictionMatrix_, realMatrix_.numCols, numNonZeroElements);
                         return *predictionMatrixPtr_;
                     }
 
@@ -277,9 +275,9 @@ namespace boosting {
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, BinarySparsePredictionMatrix>(
                           predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
                           binaryTransformationPtr_(binaryTransformationPtr),
-                          realMatrix_(predictor.featureMatrix_.getNumRows(), predictor.numLabels_,
+                          realMatrix_(predictor.featureMatrix_.numRows, predictor.numLabels_,
                                       binaryTransformationPtr_ != nullptr),
-                          predictionMatrix_(predictor.featureMatrix_.getNumRows()) {}
+                          predictionMatrix_(predictor.featureMatrix_.numRows) {}
             };
 
             class PredictionDelegate final
@@ -303,9 +301,8 @@ namespace boosting {
                                              typename Model::const_iterator rulesBegin,
                                              typename Model::const_iterator rulesEnd, uint32 threadIndex,
                                              uint32 exampleIndex, uint32 predictionIndex) const override {
-                        uint32 numLabels = realMatrix_.getNumCols();
                         CContiguousView<float64>::value_iterator realIterator = realMatrix_.values_begin(threadIndex);
-                        setViewToZeros(realIterator, numLabels);
+                        setViewToZeros(realIterator, realMatrix_.numCols);
                         ScorePredictionDelegate<FeatureMatrix, Model>(realMatrix_)
                           .predictForExample(featureMatrix, rulesBegin, rulesEnd, threadIndex, exampleIndex,
                                              threadIndex);
@@ -348,8 +345,7 @@ namespace boosting {
              * @see `IPredictor::predict`
              */
             std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
-                uint32 numExamples = featureMatrix_.getNumRows();
-                BinaryLilMatrix predictionMatrix(numExamples);
+                BinaryLilMatrix predictionMatrix(featureMatrix_.numRows);
                 uint32 numNonZeroElements;
 
                 if (binaryTransformationPtr_) {

@@ -147,7 +147,7 @@ namespace boosting {
       IndexIterator indexIterator, uint32 numExamples, const LabelMatrix& labelMatrix, const IStatistics& statistics,
       const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         // Extract thresholds and ground truth probabilities from score matrix and label matrix, respectively...
-        uint32 numLabels = labelMatrix.getNumCols();
+        uint32 numLabels = labelMatrix.numCols;
         std::unique_ptr<IsotonicProbabilityCalibrationModel> calibrationModelPtr =
           std::make_unique<IsotonicProbabilityCalibrationModel>(numLabels);
         const IBoostingStatistics& boostingStatistics = dynamic_cast<const IBoostingStatistics&>(statistics);
@@ -417,7 +417,7 @@ namespace boosting {
                                                          const LabelVectorSet& labelVectorSet) {
         LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
-        uint32 numLabels = labelMatrix.getNumCols();
+        uint32 numLabels = labelMatrix.numCols;
 
         for (uint32 i = 0; i < numLabelVectors; i++) {
             IsotonicProbabilityCalibrationModel::bin_list bins = calibrationModel[i];
@@ -447,7 +447,7 @@ namespace boosting {
                                                          const LabelVectorSet& labelVectorSet) {
         LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
-        uint32 numLabels = labelMatrix.getNumCols();
+        uint32 numLabels = labelMatrix.numCols;
 
         for (uint32 i = 0; i < numLabelVectors; i++) {
             IsotonicProbabilityCalibrationModel::bin_list bins = calibrationModel[i];

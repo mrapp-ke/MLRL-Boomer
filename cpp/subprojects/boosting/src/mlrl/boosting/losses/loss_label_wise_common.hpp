@@ -53,7 +53,7 @@ namespace boosting {
                 CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
                 CContiguousView<const uint8>::value_const_iterator labelIterator =
                   labelMatrix.values_cbegin(exampleIndex);
-                uint32 numLabels = labelMatrix.getNumCols();
+                uint32 numLabels = labelMatrix.numCols;
 
                 for (uint32 i = 0; i < numLabels; i++) {
                     bool trueLabel = labelIterator[i];
@@ -92,7 +92,7 @@ namespace boosting {
                 CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));
-                uint32 numLabels = labelMatrix.getNumCols();
+                uint32 numLabels = labelMatrix.numCols;
 
                 for (uint32 i = 0; i < numLabels; i++) {
                     bool trueLabel = *labelIterator;
@@ -132,7 +132,7 @@ namespace boosting {
                 CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
                 CContiguousView<const uint8>::value_const_iterator labelIterator =
                   labelMatrix.values_cbegin(exampleIndex);
-                uint32 numLabels = labelMatrix.getNumCols();
+                uint32 numLabels = labelMatrix.numCols;
                 float64 mean = 0;
 
                 for (uint32 i = 0; i < numLabels; i++) {
@@ -153,7 +153,7 @@ namespace boosting {
                 CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));
-                uint32 numLabels = labelMatrix.getNumCols();
+                uint32 numLabels = labelMatrix.numCols;
                 float64 mean = 0;
 
                 for (uint32 i = 0; i < numLabels; i++) {
