@@ -75,4 +75,13 @@ class BinaryCscView : public BinarySparseMatrix {
         typename BinarySparseMatrix::index_iterator indices_end(uint32 column) {
             return &BinarySparseMatrix::indices[BinarySparseMatrix::indptr[column + 1]];
         }
+
+        /**
+         * Returns the number of non-zero elements in the view.
+         *
+         * @return The number of non-zero elements
+         */
+        uint32 getNumNonZeroElements() const {
+            return BinarySparseMatrix::indptr[Matrix::numCols];
+        }
 };
