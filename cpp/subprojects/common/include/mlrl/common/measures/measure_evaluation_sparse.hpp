@@ -5,7 +5,7 @@
 
 #include "mlrl/common/data/matrix_sparse_set.hpp"
 #include "mlrl/common/data/view_c_contiguous.hpp"
-#include "mlrl/common/data/view_csr_binary.hpp"
+#include "mlrl/common/data/view_matrix_csr_binary.hpp"
 
 #include <memory>
 

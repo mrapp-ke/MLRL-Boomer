@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/matrix_lil_binary.hpp"
-#include "mlrl/common/data/view_csr_binary.hpp"
+#include "mlrl/common/data/view_matrix_csr_binary.hpp"
 #include "mlrl/common/util/dll_exports.hpp"
 
 #include <memory>
@@ -28,15 +28,15 @@ class MLRLCOMMON_API BinarySparsePredictionMatrix final : public BinaryCsrView {
     public:
 
         /**
-         * @param numRows       The number of rows in the matrix
-         * @param numCols       The number of columns in the matrix
-         * @param colIndices    A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the
-         *                      column-indices, the non-zero elements correspond to
-         * @param indptr        A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices
-         *                      of the first element in `colIndices` that corresponds to a certain row. The index at the
-         *                      last position is equal to `numNonZeroValues`
+         * @param indices   A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the
+         *                  column-indices, the non-zero elements correspond to
+         * @param indptr    A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices of
+         *                  the first element in `indices` that corresponds to a certain row. The index at the last
+         *                  position is equal to `numNonZeroValues`
+         * @param numRows   The number of rows in the matrix
+         * @param numCols   The number of columns in the matrix
          */
-        BinarySparsePredictionMatrix(uint32 numRows, uint32 numCols, uint32* colIndices, uint32* indptr);
+        BinarySparsePredictionMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols);
 
         ~BinarySparsePredictionMatrix() override;
 

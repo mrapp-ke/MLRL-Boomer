@@ -8,7 +8,7 @@
     #pragma warning(disable : 4250)
 #endif
 
-#include "mlrl/common/data/view_csr_binary.hpp"
+#include "mlrl/common/data/view_matrix_csr_binary.hpp"
 #include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/input/label_matrix_row_wise.hpp"
 
@@ -79,15 +79,15 @@ class CsrLabelMatrix final : public BinaryCsrView,
         };
 
         /**
-         * @param numRows       The number of rows in the label matrix
-         * @param numCols       The number of columns in the label matrix
-         * @param colIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
-         *                      column-indices, the relevant labels correspond to
-         * @param indptr        A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices
-         *                      of the first element in `colIndices` that corresponds to a certain row. The index at the
-         *                      last position is equal to `num_non_zero_values`
+         * @param indices A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the
+         *                column-indices, the relevant labels correspond to
+         * @param indptr  A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices of the
+         *                first element in `indices` that corresponds to a certain row. The index at the last position
+         *                is equal to `numNonZeroValues`
+         * @param numRows The number of rows in the label matrix
+         * @param numCols The number of columns in the label matrix
          */
-        CsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* colIndices, uint32* indptr);
+        CsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols);
 
         /**
          * The type of the view that provides access to the values that are stored in a single row of the label matrix.
@@ -146,17 +146,17 @@ class CsrLabelMatrix final : public BinaryCsrView,
 /**
  * Creates and returns a new object of the type `ICsrLabelMatrix`.
  *
- * @param numRows       The number of rows in the label matrix
- * @param numCols       The number of columns in the label matrix
- * @param colIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
- *                      column-indices, the relevant labels correspond to
- * @param indptr        A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices of the
- *                      first element in `colIndices` that corresponds to a certain row. The index at the last position
- *                      is equal to `num_non_zero_values`
- * @return              An unique pointer to an object of type `ICsrLabelMatrix` that has been created
+ * @param indices A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the column-indices,
+ *                the relevant labels correspond to
+ * @param indptr  A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices of the first
+ *                element in `indices` that corresponds to a certain row. The index at the last position is equal to
+ *                `numNonZeroValues`
+ * @param numRows The number of rows in the label matrix
+ * @param numCols The number of columns in the label matrix
+ * @return        An unique pointer to an object of type `ICsrLabelMatrix` that has been created
  */
-MLRLCOMMON_API std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* colIndices,
-                                                                     uint32* indptr);
+MLRLCOMMON_API std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows,
+                                                                     uint32 numCols);
 
 #ifdef _WIN32
     #pragma warning(pop)
