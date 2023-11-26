@@ -4,9 +4,9 @@
 #include "mlrl/common/prediction/predictor_probability.hpp"
 #include "mlrl/common/prediction/predictor_score.hpp"
 
-CsrFeatureMatrix::CsrFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, uint32* colIndices,
-                                   uint32* indptr)
-    : CsrView<const float32>(numRows, numCols, data, colIndices, indptr) {}
+CsrFeatureMatrix::CsrFeatureMatrix(const float32* values, uint32* indices, uint32* indptr, uint32 numRows,
+                                   uint32 numCols)
+    : CsrView<const float32>(values, indices, indptr, numRows, numCols) {}
 
 bool CsrFeatureMatrix::isSparse() const {
     return true;
@@ -51,7 +51,7 @@ std::unique_ptr<IProbabilityPredictor> CsrFeatureMatrix::createProbabilityPredic
                                                 jointProbabilityCalibrationModel, numLabels);
 }
 
-std::unique_ptr<ICsrFeatureMatrix> createCsrFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,
-                                                          uint32* colIndices, uint32* indptr) {
-    return std::make_unique<CsrFeatureMatrix>(numRows, numCols, data, colIndices, indptr);
+std::unique_ptr<ICsrFeatureMatrix> createCsrFeatureMatrix(const float32* values, uint32* indices, uint32* indptr,
+                                                          uint32 numRows, uint32 numCols) {
+    return std::make_unique<CsrFeatureMatrix>(values, indices, indptr, numRows, numCols);
 }

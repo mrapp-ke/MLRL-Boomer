@@ -65,8 +65,8 @@ cdef extern from "mlrl/common/input/feature_matrix_csr.hpp" nogil:
         pass
 
 
-    unique_ptr[ICsrFeatureMatrix] createCsrFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,
-                                                         uint32* colIndices, uint32* indptr)
+    unique_ptr[ICsrFeatureMatrix] createCsrFeatureMatrix(const float32* values, uint32* indices, uint32* indptr,
+                                                         uint32 numRows, uint32 numCols)
 
 
 cdef class FeatureMatrix:
@@ -125,9 +125,9 @@ cdef class CsrFeatureMatrix(RowWiseFeatureMatrix):
 
     # Attributes:
 
-    cdef const float32[::1] data
+    cdef const float32[::1] values
 
-    cdef const uint32[::1] col_indices
+    cdef const uint32[::1] indices
 
     cdef const uint32[::1] indptr
 
