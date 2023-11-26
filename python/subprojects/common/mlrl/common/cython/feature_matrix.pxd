@@ -55,8 +55,8 @@ cdef extern from "mlrl/common/input/feature_matrix_c_contiguous.hpp" nogil:
         pass
 
 
-    unique_ptr[ICContiguousFeatureMatrix] createCContiguousFeatureMatrix(uint32 numRows, uint32 numCols,
-                                                                         const float32* array)
+    unique_ptr[ICContiguousFeatureMatrix] createCContiguousFeatureMatrix(const float32* array, uint32 numRows,
+                                                                         uint32 numCols)
 
 
 cdef extern from "mlrl/common/input/feature_matrix_csr.hpp" nogil:

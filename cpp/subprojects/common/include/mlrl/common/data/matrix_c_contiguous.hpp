@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 
 /**
  * A two-dimensional matrix that provides random access to a fixed number of elements stored in a C-contiguous array.

@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
 #include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/seco/data/confusion_matrix.hpp"

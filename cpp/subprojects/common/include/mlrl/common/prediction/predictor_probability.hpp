@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/data/view_matrix_csr.hpp"
 #include "mlrl/common/model/rule_list.hpp"
 #include "mlrl/common/prediction/label_vector_set.hpp"
