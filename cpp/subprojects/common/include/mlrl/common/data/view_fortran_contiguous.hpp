@@ -6,12 +6,13 @@
 #include "mlrl/common/data/types.hpp"
 
 /**
- * Implements column-wise read-only access to the values that are stored in a pre-allocated Fortran-contiguous array.
+ * Implements column-wise read and write access to the values that are stored in a pre-allocated Fortran-contiguous
+ * array.
  *
  * @tparam T The type of the values
  */
 template<typename T>
-class FortranContiguousConstView {
+class FortranContiguousView {
     protected:
 
         /**
@@ -37,14 +38,19 @@ class FortranContiguousConstView {
          * @param array     A pointer to a Fortran-contiguous array of template type `T` that stores the values, the
          *                  view provides access to
          */
-        FortranContiguousConstView(uint32 numRows, uint32 numCols, T* array);
+        FortranContiguousView(uint32 numRows, uint32 numCols, T* array);
 
-        virtual ~FortranContiguousConstView() {}
+        virtual ~FortranContiguousView() {}
 
         /**
          * An iterator that provides read-only access to the values in the view.
          */
         typedef const T* value_const_iterator;
+
+        /**
+         * An iterator that provides access to the values in the view and allows to modify them.
+         */
+        typedef T* value_iterator;
 
         /**
          * Returns a `value_const_iterator` to the beginning of a specific column.
@@ -63,46 +69,6 @@ class FortranContiguousConstView {
         value_const_iterator values_cend(uint32 col) const;
 
         /**
-         * Returns the number of rows in the view.
-         *
-         * @return The number of rows
-         */
-        uint32 getNumRows() const;
-
-        /**
-         * Returns the number of columns in the view.
-         *
-         * @return The number of columns
-         */
-        uint32 getNumCols() const;
-};
-
-/**
- * Implements column-wise read and write access to the values that are stored in a pre-allocated Fortran-contiguous
- * array.
- *
- * @tparam T The type of the values
- */
-template<typename T>
-class FortranContiguousView : public FortranContiguousConstView<T> {
-    public:
-
-        /**
-         * @param numRows   The number of rows in the view
-         * @param numCols   The number of columns in the view
-         * @param array     A pointer to a Fortran-contiguous array of template type `T` that stores the values, the
-         *                  view provides access to
-         */
-        FortranContiguousView(uint32 numRows, uint32 numCols, T* array);
-
-        virtual ~FortranContiguousView() override {}
-
-        /**
-         * An iterator that provides access to the values in the view and allows to modify them.
-         */
-        typedef T* value_iterator;
-
-        /**
          * Returns a `value_iterator` to the beginning of a specific column.
          *
          * @param col   The column
@@ -117,4 +83,18 @@ class FortranContiguousView : public FortranContiguousConstView<T> {
          * @return      A `value_iterator` to the end
          */
         value_iterator values_end(uint32 col);
+
+        /**
+         * Returns the number of rows in the view.
+         *
+         * @return The number of rows
+         */
+        uint32 getNumRows() const;
+
+        /**
+         * Returns the number of columns in the view.
+         *
+         * @return The number of columns
+         */
+        uint32 getNumCols() const;
 };
