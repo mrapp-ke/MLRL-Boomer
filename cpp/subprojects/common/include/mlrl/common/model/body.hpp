@@ -3,8 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_matrix_csr.hpp"
-#include "mlrl/common/data/view_vector.hpp"
+#include "mlrl/common/data/view.hpp"
 
 #include <functional>
 
