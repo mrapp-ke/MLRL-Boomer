@@ -17,7 +17,7 @@
  * `BinaryCsrConstView`, which provides row-wise access to the labels of the training examples. These constructors
  * expect the indices of the examples to be considered when copying the existing label matrix to be provided.
  */
-class CscLabelMatrix final : public BinaryCscConstView {
+class CscLabelMatrix final : public BinaryCscView {
     public:
 
         /**
