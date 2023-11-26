@@ -528,9 +528,9 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         if issparse(x):
             log.debug('A sparse matrix is used to store the feature values of the query examples')
             x_data = np.ascontiguousarray(x.data, dtype=Float32)
-            x_col_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
+            x_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
             x_indptr = np.ascontiguousarray(x.indptr, dtype=Uint32)
-            return CsrFeatureMatrix(x.shape[0], x.shape[1], x_data, x_col_indices, x_indptr)
+            return CsrFeatureMatrix(x_data, x_indices, x_indptr, x.shape[0], x.shape[1])
 
         log.debug('A dense matrix is used to store the feature values of the query examples')
         return CContiguousFeatureMatrix(x)
