@@ -75,4 +75,13 @@ class BinaryCsrView : public BinarySparseMatrix {
         typename BinarySparseMatrix::index_iterator indices_end(uint32 row) {
             return &BinarySparseMatrix::indices[BinarySparseMatrix::indptr[row + 1]];
         }
+
+        /**
+         * Returns the number of non-zero elements in the view.
+         *
+         * @return The number of non-zero elements
+         */
+        uint32 getNumNonZeroElements() const {
+            return BinarySparseMatrix::indptr[Matrix::numRows];
+        }
 };
