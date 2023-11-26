@@ -42,9 +42,9 @@ class CscFeatureMatrix final : public CscView<const float32>,
         }
 
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override {
-            CscView<const float32>::index_const_iterator indexIterator = this->indices_cbegin(featureIndex);
-            CscView<const float32>::index_const_iterator indicesEnd = this->indices_cend(featureIndex);
-            CscView<const float32>::value_const_iterator valueIterator = this->values_cbegin(featureIndex);
+            index_const_iterator indexIterator = this->indices_cbegin(featureIndex);
+            index_const_iterator indicesEnd = this->indices_cend(featureIndex);
+            value_const_iterator valueIterator = this->values_cbegin(featureIndex);
             uint32 numElements = indicesEnd - indexIterator;
             featureVectorPtr = std::make_unique<FeatureVector>(numElements);
             FeatureVector::iterator vectorIterator = featureVectorPtr->begin();

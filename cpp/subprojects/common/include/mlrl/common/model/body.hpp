@@ -46,11 +46,9 @@ class MLRLCOMMON_API IConditional {
          *                      invocations
          * @return              True, if the example is covered, false otherwise
          */
-        virtual bool covers(CsrView<const float32>::index_const_iterator indicesBegin,
-                            CsrView<const float32>::index_const_iterator indicesEnd,
-                            CsrView<const float32>::value_const_iterator valuesBegin,
-                            CsrView<const float32>::value_const_iterator valuesEnd, View<float32>::iterator tmpArray1,
-                            View<uint32>::iterator tmpArray2, uint32 n) const = 0;
+        virtual bool covers(View<uint32>::const_iterator indicesBegin, View<uint32>::const_iterator indicesEnd,
+                            View<float32>::const_iterator valuesBegin, View<float32>::const_iterator valuesEnd,
+                            View<float32>::iterator tmpArray1, View<uint32>::iterator tmpArray2, uint32 n) const = 0;
 };
 
 /**

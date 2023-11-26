@@ -63,13 +63,11 @@ namespace boosting {
         }
     }
 
-    static inline void applyRule(const RuleList::Rule& rule,
-                                 CsrView<const float32>::index_const_iterator featureIndicesBegin,
-                                 CsrView<const float32>::index_const_iterator featureIndicesEnd,
-                                 CsrView<const float32>::value_const_iterator featureValuesBegin,
-                                 CsrView<const float32>::value_const_iterator featureValuesEnd,
-                                 View<float64>::iterator scoreIterator, View<float32>::iterator tmpArray1,
-                                 View<uint32>::iterator tmpArray2, uint32 n) {
+    static inline void applyRule(const RuleList::Rule& rule, View<uint32>::const_iterator featureIndicesBegin,
+                                 View<uint32>::const_iterator featureIndicesEnd,
+                                 View<float32>::const_iterator featureValuesBegin,
+                                 View<float32>::const_iterator featureValuesEnd, View<float64>::iterator scoreIterator,
+                                 View<float32>::iterator tmpArray1, View<uint32>::iterator tmpArray2, uint32 n) {
         const IBody& body = rule.getBody();
 
         if (body.covers(featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd, tmpArray1,
@@ -80,10 +78,10 @@ namespace boosting {
     }
 
     static inline void applyRules(RuleList::const_iterator rulesBegin, RuleList::const_iterator rulesEnd,
-                                  uint32 numFeatures, CsrView<const float32>::index_const_iterator featureIndicesBegin,
-                                  CsrView<const float32>::index_const_iterator featureIndicesEnd,
-                                  CsrView<const float32>::value_const_iterator featureValuesBegin,
-                                  CsrView<const float32>::value_const_iterator featureValuesEnd,
+                                  uint32 numFeatures, View<uint32>::const_iterator featureIndicesBegin,
+                                  View<uint32>::const_iterator featureIndicesEnd,
+                                  View<float32>::const_iterator featureValuesBegin,
+                                  View<float32>::const_iterator featureValuesEnd,
                                   View<float64>::iterator scoreIterator) {
         Array<float32> tmpArray1(numFeatures);
         Array<uint32> tmpArray2(numFeatures, true);
