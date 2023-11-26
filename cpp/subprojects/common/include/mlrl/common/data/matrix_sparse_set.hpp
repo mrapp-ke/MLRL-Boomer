@@ -31,7 +31,7 @@ class SparseSetMatrix {
 
                 const typename LilMatrix<T>::const_row row_;
 
-                typename CContiguousView<uint32>::value_const_iterator indexIterator_;
+                typename View<uint32>::const_iterator indexIterator_;
 
             public:
 
@@ -41,8 +41,7 @@ class SparseSetMatrix {
                  * @param indexIterator An iterator that provides access to the indices in `row` that correspond to
                  *                      individual columns
                  */
-                ConstRow(const typename LilMatrix<T>::const_row row,
-                         CContiguousView<uint32>::value_const_iterator indexIterator);
+                ConstRow(const typename LilMatrix<T>::const_row row, View<uint32>::const_iterator indexIterator);
 
                 /**
                  * An iterator that provides read-only access to the elements in the row.
@@ -88,7 +87,7 @@ class SparseSetMatrix {
 
                 const typename LilMatrix<T>::row row_;
 
-                typename CContiguousView<uint32>::value_iterator indexIterator_;
+                typename View<uint32>::iterator indexIterator_;
 
             public:
 
@@ -97,7 +96,7 @@ class SparseSetMatrix {
                  * @param indexIterator An iterator that provides access to the indices in `row` that correspond to
                  *                      individual columns
                  */
-                Row(const typename LilMatrix<T>::row row, CContiguousView<uint32>::value_iterator indexIterator);
+                Row(const typename LilMatrix<T>::row row, View<uint32>::iterator indexIterator);
 
                 /**
                  * Returns a `LilMatrix::iterator` to the beginning of the row.

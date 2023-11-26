@@ -44,11 +44,10 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
                 /**
                  * @see `IConditional::covers`
                  */
-                bool covers(CsrView<const float32>::index_const_iterator indicesBegin,
-                            CsrView<const float32>::index_const_iterator indicesEnd,
-                            CsrView<const float32>::value_const_iterator valuesBegin,
-                            CsrView<const float32>::value_const_iterator valuesEnd, View<float32>::iterator tmpArray1,
-                            View<uint32>::iterator tmpArray2, uint32 n) const override;
+                bool covers(View<uint32>::const_iterator indicesBegin, View<uint32>::const_iterator indicesEnd,
+                            View<float32>::const_iterator valuesBegin, View<float32>::const_iterator valuesEnd,
+                            View<float32>::iterator tmpArray1, View<uint32>::iterator tmpArray2,
+                            uint32 n) const override;
         };
 
         /**
@@ -641,11 +640,9 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         /**
          * @see `IConditional::covers`
          */
-        bool covers(CsrView<const float32>::index_const_iterator indicesBegin,
-                    CsrView<const float32>::index_const_iterator indicesEnd,
-                    CsrView<const float32>::value_const_iterator valuesBegin,
-                    CsrView<const float32>::value_const_iterator valuesEnd, View<float32>::iterator tmpArray1,
-                    View<uint32>::iterator tmpArray2, uint32 n) const override;
+        bool covers(View<uint32>::const_iterator indicesBegin, View<uint32>::const_iterator indicesEnd,
+                    View<float32>::const_iterator valuesBegin, View<float32>::const_iterator valuesEnd,
+                    View<float32>::iterator tmpArray1, View<uint32>::iterator tmpArray2, uint32 n) const override;
 
         void visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const override;
 };

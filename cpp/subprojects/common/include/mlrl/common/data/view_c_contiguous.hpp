@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/types.hpp"
+#include "mlrl/common/data/view.hpp"
 #include "mlrl/common/util/dll_exports.hpp"
 
 /**
@@ -45,12 +45,12 @@ class MLRLCOMMON_API CContiguousView {
         /**
          * An iterator that provides read-only access to the elements in the view.
          */
-        typedef const T* value_const_iterator;
+        typedef typename View<T>::const_iterator value_const_iterator;
 
         /**
          * An iterator that provides access to the elements in the view and allows to modify them.
          */
-        typedef T* value_iterator;
+        typedef typename View<T>::iterator value_iterator;
 
         /**
          * Returns a `value_const_iterator` to the beginning of a specific row.

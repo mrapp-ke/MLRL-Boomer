@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/types.hpp"
+#include "mlrl/common/data/view.hpp"
 #include "mlrl/common/util/dll_exports.hpp"
 
 /**
@@ -52,12 +52,12 @@ class BinaryCsrView {
         /**
          * An iterator that provides read-only access to the indices in the view.
          */
-        typedef const uint32* index_const_iterator;
+        typedef typename View<uint32>::const_iterator index_const_iterator;
 
         /**
          * An iterator that provides access to the indices of the view and allows to modify them.
          */
-        typedef uint32* index_iterator;
+        typedef typename View<uint32>::iterator index_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices at a specific row.
