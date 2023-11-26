@@ -25,7 +25,7 @@ namespace boosting {
           std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numLabels, true);
         const ILabelWiseLoss* lossRawPtr = lossPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
-        const CContiguousConstView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
+        const CContiguousView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
         DenseLabelWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
@@ -55,7 +55,7 @@ namespace boosting {
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {}
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
-      const CContiguousConstView<const uint8>& labelMatrix) const {
+      const CContiguousView<const uint8>& labelMatrix) const {
         std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> statisticsPtr = createStatistics(
           *lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);
         return std::make_unique<LabelWiseStatisticsProvider<ILabelWiseRuleEvaluationFactory>>(

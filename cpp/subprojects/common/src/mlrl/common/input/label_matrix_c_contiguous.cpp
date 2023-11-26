@@ -11,7 +11,7 @@ CContiguousLabelMatrix::View::View(const CContiguousLabelMatrix& labelMatrix, ui
       Vector<const uint8>(labelMatrix.values_cbegin(row), labelMatrix.getNumCols())) {}
 
 CContiguousLabelMatrix::CContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array)
-    : CContiguousConstView<const uint8>(numRows, numCols, array) {}
+    : CContiguousView<const uint8>(numRows, numCols, array) {}
 
 bool CContiguousLabelMatrix::isSparse() const {
     return false;

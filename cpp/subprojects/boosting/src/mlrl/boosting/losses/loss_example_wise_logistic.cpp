@@ -203,9 +203,8 @@ namespace boosting {
     class ExampleWiseLogisticLoss final : public IExampleWiseLoss {
         public:
 
-            virtual void updateLabelWiseStatistics(uint32 exampleIndex,
-                                                   const CContiguousConstView<const uint8>& labelMatrix,
-                                                   const CContiguousConstView<float64>& scoreMatrix,
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                                                   const CContiguousView<float64>& scoreMatrix,
                                                    CompleteIndexVector::const_iterator labelIndicesBegin,
                                                    CompleteIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticView& statisticView) const override {
@@ -214,9 +213,8 @@ namespace boosting {
                                                     statisticView.begin(exampleIndex), labelMatrix.getNumCols());
             }
 
-            virtual void updateLabelWiseStatistics(uint32 exampleIndex,
-                                                   const CContiguousConstView<const uint8>& labelMatrix,
-                                                   const CContiguousConstView<float64>& scoreMatrix,
+            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                                                   const CContiguousView<float64>& scoreMatrix,
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticView& statisticView) const override {
@@ -226,7 +224,7 @@ namespace boosting {
             }
 
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                                                   const CContiguousConstView<float64>& scoreMatrix,
+                                                   const CContiguousView<float64>& scoreMatrix,
                                                    CompleteIndexVector::const_iterator labelIndicesBegin,
                                                    CompleteIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticView& statisticView) const override {
@@ -237,7 +235,7 @@ namespace boosting {
             }
 
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                                                   const CContiguousConstView<float64>& scoreMatrix,
+                                                   const CContiguousView<float64>& scoreMatrix,
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
                                                    DenseLabelWiseStatisticView& statisticView) const override {
@@ -247,8 +245,8 @@ namespace boosting {
                                                     statisticView.begin(exampleIndex), labelMatrix.getNumCols());
             }
 
-            void updateExampleWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                                             const CContiguousConstView<float64>& scoreMatrix,
+            void updateExampleWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                                             const CContiguousView<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticView& statisticView) const override {
                 updateExampleWiseStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), labelMatrix.values_cbegin(exampleIndex),
@@ -257,7 +255,7 @@ namespace boosting {
             }
 
             void updateExampleWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                                             const CContiguousConstView<float64>& scoreMatrix,
+                                             const CContiguousView<float64>& scoreMatrix,
                                              DenseExampleWiseStatisticView& statisticView) const override {
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));
@@ -269,8 +267,8 @@ namespace boosting {
             /**
              * @see `IEvaluationMeasure::evaluate`
              */
-            float64 evaluate(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                             const CContiguousConstView<float64>& scoreMatrix) const override {
+            float64 evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                             const CContiguousView<float64>& scoreMatrix) const override {
                 return evaluateInternally(scoreMatrix.values_cbegin(exampleIndex),
                                           labelMatrix.values_cbegin(exampleIndex), labelMatrix.getNumCols());
             }
@@ -279,7 +277,7 @@ namespace boosting {
              * @see `IEvaluationMeasure::evaluate`
              */
             float64 evaluate(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                             const CContiguousConstView<float64>& scoreMatrix) const override {
+                             const CContiguousView<float64>& scoreMatrix) const override {
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));
                 return evaluateInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,

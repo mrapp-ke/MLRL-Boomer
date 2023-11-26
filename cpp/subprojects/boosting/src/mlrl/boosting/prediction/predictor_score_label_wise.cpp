@@ -24,10 +24,10 @@ namespace boosting {
             /**
              * @see `IPredictorFactory::create`
              */
-            std::unique_ptr<IScorePredictor> create(const CContiguousConstView<const float32>& featureMatrix,
+            std::unique_ptr<IScorePredictor> create(const CContiguousView<const float32>& featureMatrix,
                                                     const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                     uint32 numLabels) const override {
-                return std::make_unique<ScorePredictor<CContiguousConstView<const float32>, RuleList>>(
+                return std::make_unique<ScorePredictor<CContiguousView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
             }
 

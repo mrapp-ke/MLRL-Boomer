@@ -98,7 +98,7 @@ namespace boosting {
         }
     }
 
-    static inline void aggregatePredictedScores(const CContiguousConstView<const float32>& featureMatrix,
+    static inline void aggregatePredictedScores(const CContiguousView<const float32>& featureMatrix,
                                                 RuleList::const_iterator rulesBegin, RuleList::const_iterator rulesEnd,
                                                 CContiguousView<float64>& scoreMatrix, uint32 exampleIndex,
                                                 uint32 predictionIndex) {
