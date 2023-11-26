@@ -358,9 +358,9 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
 
         if issparse(y):
             log.debug('A sparse matrix is used to store the labels of the training examples')
-            y_col_indices = np.ascontiguousarray(y.indices, dtype=Uint32)
+            y_indices = np.ascontiguousarray(y.indices, dtype=Uint32)
             y_indptr = np.ascontiguousarray(y.indptr, dtype=Uint32)
-            label_matrix = CsrLabelMatrix(y.shape[0], y.shape[1], y_col_indices, y_indptr)
+            label_matrix = CsrLabelMatrix(y_indices, y_indptr, y.shape[0], y.shape[1])
         else:
             log.debug('A dense matrix is used to store the labels of the training examples')
             label_matrix = CContiguousLabelMatrix(y)

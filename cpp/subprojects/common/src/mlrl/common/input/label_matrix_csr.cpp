@@ -10,8 +10,8 @@ CsrLabelMatrix::View::View(const CsrLabelMatrix& labelMatrix, uint32 row)
     : IterableVectorDecorator<VectorDecorator<Vector<const uint32>>>(Vector<const uint32>(
       labelMatrix.indices_cbegin(row), labelMatrix.indices_cend(row) - labelMatrix.indices_cbegin(row))) {}
 
-CsrLabelMatrix::CsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* indptr, uint32* colIndices)
-    : BinaryCsrView(numRows, numCols, indptr, colIndices) {}
+CsrLabelMatrix::CsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
+    : BinaryCsrView(indices, indptr, numRows, numCols) {}
 
 bool CsrLabelMatrix::isSparse() const {
     return true;
@@ -98,7 +98,6 @@ std::unique_ptr<IJointProbabilityCalibrationModel> CsrLabelMatrix::fitJointProba
     return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
 }
 
-std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* colIndices,
-                                                      uint32* indptr) {
-    return std::make_unique<CsrLabelMatrix>(numRows, numCols, colIndices, indptr);
+std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols) {
+    return std::make_unique<CsrLabelMatrix>(indices, indptr, numRows, numCols);
 }

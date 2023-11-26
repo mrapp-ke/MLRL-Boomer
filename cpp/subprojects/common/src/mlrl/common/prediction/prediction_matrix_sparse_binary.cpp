@@ -2,9 +2,9 @@
 
 #include "mlrl/common/util/memory.hpp"
 
-BinarySparsePredictionMatrix::BinarySparsePredictionMatrix(uint32 numRows, uint32 numCols, uint32* colIndices,
-                                                           uint32* indptr)
-    : BinaryCsrView(numRows, numCols, colIndices, indptr), colIndices_(colIndices), indptr_(indptr) {}
+BinarySparsePredictionMatrix::BinarySparsePredictionMatrix(uint32* indices, uint32* indptr, uint32 numRows,
+                                                           uint32 numCols)
+    : BinaryCsrView(indices, indptr, numRows, numCols), colIndices_(indices), indptr_(indptr) {}
 
 BinarySparsePredictionMatrix::~BinarySparsePredictionMatrix() {
     freeMemory(colIndices_);
@@ -35,7 +35,7 @@ std::unique_ptr<BinarySparsePredictionMatrix> createBinarySparsePredictionMatrix
                                                                                  uint32 numCols,
                                                                                  uint32 numNonZeroElements) {
     uint32 numRows = lilMatrix.getNumRows();
-    uint32* colIndices = allocateMemory<uint32>(numNonZeroElements);
+    uint32* indices = allocateMemory<uint32>(numNonZeroElements);
     uint32* indptr = allocateMemory<uint32>(numRows + 1);
     uint32 n = 0;
 
@@ -43,11 +43,11 @@ std::unique_ptr<BinarySparsePredictionMatrix> createBinarySparsePredictionMatrix
         indptr[i] = n;
 
         for (auto it = lilMatrix.cbegin(i); it != lilMatrix.cend(i); it++) {
-            colIndices[n] = *it;
+            indices[n] = *it;
             n++;
         }
     }
 
     indptr[numRows] = n;
-    return std::make_unique<BinarySparsePredictionMatrix>(numRows, numCols, colIndices, indptr);
+    return std::make_unique<BinarySparsePredictionMatrix>(indices, indptr, numRows, numCols);
 }
