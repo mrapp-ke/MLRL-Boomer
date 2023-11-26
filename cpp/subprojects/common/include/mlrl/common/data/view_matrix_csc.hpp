@@ -120,4 +120,13 @@ class CscView : public SparseMatrix<T> {
         typename SparseMatrix<T>::index_iterator indices_end(uint32 column) {
             return &SparseMatrix<T>::indices[SparseMatrix<T>::indptr[column + 1]];
         }
+
+        /**
+         * Returns the number of non-zero elements in the view.
+         *
+         * @return The number of non-zero elements
+         */
+        uint32 getNumNonZeroElements() const {
+            return SparseMatrix<T>::indptr[Matrix::numCols];
+        }
 };
