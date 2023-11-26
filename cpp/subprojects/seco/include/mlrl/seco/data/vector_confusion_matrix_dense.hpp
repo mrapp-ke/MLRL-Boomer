@@ -42,8 +42,8 @@ namespace seco {
              * confusion matrix elements to be added are multiplied by a specific weight.
              *
              * @param exampleIndex              The index of the example
-             * @param labelMatrix               A reference to an object of type `CContiguousConstView` that provides
-             *                                  random access to the labels of the training examples
+             * @param labelMatrix               A reference to an object of type `CContiguousView` that provides random
+             *                                  access to the labels of the training examples
              * @param majorityLabelIndicesBegin An iterator to the beginning of the indices of the labels that are
              *                                  relevant to the majority of the training examples
              * @param majorityLabelIndicesEnd   An iterator to the end of the indices of the labels that are relevant to
@@ -52,7 +52,7 @@ namespace seco {
              *                                  often individual examples and labels have been covered
              * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
-            void add(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
+            void add(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                      View<uint32>::const_iterator majorityLabelIndicesBegin,
                      View<uint32>::const_iterator majorityLabelIndicesEnd, const DenseCoverageMatrix& coverageMatrix,
                      float64 weight);
@@ -82,8 +82,8 @@ namespace seco {
              * The confusion matrix elements to be added are multiplied by a specific weight.
              *
              * @param exampleIndex              The index of the example
-             * @param labelMatrix               A reference to an object of type `CContiguousConstView` that provides
-             *                                  random access to the labels of the training examples
+             * @param labelMatrix               A reference to an object of type `CContiguousView` that provides random
+             *                                  access to the labels of the training examples
              * @param majorityLabelIndicesBegin An iterator to the beginning of the indices of the labels that are
              *                                  relevant to the majority of the training examples
              * @param majorityLabelIndicesEnd   An iterator to the end of the indices of the labels that are relevant to
@@ -92,7 +92,7 @@ namespace seco {
              *                                  often individual examples and labels have been covered
              * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
-            void remove(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
+            void remove(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                         View<uint32>::const_iterator majorityLabelIndicesBegin,
                         View<uint32>::const_iterator majorityLabelIndicesEnd, const DenseCoverageMatrix& coverageMatrix,
                         float64 weight);
@@ -123,8 +123,8 @@ namespace seco {
              * specific weight.
              *
              * @param exampleIndex              The index of the example
-             * @param labelMatrix               A reference to an object of type `CContiguousConstView` that provides
-             *                                  random access to the labels of the training examples
+             * @param labelMatrix               A reference to an object of type `CContiguousView` that provides random
+             *                                  access to the labels of the training examples
              * @param majorityLabelIndicesBegin An iterator to the beginning of the indices of the labels that are
              *                                  relevant to the majority of the training examples
              * @param majorityLabelIndicesEnd   An iterator to the end of the indices of the labels that are relevant to
@@ -135,7 +135,7 @@ namespace seco {
              *                                  indices
              * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
-            void addToSubset(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
+            void addToSubset(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                              View<uint32>::const_iterator majorityLabelIndicesBegin,
                              View<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const CompleteIndexVector& indices,
@@ -171,8 +171,8 @@ namespace seco {
              * specific weight.
              *
              * @param exampleIndex              The index of the example
-             * @param labelMatrix               A reference to an object of type `CContiguousConstView` that provides
-             *                                  random access to the labels of the training examples
+             * @param labelMatrix               A reference to an object of type `CContiguousView` that provides random
+             *                                  access to the labels of the training examples
              * @param majorityLabelIndicesBegin An iterator to the beginning of the indices of the labels that are
              *                                  relevant to the majority of the training examples
              * @param majorityLabelIndicesEnd   An iterator to the end of the indices of the labels that are relevant to
@@ -183,7 +183,7 @@ namespace seco {
              *                                  indices
              * @param weight                    The weight, the confusion matrix elements should be multiplied by
              */
-            void addToSubset(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
+            void addToSubset(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                              View<uint32>::const_iterator majorityLabelIndicesBegin,
                              View<uint32>::const_iterator majorityLabelIndicesEnd,
                              const DenseCoverageMatrix& coverageMatrix, const PartialIndexVector& indices,

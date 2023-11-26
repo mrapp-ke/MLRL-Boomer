@@ -150,7 +150,7 @@ namespace boosting {
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {}
 
     std::unique_ptr<IStatisticsProvider> SparseLabelWiseStatisticsProviderFactory::create(
-      const CContiguousConstView<const uint8>& labelMatrix) const {
+      const CContiguousView<const uint8>& labelMatrix) const {
         std::unique_ptr<ILabelWiseStatistics<ISparseLabelWiseRuleEvaluationFactory>> statisticsPtr = createStatistics(
           *lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *regularRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);
         return std::make_unique<LabelWiseStatisticsProvider<ISparseLabelWiseRuleEvaluationFactory>>(

@@ -156,7 +156,7 @@ namespace boosting {
             using LabelWiseLoss::evaluate;
             using LabelWiseLoss::updateLabelWiseStatistics;
 
-            void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
+            void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                                            const SparseSetMatrix<float64>& scoreMatrix,
                                            CompleteIndexVector::const_iterator labelIndicesBegin,
                                            CompleteIndexVector::const_iterator labelIndicesEnd,
@@ -170,13 +170,13 @@ namespace boosting {
                                                     LabelWiseLoss::updateFunction_);
             }
 
-            void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
+            void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                                            const SparseSetMatrix<float64>& scoreMatrix,
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
                                            SparseLabelWiseStatisticView& statisticView) const override {
                 const SparseSetMatrix<float64>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
-                CContiguousConstView<const uint8>::value_const_iterator labelIterator =
+                CContiguousView<const uint8>::value_const_iterator labelIterator =
                   labelMatrix.values_cbegin(exampleIndex);
                 SparseLabelWiseStatisticView::row statisticViewRow = statisticView[exampleIndex];
                 uint32 numElements = labelIndicesEnd - labelIndicesBegin;
@@ -241,7 +241,7 @@ namespace boosting {
             /**
              * @see `IEvaluationMeasure::evaluate`
              */
-            float64 evaluate(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
+            float64 evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                              const SparseSetMatrix<float64>& scoreMatrix) const override {
                 auto indicesBegin = make_non_zero_index_forward_iterator(labelMatrix.values_cbegin(exampleIndex),
                                                                          labelMatrix.values_cend(exampleIndex));

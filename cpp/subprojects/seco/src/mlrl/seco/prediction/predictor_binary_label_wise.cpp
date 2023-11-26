@@ -51,7 +51,7 @@ namespace seco {
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
 
-    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+    static inline void predictForExampleInternally(const CContiguousView<const float32>& featureMatrix,
                                                    RuleList::const_iterator rulesBegin,
                                                    RuleList::const_iterator rulesEnd,
                                                    CContiguousView<uint8>& predictionMatrix, uint32 exampleIndex,
@@ -204,12 +204,12 @@ namespace seco {
             LabelWiseBinaryPredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
 
             std::unique_ptr<IBinaryPredictor> create(
-              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const CContiguousView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
-                return std::make_unique<LabelWiseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
+                return std::make_unique<LabelWiseBinaryPredictor<CContiguousView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
             }
 
@@ -292,7 +292,7 @@ namespace seco {
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
 
-    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+    static inline void predictForExampleInternally(const CContiguousView<const float32>& featureMatrix,
                                                    RuleList::const_iterator rulesBegin,
                                                    RuleList::const_iterator rulesEnd,
                                                    BinaryLilMatrix::row predictionRow, uint32 numLabels,
@@ -445,12 +445,12 @@ namespace seco {
             LabelWiseSparseBinaryPredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
 
             std::unique_ptr<ISparseBinaryPredictor> create(
-              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const CContiguousView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
-                return std::make_unique<LabelWiseSparseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
+                return std::make_unique<LabelWiseSparseBinaryPredictor<CContiguousView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
             }
 

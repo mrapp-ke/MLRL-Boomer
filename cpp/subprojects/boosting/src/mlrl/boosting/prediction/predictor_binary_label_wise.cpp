@@ -45,7 +45,7 @@ namespace boosting {
              * @see `IPredictorFactory::create`
              */
             std::unique_ptr<IBinaryPredictor> create(
-              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const CContiguousView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
@@ -56,7 +56,7 @@ namespace boosting {
                                                               : marginalProbabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
                   std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
-                return std::make_unique<BinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
+                return std::make_unique<BinaryPredictor<CContiguousView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(binaryTransformationPtr));
             }
 
@@ -117,7 +117,7 @@ namespace boosting {
              * @see `IPredictorFactory::create`
              */
             std::unique_ptr<ISparseBinaryPredictor> create(
-              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const CContiguousView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
@@ -128,7 +128,7 @@ namespace boosting {
                                                               : marginalProbabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
                   std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
-                return std::make_unique<SparseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
+                return std::make_unique<SparseBinaryPredictor<CContiguousView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(binaryTransformationPtr));
             }
 

@@ -25,7 +25,7 @@ class MLRLCOMMON_API ICContiguousFeatureMatrix : virtual public IRowWiseFeatureM
  * An implementation of the type `ICContiguousFeatureMatrix` that provides row-wise read-only access to the feature
  * values of examples that are stored in a C-contiguous array.
  */
-class CContiguousFeatureMatrix final : public CContiguousConstView<const float32>,
+class CContiguousFeatureMatrix final : public CContiguousView<const float32>,
                                        virtual public ICContiguousFeatureMatrix {
     public:
 
