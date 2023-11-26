@@ -11,7 +11,7 @@
  * An implementation of the type `ICscFeatureMatrix` that provides column-wise read-only access to the feature values of
  * examples that are stored in a pre-allocated sparse matrix in the compressed sparse column (CSC) format.
  */
-class CscFeatureMatrix final : public CscConstView<const float32>,
+class CscFeatureMatrix final : public CscView<const float32>,
                                virtual public ICscFeatureMatrix {
     public:
 
@@ -27,7 +27,7 @@ class CscFeatureMatrix final : public CscConstView<const float32>,
          *                      The index at the last position is equal to `num_non_zero_values`
          */
         CscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices, uint32* indptr)
-            : CscConstView<const float32>(numRows, numCols, data, rowIndices, indptr) {}
+            : CscView<const float32>(numRows, numCols, data, rowIndices, indptr) {}
 
         bool isSparse() const override {
             return true;
@@ -42,9 +42,9 @@ class CscFeatureMatrix final : public CscConstView<const float32>,
         }
 
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override {
-            CscConstView<const float32>::index_const_iterator indexIterator = this->indices_cbegin(featureIndex);
-            CscConstView<const float32>::index_const_iterator indicesEnd = this->indices_cend(featureIndex);
-            CscConstView<const float32>::value_const_iterator valueIterator = this->values_cbegin(featureIndex);
+            CscView<const float32>::index_const_iterator indexIterator = this->indices_cbegin(featureIndex);
+            CscView<const float32>::index_const_iterator indicesEnd = this->indices_cend(featureIndex);
+            CscView<const float32>::value_const_iterator valueIterator = this->values_cbegin(featureIndex);
             uint32 numElements = indicesEnd - indexIterator;
             featureVectorPtr = std::make_unique<FeatureVector>(numElements);
             FeatureVector::iterator vectorIterator = featureVectorPtr->begin();
