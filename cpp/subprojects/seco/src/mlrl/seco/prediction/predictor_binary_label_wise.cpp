@@ -70,7 +70,7 @@ namespace seco {
         }
     }
 
-    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+    static inline void predictForExampleInternally(const CsrView<const float32>& featureMatrix,
                                                    RuleList::const_iterator rulesBegin,
                                                    RuleList::const_iterator rulesEnd,
                                                    CContiguousView<uint8>& predictionMatrix, uint32 exampleIndex,
@@ -214,12 +214,11 @@ namespace seco {
             }
 
             std::unique_ptr<IBinaryPredictor> create(
-              const CsrConstView<const float32>& featureMatrix, const RuleList& model,
-              const LabelVectorSet* labelVectorSet,
+              const CsrView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
-                return std::make_unique<LabelWiseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
+                return std::make_unique<LabelWiseBinaryPredictor<CsrView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
             }
     };
@@ -308,7 +307,7 @@ namespace seco {
         }
     }
 
-    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+    static inline void predictForExampleInternally(const CsrView<const float32>& featureMatrix,
                                                    RuleList::const_iterator rulesBegin,
                                                    RuleList::const_iterator rulesEnd,
                                                    BinaryLilMatrix::row predictionRow, uint32 numLabels,
@@ -455,12 +454,11 @@ namespace seco {
             }
 
             std::unique_ptr<ISparseBinaryPredictor> create(
-              const CsrConstView<const float32>& featureMatrix, const RuleList& model,
-              const LabelVectorSet* labelVectorSet,
+              const CsrView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
-                return std::make_unique<LabelWiseSparseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
+                return std::make_unique<LabelWiseSparseBinaryPredictor<CsrView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
             }
     };

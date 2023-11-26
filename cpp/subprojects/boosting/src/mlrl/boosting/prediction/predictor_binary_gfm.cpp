@@ -111,8 +111,7 @@ namespace boosting {
              * @see `IPredictorFactory::create`
              */
             std::unique_ptr<IBinaryPredictor> create(
-              const CsrConstView<const float32>& featureMatrix, const RuleList& model,
-              const LabelVectorSet* labelVectorSet,
+              const CsrView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
@@ -204,8 +203,7 @@ namespace boosting {
              * @see `IPredictorFactory::create`
              */
             std::unique_ptr<ISparseBinaryPredictor> create(
-              const CsrConstView<const float32>& featureMatrix, const RuleList& model,
-              const LabelVectorSet* labelVectorSet,
+              const CsrView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
