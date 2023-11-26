@@ -64,10 +64,10 @@ namespace boosting {
     }
 
     static inline void applyRule(const RuleList::Rule& rule,
-                                 CsrConstView<const float32>::index_const_iterator featureIndicesBegin,
-                                 CsrConstView<const float32>::index_const_iterator featureIndicesEnd,
-                                 CsrConstView<const float32>::value_const_iterator featureValuesBegin,
-                                 CsrConstView<const float32>::value_const_iterator featureValuesEnd,
+                                 CsrView<const float32>::index_const_iterator featureIndicesBegin,
+                                 CsrView<const float32>::index_const_iterator featureIndicesEnd,
+                                 CsrView<const float32>::value_const_iterator featureValuesBegin,
+                                 CsrView<const float32>::value_const_iterator featureValuesEnd,
                                  View<float64>::iterator scoreIterator, View<float32>::iterator tmpArray1,
                                  View<uint32>::iterator tmpArray2, uint32 n) {
         const IBody& body = rule.getBody();
@@ -80,11 +80,10 @@ namespace boosting {
     }
 
     static inline void applyRules(RuleList::const_iterator rulesBegin, RuleList::const_iterator rulesEnd,
-                                  uint32 numFeatures,
-                                  CsrConstView<const float32>::index_const_iterator featureIndicesBegin,
-                                  CsrConstView<const float32>::index_const_iterator featureIndicesEnd,
-                                  CsrConstView<const float32>::value_const_iterator featureValuesBegin,
-                                  CsrConstView<const float32>::value_const_iterator featureValuesEnd,
+                                  uint32 numFeatures, CsrView<const float32>::index_const_iterator featureIndicesBegin,
+                                  CsrView<const float32>::index_const_iterator featureIndicesEnd,
+                                  CsrView<const float32>::value_const_iterator featureValuesBegin,
+                                  CsrView<const float32>::value_const_iterator featureValuesEnd,
                                   View<float64>::iterator scoreIterator) {
         Array<float32> tmpArray1(numFeatures);
         Array<uint32> tmpArray2(numFeatures, true);
@@ -106,7 +105,7 @@ namespace boosting {
                    featureMatrix.values_cend(exampleIndex), scoreMatrix.values_begin(predictionIndex));
     }
 
-    static inline void aggregatePredictedScores(const CsrConstView<const float32>& featureMatrix,
+    static inline void aggregatePredictedScores(const CsrView<const float32>& featureMatrix,
                                                 RuleList::const_iterator rulesBegin, RuleList::const_iterator rulesEnd,
                                                 CContiguousView<float64>& scoreMatrix, uint32 exampleIndex,
                                                 uint32 predictionIndex) {

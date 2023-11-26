@@ -46,8 +46,8 @@ class IScorePredictorFactory {
         /**
          * Creates and returns a new object of the type `IScorePredictor`.
          *
-         * @param featureMatrix     A reference to an object of type `CsrConstView` that stores the feature values of
-         *                          the query examples to predict for
+         * @param featureMatrix     A reference to an object of type `CsrView` that stores the feature values of the
+         *                          query examples to predict for
          * @param model             A reference to an object of type `RuleList` that should be used to obtain
          *                          predictions
          * @param labelVectorSet    A pointer to an object of type `LabelVectorSet` that stores all known label vectors
@@ -55,7 +55,7 @@ class IScorePredictorFactory {
          * @param numLabels         The number of labels to predict for
          * @return                  An unique pointer to an object of type `IScorePredictor` that has been created
          */
-        virtual std::unique_ptr<IScorePredictor> create(const CsrConstView<const float32>& featureMatrix,
+        virtual std::unique_ptr<IScorePredictor> create(const CsrView<const float32>& featureMatrix,
                                                         const RuleList& model, const LabelVectorSet* labelVectorSet,
                                                         uint32 numLabels) const = 0;
 };
