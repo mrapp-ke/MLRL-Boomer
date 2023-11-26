@@ -88,42 +88,38 @@ static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* indptr, const 
 CscLabelMatrix::CscLabelMatrix(const CContiguousView<const uint8>& labelMatrix,
                                CompleteIndexVector::const_iterator indicesBegin,
                                CompleteIndexVector::const_iterator indicesEnd)
-    : BinaryCscView(indicesEnd - indicesBegin, labelMatrix.numCols,
-                    allocateMemory<uint32>((indicesEnd - indicesBegin) * labelMatrix.numCols),
-                    allocateMemory<uint32>(labelMatrix.numCols + 1)) {
-    this->rowIndices_ = copyLabelMatrix<CompleteIndexVector::const_iterator>(this->rowIndices_, this->indptr_,
-                                                                             labelMatrix, indicesBegin, indicesEnd);
+    : BinaryCscView(allocateMemory<uint32>((indicesEnd - indicesBegin) * labelMatrix.numCols),
+                    allocateMemory<uint32>(labelMatrix.numCols + 1), indicesEnd - indicesBegin, labelMatrix.numCols) {
+    this->indices = copyLabelMatrix<CompleteIndexVector::const_iterator>(this->indices, this->indptr, labelMatrix,
+                                                                         indicesBegin, indicesEnd);
 }
 
 CscLabelMatrix::CscLabelMatrix(const CContiguousView<const uint8>& labelMatrix,
                                PartialIndexVector::const_iterator indicesBegin,
                                PartialIndexVector::const_iterator indicesEnd)
-    : BinaryCscView(indicesEnd - indicesBegin, labelMatrix.numCols,
-                    allocateMemory<uint32>((indicesEnd - indicesBegin) * labelMatrix.numCols),
-                    allocateMemory<uint32>(labelMatrix.numCols + 1)) {
-    this->rowIndices_ = copyLabelMatrix<PartialIndexVector::const_iterator>(this->rowIndices_, this->indptr_,
-                                                                            labelMatrix, indicesBegin, indicesEnd);
+    : BinaryCscView(allocateMemory<uint32>((indicesEnd - indicesBegin) * labelMatrix.numCols),
+                    allocateMemory<uint32>(labelMatrix.numCols + 1), indicesEnd - indicesBegin, labelMatrix.numCols) {
+    this->indices = copyLabelMatrix<PartialIndexVector::const_iterator>(this->indices, this->indptr, labelMatrix,
+                                                                        indicesBegin, indicesEnd);
 }
 
 CscLabelMatrix::CscLabelMatrix(const BinaryCsrView& labelMatrix, CompleteIndexVector::const_iterator indicesBegin,
                                CompleteIndexVector::const_iterator indicesEnd)
-    : BinaryCscView(indicesEnd - indicesBegin, labelMatrix.numCols,
-                    allocateMemory<uint32>(labelMatrix.getNumNonZeroElements()),
-                    allocateMemory<uint32>(labelMatrix.numCols + 1)) {
-    this->rowIndices_ = copyLabelMatrix<CompleteIndexVector::const_iterator>(this->rowIndices_, this->indptr_,
-                                                                             labelMatrix, indicesBegin, indicesEnd);
+    : BinaryCscView(allocateMemory<uint32>(labelMatrix.getNumNonZeroElements()),
+                    allocateMemory<uint32>(labelMatrix.numCols + 1), indicesEnd - indicesBegin, labelMatrix.numCols) {
+    this->indices = copyLabelMatrix<CompleteIndexVector::const_iterator>(this->indices, this->indptr, labelMatrix,
+                                                                         indicesBegin, indicesEnd);
 }
 
 CscLabelMatrix::CscLabelMatrix(const BinaryCsrView& labelMatrix, PartialIndexVector::const_iterator indicesBegin,
                                PartialIndexVector::const_iterator indicesEnd)
-    : BinaryCscView(indicesEnd - indicesBegin, labelMatrix.numCols,
-                    allocateMemory<uint32>(labelMatrix.getNumNonZeroElements()),
-                    allocateMemory<uint32>(labelMatrix.numCols + 1)) {
-    this->rowIndices_ = copyLabelMatrix<PartialIndexVector::const_iterator>(this->rowIndices_, this->indptr_,
-                                                                            labelMatrix, indicesBegin, indicesEnd);
+    : BinaryCscView(allocateMemory<uint32>(labelMatrix.getNumNonZeroElements()),
+                    allocateMemory<uint32>(labelMatrix.numCols + 1), indicesEnd - indicesBegin, labelMatrix.numCols) {
+    this->indices = copyLabelMatrix<PartialIndexVector::const_iterator>(this->indices, this->indptr, labelMatrix,
+                                                                        indicesBegin, indicesEnd);
 }
 
 CscLabelMatrix::~CscLabelMatrix() {
-    freeMemory(this->rowIndices_);
-    freeMemory(this->indptr_);
+    freeMemory(this->indices);
+    freeMemory(this->indptr);
 }
