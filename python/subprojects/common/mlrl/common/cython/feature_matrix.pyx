@@ -74,24 +74,24 @@ cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
     matrix in the compressed sparse column (CSC) format.
     """
 
-    def __cinit__(self, uint32 num_examples, uint32 num_features, const float32[::1] data not None,
-                  uint32[::1] row_indices not None, uint32[::1] indptr not None):
+    def __cinit__(self, const float32[::1] values not None, uint32[::1] indices not None, uint32[::1] indptr not None,
+                  uint32 num_examples, uint32 num_features, ):
         """
+        :param values:          An array of type `float32`, shape `(num_non_zero_values)`, that stores all non-zero
+                                feature values
+        :param indices:         An array of type `uint32`, shape `(num_non_zero_values)`, that stores the row-indices,
+                                the values in `values` correspond to
+        :param indptr:          An array of type `uint32`, shape `(num_features + 1)`, that stores the indices of the
+                                first element in `values` and `indices` that corresponds to a certain feature. The index
+                                at the last position is equal to `num_non_zero_values`
         :param num_examples:    The total number of examples
         :param num_features:    The total number of features
-        :param data:            An array of type `float32`, shape `(num_non_zero_values)`, that stores all non-zero
-                                feature values
-        :param row_indices:     An array of type `uint32`, shape `(num_non_zero_values)`, that stores the row-indices,
-                                the values in `data` correspond to
-        :param indptr:          An array of type `uint32`, shape `(num_features + 1)`, that stores the indices of the
-                                first element in `data` and `row_indices` that corresponds to a certain feature. The
-                                index at the last position is equal to `num_non_zero_values`
         """
-        self.data = data
-        self.row_indices = row_indices
+        self.values = values
+        self.indices = indices
         self.indptr = indptr
-        self.feature_matrix_ptr = createCscFeatureMatrix(num_examples, num_features, &data[0], &row_indices[0],
-                                                         &indptr[0])
+        self.feature_matrix_ptr = createCscFeatureMatrix(&values[0], &indices[0], &indptr[0], num_examples,
+                                                         num_features)
 
     cdef IFeatureMatrix* get_feature_matrix_ptr(self):
         return self.feature_matrix_ptr.get()
