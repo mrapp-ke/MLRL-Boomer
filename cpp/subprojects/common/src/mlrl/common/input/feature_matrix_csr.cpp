@@ -6,7 +6,7 @@
 
 CsrFeatureMatrix::CsrFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, uint32* colIndices,
                                    uint32* indptr)
-    : CsrConstView<const float32>(numRows, numCols, data, colIndices, indptr) {}
+    : CsrView<const float32>(numRows, numCols, data, colIndices, indptr) {}
 
 bool CsrFeatureMatrix::isSparse() const {
     return true;

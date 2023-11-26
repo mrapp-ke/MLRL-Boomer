@@ -57,7 +57,7 @@ class IProbabilityPredictorFactory {
         /**
          * Creates and returns a new object of the type `IProbabilityPredictor`.
          *
-         * @param featureMatrix                         A reference to an object of type `CsrConstView` that stores the
+         * @param featureMatrix                         A reference to an object of type `CsrView` that stores the
          *                                              feature values of the query examples to predict for
          * @param model                                 A reference to an object of type `RuleList` that should be used
          *                                              to obtain predictions
@@ -75,7 +75,7 @@ class IProbabilityPredictorFactory {
          *                                              that has been created
          */
         virtual std::unique_ptr<IProbabilityPredictor> create(
-          const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
+          const CsrView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 };
