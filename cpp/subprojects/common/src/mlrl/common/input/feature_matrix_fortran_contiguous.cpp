@@ -5,7 +5,7 @@
 
 #include "mlrl/common/input/feature_matrix_fortran_contiguous.hpp"
 
-#include "mlrl/common/data/view_fortran_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_fortran_contiguous.hpp"
 
 /**
  * An implementation of the type `IFortranContiguousFeatureMatrix` that provides column-wise read-only access to the
@@ -20,8 +20,8 @@ class FortranContiguousFeatureMatrix final : public FortranContiguousView<const 
          * @param numCols   The number of columns in the feature matrix
          * @param array     A pointer to a Fortran-contiguous array of type `float32` that stores the feature values
          */
-        FortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols, const float32* array)
-            : FortranContiguousView<const float32>(numRows, numCols, array) {}
+        FortranContiguousFeatureMatrix(const float32* array, uint32 numRows, uint32 numCols)
+            : FortranContiguousView<const float32>(array, numRows, numCols) {}
 
         bool isSparse() const override {
             return false;
@@ -57,9 +57,9 @@ class FortranContiguousFeatureMatrix final : public FortranContiguousView<const 
         }
 };
 
-std::unique_ptr<IFortranContiguousFeatureMatrix> createFortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols,
-                                                                                      const float32* array) {
-    return std::make_unique<FortranContiguousFeatureMatrix>(numRows, numCols, array);
+std::unique_ptr<IFortranContiguousFeatureMatrix> createFortranContiguousFeatureMatrix(const float32* array,
+                                                                                      uint32 numRows, uint32 numCols) {
+    return std::make_unique<FortranContiguousFeatureMatrix>(array, numRows, numCols);
 }
 
 #ifdef _WIN32

@@ -59,7 +59,7 @@ cdef class FortranContiguousFeatureMatrix(ColumnWiseFeatureMatrix):
         self.array = array
         cdef uint32 num_examples = array.shape[0]
         cdef uint32 num_features = array.shape[1]
-        self.feature_matrix_ptr = createFortranContiguousFeatureMatrix(num_examples, num_features, &array[0, 0])
+        self.feature_matrix_ptr = createFortranContiguousFeatureMatrix(&array[0, 0], num_examples, num_features)
 
     cdef IFeatureMatrix* get_feature_matrix_ptr(self):
         return self.feature_matrix_ptr.get()

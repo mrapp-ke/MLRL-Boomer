@@ -29,8 +29,8 @@ cdef extern from "mlrl/common/input/feature_matrix_fortran_contiguous.hpp" nogil
         pass
 
 
-    unique_ptr[IFortranContiguousFeatureMatrix] createFortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols,
-                                                                                     const float32* array)
+    unique_ptr[IFortranContiguousFeatureMatrix] createFortranContiguousFeatureMatrix(const float32* array,
+                                                                                     uint32 numRows, uint32 numCols,)
 
 
 cdef extern from "mlrl/common/input/feature_matrix_csc.hpp" nogil:
