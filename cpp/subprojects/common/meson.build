@@ -16,7 +16,6 @@ source_files = [
     'src/mlrl/common/data/vector_bit.cpp',
     'src/mlrl/common/data/vector_dok.cpp',
     'src/mlrl/common/data/vector_dok_binary.cpp',
-    'src/mlrl/common/data/view_fortran_contiguous.cpp',
     'src/mlrl/common/indices/index_iterator.cpp',
     'src/mlrl/common/indices/index_vector_complete.cpp',
     'src/mlrl/common/indices/index_vector_partial.cpp',
