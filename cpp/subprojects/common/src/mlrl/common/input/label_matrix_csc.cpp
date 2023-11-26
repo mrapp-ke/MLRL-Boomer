@@ -4,7 +4,7 @@
 
 template<typename IndexIterator>
 static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* indptr,
-                                      const CContiguousConstView<const uint8>& labelMatrix, IndexIterator indicesBegin,
+                                      const CContiguousView<const uint8>& labelMatrix, IndexIterator indicesBegin,
                                       IndexIterator indicesEnd) {
     uint32 numExamples = indicesEnd - indicesBegin;
     uint32 numLabels = labelMatrix.getNumCols();
@@ -85,7 +85,7 @@ static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* indptr, const 
     return reallocateMemory(rowIndices, tmp);
 }
 
-CscLabelMatrix::CscLabelMatrix(const CContiguousConstView<const uint8>& labelMatrix,
+CscLabelMatrix::CscLabelMatrix(const CContiguousView<const uint8>& labelMatrix,
                                CompleteIndexVector::const_iterator indicesBegin,
                                CompleteIndexVector::const_iterator indicesEnd)
     : BinaryCscConstView(indicesEnd - indicesBegin, labelMatrix.getNumCols(),
@@ -95,7 +95,7 @@ CscLabelMatrix::CscLabelMatrix(const CContiguousConstView<const uint8>& labelMat
                                                                              labelMatrix, indicesBegin, indicesEnd);
 }
 
-CscLabelMatrix::CscLabelMatrix(const CContiguousConstView<const uint8>& labelMatrix,
+CscLabelMatrix::CscLabelMatrix(const CContiguousView<const uint8>& labelMatrix,
                                PartialIndexVector::const_iterator indicesBegin,
                                PartialIndexVector::const_iterator indicesEnd)
     : BinaryCscConstView(indicesEnd - indicesBegin, labelMatrix.getNumCols(),

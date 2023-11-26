@@ -90,7 +90,7 @@ namespace boosting {
              * @see `IPredictorFactory::create`
              */
             std::unique_ptr<IBinaryPredictor> create(
-              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const CContiguousView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
@@ -181,7 +181,7 @@ namespace boosting {
              * @see `IPredictorFactory::create`
              */
             std::unique_ptr<ISparseBinaryPredictor> create(
-              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const CContiguousView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,

@@ -142,7 +142,7 @@ namespace boosting {
           std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numLabels, true);
         const IExampleWiseLoss* lossRawPtr = lossPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
-        const CContiguousConstView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
+        const CContiguousView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
         DenseExampleWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
@@ -171,7 +171,7 @@ namespace boosting {
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {}
 
     std::unique_ptr<IStatisticsProvider> DenseExampleWiseStatisticsProviderFactory::create(
-      const CContiguousConstView<const uint8>& labelMatrix) const {
+      const CContiguousView<const uint8>& labelMatrix) const {
         std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>
           statisticsPtr = createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_,
                                            *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);
@@ -203,7 +203,7 @@ namespace boosting {
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {}
 
     std::unique_ptr<IStatisticsProvider> DenseConvertibleExampleWiseStatisticsProviderFactory::create(
-      const CContiguousConstView<const uint8>& labelMatrix) const {
+      const CContiguousView<const uint8>& labelMatrix) const {
         std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>
           statisticsPtr = createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_,
                                            *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);

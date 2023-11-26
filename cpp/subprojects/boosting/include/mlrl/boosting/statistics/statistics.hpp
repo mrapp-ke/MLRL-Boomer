@@ -21,9 +21,9 @@ namespace boosting {
             virtual ~IBoostingStatistics() {}
 
             /**
-             * A visitor function for handling score matrices of the type `CContiguousConstView`.
+             * A visitor function for handling score matrices of the type `CContiguousView`.
              */
-            typedef std::function<void(const CContiguousConstView<float64>&)> DenseScoreMatrixVisitor;
+            typedef std::function<void(const CContiguousView<float64>&)> DenseScoreMatrixVisitor;
 
             /**
              * A visitor function for handling score matrices of the type `SparseSetMatrix`.
@@ -34,7 +34,7 @@ namespace boosting {
              * Invokes one of the given visitor functions, depending on which one is able to handle the type of matrix
              * that is used to store the currently predicted scores.
              *
-             * @param denseVisitor  The visitor function for handling objects of the type `CContiguousConstView`
+             * @param denseVisitor  The visitor function for handling objects of the type `CContiguousView`
              * @param sparseVisitor The visitor function for handling objects of the type `SparseSetMatrix`
              */
             virtual void visitScoreMatrix(DenseScoreMatrixVisitor denseVisitor,
