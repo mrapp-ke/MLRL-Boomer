@@ -197,11 +197,6 @@ class MLRLCOMMON_API ViewDecorator {
         virtual ~ViewDecorator() {}
 
         /**
-         * The type of the values that are stored in the data structure.
-         */
-        typedef typename View::value_type value_type;
-
-        /**
          * Returns a const reference to the view, the data structure is backed by.
          *
          * @return A const reference to an object of template type `View`, the data structure is backed by
@@ -270,7 +265,7 @@ class MLRLCOMMON_API IndexableViewDecorator : public View {
          * @param pos   The position of the element
          * @return      A const reference to the specified element
          */
-        const typename View::value_type& operator[](uint32 pos) const {
+        const typename View::view_type::value_type& operator[](uint32 pos) const {
             return View::view.array[pos];
         }
 
@@ -280,7 +275,7 @@ class MLRLCOMMON_API IndexableViewDecorator : public View {
          * @param pos   The position of the element
          * @return      A reference to the specified element
          */
-        typename View::value_type& operator[](uint32 pos) {
+        typename View::view_type::value_type& operator[](uint32 pos) {
             return View::view.array[pos];
         }
 };
