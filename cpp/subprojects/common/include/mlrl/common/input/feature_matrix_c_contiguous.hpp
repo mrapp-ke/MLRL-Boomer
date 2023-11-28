@@ -15,7 +15,7 @@
  * Defines an interface for all feature matrices that provide row-wise access to the feature values of examples that are
  * stored in a C-contiguous array.
  */
-class MLRLCOMMON_API ICContiguousFeatureMatrix : virtual public IRowWiseFeatureMatrix {
+class MLRLCOMMON_API ICContiguousFeatureMatrix : public IRowWiseFeatureMatrix {
     public:
 
         virtual ~ICContiguousFeatureMatrix() override {}
@@ -26,7 +26,7 @@ class MLRLCOMMON_API ICContiguousFeatureMatrix : virtual public IRowWiseFeatureM
  * values of examples that are stored in a C-contiguous array.
  */
 class CContiguousFeatureMatrix final : public CContiguousView<const float32>,
-                                       virtual public ICContiguousFeatureMatrix {
+                                       public ICContiguousFeatureMatrix {
     public:
 
         /**
