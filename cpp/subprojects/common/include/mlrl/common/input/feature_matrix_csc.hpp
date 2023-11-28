@@ -9,7 +9,7 @@
  * Defines an interface for all feature matrices that provide column-wise access to the feature values of examples that
  * are stored in a sparse matrix in the compressed sparse column (CSC) format.
  */
-class MLRLCOMMON_API ICscFeatureMatrix : virtual public IColumnWiseFeatureMatrix {
+class MLRLCOMMON_API ICscFeatureMatrix : public IColumnWiseFeatureMatrix {
     public:
 
         virtual ~ICscFeatureMatrix() override {}

@@ -12,7 +12,7 @@
  * feature values of examples that are stored in a pre-allocated Fortran-contiguous array.
  */
 class FortranContiguousFeatureMatrix final : public FortranContiguousView<const float32>,
-                                             virtual public IFortranContiguousFeatureMatrix {
+                                             public IFortranContiguousFeatureMatrix {
     public:
 
         /**

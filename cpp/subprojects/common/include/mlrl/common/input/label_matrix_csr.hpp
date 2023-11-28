@@ -27,7 +27,7 @@ class MLRLCOMMON_API ICsrLabelMatrix : virtual public IRowWiseLabelMatrix {
  * sparse matrix in the compressed sparse row (CSR) format.
  */
 class CsrLabelMatrix final : public BinaryCsrView,
-                             virtual public ICsrLabelMatrix {
+                             public ICsrLabelMatrix {
     public:
 
         /**

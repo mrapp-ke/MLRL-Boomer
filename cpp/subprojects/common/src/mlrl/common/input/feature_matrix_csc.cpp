@@ -12,7 +12,7 @@
  * examples that are stored in a pre-allocated sparse matrix in the compressed sparse column (CSC) format.
  */
 class CscFeatureMatrix final : public CscView<const float32>,
-                               virtual public ICscFeatureMatrix {
+                               public ICscFeatureMatrix {
     public:
 
         /**

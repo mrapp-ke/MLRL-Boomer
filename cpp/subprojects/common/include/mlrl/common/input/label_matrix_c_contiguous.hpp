@@ -16,7 +16,7 @@
  * Defines an interface for all label matrices that provide row-wise access to the labels of individual examples that
  * are stored in a C-contiguous array.
  */
-class MLRLCOMMON_API ICContiguousLabelMatrix : virtual public IRowWiseLabelMatrix {
+class MLRLCOMMON_API ICContiguousLabelMatrix : public IRowWiseLabelMatrix {
     public:
 
         virtual ~ICContiguousLabelMatrix() override {}
@@ -27,7 +27,7 @@ class MLRLCOMMON_API ICContiguousLabelMatrix : virtual public IRowWiseLabelMatri
  * C-contiguous array.
  */
 class CContiguousLabelMatrix final : public CContiguousView<const uint8>,
-                                     virtual public ICContiguousLabelMatrix {
+                                     public ICContiguousLabelMatrix {
     public:
 
         /**
