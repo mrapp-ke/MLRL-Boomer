@@ -26,7 +26,7 @@ class IJointProbabilityCalibrationModel;
 /**
  * Defines an interface for all label matrices that provide access to the labels of the training examples.
  */
-class MLRLCOMMON_API IRowWiseLabelMatrix : virtual public ILabelMatrix {
+class MLRLCOMMON_API IRowWiseLabelMatrix : public ILabelMatrix {
     public:
 
         virtual ~IRowWiseLabelMatrix() override {}
