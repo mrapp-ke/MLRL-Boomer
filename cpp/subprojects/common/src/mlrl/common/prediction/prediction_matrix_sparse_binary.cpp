@@ -4,31 +4,28 @@
 
 BinarySparsePredictionMatrix::BinarySparsePredictionMatrix(uint32* indices, uint32* indptr, uint32 numRows,
                                                            uint32 numCols)
-    : BinaryCsrView(indices, indptr, numRows, numCols), colIndices_(indices), indptr_(indptr) {}
+    : IterableBinarySparseMatrixDecorator<MatrixDecorator<BinaryCsrView>>(
+      BinaryCsrView(indices, indptr, numRows, numCols)) {}
 
 BinarySparsePredictionMatrix::~BinarySparsePredictionMatrix() {
-    freeMemory(colIndices_);
-    freeMemory(indptr_);
+    freeMemory(this->view.indices);
+    freeMemory(this->view.indptr);
 }
 
-uint32* BinarySparsePredictionMatrix::getColIndices() {
-    return colIndices_;
+uint32* BinarySparsePredictionMatrix::getIndices() {
+    return this->view.indices;
 }
 
-uint32* BinarySparsePredictionMatrix::releaseColIndices() {
-    uint32* ptr = colIndices_;
-    colIndices_ = nullptr;
-    return ptr;
+uint32* BinarySparsePredictionMatrix::releaseIndices() {
+    return this->view.releaseIndices();
 }
 
 uint32* BinarySparsePredictionMatrix::getIndptr() {
-    return indptr_;
+    return this->view.indptr;
 }
 
 uint32* BinarySparsePredictionMatrix::releaseIndptr() {
-    uint32* ptr = indptr_;
-    indptr_ = nullptr;
-    return ptr;
+    return this->view.releaseIndptr();
 }
 
 std::unique_ptr<BinarySparsePredictionMatrix> createBinarySparsePredictionMatrix(const BinaryLilMatrix& lilMatrix,

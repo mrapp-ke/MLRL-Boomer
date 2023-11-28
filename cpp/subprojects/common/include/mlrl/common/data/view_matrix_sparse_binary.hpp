@@ -63,6 +63,34 @@ class BinarySparseMatrix : public Matrix {
          * An iterator that provides access to the indices in the view and allows to modify them.
          */
         typedef View<index_type>::iterator index_iterator;
+
+        /**
+         * Releases the ownership of the array that stores the row or column indices, the non-zero values in the matrix
+         * correspond to. As a result, the behavior of this view becomes undefined and it should not be used anymore.
+         * The caller is responsible for freeing the memory that is occupied by the array.
+         *
+         * @return  A pointer to the array that stores the row or column indices, the non-zero values in the matrix
+         *          correspond to
+         */
+        index_type* releaseIndices() {
+            index_type* ptr = indices;
+            indices = nullptr;
+            return ptr;
+        }
+
+        /**
+         * Releases the ownership of the array that stores the indices of the first non-zero element that corresponds to
+         * a certain column or row. As a result, the behavior of this view becomes undefined and it should not be used
+         * anymore. The caller is responsible for freeing the memory that is occupied by the array.
+         *
+         * @return  A pointer to an array that stores the indices of the first non-zero element that corresponds to a
+         *          certain column or row
+         */
+        index_type* releaseIndptr() {
+            index_type* ptr = indptr;
+            indptr = nullptr;
+            return ptr;
+        }
 };
 
 /**
@@ -133,5 +161,14 @@ class IterableBinarySparseMatrixDecorator : public Matrix {
          */
         index_iterator indices_end(uint32 index) {
             return Matrix::view.indices_end(index);
+        }
+
+        /**
+         * Returns the number of non-zero elements in the matrix.
+         *
+         * @return The number of non-zero elements
+         */
+        uint32 getNumNonZeroElements() const {
+            return Matrix::view.getNumNonZeroElements();
         }
 };
