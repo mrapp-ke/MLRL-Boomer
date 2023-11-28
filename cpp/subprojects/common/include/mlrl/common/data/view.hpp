@@ -64,6 +64,19 @@ class MLRLCOMMON_API View {
         typedef value_type* iterator;
 
         /**
+         * Releases the ownership of the array that stores the values, the view provides access to. As a result, the
+         * behavior of this view becomes undefined and it should not be used anymore. The caller is responsible for
+         * freeing the memory that is occupied by the array.
+         *
+         * @return A pointer to the array that stores the values, the view provided access to
+         */
+        value_type* release() {
+            value_type* ptr = array;
+            array = nullptr;
+            return ptr;
+        }
+
+        /**
          * Returns a `const_iterator` to the beginning of the view.
          *
          * @return A `const_iterator` to the beginning
@@ -102,7 +115,7 @@ class MLRLCOMMON_API Allocator : public View {
          * @param other A reference to an object of type `Allocator` that should be moved
          */
         Allocator(Allocator<View>&& other) : View(std::move(other)) {
-            other.array = nullptr;
+            other.release();
         }
 
         virtual ~Allocator() override {
