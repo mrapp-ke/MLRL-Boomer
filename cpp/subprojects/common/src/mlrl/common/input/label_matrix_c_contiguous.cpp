@@ -44,8 +44,8 @@ float32 CContiguousLabelMatrix::calculateLabelCardinality() const {
     return labelCardinality;
 }
 
-CContiguousLabelMatrix::view_type CContiguousLabelMatrix::createView(uint32 row) const {
-    return CContiguousLabelMatrix::view_type(*this, row);
+const CContiguousLabelMatrix::View CContiguousLabelMatrix::createView(uint32 row) const {
+    return CContiguousLabelMatrix::View(*this, row);
 }
 
 std::unique_ptr<LabelVector> CContiguousLabelMatrix::createLabelVector(uint32 row) const {

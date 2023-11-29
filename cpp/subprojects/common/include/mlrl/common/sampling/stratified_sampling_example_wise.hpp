@@ -24,11 +24,11 @@ class ExampleWiseStratification final {
 
         const uint32 numTotal_;
 
-        typedef typename LabelMatrix::view_type Key;
+        typedef typename LabelMatrix::View Key;
 
-        typedef typename LabelMatrix::view_type::Hash Hash;
+        typedef typename LabelMatrix::View::Hash Hash;
 
-        typedef typename LabelMatrix::view_type::Pred Pred;
+        typedef typename LabelMatrix::View::Pred Pred;
 
         std::unordered_map<Key, std::vector<uint32>, Hash, Pred> map_;
 
