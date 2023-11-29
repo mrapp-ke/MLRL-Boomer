@@ -71,6 +71,19 @@ class DenseMatrix : public Matrix {
         typename DenseMatrix<T>::value_iterator end() {
             return &array[Matrix::numRows * Matrix::numCols];
         }
+
+        /**
+         * Releases the ownership of the array that stores the values, the view provides access to. As a result, the
+         * behavior of this view becomes undefined and it should not be used anymore. The caller is responsible for
+         * freeing the memory that is occupied by the array.
+         *
+         * @return  A pointer to the array that stores the values, the view provides access to
+         */
+        value_type* release() {
+            value_type* ptr = array;
+            array = nullptr;
+            return ptr;
+        }
 };
 
 /**
@@ -94,7 +107,7 @@ class DenseMatrixAllocator : public Matrix {
          * @param other A reference to an object of type `DenseMatrixAllocator` that should be moved
          */
         DenseMatrixAllocator(DenseMatrixAllocator<Matrix>&& other) : Matrix(std::move(other)) {
-            other.array = nullptr;
+            other.release();
         }
 
         virtual ~DenseMatrixAllocator() override {
@@ -121,12 +134,12 @@ class IterableDenseMatrixDecorator : public Matrix {
         /**
          * An iterator that provides read-only access to the values stored in the matrix.
          */
-        typedef typename Matrix::view_type::const_iterator value_const_iterator;
+        typedef typename Matrix::view_type::value_const_iterator value_const_iterator;
 
         /**
          * An iterator that provides access to the values stored in the matrix and allows to modify them.
          */
-        typedef typename Matrix::view_type::iterator value_iterator;
+        typedef typename Matrix::view_type::value_iterator value_iterator;
 
         /**
          * Returns a `value_const_iterator` to the beginning of a specific row or column in the matrix, depending on the

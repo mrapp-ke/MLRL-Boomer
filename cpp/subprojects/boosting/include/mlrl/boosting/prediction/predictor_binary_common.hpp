@@ -71,7 +71,7 @@ namespace boosting {
                                                             typename Model::const_iterator rulesBegin,
                                                             typename Model::const_iterator rulesEnd) override {
                         if (binaryTransformationPtr_) {
-                            IncrementalPredictionDelegate delegate(realMatrix_, predictionMatrix_,
+                            IncrementalPredictionDelegate delegate(realMatrix_.getView(), predictionMatrix_.getView(),
                                                                    *binaryTransformationPtr_);
                             PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(
                               delegate, featureMatrix, rulesBegin, rulesEnd, numThreads);
@@ -164,7 +164,7 @@ namespace boosting {
 
                 if (binaryTransformationPtr_) {
                     CContiguousMatrix<float64> scoreMatrix(numThreads_, numLabels_);
-                    PredictionDelegate delegate(scoreMatrix, *predictionMatrixPtr, *binaryTransformationPtr_);
+                    PredictionDelegate delegate(scoreMatrix, predictionMatrixPtr->getView(), *binaryTransformationPtr_);
                     PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(
                       delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
                 }
@@ -255,7 +255,7 @@ namespace boosting {
                         uint32 numNonZeroElements;
 
                         if (binaryTransformationPtr_) {
-                            IncrementalPredictionDelegate delegate(realMatrix_, predictionMatrix_,
+                            IncrementalPredictionDelegate delegate(realMatrix_.getView(), predictionMatrix_,
                                                                    *binaryTransformationPtr_);
                             numNonZeroElements = BinarySparsePredictionDispatcher<FeatureMatrix, Model>().predict(
                               delegate, featureMatrix, rulesBegin, rulesEnd, numThreads);
@@ -264,7 +264,7 @@ namespace boosting {
                         }
 
                         predictionMatrixPtr_ = createBinarySparsePredictionMatrix(
-                          predictionMatrix_, realMatrix_.numCols, numNonZeroElements);
+                          predictionMatrix_, realMatrix_.getNumCols(), numNonZeroElements);
                         return *predictionMatrixPtr_;
                     }
 

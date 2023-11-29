@@ -8,13 +8,11 @@ cdef extern from "mlrl/common/prediction/prediction_matrix_dense.hpp" nogil:
 
     cdef cppclass DensePredictionMatrix[T]:
 
-        # Attributes:
-
-        const uint32 numRows
-
-        const uint32 numCols
-
         # Functions:
+
+        uint32 getNumRows() const
+
+        uint32 getNumCols() const
 
         T* get() const
 
