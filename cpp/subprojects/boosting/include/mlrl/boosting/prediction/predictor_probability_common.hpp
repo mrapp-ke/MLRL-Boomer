@@ -71,7 +71,7 @@ namespace boosting {
                                                               typename Model::const_iterator rulesBegin,
                                                               typename Model::const_iterator rulesEnd) override {
                         if (probabilityTransformationPtr_) {
-                            PredictionDelegate delegate(scoreMatrix_, predictionMatrix_,
+                            PredictionDelegate delegate(scoreMatrix_.getView(), predictionMatrix_.getView(),
                                                         *probabilityTransformationPtr_);
                             PredictionDispatcher<float64, FeatureMatrix, Model>().predict(
                               delegate, featureMatrix, rulesBegin, rulesEnd, numThreads);
@@ -132,7 +132,7 @@ namespace boosting {
                   std::make_unique<DensePredictionMatrix<float64>>(featureMatrix_.numRows, numLabels_, true);
 
                 if (probabilityTransformationPtr_) {
-                    PredictionDelegate delegate(*predictionMatrixPtr, *predictionMatrixPtr,
+                    PredictionDelegate delegate(predictionMatrixPtr->getView(), predictionMatrixPtr->getView(),
                                                 *probabilityTransformationPtr_);
                     PredictionDispatcher<float64, FeatureMatrix, Model>().predict(
                       delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);

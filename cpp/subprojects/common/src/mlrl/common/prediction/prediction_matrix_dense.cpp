@@ -1,27 +1,18 @@
 #include "mlrl/common/prediction/prediction_matrix_dense.hpp"
 
-#include "mlrl/common/util/memory.hpp"
-
 template<typename T>
 DensePredictionMatrix<T>::DensePredictionMatrix(uint32 numRows, uint32 numCols, bool init)
-    : CContiguousView<T>(allocateMemory<T>(numRows * numCols, init), numRows, numCols),
-      array_(CContiguousView<T>::array) {}
-
-template<typename T>
-DensePredictionMatrix<T>::~DensePredictionMatrix() {
-    freeMemory(array_);
-}
+    : IterableDenseMatrixDecorator<MatrixDecorator<AllocatedCContiguousView<T>>>(
+      AllocatedCContiguousView<T>(numRows, numCols, init)) {}
 
 template<typename T>
 T* DensePredictionMatrix<T>::get() {
-    return array_;
+    return this->view.array;
 }
 
 template<typename T>
 T* DensePredictionMatrix<T>::release() {
-    T* ptr = array_;
-    array_ = nullptr;
-    return ptr;
+    return this->view.release();
 }
 
 template class DensePredictionMatrix<uint8>;
