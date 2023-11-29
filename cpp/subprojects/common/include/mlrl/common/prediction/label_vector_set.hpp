@@ -119,7 +119,7 @@ class LabelVectorSet final : public ILabelVectorSet {
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
-          const IBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& ruleList,
+          const IBinaryPredictorFactory& factory, const CsrView<const float32>& featureMatrix, const RuleList& ruleList,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
@@ -129,8 +129,8 @@ class LabelVectorSet final : public ILabelVectorSet {
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-          const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& ruleList,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const ISparseBinaryPredictorFactory& factory, const CsrView<const float32>& featureMatrix,
+          const RuleList& ruleList, const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
@@ -139,7 +139,7 @@ class LabelVectorSet final : public ILabelVectorSet {
                                                               uint32 numLabels) const override;
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
-                                                              const CsrFeatureMatrix& featureMatrix,
+                                                              const CsrView<const float32>& featureMatrix,
                                                               const RuleList& ruleList,
                                                               uint32 numLabels) const override;
 
@@ -149,8 +149,8 @@ class LabelVectorSet final : public ILabelVectorSet {
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
-          const IProbabilityPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& ruleList,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IProbabilityPredictorFactory& factory, const CsrView<const float32>& featureMatrix,
+          const RuleList& ruleList, const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 };
 

@@ -1,6 +1,5 @@
 #include "mlrl/common/prediction/label_vector_set.hpp"
 
-#include "mlrl/common/input/feature_matrix_csr.hpp"
 #include "mlrl/common/model/rule_list.hpp"
 #include "mlrl/common/prediction/predictor_binary.hpp"
 #include "mlrl/common/prediction/predictor_probability.hpp"
@@ -116,7 +115,7 @@ std::unique_ptr<IBinaryPredictor> LabelVectorSet::createBinaryPredictor(
 }
 
 std::unique_ptr<IBinaryPredictor> LabelVectorSet::createBinaryPredictor(
-  const IBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
+  const IBinaryPredictorFactory& factory, const CsrView<const float32>& featureMatrix, const RuleList& model,
   const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
   const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, marginalProbabilityCalibrationModel,
@@ -132,7 +131,7 @@ std::unique_ptr<ISparseBinaryPredictor> LabelVectorSet::createSparseBinaryPredic
 }
 
 std::unique_ptr<ISparseBinaryPredictor> LabelVectorSet::createSparseBinaryPredictor(
-  const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
+  const ISparseBinaryPredictorFactory& factory, const CsrView<const float32>& featureMatrix, const RuleList& model,
   const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
   const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, marginalProbabilityCalibrationModel,
@@ -146,7 +145,7 @@ std::unique_ptr<IScorePredictor> LabelVectorSet::createScorePredictor(
 }
 
 std::unique_ptr<IScorePredictor> LabelVectorSet::createScorePredictor(const IScorePredictorFactory& factory,
-                                                                      const CsrFeatureMatrix& featureMatrix,
+                                                                      const CsrView<const float32>& featureMatrix,
                                                                       const RuleList& model, uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, numLabels);
 }
@@ -160,7 +159,7 @@ std::unique_ptr<IProbabilityPredictor> LabelVectorSet::createProbabilityPredicto
 }
 
 std::unique_ptr<IProbabilityPredictor> LabelVectorSet::createProbabilityPredictor(
-  const IProbabilityPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
+  const IProbabilityPredictorFactory& factory, const CsrView<const float32>& featureMatrix, const RuleList& model,
   const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
   const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, marginalProbabilityCalibrationModel,

@@ -1,6 +1,5 @@
 #include "mlrl/common/prediction/label_space_info_no.hpp"
 
-#include "mlrl/common/input/feature_matrix_csr.hpp"
 #include "mlrl/common/model/rule_list.hpp"
 #include "mlrl/common/prediction/predictor_binary.hpp"
 #include "mlrl/common/prediction/predictor_probability.hpp"
@@ -28,7 +27,7 @@ class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
         }
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
-          const IBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
+          const IBinaryPredictorFactory& factory, const CsrView<const float32>& featureMatrix, const RuleList& model,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override {
             return factory.create(featureMatrix, model, nullptr, marginalProbabilityCalibrationModel,
@@ -44,8 +43,8 @@ class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
         }
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-          const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const ISparseBinaryPredictorFactory& factory, const CsrView<const float32>& featureMatrix,
+          const RuleList& model, const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override {
             return factory.create(featureMatrix, model, nullptr, marginalProbabilityCalibrationModel,
                                   jointProbabilityCalibrationModel, numLabels);
@@ -58,7 +57,7 @@ class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
         }
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
-                                                              const CsrFeatureMatrix& featureMatrix,
+                                                              const CsrView<const float32>& featureMatrix,
                                                               const RuleList& model, uint32 numLabels) const override {
             return factory.create(featureMatrix, model, nullptr, numLabels);
         }
@@ -72,8 +71,8 @@ class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
         }
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
-          const IProbabilityPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IProbabilityPredictorFactory& factory, const CsrView<const float32>& featureMatrix,
+          const RuleList& model, const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override {
             return factory.create(featureMatrix, model, nullptr, marginalProbabilityCalibrationModel,
                                   jointProbabilityCalibrationModel, numLabels);
