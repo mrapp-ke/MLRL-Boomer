@@ -11,7 +11,7 @@
  * @tparam T The type of the data that is stored in the matrix
  */
 template<typename T>
-class CContiguousMatrix : public CContiguousView<T> {
+class CContiguousMatrix final : public IterableDenseMatrixDecorator<MatrixDecorator<AllocatedCContiguousView<T>>> {
     public:
 
         /**
@@ -19,7 +19,7 @@ class CContiguousMatrix : public CContiguousView<T> {
          * @param numCols   The number of columns in the matrix
          * @param init      True, if all elements in the matrix should be value-initialized, false otherwise
          */
-        CContiguousMatrix(uint32 numRows, uint32 numCols, bool init = false);
-
-        virtual ~CContiguousMatrix() override;
+        CContiguousMatrix(uint32 numRows, uint32 numCols, bool init = false)
+            : IterableDenseMatrixDecorator<MatrixDecorator<AllocatedCContiguousView<T>>>(
+              AllocatedCContiguousView<T>(numRows, numCols, init)) {}
 };

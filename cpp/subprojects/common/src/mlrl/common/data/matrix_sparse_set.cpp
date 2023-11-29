@@ -168,7 +168,7 @@ uint32 SparseSetMatrix<T>::getNumRows() const {
 
 template<typename T>
 uint32 SparseSetMatrix<T>::getNumCols() const {
-    return indexMatrix_.numCols;
+    return indexMatrix_.getNumCols();
 }
 
 template<typename T>
