@@ -170,7 +170,7 @@ namespace boosting {
                     DensePredictionMatrix<float64>& applyNext(const FeatureMatrix& featureMatrix, uint32 numThreads,
                                                               typename Model::const_iterator rulesBegin,
                                                               typename Model::const_iterator rulesEnd) override {
-                        ScorePredictionDelegate<FeatureMatrix, Model> delegate(predictionMatrix_);
+                        ScorePredictionDelegate<FeatureMatrix, Model> delegate(predictionMatrix_.getView());
                         PredictionDispatcher<float64, FeatureMatrix, Model>().predict(delegate, featureMatrix,
                                                                                       rulesBegin, rulesEnd, numThreads);
                         return predictionMatrix_;
@@ -212,7 +212,7 @@ namespace boosting {
             std::unique_ptr<DensePredictionMatrix<float64>> predict(uint32 maxRules) const override {
                 std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
                   std::make_unique<DensePredictionMatrix<float64>>(featureMatrix_.numRows, numLabels_, true);
-                ScorePredictionDelegate<FeatureMatrix, Model> delegate(*predictionMatrixPtr);
+                ScorePredictionDelegate<FeatureMatrix, Model> delegate(predictionMatrixPtr->getView());
                 PredictionDispatcher<float64, FeatureMatrix, Model>().predict(
                   delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
                 return predictionMatrixPtr;
