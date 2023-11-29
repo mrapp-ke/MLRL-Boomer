@@ -149,7 +149,7 @@ class IterableDenseMatrixDecorator : public Matrix {
          * @return      A `value_const_iterator` to the beginning of the row or column
          */
         value_const_iterator values_cbegin(uint32 index) const {
-            return &Matrix::view.values_cbegin(index);
+            return Matrix::view.values_cbegin(index);
         }
 
         /**
@@ -160,7 +160,7 @@ class IterableDenseMatrixDecorator : public Matrix {
          * @return      A `value_const_iterator` to the end of the row or column
          */
         value_const_iterator values_cend(uint32 index) const {
-            return &Matrix::view.values_cend(index);
+            return Matrix::view.values_cend(index);
         }
 
         /**
@@ -171,7 +171,7 @@ class IterableDenseMatrixDecorator : public Matrix {
          * @return      A `value_iterator` to the beginning of the row or column
          */
         value_iterator values_begin(uint32 index) {
-            return &Matrix::view.values_begin(index);
+            return Matrix::view.values_begin(index);
         }
 
         /**
@@ -182,6 +182,6 @@ class IterableDenseMatrixDecorator : public Matrix {
          * @return      A `value_iterator` to the end of the row or column
          */
         value_iterator values_end(uint32 index) {
-            return &Matrix::view.values_end(index);
+            return Matrix::view.values_end(index);
         }
 };
