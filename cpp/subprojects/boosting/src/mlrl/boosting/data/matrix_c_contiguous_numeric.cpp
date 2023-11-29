@@ -1,10 +1,17 @@
 #include "mlrl/boosting/data/matrix_c_contiguous_numeric.hpp"
 
+#include "mlrl/common/util/memory.hpp"
+
 namespace boosting {
 
     template<typename T>
     NumericCContiguousMatrix<T>::NumericCContiguousMatrix(uint32 numRows, uint32 numCols, bool init)
-        : CContiguousMatrix<T>(numRows, numCols, init) {}
+        : CContiguousView<T>(allocateMemory<T>(numRows * numCols, init), numRows, numCols) {}
+
+    template<typename T>
+    NumericCContiguousMatrix<T>::~NumericCContiguousMatrix() {
+        freeMemory(this->array);
+    }
 
     template<typename T>
     void NumericCContiguousMatrix<T>::addToRowFromSubset(uint32 row, typename View<T>::const_iterator begin,

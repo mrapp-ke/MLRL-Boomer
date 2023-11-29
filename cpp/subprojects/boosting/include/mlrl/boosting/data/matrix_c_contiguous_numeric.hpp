@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/matrix_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
@@ -15,7 +15,7 @@ namespace boosting {
      * @tparam T The type of the values that are stored in the matrix
      */
     template<typename T>
-    class NumericCContiguousMatrix final : public CContiguousMatrix<T> {
+    class NumericCContiguousMatrix final : public CContiguousView<T> {
         public:
 
             /**
@@ -24,6 +24,8 @@ namespace boosting {
              * @param init      True, if all elements in the matrix should be value-initialized, false otherwise
              */
             NumericCContiguousMatrix(uint32 numRows, uint32 numCols, bool init = false);
+
+            ~NumericCContiguousMatrix() override;
 
             /**
              * Adds all values in another vector to certain elements, whose positions are given as a
