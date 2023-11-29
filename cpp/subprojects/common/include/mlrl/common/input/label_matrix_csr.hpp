@@ -90,17 +90,12 @@ class CsrLabelMatrix final : public BinaryCsrView,
         CsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols);
 
         /**
-         * The type of the view that provides access to the values that are stored in a single row of the label matrix.
-         */
-        typedef const View view_type;
-
-        /**
          * Creates and returns a view that provides access to the values at a specific row of the label matrix.
          *
          * @param row   The row
-         * @return      An object of type `view_type` that has been created
+         * @return      An object of type `View` that has been created
          */
-        view_type createView(uint32 row) const;
+        const View createView(uint32 row) const;
 
         bool isSparse() const override;
 

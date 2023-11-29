@@ -38,8 +38,8 @@ float32 CsrLabelMatrix::calculateLabelCardinality() const {
     return labelCardinality;
 }
 
-CsrLabelMatrix::view_type CsrLabelMatrix::createView(uint32 row) const {
-    return CsrLabelMatrix::view_type(*this, row);
+const CsrLabelMatrix::View CsrLabelMatrix::createView(uint32 row) const {
+    return CsrLabelMatrix::View(*this, row);
 }
 
 std::unique_ptr<LabelVector> CsrLabelMatrix::createLabelVector(uint32 row) const {
