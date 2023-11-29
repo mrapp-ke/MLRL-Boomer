@@ -15,7 +15,7 @@ class SparseMatrix : public BinarySparseMatrix {
     public:
 
         /**
-         * A pointer to the array that stores the values, the view provides access to.
+         * A pointer to the array that stores the non-zero values, the view provides access to.
          */
         T* values;
 
@@ -60,6 +60,19 @@ class SparseMatrix : public BinarySparseMatrix {
          * An iterator that provides access to the values in the view and allows to modify them.
          */
         typedef typename View<value_type>::iterator value_iterator;
+
+        /**
+         * Releases the ownership of the array that stores the non-zero values, the view provides access to. As a
+         * result, the behavior of this view becomes undefined and it should not be used anymore. The caller is
+         * responsible for freeing the memory that is occupied by the array.
+         *
+         * @return  A pointer to an array that stores the non-zero values, the view provides access to
+         */
+        value_type* releaseValues() {
+            value_type* ptr = values;
+            values = nullptr;
+            return ptr;
+        }
 };
 
 /**
