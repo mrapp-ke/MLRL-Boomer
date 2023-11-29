@@ -159,7 +159,8 @@ std::unique_ptr<IBinaryPredictor> RuleList::createBinaryPredictor(
 }
 
 std::unique_ptr<IBinaryPredictor> RuleList::createBinaryPredictor(
-  const IBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const ILabelSpaceInfo& labelSpaceInfo,
+  const IBinaryPredictorFactory& factory, const CsrView<const float32>& featureMatrix,
+  const ILabelSpaceInfo& labelSpaceInfo,
   const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
   const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
     return labelSpaceInfo.createBinaryPredictor(factory, featureMatrix, *this, marginalProbabilityCalibrationModel,
@@ -176,7 +177,7 @@ std::unique_ptr<ISparseBinaryPredictor> RuleList::createSparseBinaryPredictor(
 }
 
 std::unique_ptr<ISparseBinaryPredictor> RuleList::createSparseBinaryPredictor(
-  const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
+  const ISparseBinaryPredictorFactory& factory, const CsrView<const float32>& featureMatrix,
   const ILabelSpaceInfo& labelSpaceInfo,
   const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
   const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
@@ -192,7 +193,7 @@ std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(const IScorePred
 }
 
 std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(const IScorePredictorFactory& factory,
-                                                                const CsrFeatureMatrix& featureMatrix,
+                                                                const CsrView<const float32>& featureMatrix,
                                                                 const ILabelSpaceInfo& labelSpaceInfo,
                                                                 uint32 numLabels) const {
     return labelSpaceInfo.createScorePredictor(factory, featureMatrix, *this, numLabels);
@@ -208,7 +209,7 @@ std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(
 }
 
 std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(
-  const IProbabilityPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix,
+  const IProbabilityPredictorFactory& factory, const CsrView<const float32>& featureMatrix,
   const ILabelSpaceInfo& labelSpaceInfo,
   const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
   const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
