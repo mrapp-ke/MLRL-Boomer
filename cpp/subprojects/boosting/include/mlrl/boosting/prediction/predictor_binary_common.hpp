@@ -164,7 +164,8 @@ namespace boosting {
 
                 if (binaryTransformationPtr_) {
                     CContiguousMatrix<float64> scoreMatrix(numThreads_, numLabels_);
-                    PredictionDelegate delegate(scoreMatrix, predictionMatrixPtr->getView(), *binaryTransformationPtr_);
+                    PredictionDelegate delegate(scoreMatrix.getView(), predictionMatrixPtr->getView(),
+                                                *binaryTransformationPtr_);
                     PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(
                       delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
                 }
@@ -350,7 +351,7 @@ namespace boosting {
 
                 if (binaryTransformationPtr_) {
                     CContiguousMatrix<float64> scoreMatrix(numThreads_, numLabels_);
-                    PredictionDelegate delegate(scoreMatrix, predictionMatrix, *binaryTransformationPtr_);
+                    PredictionDelegate delegate(scoreMatrix.getView(), predictionMatrix, *binaryTransformationPtr_);
                     numNonZeroElements = BinarySparsePredictionDispatcher<FeatureMatrix, Model>().predict(
                       delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
                 } else {
