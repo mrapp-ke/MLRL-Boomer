@@ -325,7 +325,7 @@ class RuleList final : public IRuleList {
                        IHead::PartialHeadVisitor partialHeadVisitor) const override;
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
-          const IBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+          const IBinaryPredictorFactory& factory, const CContiguousView<const float32>& featureMatrix,
           const ILabelSpaceInfo& labelSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
@@ -337,7 +337,7 @@ class RuleList final : public IRuleList {
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-          const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+          const ISparseBinaryPredictorFactory& factory, const CContiguousView<const float32>& featureMatrix,
           const ILabelSpaceInfo& labelSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
@@ -349,7 +349,7 @@ class RuleList final : public IRuleList {
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
-                                                              const CContiguousFeatureMatrix& featureMatrix,
+                                                              const CContiguousView<const float32>& featureMatrix,
                                                               const ILabelSpaceInfo& labelSpaceInfo,
                                                               uint32 numLabels) const override;
 
@@ -359,7 +359,7 @@ class RuleList final : public IRuleList {
                                                               uint32 numLabels) const override;
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
-          const IProbabilityPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+          const IProbabilityPredictorFactory& factory, const CContiguousView<const float32>& featureMatrix,
           const ILabelSpaceInfo& labelSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;

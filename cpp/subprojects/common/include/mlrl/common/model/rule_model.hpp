@@ -3,13 +3,12 @@
  */
 #pragma once
 
-#include "mlrl/common/data/types.hpp"
+#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 
 #include <memory>
 
 // Forward declarations
 class ILabelSpaceInfo;
-class CContiguousFeatureMatrix;
 class CsrFeatureMatrix;
 class IMarginalProbabilityCalibrationModel;
 class IJointProbabilityCalibrationModel;
@@ -57,8 +56,8 @@ class MLRLCOMMON_API IRuleModel {
          *
          * @param factory                             A reference to an object of type `IBinaryPredictorFactory` that
          *                                            should be used to create the instance
-         * @param featureMatrix                       A reference to an object of type `CContiguousFeatureMatrix` that
-         *                                            provides row-wise access to the features of the query examples
+         * @param featureMatrix                       A reference to an object of type `CContiguousView` that provides
+         *                                            row-wise access to the features of the query examples
          * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
          *                                            information about the label space that may be used as a basis for
          *                                            making predictions
@@ -73,7 +72,7 @@ class MLRLCOMMON_API IRuleModel {
          *                                            been created
          */
         virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
-          const IBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+          const IBinaryPredictorFactory& factory, const CContiguousView<const float32>& featureMatrix,
           const ILabelSpaceInfo& labelSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
@@ -111,8 +110,8 @@ class MLRLCOMMON_API IRuleModel {
          *
          * @param factory                             A reference to an object of type `IBinaryPredictorFactory` that
          *                                            should be used to create the instance
-         * @param featureMatrix                       A reference to an object of type `CContiguousFeatureMatrix` that
-         *                                            provides row-wise access to the features of the query examples
+         * @param featureMatrix                       A reference to an object of type `CContiguousView` that provides
+         *                                            row-wise access to the features of the query examples
          * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
          *                                            information about the label space that may be used as a basis for
          *                                            making predictions
@@ -127,7 +126,7 @@ class MLRLCOMMON_API IRuleModel {
          *                                            that has been created
          */
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-          const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+          const ISparseBinaryPredictorFactory& factory, const CContiguousView<const float32>& featureMatrix,
           const ILabelSpaceInfo& labelSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
@@ -165,17 +164,16 @@ class MLRLCOMMON_API IRuleModel {
          *
          * @param factory         A reference to an object of type `IScorePredictorFactory` that should be used to
          *                        create the instance
-         * @param featureMatrix   A reference to an object of type `CContiguousFeatureMatrix` that provides row-wise
-         *                        access to the features of the query examples
+         * @param featureMatrix   A reference to an object of type `CContiguousView` that provides row-wise access to
+         *                       the features of the query examples
          * @param labelSpaceInfo  A reference to an object of type `ILabelSpaceInfo` that provides information about the
          *                        label space that may be used as a basis for making predictions
          * @param numLabels       The number of labels to predict for
          * @return                An unique pointer to an object of type `IScorePredictor` that has been created
          */
-        virtual std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
-                                                                      const CContiguousFeatureMatrix& featureMatrix,
-                                                                      const ILabelSpaceInfo& labelSpaceInfo,
-                                                                      uint32 numLabels) const = 0;
+        virtual std::unique_ptr<IScorePredictor> createScorePredictor(
+          const IScorePredictorFactory& factory, const CContiguousView<const float32>& featureMatrix,
+          const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IScorePredictor`, based on the type of this rule-based
@@ -201,8 +199,8 @@ class MLRLCOMMON_API IRuleModel {
          *
          * @param factory                             A reference to an object of type `IProbabilityPredictorFactory`
          *                                            that should be used to create the instance
-         * @param featureMatrix                       A reference to an object of type `CContiguousFeatureMatrix` that
-         *                                            provides row-wise access to the features of the query examples
+         * @param featureMatrix                       A reference to an object of type `CContiguousView` that provides
+         *                                            row-wise access to the features of the query examples
          * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
          *                                            information about the label space that may be used as a basis for
          *                                            making predictions
@@ -217,7 +215,7 @@ class MLRLCOMMON_API IRuleModel {
          *                                            that has been created
          */
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
-          const IProbabilityPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix,
+          const IProbabilityPredictorFactory& factory, const CContiguousView<const float32>& featureMatrix,
           const ILabelSpaceInfo& labelSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
