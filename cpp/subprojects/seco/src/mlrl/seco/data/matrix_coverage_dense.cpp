@@ -5,7 +5,9 @@
 namespace seco {
 
     DenseCoverageMatrix::DenseCoverageMatrix(uint32 numRows, uint32 numCols, float64 sumOfUncoveredWeights)
-        : CContiguousMatrix<uint32>(numRows, numCols, true), sumOfUncoveredWeights_(sumOfUncoveredWeights) {}
+        : IterableDenseMatrixDecorator<MatrixDecorator<AllocatedCContiguousView<uint32>>>(
+          AllocatedCContiguousView<uint32>(numRows, numCols, true)),
+          sumOfUncoveredWeights_(sumOfUncoveredWeights) {}
 
     float64 DenseCoverageMatrix::getSumOfUncoveredWeights() const {
         return sumOfUncoveredWeights_;
@@ -17,10 +19,11 @@ namespace seco {
                                                View<float64>::const_iterator predictionEnd,
                                                CompleteIndexVector::const_iterator indicesBegin,
                                                CompleteIndexVector::const_iterator indicesEnd) {
+        uint32 numCols = this->getNumCols();
         value_iterator coverageIterator = this->values_begin(row);
         auto majorityIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
 
-        for (uint32 i = 0; i < Matrix::numCols; i++) {
+        for (uint32 i = 0; i < numCols; i++) {
             bool predictedLabel = predictionBegin[i];
             bool majorityLabel = *majorityIterator;
 
@@ -75,10 +78,11 @@ namespace seco {
                                                View<float64>::const_iterator predictionEnd,
                                                CompleteIndexVector::const_iterator indicesBegin,
                                                CompleteIndexVector::const_iterator indicesEnd) {
+        uint32 numCols = this->getNumCols();
         value_iterator coverageIterator = this->values_begin(row);
         auto majorityIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
 
-        for (uint32 i = 0; i < Matrix::numCols; i++) {
+        for (uint32 i = 0; i < numCols; i++) {
             bool predictedLabel = predictionBegin[i];
             bool majorityLabel = *majorityIterator;
 

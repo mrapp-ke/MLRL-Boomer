@@ -13,7 +13,8 @@ namespace seco {
      * A two-dimensional matrix that stores how often individual examples and labels have been covered in a C-contiguous
      * array.
      */
-    class DenseCoverageMatrix final : public CContiguousMatrix<uint32> {
+    class DenseCoverageMatrix final
+        : public IterableDenseMatrixDecorator<MatrixDecorator<AllocatedCContiguousView<uint32>>> {
         private:
 
             float64 sumOfUncoveredWeights_;
