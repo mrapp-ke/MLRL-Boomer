@@ -95,12 +95,12 @@ class IterableSparseMatrixDecorator : public IterableBinarySparseMatrixDecorator
         /**
          * An iterator that provides read-only access to the values in the matrix.
          */
-        typedef typename Matrix::view_type::const_iterator value_const_iterator;
+        typedef typename Matrix::view_type::value_const_iterator value_const_iterator;
 
         /**
          * An iterator that provides access to the values in the matrix and allows to modify them.
          */
-        typedef typename Matrix::view_type::iterator value_iterator;
+        typedef typename Matrix::view_type::value_iterator value_iterator;
 
         /**
          * Returns a `value_const_iterator` to the beginning of the values in a specific row or column of the matrix,

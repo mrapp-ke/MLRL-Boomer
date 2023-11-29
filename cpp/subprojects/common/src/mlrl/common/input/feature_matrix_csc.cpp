@@ -11,7 +11,7 @@
  * An implementation of the type `ICscFeatureMatrix` that provides column-wise read-only access to the feature values of
  * examples that are stored in a pre-allocated sparse matrix in the compressed sparse column (CSC) format.
  */
-class CscFeatureMatrix final : public CscView<const float32>,
+class CscFeatureMatrix final : public IterableSparseMatrixDecorator<MatrixDecorator<CscView<const float32>>>,
                                public ICscFeatureMatrix {
     public:
 
@@ -27,18 +27,19 @@ class CscFeatureMatrix final : public CscView<const float32>,
          * @param numCols   The number of columns in the feature matrix
          */
         CscFeatureMatrix(const float32* values, uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
-            : CscView<const float32>(values, indices, indptr, numRows, numCols) {}
+            : IterableSparseMatrixDecorator<MatrixDecorator<CscView<const float32>>>(
+              CscView<const float32>(values, indices, indptr, numRows, numCols)) {}
 
         bool isSparse() const override {
             return true;
         }
 
         uint32 getNumExamples() const override {
-            return Matrix::numRows;
+            return this->getNumRows();
         }
 
         uint32 getNumFeatures() const override {
-            return Matrix::numCols;
+            return this->getNumCols();
         }
 
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override {
