@@ -11,24 +11,26 @@ CsrLabelMatrix::View::View(const CsrLabelMatrix& labelMatrix, uint32 row)
       labelMatrix.indices_cbegin(row), labelMatrix.indices_cend(row) - labelMatrix.indices_cbegin(row))) {}
 
 CsrLabelMatrix::CsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
-    : BinaryCsrView(indices, indptr, numRows, numCols) {}
+    : IterableBinarySparseMatrixDecorator<MatrixDecorator<BinaryCsrView>>(
+      BinaryCsrView(indices, indptr, numRows, numCols)) {}
 
 bool CsrLabelMatrix::isSparse() const {
     return true;
 }
 
 uint32 CsrLabelMatrix::getNumExamples() const {
-    return Matrix::numRows;
+    return this->getNumRows();
 }
 
 uint32 CsrLabelMatrix::getNumLabels() const {
-    return Matrix::numCols;
+    return this->getNumCols();
 }
 
 float32 CsrLabelMatrix::calculateLabelCardinality() const {
+    uint32 numRows = this->getNumRows();
     float32 labelCardinality = 0;
 
-    for (uint32 i = 0; i < Matrix::numRows; i++) {
+    for (uint32 i = 0; i < numRows; i++) {
         index_const_iterator indicesBegin = this->indices_cbegin(i);
         index_const_iterator indicesEnd = this->indices_cend(i);
         uint32 numRelevantLabels = indicesEnd - indicesBegin;
@@ -54,7 +56,7 @@ std::unique_ptr<LabelVector> CsrLabelMatrix::createLabelVector(uint32 row) const
 
 std::unique_ptr<IStatisticsProvider> CsrLabelMatrix::createStatisticsProvider(
   const IStatisticsProviderFactory& factory) const {
-    return factory.create(*this);
+    return factory.create(this->getView());
 }
 
 std::unique_ptr<IPartitionSampling> CsrLabelMatrix::createPartitionSampling(

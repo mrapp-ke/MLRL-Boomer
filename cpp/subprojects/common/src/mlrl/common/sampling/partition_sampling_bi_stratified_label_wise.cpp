@@ -30,7 +30,7 @@ class LabelWiseStratifiedBiPartitionSampling final : public IPartitionSampling {
          */
         LabelWiseStratifiedBiPartitionSampling(const LabelMatrix& labelMatrix, uint32 numTraining, uint32 numHoldout)
             : partition_(numTraining, numHoldout),
-              stratification_(labelMatrix, IndexIterator(), IndexIterator(labelMatrix.numRows)) {}
+              stratification_(labelMatrix, IndexIterator(), IndexIterator(labelMatrix.getNumRows())) {}
 
         IPartition& partition(RNG& rng) override {
             stratification_.sampleBiPartition(partition_, rng);
@@ -57,7 +57,7 @@ class LabelWiseStratifiedBiPartitionSamplingFactory final : public IPartitionSam
         LabelWiseStratifiedBiPartitionSamplingFactory(float32 holdoutSetSize) : holdoutSetSize_(holdoutSetSize) {}
 
         std::unique_ptr<IPartitionSampling> create(const CContiguousLabelMatrix& labelMatrix) const override {
-            uint32 numExamples = labelMatrix.numRows;
+            uint32 numExamples = labelMatrix.getNumRows();
             uint32 numHoldout = (uint32) (holdoutSetSize_ * numExamples);
             uint32 numTraining = numExamples - numHoldout;
             return std::make_unique<LabelWiseStratifiedBiPartitionSampling<CContiguousLabelMatrix>>(
@@ -65,7 +65,7 @@ class LabelWiseStratifiedBiPartitionSamplingFactory final : public IPartitionSam
         }
 
         std::unique_ptr<IPartitionSampling> create(const CsrLabelMatrix& labelMatrix) const override {
-            uint32 numExamples = labelMatrix.numRows;
+            uint32 numExamples = labelMatrix.getNumRows();
             uint32 numHoldout = (uint32) (holdoutSetSize_ * numExamples);
             uint32 numTraining = numExamples - numHoldout;
             return std::make_unique<LabelWiseStratifiedBiPartitionSampling<CsrLabelMatrix>>(labelMatrix, numTraining,
