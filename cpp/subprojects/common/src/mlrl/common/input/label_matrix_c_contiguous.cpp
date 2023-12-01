@@ -8,31 +8,34 @@
 
 CContiguousLabelMatrix::View::View(const CContiguousLabelMatrix& labelMatrix, uint32 row)
     : IterableVectorDecorator<VectorDecorator<Vector<const uint8>>>(
-      Vector<const uint8>(labelMatrix.values_cbegin(row), labelMatrix.numCols)) {}
+      Vector<const uint8>(labelMatrix.values_cbegin(row), labelMatrix.getNumCols())) {}
 
 CContiguousLabelMatrix::CContiguousLabelMatrix(const uint8* array, uint32 numRows, uint32 numCols)
-    : CContiguousView<const uint8>(array, numRows, numCols) {}
+    : IterableDenseMatrixDecorator<MatrixDecorator<CContiguousView<const uint8>>>(
+      CContiguousView<const uint8>(array, numRows, numCols)) {}
 
 bool CContiguousLabelMatrix::isSparse() const {
     return false;
 }
 
 uint32 CContiguousLabelMatrix::getNumExamples() const {
-    return Matrix::numRows;
+    return this->getNumRows();
 }
 
 uint32 CContiguousLabelMatrix::getNumLabels() const {
-    return Matrix::numCols;
+    return this->getNumCols();
 }
 
 float32 CContiguousLabelMatrix::calculateLabelCardinality() const {
+    uint32 numRows = this->getNumRows();
+    uint32 numCols = this->getNumCols();
     float32 labelCardinality = 0;
 
-    for (uint32 i = 0; i < Matrix::numRows; i++) {
+    for (uint32 i = 0; i < numRows; i++) {
         value_const_iterator labelIterator = this->values_cbegin(i);
         uint32 numRelevantLabels = 0;
 
-        for (uint32 j = 0; j < Matrix::numCols; j++) {
+        for (uint32 j = 0; j < numCols; j++) {
             if (labelIterator[j]) {
                 numRelevantLabels++;
             }
@@ -49,7 +52,7 @@ const CContiguousLabelMatrix::View CContiguousLabelMatrix::createView(uint32 row
 }
 
 std::unique_ptr<LabelVector> CContiguousLabelMatrix::createLabelVector(uint32 row) const {
-    uint32 numCols = Matrix::numCols;
+    uint32 numCols = this->getNumCols();
     std::unique_ptr<ResizableBinarySparseArrayVector> labelVectorPtr =
       std::make_unique<ResizableBinarySparseArrayVector>(numCols);
     ResizableBinarySparseArrayVector::iterator iterator = labelVectorPtr->begin();
@@ -69,7 +72,7 @@ std::unique_ptr<LabelVector> CContiguousLabelMatrix::createLabelVector(uint32 ro
 
 std::unique_ptr<IStatisticsProvider> CContiguousLabelMatrix::createStatisticsProvider(
   const IStatisticsProviderFactory& factory) const {
-    return factory.create(*this);
+    return factory.create(this->getView());
 }
 
 std::unique_ptr<IPartitionSampling> CContiguousLabelMatrix::createPartitionSampling(
