@@ -195,11 +195,6 @@ class MLRLCOMMON_API ViewDecorator {
          */
         View view;
 
-        /**
-         * The type of the view, the data structure is backed by.
-         */
-        typedef View view_type;
-
     public:
 
         /**
@@ -208,6 +203,11 @@ class MLRLCOMMON_API ViewDecorator {
         ViewDecorator(View&& view) : view(std::move(view)) {}
 
         virtual ~ViewDecorator() {}
+
+        /**
+         * The type of the view, the data structure is backed by.
+         */
+        typedef View view_type;
 
         /**
          * Returns a const reference to the view, the data structure is backed by.
