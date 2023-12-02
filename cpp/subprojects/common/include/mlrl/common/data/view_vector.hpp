@@ -4,7 +4,6 @@
 #pragma once
 
 #include "mlrl/common/data/view.hpp"
-#include "mlrl/common/util/view_functions.hpp"
 
 /**
  * A one-dimensional view that provides access to values stored in a pre-allocated array of a specific size.
@@ -202,29 +201,5 @@ class MLRLCOMMON_API ResizableVectorDecorator : public Vector {
          */
         virtual void setNumElements(uint32 numElements, bool freeMemory) {
             Vector::view.resize(numElements, freeMemory);
-        }
-};
-
-/**
- * Allows to set all values stored in a vector to zero.
- *
- * @tparam Vector The type of the vector
- */
-template<typename Vector>
-class MLRLCOMMON_API ClearableVectorDecorator : public Vector {
-    public:
-
-        /**
-         * @param view The view, the vector should be backed by
-         */
-        ClearableVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
-
-        virtual ~ClearableVectorDecorator() override {}
-
-        /**
-         * Sets all values stored in the vector to zero.
-         */
-        virtual void clear() {
-            setViewToZeros(Vector::view.array, Vector::view.numElements);
         }
 };

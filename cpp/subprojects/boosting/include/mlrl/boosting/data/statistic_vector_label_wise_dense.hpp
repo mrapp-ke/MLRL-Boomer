@@ -15,7 +15,7 @@ namespace boosting {
      * and Hessian is stored.
      */
     class DenseLabelWiseStatisticVector final
-        : public ClearableVectorDecorator<IterableVectorDecorator<VectorDecorator<AllocatedVector<Tuple<float64>>>>> {
+        : public ClearableViewDecorator<IterableVectorDecorator<VectorDecorator<AllocatedVector<Tuple<float64>>>>> {
         public:
 
             /**
