@@ -165,9 +165,9 @@ namespace boosting {
         }
     }
 
-    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseHistogramConstView& view, uint32 row,
+    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseHistogramView& view, uint32 row,
                                                      const CompleteIndexVector& indices) {
-        SparseLabelWiseHistogramConstView::weight_const_iterator weightIterator = view.weights_cbegin();
+        SparseLabelWiseHistogramView::weight_const_iterator weightIterator = view.weights_cbegin();
         float64 binWeight = weightIterator[row];
 
         if (binWeight != 0) {
@@ -176,9 +176,9 @@ namespace boosting {
         }
     }
 
-    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseHistogramConstView& view, uint32 row,
+    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseHistogramView& view, uint32 row,
                                                      const PartialIndexVector& indices) {
-        SparseLabelWiseHistogramConstView::weight_const_iterator weightIterator = view.weights_cbegin();
+        SparseLabelWiseHistogramView::weight_const_iterator weightIterator = view.weights_cbegin();
         float64 binWeight = weightIterator[row];
 
         if (binWeight != 0) {
@@ -187,9 +187,9 @@ namespace boosting {
         }
     }
 
-    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseHistogramConstView& view, uint32 row,
+    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseHistogramView& view, uint32 row,
                                                      const CompleteIndexVector& indices, float64 weight) {
-        SparseLabelWiseHistogramConstView::weight_const_iterator weightIterator = view.weights_cbegin();
+        SparseLabelWiseHistogramView::weight_const_iterator weightIterator = view.weights_cbegin();
         float64 binWeight = weightIterator[row] * weight;
 
         if (binWeight != 0) {
@@ -198,9 +198,9 @@ namespace boosting {
         }
     }
 
-    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseHistogramConstView& view, uint32 row,
+    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseHistogramView& view, uint32 row,
                                                      const PartialIndexVector& indices, float64 weight) {
-        SparseLabelWiseHistogramConstView::weight_const_iterator weightIterator = view.weights_cbegin();
+        SparseLabelWiseHistogramView::weight_const_iterator weightIterator = view.weights_cbegin();
         float64 binWeight = weightIterator[row] * weight;
 
         if (binWeight != 0) {
