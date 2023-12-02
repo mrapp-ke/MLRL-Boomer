@@ -6,8 +6,6 @@
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/weight_vector_bit.hpp"
 
-#include <functional>
-#include <unordered_map>
 #include <vector>
 
 /**
@@ -24,15 +22,7 @@ class ExampleWiseStratification final {
 
         const uint32 numTotal_;
 
-        typedef typename LabelMatrix::View Key;
-
-        typedef typename LabelMatrix::View::Hash Hash;
-
-        typedef typename LabelMatrix::View::Pred Pred;
-
-        std::unordered_map<Key, std::vector<uint32>, Hash, Pred> map_;
-
-        std::vector<std::reference_wrapper<std::vector<uint32>>> order_;
+        std::vector<std::unique_ptr<std::vector<uint32>>> order_;
 
     public:
 
