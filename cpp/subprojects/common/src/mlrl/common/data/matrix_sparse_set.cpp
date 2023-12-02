@@ -2,7 +2,6 @@
 
 #include "mlrl/common/data/triple.hpp"
 #include "mlrl/common/data/tuple.hpp"
-#include "mlrl/common/util/view_functions.hpp"
 
 static const uint32 MAX_INDEX = std::numeric_limits<uint32>::max();
 

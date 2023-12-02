@@ -1,7 +1,5 @@
 #include "mlrl/boosting/data/statistic_view_example_wise_dense.hpp"
 
-#include "mlrl/common/util/view_functions.hpp"
-
 namespace boosting {
 
     DenseExampleWiseStatisticView::DenseExampleWiseStatisticView(uint32 numRows, uint32 numGradients,
