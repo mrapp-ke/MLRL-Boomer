@@ -31,65 +31,6 @@ class CContiguousLabelMatrix final : public IterableDenseMatrixDecorator<MatrixD
     public:
 
         /**
-         * Provides access to the values that are stored in a single row of a `CContiguousLabelMatrix`.
-         */
-        class View final : public IterableVectorDecorator<VectorDecorator<Vector<const uint8>>> {
-            public:
-
-                /**
-                 * Allows to compute hash values for objects of type `CContiguousLabelMatrix::View`.
-                 */
-                struct Hash final {
-                    public:
-
-                        /**
-                         * Computes and returns a hash value for an object of type `CContiguousLabelMatrix::View`.
-                         *
-                         * @param v A reference to an object of type `CContiguousLabelMatrix::View`
-                         * @return  The hash value
-                         */
-                        inline std::size_t operator()(const View& v) const {
-                            uint32 numElements = v.getNumElements();
-                            std::size_t hashValue = (std::size_t) numElements;
-                            View::const_iterator it = v.cbegin();
-
-                            for (uint32 i = 0; i < numElements; i++) {
-                                if (it[i]) {
-                                    hashValue ^= i + 0x9e3779b9 + (hashValue << 6) + (hashValue >> 2);
-                                }
-                            }
-
-                            return hashValue;
-                        }
-                };
-
-                /**
-                 * Allows to check whether two objects of type `CContiguousLabelMatrix::View` are equal or not.
-                 */
-                struct Pred final {
-                    public:
-
-                        /**
-                         * Returns whether two objects of type `CContiguousLabelMatrix::View` are equal or not.
-                         *
-                         * @param lhs   A reference to a first object of type `CContiguousLabelMatrix::View`
-                         * @param rhs   A reference to a second object of type `CContiguousLabelMatrix::View`
-                         * @return      True, if the given objects are equal, false otherwise
-                         */
-                        inline bool operator()(const View& lhs, const View& rhs) const {
-                            return compareViews(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(), rhs.getNumElements());
-                        }
-                };
-
-                /**
-                 * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix`, the view provides
-                 *                      access to
-                 * @param row           The row, the view provides access to
-                 */
-                View(const CContiguousLabelMatrix& labelMatrix, uint32 row);
-        };
-
-        /**
          * @param array     A pointer to a C-contiguous array of type `uint8` that stores the labels
          * @param numRows   The number of rows in the label matrix
          * @param numCols   The number of columns in the label matrix
@@ -97,12 +38,17 @@ class CContiguousLabelMatrix final : public IterableDenseMatrixDecorator<MatrixD
         CContiguousLabelMatrix(const uint8* array, uint32 numRows, uint32 numCols);
 
         /**
-         * Creates and returns a view that provides access to the values at a specific row of the label matrix.
-         *
-         * @param row   The row
-         * @return      An object of type `View` that has been created
+         * Provides read-only access to an individual row in the label matrix.
          */
-        const View createView(uint32 row) const;
+        typedef const Vector<const uint8> const_row;
+
+        /**
+         * Creates and returns a view that provides read-only access to a specific row in the label matrix.
+         *
+         * @param row   The index of the row
+         * @return      An object of type `const_row` that has been created
+         */
+        const_row operator[](uint32 row) const;
 
         bool isSparse() const override;
 

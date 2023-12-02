@@ -16,6 +16,41 @@ class MLRLCOMMON_API Vector : public View<T> {
     public:
 
         /**
+         * Allows to compute hash values for objects of type `Vector`.
+         */
+        struct Hash final {
+            public:
+
+                /**
+                 * Computes and returns a hash value for a given object of type `Vector`.
+                 *
+                 * @param v A reference to an object of type `Vector`
+                 * @return  The hash value
+                 */
+                inline std::size_t operator()(const Vector<T>& v) const {
+                    return hashView(v.cbegin(), v.numElements);
+                }
+        };
+
+        /**
+         * Allows to check whether two objects of type `Vector` are equal or not.
+         */
+        struct Equal final {
+            public:
+
+                /**
+                 * Returns whether two objects of type `Vector` are equal or not.
+                 *
+                 * @param lhs   A reference to a first object of type `Vector`
+                 * @param rhs   A reference to a second object of type `Vector`
+                 * @return      True, if the given objects are equal, false otherwise
+                 */
+                inline bool operator()(const Vector<T>& lhs, const Vector<T>& rhs) const {
+                    return compareViews(lhs.cbegin(), lhs.numElements, rhs.cbegin(), rhs.numElements);
+                }
+        };
+
+        /**
          * The number of elements in the view.
          */
         uint32 numElements;
