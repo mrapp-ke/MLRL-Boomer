@@ -1,6 +1,5 @@
 #include "mlrl/boosting/data/histogram_view_label_wise_sparse.hpp"
 
-#include "mlrl/common/util/view_functions.hpp"
 #include "statistic_vector_label_wise_sparse_common.hpp"
 
 namespace boosting {
