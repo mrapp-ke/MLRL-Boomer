@@ -9,10 +9,11 @@
 namespace boosting {
 
     /**
-     * Implements row-wise read-only access to the gradients and Hessians that have been calculated using a label-wise
-     * decomposable loss function and are stored in a pre-allocated histogram in the list of lists (LIL) format.
+     * Implements row-wise read and write access to the gradients and Hessians that have been calculated using a
+     * label-wise decomposable loss function and are stored in a pre-allocated histogram in the list of lists (LIL)
+     * format.
      */
-    class SparseLabelWiseHistogramConstView {
+    class SparseLabelWiseHistogramView {
         protected:
 
             /**
@@ -43,10 +44,9 @@ namespace boosting {
              * @param statistics    A pointer to an array that stores the gradients and Hessians of each bin
              * @param weights       A pointer to an array that stores the weight of each bin
              */
-            SparseLabelWiseHistogramConstView(uint32 numRows, uint32 numCols, Triple<float64>* statistics,
-                                              float64* weights);
+            SparseLabelWiseHistogramView(uint32 numRows, uint32 numCols, Triple<float64>* statistics, float64* weights);
 
-            virtual ~SparseLabelWiseHistogramConstView() {}
+            virtual ~SparseLabelWiseHistogramView() {}
 
             /**
              * An iterator that provides read-only access to the gradients and Hessians.
@@ -89,39 +89,6 @@ namespace boosting {
             weight_const_iterator weights_cend() const;
 
             /**
-             * Returns the number of rows in the view.
-             *
-             * @return The number of rows
-             */
-            uint32 getNumRows() const;
-
-            /**
-             * Returns the number of columns in the view.
-             *
-             * @return The number of columns
-             */
-            uint32 getNumCols() const;
-    };
-
-    /**
-     * Implements row-wise read and write access to the gradients and Hessians that have been calculated using a
-     * label-wise decomposable loss function and are stored in a pre-allocated histogram in the list of lists (LIL)
-     * format.
-     */
-    class SparseLabelWiseHistogramView : public SparseLabelWiseHistogramConstView {
-        public:
-
-            /**
-             * @param numRows       The number of rows in the view
-             * @param numCols       The number of columns in the view
-             * @param statistics    A pointer to an array that stores the gradients and Hessians of each bin
-             * @param weights       A pointer to an array that stores the weight of each bin
-             */
-            SparseLabelWiseHistogramView(uint32 numRows, uint32 numCols, Triple<float64>* statistics, float64* weights);
-
-            virtual ~SparseLabelWiseHistogramView() override {}
-
-            /**
              * Sets all gradients and Hessians in the matrix to zero.
              */
             void clear();
@@ -137,6 +104,20 @@ namespace boosting {
              */
             void addToRow(uint32 row, SparseLabelWiseStatisticConstView::const_iterator begin,
                           SparseLabelWiseStatisticConstView::const_iterator end, float64 weight);
+
+            /**
+             * Returns the number of rows in the view.
+             *
+             * @return The number of rows
+             */
+            uint32 getNumRows() const;
+
+            /**
+             * Returns the number of columns in the view.
+             *
+             * @return The number of columns
+             */
+            uint32 getNumCols() const;
     };
 
 }

@@ -5,37 +5,25 @@
 
 namespace boosting {
 
-    SparseLabelWiseHistogramConstView::SparseLabelWiseHistogramConstView(uint32 numRows, uint32 numCols,
-                                                                         Triple<float64>* statistics, float64* weights)
+    SparseLabelWiseHistogramView::SparseLabelWiseHistogramView(uint32 numRows, uint32 numCols,
+                                                               Triple<float64>* statistics, float64* weights)
         : numRows_(numRows), numCols_(numCols), statistics_(statistics), weights_(weights) {}
 
-    SparseLabelWiseHistogramConstView::const_iterator SparseLabelWiseHistogramConstView::cbegin(uint32 row) const {
+    SparseLabelWiseHistogramView::const_iterator SparseLabelWiseHistogramView::cbegin(uint32 row) const {
         return &statistics_[row * numCols_];
     }
 
-    SparseLabelWiseHistogramConstView::const_iterator SparseLabelWiseHistogramConstView::cend(uint32 row) const {
+    SparseLabelWiseHistogramView::const_iterator SparseLabelWiseHistogramView::cend(uint32 row) const {
         return &statistics_[(row + 1) * numCols_];
     }
 
-    SparseLabelWiseHistogramConstView::weight_const_iterator SparseLabelWiseHistogramConstView::weights_cbegin() const {
+    SparseLabelWiseHistogramView::weight_const_iterator SparseLabelWiseHistogramView::weights_cbegin() const {
         return weights_;
     }
 
-    SparseLabelWiseHistogramConstView::weight_const_iterator SparseLabelWiseHistogramConstView::weights_cend() const {
+    SparseLabelWiseHistogramView::weight_const_iterator SparseLabelWiseHistogramView::weights_cend() const {
         return &weights_[numRows_];
     }
-
-    uint32 SparseLabelWiseHistogramConstView::getNumRows() const {
-        return numRows_;
-    }
-
-    uint32 SparseLabelWiseHistogramConstView::getNumCols() const {
-        return numCols_;
-    }
-
-    SparseLabelWiseHistogramView::SparseLabelWiseHistogramView(uint32 numRows, uint32 numCols,
-                                                               Triple<float64>* statistics, float64* weights)
-        : SparseLabelWiseHistogramConstView(numRows, numCols, statistics, weights) {}
 
     void SparseLabelWiseHistogramView::clear() {
         setViewToZeros(weights_, numRows_);
@@ -50,4 +38,11 @@ namespace boosting {
         }
     }
 
+    uint32 SparseLabelWiseHistogramView::getNumRows() const {
+        return numRows_;
+    }
+
+    uint32 SparseLabelWiseHistogramView::getNumCols() const {
+        return numCols_;
+    }
 }
