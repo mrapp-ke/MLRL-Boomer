@@ -8,10 +8,10 @@
 namespace boosting {
 
     /**
-     * Implements row-wise read-only access to the gradients and Hessians that have been calculated using a label-wise
-     * decomposable loss function and are stored in pre-allocated C-contiguous arrays.
+     * Implements row-wise read and write access to the gradients and Hessians that have been calculated using a
+     * label-wise decomposable loss function and are stored in pre-allocated C-contiguous arrays.
      */
-    class DenseLabelWiseStatisticConstView {
+    class DenseLabelWiseStatisticView {
         protected:
 
             /**
@@ -37,14 +37,19 @@ namespace boosting {
              * @param statistics    A pointer to a C-contiguous array fo type `Tuple<float64>` that stores the gradients
              *                      and Hessians, the view provides access to
              */
-            DenseLabelWiseStatisticConstView(uint32 numRows, uint32 numCols, Tuple<float64>* statistics);
+            DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols, Tuple<float64>* statistics);
 
-            virtual ~DenseLabelWiseStatisticConstView() {}
+            virtual ~DenseLabelWiseStatisticView() {}
 
             /**
              * An iterator that provides read-only access to the elements in the view.
              */
             typedef const Tuple<float64>* const_iterator;
+
+            /**
+             * An iterator that provides access to the elements in the view and allows to modify them.
+             */
+            typedef Tuple<float64>* iterator;
 
             /**
              * Returns a `const_iterator` to the beginning of a specific row.
@@ -61,43 +66,6 @@ namespace boosting {
              * @return      A `const_iterator` to the end
              */
             const_iterator cend(uint32 row) const;
-
-            /**
-             * Returns the number of rows in the view.
-             *
-             * @return The number of rows
-             */
-            uint32 getNumRows() const;
-
-            /**
-             * Returns the number of columns in the view.
-             *
-             * @return The number of columns
-             */
-            uint32 getNumCols() const;
-    };
-
-    /**
-     * Implements row-wise read and write access to the gradients and Hessians that have been calculated using a
-     * label-wise decomposable loss function and are stored in pre-allocated C-contiguous arrays.
-     */
-    class DenseLabelWiseStatisticView : public DenseLabelWiseStatisticConstView {
-        public:
-
-            /**
-             * @param numRows       The number of rows in the view
-             * @param numCols       The number of columns in the view
-             * @param statistics    A pointer to a C-contiguous array fo type `Tuple<float64>` that stores the gradients
-             *                      and Hessians, the view provides access to
-             */
-            DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols, Tuple<float64>* statistics);
-
-            virtual ~DenseLabelWiseStatisticView() override {}
-
-            /**
-             * An iterator that provides access to the elements in the view and allows to modify them.
-             */
-            typedef Tuple<float64>* iterator;
 
             /**
              * Returns an `iterator` to the beginning of a specific row.
@@ -130,6 +98,20 @@ namespace boosting {
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
             void addToRow(uint32 row, const_iterator begin, const_iterator end, float64 weight);
+
+            /**
+             * Returns the number of rows in the view.
+             *
+             * @return The number of rows
+             */
+            uint32 getNumRows() const;
+
+            /**
+             * Returns the number of columns in the view.
+             *
+             * @return The number of columns
+             */
+            uint32 getNumCols() const;
     };
 
 }
