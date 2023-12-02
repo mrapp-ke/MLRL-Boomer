@@ -81,42 +81,40 @@ namespace boosting {
         addToView(this->view.begin(), vector.view.cbegin(), this->getNumElements());
     }
 
-    void SparseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticConstView& view, uint32 row) {
+    void SparseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticView& view, uint32 row) {
         sumOfWeights_ += 1;
         addToSparseLabelWiseStatisticVector(this->view.begin(), view.cbegin(row), view.cend(row));
     }
 
-    void SparseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticConstView& view, uint32 row,
-                                             float64 weight) {
+    void SparseLabelWiseStatisticVector::add(const SparseLabelWiseStatisticView& view, uint32 row, float64 weight) {
         if (weight != 0) {
             sumOfWeights_ += weight;
             addToSparseLabelWiseStatisticVector(this->view.begin(), view.cbegin(row), view.cend(row), weight);
         }
     }
 
-    void SparseLabelWiseStatisticVector::remove(const SparseLabelWiseStatisticConstView& view, uint32 row) {
+    void SparseLabelWiseStatisticVector::remove(const SparseLabelWiseStatisticView& view, uint32 row) {
         sumOfWeights_ -= 1;
         removeFromSparseLabelWiseStatisticVector(this->view.begin(), view.cbegin(row), view.cend(row));
     }
 
-    void SparseLabelWiseStatisticVector::remove(const SparseLabelWiseStatisticConstView& view, uint32 row,
-                                                float64 weight) {
+    void SparseLabelWiseStatisticVector::remove(const SparseLabelWiseStatisticView& view, uint32 row, float64 weight) {
         if (weight != 0) {
             sumOfWeights_ -= weight;
             removeFromSparseLabelWiseStatisticVector(this->view.begin(), view.cbegin(row), view.cend(row), weight);
         }
     }
 
-    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
+    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticView& view, uint32 row,
                                                      const CompleteIndexVector& indices) {
         sumOfWeights_ += 1;
         addToSparseLabelWiseStatisticVector(this->view.begin(), view.cbegin(row), view.cend(row));
     }
 
-    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
+    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticView& view, uint32 row,
                                                      const PartialIndexVector& indices) {
         sumOfWeights_ += 1;
-        SparseLabelWiseStatisticConstView::const_row viewRow = view[row];
+        SparseLabelWiseStatisticView::const_row viewRow = view[row];
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
         uint32 numElements = indices.getNumElements();
 
@@ -134,7 +132,7 @@ namespace boosting {
         }
     }
 
-    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
+    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticView& view, uint32 row,
                                                      const CompleteIndexVector& indices, float64 weight) {
         if (weight != 0) {
             sumOfWeights_ += weight;
@@ -142,11 +140,11 @@ namespace boosting {
         }
     }
 
-    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
+    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseStatisticView& view, uint32 row,
                                                      const PartialIndexVector& indices, float64 weight) {
         if (weight != 0) {
             sumOfWeights_ += weight;
-            SparseLabelWiseStatisticConstView::const_row viewRow = view[row];
+            SparseLabelWiseStatisticView::const_row viewRow = view[row];
             PartialIndexVector::const_iterator indexIterator = indices.cbegin();
             uint32 numElements = indices.getNumElements();
 
