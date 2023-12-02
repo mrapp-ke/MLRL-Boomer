@@ -5,6 +5,7 @@
 
 #include "mlrl/common/util/dll_exports.hpp"
 #include "mlrl/common/util/memory.hpp"
+#include "mlrl/common/util/view_functions.hpp"
 
 #include <initializer_list>
 #include <utility>
@@ -238,7 +239,7 @@ class MLRLCOMMON_API IndexableViewDecorator : public View {
     public:
 
         /**
-         * @param view The view, the vector should be backed by
+         * @param view The view, the view should be backed by
          */
         IndexableViewDecorator(typename View::view_type&& view) : View(std::move(view)) {}
 
@@ -290,5 +291,29 @@ class MLRLCOMMON_API IndexableViewDecorator : public View {
          */
         typename View::view_type::value_type& operator[](uint32 pos) {
             return View::view.array[pos];
+        }
+};
+
+/**
+ * Allows to set all values stored in a view to zero.
+ *
+ * @tparam View The type of the view
+ */
+template<typename View>
+class ClearableViewDecorator : public View {
+    public:
+
+        /**
+         * @param view The view, the view should be backed by
+         */
+        ClearableViewDecorator(typename View::view_type&& view) : View(std::move(view)) {}
+
+        virtual ~ClearableViewDecorator() override {}
+
+        /**
+         * Sets all values stored in the view to zero.
+         */
+        virtual void clear() {
+            setViewToZeros(View::view.array, View::view.numElements);
         }
 };

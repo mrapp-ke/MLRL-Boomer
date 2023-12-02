@@ -17,7 +17,7 @@ namespace boosting {
      * and Hessian, as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
      */
     class SparseLabelWiseStatisticVector final
-        : public ClearableVectorDecorator<VectorDecorator<AllocatedVector<Triple<float64>>>> {
+        : public ClearableViewDecorator<VectorDecorator<AllocatedVector<Triple<float64>>>> {
         private:
 
             /**
