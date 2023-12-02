@@ -2,33 +2,21 @@
 
 namespace boosting {
 
-    SparseLabelWiseStatisticConstView::SparseLabelWiseStatisticConstView(uint32 numCols,
-                                                                         SparseSetMatrix<Tuple<float64>>* statistics)
+    SparseLabelWiseStatisticView::SparseLabelWiseStatisticView(uint32 numCols,
+                                                               SparseSetMatrix<Tuple<float64>>* statistics)
         : numCols_(numCols), statistics_(statistics) {}
 
-    SparseLabelWiseStatisticConstView::const_iterator SparseLabelWiseStatisticConstView::cbegin(uint32 row) const {
+    SparseLabelWiseStatisticView::const_iterator SparseLabelWiseStatisticView::cbegin(uint32 row) const {
         return statistics_->cbegin(row);
     }
 
-    SparseLabelWiseStatisticConstView::const_iterator SparseLabelWiseStatisticConstView::cend(uint32 row) const {
+    SparseLabelWiseStatisticView::const_iterator SparseLabelWiseStatisticView::cend(uint32 row) const {
         return statistics_->cend(row);
     }
 
-    SparseLabelWiseStatisticConstView::const_row SparseLabelWiseStatisticConstView::operator[](uint32 row) const {
+    SparseLabelWiseStatisticView::const_row SparseLabelWiseStatisticView::operator[](uint32 row) const {
         return ((const SparseSetMatrix<Tuple<float64>>&) *statistics_)[row];
     }
-
-    uint32 SparseLabelWiseStatisticConstView::getNumRows() const {
-        return statistics_->getNumRows();
-    }
-
-    uint32 SparseLabelWiseStatisticConstView::getNumCols() const {
-        return numCols_;
-    }
-
-    SparseLabelWiseStatisticView::SparseLabelWiseStatisticView(uint32 numCols,
-                                                               SparseSetMatrix<Tuple<float64>>* statistics)
-        : SparseLabelWiseStatisticConstView(numCols, statistics) {}
 
     SparseLabelWiseStatisticView::row SparseLabelWiseStatisticView::operator[](uint32 row) {
         return (*statistics_)[row];
@@ -38,4 +26,11 @@ namespace boosting {
         statistics_->clear();
     }
 
+    uint32 SparseLabelWiseStatisticView::getNumRows() const {
+        return statistics_->getNumRows();
+    }
+
+    uint32 SparseLabelWiseStatisticView::getNumCols() const {
+        return numCols_;
+    }
 }
