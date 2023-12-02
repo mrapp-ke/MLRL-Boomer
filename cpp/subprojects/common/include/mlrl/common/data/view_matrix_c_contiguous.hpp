@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/view_matrix_dense.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 
 /**
  * A two-dimensional view that provides row-wise access to values stored in a pre-allocated array of a specific size.
@@ -33,6 +34,36 @@ class CContiguousView : public DenseMatrix<T> {
         CContiguousView(CContiguousView<T>&& other) : DenseMatrix<T>(std::move(other)) {}
 
         virtual ~CContiguousView() override {}
+
+        /**
+         * Provides read-only access to an individual row in the view.
+         */
+        typedef const Vector<const T> const_row;
+
+        /**
+         * Provides access to an individual row in the view and allows to modify it.
+         */
+        typedef Vector<T> row;
+
+        /**
+         * Creates and returns a view that provides read-only access to a specific row in the view.
+         *
+         * @param row   The index of the row
+         * @return      An object of type `const_row` that has been created
+         */
+        const_row operator[](uint32 row) const {
+            return Vector<const T>(values_cbegin(row), Matrix::numCols);
+        }
+
+        /**
+         * Creates and returns a view that provides access to a specific row in the view and allows to modify it.
+         *
+         * @param row   The index of the row
+         * @return      An object of type `row` that has been created
+         */
+        row operator[](uint32 row) {
+            return Vector<T>(values_begin(row), Matrix::numCols);
+        }
 
         /**
          * Returns a `value_const_iterator` to the beginning of a specific row in the view.
