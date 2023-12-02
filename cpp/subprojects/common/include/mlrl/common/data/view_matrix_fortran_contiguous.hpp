@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/view_matrix_dense.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 
 /**
  * A two-dimensional view that provides column-wise access to values stored in a pre-allocated array of a specific size.
@@ -33,6 +34,36 @@ class FortranContiguousView : public DenseMatrix<T> {
         FortranContiguousView(FortranContiguousView<T>&& other) : DenseMatrix<T>(std::move(other)) {}
 
         virtual ~FortranContiguousView() override {}
+
+        /**
+         * Provides read-only access to an individual column in the view.
+         */
+        typedef const Vector<const T> const_column;
+
+        /**
+         * Provides access to an individual column in the view and allows to modify it.
+         */
+        typedef Vector<T> column;
+
+        /**
+         * Creates and returns a view that provides read-only access to a specific column in the view.
+         *
+         * @param column    The index of the column
+         * @return          An object of type `const_column` that has been created
+         */
+        const_column operator[](uint32 column) const {
+            return Vector<const T>(values_cbegin(column), Matrix::numRows);
+        }
+
+        /**
+         * Creates and returns a view that provides access to a specific column in the view and allows to modify it.
+         *
+         * @param column    The index of the column
+         * @return          An object of type `column` that has been created
+         */
+        column operator[](uint32 column) {
+            return Vector<T>(values_begin(column), Matrix::numRows);
+        }
 
         /**
          * Returns a `value_const_iterator` to the beginning of a specific column in the view.
