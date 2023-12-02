@@ -30,12 +30,12 @@ class NoPartitionSampling final : public IPartitionSampling {
 class NoPartitionSamplingFactory final : public IPartitionSamplingFactory {
     public:
 
-        std::unique_ptr<IPartitionSampling> create(const CContiguousLabelMatrix& labelMatrix) const override {
-            return std::make_unique<NoPartitionSampling>(labelMatrix.getNumRows());
+        std::unique_ptr<IPartitionSampling> create(const CContiguousView<const uint8>& labelMatrix) const override {
+            return std::make_unique<NoPartitionSampling>(labelMatrix.numRows);
         }
 
-        std::unique_ptr<IPartitionSampling> create(const CsrLabelMatrix& labelMatrix) const override {
-            return std::make_unique<NoPartitionSampling>(labelMatrix.getNumRows());
+        std::unique_ptr<IPartitionSampling> create(const BinaryCsrView& labelMatrix) const override {
+            return std::make_unique<NoPartitionSampling>(labelMatrix.numRows);
         }
 };
 

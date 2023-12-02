@@ -43,10 +43,6 @@ float32 CContiguousLabelMatrix::calculateLabelCardinality() const {
     return labelCardinality;
 }
 
-CContiguousLabelMatrix::const_row CContiguousLabelMatrix::operator[](uint32 row) const {
-    return Vector<const uint8>(this->values_cbegin(row), this->getNumCols());
-}
-
 std::unique_ptr<LabelVector> CContiguousLabelMatrix::createLabelVector(uint32 row) const {
     uint32 numCols = this->getNumCols();
     std::unique_ptr<ResizableBinarySparseArrayVector> labelVectorPtr =
@@ -73,41 +69,41 @@ std::unique_ptr<IStatisticsProvider> CContiguousLabelMatrix::createStatisticsPro
 
 std::unique_ptr<IPartitionSampling> CContiguousLabelMatrix::createPartitionSampling(
   const IPartitionSamplingFactory& factory) const {
-    return factory.create(*this);
+    return factory.create(this->getView());
 }
 
 std::unique_ptr<IInstanceSampling> CContiguousLabelMatrix::createInstanceSampling(
   const IInstanceSamplingFactory& factory, const SinglePartition& partition, IStatistics& statistics) const {
-    return factory.create(*this, partition, statistics);
+    return factory.create(this->getView(), partition, statistics);
 }
 
 std::unique_ptr<IInstanceSampling> CContiguousLabelMatrix::createInstanceSampling(
   const IInstanceSamplingFactory& factory, BiPartition& partition, IStatistics& statistics) const {
-    return factory.create(*this, partition, statistics);
+    return factory.create(this->getView(), partition, statistics);
 }
 
 std::unique_ptr<IMarginalProbabilityCalibrationModel> CContiguousLabelMatrix::fitMarginalProbabilityCalibrationModel(
   const IMarginalProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
   const IStatistics& statistics) const {
-    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
+    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, this->getView(), statistics);
 }
 
 std::unique_ptr<IMarginalProbabilityCalibrationModel> CContiguousLabelMatrix::fitMarginalProbabilityCalibrationModel(
   const IMarginalProbabilityCalibrator& probabilityCalibrator, BiPartition& partition,
   const IStatistics& statistics) const {
-    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
+    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, this->getView(), statistics);
 }
 
 std::unique_ptr<IJointProbabilityCalibrationModel> CContiguousLabelMatrix::fitJointProbabilityCalibrationModel(
   const IJointProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
   const IStatistics& statistics) const {
-    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
+    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, this->getView(), statistics);
 }
 
 std::unique_ptr<IJointProbabilityCalibrationModel> CContiguousLabelMatrix::fitJointProbabilityCalibrationModel(
   const IJointProbabilityCalibrator& probabilityCalibrator, BiPartition& partition,
   const IStatistics& statistics) const {
-    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
+    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, this->getView(), statistics);
 }
 
 std::unique_ptr<ICContiguousLabelMatrix> createCContiguousLabelMatrix(const uint8* array, uint32 numRows,

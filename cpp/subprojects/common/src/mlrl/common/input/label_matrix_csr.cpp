@@ -36,10 +36,6 @@ float32 CsrLabelMatrix::calculateLabelCardinality() const {
     return labelCardinality;
 }
 
-CsrLabelMatrix::const_row CsrLabelMatrix::operator[](uint32 row) const {
-    return Vector<const uint32>(this->indices_cbegin(row), this->getNumCols());
-}
-
 std::unique_ptr<LabelVector> CsrLabelMatrix::createLabelVector(uint32 row) const {
     index_const_iterator indexIterator = this->indices_cbegin(row);
     index_const_iterator indicesEnd = this->indices_cend(row);
@@ -57,43 +53,43 @@ std::unique_ptr<IStatisticsProvider> CsrLabelMatrix::createStatisticsProvider(
 
 std::unique_ptr<IPartitionSampling> CsrLabelMatrix::createPartitionSampling(
   const IPartitionSamplingFactory& factory) const {
-    return factory.create(*this);
+    return factory.create(this->getView());
 }
 
 std::unique_ptr<IInstanceSampling> CsrLabelMatrix::createInstanceSampling(const IInstanceSamplingFactory& factory,
                                                                           const SinglePartition& partition,
                                                                           IStatistics& statistics) const {
-    return factory.create(*this, partition, statistics);
+    return factory.create(this->getView(), partition, statistics);
 }
 
 std::unique_ptr<IInstanceSampling> CsrLabelMatrix::createInstanceSampling(const IInstanceSamplingFactory& factory,
                                                                           BiPartition& partition,
                                                                           IStatistics& statistics) const {
-    return factory.create(*this, partition, statistics);
+    return factory.create(this->getView(), partition, statistics);
 }
 
 std::unique_ptr<IMarginalProbabilityCalibrationModel> CsrLabelMatrix::fitMarginalProbabilityCalibrationModel(
   const IMarginalProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
   const IStatistics& statistics) const {
-    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
+    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, this->getView(), statistics);
 }
 
 std::unique_ptr<IMarginalProbabilityCalibrationModel> CsrLabelMatrix::fitMarginalProbabilityCalibrationModel(
   const IMarginalProbabilityCalibrator& probabilityCalibrator, BiPartition& partition,
   const IStatistics& statistics) const {
-    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
+    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, this->getView(), statistics);
 }
 
 std::unique_ptr<IJointProbabilityCalibrationModel> CsrLabelMatrix::fitJointProbabilityCalibrationModel(
   const IJointProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
   const IStatistics& statistics) const {
-    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
+    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, this->getView(), statistics);
 }
 
 std::unique_ptr<IJointProbabilityCalibrationModel> CsrLabelMatrix::fitJointProbabilityCalibrationModel(
   const IJointProbabilityCalibrator& probabilityCalibrator, BiPartition& partition,
   const IStatistics& statistics) const {
-    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
+    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, this->getView(), statistics);
 }
 
 std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols) {
