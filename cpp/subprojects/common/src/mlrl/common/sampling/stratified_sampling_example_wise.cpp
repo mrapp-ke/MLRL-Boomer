@@ -132,7 +132,7 @@ void ExampleWiseStratification<LabelMatrix, IndexIterator>::sampleBiPartition(Bi
     }
 }
 
-template class ExampleWiseStratification<CContiguousLabelMatrix, SinglePartition::const_iterator>;
-template class ExampleWiseStratification<CContiguousLabelMatrix, BiPartition::const_iterator>;
-template class ExampleWiseStratification<CsrLabelMatrix, SinglePartition::const_iterator>;
-template class ExampleWiseStratification<CsrLabelMatrix, BiPartition::const_iterator>;
+template class ExampleWiseStratification<CContiguousView<const uint8>, SinglePartition::const_iterator>;
+template class ExampleWiseStratification<CContiguousView<const uint8>, BiPartition::const_iterator>;
+template class ExampleWiseStratification<BinaryCsrView, SinglePartition::const_iterator>;
+template class ExampleWiseStratification<BinaryCsrView, BiPartition::const_iterator>;
