@@ -2,9 +2,7 @@
 
 #include "mlrl/common/data/array.hpp"
 #include "mlrl/common/data/indexed_value.hpp"
-#include "mlrl/common/input/label_matrix_c_contiguous.hpp"
 #include "mlrl/common/input/label_matrix_csc.hpp"
-#include "mlrl/common/input/label_matrix_csr.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
 #include "mlrl/common/util/memory.hpp"
 #include "stratified_sampling_common.hpp"
@@ -32,11 +30,11 @@ struct CompareIndexedValue final {
         }
 };
 
-static inline void updateNumExamplesPerLabel(const CContiguousLabelMatrix& labelMatrix, uint32 exampleIndex,
+static inline void updateNumExamplesPerLabel(const CContiguousView<const uint8>& labelMatrix, uint32 exampleIndex,
                                              Array<uint32>& numExamplesPerLabel,
                                              std::unordered_map<uint32, uint32>& affectedLabelIndices) {
-    CContiguousLabelMatrix::value_const_iterator labelIterator = labelMatrix.values_cbegin(exampleIndex);
-    uint32 numLabels = labelMatrix.getNumCols();
+    CContiguousView<const uint8>::value_const_iterator labelIterator = labelMatrix.values_cbegin(exampleIndex);
+    uint32 numLabels = labelMatrix.numCols;
 
     for (uint32 i = 0; i < numLabels; i++) {
         if (labelIterator[i]) {
@@ -47,10 +45,10 @@ static inline void updateNumExamplesPerLabel(const CContiguousLabelMatrix& label
     }
 }
 
-static inline void updateNumExamplesPerLabel(const CsrLabelMatrix& labelMatrix, uint32 exampleIndex,
+static inline void updateNumExamplesPerLabel(const BinaryCsrView& labelMatrix, uint32 exampleIndex,
                                              Array<uint32>& numExamplesPerLabel,
                                              std::unordered_map<uint32, uint32>& affectedLabelIndices) {
-    CsrLabelMatrix::index_const_iterator indexIterator = labelMatrix.indices_cbegin(exampleIndex);
+    BinaryCsrView::index_const_iterator indexIterator = labelMatrix.indices_cbegin(exampleIndex);
     uint32 numLabels = labelMatrix.indices_cend(exampleIndex) - indexIterator;
 
     for (uint32 i = 0; i < numLabels; i++) {
@@ -66,7 +64,7 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
                                                                              IndexIterator indicesBegin,
                                                                              IndexIterator indicesEnd) {
     // Convert the given label matrix into the CSC format...
-    const CscLabelMatrix cscLabelMatrix(labelMatrix.getView(), indicesBegin, indicesEnd);
+    const CscLabelMatrix cscLabelMatrix(labelMatrix, indicesBegin, indicesEnd);
     numRows_ = cscLabelMatrix.numRows;
 
     // Create an array that stores for each label the number of examples that are associated with the label, as well as
@@ -93,7 +91,7 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
     uint32 numCols = 0;
 
     // Create a boolean array that stores whether individual examples remain to be processed (1) or not (0)...
-    uint32 numTotalExamples = labelMatrix.getNumRows();
+    uint32 numTotalExamples = labelMatrix.numRows;
     BitVector mask(numTotalExamples, true);
 
     for (uint32 i = 0; i < numRows_; i++) {
@@ -287,7 +285,7 @@ void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleBiPartition(BiPa
     }
 }
 
-template class LabelWiseStratification<CContiguousLabelMatrix, SinglePartition::const_iterator>;
-template class LabelWiseStratification<CContiguousLabelMatrix, BiPartition::const_iterator>;
-template class LabelWiseStratification<CsrLabelMatrix, SinglePartition::const_iterator>;
-template class LabelWiseStratification<CsrLabelMatrix, BiPartition::const_iterator>;
+template class LabelWiseStratification<CContiguousView<const uint8>, SinglePartition::const_iterator>;
+template class LabelWiseStratification<CContiguousView<const uint8>, BiPartition::const_iterator>;
+template class LabelWiseStratification<BinaryCsrView, SinglePartition::const_iterator>;
+template class LabelWiseStratification<BinaryCsrView, BiPartition::const_iterator>;

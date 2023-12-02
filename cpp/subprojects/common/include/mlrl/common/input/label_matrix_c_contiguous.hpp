@@ -9,7 +9,6 @@
 #endif
 
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
-#include "mlrl/common/data/view_vector.hpp"
 #include "mlrl/common/input/label_matrix_row_wise.hpp"
 
 /**
@@ -36,19 +35,6 @@ class CContiguousLabelMatrix final : public IterableDenseMatrixDecorator<MatrixD
          * @param numCols   The number of columns in the label matrix
          */
         CContiguousLabelMatrix(const uint8* array, uint32 numRows, uint32 numCols);
-
-        /**
-         * Provides read-only access to an individual row in the label matrix.
-         */
-        typedef const Vector<const uint8> const_row;
-
-        /**
-         * Creates and returns a view that provides read-only access to a specific row in the label matrix.
-         *
-         * @param row   The index of the row
-         * @return      An object of type `const_row` that has been created
-         */
-        const_row operator[](uint32 row) const;
 
         bool isSparse() const override;
 
