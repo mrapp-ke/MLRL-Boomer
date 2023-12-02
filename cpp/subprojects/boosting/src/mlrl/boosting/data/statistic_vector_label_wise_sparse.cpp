@@ -58,7 +58,7 @@ namespace boosting {
     }
 
     SparseLabelWiseStatisticVector::SparseLabelWiseStatisticVector(uint32 numElements, bool init)
-        : ClearableVectorDecorator<VectorDecorator<AllocatedVector<Triple<float64>>>>(
+        : ClearableViewDecorator<VectorDecorator<AllocatedVector<Triple<float64>>>>(
           AllocatedVector<Triple<float64>>(numElements, init)),
           sumOfWeights_(0) {}
 
@@ -223,7 +223,7 @@ namespace boosting {
     }
 
     void SparseLabelWiseStatisticVector::clear() {
-        ClearableVectorDecorator<VectorDecorator<AllocatedVector<Triple<float64>>>>::clear();
+        ClearableViewDecorator<VectorDecorator<AllocatedVector<Triple<float64>>>>::clear();
         sumOfWeights_ = 0;
     }
 
