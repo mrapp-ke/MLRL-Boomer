@@ -11,10 +11,8 @@ namespace boosting {
      * Adds the statistics that are stored in a single row of a `SparseLabelWiseStatisticView` to a sparse vector.
      *
      * @param statistics    A pointer to an array the statistics should be added to
-     * @param begin         A `SparseLabelWiseStatisticsConstView::const_iterator` to the beginning of the statistics to
-     *                      be added
-     * @param end           A `SparseLabelWiseStatisticsConstView::const_iterator` to the end of the statistics to be
-     *                      added
+     * @param begin         An iterator to the beginning of the statistics to be added
+     * @param end           An iterator to the end of the statistics to be added
      */
     static inline void addToSparseLabelWiseStatisticVector(Triple<float64>* statistics,
                                                            SparseLabelWiseStatisticView::const_iterator begin,
@@ -36,10 +34,8 @@ namespace boosting {
      * statistics are multiplied by a specific weight.
      *
      * @param statistics    A pointer to an array the statistics should be added to
-     * @param begin         A `SparseLabelWiseStatisticsConstView::const_iterator` to the beginning of the statistics to
-     *                      be added
-     * @param end           A `SparseLabelWiseStatisticsConstView::const_iterator` to the end of the statistics to be
-     *                      added
+     * @param begin         An iterator to the beginning of the statistics to be added
+     * @param end           An iterator to the end of the statistics to be added
      * @param weight        The weight, the statistics should be multiplied by
      */
     static inline void addToSparseLabelWiseStatisticVector(Triple<float64>* statistics,
@@ -62,10 +58,8 @@ namespace boosting {
      * Removes the statistics that are stored in a single row of a `SparseLabelWiseStatisticView` from a sparse vector.
      *
      * @param statistics    A pointer to an array the statistics should be removed from
-     * @param begin         A `SparseLabelWiseStatisticsConstView::const_iterator` to the beginning of the statistics to
-     *                      be removed
-     * @param end           A `SparseLabelWiseStatisticsConstView::const_iterator` to the end of the statistics to be
-     *                      removed
+     * @param begin         An iterator to the beginning of the statistics to be removed
+     * @param end           An iterator to the end of the statistics to be removed
      */
     static inline void removeFromSparseLabelWiseStatisticVector(Triple<float64>* statistics,
                                                                 SparseLabelWiseStatisticView::const_iterator begin,
@@ -87,10 +81,8 @@ namespace boosting {
      * The statistics are multiplied by a specific weight.
      *
      * @param statistics    A pointer to an array the statistics should be remove from
-     * @param begin         A `SparseLabelWiseStatisticsConstView::const_iterator` to the beginning of the statistics to
-     *                      be removed
-     * @param end           A `SparseLabelWiseStatisticsConstView::const_iterator` to the end of the statistics to be
-     *                      removed
+     * @param begin         An iterator to the beginning of the statistics to be removed
+     * @param end           An iterator to the end of the statistics to be removed
      * @param weight        The weight, the statistics should be multiplied by
      */
     static inline void removeFromSparseLabelWiseStatisticVector(Triple<float64>* statistics,
