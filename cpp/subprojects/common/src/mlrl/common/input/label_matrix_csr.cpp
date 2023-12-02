@@ -6,10 +6,6 @@
 #include "mlrl/common/statistics/statistics_provider.hpp"
 #include "mlrl/common/util/math.hpp"
 
-CsrLabelMatrix::View::View(const CsrLabelMatrix& labelMatrix, uint32 row)
-    : IterableVectorDecorator<VectorDecorator<Vector<const uint32>>>(Vector<const uint32>(
-      labelMatrix.indices_cbegin(row), labelMatrix.indices_cend(row) - labelMatrix.indices_cbegin(row))) {}
-
 CsrLabelMatrix::CsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
     : IterableBinarySparseMatrixDecorator<MatrixDecorator<BinaryCsrView>>(
       BinaryCsrView(indices, indptr, numRows, numCols)) {}
@@ -40,8 +36,8 @@ float32 CsrLabelMatrix::calculateLabelCardinality() const {
     return labelCardinality;
 }
 
-const CsrLabelMatrix::View CsrLabelMatrix::createView(uint32 row) const {
-    return CsrLabelMatrix::View(*this, row);
+CsrLabelMatrix::const_row CsrLabelMatrix::operator[](uint32 row) const {
+    return Vector<const uint32>(this->indices_cbegin(row), this->getNumCols());
 }
 
 std::unique_ptr<LabelVector> CsrLabelMatrix::createLabelVector(uint32 row) const {

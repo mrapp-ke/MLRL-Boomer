@@ -6,10 +6,6 @@
 #include "mlrl/common/statistics/statistics_provider.hpp"
 #include "mlrl/common/util/math.hpp"
 
-CContiguousLabelMatrix::View::View(const CContiguousLabelMatrix& labelMatrix, uint32 row)
-    : IterableVectorDecorator<VectorDecorator<Vector<const uint8>>>(
-      Vector<const uint8>(labelMatrix.values_cbegin(row), labelMatrix.getNumCols())) {}
-
 CContiguousLabelMatrix::CContiguousLabelMatrix(const uint8* array, uint32 numRows, uint32 numCols)
     : IterableDenseMatrixDecorator<MatrixDecorator<CContiguousView<const uint8>>>(
       CContiguousView<const uint8>(array, numRows, numCols)) {}
@@ -47,8 +43,8 @@ float32 CContiguousLabelMatrix::calculateLabelCardinality() const {
     return labelCardinality;
 }
 
-const CContiguousLabelMatrix::View CContiguousLabelMatrix::createView(uint32 row) const {
-    return CContiguousLabelMatrix::View(*this, row);
+CContiguousLabelMatrix::const_row CContiguousLabelMatrix::operator[](uint32 row) const {
+    return Vector<const uint8>(this->values_cbegin(row), this->getNumCols());
 }
 
 std::unique_ptr<LabelVector> CContiguousLabelMatrix::createLabelVector(uint32 row) const {

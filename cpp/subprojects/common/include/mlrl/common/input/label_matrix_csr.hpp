@@ -31,54 +31,6 @@ class CsrLabelMatrix final : public IterableBinarySparseMatrixDecorator<MatrixDe
     public:
 
         /**
-         * Provides access to the values that are stored in a single row of a `CsrLabelMatrix``.
-         */
-        class View final : public IterableVectorDecorator<VectorDecorator<Vector<const uint32>>> {
-            public:
-
-                /**
-                 * Allows to compute hash values for objects of type `CsrLabelMatrix::View`.
-                 */
-                struct Hash final {
-                    public:
-
-                        /**
-                         * Computes and returns a hash value for a given object of type `CsrLabelMatrix::View`.
-                         *
-                         * @param v A reference to an object of type `CsrLabelMatrix::View`
-                         * @return  The hash value
-                         */
-                        inline std::size_t operator()(const View& v) const {
-                            return hashView(v.cbegin(), v.getNumElements());
-                        }
-                };
-
-                /**
-                 * Allows to check whether two objects of type `CsrLabelMatrix::View` are equal or not.
-                 */
-                struct Pred final {
-                    public:
-
-                        /**
-                         * Returns whether two objects of type `CsrLabelMatrix::View` are equal or not.
-                         *
-                         * @param lhs   A reference to a first object of type `CsrLabelMatrix::View`
-                         * @param rhs   A reference to a second object of type `CsrLabelMatrix::View`
-                         * @return      True, if the given objects are equal, false otherwise
-                         */
-                        inline bool operator()(const View& lhs, const View& rhs) const {
-                            return compareViews(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(), rhs.getNumElements());
-                        }
-                };
-
-                /**
-                 * @param labelMatrix   A reference to an object of type `CsrLabelMatrix`, the view provides access to
-                 * @param row           The row, the view provides access to
-                 */
-                View(const CsrLabelMatrix& labelMatrix, uint32 row);
-        };
-
-        /**
          * @param indices A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the
          *                column-indices, the relevant labels correspond to
          * @param indptr  A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices of the
@@ -90,12 +42,17 @@ class CsrLabelMatrix final : public IterableBinarySparseMatrixDecorator<MatrixDe
         CsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols);
 
         /**
-         * Creates and returns a view that provides access to the values at a specific row of the label matrix.
-         *
-         * @param row   The row
-         * @return      An object of type `View` that has been created
+         * Provides read-only access to an individual row in the label matrix.
          */
-        const View createView(uint32 row) const;
+        typedef const Vector<const uint32> const_row;
+
+        /**
+         * Creates and returns a view that provides read-only access to a specific row in the label matrix.
+         *
+         * @param row   The index of the row
+         * @return      An object of type `const_row` that has been created
+         */
+        const_row operator[](uint32 row) const;
 
         bool isSparse() const override;
 
