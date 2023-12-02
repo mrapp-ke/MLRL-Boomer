@@ -39,97 +39,94 @@ namespace boosting {
             void add(const DenseLabelWiseStatisticVector& vector);
 
             /**
-             * Adds all gradients and Hessians in a single row of a `DenseLabelWiseStatisticConstView` to this vector.
+             * Adds all gradients and Hessians in a single row of a `DenseLabelWiseStatisticView` to this vector.
              *
-             * @param view  A reference to an object of type `DenseLabelWiseStatisticConstView` that stores the
-             *              gradients and Hessians to be added to this vector
+             * @param view  A reference to an object of type `DenseLabelWiseStatisticView` that stores the gradients and
+             *              Hessians to be added to this vector
              * @param row   The index of the row to be added to this vector
              */
-            void add(const DenseLabelWiseStatisticConstView& view, uint32 row);
+            void add(const DenseLabelWiseStatisticView& view, uint32 row);
 
             /**
-             * Adds all gradients and Hessians in a single row of a `DenseLabelWiseStatisticConstView` to this vector.
-             * The gradients and Hessians to be added are multiplied by a specific weight.
+             * Adds all gradients and Hessians in a single row of a `DenseLabelWiseStatisticView` to this vector. The
+             * gradients and Hessians to be added are multiplied by a specific weight.
              *
-             * @param view      A reference to an object of type `DenseLabelWiseStatisticConstView` that stores the
-             *                  gradients and Hessians to be added to this vector
+             * @param view      A reference to an object of type `DenseLabelWiseStatisticView` that stores the gradients
+             *                  and Hessians to be added to this vector
              * @param row       The index of the row to be added to this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(const DenseLabelWiseStatisticConstView& view, uint32 row, float64 weight);
+            void add(const DenseLabelWiseStatisticView& view, uint32 row, float64 weight);
 
             /**
-             * Removes all gradients and Hessians in a single row of a `DenseLabelWiseStatisticConstView` from this
-             * vector.
+             * Removes all gradients and Hessians in a single row of a `DenseLabelWiseStatisticView` from this vector.
              *
-             * @param view  A reference to an object of type `DenseLabelWiseStatisticConstView` that stores the
-             *              gradients and Hessians to be removed from this vector
+             * @param view  A reference to an object of type `DenseLabelWiseStatisticView` that stores the gradients and
+             *              Hessians to be removed from this vector
              * @param row   The index of the row to be removed from this vector
              */
-            void remove(const DenseLabelWiseStatisticConstView& view, uint32 row);
+            void remove(const DenseLabelWiseStatisticView& view, uint32 row);
 
             /**
-             * Removes all gradients and Hessians in a single row of a `DenseLabelWiseStatisticConstView` from this
-             * vector. The gradients and Hessians to be removed are multiplied by a specific weight.
+             * Removes all gradients and Hessians in a single row of a `DenseLabelWiseStatisticView` from this vector.
+             * The gradients and Hessians to be removed are multiplied by a specific weight.
              *
-             * @param view      A reference to an object of type `DenseLabelWiseStatisticConstView` that stores the
-             *                  gradients and Hessians to be removed from this vector
+             * @param view      A reference to an object of type `DenseLabelWiseStatisticView` that stores the gradients
+             *                  and Hessians to be removed from this vector
              * @param row       The index of the row to be removed from this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void remove(const DenseLabelWiseStatisticConstView& view, uint32 row, float64 weight);
+            void remove(const DenseLabelWiseStatisticView& view, uint32 row, float64 weight);
 
             /**
-             * Adds certain gradients and Hessians in a single row of a `DenseLabelWiseStatisticConstView`, whose
-             * positions are given as a `CompleteIndexVector`, to this vector.
+             * Adds certain gradients and Hessians in a single row of a `DenseLabelWiseStatisticView`, whose positions
+             * are given as a `CompleteIndexVector`, to this vector.
              *
-             * @param view      A reference to an object of type `DenseLabelWiseStatisticConstView` that stores the
-             *                  gradients and Hessians to be added to this vector
+             * @param view      A reference to an object of type `DenseLabelWiseStatisticView` that stores the gradients
+             *                  and Hessians to be added to this vector
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              */
-            void addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
-                             const CompleteIndexVector& indices);
+            void addToSubset(const DenseLabelWiseStatisticView& view, uint32 row, const CompleteIndexVector& indices);
 
             /**
-             * Adds certain gradients and Hessians in single row of a `DenseLabelWiseStatisticConstView`, whose
-             * positions are given as a `PartialIndexVector`, to this vector.
+             * Adds certain gradients and Hessians in single row of a `DenseLabelWiseStatisticView`, whose positions are
+             * given as a `PartialIndexVector`, to this vector.
              *
-             * @param view      A reference to an object of type `DenseLabelWiseStatisticConstView` that stores the
-             *                  gradients and Hessians to be added to this vector
+             * @param view      A reference to an object of type `DenseLabelWiseStatisticView` that stores the gradients
+             *                  and Hessians to be added to this vector
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
              */
-            void addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
-                             const PartialIndexVector& indices);
+            void addToSubset(const DenseLabelWiseStatisticView& view, uint32 row, const PartialIndexVector& indices);
 
             /**
-             * Adds certain gradients and Hessians in a single row of a `DenseLabelWiseStatisticConstView`, whose
-             * positions are given as a `CompleteIndexVector`, to this vector. The gradients and Hessians to be added
-             * are multiplied by a specific weight.
-             *
-             * @param view      A reference to an object of type `DenseLabelWiseStatisticConstView` that stores the
-             *                  gradients and Hessians to be added to this vector
-             * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
-             * @param weight    The weight, the gradients and Hessians should be multiplied by
-             */
-            void addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
-                             const CompleteIndexVector& indices, float64 weight);
-
-            /**
-             * Adds certain gradients and Hessians in single row of a `DenseLabelWiseStatisticConstView`, whose
-             * positions are given as a `PartialIndexVector`, to this vector. The gradients and Hessians to be added are
+             * Adds certain gradients and Hessians in a single row of a `DenseLabelWiseStatisticView`, whose positions
+             * are given as a `CompleteIndexVector`, to this vector. The gradients and Hessians to be added are
              * multiplied by a specific weight.
              *
-             * @param view      A reference to an object of type `DenseLabelWiseStatisticConstView` that stores the
-             *                  gradients and Hessians to be added to this vector
+             * @param view      A reference to an object of type `DenseLabelWiseStatisticView` that stores the gradients
+             *                  and Hessians to be added to this vector
+             * @param row       The index of the row to be added to this vector
+             * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
+             * @param weight    The weight, the gradients and Hessians should be multiplied by
+             */
+            void addToSubset(const DenseLabelWiseStatisticView& view, uint32 row, const CompleteIndexVector& indices,
+                             float64 weight);
+
+            /**
+             * Adds certain gradients and Hessians in single row of a `DenseLabelWiseStatisticView`, whose positions are
+             * are given as a `PartialIndexVector`, to this vector. The gradients and Hessians to be added are
+             * multiplied by a specific weight.
+             *
+             * @param view      A reference to an object of type `DenseLabelWiseStatisticView` that stores the gradients
+             *                  and Hessians to be added to this vector
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
-                             const PartialIndexVector& indices, float64 weight);
+            void addToSubset(const DenseLabelWiseStatisticView& view, uint32 row, const PartialIndexVector& indices,
+                             float64 weight);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
