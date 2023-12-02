@@ -9,55 +9,23 @@
 
 #include <unordered_map>
 
-/**
- * Allows to compute hashes for objects of type `LabelVector`.
- */
-struct LabelVectorHash final {
-    public:
-
-        /**
-         * Computes and returns a hash for an object of type `LabelVector`.
-         *
-         * @param v A reference to an object of type `LabelVector`
-         * @return  The hash that has been computed
-         */
-        inline std::size_t operator()(const LabelVector& v) const {
-            return hashView(v.cbegin(), v.getNumElements());
-        }
-};
-
-/**
- * Allows to check whether two objects of type `LabelVector` are equal or not.
- */
-struct LabelVectorPred final {
-    public:
-
-        /**
-         * Returns whether two objects of type `LabelVector` are equal or not.
-         *
-         * @param lhs   A reference to the first object of type `LabelVector`
-         * @param rhs   A reference to the second object of type `LabelVector`
-         * @return      True, if the given objects are equal, false otherwise
-         */
-        inline bool operator()(const LabelVector& lhs, const LabelVector& rhs) const {
-            return compareViews(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(), rhs.getNumElements());
-        }
-};
-
 LabelVectorSet::LabelVectorSet() {}
 
 LabelVectorSet::LabelVectorSet(const IRowWiseLabelMatrix& labelMatrix) {
-    std::unordered_map<std::reference_wrapper<LabelVector>, uint32, LabelVectorHash, LabelVectorPred> map;
+    typedef typename LabelVector::view_type Key;
+    typedef typename LabelVector::view_type::Hash Hash;
+    typedef typename LabelVector::view_type::Equal Equal;
+    std::unordered_map<std::reference_wrapper<Key>, uint32, Hash, Equal> map;
     uint32 numExamples = labelMatrix.getNumExamples();
 
     for (uint32 i = 0; i < numExamples; i++) {
         std::unique_ptr<LabelVector> labelVectorPtr = labelMatrix.createLabelVector(i);
-        auto it = map.find(*labelVectorPtr);
+        auto it = map.find(labelVectorPtr->getView());
 
         if (it == map.end()) {
-            map.emplace(*labelVectorPtr, (uint32) frequencies_.size());
-            frequencies_.emplace_back(1);
             labelVectors_.push_back(std::move(labelVectorPtr));
+            map.emplace(labelVectors_.back()->getView(), (uint32) frequencies_.size());
+            frequencies_.emplace_back(1);
         } else {
             uint32 index = (*it).second;
             frequencies_[index] += 1;
