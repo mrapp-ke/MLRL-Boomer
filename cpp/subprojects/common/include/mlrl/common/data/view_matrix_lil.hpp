@@ -182,3 +182,100 @@ class ListOfListsAllocator : public Matrix {
  */
 template<typename T>
 using AllocatedListOfLists = ListOfListsAllocator<ListOfLists<T>>;
+
+/**
+ * Provides row-wise access via iterators to the values stored in a sparse matrix in the list of lists (LIL) format.
+ *
+ * @tparam Matrix The type of the matrix
+ */
+template<typename Matrix>
+class IterableListOfListsDecorator : public Matrix {
+    public:
+
+        /**
+         * @param view The view, the matrix should be backed by
+         */
+        IterableListOfListsDecorator(typename Matrix::view_type&& view) : Matrix(std::move(view)) {}
+
+        virtual ~IterableListOfListsDecorator() override {}
+
+        /**
+         * An iterator that provides read-only access to the values in the matrix.
+         */
+        typedef typename Matrix::view_type::const_iterator const_iterator;
+
+        /**
+         * An iterator that provides access to the values in the matrix and allows to modify them.
+         */
+        typedef typename Matrix::view_type::iterator iterator;
+
+        /**
+         * Provides read-only access to an individual row in the matrix.
+         */
+        typedef typename Matrix::view_type::const_row const_row;
+
+        /**
+         * Provides access to an individual row in the matrix and allows to modify it.
+         */
+        typedef typename Matrix::view_type::row row;
+
+        /**
+         * Returns a view that provides read-only access to a specific row in the matrix.
+         *
+         * @param row   The index of the row
+         * @return      A `const_row`
+         */
+        const_row operator[](uint32 row) const {
+            return Matrix::view[row];
+        }
+
+        /**
+         * Returns a view that provides access to a specific row in the matrix and allows to modify it.
+         *
+         * @param row   The index of the row
+         * @return      A `row`
+         */
+        row operator[](uint32 row) {
+            return Matrix::view[row];
+        }
+
+        /**
+         * Returns a `const_iterator` to the beginning of the values in a specific row of the matrix.
+         *
+         * @param row   The index of the row
+         * @return      A `const_iterator` to the beginning of the values
+         */
+        const_iterator cbegin(uint32 row) const {
+            return Matrix::view.cbegin(row);
+        }
+
+        /**
+         * Returns a `const_iterator` to the end of the values in a specific row of the matrix.
+         *
+         * @param row   The index of the row
+         * @return      A `const_iterator` to the end of the values
+         */
+        const_iterator cend(uint32 row) const {
+            return Matrix::view.cend(row);
+        }
+
+        /**
+         * Returns an `iterator` to the beginning of the values in a specific row of the matrix.
+         *
+         * @param row   The index of the row
+         * @return      An `iterator` to the beginning of the values
+         */
+        iterator begin(uint32 row) {
+            return Matrix::view.begin(row);
+        }
+
+        /**
+         * Returns an `iterator` to the end of the values in a specific row of the matrix.
+         *
+         * @param row   The index of the row
+         * @return      An `iterator` to the end of the values
+         */
+        iterator end(uint32 row) {
+            return Matrix::view.end(row);
+        }
+};
