@@ -72,7 +72,16 @@ def __find_requirements(requirements_file: str, *dependencies: str) -> List[str]
         requirements = {line.split(' ')[0]: line.strip() for line in file.readlines()}
 
     if dependencies:
-        return [requirements[dependency] for dependency in dependencies if dependency in requirements]
+        found_requirements = []
+
+        for dependency in dependencies:
+            if dependency not in requirements:
+                raise RuntimeError('Dependency "' + dependency + '" not found in requirements file "'
+                                   + requirements_file + '"')
+
+            found_requirements.append(dependency)
+
+        return found_requirements
 
     return list(requirements.values())
 
@@ -107,6 +116,7 @@ def run_program(program: str,
                 print_args: bool = False,
                 additional_dependencies: Optional[List[str]] = None,
                 requirements_file: str = BUILD_MODULE.requirements_file,
+                install_program: bool = True,
                 env=None):
     """
     Runs an external program that has been installed into the virtual environment.
@@ -116,9 +126,13 @@ def run_program(program: str,
     :param print_args:              True, if the arguments should be included in log statements, False otherwise
     :param additional_dependencies: The names of dependencies that should be installed before running the program
     :param requirements_file:       The path of the requirements.txt file that specifies the dependency versions
+    :param install_program:         True, if the program should be installed before being run, False otherwise
     :param env:                     The environment variables to be passed to the program
     """
-    dependencies = [program]
+    dependencies = []
+
+    if install_program:
+        dependencies.append(program)
 
     if additional_dependencies:
         dependencies.extend(additional_dependencies)
@@ -132,6 +146,7 @@ def run_python_program(program: str,
                        print_args: bool = False,
                        additional_dependencies: Optional[List[str]] = None,
                        requirements_file: str = BUILD_MODULE.requirements_file,
+                       install_program: bool = True,
                        env=None):
     """
     Runs an external Python program.
@@ -141,14 +156,23 @@ def run_python_program(program: str,
     :param print_args:              True, if the arguments should be included in log statements, False otherwise
     :param additional_dependencies: The names of dependencies that should be installed before running the program
     :param requirements_file:       The path of the requirements.txt file that specifies the dependency versions
+    :param install_program:         True, if the program should be installed before being run, False otherwise
     :param env:                     The environment variable to be passed to the program
     """
-    python_bin = path.join(path.dirname(sys.executable), 'python')
-    run_program(python_bin,
+    dependencies = []
+
+    if install_program:
+        dependencies.append(program)
+
+    if additional_dependencies:
+        dependencies.extend(additional_dependencies)
+
+    run_program(path.join(path.dirname(sys.executable), 'python'),
                 '-m',
                 program,
                 *args,
                 print_args=print_args,
-                additional_dependencies=additional_dependencies,
+                additional_dependencies=dependencies,
                 requirements_file=requirements_file,
+                install_program=False,
                 env=env)
