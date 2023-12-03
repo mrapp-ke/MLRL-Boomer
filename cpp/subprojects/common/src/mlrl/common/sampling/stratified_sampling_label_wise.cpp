@@ -4,7 +4,6 @@
 #include "mlrl/common/data/indexed_value.hpp"
 #include "mlrl/common/input/label_matrix_csc.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
-#include "mlrl/common/util/memory.hpp"
 #include "stratified_sampling_common.hpp"
 
 #include <set>

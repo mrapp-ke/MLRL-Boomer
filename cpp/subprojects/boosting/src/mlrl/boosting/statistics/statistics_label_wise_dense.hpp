@@ -8,7 +8,6 @@
 #include "mlrl/boosting/data/statistic_view_label_wise_dense.hpp"
 #include "mlrl/boosting/losses/loss_label_wise.hpp"
 #include "mlrl/common/measures/measure_evaluation.hpp"
-#include "mlrl/common/util/memory.hpp"
 #include "statistics_label_wise_common.hpp"
 
 namespace boosting {
