@@ -118,8 +118,8 @@ class BinaryCsrView : public BinarySparseMatrix {
 };
 
 /**
- * Allocates the memory, a two-dimensional view that provides row-wise access to binary values stored in a matrix in the
- * compressed sparse row (CSR) format.
+ * Allocates the memory for a two-dimensional view that provides row-wise access to binary values stored in a matrix in
+ * the compressed sparse row (CSR) format.
  *
  * @tparam Matrix The type of the view
  */

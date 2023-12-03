@@ -118,8 +118,8 @@ class BinaryCscView : public BinarySparseMatrix {
 };
 
 /**
- * Allocates the memory, a two-dimensional view that provides column-wise access to binary values stored in a matrix in
- * the compressed sparse column (CSC) format.
+ * Allocates the memory for a two-dimensional view that provides column-wise access to binary values stored in a matrix
+ * in the compressed sparse column (CSC) format.
  *
  * @tparam Matrix The type of the view
  */
