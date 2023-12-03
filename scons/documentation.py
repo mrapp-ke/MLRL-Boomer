@@ -18,7 +18,7 @@ def __doxygen(project_name: str, input_dir: str, output_dir: str):
     set_env(env, 'DOXYGEN_INPUT_DIR', input_dir)
     set_env(env, 'DOXYGEN_OUTPUT_DIR', output_dir)
     set_env(env, 'DOXYGEN_PREDEFINED', 'MLRL' + project_name.upper() + '_API=')
-    run_program('doxygen', DOC_MODULE.doxygen_config_file, print_args=True, env=env)
+    run_program('doxygen', DOC_MODULE.doxygen_config_file, print_args=True, install_program=False, env=env)
 
 
 def __breathe_apidoc(source_dir: str, output_dir: str, project: str):
@@ -33,7 +33,8 @@ def __breathe_apidoc(source_dir: str, output_dir: str, project: str):
                 source_dir,
                 print_args=True,
                 additional_dependencies=['breathe'],
-                requirements_file=DOC_MODULE.requirements_file)
+                requirements_file=DOC_MODULE.requirements_file,
+                install_program=False)
 
 
 def __sphinx_apidoc(source_dir: str, output_dir: str):
@@ -47,7 +48,8 @@ def __sphinx_apidoc(source_dir: str, output_dir: str):
                 '*.so*',
                 print_args=True,
                 additional_dependencies=['sphinx'],
-                requirements_file=DOC_MODULE.requirements_file)
+                requirements_file=DOC_MODULE.requirements_file,
+                install_program=False)
 
     root_rst_file = path.join(output_dir, 'mlrl.rst')
 
@@ -70,7 +72,8 @@ def __sphinx_build(source_dir: str, output_dir: str):
                     'sphinx-copybutton',
                     'sphinx-favicon',
                 ],
-                requirements_file=DOC_MODULE.requirements_file)
+                requirements_file=DOC_MODULE.requirements_file,
+                install_program=False)
 
 
 def __read_tocfile_template(directory: str) -> List[str]:
