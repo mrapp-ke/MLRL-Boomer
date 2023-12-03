@@ -25,7 +25,8 @@ def __install_python_wheels(wheels: List[str]):
                        '--no-deps',
                        '--disable-pip-version-check',
                        *wheels,
-                       print_args=True)
+                       print_args=True,
+                       install_program=False)
 
 
 # pylint: disable=unused-argument
