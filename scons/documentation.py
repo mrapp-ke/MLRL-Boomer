@@ -14,10 +14,10 @@ from run import run_program
 def __doxygen(project_name: str, input_dir: str, output_dir: str):
     makedirs(output_dir, exist_ok=True)
     env = environ.copy()
-    set_env('DOXYGEN_PROJECT_NAME', 'libmlrl' + project_name, env=env)
-    set_env('DOXYGEN_INPUT_DIR', input_dir, env=env)
-    set_env('DOXYGEN_OUTPUT_DIR', output_dir, env=env)
-    set_env('DOXYGEN_PREDEFINED', 'MLRL' + project_name.upper() + '_API=', env=env)
+    set_env(env, 'DOXYGEN_PROJECT_NAME', 'libmlrl' + project_name)
+    set_env(env, 'DOXYGEN_INPUT_DIR', input_dir)
+    set_env(env, 'DOXYGEN_OUTPUT_DIR', output_dir)
+    set_env(env, 'DOXYGEN_PREDEFINED', 'MLRL' + project_name.upper() + '_API=')
     run_program('doxygen', DOC_MODULE.doxygen_config_file, print_args=True, env=env)
 
 
