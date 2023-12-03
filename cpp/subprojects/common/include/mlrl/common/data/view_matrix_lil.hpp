@@ -140,3 +140,45 @@ class ListOfLists : public Matrix {
             return ptr;
         }
 };
+
+/**
+ * Allocates the memory for a two-dimensional view that provides row-wise access to values stored in a matrix in the
+ * list of lists (LIL) format.
+ *
+ * @tparam Matrix The type of the view
+ */
+template<typename Matrix>
+class ListOfListsAllocator : public Matrix {
+    public:
+
+        /**
+         * @param numRows   The number of rows in the view
+         * @param numCols   The number of columns in the view
+         */
+        ListOfListsAllocator(uint32 numRows, uint32 numCols)
+            : Matrix(
+              new std::vector<typename Matrix::value_type>[numRows] {
+        },
+              numRows, numCols) {}
+
+        /**
+         * @param other A reference to an object of type `ListOfListsAllocator` that should be moved
+         */
+        ListOfListsAllocator(ListOfListsAllocator<Matrix>&& other) : Matrix(std::move(other)) {
+            other.release();
+        }
+
+        virtual ~ListOfListsAllocator() override {
+            if (Matrix::array) {
+                delete[] Matrix::array;
+            }
+        }
+};
+
+/**
+ * Allocates the memory, a `ListOfLists` provides access to.
+ *
+ * @tparam T The type of the values stored in the `ListOfLists`
+ */
+template<typename T>
+using AllocatedListOfLists = ListOfListsAllocator<ListOfLists<T>>;
