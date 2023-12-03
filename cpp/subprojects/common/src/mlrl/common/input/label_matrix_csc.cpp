@@ -1,7 +1,5 @@
 #include "mlrl/common/input/label_matrix_csc.hpp"
 
-#include "mlrl/common/util/memory.hpp"
-
 template<typename IndexIterator>
 static inline uint32* copyLabelMatrix(uint32* rowIndices, uint32* indptr,
                                       const CContiguousView<const uint8>& labelMatrix, IndexIterator indicesBegin,

@@ -1,7 +1,5 @@
 #include "mlrl/common/prediction/prediction_matrix_sparse_binary.hpp"
 
-#include "mlrl/common/util/memory.hpp"
-
 BinarySparsePredictionView::BinarySparsePredictionView(const BinaryLilMatrix& lilMatrix, uint32 numCols,
                                                        uint32 numNonZeroElements)
     : AllocatedBinaryCsrView(numNonZeroElements, lilMatrix.getNumRows(), numCols) {
