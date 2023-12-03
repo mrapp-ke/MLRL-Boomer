@@ -159,6 +159,8 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View> {
         ResizableAllocator(ResizableAllocator<View>&& other)
             : Allocator<View>(std::move(other)), maxCapacity(other.maxCapacity) {}
 
+        virtual ~ResizableAllocator() override {}
+
         /**
          * Resizes the view by re-allocating the memory it provides access to.
          *
@@ -178,8 +180,6 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View> {
 
             View::numElements = numElements;
         }
-
-        virtual ~ResizableAllocator() override {}
 };
 
 /**
