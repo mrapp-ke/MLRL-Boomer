@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/common/data/list_of_lists.hpp"
 #include "mlrl/common/data/tuple.hpp"
+#include "mlrl/common/data/view_matrix_lil.hpp"
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
 
 #include <functional>
@@ -50,43 +50,15 @@ class MLRLCOMMON_API IIsotonicProbabilityCalibrationModel : public IMarginalProb
 /**
  * A model for the calibration of marginal or joint probabilities via isotonic regression.
  */
-class IsotonicProbabilityCalibrationModel final : public IIsotonicProbabilityCalibrationModel {
-    private:
-
-        ListOfLists<Tuple<float64>> binsPerList_;
-
+class IsotonicProbabilityCalibrationModel final
+    : public IterableListOfListsDecorator<ViewDecorator<AllocatedListOfLists<Tuple<float64>>>>,
+      public IIsotonicProbabilityCalibrationModel {
     public:
 
         /**
          * @param numLists The total number of lists for storing bins
          */
         IsotonicProbabilityCalibrationModel(uint32 numLists);
-
-        /**
-         * Provides access to the bins that belong to a specific list and allows to modify them.
-         */
-        typedef ListOfLists<Tuple<float64>>::row bin_list;
-
-        /**
-         * Provides read-only access to the bins that belong to a specific list.
-         */
-        typedef ListOfLists<Tuple<float64>>::const_row const_bin_list;
-
-        /**
-         * Provides access to the bins that belong to the list at a specific index and allows to modify its elements.
-         *
-         * @param listIndex The index of the list
-         * @return          A `bin_list`
-         */
-        bin_list operator[](uint32 listIndex);
-
-        /**
-         * Provides read-only access to the bins that belong to the list at a specific index.
-         *
-         * @param listIndex The index of the list
-         * @return          A `const_bin_list`
-         */
-        const_bin_list operator[](uint32 listIndex) const;
 
         /**
          * Fits the isotonic calibration model.
