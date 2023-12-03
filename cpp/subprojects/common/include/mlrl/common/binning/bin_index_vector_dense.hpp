@@ -4,12 +4,12 @@
 #pragma once
 
 #include "mlrl/common/binning/bin_index_vector.hpp"
-#include "mlrl/common/data/view_vector.hpp"
+#include "mlrl/common/data/vector_dense.hpp"
 
 /**
  * Stores the indices of the bins, individual examples have been assigned to, using a C-contiguous array.
  */
-class DenseBinIndexVector final : public IterableVectorDecorator<VectorDecorator<AllocatedVector<uint32>>>,
+class DenseBinIndexVector final : public DenseVectorDecorator<AllocatedVector<uint32>>,
                                   public IBinIndexVector {
     public:
 

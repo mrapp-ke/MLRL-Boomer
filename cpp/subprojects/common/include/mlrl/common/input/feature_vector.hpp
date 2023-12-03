@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/indexed_value.hpp"
-#include "mlrl/common/data/view_vector.hpp"
+#include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/input/missing_feature_vector.hpp"
 
 /**
@@ -12,7 +12,7 @@
  * indices of examples with missing feature values.
  */
 class FeatureVector final
-    : public ResizableVectorDecorator<IterableVectorDecorator<VectorDecorator<ResizableVector<IndexedValue<float32>>>>>,
+    : public ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<IndexedValue<float32>>>>,
       public MissingFeatureVector {
     public:
 
