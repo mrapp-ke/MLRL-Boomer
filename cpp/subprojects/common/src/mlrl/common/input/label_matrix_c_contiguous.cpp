@@ -1,5 +1,6 @@
 #include "mlrl/common/input/label_matrix_c_contiguous.hpp"
 
+#include "mlrl/common/data/matrix_dense.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
 #include "mlrl/common/sampling/instance_sampling.hpp"
@@ -11,7 +12,7 @@
  * Implements random read-only access to the labels of individual training examples that are stored in a pre-allocated
  * C-contiguous array.
  */
-class CContiguousLabelMatrix final : public IterableDenseMatrixDecorator<MatrixDecorator<CContiguousView<const uint8>>>,
+class CContiguousLabelMatrix final : public DenseMatrixDecorator<CContiguousView<const uint8>>,
                                      public ICContiguousLabelMatrix {
     public:
 
@@ -21,7 +22,7 @@ class CContiguousLabelMatrix final : public IterableDenseMatrixDecorator<MatrixD
          * @param numCols   The number of columns in the label matrix
          */
         CContiguousLabelMatrix(const uint8* array, uint32 numRows, uint32 numCols)
-            : IterableDenseMatrixDecorator<MatrixDecorator<CContiguousView<const uint8>>>(
+            : DenseMatrixDecorator<CContiguousView<const uint8>>(
               CContiguousView<const uint8>(array, numRows, numCols)) {}
 
         bool isSparse() const override {

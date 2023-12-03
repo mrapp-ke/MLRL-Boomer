@@ -5,15 +5,15 @@
 
 #include "mlrl/common/input/feature_matrix_fortran_contiguous.hpp"
 
+#include "mlrl/common/data/matrix_dense.hpp"
 #include "mlrl/common/data/view_matrix_fortran_contiguous.hpp"
 
 /**
  * An implementation of the type `IFortranContiguousFeatureMatrix` that provides column-wise read-only access to the
  * feature values of examples that are stored in a pre-allocated Fortran-contiguous array.
  */
-class FortranContiguousFeatureMatrix final
-    : public IterableDenseMatrixDecorator<MatrixDecorator<FortranContiguousView<const float32>>>,
-      public IFortranContiguousFeatureMatrix {
+class FortranContiguousFeatureMatrix final : public DenseMatrixDecorator<FortranContiguousView<const float32>>,
+                                             public IFortranContiguousFeatureMatrix {
     public:
 
         /**
@@ -22,7 +22,7 @@ class FortranContiguousFeatureMatrix final
          * @param array     A pointer to a Fortran-contiguous array of type `float32` that stores the feature values
          */
         FortranContiguousFeatureMatrix(const float32* array, uint32 numRows, uint32 numCols)
-            : IterableDenseMatrixDecorator<MatrixDecorator<FortranContiguousView<const float32>>>(
+            : DenseMatrixDecorator<FortranContiguousView<const float32>>(
               FortranContiguousView<const float32>(array, numRows, numCols)) {}
 
         bool isSparse() const override {
