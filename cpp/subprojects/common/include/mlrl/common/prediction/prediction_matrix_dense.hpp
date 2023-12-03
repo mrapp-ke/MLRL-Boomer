@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/data/matrix_dense.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/util/dll_exports.hpp"
 
@@ -12,8 +13,7 @@
  * @tparam T The type of the predictions that are stored by the matrix
  */
 template<typename T>
-class MLRLCOMMON_API DensePredictionMatrix final
-    : public IterableDenseMatrixDecorator<MatrixDecorator<AllocatedCContiguousView<T>>> {
+class MLRLCOMMON_API DensePredictionMatrix final : public DenseMatrixDecorator<AllocatedCContiguousView<T>> {
     public:
 
         /**
