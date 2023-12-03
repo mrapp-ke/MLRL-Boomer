@@ -278,7 +278,7 @@ namespace boosting {
                           binaryTransformationPtr_(binaryTransformationPtr),
                           realMatrix_(predictor.featureMatrix_.numRows, predictor.numLabels_,
                                       binaryTransformationPtr_ != nullptr),
-                          predictionMatrix_(predictor.featureMatrix_.numRows) {}
+                          predictionMatrix_(predictor.featureMatrix_.numRows, predictor.numLabels_) {}
             };
 
             class PredictionDelegate final
@@ -346,7 +346,7 @@ namespace boosting {
              * @see `IPredictor::predict`
              */
             std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
-                BinaryLilMatrix predictionMatrix(featureMatrix_.numRows);
+                BinaryLilMatrix predictionMatrix(featureMatrix_.numRows, numLabels_);
                 uint32 numNonZeroElements;
 
                 if (binaryTransformationPtr_) {
