@@ -116,3 +116,38 @@ class BinaryCsrView : public BinarySparseMatrix {
             return BinarySparseMatrix::indptr[Matrix::numRows];
         }
 };
+
+/**
+ * Allocates the memory, a two-dimensional view that provides row-wise access to binary values stored in a matrix in the
+ * compressed sparse row (CSR) format.
+ *
+ * @tparam Matrix The type of the view
+ */
+template<typename Matrix>
+class BinaryCsrViewAllocator : public BinarySparseMatrixAllocator<Matrix> {
+    public:
+
+        /**
+         * @param numNonZeroElements    The number of non-zero values in the view
+         * @param numRows               The number of rows in the view
+         * @param numCols               The number of columns in the view
+         * @param init                  True, if all elements in the view should be value-initialized, false otherwise
+         */
+        BinaryCsrViewAllocator(uint32 numNonZeroElements, uint32 numRows, uint32 numCols, bool init = false)
+            : BinarySparseMatrixAllocator<Matrix>(numNonZeroElements, numRows, numCols, init) {
+            BinarySparseMatrixAllocator<Matrix>::indptr[numRows] = numNonZeroElements;
+        }
+
+        /**
+         * @param other A reference to an object of type `BinarySparseMatrixAllocator` that should be moved
+         */
+        BinaryCsrViewAllocator(BinaryCsrViewAllocator<Matrix>&& other)
+            : BinarySparseMatrixAllocator<Matrix>(std::move(other)) {}
+
+        virtual ~BinaryCsrViewAllocator() override {}
+};
+
+/**
+ * Allocates the memory, a `BinaryCsrView` provides access to
+ */
+typedef BinaryCsrViewAllocator<BinaryCsrView> AllocatedBinaryCsrView;
