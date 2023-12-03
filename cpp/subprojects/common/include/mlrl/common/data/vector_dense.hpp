@@ -25,8 +25,8 @@ class DenseVector final : public IterableVectorDecorator<VectorDecorator<Allocat
         /**
          * @param other A reference to an object of type `AllocatedVector` that should be moved
          */
-        DenseVector(AllocatedVector<T>&& vector)
-            : IterableVectorDecorator<VectorDecorator<AllocatedVector<T>>>(AllocatedVector<T>(std::move(vector))) {}
+        DenseVector(AllocatedVector<T>&& other)
+            : IterableVectorDecorator<VectorDecorator<AllocatedVector<T>>>(AllocatedVector<T>(std::move(other))) {}
 };
 
 /**
