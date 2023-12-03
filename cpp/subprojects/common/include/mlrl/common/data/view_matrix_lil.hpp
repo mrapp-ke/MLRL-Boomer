@@ -184,7 +184,8 @@ template<typename T>
 using AllocatedListOfLists = ListOfListsAllocator<ListOfLists<T>>;
 
 /**
- * Provides row-wise access via iterators to the values stored in a sparse matrix in the list of lists (LIL) format.
+ * Provides row-wise read and write access via iterators to the values stored in a sparse matrix in the list of lists
+ * (LIL) format.
  *
  * @tparam Matrix The type of the matrix
  */
