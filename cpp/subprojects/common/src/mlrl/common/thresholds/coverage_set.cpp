@@ -4,14 +4,12 @@
 #include "mlrl/common/thresholds/thresholds_subset.hpp"
 
 CoverageSet::CoverageSet(uint32 numElements)
-    : IterableVectorDecorator<VectorDecorator<AllocatedVector<uint32>>>(AllocatedVector<uint32>(numElements)),
-      numCovered_(numElements) {
+    : DenseVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(numElements)), numCovered_(numElements) {
     setViewToIncreasingValues(this->begin(), numElements, 0, 1);
 }
 
 CoverageSet::CoverageSet(const CoverageSet& other)
-    : IterableVectorDecorator<VectorDecorator<AllocatedVector<uint32>>>(
-      AllocatedVector<uint32>(other.getNumElements())),
+    : DenseVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(other.getNumElements())),
       numCovered_(other.numCovered_) {
     copyView(other.cbegin(), this->begin(), numCovered_);
 }

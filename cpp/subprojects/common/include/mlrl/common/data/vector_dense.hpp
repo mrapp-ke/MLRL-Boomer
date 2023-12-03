@@ -6,13 +6,22 @@
 #include "mlrl/common/data/view_vector.hpp"
 
 /**
+ * Provides random read and write access, as well as read and write access via iterators, to the values stored in
+ * vector.
+ *
+ * @tparam Vector The type of the vector
+ */
+template<typename Vector>
+using DenseVectorDecorator = IterableVectorDecorator<VectorDecorator<Vector>>;
+
+/**
  * A vector that provides random read and write access, as well as read and write access via iterators, to the values
  * stored in a newly allocated array.
  *
  * @tparam T The type of the values stored in the vector
  */
 template<typename T>
-class DenseVector final : public IterableVectorDecorator<VectorDecorator<AllocatedVector<T>>> {
+class DenseVector final : public DenseVectorDecorator<AllocatedVector<T>> {
     public:
 
         /**
@@ -20,13 +29,13 @@ class DenseVector final : public IterableVectorDecorator<VectorDecorator<Allocat
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
         DenseVector(uint32 numElements, bool init = false)
-            : IterableVectorDecorator<VectorDecorator<AllocatedVector<T>>>(AllocatedVector<T>(numElements, init)) {}
+            : DenseVectorDecorator<AllocatedVector<T>>(AllocatedVector<T>(numElements, init)) {}
 
         /**
          * @param other A reference to an object of type `AllocatedVector` that should be moved
          */
         DenseVector(AllocatedVector<T>&& other)
-            : IterableVectorDecorator<VectorDecorator<AllocatedVector<T>>>(AllocatedVector<T>(std::move(other))) {}
+            : DenseVectorDecorator<AllocatedVector<T>>(AllocatedVector<T>(std::move(other))) {}
 };
 
 /**
@@ -36,8 +45,7 @@ class DenseVector final : public IterableVectorDecorator<VectorDecorator<Allocat
  * @tparam T The type of the values stored in the vector
  */
 template<typename T>
-class ResizableDenseVector final
-    : public ResizableVectorDecorator<IterableVectorDecorator<VectorDecorator<ResizableVector<T>>>> {
+class ResizableDenseVector final : public ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<T>>> {
     public:
 
         /**
@@ -45,6 +53,6 @@ class ResizableDenseVector final
          * @param init          True, if all elements in the vector should be value-initialized, false otherwise
          */
         ResizableDenseVector(uint32 numElements, bool init = false)
-            : ResizableVectorDecorator<IterableVectorDecorator<VectorDecorator<ResizableVector<T>>>>(
+            : ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<T>>>(
               ResizableVector<T>(numElements, init)) {}
 };
