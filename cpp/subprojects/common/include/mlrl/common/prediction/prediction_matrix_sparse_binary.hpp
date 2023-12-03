@@ -10,30 +10,39 @@
 #include <memory>
 
 /**
- * A sparse matrix that provides read-only access to binary predictions that are stored in the compressed sparse row
- * (CSR) format.
- *
- * The matrix maintains two arrays, referred to as `indptr` and `colIndices`. The latter stores a column-index for each
- * of the `numNonZeroValues` non-zero elements in the matrix. The former stores `numRows + 1` row-indices that specify
- * the first element in `colIndices` that correspond to a certain row. The index at the last position is equal to the
- * number of non-zero values in the matrix.
+ * A two-dimensional view that provides row-wise access to binary values stored in a matrix in the compressed sparse row
+ * (CSR) format that have been copied from a `BinaryLilMatrix`.
  */
-class MLRLCOMMON_API BinarySparsePredictionMatrix final
-    : public IterableBinarySparseMatrixDecorator<MatrixDecorator<BinaryCsrView>> {
+class BinarySparsePredictionView final : public AllocatedBinaryCsrView {
     public:
 
         /**
-         * @param indices   A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the
-         *                  column-indices, the non-zero elements correspond to
-         * @param indptr    A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices of
-         *                  the first element in `indices` that corresponds to a certain row. The index at the last
-         *                  position is equal to `numNonZeroValues`
-         * @param numRows   The number of rows in the matrix
-         * @param numCols   The number of columns in the matrix
+         * @param lilMatrix             A reference to an object of type `BinaryLilMatrix` to be copied
+         * @param numCols               The number of columns of the given `BinaryLilMatrix`
+         * @param numNonZeroElements    The number of non-zero elements in the given `BinaryLilMatrix`
          */
-        BinarySparsePredictionMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols);
+        BinarySparsePredictionView(const BinaryLilMatrix& lilMatrix, uint32 numCols, uint32 numNonZeroElements);
 
-        ~BinarySparsePredictionMatrix() override;
+        /**
+         * @param other A reference to an object of type `BinarySparsePredictionView` that should be moved
+         */
+        BinarySparsePredictionView(BinarySparsePredictionView&& other);
+};
+
+/**
+ * A sparse matrix that provides read-only access to binary predictions that are stored in the compressed sparse row
+ * (CSR) format.
+ */
+class MLRLCOMMON_API BinarySparsePredictionMatrix final
+    : public IterableBinarySparseMatrixDecorator<MatrixDecorator<BinarySparsePredictionView>> {
+    public:
+
+        /**
+         * @param lilMatrix             A reference to an object of type `BinaryLilMatrix` to be copied
+         * @param numCols               The number of columns of the given `BinaryLilMatrix`
+         * @param numNonZeroElements    The number of non-zero elements in the given `BinaryLilMatrix`
+         */
+        BinarySparsePredictionMatrix(const BinaryLilMatrix& lilMatrix, uint32 numCols, uint32 numNonZeroElements);
 
         /**
          * Returns a pointer to the array that stores the column indices, the non-zero values in the matrix correspond
