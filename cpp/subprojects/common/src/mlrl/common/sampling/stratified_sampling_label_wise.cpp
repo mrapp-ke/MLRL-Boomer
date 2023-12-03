@@ -2,12 +2,169 @@
 
 #include "mlrl/common/data/array.hpp"
 #include "mlrl/common/data/indexed_value.hpp"
-#include "mlrl/common/input/label_matrix_csc.hpp"
+#include "mlrl/common/data/matrix_sparse_binary.hpp"
+#include "mlrl/common/data/view_matrix_csc_binary.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
 #include "stratified_sampling_common.hpp"
 
 #include <set>
 #include <unordered_map>
+
+template<typename IndexIterator>
+static inline uint32* copyLabelMatrix(uint32* indices, uint32* indptr, const CContiguousView<const uint8>& labelMatrix,
+                                      IndexIterator indicesBegin, IndexIterator indicesEnd) {
+    uint32 numExamples = indicesEnd - indicesBegin;
+    uint32 numLabels = labelMatrix.numCols;
+    uint32 n = 0;
+
+    for (uint32 i = 0; i < numLabels; i++) {
+        indptr[i] = n;
+
+        for (uint32 j = 0; j < numExamples; j++) {
+            uint32 exampleIndex = indicesBegin[j];
+
+            if (labelMatrix.values_cbegin(exampleIndex)[i]) {
+                indices[n] = exampleIndex;
+                n++;
+            }
+        }
+    }
+
+    indptr[numLabels] = n;
+    return reallocateMemory(indices, n);
+}
+
+template<typename IndexIterator>
+static inline uint32* copyLabelMatrix(uint32* indices, uint32* indptr, const BinaryCsrView& labelMatrix,
+                                      IndexIterator indicesBegin, IndexIterator indicesEnd) {
+    uint32 numExamples = indicesEnd - indicesBegin;
+    uint32 numLabels = labelMatrix.numCols;
+
+    // Set column indices of the CSC matrix to zero...
+    setViewToZeros(indptr, numLabels);
+
+    // Determine the number of non-zero elements per column...
+    for (uint32 i = 0; i < numExamples; i++) {
+        uint32 exampleIndex = indicesBegin[i];
+        BinaryCsrView::index_const_iterator labelIndexIterator = labelMatrix.indices_cbegin(exampleIndex);
+        uint32 numRelevantLabels = labelMatrix.indices_cend(exampleIndex) - labelIndexIterator;
+
+        for (uint32 j = 0; j < numRelevantLabels; j++) {
+            uint32 labelIndex = labelIndexIterator[j];
+            indptr[labelIndex]++;
+        }
+    }
+
+    // Update the column indices of the CSC matrix with respect to the number of non-zero elements that correspond to
+    // previous columns...
+    uint32 tmp = 0;
+
+    for (uint32 i = 0; i < numLabels; i++) {
+        uint32 labelIndex = indptr[i];
+        indptr[i] = tmp;
+        tmp += labelIndex;
+    }
+
+    // Set the row indices of the CSC matrix. This will modify the column indices...
+    for (uint32 i = 0; i < numExamples; i++) {
+        uint32 exampleIndex = indicesBegin[i];
+        BinaryCsrView::index_const_iterator labelIndexIterator = labelMatrix.indices_cbegin(exampleIndex);
+        uint32 numRelevantLabels = labelMatrix.indices_cend(exampleIndex) - labelIndexIterator;
+
+        for (uint32 j = 0; j < numRelevantLabels; j++) {
+            uint32 originalLabelIndex = labelIndexIterator[j];
+            uint32 labelIndex = indptr[originalLabelIndex];
+            indices[labelIndex] = exampleIndex;
+            indptr[originalLabelIndex]++;
+        }
+    }
+
+    // Reset the column indices to the previous values...
+    tmp = 0;
+
+    for (uint32 i = 0; i < numLabels; i++) {
+        uint32 labelIndex = indptr[i];
+        indptr[i] = tmp;
+        tmp = labelIndex;
+    }
+
+    indptr[numLabels] = tmp;
+    return reallocateMemory(indices, tmp);
+}
+
+/**
+ * A two-dimensional view that provides column-wise read and write access to the labels of individual training examples
+ * stored in a matrix in the compressed sparse column (CSC) format that have been copied from a `CContiguousView` or a
+ * `BinaryCsrView`.
+ */
+class CscLabelMatrix final : public AllocatedBinaryCscView {
+    public:
+
+        /**
+         * @param labelMatrix   A reference to an object of type `CContiguousView` to be copied
+         * @param indicesBegin  A `CompleteIndexVector::const_iterator` to the beginning of the indices of the examples
+         *                      to be considered
+         * @param indicesEnd    A `CompleteIndexVector::const_iterator` to the end of the indices of the examples to be
+         *                      considered
+         */
+        CscLabelMatrix(const CContiguousView<const uint8>& labelMatrix,
+                       CompleteIndexVector::const_iterator indicesBegin, CompleteIndexVector::const_iterator indicesEnd)
+            : AllocatedBinaryCscView((indicesEnd - indicesBegin) * labelMatrix.numCols, indicesEnd - indicesBegin,
+                                     labelMatrix.numCols) {
+            BinarySparseMatrix::indices = copyLabelMatrix(BinarySparseMatrix::indices, BinarySparseMatrix::indptr,
+                                                          labelMatrix, indicesBegin, indicesEnd);
+        }
+
+        /**
+         * @param labelMatrix   A reference to an object of type `CContiguousView` to be copied
+         * @param indicesBegin  A `PartialIndexVector::const_iterator` to the beginning of the indices of the examples
+         *                      to be considered
+         * @param indicesEnd    A `PartialIndexVector::const_iterator` to the end of the indices of the examples to be
+         *                      considered
+         */
+        CscLabelMatrix(const CContiguousView<const uint8>& labelMatrix, PartialIndexVector::const_iterator indicesBegin,
+                       PartialIndexVector::const_iterator indicesEnd)
+            : AllocatedBinaryCscView((indicesEnd - indicesBegin) * labelMatrix.numCols, indicesEnd - indicesBegin,
+                                     labelMatrix.numCols) {
+            BinarySparseMatrix::indices = copyLabelMatrix(BinarySparseMatrix::indices, BinarySparseMatrix::indptr,
+                                                          labelMatrix, indicesBegin, indicesEnd);
+        }
+
+        /**
+         * @param labelMatrix   A reference to an object of type `BinaryCsrView` to be copied
+         * @param indicesBegin  A `CompleteIndexVector::const_iterator` to the beginning of the indices of the examples
+         *                      to be considered
+         * @param indicesEnd    A `CompleteIndexVector::const_iterator` to the end of the indices of the examples to be
+         *                      considered
+         */
+        CscLabelMatrix(const BinaryCsrView& labelMatrix, CompleteIndexVector::const_iterator indicesBegin,
+                       CompleteIndexVector::const_iterator indicesEnd)
+            : AllocatedBinaryCscView(labelMatrix.getNumNonZeroElements(), indicesEnd - indicesBegin,
+                                     labelMatrix.numCols) {
+            BinarySparseMatrix::indices = copyLabelMatrix(BinarySparseMatrix::indices, BinarySparseMatrix::indptr,
+                                                          labelMatrix, indicesBegin, indicesEnd);
+        }
+
+        /**
+         * @param labelMatrix   A reference to an object of type `BinaryCsrView` to be copied
+         * @param indicesBegin  A `PartialIndexVector::const_iterator` to the beginning of the indices of the examples
+         *                      to be considered
+         * @param indicesEnd    A `PartialIndexVector::const_iterator` to the end of the indices of the examples to be
+         *                      considered
+         */
+        CscLabelMatrix(const BinaryCsrView& labelMatrix, PartialIndexVector::const_iterator indicesBegin,
+                       PartialIndexVector::const_iterator indicesEnd)
+            : AllocatedBinaryCscView(labelMatrix.getNumNonZeroElements(), indicesEnd - indicesBegin,
+                                     labelMatrix.numCols) {
+            BinarySparseMatrix::indices = copyLabelMatrix(BinarySparseMatrix::indices, BinarySparseMatrix::indptr,
+                                                          labelMatrix, indicesBegin, indicesEnd);
+        }
+
+        /**
+         * @param other A reference to an object of type `CscLabelMatrix` that should be moved
+         */
+        CscLabelMatrix(CscLabelMatrix&& other) : AllocatedBinaryCscView(std::move(other)) {}
+};
 
 /**
  * Allows to compare two objects of type `IndexedValue` according to the following strict weak ordering: If the value of
@@ -63,12 +220,13 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
                                                                              IndexIterator indicesBegin,
                                                                              IndexIterator indicesEnd) {
     // Convert the given label matrix into the CSC format...
-    const CscLabelMatrix cscLabelMatrix(labelMatrix, indicesBegin, indicesEnd);
-    numRows_ = cscLabelMatrix.numRows;
+    const BinarySparseMatrixDecorator<CscLabelMatrix> cscLabelMatrix(
+      CscLabelMatrix(labelMatrix, indicesBegin, indicesEnd));
+    numRows_ = cscLabelMatrix.getNumRows();
 
     // Create an array that stores for each label the number of examples that are associated with the label, as well as
     // a sorted map that stores all label indices in increasing order of the number of associated examples...
-    uint32 numLabels = cscLabelMatrix.numCols;
+    uint32 numLabels = cscLabelMatrix.getNumCols();
     Array<uint32> numExamplesPerLabel(numLabels);
     typedef std::set<IndexedValue<uint32>, CompareIndexedValue> SortedSet;
     SortedSet sortedLabelIndices;
@@ -115,7 +273,8 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
         numCols++;
 
         // Iterate the examples that are associated with the current label, if no weight has been set yet...
-        CscLabelMatrix::index_const_iterator indexIterator = cscLabelMatrix.indices_cbegin(labelIndex);
+        BinarySparseMatrixDecorator<CscLabelMatrix>::index_const_iterator indexIterator =
+          cscLabelMatrix.indices_cbegin(labelIndex);
         uint32 numExamples = cscLabelMatrix.indices_cend(labelIndex) - indexIterator;
 
         for (uint32 i = 0; i < numExamples; i++) {
