@@ -79,7 +79,7 @@ namespace boosting {
                       marginalProbabilityFunction.transformScoreIntoMarginalProbability(j, score);
                     calibrationModel.addBin(j, marginalProbability, trueProbability);
                 } else {
-                    IsotonicProbabilityCalibrationModel::bin_list bins = calibrationModel[j];
+                    IsotonicProbabilityCalibrationModel::row bins = calibrationModel[j];
                     Tuple<float64>& firstBin = bins[0];
                     uint32 numSparse = numSparsePerLabel[j] + 1;
 
@@ -136,7 +136,7 @@ namespace boosting {
         }
 
         for (uint32 i = 0; i < numLabels; i++) {
-            IsotonicProbabilityCalibrationModel::bin_list bins = calibrationModel[i];
+            IsotonicProbabilityCalibrationModel::row bins = calibrationModel[i];
             Tuple<float64>& firstBin = bins[0];
             firstBin.second = (float64) numSparseRelevantPerLabel[i] / (float64) numSparsePerLabel[i];
         }
@@ -361,7 +361,7 @@ namespace boosting {
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
 
         for (uint32 i = 0; i < numLabelVectors; i++) {
-            IsotonicProbabilityCalibrationModel::bin_list bins = calibrationModel[i];
+            IsotonicProbabilityCalibrationModel::row bins = calibrationModel[i];
             const LabelVector& labelVector = *labelVectorIterator[i];
 
             for (uint32 j = 0; j < numExamples; j++) {
@@ -391,7 +391,7 @@ namespace boosting {
         uint32 numLabelVectors = labelVectorSet.getNumLabelVectors();
 
         for (uint32 i = 0; i < numLabelVectors; i++) {
-            IsotonicProbabilityCalibrationModel::bin_list bins = calibrationModel[i];
+            IsotonicProbabilityCalibrationModel::row bins = calibrationModel[i];
             const LabelVector& labelVector = *labelVectorIterator[i];
 
             for (uint32 j = 0; j < numExamples; j++) {
@@ -420,7 +420,7 @@ namespace boosting {
         uint32 numLabels = labelMatrix.numCols;
 
         for (uint32 i = 0; i < numLabelVectors; i++) {
-            IsotonicProbabilityCalibrationModel::bin_list bins = calibrationModel[i];
+            IsotonicProbabilityCalibrationModel::row bins = calibrationModel[i];
             const LabelVector& labelVector = *labelVectorIterator[i];
 
             for (uint32 j = 0; j < numExamples; j++) {
@@ -450,7 +450,7 @@ namespace boosting {
         uint32 numLabels = labelMatrix.numCols;
 
         for (uint32 i = 0; i < numLabelVectors; i++) {
-            IsotonicProbabilityCalibrationModel::bin_list bins = calibrationModel[i];
+            IsotonicProbabilityCalibrationModel::row bins = calibrationModel[i];
             const LabelVector& labelVector = *labelVectorIterator[i];
 
             for (uint32 j = 0; j < numExamples; j++) {
