@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/boosting/data/statistic_view_label_wise_dense.hpp"
+#include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
@@ -15,7 +16,7 @@ namespace boosting {
      * and Hessian is stored.
      */
     class DenseLabelWiseStatisticVector final
-        : public ClearableViewDecorator<IterableVectorDecorator<VectorDecorator<AllocatedVector<Tuple<float64>>>>> {
+        : public ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<Tuple<float64>>>> {
         public:
 
             /**

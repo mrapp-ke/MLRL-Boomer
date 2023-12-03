@@ -31,7 +31,7 @@ namespace seco {
     }
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(uint32 numElements, bool init)
-        : ClearableViewDecorator<IterableVectorDecorator<VectorDecorator<AllocatedVector<ConfusionMatrix>>>>(
+        : ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<ConfusionMatrix>>>(
           AllocatedVector<ConfusionMatrix>(numElements, init)) {}
 
     DenseConfusionMatrixVector::DenseConfusionMatrixVector(const DenseConfusionMatrixVector& other)
