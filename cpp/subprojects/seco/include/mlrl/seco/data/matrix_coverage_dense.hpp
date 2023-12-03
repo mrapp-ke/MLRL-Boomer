@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/matrix_c_contiguous.hpp"
+#include "mlrl/common/data/matrix_dense.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
@@ -13,8 +14,7 @@ namespace seco {
      * A two-dimensional matrix that stores how often individual examples and labels have been covered in a C-contiguous
      * array.
      */
-    class DenseCoverageMatrix final
-        : public IterableDenseMatrixDecorator<MatrixDecorator<AllocatedCContiguousView<uint32>>> {
+    class DenseCoverageMatrix final : public DenseMatrixDecorator<AllocatedCContiguousView<uint32>> {
         private:
 
             float64 sumOfUncoveredWeights_;

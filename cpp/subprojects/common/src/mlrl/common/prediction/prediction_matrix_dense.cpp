@@ -2,8 +2,7 @@
 
 template<typename T>
 DensePredictionMatrix<T>::DensePredictionMatrix(uint32 numRows, uint32 numCols, bool init)
-    : IterableDenseMatrixDecorator<MatrixDecorator<AllocatedCContiguousView<T>>>(
-      AllocatedCContiguousView<T>(numRows, numCols, init)) {}
+    : DenseMatrixDecorator<AllocatedCContiguousView<T>>(AllocatedCContiguousView<T>(numRows, numCols, init)) {}
 
 template<typename T>
 T* DensePredictionMatrix<T>::get() {
