@@ -124,7 +124,7 @@ class BinaryCsrView : public BinarySparseMatrix {
  * @tparam Matrix The type of the view
  */
 template<typename Matrix>
-class BinaryCsrViewAllocator : public BinarySparseMatrixAllocator<Matrix> {
+class BinaryCsrViewAllocator : public Matrix {
     public:
 
         /**
@@ -134,17 +134,23 @@ class BinaryCsrViewAllocator : public BinarySparseMatrixAllocator<Matrix> {
          * @param init                  True, if all elements in the view should be value-initialized, false otherwise
          */
         BinaryCsrViewAllocator(uint32 numNonZeroElements, uint32 numRows, uint32 numCols, bool init = false)
-            : BinarySparseMatrixAllocator<Matrix>(numNonZeroElements, numRows, numCols, init) {
-            BinarySparseMatrixAllocator<Matrix>::indptr[numRows] = numNonZeroElements;
+            : Matrix(allocateMemory<uint32>(numNonZeroElements, init), allocateMemory<uint32>(numRows + 1, init),
+                     numRows, numCols) {
+            Matrix::indptr[numRows] = numNonZeroElements;
         }
 
         /**
-         * @param other A reference to an object of type `BinarySparseMatrixAllocator` that should be moved
+         * @param other A reference to an object of type `BinaryCsrViewAllocator` that should be moved
          */
-        BinaryCsrViewAllocator(BinaryCsrViewAllocator<Matrix>&& other)
-            : BinarySparseMatrixAllocator<Matrix>(std::move(other)) {}
+        BinaryCsrViewAllocator(BinaryCsrViewAllocator<Matrix>&& other) : Matrix(std::move(other)) {
+            other.releaseIndices();
+            other.releaseIndptr();
+        }
 
-        virtual ~BinaryCsrViewAllocator() override {}
+        virtual ~BinaryCsrViewAllocator() override {
+            freeMemory(Matrix::indices);
+            freeMemory(Matrix::indptr);
+        }
 };
 
 /**
