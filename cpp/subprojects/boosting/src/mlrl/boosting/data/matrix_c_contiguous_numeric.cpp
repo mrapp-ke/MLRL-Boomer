@@ -1,7 +1,5 @@
 #include "mlrl/boosting/data/matrix_c_contiguous_numeric.hpp"
 
-#include "mlrl/common/util/memory.hpp"
-
 namespace boosting {
 
     template<typename T>
