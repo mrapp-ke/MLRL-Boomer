@@ -58,9 +58,9 @@ def __pip_install(requirement: str, dry_run: bool = False):
         stdout = str(out.stdout).strip()
         stdout_lines = stdout.split('\n')
 
-        if not reduce(lambda aggr, line: aggr & line.startswith('Requirement already satisfied'), stdout_lines, True):
+        if not reduce(lambda aggr, line: aggr | line.startswith('Requirement already satisfied'), stdout_lines, True):
             if dry_run:
-                __run_pip_command(requirement)
+                __run_pip_command(requirement, print_args=True)
             else:
                 print(stdout)
     except RuntimeError:
