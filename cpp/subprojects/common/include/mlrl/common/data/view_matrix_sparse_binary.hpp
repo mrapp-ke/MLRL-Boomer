@@ -6,7 +6,7 @@
 #include "mlrl/common/data/view_matrix.hpp"
 
 /**
- * A two-dimensional view that provides row-or column wise access to binary values stored in a sparse matrix.
+ * A two-dimensional view that provides row- or column wise access to binary values stored in a sparse matrix.
  */
 class BinarySparseMatrix : public Matrix {
     public:
@@ -90,6 +90,40 @@ class BinarySparseMatrix : public Matrix {
             index_type* ptr = indptr;
             indptr = nullptr;
             return ptr;
+        }
+};
+
+/**
+ * Allocates the memory, a two-dimensional sparse view that provides row- or column wise access to binary values
+ * provides access to.
+ *
+ * @tparam Matrix The type of the view
+ */
+template<typename Matrix>
+class BinarySparseMatrixAllocator : public Matrix {
+    public:
+
+        /**
+         * @param numNonZeroElements    The number of non-zero values in the view
+         * @param numRows               The number of rows in the view
+         * @param numCols               The number of columns in the view
+         * @param init                  True, if all elements in the view should be value-initialized, false otherwise
+         */
+        BinarySparseMatrixAllocator(uint32 numNonZeroElements, uint32 numRows, uint32 numCols, bool init = false)
+            : Matrix(allocateMemory<uint32>(numNonZeroElements, init), allocateMemory<uint32>(numRows + 1, init),
+                     numRows, numCols) {}
+
+        /**
+         * @param other A reference to an object of type `BinarySparseMatrixAllocator` that should be moved
+         */
+        BinarySparseMatrixAllocator(BinarySparseMatrixAllocator<Matrix>&& other) : Matrix(std::move(other)) {
+            other.releaseIndices();
+            other.releaseIndptr();
+        }
+
+        virtual ~BinarySparseMatrixAllocator() override {
+            freeMemory(Matrix::indices);
+            freeMemory(Matrix::indptr);
         }
 };
 
