@@ -4,7 +4,6 @@
 #pragma once
 
 #include "mlrl/common/data/indexed_value.hpp"
-#include "mlrl/common/data/list_of_lists.hpp"
 #include "mlrl/common/data/view_matrix_lil.hpp"
 
 /**
@@ -17,9 +16,18 @@ template<typename Matrix>
 using LilMatrixDecorator = IterableListOfListsDecorator<MatrixDecorator<Matrix>>;
 
 /**
- * A two-dimensional matrix that provides row-wise access to data that is stored in the list of lists (LIL) format.
- *
- * @tparam T The type of the data that is stored by the matrix
+ * A two-dimensional matrix that provides row-wise read and write access to values that are stored in a newly allocated
+ * sparse matrix in the list of lists (LIL) format.
  */
 template<typename T>
-using LilMatrix = ListOfLists<IndexedValue<T>>;
+class LilMatrix final : public LilMatrixDecorator<AllocatedListOfLists<IndexedValue<T>>> {
+    public:
+
+        /**
+         * @param numRows   The number of rows in the matrix
+         * @param numCols   The number of columns in the matrix
+         */
+        LilMatrix(uint32 numRows, uint32 numCols)
+            : LilMatrixDecorator<AllocatedListOfLists<IndexedValue<T>>>(
+              AllocatedListOfLists<IndexedValue<T>>(numRows, numCols)) {}
+};
