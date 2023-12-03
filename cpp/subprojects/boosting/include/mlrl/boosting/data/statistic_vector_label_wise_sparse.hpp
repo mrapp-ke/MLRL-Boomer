@@ -351,6 +351,9 @@ namespace boosting {
             void difference(const SparseLabelWiseStatisticVector& first, const PartialIndexVector& firstIndices,
                             const SparseLabelWiseStatisticVector& second);
 
+            /**
+             * @see `ClearableVectorDecorator::clear`
+             */
             void clear() override;
     };
 
