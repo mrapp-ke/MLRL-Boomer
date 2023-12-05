@@ -11,7 +11,7 @@
  * A two-dimensional view that provides row-wise access to values stored in a sparse matrix in the list of lists (LIL)
  * format.
  *
- * @tparam T The type
+ * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
 class ListOfLists : public Matrix {
