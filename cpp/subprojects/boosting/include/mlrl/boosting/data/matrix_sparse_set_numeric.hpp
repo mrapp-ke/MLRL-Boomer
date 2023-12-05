@@ -16,7 +16,7 @@ namespace boosting {
      * @tparam T The type of the values that are stored in the matrix
      */
     template<typename T>
-    class NumericSparseSetMatrix final : public SparseSetMatrix<T> {
+    class NumericSparseSetMatrix final : public SparseSetMatrixDecorator<AllocatedSparseSetView<T>> {
         public:
 
             /**

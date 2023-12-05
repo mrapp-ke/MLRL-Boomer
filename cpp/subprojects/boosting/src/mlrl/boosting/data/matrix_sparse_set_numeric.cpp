@@ -26,7 +26,7 @@ namespace boosting {
 
     template<typename T>
     NumericSparseSetMatrix<T>::NumericSparseSetMatrix(uint32 numRows, uint32 numCols)
-        : SparseSetMatrix<T>(numRows, numCols) {}
+        : SparseSetMatrixDecorator<AllocatedSparseSetView<T>>(AllocatedSparseSetView<T>(numRows, numCols)) {}
 
     template<typename T>
     void NumericSparseSetMatrix<T>::addToRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
