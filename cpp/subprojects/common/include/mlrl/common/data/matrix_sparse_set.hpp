@@ -12,7 +12,7 @@
  * @tparam Matrix The type of the matrix
  */
 template<typename Matrix>
-using SparseSetMatrixDecorator = MatrixDecorator<Matrix>;
+using SparseSetMatrixDecorator = IterableSparseSetViewDecorator<MatrixDecorator<Matrix>>;
 
 /**
  * A two-dimensional matrix that provides row-wise access to data that is stored in the list of lists (LIL) format. In
