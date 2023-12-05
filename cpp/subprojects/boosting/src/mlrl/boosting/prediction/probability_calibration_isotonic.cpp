@@ -57,7 +57,7 @@ namespace boosting {
     static inline void extractThresholdsAndProbabilities(
       IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
       IsotonicProbabilityCalibrationModel& calibrationModel, const CContiguousView<const uint8>& labelMatrix,
-      const SparseSetMatrix<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
+      const SparseSetView<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         for (uint32 i = 0; i < numLabels; i++) {
             calibrationModel.addBin(i, 0, 0);
         }
@@ -67,7 +67,7 @@ namespace boosting {
         for (uint32 i = 0; i < numExamples; i++) {
             uint32 exampleIndex = indexIterator[i];
             CContiguousView<const uint8>::value_const_iterator labelIterator = labelMatrix.values_cbegin(exampleIndex);
-            SparseSetMatrix<float64>::const_row scoreRow = scoreMatrix[exampleIndex];
+            SparseSetView<float64>::const_row scoreRow = scoreMatrix[exampleIndex];
 
             for (uint32 j = 0; j < numLabels; j++) {
                 float64 trueProbability = labelIterator[j] ? 1 : 0;
@@ -99,7 +99,7 @@ namespace boosting {
     static inline void extractThresholdsAndProbabilities(
       IndexIterator indexIterator, uint32 numExamples, uint32 numLabels,
       IsotonicProbabilityCalibrationModel& calibrationModel, const BinaryCsrView& labelMatrix,
-      const SparseSetMatrix<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
+      const SparseSetView<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         for (uint32 i = 0; i < numLabels; i++) {
             calibrationModel.addBin(i, 0, 0);
         }
@@ -157,7 +157,7 @@ namespace boosting {
                                               scoreMatrix, marginalProbabilityFunction);
         };
         auto sparseVisitor = [=, &marginalProbabilityFunction,
-                              &calibrationModelPtr](const SparseSetMatrix<float64>& scoreMatrix) {
+                              &calibrationModelPtr](const SparseSetView<float64>& scoreMatrix) {
             extractThresholdsAndProbabilities(indexIterator, numExamples, numLabels, *calibrationModelPtr, labelMatrix,
                                               scoreMatrix, marginalProbabilityFunction);
         };
@@ -412,7 +412,7 @@ namespace boosting {
     static inline void extractThresholdsAndProbabilities(IndexIterator indexIterator, uint32 numExamples,
                                                          IsotonicProbabilityCalibrationModel& calibrationModel,
                                                          const CContiguousView<const uint8>& labelMatrix,
-                                                         const SparseSetMatrix<float64>& scoreMatrix,
+                                                         const SparseSetView<float64>& scoreMatrix,
                                                          const IJointProbabilityFunction& jointProbabilityFunction,
                                                          const LabelVectorSet& labelVectorSet) {
         LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
@@ -430,7 +430,7 @@ namespace boosting {
                 auto labelIndicesEnd = make_non_zero_index_forward_iterator(labelMatrix.values_cend(exampleIndex),
                                                                             labelMatrix.values_cend(exampleIndex));
                 float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
-                SparseSetMatrix<float64>::const_row scores = scoreMatrix[exampleIndex];
+                SparseSetView<float64>::const_row scores = scoreMatrix[exampleIndex];
                 float64 jointProbability =
                   jointProbabilityFunction.transformScoresIntoJointProbability(i, labelVector, scores, numLabels);
                 bins.emplace_back(jointProbability, trueProbability);
@@ -442,7 +442,7 @@ namespace boosting {
     static inline void extractThresholdsAndProbabilities(IndexIterator indexIterator, uint32 numExamples,
                                                          IsotonicProbabilityCalibrationModel& calibrationModel,
                                                          const BinaryCsrView& labelMatrix,
-                                                         const SparseSetMatrix<float64>& scoreMatrix,
+                                                         const SparseSetView<float64>& scoreMatrix,
                                                          const IJointProbabilityFunction& jointProbabilityFunction,
                                                          const LabelVectorSet& labelVectorSet) {
         LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
@@ -458,7 +458,7 @@ namespace boosting {
                 BinaryCsrView::index_const_iterator labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
                 BinaryCsrView::index_const_iterator labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
                 float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
-                SparseSetMatrix<float64>::const_row scores = scoreMatrix[exampleIndex];
+                SparseSetView<float64>::const_row scores = scoreMatrix[exampleIndex];
                 float64 jointProbability =
                   jointProbabilityFunction.transformScoresIntoJointProbability(i, labelVector, scores, numLabels);
                 bins.emplace_back(jointProbability, trueProbability);
@@ -481,7 +481,7 @@ namespace boosting {
                                               scoreMatrix, jointProbabilityFunction, labelVectorSet);
         };
         auto sparseVisitor = [=, &jointProbabilityFunction, &calibrationModelPtr,
-                              &labelVectorSet](const SparseSetMatrix<float64>& scoreMatrix) {
+                              &labelVectorSet](const SparseSetView<float64>& scoreMatrix) {
             extractThresholdsAndProbabilities(indexIterator, numExamples, *calibrationModelPtr, labelMatrix,
                                               scoreMatrix, jointProbabilityFunction, labelVectorSet);
         };
