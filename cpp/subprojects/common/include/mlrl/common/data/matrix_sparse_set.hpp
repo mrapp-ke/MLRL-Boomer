@@ -28,7 +28,7 @@ using SparseSetMatrixDecorator = IterableSparseSetViewDecorator<MatrixDecorator<
  * @tparam T The type of the values that are stored in the matrix
  */
 template<typename T>
-class SparseSetMatrix : SparseSetMatrixDecorator<AllocatedSparseSetView<T>> {
+class SparseSetMatrix : public SparseSetMatrixDecorator<AllocatedSparseSetView<T>> {
     public:
 
         /**

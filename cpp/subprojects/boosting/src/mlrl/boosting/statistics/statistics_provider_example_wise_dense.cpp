@@ -86,7 +86,7 @@ namespace boosting {
              */
             void visitScoreMatrix(IBoostingStatistics::DenseScoreMatrixVisitor denseVisitor,
                                   IBoostingStatistics::SparseScoreMatrixVisitor sparseVisitor) const override {
-                denseVisitor(*this->scoreMatrixPtr_);
+                denseVisitor(this->scoreMatrixPtr_->getView());
             }
 
             /**
@@ -142,7 +142,7 @@ namespace boosting {
           std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numLabels, true);
         const IExampleWiseLoss* lossRawPtr = lossPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
-        const CContiguousView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
+        const CContiguousView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
         DenseExampleWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
 #if MULTI_THREADING_SUPPORT_ENABLED

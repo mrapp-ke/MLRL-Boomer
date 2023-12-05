@@ -4,12 +4,7 @@ namespace boosting {
 
     template<typename T>
     NumericCContiguousMatrix<T>::NumericCContiguousMatrix(uint32 numRows, uint32 numCols, bool init)
-        : CContiguousView<T>(allocateMemory<T>(numRows * numCols, init), numRows, numCols) {}
-
-    template<typename T>
-    NumericCContiguousMatrix<T>::~NumericCContiguousMatrix() {
-        freeMemory(this->array);
-    }
+        : DenseMatrixDecorator<AllocatedCContiguousView<T>>(AllocatedCContiguousView<T>(numRows, numCols, init)) {}
 
     template<typename T>
     void NumericCContiguousMatrix<T>::addToRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
@@ -17,8 +12,9 @@ namespace boosting {
                                                          CompleteIndexVector::const_iterator indicesBegin,
                                                          CompleteIndexVector::const_iterator indicesEnd) {
         typename NumericCContiguousMatrix<T>::value_iterator iterator = this->values_begin(row);
+        uint32 numCols = this->getNumCols();
 
-        for (uint32 i = 0; i < Matrix::numCols; i++) {
+        for (uint32 i = 0; i < numCols; i++) {
             iterator[i] += begin[i];
         }
     }
@@ -43,8 +39,9 @@ namespace boosting {
                                                               CompleteIndexVector::const_iterator indicesBegin,
                                                               CompleteIndexVector::const_iterator indicesEnd) {
         typename NumericCContiguousMatrix<T>::value_iterator iterator = this->values_begin(row);
+        uint32 numCols = this->getNumCols();
 
-        for (uint32 i = 0; i < Matrix::numCols; i++) {
+        for (uint32 i = 0; i < numCols; i++) {
             iterator[i] -= begin[i];
         }
     }

@@ -77,7 +77,7 @@ namespace boosting {
              */
             void visitScoreMatrix(IBoostingStatistics::DenseScoreMatrixVisitor denseVisitor,
                                   IBoostingStatistics::SparseScoreMatrixVisitor sparseVisitor) const override {
-                denseVisitor(*this->scoreMatrixPtr_);
+                denseVisitor(this->scoreMatrixPtr_->getView());
             }
     };
 

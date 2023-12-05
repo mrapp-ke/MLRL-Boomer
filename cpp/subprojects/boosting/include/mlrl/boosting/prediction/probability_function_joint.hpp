@@ -4,8 +4,8 @@
 #pragma once
 
 #include "mlrl/boosting/prediction/probability_function_marginal.hpp"
-#include "mlrl/common/data/matrix_sparse_set.hpp"
 #include "mlrl/common/data/vector_dense.hpp"
+#include "mlrl/common/data/view_matrix_sparse_set.hpp"
 #include "mlrl/common/measures/measure_distance.hpp"
 #include "mlrl/common/util/math.hpp"
 
@@ -41,13 +41,13 @@ namespace boosting {
              *
              * @param labelVectorIndex  The index of the label vector, the scores should be compared to
              * @param labelVector       A reference to an object of type `LabelVector`, the scores should be compared to
-             * @param scores            A `SparseSetMatrix::const_row` that stores the scores
+             * @param scores            A `SparseSetView::const_row` that stores the scores
              * @param numLabels         The total number of available labels
              * @return                  The joint probability the corresponds to the chance of the given label vector
              *                          being correct
              */
             virtual float64 transformScoresIntoJointProbability(uint32 labelVectorIndex, const LabelVector& labelVector,
-                                                                SparseSetMatrix<float64>::const_row scores,
+                                                                SparseSetView<float64>::const_row scores,
                                                                 uint32 numLabels) const = 0;
 
             /**

@@ -785,7 +785,7 @@ namespace boosting {
             void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
                 applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
                 updateLabelWiseStatisticsInternally(statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_,
-                                                    *scoreMatrixPtr_, *lossPtr_);
+                                                    scoreMatrixPtr_->getView(), *lossPtr_);
             }
 
             /**
@@ -794,7 +794,7 @@ namespace boosting {
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
                 applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
                 updateLabelWiseStatisticsInternally(statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_,
-                                                    *scoreMatrixPtr_, *lossPtr_);
+                                                    scoreMatrixPtr_->getView(), *lossPtr_);
             }
 
             /**
@@ -803,7 +803,7 @@ namespace boosting {
             void revertPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
                 revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
                 updateLabelWiseStatisticsInternally(statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_,
-                                                    *scoreMatrixPtr_, *lossPtr_);
+                                                    scoreMatrixPtr_->getView(), *lossPtr_);
             }
 
             /**
@@ -812,14 +812,14 @@ namespace boosting {
             void revertPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
                 revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
                 updateLabelWiseStatisticsInternally(statisticIndex, prediction, labelMatrix_, *this->statisticViewPtr_,
-                                                    *scoreMatrixPtr_, *lossPtr_);
+                                                    scoreMatrixPtr_->getView(), *lossPtr_);
             }
 
             /**
              * @see `IStatistics::evaluatePrediction`
              */
             float64 evaluatePrediction(uint32 statisticIndex) const override final {
-                return evaluationMeasurePtr_->evaluate(statisticIndex, labelMatrix_, *scoreMatrixPtr_);
+                return evaluationMeasurePtr_->evaluate(statisticIndex, labelMatrix_, scoreMatrixPtr_->getView());
             }
 
             /**

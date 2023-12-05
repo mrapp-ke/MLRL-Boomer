@@ -697,7 +697,7 @@ namespace boosting {
     static inline void updateExampleWiseStatisticsInternally(uint32 statisticIndex, const LabelMatrix& labelMatrix,
                                                              StatisticView& statisticView, ScoreMatrix& scoreMatrix,
                                                              const LossFunction& lossFunction) {
-        lossFunction.updateExampleWiseStatistics(statisticIndex, labelMatrix, scoreMatrix, statisticView);
+        lossFunction.updateExampleWiseStatistics(statisticIndex, labelMatrix, scoreMatrix.getView(), statisticView);
     }
 
     /**
@@ -850,7 +850,7 @@ namespace boosting {
              * @see `IStatistics::evaluatePrediction`
              */
             float64 evaluatePrediction(uint32 statisticIndex) const override final {
-                return evaluationMeasurePtr_->evaluate(statisticIndex, labelMatrix_, *scoreMatrixPtr_);
+                return evaluationMeasurePtr_->evaluate(statisticIndex, labelMatrix_, scoreMatrixPtr_->getView());
             }
 
             /**
