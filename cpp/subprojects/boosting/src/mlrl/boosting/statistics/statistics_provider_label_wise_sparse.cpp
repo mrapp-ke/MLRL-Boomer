@@ -102,7 +102,7 @@ namespace boosting {
              */
             void visitScoreMatrix(IBoostingStatistics::DenseScoreMatrixVisitor denseVisitor,
                                   IBoostingStatistics::SparseScoreMatrixVisitor sparseVisitor) const override {
-                sparseVisitor(*this->scoreMatrixPtr_);
+                sparseVisitor(this->scoreMatrixPtr_->getView());
             }
     };
 
@@ -122,7 +122,7 @@ namespace boosting {
           std::make_unique<NumericSparseSetMatrix<float64>>(numExamples, numLabels);
         const ISparseLabelWiseLoss* lossRawPtr = lossPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
-        const SparseSetMatrix<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
+        const SparseSetView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
         SparseLabelWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
 #if MULTI_THREADING_SUPPORT_ENABLED

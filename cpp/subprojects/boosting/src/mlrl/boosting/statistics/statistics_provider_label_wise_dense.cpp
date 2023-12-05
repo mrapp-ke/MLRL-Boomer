@@ -25,7 +25,7 @@ namespace boosting {
           std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numLabels, true);
         const ILabelWiseLoss* lossRawPtr = lossPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
-        const CContiguousView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
+        const CContiguousView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
         DenseLabelWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
