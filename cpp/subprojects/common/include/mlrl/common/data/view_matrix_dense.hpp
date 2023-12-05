@@ -55,12 +55,30 @@ class DenseMatrix : public Matrix {
         typedef typename View<value_type>::iterator value_iterator;
 
         /**
+         * Returns a `const_iterator` to the beginning of the view.
+         *
+         * @return A `const_iterator` to the beginning
+         */
+        value_const_iterator cbegin() const {
+            return array;
+        }
+
+        /**
          * Returns a `const_iterator` to the end of the view.
          *
          * @return A `const_iterator` to the end
          */
-        typename DenseMatrix<T>::value_const_iterator cend() const {
+        value_const_iterator cend() const {
             return &array[Matrix::numRows * Matrix::numCols];
+        }
+
+        /**
+         * Returns an `iterator` to the beginning of the view.
+         *
+         * @return An `iterator` to the beginning
+         */
+        value_iterator begin() {
+            return array;
         }
 
         /**
@@ -68,7 +86,7 @@ class DenseMatrix : public Matrix {
          *
          * @return An `iterator` to the end
          */
-        typename DenseMatrix<T>::value_iterator end() {
+        value_iterator end() {
             return &array[Matrix::numRows * Matrix::numCols];
         }
 
