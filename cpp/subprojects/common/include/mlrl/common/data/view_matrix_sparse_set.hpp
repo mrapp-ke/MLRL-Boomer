@@ -364,3 +364,41 @@ class SparseSetView : public Matrix {
             return valueView.end(row);
         }
 };
+
+/**
+ * Allocates the memory for a two-dimensional view that provides random read and write access, as well as row-wise read
+ * and write access via iterators, to values stored in a sparse matrix in the list of lists (LIL) format.
+ *
+ * @tparam Matrix The type of the view
+ */
+template<typename Matrix>
+class SparseSetViewAllocator : public Matrix {
+    public:
+
+        /**
+         * @param numRows   The number of rows in the view
+         * @param numCols   The number of columns in the view
+         */
+        SparseSetViewAllocator(uint32 numRows, uint32 numCols)
+            : Matrix(AllocatedListOfLists<typename Matrix::value_type>(numRows, numCols),
+                     AllocatedCContiguousView<uint32>(numRows, numCols), numRows, numCols) {
+            CContiguousView<uint32>::value_iterator indicesBegin = Matrix::indexView.begin();
+            CContiguousView<uint32>::value_iterator indicesEnd = Matrix::indexView.end();
+            setViewToValue(indicesBegin, indicesEnd - indicesBegin, Matrix::MAX_INDEX);
+        }
+
+        /**
+         * @param other A reference to an object of type `SparseSetViewAllocator` that should be moved
+         */
+        SparseSetViewAllocator(SparseSetViewAllocator<Matrix>&& other) : Matrix(std::move(other)) {}
+
+        virtual ~SparseSetViewAllocator() override {}
+};
+
+/**
+ * Allocates the memory, a `SparseSetView` provides access to.
+ *
+ * @tparam T The type of the values stored in the `SparseSetView`
+ */
+template<typename T>
+using AllocatedSparseSetView = SparseSetViewAllocator<SparseSetView<T>>;
