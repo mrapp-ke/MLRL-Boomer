@@ -5,7 +5,7 @@
 
 template<typename T>
 SparseSetMatrix<T>::SparseSetMatrix(uint32 numRows, uint32 numCols)
-    : MatrixDecorator<AllocatedSparseSetView<T>>(AllocatedSparseSetView<T>(numRows, numCols)) {}
+    : SparseSetMatrixDecorator<AllocatedSparseSetView<T>>(AllocatedSparseSetView<T>(numRows, numCols)) {}
 
 template<typename T>
 typename SparseSetMatrix<T>::iterator SparseSetMatrix<T>::begin(uint32 row) {
