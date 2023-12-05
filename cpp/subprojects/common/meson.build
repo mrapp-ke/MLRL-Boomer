@@ -9,7 +9,6 @@ source_files = [
     'src/mlrl/common/binning/feature_binning_equal_width.cpp',
     'src/mlrl/common/binning/feature_binning_no.cpp',
     'src/mlrl/common/binning/threshold_vector.cpp',
-    'src/mlrl/common/data/matrix_sparse_set.cpp',
     'src/mlrl/common/data/ring_buffer.cpp',
     'src/mlrl/common/data/vector_bit.cpp',
     'src/mlrl/common/data/vector_dok.cpp',
