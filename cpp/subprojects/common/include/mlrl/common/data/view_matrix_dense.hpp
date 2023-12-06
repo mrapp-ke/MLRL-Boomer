@@ -55,42 +55,6 @@ class DenseMatrix : public Matrix {
         typedef typename View<value_type>::iterator value_iterator;
 
         /**
-         * Returns a `value_const_iterator` to the beginning of the view.
-         *
-         * @return A `value_const_iterator` to the beginning
-         */
-        value_const_iterator cbegin() const {
-            return array;
-        }
-
-        /**
-         * Returns a `value_const_iterator` to the end of the view.
-         *
-         * @return A `value_const_iterator` to the end
-         */
-        value_const_iterator cend() const {
-            return &array[Matrix::numRows * Matrix::numCols];
-        }
-
-        /**
-         * Returns a `value_iterator` to the beginning of the view.
-         *
-         * @return A `value_iterator` to the beginning
-         */
-        value_iterator begin() {
-            return array;
-        }
-
-        /**
-         * Returns a `value_iterator` to the end of the view.
-         *
-         * @return A `value_iterator` to the end
-         */
-        value_iterator end() {
-            return &array[Matrix::numRows * Matrix::numCols];
-        }
-
-        /**
          * Releases the ownership of the array that stores the values, the view provides access to. As a result, the
          * behavior of this view becomes undefined and it should not be used anymore. The caller is responsible for
          * freeing the memory that is occupied by the array.
