@@ -2,28 +2,13 @@
 
 namespace boosting {
 
-    SparseLabelWiseStatisticView::SparseLabelWiseStatisticView(uint32 numCols,
-                                                               SparseSetMatrix<Tuple<float64>>* statistics)
-        : numCols_(numCols), statistics_(statistics) {}
-
-    SparseLabelWiseStatisticView::const_iterator SparseLabelWiseStatisticView::cbegin(uint32 row) const {
-        return statistics_->cbegin(row);
-    }
-
-    SparseLabelWiseStatisticView::const_iterator SparseLabelWiseStatisticView::cend(uint32 row) const {
-        return statistics_->cend(row);
-    }
-
-    SparseLabelWiseStatisticView::const_row SparseLabelWiseStatisticView::operator[](uint32 row) const {
-        return ((const SparseSetMatrix<Tuple<float64>>&) *statistics_)[row];
-    }
-
-    SparseLabelWiseStatisticView::row SparseLabelWiseStatisticView::operator[](uint32 row) {
-        return (*statistics_)[row];
-    }
+    SparseLabelWiseStatisticView::SparseLabelWiseStatisticView(ListOfLists<IndexedValue<Tuple<float64>>>&& valueView,
+                                                               CContiguousView<uint32>&& indexView, uint32 numRows,
+                                                               uint32 numCols)
+        : SparseSetView<Tuple<float64>>(std::move(valueView), std::move(indexView), numRows, numCols) {}
 
     void SparseLabelWiseStatisticView::clear() {
-        uint32 numRows = this->getNumRows();
+        uint32 numRows = Matrix::numRows;
 
         for (uint32 i = 0; i < numRows; i++) {
             (*this)[i].clear();
@@ -31,10 +16,10 @@ namespace boosting {
     }
 
     uint32 SparseLabelWiseStatisticView::getNumRows() const {
-        return statistics_->getNumRows();
+        return Matrix::numRows;
     }
 
     uint32 SparseLabelWiseStatisticView::getNumCols() const {
-        return numCols_;
+        return Matrix::numCols;
     }
 }
