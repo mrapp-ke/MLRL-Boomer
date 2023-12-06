@@ -63,7 +63,7 @@ namespace boosting {
     static inline void updateLabelWiseStatisticsInternally(IndexIterator indicesBegin, IndexIterator indicesEnd,
                                                            SparseSetView<float64>::const_iterator scoresBegin,
                                                            SparseSetView<float64>::const_iterator scoresEnd,
-                                                           SparseLabelWiseStatisticView::row row,
+                                                           SparseSetView<Tuple<float64>>::row row,
                                                            LabelWiseLoss::UpdateFunction updateFunction) {
         row.clear();
         Tuple<float64> tuple;
@@ -160,7 +160,7 @@ namespace boosting {
                                            const SparseSetView<float64>& scoreMatrix,
                                            CompleteIndexVector::const_iterator labelIndicesBegin,
                                            CompleteIndexVector::const_iterator labelIndicesEnd,
-                                           SparseLabelWiseStatisticView& statisticView) const override {
+                                           SparseSetView<Tuple<float64>>& statisticView) const override {
                 auto indicesBegin = make_non_zero_index_forward_iterator(labelMatrix.values_cbegin(exampleIndex),
                                                                          labelMatrix.values_cend(exampleIndex));
                 auto indicesEnd = make_non_zero_index_forward_iterator(labelMatrix.values_cend(exampleIndex),
@@ -174,11 +174,11 @@ namespace boosting {
                                            const SparseSetView<float64>& scoreMatrix,
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
-                                           SparseLabelWiseStatisticView& statisticView) const override {
+                                           SparseSetView<Tuple<float64>>& statisticView) const override {
                 const SparseSetView<float64>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
                 CContiguousView<const uint8>::value_const_iterator labelIterator =
                   labelMatrix.values_cbegin(exampleIndex);
-                SparseLabelWiseStatisticView::row statisticViewRow = statisticView[exampleIndex];
+                SparseSetView<Tuple<float64>>::row statisticViewRow = statisticView[exampleIndex];
                 uint32 numElements = labelIndicesEnd - labelIndicesBegin;
                 Tuple<float64> tuple;
 
@@ -202,7 +202,7 @@ namespace boosting {
                                            const SparseSetView<float64>& scoreMatrix,
                                            CompleteIndexVector::const_iterator labelIndicesBegin,
                                            CompleteIndexVector::const_iterator labelIndicesEnd,
-                                           SparseLabelWiseStatisticView& statisticView) const override {
+                                           SparseSetView<Tuple<float64>>& statisticView) const override {
                 updateLabelWiseStatisticsInternally(labelMatrix.indices_cbegin(exampleIndex),
                                                     labelMatrix.indices_cend(exampleIndex),
                                                     scoreMatrix.cbegin(exampleIndex), scoreMatrix.cend(exampleIndex),
@@ -213,11 +213,11 @@ namespace boosting {
                                            const SparseSetView<float64>& scoreMatrix,
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
-                                           SparseLabelWiseStatisticView& statisticView) const override {
+                                           SparseSetView<Tuple<float64>>& statisticView) const override {
                 const SparseSetView<float64>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
                 BinaryCsrView::index_const_iterator indexIterator = labelMatrix.indices_cbegin(exampleIndex);
                 BinaryCsrView::index_const_iterator indicesEnd = labelMatrix.indices_cend(exampleIndex);
-                SparseLabelWiseStatisticView::row statisticViewRow = statisticView[exampleIndex];
+                SparseSetView<Tuple<float64>>::row statisticViewRow = statisticView[exampleIndex];
                 uint32 numElements = labelIndicesEnd - labelIndicesBegin;
                 Tuple<float64> tuple;
 
