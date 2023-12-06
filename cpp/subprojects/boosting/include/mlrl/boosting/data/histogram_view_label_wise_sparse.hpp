@@ -3,8 +3,9 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/statistic_view_label_wise_sparse.hpp"
 #include "mlrl/common/data/triple.hpp"
+#include "mlrl/common/data/tuple.hpp"
+#include "mlrl/common/data/view_matrix_sparse_set.hpp"
 
 namespace boosting {
 
@@ -102,8 +103,8 @@ namespace boosting {
              * @param end       An iterator to the end of the vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToRow(uint32 row, SparseLabelWiseStatisticView::const_iterator begin,
-                          SparseLabelWiseStatisticView::const_iterator end, float64 weight);
+            void addToRow(uint32 row, SparseSetView<Tuple<float64>>::const_iterator begin,
+                          SparseSetView<Tuple<float64>>::const_iterator end, float64 weight);
 
             /**
              * Returns the number of rows in the view.

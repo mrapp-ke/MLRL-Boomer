@@ -3,20 +3,22 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/statistic_view_label_wise_sparse.hpp"
+#include "mlrl/common/data/triple.hpp"
+#include "mlrl/common/data/tuple.hpp"
+#include "mlrl/common/data/view_matrix_sparse_set.hpp"
 
 namespace boosting {
 
     /**
-     * Adds the statistics that are stored in a single row of a `SparseLabelWiseStatisticView` to a sparse vector.
+     * Adds the statistics that are stored in a single row of a `SparseSetView` to a sparse vector.
      *
      * @param statistics    A pointer to an array the statistics should be added to
      * @param begin         An iterator to the beginning of the statistics to be added
      * @param end           An iterator to the end of the statistics to be added
      */
     static inline void addToSparseLabelWiseStatisticVector(Triple<float64>* statistics,
-                                                           SparseLabelWiseStatisticView::const_iterator begin,
-                                                           SparseLabelWiseStatisticView::const_iterator end) {
+                                                           SparseSetView<Tuple<float64>>::const_iterator begin,
+                                                           SparseSetView<Tuple<float64>>::const_iterator end) {
         uint32 numElements = end - begin;
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -30,8 +32,8 @@ namespace boosting {
     }
 
     /**
-     * Adds the statistics that are stored in a single row of a `SparseLabelWiseStatisticView` to a sparse vector. The
-     * statistics are multiplied by a specific weight.
+     * Adds the statistics that are stored in a single row of a `SparseSetView` to a sparse vector. The statistics are
+     * multiplied by a specific weight.
      *
      * @param statistics    A pointer to an array the statistics should be added to
      * @param begin         An iterator to the beginning of the statistics to be added
@@ -39,8 +41,8 @@ namespace boosting {
      * @param weight        The weight, the statistics should be multiplied by
      */
     static inline void addToSparseLabelWiseStatisticVector(Triple<float64>* statistics,
-                                                           SparseLabelWiseStatisticView::const_iterator begin,
-                                                           SparseLabelWiseStatisticView::const_iterator end,
+                                                           SparseSetView<Tuple<float64>>::const_iterator begin,
+                                                           SparseSetView<Tuple<float64>>::const_iterator end,
                                                            float64 weight) {
         uint32 numElements = end - begin;
 
@@ -55,15 +57,15 @@ namespace boosting {
     }
 
     /**
-     * Removes the statistics that are stored in a single row of a `SparseLabelWiseStatisticView` from a sparse vector.
+     * Removes the statistics that are stored in a single row of a `SparseSetView` from a sparse vector.
      *
      * @param statistics    A pointer to an array the statistics should be removed from
      * @param begin         An iterator to the beginning of the statistics to be removed
      * @param end           An iterator to the end of the statistics to be removed
      */
     static inline void removeFromSparseLabelWiseStatisticVector(Triple<float64>* statistics,
-                                                                SparseLabelWiseStatisticView::const_iterator begin,
-                                                                SparseLabelWiseStatisticView::const_iterator end) {
+                                                                SparseSetView<Tuple<float64>>::const_iterator begin,
+                                                                SparseSetView<Tuple<float64>>::const_iterator end) {
         uint32 numElements = end - begin;
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -77,8 +79,8 @@ namespace boosting {
     }
 
     /**
-     * Removes the statistics that are stored in a single row of a `SparseLabelWiseStatisticView` from a sparse vector.
-     * The statistics are multiplied by a specific weight.
+     * Removes the statistics that are stored in a single row of a `SparseSetView` from a sparse vector. The statistics
+     * are multiplied by a specific weight.
      *
      * @param statistics    A pointer to an array the statistics should be remove from
      * @param begin         An iterator to the beginning of the statistics to be removed
@@ -86,8 +88,8 @@ namespace boosting {
      * @param weight        The weight, the statistics should be multiplied by
      */
     static inline void removeFromSparseLabelWiseStatisticVector(Triple<float64>* statistics,
-                                                                SparseLabelWiseStatisticView::const_iterator begin,
-                                                                SparseLabelWiseStatisticView::const_iterator end,
+                                                                SparseSetView<Tuple<float64>>::const_iterator begin,
+                                                                SparseSetView<Tuple<float64>>::const_iterator end,
                                                                 float64 weight) {
         uint32 numElements = end - begin;
 
