@@ -25,10 +25,11 @@ namespace boosting {
              * @param numCols   The number of columns in the matrix
              */
             SparseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols)
-                : SparseLabelWiseStatisticView(numCols, new SparseSetMatrix<Tuple<float64>>(numRows, numCols)) {}
-
-            ~SparseLabelWiseStatisticMatrix() override {
-                delete statistics_;
+                : SparseLabelWiseStatisticView(AllocatedListOfLists<IndexedValue<Tuple<float64>>>(numRows, numCols),
+                                               AllocatedCContiguousView<uint32>(numRows, numCols), numRows, numCols) {
+                CContiguousView<uint32>::value_iterator indicesBegin = this->indexView.begin();
+                CContiguousView<uint32>::value_iterator indicesEnd = this->indexView.end();
+                setViewToValue(indicesBegin, indicesEnd - indicesBegin, this->MAX_INDEX);
             }
     };
 
