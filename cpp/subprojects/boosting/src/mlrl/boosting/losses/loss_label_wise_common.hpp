@@ -48,8 +48,8 @@ namespace boosting {
                                            const CContiguousView<float64>& scoreMatrix,
                                            CompleteIndexVector::const_iterator labelIndicesBegin,
                                            CompleteIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticView& statisticView) const override final {
-                DenseLabelWiseStatisticView::value_iterator statisticIterator =
+                                           CContiguousView<Tuple<float64>>& statisticView) const override final {
+                CContiguousView<Tuple<float64>>::value_iterator statisticIterator =
                   statisticView.values_begin(exampleIndex);
                 CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
                 CContiguousView<const uint8>::value_const_iterator labelIterator =
@@ -68,8 +68,8 @@ namespace boosting {
                                            const CContiguousView<float64>& scoreMatrix,
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticView& statisticView) const override final {
-                DenseLabelWiseStatisticView::value_iterator statisticIterator =
+                                           CContiguousView<Tuple<float64>>& statisticView) const override final {
+                CContiguousView<Tuple<float64>>::value_iterator statisticIterator =
                   statisticView.values_begin(exampleIndex);
                 CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
                 CContiguousView<const uint8>::value_const_iterator labelIterator =
@@ -89,8 +89,8 @@ namespace boosting {
                                            const CContiguousView<float64>& scoreMatrix,
                                            CompleteIndexVector::const_iterator labelIndicesBegin,
                                            CompleteIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticView& statisticView) const override final {
-                DenseLabelWiseStatisticView::value_iterator statisticIterator =
+                                           CContiguousView<Tuple<float64>>& statisticView) const override final {
+                CContiguousView<Tuple<float64>>::value_iterator statisticIterator =
                   statisticView.values_begin(exampleIndex);
                 CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
@@ -110,8 +110,8 @@ namespace boosting {
                                            const CContiguousView<float64>& scoreMatrix,
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticView& statisticView) const override final {
-                DenseLabelWiseStatisticView::value_iterator statisticIterator =
+                                           CContiguousView<Tuple<float64>>& statisticView) const override final {
+                CContiguousView<Tuple<float64>>::value_iterator statisticIterator =
                   statisticView.values_begin(exampleIndex);
                 CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
                 BinaryCsrView::index_const_iterator indexIterator = labelMatrix.indices_cbegin(exampleIndex);
