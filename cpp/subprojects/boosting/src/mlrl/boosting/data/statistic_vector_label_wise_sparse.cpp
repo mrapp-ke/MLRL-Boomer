@@ -83,32 +83,34 @@ namespace boosting {
 
     void SparseLabelWiseStatisticVector::add(const SparseSetView<Tuple<float64>>& view, uint32 row) {
         sumOfWeights_ += 1;
-        addToSparseLabelWiseStatisticVector(this->view.begin(), view.cbegin(row), view.cend(row));
+        addToSparseLabelWiseStatisticVector(this->view.begin(), view.values_cbegin(row), view.values_cend(row));
     }
 
     void SparseLabelWiseStatisticVector::add(const SparseSetView<Tuple<float64>>& view, uint32 row, float64 weight) {
         if (weight != 0) {
             sumOfWeights_ += weight;
-            addToSparseLabelWiseStatisticVector(this->view.begin(), view.cbegin(row), view.cend(row), weight);
+            addToSparseLabelWiseStatisticVector(this->view.begin(), view.values_cbegin(row), view.values_cend(row),
+                                                weight);
         }
     }
 
     void SparseLabelWiseStatisticVector::remove(const SparseSetView<Tuple<float64>>& view, uint32 row) {
         sumOfWeights_ -= 1;
-        removeFromSparseLabelWiseStatisticVector(this->view.begin(), view.cbegin(row), view.cend(row));
+        removeFromSparseLabelWiseStatisticVector(this->view.begin(), view.values_cbegin(row), view.values_cend(row));
     }
 
     void SparseLabelWiseStatisticVector::remove(const SparseSetView<Tuple<float64>>& view, uint32 row, float64 weight) {
         if (weight != 0) {
             sumOfWeights_ -= weight;
-            removeFromSparseLabelWiseStatisticVector(this->view.begin(), view.cbegin(row), view.cend(row), weight);
+            removeFromSparseLabelWiseStatisticVector(this->view.begin(), view.values_cbegin(row), view.values_cend(row),
+                                                     weight);
         }
     }
 
     void SparseLabelWiseStatisticVector::addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row,
                                                      const CompleteIndexVector& indices) {
         sumOfWeights_ += 1;
-        addToSparseLabelWiseStatisticVector(this->view.begin(), view.cbegin(row), view.cend(row));
+        addToSparseLabelWiseStatisticVector(this->view.begin(), view.values_cbegin(row), view.values_cend(row));
     }
 
     void SparseLabelWiseStatisticVector::addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row,
@@ -136,7 +138,8 @@ namespace boosting {
                                                      const CompleteIndexVector& indices, float64 weight) {
         if (weight != 0) {
             sumOfWeights_ += weight;
-            addToSparseLabelWiseStatisticVector(this->view.begin(), view.cbegin(row), view.cend(row), weight);
+            addToSparseLabelWiseStatisticVector(this->view.begin(), view.values_cbegin(row), view.values_cend(row),
+                                                weight);
         }
     }
 

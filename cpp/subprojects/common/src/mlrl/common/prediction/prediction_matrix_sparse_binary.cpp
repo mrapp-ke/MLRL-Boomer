@@ -8,7 +8,7 @@ BinarySparsePredictionView::BinarySparsePredictionView(const BinaryLilMatrix& li
     for (uint32 i = 0; i < Matrix::numRows; i++) {
         BinarySparseMatrix::indptr[i] = n;
 
-        for (auto it = lilMatrix.cbegin(i); it != lilMatrix.cend(i); it++) {
+        for (auto it = lilMatrix.values_cbegin(i); it != lilMatrix.values_cend(i); it++) {
             BinarySparseMatrix::indices[n] = *it;
             n++;
         }

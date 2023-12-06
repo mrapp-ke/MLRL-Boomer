@@ -7,19 +7,19 @@ namespace boosting {
     DenseLabelWiseStatisticView::DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols, Tuple<float64>* statistics)
         : numRows_(numRows), numCols_(numCols), statistics_(statistics) {}
 
-    DenseLabelWiseStatisticView::const_iterator DenseLabelWiseStatisticView::cbegin(uint32 row) const {
+    DenseLabelWiseStatisticView::value_const_iterator DenseLabelWiseStatisticView::values_cbegin(uint32 row) const {
         return &statistics_[row * numCols_];
     }
 
-    DenseLabelWiseStatisticView::const_iterator DenseLabelWiseStatisticView::cend(uint32 row) const {
+    DenseLabelWiseStatisticView::value_const_iterator DenseLabelWiseStatisticView::values_cend(uint32 row) const {
         return &statistics_[(row + 1) * numCols_];
     }
 
-    DenseLabelWiseStatisticView::iterator DenseLabelWiseStatisticView::begin(uint32 row) {
+    DenseLabelWiseStatisticView::value_iterator DenseLabelWiseStatisticView::values_begin(uint32 row) {
         return &statistics_[row * numCols_];
     }
 
-    DenseLabelWiseStatisticView::iterator DenseLabelWiseStatisticView::end(uint32 row) {
+    DenseLabelWiseStatisticView::value_iterator DenseLabelWiseStatisticView::values_end(uint32 row) {
         return &statistics_[(row + 1) * numCols_];
     }
 
@@ -27,7 +27,8 @@ namespace boosting {
         setViewToZeros(statistics_, numRows_ * numCols_);
     }
 
-    void DenseLabelWiseStatisticView::addToRow(uint32 row, const_iterator begin, const_iterator end, float64 weight) {
+    void DenseLabelWiseStatisticView::addToRow(uint32 row, value_const_iterator begin, value_const_iterator end,
+                                               float64 weight) {
         uint32 offset = row * numCols_;
         addToView(&statistics_[offset], begin, numCols_, weight);
     }

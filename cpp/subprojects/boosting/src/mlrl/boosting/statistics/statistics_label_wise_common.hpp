@@ -424,8 +424,8 @@ namespace boosting {
 
                     if (binIndex != IBinIndexVector::BIN_INDEX_SPARSE) {
                         binWeightVectorPtr_->increaseWeight(binIndex);
-                        histogramPtr_->addToRow(binIndex, originalStatisticView_.cbegin(statisticIndex),
-                                                originalStatisticView_.cend(statisticIndex), weight);
+                        histogramPtr_->addToRow(binIndex, originalStatisticView_.values_cbegin(statisticIndex),
+                                                originalStatisticView_.values_cend(statisticIndex), weight);
                     }
                 }
             }

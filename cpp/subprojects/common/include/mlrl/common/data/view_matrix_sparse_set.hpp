@@ -70,7 +70,7 @@ class SparseSetView : public Matrix {
                 /**
                  * An iterator that provides read-only access to the values in the row.
                  */
-                typedef typename SparseSetView::const_iterator const_iterator;
+                typedef typename SparseSetView::value_const_iterator const_iterator;
 
                 /**
                  * Returns a `const_iterator` to the beginning of the row.
@@ -126,7 +126,7 @@ class SparseSetView : public Matrix {
                 /**
                  * An iterator that provides access to the values in the row and allows to modify them.
                  */
-                typedef typename SparseSetView::iterator iterator;
+                typedef typename SparseSetView::value_iterator iterator;
 
                 /**
                  * Returns an `iterator` to the beginning of the row.
@@ -285,12 +285,12 @@ class SparseSetView : public Matrix {
         /**
          * An iterator that provides read-only access to the values in the view.
          */
-        typedef typename ListOfLists<IndexedValue<T>>::const_iterator const_iterator;
+        typedef typename ListOfLists<IndexedValue<T>>::value_const_iterator value_const_iterator;
 
         /**
          * An iterator that provides access to the values in the view and allows to modify them.
          */
-        typedef typename ListOfLists<IndexedValue<T>>::iterator iterator;
+        typedef typename ListOfLists<IndexedValue<T>>::value_iterator value_iterator;
 
         /**
          * Provides read-only access to an individual row in the view.
@@ -325,43 +325,43 @@ class SparseSetView : public Matrix {
         }
 
         /**
-         * Returns a `const_iterator` to the beginning of the values in a specific row of the view.
+         * Returns a `value_const_iterator` to the beginning of the values in a specific row of the view.
          *
          * @param row   The index of the row
-         * @return      A `const_iterator` to the beginning of the values
+         * @return      A `value_const_iterator` to the beginning of the values
          */
-        const_iterator cbegin(uint32 row) const {
-            return valueView.cbegin(row);
+        value_const_iterator values_cbegin(uint32 row) const {
+            return valueView.values_cbegin(row);
         }
 
         /**
-         * Returns a `const_iterator` to the end of the values in a specific row of the view.
+         * Returns a `value_const_iterator` to the end of the values in a specific row of the view.
          *
          * @param row   The index of the row
-         * @return      A `const_iterator` to the end of the values
+         * @return      A `value_const_iterator` to the end of the values
          */
-        const_iterator cend(uint32 row) const {
-            return valueView.cend(row);
+        value_const_iterator values_cend(uint32 row) const {
+            return valueView.values_cend(row);
         }
 
         /**
-         * Returns an `iterator` to the beginning of the values in a specific row of the view.
+         * Returns a `value_iterator` to the beginning of the values in a specific row of the view.
          *
          * @param row   The index of the row
-         * @return      An `iterator` to the beginning of the values
+         * @return      A `value_iterator` to the beginning of the values
          */
-        iterator begin(uint32 row) {
-            return valueView.begin(row);
+        value_iterator values_begin(uint32 row) {
+            return valueView.values_begin(row);
         }
 
         /**
-         * Returns an `iterator` to the end of the values in a specific row of the view.
+         * Returns a `value_iterator` to the end of the values in a specific row of the view.
          *
          * @param row   The index of the row
-         * @return      An `iterator` to the end of the values
+         * @return      A `value_iterator` to the end of the values
          */
-        iterator end(uint32 row) {
-            return valueView.end(row);
+        value_iterator values_end(uint32 row) {
+            return valueView.values_end(row);
         }
 };
 
@@ -423,12 +423,12 @@ class IterableSparseSetViewDecorator : public Matrix {
         /**
          * An iterator that provides read-only access to the values in the matrix.
          */
-        typedef typename Matrix::view_type::const_iterator const_iterator;
+        typedef typename Matrix::view_type::value_const_iterator value_const_iterator;
 
         /**
          * An iterator that provides access to the values in the matrix and allows to modify them.
          */
-        typedef typename Matrix::view_type::iterator iterator;
+        typedef typename Matrix::view_type::value_iterator value_iterator;
 
         /**
          * Provides read-only access to an individual row in the matrix.
@@ -461,42 +461,42 @@ class IterableSparseSetViewDecorator : public Matrix {
         }
 
         /**
-         * Returns a `const_iterator` to the beginning of the values in a specific row of the matrix.
+         * Returns a `value_const_iterator` to the beginning of the values in a specific row of the matrix.
          *
          * @param row   The index of the row
-         * @return      A `const_iterator` to the beginning of the values
+         * @return      A `value_const_iterator` to the beginning of the values
          */
-        const_iterator cbegin(uint32 row) const {
-            return Matrix::view.cbegin(row);
+        value_const_iterator values_cbegin(uint32 row) const {
+            return Matrix::view.values_cbegin(row);
         }
 
         /**
-         * Returns a `const_iterator` to the end of the values in a specific row of the matrix.
+         * Returns a `value_const_iterator` to the end of the values in a specific row of the matrix.
          *
          * @param row   The index of the row
-         * @return      A `const_iterator` to the end of the values
+         * @return      A `value_const_iterator` to the end of the values
          */
-        const_iterator cend(uint32 row) const {
-            return Matrix::view.cend(row);
+        value_const_iterator values_cend(uint32 row) const {
+            return Matrix::view.values_cend(row);
         }
 
         /**
-         * Returns an `iterator` to the beginning of the values in a specific row of the matrix.
+         * Returns a `value_iterator` to the beginning of the values in a specific row of the matrix.
          *
          * @param row   The index of the row
-         * @return      An `iterator` to the beginning of the values
+         * @return      A `value_iterator` to the beginning of the values
          */
-        iterator begin(uint32 row) {
-            return Matrix::view.begin(row);
+        value_iterator values_begin(uint32 row) {
+            return Matrix::view.values_begin(row);
         }
 
         /**
-         * Returns an `iterator` to the end of the values in a specific row of the matrix.
+         * Returns a `value_iterator` to the end of the values in a specific row of the matrix.
          *
          * @param row   The index of the row
-         * @return      An `iterator` to the end of the values
+         * @return      A `value_iterator` to the end of the values
          */
-        iterator end(uint32 row) {
-            return Matrix::view.end(row);
+        value_iterator values_end(uint32 row) {
+            return Matrix::view.values_end(row);
         }
 };

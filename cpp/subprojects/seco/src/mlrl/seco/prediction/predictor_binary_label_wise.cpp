@@ -225,8 +225,8 @@ namespace seco {
                                  BinaryLilMatrix::row predictionRow, uint32 numLabels) {
         if (scoresBegin != scoresEnd) {
             if (predictionRow.size() > 0) {
-                BinaryLilMatrix::iterator end = predictionRow.end();
-                BinaryLilMatrix::iterator start =
+                BinaryLilMatrix::value_iterator end = predictionRow.end();
+                BinaryLilMatrix::value_iterator start =
                   std::lower_bound(predictionRow.begin(), end, indexIterator[*scoresBegin]);
                 uint32 bufferSize = end - start;
                 Array<uint32> buffer(bufferSize);

@@ -103,8 +103,8 @@ namespace boosting {
              * @param end       An iterator to the end of the vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToRow(uint32 row, SparseSetView<Tuple<float64>>::const_iterator begin,
-                          SparseSetView<Tuple<float64>>::const_iterator end, float64 weight);
+            void addToRow(uint32 row, SparseSetView<Tuple<float64>>::value_const_iterator begin,
+                          SparseSetView<Tuple<float64>>::value_const_iterator end, float64 weight);
 
             /**
              * Returns the number of rows in the view.
