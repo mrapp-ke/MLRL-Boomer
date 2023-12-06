@@ -6,9 +6,10 @@
 namespace boosting {
 
     template<typename LabelIterator>
-    static inline void updateLabelWiseStatisticsInternally(
-      View<float64>::const_iterator scoreIterator, LabelIterator labelIterator,
-      DenseLabelWiseStatisticView::value_iterator statisticIterator, uint32 numLabels) {
+    static inline void updateLabelWiseStatisticsInternally(View<float64>::const_iterator scoreIterator,
+                                                           LabelIterator labelIterator,
+                                                           View<Tuple<float64>>::iterator statisticIterator,
+                                                           uint32 numLabels) {
         LabelIterator labelIterator2 = labelIterator;
 
         // For each label `i`, calculate `x_i = predictedScore_i^2 + (-2 * expectedScore_i * predictedScore_i) + 1` and
@@ -141,7 +142,7 @@ namespace boosting {
                                                    const CContiguousView<float64>& scoreMatrix,
                                                    CompleteIndexVector::const_iterator labelIndicesBegin,
                                                    CompleteIndexVector::const_iterator labelIndicesEnd,
-                                                   DenseLabelWiseStatisticView& statisticView) const override {
+                                                   CContiguousView<Tuple<float64>>& statisticView) const override {
                 updateLabelWiseStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
                                                     labelMatrix.values_cbegin(exampleIndex),
                                                     statisticView.values_begin(exampleIndex), labelMatrix.numCols);
@@ -151,7 +152,7 @@ namespace boosting {
                                                    const CContiguousView<float64>& scoreMatrix,
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
-                                                   DenseLabelWiseStatisticView& statisticView) const override {
+                                                   CContiguousView<Tuple<float64>>& statisticView) const override {
                 updateLabelWiseStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
                                                     labelMatrix.values_cbegin(exampleIndex),
                                                     statisticView.values_begin(exampleIndex), labelMatrix.numCols);
@@ -161,7 +162,7 @@ namespace boosting {
                                                    const CContiguousView<float64>& scoreMatrix,
                                                    CompleteIndexVector::const_iterator labelIndicesBegin,
                                                    CompleteIndexVector::const_iterator labelIndicesEnd,
-                                                   DenseLabelWiseStatisticView& statisticView) const override {
+                                                   CContiguousView<Tuple<float64>>& statisticView) const override {
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));
                 updateLabelWiseStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
@@ -172,7 +173,7 @@ namespace boosting {
                                                    const CContiguousView<float64>& scoreMatrix,
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
-                                                   DenseLabelWiseStatisticView& statisticView) const override {
+                                                   CContiguousView<Tuple<float64>>& statisticView) const override {
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));
                 updateLabelWiseStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,

@@ -3,8 +3,9 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/statistic_view_label_wise_dense.hpp"
 #include "mlrl/boosting/losses/loss.hpp"
+#include "mlrl/common/data/tuple.hpp"
+#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
@@ -29,13 +30,13 @@ namespace boosting {
              *                          predicted scores
              * @param labelIndicesBegin A `CompleteIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `CompleteIndexVector::const_iterator` to the end of the label indices
-             * @param statisticView     A reference to an object of type `DenseLabelWiseStatisticView` to be updated
+             * @param statisticView     A reference to an object of type `CContiguousView` to be updated
              */
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                                                    const CContiguousView<float64>& scoreMatrix,
                                                    CompleteIndexVector::const_iterator labelIndicesBegin,
                                                    CompleteIndexVector::const_iterator labelIndicesEnd,
-                                                   DenseLabelWiseStatisticView& statisticView) const = 0;
+                                                   CContiguousView<Tuple<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -48,13 +49,13 @@ namespace boosting {
              *                          predicted scores
              * @param labelIndicesBegin A `PartialIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
-             * @param statisticView     A reference to an object of type `DenseLabelWiseStatisticView` to be updated
+             * @param statisticView     A reference to an object of type `CContiguousView` to be updated
              */
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                                                    const CContiguousView<float64>& scoreMatrix,
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
-                                                   DenseLabelWiseStatisticView& statisticView) const = 0;
+                                                   CContiguousView<Tuple<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -67,13 +68,13 @@ namespace boosting {
              *                          predicted scores
              * @param labelIndicesBegin A `CompleteIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `CompleteIndexVector::const_iterator` to the end of the label indices
-             * @param statisticView     A reference to an object of type `DenseLabelWiseStatisticView` to be updated
+             * @param statisticView     A reference to an object of type `CContiguousView` to be updated
              */
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                                    const CContiguousView<float64>& scoreMatrix,
                                                    CompleteIndexVector::const_iterator labelIndicesBegin,
                                                    CompleteIndexVector::const_iterator labelIndicesEnd,
-                                                   DenseLabelWiseStatisticView& statisticView) const = 0;
+                                                   CContiguousView<Tuple<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -86,13 +87,13 @@ namespace boosting {
              *                          predicted scores
              * @param labelIndicesBegin A `PartialIndexVector::const_iterator` to the beginning of the label indices
              * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
-             * @param statisticView     A reference to an object of type `DenseLabelWiseStatisticView` to be updated
+             * @param statisticView     A reference to an object of type `CContiguousView` to be updated
              */
             virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                                    const CContiguousView<float64>& scoreMatrix,
                                                    PartialIndexVector::const_iterator labelIndicesBegin,
                                                    PartialIndexVector::const_iterator labelIndicesEnd,
-                                                   DenseLabelWiseStatisticView& statisticView) const = 0;
+                                                   CContiguousView<Tuple<float64>>& statisticView) const = 0;
     };
 
     /**
