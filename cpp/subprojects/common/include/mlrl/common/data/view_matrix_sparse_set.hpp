@@ -382,9 +382,8 @@ class SparseSetViewAllocator : public Matrix {
         SparseSetViewAllocator(uint32 numRows, uint32 numCols)
             : Matrix(AllocatedListOfLists<typename Matrix::value_type>(numRows, numCols),
                      AllocatedCContiguousView<uint32>(numRows, numCols), numRows, numCols) {
-            CContiguousView<uint32>::value_iterator indicesBegin = Matrix::indexView.begin();
-            CContiguousView<uint32>::value_iterator indicesEnd = Matrix::indexView.end();
-            setViewToValue(indicesBegin, indicesEnd - indicesBegin, Matrix::MAX_INDEX);
+            setViewToValue(Matrix::indexView.array, Matrix::indexView.numRows * Matrix::indexView.numCols,
+                           Matrix::MAX_INDEX);
         }
 
         /**
