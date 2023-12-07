@@ -27,7 +27,7 @@ namespace boosting {
                 : DenseLabelWiseStatisticView(numRows, numCols, allocateMemory<Tuple<float64>>(numRows * numCols)) {}
 
             ~DenseLabelWiseStatisticMatrix() override {
-                freeMemory(statistics_);
+                freeMemory(this->array);
             }
     };
 
