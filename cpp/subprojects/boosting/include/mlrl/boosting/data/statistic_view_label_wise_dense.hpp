@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/data/matrix_c_contiguous.hpp"
 #include "mlrl/common/data/tuple.hpp"
 
 namespace boosting {
@@ -11,24 +12,7 @@ namespace boosting {
      * Implements row-wise read and write access to the gradients and Hessians that have been calculated using a
      * label-wise decomposable loss function and are stored in pre-allocated C-contiguous arrays.
      */
-    class DenseLabelWiseStatisticView {
-        protected:
-
-            /**
-             * The number of rows in the view.
-             */
-            const uint32 numRows_;
-
-            /**
-             * The number of columns in the view.
-             */
-            const uint32 numCols_;
-
-            /**
-             * A pointer to an array that stores the gradients and Hessians.
-             */
-            Tuple<float64>* statistics_;
-
+    class DenseLabelWiseStatisticView : public CContiguousView<Tuple<float64>> {
         public:
 
             /**
@@ -39,49 +23,7 @@ namespace boosting {
              */
             DenseLabelWiseStatisticView(uint32 numRows, uint32 numCols, Tuple<float64>* statistics);
 
-            virtual ~DenseLabelWiseStatisticView() {}
-
-            /**
-             * An iterator that provides read-only access to the elements in the view.
-             */
-            typedef const Tuple<float64>* value_const_iterator;
-
-            /**
-             * An iterator that provides access to the elements in the view and allows to modify them.
-             */
-            typedef Tuple<float64>* value_iterator;
-
-            /**
-             * Returns a `value_const_iterator` to the beginning of a specific row.
-             *
-             * @param row   The row
-             * @return      A `value_const_iterator` to the beginning
-             */
-            value_const_iterator values_cbegin(uint32 row) const;
-
-            /**
-             * Returns a `value_const_iterator` to the end of a specific row.
-             *
-             * @param row   The row
-             * @return      A `value_const_iterator` to the end
-             */
-            value_const_iterator values_cend(uint32 row) const;
-
-            /**
-             * Returns a `value_iterator` to the beginning of a specific row.
-             *
-             * @param row   The row
-             * @return      A `value_iterator` to the beginning
-             */
-            value_iterator values_begin(uint32 row);
-
-            /**
-             * Returns a `value_iterator` to the end of a specific row.
-             *
-             * @param row   The row
-             * @return      A `value_iterator` to the end
-             */
-            value_iterator values_end(uint32 row);
+            virtual ~DenseLabelWiseStatisticView() override {}
 
             /**
              * Sets all gradients and Hessians in the matrix to zero.
