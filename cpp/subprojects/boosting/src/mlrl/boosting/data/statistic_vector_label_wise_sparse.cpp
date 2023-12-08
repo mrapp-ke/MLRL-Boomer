@@ -173,7 +173,7 @@ namespace boosting {
 
         if (binWeight != 0) {
             sumOfWeights_ += binWeight;
-            addToView(this->view.begin(), view.cbegin(row), this->getNumElements());
+            addToView(this->view.begin(), view.values_cbegin(row), this->getNumElements());
         }
     }
 
@@ -184,7 +184,7 @@ namespace boosting {
 
         if (binWeight != 0) {
             sumOfWeights_ += binWeight;
-            addToView(this->view.begin(), view.cbegin(row), indices.cbegin(), indices.getNumElements());
+            addToView(this->view.begin(), view.values_cbegin(row), indices.cbegin(), indices.getNumElements());
         }
     }
 
@@ -195,7 +195,7 @@ namespace boosting {
 
         if (binWeight != 0) {
             sumOfWeights_ += binWeight;
-            addToView(this->view.begin(), view.cbegin(row), this->getNumElements(), weight);
+            addToView(this->view.begin(), view.values_cbegin(row), this->getNumElements(), weight);
         }
     }
 
@@ -206,7 +206,7 @@ namespace boosting {
 
         if (binWeight != 0) {
             sumOfWeights_ += binWeight;
-            addToView(this->view.begin(), view.cbegin(row), indices.cbegin(), indices.getNumElements(), weight);
+            addToView(this->view.begin(), view.values_cbegin(row), indices.cbegin(), indices.getNumElements(), weight);
         }
     }
 

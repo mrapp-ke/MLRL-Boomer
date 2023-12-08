@@ -52,7 +52,7 @@ namespace boosting {
             /**
              * An iterator that provides read-only access to the gradients and Hessians.
              */
-            typedef const Triple<float64>* const_iterator;
+            typedef const Triple<float64>* value_const_iterator;
 
             /**
              * An iterator that provides read-only access to the weights that correspond to individual bins.
@@ -65,7 +65,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `const_iterator` to the beginning of the row
              */
-            const_iterator cbegin(uint32 row) const;
+            value_const_iterator values_cbegin(uint32 row) const;
 
             /**
              * Returns a `const_iterator` to the end of the gradients and Hessians at a specific row.
@@ -73,7 +73,7 @@ namespace boosting {
              * @param row   The row
              * @return      A `const_iterator` to the end of the row
              */
-            const_iterator cend(uint32 row) const;
+            value_const_iterator values_cend(uint32 row) const;
 
             /**
              * Returns a `weight_const_iterator` to the beginning of the weights that correspond to individual bins.
