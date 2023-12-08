@@ -4,8 +4,9 @@
 #pragma once
 
 #include "mlrl/common/data/triple.hpp"
-#include "mlrl/common/data/tuple.hpp"
-#include "mlrl/common/data/view_matrix_sparse_set.hpp"
+#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_composite.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 
 namespace boosting {
 
@@ -14,55 +15,35 @@ namespace boosting {
      * label-wise decomposable loss function and are stored in a pre-allocated histogram in the list of lists (LIL)
      * format.
      */
-    class SparseLabelWiseHistogramView {
-        protected:
-
-            /**
-             * The number of rows in the view.
-             */
-            const uint32 numRows_;
-
-            /**
-             * The number of columns in the view.
-             */
-            const uint32 numCols_;
-
-            /**
-             * A pointer to an array that stores the gradients and Hessians of each bin.
-             */
-            Triple<float64>* statistics_;
-
-            /**
-             * A pointer to an array that stores the weight of each bin.
-             */
-            float64* weights_;
-
+    class SparseLabelWiseHistogramView : public CompositeMatrix<CContiguousView<Triple<float64>>, Vector<float64>> {
         public:
 
             /**
-             * @param numRows       The number of rows in the view
-             * @param numCols       The number of columns in the view
-             * @param statistics    A pointer to an array that stores the gradients and Hessians of each bin
-             * @param weights       A pointer to an array that stores the weight of each bin
+             * @param firstView A reference to an object of type `CContiguousView` that stores the gradients and
+             *                  Hessians of each bin
+             * @param weights   A refereence to an object of type `Vector` that stores the weight of each bin
+             * @param numRows   The number of rows in the view
+             * @param numCols   The number of columns in the view
              */
-            SparseLabelWiseHistogramView(uint32 numRows, uint32 numCols, Triple<float64>* statistics, float64* weights);
+            SparseLabelWiseHistogramView(CContiguousView<Triple<float64>>&& firstView, Vector<float64>&& secondView,
+                                         uint32 numRows, uint32 numCols);
 
-            virtual ~SparseLabelWiseHistogramView() {}
+            virtual ~SparseLabelWiseHistogramView() override {}
 
             /**
              * An iterator that provides read-only access to the gradients and Hessians.
              */
-            typedef const Triple<float64>* value_const_iterator;
+            typedef typename CContiguousView<Triple<float64>>::value_const_iterator value_const_iterator;
 
             /**
              * An iterator that provides read-only access to the weights that correspond to individual bins.
              */
-            typedef const float64* weight_const_iterator;
+            typedef typename Vector<float64>::const_iterator weight_const_iterator;
 
             /**
              * Returns a `const_iterator` to the beginning of the gradients and Hessians at a specific row.
              *
-             * @param row   The row
+             * @param row   The index of the row
              * @return      A `const_iterator` to the beginning of the row
              */
             value_const_iterator values_cbegin(uint32 row) const;
@@ -70,7 +51,7 @@ namespace boosting {
             /**
              * Returns a `const_iterator` to the end of the gradients and Hessians at a specific row.
              *
-             * @param row   The row
+             * @param row   The index of the row
              * @return      A `const_iterator` to the end of the row
              */
             value_const_iterator values_cend(uint32 row) const;
@@ -88,37 +69,6 @@ namespace boosting {
              * @return A `weight_const_iterator` to the end
              */
             weight_const_iterator weights_cend() const;
-
-            /**
-             * Sets all gradients and Hessians in the matrix to zero.
-             */
-            void clear();
-
-            /**
-             * Adds all gradients and Hessians in a vector to a specific row of this histogram. The gradients and
-             * Hessians to be added are multiplied by a specific weight.
-             *
-             * @param row       The row
-             * @param begin     An iterator to the beginning of the vector
-             * @param end       An iterator to the end of the vector
-             * @param weight    The weight, the gradients and Hessians should be multiplied by
-             */
-            void addToRow(uint32 row, SparseSetView<Tuple<float64>>::value_const_iterator begin,
-                          SparseSetView<Tuple<float64>>::value_const_iterator end, float64 weight);
-
-            /**
-             * Returns the number of rows in the view.
-             *
-             * @return The number of rows
-             */
-            uint32 getNumRows() const;
-
-            /**
-             * Returns the number of columns in the view.
-             *
-             * @return The number of columns
-             */
-            uint32 getNumCols() const;
     };
 
 }
