@@ -1,7 +1,5 @@
 #include "mlrl/boosting/data/statistic_vector_label_wise_sparse.hpp"
 
-#include "statistic_vector_label_wise_sparse_common.hpp"
-
 namespace boosting {
 
     SparseLabelWiseStatisticVector::ConstIterator::ConstIterator(View<Triple<float64>>::const_iterator iterator,
