@@ -7,6 +7,7 @@
 
 #include "mlrl/boosting/data/histogram_view_label_wise_sparse.hpp"
 #include "mlrl/boosting/data/matrix_sparse_set_numeric.hpp"
+#include "mlrl/boosting/data/statistic_vector_label_wise_sparse.hpp"
 #include "mlrl/common/util/openmp.hpp"
 #include "statistics_label_wise_common.hpp"
 #include "statistics_provider_label_wise.hpp"
@@ -62,12 +63,32 @@ namespace boosting {
              * @param numCols   The number of columns in the histogram
              */
             SparseLabelWiseHistogram(uint32 numBins, uint32 numCols)
-                : SparseLabelWiseHistogramView(numBins, numCols, new Triple<float64>[numBins * numCols],
-                                               new float64[numBins]) {}
+                : SparseLabelWiseHistogramView(AllocatedCContiguousView<Triple<float64>>(numBins, numCols),
+                                               AllocatedVector<float64>(numBins, true), numBins, numCols) {}
 
-            ~SparseLabelWiseHistogram() override {
-                delete[] statistics_;
-                delete[] weights_;
+            /**
+             * Adds all gradients and Hessians in a vector to a specific row of this histogram. The gradients and
+             * Hessians to be added are multiplied by a specific weight.
+             *
+             * @param row       The row
+             * @param begin     An iterator to the beginning of the vector
+             * @param end       An iterator to the end of the vector
+             * @param weight    The weight, the gradients and Hessians should be multiplied by
+             */
+            void addToRow(uint32 row, SparseSetView<Tuple<float64>>::value_const_iterator begin,
+                          SparseSetView<Tuple<float64>>::value_const_iterator end, float64 weight) {
+                if (weight != 0) {
+                    CompositeView::secondView[row] += weight;
+                    addToSparseLabelWiseStatisticVector(CompositeView::firstView.values_begin(row), begin, end, weight);
+                }
+            }
+
+            uint32 getNumRows() const {
+                return Matrix::numRows;
+            }
+
+            uint32 getNumCols() const {
+                return Matrix::numCols;
             }
     };
 
