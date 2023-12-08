@@ -18,7 +18,7 @@ namespace boosting {
      */
     class DenseExampleWiseStatisticVector final
         : public ClearableCompositeVectorDecorator<
-            CompositeVectorDecorator<AllocatedVector<float64>, AllocatedVector<float64>>> {
+            CompositeViewDecorator<AllocatedVector<float64>, AllocatedVector<float64>>> {
         public:
 
             /**
