@@ -345,7 +345,7 @@ namespace boosting {
                             const SparseLabelWiseStatisticVector& second);
 
             /**
-             * @see `ClearableVectorDecorator::clear`
+             * @see `ClearableViewDecorator::clear`
              */
             void clear() override;
     };

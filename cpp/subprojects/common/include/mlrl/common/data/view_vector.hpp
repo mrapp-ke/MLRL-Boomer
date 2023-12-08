@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/view.hpp"
+#include "mlrl/common/util/view_functions.hpp"
 
 /**
  * A one-dimensional view that provides access to values stored in a pre-allocated array of a specific size.
@@ -97,6 +98,13 @@ class MLRLCOMMON_API Vector : public View<T> {
          */
         typename View<T>::iterator end() {
             return &View<T>::array[numElements];
+        }
+
+        /**
+         * Sets all values stored in the view to zero.
+         */
+        void clear() {
+            setViewToZeros(View<T>::array, numElements);
         }
 };
 
