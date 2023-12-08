@@ -7,7 +7,6 @@
 
 #include "mlrl/boosting/data/histogram_view_label_wise_sparse.hpp"
 #include "mlrl/boosting/data/matrix_sparse_set_numeric.hpp"
-#include "mlrl/boosting/data/statistic_view_label_wise_sparse.hpp"
 #include "mlrl/common/util/openmp.hpp"
 #include "statistics_label_wise_common.hpp"
 #include "statistics_provider_label_wise.hpp"
@@ -18,7 +17,7 @@ namespace boosting {
      * A matrix that stores gradients and Hessians that have been calculated using a label-wise decomposable loss
      * function in the list of lists (LIL) format.
      */
-    class SparseLabelWiseStatisticMatrix final : public SparseLabelWiseStatisticView {
+    class SparseLabelWiseStatisticMatrix final : public SparseSetView<Tuple<float64>> {
         public:
 
             /**
@@ -26,16 +25,45 @@ namespace boosting {
              * @param numCols   The number of columns in the matrix
              */
             SparseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols)
-                : SparseLabelWiseStatisticView(AllocatedListOfLists<IndexedValue<Tuple<float64>>>(numRows, numCols),
-                                               AllocatedCContiguousView<uint32>(numRows, numCols), numRows, numCols) {
+                : SparseSetView<Tuple<float64>>(AllocatedListOfLists<IndexedValue<Tuple<float64>>>(numRows, numCols),
+                                                AllocatedCContiguousView<uint32>(numRows, numCols), numRows, numCols) {
                 setViewToValue(this->indexView.array, this->indexView.numRows * this->indexView.numCols,
                                this->MAX_INDEX);
+            }
+
+            /**
+             * Sets all gradients and Hessians in the matrix to zero.
+             */
+            void clear() {
+                uint32 numRows = Matrix::numRows;
+
+                for (uint32 i = 0; i < numRows; i++) {
+                    (*this)[i].clear();
+                }
+            }
+
+            /**
+             * Returns the number of rows in the view.
+             *
+             * @return The number of rows
+             */
+            uint32 getNumRows() const {
+                return Matrix::numRows;
+            }
+
+            /**
+             * Returns the number of columns in the view.
+             *
+             * @return The number of columns
+             */
+            uint32 getNumCols() const {
+                return Matrix::numCols;
             }
     };
 
     /**
-     * A histogram that stores gradients and Hessians that have been calculated using a label-wise decomposable loss
-     * function in the list of lists (LIL) format.
+     * A histogram that stores gradients and Hessians that have been calculated using a label-wise decomposable
+     * loss function in the list of lists (LIL) format.
      */
     class SparseLabelWiseHistogram final : public SparseLabelWiseHistogramView {
         public:
@@ -55,46 +83,46 @@ namespace boosting {
     };
 
     /**
-     * Provides access to gradients and Hessians that have been calculated according to a differentiable loss function
-     * that is applied label-wise and are stored using sparse data structures.
+     * Provides access to gradients and Hessians that have been calculated according to a differentiable loss
+     * function that is applied label-wise and are stored using sparse data structures.
      *
      * @tparam LabelMatrix The type of the matrix that provides access to the labels of the training examples
      */
     template<typename LabelMatrix>
     class SparseLabelWiseStatistics final
-        : public AbstractLabelWiseStatistics<LabelMatrix, SparseLabelWiseStatisticVector, SparseLabelWiseStatisticView,
-                                             SparseLabelWiseHistogram, NumericSparseSetMatrix<float64>,
-                                             ISparseLabelWiseLoss, ISparseEvaluationMeasure,
-                                             ISparseLabelWiseRuleEvaluationFactory> {
+        : public AbstractLabelWiseStatistics<LabelMatrix, SparseLabelWiseStatisticVector,
+                                             SparseLabelWiseStatisticMatrix, SparseLabelWiseHistogram,
+                                             NumericSparseSetMatrix<float64>, ISparseLabelWiseLoss,
+                                             ISparseEvaluationMeasure, ISparseLabelWiseRuleEvaluationFactory> {
         public:
 
             /**
              * @param lossPtr               An unique pointer to an object of template type `LossFunction` that
-             *                              implements the loss function that should be used for calculating gradients
-             *                              and Hessians
-             * @param evaluationMeasurePtr  An unique pointer to an object of type `ISparseEvaluationMeasure` that
-             *                              implements the evaluation measure that should be used to assess the quality
-             *                              of predictions for a specific statistic
-             * @param ruleEvaluationFactory A reference to an object of type `ISparseLabelWiseRuleEvaluationFactory`,
-             *                              that allows to create instances of the class that is used for calculating
-             *                              the predictions of rules, as well as their overall quality
-             * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
-             *                              to the labels of the training examples
-             * @param statisticViewPtr      An unique pointer to an object of type `SparseLabelWiseStatisticView` that
-             *                              provides access to the gradients and Hessians
-             * @param scoreMatrixPtr        An unique pointer to an object of type `NumericSparseSetMatrix` that stores
-             *                              the currently predicted scores
+             *                              implements the loss function that should be used for calculating
+             * gradients and Hessians
+             * @param evaluationMeasurePtr  An unique pointer to an object of type `ISparseEvaluationMeasure`
+             * that implements the evaluation measure that should be used to assess the quality of predictions
+             * for a specific statistic
+             * @param ruleEvaluationFactory A reference to an object of type
+             * `ISparseLabelWiseRuleEvaluationFactory`, that allows to create instances of the class that is
+             * used for calculating the predictions of rules, as well as their overall quality
+             * @param labelMatrix           A reference to an object of template type `LabelMatrix` that
+             * provides access to the labels of the training examples
+             * @param statisticViewPtr      An unique pointer to an object of type
+             * `SparseLabelWiseStatisticMatrix` that provides access to the gradients and Hessians
+             * @param scoreMatrixPtr        An unique pointer to an object of type `NumericSparseSetMatrix` that
+             * stores the currently predicted scores
              */
             SparseLabelWiseStatistics(std::unique_ptr<ISparseLabelWiseLoss> lossPtr,
                                       std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr,
                                       const ISparseLabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
                                       const LabelMatrix& labelMatrix,
-                                      std::unique_ptr<SparseLabelWiseStatisticView> statisticViewPtr,
+                                      std::unique_ptr<SparseLabelWiseStatisticMatrix> statisticViewPtr,
                                       std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr)
-                : AbstractLabelWiseStatistics<LabelMatrix, SparseLabelWiseStatisticVector, SparseLabelWiseStatisticView,
-                                              SparseLabelWiseHistogram, NumericSparseSetMatrix<float64>,
-                                              ISparseLabelWiseLoss, ISparseEvaluationMeasure,
-                                              ISparseLabelWiseRuleEvaluationFactory>(
+                : AbstractLabelWiseStatistics<LabelMatrix, SparseLabelWiseStatisticVector,
+                                              SparseLabelWiseStatisticMatrix, SparseLabelWiseHistogram,
+                                              NumericSparseSetMatrix<float64>, ISparseLabelWiseLoss,
+                                              ISparseEvaluationMeasure, ISparseLabelWiseRuleEvaluationFactory>(
                   std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
                   std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
 
@@ -165,7 +193,6 @@ namespace boosting {
         return std::make_unique<LabelWiseStatisticsProvider<ISparseLabelWiseRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
-
 }
 
 #ifdef _WIN32
