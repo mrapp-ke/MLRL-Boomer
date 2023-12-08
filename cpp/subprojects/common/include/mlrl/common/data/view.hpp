@@ -5,7 +5,6 @@
 
 #include "mlrl/common/util/dll_exports.hpp"
 #include "mlrl/common/util/memory.hpp"
-#include "mlrl/common/util/view_functions.hpp"
 
 #include <initializer_list>
 #include <utility>
@@ -314,6 +313,6 @@ class ClearableViewDecorator : public View {
          * Sets all values stored in the view to zero.
          */
         virtual void clear() {
-            setViewToZeros(View::view.array, View::view.numElements);
+            View::view.clear();
         }
 };

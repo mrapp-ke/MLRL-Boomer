@@ -3,27 +3,48 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 
 /**
- * A view that is backed two views.
+ * A view that is backed two one-dimensional views.
  *
- * @tparam IndexView    The type of the first view
- * @tparam ValueView    The type of the second view
+ * @tparam FirstView    The type of the first view
+ * @tparam SecondView   The type of the second view
  */
 template<typename FirstView, typename SecondView>
-class CompositeViewDecorator {
-    protected:
+class CompositeView {
+    public:
 
         /**
          * The first view, the view is backed by.
          */
-        FirstView firstView_;
+        FirstView firstView;
 
         /**
          * The second view, the view is backed by.
          */
-        SecondView secondView_;
+        SecondView secondView;
+
+        /**
+         * @param firstView     The first view, the view should be backed by
+         * @param secondView    The second view, the view should be backed by
+         */
+        CompositeView(FirstView&& firstView, SecondView&& secondView)
+            : firstView(std::move(firstView)), secondView(std::move(secondView)) {}
+
+        /**
+         * @param other A reference to an object of type `CompositeView` that should be copied
+         */
+        CompositeView(const CompositeView<FirstView, SecondView>& other)
+            : firstView(other.firstView), secondView(other.secondView) {}
+
+        /**
+         * @param other A reference to an object of type `CompositeView` that should be moved
+         */
+        CompositeView(CompositeView<FirstView, SecondView>&& other)
+            : firstView(std::move(other.firstView)), secondView(std::move(other.secondView)) {}
+
+        virtual ~CompositeView() {}
 
         /**
          * The type of the first view, the view is backed by.
@@ -34,15 +55,4 @@ class CompositeViewDecorator {
          * The type of the second view, the view is backed by.
          */
         typedef SecondView second_view_type;
-
-    public:
-
-        /**
-         * @param firstView     The first view, the vector should be backed by
-         * @param secondView    The second view, the vector should be backed by
-         */
-        CompositeViewDecorator(FirstView&& firstView, SecondView&& secondView)
-            : firstView_(std::move(firstView)), secondView_(std::move(secondView)) {}
-
-        virtual ~CompositeViewDecorator() {}
 };

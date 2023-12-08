@@ -15,12 +15,9 @@ class MLRLCOMMON_API BinnedVectorDecorator : public Vector {
     public:
 
         /**
-         * @param binIndexView  The view, the bin indices should be backed by
-         * @param valueView     The view, the values of the bins should be backed by
+         * @param view The view, the vector should be backed by
          */
-        BinnedVectorDecorator(typename Vector::first_view_type&& binIndexView,
-                              typename Vector::second_view_type&& valueView)
-            : Vector(std::move(binIndexView), std::move(valueView)) {}
+        BinnedVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
 
         virtual ~BinnedVectorDecorator() override {}
 
@@ -30,6 +27,6 @@ class MLRLCOMMON_API BinnedVectorDecorator : public Vector {
          * @return The number of bins
          */
         uint32 getNumBins() const {
-            return this->secondView_.numElements;
+            return this->view.secondView.numElements;
         }
 };

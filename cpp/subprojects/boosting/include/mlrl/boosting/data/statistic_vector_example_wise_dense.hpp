@@ -17,8 +17,8 @@ namespace boosting {
      * as a symmetric Hessian matrix with `n` rows and columns.
      */
     class DenseExampleWiseStatisticVector final
-        : public ClearableCompositeVectorDecorator<
-            CompositeViewDecorator<AllocatedVector<float64>, AllocatedVector<float64>>> {
+        : public ClearableViewDecorator<
+            ViewDecorator<CompositeVector<AllocatedVector<float64>, AllocatedVector<float64>>>> {
         public:
 
             /**
