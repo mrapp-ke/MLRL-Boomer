@@ -5,8 +5,7 @@
 namespace boosting {
 
     DenseExampleWiseStatisticVector::DenseExampleWiseStatisticVector(uint32 numGradients, bool init)
-        : ClearableCompositeVectorDecorator<
-          CompositeVectorDecorator<AllocatedVector<float64>, AllocatedVector<float64>>>(
+        : ClearableCompositeVectorDecorator<CompositeViewDecorator<AllocatedVector<float64>, AllocatedVector<float64>>>(
           AllocatedVector<float64>(numGradients, init),
           AllocatedVector<float64>(triangularNumber(numGradients), init)) {}
 

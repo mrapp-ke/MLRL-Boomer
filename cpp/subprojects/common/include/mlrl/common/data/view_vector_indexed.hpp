@@ -12,7 +12,7 @@
  * @tparam ValueView    The type of the view, the values are backed by
  */
 template<typename IndexView, typename ValueView>
-class MLRLCOMMON_API IndexedVectorDecorator : public CompositeVectorDecorator<IndexView, ValueView> {
+class MLRLCOMMON_API IndexedVectorDecorator : public CompositeViewDecorator<IndexView, ValueView> {
     public:
 
         /**
@@ -20,7 +20,7 @@ class MLRLCOMMON_API IndexedVectorDecorator : public CompositeVectorDecorator<In
          * @param valueView The view, the values should be backed by
          */
         IndexedVectorDecorator(IndexView&& indexView, ValueView&& valueView)
-            : CompositeVectorDecorator<IndexView, ValueView>(std::move(indexView), std::move(valueView)) {}
+            : CompositeViewDecorator<IndexView, ValueView>(std::move(indexView), std::move(valueView)) {}
 
         virtual ~IndexedVectorDecorator() override {}
 
