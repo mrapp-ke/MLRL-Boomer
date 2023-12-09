@@ -93,6 +93,26 @@ class MLRLCOMMON_API View {
         iterator begin() {
             return array;
         }
+
+        /**
+         * Returns a const reference to the element at a specific position.
+         *
+         * @param pos   The position of the element
+         * @return      A const reference to the specified element
+         */
+        const value_type& operator[](uint32 pos) const {
+            return array[pos];
+        }
+
+        /**
+         * Returns a reference to the element at a specific position.
+         *
+         * @param pos   The position of the element
+         * @return      A reference to the specified element
+         */
+        value_type& operator[](uint32 pos) {
+            return array[pos];
+        }
 };
 
 /**
@@ -279,7 +299,7 @@ class MLRLCOMMON_API IndexableViewDecorator : public View {
          * @return      A const reference to the specified element
          */
         const typename View::view_type::value_type& operator[](uint32 pos) const {
-            return View::view.array[pos];
+            return View::view[pos];
         }
 
         /**
@@ -289,7 +309,7 @@ class MLRLCOMMON_API IndexableViewDecorator : public View {
          * @return      A reference to the specified element
          */
         typename View::view_type::value_type& operator[](uint32 pos) {
-            return View::view.array[pos];
+            return View::view[pos];
         }
 };
 
