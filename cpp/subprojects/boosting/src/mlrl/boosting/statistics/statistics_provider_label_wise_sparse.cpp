@@ -32,17 +32,6 @@ namespace boosting {
             }
 
             /**
-             * Sets all gradients and Hessians in the matrix to zero.
-             */
-            void clear() {
-                uint32 numRows = Matrix::numRows;
-
-                for (uint32 i = 0; i < numRows; i++) {
-                    (*this)[i].clear();
-                }
-            }
-
-            /**
              * Returns the number of rows in the view.
              *
              * @return The number of rows
