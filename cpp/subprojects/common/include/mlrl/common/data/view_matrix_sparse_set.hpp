@@ -366,6 +366,15 @@ class SparseSetView : public Matrix {
         value_iterator values_end(uint32 row) {
             return valueView.values_end(row);
         }
+
+        /**
+         * Sets all values stored in the matrix to zero.
+         */
+        void clear() {
+            for (uint32 i = 0; i < Matrix::numRows; i++) {
+                (*this)[i].clear();
+            }
+        }
 };
 
 /**
