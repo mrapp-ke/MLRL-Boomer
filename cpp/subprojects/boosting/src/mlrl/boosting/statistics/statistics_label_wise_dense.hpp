@@ -31,13 +31,6 @@ namespace boosting {
             }
 
             /**
-             * Sets all gradients and Hessians in the matrix to zero.
-             */
-            void clear() {
-                setViewToZeros(DenseMatrix::array, Matrix::numRows * Matrix::numCols);
-            }
-
-            /**
              * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
              * to be added are multiplied by a specific weight.
              *
