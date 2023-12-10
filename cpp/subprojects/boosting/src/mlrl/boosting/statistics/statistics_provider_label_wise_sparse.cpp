@@ -108,20 +108,20 @@ namespace boosting {
 
             /**
              * @param lossPtr               An unique pointer to an object of template type `LossFunction` that
-             *                              implements the loss function that should be used for calculating
-             * gradients and Hessians
-             * @param evaluationMeasurePtr  An unique pointer to an object of type `ISparseEvaluationMeasure`
-             * that implements the evaluation measure that should be used to assess the quality of predictions
-             * for a specific statistic
-             * @param ruleEvaluationFactory A reference to an object of type
-             * `ISparseLabelWiseRuleEvaluationFactory`, that allows to create instances of the class that is
-             * used for calculating the predictions of rules, as well as their overall quality
-             * @param labelMatrix           A reference to an object of template type `LabelMatrix` that
-             * provides access to the labels of the training examples
-             * @param statisticViewPtr      An unique pointer to an object of type
-             * `SparseLabelWiseStatisticMatrix` that provides access to the gradients and Hessians
-             * @param scoreMatrixPtr        An unique pointer to an object of type `NumericSparseSetMatrix` that
-             * stores the currently predicted scores
+             *                              implements the loss function that should be used for calculating gradients
+             *                              and Hessians
+             * @param evaluationMeasurePtr  An unique pointer to an object of type `ISparseEvaluationMeasure` that
+             *                              implements the evaluation measure that should be used to assess the quality
+             *                              of predictions for a specific statistic
+             * @param ruleEvaluationFactory A reference to an object of type `ISparseLabelWiseRuleEvaluationFactory`,
+             *                              that allows to create instances of the class that is used for calculating
+             *                              the predictions of rules, as well as their overall quality
+             * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
+             *                              to the labels of the training examples
+             * @param statisticViewPtr      An unique pointer to an object of type `SparseLabelWiseStatisticMatrix` that
+             *                              provides access to the gradients and Hessians
+             * @param scoreMatrixPtr        An unique pointer to an object of type `NumericSparseSetMatrix` that stores
+             *                              the currently predicted scores
              */
             SparseLabelWiseStatistics(std::unique_ptr<ISparseLabelWiseLoss> lossPtr,
                                       std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr,
