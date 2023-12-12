@@ -98,7 +98,8 @@ namespace boosting {
                 uint32 numCols = this->statisticViewPtr_->getNumCols();
                 std::unique_ptr<DenseLabelWiseStatisticMatrix> labelWiseStatisticMatrixPtr =
                   std::make_unique<DenseLabelWiseStatisticMatrix>(numRows, numCols);
-                DenseLabelWiseStatisticMatrix* labelWiseStatisticMatrixRawPtr = labelWiseStatisticMatrixPtr.get();
+                CContiguousView<Tuple<float64>>* labelWiseStatisticMatrixRawPtr =
+                  &labelWiseStatisticMatrixPtr->getView();
                 DenseExampleWiseStatisticView* exampleWiseStatisticViewRawPtr = this->statisticViewPtr_.get();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
@@ -106,7 +107,7 @@ namespace boosting {
       firstprivate(exampleWiseStatisticViewRawPtr) schedule(dynamic) num_threads(numThreads)
 #endif
                 for (int64 i = 0; i < numRows; i++) {
-                    DenseLabelWiseStatisticMatrix::value_iterator iterator =
+                    CContiguousView<Tuple<float64>>::value_iterator iterator =
                       labelWiseStatisticMatrixRawPtr->values_begin(i);
                     DenseExampleWiseStatisticView::gradient_const_iterator gradientIterator =
                       exampleWiseStatisticViewRawPtr->gradients_cbegin(i);
