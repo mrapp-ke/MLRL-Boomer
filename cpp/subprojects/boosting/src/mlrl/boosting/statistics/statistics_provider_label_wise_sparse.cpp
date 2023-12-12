@@ -18,7 +18,7 @@ namespace boosting {
      * A matrix that stores gradients and Hessians that have been calculated using a label-wise decomposable loss
      * function in the list of lists (LIL) format.
      */
-    class SparseLabelWiseStatisticMatrix final : public SparseSetView<Tuple<float64>> {
+    class SparseLabelWiseStatisticMatrix final : public MatrixDecorator<AllocatedSparseSetView<Tuple<float64>>> {
         public:
 
             /**
@@ -26,36 +26,16 @@ namespace boosting {
              * @param numCols   The number of columns in the matrix
              */
             SparseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols)
-                : SparseSetView<Tuple<float64>>(AllocatedListOfLists<IndexedValue<Tuple<float64>>>(numRows, numCols),
-                                                AllocatedCContiguousView<uint32>(numRows, numCols), numRows, numCols) {
-                setViewToValue(this->indexView.array, this->indexView.numRows * this->indexView.numCols,
-                               this->MAX_INDEX);
-            }
-
-            /**
-             * Returns the number of rows in the view.
-             *
-             * @return The number of rows
-             */
-            uint32 getNumRows() const {
-                return Matrix::numRows;
-            }
-
-            /**
-             * Returns the number of columns in the view.
-             *
-             * @return The number of columns
-             */
-            uint32 getNumCols() const {
-                return Matrix::numCols;
-            }
+                : MatrixDecorator<AllocatedSparseSetView<Tuple<float64>>>(
+                  AllocatedSparseSetView<Tuple<float64>>(numRows, numCols)) {}
     };
 
     /**
      * A histogram that stores gradients and Hessians that have been calculated using a label-wise decomposable
      * loss function in the list of lists (LIL) format.
      */
-    class SparseLabelWiseHistogram final : public SparseLabelWiseHistogramView {
+    class SparseLabelWiseHistogram final
+        : public ClearableViewDecorator<MatrixDecorator<SparseLabelWiseHistogramView>> {
         public:
 
             /**
@@ -63,8 +43,9 @@ namespace boosting {
              * @param numCols   The number of columns in the histogram
              */
             SparseLabelWiseHistogram(uint32 numBins, uint32 numCols)
-                : SparseLabelWiseHistogramView(AllocatedCContiguousView<Triple<float64>>(numBins, numCols),
-                                               AllocatedVector<float64>(numBins, true), numBins, numCols) {}
+                : ClearableViewDecorator<MatrixDecorator<SparseLabelWiseHistogramView>>(
+                  SparseLabelWiseHistogramView(AllocatedCContiguousView<Triple<float64>>(numBins, numCols),
+                                               AllocatedVector<float64>(numBins, true), numBins, numCols)) {}
 
             /**
              * Adds all gradients and Hessians in a vector to a specific row of this histogram. The gradients and
@@ -78,17 +59,9 @@ namespace boosting {
             void addToRow(uint32 row, SparseSetView<Tuple<float64>>::value_const_iterator begin,
                           SparseSetView<Tuple<float64>>::value_const_iterator end, float64 weight) {
                 if (weight != 0) {
-                    CompositeView::secondView[row] += weight;
-                    addToSparseLabelWiseStatisticVector(CompositeView::firstView.values_begin(row), begin, end, weight);
+                    this->view.secondView[row] += weight;
+                    addToSparseLabelWiseStatisticVector(this->view.firstView.values_begin(row), begin, end, weight);
                 }
-            }
-
-            uint32 getNumRows() const {
-                return Matrix::numRows;
-            }
-
-            uint32 getNumCols() const {
-                return Matrix::numCols;
             }
     };
 
@@ -162,7 +135,7 @@ namespace boosting {
         const ISparseLabelWiseLoss* lossRawPtr = lossPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
         const SparseSetView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
-        SparseLabelWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
+        SparseSetView<Tuple<float64>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(labelMatrixPtr) \
