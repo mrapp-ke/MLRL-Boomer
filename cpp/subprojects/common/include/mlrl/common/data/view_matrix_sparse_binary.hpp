@@ -112,12 +112,12 @@ class IterableBinarySparseMatrixDecorator : public Matrix {
         /**
          * An iterator that provides read-only access to the indices in the matrix.
          */
-        typedef const uint32* index_const_iterator;
+        typedef typename Matrix::view_type::index_const_iterator index_const_iterator;
 
         /**
          * An iterator that provides access to the indices in the matrix and allows to modify them.
          */
-        typedef uint32* index_iterator;
+        typedef typename Matrix::view_type::index_iterator index_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices in a specific row or column of the matrix,
