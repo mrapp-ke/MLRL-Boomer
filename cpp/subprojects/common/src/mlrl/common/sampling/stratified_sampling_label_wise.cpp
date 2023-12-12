@@ -2,8 +2,6 @@
 
 #include "mlrl/common/data/array.hpp"
 #include "mlrl/common/data/indexed_value.hpp"
-#include "mlrl/common/data/matrix_sparse_binary.hpp"
-#include "mlrl/common/data/view_matrix_csc_binary.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
 #include "stratified_sampling_common.hpp"
 
@@ -109,7 +107,7 @@ class CscLabelMatrix final : public AllocatedBinaryCscView {
          */
         CscLabelMatrix(const CContiguousView<const uint8>& labelMatrix,
                        CompleteIndexVector::const_iterator indicesBegin, CompleteIndexVector::const_iterator indicesEnd)
-            : AllocatedBinaryCscView((indicesEnd - indicesBegin) * labelMatrix.numCols, indicesEnd - indicesBegin,
+            : AllocatedBinaryCscView((indicesEnd - indicesBegin) * labelMatrix.numCols, labelMatrix.numRows,
                                      labelMatrix.numCols) {
             BinarySparseMatrix::indices = copyLabelMatrix(BinarySparseMatrix::indices, BinarySparseMatrix::indptr,
                                                           labelMatrix, indicesBegin, indicesEnd);
@@ -124,7 +122,7 @@ class CscLabelMatrix final : public AllocatedBinaryCscView {
          */
         CscLabelMatrix(const CContiguousView<const uint8>& labelMatrix, PartialIndexVector::const_iterator indicesBegin,
                        PartialIndexVector::const_iterator indicesEnd)
-            : AllocatedBinaryCscView((indicesEnd - indicesBegin) * labelMatrix.numCols, indicesEnd - indicesBegin,
+            : AllocatedBinaryCscView((indicesEnd - indicesBegin) * labelMatrix.numCols, labelMatrix.numRows,
                                      labelMatrix.numCols) {
             BinarySparseMatrix::indices = copyLabelMatrix(BinarySparseMatrix::indices, BinarySparseMatrix::indptr,
                                                           labelMatrix, indicesBegin, indicesEnd);
@@ -139,8 +137,7 @@ class CscLabelMatrix final : public AllocatedBinaryCscView {
          */
         CscLabelMatrix(const BinaryCsrView& labelMatrix, CompleteIndexVector::const_iterator indicesBegin,
                        CompleteIndexVector::const_iterator indicesEnd)
-            : AllocatedBinaryCscView(labelMatrix.getNumNonZeroElements(), indicesEnd - indicesBegin,
-                                     labelMatrix.numCols) {
+            : AllocatedBinaryCscView(labelMatrix.getNumNonZeroElements(), labelMatrix.numRows, labelMatrix.numCols) {
             BinarySparseMatrix::indices = copyLabelMatrix(BinarySparseMatrix::indices, BinarySparseMatrix::indptr,
                                                           labelMatrix, indicesBegin, indicesEnd);
         }
@@ -154,8 +151,7 @@ class CscLabelMatrix final : public AllocatedBinaryCscView {
          */
         CscLabelMatrix(const BinaryCsrView& labelMatrix, PartialIndexVector::const_iterator indicesBegin,
                        PartialIndexVector::const_iterator indicesEnd)
-            : AllocatedBinaryCscView(labelMatrix.getNumNonZeroElements(), indicesEnd - indicesBegin,
-                                     labelMatrix.numCols) {
+            : AllocatedBinaryCscView(labelMatrix.getNumNonZeroElements(), labelMatrix.numRows, labelMatrix.numCols) {
             BinarySparseMatrix::indices = copyLabelMatrix(BinarySparseMatrix::indices, BinarySparseMatrix::indptr,
                                                           labelMatrix, indicesBegin, indicesEnd);
         }
@@ -215,156 +211,181 @@ static inline void updateNumExamplesPerLabel(const BinaryCsrView& labelMatrix, u
     }
 }
 
+/**
+ * A two-dimensional view that provides column-wise read and write access to the indices of individual training examples
+ * stored in a matrix in the compressed sparse column (CSC) format. The indices in each column of the matrix correspond
+ * to the examples to be sampled for a particular label.
+ *
+ * @tparam LabelMatrix      The type of the label matrix that provides random or row-wise access to the labels of the
+ *                          training examples
+ * @tparam IndexIterator    The type of the iterator that provides access to the indices of the examples that should be
+ *                          considered
+ */
+template<typename LabelMatrix, typename IndexIterator>
+class StratificationMatrix final : public AllocatedBinaryCscView {
+    public:
+
+        /**
+         * @param rowWiseLabelMatrix    A reference to an on object of template type `LabelMatrix` that provides random
+         *                              or row-wise access to the labels of the training examples
+         * @param columnWiseLabelMatrix A reference to an object of type `CscLabelMatrix` that provides column-wise
+         *                              access to the labels of the training examples
+         * @param indicesBegin          An iterator to the beginning of the indices of the examples that should be
+         *                              considered
+         * @param indicesEnd            An iterator to the end of the indices of the examples that should be considered
+         */
+        StratificationMatrix(const LabelMatrix& rowWiseLabelMatrix, const CscLabelMatrix& columnWiseLabelMatrix,
+                             IndexIterator indicesBegin, IndexIterator indicesEnd)
+            : AllocatedBinaryCscView(columnWiseLabelMatrix.getNumNonZeroElements(), indicesEnd - indicesBegin,
+                                     columnWiseLabelMatrix.numCols) {
+            // Create an array that stores for each label the number of examples that are associated with the label, as
+            // well as a sorted map that stores all label indices in increasing order of the number of associated
+            // examples...
+            Array<uint32> numExamplesPerLabel(Matrix::numCols);
+            typedef std::set<IndexedValue<uint32>, CompareIndexedValue> SortedSet;
+            SortedSet sortedLabelIndices;
+
+            for (uint32 i = 0; i < Matrix::numCols; i++) {
+                uint32 numExamples = columnWiseLabelMatrix.indices_cend(i) - columnWiseLabelMatrix.indices_cbegin(i);
+                numExamplesPerLabel[i] = numExamples;
+
+                if (numExamples > 0) {
+                    sortedLabelIndices.emplace(i, numExamples);
+                }
+            }
+
+            // Allocate arrays for storing the row and column indices of the labels to be processed by the sampling
+            // method in the CSC format...
+            uint32 numNonZeroElements = 0;
+            uint32 numCols = 0;
+
+            // Create a boolean array that stores whether individual examples remain to be processed (1) or not (0)...
+            uint32 numTotalExamples = columnWiseLabelMatrix.numRows;
+            BitVector mask(numTotalExamples, true);
+
+            for (uint32 i = 0; i < Matrix::numRows; i++) {
+                uint32 exampleIndex = indicesBegin[i];
+                mask.set(exampleIndex, true);
+            }
+
+            // As long as there are labels that have not been processed yet, proceed with the label that has the
+            // smallest number of associated examples...
+            std::unordered_map<uint32, uint32> affectedLabelIndices;
+            SortedSet::iterator firstEntry;
+
+            while ((firstEntry = sortedLabelIndices.begin()) != sortedLabelIndices.end()) {
+                const IndexedValue<uint32>& entry = *firstEntry;
+                uint32 labelIndex = entry.index;
+
+                // Remove the label from the sorted map...
+                sortedLabelIndices.erase(firstEntry);
+
+                // Add the number of non-zero labels that have been processed so far to the array of column indices...
+                BinarySparseMatrix::indptr[numCols] = numNonZeroElements;
+                numCols++;
+
+                // Iterate the examples that are associated with the current label, if no weight has been set yet...
+                CscLabelMatrix::index_const_iterator indexIterator = columnWiseLabelMatrix.indices_cbegin(labelIndex);
+                uint32 numExamples = columnWiseLabelMatrix.indices_cend(labelIndex) - indexIterator;
+
+                for (uint32 i = 0; i < numExamples; i++) {
+                    uint32 exampleIndex = indexIterator[i];
+
+                    // If the example has not been processed yet...
+                    if (mask[exampleIndex]) {
+                        mask.set(exampleIndex, false);
+
+                        // Add the example's index to the array of row indices...
+                        BinarySparseMatrix::indices[numNonZeroElements] = exampleIndex;
+                        numNonZeroElements++;
+
+                        // For each label that is associated with the example, decrement the number of associated
+                        // examples by one...
+                        updateNumExamplesPerLabel(rowWiseLabelMatrix, exampleIndex, numExamplesPerLabel,
+                                                  affectedLabelIndices);
+                    }
+                }
+
+                // Remove each label, for which the number of associated examples have been changed previously, from the
+                // sorted map and add it again to update the order...
+                for (auto it = affectedLabelIndices.cbegin(); it != affectedLabelIndices.cend(); it++) {
+                    uint32 key = it->first;
+
+                    if (key != labelIndex) {
+                        uint32 value = it->second;
+                        SortedSet::iterator it2 = sortedLabelIndices.find(IndexedValue<uint32>(key, value));
+                        uint32 numRemaining = numExamplesPerLabel[key];
+
+                        if (numRemaining > 0) {
+                            sortedLabelIndices.emplace_hint(it2, key, numRemaining);
+                        }
+
+                        sortedLabelIndices.erase(it2);
+                    }
+                }
+
+                affectedLabelIndices.clear();
+            }
+
+            // If there are examples that are not associated with any labels, we handle them separately..
+            uint32 numRemaining = Matrix::numRows - numNonZeroElements;
+
+            if (numRemaining > 0) {
+                // Adjust the size of the arrays that are used to store row and column indices...
+                BinarySparseMatrix::indices =
+                  reallocateMemory(BinarySparseMatrix::indices, numNonZeroElements + numRemaining);
+                BinarySparseMatrix::indptr = reallocateMemory(BinarySparseMatrix::indptr, numCols + 2);
+
+                // Add the number of non-zero labels that have been processed so far to the array of column indices...
+                BinarySparseMatrix::indptr[numCols] = numNonZeroElements;
+                numCols++;
+
+                // Iterate the weights of all examples to find those whose weight has not been set yet...
+                for (uint32 i = 0; i < numTotalExamples; i++) {
+                    if (mask[i]) {
+                        // Add the example's index to the array of row indices...
+                        BinarySparseMatrix::indices[numNonZeroElements] = i;
+                        numNonZeroElements++;
+                    }
+                }
+            } else {
+                // Adjust the size of the arrays that are used to store row and column indices...
+                BinarySparseMatrix::indices = reallocateMemory(BinarySparseMatrix::indices, numNonZeroElements);
+                BinarySparseMatrix::indptr = reallocateMemory(BinarySparseMatrix::indptr, numCols + 1);
+            }
+
+            BinarySparseMatrix::indptr[numCols] = numNonZeroElements;
+            Matrix::numCols = numCols;
+        }
+
+        /**
+         * @param other A reference to an object of type `StratificationMatrix` that should be moved
+         */
+        StratificationMatrix(StratificationMatrix<LabelMatrix, IndexIterator>&& other)
+            : AllocatedBinaryCscView(std::move(other)) {}
+};
+
 template<typename LabelMatrix, typename IndexIterator>
 LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(const LabelMatrix& labelMatrix,
                                                                              IndexIterator indicesBegin,
-                                                                             IndexIterator indicesEnd) {
-    // Convert the given label matrix into the CSC format...
-    const BinarySparseMatrixDecorator<CscLabelMatrix> cscLabelMatrix(
-      CscLabelMatrix(labelMatrix, indicesBegin, indicesEnd));
-    numRows_ = cscLabelMatrix.getNumRows();
-
-    // Create an array that stores for each label the number of examples that are associated with the label, as well as
-    // a sorted map that stores all label indices in increasing order of the number of associated examples...
-    uint32 numLabels = cscLabelMatrix.getNumCols();
-    Array<uint32> numExamplesPerLabel(numLabels);
-    typedef std::set<IndexedValue<uint32>, CompareIndexedValue> SortedSet;
-    SortedSet sortedLabelIndices;
-
-    for (uint32 i = 0; i < numLabels; i++) {
-        uint32 numExamples = cscLabelMatrix.indices_cend(i) - cscLabelMatrix.indices_cbegin(i);
-        numExamplesPerLabel[i] = numExamples;
-
-        if (numExamples > 0) {
-            sortedLabelIndices.emplace(i, numExamples);
-        }
-    }
-
-    // Allocate arrays for storing the row and column indices of the labels to be processed by the sampling method in
-    // the CSC format...
-    rowIndices_ = allocateMemory<uint32>(cscLabelMatrix.getNumNonZeroElements());
-    indptr_ = allocateMemory<uint32>(sortedLabelIndices.size() + 1);
-    uint32 numNonZeroElements = 0;
-    uint32 numCols = 0;
-
-    // Create a boolean array that stores whether individual examples remain to be processed (1) or not (0)...
-    uint32 numTotalExamples = labelMatrix.numRows;
-    BitVector mask(numTotalExamples, true);
-
-    for (uint32 i = 0; i < numRows_; i++) {
-        uint32 exampleIndex = indicesBegin[i];
-        mask.set(exampleIndex, true);
-    }
-
-    // As long as there are labels that have not been processed yet, proceed with the label that has the smallest number
-    // of associated examples...
-    std::unordered_map<uint32, uint32> affectedLabelIndices;
-    SortedSet::iterator firstEntry;
-
-    while ((firstEntry = sortedLabelIndices.begin()) != sortedLabelIndices.end()) {
-        const IndexedValue<uint32>& entry = *firstEntry;
-        uint32 labelIndex = entry.index;
-
-        // Remove the label from the sorted map...
-        sortedLabelIndices.erase(firstEntry);
-
-        // Add the number of non-zero labels that have been processed so far to the array of column indices...
-        indptr_[numCols] = numNonZeroElements;
-        numCols++;
-
-        // Iterate the examples that are associated with the current label, if no weight has been set yet...
-        BinarySparseMatrixDecorator<CscLabelMatrix>::index_const_iterator indexIterator =
-          cscLabelMatrix.indices_cbegin(labelIndex);
-        uint32 numExamples = cscLabelMatrix.indices_cend(labelIndex) - indexIterator;
-
-        for (uint32 i = 0; i < numExamples; i++) {
-            uint32 exampleIndex = indexIterator[i];
-
-            // If the example has not been processed yet...
-            if (mask[exampleIndex]) {
-                mask.set(exampleIndex, false);
-
-                // Add the example's index to the array of row indices...
-                rowIndices_[numNonZeroElements] = exampleIndex;
-                numNonZeroElements++;
-
-                // For each label that is associated with the example, decrement the number of associated examples by
-                // one...
-                updateNumExamplesPerLabel(labelMatrix, exampleIndex, numExamplesPerLabel, affectedLabelIndices);
-            }
-        }
-
-        // Remove each label, for which the number of associated examples have been changed previously, from the sorted
-        // map and add it again to update the order...
-        for (auto it = affectedLabelIndices.cbegin(); it != affectedLabelIndices.cend(); it++) {
-            uint32 key = it->first;
-
-            if (key != labelIndex) {
-                uint32 value = it->second;
-                SortedSet::iterator it2 = sortedLabelIndices.find(IndexedValue<uint32>(key, value));
-                uint32 numRemaining = numExamplesPerLabel[key];
-
-                if (numRemaining > 0) {
-                    sortedLabelIndices.emplace_hint(it2, key, numRemaining);
-                }
-
-                sortedLabelIndices.erase(it2);
-            }
-        }
-
-        affectedLabelIndices.clear();
-    }
-
-    // If there are examples that are not associated with any labels, we handle them separately..
-    uint32 numRemaining = numRows_ - numNonZeroElements;
-
-    if (numRemaining > 0) {
-        // Adjust the size of the arrays that are used to store row and column indices...
-        rowIndices_ = reallocateMemory(rowIndices_, numNonZeroElements + numRemaining);
-        indptr_ = reallocateMemory(indptr_, numCols + 2);
-
-        // Add the number of non-zero labels that have been processed so far to the array of column indices...
-        indptr_[numCols] = numNonZeroElements;
-        numCols++;
-
-        // Iterate the weights of all examples to find those whose weight has not been set yet...
-        for (uint32 i = 0; i < numTotalExamples; i++) {
-            if (mask[i]) {
-                // Add the example's index to the array of row indices...
-                rowIndices_[numNonZeroElements] = i;
-                numNonZeroElements++;
-            }
-        }
-    } else {
-        // Adjust the size of the arrays that are used to store row and column indices...
-        rowIndices_ = reallocateMemory(rowIndices_, numNonZeroElements);
-        indptr_ = reallocateMemory(indptr_, numCols + 1);
-    }
-
-    indptr_[numCols] = numNonZeroElements;
-    numCols_ = numCols;
-}
-
-template<typename LabelMatrix, typename IndexIterator>
-LabelWiseStratification<LabelMatrix, IndexIterator>::~LabelWiseStratification() {
-    freeMemory(rowIndices_);
-    freeMemory(indptr_);
-}
+                                                                             IndexIterator indicesEnd)
+    : stratificationMatrix_(StratificationMatrix<LabelMatrix, IndexIterator>(
+      labelMatrix, CscLabelMatrix(labelMatrix, indicesBegin, indicesEnd), indicesBegin, indicesEnd)) {}
 
 template<typename LabelMatrix, typename IndexIterator>
 void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWeightVector& weightVector,
-                                                                        float32 sampleSize, RNG& rng) const {
-    uint32 numTotalSamples = (uint32) std::round(sampleSize * numRows_);
-    uint32 numTotalOutOfSamples = numRows_ - numTotalSamples;
+                                                                        float32 sampleSize, RNG& rng) {
+    uint32 numRows = stratificationMatrix_.getNumRows();
+    uint32 numCols = stratificationMatrix_.getNumCols();
+    uint32 numTotalSamples = (uint32) std::round(sampleSize * numRows);
+    uint32 numTotalOutOfSamples = numRows - numTotalSamples;
     uint32 numNonZeroWeights = 0;
     uint32 numZeroWeights = 0;
 
     // For each column, assign a weight to the corresponding examples...
-    for (uint32 i = 0; i < numCols_; i++) {
-        uint32 start = indptr_[i];
-        uint32* exampleIndices = &rowIndices_[start];
-        uint32 end = indptr_[i + 1];
-        uint32 numExamples = end - start;
+    for (uint32 i = 0; i < numCols; i++) {
+        auto exampleIndices = stratificationMatrix_.indices_begin(i);
+        uint32 numExamples = stratificationMatrix_.indices_end(i) - exampleIndices;
         float32 numSamplesDecimal = sampleSize * numExamples;
         uint32 numDesiredSamples = numTotalSamples - numNonZeroWeights;
         uint32 numDesiredOutOfSamples = numTotalOutOfSamples - numZeroWeights;
@@ -395,17 +416,16 @@ void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWeigh
 }
 
 template<typename LabelMatrix, typename IndexIterator>
-void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleBiPartition(BiPartition& partition, RNG& rng) const {
+void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleBiPartition(BiPartition& partition, RNG& rng) {
+    uint32 numCols = stratificationMatrix_.getNumCols();
     BiPartition::iterator firstIterator = partition.first_begin();
     BiPartition::iterator secondIterator = partition.second_begin();
     uint32 numFirst = partition.getNumFirst();
     uint32 numSecond = partition.getNumSecond();
 
-    for (uint32 i = 0; i < numCols_; i++) {
-        uint32 start = indptr_[i];
-        uint32* exampleIndices = &rowIndices_[start];
-        uint32 end = indptr_[i + 1];
-        uint32 numExamples = end - start;
+    for (uint32 i = 0; i < numCols; i++) {
+        auto exampleIndices = stratificationMatrix_.indices_begin(i);
+        uint32 numExamples = stratificationMatrix_.indices_end(i) - exampleIndices;
 
         float32 sampleSize = (float32) numFirst / (float32) (numFirst + numSecond);
         float32 numSamplesDecimal = sampleSize * numExamples;

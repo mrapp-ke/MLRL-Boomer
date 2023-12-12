@@ -22,7 +22,7 @@ class LabelWiseStratifiedSampling final : public IInstanceSampling {
 
         BitWeightVector weightVector_;
 
-        const LabelWiseStratification<LabelMatrix, IndexIterator> stratification_;
+        LabelWiseStratification<LabelMatrix, IndexIterator> stratification_;
 
     public:
 
