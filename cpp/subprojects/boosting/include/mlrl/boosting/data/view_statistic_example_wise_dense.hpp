@@ -4,6 +4,8 @@
 #pragma once
 
 #include "mlrl/boosting/iterator/diagonal_iterator.hpp"
+#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_composite.hpp"
 
 namespace boosting {
 
@@ -11,74 +13,44 @@ namespace boosting {
      * Implements row-wise read and write access to the gradients and Hessians that have been calculated using a
      * non-decomposable loss function and are stored in pre-allocated C-contiguous arrays.
      */
-    class DenseExampleWiseStatisticView {
-        protected:
-
-            /**
-             * The number of rows in the view.
-             */
-            const uint32 numRows_;
-
-            /**
-             * The number of gradients per row.
-             */
-            const uint32 numGradients_;
-
-            /**
-             * The number of Hessians per row.
-             */
-            const uint32 numHessians_;
-
-            /**
-             * A pointer to an array that stores the gradients.
-             */
-            float64* gradients_;
-
-            /**
-             * A pointer to an array that stores the Hessians.
-             */
-            float64* hessians_;
-
+    class DenseExampleWiseStatisticView : public CompositeMatrix<CContiguousView<float64>, CContiguousView<float64>> {
         public:
 
             /**
+             * @param firstView     A reference to an object of type `CContiguousView` that stores the gradients
+             * @param secondView    A reference to an object of type `CContiguousView` that stores the Hessians
              * @param numRows       The number of rows in the view
-             * @param numGradients  The number of gradients per row
-             * @param numHessians   The number of Hessians per row
-             * @param gradients     A pointer to an array of type `float64` that stores the gradients, the view provides
-             *                      access to
-             * @param hessians      A pointer to an array of type `float64` that stores the Hessians, the view provides
-             *                      access to
+             * @param numCols       The number of columns in the view
              */
-            DenseExampleWiseStatisticView(uint32 numRows, uint32 numGradients, uint32 numHessians, float64* gradients,
-                                          float64* hessians);
+            DenseExampleWiseStatisticView(CContiguousView<float64>&& firstView, CContiguousView<float64>&& secondView,
+                                          uint32 numRows, uint32 numCols);
 
-            virtual ~DenseExampleWiseStatisticView() {}
+            virtual ~DenseExampleWiseStatisticView() override {}
 
             /**
              * An iterator that provides read-only access to the gradients.
              */
-            typedef const float64* gradient_const_iterator;
+            typedef CContiguousView<float64>::value_const_iterator gradient_const_iterator;
 
             /**
              * An iterator that provides access to the gradients and allows to modify them.
              */
-            typedef float64* gradient_iterator;
+            typedef CContiguousView<float64>::value_iterator gradient_iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians.
              */
-            typedef const float64* hessian_const_iterator;
+            typedef CContiguousView<float64>::value_const_iterator hessian_const_iterator;
+
+            /**
+             * An iterator that provides access to the Hessians and allows to modify them.
+             */
+            typedef CContiguousView<float64>::value_iterator hessian_iterator;
 
             /**
              * An iterator that provides read-only access to the Hessians that correspond to the diagonal of the matrix.
              */
             typedef DiagonalConstIterator<float64> hessian_diagonal_const_iterator;
-
-            /**
-             * An iterator that provides access to the Hessians and allows to modify them.
-             */
-            typedef float64* hessian_iterator;
 
             /**
              * Returns a `gradient_const_iterator` to the beginning of the gradients at a specific row.
@@ -161,25 +133,6 @@ namespace boosting {
              * @return      A `hessian_iterator` to the end of the given row
              */
             hessian_iterator hessians_end(uint32 row);
-
-            /**
-             * Sets all gradients and Hessians in the matrix to zero.
-             */
-            void clear();
-
-            /**
-             * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
-             * to be added are multiplied by a specific weight.
-             *
-             * @param row               The row
-             * @param gradientsBegin    A `gradient_const_iterator` to the beginning of the gradients in the vector
-             * @param gradientsEnd      A `gradient_const_iterator` to the end of the gradients in the vector
-             * @param hessiansBegin     A `hessian_const_iterator` to the beginning of the Hessians in the vector
-             * @param hessiansEnd       A `hessian_const_iterator` to the end of the Hessians in the vector
-             * @param weight            The weight, the gradients and Hessians should be multiplied by
-             */
-            void addToRow(uint32 row, gradient_const_iterator gradientsBegin, gradient_const_iterator gradientsEnd,
-                          hessian_const_iterator hessiansBegin, hessian_const_iterator hessiansEnd, float64 weight);
 
             /**
              * Returns the number of rows in the view.

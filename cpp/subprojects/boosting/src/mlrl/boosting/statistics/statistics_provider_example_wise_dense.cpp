@@ -28,13 +28,26 @@ namespace boosting {
              * @param numGradients  The number of gradients per row
              */
             DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numGradients)
-                : DenseExampleWiseStatisticView(numRows, numGradients, triangularNumber(numGradients),
-                                                allocateMemory<float64>(numRows * numGradients),
-                                                allocateMemory<float64>(numRows * triangularNumber(numGradients))) {}
+                : DenseExampleWiseStatisticView(
+                  AllocatedCContiguousView<float64>(numRows, numGradients),
+                  AllocatedCContiguousView<float64>(numRows, triangularNumber(numGradients)), numRows, numGradients) {}
 
-            ~DenseExampleWiseStatisticMatrix() {
-                freeMemory(gradients_);
-                freeMemory(hessians_);
+            /**
+             * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
+             * to be added are multiplied by a specific weight.
+             *
+             * @param row               The row
+             * @param gradientsBegin    An iterator to the beginning of the gradients in the vector
+             * @param gradientsEnd      An iterator to the end of the gradients in the vector
+             * @param hessiansBegin     An iterator to the beginning of the Hessians in the vector
+             * @param hessiansEnd       An iterator to the end of the Hessians in the vector
+             * @param weight            The weight, the gradients and Hessians should be multiplied by
+             */
+            void addToRow(uint32 row, View<float64>::const_iterator gradientsBegin,
+                          View<float64>::const_iterator gradientsEnd, View<float64>::const_iterator hessiansBegin,
+                          View<float64>::const_iterator hessiansEnd, float64 weight) {
+                addToView(this->firstView.values_begin(row), gradientsBegin, this->firstView.numCols, weight);
+                addToView(this->secondView.values_begin(row), hessiansBegin, this->secondView.numCols, weight);
             }
     };
 

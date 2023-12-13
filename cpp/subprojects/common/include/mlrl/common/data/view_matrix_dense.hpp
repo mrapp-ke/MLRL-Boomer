@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/view_matrix.hpp"
+#include "mlrl/common/util/view_functions.hpp"
 
 /**
  * A two-dimensional view that provides access to values stored in a dense matrix of a specific size.
