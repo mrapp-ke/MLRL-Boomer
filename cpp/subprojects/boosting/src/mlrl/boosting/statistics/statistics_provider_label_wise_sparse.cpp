@@ -5,9 +5,9 @@
 
 #include "mlrl/boosting/statistics/statistics_provider_label_wise_sparse.hpp"
 
-#include "mlrl/boosting/data/histogram_view_label_wise_sparse.hpp"
 #include "mlrl/boosting/data/matrix_sparse_set_numeric.hpp"
 #include "mlrl/boosting/data/statistic_vector_label_wise_sparse.hpp"
+#include "mlrl/boosting/data/view_histogram_label_wise_sparse.hpp"
 #include "mlrl/common/util/openmp.hpp"
 #include "statistics_label_wise_common.hpp"
 #include "statistics_provider_label_wise.hpp"

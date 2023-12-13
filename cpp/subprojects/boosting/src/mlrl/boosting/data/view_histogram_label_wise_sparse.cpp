@@ -1,4 +1,4 @@
-#include "mlrl/boosting/data/histogram_view_label_wise_sparse.hpp"
+#include "mlrl/boosting/data/view_histogram_label_wise_sparse.hpp"
 
 namespace boosting {
 
