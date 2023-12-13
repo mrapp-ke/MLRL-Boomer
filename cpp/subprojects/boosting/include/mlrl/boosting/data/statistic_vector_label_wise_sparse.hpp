@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/histogram_view_label_wise_sparse.hpp"
+#include "mlrl/boosting/data/view_histogram_label_wise_sparse.hpp"
 #include "mlrl/common/data/tuple.hpp"
 #include "mlrl/common/data/view_matrix_sparse_set.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
