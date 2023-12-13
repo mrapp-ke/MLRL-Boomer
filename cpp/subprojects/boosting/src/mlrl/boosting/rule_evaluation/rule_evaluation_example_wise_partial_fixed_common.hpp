@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/statistic_vector_example_wise_dense.hpp"
+#include "mlrl/boosting/data/vector_statistic_example_wise_dense.hpp"
 #include "rule_evaluation_label_wise_partial_fixed_common.hpp"
 
 namespace boosting {
