@@ -7,7 +7,7 @@
 
 #include "mlrl/boosting/data/matrix_c_contiguous_numeric.hpp"
 #include "mlrl/boosting/data/statistic_vector_example_wise_dense.hpp"
-#include "mlrl/boosting/data/statistic_view_example_wise_dense.hpp"
+#include "mlrl/boosting/data/view_statistic_example_wise_dense.hpp"
 #include "mlrl/boosting/util/math.hpp"
 #include "mlrl/common/util/openmp.hpp"
 #include "statistics_example_wise_common.hpp"
