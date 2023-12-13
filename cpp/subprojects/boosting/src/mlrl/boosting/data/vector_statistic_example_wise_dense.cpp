@@ -1,4 +1,4 @@
-#include "mlrl/boosting/data/statistic_vector_example_wise_dense.hpp"
+#include "mlrl/boosting/data/vector_statistic_example_wise_dense.hpp"
 
 #include "mlrl/boosting/util/math.hpp"
 
