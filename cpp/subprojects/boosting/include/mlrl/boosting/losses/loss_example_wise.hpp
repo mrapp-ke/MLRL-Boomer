@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/statistic_view_example_wise_dense.hpp"
+#include "mlrl/boosting/data/view_statistic_example_wise_dense.hpp"
 #include "mlrl/boosting/losses/loss_label_wise.hpp"
 
 namespace boosting {
