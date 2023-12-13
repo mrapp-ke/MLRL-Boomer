@@ -1,79 +1,68 @@
 #include "mlrl/boosting/data/view_statistic_example_wise_dense.hpp"
 
-#include "mlrl/common/util/view_functions.hpp"
+#include "mlrl/boosting/util/math.hpp"
 
 namespace boosting {
 
-    DenseExampleWiseStatisticView::DenseExampleWiseStatisticView(uint32 numRows, uint32 numGradients,
-                                                                 uint32 numHessians, float64* gradients,
-                                                                 float64* hessians)
-        : numRows_(numRows), numGradients_(numGradients), numHessians_(numHessians), gradients_(gradients),
-          hessians_(hessians) {}
+    DenseExampleWiseStatisticView::DenseExampleWiseStatisticView(uint32 numRows, uint32 numCols)
+        : CompositeMatrix<AllocatedCContiguousView<float64>, AllocatedCContiguousView<float64>>(
+          AllocatedCContiguousView<float64>(numRows, numCols),
+          AllocatedCContiguousView<float64>(numRows, triangularNumber(numCols)), numRows, numCols) {}
+
+    DenseExampleWiseStatisticView::DenseExampleWiseStatisticView(DenseExampleWiseStatisticView&& other)
+        : CompositeMatrix<AllocatedCContiguousView<float64>, AllocatedCContiguousView<float64>>(std::move(other)) {}
 
     DenseExampleWiseStatisticView::gradient_const_iterator DenseExampleWiseStatisticView::gradients_cbegin(
       uint32 row) const {
-        return &gradients_[row * numGradients_];
+        return CompositeMatrix::firstView.values_cbegin(row);
     }
 
     DenseExampleWiseStatisticView::gradient_const_iterator DenseExampleWiseStatisticView::gradients_cend(
       uint32 row) const {
-        return &gradients_[(row + 1) * numGradients_];
+        return CompositeMatrix::firstView.values_cend(row);
     }
 
     DenseExampleWiseStatisticView::gradient_iterator DenseExampleWiseStatisticView::gradients_begin(uint32 row) {
-        return &gradients_[row * numGradients_];
+        return CompositeMatrix::firstView.values_begin(row);
     }
 
     DenseExampleWiseStatisticView::gradient_iterator DenseExampleWiseStatisticView::gradients_end(uint32 row) {
-        return &gradients_[(row + 1) * numGradients_];
+        return CompositeMatrix::firstView.values_end(row);
     }
 
     DenseExampleWiseStatisticView::hessian_const_iterator DenseExampleWiseStatisticView::hessians_cbegin(
       uint32 row) const {
-        return &hessians_[row * numHessians_];
+        return CompositeMatrix::secondView.values_cbegin(row);
     }
 
     DenseExampleWiseStatisticView::hessian_const_iterator DenseExampleWiseStatisticView::hessians_cend(
       uint32 row) const {
-        return &hessians_[(row + 1) * numHessians_];
+        return CompositeMatrix::secondView.values_cend(row);
+    }
+
+    DenseExampleWiseStatisticView::hessian_iterator DenseExampleWiseStatisticView::hessians_begin(uint32 row) {
+        return CompositeMatrix::secondView.values_begin(row);
+    }
+
+    DenseExampleWiseStatisticView::hessian_iterator DenseExampleWiseStatisticView::hessians_end(uint32 row) {
+        return CompositeMatrix::secondView.values_end(row);
     }
 
     DenseExampleWiseStatisticView::hessian_diagonal_const_iterator
       DenseExampleWiseStatisticView::hessians_diagonal_cbegin(uint32 row) const {
-        return DiagonalConstIterator<float64>(&hessians_[row * numHessians_], 0);
+        return DiagonalConstIterator<float64>(CompositeMatrix::secondView.values_cbegin(row), 0);
     }
 
     DenseExampleWiseStatisticView::hessian_diagonal_const_iterator
       DenseExampleWiseStatisticView::hessians_diagonal_cend(uint32 row) const {
-        return DiagonalConstIterator<float64>(&hessians_[row * numHessians_], numGradients_);
-    }
-
-    DenseExampleWiseStatisticView::hessian_iterator DenseExampleWiseStatisticView::hessians_begin(uint32 row) {
-        return &hessians_[row * numHessians_];
-    }
-
-    DenseExampleWiseStatisticView::hessian_iterator DenseExampleWiseStatisticView::hessians_end(uint32 row) {
-        return &hessians_[(row + 1) * numHessians_];
-    }
-
-    void DenseExampleWiseStatisticView::clear() {
-        setViewToZeros(gradients_, numRows_ * numGradients_);
-        setViewToZeros(hessians_, numRows_ * numHessians_);
-    }
-
-    void DenseExampleWiseStatisticView::addToRow(uint32 row, gradient_const_iterator gradientsBegin,
-                                                 gradient_const_iterator gradientsEnd,
-                                                 hessian_const_iterator hessiansBegin,
-                                                 hessian_const_iterator hessiansEnd, float64 weight) {
-        addToView(&gradients_[row * numGradients_], gradientsBegin, numGradients_, weight);
-        addToView(&hessians_[row * numHessians_], hessiansBegin, numHessians_, weight);
+        return DiagonalConstIterator<float64>(CompositeMatrix::secondView.values_cbegin(row), Matrix::numCols);
     }
 
     uint32 DenseExampleWiseStatisticView::getNumRows() const {
-        return numRows_;
+        return Matrix::numRows;
     }
 
     uint32 DenseExampleWiseStatisticView::getNumCols() const {
-        return numGradients_;
+        return Matrix::numCols;
     }
 }

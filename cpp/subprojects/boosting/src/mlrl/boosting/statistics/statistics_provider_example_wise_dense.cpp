@@ -8,7 +8,6 @@
 #include "mlrl/boosting/data/matrix_c_contiguous_numeric.hpp"
 #include "mlrl/boosting/data/vector_statistic_example_wise_dense.hpp"
 #include "mlrl/boosting/data/view_statistic_example_wise_dense.hpp"
-#include "mlrl/boosting/util/math.hpp"
 #include "mlrl/common/util/openmp.hpp"
 #include "statistics_example_wise_common.hpp"
 #include "statistics_label_wise_dense.hpp"
@@ -24,17 +23,28 @@ namespace boosting {
         public:
 
             /**
-             * @param numRows       The number of rows in the matrix
-             * @param numGradients  The number of gradients per row
+             * @param numRows The number of rows in the matrix
+             * @param numCols The number of columns in the matrix
              */
-            DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numGradients)
-                : DenseExampleWiseStatisticView(numRows, numGradients, triangularNumber(numGradients),
-                                                allocateMemory<float64>(numRows * numGradients),
-                                                allocateMemory<float64>(numRows * triangularNumber(numGradients))) {}
+            DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numCols)
+                : DenseExampleWiseStatisticView(numRows, numCols) {}
 
-            ~DenseExampleWiseStatisticMatrix() {
-                freeMemory(gradients_);
-                freeMemory(hessians_);
+            /**
+             * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
+             * to be added are multiplied by a specific weight.
+             *
+             * @param row               The row
+             * @param gradientsBegin    An iterator to the beginning of the gradients in the vector
+             * @param gradientsEnd      An iterator to the end of the gradients in the vector
+             * @param hessiansBegin     An iterator to the beginning of the Hessians in the vector
+             * @param hessiansEnd       An iterator to the end of the Hessians in the vector
+             * @param weight            The weight, the gradients and Hessians should be multiplied by
+             */
+            void addToRow(uint32 row, View<float64>::const_iterator gradientsBegin,
+                          View<float64>::const_iterator gradientsEnd, View<float64>::const_iterator hessiansBegin,
+                          View<float64>::const_iterator hessiansEnd, float64 weight) {
+                addToView(this->firstView.values_begin(row), gradientsBegin, this->firstView.numCols, weight);
+                addToView(this->secondView.values_begin(row), hessiansBegin, this->secondView.numCols, weight);
             }
     };
 
