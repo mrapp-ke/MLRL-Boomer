@@ -1,4 +1,4 @@
-#include "mlrl/boosting/data/statistic_vector_label_wise_dense.hpp"
+#include "mlrl/boosting/data/vector_statistic_label_wise_dense.hpp"
 
 namespace boosting {
 
