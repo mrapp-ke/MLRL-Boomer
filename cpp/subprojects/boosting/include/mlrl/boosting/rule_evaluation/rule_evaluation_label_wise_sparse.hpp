@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/statistic_vector_label_wise_sparse.hpp"
+#include "mlrl/boosting/data/vector_statistic_label_wise_sparse.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
 
 namespace boosting {
