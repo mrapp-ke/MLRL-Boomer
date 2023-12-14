@@ -4,7 +4,6 @@
 #pragma once
 
 #include "mlrl/common/stopping/stopping_criterion.hpp"
-#include "mlrl/common/util/dll_exports.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure a stopping criterion that ensures that a certain time

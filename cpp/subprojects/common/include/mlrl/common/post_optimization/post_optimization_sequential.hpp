@@ -4,7 +4,6 @@
 #pragma once
 
 #include "mlrl/common/post_optimization/post_optimization.hpp"
-#include "mlrl/common/util/dll_exports.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure a method that optimizes each rule in a model by

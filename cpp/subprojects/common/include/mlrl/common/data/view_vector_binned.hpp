@@ -11,7 +11,7 @@
  * @tparam Vector The type of the vector
  */
 template<typename Vector>
-class BinnedVectorDecorator : public Vector {
+class MLRLCOMMON_API BinnedVectorDecorator : public Vector {
     public:
 
         /**

@@ -5,7 +5,6 @@
 
 #include "mlrl/common/stopping/aggregation_function.hpp"
 #include "mlrl/common/stopping/global_pruning.hpp"
-#include "mlrl/common/util/dll_exports.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure a stopping criterion that stops the induction of rules

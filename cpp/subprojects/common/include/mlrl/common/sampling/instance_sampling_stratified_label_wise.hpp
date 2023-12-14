@@ -5,7 +5,6 @@
 #pragma once
 
 #include "mlrl/common/sampling/instance_sampling.hpp"
-#include "mlrl/common/util/dll_exports.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure a method for selecting a subset of the available
