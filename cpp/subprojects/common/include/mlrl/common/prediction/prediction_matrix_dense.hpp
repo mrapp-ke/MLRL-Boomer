@@ -5,7 +5,6 @@
 
 #include "mlrl/common/data/matrix_dense.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
-#include "mlrl/common/util/dll_exports.hpp"
 
 /**
  * A dense matrix that provides read-only access to predictions that are stored in a C-contiguous array.
