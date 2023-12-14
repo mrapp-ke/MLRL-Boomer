@@ -26,8 +26,8 @@ namespace boosting {
         public:
 
             /**
-             * @param ptr   A pointer to a C-contiguous array of type `float64` that stores the elements of the matrix
-             * @param index The index to start at
+             * @param iterator  An iterator to the beginning of the matrix
+             * @param index     The index to start at
              */
             DiagonalConstIterator(typename View<T>::const_iterator iterator, uint32 index);
 

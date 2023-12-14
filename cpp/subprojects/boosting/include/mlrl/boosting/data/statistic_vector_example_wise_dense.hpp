@@ -202,8 +202,8 @@ namespace boosting {
              * @param gradientsBegin    An iterator to the beginning of the gradients
              * @param gradientsEnd      An iterator to the end of the gradients
              * @param hessiansBegin     An iterator to the beginning of the Hessians
-             * @param hessiansEnd       An iterator` to the end of the Hessians
-             * @param indices           A reference to a `CompleteIndexVector' that provides access to the indices
+             * @param hessiansEnd       An iterator to the end of the Hessians
+             * @param indices           A reference to a `CompleteIndexVector` that provides access to the indices
              */
             void addToSubset(View<float64>::const_iterator gradientsBegin, View<float64>::const_iterator gradientsEnd,
                              View<float64>::const_iterator hessiansBegin, View<float64>::const_iterator hessiansEnd,
