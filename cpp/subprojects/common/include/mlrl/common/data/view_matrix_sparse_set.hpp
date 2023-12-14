@@ -22,6 +22,23 @@
  */
 template<typename T>
 class MLRLCOMMON_API SparseSetView : public Matrix {
+    public:
+
+        /**
+         * The type of the values, the view provides access to.
+         */
+        typedef IndexedValue<T> value_type;
+
+        /**
+         * An iterator that provides read-only access to the values in the view.
+         */
+        typedef typename ListOfLists<IndexedValue<T>>::value_const_iterator value_const_iterator;
+
+        /**
+         * An iterator that provides access to the values in the view and allows to modify them.
+         */
+        typedef typename ListOfLists<IndexedValue<T>>::value_iterator value_iterator;
+
     private:
 
         /**
@@ -276,21 +293,6 @@ class MLRLCOMMON_API SparseSetView : public Matrix {
               indexView(std::move(other.indexView)) {}
 
         virtual ~SparseSetView() override {}
-
-        /**
-         * The type of the values, the view provides access to.
-         */
-        typedef IndexedValue<T> value_type;
-
-        /**
-         * An iterator that provides read-only access to the values in the view.
-         */
-        typedef typename ListOfLists<IndexedValue<T>>::value_const_iterator value_const_iterator;
-
-        /**
-         * An iterator that provides access to the values in the view and allows to modify them.
-         */
-        typedef typename ListOfLists<IndexedValue<T>>::value_iterator value_iterator;
 
         /**
          * Provides read-only access to an individual row in the view.
