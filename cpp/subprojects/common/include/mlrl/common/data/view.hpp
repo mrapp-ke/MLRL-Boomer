@@ -7,6 +7,7 @@
 #include "mlrl/common/util/memory.hpp"
 
 #include <initializer_list>
+#include <stdexcept>
 #include <utility>
 
 /**
@@ -132,6 +133,13 @@ class MLRLCOMMON_API Allocator : public View {
             : View(allocateMemory<typename View::value_type>(numElements, init), {numElements}) {}
 
         /**
+         * @param other A reference to an object of type `Allocator` that should be copied
+         */
+        Allocator(const Allocator<View>& other) : View(other) {
+            throw std::runtime_error("Objects of type Allocator cannot be copied");
+        }
+
+        /**
          * @param other A reference to an object of type `Allocator` that should be moved
          */
         Allocator(Allocator<View>&& other) : View(std::move(other)) {
@@ -171,6 +179,14 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View> {
          */
         ResizableAllocator(uint32 numElements, bool init = false)
             : Allocator<View>(numElements, init), maxCapacity(numElements) {}
+
+        /**
+         * @param other A reference to an object of type `ResizableAllocator` that should be copied
+         */
+        ResizableAllocator(const ResizableAllocator<View>& other)
+            : Allocator<View>(other), maxCapacity(other.maxCapacity) {
+            throw std::runtime_error("Objects of type ResizableAllocator cannot be copied");
+        }
 
         /**
          * @param other A reference to an object of type `ResizableAllocator` that should be moved
