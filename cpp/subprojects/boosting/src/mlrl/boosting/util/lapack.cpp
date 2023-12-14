@@ -24,8 +24,8 @@ namespace boosting {
 
         if (info != 0) {
             throw std::runtime_error(
-              std::string("DSYSV terminated with non-zero info code when querying the optimal lwork parameter: "
-                          + std::to_string(info)));
+              "DSYSV terminated with non-zero info code when querying the optimal lwork parameter: "
+              + std::to_string(info));
         }
 
         return (int) worksize;
@@ -43,7 +43,7 @@ namespace boosting {
         dsysvFunction_(uplo, &n, &nrhs, tmpArray1, &n, tmpArray2, output, &n, tmpArray3, &lwork, &info);
 
         if (info != 0) {
-            throw std::runtime_error(std::string("DSYSV terminated with non-zero info code: " + std::to_string(info)));
+            throw std::runtime_error("DSYSV terminated with non-zero info code: " + std::to_string(info));
         }
     }
 
