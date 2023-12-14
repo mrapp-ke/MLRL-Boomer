@@ -103,7 +103,7 @@ namespace boosting {
              *                      binning method
              * @param criteria      An iterator to the label-wise criteria that should be used to assign individual
              *                      labels to bins
-             * @param numElements   The number of label-wise criteria
+             * @param numCriteria   The number of label-wise criteria
              * @param callback      A callback that is invoked when a label is assigned to a bin
              * @param zeroCallback  A callback that is invoked when a label for which the criterion is zero is
              *                      encountered
