@@ -58,7 +58,8 @@ def __pip_install(requirement: str, dry_run: bool = False):
         stdout = str(out.stdout).strip()
         stdout_lines = stdout.split('\n')
 
-        if not reduce(lambda aggr, line: aggr | line.startswith('Requirement already satisfied'), stdout_lines, True):
+        if not reduce(lambda aggr, line: aggr | line.startswith('Requirement already satisfied: ' + requirement),
+                      stdout_lines, False):
             if dry_run:
                 __run_pip_command(requirement, print_args=True)
             else:
@@ -79,7 +80,7 @@ def __find_requirements(requirements_file: str, *dependencies: str) -> List[str]
                 raise RuntimeError('Dependency "' + dependency + '" not found in requirements file "'
                                    + requirements_file + '"')
 
-            found_requirements.append(dependency)
+            found_requirements.append(requirements[dependency])
 
         return found_requirements
 
