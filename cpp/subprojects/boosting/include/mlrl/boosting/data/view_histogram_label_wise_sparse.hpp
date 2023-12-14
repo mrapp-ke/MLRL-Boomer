@@ -21,11 +21,11 @@ namespace boosting {
         public:
 
             /**
-             * @param firstView A reference to an object of type `CContiguousView` that stores the gradients and
-             *                  Hessians of each bin
-             * @param weights   A refereence to an object of type `Vector` that stores the weight of each bin
-             * @param numRows   The number of rows in the view
-             * @param numCols   The number of columns in the view
+             * @param firstView     A reference to an object of type `CContiguousView` that stores the gradients and
+             *                      Hessians of each bin
+             * @param secondView    A reference to an object of type `Vector` that stores the weight of each bin
+             * @param numRows       The number of rows in the view
+             * @param numCols       The number of columns in the view
              */
             SparseLabelWiseHistogramView(CContiguousView<Triple<float64>>&& firstView, Vector<float64>&& secondView,
                                          uint32 numRows, uint32 numCols);
