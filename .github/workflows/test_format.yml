@@ -48,33 +48,12 @@ jobs:
               - '.isort.cfg'
               - '.pylintrc'
               - '.style.yapf'
-            any:
-              - *cpp
-              - *python
-      - name: Look up build files in cache
-        uses: actions/cache/restore@v3
-        if: steps.filter.outputs.any == 'true'
-        with:
-          path: |
-            venv/
-            scons/build/
-          key: test-format-cache-tmp-files-${{ github.run_id }}
-          restore-keys: |
-            test-format-cache-tmp-files
       - name: Check C++ code style
         if: steps.filter.outputs.cpp == 'true'
         run: ./build test_format_cpp
       - name: Check Python code style
         if: steps.filter.outputs.python == 'true'
         run: ./build test_format_python
-      - name: Save build files to cache
-        uses: actions/cache/save@v3
-        if: (success() || failure()) && steps.filter.outputs.any == 'true'
-        with:
-          path: |
-            venv/
-            scons/build/
-          key: test-format-cache-tmp-files-${{ github.run_id }}
       - name: Save Git repository to cache
         uses: actions/cache/save@v3
         if: success() || failure()

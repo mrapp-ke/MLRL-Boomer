@@ -91,23 +91,6 @@ jobs:
           sudo apt install -y opencl-headers ocl-icd-opencl-dev
       - name: Install GoogleTest
         run: sudo apt install -y googletest
-      - name: Look up build files in cache
-        uses: actions/cache/restore@v3
-        with:
-          path: |
-            venv/
-            scons/build/
-            python/**/cython/*.so*
-            python/**/dist/
-            python/**/*egg-info/
-            doc/development/api/python/index.rst
-            doc/development/api/python/**/
-            doc/development/api/cpp/index.rst
-            doc/development/api/cpp/**/
-            doc/_build/
-          key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-test-build-cache-tmp-files
       - name: Prepare ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
@@ -133,22 +116,6 @@ jobs:
       - name: Generate Documentation
         if: ${{ needs.changes.outputs.doc == 'true' }}
         run: ./build doc
-      - name: Save build files to cache
-        uses: actions/cache/save@v3
-        if: success() || failure()
-        with:
-          path: |
-            venv/
-            scons/build/
-            python/**/cython/*.so*
-            python/**/dist/
-            python/**/*egg-info/
-            doc/development/api/python/index.rst
-            doc/development/api/python/**/
-            doc/development/api/cpp/index.rst
-            doc/development/api/cpp/**/
-            doc/_build/
-          key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
   macos_build:
     needs: changes
     if: ${{ needs.changes.outputs.cpp == 'true' }}
@@ -170,29 +137,12 @@ jobs:
           brew link libomp --force
       - name: Install OpenCL
         run: brew install opencl-clhpp-headers
-      - name: Look up build files in cache
-        uses: actions/cache/restore@v3
-        with:
-          path: |
-            venv/
-            scons/build/
-          key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-test-build-cache-tmp-files
       - name: Prepare ccache
         uses: hendrikmuhs/ccache-action@v1
         with:
           key: ${{ runner.os }}-test-build-ccache
       - name: Compile via Clang
         run: TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
-      - name: Save build files to cache
-        uses: actions/cache/save@v3
-        if: success() || failure()
-        with:
-          path: |
-            venv/
-            scons/build/
-          key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
   windows_build:
     needs: changes
     if: ${{ needs.changes.outputs.cpp == 'true' }}
@@ -223,15 +173,6 @@ jobs:
           pkgs: opencl
           triplet: x64-windows
           token: ${{ github.token }}
-      - name: Look up build files in cache
-        uses: actions/cache/restore@v3
-        with:
-          path: |
-            venv/
-            scons/build/
-          key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-test-build-cache-tmp-files
       - name: Prepare sccache
         uses: mozilla-actions/sccache-action@v0.0.3
       - name: Compile via MSVC
@@ -240,11 +181,3 @@ jobs:
           $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\include"
           $env:LIB += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\lib"
           ./build.bat compile
-      - name: Save build files to cache
-        uses: actions/cache/save@v3
-        if: success() || failure()
-        with:
-          path: |
-            venv/
-            scons/build/
-          key: ${{ runner.os }}-test-build-cache-tmp-files-${{ github.run_id }}
