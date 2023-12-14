@@ -162,6 +162,13 @@ class MLRLCOMMON_API ListOfListsAllocator : public Matrix {
               numRows, numCols) {}
 
         /**
+         * @param other A reference to an object of type `ListOfListsAllocator` that should be copied
+         */
+        ListOfListsAllocator(const ListOfListsAllocator<Matrix>& other) : Matrix(other) {
+            throw std::runtime_error("Objects of type ListOfListsAllocator cannot be copied");
+        }
+
+        /**
          * @param other A reference to an object of type `ListOfListsAllocator` that should be moved
          */
         ListOfListsAllocator(ListOfListsAllocator<Matrix>&& other) : Matrix(std::move(other)) {

@@ -94,6 +94,13 @@ class MLRLCOMMON_API DenseMatrixAllocator : public Matrix {
             : Matrix(allocateMemory<typename Matrix::value_type>(numRows * numCols, init), numRows, numCols) {}
 
         /**
+         * @param other A reference to an object of type `DenseMatrixAllocator` that should be copied
+         */
+        DenseMatrixAllocator(const DenseMatrixAllocator<Matrix>& other) : Matrix(other) {
+            throw std::runtime_error("Objects of type DenseMatrixAllocator cannot be copied");
+        }
+
+        /**
          * @param other A reference to an object of type `DenseMatrixAllocator` that should be moved
          */
         DenseMatrixAllocator(DenseMatrixAllocator<Matrix>&& other) : Matrix(std::move(other)) {
