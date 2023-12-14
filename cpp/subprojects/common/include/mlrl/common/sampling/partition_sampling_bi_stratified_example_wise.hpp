@@ -4,7 +4,6 @@
 #pragma once
 
 #include "mlrl/common/sampling/partition_sampling.hpp"
-#include "mlrl/common/util/dll_exports.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure a method for partitioning the available training
