@@ -8,8 +8,6 @@
 #include "mlrl/common/model/head_partial.hpp"
 #include "mlrl/common/prediction/predictor_common.hpp"
 
-#include <stdexcept>
-
 namespace seco {
 
     static inline void applyHead(const CompleteHead& head, View<uint8>::iterator iterator, BitVector& mask) {

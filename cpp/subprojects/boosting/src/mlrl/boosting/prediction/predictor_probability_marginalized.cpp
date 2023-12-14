@@ -4,8 +4,6 @@
 #include "mlrl/boosting/prediction/transformation_probability_marginalized.hpp"
 #include "mlrl/common/prediction/probability_calibration_no.hpp"
 
-#include <stdexcept>
-
 namespace boosting {
 
     template<typename FeatureMatrix, typename Model>
