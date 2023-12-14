@@ -21,7 +21,7 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class SparseSetView : public Matrix {
+class MLRLCOMMON_API SparseSetView : public Matrix {
     private:
 
         /**
@@ -381,7 +381,7 @@ class SparseSetView : public Matrix {
  * @tparam Matrix The type of the view
  */
 template<typename Matrix>
-class SparseSetViewAllocator : public Matrix {
+class MLRLCOMMON_API SparseSetViewAllocator : public Matrix {
     public:
 
         /**
@@ -418,7 +418,7 @@ using AllocatedSparseSetView = SparseSetViewAllocator<SparseSetView<T>>;
  * @tparam Matrix The type of the matrix
  */
 template<typename Matrix>
-class IterableSparseSetViewDecorator : public Matrix {
+class MLRLCOMMON_API IterableSparseSetViewDecorator : public Matrix {
     public:
 
         /**

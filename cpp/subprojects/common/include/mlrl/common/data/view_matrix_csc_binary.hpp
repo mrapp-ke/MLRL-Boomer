@@ -10,7 +10,7 @@
  * A two-dimensional view that provides column-wise access to binary values stored in a matrix in the compressed sparse
  * column (CSC) format.
  */
-class BinaryCscView : public BinarySparseMatrix {
+class MLRLCOMMON_API BinaryCscView : public BinarySparseMatrix {
     public:
 
         /**
@@ -124,7 +124,7 @@ class BinaryCscView : public BinarySparseMatrix {
  * @tparam Matrix The type of the view
  */
 template<typename Matrix>
-class BinaryCscViewAllocator : public Matrix {
+class MLRLCOMMON_API BinaryCscViewAllocator : public Matrix {
     public:
 
         /**

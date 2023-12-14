@@ -12,7 +12,7 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class DenseMatrix : public Matrix {
+class MLRLCOMMON_API DenseMatrix : public Matrix {
     public:
 
         /**
@@ -82,7 +82,7 @@ class DenseMatrix : public Matrix {
  * @tparam Matrix The type of the view
  */
 template<typename Matrix>
-class DenseMatrixAllocator : public Matrix {
+class MLRLCOMMON_API DenseMatrixAllocator : public Matrix {
     public:
 
         /**
@@ -111,7 +111,7 @@ class DenseMatrixAllocator : public Matrix {
  * @tparam Matrix The type of the matrix
  */
 template<typename Matrix>
-class IterableDenseMatrixDecorator : public Matrix {
+class MLRLCOMMON_API IterableDenseMatrixDecorator : public Matrix {
     public:
 
         /**

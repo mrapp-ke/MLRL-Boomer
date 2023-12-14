@@ -319,7 +319,7 @@ class MLRLCOMMON_API IndexableViewDecorator : public View {
  * @tparam View The type of the view
  */
 template<typename View>
-class ClearableViewDecorator : public View {
+class MLRLCOMMON_API ClearableViewDecorator : public View {
     public:
 
         /**

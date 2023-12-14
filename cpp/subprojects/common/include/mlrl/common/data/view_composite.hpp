@@ -12,7 +12,7 @@
  * @tparam SecondView   The type of the second view
  */
 template<typename FirstView, typename SecondView>
-class CompositeView {
+class MLRLCOMMON_API CompositeView {
     public:
 
         /**

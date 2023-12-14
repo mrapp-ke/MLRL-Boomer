@@ -12,7 +12,7 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class CsrView : public SparseMatrix<T> {
+class MLRLCOMMON_API CsrView : public SparseMatrix<T> {
     public:
 
         /**

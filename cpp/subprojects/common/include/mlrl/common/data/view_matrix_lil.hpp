@@ -14,7 +14,7 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class ListOfLists : public Matrix {
+class MLRLCOMMON_API ListOfLists : public Matrix {
     public:
 
         /**
@@ -148,7 +148,7 @@ class ListOfLists : public Matrix {
  * @tparam Matrix The type of the view
  */
 template<typename Matrix>
-class ListOfListsAllocator : public Matrix {
+class MLRLCOMMON_API ListOfListsAllocator : public Matrix {
     public:
 
         /**
@@ -190,7 +190,7 @@ using AllocatedListOfLists = ListOfListsAllocator<ListOfLists<T>>;
  * @tparam Matrix The type of the matrix
  */
 template<typename Matrix>
-class IterableListOfListsDecorator : public Matrix {
+class MLRLCOMMON_API IterableListOfListsDecorator : public Matrix {
     public:
 
         /**
