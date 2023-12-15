@@ -17,8 +17,8 @@ namespace boosting {
      * @param end           An iterator to the end of the statistics to be added
      */
     static inline void addToSparseLabelWiseStatisticVector(Triple<float64>* statistics,
-                                                           SparseSetView<Tuple<float64>>::const_iterator begin,
-                                                           SparseSetView<Tuple<float64>>::const_iterator end) {
+                                                           SparseSetView<Tuple<float64>>::value_const_iterator begin,
+                                                           SparseSetView<Tuple<float64>>::value_const_iterator end) {
         uint32 numElements = end - begin;
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -41,8 +41,8 @@ namespace boosting {
      * @param weight        The weight, the statistics should be multiplied by
      */
     static inline void addToSparseLabelWiseStatisticVector(Triple<float64>* statistics,
-                                                           SparseSetView<Tuple<float64>>::const_iterator begin,
-                                                           SparseSetView<Tuple<float64>>::const_iterator end,
+                                                           SparseSetView<Tuple<float64>>::value_const_iterator begin,
+                                                           SparseSetView<Tuple<float64>>::value_const_iterator end,
                                                            float64 weight) {
         uint32 numElements = end - begin;
 
@@ -63,9 +63,9 @@ namespace boosting {
      * @param begin         An iterator to the beginning of the statistics to be removed
      * @param end           An iterator to the end of the statistics to be removed
      */
-    static inline void removeFromSparseLabelWiseStatisticVector(Triple<float64>* statistics,
-                                                                SparseSetView<Tuple<float64>>::const_iterator begin,
-                                                                SparseSetView<Tuple<float64>>::const_iterator end) {
+    static inline void removeFromSparseLabelWiseStatisticVector(
+      Triple<float64>* statistics, SparseSetView<Tuple<float64>>::value_const_iterator begin,
+      SparseSetView<Tuple<float64>>::value_const_iterator end) {
         uint32 numElements = end - begin;
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -87,10 +87,9 @@ namespace boosting {
      * @param end           An iterator to the end of the statistics to be removed
      * @param weight        The weight, the statistics should be multiplied by
      */
-    static inline void removeFromSparseLabelWiseStatisticVector(Triple<float64>* statistics,
-                                                                SparseSetView<Tuple<float64>>::const_iterator begin,
-                                                                SparseSetView<Tuple<float64>>::const_iterator end,
-                                                                float64 weight) {
+    static inline void removeFromSparseLabelWiseStatisticVector(
+      Triple<float64>* statistics, SparseSetView<Tuple<float64>>::value_const_iterator begin,
+      SparseSetView<Tuple<float64>>::value_const_iterator end, float64 weight) {
         uint32 numElements = end - begin;
 
         for (uint32 i = 0; i < numElements; i++) {

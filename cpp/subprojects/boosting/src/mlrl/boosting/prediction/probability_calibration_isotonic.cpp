@@ -119,7 +119,7 @@ namespace boosting {
                 numSparseRelevantPerLabel[labelIndex] += 1;
             }
 
-            for (auto it = scoreMatrix.cbegin(exampleIndex); it != scoreMatrix.cend(exampleIndex); it++) {
+            for (auto it = scoreMatrix.values_cbegin(exampleIndex); it != scoreMatrix.values_cend(exampleIndex); it++) {
                 const IndexedValue<float64>& entry = *it;
                 uint32 labelIndex = entry.index;
                 float64 score = entry.value;
