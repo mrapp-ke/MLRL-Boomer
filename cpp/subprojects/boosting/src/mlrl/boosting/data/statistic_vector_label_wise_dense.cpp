@@ -16,41 +16,41 @@ namespace boosting {
     }
 
     void DenseLabelWiseStatisticVector::add(const DenseLabelWiseStatisticView& view, uint32 row) {
-        addToView(this->begin(), view.cbegin(row), this->getNumElements());
+        addToView(this->begin(), view.values_cbegin(row), this->getNumElements());
     }
 
     void DenseLabelWiseStatisticVector::add(const DenseLabelWiseStatisticView& view, uint32 row, float64 weight) {
-        addToView(this->begin(), view.cbegin(row), this->getNumElements(), weight);
+        addToView(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
     void DenseLabelWiseStatisticVector::remove(const DenseLabelWiseStatisticView& view, uint32 row) {
-        removeFromView(this->begin(), view.cbegin(row), this->getNumElements());
+        removeFromView(this->begin(), view.values_cbegin(row), this->getNumElements());
     }
 
     void DenseLabelWiseStatisticVector::remove(const DenseLabelWiseStatisticView& view, uint32 row, float64 weight) {
-        removeFromView(this->begin(), view.cbegin(row), this->getNumElements(), weight);
+        removeFromView(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
     void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticView& view, uint32 row,
                                                     const CompleteIndexVector& indices) {
-        addToView(this->begin(), view.cbegin(row), this->getNumElements());
+        addToView(this->begin(), view.values_cbegin(row), this->getNumElements());
     }
 
     void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticView& view, uint32 row,
                                                     const PartialIndexVector& indices) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        addToView(this->begin(), view.cbegin(row), indexIterator, this->getNumElements());
+        addToView(this->begin(), view.values_cbegin(row), indexIterator, this->getNumElements());
     }
 
     void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticView& view, uint32 row,
                                                     const CompleteIndexVector& indices, float64 weight) {
-        addToView(this->begin(), view.cbegin(row), this->getNumElements(), weight);
+        addToView(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
     void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticView& view, uint32 row,
                                                     const PartialIndexVector& indices, float64 weight) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        addToView(this->begin(), view.cbegin(row), indexIterator, this->getNumElements(), weight);
+        addToView(this->begin(), view.values_cbegin(row), indexIterator, this->getNumElements(), weight);
     }
 
     void DenseLabelWiseStatisticVector::difference(const DenseLabelWiseStatisticVector& first,

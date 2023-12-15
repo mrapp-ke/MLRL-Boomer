@@ -44,44 +44,44 @@ namespace boosting {
             /**
              * An iterator that provides read-only access to the elements in the view.
              */
-            typedef const Tuple<float64>* const_iterator;
+            typedef const Tuple<float64>* value_const_iterator;
 
             /**
              * An iterator that provides access to the elements in the view and allows to modify them.
              */
-            typedef Tuple<float64>* iterator;
+            typedef Tuple<float64>* value_iterator;
 
             /**
-             * Returns a `const_iterator` to the beginning of a specific row.
+             * Returns a `value_const_iterator` to the beginning of a specific row.
              *
              * @param row   The row
-             * @return      A `const_iterator` to the beginning
+             * @return      A `value_const_iterator` to the beginning
              */
-            const_iterator cbegin(uint32 row) const;
+            value_const_iterator values_cbegin(uint32 row) const;
 
             /**
-             * Returns a `const_iterator` to the end of a specific row.
+             * Returns a `value_const_iterator` to the end of a specific row.
              *
              * @param row   The row
-             * @return      A `const_iterator` to the end
+             * @return      A `value_const_iterator` to the end
              */
-            const_iterator cend(uint32 row) const;
+            value_const_iterator values_cend(uint32 row) const;
 
             /**
-             * Returns an `iterator` to the beginning of a specific row.
+             * Returns a `value_iterator` to the beginning of a specific row.
              *
              * @param row   The row
-             * @return      An `iterator` to the beginning
+             * @return      A `value_iterator` to the beginning
              */
-            iterator begin(uint32 row);
+            value_iterator values_begin(uint32 row);
 
             /**
-             * Returns an `iterator` to the end of a specific row.
+             * Returns a `value_iterator` to the end of a specific row.
              *
              * @param row   The row
-             * @return      An `iterator` to the end
+             * @return      A `value_iterator` to the end
              */
-            iterator end(uint32 row);
+            value_iterator values_end(uint32 row);
 
             /**
              * Sets all gradients and Hessians in the matrix to zero.
@@ -93,11 +93,11 @@ namespace boosting {
              * to be added are multiplied by a specific weight.
              *
              * @param row       The row
-             * @param begin     A `const_iterator` to the beginning of the vector
-             * @param end       A `const_iterator` to the end of the vector
+             * @param begin     An iterator to the beginning of the vector
+             * @param end       An iterator to the end of the vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToRow(uint32 row, const_iterator begin, const_iterator end, float64 weight);
+            void addToRow(uint32 row, value_const_iterator begin, value_const_iterator end, float64 weight);
 
             /**
              * Returns the number of rows in the view.

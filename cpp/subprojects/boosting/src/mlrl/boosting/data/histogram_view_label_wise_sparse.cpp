@@ -29,8 +29,9 @@ namespace boosting {
         setViewToZeros(statistics_, numRows_ * numCols_);
     }
 
-    void SparseLabelWiseHistogramView::addToRow(uint32 row, SparseSetView<Tuple<float64>>::const_iterator begin,
-                                                SparseSetView<Tuple<float64>>::const_iterator end, float64 weight) {
+    void SparseLabelWiseHistogramView::addToRow(uint32 row, SparseSetView<Tuple<float64>>::value_const_iterator begin,
+                                                SparseSetView<Tuple<float64>>::value_const_iterator end,
+                                                float64 weight) {
         if (weight != 0) {
             weights_[row] += weight;
             addToSparseLabelWiseStatisticVector(&statistics_[row * numCols_], begin, end, weight);

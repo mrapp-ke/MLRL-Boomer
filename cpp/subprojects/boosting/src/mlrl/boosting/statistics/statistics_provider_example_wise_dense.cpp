@@ -106,7 +106,8 @@ namespace boosting {
       firstprivate(exampleWiseStatisticViewRawPtr) schedule(dynamic) num_threads(numThreads)
 #endif
                 for (int64 i = 0; i < numRows; i++) {
-                    DenseLabelWiseStatisticView::iterator iterator = labelWiseStatisticMatrixRawPtr->begin(i);
+                    DenseLabelWiseStatisticView::value_iterator iterator =
+                      labelWiseStatisticMatrixRawPtr->values_begin(i);
                     DenseExampleWiseStatisticView::gradient_const_iterator gradientIterator =
                       exampleWiseStatisticViewRawPtr->gradients_cbegin(i);
                     DenseExampleWiseStatisticView::hessian_diagonal_const_iterator hessianIterator =
