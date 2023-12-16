@@ -19,7 +19,8 @@ namespace boosting {
      * A matrix that stores gradients and Hessians that have been calculated using a non-decomposable loss function
      * using C-contiguous arrays.
      */
-    class DenseExampleWiseStatisticMatrix final : public DenseExampleWiseStatisticView {
+    class DenseExampleWiseStatisticMatrix final
+        : public ClearableViewDecorator<MatrixDecorator<DenseExampleWiseStatisticView>> {
         public:
 
             /**
@@ -27,7 +28,8 @@ namespace boosting {
              * @param numCols The number of columns in the matrix
              */
             DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numCols)
-                : DenseExampleWiseStatisticView(numRows, numCols) {}
+                : ClearableViewDecorator<MatrixDecorator<DenseExampleWiseStatisticView>>(
+                  DenseExampleWiseStatisticView(numRows, numCols)) {}
 
             /**
              * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
@@ -43,8 +45,9 @@ namespace boosting {
             void addToRow(uint32 row, View<float64>::const_iterator gradientsBegin,
                           View<float64>::const_iterator gradientsEnd, View<float64>::const_iterator hessiansBegin,
                           View<float64>::const_iterator hessiansEnd, float64 weight) {
-                addToView(this->firstView.values_begin(row), gradientsBegin, this->firstView.numCols, weight);
-                addToView(this->secondView.values_begin(row), hessiansBegin, this->secondView.numCols, weight);
+                addToView(this->view.firstView.values_begin(row), gradientsBegin, this->view.firstView.numCols, weight);
+                addToView(this->view.secondView.values_begin(row), hessiansBegin, this->view.secondView.numCols,
+                          weight);
             }
     };
 
@@ -57,7 +60,7 @@ namespace boosting {
     template<typename LabelMatrix>
     class DenseExampleWiseStatistics final
         : public AbstractExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector,
-                                               DenseExampleWiseStatisticView, DenseExampleWiseStatisticMatrix,
+                                               DenseExampleWiseStatisticMatrix, DenseExampleWiseStatisticMatrix,
                                                NumericCContiguousMatrix<float64>, IExampleWiseLoss, IEvaluationMeasure,
                                                IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory> {
         public:
@@ -73,8 +76,8 @@ namespace boosting {
              *                              scores, of rules
              * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
              *                              to the labels of the training examples
-             * @param statisticViewPtr      An unique pointer to an object of type `DenseExampleWiseStatisticView` that
-             *                              provides access to the gradients and Hessians
+             * @param statisticMatrixPtr    An unique pointer to an object of type `DenseExampleWiseStatisticMatrix`
+             *                              that stores to the gradients and Hessians
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericCContiguousMatrix` that
              *                              stores the currently predicted scores
              */
@@ -82,14 +85,14 @@ namespace boosting {
                                        std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr,
                                        const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory,
                                        const LabelMatrix& labelMatrix,
-                                       std::unique_ptr<DenseExampleWiseStatisticView> statisticViewPtr,
+                                       std::unique_ptr<DenseExampleWiseStatisticMatrix> statisticMatrixPtr,
                                        std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
                 : AbstractExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector,
-                                                DenseExampleWiseStatisticView, DenseExampleWiseStatisticMatrix,
+                                                DenseExampleWiseStatisticMatrix, DenseExampleWiseStatisticMatrix,
                                                 NumericCContiguousMatrix<float64>, IExampleWiseLoss, IEvaluationMeasure,
                                                 IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>(
                   std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
-                  std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
+                  std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 
             /**
              * @see `IBoostingStatistics::visitScoreMatrix`
@@ -104,13 +107,13 @@ namespace boosting {
              */
             std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> toLabelWiseStatistics(
               const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads) override final {
-                uint32 numRows = this->statisticViewPtr_->getNumRows();
-                uint32 numCols = this->statisticViewPtr_->getNumCols();
+                uint32 numRows = this->statisticMatrixPtr_->getNumRows();
+                uint32 numCols = this->statisticMatrixPtr_->getNumCols();
                 std::unique_ptr<DenseLabelWiseStatisticMatrix> labelWiseStatisticMatrixPtr =
                   std::make_unique<DenseLabelWiseStatisticMatrix>(numRows, numCols);
                 CContiguousView<Tuple<float64>>* labelWiseStatisticMatrixRawPtr =
                   &labelWiseStatisticMatrixPtr->getView();
-                DenseExampleWiseStatisticView* exampleWiseStatisticViewRawPtr = this->statisticViewPtr_.get();
+                DenseExampleWiseStatisticView* exampleWiseStatisticViewRawPtr = &this->statisticMatrixPtr_->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numRows) firstprivate(numCols) firstprivate(labelWiseStatisticMatrixRawPtr) \
@@ -155,7 +158,7 @@ namespace boosting {
         const IExampleWiseLoss* lossRawPtr = lossPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
         const CContiguousView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
-        DenseExampleWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
+        DenseExampleWiseStatisticView* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(labelMatrixPtr) \

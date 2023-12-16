@@ -57,12 +57,4 @@ namespace boosting {
       DenseExampleWiseStatisticView::hessians_diagonal_cend(uint32 row) const {
         return DiagonalConstIterator<float64>(CompositeMatrix::secondView.values_cbegin(row), Matrix::numCols);
     }
-
-    uint32 DenseExampleWiseStatisticView::getNumRows() const {
-        return Matrix::numRows;
-    }
-
-    uint32 DenseExampleWiseStatisticView::getNumCols() const {
-        return Matrix::numCols;
-    }
 }
