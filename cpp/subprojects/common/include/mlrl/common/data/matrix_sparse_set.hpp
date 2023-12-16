@@ -6,6 +6,15 @@
 #include "mlrl/common/data/view_matrix_sparse_set.hpp"
 
 /**
+ * Provides random read and write access, as well as row-wise read and write access via iterators, to values stored in a
+ * sparse matrix in the list of lists (LIL) format.
+ *
+ * @tparam Matrix The type of the matrix
+ */
+template<typename Matrix>
+using SparseSetMatrixDecorator = MatrixDecorator<Matrix>;
+
+/**
  * A two-dimensional matrix that provides row-wise access to data that is stored in the list of lists (LIL) format. In
  * contrast to a `LilMatrix`, this matrix does also provide random access to its elements. This additional functionality
  * comes at the expense of memory efficiency, as it requires to not only maintain a sparse matrix that stores the
@@ -19,7 +28,7 @@
  * @tparam T The type of the values that are stored in the matrix
  */
 template<typename T>
-class SparseSetMatrix : public MatrixDecorator<SparseSetView<T>> {
+class SparseSetMatrix : public SparseSetMatrixDecorator<SparseSetView<T>> {
     public:
 
         /**
