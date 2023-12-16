@@ -2,11 +2,13 @@
 
 namespace boosting {
 
-    SparseLabelWiseHistogramView::SparseLabelWiseHistogramView(CContiguousView<Triple<float64>>&& firstView,
-                                                               Vector<float64>&& secondView, uint32 numRows,
-                                                               uint32 numCols)
-        : CompositeMatrix<CContiguousView<Triple<float64>>, Vector<float64>>(std::move(firstView),
-                                                                             std::move(secondView), numRows, numCols) {}
+    SparseLabelWiseHistogramView::SparseLabelWiseHistogramView(uint32 numRows, uint32 numCols)
+        : CompositeMatrix<AllocatedCContiguousView<Triple<float64>>, AllocatedVector<float64>>(
+          AllocatedCContiguousView<Triple<float64>>(numRows, numCols), AllocatedVector<float64>(numRows, true), numRows,
+          numCols) {}
+
+    SparseLabelWiseHistogramView::SparseLabelWiseHistogramView(SparseLabelWiseHistogramView&& other)
+        : CompositeMatrix<AllocatedCContiguousView<Triple<float64>>, AllocatedVector<float64>>(std::move(other)) {}
 
     SparseLabelWiseHistogramView::value_const_iterator SparseLabelWiseHistogramView::values_cbegin(uint32 row) const {
         return CompositeView::firstView.values_cbegin(row);

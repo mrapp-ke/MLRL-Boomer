@@ -45,8 +45,7 @@ namespace boosting {
              */
             SparseLabelWiseHistogram(uint32 numBins, uint32 numCols)
                 : ClearableViewDecorator<MatrixDecorator<SparseLabelWiseHistogramView>>(
-                  SparseLabelWiseHistogramView(AllocatedCContiguousView<Triple<float64>>(numBins, numCols),
-                                               AllocatedVector<float64>(numBins, true), numBins, numCols)) {}
+                  SparseLabelWiseHistogramView(numBins, numCols)) {}
 
             /**
              * Adds all gradients and Hessians in a vector to a specific row of this histogram. The gradients and
