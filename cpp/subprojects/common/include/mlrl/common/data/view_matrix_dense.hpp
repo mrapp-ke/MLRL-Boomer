@@ -101,9 +101,7 @@ class MLRLCOMMON_API DenseMatrixAllocator : public Matrix {
         }
 
         virtual ~DenseMatrixAllocator() override {
-            if (Matrix::array) {
-                freeMemory(Matrix::array);
-            }
+            freeMemory(Matrix::array);
         }
 };
 
