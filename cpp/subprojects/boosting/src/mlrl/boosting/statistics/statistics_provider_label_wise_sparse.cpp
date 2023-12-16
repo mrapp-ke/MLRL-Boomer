@@ -26,9 +26,7 @@ namespace boosting {
              * @param numCols   The number of columns in the matrix
              */
             SparseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols)
-                : MatrixDecorator<SparseSetView<Tuple<float64>>>(SparseSetView<Tuple<float64>>(
-                  AllocatedListOfLists<IndexedValue<Tuple<float64>>>(numRows, numCols),
-                  AllocatedCContiguousView<uint32>(numRows, numCols), numRows, numCols)) {}
+                : MatrixDecorator<SparseSetView<Tuple<float64>>>(SparseSetView<Tuple<float64>>(numRows, numCols)) {}
     };
 
     /**
