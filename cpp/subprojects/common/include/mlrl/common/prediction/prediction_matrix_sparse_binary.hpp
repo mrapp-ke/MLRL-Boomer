@@ -13,7 +13,7 @@
  * A two-dimensional view that provides row-wise access to binary values stored in a matrix in the compressed sparse row
  * (CSR) format that have been copied from a `BinaryLilMatrix`.
  */
-class BinarySparsePredictionView final : public AllocatedBinaryCsrView {
+class MLRLCOMMON_API BinarySparsePredictionView final : public AllocatedBinaryCsrView {
     public:
 
         /**

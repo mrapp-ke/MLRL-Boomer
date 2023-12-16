@@ -22,7 +22,7 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class SparseSetView : public CompositeMatrix<AllocatedListOfLists<IndexedValue<T>>, AllocatedCContiguousView<uint32>> {
+class MLRLCOMMON_API SparseSetView : public CompositeMatrix<AllocatedListOfLists<IndexedValue<T>>, AllocatedCContiguousView<uint32>> {
     private:
 
         /**
@@ -374,7 +374,7 @@ class SparseSetView : public CompositeMatrix<AllocatedListOfLists<IndexedValue<T
  * @tparam Matrix The type of the matrix
  */
 template<typename Matrix>
-class IterableSparseSetViewDecorator : public Matrix {
+class MLRLCOMMON_API IterableSparseSetViewDecorator : public Matrix {
     public:
 
         /**

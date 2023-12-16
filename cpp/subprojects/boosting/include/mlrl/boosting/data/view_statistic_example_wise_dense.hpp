@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/boosting/iterator/diagonal_iterator.hpp"
+#include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/data/view_matrix_composite.hpp"
 
@@ -13,7 +14,7 @@ namespace boosting {
      * Implements row-wise read and write access to the gradients and Hessians that have been calculated using a
      * non-decomposable loss function and are stored in pre-allocated C-contiguous arrays.
      */
-    class DenseExampleWiseStatisticView
+    class MLRLBOOSTING_API DenseExampleWiseStatisticView
         : public CompositeMatrix<AllocatedCContiguousView<float64>, AllocatedCContiguousView<float64>> {
         public:
 

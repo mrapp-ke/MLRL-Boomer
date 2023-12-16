@@ -11,7 +11,7 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class SparseMatrix : public BinarySparseMatrix {
+class MLRLCOMMON_API SparseMatrix : public BinarySparseMatrix {
     public:
 
         /**
@@ -81,7 +81,7 @@ class SparseMatrix : public BinarySparseMatrix {
  * @tparam Matrix The type of the matrix
  */
 template<typename Matrix>
-class IterableSparseMatrixDecorator : public IterableBinarySparseMatrixDecorator<Matrix> {
+class MLRLCOMMON_API IterableSparseMatrixDecorator : public IterableBinarySparseMatrixDecorator<Matrix> {
     public:
 
         /**

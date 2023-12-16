@@ -10,7 +10,7 @@
  * A two-dimensional view that provides row-wise access to binary values stored in a matrix in the compressed sparse row
  * (CSR) format.
  */
-class BinaryCsrView : public BinarySparseMatrix {
+class MLRLCOMMON_API BinaryCsrView : public BinarySparseMatrix {
     public:
 
         /**
@@ -124,7 +124,7 @@ class BinaryCsrView : public BinarySparseMatrix {
  * @tparam Matrix The type of the view
  */
 template<typename Matrix>
-class BinaryCsrViewAllocator : public Matrix {
+class MLRLCOMMON_API BinaryCsrViewAllocator : public Matrix {
     public:
 
         /**
