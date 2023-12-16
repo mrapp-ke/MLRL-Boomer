@@ -263,8 +263,7 @@ class MLRLCOMMON_API SparseSetView
          * @param numRows   The number of rows in the view
          * @param numCols   The number of columns in the view
          */
-        SparseSetView(AllocatedListOfLists<IndexedValue<T>>&& firstView, AllocatedCContiguousView<uint32>&& secondView,
-                      uint32 numRows, uint32 numCols)
+        SparseSetView(uint32 numRows, uint32 numCols)
             : CompositeMatrix<AllocatedListOfLists<IndexedValue<T>>, AllocatedCContiguousView<uint32>>(
               AllocatedListOfLists<IndexedValue<T>>(numRows, numCols),
               AllocatedCContiguousView<uint32>(numRows, numCols), numRows, numCols) {

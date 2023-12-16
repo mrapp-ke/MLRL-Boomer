@@ -29,7 +29,5 @@ class SparseSetMatrix final : public SparseSetMatrixDecorator<SparseSetView<T>> 
          * @param numCols   The number of columns in the matrix
          */
         SparseSetMatrix(uint32 numRows, uint32 numCols)
-            : SparseSetMatrixDecorator<SparseSetView<T>>(
-              SparseSetView<T>(AllocatedListOfLists<IndexedValue<T>>(numRows, numCols),
-                               AllocatedCContiguousView<uint32>(numRows, numCols), numRows, numCols)) {}
+            : SparseSetMatrixDecorator<SparseSetView<T>>(SparseSetView<T>(numRows, numCols)) {}
 };
