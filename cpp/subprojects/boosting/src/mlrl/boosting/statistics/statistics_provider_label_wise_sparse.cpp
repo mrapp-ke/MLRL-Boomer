@@ -27,7 +27,7 @@ namespace boosting {
             SparseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols)
                 : SparseSetView<Tuple<float64>>(AllocatedListOfLists<IndexedValue<Tuple<float64>>>(numRows, numCols),
                                                 AllocatedCContiguousView<uint32>(numRows, numCols), numRows, numCols) {
-                setViewToValue(this->indexView.array, this->indexView.numRows * this->indexView.numCols,
+                setViewToValue(this->secondView.array, this->secondView.numRows * this->secondView.numCols,
                                this->MAX_INDEX);
             }
 

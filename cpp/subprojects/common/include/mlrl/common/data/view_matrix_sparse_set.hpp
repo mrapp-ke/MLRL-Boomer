@@ -5,6 +5,7 @@
 
 #include "mlrl/common/data/indexed_value.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_composite.hpp"
 #include "mlrl/common/data/view_matrix_lil.hpp"
 
 /**
@@ -21,7 +22,7 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class SparseSetView : public Matrix {
+class SparseSetView : public CompositeMatrix<AllocatedListOfLists<IndexedValue<T>>, AllocatedCContiguousView<uint32>> {
     private:
 
         /**
@@ -241,40 +242,29 @@ class SparseSetView : public Matrix {
     public:
 
         /**
-         * A view that provides access to all non-zero elements in the view.
-         */
-        AllocatedListOfLists<IndexedValue<T>> valueView;
-
-        /**
-         * A view that provides access to the indices of all non-zero elements that correspond to individual columns of
-         * the view.
-         */
-        AllocatedCContiguousView<uint32> indexView;
-
-        /**
          * @param numRows   The number of rows in the view
          * @param numCols   The number of columns in the view
          */
-        SparseSetView(uint32 numRows, uint32 numCols)
-            : Matrix(numRows, numCols), valueView(AllocatedListOfLists<IndexedValue<T>>(numRows, numCols)),
-              indexView(AllocatedCContiguousView<uint32>(numRows, numCols)) {
-            AllocatedCContiguousView<uint32>::value_iterator indicesBegin = SparseSetView<T>::indexView.begin();
-            AllocatedCContiguousView<uint32>::value_iterator indicesEnd = SparseSetView<T>::indexView.end();
-            setViewToValue(indicesBegin, indicesEnd - indicesBegin, MAX_INDEX);
+        SparseSetView(AllocatedListOfLists<IndexedValue<T>>&& firstView, AllocatedCContiguousView<uint32>&& secondView,
+                      uint32 numRows, uint32 numCols)
+            : CompositeMatrix<AllocatedListOfLists<IndexedValue<T>>, AllocatedCContiguousView<uint32>>(
+              AllocatedListOfLists<IndexedValue<T>>(numRows, numCols),
+              AllocatedCContiguousView<uint32>(numRows, numCols), numRows, numCols) {
+            setViewToValue(this->secondView.array, this->secondView.numRows * this->secondView.numCols, MAX_INDEX);
         }
 
         /**
          * @param other A const reference to an object of type `SparseSetView` that should be copied
          */
         SparseSetView(const SparseSetView& other)
-            : Matrix(other.numRows, other.numCols), valueView(other.valueView), indexView(other.indexView) {}
+            : CompositeMatrix<AllocatedListOfLists<IndexedValue<T>>, AllocatedCContiguousView<uint32>>(other) {}
 
         /**
          * @param other A reference to an object of type `SparseSetView` that should be moved
          */
         SparseSetView(SparseSetView&& other)
-            : Matrix(other.numRows, other.numCols), valueView(std::move(other.valueView)),
-              indexView(std::move(other.indexView)) {}
+            : CompositeMatrix<AllocatedListOfLists<IndexedValue<T>>, AllocatedCContiguousView<uint32>>(
+              std::move(other)) {}
 
         virtual ~SparseSetView() override {}
 
@@ -314,7 +304,7 @@ class SparseSetView : public Matrix {
          * @return      A `const_row`
          */
         const_row operator[](uint32 row) const {
-            return SparseSetView<T>::const_row(valueView[row], indexView.values_cbegin(row));
+            return SparseSetView<T>::const_row(this->firstView[row], this->secondView.values_cbegin(row));
         }
 
         /**
@@ -324,7 +314,7 @@ class SparseSetView : public Matrix {
          * @return      A `row`
          */
         row operator[](uint32 row) {
-            return SparseSetView<T>::row(valueView[row], indexView.values_begin(row));
+            return SparseSetView<T>::row(this->firstView[row], this->secondView.values_begin(row));
         }
 
         /**
@@ -334,7 +324,7 @@ class SparseSetView : public Matrix {
          * @return      A `value_const_iterator` to the beginning of the values
          */
         value_const_iterator values_cbegin(uint32 row) const {
-            return valueView.values_cbegin(row);
+            return this->firstView.values_cbegin(row);
         }
 
         /**
@@ -344,7 +334,7 @@ class SparseSetView : public Matrix {
          * @return      A `value_const_iterator` to the end of the values
          */
         value_const_iterator values_cend(uint32 row) const {
-            return valueView.values_cend(row);
+            return this->firstView.values_cend(row);
         }
 
         /**
@@ -354,7 +344,7 @@ class SparseSetView : public Matrix {
          * @return      A `value_iterator` to the beginning of the values
          */
         value_iterator values_begin(uint32 row) {
-            return valueView.values_begin(row);
+            return this->firstView.values_begin(row);
         }
 
         /**
@@ -364,7 +354,7 @@ class SparseSetView : public Matrix {
          * @return      A `value_iterator` to the end of the values
          */
         value_iterator values_end(uint32 row) {
-            return valueView.values_end(row);
+            return this->firstView.values_end(row);
         }
 
         /**
