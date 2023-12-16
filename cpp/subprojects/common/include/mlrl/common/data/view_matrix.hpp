@@ -8,7 +8,7 @@
 /**
  * A two-dimensional view that provides access to values stored in a matrix of a specific size.
  */
-class Matrix {
+class MLRLCOMMON_API Matrix {
     public:
 
         /**
@@ -46,7 +46,7 @@ class Matrix {
  * @tparam View The type of view, the matrix is backed by
  */
 template<typename View>
-class MatrixDecorator : public ViewDecorator<View> {
+class MLRLCOMMON_API MatrixDecorator : public ViewDecorator<View> {
     public:
 
         /**

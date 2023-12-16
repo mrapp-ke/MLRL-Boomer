@@ -8,7 +8,7 @@
 /**
  * A two-dimensional view that provides row- or column wise access to binary values stored in a sparse matrix.
  */
-class BinarySparseMatrix : public Matrix {
+class MLRLCOMMON_API BinarySparseMatrix : public Matrix {
     public:
 
         /**
@@ -99,7 +99,7 @@ class BinarySparseMatrix : public Matrix {
  * @tparam Matrix The type of the matrix
  */
 template<typename Matrix>
-class IterableBinarySparseMatrixDecorator : public Matrix {
+class MLRLCOMMON_API IterableBinarySparseMatrixDecorator : public Matrix {
     public:
 
         /**

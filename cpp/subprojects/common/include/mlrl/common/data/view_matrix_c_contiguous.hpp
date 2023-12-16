@@ -12,7 +12,7 @@
  * @tparam T The type of the values, the view provides access to
  */
 template<typename T>
-class CContiguousView : public DenseMatrix<T> {
+class MLRLCOMMON_API CContiguousView : public DenseMatrix<T> {
     public:
 
         /**

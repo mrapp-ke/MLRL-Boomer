@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/data/triple.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
 #include "mlrl/common/data/view_matrix_composite.hpp"
@@ -15,7 +16,8 @@ namespace boosting {
      * label-wise decomposable loss function and are stored in a pre-allocated histogram in the list of lists (LIL)
      * format.
      */
-    class SparseLabelWiseHistogramView : public CompositeMatrix<CContiguousView<Triple<float64>>, Vector<float64>> {
+    class MLRLBOOSTING_API SparseLabelWiseHistogramView
+        : public CompositeMatrix<CContiguousView<Triple<float64>>, Vector<float64>> {
         public:
 
             /**
