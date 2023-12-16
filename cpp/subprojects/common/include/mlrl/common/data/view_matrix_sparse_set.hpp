@@ -272,12 +272,6 @@ class MLRLCOMMON_API SparseSetView
         }
 
         /**
-         * @param other A const reference to an object of type `SparseSetView` that should be copied
-         */
-        SparseSetView(const SparseSetView& other)
-            : CompositeMatrix<AllocatedListOfLists<IndexedValue<T>>, AllocatedCContiguousView<uint32>>(other) {}
-
-        /**
          * @param other A reference to an object of type `SparseSetView` that should be moved
          */
         SparseSetView(SparseSetView&& other)
