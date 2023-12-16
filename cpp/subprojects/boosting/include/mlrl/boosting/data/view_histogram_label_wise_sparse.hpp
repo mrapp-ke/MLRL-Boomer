@@ -17,30 +17,31 @@ namespace boosting {
      * format.
      */
     class MLRLBOOSTING_API SparseLabelWiseHistogramView
-        : public CompositeMatrix<CContiguousView<Triple<float64>>, Vector<float64>> {
+        : public CompositeMatrix<AllocatedCContiguousView<Triple<float64>>, AllocatedVector<float64>> {
         public:
 
             /**
-             * @param firstView     A reference to an object of type `CContiguousView` that stores the gradients and
-             *                      Hessians of each bin
-             * @param secondView    A reference to an object of type `Vector` that stores the weight of each bin
-             * @param numRows       The number of rows in the view
-             * @param numCols       The number of columns in the view
+             * @param numRows   The number of rows in the view
+             * @param numCols   The number of columns in the view
              */
-            SparseLabelWiseHistogramView(CContiguousView<Triple<float64>>&& firstView, Vector<float64>&& secondView,
-                                         uint32 numRows, uint32 numCols);
+            SparseLabelWiseHistogramView(uint32 numRows, uint32 numCols);
+
+            /**
+             * @param other A reference to an object of type `SparseLabelWiseHistogramView` that should be copied
+             */
+            SparseLabelWiseHistogramView(SparseLabelWiseHistogramView&& other);
 
             virtual ~SparseLabelWiseHistogramView() override {}
 
             /**
              * An iterator that provides read-only access to the gradients and Hessians.
              */
-            typedef typename CContiguousView<Triple<float64>>::value_const_iterator value_const_iterator;
+            typedef typename AllocatedCContiguousView<Triple<float64>>::value_const_iterator value_const_iterator;
 
             /**
              * An iterator that provides read-only access to the weights that correspond to individual bins.
              */
-            typedef typename Vector<float64>::const_iterator weight_const_iterator;
+            typedef typename AllocatedVector<float64>::const_iterator weight_const_iterator;
 
             /**
              * Returns a `const_iterator` to the beginning of the gradients and Hessians at a specific row.
