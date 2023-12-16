@@ -23,7 +23,11 @@ namespace boosting {
     }
 
     void SparseLabelWiseStatisticView::clear() {
-        statistics_->clear();
+        uint32 numRows = this->getNumRows();
+
+        for (uint32 i = 0; i < numRows; i++) {
+            (*this)[i].clear();
+        }
     }
 
     uint32 SparseLabelWiseStatisticView::getNumRows() const {
