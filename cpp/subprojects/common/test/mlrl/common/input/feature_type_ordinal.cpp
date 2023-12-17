@@ -18,7 +18,7 @@ TEST(OrdinalFeatureTypeTest, createOrdinalFeatureVectorFromFortranContiguousView
     features[5] = NAN;
     features[6] = -1.0;
     features[7] = 0.0;
-    FortranContiguousConstView<const float32> view(numExamples, 1, features);
+    FortranContiguousView<const float32> view(features, numExamples, 1);
 
     // Create feature vector...
     std::unique_ptr<IFeatureVector> featureVectorPtr = OrdinalFeatureType().createFeatureVector(0, view);
@@ -73,7 +73,7 @@ TEST(OrdinalFeatureTypeTest, createBinaryFeatureVectorFromFortranContiguousView)
     features[4] = 0.0;
     features[5] = NAN;
     features[6] = 0.0;
-    FortranContiguousConstView<const float32> view(numExamples, 1, features);
+    FortranContiguousView<const float32> view(features, numExamples, 1);
 
     // Create feature vector...
     std::unique_ptr<IFeatureVector> featureVectorPtr = OrdinalFeatureType().createFeatureVector(0, view);
@@ -114,7 +114,7 @@ TEST(OrdinalFeatureTypeTest, createEqualFeatureVectorFromFortranContiguousView) 
     float32* features = new float32[numExamples];
     features[0] = 0.0;
     features[1] = 0.0;
-    FortranContiguousConstView<const float32> view(numExamples, 1, features);
+    FortranContiguousView<const float32> view(features, numExamples, 1);
 
     // Create feature vector...
     std::unique_ptr<IFeatureVector> featureVectorPtr = OrdinalFeatureType().createFeatureVector(0, view);
@@ -150,7 +150,7 @@ TEST(OrdinalFeatureTypeTest, createOrdinalFeatureVectorFromDenseCscView) {
     uint32* indptr = new uint32[2];
     indptr[0] = 0;
     indptr[1] = numDense;
-    CscConstView<const float32> view(numDense, 1, data, rowIndices, indptr);
+    CscView<const float32> view(data, rowIndices, indptr, numDense, 1);
 
     // Create feature vector...
     std::unique_ptr<IFeatureVector> featureVectorPtr = OrdinalFeatureType().createFeatureVector(0, view);
@@ -218,7 +218,7 @@ TEST(OrdinalFeatureTypeTest, createBinaryFeatureVectorFromDenseCscView) {
     uint32* indptr = new uint32[2];
     indptr[0] = 0;
     indptr[1] = numDense;
-    CscConstView<const float32> view(numDense, 1, data, rowIndices, indptr);
+    CscView<const float32> view(data, rowIndices, indptr, numDense, 1);
 
     // Create feature vector...
     std::unique_ptr<IFeatureVector> featureVectorPtr = OrdinalFeatureType().createFeatureVector(0, view);
@@ -267,7 +267,7 @@ TEST(OrdinalFeatureTypeTest, createEqualFeatureVectorFromDenseCscView) {
     uint32* indptr = new uint32[2];
     indptr[0] = 0;
     indptr[1] = numDense;
-    CscConstView<const float32> view(numDense, 1, data, rowIndices, indptr);
+    CscView<const float32> view(data, rowIndices, indptr, numDense, 1);
 
     // Create feature vector...
     std::unique_ptr<IFeatureVector> featureVectorPtr = OrdinalFeatureType().createFeatureVector(0, view);
@@ -299,7 +299,7 @@ TEST(OrdinalFeatureTypeTest, createOrdinalFeatureVectorFromCscView) {
     uint32* indptr = new uint32[2];
     indptr[0] = 0;
     indptr[1] = numDense;
-    CscConstView<const float32> view(numDense + 3, 1, data, rowIndices, indptr);
+    CscView<const float32> view(data, rowIndices, indptr, numDense + 3, 1);
 
     // Create feature vector...
     std::unique_ptr<IFeatureVector> featureVectorPtr = OrdinalFeatureType().createFeatureVector(0, view);
@@ -361,7 +361,7 @@ TEST(OrdinalFeatureTypeTest, createBinaryFeatureVectorFromCscView) {
     uint32* indptr = new uint32[2];
     indptr[0] = 0;
     indptr[1] = numDense;
-    CscConstView<const float32> view(numDense + 3, 1, data, rowIndices, indptr);
+    CscView<const float32> view(data, rowIndices, indptr, numDense + 3, 1);
 
     // Create feature vector...
     std::unique_ptr<IFeatureVector> featureVectorPtr = OrdinalFeatureType().createFeatureVector(0, view);
@@ -406,7 +406,7 @@ TEST(OrdinalFeatureTypeTest, createEqualFeatureVectorFromCscView) {
     uint32* indptr = new uint32[2];
     indptr[0] = 0;
     indptr[1] = numDense;
-    CscConstView<const float32> view(numDense + 3, 1, data, rowIndices, indptr);
+    CscView<const float32> view(data, rowIndices, indptr, numDense + 3, 1);
 
     // Create feature vector...
     std::unique_ptr<IFeatureVector> featureVectorPtr = OrdinalFeatureType().createFeatureVector(0, view);

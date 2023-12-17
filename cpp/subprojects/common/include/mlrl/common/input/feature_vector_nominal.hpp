@@ -158,7 +158,7 @@ class NominalFeatureVector : public AbstractFeatureVector {
          */
         int32 getMajorityValue() const;
 
-        uint32 getNumElements() const override;
+        uint32 getNumElements() const;
 
         virtual std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                             uint32 start, uint32 end) const override;

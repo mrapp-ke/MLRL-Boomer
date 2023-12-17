@@ -85,10 +85,10 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
 }
 
 static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
-  uint32 featureIndex, const FortranContiguousConstView<const float32>& featureMatrix) {
-    FortranContiguousConstView<const float32>::value_const_iterator valueIterator =
+  uint32 featureIndex, const FortranContiguousView<const float32>& featureMatrix) {
+    FortranContiguousView<const float32>::value_const_iterator valueIterator =
       featureMatrix.values_cbegin(featureIndex);
-    uint32 numElements = featureMatrix.getNumRows();
+    uint32 numElements = featureMatrix.numRows;
     std::unordered_map<int32, Tuple<uint32>> mapping;
     uint32 numExamples = createMapping(valueIterator, numElements, mapping);
     uint32 numValues = (uint32) mapping.size();
@@ -97,15 +97,15 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
 }
 
 static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
-  uint32 featureIndex, const CscConstView<const float32>& featureMatrix) {
-    CscConstView<const float32>::index_const_iterator indexIterator = featureMatrix.indices_cbegin(featureIndex);
-    CscConstView<const float32>::value_const_iterator valuesBegin = featureMatrix.values_cbegin(featureIndex);
-    CscConstView<const float32>::value_const_iterator valuesEnd = featureMatrix.values_cend(featureIndex);
+  uint32 featureIndex, const CscView<const float32>& featureMatrix) {
+    CscView<const float32>::index_const_iterator indexIterator = featureMatrix.indices_cbegin(featureIndex);
+    CscView<const float32>::value_const_iterator valuesBegin = featureMatrix.values_cbegin(featureIndex);
+    CscView<const float32>::value_const_iterator valuesEnd = featureMatrix.values_cend(featureIndex);
     uint32 numElements = valuesEnd - valuesBegin;
     std::unordered_map<int32, Tuple<uint32>> mapping;
     uint32 numExamples = createMapping(valuesBegin, numElements, mapping);
     uint32 numValues = (uint32) mapping.size();
-    bool sparse = numElements < featureMatrix.getNumRows();
+    bool sparse = numElements < featureMatrix.numRows;
 
     if (sparse) {
         numValues++;
@@ -124,11 +124,11 @@ bool NominalFeatureType::isNominal() const {
 }
 
 std::unique_ptr<IFeatureVector> NominalFeatureType::createFeatureVector(
-  uint32 featureIndex, const FortranContiguousConstView<const float32>& featureMatrix) const {
+  uint32 featureIndex, const FortranContiguousView<const float32>& featureMatrix) const {
     return createFeatureVectorInternally(featureIndex, featureMatrix);
 }
 
 std::unique_ptr<IFeatureVector> NominalFeatureType::createFeatureVector(
-  uint32 featureIndex, const CscConstView<const float32>& featureMatrix) const {
+  uint32 featureIndex, const CscView<const float32>& featureMatrix) const {
     return createFeatureVectorInternally(featureIndex, featureMatrix);
 }

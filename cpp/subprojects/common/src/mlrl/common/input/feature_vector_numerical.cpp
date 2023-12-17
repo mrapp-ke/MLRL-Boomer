@@ -1,7 +1,7 @@
 #include "mlrl/common/input/feature_vector_numerical.hpp"
 
 NumericalFeatureVector::NumericalFeatureVector(uint32 numElements, float32 sparseValue)
-    : vector_(SparseArrayVector<float32>(numElements)), sparseValue_(sparseValue) {}
+    : vector_(numElements), sparseValue_(sparseValue) {}
 
 NumericalFeatureVector::iterator NumericalFeatureVector::begin() {
     return vector_.begin();

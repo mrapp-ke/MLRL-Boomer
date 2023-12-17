@@ -12,7 +12,7 @@
 class EqualFeatureVector final : public IFeatureVector {
     public:
 
-        uint32 getNumElements() const override;
+        uint32 getNumElements() const;
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     uint32 start, uint32 end) const override;

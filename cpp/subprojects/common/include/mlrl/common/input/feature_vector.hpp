@@ -12,10 +12,10 @@
  * Defines an interface for all one-dimensional vectors that store the values of training examples for a certain
  * feature.
  */
-class IFeatureVector : public IOneDimensionalView {
+class IFeatureVector {
     public:
 
-        virtual ~IFeatureVector() override {}
+        virtual ~IFeatureVector() {}
 
         /**
          * Creates and returns a copy of this vector that does only store the feature values between a given start and

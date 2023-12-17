@@ -61,7 +61,7 @@ class FortranContiguousFeatureMatrix final : public DenseMatrixDecorator<Fortran
 
         std::unique_ptr<IFeatureVector> createFeatureVector(uint32 featureIndex,
                                                             const IFeatureType& featureType) const override {
-            return featureType.createFeatureVector(featureIndex, *this);
+            return featureType.createFeatureVector(featureIndex, this->getView());
         }
 };
 
