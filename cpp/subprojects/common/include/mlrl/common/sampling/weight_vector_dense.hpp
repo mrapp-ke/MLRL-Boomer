@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_vector.hpp"
+#include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/sampling/weight_vector.hpp"
 
 /**
@@ -12,7 +12,7 @@
  * @tparam T The type of the weights
  */
 template<typename T>
-class DenseWeightVector final : public IterableVectorDecorator<VectorDecorator<AllocatedVector<T>>>,
+class DenseWeightVector final : public DenseVectorDecorator<AllocatedVector<T>>,
                                 public IWeightVector {
     private:
 

@@ -279,14 +279,14 @@ namespace boosting {
              * @see `IImmutableWeightedStatistics::getNumStatistics`
              */
             uint32 getNumStatistics() const override final {
-                return statisticView_.getNumRows();
+                return statisticView_.numRows;
             }
 
             /**
              * @see `IImmutableWeightedStatistics::getNumLabels`
              */
             uint32 getNumLabels() const override final {
-                return statisticView_.getNumCols();
+                return statisticView_.numCols;
             }
     };
 
@@ -309,8 +309,8 @@ namespace boosting {
              typename BinIndexVector, typename WeightVector>
     class ExampleWiseHistogram final
         : virtual public IHistogram,
-          public AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, Histogram, RuleEvaluationFactory,
-                                                                BinWeightVector> {
+          public AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, typename Histogram::view_type,
+                                                                RuleEvaluationFactory, BinWeightVector> {
         private:
 
             /**
@@ -323,7 +323,7 @@ namespace boosting {
             template<typename IndexVector>
             class WeightedStatisticsSubset final
                 : public AbstractExampleWiseImmutableWeightedStatistics<
-                    StatisticVector, Histogram, RuleEvaluationFactory,
+                    StatisticVector, typename Histogram::view_type, RuleEvaluationFactory,
                     BinWeightVector>::template AbstractWeightedStatisticsSubset<IndexVector> {
                 private:
 
@@ -344,7 +344,7 @@ namespace boosting {
                     WeightedStatisticsSubset(const ExampleWiseHistogram& histogram,
                                              const StatisticVector& totalSumVector, const IndexVector& labelIndices)
                         : AbstractExampleWiseImmutableWeightedStatistics<
-                          StatisticVector, Histogram, RuleEvaluationFactory,
+                          StatisticVector, typename Histogram::view_type, RuleEvaluationFactory,
                           BinWeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(histogram,
                                                                                                    totalSumVector,
                                                                                                    labelIndices),
@@ -405,9 +405,9 @@ namespace boosting {
                                  const BinIndexVector& binIndexVector, const StatisticView& originalStatisticView,
                                  const WeightVector& originalWeights, const StatisticVector& totalSumVector,
                                  const RuleEvaluationFactory& ruleEvaluationFactory)
-                : AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, Histogram, RuleEvaluationFactory,
-                                                                 BinWeightVector>(*histogramPtr, ruleEvaluationFactory,
-                                                                                  *binWeightVectorPtr),
+                : AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, typename Histogram::view_type,
+                                                                 RuleEvaluationFactory, BinWeightVector>(
+                  histogramPtr->getView(), ruleEvaluationFactory, *binWeightVectorPtr),
                   histogramPtr_(std::move(histogramPtr)), binWeightVectorPtr_(std::move(binWeightVectorPtr)),
                   binIndexVector_(binIndexVector), originalStatisticView_(originalStatisticView),
                   originalWeights_(originalWeights), totalSumVector_(totalSumVector) {}
@@ -505,8 +505,7 @@ namespace boosting {
       const BinIndexVector& binIndexVector, const StatisticView& originalStatisticView,
       const WeightVector& originalWeights, const StatisticVector& totalSumVector,
       const RuleEvaluationFactory& ruleEvaluationFactory, uint32 numBins) {
-        std::unique_ptr<Histogram> histogramPtr =
-          std::make_unique<Histogram>(numBins, originalStatisticView.getNumCols());
+        std::unique_ptr<Histogram> histogramPtr = std::make_unique<Histogram>(numBins, originalStatisticView.numCols);
         std::unique_ptr<BinWeightVector> binWeightVectorPtr = std::make_unique<BinWeightVector>(numBins);
         return std::make_unique<ExampleWiseHistogram<StatisticVector, StatisticView, Histogram, RuleEvaluationFactory,
                                                      BinIndexVector, WeightVector>>(
@@ -606,7 +605,7 @@ namespace boosting {
                 : AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
                                                                  WeightVector>(statisticView, ruleEvaluationFactory,
                                                                                weights),
-                  totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.getNumCols(), true)) {
+                  totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.numCols, true)) {
                 uint32 numStatistics = weights.getNumElements();
 
                 for (uint32 i = 0; i < numStatistics; i++) {
@@ -697,7 +696,7 @@ namespace boosting {
     static inline void updateExampleWiseStatisticsInternally(uint32 statisticIndex, const LabelMatrix& labelMatrix,
                                                              StatisticView& statisticView, ScoreMatrix& scoreMatrix,
                                                              const LossFunction& lossFunction) {
-        lossFunction.updateExampleWiseStatistics(statisticIndex, labelMatrix, scoreMatrix, statisticView);
+        lossFunction.updateExampleWiseStatistics(statisticIndex, labelMatrix, scoreMatrix.getView(), statisticView);
     }
 
     /**
@@ -707,7 +706,7 @@ namespace boosting {
      * @tparam LabelMatrix                      The type of the matrix that provides access to the labels of the
      *                                          training examples
      * @tparam StatisticVector                  The type of the vectors that are used to store gradients and Hessians
-     * @tparam StatisticView                    The type of the view that provides access to the gradients and Hessians
+     * @tparam StatisticMatrix                  The type of the matrix that stores the gradients and Hessians
      * @tparam Histogram                        The type of a histogram that stores aggregated gradients and Hessians
      * @tparam ScoreMatrix                      The type of the matrices that are used to store predicted scores
      * @tparam LossFunction                     The type of the loss function that is used to calculate gradients and
@@ -721,7 +720,7 @@ namespace boosting {
      *                                          that is used for calculating the label-wise predictions of rules, as
      *                                          well as their overall quality
      */
-    template<typename LabelMatrix, typename StatisticVector, typename StatisticView, typename Histogram,
+    template<typename LabelMatrix, typename StatisticVector, typename StatisticMatrix, typename Histogram,
              typename ScoreMatrix, typename LossFunction, typename EvaluationMeasure,
              typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
     class AbstractExampleWiseStatistics
@@ -749,9 +748,9 @@ namespace boosting {
             const LabelMatrix& labelMatrix_;
 
             /**
-             * An unique pointer to an object of template type `StatisticView` that stores the gradients and Hessians.
+             * An unique pointer to an object of template type `StatisticMatrix` that stores the gradients and Hessians.
              */
-            const std::unique_ptr<StatisticView> statisticViewPtr_;
+            const std::unique_ptr<StatisticMatrix> statisticMatrixPtr_;
 
             /**
              * The score matrix that stores the currently predicted scores.
@@ -773,8 +772,8 @@ namespace boosting {
              *                              scores
              * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
              *                              to the labels of the training examples
-             * @param statisticViewPtr      An unique pointer to an object of template type `StatisticView` that
-             *                              provides access to the gradients and Hessians
+             * @param statisticMatrixPtr    An unique pointer to an object of template type `StatisticView` that stores
+             *                              the gradients and Hessians
              * @param scoreMatrixPtr        An unique pointer to an object of template type `ScoreMatrix` that stores
              *                              the currently predicted scores
              */
@@ -782,11 +781,11 @@ namespace boosting {
                                           std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
                                           const ExampleWiseRuleEvaluationFactory& ruleEvaluationFactory,
                                           const LabelMatrix& labelMatrix,
-                                          std::unique_ptr<StatisticView> statisticViewPtr,
+                                          std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                                           std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
                 : ruleEvaluationFactory_(&ruleEvaluationFactory), lossPtr_(std::move(lossPtr)),
                   evaluationMeasurePtr_(std::move(evaluationMeasurePtr)), labelMatrix_(labelMatrix),
-                  statisticViewPtr_(std::move(statisticViewPtr)), scoreMatrixPtr_(std::move(scoreMatrixPtr)) {}
+                  statisticMatrixPtr_(std::move(statisticMatrixPtr)), scoreMatrixPtr_(std::move(scoreMatrixPtr)) {}
 
             /**
              * @see `IExampleWiseStatistics::setRuleEvaluationFactory`
@@ -800,14 +799,14 @@ namespace boosting {
              * @see `IStatistics::getNumStatistics`
              */
             uint32 getNumStatistics() const override final {
-                return statisticViewPtr_->getNumRows();
+                return statisticMatrixPtr_->getNumRows();
             }
 
             /**
              * @see `IStatistics::getNumLabels`
              */
             uint32 getNumLabels() const override final {
-                return statisticViewPtr_->getNumCols();
+                return statisticMatrixPtr_->getNumCols();
             }
 
             /**
@@ -815,7 +814,7 @@ namespace boosting {
              */
             void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
                 applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, *this->statisticViewPtr_,
+                updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, statisticMatrixPtr_->getView(),
                                                       *scoreMatrixPtr_, *lossPtr_);
             }
 
@@ -824,7 +823,7 @@ namespace boosting {
              */
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
                 applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, *this->statisticViewPtr_,
+                updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, statisticMatrixPtr_->getView(),
                                                       *scoreMatrixPtr_, *lossPtr_);
             }
 
@@ -833,7 +832,7 @@ namespace boosting {
              */
             void revertPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
                 revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, *this->statisticViewPtr_,
+                updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, statisticMatrixPtr_->getView(),
                                                       *scoreMatrixPtr_, *lossPtr_);
             }
 
@@ -842,7 +841,7 @@ namespace boosting {
              */
             void revertPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
                 revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, *this->statisticViewPtr_,
+                updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, statisticMatrixPtr_->getView(),
                                                       *scoreMatrixPtr_, *lossPtr_);
             }
 
@@ -850,7 +849,7 @@ namespace boosting {
              * @see `IStatistics::evaluatePrediction`
              */
             float64 evaluatePrediction(uint32 statisticIndex) const override final {
-                return evaluationMeasurePtr_->evaluate(statisticIndex, labelMatrix_, *scoreMatrixPtr_);
+                return evaluationMeasurePtr_->evaluate(statisticIndex, labelMatrix_, scoreMatrixPtr_->getView());
             }
 
             /**
@@ -858,10 +857,10 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
                                                             const EqualWeightVector& weights) const override final {
-                return std::make_unique<
-                  ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
-                                              EqualWeightVector, CompleteIndexVector>>(
-                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
+                return std::make_unique<ExampleWiseStatisticsSubset<
+                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  EqualWeightVector, CompleteIndexVector>>(statisticMatrixPtr_->getView(), *ruleEvaluationFactory_,
+                                                           weights, labelIndices);
             }
 
             /**
@@ -870,9 +869,9 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
                                                             const EqualWeightVector& weights) const override final {
                 return std::make_unique<
-                  ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
-                                              EqualWeightVector, PartialIndexVector>>(
-                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
+                  ExampleWiseStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
+                                              ExampleWiseRuleEvaluationFactory, EqualWeightVector, PartialIndexVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
@@ -881,9 +880,9 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
                                                             const BitWeightVector& weights) const override final {
                 return std::make_unique<
-                  ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
-                                              BitWeightVector, CompleteIndexVector>>(
-                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
+                  ExampleWiseStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
+                                              ExampleWiseRuleEvaluationFactory, BitWeightVector, CompleteIndexVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
@@ -892,9 +891,9 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
                                                             const BitWeightVector& weights) const override final {
                 return std::make_unique<
-                  ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
-                                              BitWeightVector, PartialIndexVector>>(
-                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
+                  ExampleWiseStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
+                                              ExampleWiseRuleEvaluationFactory, BitWeightVector, PartialIndexVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
@@ -902,10 +901,10 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& labelIndices, const DenseWeightVector<uint32>& weights) const override final {
-                return std::make_unique<
-                  ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
-                                              DenseWeightVector<uint32>, CompleteIndexVector>>(
-                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
+                return std::make_unique<ExampleWiseStatisticsSubset<
+                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  DenseWeightVector<uint32>, CompleteIndexVector>>(statisticMatrixPtr_->getView(),
+                                                                   *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
@@ -913,10 +912,10 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& labelIndices, const DenseWeightVector<uint32>& weights) const override final {
-                return std::make_unique<
-                  ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
-                                              DenseWeightVector<uint32>, PartialIndexVector>>(
-                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
+                return std::make_unique<ExampleWiseStatisticsSubset<
+                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  DenseWeightVector<uint32>, PartialIndexVector>>(statisticMatrixPtr_->getView(),
+                                                                  *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
@@ -925,10 +924,10 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& labelIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
-                return std::make_unique<
-                  ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
-                                              OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector>>(
-                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
+                return std::make_unique<ExampleWiseStatisticsSubset<
+                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
@@ -937,10 +936,10 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& labelIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
-                return std::make_unique<
-                  ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
-                                              OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector>>(
-                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
+                return std::make_unique<ExampleWiseStatisticsSubset<
+                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
@@ -949,10 +948,10 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& labelIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
-                return std::make_unique<
-                  ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
-                                              OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector>>(
-                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
+                return std::make_unique<ExampleWiseStatisticsSubset<
+                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
@@ -961,10 +960,10 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& labelIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
-                return std::make_unique<
-                  ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
-                                              OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector>>(
-                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
+                return std::make_unique<ExampleWiseStatisticsSubset<
+                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
@@ -973,10 +972,10 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& labelIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
-                return std::make_unique<
-                  ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
-                                              OutOfSampleWeightVector<DenseWeightVector<uint32>>, CompleteIndexVector>>(
-                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
+                return std::make_unique<ExampleWiseStatisticsSubset<
+                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  OutOfSampleWeightVector<DenseWeightVector<uint32>>, CompleteIndexVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
@@ -985,10 +984,10 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& labelIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
-                return std::make_unique<
-                  ExampleWiseStatisticsSubset<StatisticVector, StatisticView, ExampleWiseRuleEvaluationFactory,
-                                              OutOfSampleWeightVector<DenseWeightVector<uint32>>, PartialIndexVector>>(
-                  *statisticViewPtr_, *ruleEvaluationFactory_, weights, labelIndices);
+                return std::make_unique<ExampleWiseStatisticsSubset<
+                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  OutOfSampleWeightVector<DenseWeightVector<uint32>>, PartialIndexVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
@@ -996,9 +995,10 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const EqualWeightVector& weights) const override final {
-                return std::make_unique<ExampleWiseWeightedStatistics<
-                  StatisticVector, StatisticView, Histogram, ExampleWiseRuleEvaluationFactory, EqualWeightVector>>(
-                  *statisticViewPtr_, *ruleEvaluationFactory_, weights);
+                return std::make_unique<
+                  ExampleWiseWeightedStatistics<StatisticVector, typename StatisticMatrix::view_type, Histogram,
+                                                ExampleWiseRuleEvaluationFactory, EqualWeightVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -1006,9 +1006,10 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const BitWeightVector& weights) const override final {
-                return std::make_unique<ExampleWiseWeightedStatistics<
-                  StatisticVector, StatisticView, Histogram, ExampleWiseRuleEvaluationFactory, BitWeightVector>>(
-                  *statisticViewPtr_, *ruleEvaluationFactory_, weights);
+                return std::make_unique<
+                  ExampleWiseWeightedStatistics<StatisticVector, typename StatisticMatrix::view_type, Histogram,
+                                                ExampleWiseRuleEvaluationFactory, BitWeightVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
             }
 
             /**
@@ -1017,9 +1018,9 @@ namespace boosting {
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<
-                  ExampleWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
+                  ExampleWiseWeightedStatistics<StatisticVector, typename StatisticMatrix::view_type, Histogram,
                                                 ExampleWiseRuleEvaluationFactory, DenseWeightVector<uint32>>>(
-                  *statisticViewPtr_, *ruleEvaluationFactory_, weights);
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
             }
     };
 

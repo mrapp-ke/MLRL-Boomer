@@ -5,8 +5,7 @@
 
 template<typename T>
 DenseWeightVector<T>::DenseWeightVector(uint32 numElements, bool init)
-    : IterableVectorDecorator<VectorDecorator<AllocatedVector<T>>>(AllocatedVector<T>(numElements, init)),
-      numNonZeroWeights_(0) {}
+    : DenseVectorDecorator<AllocatedVector<T>>(AllocatedVector<T>(numElements, init)), numNonZeroWeights_(0) {}
 
 template<typename T>
 uint32 DenseWeightVector<T>::getNumNonZeroWeights() const {

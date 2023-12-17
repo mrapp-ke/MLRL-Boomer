@@ -6,6 +6,8 @@
 #include "mlrl/common/util/dll_exports.hpp"
 #include "mlrl/common/util/memory.hpp"
 
+#include <initializer_list>
+#include <stdexcept>
 #include <utility>
 
 /**
@@ -25,9 +27,15 @@ class MLRLCOMMON_API View {
         /**
          * @param array         A pointer to an array of template type `T` that stores the values, the view should
          *                      provide access to
-         * @param numElements   The number of elements in the view
+         * @param dimensions    The number of elements in each dimension of the view
          */
-        View(T* array, uint32 numElements) : array(array) {}
+        View(T* array, std::initializer_list<uint32> dimensions) : array(array) {}
+
+        /**
+         * @param array A pointer to an array of template type `T` that stores the values, the view should provide
+         *              access to
+         */
+        View(T* array) : array(array) {}
 
         /**
          * @param other A const reference to an object of type `View` that should be copied
@@ -57,6 +65,19 @@ class MLRLCOMMON_API View {
         typedef value_type* iterator;
 
         /**
+         * Releases the ownership of the array that stores the values, the view provides access to. As a result, the
+         * behavior of this view becomes undefined and it should not be used anymore. The caller is responsible for
+         * freeing the memory that is occupied by the array.
+         *
+         * @return A pointer to the array that stores the values, the view provided access to
+         */
+        value_type* release() {
+            value_type* ptr = array;
+            array = nullptr;
+            return ptr;
+        }
+
+        /**
          * Returns a `const_iterator` to the beginning of the view.
          *
          * @return A `const_iterator` to the beginning
@@ -72,6 +93,26 @@ class MLRLCOMMON_API View {
          */
         iterator begin() {
             return array;
+        }
+
+        /**
+         * Returns a const reference to the element at a specific position.
+         *
+         * @param pos   The position of the element
+         * @return      A const reference to the specified element
+         */
+        const value_type& operator[](uint32 pos) const {
+            return array[pos];
+        }
+
+        /**
+         * Returns a reference to the element at a specific position.
+         *
+         * @param pos   The position of the element
+         * @return      A reference to the specified element
+         */
+        value_type& operator[](uint32 pos) {
+            return array[pos];
         }
 };
 
@@ -89,13 +130,20 @@ class MLRLCOMMON_API Allocator : public View {
          * @param init          True, if all elements in the view should be value-initialized, false otherwise
          */
         Allocator(uint32 numElements, bool init = false)
-            : View(allocateMemory<typename View::value_type>(numElements, init), numElements) {}
+            : View(allocateMemory<typename View::value_type>(numElements, init), {numElements}) {}
+
+        /**
+         * @param other A reference to an object of type `Allocator` that should be copied
+         */
+        Allocator(const Allocator<View>& other) : View(other) {
+            throw std::runtime_error("Objects of type Allocator cannot be copied");
+        }
 
         /**
          * @param other A reference to an object of type `Allocator` that should be moved
          */
         Allocator(Allocator<View>&& other) : View(std::move(other)) {
-            other.array = nullptr;
+            other.release();
         }
 
         virtual ~Allocator() override {
@@ -133,10 +181,20 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View> {
             : Allocator<View>(numElements, init), maxCapacity(numElements) {}
 
         /**
+         * @param other A reference to an object of type `ResizableAllocator` that should be copied
+         */
+        ResizableAllocator(const ResizableAllocator<View>& other)
+            : Allocator<View>(other), maxCapacity(other.maxCapacity) {
+            throw std::runtime_error("Objects of type ResizableAllocator cannot be copied");
+        }
+
+        /**
          * @param other A reference to an object of type `ResizableAllocator` that should be moved
          */
         ResizableAllocator(ResizableAllocator<View>&& other)
             : Allocator<View>(std::move(other)), maxCapacity(other.maxCapacity) {}
+
+        virtual ~ResizableAllocator() override {}
 
         /**
          * Resizes the view by re-allocating the memory it provides access to.
@@ -157,8 +215,6 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View> {
 
             View::numElements = numElements;
         }
-
-        virtual ~ResizableAllocator() override {}
 };
 
 /**
@@ -175,11 +231,6 @@ class MLRLCOMMON_API ViewDecorator {
          */
         View view;
 
-        /**
-         * The type of the view, the data structure is backed by.
-         */
-        typedef View view_type;
-
     public:
 
         /**
@@ -190,9 +241,9 @@ class MLRLCOMMON_API ViewDecorator {
         virtual ~ViewDecorator() {}
 
         /**
-         * The type of the values that are stored in the data structure.
+         * The type of the view, the data structure is backed by.
          */
-        typedef typename View::value_type value_type;
+        typedef View view_type;
 
         /**
          * Returns a const reference to the view, the data structure is backed by.
@@ -223,7 +274,7 @@ class MLRLCOMMON_API IndexableViewDecorator : public View {
     public:
 
         /**
-         * @param view The view, the vector should be backed by
+         * @param view The view, the view should be backed by
          */
         IndexableViewDecorator(typename View::view_type&& view) : View(std::move(view)) {}
 
@@ -263,8 +314,8 @@ class MLRLCOMMON_API IndexableViewDecorator : public View {
          * @param pos   The position of the element
          * @return      A const reference to the specified element
          */
-        const typename View::value_type& operator[](uint32 pos) const {
-            return View::view.array[pos];
+        const typename View::view_type::value_type& operator[](uint32 pos) const {
+            return View::view[pos];
         }
 
         /**
@@ -273,7 +324,31 @@ class MLRLCOMMON_API IndexableViewDecorator : public View {
          * @param pos   The position of the element
          * @return      A reference to the specified element
          */
-        typename View::value_type& operator[](uint32 pos) {
-            return View::view.array[pos];
+        typename View::view_type::value_type& operator[](uint32 pos) {
+            return View::view[pos];
+        }
+};
+
+/**
+ * Allows to set all values stored in a view to zero.
+ *
+ * @tparam View The type of the view
+ */
+template<typename View>
+class MLRLCOMMON_API ClearableViewDecorator : public View {
+    public:
+
+        /**
+         * @param view The view, the view should be backed by
+         */
+        ClearableViewDecorator(typename View::view_type&& view) : View(std::move(view)) {}
+
+        virtual ~ClearableViewDecorator() override {}
+
+        /**
+         * Sets all values stored in the view to zero.
+         */
+        virtual void clear() {
+            View::view.clear();
         }
 };

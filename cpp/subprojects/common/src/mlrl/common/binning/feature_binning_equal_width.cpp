@@ -244,7 +244,7 @@ std::unique_ptr<IThresholdsFactory> EqualWidthFeatureBinningConfig::createThresh
       std::make_unique<EqualWidthFeatureBinningFactory>(binRatio_, minBins_, maxBins_);
     std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr =
       std::make_unique<NominalFeatureBinningFactory>();
-    uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumCols());
+    uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
     return std::make_unique<ApproximateThresholdsFactory>(std::move(numericalFeatureBinningFactoryPtr),
                                                           std::move(nominalFeatureBinningFactoryPtr), numThreads);
 }

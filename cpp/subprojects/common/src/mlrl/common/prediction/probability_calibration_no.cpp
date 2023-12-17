@@ -23,25 +23,25 @@ class NoMarginalProbabilityCalibrator final : public IMarginalProbabilityCalibra
     public:
 
         std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix,
+          const SinglePartition& partition, const CContiguousView<const uint8>& labelMatrix,
           const IStatistics& statistics) const override {
             return std::make_unique<NoProbabilityCalibrationModel>();
         }
 
         std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const SinglePartition& partition, const CsrLabelMatrix& labelMatrix,
+          const SinglePartition& partition, const BinaryCsrView& labelMatrix,
           const IStatistics& statistics) const override {
             return std::make_unique<NoProbabilityCalibrationModel>();
         }
 
         std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          BiPartition& partition, const CContiguousLabelMatrix& labelMatrix,
+          BiPartition& partition, const CContiguousView<const uint8>& labelMatrix,
           const IStatistics& statistics) const override {
             return std::make_unique<NoProbabilityCalibrationModel>();
         }
 
         std::unique_ptr<IMarginalProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics) const override {
+          BiPartition& partition, const BinaryCsrView& labelMatrix, const IStatistics& statistics) const override {
             return std::make_unique<NoProbabilityCalibrationModel>();
         }
 };
@@ -67,25 +67,25 @@ class NoJointProbabilityCalibrator final : public IJointProbabilityCalibrator {
     public:
 
         std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const SinglePartition& partition, const CContiguousLabelMatrix& labelMatrix,
+          const SinglePartition& partition, const CContiguousView<const uint8>& labelMatrix,
           const IStatistics& statistics) const override {
             return std::make_unique<NoProbabilityCalibrationModel>();
         }
 
         std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          const SinglePartition& partition, const CsrLabelMatrix& labelMatrix,
+          const SinglePartition& partition, const BinaryCsrView& labelMatrix,
           const IStatistics& statistics) const override {
             return std::make_unique<NoProbabilityCalibrationModel>();
         }
 
         std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          BiPartition& partition, const CContiguousLabelMatrix& labelMatrix,
+          BiPartition& partition, const CContiguousView<const uint8>& labelMatrix,
           const IStatistics& statistics) const override {
             return std::make_unique<NoProbabilityCalibrationModel>();
         }
 
         std::unique_ptr<IJointProbabilityCalibrationModel> fitProbabilityCalibrationModel(
-          BiPartition& partition, const CsrLabelMatrix& labelMatrix, const IStatistics& statistics) const override {
+          BiPartition& partition, const BinaryCsrView& labelMatrix, const IStatistics& statistics) const override {
             return std::make_unique<NoProbabilityCalibrationModel>();
         }
 };

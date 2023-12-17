@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/statistic_view_example_wise_dense.hpp"
+#include "mlrl/boosting/data/view_statistic_example_wise_dense.hpp"
 #include "mlrl/boosting/losses/loss_label_wise.hpp"
 
 namespace boosting {
@@ -20,29 +20,29 @@ namespace boosting {
              * Updates the statistics of the example at a specific index.
              *
              * @param exampleIndex  The index of the example for which the gradients and Hessians should be updated
-             * @param labelMatrix   A reference to an object of type `CContiguousConstView` that provides random access
-             *                      to the labels of the training examples
-             * @param scoreMatrix   A reference to an object of type `CContiguousConstView` that stores the currently
+             * @param labelMatrix   A reference to an object of type `CContiguousView` that provides random access to
+             *                      the labels of the training examples
+             * @param scoreMatrix   A reference to an object of type `CContiguousView` that stores the currently
              *                      predicted scores
              * @param statisticView A reference to an object of type `DenseExampleWiseStatisticView` to be updated
              */
             virtual void updateExampleWiseStatistics(uint32 exampleIndex,
-                                                     const CContiguousConstView<const uint8>& labelMatrix,
-                                                     const CContiguousConstView<float64>& scoreMatrix,
+                                                     const CContiguousView<const uint8>& labelMatrix,
+                                                     const CContiguousView<float64>& scoreMatrix,
                                                      DenseExampleWiseStatisticView& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index.
              *
              * @param exampleIndex  The index of the example for which the gradients and Hessians should be updated
-             * @param labelMatrix   A reference to an object of type `BinaryCsrConstView` that provides row-wise access
-             *                      to the labels of the training examples
-             * @param scoreMatrix   A reference to an object of type `CContiguousConstView` that stores the currently
+             * @param labelMatrix   A reference to an object of type `BinaryCsrView` that provides row-wise access to
+             *                      the labels of the training examples
+             * @param scoreMatrix   A reference to an object of type `CContiguousView` that stores the currently
              *                      predicted scores
              * @param statisticView A reference to an object of type `DenseExampleWiseStatisticView` to be updated
              */
-            virtual void updateExampleWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                                                     const CContiguousConstView<float64>& scoreMatrix,
+            virtual void updateExampleWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                                     const CContiguousView<float64>& scoreMatrix,
                                                      DenseExampleWiseStatisticView& statisticView) const = 0;
     };
 

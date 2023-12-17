@@ -4,8 +4,6 @@
 #include "mlrl/boosting/prediction/transformation_probability_marginalized.hpp"
 #include "mlrl/common/prediction/probability_calibration_no.hpp"
 
-#include <stdexcept>
-
 namespace boosting {
 
     template<typename FeatureMatrix, typename Model>
@@ -80,7 +78,7 @@ namespace boosting {
              * @see `IPredictorFactory::create`
              */
             std::unique_ptr<IProbabilityPredictor> create(
-              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const CContiguousView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
@@ -97,8 +95,7 @@ namespace boosting {
              * @see `IPredictorFactory::create`
              */
             std::unique_ptr<IProbabilityPredictor> create(
-              const CsrConstView<const float32>& featureMatrix, const RuleList& model,
-              const LabelVectorSet* labelVectorSet,
+              const CsrView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {

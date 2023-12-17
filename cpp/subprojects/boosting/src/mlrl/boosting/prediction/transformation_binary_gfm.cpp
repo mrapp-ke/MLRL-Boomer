@@ -24,7 +24,7 @@ namespace boosting {
         return maxLabelCardinality;
     }
 
-    static inline float64 calculateMarginalizedProbabilities(SparseSetMatrix<float64>& probabilities, uint32 numLabels,
+    static inline float64 calculateMarginalizedProbabilities(SparseSetView<float64>& probabilities, uint32 numLabels,
                                                              View<float64>::const_iterator jointProbabilityIterator,
                                                              const LabelVectorSet& labelVectorSet) {
         LabelVectorSet::const_iterator labelVectorIterator = labelVectorSet.cbegin();
@@ -41,7 +41,7 @@ namespace boosting {
 
                 for (uint32 j = 0; j < numRelevantLabels; j++) {
                     uint32 labelIndex = labelIndexIterator[j];
-                    SparseSetMatrix<float64>::row row = probabilities[labelIndex];
+                    SparseSetView<float64>::row row = probabilities[labelIndex];
                     IndexedValue<float64>& indexedValue = row.emplace(numRelevantLabels - 1, 0.0);
                     indexedValue.value += jointProbability;
                 }
@@ -54,12 +54,12 @@ namespace boosting {
     }
 
     static inline float64 createAndEvaluateLabelVector(ResizableSparseArrayVector<float64>::iterator iterator,
-                                                       uint32 numLabels, const SparseSetMatrix<float64>& probabilities,
+                                                       uint32 numLabels, const SparseSetView<float64>& probabilities,
                                                        uint32 k) {
         for (uint32 i = 0; i < numLabels; i++) {
             float64 weightedProbability = 0;
 
-            for (auto it = probabilities.cbegin(i); it != probabilities.cend(i); it++) {
+            for (auto it = probabilities.values_cbegin(i); it != probabilities.values_cend(i); it++) {
                 const IndexedValue<float64>& indexedValue = *it;
                 weightedProbability += (2 * indexedValue.value) / (float64) (indexedValue.index + k + 1);
             }
@@ -119,7 +119,7 @@ namespace boosting {
         DenseVector<float64>::const_iterator jointProbabilityIterator = jointProbabilityVectorPtr->cbegin();
         uint32 numLabels = scoresEnd - scoresBegin;
         SparseSetMatrix<float64> marginalizedProbabilities(numLabels, maxLabelCardinality);
-        float64 bestQuality = calculateMarginalizedProbabilities(marginalizedProbabilities, numLabels,
+        float64 bestQuality = calculateMarginalizedProbabilities(marginalizedProbabilities.getView(), numLabels,
                                                                  jointProbabilityIterator, labelVectorSet);
         ResizableSparseArrayVector<float64> tmpVector1(numLabels);
         tmpVector1.setNumElements(0, false);
@@ -130,7 +130,7 @@ namespace boosting {
         for (uint32 i = 0; i < numLabels; i++) {
             uint32 k = i + 1;
             float64 quality =
-              createAndEvaluateLabelVector(tmpVectorPtr->begin(), numLabels, marginalizedProbabilities, k);
+              createAndEvaluateLabelVector(tmpVectorPtr->begin(), numLabels, marginalizedProbabilities.getView(), k);
 
             if (quality > bestQuality) {
                 bestQuality = quality;

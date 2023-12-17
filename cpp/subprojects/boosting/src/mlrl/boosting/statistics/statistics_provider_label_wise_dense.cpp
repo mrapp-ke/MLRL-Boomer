@@ -15,8 +15,8 @@ namespace boosting {
     static inline std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
       const ILabelWiseLossFactory& lossFactory, const IEvaluationMeasureFactory& evaluationMeasureFactory,
       const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads, const LabelMatrix& labelMatrix) {
-        uint32 numExamples = labelMatrix.getNumRows();
-        uint32 numLabels = labelMatrix.getNumCols();
+        uint32 numExamples = labelMatrix.numRows;
+        uint32 numLabels = labelMatrix.numCols;
         std::unique_ptr<ILabelWiseLoss> lossPtr = lossFactory.createLabelWiseLoss();
         std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr = evaluationMeasureFactory.createEvaluationMeasure();
         std::unique_ptr<DenseLabelWiseStatisticMatrix> statisticMatrixPtr =
@@ -25,8 +25,8 @@ namespace boosting {
           std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numLabels, true);
         const ILabelWiseLoss* lossRawPtr = lossPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
-        const CContiguousConstView<float64>* scoreMatrixRawPtr = scoreMatrixPtr.get();
-        DenseLabelWiseStatisticMatrix* statisticMatrixRawPtr = statisticMatrixPtr.get();
+        const CContiguousView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
+        CContiguousView<Tuple<float64>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(labelMatrixPtr) \
@@ -34,7 +34,7 @@ namespace boosting {
 #endif
         for (int64 i = 0; i < numExamples; i++) {
             lossRawPtr->updateLabelWiseStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr, IndexIterator(),
-                                                  IndexIterator(labelMatrixPtr->getNumCols()), *statisticMatrixRawPtr);
+                                                  IndexIterator(labelMatrixPtr->numCols), *statisticMatrixRawPtr);
         }
 
         return std::make_unique<DenseLabelWiseStatistics<LabelMatrix>>(
@@ -55,7 +55,7 @@ namespace boosting {
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {}
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
-      const CContiguousConstView<const uint8>& labelMatrix) const {
+      const CContiguousView<const uint8>& labelMatrix) const {
         std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> statisticsPtr = createStatistics(
           *lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);
         return std::make_unique<LabelWiseStatisticsProvider<ILabelWiseRuleEvaluationFactory>>(
@@ -63,7 +63,7 @@ namespace boosting {
     }
 
     std::unique_ptr<IStatisticsProvider> DenseLabelWiseStatisticsProviderFactory::create(
-      const BinaryCsrConstView& labelMatrix) const {
+      const BinaryCsrView& labelMatrix) const {
         std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> statisticsPtr = createStatistics(
           *lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);
         return std::make_unique<LabelWiseStatisticsProvider<ILabelWiseRuleEvaluationFactory>>(

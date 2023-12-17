@@ -332,9 +332,9 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         if issparse(x):
             log.debug('A sparse matrix is used to store the feature values of the training examples')
             x_data = np.ascontiguousarray(x.data, dtype=Float32)
-            x_row_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
+            x_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
             x_indptr = np.ascontiguousarray(x.indptr, dtype=Uint32)
-            feature_matrix = CscFeatureMatrix(x.shape[0], x.shape[1], x_data, x_row_indices, x_indptr)
+            feature_matrix = CscFeatureMatrix(x_data, x_indices, x_indptr, x.shape[0], x.shape[1])
         else:
             log.debug('A dense matrix is used to store the feature values of the training examples')
             feature_matrix = FortranContiguousFeatureMatrix(x)
@@ -358,15 +358,15 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
 
         if issparse(y):
             log.debug('A sparse matrix is used to store the labels of the training examples')
-            y_col_indices = np.ascontiguousarray(y.indices, dtype=Uint32)
+            y_indices = np.ascontiguousarray(y.indices, dtype=Uint32)
             y_indptr = np.ascontiguousarray(y.indptr, dtype=Uint32)
-            label_matrix = CsrLabelMatrix(y.shape[0], y.shape[1], y_col_indices, y_indptr)
+            label_matrix = CsrLabelMatrix(y_indices, y_indptr, y.shape[0], y.shape[1])
         else:
             log.debug('A dense matrix is used to store the labels of the training examples')
             label_matrix = CContiguousLabelMatrix(y)
 
         # Obtain information about the types of the individual features...
-        feature_info = self.__create_feature_info(feature_matrix.get_num_cols())
+        feature_info = self.__create_feature_info(feature_matrix.get_num_features())
 
         # Induce rules...
         learner = self._create_learner()
@@ -528,9 +528,9 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         if issparse(x):
             log.debug('A sparse matrix is used to store the feature values of the query examples')
             x_data = np.ascontiguousarray(x.data, dtype=Float32)
-            x_col_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
+            x_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
             x_indptr = np.ascontiguousarray(x.indptr, dtype=Uint32)
-            return CsrFeatureMatrix(x.shape[0], x.shape[1], x_data, x_col_indices, x_indptr)
+            return CsrFeatureMatrix(x_data, x_indices, x_indptr, x.shape[0], x.shape[1])
 
         log.debug('A dense matrix is used to store the feature values of the query examples')
         return CContiguousFeatureMatrix(x)

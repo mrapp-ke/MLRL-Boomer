@@ -3,8 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_csr.hpp"
-#include "mlrl/common/data/view_vector.hpp"
+#include "mlrl/common/data/view.hpp"
 
 #include <functional>
 
@@ -46,10 +45,8 @@ class MLRLCOMMON_API IConditional {
          *                      invocations
          * @return              True, if the example is covered, false otherwise
          */
-        virtual bool covers(CsrConstView<const float32>::index_const_iterator indicesBegin,
-                            CsrConstView<const float32>::index_const_iterator indicesEnd,
-                            CsrConstView<const float32>::value_const_iterator valuesBegin,
-                            CsrConstView<const float32>::value_const_iterator valuesEnd,
+        virtual bool covers(View<uint32>::const_iterator indicesBegin, View<uint32>::const_iterator indicesEnd,
+                            View<float32>::const_iterator valuesBegin, View<float32>::const_iterator valuesEnd,
                             View<float32>::iterator tmpArray1, View<uint32>::iterator tmpArray2, uint32 n) const = 0;
 };
 

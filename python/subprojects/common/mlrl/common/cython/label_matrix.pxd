@@ -10,9 +10,9 @@ cdef extern from "mlrl/common/input/label_matrix.hpp" nogil:
 
         # Functions:
 
-        uint32 getNumRows() const
+        uint32 getNumExamples() const
 
-        uint32 getNumCols() const
+        uint32 getNumLabels() const
 
         bool isSparse() const
 
@@ -32,7 +32,7 @@ cdef extern from "mlrl/common/input/label_matrix_c_contiguous.hpp" nogil:
         pass
 
 
-    unique_ptr[ICContiguousLabelMatrix] createCContiguousLabelMatrix(uint32 numRows, uint32 numCols, const uint8* array)
+    unique_ptr[ICContiguousLabelMatrix] createCContiguousLabelMatrix(const uint8* array, uint32 numRows, uint32 numCols)
 
 
 cdef extern from "mlrl/common/input/label_matrix_csr.hpp" nogil:
@@ -41,7 +41,7 @@ cdef extern from "mlrl/common/input/label_matrix_csr.hpp" nogil:
         pass
 
 
-    unique_ptr[ICsrLabelMatrix] createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* colIndices, uint32* indptr)
+    unique_ptr[ICsrLabelMatrix] createCsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
 
 
 cdef class LabelMatrix:
@@ -71,7 +71,7 @@ cdef class CsrLabelMatrix(RowWiseLabelMatrix):
 
     # Attributes:
 
-    cdef uint32[::1] col_indices
+    cdef uint32[::1] indices
 
     cdef uint32[::1] indptr
 

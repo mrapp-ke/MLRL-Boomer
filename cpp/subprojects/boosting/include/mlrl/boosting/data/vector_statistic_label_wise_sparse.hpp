@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/histogram_view_label_wise_sparse.hpp"
-#include "mlrl/boosting/data/statistic_view_label_wise_sparse.hpp"
-#include "mlrl/common/data/triple.hpp"
+#include "mlrl/boosting/data/view_histogram_label_wise_sparse.hpp"
+#include "mlrl/common/data/tuple.hpp"
+#include "mlrl/common/data/view_matrix_sparse_set.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
@@ -17,7 +17,7 @@ namespace boosting {
      * and Hessian, as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
      */
     class SparseLabelWiseStatisticVector final
-        : public ClearableVectorDecorator<VectorDecorator<AllocatedVector<Triple<float64>>>> {
+        : public ClearableViewDecorator<VectorDecorator<AllocatedVector<Triple<float64>>>> {
         private:
 
             /**
@@ -177,149 +177,144 @@ namespace boosting {
             void add(const SparseLabelWiseStatisticVector& vector);
 
             /**
-             * Adds all gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView` to this vector.
+             * Adds all gradients and Hessians in a single row of a `SparseSetView` to this vector.
              *
-             * @param view  A reference to an object of type `SparseLabelWiseStatisticConstView` that stores the
-             *              gradients and Hessians to be added to this vector
+             * @param view  A reference to an object of type `SparseSetView` that stores the gradients and Hessians to
+             *              be added to this vector
              * @param row   The index of the row to be added to this vector
              */
-            void add(const SparseLabelWiseStatisticConstView& view, uint32 row);
+            void add(const SparseSetView<Tuple<float64>>& view, uint32 row);
 
             /**
-             * Adds all gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView` to this vector.
-             * The gradients and Hessians to be added are multiplied by a specific weight.
+             * Adds all gradients and Hessians in a single row of a `SparseSetView` to this vector. The gradients and
+             * Hessians to be added are multiplied by a specific weight.
              *
-             * @param view      A reference to an object of type `SparseLabelWiseStatisticConstView` that stores the
-             *                  gradients and Hessians to be added to this vector
+             * @param view      A reference to an object of type `SparseSetView` that stores the gradients and Hessians
+             *                  to be added to this vector
              * @param row       The index of the row to be added to this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void add(const SparseLabelWiseStatisticConstView& view, uint32 row, float64 weight);
+            void add(const SparseSetView<Tuple<float64>>& view, uint32 row, float64 weight);
 
             /**
-             * Removes all gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView` from this
-             * vector.
+             * Removes all gradients and Hessians in a single row of a `SparseSetView` from this vector.
              *
-             * @param view  A reference to an object of type `SparseLabelWiseStatisticConstView` that stores the
-             *              gradients and Hessians to be removed from this vector
+             * @param view  A reference to an object of type `SparseSetView` that stores the gradients and Hessians to
+             *              be removed from this vector
              * @param row   The index of the row to be removed from this vector
              */
-            void remove(const SparseLabelWiseStatisticConstView& view, uint32 row);
+            void remove(const SparseSetView<Tuple<float64>>& view, uint32 row);
 
             /**
-             * Removes all gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView` from this
-             * vector. The gradients and Hessians to be added are multiplied by a specific weight.
+             * Removes all gradients and Hessians in a single row of a `SparseSetView` from this vector. The gradients
+             * and Hessians to be added are multiplied by a specific weight.
              *
-             * @param view      A reference to an object of type `SparseLabelWiseStatisticConstView` that stores the
-             *                  gradients and Hessians to be removed from this vector
+             * @param view      A reference to an object of type `SparseSetView` that stores the gradients and Hessians
+             *                  to be removed from this vector
              * @param row       The index of the row to be removed from this vector
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void remove(const SparseLabelWiseStatisticConstView& view, uint32 row, float64 weight);
+            void remove(const SparseSetView<Tuple<float64>>& view, uint32 row, float64 weight);
 
             /**
-             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView`, whose
-             * positions are given as a `CompleteIndexVector`, to this vector.
+             * Adds certain gradients and Hessians in a single row of a `SparseSetView`, whose positions are given as a
+             * `CompleteIndexVector`, to this vector.
              *
-             * @param view      A reference to an object of type `SparseLabelWiseStatisticConstView` that stores the
-             *                  gradients and Hessians to be added to this vector
+             * @param view      A reference to an object of type `SparseSetView` that stores the gradients and Hessians
+             *                  to be added to this vector
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              */
-            void addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
-                             const CompleteIndexVector& indices);
+            void addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row, const CompleteIndexVector& indices);
 
             /**
-             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView`, whose
-             * positions are given as a `PartialIndexVector`, to this vector.
+             * Adds certain gradients and Hessians in a single row of a `SparseSetView`, whose positions are given as a
+             * `PartialIndexVector`, to this vector.
              *
-             * @param view      A reference to an object of type `SparseLabelWiseStatisticConstView` that stores the
-             *                  gradients and Hessians to be added to this vector
+             * @param view      A reference to an object of type `SparseSetView` that stores the gradients and Hessians
+             *                  to be added to this vector
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
              */
-            void addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
-                             const PartialIndexVector& indices);
+            void addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row, const PartialIndexVector& indices);
 
             /**
-             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView`, whose
-             * positions are given as a `CompleteIndexVector`, to this vector. The gradients and Hessians to be added
-             * are multiplied by a specific weight.
+             * Adds certain gradients and Hessians in a single row of a `SparseSetView`, whose positions are given as a
+             * `CompleteIndexVector`, to this vector. The gradients and Hessians to be added are multiplied by a
+             * specific weight.
              *
-             * @param view      A reference to an object of type `SparseLabelWiseStatisticConstView` that stores the
-             *                  gradients and Hessians to be added to this vector
+             * @param view      A reference to an object of type `SparseSetView` that stores the gradients and Hessians
+             *                  to be added to this vector
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
-                             const CompleteIndexVector& indices, float64 weight);
+            void addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row, const CompleteIndexVector& indices,
+                             float64 weight);
 
             /**
-             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseStatisticConstView`, whose
-             * positions are given as a `PartialIndexVector`, to this vector. The gradients and Hessians to be added are
+             * Adds certain gradients and Hessians in a single row of a `SparsesetView`, whose positions are given as a
+             * `PartialIndexVector`, to this vector. The gradients and Hessians to be added are multiplied by a specific
+             * weight.
+             *
+             * @param view      A reference to an object of type `SparseSetView` that stores the gradients and Hessians
+             *                  to be added to this vector
+             * @param row       The index of the row to be added to this vector
+             * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
+             * @param weight    The weight, the gradients and Hessians should be multiplied by
+             */
+            void addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row, const PartialIndexVector& indices,
+                             float64 weight);
+
+            /**
+             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseHistogramView`, whose positions
+             * are given as a `CompleteIndexVector`, to this vector.
+             *
+             * @param view      A reference to an object of type `SparseLabelWiseHistogramView` that stores the
+             *                  gradients and Hessians to be added to this vector
+             * @param row       The index of the row to be added to this vector
+             * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
+             */
+            void addToSubset(const SparseLabelWiseHistogramView& view, uint32 row, const CompleteIndexVector& indices);
+
+            /**
+             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseHistogramView`, whose positions
+             * are given as a `PartialIndexVector`, to this vector.
+             *
+             * @param view      A reference to an object of type `SparseLabelWiseHistogramView` that stores the
+             *                  gradients and Hessians to be added to this vector
+             * @param row       The index of the row to be added to this vector
+             * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
+             */
+            void addToSubset(const SparseLabelWiseHistogramView& view, uint32 row, const PartialIndexVector& indices);
+
+            /**
+             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseHistogramView`, whose positions
+             * are given as a `CompleteIndexVector`, to this vector. The gradients and Hessians to be added are
              * multiplied by a specific weight.
              *
-             * @param view      A reference to an object of type `SparseLabelWiseStatisticConstView` that stores the
-             *                  gradients and Hessians to be added to this vector
-             * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
-             * @param weight    The weight, the gradients and Hessians should be multiplied by
-             */
-            void addToSubset(const SparseLabelWiseStatisticConstView& view, uint32 row,
-                             const PartialIndexVector& indices, float64 weight);
-
-            /**
-             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseHistogramConstView`, whose
-             * positions are given as a `CompleteIndexVector`, to this vector.
-             *
-             * @param view      A reference to an object of type `SparseLabelWiseStatisticConstView` that stores the
-             *                  gradients and Hessians to be added to this vector
-             * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
-             */
-            void addToSubset(const SparseLabelWiseHistogramConstView& view, uint32 row,
-                             const CompleteIndexVector& indices);
-
-            /**
-             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseHistogramConstView`, whose
-             * positions are given as a `PartialIndexVector`, to this vector.
-             *
-             * @param view      A reference to an object of type `SparseLabelWiseStatisticConstView` that stores the
-             *                  gradients and Hessians to be added to this vector
-             * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
-             */
-            void addToSubset(const SparseLabelWiseHistogramConstView& view, uint32 row,
-                             const PartialIndexVector& indices);
-
-            /**
-             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseHistogramConstView`, whose
-             * positions are given as a `CompleteIndexVector`, to this vector. The gradients and Hessians to be added
-             * are multiplied by a specific weight.
-             *
-             * @param view      A reference to an object of type `SparseLabelWiseStatisticConstView` that stores the
+             * @param view      A reference to an object of type `SparseLabelWiseHistogramView` that stores the
              *                  gradients and Hessians to be added to this vector
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const SparseLabelWiseHistogramConstView& view, uint32 row,
-                             const CompleteIndexVector& indices, float64 weight);
+            void addToSubset(const SparseLabelWiseHistogramView& view, uint32 row, const CompleteIndexVector& indices,
+                             float64 weight);
 
             /**
-             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseHistogramConstView`, whose
-             * positions are given as a `PartialIndexVector`, to this vector. The gradients and Hessians to be added are
+             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseHistogramView`, whose positions
+             * are given as a `PartialIndexVector`, to this vector. The gradients and Hessians to be added are
              * multiplied by a specific weight.
              *
-             * @param view      A reference to an object of type `SparseLabelWiseHistogramConstView` that stores the
+             * @param view      A reference to an object of type `SparseLabelWiseHistogramView` that stores the
              *                  gradients and Hessians to be added to this vector
              * @param row       The index of the row to be added to this vector
              * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(const SparseLabelWiseHistogramConstView& view, uint32 row,
-                             const PartialIndexVector& indices, float64 weight);
+            void addToSubset(const SparseLabelWiseHistogramView& view, uint32 row, const PartialIndexVector& indices,
+                             float64 weight);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
@@ -352,9 +347,102 @@ namespace boosting {
                             const SparseLabelWiseStatisticVector& second);
 
             /**
-             * @see `ClearableVectorDecorator::clear`
+             * @see `ClearableViewDecorator::clear`
              */
             void clear() override;
     };
+
+    /**
+     * Adds the statistics that are stored in a single row of a `SparseSetView` to a sparse vector.
+     *
+     * @param statistics    An iterator, the statistics should be added to
+     * @param begin         An iterator to the beginning of the statistics to be added
+     * @param end           An iterator to the end of the statistics to be added
+     */
+    static inline void addToSparseLabelWiseStatisticVector(View<Triple<float64>>::iterator statistics,
+                                                           SparseSetView<Tuple<float64>>::value_const_iterator begin,
+                                                           SparseSetView<Tuple<float64>>::value_const_iterator end) {
+        uint32 numElements = end - begin;
+
+        for (uint32 i = 0; i < numElements; i++) {
+            const IndexedValue<Tuple<float64>>& entry = begin[i];
+            const Tuple<float64>& tuple = entry.value;
+            Triple<float64>& triple = statistics[entry.index];
+            triple.first += tuple.first;
+            triple.second += tuple.second;
+            triple.third += 1;
+        }
+    }
+
+    /**
+     * Adds the statistics that are stored in a single row of a `SparseSetView` to a sparse vector. The statistics are
+     * multiplied by a specific weight.
+     *
+     * @param statistics    An iterator, the statistics should be added to
+     * @param begin         An iterator to the beginning of the statistics to be added
+     * @param end           An iterator to the end of the statistics to be added
+     * @param weight        The weight, the statistics should be multiplied by
+     */
+    static inline void addToSparseLabelWiseStatisticVector(View<Triple<float64>>::iterator statistics,
+                                                           SparseSetView<Tuple<float64>>::value_const_iterator begin,
+                                                           SparseSetView<Tuple<float64>>::value_const_iterator end,
+                                                           float64 weight) {
+        uint32 numElements = end - begin;
+
+        for (uint32 i = 0; i < numElements; i++) {
+            const IndexedValue<Tuple<float64>>& entry = begin[i];
+            const Tuple<float64>& tuple = entry.value;
+            Triple<float64>& triple = statistics[entry.index];
+            triple.first += (tuple.first * weight);
+            triple.second += (tuple.second * weight);
+            triple.third += weight;
+        }
+    }
+
+    /**
+     * Removes the statistics that are stored in a single row of a `SparseSetView` from a sparse vector.
+     *
+     * @param statistics    An iterator, the statistics should be removed from
+     * @param begin         An iterator to the beginning of the statistics to be removed
+     * @param end           An iterator to the end of the statistics to be removed
+     */
+    static inline void removeFromSparseLabelWiseStatisticVector(
+      View<Triple<float64>>::iterator statistics, SparseSetView<Tuple<float64>>::value_const_iterator begin,
+      SparseSetView<Tuple<float64>>::value_const_iterator end) {
+        uint32 numElements = end - begin;
+
+        for (uint32 i = 0; i < numElements; i++) {
+            const IndexedValue<Tuple<float64>>& entry = begin[i];
+            const Tuple<float64>& tuple = entry.value;
+            Triple<float64>& triple = statistics[entry.index];
+            triple.first -= tuple.first;
+            triple.second -= tuple.second;
+            triple.third -= 1;
+        }
+    }
+
+    /**
+     * Removes the statistics that are stored in a single row of a `SparseSetView` from a sparse vector. The statistics
+     * are multiplied by a specific weight.
+     *
+     * @param statistics    An iterator, the statistics should be removed from
+     * @param begin         An iterator to the beginning of the statistics to be removed
+     * @param end           An iterator to the end of the statistics to be removed
+     * @param weight        The weight, the statistics should be multiplied by
+     */
+    static inline void removeFromSparseLabelWiseStatisticVector(
+      View<Triple<float64>>::iterator statistics, SparseSetView<Tuple<float64>>::value_const_iterator begin,
+      SparseSetView<Tuple<float64>>::value_const_iterator end, float64 weight) {
+        uint32 numElements = end - begin;
+
+        for (uint32 i = 0; i < numElements; i++) {
+            const IndexedValue<Tuple<float64>>& entry = begin[i];
+            const Tuple<float64>& tuple = entry.value;
+            Triple<float64>& triple = statistics[entry.index];
+            triple.first -= (tuple.first * weight);
+            triple.second -= (tuple.second * weight);
+            triple.third -= weight;
+        }
+    }
 
 }

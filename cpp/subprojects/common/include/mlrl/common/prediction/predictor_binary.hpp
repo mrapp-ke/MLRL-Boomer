@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_c_contiguous.hpp"
-#include "mlrl/common/data/view_csr.hpp"
+#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_csr.hpp"
 #include "mlrl/common/model/rule_list.hpp"
 #include "mlrl/common/prediction/label_vector_set.hpp"
 #include "mlrl/common/prediction/prediction_matrix_dense.hpp"
@@ -32,8 +32,8 @@ class IBinaryPredictorFactory {
         /**
          * Creates and returns a new object of the type `IBinaryPredictor`.
          *
-         * @param featureMatrix                         A reference to an object of type `CsrConstView` that stores the
-         *                                              feature values of the query examples to predict for
+         * @param featureMatrix                         A reference to an object of type `CContiguousView` that stores
+         *                                              the feature values of the query examples to predict for
          * @param model                                 A reference to an object of type `RuleList` that should be used
          *                                              to obtain predictions
          * @param labelVectorSet                        A pointer to an object of type `LabelVectorSet` that stores all
@@ -50,7 +50,7 @@ class IBinaryPredictorFactory {
          *                                              has been created
          */
         virtual std::unique_ptr<IBinaryPredictor> create(
-          const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+          const CContiguousView<const float32>& featureMatrix, const RuleList& model,
           const LabelVectorSet* labelVectorSet,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
@@ -58,7 +58,7 @@ class IBinaryPredictorFactory {
         /**
          * Creates and returns a new object of the type `IBinaryPredictor`.
          *
-         * @param featureMatrix                         A reference to an object of type `CsrConstView` that stores the
+         * @param featureMatrix                         A reference to an object of type `CsrView` that stores the
          *                                              feature values of the query examples to predict for
          * @param model                                 A reference to an object of type `RuleList` that should be used
          *                                              to obtain predictions
@@ -76,7 +76,7 @@ class IBinaryPredictorFactory {
          *                                              has been created
          */
         virtual std::unique_ptr<IBinaryPredictor> create(
-          const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
+          const CsrView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 };
@@ -101,8 +101,8 @@ class ISparseBinaryPredictorFactory {
         /**
          * Creates and returns a new object of the type `ISparseBinaryPredictor`.
          *
-         * @param featureMatrix                         A reference to an object of type `CsrConstView` that stores the
-         *                                              feature values of the query examples to predict for
+         * @param featureMatrix                         A reference to an object of type `CContiguousView` that stores
+         *                                              the feature values of the query examples to predict for
          * @param model                                 A reference to an object of type `RuleList` that should be used
          *                                              to obtain predictions
          * @param labelVectorSet                        A pointer to an object of type `LabelVectorSet` that stores all
@@ -119,7 +119,7 @@ class ISparseBinaryPredictorFactory {
          *                                              that has been created
          */
         virtual std::unique_ptr<ISparseBinaryPredictor> create(
-          const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+          const CContiguousView<const float32>& featureMatrix, const RuleList& model,
           const LabelVectorSet* labelVectorSet,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
@@ -127,7 +127,7 @@ class ISparseBinaryPredictorFactory {
         /**
          * Creates and returns a new object of the type `ISparseBinaryPredictor`.
          *
-         * @param featureMatrix                         A reference to an object of type `CsrConstView` that stores the
+         * @param featureMatrix                         A reference to an object of type `CsrView` that stores the
          *                                              feature values of the query examples to predict for
          * @param model                                 A reference to an object of type `RuleList` that should be used
          *                                              to obtain predictions
@@ -145,7 +145,7 @@ class ISparseBinaryPredictorFactory {
          *                                              that has been created
          */
         virtual std::unique_ptr<ISparseBinaryPredictor> create(
-          const CsrConstView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
+          const CsrView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 };

@@ -5,7 +5,9 @@
 namespace seco {
 
     DenseCoverageMatrix::DenseCoverageMatrix(uint32 numRows, uint32 numCols, float64 sumOfUncoveredWeights)
-        : CContiguousMatrix<uint32>(numRows, numCols, true), sumOfUncoveredWeights_(sumOfUncoveredWeights) {}
+        : DenseMatrixDecorator<AllocatedCContiguousView<uint32>>(
+          AllocatedCContiguousView<uint32>(numRows, numCols, true)),
+          sumOfUncoveredWeights_(sumOfUncoveredWeights) {}
 
     float64 DenseCoverageMatrix::getSumOfUncoveredWeights() const {
         return sumOfUncoveredWeights_;

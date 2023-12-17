@@ -8,8 +8,6 @@
 #include "mlrl/common/model/head_partial.hpp"
 #include "mlrl/common/prediction/predictor_common.hpp"
 
-#include <stdexcept>
-
 namespace seco {
 
     static inline void applyHead(const CompleteHead& head, View<uint8>::iterator iterator, BitVector& mask) {
@@ -51,13 +49,12 @@ namespace seco {
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
 
-    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+    static inline void predictForExampleInternally(const CContiguousView<const float32>& featureMatrix,
                                                    RuleList::const_iterator rulesBegin,
                                                    RuleList::const_iterator rulesEnd,
                                                    CContiguousView<uint8>& predictionMatrix, uint32 exampleIndex,
                                                    uint32 predictionIndex) {
-        uint32 numLabels = predictionMatrix.getNumCols();
-        BitVector mask(numLabels, true);
+        BitVector mask(predictionMatrix.numCols, true);
 
         for (; rulesBegin != rulesEnd; rulesBegin++) {
             const RuleList::Rule& rule = *rulesBegin;
@@ -70,14 +67,13 @@ namespace seco {
         }
     }
 
-    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+    static inline void predictForExampleInternally(const CsrView<const float32>& featureMatrix,
                                                    RuleList::const_iterator rulesBegin,
                                                    RuleList::const_iterator rulesEnd,
                                                    CContiguousView<uint8>& predictionMatrix, uint32 exampleIndex,
                                                    uint32 predictionIndex) {
-        uint32 numFeatures = featureMatrix.getNumCols();
-        uint32 numLabels = predictionMatrix.getNumCols();
-        BitVector mask(numLabels, true);
+        BitVector mask(predictionMatrix.numCols, true);
+        uint32 numFeatures = featureMatrix.numCols;
         Array<float32> tmpArray1(numFeatures);
         Array<uint32> tmpArray2(numFeatures, true);
         uint32 n = 1;
@@ -157,11 +153,10 @@ namespace seco {
              * @see `IPredictor::predict`
              */
             std::unique_ptr<DensePredictionMatrix<uint8>> predict(uint32 maxRules) const override {
-                uint32 numExamples = featureMatrix_.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<uint8>> predictionMatrixPtr =
-                  std::make_unique<DensePredictionMatrix<uint8>>(numExamples, numLabels_,
+                  std::make_unique<DensePredictionMatrix<uint8>>(featureMatrix_.numRows, numLabels_,
                                                                  !model_.containsDefaultRule());
-                PredictionDelegate delegate(*predictionMatrixPtr);
+                PredictionDelegate delegate(predictionMatrixPtr->getView());
                 PredictionDispatcher<uint8, FeatureMatrix, Model>().predict(
                   delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
                 return predictionMatrixPtr;
@@ -204,22 +199,21 @@ namespace seco {
             LabelWiseBinaryPredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
 
             std::unique_ptr<IBinaryPredictor> create(
-              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const CContiguousView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
-                return std::make_unique<LabelWiseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
+                return std::make_unique<LabelWiseBinaryPredictor<CContiguousView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
             }
 
             std::unique_ptr<IBinaryPredictor> create(
-              const CsrConstView<const float32>& featureMatrix, const RuleList& model,
-              const LabelVectorSet* labelVectorSet,
+              const CsrView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
-                return std::make_unique<LabelWiseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
+                return std::make_unique<LabelWiseBinaryPredictor<CsrView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
             }
     };
@@ -229,8 +223,8 @@ namespace seco {
                                  BinaryLilMatrix::row predictionRow, uint32 numLabels) {
         if (scoresBegin != scoresEnd) {
             if (predictionRow.size() > 0) {
-                BinaryLilMatrix::iterator end = predictionRow.end();
-                BinaryLilMatrix::iterator start =
+                BinaryLilMatrix::value_iterator end = predictionRow.end();
+                BinaryLilMatrix::value_iterator start =
                   std::lower_bound(predictionRow.begin(), end, indexIterator[*scoresBegin]);
                 uint32 bufferSize = end - start;
                 Array<uint32> buffer(bufferSize);
@@ -292,7 +286,7 @@ namespace seco {
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
 
-    static inline void predictForExampleInternally(const CContiguousConstView<const float32>& featureMatrix,
+    static inline void predictForExampleInternally(const CContiguousView<const float32>& featureMatrix,
                                                    RuleList::const_iterator rulesBegin,
                                                    RuleList::const_iterator rulesEnd,
                                                    BinaryLilMatrix::row predictionRow, uint32 numLabels,
@@ -308,12 +302,12 @@ namespace seco {
         }
     }
 
-    static inline void predictForExampleInternally(const CsrConstView<const float32>& featureMatrix,
+    static inline void predictForExampleInternally(const CsrView<const float32>& featureMatrix,
                                                    RuleList::const_iterator rulesBegin,
                                                    RuleList::const_iterator rulesEnd,
                                                    BinaryLilMatrix::row predictionRow, uint32 numLabels,
                                                    uint32 exampleIndex) {
-        uint32 numFeatures = featureMatrix.getNumCols();
+        uint32 numFeatures = featureMatrix.numCols;
         Array<float32> tmpArray1(numFeatures);
         Array<uint32> tmpArray2(numFeatures, true);
         uint32 n = 1;
@@ -399,8 +393,7 @@ namespace seco {
              * @see `IPredictor::predict`
              */
             std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
-                uint32 numExamples = featureMatrix_.getNumRows();
-                BinaryLilMatrix predictionMatrix(numExamples);
+                BinaryLilMatrix predictionMatrix(featureMatrix_.numRows, numLabels_);
                 Delegate delegate(predictionMatrix, numLabels_);
                 uint32 numNonZeroElements = Dispatcher().predict(delegate, featureMatrix_, model_.used_cbegin(maxRules),
                                                                  model_.used_cend(maxRules), numThreads_);
@@ -445,22 +438,21 @@ namespace seco {
             LabelWiseSparseBinaryPredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
 
             std::unique_ptr<ISparseBinaryPredictor> create(
-              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const CContiguousView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
-                return std::make_unique<LabelWiseSparseBinaryPredictor<CContiguousConstView<const float32>, RuleList>>(
+                return std::make_unique<LabelWiseSparseBinaryPredictor<CContiguousView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
             }
 
             std::unique_ptr<ISparseBinaryPredictor> create(
-              const CsrConstView<const float32>& featureMatrix, const RuleList& model,
-              const LabelVectorSet* labelVectorSet,
+              const CsrView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
-                return std::make_unique<LabelWiseSparseBinaryPredictor<CsrConstView<const float32>, RuleList>>(
+                return std::make_unique<LabelWiseSparseBinaryPredictor<CsrView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
             }
     };

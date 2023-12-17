@@ -63,13 +63,11 @@ namespace boosting {
         }
     }
 
-    static inline void applyRule(const RuleList::Rule& rule,
-                                 CsrConstView<const float32>::index_const_iterator featureIndicesBegin,
-                                 CsrConstView<const float32>::index_const_iterator featureIndicesEnd,
-                                 CsrConstView<const float32>::value_const_iterator featureValuesBegin,
-                                 CsrConstView<const float32>::value_const_iterator featureValuesEnd,
-                                 View<float64>::iterator scoreIterator, View<float32>::iterator tmpArray1,
-                                 View<uint32>::iterator tmpArray2, uint32 n) {
+    static inline void applyRule(const RuleList::Rule& rule, View<uint32>::const_iterator featureIndicesBegin,
+                                 View<uint32>::const_iterator featureIndicesEnd,
+                                 View<float32>::const_iterator featureValuesBegin,
+                                 View<float32>::const_iterator featureValuesEnd, View<float64>::iterator scoreIterator,
+                                 View<float32>::iterator tmpArray1, View<uint32>::iterator tmpArray2, uint32 n) {
         const IBody& body = rule.getBody();
 
         if (body.covers(featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd, tmpArray1,
@@ -80,11 +78,10 @@ namespace boosting {
     }
 
     static inline void applyRules(RuleList::const_iterator rulesBegin, RuleList::const_iterator rulesEnd,
-                                  uint32 numFeatures,
-                                  CsrConstView<const float32>::index_const_iterator featureIndicesBegin,
-                                  CsrConstView<const float32>::index_const_iterator featureIndicesEnd,
-                                  CsrConstView<const float32>::value_const_iterator featureValuesBegin,
-                                  CsrConstView<const float32>::value_const_iterator featureValuesEnd,
+                                  uint32 numFeatures, View<uint32>::const_iterator featureIndicesBegin,
+                                  View<uint32>::const_iterator featureIndicesEnd,
+                                  View<float32>::const_iterator featureValuesBegin,
+                                  View<float32>::const_iterator featureValuesEnd,
                                   View<float64>::iterator scoreIterator) {
         Array<float32> tmpArray1(numFeatures);
         Array<uint32> tmpArray2(numFeatures, true);
@@ -98,7 +95,7 @@ namespace boosting {
         }
     }
 
-    static inline void aggregatePredictedScores(const CContiguousConstView<const float32>& featureMatrix,
+    static inline void aggregatePredictedScores(const CContiguousView<const float32>& featureMatrix,
                                                 RuleList::const_iterator rulesBegin, RuleList::const_iterator rulesEnd,
                                                 CContiguousView<float64>& scoreMatrix, uint32 exampleIndex,
                                                 uint32 predictionIndex) {
@@ -106,12 +103,11 @@ namespace boosting {
                    featureMatrix.values_cend(exampleIndex), scoreMatrix.values_begin(predictionIndex));
     }
 
-    static inline void aggregatePredictedScores(const CsrConstView<const float32>& featureMatrix,
+    static inline void aggregatePredictedScores(const CsrView<const float32>& featureMatrix,
                                                 RuleList::const_iterator rulesBegin, RuleList::const_iterator rulesEnd,
                                                 CContiguousView<float64>& scoreMatrix, uint32 exampleIndex,
                                                 uint32 predictionIndex) {
-        uint32 numFeatures = featureMatrix.getNumCols();
-        applyRules(rulesBegin, rulesEnd, numFeatures, featureMatrix.indices_cbegin(exampleIndex),
+        applyRules(rulesBegin, rulesEnd, featureMatrix.numCols, featureMatrix.indices_cbegin(exampleIndex),
                    featureMatrix.indices_cend(exampleIndex), featureMatrix.values_cbegin(exampleIndex),
                    featureMatrix.values_cend(exampleIndex), scoreMatrix.values_begin(predictionIndex));
     }
@@ -174,7 +170,7 @@ namespace boosting {
                     DensePredictionMatrix<float64>& applyNext(const FeatureMatrix& featureMatrix, uint32 numThreads,
                                                               typename Model::const_iterator rulesBegin,
                                                               typename Model::const_iterator rulesEnd) override {
-                        ScorePredictionDelegate<FeatureMatrix, Model> delegate(predictionMatrix_);
+                        ScorePredictionDelegate<FeatureMatrix, Model> delegate(predictionMatrix_.getView());
                         PredictionDispatcher<float64, FeatureMatrix, Model>().predict(delegate, featureMatrix,
                                                                                       rulesBegin, rulesEnd, numThreads);
                         return predictionMatrix_;
@@ -185,7 +181,7 @@ namespace boosting {
                     IncrementalPredictor(const ScorePredictor& predictor, uint32 maxRules)
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<float64>>(
                           predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
-                          predictionMatrix_(predictor.featureMatrix_.getNumRows(), predictor.numLabels_, true) {}
+                          predictionMatrix_(predictor.featureMatrix_.numRows, predictor.numLabels_, true) {}
             };
 
             const FeatureMatrix& featureMatrix_;
@@ -214,10 +210,9 @@ namespace boosting {
              * @see `IPredictor::predict`
              */
             std::unique_ptr<DensePredictionMatrix<float64>> predict(uint32 maxRules) const override {
-                uint32 numExamples = featureMatrix_.getNumRows();
                 std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
-                  std::make_unique<DensePredictionMatrix<float64>>(numExamples, numLabels_, true);
-                ScorePredictionDelegate<FeatureMatrix, Model> delegate(*predictionMatrixPtr);
+                  std::make_unique<DensePredictionMatrix<float64>>(featureMatrix_.numRows, numLabels_, true);
+                ScorePredictionDelegate<FeatureMatrix, Model> delegate(predictionMatrixPtr->getView());
                 PredictionDispatcher<float64, FeatureMatrix, Model>().predict(
                   delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
                 return predictionMatrixPtr;

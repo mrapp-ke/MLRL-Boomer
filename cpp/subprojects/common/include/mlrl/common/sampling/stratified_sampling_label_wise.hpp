@@ -3,6 +3,8 @@
  */
 #pragma once
 
+#include "mlrl/common/data/matrix_sparse_binary.hpp"
+#include "mlrl/common/data/view_matrix_csc_binary.hpp"
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/weight_vector_bit.hpp"
 
@@ -22,13 +24,7 @@ template<typename LabelMatrix, typename IndexIterator>
 class LabelWiseStratification final {
     private:
 
-        uint32 numRows_;
-
-        uint32 numCols_;
-
-        uint32* rowIndices_;
-
-        uint32* indptr_;
+        BinarySparseMatrixDecorator<AllocatedBinaryCscView> stratificationMatrix_;
 
     public:
 
@@ -40,8 +36,6 @@ class LabelWiseStratification final {
          */
         LabelWiseStratification(const LabelMatrix& labelMatrix, IndexIterator indicesBegin, IndexIterator indicesEnd);
 
-        ~LabelWiseStratification();
-
         /**
          * Randomly selects a stratified sample of the available examples and sets their weights to 1, while the
          * remaining weights are set to 0.
@@ -51,7 +45,7 @@ class LabelWiseStratification final {
          * @param rng           A reference to an object of type `RNG`, implementing the random number generator to be
          *                      used
          */
-        void sampleWeights(BitWeightVector& weightVector, float32 sampleSize, RNG& rng) const;
+        void sampleWeights(BitWeightVector& weightVector, float32 sampleSize, RNG& rng);
 
         /**
          * Randomly splits the available examples into two distinct sets and updates a given `BiPartition` accordingly.
@@ -59,5 +53,5 @@ class LabelWiseStratification final {
          * @param partition A reference to an object of type `BiPartition` to be updated
          * @param rng       A reference to an object of type `RNG`, implementing the random number generator to be used
          */
-        void sampleBiPartition(BiPartition& partition, RNG& rng) const;
+        void sampleBiPartition(BiPartition& partition, RNG& rng);
 };

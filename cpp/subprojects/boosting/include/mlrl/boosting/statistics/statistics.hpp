@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/common/data/matrix_sparse_set.hpp"
-#include "mlrl/common/data/view_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_sparse_set.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 
 #include <functional>
@@ -21,21 +21,21 @@ namespace boosting {
             virtual ~IBoostingStatistics() {}
 
             /**
-             * A visitor function for handling score matrices of the type `CContiguousConstView`.
+             * A visitor function for handling score matrices of the type `CContiguousView`.
              */
-            typedef std::function<void(const CContiguousConstView<float64>&)> DenseScoreMatrixVisitor;
+            typedef std::function<void(const CContiguousView<float64>&)> DenseScoreMatrixVisitor;
 
             /**
-             * A visitor function for handling score matrices of the type `SparseSetMatrix`.
+             * A visitor function for handling score matrices of the type `SparseSetView`.
              */
-            typedef std::function<void(const SparseSetMatrix<float64>&)> SparseScoreMatrixVisitor;
+            typedef std::function<void(const SparseSetView<float64>&)> SparseScoreMatrixVisitor;
 
             /**
              * Invokes one of the given visitor functions, depending on which one is able to handle the type of matrix
              * that is used to store the currently predicted scores.
              *
-             * @param denseVisitor  The visitor function for handling objects of the type `CContiguousConstView`
-             * @param sparseVisitor The visitor function for handling objects of the type `SparseSetMatrix`
+             * @param denseVisitor  The visitor function for handling objects of the type `CContiguousView`
+             * @param sparseVisitor The visitor function for handling objects of the type `SparseSetView`
              */
             virtual void visitScoreMatrix(DenseScoreMatrixVisitor denseVisitor,
                                           SparseScoreMatrixVisitor sparseVisitor) const = 0;

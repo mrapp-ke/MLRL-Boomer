@@ -3,7 +3,7 @@
 namespace boosting {
 
     template<typename T, typename IndexIterator>
-    static inline void addToRowFromSubsetInternally(typename NumericSparseSetMatrix<T>::row row,
+    static inline void addToRowFromSubsetInternally(typename SparseSetView<T>::row row,
                                                     typename View<T>::const_iterator iterator,
                                                     IndexIterator indexIterator, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
@@ -14,7 +14,7 @@ namespace boosting {
     }
 
     template<typename T, typename IndexIterator>
-    static inline void removeFromRowFromSubsetInternally(typename NumericSparseSetMatrix<T>::row row,
+    static inline void removeFromRowFromSubsetInternally(typename SparseSetView<T>::row row,
                                                          typename View<T>::const_iterator iterator,
                                                          IndexIterator indexIterator, uint32 numElements) {
         for (uint32 i = 0; i < numElements; i++) {
@@ -26,7 +26,7 @@ namespace boosting {
 
     template<typename T>
     NumericSparseSetMatrix<T>::NumericSparseSetMatrix(uint32 numRows, uint32 numCols)
-        : SparseSetMatrix<T>(numRows, numCols) {}
+        : SparseSetMatrixDecorator<SparseSetView<T>>(SparseSetView<T>(numRows, numCols)) {}
 
     template<typename T>
     void NumericSparseSetMatrix<T>::addToRowFromSubset(uint32 row, typename View<T>::const_iterator begin,
