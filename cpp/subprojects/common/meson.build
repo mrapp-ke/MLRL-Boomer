@@ -11,7 +11,6 @@ source_files = [
     'src/mlrl/common/binning/threshold_vector.cpp',
     'src/mlrl/common/data/ring_buffer.cpp',
     'src/mlrl/common/data/vector_bit.cpp',
-    'src/mlrl/common/data/vector_dok.cpp',
     'src/mlrl/common/data/vector_dok_binary.cpp',
     'src/mlrl/common/indices/index_iterator.cpp',
     'src/mlrl/common/indices/index_vector_complete.cpp',
