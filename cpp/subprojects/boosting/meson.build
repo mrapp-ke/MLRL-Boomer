@@ -13,7 +13,6 @@ source_files = [
     'src/mlrl/boosting/data/vector_statistic_label_wise_sparse.cpp',
     'src/mlrl/boosting/data/view_histogram_label_wise_sparse.cpp',
     'src/mlrl/boosting/data/view_statistic_example_wise_dense.cpp',
-    'src/mlrl/boosting/iterator/diagonal_iterator.cpp',
     'src/mlrl/boosting/losses/loss_example_wise_logistic.cpp',
     'src/mlrl/boosting/losses/loss_example_wise_squared_error.cpp',
     'src/mlrl/boosting/losses/loss_example_wise_squared_hinge.cpp',
