@@ -66,7 +66,7 @@ class PredictionDispatcher final {
         void predict(const IPredictionDelegate& delegate, const FeatureMatrix& featureMatrix,
                      typename Model::const_iterator rulesBegin, typename Model::const_iterator rulesEnd,
                      uint32 numThreads) const {
-            uint32 numExamples = featureMatrix.getNumRows();
+            uint32 numExamples = featureMatrix.numRows;
             const IPredictionDelegate* delegatePtr = &delegate;
             const FeatureMatrix* featureMatrixPtr = &featureMatrix;
 
@@ -146,7 +146,7 @@ class BinarySparsePredictionDispatcher final {
         uint32 predict(const IPredictionDelegate& delegate, const FeatureMatrix& featureMatrix,
                        typename Model::const_iterator rulesBegin, typename Model::const_iterator rulesEnd,
                        uint32 numThreads) const {
-            uint32 numExamples = featureMatrix.getNumRows();
+            uint32 numExamples = featureMatrix.numRows;
             const IPredictionDelegate* delegatePtr = &delegate;
             const FeatureMatrix* featureMatrixPtr = &featureMatrix;
             uint32 numNonZeroElements = 0;

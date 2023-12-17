@@ -12,15 +12,14 @@
  * @tparam ValueView    The type of the view, the values are backed by
  */
 template<typename IndexView, typename ValueView>
-class MLRLCOMMON_API IndexedVectorDecorator : public CompositeVectorDecorator<IndexView, ValueView> {
+class MLRLCOMMON_API IndexedVectorDecorator : public ViewDecorator<CompositeVector<IndexView, ValueView>> {
     public:
 
         /**
-         * @param indexView The view, the indices should be backed by
-         * @param valueView The view, the values should be backed by
+         * @param view The view, the vector should be backed by
          */
-        IndexedVectorDecorator(IndexView&& indexView, ValueView&& valueView)
-            : CompositeVectorDecorator<IndexView, ValueView>(std::move(indexView), std::move(valueView)) {}
+        IndexedVectorDecorator(CompositeVector<IndexView, ValueView>&& view)
+            : ViewDecorator<CompositeVector<IndexView, ValueView>>(std::move(view)) {}
 
         virtual ~IndexedVectorDecorator() override {}
 
@@ -40,7 +39,7 @@ class MLRLCOMMON_API IndexedVectorDecorator : public CompositeVectorDecorator<In
          * @return The number of elements in the vector
          */
         uint32 getNumElements() const {
-            return this->firstView_.numElements;
+            return this->view.firstView.numElements;
         }
 };
 
@@ -54,34 +53,31 @@ class MLRLCOMMON_API IterableIndexedVectorDecorator : public Vector {
     public:
 
         /**
-         * @param indexView The view, the indices should be backed by
-         * @param valueView The view, the values should be backed by
+         * @param view The view, the vector should be backed by
          */
-        IterableIndexedVectorDecorator(typename Vector::first_view_type&& indexView,
-                                       typename Vector::second_view_type&& valueView)
-            : Vector(std::move(indexView), std::move(valueView)) {}
+        IterableIndexedVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
 
         virtual ~IterableIndexedVectorDecorator() override {}
 
         /**
          * An iterator that provides read-only access to the indices stored in the vector.
          */
-        typedef typename Vector::first_view_type::const_iterator index_const_iterator;
+        typedef typename Vector::view_type::first_view_type::const_iterator index_const_iterator;
 
         /**
          * An iterator that provides read-only access to the values stored in the vector.
          */
-        typedef typename Vector::second_view_type::const_iterator value_const_iterator;
+        typedef typename Vector::view_type::second_view_type::const_iterator value_const_iterator;
 
         /**
          * An iterator that provides access to the indices stored in the vector and allows to modify them.
          */
-        typedef typename Vector::first_view_type::iterator index_iterator;
+        typedef typename Vector::view_type::first_view_type::iterator index_iterator;
 
         /**
          * An iterator that provides access to the values stored in the vector and allows to modify them.
          */
-        typedef typename Vector::second_view_type::iterator value_iterator;
+        typedef typename Vector::view_type::second_view_type::iterator value_iterator;
 
         /**
          * Returns an `index_const_iterator` to the beginning of the vector.
@@ -89,7 +85,7 @@ class MLRLCOMMON_API IterableIndexedVectorDecorator : public Vector {
          * @return An `index_const_iterator` to the beginning
          */
         index_const_iterator indices_cbegin() const {
-            return Vector::firstView_.cbegin();
+            return Vector::view.firstView.cbegin();
         }
 
         /**
@@ -98,7 +94,7 @@ class MLRLCOMMON_API IterableIndexedVectorDecorator : public Vector {
          * @return An `index_const_iterator` to the end
          */
         index_const_iterator indices_cend() const {
-            return Vector::firstView_.cend();
+            return Vector::view.firstView.cend();
         }
 
         /**
@@ -107,7 +103,7 @@ class MLRLCOMMON_API IterableIndexedVectorDecorator : public Vector {
          * @return A `value_const_iterator` to the beginning
          */
         value_const_iterator values_cbegin() const {
-            return Vector::secondView_.cbegin();
+            return Vector::view.secondView.cbegin();
         }
 
         /**
@@ -116,7 +112,7 @@ class MLRLCOMMON_API IterableIndexedVectorDecorator : public Vector {
          * @return A `value_const_iterator` to the end
          */
         value_const_iterator values_cend() const {
-            return Vector::secondView_.cend();
+            return Vector::view.secondView.cend();
         }
 
         /**
@@ -125,7 +121,7 @@ class MLRLCOMMON_API IterableIndexedVectorDecorator : public Vector {
          * @return An `index_iterator` to the beginning
          */
         index_iterator indices_begin() {
-            return Vector::firstView_.begin();
+            return Vector::view.firstView.begin();
         }
 
         /**
@@ -134,7 +130,7 @@ class MLRLCOMMON_API IterableIndexedVectorDecorator : public Vector {
          * @return An `index_iterator` to the end
          */
         index_iterator indices_end() {
-            return Vector::firstView_.end();
+            return Vector::view.firstView.end();
         }
 
         /**
@@ -143,7 +139,7 @@ class MLRLCOMMON_API IterableIndexedVectorDecorator : public Vector {
          * @return A `value_iterator` to the beginning
          */
         value_iterator values_begin() {
-            return Vector::secondView_.begin();
+            return Vector::view.secondView.begin();
         }
 
         /**
@@ -152,6 +148,6 @@ class MLRLCOMMON_API IterableIndexedVectorDecorator : public Vector {
          * @return A `value_iterator` to the end
          */
         value_iterator values_end() {
-            return Vector::secondView_.end();
+            return Vector::view.secondView.end();
         }
 };

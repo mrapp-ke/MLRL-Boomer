@@ -3,7 +3,8 @@
 template<typename Threshold, typename Compare>
 ConjunctiveBody::ConditionVector<Threshold, Compare>::ConditionVector(uint32 numConditions)
     : IterableIndexedVectorDecorator<IndexedVectorDecorator<AllocatedVector<uint32>, AllocatedVector<Threshold>>>(
-      AllocatedVector<uint32>(numConditions), AllocatedVector<Threshold>(numConditions)) {}
+      CompositeVector<AllocatedVector<uint32>, AllocatedVector<Threshold>>(
+        AllocatedVector<uint32>(numConditions), AllocatedVector<Threshold>(numConditions))) {}
 
 template<typename Threshold, typename Compare>
 bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(View<const float32>::const_iterator begin,
@@ -26,11 +27,12 @@ bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(View<const flo
 }
 
 template<typename Threshold, typename Compare>
-bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(
-  CsrConstView<const float32>::index_const_iterator indicesBegin,
-  CsrConstView<const float32>::index_const_iterator indicesEnd,
-  CsrConstView<const float32>::value_const_iterator valuesBegin,
-  CsrConstView<const float32>::value_const_iterator valuesEnd, float32* tmpArray1, uint32* tmpArray2, uint32 n) const {
+bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(View<uint32>::const_iterator indicesBegin,
+                                                                  View<uint32>::const_iterator indicesEnd,
+                                                                  View<float32>::const_iterator valuesBegin,
+                                                                  View<float32>::const_iterator valuesEnd,
+                                                                  float32* tmpArray1, uint32* tmpArray2,
+                                                                  uint32 n) const {
     uint32 numConditions = this->getNumElements();
     index_const_iterator featureIndexIterator = this->indices_cbegin();
     threshold_const_iterator thresholdIterator = this->values_cbegin();
@@ -275,11 +277,9 @@ bool ConjunctiveBody::covers(View<const float32>::const_iterator begin, View<con
            && nominalEqVector_.covers(begin, end) && nominalNeqVector_.covers(begin, end);
 }
 
-bool ConjunctiveBody::covers(CsrConstView<const float32>::index_const_iterator indicesBegin,
-                             CsrConstView<const float32>::index_const_iterator indicesEnd,
-                             CsrConstView<const float32>::value_const_iterator valuesBegin,
-                             CsrConstView<const float32>::value_const_iterator valuesEnd, float32* tmpArray1,
-                             uint32* tmpArray2, uint32 n) const {
+bool ConjunctiveBody::covers(View<uint32>::const_iterator indicesBegin, View<uint32>::const_iterator indicesEnd,
+                             View<float32>::const_iterator valuesBegin, View<float32>::const_iterator valuesEnd,
+                             float32* tmpArray1, uint32* tmpArray2, uint32 n) const {
     // Copy non-zero feature values to the temporary arrays...
     uint32 numNonZeroFeatureValues = valuesEnd - valuesBegin;
 

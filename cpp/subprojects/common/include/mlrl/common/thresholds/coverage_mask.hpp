@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_vector.hpp"
+#include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/thresholds/coverage_state.hpp"
 
 /**
@@ -11,7 +11,7 @@
  * C-contiguous array that may be updated when the rule is refined. If the value that corresponds to a certain example
  * is equal to the "indicator value", it is considered to be covered.
  */
-class CoverageMask final : public IterableVectorDecorator<VectorDecorator<AllocatedVector<uint32>>>,
+class CoverageMask final : public DenseVectorDecorator<AllocatedVector<uint32>>,
                            public ICoverageState {
     private:
 

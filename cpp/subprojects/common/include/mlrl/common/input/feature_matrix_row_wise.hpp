@@ -24,7 +24,7 @@ class IProbabilityPredictorFactory;
 /**
  * Defines an interface for all feature matrices that provide row-wise access to the feature values of examples.
  */
-class MLRLCOMMON_API IRowWiseFeatureMatrix : virtual public IFeatureMatrix {
+class MLRLCOMMON_API IRowWiseFeatureMatrix : public IFeatureMatrix {
     public:
 
         virtual ~IRowWiseFeatureMatrix() override {}

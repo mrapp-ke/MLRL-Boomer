@@ -45,7 +45,7 @@ namespace boosting {
              * @see `IPredictorFactory::create`
              */
             std::unique_ptr<IProbabilityPredictor> create(
-              const CContiguousConstView<const float32>& featureMatrix, const RuleList& model,
+              const CContiguousView<const float32>& featureMatrix, const RuleList& model,
               const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
@@ -54,7 +54,7 @@ namespace boosting {
                   std::make_unique<LabelWiseProbabilityTransformation>(marginalProbabilityFunctionFactoryPtr_->create(
                     marginalProbabilityCalibrationModel_ ? *marginalProbabilityCalibrationModel_
                                                          : marginalProbabilityCalibrationModel));
-                return std::make_unique<ProbabilityPredictor<CContiguousConstView<const float32>, RuleList>>(
+                return std::make_unique<ProbabilityPredictor<CContiguousView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(probabilityTransformationPtr));
             }
 
@@ -62,8 +62,7 @@ namespace boosting {
              * @see `IPredictorFactory::create`
              */
             std::unique_ptr<IProbabilityPredictor> create(
-              const CsrConstView<const float32>& featureMatrix, const RuleList& model,
-              const LabelVectorSet* labelVectorSet,
+              const CsrView<const float32>& featureMatrix, const RuleList& model, const LabelVectorSet* labelVectorSet,
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
@@ -71,7 +70,7 @@ namespace boosting {
                   std::make_unique<LabelWiseProbabilityTransformation>(marginalProbabilityFunctionFactoryPtr_->create(
                     marginalProbabilityCalibrationModel_ ? *marginalProbabilityCalibrationModel_
                                                          : marginalProbabilityCalibrationModel));
-                return std::make_unique<ProbabilityPredictor<CsrConstView<const float32>, RuleList>>(
+                return std::make_unique<ProbabilityPredictor<CsrView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(probabilityTransformationPtr));
             }
     };

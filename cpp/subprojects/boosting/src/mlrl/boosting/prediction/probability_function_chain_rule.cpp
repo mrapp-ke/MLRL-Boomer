@@ -56,7 +56,7 @@ namespace boosting {
             }
 
             float64 transformScoresIntoJointProbability(uint32 labelVectorIndex, const LabelVector& labelVector,
-                                                        SparseSetMatrix<float64>::const_row scores,
+                                                        SparseSetView<float64>::const_row scores,
                                                         uint32 numLabels) const override {
                 auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
                 float64 jointProbability = 1;

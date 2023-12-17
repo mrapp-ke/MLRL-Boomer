@@ -59,23 +59,23 @@ class NoInstanceSampling final : public IInstanceSampling {
 class NoInstanceSamplingFactory final : public IInstanceSamplingFactory {
     public:
 
-        std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix,
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
                                                   const SinglePartition& partition,
                                                   IStatistics& statistics) const override {
             return std::make_unique<NoInstanceSampling<const SinglePartition, EqualWeightVector>>(partition);
         }
 
-        std::unique_ptr<IInstanceSampling> create(const CContiguousLabelMatrix& labelMatrix, BiPartition& partition,
-                                                  IStatistics& statistics) const override {
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
+                                                  BiPartition& partition, IStatistics& statistics) const override {
             return std::make_unique<NoInstanceSampling<BiPartition, BitWeightVector>>(partition);
         }
 
-        std::unique_ptr<IInstanceSampling> create(const CsrLabelMatrix& labelMatrix, const SinglePartition& partition,
+        std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, const SinglePartition& partition,
                                                   IStatistics& statistics) const override {
             return std::make_unique<NoInstanceSampling<const SinglePartition, EqualWeightVector>>(partition);
         }
 
-        std::unique_ptr<IInstanceSampling> create(const CsrLabelMatrix& labelMatrix, BiPartition& partition,
+        std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, BiPartition& partition,
                                                   IStatistics& statistics) const override {
             return std::make_unique<NoInstanceSampling<BiPartition, BitWeightVector>>(partition);
         }

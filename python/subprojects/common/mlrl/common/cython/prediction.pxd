@@ -25,20 +25,19 @@ cdef extern from "mlrl/common/prediction/prediction_matrix_sparse_binary.hpp" no
 
         # Functions:
 
+        uint32 getNumNonZeroElements() const
+
         uint32 getNumRows() const
 
         uint32 getNumCols() const
 
-        uint32 getNumNonZeroElements() const
+        uint32* getIndices()
 
-        uint32* getColIndices()
-
-        uint32* releaseColIndices()
+        uint32* releaseIndices()
 
         uint32* getIndptr()
 
         uint32* releaseIndptr()
-
 
 
 cdef extern from "mlrl/common/prediction/predictor.hpp" nogil:

@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/common/input/label_matrix_c_contiguous.hpp"
-#include "mlrl/common/input/label_matrix_csr.hpp"
+#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_csr_binary.hpp"
 #include "mlrl/common/sampling/partition.hpp"
 #include "mlrl/common/sampling/random.hpp"
 
@@ -40,20 +40,20 @@ class IPartitionSamplingFactory {
         /**
          * Creates and returns a new object of type `IPartitionSampling`.
          *
-         * @param labelMatrix   A reference to an object of type `CContiguousLabelMatrix` that provides random access to
-         *                      the labels of the training examples
+         * @param labelMatrix   A reference to an object of type `CContiguousView` that provides random access to the
+         *                      labels of the training examples
          * @return              An unique pointer to an object of type `IPartitionSampling` that has been created
          */
-        virtual std::unique_ptr<IPartitionSampling> create(const CContiguousLabelMatrix& labelMatrix) const = 0;
+        virtual std::unique_ptr<IPartitionSampling> create(const CContiguousView<const uint8>& labelMatrix) const = 0;
 
         /**
          * Creates and returns a new object of type `IPartitionSampling`.
          *
-         * @param labelMatrix   A reference to an object of type `CsrLabelMatrix` that provides row-wise access to the
+         * @param labelMatrix   A reference to an object of type `BinaryCsrView` that provides row-wise access to the
          *                      labels of the training examples
          * @return              An unique pointer to an object of type `IPartitionSampling` that has been created
          */
-        virtual std::unique_ptr<IPartitionSampling> create(const CsrLabelMatrix& labelMatrix) const = 0;
+        virtual std::unique_ptr<IPartitionSampling> create(const BinaryCsrView& labelMatrix) const = 0;
 };
 
 /**

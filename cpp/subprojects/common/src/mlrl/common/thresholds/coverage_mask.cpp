@@ -4,12 +4,10 @@
 #include "mlrl/common/thresholds/thresholds_subset.hpp"
 
 CoverageMask::CoverageMask(uint32 numElements)
-    : IterableVectorDecorator<VectorDecorator<AllocatedVector<uint32>>>(AllocatedVector<uint32>(numElements, true)),
-      indicatorValue_(0) {}
+    : DenseVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(numElements, true)), indicatorValue_(0) {}
 
 CoverageMask::CoverageMask(const CoverageMask& other)
-    : IterableVectorDecorator<VectorDecorator<AllocatedVector<uint32>>>(
-      AllocatedVector<uint32>(other.getNumElements())),
+    : DenseVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(other.getNumElements())),
       indicatorValue_(other.indicatorValue_) {
     copyView(other.cbegin(), this->begin(), this->getNumElements());
 }

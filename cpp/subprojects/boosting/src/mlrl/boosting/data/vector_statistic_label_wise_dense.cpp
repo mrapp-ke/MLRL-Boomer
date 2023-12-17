@@ -1,9 +1,9 @@
-#include "mlrl/boosting/data/statistic_vector_label_wise_dense.hpp"
+#include "mlrl/boosting/data/vector_statistic_label_wise_dense.hpp"
 
 namespace boosting {
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(uint32 numElements, bool init)
-        : ClearableVectorDecorator<IterableVectorDecorator<VectorDecorator<AllocatedVector<Tuple<float64>>>>>(
+        : ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<Tuple<float64>>>>(
           AllocatedVector<Tuple<float64>>(numElements, init)) {}
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(const DenseLabelWiseStatisticVector& other)
@@ -15,43 +15,43 @@ namespace boosting {
         addToView(this->begin(), vector.cbegin(), this->getNumElements());
     }
 
-    void DenseLabelWiseStatisticVector::add(const DenseLabelWiseStatisticConstView& view, uint32 row) {
-        addToView(this->begin(), view.cbegin(row), this->getNumElements());
+    void DenseLabelWiseStatisticVector::add(const CContiguousView<Tuple<float64>>& view, uint32 row) {
+        addToView(this->begin(), view.values_cbegin(row), this->getNumElements());
     }
 
-    void DenseLabelWiseStatisticVector::add(const DenseLabelWiseStatisticConstView& view, uint32 row, float64 weight) {
-        addToView(this->begin(), view.cbegin(row), this->getNumElements(), weight);
+    void DenseLabelWiseStatisticVector::add(const CContiguousView<Tuple<float64>>& view, uint32 row, float64 weight) {
+        addToView(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
-    void DenseLabelWiseStatisticVector::remove(const DenseLabelWiseStatisticConstView& view, uint32 row) {
-        removeFromView(this->begin(), view.cbegin(row), this->getNumElements());
+    void DenseLabelWiseStatisticVector::remove(const CContiguousView<Tuple<float64>>& view, uint32 row) {
+        removeFromView(this->begin(), view.values_cbegin(row), this->getNumElements());
     }
 
-    void DenseLabelWiseStatisticVector::remove(const DenseLabelWiseStatisticConstView& view, uint32 row,
+    void DenseLabelWiseStatisticVector::remove(const CContiguousView<Tuple<float64>>& view, uint32 row,
                                                float64 weight) {
-        removeFromView(this->begin(), view.cbegin(row), this->getNumElements(), weight);
+        removeFromView(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
-    void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
+    void DenseLabelWiseStatisticVector::addToSubset(const CContiguousView<Tuple<float64>>& view, uint32 row,
                                                     const CompleteIndexVector& indices) {
-        addToView(this->begin(), view.cbegin(row), this->getNumElements());
+        addToView(this->begin(), view.values_cbegin(row), this->getNumElements());
     }
 
-    void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
+    void DenseLabelWiseStatisticVector::addToSubset(const CContiguousView<Tuple<float64>>& view, uint32 row,
                                                     const PartialIndexVector& indices) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        addToView(this->begin(), view.cbegin(row), indexIterator, this->getNumElements());
+        addToView(this->begin(), view.values_cbegin(row), indexIterator, this->getNumElements());
     }
 
-    void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
+    void DenseLabelWiseStatisticVector::addToSubset(const CContiguousView<Tuple<float64>>& view, uint32 row,
                                                     const CompleteIndexVector& indices, float64 weight) {
-        addToView(this->begin(), view.cbegin(row), this->getNumElements(), weight);
+        addToView(this->begin(), view.values_cbegin(row), this->getNumElements(), weight);
     }
 
-    void DenseLabelWiseStatisticVector::addToSubset(const DenseLabelWiseStatisticConstView& view, uint32 row,
+    void DenseLabelWiseStatisticVector::addToSubset(const CContiguousView<Tuple<float64>>& view, uint32 row,
                                                     const PartialIndexVector& indices, float64 weight) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        addToView(this->begin(), view.cbegin(row), indexIterator, this->getNumElements(), weight);
+        addToView(this->begin(), view.values_cbegin(row), indexIterator, this->getNumElements(), weight);
     }
 
     void DenseLabelWiseStatisticVector::difference(const DenseLabelWiseStatisticVector& first,

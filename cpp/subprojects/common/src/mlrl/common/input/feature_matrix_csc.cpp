@@ -5,38 +5,47 @@
 
 #include "mlrl/common/input/feature_matrix_csc.hpp"
 
-#include "mlrl/common/data/view_csc.hpp"
+#include "mlrl/common/data/view_matrix_csc.hpp"
 
 /**
  * An implementation of the type `ICscFeatureMatrix` that provides column-wise read-only access to the feature values of
  * examples that are stored in a pre-allocated sparse matrix in the compressed sparse column (CSC) format.
  */
-class CscFeatureMatrix final : public CscConstView<const float32>,
-                               virtual public ICscFeatureMatrix {
+class CscFeatureMatrix final : public IterableSparseMatrixDecorator<MatrixDecorator<CscView<const float32>>>,
+                               public ICscFeatureMatrix {
     public:
 
         /**
-         * @param numRows       The number of rows in the feature matrix
-         * @param numCols       The number of columns in the feature matrix
-         * @param data          A pointer to an array of type `float32`, shape `(num_non_zero_values)`, that stores all
-         *                      non-zero feature values
-         * @param rowIndices    A pointer to an array of type `uint32`, shape `(num_non_zero_values)`, that stores the
-         *                      row-indices, the values in `data` correspond to
-         * @param indptr        A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices
-         *                      of the first element in `data` and `rowIndices` that corresponds to a certain column.
-         *                      The index at the last position is equal to `num_non_zero_values`
+         * @param values    A pointer to an array of type `float32`, shape `(numNonZeroValues)`, that stores all
+         *                  non-zero feature values
+         * @param indices   A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the
+         *                  row-indices, the values in `values` correspond to
+         * @param indptr    A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices of
+         *                  the first element in `values` and `indices` that corresponds to a certain column. The index
+         *                  at the last position is equal to `numNonZeroValues`
+         * @param numRows   The number of rows in the feature matrix
+         * @param numCols   The number of columns in the feature matrix
          */
-        CscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data, uint32* rowIndices, uint32* indptr)
-            : CscConstView<const float32>(numRows, numCols, data, rowIndices, indptr) {}
+        CscFeatureMatrix(const float32* values, uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
+            : IterableSparseMatrixDecorator<MatrixDecorator<CscView<const float32>>>(
+              CscView<const float32>(values, indices, indptr, numRows, numCols)) {}
 
         bool isSparse() const override {
             return true;
         }
 
+        uint32 getNumExamples() const override {
+            return this->getNumRows();
+        }
+
+        uint32 getNumFeatures() const override {
+            return this->getNumCols();
+        }
+
         void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override {
-            CscConstView<const float32>::index_const_iterator indexIterator = this->indices_cbegin(featureIndex);
-            CscConstView<const float32>::index_const_iterator indicesEnd = this->indices_cend(featureIndex);
-            CscConstView<const float32>::value_const_iterator valueIterator = this->values_cbegin(featureIndex);
+            index_const_iterator indexIterator = this->indices_cbegin(featureIndex);
+            index_const_iterator indicesEnd = this->indices_cend(featureIndex);
+            value_const_iterator valueIterator = this->values_cbegin(featureIndex);
             uint32 numElements = indicesEnd - indexIterator;
             featureVectorPtr = std::make_unique<FeatureVector>(numElements);
             FeatureVector::iterator vectorIterator = featureVectorPtr->begin();
@@ -59,9 +68,9 @@ class CscFeatureMatrix final : public CscConstView<const float32>,
         }
 };
 
-std::unique_ptr<ICscFeatureMatrix> createCscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,
-                                                          uint32* rowIndices, uint32* indptr) {
-    return std::make_unique<CscFeatureMatrix>(numRows, numCols, data, rowIndices, indptr);
+std::unique_ptr<ICscFeatureMatrix> createCscFeatureMatrix(const float32* values, uint32* indices, uint32* indptr,
+                                                          uint32 numRows, uint32 numCols) {
+    return std::make_unique<CscFeatureMatrix>(values, indices, indptr, numRows, numCols);
 }
 
 #ifdef _WIN32

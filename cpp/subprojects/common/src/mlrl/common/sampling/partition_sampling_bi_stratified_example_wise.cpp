@@ -29,7 +29,7 @@ class ExampleWiseStratifiedBiPartitionSampling final : public IPartitionSampling
          */
         ExampleWiseStratifiedBiPartitionSampling(const LabelMatrix& labelMatrix, uint32 numTraining, uint32 numHoldout)
             : partition_(numTraining, numHoldout),
-              stratification_(labelMatrix, IndexIterator(), IndexIterator(labelMatrix.getNumRows())) {}
+              stratification_(labelMatrix, IndexIterator(), IndexIterator(labelMatrix.numRows)) {}
 
         IPartition& partition(RNG& rng) override {
             stratification_.sampleBiPartition(partition_, rng);
@@ -55,20 +55,20 @@ class ExampleWiseStratifiedBiPartitionSamplingFactory final : public IPartitionS
          */
         ExampleWiseStratifiedBiPartitionSamplingFactory(float32 holdoutSetSize) : holdoutSetSize_(holdoutSetSize) {}
 
-        std::unique_ptr<IPartitionSampling> create(const CContiguousLabelMatrix& labelMatrix) const override {
-            uint32 numExamples = labelMatrix.getNumRows();
+        std::unique_ptr<IPartitionSampling> create(const CContiguousView<const uint8>& labelMatrix) const override {
+            uint32 numExamples = labelMatrix.numRows;
             uint32 numHoldout = (uint32) (holdoutSetSize_ * numExamples);
             uint32 numTraining = numExamples - numHoldout;
-            return std::make_unique<ExampleWiseStratifiedBiPartitionSampling<CContiguousLabelMatrix>>(
+            return std::make_unique<ExampleWiseStratifiedBiPartitionSampling<CContiguousView<const uint8>>>(
               labelMatrix, numTraining, numHoldout);
         }
 
-        std::unique_ptr<IPartitionSampling> create(const CsrLabelMatrix& labelMatrix) const override {
-            uint32 numExamples = labelMatrix.getNumRows();
+        std::unique_ptr<IPartitionSampling> create(const BinaryCsrView& labelMatrix) const override {
+            uint32 numExamples = labelMatrix.numRows;
             uint32 numHoldout = (uint32) (holdoutSetSize_ * numExamples);
             uint32 numTraining = numExamples - numHoldout;
-            return std::make_unique<ExampleWiseStratifiedBiPartitionSampling<CsrLabelMatrix>>(labelMatrix, numTraining,
-                                                                                              numHoldout);
+            return std::make_unique<ExampleWiseStratifiedBiPartitionSampling<BinaryCsrView>>(labelMatrix, numTraining,
+                                                                                             numHoldout);
         }
 };
 

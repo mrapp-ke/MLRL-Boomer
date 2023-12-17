@@ -467,7 +467,7 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
                                                     statisticsProviderPtr->get());
 
     return std::make_unique<TrainingResult>(
-      labelMatrix.getNumCols(), modelBuilder.buildModel(), std::move(labelSpaceInfoPtr),
+      labelMatrix.getNumLabels(), modelBuilder.buildModel(), std::move(labelSpaceInfoPtr),
       std::move(marginalProbabilityCalibrationModelPtr), std::move(jointProbabilityCalibrationModelPtr));
 }
 

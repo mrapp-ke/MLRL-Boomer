@@ -102,9 +102,9 @@ static inline void aggregateNonIncreasingBins(ListOfLists<Tuple<float64>>::row b
 
 static inline float64 calibrateProbability(ListOfLists<Tuple<float64>>::const_row bins, float64 probability) {
     // Find the bins that impose a lower and upper bound on the probability...
-    ListOfLists<Tuple<float64>>::const_iterator begin = bins.cbegin();
-    ListOfLists<Tuple<float64>>::const_iterator end = bins.cend();
-    ListOfLists<Tuple<float64>>::const_iterator it =
+    ListOfLists<Tuple<float64>>::value_const_iterator begin = bins.cbegin();
+    ListOfLists<Tuple<float64>>::value_const_iterator end = bins.cend();
+    ListOfLists<Tuple<float64>>::value_const_iterator it =
       std::lower_bound(begin, end, probability, [=](const Tuple<float64>& lhs, const float64& rhs) {
         return lhs.first < rhs;
     });
@@ -130,22 +130,15 @@ static inline float64 calibrateProbability(ListOfLists<Tuple<float64>>::const_ro
     return lowerBound.second + (t * (upperBound.second - lowerBound.second));
 }
 
-IsotonicProbabilityCalibrationModel::IsotonicProbabilityCalibrationModel(uint32 numLists) : binsPerList_(numLists) {}
-
-IsotonicProbabilityCalibrationModel::bin_list IsotonicProbabilityCalibrationModel::operator[](uint32 listIndex) {
-    return binsPerList_[listIndex];
-}
-
-IsotonicProbabilityCalibrationModel::const_bin_list IsotonicProbabilityCalibrationModel::operator[](
-  uint32 listIndex) const {
-    return binsPerList_[listIndex];
-}
+IsotonicProbabilityCalibrationModel::IsotonicProbabilityCalibrationModel(uint32 numLists)
+    : IterableListOfListsDecorator<ViewDecorator<AllocatedListOfLists<Tuple<float64>>>>(
+      AllocatedListOfLists<Tuple<float64>>(numLists, 0)) {}
 
 void IsotonicProbabilityCalibrationModel::fit() {
-    uint32 numLists = binsPerList_.getNumRows();
+    uint32 numLists = this->getNumBinLists();
 
     for (uint32 i = 0; i < numLists; i++) {
-        ListOfLists<Tuple<float64>>::row bins = binsPerList_[i];
+        row bins = (*this)[i];
         sortByThresholdsAndEliminateDuplicates(bins);
         aggregateNonIncreasingBins(bins);
     }
@@ -153,28 +146,28 @@ void IsotonicProbabilityCalibrationModel::fit() {
 
 float64 IsotonicProbabilityCalibrationModel::calibrateMarginalProbability(uint32 labelIndex,
                                                                           float64 marginalProbability) const {
-    return calibrateProbability(binsPerList_[labelIndex], marginalProbability);
+    return calibrateProbability((*this)[labelIndex], marginalProbability);
 }
 
 float64 IsotonicProbabilityCalibrationModel::calibrateJointProbability(uint32 labelVectorIndex,
                                                                        float64 jointProbability) const {
-    return calibrateProbability(binsPerList_[labelVectorIndex], jointProbability);
+    return calibrateProbability((*this)[labelVectorIndex], jointProbability);
 }
 
 uint32 IsotonicProbabilityCalibrationModel::getNumBinLists() const {
-    return binsPerList_.getNumRows();
+    return this->view.numRows;
 }
 
 void IsotonicProbabilityCalibrationModel::addBin(uint32 listIndex, float64 threshold, float64 probability) {
-    ListOfLists<Tuple<float64>>::row row = binsPerList_[listIndex];
+    row row = (*this)[listIndex];
     row.emplace_back(threshold, probability);
 }
 
 void IsotonicProbabilityCalibrationModel::visit(BinVisitor visitor) const {
-    uint32 numLists = binsPerList_.getNumRows();
+    uint32 numLists = this->getNumBinLists();
 
     for (uint32 i = 0; i < numLists; i++) {
-        ListOfLists<Tuple<float64>>::const_row bins = binsPerList_[i];
+        const_row bins = (*this)[i];
 
         for (auto it = bins.cbegin(); it != bins.cend(); it++) {
             const Tuple<float64>& bin = *it;

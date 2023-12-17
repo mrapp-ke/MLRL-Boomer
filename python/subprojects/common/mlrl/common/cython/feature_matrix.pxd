@@ -10,9 +10,9 @@ cdef extern from "mlrl/common/input/feature_matrix.hpp" nogil:
 
         # Functions:
 
-        uint32 getNumRows() const
+        uint32 getNumExamples() const
 
-        uint32 getNumCols() const
+        uint32 getNumFeatures() const
 
         bool isSparse() const
 
@@ -29,8 +29,8 @@ cdef extern from "mlrl/common/input/feature_matrix_fortran_contiguous.hpp" nogil
         pass
 
 
-    unique_ptr[IFortranContiguousFeatureMatrix] createFortranContiguousFeatureMatrix(uint32 numRows, uint32 numCols,
-                                                                                     const float32* array)
+    unique_ptr[IFortranContiguousFeatureMatrix] createFortranContiguousFeatureMatrix(const float32* array,
+                                                                                     uint32 numRows, uint32 numCols,)
 
 
 cdef extern from "mlrl/common/input/feature_matrix_csc.hpp" nogil:
@@ -39,8 +39,8 @@ cdef extern from "mlrl/common/input/feature_matrix_csc.hpp" nogil:
         pass
 
 
-    unique_ptr[ICscFeatureMatrix] createCscFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,
-                                                         uint32* rowIndices, uint32* indptr)
+    unique_ptr[ICscFeatureMatrix] createCscFeatureMatrix(const float32* values, uint32* indices, uint32* indptr,
+                                                         uint32 numRows, uint32 numCols)
 
 
 cdef extern from "mlrl/common/input/feature_matrix_row_wise.hpp" nogil:
@@ -55,8 +55,8 @@ cdef extern from "mlrl/common/input/feature_matrix_c_contiguous.hpp" nogil:
         pass
 
 
-    unique_ptr[ICContiguousFeatureMatrix] createCContiguousFeatureMatrix(uint32 numRows, uint32 numCols,
-                                                                         const float32* array)
+    unique_ptr[ICContiguousFeatureMatrix] createCContiguousFeatureMatrix(const float32* array, uint32 numRows,
+                                                                         uint32 numCols)
 
 
 cdef extern from "mlrl/common/input/feature_matrix_csr.hpp" nogil:
@@ -65,8 +65,8 @@ cdef extern from "mlrl/common/input/feature_matrix_csr.hpp" nogil:
         pass
 
 
-    unique_ptr[ICsrFeatureMatrix] createCsrFeatureMatrix(uint32 numRows, uint32 numCols, const float32* data,
-                                                         uint32* colIndices, uint32* indptr)
+    unique_ptr[ICsrFeatureMatrix] createCsrFeatureMatrix(const float32* values, uint32* indices, uint32* indptr,
+                                                         uint32 numRows, uint32 numCols)
 
 
 cdef class FeatureMatrix:
@@ -96,9 +96,9 @@ cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
 
     # Attributes:
 
-    cdef const float32[::1] data
+    cdef const float32[::1] values
 
-    cdef uint32[::1] row_indices
+    cdef uint32[::1] indices
 
     cdef uint32[::1] indptr
 
@@ -125,9 +125,9 @@ cdef class CsrFeatureMatrix(RowWiseFeatureMatrix):
 
     # Attributes:
 
-    cdef const float32[::1] data
+    cdef const float32[::1] values
 
-    cdef const uint32[::1] col_indices
+    cdef const uint32[::1] indices
 
     cdef const uint32[::1] indptr
 

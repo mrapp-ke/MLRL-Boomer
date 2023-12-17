@@ -44,17 +44,17 @@ namespace boosting {
             LabelWiseLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction)
                 : updateFunction_(updateFunction), evaluateFunction_(evaluateFunction) {}
 
-            void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                                           const CContiguousConstView<float64>& scoreMatrix,
+            void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                                           const CContiguousView<float64>& scoreMatrix,
                                            CompleteIndexVector::const_iterator labelIndicesBegin,
                                            CompleteIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticView& statisticView) const override final {
-                DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.begin(exampleIndex);
-                CContiguousConstView<float64>::value_const_iterator scoreIterator =
-                  scoreMatrix.values_cbegin(exampleIndex);
-                CContiguousConstView<const uint8>::value_const_iterator labelIterator =
+                                           CContiguousView<Tuple<float64>>& statisticView) const override final {
+                CContiguousView<Tuple<float64>>::value_iterator statisticIterator =
+                  statisticView.values_begin(exampleIndex);
+                CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
+                CContiguousView<const uint8>::value_const_iterator labelIterator =
                   labelMatrix.values_cbegin(exampleIndex);
-                uint32 numLabels = labelMatrix.getNumCols();
+                uint32 numLabels = labelMatrix.numCols;
 
                 for (uint32 i = 0; i < numLabels; i++) {
                     bool trueLabel = labelIterator[i];
@@ -64,15 +64,15 @@ namespace boosting {
                 }
             }
 
-            void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                                           const CContiguousConstView<float64>& scoreMatrix,
+            void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                                           const CContiguousView<float64>& scoreMatrix,
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticView& statisticView) const override final {
-                DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.begin(exampleIndex);
-                CContiguousConstView<float64>::value_const_iterator scoreIterator =
-                  scoreMatrix.values_cbegin(exampleIndex);
-                CContiguousConstView<const uint8>::value_const_iterator labelIterator =
+                                           CContiguousView<Tuple<float64>>& statisticView) const override final {
+                CContiguousView<Tuple<float64>>::value_iterator statisticIterator =
+                  statisticView.values_begin(exampleIndex);
+                CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
+                CContiguousView<const uint8>::value_const_iterator labelIterator =
                   labelMatrix.values_cbegin(exampleIndex);
                 uint32 numLabels = labelIndicesEnd - labelIndicesBegin;
 
@@ -85,17 +85,17 @@ namespace boosting {
                 }
             }
 
-            void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                                           const CContiguousConstView<float64>& scoreMatrix,
+            void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                           const CContiguousView<float64>& scoreMatrix,
                                            CompleteIndexVector::const_iterator labelIndicesBegin,
                                            CompleteIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticView& statisticView) const override final {
-                DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.begin(exampleIndex);
-                CContiguousConstView<float64>::value_const_iterator scoreIterator =
-                  scoreMatrix.values_cbegin(exampleIndex);
+                                           CContiguousView<Tuple<float64>>& statisticView) const override final {
+                CContiguousView<Tuple<float64>>::value_iterator statisticIterator =
+                  statisticView.values_begin(exampleIndex);
+                CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));
-                uint32 numLabels = labelMatrix.getNumCols();
+                uint32 numLabels = labelMatrix.numCols;
 
                 for (uint32 i = 0; i < numLabels; i++) {
                     bool trueLabel = *labelIterator;
@@ -106,16 +106,16 @@ namespace boosting {
                 }
             }
 
-            void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                                           const CContiguousConstView<float64>& scoreMatrix,
+            void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                           const CContiguousView<float64>& scoreMatrix,
                                            PartialIndexVector::const_iterator labelIndicesBegin,
                                            PartialIndexVector::const_iterator labelIndicesEnd,
-                                           DenseLabelWiseStatisticView& statisticView) const override final {
-                DenseLabelWiseStatisticView::iterator statisticIterator = statisticView.begin(exampleIndex);
-                CContiguousConstView<float64>::value_const_iterator scoreIterator =
-                  scoreMatrix.values_cbegin(exampleIndex);
-                BinaryCsrConstView::index_const_iterator indexIterator = labelMatrix.indices_cbegin(exampleIndex);
-                BinaryCsrConstView::index_const_iterator indicesEnd = labelMatrix.indices_cend(exampleIndex);
+                                           CContiguousView<Tuple<float64>>& statisticView) const override final {
+                CContiguousView<Tuple<float64>>::value_iterator statisticIterator =
+                  statisticView.values_begin(exampleIndex);
+                CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
+                BinaryCsrView::index_const_iterator indexIterator = labelMatrix.indices_cbegin(exampleIndex);
+                BinaryCsrView::index_const_iterator indicesEnd = labelMatrix.indices_cend(exampleIndex);
                 uint32 numLabels = labelIndicesEnd - labelIndicesBegin;
 
                 for (uint32 i = 0; i < numLabels; i++) {
@@ -131,13 +131,12 @@ namespace boosting {
             /**
              * @see `IEvaluationMeasure::evaluate`
              */
-            float64 evaluate(uint32 exampleIndex, const CContiguousConstView<const uint8>& labelMatrix,
-                             const CContiguousConstView<float64>& scoreMatrix) const override final {
-                CContiguousConstView<float64>::value_const_iterator scoreIterator =
-                  scoreMatrix.values_cbegin(exampleIndex);
-                CContiguousConstView<const uint8>::value_const_iterator labelIterator =
+            float64 evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                             const CContiguousView<float64>& scoreMatrix) const override final {
+                CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
+                CContiguousView<const uint8>::value_const_iterator labelIterator =
                   labelMatrix.values_cbegin(exampleIndex);
-                uint32 numLabels = labelMatrix.getNumCols();
+                uint32 numLabels = labelMatrix.numCols;
                 float64 mean = 0;
 
                 for (uint32 i = 0; i < numLabels; i++) {
@@ -153,13 +152,12 @@ namespace boosting {
             /**
              * @see `IEvaluationMeasure::evaluate`
              */
-            float64 evaluate(uint32 exampleIndex, const BinaryCsrConstView& labelMatrix,
-                             const CContiguousConstView<float64>& scoreMatrix) const override final {
-                CContiguousConstView<float64>::value_const_iterator scoreIterator =
-                  scoreMatrix.values_cbegin(exampleIndex);
+            float64 evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                             const CContiguousView<float64>& scoreMatrix) const override final {
+                CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));
-                uint32 numLabels = labelMatrix.getNumCols();
+                uint32 numLabels = labelMatrix.numCols;
                 float64 mean = 0;
 
                 for (uint32 i = 0; i < numLabels; i++) {

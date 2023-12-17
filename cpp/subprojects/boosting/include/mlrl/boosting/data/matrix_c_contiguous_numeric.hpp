@@ -15,7 +15,7 @@ namespace boosting {
      * @tparam T The type of the values that are stored in the matrix
      */
     template<typename T>
-    class NumericCContiguousMatrix final : public CContiguousMatrix<T> {
+    class NumericCContiguousMatrix final : public DenseMatrixDecorator<AllocatedCContiguousView<T>> {
         public:
 
             /**

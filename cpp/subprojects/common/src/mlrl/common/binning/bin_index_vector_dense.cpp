@@ -3,7 +3,7 @@
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 
 DenseBinIndexVector::DenseBinIndexVector(uint32 numElements)
-    : IterableVectorDecorator<VectorDecorator<AllocatedVector<uint32>>>(AllocatedVector<uint32>(numElements)) {}
+    : DenseVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(numElements)) {}
 
 uint32 DenseBinIndexVector::getBinIndex(uint32 exampleIndex) const {
     return (*this)[exampleIndex];

@@ -1,97 +1,116 @@
 #include "mlrl/common/input/label_matrix_csr.hpp"
 
+#include "mlrl/common/data/view_matrix_csr_binary.hpp"
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
 #include "mlrl/common/sampling/instance_sampling.hpp"
 #include "mlrl/common/sampling/partition_sampling.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
 #include "mlrl/common/util/math.hpp"
 
-CsrLabelMatrix::View::View(const CsrLabelMatrix& labelMatrix, uint32 row)
-    : IterableVectorDecorator<VectorDecorator<Vector<const uint32>>>(Vector<const uint32>(
-      labelMatrix.indices_cbegin(row), labelMatrix.indices_cend(row) - labelMatrix.indices_cbegin(row))) {}
+/**
+ * Implements row-wise read-only access to the labels of individual training examples that are stored in a pre-allocated
+ * sparse matrix in the compressed sparse row (CSR) format.
+ */
+class CsrLabelMatrix final : public IterableBinarySparseMatrixDecorator<MatrixDecorator<BinaryCsrView>>,
+                             public ICsrLabelMatrix {
+    public:
 
-CsrLabelMatrix::CsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* indptr, uint32* colIndices)
-    : BinaryCsrConstView(numRows, numCols, indptr, colIndices) {}
+        /**
+         * @param indices A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the
+         *                column-indices, the relevant labels correspond to
+         * @param indptr  A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices of the
+         *                first element in `indices` that corresponds to a certain row. The index at the last position
+         *                is equal to `numNonZeroValues`
+         * @param numRows The number of rows in the label matrix
+         * @param numCols The number of columns in the label matrix
+         */
+        CsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
+            : IterableBinarySparseMatrixDecorator<MatrixDecorator<BinaryCsrView>>(
+              BinaryCsrView(indices, indptr, numRows, numCols)) {}
 
-bool CsrLabelMatrix::isSparse() const {
-    return true;
-}
+        bool isSparse() const override {
+            return true;
+        }
 
-float32 CsrLabelMatrix::calculateLabelCardinality() const {
-    uint32 numRows = this->getNumRows();
-    float32 labelCardinality = 0;
+        uint32 getNumExamples() const override {
+            return this->getNumRows();
+        }
 
-    for (uint32 i = 0; i < numRows; i++) {
-        index_const_iterator indicesBegin = this->indices_cbegin(i);
-        index_const_iterator indicesEnd = this->indices_cend(i);
-        uint32 numRelevantLabels = indicesEnd - indicesBegin;
-        labelCardinality = iterativeArithmeticMean(i + 1, (float32) numRelevantLabels, labelCardinality);
-    }
+        uint32 getNumLabels() const override {
+            return this->getNumCols();
+        }
 
-    return labelCardinality;
-}
+        float32 calculateLabelCardinality() const override {
+            uint32 numRows = this->getNumRows();
+            float32 labelCardinality = 0;
 
-CsrLabelMatrix::view_type CsrLabelMatrix::createView(uint32 row) const {
-    return CsrLabelMatrix::view_type(*this, row);
-}
+            for (uint32 i = 0; i < numRows; i++) {
+                index_const_iterator indicesBegin = this->indices_cbegin(i);
+                index_const_iterator indicesEnd = this->indices_cend(i);
+                uint32 numRelevantLabels = indicesEnd - indicesBegin;
+                labelCardinality = iterativeArithmeticMean(i + 1, (float32) numRelevantLabels, labelCardinality);
+            }
 
-std::unique_ptr<LabelVector> CsrLabelMatrix::createLabelVector(uint32 row) const {
-    index_const_iterator indexIterator = this->indices_cbegin(row);
-    index_const_iterator indicesEnd = this->indices_cend(row);
-    uint32 numElements = indicesEnd - indexIterator;
-    std::unique_ptr<LabelVector> labelVectorPtr = std::make_unique<LabelVector>(numElements);
-    LabelVector::iterator iterator = labelVectorPtr->begin();
-    copyView(indexIterator, iterator, numElements);
-    return labelVectorPtr;
-}
+            return labelCardinality;
+        }
 
-std::unique_ptr<IStatisticsProvider> CsrLabelMatrix::createStatisticsProvider(
-  const IStatisticsProviderFactory& factory) const {
-    return factory.create(*this);
-}
+        std::unique_ptr<LabelVector> createLabelVector(uint32 row) const override {
+            index_const_iterator indexIterator = this->indices_cbegin(row);
+            index_const_iterator indicesEnd = this->indices_cend(row);
+            uint32 numElements = indicesEnd - indexIterator;
+            std::unique_ptr<LabelVector> labelVectorPtr = std::make_unique<LabelVector>(numElements);
+            LabelVector::iterator iterator = labelVectorPtr->begin();
+            copyView(indexIterator, iterator, numElements);
+            return labelVectorPtr;
+        }
 
-std::unique_ptr<IPartitionSampling> CsrLabelMatrix::createPartitionSampling(
-  const IPartitionSamplingFactory& factory) const {
-    return factory.create(*this);
-}
+        std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
+          const IStatisticsProviderFactory& factory) const override {
+            return factory.create(this->getView());
+        }
 
-std::unique_ptr<IInstanceSampling> CsrLabelMatrix::createInstanceSampling(const IInstanceSamplingFactory& factory,
-                                                                          const SinglePartition& partition,
-                                                                          IStatistics& statistics) const {
-    return factory.create(*this, partition, statistics);
-}
+        std::unique_ptr<IPartitionSampling> createPartitionSampling(
+          const IPartitionSamplingFactory& factory) const override {
+            return factory.create(this->getView());
+        }
 
-std::unique_ptr<IInstanceSampling> CsrLabelMatrix::createInstanceSampling(const IInstanceSamplingFactory& factory,
-                                                                          BiPartition& partition,
-                                                                          IStatistics& statistics) const {
-    return factory.create(*this, partition, statistics);
-}
+        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
+                                                                  const SinglePartition& partition,
+                                                                  IStatistics& statistics) const override {
+            return factory.create(this->getView(), partition, statistics);
+        }
 
-std::unique_ptr<IMarginalProbabilityCalibrationModel> CsrLabelMatrix::fitMarginalProbabilityCalibrationModel(
-  const IMarginalProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
-  const IStatistics& statistics) const {
-    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
-}
+        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
+                                                                  BiPartition& partition,
+                                                                  IStatistics& statistics) const override {
+            return factory.create(this->getView(), partition, statistics);
+        }
 
-std::unique_ptr<IMarginalProbabilityCalibrationModel> CsrLabelMatrix::fitMarginalProbabilityCalibrationModel(
-  const IMarginalProbabilityCalibrator& probabilityCalibrator, BiPartition& partition,
-  const IStatistics& statistics) const {
-    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
-}
+        std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
+          const IMarginalProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
+          const IStatistics& statistics) const override {
+            return probabilityCalibrator.fitProbabilityCalibrationModel(partition, this->getView(), statistics);
+        }
 
-std::unique_ptr<IJointProbabilityCalibrationModel> CsrLabelMatrix::fitJointProbabilityCalibrationModel(
-  const IJointProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
-  const IStatistics& statistics) const {
-    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
-}
+        std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(
+          const IMarginalProbabilityCalibrator& probabilityCalibrator, BiPartition& partition,
+          const IStatistics& statistics) const override {
+            return probabilityCalibrator.fitProbabilityCalibrationModel(partition, this->getView(), statistics);
+        }
 
-std::unique_ptr<IJointProbabilityCalibrationModel> CsrLabelMatrix::fitJointProbabilityCalibrationModel(
-  const IJointProbabilityCalibrator& probabilityCalibrator, BiPartition& partition,
-  const IStatistics& statistics) const {
-    return probabilityCalibrator.fitProbabilityCalibrationModel(partition, *this, statistics);
-}
+        std::unique_ptr<IJointProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
+          const IJointProbabilityCalibrator& probabilityCalibrator, const SinglePartition& partition,
+          const IStatistics& statistics) const override {
+            return probabilityCalibrator.fitProbabilityCalibrationModel(partition, this->getView(), statistics);
+        }
 
-std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32 numRows, uint32 numCols, uint32* colIndices,
-                                                      uint32* indptr) {
-    return std::make_unique<CsrLabelMatrix>(numRows, numCols, colIndices, indptr);
+        std::unique_ptr<IJointProbabilityCalibrationModel> fitJointProbabilityCalibrationModel(
+          const IJointProbabilityCalibrator& probabilityCalibrator, BiPartition& partition,
+          const IStatistics& statistics) const override {
+            return probabilityCalibrator.fitProbabilityCalibrationModel(partition, this->getView(), statistics);
+        }
+};
+
+std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols) {
+    return std::make_unique<CsrLabelMatrix>(indices, indptr, numRows, numCols);
 }

@@ -8,7 +8,7 @@
 /**
  * A vector that stores the weights of individual bins, i.e., how many examples have been assigned to them.
  */
-class BinWeightVector final : public ClearableVectorDecorator<VectorDecorator<AllocatedVector<uint32>>> {
+class BinWeightVector final : public ClearableViewDecorator<VectorDecorator<AllocatedVector<uint32>>> {
     public:
 
         /**

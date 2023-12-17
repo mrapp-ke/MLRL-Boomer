@@ -451,8 +451,8 @@ namespace seco {
                                         const BinarySparseArrayVector& majorityLabelVector,
                                         const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights)
                 : weights_(weights), ruleEvaluationFactory_(ruleEvaluationFactory), labelMatrix_(labelMatrix),
-                  majorityLabelVector_(majorityLabelVector), totalSumVector_(labelMatrix.getNumCols(), true),
-                  subsetSumVector_(labelMatrix.getNumCols(), true), coverageMatrix_(coverageMatrix) {
+                  majorityLabelVector_(majorityLabelVector), totalSumVector_(labelMatrix.numCols, true),
+                  subsetSumVector_(labelMatrix.numCols, true), coverageMatrix_(coverageMatrix) {
                 initializeLabelWiseStatisticVector(weights, labelMatrix, majorityLabelVector, coverageMatrix,
                                                    totalSumVector_);
                 initializeLabelWiseStatisticVector(weights, labelMatrix, majorityLabelVector, coverageMatrix,
@@ -472,14 +472,14 @@ namespace seco {
              * @see `IImmutableWeightedStatistics::getNumStatistics`
              */
             uint32 getNumStatistics() const override {
-                return labelMatrix_.getNumRows();
+                return labelMatrix_.numRows;
             }
 
             /**
              * @see `IImmutableWeightedStatistics::getNumLabels`
              */
             uint32 getNumLabels() const override {
-                return labelMatrix_.getNumCols();
+                return labelMatrix_.numCols;
             }
 
             /**
@@ -575,7 +575,7 @@ namespace seco {
       const BinarySparseArrayVector& majorityLabelVector, const RuleEvaluationFactory& ruleEvaluationFactory,
       const WeightVector& weights, const IndexVector& labelIndices) {
         std::unique_ptr<ConfusionMatrixVector> totalSumVectorPtr =
-          std::make_unique<ConfusionMatrixVector>(labelMatrix.getNumRows(), true);
+          std::make_unique<ConfusionMatrixVector>(labelMatrix.numRows, true);
         return std::make_unique<LabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
                                                           RuleEvaluationFactory, WeightVector, IndexVector>>(
           std::move(totalSumVectorPtr), labelMatrix, coverageMatrix, majorityLabelVector, ruleEvaluationFactory,
@@ -648,14 +648,14 @@ namespace seco {
              * @see `IStatistics::getNumStatistics`
              */
             uint32 getNumStatistics() const override final {
-                return labelMatrix_.getNumRows();
+                return labelMatrix_.numRows;
             }
 
             /**
              * @see `IStatistics::getNumLabels`
              */
             uint32 getNumLabels() const override final {
-                return labelMatrix_.getNumCols();
+                return labelMatrix_.numCols;
             }
 
             /**

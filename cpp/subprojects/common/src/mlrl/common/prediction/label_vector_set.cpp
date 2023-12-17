@@ -1,7 +1,5 @@
 #include "mlrl/common/prediction/label_vector_set.hpp"
 
-#include "mlrl/common/input/feature_matrix_c_contiguous.hpp"
-#include "mlrl/common/input/feature_matrix_csr.hpp"
 #include "mlrl/common/model/rule_list.hpp"
 #include "mlrl/common/prediction/predictor_binary.hpp"
 #include "mlrl/common/prediction/predictor_probability.hpp"
@@ -11,55 +9,23 @@
 
 #include <unordered_map>
 
-/**
- * Allows to compute hashes for objects of type `LabelVector`.
- */
-struct LabelVectorHash final {
-    public:
-
-        /**
-         * Computes and returns a hash for an object of type `LabelVector`.
-         *
-         * @param v A reference to an object of type `LabelVector`
-         * @return  The hash that has been computed
-         */
-        inline std::size_t operator()(const LabelVector& v) const {
-            return hashView(v.cbegin(), v.getNumElements());
-        }
-};
-
-/**
- * Allows to check whether two objects of type `LabelVector` are equal or not.
- */
-struct LabelVectorPred final {
-    public:
-
-        /**
-         * Returns whether two objects of type `LabelVector` are equal or not.
-         *
-         * @param lhs   A reference to the first object of type `LabelVector`
-         * @param rhs   A reference to the second object of type `LabelVector`
-         * @return      True, if the given objects are equal, false otherwise
-         */
-        inline bool operator()(const LabelVector& lhs, const LabelVector& rhs) const {
-            return compareViews(lhs.cbegin(), lhs.getNumElements(), rhs.cbegin(), rhs.getNumElements());
-        }
-};
-
 LabelVectorSet::LabelVectorSet() {}
 
 LabelVectorSet::LabelVectorSet(const IRowWiseLabelMatrix& labelMatrix) {
-    std::unordered_map<std::reference_wrapper<LabelVector>, uint32, LabelVectorHash, LabelVectorPred> map;
-    uint32 numRows = labelMatrix.getNumRows();
+    typedef typename LabelVector::view_type Key;
+    typedef typename LabelVector::view_type::Hash Hash;
+    typedef typename LabelVector::view_type::Equal Equal;
+    std::unordered_map<std::reference_wrapper<Key>, uint32, Hash, Equal> map;
+    uint32 numExamples = labelMatrix.getNumExamples();
 
-    for (uint32 i = 0; i < numRows; i++) {
+    for (uint32 i = 0; i < numExamples; i++) {
         std::unique_ptr<LabelVector> labelVectorPtr = labelMatrix.createLabelVector(i);
-        auto it = map.find(*labelVectorPtr);
+        auto it = map.find(labelVectorPtr->getView());
 
         if (it == map.end()) {
-            map.emplace(*labelVectorPtr, (uint32) frequencies_.size());
-            frequencies_.emplace_back(1);
             labelVectors_.push_back(std::move(labelVectorPtr));
+            map.emplace(labelVectors_.back()->getView(), (uint32) frequencies_.size());
+            frequencies_.emplace_back(1);
         } else {
             uint32 index = (*it).second;
             frequencies_[index] += 1;
@@ -109,7 +75,7 @@ std::unique_ptr<IJointProbabilityCalibrator> LabelVectorSet::createJointProbabil
 }
 
 std::unique_ptr<IBinaryPredictor> LabelVectorSet::createBinaryPredictor(
-  const IBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix, const RuleList& model,
+  const IBinaryPredictorFactory& factory, const CContiguousView<const float32>& featureMatrix, const RuleList& model,
   const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
   const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, marginalProbabilityCalibrationModel,
@@ -117,7 +83,7 @@ std::unique_ptr<IBinaryPredictor> LabelVectorSet::createBinaryPredictor(
 }
 
 std::unique_ptr<IBinaryPredictor> LabelVectorSet::createBinaryPredictor(
-  const IBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
+  const IBinaryPredictorFactory& factory, const CsrView<const float32>& featureMatrix, const RuleList& model,
   const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
   const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, marginalProbabilityCalibrationModel,
@@ -125,43 +91,43 @@ std::unique_ptr<IBinaryPredictor> LabelVectorSet::createBinaryPredictor(
 }
 
 std::unique_ptr<ISparseBinaryPredictor> LabelVectorSet::createSparseBinaryPredictor(
-  const ISparseBinaryPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix, const RuleList& model,
-  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+  const ISparseBinaryPredictorFactory& factory, const CContiguousView<const float32>& featureMatrix,
+  const RuleList& model, const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
   const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, marginalProbabilityCalibrationModel,
                           jointProbabilityCalibrationModel, numLabels);
 }
 
 std::unique_ptr<ISparseBinaryPredictor> LabelVectorSet::createSparseBinaryPredictor(
-  const ISparseBinaryPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
+  const ISparseBinaryPredictorFactory& factory, const CsrView<const float32>& featureMatrix, const RuleList& model,
   const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
   const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, marginalProbabilityCalibrationModel,
                           jointProbabilityCalibrationModel, numLabels);
 }
 
-std::unique_ptr<IScorePredictor> LabelVectorSet::createScorePredictor(const IScorePredictorFactory& factory,
-                                                                      const CContiguousFeatureMatrix& featureMatrix,
-                                                                      const RuleList& model, uint32 numLabels) const {
+std::unique_ptr<IScorePredictor> LabelVectorSet::createScorePredictor(
+  const IScorePredictorFactory& factory, const CContiguousView<const float32>& featureMatrix, const RuleList& model,
+  uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, numLabels);
 }
 
 std::unique_ptr<IScorePredictor> LabelVectorSet::createScorePredictor(const IScorePredictorFactory& factory,
-                                                                      const CsrFeatureMatrix& featureMatrix,
+                                                                      const CsrView<const float32>& featureMatrix,
                                                                       const RuleList& model, uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, numLabels);
 }
 
 std::unique_ptr<IProbabilityPredictor> LabelVectorSet::createProbabilityPredictor(
-  const IProbabilityPredictorFactory& factory, const CContiguousFeatureMatrix& featureMatrix, const RuleList& model,
-  const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+  const IProbabilityPredictorFactory& factory, const CContiguousView<const float32>& featureMatrix,
+  const RuleList& model, const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
   const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, marginalProbabilityCalibrationModel,
                           jointProbabilityCalibrationModel, numLabels);
 }
 
 std::unique_ptr<IProbabilityPredictor> LabelVectorSet::createProbabilityPredictor(
-  const IProbabilityPredictorFactory& factory, const CsrFeatureMatrix& featureMatrix, const RuleList& model,
+  const IProbabilityPredictorFactory& factory, const CsrView<const float32>& featureMatrix, const RuleList& model,
   const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
   const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
     return factory.create(featureMatrix, model, this, marginalProbabilityCalibrationModel,

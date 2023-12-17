@@ -11,7 +11,7 @@
 /**
  * Defines an interface for all feature matrices that provide column-wise access to the feature values of examples.
  */
-class MLRLCOMMON_API IColumnWiseFeatureMatrix : virtual public IFeatureMatrix {
+class MLRLCOMMON_API IColumnWiseFeatureMatrix : public IFeatureMatrix {
     public:
 
         virtual ~IColumnWiseFeatureMatrix() override {}

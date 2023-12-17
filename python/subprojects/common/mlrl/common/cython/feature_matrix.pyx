@@ -11,21 +11,21 @@ cdef class FeatureMatrix:
     cdef IFeatureMatrix* get_feature_matrix_ptr(self):
         pass
 
-    def get_num_rows(self) -> int:
+    def get_num_examples(self) -> int:
         """
-        Returns the number of rows in the matrix.
+        Returns the number of examples in the feature matrix.
 
-        :return The number of rows
+        :return The number of examples
         """
-        return self.get_feature_matrix_ptr().getNumRows()
+        return self.get_feature_matrix_ptr().getNumExamples()
 
-    def get_num_cols(self) -> int:
+    def get_num_features(self) -> int:
         """
-        Returns the number of columns in the matrix.
+        Returns the number of features in the feature matrix.
 
-        :return The number of columns
+        :return The number of features
         """
-        return self.get_feature_matrix_ptr().getNumCols()
+        return self.get_feature_matrix_ptr().getNumFeatures()
 
     def is_sparse(self) -> bool:
         """
@@ -59,7 +59,7 @@ cdef class FortranContiguousFeatureMatrix(ColumnWiseFeatureMatrix):
         self.array = array
         cdef uint32 num_examples = array.shape[0]
         cdef uint32 num_features = array.shape[1]
-        self.feature_matrix_ptr = createFortranContiguousFeatureMatrix(num_examples, num_features, &array[0, 0])
+        self.feature_matrix_ptr = createFortranContiguousFeatureMatrix(&array[0, 0], num_examples, num_features)
 
     cdef IFeatureMatrix* get_feature_matrix_ptr(self):
         return self.feature_matrix_ptr.get()
@@ -74,24 +74,24 @@ cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
     matrix in the compressed sparse column (CSC) format.
     """
 
-    def __cinit__(self, uint32 num_examples, uint32 num_features, const float32[::1] data not None,
-                  uint32[::1] row_indices not None, uint32[::1] indptr not None):
+    def __cinit__(self, const float32[::1] values not None, uint32[::1] indices not None, uint32[::1] indptr not None,
+                  uint32 num_examples, uint32 num_features, ):
         """
+        :param values:          An array of type `float32`, shape `(num_non_zero_values)`, that stores all non-zero
+                                feature values
+        :param indices:         An array of type `uint32`, shape `(num_non_zero_values)`, that stores the row-indices,
+                                the values in `values` correspond to
+        :param indptr:          An array of type `uint32`, shape `(num_features + 1)`, that stores the indices of the
+                                first element in `values` and `indices` that corresponds to a certain feature. The index
+                                at the last position is equal to `num_non_zero_values`
         :param num_examples:    The total number of examples
         :param num_features:    The total number of features
-        :param data:            An array of type `float32`, shape `(num_non_zero_values)`, that stores all non-zero
-                                feature values
-        :param row_indices:     An array of type `uint32`, shape `(num_non_zero_values)`, that stores the row-indices,
-                                the values in `data` correspond to
-        :param indptr:          An array of type `uint32`, shape `(num_features + 1)`, that stores the indices of the
-                                first element in `data` and `row_indices` that corresponds to a certain feature. The
-                                index at the last position is equal to `num_non_zero_values`
         """
-        self.data = data
-        self.row_indices = row_indices
+        self.values = values
+        self.indices = indices
         self.indptr = indptr
-        self.feature_matrix_ptr = createCscFeatureMatrix(num_examples, num_features, &data[0], &row_indices[0],
-                                                         &indptr[0])
+        self.feature_matrix_ptr = createCscFeatureMatrix(&values[0], &indices[0], &indptr[0], num_examples,
+                                                         num_features)
 
     cdef IFeatureMatrix* get_feature_matrix_ptr(self):
         return self.feature_matrix_ptr.get()
@@ -123,7 +123,7 @@ cdef class CContiguousFeatureMatrix(RowWiseFeatureMatrix):
         self.array = array
         cdef uint32 num_examples = array.shape[0]
         cdef uint32 num_features = array.shape[1]
-        self.feature_matrix_ptr = createCContiguousFeatureMatrix(num_examples, num_features, &array[0, 0])
+        self.feature_matrix_ptr = createCContiguousFeatureMatrix(&array[0, 0], num_examples, num_features)
 
     cdef IFeatureMatrix* get_feature_matrix_ptr(self):
         return self.feature_matrix_ptr.get()
@@ -138,24 +138,24 @@ cdef class CsrFeatureMatrix(RowWiseFeatureMatrix):
     in the compressed sparse row (CSR) format.
     """
 
-    def __cinit__(self, uint32 num_examples, uint32 num_features, const float32[::1] data not None,
-                  uint32[::1] col_indices not None, uint32[::1] indptr not None):
+    def __cinit__(self, const float32[::1] values not None, uint32[::1] indices not None, uint32[::1] indptr not None,
+                  uint32 num_examples, uint32 num_features):
         """
+        :param values:          An array of type `float32`, shape `(num_non_zero_values)`, that stores all non-zero
+                                feature values
+        :param indices:         An array of type `uint32`, shape `(num_non_zero_values)`, that stores the
+                                column-indices, the values in `values` correspond to
+        :param indptr:          An array of type `uint32`, shape `(num_examples + 1)`, that stores the indices of the
+                                first element in `values` and `indices` that corresponds to a certain example. The index
+                                at the last position is equal to `num_non_zero_values`
         :param num_examples:    The total number of examples
         :param num_features:    The total number of features
-        :param data:            An array of type `float32`, shape `(num_non_zero_values)`, that stores all non-zero
-                                feature values
-        :param col_indices:     An array of type `uint32`, shape `(num_non_zero_values)`, that stores the
-                                column-indices, the values in `data` correspond to
-        :param indptr:          An array of type `uint32`, shape `(num_examples + 1)`, that stores the indices of the
-                                first element in `data` and `col_indices` that corresponds to a certain example. The
-                                index at the last position is equal to `num_non_zero_values`
         """
-        self.data = data
-        self.col_indices = col_indices
+        self.values = values
+        self.indices = indices
         self.indptr = indptr
-        self.feature_matrix_ptr = createCsrFeatureMatrix(num_examples, num_features, &data[0], &col_indices[0],
-                                                         &indptr[0])
+        self.feature_matrix_ptr = createCsrFeatureMatrix(&values[0], &indices[0], &indptr[0], num_examples,
+                                                         num_features)
 
     cdef IFeatureMatrix* get_feature_matrix_ptr(self):
         return self.feature_matrix_ptr.get()

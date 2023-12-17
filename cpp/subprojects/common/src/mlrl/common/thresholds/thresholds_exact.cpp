@@ -339,7 +339,7 @@ class ExactThresholds final : public AbstractThresholds {
                                  const WeightVector& weights)
                     : thresholds_(thresholds), weightedStatisticsPtr_(std::move(weightedStatisticsPtr)),
                       weights_(weights), numCoveredExamples_(weights.getNumNonZeroWeights()),
-                      coverageMask_(thresholds.featureMatrix_.getNumRows()), numModifications_(0) {}
+                      coverageMask_(thresholds.featureMatrix_.getNumExamples()), numModifications_(0) {}
 
                 /**
                  * @param thresholdsSubset A reference to an object of type `ThresholdsSubset` to be copied

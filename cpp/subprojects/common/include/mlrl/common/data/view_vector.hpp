@@ -16,6 +16,41 @@ class MLRLCOMMON_API Vector : public View<T> {
     public:
 
         /**
+         * Allows to compute hash values for objects of type `Vector`.
+         */
+        struct Hash final {
+            public:
+
+                /**
+                 * Computes and returns a hash value for a given object of type `Vector`.
+                 *
+                 * @param v A reference to an object of type `Vector`
+                 * @return  The hash value
+                 */
+                inline std::size_t operator()(const Vector<T>& v) const {
+                    return hashView(v.cbegin(), v.numElements);
+                }
+        };
+
+        /**
+         * Allows to check whether two objects of type `Vector` are equal or not.
+         */
+        struct Equal final {
+            public:
+
+                /**
+                 * Returns whether two objects of type `Vector` are equal or not.
+                 *
+                 * @param lhs   A reference to a first object of type `Vector`
+                 * @param rhs   A reference to a second object of type `Vector`
+                 * @return      True, if the given objects are equal, false otherwise
+                 */
+                inline bool operator()(const Vector<T>& lhs, const Vector<T>& rhs) const {
+                    return compareViews(lhs.cbegin(), lhs.numElements, rhs.cbegin(), rhs.numElements);
+                }
+        };
+
+        /**
          * The number of elements in the view.
          */
         uint32 numElements;
@@ -23,19 +58,27 @@ class MLRLCOMMON_API Vector : public View<T> {
         /**
          * @param array         A pointer to an array of template type `T` that stores the values, the view should
          *                      provide access to
+         * @param dimensions    The number of elements in each dimension of the view
+         */
+        Vector(T* array, std::initializer_list<uint32> dimensions)
+            : View<T>(array), numElements(dimensions.begin()[0]) {}
+
+        /**
+         * @param array         A pointer to an array of template type `T` that stores the values, the view should
+         *                      provide access to
          * @param numElements   The number of elements in the view
          */
-        Vector(T* array, uint32 numElements) : View<T>(array, numElements), numElements(numElements) {}
+        Vector(T* array, uint32 numElements) : View<T>(array), numElements(numElements) {}
 
         /**
          * @param other A const reference to an object of type `Vector` that should be copied
          */
-        Vector(const Vector<T>& other) : Vector(other.array, other.numElements) {}
+        Vector(const Vector<T>& other) : View<T>(other), numElements(other.numElements) {}
 
         /**
          * @param other A reference to an object of type `Vector` that should be moved
          */
-        Vector(Vector<T>&& other) : Vector(other.array, other.numElements) {}
+        Vector(Vector<T>&& other) : View<T>(std::move(other)), numElements(other.numElements) {}
 
         virtual ~Vector() override {}
 
@@ -55,6 +98,13 @@ class MLRLCOMMON_API Vector : public View<T> {
          */
         typename View<T>::iterator end() {
             return &View<T>::array[numElements];
+        }
+
+        /**
+         * Sets all values stored in the view to zero.
+         */
+        void clear() {
+            setViewToZeros(View<T>::array, numElements);
         }
 };
 
@@ -159,29 +209,5 @@ class MLRLCOMMON_API ResizableVectorDecorator : public Vector {
          */
         virtual void setNumElements(uint32 numElements, bool freeMemory) {
             Vector::view.resize(numElements, freeMemory);
-        }
-};
-
-/**
- * Allows to set all values stored in a vector to zero.
- *
- * @tparam Vector The type of the vector
- */
-template<typename Vector>
-class MLRLCOMMON_API ClearableVectorDecorator : public Vector {
-    public:
-
-        /**
-         * @param view The view, the vector should be backed by
-         */
-        ClearableVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
-
-        virtual ~ClearableVectorDecorator() override {}
-
-        /**
-         * Sets all values stored in the vector to zero.
-         */
-        virtual void clear() {
-            setViewToZeros(Vector::view.array, Vector::view.numElements);
         }
 };
