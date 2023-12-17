@@ -15,7 +15,7 @@
 class IFeatureVector : public IOneDimensionalView {
     public:
 
-        virtual ~IFeatureVector() override {};
+        virtual ~IFeatureVector() override {}
 
         /**
          * Creates and returns a copy of this vector that does only store the feature values between a given start and

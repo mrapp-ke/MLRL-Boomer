@@ -19,7 +19,7 @@ class AbstractFeatureVector : public IFeatureVector {
 
     public:
 
-        virtual ~AbstractFeatureVector() override {};
+        virtual ~AbstractFeatureVector() override {}
 
         /**
          * An iterator that provides read-only access to the indices of examples with missing feature values.
