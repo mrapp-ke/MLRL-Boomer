@@ -13,7 +13,7 @@
 class NumericalFeatureVector final : public AbstractFeatureVector {
     private:
 
-        SparseArrayVector<float32> vector_;
+        ResizableSparseArrayVector<float32> vector_;
 
         const float32 sparseValue_;
 
@@ -28,12 +28,12 @@ class NumericalFeatureVector final : public AbstractFeatureVector {
         /**
          * An iterator that provides access to the feature values in the vector and allows to modify them.
          */
-        typedef SparseArrayVector<float32>::iterator iterator;
+        typedef ResizableSparseArrayVector<float32>::iterator iterator;
 
         /**
          * An iterator that provides read-only access to the feature values in the vector.
          */
-        typedef SparseArrayVector<float32>::const_iterator const_iterator;
+        typedef ResizableSparseArrayVector<float32>::const_iterator const_iterator;
 
         /**
          * Returns an `iterator` to the beginning of the vector.
@@ -78,7 +78,7 @@ class NumericalFeatureVector final : public AbstractFeatureVector {
          */
         void setNumElements(uint32 numElements, bool freeMemory);
 
-        uint32 getNumElements() const override;
+        uint32 getNumElements() const;
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     uint32 start, uint32 end) const override;

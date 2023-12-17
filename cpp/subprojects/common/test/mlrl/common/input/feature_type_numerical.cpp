@@ -18,7 +18,7 @@ TEST(NumericalFeatureTypeTest, createNumericalFeatureVectorFromFortranContiguous
     features[4] = 0.0;
     features[5] = NAN;
     features[6] = 0.1;
-    FortranContiguousConstView<const float32> view(numExamples, 1, features);
+    FortranContiguousView<const float32> view(features, numExamples, 1);
 
     // Create feature vector...
     std::unique_ptr<IFeatureVector> featureVectorPtr = NumericalFeatureType().createFeatureVector(0, view);
@@ -57,7 +57,7 @@ TEST(NumericalFeatureTypeTest, createEqualFeatureVectorFromFortranContiguousView
     float32* features = new float32[numExamples];
     features[0] = 0.0;
     features[1] = 0.0;
-    FortranContiguousConstView<const float32> view(numExamples, 1, features);
+    FortranContiguousView<const float32> view(features, numExamples, 1);
 
     // Create feature vector...
     std::unique_ptr<IFeatureVector> featureVectorPtr = NumericalFeatureType().createFeatureVector(0, view);
@@ -91,7 +91,7 @@ TEST(NumericalFeatureTypeTest, createNumericalFeatureVectorFromCscView) {
     uint32* indptr = new uint32[2];
     indptr[0] = 0;
     indptr[1] = numDense;
-    CscConstView<const float32> view(numDense + 3, 1, data, rowIndices, indptr);
+    CscView<const float32> view(data, rowIndices, indptr, numDense + 3, 1);
 
     // Create feature vector...
     std::unique_ptr<IFeatureVector> featureVectorPtr = NumericalFeatureType().createFeatureVector(0, view);
@@ -138,7 +138,7 @@ TEST(NumericalFeatureTypeTest, createEqualFeatureVectorFromCscView) {
     uint32* indptr = new uint32[2];
     indptr[0] = 0;
     indptr[1] = numDense;
-    CscConstView<const float32> view(numDense + 3, 1, data, rowIndices, indptr);
+    CscView<const float32> view(data, rowIndices, indptr, numDense + 3, 1);
 
     // Create feature vector...
     std::unique_ptr<IFeatureVector> featureVectorPtr = NumericalFeatureType().createFeatureVector(0, view);

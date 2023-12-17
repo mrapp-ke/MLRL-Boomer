@@ -33,18 +33,18 @@ static inline std::unique_ptr<NumericalFeatureVector> createNumericalFeatureVect
 }
 
 static inline std::unique_ptr<NumericalFeatureVector> createNumericalFeatureVector(
-  uint32 featureIndex, const FortranContiguousConstView<const float32>& featureMatrix) {
-    FortranContiguousConstView<const float32>::value_const_iterator valueIterator =
+  uint32 featureIndex, const FortranContiguousView<const float32>& featureMatrix) {
+    FortranContiguousView<const float32>::value_const_iterator valueIterator =
       featureMatrix.values_cbegin(featureIndex);
-    uint32 numElements = featureMatrix.getNumRows();
+    uint32 numElements = featureMatrix.numRows;
     return createNumericalFeatureVector(IndexIterator(), valueIterator, numElements);
 }
 
 static inline std::unique_ptr<NumericalFeatureVector> createNumericalFeatureVector(
-  uint32 featureIndex, const CscConstView<const float32>& featureMatrix) {
-    CscConstView<const float32>::index_const_iterator indexIterator = featureMatrix.indices_cbegin(featureIndex);
-    CscConstView<const float32>::index_const_iterator indicesEnd = featureMatrix.indices_cend(featureIndex);
-    CscConstView<const float32>::value_const_iterator valueIterator = featureMatrix.values_cbegin(featureIndex);
+  uint32 featureIndex, const CscView<const float32>& featureMatrix) {
+    CscView<const float32>::index_const_iterator indexIterator = featureMatrix.indices_cbegin(featureIndex);
+    CscView<const float32>::index_const_iterator indicesEnd = featureMatrix.indices_cend(featureIndex);
+    CscView<const float32>::value_const_iterator valueIterator = featureMatrix.values_cbegin(featureIndex);
     uint32 numElements = indicesEnd - indexIterator;
     return createNumericalFeatureVector(indexIterator, valueIterator, numElements);
 }
@@ -80,11 +80,11 @@ bool NumericalFeatureType::isNominal() const {
 }
 
 std::unique_ptr<IFeatureVector> NumericalFeatureType::createFeatureVector(
-  uint32 featureIndex, const FortranContiguousConstView<const float32>& featureMatrix) const {
+  uint32 featureIndex, const FortranContiguousView<const float32>& featureMatrix) const {
     return createFeatureVectorInternally(featureIndex, featureMatrix);
 }
 
 std::unique_ptr<IFeatureVector> NumericalFeatureType::createFeatureVector(
-  uint32 featureIndex, const CscConstView<const float32>& featureMatrix) const {
+  uint32 featureIndex, const CscView<const float32>& featureMatrix) const {
     return createFeatureVectorInternally(featureIndex, featureMatrix);
 }

@@ -16,8 +16,8 @@ class OrdinalFeatureType final : public IFeatureType {
         bool isNominal() const override;
 
         std::unique_ptr<IFeatureVector> createFeatureVector(
-          uint32 featureIndex, const FortranContiguousConstView<const float32>& featureMatrix) const override;
+          uint32 featureIndex, const FortranContiguousView<const float32>& featureMatrix) const override;
 
-        std::unique_ptr<IFeatureVector> createFeatureVector(
-          uint32 featureIndex, const CscConstView<const float32>& featureMatrix) const override;
+        std::unique_ptr<IFeatureVector> createFeatureVector(uint32 featureIndex,
+                                                            const CscView<const float32>& featureMatrix) const override;
 };
