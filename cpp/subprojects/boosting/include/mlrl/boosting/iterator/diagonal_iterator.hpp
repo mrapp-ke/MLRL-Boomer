@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/boosting/util/math.hpp"
 #include "mlrl/common/data/view.hpp"
 
 #include <iterator>
@@ -27,9 +28,10 @@ namespace boosting {
 
             /**
              * @param iterator  An iterator to the beginning of the matrix
-             * @param index     The index to start at
+             * @param index     The index on the diagonal to start at
              */
-            DiagonalConstIterator(typename View<T>::const_iterator iterator, uint32 index);
+            DiagonalConstIterator(typename View<T>::const_iterator iterator, uint32 index)
+                : iterator_(iterator), index_(index) {}
 
             /**
              * The type that is used to represent the difference between two iterators.
@@ -62,42 +64,58 @@ namespace boosting {
              * @param index The index of the element to be returned
              * @return      The element at the given index
              */
-            reference operator[](uint32 index) const;
+            reference operator[](uint32 index) const {
+                return iterator_[triangularNumber(index + 1) - 1];
+            }
 
             /**
              * Returns the element, the iterator currently refers to.
              *
              * @return The element, the iterator currently refers to
              */
-            reference operator*() const;
+            reference operator*() const {
+                return iterator_[triangularNumber(index_ + 1) - 1];
+            }
 
             /**
              * Returns an iterator to the next element.
              *
              * @return A reference to an iterator to the next element
              */
-            DiagonalConstIterator<T>& operator++();
+            DiagonalConstIterator<T>& operator++() {
+                ++index_;
+                return *this;
+            }
 
             /**
              * Returns an iterator to the next element.
              *
              * @return A reference to an iterator to the next element
              */
-            DiagonalConstIterator<T>& operator++(int n);
+            DiagonalConstIterator<T>& operator++(int n) {
+                index_++;
+                return *this;
+            }
 
             /**
              * Returns an iterator to the previous element.
              *
              * @return A reference to an iterator to the previous element
              */
-            DiagonalConstIterator<T>& operator--();
+            DiagonalConstIterator<T>& operator--() {
+                --index_;
+                return *this;
+            }
 
             /**
              * Returns an iterator to the previous element.
              *
              * @return A reference to an iterator to the previous element
              */
-            DiagonalConstIterator<T>& operator--(int n);
+            DiagonalConstIterator<T>& operator--(int n) {
+                index_--;
+                return *this;
+            }
 
             /**
              * Returns whether this iterator and another one refer to the same element.
@@ -105,7 +123,9 @@ namespace boosting {
              * @param rhs   A reference to another iterator
              * @return      True, if the iterators do not refer to the same element, false otherwise
              */
-            bool operator!=(const DiagonalConstIterator<T>& rhs) const;
+            bool operator!=(const DiagonalConstIterator<T>& rhs) const {
+                return index_ != rhs.index_;
+            }
 
             /**
              * Returns whether this iterator and another one refer to the same element.
@@ -113,7 +133,9 @@ namespace boosting {
              * @param rhs   A reference to another iterator
              * @return      True, if the iterators refer to the same element, false otherwise
              */
-            bool operator==(const DiagonalConstIterator<T>& rhs) const;
+            bool operator==(const DiagonalConstIterator<T>& rhs) const {
+                return index_ == rhs.index_;
+            }
 
             /**
              * Returns the difference between this iterator and another one.
@@ -121,7 +143,9 @@ namespace boosting {
              * @param rhs   A reference to another iterator
              * @return      The difference between the iterators
              */
-            difference_type operator-(const DiagonalConstIterator<T>& rhs) const;
+            difference_type operator-(const DiagonalConstIterator<T>& rhs) const {
+                return (difference_type) index_ - (difference_type) rhs.index_;
+            }
     };
 
 }
