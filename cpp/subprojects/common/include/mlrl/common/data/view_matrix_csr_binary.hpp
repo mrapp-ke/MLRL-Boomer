@@ -131,11 +131,11 @@ class MLRLCOMMON_API BinaryCsrViewAllocator : public Matrix {
          * @param numNonZeroElements    The number of non-zero values in the view
          * @param numRows               The number of rows in the view
          * @param numCols               The number of columns in the view
-         * @param init                  True, if all elements in the view should be value-initialized, false otherwise
          */
-        BinaryCsrViewAllocator(uint32 numNonZeroElements, uint32 numRows, uint32 numCols, bool init = false)
-            : Matrix(allocateMemory<uint32>(numNonZeroElements, init), allocateMemory<uint32>(numRows + 1, init),
-                     numRows, numCols) {
+        BinaryCsrViewAllocator(uint32 numNonZeroElements, uint32 numRows, uint32 numCols)
+            : Matrix(allocateMemory<uint32>(numNonZeroElements), allocateMemory<uint32>(numRows + 1), numRows,
+                     numCols) {
+            Matrix::indptr[0] = 0;
             Matrix::indptr[numRows] = numNonZeroElements;
         }
 
