@@ -147,7 +147,7 @@ class MLRLCOMMON_API BinaryCscViewAllocator : public Matrix {
         }
 
         /**
-         * @param other A reference to an object of type `BinaryCsrViewAllocator` that should be moved
+         * @param other A reference to an object of type `BinaryCscViewAllocator` that should be moved
          */
         BinaryCscViewAllocator(BinaryCscViewAllocator<Matrix>&& other) : Matrix(std::move(other)) {
             other.releaseIndices();
