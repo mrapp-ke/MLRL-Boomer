@@ -10,7 +10,8 @@
 TEST(NumericalFeatureTypeTest, createNumericalFeatureVectorFromFortranContiguousView) {
     // Initialize feature matrix...
     uint32 numExamples = 7;
-    float32* features = new float32[numExamples];
+    AllocatedFortranContiguousView<float32> featureView(numExamples, 1);
+    AllocatedFortranContiguousView<float32>::value_iterator features = featureView.values_begin(0);
     features[0] = 0.2;
     features[1] = -0.1;
     features[2] = NAN;
@@ -47,14 +48,13 @@ TEST(NumericalFeatureTypeTest, createNumericalFeatureVectorFromFortranContiguous
     EXPECT_EQ(iterator[3].index, (uint32) 6);
     EXPECT_FLOAT_EQ(iterator[4].value, 0.2);
     EXPECT_EQ(iterator[4].index, (uint32) 0);
-
-    delete[] features;
 }
 
 TEST(NumericalFeatureTypeTest, createEqualFeatureVectorFromFortranContiguousView) {
     // Initialize feature matrix...
     uint32 numExamples = 2;
-    float32* features = new float32[numExamples];
+    AllocatedFortranContiguousView<float32> featureView(numExamples, 1);
+    AllocatedFortranContiguousView<float32>::value_iterator features = featureView.values_begin(0);
     features[0] = 0.0;
     features[1] = 0.0;
     FortranContiguousView<const float32> view(features, numExamples, 1);
@@ -65,8 +65,6 @@ TEST(NumericalFeatureTypeTest, createEqualFeatureVectorFromFortranContiguousView
     // Check type of feature vector...
     const EqualFeatureVector* featureVector = dynamic_cast<const EqualFeatureVector*>(featureVectorPtr.get());
     EXPECT_TRUE(featureVector != nullptr);
-
-    delete[] features;
 }
 
 TEST(NumericalFeatureTypeTest, createNumericalFeatureVectorFromCscView) {
