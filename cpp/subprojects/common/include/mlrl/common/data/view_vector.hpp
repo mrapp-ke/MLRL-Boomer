@@ -109,7 +109,7 @@ class MLRLCOMMON_API Vector : public View<T> {
 };
 
 /**
- * Allocates the memory, a `Vector` provides access to
+ * Allocates the memory, a `Vector` provides access to.
  *
  * @tparam T The type of the values stored in the `Vector`
  */
