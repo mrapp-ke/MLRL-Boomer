@@ -9,7 +9,8 @@
 TEST(OrdinalFeatureTypeTest, createOrdinalFeatureVectorFromFortranContiguousView) {
     // Initialize feature matrix...
     uint32 numExamples = 8;
-    float32* features = new float32[numExamples];
+    AllocatedFortranContiguousView<float32> featureView(numExamples, 1);
+    AllocatedFortranContiguousView<float32>::value_iterator features = featureView.values_begin(0);
     features[0] = 1.0;
     features[1] = 0.0;
     features[2] = NAN;
@@ -58,14 +59,13 @@ TEST(OrdinalFeatureTypeTest, createOrdinalFeatureVectorFromFortranContiguousView
             EXPECT_TRUE(indices.find(3) != indices.end());
         }
     }
-
-    delete[] features;
 }
 
 TEST(OrdinalFeatureTypeTest, createBinaryFeatureVectorFromFortranContiguousView) {
     // Initialize feature matrix...
     uint32 numExamples = 7;
-    float32* features = new float32[numExamples];
+    AllocatedFortranContiguousView<float32> featureView(numExamples, 1);
+    AllocatedFortranContiguousView<float32>::value_iterator features = featureView.values_begin(0);
     features[0] = 1.0;
     features[1] = 0.0;
     features[2] = NAN;
@@ -104,14 +104,13 @@ TEST(OrdinalFeatureTypeTest, createBinaryFeatureVectorFromFortranContiguousView)
     EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
     EXPECT_TRUE(indices.find(0) != indices.end());
     EXPECT_TRUE(indices.find(3) != indices.end());
-
-    delete[] features;
 }
 
 TEST(OrdinalFeatureTypeTest, createEqualFeatureVectorFromFortranContiguousView) {
     // Initialize feature matrix...
     uint32 numExamples = 2;
-    float32* features = new float32[numExamples];
+    AllocatedFortranContiguousView<float32> featureView(numExamples, 1);
+    AllocatedFortranContiguousView<float32>::value_iterator features = featureView.values_begin(0);
     features[0] = 0.0;
     features[1] = 0.0;
     FortranContiguousView<const float32> view(features, numExamples, 1);
@@ -122,8 +121,6 @@ TEST(OrdinalFeatureTypeTest, createEqualFeatureVectorFromFortranContiguousView) 
     // Check type of feature vector...
     const EqualFeatureVector* featureVector = dynamic_cast<const EqualFeatureVector*>(featureVectorPtr.get());
     EXPECT_TRUE(featureVector != nullptr);
-
-    delete[] features;
 }
 
 TEST(OrdinalFeatureTypeTest, createOrdinalFeatureVectorFromDenseCscView) {
