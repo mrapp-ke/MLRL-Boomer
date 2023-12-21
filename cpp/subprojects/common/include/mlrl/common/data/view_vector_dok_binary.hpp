@@ -10,7 +10,7 @@
 /**
  * A view that provides access to binary values stored in a sparse vector in the dictionary of keys (DOK) format.
  */
-class BinaryDokVector {
+class MLRLCOMMON_API BinaryDokVector {
     protected:
 
         /**
@@ -106,7 +106,7 @@ class BinaryDokVector {
  * @tparam Vector The type of the view
  */
 template<typename Vector>
-class BinaryDokVectorAllocator : public Vector {
+class MLRLCOMMON_API BinaryDokVectorAllocator : public Vector {
     public:
 
         BinaryDokVectorAllocator() : Vector(new std::unordered_set<typename Vector::index_type>()) {}

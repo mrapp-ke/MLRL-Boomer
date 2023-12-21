@@ -13,7 +13,7 @@
  * @tparam T The type of the valeus stored in the vector
  */
 template<typename T>
-class DokVector {
+class MLRLCOMMON_API DokVector {
     protected:
 
         /**
@@ -144,7 +144,7 @@ class DokVector {
  * @tparam Vector The type of the view
  */
 template<typename Vector>
-class DokVectorAllocator : public Vector {
+class MLRLCOMMON_API DokVectorAllocator : public Vector {
     public:
 
         /**
@@ -187,7 +187,7 @@ using AllocatedDokVector = DokVectorAllocator<DokVector<T>>;
  * @tparam Vector The type of the vector
  */
 template<typename Vector>
-class IterableDokVectorDecorator : public Vector {
+class MLRLCOMMON_API IterableDokVectorDecorator : public Vector {
     public:
 
         /**
