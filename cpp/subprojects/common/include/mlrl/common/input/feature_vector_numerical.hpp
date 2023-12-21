@@ -4,13 +4,15 @@
 #pragma once
 
 #include "mlrl/common/data/vector_sparse_array.hpp"
+#include "mlrl/common/input/feature_vector.hpp"
 #include "mlrl/common/input/feature_vector_common.hpp"
 
 /**
  * A feature vector that stores the values of training examples for a certain numerical feature, except for the examples
  * associated with a sparse value.
  */
-class NumericalFeatureVector final : public AbstractFeatureVector {
+class NumericalFeatureVector final : public AbstractFeatureVector,
+                                     public IFeatureVector {
     private:
 
         ResizableSparseArrayVector<float32> vector_;

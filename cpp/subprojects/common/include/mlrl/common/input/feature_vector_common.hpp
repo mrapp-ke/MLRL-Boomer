@@ -4,7 +4,6 @@
 #pragma once
 
 #include "mlrl/common/data/vector_dok_binary.hpp"
-#include "mlrl/common/input/feature_vector.hpp"
 
 #include <memory>
 
@@ -12,14 +11,14 @@
  * An abstract base class for all feature vectors that store the values of training examples for a certain feature. It
  * allows to keep track of the indices of examples with missing feature values.
  */
-class AbstractFeatureVector : public IFeatureVector {
+class AbstractFeatureVector {
     private:
 
         BinaryDokVector missingIndices_;
 
     public:
 
-        virtual ~AbstractFeatureVector() override {}
+        virtual ~AbstractFeatureVector() {}
 
         /**
          * An iterator that provides read-only access to the indices of examples with missing feature values.
