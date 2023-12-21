@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_dok_binary.hpp"
+#include "mlrl/common/data/view_vector_dok_binary.hpp"
 
 #include <memory>
 
@@ -14,7 +14,7 @@
 class MissingFeatureVector {
     private:
 
-        std::unique_ptr<BinaryDokVector> missingIndicesPtr_;
+        std::unique_ptr<ClearableViewDecorator<ViewDecorator<AllocatedBinaryDokVector>>> missingIndicesPtr_;
 
     public:
 

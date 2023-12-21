@@ -10,7 +10,6 @@ source_files = [
     'src/mlrl/common/binning/feature_binning_no.cpp',
     'src/mlrl/common/binning/threshold_vector.cpp',
     'src/mlrl/common/data/vector_bit.cpp',
-    'src/mlrl/common/data/vector_dok_binary.cpp',
     'src/mlrl/common/indices/index_iterator.cpp',
     'src/mlrl/common/indices/index_vector_complete.cpp',
     'src/mlrl/common/indices/index_vector_partial.cpp',
