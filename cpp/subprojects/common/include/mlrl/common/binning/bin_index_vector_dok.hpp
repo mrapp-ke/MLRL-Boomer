@@ -10,33 +10,11 @@
  * Stores the indices of the bins, individual examples have been assigned to, using the dictionaries of keys (DOK)
  * format.
  */
-class DokBinIndexVector final : public IBinIndexVector {
-    private:
-
-        DokVector<uint32> vector_;
-
+class DokBinIndexVector final : public DokVectorDecorator<AllocatedDokVector<uint32>>,
+                                public IBinIndexVector {
     public:
 
         DokBinIndexVector();
-
-        /**
-         * An iterator that provides access to the elements in the vector.
-         */
-        typedef DokVector<uint32>::iterator iterator;
-
-        /**
-         * Returns an `iterator` to the beginning of the vector.
-         *
-         * @return An `iterator` to the beginning
-         */
-        iterator begin();
-
-        /**
-         * Returns an `iterator` to the end of the vector.
-         *
-         * @return An `iterator` to the end
-         */
-        iterator end();
 
         uint32 getBinIndex(uint32 exampleIndex) const override;
 

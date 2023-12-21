@@ -2,22 +2,15 @@
 
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 
-DokBinIndexVector::DokBinIndexVector() : vector_(BIN_INDEX_SPARSE) {}
-
-DokBinIndexVector::iterator DokBinIndexVector::begin() {
-    return vector_.begin();
-}
-
-DokBinIndexVector::iterator DokBinIndexVector::end() {
-    return vector_.end();
-}
+DokBinIndexVector::DokBinIndexVector()
+    : DokVectorDecorator<AllocatedDokVector<uint32>>(AllocatedDokVector<uint32>(BIN_INDEX_SPARSE)) {}
 
 uint32 DokBinIndexVector::getBinIndex(uint32 exampleIndex) const {
-    return vector_[exampleIndex];
+    return this->view[exampleIndex];
 }
 
 void DokBinIndexVector::setBinIndex(uint32 exampleIndex, uint32 binIndex) {
-    vector_.set(exampleIndex, binIndex);
+    this->view.set(exampleIndex, binIndex);
 }
 
 std::unique_ptr<IHistogram> DokBinIndexVector::createHistogram(const IWeightedStatistics& statistics,
