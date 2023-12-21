@@ -18,7 +18,7 @@ def create_program_info() -> RuleLearnerRunnable.ProgramInfo:
     package_info = get_package_info()
     return RuleLearnerRunnable.ProgramInfo(name='BOOMER',
                                            version=package_info.package_version,
-                                           year='2020 - 2023',
+                                           year='2020 - 2024',
                                            authors=['Michael Rapp et al.'],
                                            python_packages=[package_info])
 
