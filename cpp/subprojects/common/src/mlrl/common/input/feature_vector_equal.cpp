@@ -9,10 +9,6 @@ static inline std::unique_ptr<IFeatureVector> createFilteredFeatureVectorInterna
     return std::make_unique<EqualFeatureVector>();
 }
 
-uint32 EqualFeatureVector::getNumElements() const {
-    return 0;
-}
-
 std::unique_ptr<IFeatureVector> EqualFeatureVector::createFilteredFeatureVector(
   std::unique_ptr<IFeatureVector>& existing, uint32 start, uint32 end) const {
     return createFilteredFeatureVectorInternally(existing);
