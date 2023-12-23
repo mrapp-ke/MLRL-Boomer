@@ -14,6 +14,15 @@ In addition to the mandatory arguments that must be provided to the command line
 .. note::
     The argument ``--log-level`` controls the level of detail used for log messages (Default value = ``info``). It can be set to the values ``debug``, ``info``, ``warn``, ``warning``, ``error``, ``critical``, ``fatal`` or ``notset``, where the first one provides the greatest level of detail and the last one disables logging entirely.
 
+Dataset
+-------
+
+The following mandatory arguments must always be given to specify the dataset that should be used, as well as the location where it should be loaded from.
+
+* ``--data-dir`` An absolute or relative path to the directory where the data set files are located.
+
+* ``--dataset`` The name of the data set files (without suffix).
+
 Performance Evaluation
 ----------------------
 
