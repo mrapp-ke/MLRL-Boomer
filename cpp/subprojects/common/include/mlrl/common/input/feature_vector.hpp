@@ -47,6 +47,7 @@ class IFeatureVector {
  * An one-dimensional sparse vector that stores the values of training examples for a certain feature, as well as the
  * indices of examples with missing feature values.
  */
+// TODO Remove
 class FeatureVector final
     : public ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<IndexedValue<float32>>>>,
       public MissingFeatureVector {
