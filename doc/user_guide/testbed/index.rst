@@ -1,5 +1,3 @@
-.. _testbed:
-
 Command Line API
 ================
 
