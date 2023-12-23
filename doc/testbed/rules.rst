@@ -1,7 +1,7 @@
 .. _rules:
 
 Understanding the Rules Language
---------------------------------
+================================
 
 The top of each rule file has the "default rule", a special rule without any conditions on features and therefore applies to any given example. For each label, it provides a "default prediction" or "starting value". The prediction for a particular label is positive, if most examples are associated with the respective label, otherwise it is negative. The ratio between the number of examples that are associated with a label and those that are not affects the absolute size of the default prediction. Values that are farther away from zero indicate that the data is very unbalanced.
 
