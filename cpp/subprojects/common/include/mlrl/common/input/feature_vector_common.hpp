@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_dok_binary.hpp"
+#include "mlrl/common/data/view_vector_dok_binary.hpp"
 
 #include <memory>
 
@@ -11,10 +11,11 @@
  * An abstract base class for all feature vectors that store the values of training examples for a certain feature. It
  * allows to keep track of the indices of examples with missing feature values.
  */
+// TODO Remove class
 class AbstractFeatureVector {
     private:
 
-        BinaryDokVector missingIndices_;
+        AllocatedBinaryDokVector missingIndices_;
 
     public:
 
@@ -23,7 +24,7 @@ class AbstractFeatureVector {
         /**
          * An iterator that provides read-only access to the indices of examples with missing feature values.
          */
-        typedef BinaryDokVector::index_const_iterator missing_index_const_iterator;
+        typedef AllocatedBinaryDokVector::index_const_iterator missing_index_const_iterator;
 
         /**
          * Returns a `missing_index_const_iterator` to the beginning of the indices of examples with missing feature
