@@ -1,7 +1,7 @@
 Command Line API
 ================
 
-The command line API allows to run experiments without the need to write code. In this section, we provide a detailed description of the functionalities it provides:
+The command line API allows to run experiments without the need to write code. Compared to the section :ref:`testbed`, the following sections provide a more detailed description of the functionalities it provides:
 
 .. toctree::
    :maxdepth: 1
