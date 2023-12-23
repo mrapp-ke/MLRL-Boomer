@@ -11,20 +11,21 @@
  * An one-dimensional sparse vector that stores the indices of training examples with missing feature values using the
  * dictionary of keys (DOK) format.
  */
-class MissingFeatureVector {
+// TODO Remove class
+class OldMissingFeatureVector {
     private:
 
         std::unique_ptr<ClearableViewDecorator<ViewDecorator<AllocatedBinaryDokVector>>> missingIndicesPtr_;
 
     public:
 
-        MissingFeatureVector();
+        OldMissingFeatureVector();
 
         /**
-         * @param missingFeatureVector A reference to an object of type `MissingFeatureVector`, the missing indices
+         * @param missingFeatureVector A reference to an object of type `OldMissingFeatureVector`, the missing indices
          *                             should be taken from
          */
-        MissingFeatureVector(MissingFeatureVector& missingFeatureVector);
+        OldMissingFeatureVector(OldMissingFeatureVector& missingFeatureVector);
 
         /**
          * An iterator that provides read-only access to the missing indices.

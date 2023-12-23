@@ -10,7 +10,7 @@
  * An one-dimensional vector that stores thresholds that may be used by conditions.
  */
 class ThresholdVector final : public ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<float32>>>,
-                              public MissingFeatureVector {
+                              public OldMissingFeatureVector {
     private:
 
         uint32 sparseBinIndex_;
@@ -18,12 +18,12 @@ class ThresholdVector final : public ResizableVectorDecorator<DenseVectorDecorat
     public:
 
         /**
-         * @param missingFeatureVector  A reference to an object of type `MissingFeatureVector` the missing indices
+         * @param missingFeatureVector  A reference to an object of type `OldMissingFeatureVector` the missing indices
          *                              should be taken from
          * @param numElements           The number of elements in the vector
          * @param init                  True, if all elements in the vector should be value-initialized, false otherwise
          */
-        ThresholdVector(MissingFeatureVector& missingFeatureVector, uint32 numElements, bool init = false);
+        ThresholdVector(OldMissingFeatureVector& missingFeatureVector, uint32 numElements, bool init = false);
 
         /**
          * Returns the index of the bin, sparse values have been assigned to.

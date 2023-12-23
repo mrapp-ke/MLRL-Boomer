@@ -50,7 +50,7 @@ class IFeatureVector {
 // TODO Remove
 class FeatureVector final
     : public ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<IndexedValue<float32>>>>,
-      public MissingFeatureVector {
+      public OldMissingFeatureVector {
     public:
 
         /**
