@@ -1,7 +1,7 @@
 .. _parameters:
 
-Configuration and Parameters
-============================
+Overview of Parameters
+======================
 
 The behavior of the BOOMER algorithm can be controlled in a fine-grained manner via a large number of parameters. Values for these parameters may be provided as constructor arguments to the class ``Boomer`` as shown in the section :ref:`usage`. They can also be used to configure the algorithm when using the :ref:`testbed`.
 

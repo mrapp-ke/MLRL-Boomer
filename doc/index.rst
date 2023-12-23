@@ -18,7 +18,6 @@ This document is intended for users and developers who are interested in the alg
 
    quickstart/installation
    quickstart/usage
-   quickstart/parameters
    quickstart/testbed
 
 .. toctree::
@@ -26,7 +25,8 @@ This document is intended for users and developers who are interested in the alg
    :maxdepth: 2
    :caption: User Guide
 
-   testbed/rules
+   user_guide/methodology/index
+   user_guide/testbed/index
 
 .. toctree::
    :hidden:
