@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/view_vector.hpp"
+#include "mlrl/common/data/view.hpp"
 
 /**
  * A view that is backed two one-dimensional views.
