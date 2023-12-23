@@ -3,88 +3,37 @@
  */
 #pragma once
 
-#include "mlrl/common/data/vector_sparse_array.hpp"
-#include "mlrl/common/input/feature_vector.hpp"
-#include "mlrl/common/input/feature_vector_common.hpp"
+#include "mlrl/common/data/indexed_value.hpp"
+#include "mlrl/common/data/view_vector.hpp"
 
 /**
  * A feature vector that stores the values of training examples for a certain numerical feature, except for the examples
  * associated with a sparse value.
  */
-class NumericalFeatureVector final : public AbstractFeatureVector,
-                                     public IFeatureVector {
-    private:
-
-        ResizableSparseArrayVector<float32> vector_;
-
-        const float32 sparseValue_;
-
+class NumericalFeatureVector : public Vector<IndexedValue<float32>> {
     public:
 
         /**
+         * The value of sparse elements not explicitly stored in the vector.
+         */
+        float32 sparseValue;
+
+        /**
+         * @param array         A pointer to an array of type `IndexedValue<float32>` that stores the values in the
+         *                      feature vector
          * @param numElements   The number of elements in the vector, excluding those associated with the sparse value
-         * @param sparseValue   The value of sparse elements not explicitly stored in the vector
          */
-        NumericalFeatureVector(uint32 numElements, float32 sparseValue);
+        NumericalFeatureVector(IndexedValue<float32>* array, uint32 numElements);
 
         /**
-         * An iterator that provides access to the feature values in the vector and allows to modify them.
+         * @param other A const reference to an object of type `NumericalFeatureVector` that should be copied
          */
-        typedef ResizableSparseArrayVector<float32>::iterator iterator;
+        NumericalFeatureVector(const NumericalFeatureVector& other);
 
         /**
-         * An iterator that provides read-only access to the feature values in the vector.
+         * @param other A reference to an object of type `NumericalFeatureVector` that should be moved
          */
-        typedef ResizableSparseArrayVector<float32>::const_iterator const_iterator;
+        NumericalFeatureVector(NumericalFeatureVector&& other);
 
-        /**
-         * Returns an `iterator` to the beginning of the vector.
-         *
-         * @return An `iterator` to the beginning
-         */
-        iterator begin();
-
-        /**
-         * Returns an `iterator` to the end of the vector.
-         *
-         * @return An `iterator` to the end
-         */
-        iterator end();
-
-        /**
-         * Returns a `const_iterator` to the beginning of the vector.
-         *
-         * @return A `const_iterator` to the beginning
-         */
-        const_iterator cbegin() const;
-
-        /**
-         * Returns a `const_iterator` to the end of the vector.
-         *
-         * @return A `const_iterator` to the end
-         */
-        const_iterator cend() const;
-
-        /**
-         * Returns the value of sparse elements not explicitly stored in the vector.
-         *
-         * @return The value of sparse elements
-         */
-        float32 getSparseValue() const;
-
-        /**
-         * Sets the number of elements in the vector.
-         *
-         * @param numElements   The number of elements to be set
-         * @param freeMemory    True, if unused memory should be freed, if possible, false otherwise
-         */
-        void setNumElements(uint32 numElements, bool freeMemory);
-
-        uint32 getNumElements() const;
-
-        std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
-                                                                    uint32 start, uint32 end) const override;
-
-        std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
-                                                                    const CoverageMask& coverageMask) const override;
+        virtual ~NumericalFeatureVector() override {};
 };

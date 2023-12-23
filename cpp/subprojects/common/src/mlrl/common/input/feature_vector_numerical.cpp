@@ -1,44 +1,10 @@
 #include "mlrl/common/input/feature_vector_numerical.hpp"
 
-NumericalFeatureVector::NumericalFeatureVector(uint32 numElements, float32 sparseValue)
-    : vector_(numElements), sparseValue_(sparseValue) {}
+NumericalFeatureVector::NumericalFeatureVector(IndexedValue<float32>* array, uint32 numElements)
+    : Vector<IndexedValue<float32>>(array, numElements), sparseValue(0) {}
 
-NumericalFeatureVector::iterator NumericalFeatureVector::begin() {
-    return vector_.begin();
-}
+NumericalFeatureVector::NumericalFeatureVector(const NumericalFeatureVector& other)
+    : Vector<IndexedValue<float32>>(other), sparseValue(other.sparseValue) {}
 
-NumericalFeatureVector::iterator NumericalFeatureVector::end() {
-    return vector_.end();
-}
-
-NumericalFeatureVector::const_iterator NumericalFeatureVector::cbegin() const {
-    return vector_.cbegin();
-}
-
-NumericalFeatureVector::const_iterator NumericalFeatureVector::cend() const {
-    return vector_.cend();
-}
-
-float32 NumericalFeatureVector::getSparseValue() const {
-    return sparseValue_;
-}
-
-void NumericalFeatureVector::setNumElements(uint32 numElements, bool freeMemory) {
-    return vector_.setNumElements(numElements, freeMemory);
-}
-
-uint32 NumericalFeatureVector::getNumElements() const {
-    return vector_.getNumElements();
-}
-
-std::unique_ptr<IFeatureVector> NumericalFeatureVector::createFilteredFeatureVector(
-  std::unique_ptr<IFeatureVector>& existing, uint32 start, uint32 end) const {
-    // TODO Implement
-    return nullptr;
-}
-
-std::unique_ptr<IFeatureVector> NumericalFeatureVector::createFilteredFeatureVector(
-  std::unique_ptr<IFeatureVector>& existing, const CoverageMask& coverageMask) const {
-    // TODO Implement
-    return nullptr;
-}
+NumericalFeatureVector::NumericalFeatureVector(NumericalFeatureVector&& other)
+    : Vector<IndexedValue<float32>>(std::move(other)), sparseValue(other.sparseValue) {}
