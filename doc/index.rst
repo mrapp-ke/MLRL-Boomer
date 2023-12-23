@@ -24,6 +24,13 @@ This document is intended for users and developers who are interested in the alg
 .. toctree::
    :hidden:
    :maxdepth: 2
+   :caption: User Guide
+
+   testbed/rules
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
    :caption: Developer Guide
 
    development/project_structure
