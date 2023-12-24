@@ -16,7 +16,7 @@ In the following, a minimal working example of how to use the command line API f
 
 .. code-block:: text
 
-   boomer --data-dir /path/to/datasets/ --dataset name
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name
 
 Both arguments that are included in the above command are mandatory:
 
@@ -39,16 +39,16 @@ In addition to the mandatory arguments that must be provided to the command line
 
 .. code-block:: text
 
-   boomer --data-dir /path/to/datsets/ --dataset name --output-dir /path/to/output/
+   boomer --data-dir /path/to/datsets/ --dataset dataset-name --output-dir /path/to/output/
 
 Moreover, algorithmic parameters that control the behavior of the machine learning algorithm can be set via command line arguments as well. For example, as shown in the section :ref:`setting_algorithmic_parameters`, the value of the parameter ``feature_binning`` can be specified as follows:
 
 .. code-block:: text
 
-   boomer --data-dir /path/to/datasets/ --dataset name --feature-binning equal-width
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --feature-binning equal-width
 
 Some algorithmic parameters, including the parameter ``feature_binning``, come with additional options in the form of key-value pairs. They can be specified by using a bracket notation as shown below:
 
 .. code-block:: text
 
-   boomer --data-dir /path/to/datasets/ --dataset name --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
