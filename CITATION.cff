@@ -7,7 +7,7 @@ type: software
 authors:
   - given-names: Michael
     family-names: Rapp
-repository-code: 'https://github.com/mrapp-ke/Boomer'
+repository-code: 'https://github.com/mrapp-ke/MLRL-Boomer'
 license: MIT
 preferred-citation:
   type: proceedings

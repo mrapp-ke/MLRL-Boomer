@@ -110,7 +110,7 @@ Citations of BOOMER
 In the following, we provide a selection of interesting publications that have made use of the BOOMER algorithm in experimental studies or by building upon its code for the implementation of novel machine learning approaches.
 
 .. note::
-    If you are the author of a paper that you would like to be presented in this section, feel free to reach out to us via the project's `issue tracker <https://github.com/mrapp-ke/Boomer/issues>`_.
+    If you are the author of a paper that you would like to be presented in this section, feel free to reach out to us via the project's `issue tracker <https://github.com/mrapp-ke/MLRL-Boomer/issues>`_.
 
 pRSL: Interpretable Multi-label Stacking by Learning Probabilistic Rules
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
