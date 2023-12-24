@@ -13,7 +13,7 @@
 [![Code style](https://github.com/mrapp-ke/MLRL-Boomer/actions/workflows/test_format.yml/badge.svg)](https://github.com/mrapp-ke/MLRL-Boomer/actions/workflows/test_format.yml)
 [![X URL](https://img.shields.io/twitter/url?label=Follow&style=social&url=https%3A%2F%2Ftwitter.com%2FBOOMER_ML)](https://twitter.com/BOOMER_ML)
 
-**Important links:** [Documentation](https://mlrl-boomer.readthedocs.io) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](CHANGELOG.md) | [Contributors](CONTRIBUTORS.md) | [Code of Conduct](CODE_OF_CONDUCT.md)
+**Important links:** [Documentation](https://mlrl-boomer.readthedocs.io) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CHANGELOG.md) | [Contributors](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CONTRIBUTORS.md) | [Code of Conduct](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CODE_OF_CONDUCT.md) | [License](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/LICENSE.md)
 
 This software package provides the official implementation of **BOOMER - an algorithm for learning gradient boosted multi-label classification rules** that integrates with the popular [scikit-learn](https://scikit-learn.org) machine learning framework.
 
@@ -68,10 +68,10 @@ An extensive user guide, as well as an API documentation for developers, is avai
 
 A collection of benchmark datasets that are compatible with the algorithm are provided in a separate [repository](https://github.com/mrapp-ke/Boomer-Datasets).
 
-For an overview of changes and new features that have been included in past releases, please refer to the [changelog](CHANGELOG.md).
+For an overview of changes and new features that have been included in past releases, please refer to the [changelog](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CHANGELOG.md).
 
 ## License
 
-This project is open source software licensed under the terms of the [MIT license](LICENSE.md). We welcome contributions to the project to enhance its functionality and make it more accessible to a broader audience. A frequently updated list of contributors is available [here](CONTRIBUTORS.md).
+This project is open source software licensed under the terms of the [MIT license](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/LICENSE.md). We welcome contributions to the project to enhance its functionality and make it more accessible to a broader audience. A frequently updated list of contributors is available [here](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CONTRIBUTORS.md).
 
-All contributions to the project and discussions on the [issue tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) are expected to follow the [code of conduct](CODE_OF_CONDUCT.md).
+All contributions to the project and discussions on the [issue tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) are expected to follow the [code of conduct](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CODE_OF_CONDUCT.md).
