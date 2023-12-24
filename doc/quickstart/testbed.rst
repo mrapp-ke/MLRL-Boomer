@@ -20,8 +20,8 @@ In the following, a minimal working example of how to use the command line API f
 
 Both arguments that are included in the above command are mandatory:
 
-* ``--data-dir``: An absolute or relative path to the directory where the data set files are located.
-* ``--dataset``: The name of the data set files (without suffix).
+* ``--data-dir`` An absolute or relative path to the directory where the data set files are located.
+* ``--dataset`` The name of the data set files (without suffix).
 
 The program expects the data set files to be provided in the `Mulan format <http://mulan.sourceforge.net/format.html>`_. It requires two files to be present in the specified directory:
 

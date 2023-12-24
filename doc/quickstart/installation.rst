@@ -5,7 +5,7 @@ Installation
 
 All algorithms that are provided as part of this project are published on `PyPi <https://pypi.org/>`__. As shown below, they can easily be installed via the Python package manager `pip <https://en.wikipedia.org/wiki/Pip_(package_manager)>`_. Unless you intend to modify the algorithms' source code, in which case you should have a look at the section :ref:`compilation`, this is the recommended way for installing the software.
 
-Installing the BOOMER algorithm
+Installing the BOOMER Algorithm
 -------------------------------
 
 The BOOMER algorithm is published as the Python package `mlrl-boomer <https://pypi.org/project/mlrl-boomer/>`__. It can be installed via the following command:
