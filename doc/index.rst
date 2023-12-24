@@ -35,7 +35,6 @@ This document is intended for users and developers who are interested in the alg
 
    development/project_structure
    development/compilation
-   development/build_options
    development/documentation
    development/coding_standards
    development/api/python/index
