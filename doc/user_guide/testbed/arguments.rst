@@ -17,6 +17,8 @@ In addition to the mandatory arguments that must be provided to the command line
 Dataset
 -------
 
+    A more detailed description of the following arguments can be found :ref:`here<testbed>`.
+
 The following mandatory arguments must always be given to specify the dataset that should be used, as well as the location where it should be loaded from.
 
 * ``--data-dir`` An absolute or relative path to the directory where the data set files are located.
