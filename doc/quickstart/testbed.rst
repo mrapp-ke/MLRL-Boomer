@@ -35,7 +35,11 @@ If an .xml file is not provided, the program tries to retrieve the number of lab
 Optional Arguments
 ------------------
 
-In addition to the mandatory arguments that must be provided to the command line API for specifying the dataset used for training, a wide variety of optional arguments for customizing the program's behavior are available as well. For example, they can be used to specify an output directory, where experimental results, models, or parameter settings should be stored. An overview of all available command line arguments is provided in the section :ref:`arguments`.
+In addition to the mandatory arguments that must be provided to the command line API for specifying the dataset used for training, a wide variety of optional arguments for customizing the program's behavior are available as well. An overview of all available command line arguments is provided in the section :ref:`arguments`. For example, they can be used to specify an output directory, where experimental results should be stored:
+
+.. code-block:: text
+
+   boomer --data-dir /path/to/datsets/ --dataset name --output-dir /path/to/output/
 
 Moreover, algorithmic parameters that control the behavior of the machine learning algorithm can be set via command line arguments as well. For example, as shown in the section :ref:`setting_algorithmic_parameters`, the value of the parameter ``feature_binning`` can be specified as follows:
 
