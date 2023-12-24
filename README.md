@@ -64,7 +64,7 @@ An extensive user guide, as well as an API documentation for developers, is avai
 
 * Instructions for [installing the software package](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/installation.html) or [building the project from source](https://mlrl-boomer.readthedocs.io/en/latest/development/compilation.html).
 * Examples of how to [use the algorithm](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/usage.html) in your own Python code or how to use the [command line API](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/testbed.html).
-* An overview of available [parameters](https://mlrl-boomer.readthedocs.io/en/latest/quickstart/parameters.html).
+* An overview of available [parameters](https://mlrl-boomer.readthedocs.io/en/latest/user_guide/boosting/parameters.html).
 
 A collection of benchmark datasets that are compatible with the algorithm are provided in a separate [repository](https://github.com/mrapp-ke/Boomer-Datasets).
 
