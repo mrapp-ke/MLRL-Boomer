@@ -25,7 +25,7 @@ This document is intended for users and developers who are interested in the alg
    :maxdepth: 2
    :caption: User Guide
 
-   user_guide/methodology/index
+   user_guide/boosting/index
    user_guide/testbed/index
 
 .. toctree::
