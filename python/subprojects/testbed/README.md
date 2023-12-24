@@ -4,6 +4,8 @@
 [![PyPI version](https://badge.fury.io/py/mlrl-testbed.svg)](https://badge.fury.io/py/mlrl-testbed)
 [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest)
 
+**Important links:** [Documentation](https://mlrl-boomer.readthedocs.io) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CHANGELOG.md) | [Contributors](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CONTRIBUTORS.md) | [Code of Conduct](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CODE_OF_CONDUCT.md) | [License](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/LICENSE.md)
+
 This software package provides **utilities for training and evaluating single- and multi-label rule learning algorithms** that have been implemented using the "MLRL-Common" library, including the following ones:
 
 * **BOOMER (Gradient Boosted Multi-label Classification Rules)**: A state-of-the art algorithm that uses [gradient boosting](https://en.wikipedia.org/wiki/Gradient_boosting) to learn an ensemble of rules that is built with respect to a given multivariate loss function.
