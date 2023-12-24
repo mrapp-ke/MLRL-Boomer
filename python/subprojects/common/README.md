@@ -4,6 +4,8 @@
 [![PyPI version](https://badge.fury.io/py/mlrl-common.svg)](https://badge.fury.io/py/mlrl-common)
 [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest)
 
+**Important links:** [Documentation](https://mlrl-boomer.readthedocs.io) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CHANGELOG.md) | [Contributors](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CONTRIBUTORS.md) | [Code of Conduct](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CODE_OF_CONDUCT.md) | [License](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/LICENSE.md)
+
 This software package provides common modules to be used by different types of **multi-label rule learning (MLRL)** algorithms that integrate with the popular [scikit-learn](https://scikit-learn.org) machine learning framework.
 
 The goal of [multi-label classification](https://en.wikipedia.org/wiki/Multi-label_classification) is the automatic assignment of sets of labels to individual data points, for example, the annotation of text documents with topics.

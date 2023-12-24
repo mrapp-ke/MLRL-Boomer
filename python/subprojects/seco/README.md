@@ -2,6 +2,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+**Important links:** [Documentation](https://mlrl-boomer.readthedocs.io) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CHANGELOG.md) | [Contributors](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CONTRIBUTORS.md) | [Code of Conduct](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CODE_OF_CONDUCT.md) | [License](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/LICENSE.md)
+
 This software package provides an implementation of a **Multi-label Separate-and-Conquer (SeCo) Rule Learning Algorithm** that integrates with the popular [scikit-learn](https://scikit-learn.org) machine learning framework.
 
 The goal of [multi-label classification](https://en.wikipedia.org/wiki/Multi-label_classification) is the automatic assignment of sets of labels to individual data points, for example, the annotation of text documents with topics. The algorithm that is provided by this package uses the SeCo paradigm for learning interpretable rule lists.
