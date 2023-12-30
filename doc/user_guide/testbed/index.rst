@@ -7,5 +7,6 @@ The command line API allows to run experiments using the algorithms provided by 
    :maxdepth: 1
 
    evaluation
+   pre_processing
    inspecting_models
    arguments
