@@ -8,5 +8,6 @@ The command line API allows to run experiments using the algorithms provided by 
 
    evaluation
    pre_processing
+   model_persistence
    inspecting_models
    arguments

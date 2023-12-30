@@ -10,6 +10,8 @@ Strategies for Data Splitting
 
 Several strategies for splitting the available data into distinct training and test sets can be used via the command line API. They are described in the following.
 
+.. _train_test_split:
+
 Train-Test-Splits
 ^^^^^^^^^^^^^^^^^
 
@@ -28,6 +30,8 @@ When it is the responsibility of the command line API to split a given dataset i
    boomer --data-dir /path/to/datsets/ --dataset dataset-name --data-split 'train-test{test_size=0.25}'
 
 This command will tell the command line API to include 75% of the available data in the training set and use the remaining 25% for the test set.
+
+.. _cross_validation:
 
 Cross Validation
 ^^^^^^^^^^^^^^^^

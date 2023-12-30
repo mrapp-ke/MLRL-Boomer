@@ -93,6 +93,8 @@ One-Hot-Encoding
 Saving and Loading Models
 -------------------------
 
+    A more detailed description of the following arguments can be found :ref:`here<model_persistence>`.
+
 Because the training of models can be time-consuming, it might be desirable to store them on disk for later use. This requires to specify the path of a directory where models should be saved.
 
 * ``--model-dir`` (Default value = ``None``)
