@@ -110,3 +110,24 @@ The most common type of prediction used for multi-label classification are binar
    boomer --data-dir /path/to/datsets/ --dataset dataset-name --prediction-type binary
 
 In a multi-label setting, the quality of binary predictions is assessed in terms of commonly used `multi-label classification metrics <https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics>`__ implemented by the `scikit-learn <https://scikit-learn.org>`__ framework. If a dataset contains only a single label, the evaluation will be restricted to classification metrics that are suited for single-label classification problems.
+
+Incremental Evaluation
+----------------------
+
+When evaluating the predictive performance of an `ensemble method <https://en.wikipedia.org/wiki/Ensemble_learning>`__, i.e., models that consist of several weak predictors, also referred to as *ensemble members*, the command line API supports to evaluate these models incrementally. In particular, rule-based machine learning algorithms like the ones implemented by this project are often considered as ensemble methods, where each rule in a model can be viewed as a weak predictor.  Adding more rules to a model typically results in better predictive performance. However, adding too many rules may result in overfitting the training data and therefore achieving subpar performance on the test data. For analyzing such behavior, the arugment ``--incremental-evaluation true`` may be passed to the command line API:
+
+.. code-block:: text
+
+   boomer --data-dir /path/to/datsets/ --dataset dataset-name --incremental-evaluation true
+
+When using the above command, the rule-based model that is learned by the BOOMER algorithm will be evaluated repeatedly as more rules are added to it. Evaluation results will be obtained for a model consisting of a single rule, two rules, three rules, and so on. Of course, because the evaluation is performed multiple times, this evaluation strategy comes with a large computational overhead. Therefore, depending on the size of the final model, it might be necessary to limit the number of evaluations via the following options:
+
+* ``min_size`` specifies the minimum number of ensemble members that must be included in a model for the first evaluation to be performed.
+* ``max_size`` specifies the maximum number of ensemble members to be evaluated.
+* ``step_size`` allows to to specify after how many additional ensemble members the evaluation should be repeated.
+
+For example, the following command may be used for the incremental evaluation of a BOOMER model that consists of up to 1000 rules. The model will be evaluated for the first time after 200 rules have been added. Subsequent evaluations will be perfomed when the model comprises 400, 600, 800, and 1000 rules.
+
+.. code-block:: text
+
+   boomer --data-dir /path/to/datsets/ --dataset dataset-name --incremental-evaluation 'true{min_size=200,max_size=1000,step_size=200}'
