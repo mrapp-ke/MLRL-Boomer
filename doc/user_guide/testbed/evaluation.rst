@@ -69,3 +69,44 @@ Sometimes, evaluating the performance of a model on the data it has been trained
     .. code-block:: text
 
        boomer --data-dir /path/to/datsets/ --dataset dataset-name --data-split cv --evaluate-training-data true
+
+Types of Predictions
+--------------------
+
+The metrics for evaluating the quality of predictions that have been obtained for a test set are chosen automatically, depending on the type of predictions provided by the model. In general, the command line API supports evaluating binary predictions, probability estimates, and regression scores. Not all of these prediction types must be supported by a single machine learning method. For example, in case of the BOOMER algorithm, the prediction of probabilities is only possible with certain configurations.
+
+.. _regression_scores:
+
+Regression Scores
+^^^^^^^^^^^^^^^^^
+
+We refer to real-valued predictions, which may be positive or negative, as *regression scores*. In the context of multi-label classification, positive scores indicate a preference towards predicting a label as relevant, whereas negative scores are predicted for labels that are more likely to be irrelevant. The absolute size of the scores corresponds to the confidence of the predictions, i.e., if a large value is predicted for a label, the model is more certain about the correctness of the predicted outcome. Unlike :ref:`probability_estimates`, regression scores are not bound to a certain interval and can be arbitrary positive or negative values. The BOOMER algorithm uses regression scores as a basis for predicting probabilities or binary labels. If you want to evaluate the quality of the regression scores directly, instead of transforming them into probabilities or binary predictions, the argument ``--prediction-type scores`` may be passed to the command line API:
+
+.. code-block:: text
+
+   boomer --data-dir /path/to/datsets/ --dataset dataset-name --prediction-type scores
+
+For evaluating the quality of regression scores, `multi-label ranking measures <https://scikit-learn.org/stable/modules/model_evaluation.html#multilabel-ranking-metrics>`__ provided by the `scikit-learn <https://scikit-learn.org>`__ framework are used.
+
+.. _probability_estimates:
+
+Probability Estimates
+^^^^^^^^^^^^^^^^^^^^^
+Probability estimates are given as real values between zero and one. In the context of multi-label classification, they express the probability of a label being relevant. If the predicted probability is close to zero, the corresponding label is more likely to be irrelevant, whereas a probability close to one is predicted for labels that are likely to be relevant. If you intend to evaluate the quality of probabilistic predictions, the argument ``--prediction-type probabilities`` should be used:
+
+.. code-block:: text
+
+   boomer --data-dir /path/to/datsets/ --dataset dataset-name --prediction-type probabilities
+
+Similar to :ref:`regression_scores`, the command line API relies on `multi-label ranking measures <https://scikit-learn.org/stable/modules/model_evaluation.html#multilabel-ranking-metrics>`__, as implemented by the `scikit-learn <https://scikit-learn.org>`__ framework, for evaluating probability estimates.
+
+Binary Labels
+^^^^^^^^^^^^^
+
+The most common type of prediction used for multi-label classification are binary predictions that directly indicate whether a label is considered as irrelevant or relevant. Irrelevant labels are represented by the value ``0``, whereas the value ``1`` is predicted for relevant labels. By default, the command line API instructs the learning method to provide binary predictions. If you want to explicitly instruct it to use this particular type of predictions, you can use the argument ``--prediction-type binary``:
+
+.. code-block:: text
+
+   boomer --data-dir /path/to/datsets/ --dataset dataset-name --prediction-type binary
+
+In a multi-label setting, the quality of binary predictions is assessed in terms of commonly used `multi-label classification metrics <https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics>`__ implemented by the `scikit-learn <https://scikit-learn.org>`__ framework. If a dataset contains only a single label, the evaluation will be restricted to classification metrics that are suited for single-label classification problems.
