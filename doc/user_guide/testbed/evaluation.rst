@@ -25,7 +25,7 @@ When it is the responsibility of the command line API to split a given dataset i
 
 .. code-block:: text
 
-   boomer --data-dir /path/to/datsets/ --dataset dataset-name --data-split train-test'{test_size=0.25}'
+   boomer --data-dir /path/to/datsets/ --dataset dataset-name --data-split 'train-test{test_size=0.25}'
 
 This command will tell the command line API to include 75% of the available data in the training set and use the remaining 25% for the test set.
 
@@ -42,14 +42,14 @@ By default, a 10-fold cross validation, where ten models are trained and evaluat
 
 .. code-block:: text
 
-   boomer --data-dir /path/to/datsets/ --dataset dataset-name --data-split cv'{num_folds=5}'
+   boomer --data-dir /path/to/datsets/ --dataset dataset-name --data-split 'cv{num_folds=5}'
 
 .. tip::
     When providing the option ``current_fold``, only a single fold, instead of the entire procedure, will be performed. This is particularly useful, if one intends to train and evaluate the models for each individual fold in parallel on different machines. For example, the following command does only execute the second fold of a 5-fold CV:
 
     .. code-block:: text
 
-       boomer --data-dir /path/to/datsets/ --dataset dataset-name --data-split cv'{num_folds=5,current_fold=2}'
+       boomer --data-dir /path/to/datsets/ --dataset dataset-name --data-split 'cv{num_folds=5,current_fold=2}'
 
 Evaluation on the Training Data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
