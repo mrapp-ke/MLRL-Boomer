@@ -17,8 +17,8 @@ from pathlib import Path
 # -- Project information -----------------------------------------------------
 
 project = 'BOOMER'
-copyright = '2020-2024, Michael Rapp'
-author = 'Michael Rapp'
+copyright = '2020-2024, Michael Rapp et al.'
+author = 'Michael Rapp et al.'
 
 # The full version, including alpha/beta/rc tags
 release = (Path(__file__).resolve().parent.parent / 'VERSION').read_text()
