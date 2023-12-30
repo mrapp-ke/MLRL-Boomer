@@ -15,7 +15,7 @@ We make use of `Github Actions <https://docs.github.com/en/actions>`__ as a `Con
 .. tip::
     A track record of past runs can be found in the `Github repository <https://github.com/mrapp-ke/MLRL-Boomer/actions>`__.
 
-The workflow definitions of individual CI jobs can be found in the directory `./github/workflows/ <https://github.com/mrapp-ke/MLRL-Boomer/tree/8ed4f36af5e449c5960a4676bc0a6a22de195979/.github/workflows>`__. Currently, the following jobs are used in the project:
+The workflow definitions of individual CI jobs can be found in the directory `.github/workflows/ <https://github.com/mrapp-ke/MLRL-Boomer/tree/8ed4f36af5e449c5960a4676bc0a6a22de195979/.github/workflows>`__. Currently, the following jobs are used in the project:
 
 * ``publish.yml`` is used for publishing pre-built packages on `PyPi <https://pypi.org/>`__ (see :ref:`installation`). For this purpose, the project is built from source for each of the target platforms and architectures, using virtualization in some cases. The job is run automatically when a new release was published on `Github <https://github.com/mrapp-ke/MLRL-Boomer/releases>`__.
 
