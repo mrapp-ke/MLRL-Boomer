@@ -28,6 +28,8 @@ The following mandatory arguments must always be given to specify the dataset th
 Performance Evaluation
 ----------------------
 
+    A more detailed description of the following arguments can be found :ref:`here<evaluation>`.
+
 One of the most important capabilities of the command line API is to train machine learning models and obtain an unbiased estimate of their predictive performance. For this purpose, the available data must be split into training and test data. The former is used to train models and the latter is used for evaluation afterwards, whereas the evaluation metrics depend on the type of predictions provided by a model.
 
 * ``--data-split`` (Default value = ``train-test``)
@@ -48,6 +50,12 @@ One of the most important capabilities of the command line API is to train machi
   * ``true`` The models are not only evaluated on the test data, but also on the training data.
   * ``false`` The models are only evaluated on the test data.
 
+* ``--prediction-type`` (Default value = ``binary``)
+
+  * ``binary`` The learner is instructed to predict binary labels. In this case, bipartition evaluation measures are used for evaluation.
+  * ``scores`` The learner is instructed to predict regression scores. In this case, ranking measures are used for evaluation.
+  * ``probabilities`` The learner is instructed to predict probability estimates. In this case, ranking measures are used for evaluation.
+
 * ``--incremental-evaluation`` (Default value = ``false``)
 
   * ``true`` Ensemble models are evaluated repeatedly, using only a subset of their ensemble members with increasing size, e.g., the first 100, 200, ... rules.
@@ -57,12 +65,6 @@ One of the most important capabilities of the command line API is to train machi
     * ``step_size`` (Default value = ``1``) The number of additional ensemble members to be evaluated at each repetition. Must be at least 1.
 
   * ``false`` Models are evaluated only once as a whole.
-
-* ``--prediction-type`` (Default value = ``binary``)
-
-  * ``binary`` The learner is instructed to predict binary labels. In this case, bipartition evaluation measures are used for evaluation.
-  * ``scores`` The learner is instructed to predict regression scores. In this case, ranking measures are used for evaluation.
-  * ``probabilities`` The learner is instructed to predict probability estimates. In this case, ranking measures are used for evaluation.
 
 Data Pre-Processing
 -------------------

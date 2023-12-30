@@ -6,5 +6,6 @@ The command line API allows to run experiments using the algorithms provided by 
 .. toctree::
    :maxdepth: 1
 
+   evaluation
    inspecting_models
    arguments
