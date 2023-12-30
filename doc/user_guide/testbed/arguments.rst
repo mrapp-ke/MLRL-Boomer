@@ -32,6 +32,9 @@ Performance Evaluation
 
 One of the most important capabilities of the command line API is to train machine learning models and obtain an unbiased estimate of their predictive performance. For this purpose, the available data must be split into training and test data. The former is used to train models and the latter is used for evaluation afterwards, whereas the evaluation metrics depend on the type of predictions provided by a model.
 
+Strategies for Data Splitting
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 * ``--data-split`` (Default value = ``train-test``)
 
   * ``train-test`` The available data is split into a single training and test set. Given that ``dataset-name`` is provided as the value of the argument ``--dataset``, the training data must be stored in a file named ``dataset-name_training.arff``, whereas the test data must be stored in a file named ``dataset-name_test.arff``. If no such files are available, the program will look for a file with the name ``dataset-name.arff`` and split it into training and test data automatically. The following options may be specified via the bracket notation (see :ref:`parameters`):
@@ -50,11 +53,17 @@ One of the most important capabilities of the command line API is to train machi
   * ``true`` The models are not only evaluated on the test data, but also on the training data.
   * ``false`` The models are only evaluated on the test data.
 
+Types of Predictions
+^^^^^^^^^^^^^^^^^^^^
+
 * ``--prediction-type`` (Default value = ``binary``)
 
   * ``binary`` The learner is instructed to predict binary labels. In this case, bipartition evaluation measures are used for evaluation.
   * ``scores`` The learner is instructed to predict regression scores. In this case, ranking measures are used for evaluation.
   * ``probabilities`` The learner is instructed to predict probability estimates. In this case, ranking measures are used for evaluation.
+
+Incremental Evaluation
+^^^^^^^^^^^^^^^^^^^^^^
 
 * ``--incremental-evaluation`` (Default value = ``false``)
 
@@ -70,6 +79,9 @@ Data Pre-Processing
 -------------------
 
 Depending on the characteristics of a dataset, it might be desirable to apply one of the following pre-processing techniques before training and evaluating machine learning models.
+
+One-Hot-Encoding
+^^^^^^^^^^^^^^^^
 
 * ``--one-hot-encoding`` (Default value = ``false``)
 
@@ -113,6 +125,9 @@ To provide valuable insights into the models learned by an algorithm, the predic
 * ``--output-dir`` (Default value = ``None``)
 
   * An absolute or relative path to the directory where experimental results should be saved.
+
+Evaluation Results
+^^^^^^^^^^^^^^^^^^
 
 * ``--print-evaluation`` (Default value = ``true``)
 
@@ -198,6 +213,9 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   * ``false`` The evaluation results are not written into .csv files.
 
+Predictions
+^^^^^^^^^^^
+
 * ``--print-predictions`` (Default value = ``false``)
 
   * ``true`` The predictions for individual examples and labels are printed on the console.
@@ -213,6 +231,9 @@ To provide valuable insights into the models learned by an algorithm, the predic
     * ``decimals`` (Default value = ``0``) The number of decimals to be used for real-valued predictions or 0, if the number of decimals should not be restricted.
 
   * ``false`` Predictions are not written into .arff files.
+
+Prediction Characteristics
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * ``--print-prediction-characteristics`` (Default value = ``false``)
 
@@ -243,6 +264,9 @@ To provide valuable insights into the models learned by an algorithm, the predic
     * ``distinct_label_vectors`` (Default value = ``true``) ``true``, if the number of distinct label vectors should be stored, ``false`` otherwise.
 
   * ``false`` The characteristics of predictions are not written into .csv files.
+
+Data Characteristics
+^^^^^^^^^^^^^^^^^^^^
 
 * ``--print-data-characteristics`` (Default value = ``false``)
 
@@ -286,6 +310,9 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   * ``false`` The characteristics of the training data set are not written into a .csv file.
 
+Label Vectors
+^^^^^^^^^^^^^
+
 * ``--print-label-vectors`` (Default value = ``false``)
 
   * ``true`` The unique label vectors contained in the training data are printed on the console. The following options may be specified via the bracket notation (see :ref:`parameters`):
@@ -302,6 +329,9 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   * ``false`` The unique label vectors contained in the training data are not written into a .csv file.
 
+Model Characteristics
+^^^^^^^^^^^^^^^^^^^^^
+
 * ``--print-model-characteristics`` (Default value = ``false``)
 
   * ``true`` The characteristics of rule models are printed on the console
@@ -311,6 +341,9 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   * ``true`` The characteristics of rule models are written into a .csv file. Does only have an effect if the parameter ``--output-dir`` is specified.
   * ``false`` The characteristics of rule models are not written into a .csv file.
+
+Rules
+^^^^^
 
 * ``--print-rules`` (Default value = ``false``)
 
@@ -339,6 +372,9 @@ To provide valuable insights into the models learned by an algorithm, the predic
     * ``decimals_head`` (Default value = ``2``) The number of decimals to be used for predictions in a rule's head or 0, if the number of decimals should not be restricted.
 
   * ``false`` The induced rules are not written into a .txt file.
+
+Probability Calibration Models
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * ``--print-marginal-probability-calibration-model`` (Default value = ``false``)
 
