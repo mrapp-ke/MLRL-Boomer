@@ -795,7 +795,7 @@ class IntegrationTests(ABC, TestCase):
         if builder.rules_stored:
             self.__assert_output_files_exist(builder, 'rules', 'txt')
 
-    def __assert_marginal_probability_calibration_model_filex_exist(self, builder: CmdBuilder):
+    def __assert_marginal_probability_calibration_model_files_exist(self, builder: CmdBuilder):
         """
         Asserts that the marginal probability calibration model files, which should be created by a command, exist.
 
@@ -804,7 +804,7 @@ class IntegrationTests(ABC, TestCase):
         if builder.marginal_probability_calibration_model_stored:
             self.__assert_output_files_exist(builder, 'marginal_probability_calibration_model', 'csv')
 
-    def __assert_joint_probability_calibration_model_filex_exist(self, builder: CmdBuilder):
+    def __assert_joint_probability_calibration_model_files_exist(self, builder: CmdBuilder):
         """
         Asserts that the joint probability calibration model files, which should be created by a command, exist.
 
@@ -897,8 +897,8 @@ class IntegrationTests(ABC, TestCase):
             self.__assert_label_vector_files_exist(builder)
             self.__assert_model_characteristic_files_exist(builder)
             self.__assert_rule_files_exist(builder)
-            self.__assert_marginal_probability_calibration_model_filex_exist(builder)
-            self.__assert_joint_probability_calibration_model_filex_exist(builder)
+            self.__assert_marginal_probability_calibration_model_files_exist(builder)
+            self.__assert_joint_probability_calibration_model_files_exist(builder)
 
         self.__remove_tmp_dirs(builder)
 
