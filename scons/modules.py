@@ -358,7 +358,7 @@ class DocumentationModule(Module):
         """
         The directory, where API documentations should be stored.
         """
-        return path.join(self.root_dir, 'development', 'api')
+        return path.join(self.root_dir, 'developer_guide', 'api')
 
     @property
     def apidoc_dir_python(self) -> str:

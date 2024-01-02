@@ -52,7 +52,7 @@ intersphinx_mapping = {
 
 # Breathe configuration
 breathe_projects = {
-    file: Path('development', 'api', 'cpp', file, 'xml')
+    file: Path('developer_guide', 'api', 'cpp', file, 'xml')
     for file in listdir(Path(__file__).resolve().parent.parent / 'cpp' / 'subprojects')
 }
 breathe_default_project = next(iter(breathe_projects.keys()))
