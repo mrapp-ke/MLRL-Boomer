@@ -6,13 +6,15 @@ Provides utilities for writing output data to sinks like the console or output f
 import logging as log
 
 from abc import ABC, abstractmethod
+from os import path
 from typing import Any, Dict, List, Optional
 
 from mlrl.common.options import Options
 
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
-from mlrl.testbed.io import create_csv_dict_writer, open_writable_csv_file, open_writable_txt_file
+from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_writer, get_file_name_per_fold, open_writable_csv_file, \
+    open_writable_txt_file
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 
 
@@ -163,11 +165,10 @@ class OutputWriter(ABC):
                 if len(tabular_data) > 0:
                     header = sorted(tabular_data[0].keys())
                     file_name = self.file_name if data_type is None else data_type.get_file_name(self.file_name)
+                    file_name = get_file_name_per_fold(file_name, SUFFIX_CSV, data_split.get_fold())
+                    file_path = path.join(self.output_dir, file_name)
 
-                    with open_writable_csv_file(directory=self.output_dir,
-                                                file_name=file_name,
-                                                fold=data_split.get_fold(),
-                                                append=incremental_prediction) as csv_file:
+                    with open_writable_csv_file(file_path, append=incremental_prediction) as csv_file:
                         csv_writer = create_csv_dict_writer(csv_file, header)
 
                         for row in tabular_data:

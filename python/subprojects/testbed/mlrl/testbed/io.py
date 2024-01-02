@@ -72,34 +72,26 @@ def open_writable_txt_file(directory: str, file_name: str, fold: Optional[int] =
     return open(file, mode=write_mode, encoding=ENCODING_UTF8)
 
 
-def open_readable_csv_file(directory: str, file_name: str, fold: Optional[int] = None):
+def open_readable_csv_file(file_path: str):
     """
     Opens a CSV file to be read from.
 
-    :param directory:   The directory where the file is located
-    :param file_name:   The name of the file to be opened (without suffix)
-    :param fold:        The cross validation fold, the file corresponds to, or None, if the file does not correspond to
-                        a specific fold
+    :param file_path:   The path of the file to be opened
     :return:            The file that has been opened
     """
-    file = path.join(directory, get_file_name_per_fold(file_name, SUFFIX_CSV, fold))
-    return open(file, mode='r', newline='', encoding=ENCODING_UTF8)
+    return open(file_path, mode='r', newline='', encoding=ENCODING_UTF8)
 
 
-def open_writable_csv_file(directory: str, file_name: str, fold: Optional[int] = None, append: bool = False):
+def open_writable_csv_file(file_path: str, append: bool = False):
     """
     Opens a CSV file to be written to.
 
-    :param directory:   The directory where the file is located
-    :param file_name:   The name of the file to be opened (without suffix)
-    :param fold:        The cross validation fold, the file corresponds to, or None, if the file does not correspond to
-                        a specific fold
+    :param file_path:   The path of the file to be opened
     :param append:      True, if new data should be appended to the file, if it already exists, False otherwise
     :return:            The file that has been opened
     """
-    file = path.join(directory, get_file_name_per_fold(file_name, SUFFIX_CSV, fold))
-    write_mode = 'a' if append and path.isfile(file) else 'w'
-    return open(file, mode=write_mode, encoding=ENCODING_UTF8)
+    write_mode = 'a' if append and path.isfile(file_path) else 'w'
+    return open(file_path, mode=write_mode, encoding=ENCODING_UTF8)
 
 
 def create_csv_dict_reader(csv_file) -> DictReader:
