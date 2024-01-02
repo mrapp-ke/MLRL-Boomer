@@ -104,6 +104,8 @@ Because the training of models can be time-consuming, it might be desirable to s
 Saving and Loading Parameters
 -----------------------------
 
+    A more detailed description of the following arguments can be found :ref:`here<parameter_persistence>`.
+
 As an alternative to storing the models learned by an algorithm, the algorithmic parameters used for training can be saved to disk. This may help to remember the configuration used for training a model and enables to reload the same parameter setting for additional experiments.
 
 * ``--parameter-dir`` (Default value = ``None``)
