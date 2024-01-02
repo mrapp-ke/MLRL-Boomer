@@ -29,7 +29,7 @@ def __pylint(directory: str):
     run_program('pylint', *args, directory)
 
 
-def __clang_format(directory: str, enforce_changes: bool = True):
+def __clang_format(directory: str, enforce_changes: bool = False):
     cpp_header_files = glob(path.join(directory, '**', '*.hpp'), recursive=True)
     cpp_source_files = glob(path.join(directory, '**', '*.cpp'), recursive=True)
     args = ['--style=file']
