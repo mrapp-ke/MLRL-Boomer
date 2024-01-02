@@ -984,12 +984,12 @@ class RuleLearnerRunnable(LearnerRunnable):
                             + '. For additional options refer to the documentation.')
         parser.add_argument('--print-model-characteristics',
                             type=BooleanOption.parse,
-                            default=False,
+                            default=BooleanOption.FALSE.value,
                             help='Whether the characteristics of models should be printed on the console or not. Must '
                             + 'be one of ' + format_enum_values(BooleanOption) + '.')
         parser.add_argument('--store-model-characteristics',
                             type=BooleanOption.parse,
-                            default=False,
+                            default=BooleanOption.FALSE.value,
                             help='Whether the characteristics of models should be written into output files or not. '
                             + 'Must be one of ' + format_enum_values(BooleanOption) + '. Does only have an effect if '
                             + 'the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified.')
