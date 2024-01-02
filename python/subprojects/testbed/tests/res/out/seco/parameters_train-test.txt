@@ -7,12 +7,8 @@ INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters:
 
-feature_format     auto
-label_format       auto
-max_rules          10
-prediction_format  auto
-random_state       1
-rule_induction     top-down-greedy{max_conditions=1}
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
