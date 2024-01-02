@@ -4,7 +4,10 @@ Author Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for loading and printing parameter settings that are used by a learner. The parameter settings can be
 written to one or several outputs, e.g., to the console or to a file. They can also be loaded from CSV files.
 """
+import logging as log
+
 from abc import ABC, abstractmethod
+from os import path
 from typing import Any, Dict, List, Optional
 
 from mlrl.common.options import Options
@@ -12,7 +15,7 @@ from mlrl.common.options import Options
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.format import format_table
-from mlrl.testbed.io import create_csv_dict_reader, open_readable_csv_file
+from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_reader, get_file_name_per_fold, open_readable_csv_file
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 
@@ -23,7 +26,7 @@ class ParameterInput(ABC):
     """
 
     @abstractmethod
-    def read_parameters(self, data_split: DataSplit) -> dict:
+    def read_parameters(self, data_split: DataSplit) -> Dict:
         """
         Reads a parameter setting from the input.
 
@@ -43,10 +46,19 @@ class ParameterCsvInput(ParameterInput):
         """
         self.input_dir = input_dir
 
-    def read_parameters(self, data_split: DataSplit) -> dict:
-        with open_readable_csv_file(self.input_dir, 'parameters', data_split.get_fold()) as csv_file:
-            csv_reader = create_csv_dict_reader(csv_file)
-            return dict(next(csv_reader))
+    def read_parameters(self, data_split: DataSplit) -> Dict:
+        file_name = get_file_name_per_fold('parameters', SUFFIX_CSV, data_split.get_fold())
+        file_path = path.join(self.input_dir, file_name)
+        log.debug('Loading parameters from file \"%s\"...', file_path)
+
+        try:
+            with open_readable_csv_file(file_path) as csv_file:
+                csv_reader = create_csv_dict_reader(csv_file)
+                log.info('Successfully loaded parameters from file \"%s\"', file_path)
+                return dict(next(csv_reader))
+        except IOError:
+            log.error('Failed to load parameters from file \"%s\"', file_path)
+            return {}
 
 
 class ParameterWriter(OutputWriter):

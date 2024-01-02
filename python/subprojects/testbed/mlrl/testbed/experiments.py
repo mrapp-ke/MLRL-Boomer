@@ -302,8 +302,10 @@ class Experiment(DataSplitter.Callback):
 
         if parameter_input is not None:
             params = parameter_input.read_parameters(data_split)
-            current_learner.set_params(**params)
-            log.info('Successfully applied parameter setting: %s', params)
+
+            if params:
+                current_learner.set_params(**params)
+                log.info('Successfully applied parameter setting: %s', params)
 
         # Write output data before model is trained...
         for output_writer in self.pre_training_output_writers:
