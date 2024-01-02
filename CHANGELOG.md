@@ -18,6 +18,7 @@ A major update to the BOOMER algorithm that introduces the following changes.
 ### Bugfixes
 
 * An issue has been fixed that caused the number of numerical and ordinal features to be swapped when using the command line arguments `--print-data-characteristics` or `--store-data-characteristics`.
+* The correct directory is now used for loading and saving parameter settings when using the command line arguments `--parameter-dir` and `--store-parameters`.
 
 ### API Changes
 
