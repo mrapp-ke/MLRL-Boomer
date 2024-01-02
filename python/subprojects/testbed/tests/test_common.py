@@ -109,6 +109,7 @@ class CmdBuilder:
         """
         self.cmd = cmd
         self.output_dir = None
+        self.parameter_dir = None
         self.model_dir = None
         self.num_folds = 0
         self.current_fold = 0
@@ -164,6 +165,8 @@ class CmdBuilder:
         :param parameter_dir:   The path of the directory, where parameter settings are stored
         :return:                The builder itself
         """
+        self.parameter_dir = parameter_dir
+
         if parameter_dir is not None:
             self.args.append('--parameter-dir')
             self.args.append(parameter_dir)
@@ -725,7 +728,7 @@ class IntegrationTests(ABC, TestCase):
         :param builder: The builder
         """
         if builder.parameters_stored:
-            self.__assert_output_files_exist(builder, 'parameters', 'csv')
+            self.__assert_files_exist(builder, builder.parameter_dir, 'parameters', 'csv')
 
     def __assert_prediction_files_exist(self, builder: CmdBuilder):
         """

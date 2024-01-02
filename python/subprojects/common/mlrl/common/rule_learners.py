@@ -370,7 +370,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
 
         # Induce rules...
         learner = self._create_learner()
-        training_result = learner.fit(feature_info, feature_matrix, label_matrix, self.random_state)
+        random_state = int(self.random_state)
+        training_result = learner.fit(feature_info, feature_matrix, label_matrix, random_state)
         self.num_labels_ = training_result.num_labels
         self.label_space_info_ = training_result.label_space_info
         self.marginal_probability_calibration_model_ = training_result.marginal_probability_calibration_model

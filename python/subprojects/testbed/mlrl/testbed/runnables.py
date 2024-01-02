@@ -795,8 +795,8 @@ class LearnerRunnable(Runnable, ABC):
         if args.print_parameters:
             sinks.append(ParameterWriter.LogSink())
 
-        if args.store_parameters and args.output_dir is not None:
-            sinks.append(ParameterWriter.CsvSink(output_dir=args.output_dir))
+        if args.store_parameters and args.parameter_dir is not None:
+            sinks.append(ParameterWriter.CsvSink(output_dir=args.parameter_dir))
 
         return ParameterWriter(sinks) if len(sinks) > 0 else None
 
