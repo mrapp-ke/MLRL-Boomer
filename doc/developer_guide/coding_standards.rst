@@ -61,7 +61,13 @@ The unit and integration tests are run automatically via :ref:`ci` whenever rele
 Code Style
 ----------
 
-We aim to enforce a consistent code style across the entire project. For formatting the C++ code, we employ `clang-format <https://clang.llvm.org/docs/ClangFormat.html>`__. The desired C++ code style is defined in the file ``.clang-format`` in project's root directory. Accordingly, we use `YAPF <https://github.com/google/yapf>`__ to enforce the Python code style defined in the file ``.style.yapf``. In addition, `isort <https://github.com/PyCQA/isort>`__ is used to keep the ordering of imports in Python and Cython source files consistent according to the configuration file ``.isort.cfg`` and `pylint <https://pylint.org/>`__ is used to check for common issues in the Python code according to the configuration file ``.pylintrc``. If you have modified the project's source code, you can check whether it adheres to our coding standards via the following command:
+We aim to enforce a consistent code style across the entire project. For this purpose, we employ the following tools:
+
+* For formatting the C++ code, we use `clang-format <https://clang.llvm.org/docs/ClangFormat.html>`__. The desired C++ code style is defined in the file `.clang-format <https://github.com/mrapp-ke/MLRL-Boomer/blob/fece21c929043d8009aab9d52f3ed2fd03d1a191/.clang-format>`__ in the project's root directory.
+
+* We use `YAPF <https://github.com/google/yapf>`__ to enforce the Python code style defined in the file `.style.yapf <https://github.com/mrapp-ke/MLRL-Boomer/blob/fece21c929043d8009aab9d52f3ed2fd03d1a191/.style.yapf>`__. In addition, `isort <https://github.com/PyCQA/isort>`__ is used to keep the ordering of imports in Python and Cython source files consistent according to the configuration file `.isort.cfg <https://github.com/mrapp-ke/MLRL-Boomer/blob/fece21c929043d8009aab9d52f3ed2fd03d1a191/.isort.cfg>`__ and `pylint <https://pylint.org/>`__ is used to check for common issues in the Python code according to the configuration file `.pylintrc <https://github.com/mrapp-ke/MLRL-Boomer/blob/fece21c929043d8009aab9d52f3ed2fd03d1a191/.pylintrc>`__.
+
+If you have modified the project's source code, you can check whether it adheres to our coding standards via the following command:
 
 .. tab:: Linux
 
