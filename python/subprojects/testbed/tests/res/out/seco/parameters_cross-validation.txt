@@ -8,12 +8,8 @@ INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 1):
 
-feature_format     auto
-label_format       auto
-max_rules          10
-prediction_format  auto
-random_state       1
-rule_induction     top-down-greedy{max_conditions=1}
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -48,12 +44,8 @@ INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 2):
 
-feature_format     auto
-label_format       auto
-max_rules          10
-prediction_format  auto
-random_state       1
-rule_induction     top-down-greedy{max_conditions=1}
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -88,12 +80,8 @@ INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 3):
 
-feature_format     auto
-label_format       auto
-max_rules          10
-prediction_format  auto
-random_state       1
-rule_induction     top-down-greedy{max_conditions=1}
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 INFO Fitting model to 533 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -128,12 +116,8 @@ INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 4):
 
-feature_format     auto
-label_format       auto
-max_rules          10
-prediction_format  auto
-random_state       1
-rule_induction     top-down-greedy{max_conditions=1}
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -168,12 +152,8 @@ INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 5):
 
-feature_format     auto
-label_format       auto
-max_rules          10
-prediction_format  auto
-random_state       1
-rule_induction     top-down-greedy{max_conditions=1}
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -208,12 +188,8 @@ INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 6):
 
-feature_format     auto
-label_format       auto
-max_rules          10
-prediction_format  auto
-random_state       1
-rule_induction     top-down-greedy{max_conditions=1}
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -248,12 +224,8 @@ INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 7):
 
-feature_format     auto
-label_format       auto
-max_rules          10
-prediction_format  auto
-random_state       1
-rule_induction     top-down-greedy{max_conditions=1}
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -288,12 +260,8 @@ INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 8):
 
-feature_format     auto
-label_format       auto
-max_rules          10
-prediction_format  auto
-random_state       1
-rule_induction     top-down-greedy{max_conditions=1}
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -328,12 +296,8 @@ INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 9):
 
-feature_format     auto
-label_format       auto
-max_rules          10
-prediction_format  auto
-random_state       1
-rule_induction     top-down-greedy{max_conditions=1}
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
@@ -368,12 +332,8 @@ INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/
 INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
 INFO Custom parameters (Fold 10):
 
-feature_format     auto
-label_format       auto
-max_rules          10
-prediction_format  auto
-random_state       1
-rule_induction     top-down-greedy{max_conditions=1}
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
 
 INFO Fitting model to 534 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples

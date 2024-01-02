@@ -9,7 +9,7 @@ from sklearn.base import ClassifierMixin, MultiOutputMixin, RegressorMixin
 
 from mlrl.common.config import configure_rule_learner
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
-from mlrl.common.rule_learners import RuleLearner, SparsePolicy
+from mlrl.common.rule_learners import RuleLearner
 
 from mlrl.boosting.config import BOOSTING_RULE_LEARNER_PARAMETERS
 from mlrl.boosting.cython.learner_boomer import Boomer as BoomerWrapper, BoomerConfig
@@ -22,10 +22,10 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
     """
 
     def __init__(self,
-                 random_state: int = 1,
-                 feature_format: str = SparsePolicy.AUTO.value,
-                 label_format: str = SparsePolicy.AUTO.value,
-                 prediction_format: str = SparsePolicy.AUTO.value,
+                 random_state: Optional[int] = None,
+                 feature_format: Optional[str] = None,
+                 label_format: Optional[str] = None,
+                 prediction_format: Optional[str] = None,
                  statistic_format: Optional[str] = None,
                  default_rule: Optional[str] = None,
                  rule_induction: Optional[str] = None,

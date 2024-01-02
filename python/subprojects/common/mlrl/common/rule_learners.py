@@ -7,6 +7,7 @@ import logging as log
 
 from abc import ABC, abstractmethod
 from enum import Enum
+from typing import Optional
 
 import numpy as np
 
@@ -49,17 +50,20 @@ class SparseFormat(Enum):
     CSR = 'csr'
 
 
-def parse_sparse_policy(parameter_name: str, value: str) -> SparsePolicy:
+def parse_sparse_policy(parameter_name: str, value: Optional[str]) -> SparsePolicy:
     """
-    Parses and returns a parameter value that specifies a `SparsePolicy` to be used for converting matrixes into sparse
+    Parses and returns a parameter value that specifies a `SparsePolicy` to be used for converting matrices into sparse
     or dense formats. If the given value is invalid, a `ValueError` is raised.
 
     :param parameter_name:  The name of the parameter
-    :param value:           The value to be parsed
+    :param value:           The value to be parsed or None, if the default value should be used
     :return:                A `SparsePolicy`
     """
     try:
-        return SparsePolicy(value)
+        if value:
+            return SparsePolicy(value)
+
+        return SparsePolicy.AUTO
     except ValueError as error:
         raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
                          + format_enum_values(SparsePolicy) + ', but is "' + str(value) + '"') from error
@@ -299,7 +303,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         def apply_next(self, step_size: int):
             return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
 
-    def __init__(self, random_state: int, feature_format: str, label_format: str, prediction_format: str):
+    def __init__(self, random_state: Optional[int], feature_format: Optional[str], label_format: Optional[str],
+                 prediction_format: Optional[str]):
         """
         :param random_state:        The seed to be used by RNGs. Must be at least 1
         :param feature_format:      The format to be used for the representation of the feature matrix. Must be
@@ -370,7 +375,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
 
         # Induce rules...
         learner = self._create_learner()
-        random_state = int(self.random_state)
+        random_state = int(self.random_state) if self.random_state else 1
         training_result = learner.fit(feature_info, feature_matrix, label_matrix, random_state)
         self.num_labels_ = training_result.num_labels
         self.label_space_info_ = training_result.label_space_info

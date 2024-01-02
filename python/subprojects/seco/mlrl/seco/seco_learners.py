@@ -10,7 +10,7 @@ from sklearn.base import ClassifierMixin, MultiOutputMixin
 
 from mlrl.common.config import configure_rule_learner
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
-from mlrl.common.rule_learners import RuleLearner, SparsePolicy
+from mlrl.common.rule_learners import RuleLearner
 
 from mlrl.seco.config import SECO_RULE_LEARNER_PARAMETERS
 from mlrl.seco.cython.learner_seco import MultiLabelSeCoRuleLearner as MultiLabelSeCoRuleLearnerWrapper, \
@@ -24,10 +24,10 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
     """
 
     def __init__(self,
-                 random_state: int = 1,
-                 feature_format: str = SparsePolicy.AUTO.value,
-                 label_format: str = SparsePolicy.AUTO.value,
-                 prediction_format: str = SparsePolicy.AUTO.value,
+                 random_state: Optional[int] = None,
+                 feature_format: Optional[str] = None,
+                 label_format: Optional[str] = None,
+                 prediction_format: Optional[str] = None,
                  rule_induction: Optional[str] = None,
                  max_rules: Optional[int] = None,
                  time_limit: Optional[int] = None,

@@ -355,6 +355,8 @@ class LearnerRunnable(Runnable, ABC):
             """
             clear_directory(self.output_dir)
 
+    PARAM_RANDOM_STATE = '--random-state'
+
     PARAM_DATA_SPLIT = '--data-split'
 
     DATA_SPLIT_TRAIN_TEST = 'train-test'
@@ -494,15 +496,19 @@ class LearnerRunnable(Runnable, ABC):
             if current_fold != 0:
                 assert_greater_or_equal(self.OPTION_CURRENT_FOLD, current_fold, 1)
                 assert_less_or_equal(self.OPTION_CURRENT_FOLD, current_fold, num_folds)
+            random_state = int(args.random_state) if args.random_state else 1
+            assert_greater_or_equal(self.PARAM_RANDOM_STATE, random_state, 1)
             return CrossValidationSplitter(data_set,
                                            num_folds=num_folds,
                                            current_fold=current_fold - 1,
-                                           random_state=args.random_state)
+                                           random_state=random_state)
         if value == self.DATA_SPLIT_TRAIN_TEST:
             test_size = options.get_float(self.OPTION_TEST_SIZE, 0.33)
             assert_greater(self.OPTION_TEST_SIZE, test_size, 0)
             assert_less(self.OPTION_TEST_SIZE, test_size, 1)
-            return TrainTestSplitter(data_set, test_size=test_size, random_state=args.random_state)
+            random_state = int(args.random_state) if args.random_state else 1
+            assert_greater_or_equal(self.PARAM_RANDOM_STATE, random_state, 1)
+            return TrainTestSplitter(data_set, test_size=test_size, random_state=random_state)
 
         return NoSplitter(data_set)
 
@@ -514,9 +520,9 @@ class LearnerRunnable(Runnable, ABC):
 
     def _configure_arguments(self, parser: ArgumentParser):
         super()._configure_arguments(parser)
-        parser.add_argument('--random-state',
+        parser.add_argument(self.PARAM_RANDOM_STATE,
                             type=int,
-                            default=1,
+                            default=None,
                             help='The seed to be used by random number generators. Must be at least 1.')
         parser.add_argument('--data-dir',
                             type=str,
@@ -1034,17 +1040,17 @@ class RuleLearnerRunnable(LearnerRunnable):
                             + 'additional options refer to the documentation.')
         parser.add_argument('--feature-format',
                             type=str,
-                            default=SparsePolicy.AUTO.value,
+                            default=None,
                             help='The format to be used for the representation of the feature matrix. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
         parser.add_argument('--label-format',
                             type=str,
-                            default=SparsePolicy.AUTO.value,
+                            default=None,
                             help='The format to be used for the representation of the label matrix. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
         parser.add_argument('--prediction-format',
                             type=str,
-                            default=SparsePolicy.AUTO.value,
+                            default=None,
                             help='The format to be used for the representation of predictions. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
         configure_argument_parser(parser, self.config_type, self.parameters)
