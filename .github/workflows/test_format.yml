@@ -37,23 +37,29 @@ jobs:
               - 'build'
               - 'build.bat'
               - 'scons/**'
-            cpp: &cpp
+            cpp:
               - *build_files
               - '**/*.hpp'
               - '**/*.cpp'
               - '.clang-format'
-            python: &python
+            python:
               - *build_files
               - '**/*.py'
               - '.isort.cfg'
               - '.pylintrc'
               - '.style.yapf'
+            md:
+              - '*build_files'
+              - '**/*.md'
       - name: Check C++ code style
         if: steps.filter.outputs.cpp == 'true'
         run: ./build test_format_cpp
       - name: Check Python code style
         if: steps.filter.outputs.python == 'true'
         run: ./build test_format_python
+      - name: Check Markdown code style
+        if: steps.filter.outputs.md == 'true'
+        run: ./build test_format_md
       - name: Save Git repository to cache
         uses: actions/cache/save@v3
         if: success() || failure()

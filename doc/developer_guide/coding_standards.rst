@@ -67,6 +67,8 @@ We aim to enforce a consistent code style across the entire project. For this pu
 
 * We use `YAPF <https://github.com/google/yapf>`__ to enforce the Python code style defined in the file `.style.yapf <https://github.com/mrapp-ke/MLRL-Boomer/blob/fece21c929043d8009aab9d52f3ed2fd03d1a191/.style.yapf>`__. In addition, `isort <https://github.com/PyCQA/isort>`__ is used to keep the ordering of imports in Python and Cython source files consistent according to the configuration file `.isort.cfg <https://github.com/mrapp-ke/MLRL-Boomer/blob/fece21c929043d8009aab9d52f3ed2fd03d1a191/.isort.cfg>`__ and `pylint <https://pylint.org/>`__ is used to check for common issues in the Python code according to the configuration file `.pylintrc <https://github.com/mrapp-ke/MLRL-Boomer/blob/fece21c929043d8009aab9d52f3ed2fd03d1a191/.pylintrc>`__.
 
+* For applying a consistent style to Markdown files, we use `mdformat <https://github.com/executablebooks/mdformat>`__.
+
 If you have modified the project's source code, you can check whether it adheres to our coding standards via the following command:
 
 .. tab:: Linux
@@ -88,7 +90,7 @@ If you have modified the project's source code, you can check whether it adheres
       build.bat test_format
 
 .. note::
-    If you want to check for compliance with the C++ or Python code style independently, you can use the build target ``test_format_cpp`` or ``test_format_python`` instead of ``test_format``.
+    If you want to check for compliance with the C++ or Python code style independently, you can use the build target ``test_format_cpp`` or ``test_format_python`` instead of ``test_format``. Using the build target ``test_fomat_md``, results in the style of Markdown files to be checked.
 
 In order to automatically format the project's source files according to our style guidelines, the following command can be used:
 
@@ -111,6 +113,6 @@ In order to automatically format the project's source files according to our sty
       build.bat format
 
 .. note::
-    If you want to format only the C++ source files, you can specify the build target ``format_cpp`` instead of ``format``. Accordingly, the target ``format_python`` may be used to format only the Python source files.
+    If you want to format only the C++ source files, you can specify the build target ``format_cpp`` instead of ``format``. Accordingly, the target ``format_python`` may be used to format only the Python source files. If you want to format Markdown files, you should use the target ``format_md``.
 
 Whenever any source files have been modified, a :ref:`ci` job is run automatically to verify if they adhere to our code style guidelines.
