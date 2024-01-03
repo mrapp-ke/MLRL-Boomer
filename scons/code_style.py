@@ -43,8 +43,8 @@ def __clang_format(directory: str, enforce_changes: bool = False):
     run_program('clang-format', *args, *cpp_header_files, *cpp_source_files)
 
 
-def __mdformat(directory: str, enforce_changes: bool = False):
-    md_files = glob(path.join(directory, '*.md'))
+def __mdformat(directory: str, recursive: bool = False, enforce_changes: bool = False):
+    md_files = glob(path.join(directory, '**', '*.md') if recursive else path.join(directory, '*.md'))
     args = ['--number', '--wrap', 'no', '--end-of-line', 'lf']
 
     if not enforce_changes:
@@ -98,13 +98,21 @@ def check_md_code_style(**_):
     """
     Check if the Markdown files adhere to the code style definitions. If this is not the case, an error is raised.
     """
-    print('Checking Markdown code style in the root directory...')
-    __mdformat('.')
+    directory = '.'
+    print('Checking Markdown code style in the directory "' + directory + '"...')
+    __mdformat(directory)
+    directory = DOC_MODULE.root_dir
+    print('Checking Markdown code style in the directory "' + directory + '"...')
+    __mdformat(directory, recursive=True)
 
 
 def enforce_md_code_style(**_):
     """
     Enforces the Markdown files to adhere to the code style definitions.
     """
-    print('Formatting Markdown code style in the root directory...')
-    __mdformat('.', enforce_changes=True)
+    directory = '.'
+    print('Formatting Markdown files in the directory "' + directory + '"...')
+    __mdformat(directory, enforce_changes=True)
+    directory = DOC_MODULE.root_dir
+    print('Formatting Markdown files in the directory "' + directory + '"...')
+    __mdformat(directory, recursive=True, enforce_changes=True)
