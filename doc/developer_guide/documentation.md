@@ -12,21 +12,21 @@ In order to generate the documentation, [Doxygen](https://sourceforge.net/projec
 It is not necessary to execute the steps below one after the other. Instead, running the following command should suffice to create the entire documentation, including files that describe the C++ and Python API.
 
 ````{tab} Linux
-    ```text
-    ./build doc
-    ```
+   ```text
+   ./build doc
+   ```
 ````
 
 ````{tab} MacOS
-    ```text
-    ./build doc
-    ```
+   ```text
+   ./build doc
+   ```
 ````
 
 ````{tab} Windows
-    ```text
-    build.bat doc
-    ```
+   ```text
+   build.bat doc
+   ```
 ````
 `````
 
@@ -37,21 +37,21 @@ Whenever the documentation was updated or any C++ or Python source files have be
 By running the following command, the C++ API documentation is generated via Doxygen:
 
 ````{tab} Linux
-    ```text
-    ./build apidoc_cpp
-    ```
+   ```text
+   ./build apidoc_cpp
+   ```
 ````
 
 ````{tab} MacOS
-    ```text
-    ./build apidoc_cpp
-    ```
+   ```text
+   ./build apidoc_cpp
+   ```
 ````
 
 ````{tab} Windows
-    ```text
-    build.bat apidoc_cpp
-    ```
+   ```text
+   build.bat apidoc_cpp
+   ```
 ````
 
 The resulting HTML files should be located in the directory `doc/apidoc/api/cpp/`.
@@ -61,21 +61,21 @@ The resulting HTML files should be located in the directory `doc/apidoc/api/cpp/
 Similarly, the following command generates an API documentation from the project's Python code via [sphinx-apidoc](https://www.sphinx-doc.org/en/master/man/sphinx-apidoc.html):
 
 ````{tab} Linux
-    ```text
-    ./build apidoc_python
-    ```
+   ```text
+   ./build apidoc_python
+   ```
 ````
 
 ````{tab} MacOS
-    ```text
-    ./build apidoc_python
-    ```
+   ```text
+   ./build apidoc_python
+   ```
 ````
 
 ````{tab} Windows
-    ```text
-    build.bat apidoc_python
-    ```
+   ```text
+   build.bat apidoc_python
+   ```
 ````
 
 ```{note}
@@ -87,21 +87,21 @@ If you want to generate the API documentation for the C++ and Python code simula
 To generate the final documentation's HTML files via [sphinx](https://www.sphinx-doc.org/en/master/), the following command can be used:
 
 ````{tab} Linux
-    ```text
-    ./build doc
-    ```
+   ```text
+   ./build doc
+   ```
 ````
 
 ````{tab} MacOS
-    ```text
-    ./build doc
-    ```
+   ```text
+   ./build doc
+   ```
 ````
 
 ````{tab} Windows
-    ```text
-    build.bat doc
-    ```
+   ```text
+   build.bat doc
+   ```
 ````
 
 Afterwards, the generated files can be found in the directory `doc/build_/`.
