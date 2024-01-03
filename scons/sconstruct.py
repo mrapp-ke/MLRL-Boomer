@@ -8,7 +8,8 @@ import sys
 from functools import reduce
 from os import path
 
-from code_style import check_cpp_code_style, check_python_code_style, enforce_cpp_code_style, enforce_python_code_style
+from code_style import check_cpp_code_style, check_md_code_style, check_python_code_style, enforce_cpp_code_style, \
+    enforce_md_code_style, enforce_python_code_style
 from compilation import compile_cpp, compile_cython, install_cpp, install_cython, setup_cpp, setup_cython
 from documentation import apidoc_cpp, apidoc_cpp_tocfile, apidoc_python, apidoc_python_tocfile, doc
 from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
@@ -33,9 +34,11 @@ def __print_if_clean(environment, message: str):
 TARGET_NAME_TEST_FORMAT = 'test_format'
 TARGET_NAME_TEST_FORMAT_PYTHON = TARGET_NAME_TEST_FORMAT + '_python'
 TARGET_NAME_TEST_FORMAT_CPP = TARGET_NAME_TEST_FORMAT + '_cpp'
+TARGET_NAME_TEST_FORMAT_MD = TARGET_NAME_TEST_FORMAT + '_md'
 TARGET_NAME_FORMAT = 'format'
 TARGET_NAME_FORMAT_PYTHON = TARGET_NAME_FORMAT + '_python'
 TARGET_NAME_FORMAT_CPP = TARGET_NAME_FORMAT + '_cpp'
+TARGET_NAME_FORMAT_MD = TARGET_NAME_FORMAT + '_md'
 TARGET_NAME_VENV = 'venv'
 TARGET_NAME_COMPILE = 'compile'
 TARGET_NAME_COMPILE_CPP = TARGET_NAME_COMPILE + '_cpp'
@@ -54,11 +57,12 @@ TARGET_NAME_APIDOC_PYTHON = TARGET_NAME_APIDOC + '_python'
 TARGET_NAME_DOC = 'doc'
 
 VALID_TARGETS = {
-    TARGET_NAME_TEST_FORMAT, TARGET_NAME_TEST_FORMAT_PYTHON, TARGET_NAME_TEST_FORMAT_CPP, TARGET_NAME_FORMAT,
-    TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP, TARGET_NAME_VENV, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP,
-    TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL, TARGET_NAME_INSTALL_CPP, TARGET_NAME_INSTALL_CYTHON,
-    TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS, TARGET_NAME_TESTS, TARGET_NAME_TESTS_CPP,
-    TARGET_NAME_TESTS_PYTHON, TARGET_NAME_APIDOC, TARGET_NAME_APIDOC_CPP, TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
+    TARGET_NAME_TEST_FORMAT, TARGET_NAME_TEST_FORMAT_PYTHON, TARGET_NAME_TEST_FORMAT_CPP, TARGET_NAME_TEST_FORMAT_MD,
+    TARGET_NAME_FORMAT, TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP, TARGET_NAME_FORMAT_MD, TARGET_NAME_VENV,
+    TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP, TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL,
+    TARGET_NAME_INSTALL_CPP, TARGET_NAME_INSTALL_CYTHON, TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS,
+    TARGET_NAME_TESTS, TARGET_NAME_TESTS_CPP, TARGET_NAME_TESTS_PYTHON, TARGET_NAME_APIDOC, TARGET_NAME_APIDOC_CPP,
+    TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
 }
 
 DEFAULT_TARGET = TARGET_NAME_INSTALL_WHEELS
@@ -78,14 +82,16 @@ env.SConsignFile(name=path.relpath(path.join(BUILD_MODULE.build_dir, '.sconsign'
 # Define targets for checking code style definitions...
 target_test_format_python = __create_phony_target(env, TARGET_NAME_TEST_FORMAT_PYTHON, action=check_python_code_style)
 target_test_format_cpp = __create_phony_target(env, TARGET_NAME_TEST_FORMAT_CPP, action=check_cpp_code_style)
+target_test_format_md = __create_phony_target(env, TARGET_NAME_TEST_FORMAT_MD, action=check_md_code_style)
 target_test_format = __create_phony_target(env, TARGET_NAME_TEST_FORMAT)
-env.Depends(target_test_format, [target_test_format_python, target_test_format_cpp])
+env.Depends(target_test_format, [target_test_format_python, target_test_format_cpp, target_test_format_md])
 
 # Define targets for enforcing code style definitions...
 target_format_python = __create_phony_target(env, TARGET_NAME_FORMAT_PYTHON, action=enforce_python_code_style)
 target_format_cpp = __create_phony_target(env, TARGET_NAME_FORMAT_CPP, action=enforce_cpp_code_style)
-target_format = __create_phony_target(env, TARGET_NAME_FORMAT)
-env.Depends(target_format, [target_format_python, target_format_cpp])
+target_format_md = __create_phony_target(env, TARGET_NAME_FORMAT_MD, action=enforce_md_code_style)
+target_format = __create_phony_target(env, TARGET_NAME_FORMAT, TARGET_NAME_FORMAT_MD)
+env.Depends(target_format, [target_format_python, target_format_cpp, target_format_md])
 
 # Define target for installing runtime dependencies...
 target_venv = __create_phony_target(env, TARGET_NAME_VENV, action=install_runtime_dependencies)
