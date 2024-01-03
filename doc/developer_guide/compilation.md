@@ -66,21 +66,21 @@ Instead of following the instructions below step by step, the following command,
 ```
 
 ````{tab} Linux
-    ```text
-    ./build
-    ```
+   ```text
+   ./build
+   ```
 ````
 
 ````{tab} MacOS
-    ```text
-    ./build
-    ```
+   ```text
+   ./build
+   ```
 ````
 
 ````{tab} Windows
-    ```text
-    build.bat
-    ```
+   ```text
+   build.bat
+   ```
 ````
 
 Whenever any C++, Cython or Python source files have been modified, the above command must be run again in order to rebuild modified files and install updated wheel packages into the virtual environment. If any compilation files do already exist, this will only result in the affected parts of the code to be rebuilt.
@@ -90,21 +90,21 @@ Whenever any C++, Cython or Python source files have been modified, the above co
 The build process is based on an virtual Python environment that allows to install build- and run-time dependencies in an isolated manner and independently from the host system. Once the build process was completed, the resulting Python packages are installed into the virtual environment. To create new virtual environment and install all necessarily run-time dependencies, the following command must be executed:
 
 ````{tab} Linux
-    ```text
-    ./build venv
-    ```
+   ```text
+   ./build venv
+   ```
 ````
 
 ````{tab} MacOS
-    ```text
-    ./build venv
-    ```
+   ```text
+   ./build venv
+   ```
 ````
 
 ````{tab} Windows
-    ```text
-    build.bat venv
-    ```
+   ```text
+   build.bat venv
+   ```
 ````
 
 All run-time dependencies (`numpy`, `scipy`, etc.) that are required for running the algorithms that are provided by the project should automatically be installed into the virtual environment when executing the above command. As a result, a subdirectory `venv/` should have been created in the project's root directory.
@@ -114,21 +114,21 @@ All run-time dependencies (`numpy`, `scipy`, etc.) that are required for running
 Once a new virtual environment has successfully been created, the compilation of the C++ code can be started by executing the following command:
 
 ````{tab} Linux
-    ```text
-    ./build compile_cpp
-    ```
+   ```text
+   ./build compile_cpp
+   ```
 ````
 
 ````{tab} MacOS
-    ```text
-    ./build compile_cpp
-    ```
+   ```text
+   ./build compile_cpp
+   ```
 ````
 
 ````{tab} Windows
-    ```text
-    build.bat compile_cpp
-    ```
+   ```text
+   build.bat compile_cpp
+   ```
 ````
 
 The compilation is based on the build system [Meson](https://mesonbuild.com/) and uses [Ninja](https://ninja-build.org/) as a backend. After the above command has terminated, a new directory `cpp/build/` should have been created. It contains the shared libraries ("libmlrlcommon", "libmlrlboosting" and possibly others) that provide the basic functionality of the project's algorithms.
@@ -138,21 +138,21 @@ The compilation is based on the build system [Meson](https://mesonbuild.com/) an
 Once the compilation of the C++ code has completed, the Cython code, which allows to access the corresponding shared libraries from within Python, can be compiled in the next step. Again, Meson and Ninja are used for compilation. It can be started via the following command:
 
 ````{tab} Linux
-    ```text
-    ./build compile_cython
-    ```
+   ```text
+   ./build compile_cython
+   ```
 ````
 
 ````{tab} MacOS
-    ```text
-    ./build compile_cython
-    ```
+   ```text
+   ./build compile_cython
+   ```
 ````
 
 ````{tab} Windows
-    ```text
-    build.bat compile_cython
-    ```
+   ```text
+   build.bat compile_cython
+   ```
 ````
 
 As a result of executing the above command, the directory `python/build` should have been created. It contains Python extension modules for the respective target platform.
@@ -166,21 +166,21 @@ Instead of performing the previous steps one after the other, the build target `
 The shared libraries that have been created in the previous steps from the C++ source files must afterwards be copied into the Python source tree. This can be achieved by executing the following command:
 
 ````{tab} Linux
-    ```text
-    ./build install_cpp
-    ```
+   ```text
+   ./build install_cpp
+   ```
 ````
 
 ````{tab} MacOS
-    ```text
-    ./build install_cpp
-    ```
+   ```text
+   ./build install_cpp
+   ```
 ````
 
 ````{tab} Windows
-    ```text
-    build.bat install_cpp
-    ```
+   ```text
+   build.bat install_cpp
+   ```
 ````
 
 This should result in the compilation files, which were previously located in the `cpp/build/` directory, to be copied into the `cython/` subdirectories that are contained by each Python module (e.g., into the directory `python/subprojects/common/mlrl/common/cython/`).
@@ -190,21 +190,21 @@ This should result in the compilation files, which were previously located in th
 Similar to the previous step, the Python extension modules that have been built from the project's Cython code must be copied into the Python source tree via the following command:
 
 ````{tab} Linux
-    ```text
-    ./build install_cython
-    ```
+   ```text
+   ./build install_cython
+   ```
 ````
 
 ````{tab} MacOS
-    ```text
-    ./build install_cython
-    ```
+   ```text
+   ./build install_cython
+   ```
 ````
 
 ````{tab} Windows
-    ```text
-    build.bat install_cython
-    ```
+   ```text
+   build.bat install_cython
+   ```
 ````
 
 As a result, the compilation files that can be found in the `python/build/` directories should have been copied into the `cython/` subdirectories of each Python module.
@@ -218,21 +218,21 @@ Instead of executing the above commands one after the other, the build target `i
 Once the compilation files have been copied into the Python source tree, wheel packages can be built for the individual Python modules via the following command:
 
 ````{tab} Linux
-    ```text
-    ./build build_wheels
-    ```
+   ```text
+   ./build build_wheels
+   ```
 ````
 
 ````{tab} MacOS
-    ```text
-    ./build build_wheels
-    ```
+   ```text
+   ./build build_wheels
+   ```
 ````
 
 ````{tab} Windows
-    ```text
-    build.bat build_wheels
-    ```
+   ```text
+   build.bat build_wheels
+   ```
 ````
 
 This should result in .whl files being created in a new `dist/` subdirectory inside the directories that correspond to the individual Python modules (e.g., in the directory `python/subprojects/common/dist/`).
@@ -242,21 +242,21 @@ This should result in .whl files being created in a new `dist/` subdirectory ins
 The wheel packages that have previously been created can finally be installed into the virtual environment via the following command:
 
 ````{tab} Linux
-    ```text
-    ./build install_wheels
-    ```
+   ```text
+   ./build install_wheels
+   ```
 ````
 
 ````{tab} MacOS
-    ```text
-    ./build install_wheels
-    ```
+   ```text
+   ./build install_wheels
+   ```
 ````
 
 ````{tab} Windows
-    ```text
-    build.bat install_wheels
-    ```
+   ```text
+   build.bat install_wheels
+   ```
 ````
 
 After this final step has completed, the Python packages can be used from within the virtual environment once it has been [activated](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#activating-a-virtual-environment). To ensure that the installation of the wheel packages was successful, check if a `mlrl/` directory has been created in the `lib/` directory of the virtual environment (depending on the Python version, it should be located at `venv/lib/python3.9/site-packages/mlrl/` or similar). If this is the case, the algorithm can be used from within your own Python code. Alternatively, the command line API can be used to start an experiment (see {ref}`testbed`).
@@ -266,41 +266,41 @@ After this final step has completed, the Python packages can be used from within
 It is possible to delete the compilation files that result from an individual step of the build process mentioned above by using the command libe argument `--clean` or `-c`. This may be useful if you want to repeat a single or multiple steps of the build process from scratch in case anything went wrong. For example, to delete the C++ compilation files, the following command can be used:
 
 ````{tab} Linux
-    ```text
-    ./build --clean compile_cpp
-    ```
+   ```text
+   ./build --clean compile_cpp
+   ```
 ````
 
 ````{tab} MacOS
-    ```text
-    ./build --clean compile_cpp
-    ```
+   ```text
+   ./build --clean compile_cpp
+   ```
 ````
 
 ````{tab} Windows
-    ```text
-    build.bat --clean compile_cpp
-    ```
+   ```text
+   build.bat --clean compile_cpp
+   ```
 ````
 
 If you want to delete all compilation files that have previously been created, including the virtual environment, you should use the following command, where no build target is specified:
 
 ````{tab} Linux
-    ```text
-    ./build --clean
-    ```
+   ```text
+   ./build --clean
+   ```
 ````
 
 ````{tab} MacOS
-    ```text
-    ./build --clean
-    ```
+   ```text
+   ./build --clean
+   ```
 ````
 
 ````{tab} Windows
-    ```text
-    build.bat --clean
-    ```
+   ```text
+   build.bat --clean
+   ```
 ````
 
 (build-options)=
@@ -326,21 +326,21 @@ When using the {ref}`testbed`, the command `boomer --version` or `boomer -v` can
 If you need to access this information programmatically in your own Python or C++ code, the following code snippets can be used (see {ref}`python-apidoc` and {ref}`cpp-apidoc`):
 
 ````{tab} Python
-    ```python
-    from mlrl.common import get_num_cpu_cores, is_multi_threading_support_enabled
+   ```python
+   from mlrl.common import get_num_cpu_cores, is_multi_threading_support_enabled
 
-    multi_threading_support_enabled: bool = is_multi_threading_support_enabled()
-    num_cpu_cores: int = get_num_cpu_cores()
-    ```
+   multi_threading_support_enabled: bool = is_multi_threading_support_enabled()
+   num_cpu_cores: int = get_num_cpu_cores()
+   ```
 ````
 
 ````{tab} C++
-    ```cpp
-    #include "mlrl/common/info.hpp"
+   ```cpp
+   #include "mlrl/common/info.hpp"
 
-    bool multiThreadingSupportEnabled = isMultiThreadingSupportEnabled();
-    uint32 numCpuCores = getNumCpuCores();
-    ```
+   bool multiThreadingSupportEnabled = isMultiThreadingSupportEnabled();
+   uint32 numCpuCores = getNumCpuCores();
+   ```
 ````
 
 (gpu-support)=
@@ -358,22 +358,22 @@ An easy way to check whether the program was built with GPU support enabled or n
 Alternatively, this information can be retrieved programmatically via the Python or C++ API as shown below (see {ref}`python-apidoc` and {ref}`cpp-apidoc`):
 
 ````{tab} Python
-    ```python
-    from mlrl.common import get_gpu_devices, is_gpu_available, is_gpu_support_enabled
-    from typing import List
+   ```python
+   from mlrl.common import get_gpu_devices, is_gpu_available, is_gpu_support_enabled
+   from typing import List
 
-    gpu_support_enabled: bool = is_gpu_support_enabled()
-    gpu_available: bool = is_gpu_available()
-    gpu_devices: List[str] = get_gpu_devices()
-    ```
+   gpu_support_enabled: bool = is_gpu_support_enabled()
+   gpu_available: bool = is_gpu_available()
+   gpu_devices: List[str] = get_gpu_devices()
+   ```
 ````
 
 ````{tab} C++
-    ```cpp
-    #include "mlrl/common/info.hpp"
+   ```cpp
+   #include "mlrl/common/info.hpp"
 
-    bool gpuSupportEnabled = isGpuSupportEnabled();
-    bool gpuAvailable = isGpuAvailable();
-    std::vector<std::string> gpuDevices = getGpuDevices();
-    ```
+   bool gpuSupportEnabled = isGpuSupportEnabled();
+   bool gpuAvailable = isGpuAvailable();
+   std::vector<std::string> gpuDevices = getGpuDevices();
+   ```
 ````

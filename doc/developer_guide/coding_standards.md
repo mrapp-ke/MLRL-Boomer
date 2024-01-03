@@ -27,21 +27,21 @@ The workflow definitions of individual CI jobs can be found in the directory [.g
 To be able to detect problems with the project's source code early during development, it comes with unit and integration tests for the C++ and Python code it contains. If you want to execute all of these tests on your own system, you can use the following command:
 
 ````{tab} Linux
-    ```text
-    ./build tests
-    ```
+   ```text
+   ./build tests
+   ```
 ````
 
 ````{tab} MacOS
-    ```text
-    ./build tests
-    ```
+   ```text
+   ./build tests
+   ```
 ````
 
 ````{tab} Windows
-    ```text
-    build.bat tests
-    ```
+   ```text
+   build.bat tests
+   ```
 ````
 
 ```{note}
@@ -67,21 +67,21 @@ We aim to enforce a consistent code style across the entire project. For this pu
 If you have modified the project's source code, you can check whether it adheres to our coding standards via the following command:
 
 ````{tab} Linux
-    ```text
-    ./build test_format
-    ```
+   ```text
+   ./build test_format
+   ```
 ````
 
 ````{tab} MacOS
-    ```text
-    ./build test_format
-    ```
+   ```text
+   ./build test_format
+   ```
 ````
 
 ````{tab} Windows
-    ```text
-    build.bat test_format
-    ```
+   ```text
+   build.bat test_format
+   ```
 ````
 
 ```{note}
@@ -91,21 +91,21 @@ If you want to check for compliance with the C++ or Python code style independen
 In order to automatically format the project's source files according to our style guidelines, the following command can be used:
 
 ````{tab} Linux
-    ```text
-    ./build format
-    ```
+   ```text
+   ./build format
+   ```
 ````
 
 ````{tab} MacOS
-    ```text
-    ./build format
-    ```
+   ```text
+   ./build format
+   ```
 ````
 
 ````{tab} Windows
-    ```
-    build.bat format
-    ```
+   ```
+   build.bat format
+   ```
 ````
 
 ```{note}
