@@ -372,7 +372,7 @@ class DocumentationModule(Module):
         """
         The tocfile referencing all Python API documentations.
         """
-        return path.join(self.apidoc_dir_python, 'index.rst')
+        return path.join(self.apidoc_dir_python, 'index.md')
 
     @property
     def apidoc_dir_cpp(self) -> str:
@@ -386,7 +386,7 @@ class DocumentationModule(Module):
         """
         The tocfile referencing all C++ API documentations.
         """
-        return path.join(self.apidoc_dir_cpp, 'index.rst')
+        return path.join(self.apidoc_dir_cpp, 'index.md')
 
     @property
     def build_dir(self) -> str:

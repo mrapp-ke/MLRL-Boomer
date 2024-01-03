@@ -14,9 +14,9 @@ cpp/build/
 
 # Documentation files
 doc/_build/
-doc/developer_guide/api/python/index.rst
+doc/developer_guide/api/python/index.md
 doc/developer_guide/api/python/**/
-doc/developer_guide/api/cpp/index.rst
+doc/developer_guide/api/cpp/index.md
 doc/developer_guide/api/cpp/**/
 
 # Virtual Environment

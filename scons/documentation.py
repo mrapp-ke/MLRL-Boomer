@@ -77,16 +77,22 @@ def __sphinx_build(source_dir: str, output_dir: str):
 
 
 def __read_tocfile_template(directory: str) -> List[str]:
-    with open(path.join(directory, 'index.rst.template'), mode='r', encoding='utf-8') as file:
+    with open(path.join(directory, 'index.md.template'), mode='r', encoding='utf-8') as file:
         return file.readlines()
 
 
 def __write_tocfile(directory: str, tocfile_entries: List[str]):
     tocfile_template = __read_tocfile_template(directory)
+    tocfile = []
 
-    with open(path.join(directory, 'index.rst'), mode='w', encoding='utf-8') as file:
-        file.writelines(tocfile_template)
-        file.writelines(tocfile_entries)
+    for line in tocfile_template:
+        if line.strip() == '%s':
+            tocfile.extend(tocfile_entries)
+        else:
+            tocfile.append(line)
+
+    with open(path.join(directory, 'index.md'), mode='w', encoding='utf-8') as file:
+        file.writelines(tocfile)
 
 
 # pylint: disable=unused-argument
@@ -114,14 +120,14 @@ def apidoc_cpp_tocfile(**_):
     Generates a tocfile referencing the C++ API documentation for all existing subprojects.
     """
     print('Generating tocfile referencing the C++ API documentation for all subprojects...')
-    tocfile_entries = ['\n']
+    tocfile_entries = []
 
     for subproject in CPP_MODULE.find_subprojects():
         apidoc_subproject = DOC_MODULE.get_cpp_apidoc_subproject(subproject)
         root_file = apidoc_subproject.root_file
 
         if path.isfile(root_file):
-            tocfile_entries.append('    Library libmlrl' + apidoc_subproject.name + ' <'
+            tocfile_entries.append('Library libmlrl' + apidoc_subproject.name + ' <'
                                    + path.relpath(root_file, DOC_MODULE.apidoc_dir_cpp) + '>\n')
 
     __write_tocfile(DOC_MODULE.apidoc_dir_cpp, tocfile_entries)
@@ -150,14 +156,14 @@ def apidoc_python_tocfile(**_):
     Generates a tocfile referencing the Python API documentation for all existing subprojects.
     """
     print('Generating tocfile referencing the Python API documentation for all subprojects...')
-    tocfile_entries = ['\n']
+    tocfile_entries = []
 
     for subproject in PYTHON_MODULE.find_subprojects():
         apidoc_subproject = DOC_MODULE.get_python_apidoc_subproject(subproject)
         root_file = apidoc_subproject.root_file
 
         if path.isfile(root_file):
-            tocfile_entries.append('    Package mlrl-' + apidoc_subproject.name + ' <'
+            tocfile_entries.append('Package mlrl-' + apidoc_subproject.name + ' <'
                                    + path.relpath(root_file, DOC_MODULE.apidoc_dir_python) + '>\n')
 
     __write_tocfile(DOC_MODULE.apidoc_dir_python, tocfile_entries)
