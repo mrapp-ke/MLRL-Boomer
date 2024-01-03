@@ -34,6 +34,7 @@ A major update to the BOOMER algorithm that introduces the following changes.
 - The Makefile has been replaced with wrapper scripts triggering a [SCons](https://scons.org/) build.
 - The runtime of continuous integration jobs has been optimized by running individual steps only if necessary and caching files across subsequent runs.
 - The fundemental data structures used to implement vectors and matrices have been reworked to ease reusing existing functionality and avoiding redundant code.
+- Markdown files are now used for writing the documentation.
 - A consistent style is now enforced for Markdown files by applying the tool `mdformat` via continuous integration.
 
 ## Version 0.9.0 (Jul. 2nd, 2023)

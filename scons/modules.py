@@ -372,7 +372,7 @@ class DocumentationModule(Module):
         """
         The tocfile referencing all Python API documentations.
         """
-        return path.join(self.apidoc_dir_python, 'index.rst')
+        return path.join(self.apidoc_dir_python, 'index.md')
 
     @property
     def apidoc_dir_cpp(self) -> str:
@@ -386,7 +386,7 @@ class DocumentationModule(Module):
         """
         The tocfile referencing all C++ API documentations.
         """
-        return path.join(self.apidoc_dir_cpp, 'index.rst')
+        return path.join(self.apidoc_dir_cpp, 'index.md')
 
     @property
     def build_dir(self) -> str:
@@ -414,7 +414,7 @@ class DocumentationModule(Module):
             return path.join(parent_directory, directory) != self.build_dir
 
         def file_filter(_: str, file: str) -> bool:
-            return file == 'conf.py' or file.endswith('.rst') or file.endswith('.svg')
+            return file == 'conf.py' or file.endswith('.rst') or file.endswith('.svg') or file.endswith('.md')
 
         return find_files_recursively(self.root_dir, directory_filter=directory_filter, file_filter=file_filter)
 
