@@ -18,7 +18,7 @@ The workflow definitions of individual CI jobs can be found in the directory [.g
 
 - `publish.yml` is used for publishing pre-built packages on [PyPi](https://pypi.org/) (see {ref}`installation`). For this purpose, the project is built from source for each of the target platforms and architectures, using virtualization in some cases. The job is run automatically when a new release was published on [Github](https://github.com/mrapp-ke/MLRL-Boomer/releases).
 - `test_build.yml` builds the project for each of the supported target plattforms, i.e., Linux, Windows, and MacOS (see {ref}`compilation`). In the Linux environment, this job does also execute all available unit and integration tests (see {ref}`testing`) and generates the latest documentation (see {ref}`documentation`). It is run whenever relevant parts of the project's source code have been modified in a branch.
-- `test_format.yml` ensures that the C++ and Python code adheres to our coding style guidelines (see {ref}`codestyle`). This job is run automatically whenever any changes affecting the C++ or Python source files have been pushed to a branch.
+- `test_format.yml` ensures that the C++ and Python code adheres to our coding style guidelines (see {ref}`code-style`). This job is run automatically whenever any changes affecting the C++ or Python source files have been pushed to a branch.
 
 (testing)=
 
@@ -54,7 +54,7 @@ Tests for the C++ code are only executed if the project has been compiled with t
 
 The unit and integration tests are run automatically via {ref}`ci` whenever relevant parts of the source code have been modified.
 
-(codestyle)=
+(code-style)=
 
 ## Code Style
 

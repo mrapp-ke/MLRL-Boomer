@@ -21,11 +21,11 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **C++ compiler**
      - Most Linux distributions provide the [GNU Compiler Collection](https://gcc.gnu.org/) (GCC), which includes a C++ compiler, as part of their software repositories. If this is the case, it can be installed via the distribution's package manager.
    * - **GoogleTest**
-     - The [GoogleTest](https://github.com/google/googletest) framework must optionally be available in order to compile the project with {ref}`testingsupport` enabled. It should be possible to install it via the package manager of your Linux distribution.
+     - The [GoogleTest](https://github.com/google/googletest) framework must optionally be available in order to compile the project with {ref}`testing-support` enabled. It should be possible to install it via the package manager of your Linux distribution.
    * - **OpenMP**
-     - [OpenMP](https://en.wikipedia.org/wiki/OpenMP), which is optionally required for {ref}`multithreadingsupport`, should be installable via your Linux distribution's package manager.         
+     - [OpenMP](https://en.wikipedia.org/wiki/OpenMP), which is optionally required for {ref}`multi-threading-support`, should be installable via your Linux distribution's package manager.         
    * - **OpenCL**
-     - If the project should be compiled with {ref}`gpusupport`, [OpenCL](https://www.khronos.org/opencl/) must be available. On Linux, it should be installable via your distribution's package manager.
+     - If the project should be compiled with {ref}`gpu-support`, [OpenCL](https://www.khronos.org/opencl/) must be available. On Linux, it should be installable via your distribution's package manager.
    ```
 ````
 
@@ -36,11 +36,11 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **C++ compiler**
      - MacOS relies on the [Clang](https://en.wikipedia.org/wiki/Clang) compiler for building C++ code. It is part of the [Xcode](https://developer.apple.com/support/xcode/) developer toolset.
    * - **GoogleTest**
-     - The [GoogleTest](https://github.com/google/googletest) framework must optionally be installed in order to compile the project with {ref}`testingsupport` enabled. It can easily be installed via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by runnig the command `brew install googletest`.
+     - The [GoogleTest](https://github.com/google/googletest) framework must optionally be installed in order to compile the project with {ref}`testing-support` enabled. It can easily be installed via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by runnig the command `brew install googletest`.
    * - **OpenMP**
-     - If the project should be compiled with {ref}`multithreadingsupport` enabled, the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library must be installed. We recommend to install it via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by running the command `brew install libomp`.
+     - If the project should be compiled with {ref}`multi-threading-support` enabled, the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library must be installed. We recommend to install it via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by running the command `brew install libomp`.
    * - **OpenCL**
-     - The [Xcode](https://developer.apple.com/support/xcode/) developer toolset should include [OpenCL](https://www.khronos.org/opencl/), which are needed for {ref}`gpusupport`. However, the [OpenCL C++ headers](https://github.com/KhronosGroup/OpenCL-Headers) must be installed manually. The easiest way to do so is via the [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) command `brew install opencl-clhpp-headers`.
+     - The [Xcode](https://developer.apple.com/support/xcode/) developer toolset should include [OpenCL](https://www.khronos.org/opencl/), which are needed for {ref}`gpu-support`. However, the [OpenCL C++ headers](https://github.com/KhronosGroup/OpenCL-Headers) must be installed manually. The easiest way to do so is via the [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) command `brew install opencl-clhpp-headers`.
    ```
 ````
 
@@ -51,11 +51,11 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **C++ compiler**
      - For the compilation of the project's source code, the MSVC compiler must be used. It is included in [Visual Studio](https://visualstudio.microsoft.com/downloads/).
    * - **GoogleTest**
-     - The [GoogleTest](https://github.com/google/googletest) framework must optionally be available on your system to compile the project with {ref}`testingsupport` enabled. It should already be included in recent versions of [Visual Studio](https://learn.microsoft.com/en-us/visualstudio/test/how-to-use-google-test-for-cpp?view=vs-2022).
+     - The [GoogleTest](https://github.com/google/googletest) framework must optionally be available on your system to compile the project with {ref}`testing-support` enabled. It should already be included in recent versions of [Visual Studio](https://learn.microsoft.com/en-us/visualstudio/test/how-to-use-google-test-for-cpp?view=vs-2022).
    * - **OpenMP**
-     - The [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/) also include the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library, which is utilized by the project for {ref}`multithreadingsupport`.
+     - The [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/) also include the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library, which is utilized by the project for {ref}`multi-threading-support`.
    * - **OpenCL**
-     - If you intend to compile the project with {ref}`gpusupport` enabled, [OpenCL](https://www.khronos.org/opencl/) must be installed manually. In order to do so, we recommend to install the package `opencl` via the package manager [vcpkg](https://github.com/microsoft/vcpkg).
+     - If you intend to compile the project with {ref}`gpu-support` enabled, [OpenCL](https://www.khronos.org/opencl/) must be installed manually. In order to do so, we recommend to install the package `opencl` via the package manager [vcpkg](https://github.com/microsoft/vcpkg).
    ```
 ````
 
@@ -309,13 +309,13 @@ If you want to delete all compilation files that have previously been created, i
 
 Certain functionalities of the project can be enabled or disabled at compile-time via so-called build options. They can be specified in the configuration file [cpp/subprojects/common/meson.options](https://github.com/mrapp-ke/MLRL-Boomer/blob/8ed4f36af5e449c5960a4676bc0a6a22de195979/cpp/subprojects/common/meson.options) or set via environment variables.
 
-(testingsupport)=
+(testing-support)=
 
 ### Testing Support
 
 This project comes with unit tests for the C++ code it contains (see {ref}`testing`). They are based on the [GoogleTest](https://github.com/google/googletest) framework. When building the project, the testing code is compiled and linked against the shared libraries it is supposed to test. In order to prevent the testing code from being compiled, e.g., because the [GoogleTest](https://github.com/google/googletest) framework is not available on your system, the build option `test_support` can be set to `disabled` instead of `enabled`. Alternatively, the desired value can be specified via the environment variable `TEST_SUPPORT`.
 
-(multithreadingsupport)=
+(multi-threading-support)=
 
 ### Multi-Threading Support
 
@@ -343,7 +343,7 @@ If you need to access this information programmatically in your own Python or C+
     ```
 ````
 
-(gpusupport)=
+(gpu-support)=
 
 ### GPU Support
 
