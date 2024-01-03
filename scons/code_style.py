@@ -106,5 +106,5 @@ def enforce_md_code_style(**_):
     """
     Enforces the Markdown files to adhere to the code style definitions.
     """
-    print('Formatting Markdown code style in the root directory...')
+    print('Formatting Markdown files in the root directory...')
     __mdformat('.', enforce_changes=True)
