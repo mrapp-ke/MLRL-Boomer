@@ -44,7 +44,7 @@ Moreover, algorithmic parameters that control the behavior of the machine learni
 boomer --data-dir /path/to/datasets/ --dataset dataset-name --feature-binning equal-width
 ```
 
-Some algorithmic parameters, including the parameter `feature_binning`, come with additional options in the form of key-value pairs. They can be specified by using a bracket notation as shown below:
+Some algorithmic parameters, including the parameter `feature_binning`, come with additional options in the form of key-value pairs. They can be specified by using a {ref}`bracket-notation` as shown below:
 
 ```text
 boomer --data-dir /path/to/datasets/ --dataset dataset-name --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
