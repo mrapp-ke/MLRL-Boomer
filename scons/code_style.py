@@ -43,6 +43,16 @@ def __clang_format(directory: str, enforce_changes: bool = False):
     run_program('clang-format', *args, *cpp_header_files, *cpp_source_files)
 
 
+def __mdformat(directory: str, enforce_changes: bool = False):
+    md_files = glob(path.join(directory, '*.md'))
+    args = ['--number', '--wrap', 'no']
+
+    if not enforce_changes:
+        args.append('--check')
+
+    run_program('mdformat', *args, *md_files)
+
+
 def check_python_code_style(**_):
     """
     Checks if the Python source files adhere to the code style definitions. If this is not the case, an error is raised.
@@ -82,3 +92,19 @@ def enforce_cpp_code_style(**_):
     directory = CPP_MODULE.root_dir
     print('Formatting C++ code in directory "' + directory + '"...')
     __clang_format(directory, enforce_changes=True)
+
+
+def check_md_code_style(**_):
+    """
+    Check if the Markdown files adhere to the code style definitions. If this is not the case, an error is raised.
+    """
+    print('Checking Markdown code style in the root directory...')
+    __mdformat('.')
+
+
+def enforce_md_code_style(**_):
+    """
+    Enforces the Markdown files to adhere to the code style definitions.
+    """
+    print('Formatting Markdown code style in the root directory...')
+    __mdformat('.', enforce_changes=True)
