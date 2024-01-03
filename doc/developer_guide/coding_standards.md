@@ -18,7 +18,7 @@ The workflow definitions of individual CI jobs can be found in the directory [.g
 
 - `publish.yml` is used for publishing pre-built packages on [PyPi](https://pypi.org/) (see {ref}`installation`). For this purpose, the project is built from source for each of the target platforms and architectures, using virtualization in some cases. The job is run automatically when a new release was published on [Github](https://github.com/mrapp-ke/MLRL-Boomer/releases).
 - `test_build.yml` builds the project for each of the supported target plattforms, i.e., Linux, Windows, and MacOS (see {ref}`compilation`). In the Linux environment, this job does also execute all available unit and integration tests (see {ref}`testing`) and generates the latest documentation (see {ref}`documentation`). It is run whenever relevant parts of the project's source code have been modified in a branch.
-- `test_format.yml` ensures that the C++ and Python code adheres to our coding style guidelines (see {ref}`code-style`). This job is run automatically whenever any changes affecting the C++ or Python source files have been pushed to a branch.
+- `test_format.yml` ensures that all source files in the project adhere to our coding style guidelines (see {ref}`code-style`). This job is run automatically whenever any changes affecting the relevant source files have been pushed to a branch.
 
 (testing)=
 
@@ -62,7 +62,7 @@ We aim to enforce a consistent code style across the entire project. For this pu
 
 - For formatting the C++ code, we use [clang-format](https://clang.llvm.org/docs/ClangFormat.html). The desired C++ code style is defined in the file [.clang-format](https://github.com/mrapp-ke/MLRL-Boomer/blob/fece21c929043d8009aab9d52f3ed2fd03d1a191/.clang-format) in the project's root directory.
 - We use [YAPF](https://github.com/google/yapf) to enforce the Python code style defined in the file [.style.yapf](https://github.com/mrapp-ke/MLRL-Boomer/blob/fece21c929043d8009aab9d52f3ed2fd03d1a191/.style.yapf). In addition, [isort](https://github.com/PyCQA/isort) is used to keep the ordering of imports in Python and Cython source files consistent according to the configuration file [.isort.cfg](https://github.com/mrapp-ke/MLRL-Boomer/blob/fece21c929043d8009aab9d52f3ed2fd03d1a191/.isort.cfg) and [pylint](https://pylint.org/) is used to check for common issues in the Python code according to the configuration file [.pylintrc](https://github.com/mrapp-ke/MLRL-Boomer/blob/fece21c929043d8009aab9d52f3ed2fd03d1a191/.pylintrc).
-- For applying a consistent style to Markdown files, we use [mdformat](https://github.com/executablebooks/mdformat).
+- For applying a consistent style to Markdown files, including those used for writing the documentation, we use [mdformat](https://github.com/executablebooks/mdformat).
 
 If you have modified the project's source code, you can check whether it adheres to our coding standards via the following command:
 
