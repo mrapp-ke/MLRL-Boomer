@@ -90,7 +90,7 @@ env.Depends(target_test_format, [target_test_format_python, target_test_format_c
 target_format_python = __create_phony_target(env, TARGET_NAME_FORMAT_PYTHON, action=enforce_python_code_style)
 target_format_cpp = __create_phony_target(env, TARGET_NAME_FORMAT_CPP, action=enforce_cpp_code_style)
 target_format_md = __create_phony_target(env, TARGET_NAME_FORMAT_MD, action=enforce_md_code_style)
-target_format = __create_phony_target(env, TARGET_NAME_FORMAT, TARGET_NAME_FORMAT_MD)
+target_format = __create_phony_target(env, TARGET_NAME_FORMAT)
 env.Depends(target_format, [target_format_python, target_format_cpp, target_format_md])
 
 # Define target for installing runtime dependencies...
