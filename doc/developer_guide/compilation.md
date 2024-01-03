@@ -323,7 +323,7 @@ By default, the project is built with multi-threading support enabled. This requ
 
 When using the {ref}`testbed`, the command `boomer --version` or `boomer -v` can be executed to check whether the program was built with multi-threading support enabled or not. It will print the build options used for compilation, as well as information about the CPU cores available on the system for multi-threading.
 
-If you need to access this information programmatically in your own Python or C++ code, the following code snippets can be used (see {ref}`python_apidoc` and {ref}`cpp_apidoc`):
+If you need to access this information programmatically in your own Python or C++ code, the following code snippets can be used (see {ref}`python-apidoc` and {ref}`cpp-apidoc`):
 
 ````{tab} Python
     ```python
@@ -355,7 +355,7 @@ GPU support via [OpenCL](https://www.khronos.org/opencl/) is enabled by default 
 
 An easy way to check whether the program was built with GPU support enabled or not, is to run the `boomer --version` or `boomer -v` command that is provided by the {ref}`testbed`. It will print the build options used for compiling the program, together with a list of supported GPUs available on your machine.
 
-Alternatively, this information can be retrieved programmatically via the Python or C++ API as shown below (see {ref}`python_apidoc` and {ref}`cpp_apidoc`):
+Alternatively, this information can be retrieved programmatically via the Python or C++ API as shown below (see {ref}`python-apidoc` and {ref}`cpp-apidoc`):
 
 ````{tab} Python
     ```python
