@@ -50,7 +50,7 @@ def __mdformat(directory: str, enforce_changes: bool = False):
     if not enforce_changes:
         args.append('--check')
 
-    run_program('mdformat', *args, *md_files)
+    run_program('mdformat', *args, *md_files, additional_dependencies=['mdformat-myst'])
 
 
 def check_python_code_style(**_):
