@@ -45,7 +45,7 @@ def __clang_format(directory: str, enforce_changes: bool = False):
 
 def __mdformat(directory: str, enforce_changes: bool = False):
     md_files = glob(path.join(directory, '*.md'))
-    args = ['--number', '--wrap', 'no']
+    args = ['--number', '--wrap', 'no', '--end-of-line', 'lf']
 
     if not enforce_changes:
         args.append('--check')
