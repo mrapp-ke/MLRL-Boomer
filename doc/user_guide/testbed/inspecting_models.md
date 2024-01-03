@@ -12,7 +12,7 @@ For example default rule:
 
 The rest of the rules in the file. unlike the default rule, do only apply to examples that satisfy the rules' conditions. If a rule applies to an example, the example is said to be "covered" by the rule. In this case, the rule assigns a positive or negative value to one or several labels. The number of labels to be considered by a rule is controllable via the parameter `head_type` (see {ref}`parameters<Parameters>` below). A positive value expresses a preference towards predicting the corresponding label as relevant. A negative value contributes towards predicting the label as irrelevant. The absolute size of the value corresponds to the weight of the rule's prediction. The larger the value, the stronger the impact of the respective rule, compared to other ones.
 
-A more formal description of the rules is given in Section 2.2. "Multi-label Classification Rules" of {ref}`our ECML paper<firstpartyreferences>`.
+A more formal description of the rules is given in Section 2.2. "Multi-label Classification Rules" of {ref}`our ECML paper<references-first-party>`.
 
 Example rule:
 
@@ -22,6 +22,6 @@ Example rule:
 
 When this rule applies, it has a negative contribution towards `label1`.
 
-The default prediction strategy thus use the rule's prediction value which can be either positive, zero or negative and the prediction is `1` for all values > 0 and `0` otherwise. This strategy aims to optimize the Hamming loss measure. There is also another strategy for optimizing the Subset 0/1 loss. You can specify which strategy should be used via the {ref}`parameter<Parameters>` `predictor`. A description of both prediction strategies can be found in Section 4.3 "Prediction" of {ref}`our ECML paper<firstpartyreferences>`.
+The default prediction strategy thus use the rule's prediction value which can be either positive, zero or negative and the prediction is `1` for all values > 0 and `0` otherwise. This strategy aims to optimize the Hamming loss measure. There is also another strategy for optimizing the Subset 0/1 loss. You can specify which strategy should be used via the {ref}`parameter<Parameters>` `predictor`. A description of both prediction strategies can be found in Section 4.3 "Prediction" of {ref}`our ECML paper<references-first-party>`.
 
 There is also a probabilistic interpretation of the aggregated value that is obtained for an individual label and example: By default, the (label-wise) logistic loss function is used for training (see {ref}`parameter<Parameters>` `loss` below). In this case, the aggregated value can be viewed as log odds. Passing it through the `logistic sigmoid function<https://en.wikipedia.org/wiki/Sigmoid_function>` results in a value between 0 and 1 that corresponds to the probability that the respective label is relevant to the example at hand.
