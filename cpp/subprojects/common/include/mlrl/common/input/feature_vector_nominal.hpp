@@ -3,168 +3,190 @@
  */
 #pragma once
 
-#include "mlrl/common/input/feature_vector.hpp"
-#include "mlrl/common/input/feature_vector_common.hpp"
+#include "mlrl/common/data/view.hpp"
 
 /**
  * A feature vector that stores the indices of the examples that are associated with each value, except for the majority
  * value, i.e., the most frequent value, of a nominal feature.
  */
-class NominalFeatureVector : public AbstractFeatureVector,
-                             public IFeatureVector {
-    private:
+class NominalFeatureVector {
+    public:
 
-        int32* values_;
-
-        const uint32 numValues_;
-
-        const int32 majorityValue_;
-
-    protected:
+        /**
+         * A pointer to an array that stores all nominal values.
+         */
+        int32* values;
 
         /**
          * A pointer to an array that stores the indices of all examples not associated with the majority value.
          */
-        uint32* indices_;
+        uint32* indices;
 
         /**
-         * A pointer to an array that stores the indices of the first element in `indices_` that corresponds to a
-         * certain value.
+         * A pointer to an array that stores the indices of the first element in `indices` that corresponds to a certain
+         * value in `values`.
          */
-        uint32* indptr_;
+        uint32* indptr;
+
+        /**
+         * The number of nominal values.
+         */
+        uint32 numValues;
+
+        /**
+         * The majority value, i.e., the most frequent value, of the nominal feature.
+         */
+        int32 majorityValue;
 
     public:
 
         /**
-         * @param numValues     The number of distinct values of the nominal feature, excluding the majority value
-         * @param numExamples   The number of elements in the vector, i.e., the number of examples not associated with
-         *                      the majority value
+         * @param values        A pointer to an array of type `int32`, shape `(numValues)` that stores all nominal
+         *                      values
+         * @param indices       A pointer to an array of type `uint32`, shape `(numIndices)` that stores the indices of
+         *                      all examples not associated with the majority value
+         * @param indptr        A pointer to an array that stores the indices of the first element in `indices` that
+         *                      corresponds to a certain value in `values`
+         * @param numValues     The number of elements in the array `values`
+         * @param numIndices    The number of elements in the array `indices`
          * @param majorityValue The majority value, i.e., the most frequent value, of the nominal feature
          */
-        NominalFeatureVector(uint32 numValues, uint32 numExamples, int32 majorityValue);
-
-        ~NominalFeatureVector() override;
+        NominalFeatureVector(int32* values, uint32* indices, uint32* indptr, uint32 numValues, uint32 numIndices,
+                             int32 majorityValue);
 
         /**
-         * An iterator that provides access to the values of the nominal feature and allows to modify them.
+         * @param other A reference to an object of type `NominalFeatureVector` that should be copied
          */
-        typedef int32* value_iterator;
+        NominalFeatureVector(const NominalFeatureVector& other);
 
         /**
-         * An iterator that provides read-only access to the values of the nominal feature.
+         * @param other A reference to an object of type `NominalFeatureVector` that should be moved
+         */
+        NominalFeatureVector(NominalFeatureVector&& other);
+
+        virtual ~NominalFeatureVector() {};
+
+        /**
+         * The type of the indices, the view provides access to.
+         */
+        typedef uint32 index_type;
+
+        /**
+         * The type of the values, the view provides access to.
+         */
+        typedef int32 value_type;
+
+        /**
+         * An iterator that provides read-only access to all nominal values.
          */
         typedef const int32* value_const_iterator;
 
         /**
-         * An iterator that provides access to the indices of the examples that are associated with each value of the
-         * nominal feature, except for the majority value, and allows to modify them.
+         * An iterator that provides access to all nominal values and allows to modify them.
          */
-        typedef uint32* index_iterator;
+        typedef int32* value_iterator;
 
         /**
-         * An iterator that provides read-only access to the indices of the examples that are associated with each value
-         * of the nominal feature, except for the majority value.
+         * An iterator that provides read-only access to the indices of the examples that are associated with each
+         * nominal value, except for the majority value.
          */
         typedef const uint32* index_const_iterator;
 
         /**
-         * An iterator that provides access to the indices that specify the first element in the array of example
-         * indices that corresponds to each value of the nominal feature.
+         * An iterator that provides access to the indices of the examples that are associated with each nominal value,
+         * except for the majority value, and allows to modify them.
          */
-        typedef uint32* indptr_iterator;
+        typedef uint32* index_iterator;
 
         /**
-         * Returns a `value_iterator` to the beginning of the values of the nominal feature.
-         *
-         * @return A `value_iterator` to the beginning
-         */
-        value_iterator values_begin();
-
-        /**
-         * Returns a `value_iterator` to the end of the values of the nominal feature.
-         *
-         * @return A `value_iterator` to the end
-         */
-        value_iterator values_end();
-
-        /**
-         * Returns a `value_const_iterator` to the beginning of the values of the nominal feature.
+         * Returns a `value_const_iterator` to the beginning of the noinal values.
          *
          * @return A `value_const_iterator` to the beginning
          */
         value_const_iterator values_cbegin() const;
 
         /**
-         * Returns a `value_const_iterator` to the end of the value of the nominal feature.
+         * Returns a `value_const_iterator` to the end of the nominal values.
          *
          * @return A `value_const_iterator` to the end
          */
         value_const_iterator values_cend() const;
 
         /**
-         * Returns an `index_iterator` to the beginning of the indices of the examples that are associated with a
-         * specific value of the nominal feature.
+         * Returns a `value_iterator` to the beginning of the nominal values.
          *
-         * @param index The index of the value
-         * @return      An `index_iterator` to the beginning
+         * @return A `value_iterator` to the beginning
          */
-        index_iterator indices_begin(uint32 index);
+        value_iterator values_begin();
 
         /**
-         * Returns an `index_iterator` to the end of the indices of the examples that are associated with a specific
-         * value of the nominal feature.
+         * Returns a `value_iterator` to the end of the nominal values.
          *
-         * @param index The index of the value
-         * @return      An `index_iterator` to the end
+         * @return A `value_iterator` to the end
          */
-        index_iterator indices_end(uint32 index);
+        value_iterator values_end();
 
         /**
          * Returns an `index_const_iterator` to the beginning of the indices of the examples that are associated with a
-         * specific value of the nominal feature.
+         * specific nominal value.
          *
-         * @param index The index of the value
+         * @param index The index of the nominal value
          * @return      An `index_const_iterator` to the beginning
          */
         index_const_iterator indices_cbegin(uint32 index) const;
 
         /**
          * Returns an `index_const_iterator` to the end of the indices of the examples that are associated with a
-         * specific value of the nominal feature.
+         * specific nominal value.
          *
-         * @param index The index of the value
+         * @param index The index of the nominal value
          * @return      An `index_const_iterator` to the end
          */
         index_const_iterator indices_cend(uint32 index) const;
 
         /**
-         * Returns an `indptr_iterator` to the beginning of the indices that specify the first element in the array of
-         * example indices that corresponds to each value of the nominal feature, except for the majority value.
+         * Returns an `index_iterator` to the beginning of the indices of the examples that are associated with a
+         * specific nominal value.
          *
-         * @return An `indptr_iterator` to the beginning
+         * @param index The index of the nominal value
+         * @return      An `index_iterator` to the beginning
          */
-        indptr_iterator indptr_begin();
+        index_iterator indices_begin(uint32 index);
 
         /**
-         * Returns an `indptr_iterator` to the end of the indices that specify the first element in the array of example
-         * indices that corresponds to each value of the nominal feature, except for the majority value.
+         * Returns an `index_iterator` to the end of the indices of the examples that are associated with a specific
+         * nominal value.
          *
-         * @return An `indptr_iterator` to the end
+         * @param index The index of the nominal value
+         * @return      An `index_iterator` to the end
          */
-        indptr_iterator indptr_end();
+        index_iterator indices_end(uint32 index);
 
         /**
-         * Returns the majority value, i.e., the least frequent value, of the nominal feature.
+         * Releases the ownership of the array that stores all nominal values. As a result, the behavior of this view
+         * becomes undefined and it should not be used anymore. The caller is responsible for freeing the memory that is
+         * occupied by the array.
          *
-         * @return The majority value
+         * @return A pointer to an array that stores all nominal values
          */
-        int32 getMajorityValue() const;
+        value_type* releaseValues();
 
-        uint32 getNumElements() const;
+        /**
+         * Releases the ownership of the array that stores the indices of all examples not associated with the majority
+         * value. As a result, the behavior of this view becomes undefined and it should not be used anymore. The caller
+         * is responsible for freeing the memory that is occupied by the array.
+         *
+         * @return A pointer to the array that stores the indices of all examples not associated with the majority value
+         */
+        index_type* releaseIndices();
 
-        virtual std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
-                                                                            uint32 start, uint32 end) const override;
-
-        virtual std::unique_ptr<IFeatureVector> createFilteredFeatureVector(
-          std::unique_ptr<IFeatureVector>& existing, const CoverageMask& coverageMask) const override;
+        /**
+         * Releases the ownership of the array that stores the indices of the first element in `indices` that
+         * corresponds to a certain value in `values`. As a result, the behavior of this view becomes undefined and it
+         * should not be used anymore. The caller is responsible for freeing the memory that is occupied by the array.
+         *
+         * @return  A pointer to an array that stores the indices of the first element in `indices` that corresponds to
+         *          a certain value in `values`
+         */
+        index_type* releaseIndptr();
 };
