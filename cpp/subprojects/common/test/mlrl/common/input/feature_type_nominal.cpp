@@ -1,8 +1,10 @@
 #include "mlrl/common/input/feature_type_nominal.hpp"
 
+#include "mlrl/common/input/feature_type_nominal_common.hpp"
 #include "mlrl/common/input/feature_vector_binary.hpp"
 #include "mlrl/common/input/feature_vector_equal.hpp"
 #include "mlrl/common/input/feature_vector_nominal.hpp"
+#include "mlrl/common/input/feature_vector_nominal_allocated.hpp"
 
 #include <gtest/gtest.h>
 
@@ -25,43 +27,48 @@ TEST(NominalFeatureTypeTest, createNominalFeatureVectorFromFortranContiguousView
     std::unique_ptr<IFeatureVector> featureVectorPtr = NominalFeatureType().createFeatureVector(0, view);
 
     // Check type of feature vector...
-    const NominalFeatureVector* featureVector = dynamic_cast<const NominalFeatureVector*>(featureVectorPtr.get());
-    EXPECT_TRUE(featureVector != nullptr);
+    const AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector>* featureVectorDecorator =
+      dynamic_cast<const AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector>*>(featureVectorPtr.get());
+    EXPECT_TRUE(featureVectorDecorator != nullptr);
 
-    // Check dimensionality of feature vector...
-    EXPECT_FLOAT_EQ(featureVector->getMajorityValue(), (int32) 0);
-    EXPECT_EQ(featureVector->getNumElements(), (uint32) 2);
+    if (featureVectorDecorator) {
+        // Check for missing feature values...
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        EXPECT_TRUE(missingFeatureVector[2]);
+        EXPECT_TRUE(missingFeatureVector[5]);
 
-    // Check for missing feature values....
-    EXPECT_TRUE(featureVector->isMissing(2));
-    EXPECT_TRUE(featureVector->isMissing(5));
+        // Check dimensionality of feature vector...
+        const NominalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
+        EXPECT_EQ(featureVector.numValues, (uint32) 2);
 
-    // Check for regular feature values...
-    std::unordered_set<int32> values;
+        // Check for regular feature values...
+        std::unordered_set<int32> values;
 
-    for (auto it = featureVector->values_cbegin(); it != featureVector->values_cend(); it++) {
-        values.emplace(*it);
-    }
-
-    EXPECT_TRUE(values.find(-1) != values.end());
-    EXPECT_TRUE(values.find(1) != values.end());
-
-    // Check indices associated with the feature values...
-    for (uint32 i = 0; i < 2; i++) {
-        int32 value = featureVector->values_cbegin()[i];
-        std::unordered_set<uint32> indices;
-
-        for (auto it = featureVector->indices_cbegin(i); it != featureVector->indices_cend(i); it++) {
-            indices.emplace(*it);
+        for (auto it = featureVector.values_cbegin(); it != featureVector.values_cend(); it++) {
+            values.emplace(*it);
         }
 
-        if (value == -1) {
-            EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 1);
-            EXPECT_TRUE(indices.find(6) != indices.end());
-        } else {
-            EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
-            EXPECT_TRUE(indices.find(0) != indices.end());
-            EXPECT_TRUE(indices.find(3) != indices.end());
+        EXPECT_TRUE(values.find(-1) != values.end());
+        EXPECT_TRUE(values.find(1) != values.end());
+
+        // Check indices associated with the feature values...
+        for (uint32 i = 0; i < 2; i++) {
+            int32 value = featureVector.values_cbegin()[i];
+            std::unordered_set<uint32> indices;
+
+            for (auto it = featureVector.indices_cbegin(i); it != featureVector.indices_cend(i); it++) {
+                indices.emplace(*it);
+            }
+
+            if (value == -1) {
+                EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 1);
+                EXPECT_TRUE(indices.find(6) != indices.end());
+            } else {
+                EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
+                EXPECT_TRUE(indices.find(0) != indices.end());
+                EXPECT_TRUE(indices.find(3) != indices.end());
+            }
         }
     }
 }
@@ -84,31 +91,36 @@ TEST(NominalFeatureTypeTest, createBinaryFeatureVectorFromFortranContiguousView)
     std::unique_ptr<IFeatureVector> featureVectorPtr = NominalFeatureType().createFeatureVector(0, view);
 
     // Check type of feature vector...
-    const BinaryFeatureVector* featureVector = dynamic_cast<const BinaryFeatureVector*>(featureVectorPtr.get());
-    EXPECT_TRUE(featureVector != nullptr);
+    const AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector>* featureVectorDecorator =
+      dynamic_cast<const AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector>*>(featureVectorPtr.get());
+    EXPECT_TRUE(featureVectorDecorator != nullptr);
 
-    // Check dimensionality of feature vector...
-    EXPECT_FLOAT_EQ(featureVector->getMajorityValue(), (int32) 0);
-    EXPECT_EQ(featureVector->getNumElements(), (uint32) 1);
+    if (featureVectorDecorator) {
+        // Check for missing feature values...
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        EXPECT_TRUE(missingFeatureVector[2]);
+        EXPECT_TRUE(missingFeatureVector[5]);
 
-    // Check for missing feature values....
-    EXPECT_TRUE(featureVector->isMissing(2));
-    EXPECT_TRUE(featureVector->isMissing(5));
+        // Check dimensionality of feature vector...
+        const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
+        EXPECT_EQ(featureVector.numValues, (uint32) 1);
 
-    // Check for regular feature values...
-    int32 minorityValue = featureVector->values_cbegin()[0];
-    EXPECT_EQ(minorityValue, (int32) 1);
+        // Check for regular feature values...
+        int32 minorityValue = featureVector.values_cbegin()[0];
+        EXPECT_EQ(minorityValue, (int32) 1);
 
-    // Check indices associated with the feature values...
-    std::unordered_set<uint32> indices;
+        // Check indices associated with the feature values...
+        std::unordered_set<uint32> indices;
 
-    for (auto it = featureVector->indices_cbegin(0); it != featureVector->indices_cend(0); it++) {
-        indices.emplace(*it);
+        for (auto it = featureVector.indices_cbegin(0); it != featureVector.indices_cend(0); it++) {
+            indices.emplace(*it);
+        }
+
+        EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
+        EXPECT_TRUE(indices.find(0) != indices.end());
+        EXPECT_TRUE(indices.find(3) != indices.end());
     }
-
-    EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
-    EXPECT_TRUE(indices.find(0) != indices.end());
-    EXPECT_TRUE(indices.find(3) != indices.end());
 }
 
 TEST(NominalFeatureTypeTest, createEqualFeatureVectorFromFortranContiguousView) {
@@ -158,43 +170,48 @@ TEST(NominalFeatureTypeTest, createNominalFeatureVectorFromDenseCscView) {
     std::unique_ptr<IFeatureVector> featureVectorPtr = NominalFeatureType().createFeatureVector(0, view);
 
     // Check type of feature vector...
-    const NominalFeatureVector* featureVector = dynamic_cast<const NominalFeatureVector*>(featureVectorPtr.get());
-    EXPECT_TRUE(featureVector != nullptr);
+    const AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector>* featureVectorDecorator =
+      dynamic_cast<const AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector>*>(featureVectorPtr.get());
+    EXPECT_TRUE(featureVectorDecorator != nullptr);
 
-    // Check dimensionality of feature vector...
-    EXPECT_FLOAT_EQ(featureVector->getMajorityValue(), (int32) 0);
-    EXPECT_EQ(featureVector->getNumElements(), (uint32) 2);
+    if (featureVectorDecorator) {
+        // Check for missing feature values...
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        EXPECT_TRUE(missingFeatureVector[2]);
+        EXPECT_TRUE(missingFeatureVector[5]);
 
-    // Check for missing feature values....
-    EXPECT_TRUE(featureVector->isMissing(2));
-    EXPECT_TRUE(featureVector->isMissing(5));
+        // Check dimensionality of feature vector...
+        const NominalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
+        EXPECT_EQ(featureVector.numValues, (uint32) 2);
 
-    // Check for regular feature values...
-    std::unordered_set<int32> values;
+        // Check for regular feature values...
+        std::unordered_set<int32> values;
 
-    for (auto it = featureVector->values_cbegin(); it != featureVector->values_cend(); it++) {
-        values.emplace(*it);
-    }
-
-    EXPECT_TRUE(values.find(-1) != values.end());
-    EXPECT_TRUE(values.find(1) != values.end());
-
-    // Check indices associated with the feature values...
-    for (uint32 i = 0; i < 2; i++) {
-        int32 value = featureVector->values_cbegin()[i];
-        std::unordered_set<uint32> indices;
-
-        for (auto it = featureVector->indices_cbegin(i); it != featureVector->indices_cend(i); it++) {
-            indices.emplace(*it);
+        for (auto it = featureVector.values_cbegin(); it != featureVector.values_cend(); it++) {
+            values.emplace(*it);
         }
 
-        if (value == -1) {
-            EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 1);
-            EXPECT_TRUE(indices.find(6) != indices.end());
-        } else {
-            EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
-            EXPECT_TRUE(indices.find(0) != indices.end());
-            EXPECT_TRUE(indices.find(3) != indices.end());
+        EXPECT_TRUE(values.find(-1) != values.end());
+        EXPECT_TRUE(values.find(1) != values.end());
+
+        // Check indices associated with the feature values...
+        for (uint32 i = 0; i < 2; i++) {
+            int32 value = featureVector.values_cbegin()[i];
+            std::unordered_set<uint32> indices;
+
+            for (auto it = featureVector.indices_cbegin(i); it != featureVector.indices_cend(i); it++) {
+                indices.emplace(*it);
+            }
+
+            if (value == -1) {
+                EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 1);
+                EXPECT_TRUE(indices.find(6) != indices.end());
+            } else {
+                EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
+                EXPECT_TRUE(indices.find(0) != indices.end());
+                EXPECT_TRUE(indices.find(3) != indices.end());
+            }
         }
     }
 
@@ -231,31 +248,36 @@ TEST(NominalFeatureTypeTest, createBinaryFeatureVectorFromDenseCscView) {
     std::unique_ptr<IFeatureVector> featureVectorPtr = NominalFeatureType().createFeatureVector(0, view);
 
     // Check type of feature vector...
-    const BinaryFeatureVector* featureVector = dynamic_cast<const BinaryFeatureVector*>(featureVectorPtr.get());
-    EXPECT_TRUE(featureVector != nullptr);
+    const AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector>* featureVectorDecorator =
+      dynamic_cast<const AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector>*>(featureVectorPtr.get());
+    EXPECT_TRUE(featureVectorDecorator != nullptr);
 
-    // Check dimensionality of feature vector...
-    EXPECT_FLOAT_EQ(featureVector->getMajorityValue(), (int32) 0);
-    EXPECT_EQ(featureVector->getNumElements(), (uint32) 1);
+    if (featureVectorDecorator) {
+        // Check for missing feature values....
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        EXPECT_TRUE(missingFeatureVector[2]);
+        EXPECT_TRUE(missingFeatureVector[5]);
 
-    // Check for missing feature values....
-    EXPECT_TRUE(featureVector->isMissing(2));
-    EXPECT_TRUE(featureVector->isMissing(5));
+        // Check dimensionality of feature vector...
+        const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
+        EXPECT_EQ(featureVector.numValues, (uint32) 1);
 
-    // Check for regular feature values...
-    int32 minorityValue = featureVector->values_cbegin()[0];
-    EXPECT_EQ(minorityValue, (int32) 1);
+        // Check for regular feature values...
+        int32 minorityValue = featureVector.values_cbegin()[0];
+        EXPECT_EQ(minorityValue, (int32) 1);
 
-    // Check indices associated with the feature values...
-    std::unordered_set<uint32> indices;
+        // Check indices associated with the feature values...
+        std::unordered_set<uint32> indices;
 
-    for (auto it = featureVector->indices_cbegin(0); it != featureVector->indices_cend(0); it++) {
-        indices.emplace(*it);
+        for (auto it = featureVector.indices_cbegin(0); it != featureVector.indices_cend(0); it++) {
+            indices.emplace(*it);
+        }
+
+        EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
+        EXPECT_TRUE(indices.find(0) != indices.end());
+        EXPECT_TRUE(indices.find(3) != indices.end());
     }
-
-    EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
-    EXPECT_TRUE(indices.find(0) != indices.end());
-    EXPECT_TRUE(indices.find(3) != indices.end());
 
     delete[] data;
     delete[] rowIndices;
@@ -312,43 +334,48 @@ TEST(NominalFeatureTypeTest, createNominalFeatureVectorFromCscView) {
     std::unique_ptr<IFeatureVector> featureVectorPtr = NominalFeatureType().createFeatureVector(0, view);
 
     // Check type of feature vector...
-    const NominalFeatureVector* featureVector = dynamic_cast<const NominalFeatureVector*>(featureVectorPtr.get());
-    EXPECT_TRUE(featureVector != nullptr);
+    const AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector>* featureVectorDecorator =
+      dynamic_cast<const AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector>*>(featureVectorPtr.get());
+    EXPECT_TRUE(featureVectorDecorator != nullptr);
 
-    // Check dimensionality of feature vector...
-    EXPECT_FLOAT_EQ(featureVector->getMajorityValue(), (int32) 0);
-    EXPECT_EQ(featureVector->getNumElements(), (uint32) 2);
+    if (featureVectorDecorator) {
+        // Check for missing feature values....
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        EXPECT_TRUE(missingFeatureVector[2]);
+        EXPECT_TRUE(missingFeatureVector[5]);
 
-    // Check for missing feature values....
-    EXPECT_TRUE(featureVector->isMissing(2));
-    EXPECT_TRUE(featureVector->isMissing(5));
+        // Check dimensionality of feature vector...
+        const NominalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
+        EXPECT_EQ(featureVector.numValues, (uint32) 2);
 
-    // Check for regular feature values...
-    std::unordered_set<int32> values;
+        // Check for regular feature values...
+        std::unordered_set<int32> values;
 
-    for (auto it = featureVector->values_cbegin(); it != featureVector->values_cend(); it++) {
-        values.emplace(*it);
-    }
-
-    EXPECT_TRUE(values.find(-1) != values.end());
-    EXPECT_TRUE(values.find(1) != values.end());
-
-    // Check indices associated with the feature values...
-    for (uint32 i = 0; i < 2; i++) {
-        int32 value = featureVector->values_cbegin()[i];
-        std::unordered_set<uint32> indices;
-
-        for (auto it = featureVector->indices_cbegin(i); it != featureVector->indices_cend(i); it++) {
-            indices.emplace(*it);
+        for (auto it = featureVector.values_cbegin(); it != featureVector.values_cend(); it++) {
+            values.emplace(*it);
         }
 
-        if (value == -1) {
-            EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 1);
-            EXPECT_TRUE(indices.find(6) != indices.end());
-        } else {
-            EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
-            EXPECT_TRUE(indices.find(0) != indices.end());
-            EXPECT_TRUE(indices.find(3) != indices.end());
+        EXPECT_TRUE(values.find(-1) != values.end());
+        EXPECT_TRUE(values.find(1) != values.end());
+
+        // Check indices associated with the feature values...
+        for (uint32 i = 0; i < 2; i++) {
+            int32 value = featureVector.values_cbegin()[i];
+            std::unordered_set<uint32> indices;
+
+            for (auto it = featureVector.indices_cbegin(i); it != featureVector.indices_cend(i); it++) {
+                indices.emplace(*it);
+            }
+
+            if (value == -1) {
+                EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 1);
+                EXPECT_TRUE(indices.find(6) != indices.end());
+            } else {
+                EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
+                EXPECT_TRUE(indices.find(0) != indices.end());
+                EXPECT_TRUE(indices.find(3) != indices.end());
+            }
         }
     }
 
@@ -379,31 +406,36 @@ TEST(NominalFeatureTypeTest, createBinaryFeatureVectorFromCscView) {
     std::unique_ptr<IFeatureVector> featureVectorPtr = NominalFeatureType().createFeatureVector(0, view);
 
     // Check type of feature vector...
-    const BinaryFeatureVector* featureVector = dynamic_cast<const BinaryFeatureVector*>(featureVectorPtr.get());
-    EXPECT_TRUE(featureVector != nullptr);
+    const AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector>* featureVectorDecorator =
+      dynamic_cast<const AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector>*>(featureVectorPtr.get());
+    EXPECT_TRUE(featureVectorDecorator != nullptr);
 
-    // Check dimensionality of feature vector...
-    EXPECT_FLOAT_EQ(featureVector->getMajorityValue(), (int32) 0);
-    EXPECT_EQ(featureVector->getNumElements(), (uint32) 1);
+    if (featureVectorDecorator) {
+        // Check for missing feature values....
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        EXPECT_TRUE(missingFeatureVector[2]);
+        EXPECT_TRUE(missingFeatureVector[5]);
 
-    // Check for missing feature values....
-    EXPECT_TRUE(featureVector->isMissing(2));
-    EXPECT_TRUE(featureVector->isMissing(5));
+        // Check dimensionality of feature vector...
+        const BinaryFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        EXPECT_FLOAT_EQ(featureVector.majorityValue, (int32) 0);
+        EXPECT_EQ(featureVector.numValues, (uint32) 1);
 
-    // Check for regular feature values...
-    int32 minorityValue = featureVector->values_cbegin()[0];
-    EXPECT_EQ(minorityValue, (int32) 1);
+        // Check for regular feature values...
+        int32 minorityValue = featureVector.values_cbegin()[0];
+        EXPECT_EQ(minorityValue, (int32) 1);
 
-    // Check indices associated with the feature values...
-    std::unordered_set<uint32> indices;
+        // Check indices associated with the feature values...
+        std::unordered_set<uint32> indices;
 
-    for (auto it = featureVector->indices_cbegin(0); it != featureVector->indices_cend(0); it++) {
-        indices.emplace(*it);
+        for (auto it = featureVector.indices_cbegin(0); it != featureVector.indices_cend(0); it++) {
+            indices.emplace(*it);
+        }
+
+        EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
+        EXPECT_TRUE(indices.find(0) != indices.end());
+        EXPECT_TRUE(indices.find(3) != indices.end());
     }
-
-    EXPECT_EQ(indices.size(), (std::unordered_set<uint32>::size_type) 2);
-    EXPECT_TRUE(indices.find(0) != indices.end());
-    EXPECT_TRUE(indices.find(3) != indices.end());
 
     delete[] data;
     delete[] rowIndices;

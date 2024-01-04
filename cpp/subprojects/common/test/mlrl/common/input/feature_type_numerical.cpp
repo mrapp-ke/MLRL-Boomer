@@ -1,7 +1,9 @@
 #include "mlrl/common/input/feature_type_numerical.hpp"
 
+#include "mlrl/common/input/feature_type_common.hpp"
 #include "mlrl/common/input/feature_vector_equal.hpp"
 #include "mlrl/common/input/feature_vector_numerical.hpp"
+#include "mlrl/common/input/feature_vector_numerical_allocated.hpp"
 
 #include <cmath>
 
@@ -25,29 +27,34 @@ TEST(NumericalFeatureTypeTest, createNumericalFeatureVectorFromFortranContiguous
     std::unique_ptr<IFeatureVector> featureVectorPtr = NumericalFeatureType().createFeatureVector(0, view);
 
     // Check type of feature vector...
-    const NumericalFeatureVector* featureVector = dynamic_cast<const NumericalFeatureVector*>(featureVectorPtr.get());
-    EXPECT_TRUE(featureVector != nullptr);
+    const AbstractFeatureVectorDecorator<AllocatedNumericalFeatureVector>* featureVectorDecorator =
+      dynamic_cast<const AbstractFeatureVectorDecorator<AllocatedNumericalFeatureVector>*>(featureVectorPtr.get());
+    EXPECT_TRUE(featureVectorDecorator != nullptr);
 
-    // Check dimensionality of feature vector...
-    EXPECT_FLOAT_EQ(featureVector->getSparseValue(), 0.0);
-    EXPECT_EQ(featureVector->getNumElements(), (uint32) 5);
+    if (featureVectorDecorator) {
+        // Check for missing feature values...
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        EXPECT_TRUE(missingFeatureVector[2]);
+        EXPECT_TRUE(missingFeatureVector[5]);
 
-    // Check for missing feature values....
-    EXPECT_TRUE(featureVector->isMissing(2));
-    EXPECT_TRUE(featureVector->isMissing(5));
+        // Check dimensionality of feature vector...
+        const NumericalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        EXPECT_FLOAT_EQ(featureVector.sparseValue, 0.0);
+        EXPECT_EQ(featureVector.numElements, (uint32) 5);
 
-    // Check if regular feature values are sorted...
-    NumericalFeatureVector::const_iterator iterator = featureVector->cbegin();
-    EXPECT_FLOAT_EQ(iterator[0].value, -0.2);
-    EXPECT_EQ(iterator[0].index, (uint32) 3);
-    EXPECT_FLOAT_EQ(iterator[1].value, -0.1);
-    EXPECT_EQ(iterator[1].index, (uint32) 1);
-    EXPECT_FLOAT_EQ(iterator[2].value, 0.0);
-    EXPECT_EQ(iterator[2].index, (uint32) 4);
-    EXPECT_FLOAT_EQ(iterator[3].value, 0.1);
-    EXPECT_EQ(iterator[3].index, (uint32) 6);
-    EXPECT_FLOAT_EQ(iterator[4].value, 0.2);
-    EXPECT_EQ(iterator[4].index, (uint32) 0);
+        // Check if regular feature values are sorted...
+        NumericalFeatureVector::const_iterator iterator = featureVector.cbegin();
+        EXPECT_FLOAT_EQ(iterator[0].value, -0.2);
+        EXPECT_EQ(iterator[0].index, (uint32) 3);
+        EXPECT_FLOAT_EQ(iterator[1].value, -0.1);
+        EXPECT_EQ(iterator[1].index, (uint32) 1);
+        EXPECT_FLOAT_EQ(iterator[2].value, 0.0);
+        EXPECT_EQ(iterator[2].index, (uint32) 4);
+        EXPECT_FLOAT_EQ(iterator[3].value, 0.1);
+        EXPECT_EQ(iterator[3].index, (uint32) 6);
+        EXPECT_FLOAT_EQ(iterator[4].value, 0.2);
+        EXPECT_EQ(iterator[4].index, (uint32) 0);
+    }
 }
 
 TEST(NumericalFeatureTypeTest, createEqualFeatureVectorFromFortranContiguousView) {
@@ -95,29 +102,34 @@ TEST(NumericalFeatureTypeTest, createNumericalFeatureVectorFromCscView) {
     std::unique_ptr<IFeatureVector> featureVectorPtr = NumericalFeatureType().createFeatureVector(0, view);
 
     // Check type of feature vector...
-    const NumericalFeatureVector* featureVector = dynamic_cast<const NumericalFeatureVector*>(featureVectorPtr.get());
-    EXPECT_TRUE(featureVector != nullptr);
+    const AbstractFeatureVectorDecorator<AllocatedNumericalFeatureVector>* featureVectorDecorator =
+      dynamic_cast<const AbstractFeatureVectorDecorator<AllocatedNumericalFeatureVector>*>(featureVectorPtr.get());
+    EXPECT_TRUE(featureVectorDecorator != nullptr);
 
-    // Check dimensionality of feature vector...
-    EXPECT_FLOAT_EQ(featureVector->getSparseValue(), 0.0);
-    EXPECT_EQ(featureVector->getNumElements(), (uint32) 5);
+    if (featureVectorDecorator) {
+        // Check for missing feature values...
+        const MissingFeatureVector& missingFeatureVector = featureVectorDecorator->getView().secondView;
+        EXPECT_TRUE(missingFeatureVector[3]);
+        EXPECT_TRUE(missingFeatureVector[7]);
 
-    // Check for missing feature values....
-    EXPECT_TRUE(featureVector->isMissing(3));
-    EXPECT_TRUE(featureVector->isMissing(7));
+        // Check dimensionality of feature vector...
+        const NumericalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
+        EXPECT_FLOAT_EQ(featureVector.sparseValue, 0.0);
+        EXPECT_EQ(featureVector.numElements, (uint32) 5);
 
-    // Check if regular feature values are sorted...
-    NumericalFeatureVector::const_iterator iterator = featureVector->cbegin();
-    EXPECT_FLOAT_EQ(iterator[0].value, -0.2);
-    EXPECT_EQ(iterator[0].index, (uint32) 5);
-    EXPECT_FLOAT_EQ(iterator[1].value, -0.1);
-    EXPECT_EQ(iterator[1].index, (uint32) 2);
-    EXPECT_FLOAT_EQ(iterator[2].value, 0.0);
-    EXPECT_EQ(iterator[2].index, (uint32) 6);
-    EXPECT_FLOAT_EQ(iterator[3].value, 0.1);
-    EXPECT_EQ(iterator[3].index, (uint32) 9);
-    EXPECT_FLOAT_EQ(iterator[4].value, 0.2);
-    EXPECT_EQ(iterator[4].index, (uint32) 0);
+        // Check if regular feature values are sorted...
+        NumericalFeatureVector::const_iterator iterator = featureVector.cbegin();
+        EXPECT_FLOAT_EQ(iterator[0].value, -0.2);
+        EXPECT_EQ(iterator[0].index, (uint32) 5);
+        EXPECT_FLOAT_EQ(iterator[1].value, -0.1);
+        EXPECT_EQ(iterator[1].index, (uint32) 2);
+        EXPECT_FLOAT_EQ(iterator[2].value, 0.0);
+        EXPECT_EQ(iterator[2].index, (uint32) 6);
+        EXPECT_FLOAT_EQ(iterator[3].value, 0.1);
+        EXPECT_EQ(iterator[3].index, (uint32) 9);
+        EXPECT_FLOAT_EQ(iterator[4].value, 0.2);
+        EXPECT_EQ(iterator[4].index, (uint32) 0);
+    }
 
     delete[] data;
     delete[] rowIndices;
