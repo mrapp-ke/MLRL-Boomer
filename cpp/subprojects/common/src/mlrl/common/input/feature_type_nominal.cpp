@@ -1,17 +1,48 @@
 #include "mlrl/common/input/feature_type_nominal.hpp"
 
 #include "feature_type_nominal_common.hpp"
-#include "mlrl/common/input/feature_vector_equal.hpp"
 #include "mlrl/common/iterator/index_iterator.hpp"
 
+/**
+ * Provides random read and write access, as well as read and write access via iterators, to the values and indicies of
+ * training examples stored in a `NominalFeatureVector`.
+ */
+class NominalFeatureVectorDecorator final
+    : public ViewDecorator<CompositeView<AllocatedNominalFeatureVector, AllocatedMissingFeatureVector>>,
+      public IFeatureVector {
+    public:
+
+        /**
+         * @param firstView   A reference to an object of type `AllocatedNominalFeatureVector`
+         * @param secondView  A reference to an object of type `AllocatedMissingFeatureVector`
+         */
+        NominalFeatureVectorDecorator(AllocatedNominalFeatureVector&& firstView,
+                                      AllocatedMissingFeatureVector&& secondView)
+            : ViewDecorator<CompositeView<AllocatedNominalFeatureVector, AllocatedMissingFeatureVector>>(
+              CompositeView<AllocatedNominalFeatureVector, AllocatedMissingFeatureVector>(std::move(firstView),
+                                                                                          std::move(secondView))) {}
+
+        std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
+                                                                    uint32 start, uint32 end) const override {
+            // TODO Implement
+            return nullptr;
+        }
+
+        std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
+                                                                    const CoverageMask& coverageMask) const override {
+            // TODO Implement
+            return nullptr;
+        }
+};
+
 template<typename IndexIterator, typename ValueIterator>
-static inline std::unique_ptr<NominalFeatureVector> createNominalFeatureVector(
+static inline std::unique_ptr<NominalFeatureVectorDecorator> createNominalFeatureVector(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
-  std::unordered_map<int32, Tuple<uint32>>& mapping, uint32 numValues, uint32 numExamples, int32 majorityValue) {
-    std::unique_ptr<NominalFeatureVector> featureVectorPtr =
-      std::make_unique<NominalFeatureVector>(numValues, numExamples, majorityValue);
-    NominalFeatureVector::value_iterator vectorValueIterator = featureVectorPtr->values_begin();
-    NominalFeatureVector::index_iterator vectorIndptrIterator = featureVectorPtr->indptr_begin();
+  std::unordered_map<int32, Tuple<uint32>>& mapping, uint32 numValues, uint32 numIndices, int32 majorityValue) {
+    AllocatedNominalFeatureVector nominalFeatureVector(numValues, numIndices, majorityValue);
+    AllocatedMissingFeatureVector missingFeatureVector;
+    AllocatedNominalFeatureVector::value_iterator vectorValueIterator = nominalFeatureVector.values;
+    AllocatedNominalFeatureVector::index_iterator vectorIndptrIterator = nominalFeatureVector.indptr;
     uint32 offset = 0;
     uint32 n = 0;
 
@@ -34,7 +65,7 @@ static inline std::unique_ptr<NominalFeatureVector> createNominalFeatureVector(
         float32 value = valueIterator[i];
 
         if (std::isnan(value)) {
-            featureVectorPtr->setMissing(index, true);
+            missingFeatureVector.set(index, true);
         } else {
             int32 nominalValue = (int32) value;
 
@@ -42,17 +73,19 @@ static inline std::unique_ptr<NominalFeatureVector> createNominalFeatureVector(
                 Tuple<uint32>& tuple = mapping.at(nominalValue);
                 uint32 numRemaining = tuple.second - 1;
                 tuple.second = numRemaining;
-                NominalFeatureVector::index_iterator vectorIndexIterator = featureVectorPtr->indices_begin(tuple.first);
+                NominalFeatureVector::index_iterator vectorIndexIterator =
+                  nominalFeatureVector.indices_begin(tuple.first);
                 vectorIndexIterator[numRemaining] = index;
             }
         }
     }
 
-    return featureVectorPtr;
+    return std::make_unique<NominalFeatureVectorDecorator>(std::move(nominalFeatureVector),
+                                                           std::move(missingFeatureVector));
 }
 
 template<typename IndexIterator, typename ValueIterator>
-static inline std::unique_ptr<NominalFeatureVector> createNominalFeatureVector(
+static inline std::unique_ptr<NominalFeatureVectorDecorator> createNominalFeatureVector(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
   std::unordered_map<int32, Tuple<uint32>>& mapping, uint32 numValues, uint32 numExamples, bool sparse) {
     int32 majorityValue;

@@ -7,10 +7,42 @@
 
 #include <algorithm>
 
+/**
+ * Provides random read and write access, as well as read and write access via iterators, to the values and indicies of
+ * training examples stored in an `OrdinalFeatureVector`.
+ */
+class OrdinalFeatureVectorDecorator final
+    : public ViewDecorator<CompositeView<AllocatedNominalFeatureVector, AllocatedMissingFeatureVector>>,
+      public IFeatureVector {
+    public:
+
+        /**
+         * @param firstView   A reference to an object of type `AllocatedNominalFeatureVector`
+         * @param secondView  A reference to an object of type `AllocatedMissingFeatureVector`
+         */
+        OrdinalFeatureVectorDecorator(AllocatedNominalFeatureVector&& firstView,
+                                      AllocatedMissingFeatureVector&& secondView)
+            : ViewDecorator<CompositeView<AllocatedNominalFeatureVector, AllocatedMissingFeatureVector>>(
+              CompositeView<AllocatedNominalFeatureVector, AllocatedMissingFeatureVector>(std::move(firstView),
+                                                                                          std::move(secondView))) {}
+
+        std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
+                                                                    uint32 start, uint32 end) const override {
+            // TODO Implement
+            return nullptr;
+        }
+
+        std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
+                                                                    const CoverageMask& coverageMask) const override {
+            // TODO Implement
+            return nullptr;
+        }
+};
+
 template<typename IndexIterator, typename ValueIterator>
-static inline std::unique_ptr<OrdinalFeatureVector> createOrdinalFeatureVector(
+static inline std::unique_ptr<OrdinalFeatureVectorDecorator> createOrdinalFeatureVector(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
-  std::unordered_map<int32, Tuple<uint32>>& mapping, uint32 numValues, uint32 numExamples, int32 majorityValue) {
+  std::unordered_map<int32, Tuple<uint32>>& mapping, uint32 numValues, uint32 numIndices, int32 majorityValue) {
     DenseVector<int32> sortedValues(numValues);
     uint32 n = 0;
 
@@ -26,10 +58,10 @@ static inline std::unique_ptr<OrdinalFeatureVector> createOrdinalFeatureVector(
 
     std::sort(sortedValues.begin(), sortedValues.end(), std::less<int32>());
 
-    std::unique_ptr<OrdinalFeatureVector> featureVectorPtr =
-      std::make_unique<OrdinalFeatureVector>(numValues, numExamples, majorityValue);
-    OrdinalFeatureVector::value_iterator vectorValueIterator = featureVectorPtr->values_begin();
-    OrdinalFeatureVector::index_iterator vectorIndptrIterator = featureVectorPtr->indptr_begin();
+    AllocatedNominalFeatureVector ordinalFeatureVector(numValues, numIndices, majorityValue);
+    AllocatedMissingFeatureVector missingFeatureVector;
+    AllocatedNominalFeatureVector::value_iterator vectorValueIterator = ordinalFeatureVector.values;
+    AllocatedNominalFeatureVector::index_iterator vectorIndptrIterator = ordinalFeatureVector.indptr;
     uint32 offset = 0;
 
     for (uint32 i = 0; i < numValues; i++) {
@@ -46,7 +78,7 @@ static inline std::unique_ptr<OrdinalFeatureVector> createOrdinalFeatureVector(
         float32 value = valueIterator[i];
 
         if (std::isnan(value)) {
-            featureVectorPtr->setMissing(index, true);
+            missingFeatureVector.set(index, true);
         } else {
             int32 nominalValue = (int32) value;
 
@@ -54,17 +86,19 @@ static inline std::unique_ptr<OrdinalFeatureVector> createOrdinalFeatureVector(
                 Tuple<uint32>& tuple = mapping.at(nominalValue);
                 uint32 numRemaining = tuple.second - 1;
                 tuple.second = numRemaining;
-                OrdinalFeatureVector::index_iterator vectorIndexIterator = featureVectorPtr->indices_begin(tuple.first);
+                AllocatedNominalFeatureVector::index_iterator vectorIndexIterator =
+                  ordinalFeatureVector.indices_begin(tuple.first);
                 vectorIndexIterator[numRemaining] = index;
             }
         }
     }
 
-    return featureVectorPtr;
+    return std::make_unique<OrdinalFeatureVectorDecorator>(std::move(ordinalFeatureVector),
+                                                           std::move(missingFeatureVector));
 }
 
 template<typename IndexIterator, typename ValueIterator>
-static inline std::unique_ptr<OrdinalFeatureVector> createOrdinalFeatureVector(
+static inline std::unique_ptr<OrdinalFeatureVectorDecorator> createOrdinalFeatureVector(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
   std::unordered_map<int32, Tuple<uint32>>& mapping, uint32 numValues, uint32 numExamples, bool sparse) {
     int32 majorityValue;

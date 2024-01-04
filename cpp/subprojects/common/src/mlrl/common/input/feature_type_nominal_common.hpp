@@ -3,11 +3,46 @@
  */
 #pragma once
 
+#include "feature_type_common.hpp"
+#include "feature_vector_nominal_allocated.hpp"
 #include "mlrl/common/data/tuple.hpp"
+#include "mlrl/common/data/view_composite.hpp"
 #include "mlrl/common/input/feature_vector_binary.hpp"
 #include "mlrl/common/input/feature_vector_equal.hpp"
 
 #include <unordered_map>
+
+/**
+ * Provides random read and write access, as well as read and write access via iterators, to the values and indicies of
+ * training examples stored in an `BinaryFeatureVector`.
+ */
+class BinaryFeatureVectorDecorator final
+    : public ViewDecorator<CompositeView<AllocatedNominalFeatureVector, AllocatedMissingFeatureVector>>,
+      public IFeatureVector {
+    public:
+
+        /**
+         * @param firstView   A reference to an object of type `AllocatedNominalFeatureVector`
+         * @param secondView  A reference to an object of type `AllocatedMissingFeatureVector`
+         */
+        BinaryFeatureVectorDecorator(AllocatedNominalFeatureVector&& firstView,
+                                     AllocatedMissingFeatureVector&& secondView)
+            : ViewDecorator<CompositeView<AllocatedNominalFeatureVector, AllocatedMissingFeatureVector>>(
+              CompositeView<AllocatedNominalFeatureVector, AllocatedMissingFeatureVector>(std::move(firstView),
+                                                                                          std::move(secondView))) {}
+
+        std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
+                                                                    uint32 start, uint32 end) const override {
+            // TODO Implement
+            return nullptr;
+        }
+
+        std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
+                                                                    const CoverageMask& coverageMask) const override {
+            // TODO Implement
+            return nullptr;
+        }
+};
 
 template<typename ValueIterator>
 static inline uint32 createMapping(ValueIterator valueIterator, uint32 numElements,
@@ -77,14 +112,16 @@ static inline Tuple<int32> getMinorityAndMajorityValue(const std::unordered_map<
 }
 
 template<typename IndexIterator, typename ValueIterator>
-static inline std::unique_ptr<BinaryFeatureVector> createBinaryFeatureVector(
+static inline std::unique_ptr<BinaryFeatureVectorDecorator> createBinaryFeatureVector(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
   const std::unordered_map<int32, Tuple<uint32>>& mapping, int32 minorityValue, int32 majorityValue) {
     const Tuple<uint32>& tuple = mapping.at(minorityValue);
     uint32 numMinorityExamples = tuple.second;
-    std::unique_ptr<BinaryFeatureVector> featureVectorPtr =
-      std::make_unique<BinaryFeatureVector>(numMinorityExamples, minorityValue, majorityValue);
-    BinaryFeatureVector::index_iterator vectorIndexIterator = featureVectorPtr->indices_begin(0);
+    AllocatedNominalFeatureVector binaryFeatureVector(1, numMinorityExamples, majorityValue);
+    AllocatedMissingFeatureVector missingFeatureVector;
+    AllocatedNominalFeatureVector::value_iterator vectorValueIterator = binaryFeatureVector.values;
+    vectorValueIterator[0] = minorityValue;
+    AllocatedNominalFeatureVector::index_iterator vectorIndexIterator = binaryFeatureVector.indices;
     uint32 n = 0;
 
     for (uint32 i = 0; i < numElements; i++) {
@@ -92,7 +129,7 @@ static inline std::unique_ptr<BinaryFeatureVector> createBinaryFeatureVector(
         float32 value = valueIterator[i];
 
         if (std::isnan(value)) {
-            featureVectorPtr->setMissing(index, true);
+            missingFeatureVector.set(index, true);
         } else {
             int32 nominalValue = (int32) value;
 
@@ -103,11 +140,12 @@ static inline std::unique_ptr<BinaryFeatureVector> createBinaryFeatureVector(
         }
     }
 
-    return featureVectorPtr;
+    return std::make_unique<BinaryFeatureVectorDecorator>(std::move(binaryFeatureVector),
+                                                          std::move(missingFeatureVector));
 }
 
 template<typename IndexIterator, typename ValueIterator>
-static inline std::unique_ptr<BinaryFeatureVector> createBinaryFeatureVector(
+static inline std::unique_ptr<BinaryFeatureVectorDecorator> createBinaryFeatureVector(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
   std::unordered_map<int32, Tuple<uint32>>& mapping, bool sparse) {
     int32 minorityValue;
