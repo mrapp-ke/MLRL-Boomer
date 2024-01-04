@@ -6,7 +6,6 @@
 #include "feature_type_common.hpp"
 #include "feature_vector_nominal_allocated.hpp"
 #include "mlrl/common/data/tuple.hpp"
-#include "mlrl/common/data/view_composite.hpp"
 #include "mlrl/common/input/feature_vector_binary.hpp"
 #include "mlrl/common/input/feature_vector_equal.hpp"
 
@@ -16,9 +15,7 @@
  * Provides random read and write access, as well as read and write access via iterators, to the values and indicies of
  * training examples stored in an `BinaryFeatureVector`.
  */
-class BinaryFeatureVectorDecorator final
-    : public ViewDecorator<CompositeView<AllocatedNominalFeatureVector, AllocatedMissingFeatureVector>>,
-      public IFeatureVector {
+class BinaryFeatureVectorDecorator final : public AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector> {
     public:
 
         /**
@@ -27,9 +24,8 @@ class BinaryFeatureVectorDecorator final
          */
         BinaryFeatureVectorDecorator(AllocatedNominalFeatureVector&& firstView,
                                      AllocatedMissingFeatureVector&& secondView)
-            : ViewDecorator<CompositeView<AllocatedNominalFeatureVector, AllocatedMissingFeatureVector>>(
-              CompositeView<AllocatedNominalFeatureVector, AllocatedMissingFeatureVector>(std::move(firstView),
-                                                                                          std::move(secondView))) {}
+            : AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector>(std::move(firstView),
+                                                                            std::move(secondView)) {}
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     uint32 start, uint32 end) const override {

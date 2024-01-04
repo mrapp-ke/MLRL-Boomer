@@ -1,9 +1,8 @@
 #include "mlrl/common/input/feature_type_numerical.hpp"
 
+#include "feature_type_common.hpp"
 #include "feature_vector_numerical_allocated.hpp"
-#include "mlrl/common/data/view_composite.hpp"
 #include "mlrl/common/input/feature_vector_equal.hpp"
-#include "mlrl/common/input/feature_vector_missing.hpp"
 #include "mlrl/common/iterator/index_iterator.hpp"
 
 #include <algorithm>
@@ -12,9 +11,7 @@
  * Provides random read and write access, as well as read and write access via iterators, to the indices and values of
  * training examples stored in an `AllocatedNumericalFeatureVector`.
  */
-class NumericalFeatureVectorDecorator final
-    : public ViewDecorator<CompositeView<AllocatedNumericalFeatureVector, AllocatedMissingFeatureVector>>,
-      public IFeatureVector {
+class NumericalFeatureVectorDecorator final : public AbstractFeatureVectorDecorator<AllocatedNumericalFeatureVector> {
     public:
 
         /**
@@ -23,9 +20,8 @@ class NumericalFeatureVectorDecorator final
          */
         NumericalFeatureVectorDecorator(AllocatedNumericalFeatureVector&& firstView,
                                         AllocatedMissingFeatureVector&& secondView)
-            : ViewDecorator<CompositeView<AllocatedNumericalFeatureVector, AllocatedMissingFeatureVector>>(
-              CompositeView<AllocatedNumericalFeatureVector, AllocatedMissingFeatureVector>(std::move(firstView),
-                                                                                            std::move(secondView))) {}
+            : AbstractFeatureVectorDecorator<AllocatedNumericalFeatureVector>(std::move(firstView),
+                                                                              std::move(secondView)) {}
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     uint32 start, uint32 end) const override {
