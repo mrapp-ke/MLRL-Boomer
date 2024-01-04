@@ -7,7 +7,7 @@
  * Provides random read and write access, as well as read and write access via iterators, to the values and indicies of
  * training examples stored in a `NominalFeatureVector`.
  */
-class NominalFeatureVectorDecorator final : public AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector> {
+class NominalFeatureVectorDecorator final : public AbstractNominalFeatureVectorDecorator {
     public:
 
         /**
@@ -16,8 +16,7 @@ class NominalFeatureVectorDecorator final : public AbstractFeatureVectorDecorato
          */
         NominalFeatureVectorDecorator(AllocatedNominalFeatureVector&& firstView,
                                       AllocatedMissingFeatureVector&& secondView)
-            : AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector>(std::move(firstView),
-                                                                            std::move(secondView)) {}
+            : AbstractNominalFeatureVectorDecorator(std::move(firstView), std::move(secondView)) {}
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     uint32 start, uint32 end) const override {
