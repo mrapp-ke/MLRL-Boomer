@@ -18,7 +18,10 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
          */
         AllocatedNominalFeatureVector(uint32 numValues, uint32 numIndices, int32 majorityValue = 0)
             : NominalFeatureVector(allocateMemory<int32>(numValues), allocateMemory<uint32>(numIndices),
-                                   allocateMemory<uint32>(numValues + 1), numValues, numIndices, majorityValue) {}
+                                   allocateMemory<uint32>(numValues + 1), numValues, numIndices, majorityValue) {
+            NominalFeatureVector::indptr[0] = 0;
+            NominalFeatureVector::indptr[numValues] = numIndices;
+        }
 
         /**
          * @param other A reference to an object of type `AllocatedNominalFeatureVector` that should be copied

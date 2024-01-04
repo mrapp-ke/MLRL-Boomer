@@ -12,10 +12,16 @@
 #include <unordered_map>
 
 /**
+ * An abstract base class for all decorators that provide access to the values and indices of training examples stored
+ * in an `AllocatedNominalFeatureVector`.
+ */
+typedef AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector> AbstractNominalFeatureVectorDecorator;
+
+/**
  * Provides random read and write access, as well as read and write access via iterators, to the values and indicies of
  * training examples stored in an `BinaryFeatureVector`.
  */
-class BinaryFeatureVectorDecorator final : public AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector> {
+class BinaryFeatureVectorDecorator final : public AbstractNominalFeatureVectorDecorator {
     public:
 
         /**
@@ -24,8 +30,7 @@ class BinaryFeatureVectorDecorator final : public AbstractFeatureVectorDecorator
          */
         BinaryFeatureVectorDecorator(AllocatedNominalFeatureVector&& firstView,
                                      AllocatedMissingFeatureVector&& secondView)
-            : AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector>(std::move(firstView),
-                                                                            std::move(secondView)) {}
+            : AbstractNominalFeatureVectorDecorator(std::move(firstView), std::move(secondView)) {}
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     uint32 start, uint32 end) const override {

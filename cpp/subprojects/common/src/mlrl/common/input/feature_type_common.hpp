@@ -10,7 +10,7 @@
 /**
  * An abstract base class for all decorators that provide access to the values and indices of training examples stored
  * in a feature vector.
- * 
+ *
  * @tparam FeatureVector The type of the feature vector
  */
 template<typename FeatureVector>
