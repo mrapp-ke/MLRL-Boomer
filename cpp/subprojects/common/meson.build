@@ -114,7 +114,7 @@ test_files = [
 ]
 
 # Directory containing public headers
-include_directories = include_directories('include')
+include_dir = include_directories('include')
 
 # Directory into which the library should be installed
 install_root = meson.current_source_dir() / '../../../python/subprojects'
@@ -177,24 +177,25 @@ else
 endif
 
 # Library declaration
-common_lib = library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args,
+common_lib = library(lib_name, source_files, include_directories : include_dir, cpp_args : cpp_args,
                      link_args : link_args, version : version, install : true, install_dir : install_dir)
 
 if host_machine.system() == 'windows'
     # On Windows, we must additionally built a static library to link against, as we cannot add DLL exports for all
     # classes that can potentially be used by dependant libraries
-    common_lib = static_library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args,
+    common_lib = static_library(lib_name, source_files, include_directories : include_dir, cpp_args : cpp_args,
                                 link_args : link_args)
 endif
 
-common_dep = declare_dependency(include_directories : include_directories, link_with : common_lib)
+common_dep = declare_dependency(include_directories : include_dir, link_with : common_lib)
 
 # Test declaration
 test_support_enabled = get_option('test_support').enabled()
 
 if test_support_enabled
     gtest_test_dep = dependency('gtest', main : true)
-    common_test_dep = declare_dependency(include_directories : include_directories, link_with : common_lib)
+    common_test_dep = declare_dependency(include_directories : [include_dir, include_directories('src')],
+                                         link_with : common_lib)
 
     test_dependencies = [
         gtest_test_dep,

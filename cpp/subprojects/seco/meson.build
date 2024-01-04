@@ -41,7 +41,7 @@ dependencies = [
 ]
 
 # Directory containing public headers
-include_directories = include_directories('include')
+include_dir = include_directories('include')
 
 # Directory into which the library should be installed
 install_root = common_project.get_variable('install_root')
@@ -67,7 +67,7 @@ if host_machine.system() == 'windows'
     cpp_args += '-DMLRLSECO_EXPORTS'
 endif
 
-seco_lib = library(lib_name, source_files, include_directories : include_directories, dependencies : dependencies,
+seco_lib = library(lib_name, source_files, include_directories : include_dir, dependencies : dependencies,
                    cpp_args : cpp_args, link_args : link_args, version : version, install : true,
                    install_dir : install_dir)
 
@@ -77,7 +77,8 @@ test_support_enabled = common_project.get_variable('test_support_enabled')
 if test_support_enabled
     gtest_test_dep = common_project.get_variable('gtest_test_dep')
     common_test_dep = common_project.get_variable('common_test_dep')
-    seco_test_dep = declare_dependency(include_directories : include_directories, link_with : seco_lib)
+    seco_test_dep = declare_dependency(include_directories : [include_dir, include_directories('src')],
+                                       link_with : seco_lib)
 
     test_dependencies = [
         gtest_test_dep,
