@@ -22,6 +22,13 @@ class OrdinalFeatureVectorDecorator final : public AbstractNominalFeatureVectorD
                                       AllocatedMissingFeatureVector&& secondView)
             : AbstractNominalFeatureVectorDecorator(std::move(firstView), std::move(secondView)) {}
 
+        /**
+         * @param other A reference to an object of type `OrdinalFeatureVectorDecorator` that should be copied
+         */
+        OrdinalFeatureVectorDecorator(const OrdinalFeatureVectorDecorator& other)
+            : OrdinalFeatureVectorDecorator(AllocatedNominalFeatureVector(other.view.firstView),
+                                            AllocatedMissingFeatureVector()) {}
+
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     uint32 start, uint32 end) const override {
             // TODO Implement
@@ -30,8 +37,7 @@ class OrdinalFeatureVectorDecorator final : public AbstractNominalFeatureVectorD
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const CoverageMask& coverageMask) const override {
-            // TODO Implement
-            return nullptr;
+            return createFilteredNominalFeatureVectorDecorator(*this, existing, coverageMask);
         }
 };
 
