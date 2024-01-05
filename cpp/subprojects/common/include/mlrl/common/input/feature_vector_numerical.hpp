@@ -10,7 +10,7 @@
  * A feature vector that stores the values of training examples for a certain numerical feature, except for the examples
  * associated with a sparse value.
  */
-class NumericalFeatureVector : public Vector<IndexedValue<float32>> {
+class MLRLCOMMON_API NumericalFeatureVector : public Vector<IndexedValue<float32>> {
     public:
 
         /**
