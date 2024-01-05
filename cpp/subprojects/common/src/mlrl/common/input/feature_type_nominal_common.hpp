@@ -32,16 +32,80 @@ class BinaryFeatureVectorDecorator final : public AbstractNominalFeatureVectorDe
                                      AllocatedMissingFeatureVector&& secondView)
             : AbstractNominalFeatureVectorDecorator(std::move(firstView), std::move(secondView)) {}
 
+        /**
+         * @param other A reference to an object of type `BinaryFeatureVectorDecorator` that should be copied
+         */
+        BinaryFeatureVectorDecorator(const BinaryFeatureVectorDecorator& other)
+            : AbstractNominalFeatureVectorDecorator(AllocatedNominalFeatureVector(other.view.firstView),
+                                                    AllocatedMissingFeatureVector()) {}
+
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     uint32 start, uint32 end) const override {
-            // TODO Implement
-            return nullptr;
+            return std::make_unique<EqualFeatureVector>();
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const CoverageMask& coverageMask) const override {
-            // TODO Implement
-            return nullptr;
+            std::unique_ptr<BinaryFeatureVectorDecorator> filteredDecoratorPtr;
+            BinaryFeatureVectorDecorator* existingDecorator =
+              dynamic_cast<BinaryFeatureVectorDecorator*>(existing.get());
+
+            if (existingDecorator) {
+                // Reuse the existing feature vector...
+                existing.release();
+                filteredDecoratorPtr = std::unique_ptr<BinaryFeatureVectorDecorator>(existingDecorator);
+
+                // Filter the indices of examples with missing feature values...
+                MissingFeatureVector& missingFeatureVector = filteredDecoratorPtr->view.secondView;
+
+                for (auto it = missingFeatureVector.indices_cbegin(); it != missingFeatureVector.indices_cend();) {
+                    uint32 index = *it;
+                    it++;  // Iterator must be incremented before call to `MissingFeatureVector::set` invalidates it
+
+                    if (!coverageMask.isCovered(index)) {
+                        missingFeatureVector.set(index, false);
+                    }
+                }
+            } else {
+                // Create a new feature vector...
+                filteredDecoratorPtr = std::make_unique<BinaryFeatureVectorDecorator>(*this);
+
+                // Add the indices of examples with missing feature values...
+                MissingFeatureVector& missingFeatureVector = filteredDecoratorPtr->view.secondView;
+
+                for (auto it = this->view.secondView.indices_cbegin(); it != this->view.secondView.indices_cend();
+                     it++) {
+                    uint32 index = *it;
+
+                    if (coverageMask.isCovered(index)) {
+                        missingFeatureVector.set(index, true);
+                    }
+                }
+            }
+
+            // Filter the indices of examples associated with the minority value...
+            AllocatedNominalFeatureVector& featureVector = filteredDecoratorPtr->view.firstView;
+            AllocatedNominalFeatureVector::index_iterator filteredIndexIterator = featureVector.indices_begin(0);
+            NominalFeatureVector::index_const_iterator indexIterator = this->view.firstView.indices_cbegin(0);
+            NominalFeatureVector::index_const_iterator indicesEnd = this->view.firstView.indices_cend(0);
+            uint32 maxIndices = indicesEnd - indexIterator;
+            uint32 n = 0;
+
+            for (uint32 i = 0; i < maxIndices; i++) {
+                uint32 index = indexIterator[i];
+
+                if (coverageMask.isCovered(index)) {
+                    filteredIndexIterator[n] = index;
+                    n++;
+                }
+            }
+
+            if (n > 0) {
+                featureVector.resize(n);
+                return filteredDecoratorPtr;
+            }
+
+            return std::make_unique<EqualFeatureVector>();
         }
 };
 

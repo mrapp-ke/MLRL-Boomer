@@ -26,9 +26,8 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
         /**
          * @param other A reference to an object of type `AllocatedNominalFeatureVector` that should be copied
          */
-        AllocatedNominalFeatureVector(const AllocatedNominalFeatureVector& other) : NominalFeatureVector(other) {
-            throw std::runtime_error("Objects of type AllocatedNominalFeatureVector cannot be copied");
-        }
+        AllocatedNominalFeatureVector(const AllocatedNominalFeatureVector& other)
+            : AllocatedNominalFeatureVector(other.numValues, other.indptr[other.numValues], other.majorityValue) {}
 
         /**
          * @param other A reference to an object of type `AllocatedNominalFeatureVector` that should be moved
@@ -43,5 +42,16 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
             freeMemory(NominalFeatureVector::values);
             freeMemory(NominalFeatureVector::indices);
             freeMemory(NominalFeatureVector::indptr);
+        }
+
+        /**
+         * Resizes the view by re-allocating the memory it provides access to.
+         *
+         * @param numIndices The number of examples not associated with the majority value to which the view should be
+         *                   resized
+         */
+        void resize(uint32 numIndices) {
+            NominalFeatureVector::indices = reallocateMemory(NominalFeatureVector::indices, numIndices);
+            NominalFeatureVector::indptr[NominalFeatureVector::numValues] = numIndices;
         }
 };
