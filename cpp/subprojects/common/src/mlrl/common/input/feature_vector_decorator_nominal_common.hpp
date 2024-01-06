@@ -47,12 +47,12 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
     }
 
     // Filter the indices of examples not associated with the majority value...
-    AllocatedNominalFeatureVector& featureVector = filteredDecoratorPtr->getView().firstView;
-    AllocatedNominalFeatureVector::index_iterator filteredIndexIterator = featureVector.indices;
-    AllocatedNominalFeatureVector::index_iterator filteredIndptrIterator = featureVector.indptr;
+    AllocatedNominalFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().firstView;
+    AllocatedNominalFeatureVector::index_iterator filteredIndexIterator = filteredFeatureVector.indices;
+    AllocatedNominalFeatureVector::index_iterator filteredIndptrIterator = filteredFeatureVector.indptr;
     uint32 n = 0;
 
-    for (uint32 i = 0; i < featureVector.numValues; i++) {
+    for (uint32 i = 0; i < filteredFeatureVector.numValues; i++) {
         filteredIndptrIterator[i] = n;
         NominalFeatureVector::index_const_iterator indexIterator = decorator.getView().firstView.indices_cbegin(i);
         NominalFeatureVector::index_const_iterator indicesEnd = decorator.getView().firstView.indices_cend(i);
@@ -69,7 +69,7 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
     }
 
     if (n > 0) {
-        featureVector.resize(n);
+        filteredFeatureVector.resize(n);
         return filteredDecoratorPtr;
     }
 
