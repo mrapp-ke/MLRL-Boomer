@@ -109,7 +109,7 @@ test_files = [
     'test/mlrl/common/input/feature_type_nominal.cpp',
     'test/mlrl/common/input/feature_type_numerical.cpp',
     'test/mlrl/common/input/feature_type_ordinal.cpp',
-    'test/mlrl/common/input/feature_vector_binary.cpp',
+    'test/mlrl/common/input/feature_vector_decorator_binary.cpp',
     'test/mlrl/common/input/feature_vector_equal.cpp',
     'test/mlrl/common/info.cpp'
 ]
