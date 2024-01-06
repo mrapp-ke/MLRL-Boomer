@@ -1,5 +1,7 @@
 #include "mlrl/common/input/feature_vector_decorator_binary.hpp"
 
+#include "mlrl/common/input/feature_vector_binary.hpp"
+
 #include <gtest/gtest.h>
 
 TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) {
