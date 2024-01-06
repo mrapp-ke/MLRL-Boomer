@@ -10,41 +10,8 @@
 template<typename Decorator>
 static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVectorDecorator(
   const Decorator& decorator, std::unique_ptr<IFeatureVector>& existing, const CoverageMask& coverageMask) {
-    std::unique_ptr<Decorator> filteredDecoratorPtr;
-    Decorator* existingDecorator = dynamic_cast<Decorator*>(existing.get());
-
-    if (existingDecorator) {
-        // Reuse the existing feature vector...
-        existing.release();
-        filteredDecoratorPtr = std::unique_ptr<Decorator>(existingDecorator);
-
-        // Filter the indices of examples with missing feature values...
-        MissingFeatureVector& missingFeatureVector = filteredDecoratorPtr->getView().secondView;
-
-        for (auto it = missingFeatureVector.indices_cbegin(); it != missingFeatureVector.indices_cend();) {
-            uint32 index = *it;
-            it++;  // Iterator must be incremented before call to `MissingFeatureVector::set` invalidates it
-
-            if (!coverageMask.isCovered(index)) {
-                missingFeatureVector.set(index, false);
-            }
-        }
-    } else {
-        // Create a new feature vector...
-        filteredDecoratorPtr = std::make_unique<Decorator>(decorator);
-
-        // Add the indices of examples with missing feature values...
-        MissingFeatureVector& missingFeatureVector = filteredDecoratorPtr->getView().secondView;
-
-        for (auto it = decorator.getView().secondView.indices_cbegin();
-             it != decorator.getView().secondView.indices_cend(); it++) {
-            uint32 index = *it;
-
-            if (coverageMask.isCovered(index)) {
-                missingFeatureVector.set(index, true);
-            }
-        }
-    }
+    std::unique_ptr<Decorator> filteredDecoratorPtr =
+      createFilteredFeatureVectorDecorator(decorator, existing, coverageMask);
 
     // Filter the indices of examples not associated with the majority value...
     AllocatedNominalFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().firstView;
