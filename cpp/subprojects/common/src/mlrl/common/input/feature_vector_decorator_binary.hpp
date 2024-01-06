@@ -4,7 +4,6 @@
 #pragma once
 
 #include "feature_vector_decorator_nominal_common.hpp"
-#include "mlrl/common/input/feature_vector_binary.hpp"
 
 /**
  * Provides random read and write access, as well as read and write access via iterators, to the values and indicies of
