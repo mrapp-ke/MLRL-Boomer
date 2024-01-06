@@ -1,8 +1,8 @@
-#include "mlrl/common/input/feature_type_nominal_common.hpp"
+#include "mlrl/common/input/feature_vector_decorator_binary.hpp"
 
 #include <gtest/gtest.h>
 
-TEST(BinaryFeatureVectorTest, createFilteredFeatureVectorFromIndices) {
+TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) {
     BinaryFeatureVectorDecorator decorator(AllocatedNominalFeatureVector(1, 0, 1), AllocatedMissingFeatureVector());
     std::unique_ptr<IFeatureVector> existing;
     std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, 0, 1);
@@ -10,7 +10,7 @@ TEST(BinaryFeatureVectorTest, createFilteredFeatureVectorFromIndices) {
     EXPECT_TRUE(filteredFeatureVector != nullptr);
 }
 
-TEST(BinaryFeatureVectorTest, createFilteredFeatureVectorFromCoverageMask) {
+TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMask) {
     uint32 numMinorityExamples = 10;
     AllocatedNominalFeatureVector featureVector(1, numMinorityExamples, 1);
     AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
@@ -77,7 +77,7 @@ TEST(BinaryFeatureVectorTest, createFilteredFeatureVectorFromCoverageMask) {
     }
 }
 
-TEST(BinaryFeatureVectorTest, createFilteredFeatureVectorFromCoverageMaskUsingExisting) {
+TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMaskUsingExisting) {
     uint32 numMinorityExamples = 10;
     AllocatedNominalFeatureVector featureVector(1, numMinorityExamples, 1);
     AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
@@ -145,7 +145,7 @@ TEST(BinaryFeatureVectorTest, createFilteredFeatureVectorFromCoverageMaskUsingEx
     }
 }
 
-TEST(BinaryFeatureVectorTest, createFilteredFeatureVectorFromCoverageMaskReturnsEqualFeatureVector) {
+TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMaskReturnsEqualFeatureVector) {
     uint32 numMinorityExamples = 10;
     AllocatedNominalFeatureVector featureVector(1, numMinorityExamples, 1);
     AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
