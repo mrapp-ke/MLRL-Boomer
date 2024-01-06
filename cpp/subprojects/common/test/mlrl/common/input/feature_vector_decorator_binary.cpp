@@ -134,7 +134,7 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
     }
 
     // Check missing indices...
-    const MissingFeatureVector filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+    const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
 
     for (uint32 i = numMinorityExamples; i < numExamples; i++) {
         if (i % 2 == 0) {
