@@ -53,10 +53,10 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
     uint32 n = 0;
 
     for (uint32 i = 0; i < filteredFeatureVector.numValues; i++) {
-        filteredIndptrIterator[i] = n;
         NominalFeatureVector::index_const_iterator indexIterator = decorator.getView().firstView.indices_cbegin(i);
         NominalFeatureVector::index_const_iterator indicesEnd = decorator.getView().firstView.indices_cend(i);
         uint32 numIndices = indicesEnd - indexIterator;
+        filteredIndptrIterator[i] = n;
 
         for (uint32 j = 0; j < numIndices; j++) {
             uint32 index = indexIterator[j];
