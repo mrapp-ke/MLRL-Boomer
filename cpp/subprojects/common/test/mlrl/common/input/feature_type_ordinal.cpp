@@ -1,7 +1,7 @@
 #include "mlrl/common/input/feature_type_ordinal.hpp"
 
-#include "mlrl/common/input/feature_type_nominal_common.hpp"
 #include "mlrl/common/input/feature_vector_binary.hpp"
+#include "mlrl/common/input/feature_vector_decorator.hpp"
 #include "mlrl/common/input/feature_vector_equal.hpp"
 #include "mlrl/common/input/feature_vector_nominal_allocated.hpp"
 #include "mlrl/common/input/feature_vector_ordinal.hpp"
