@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "feature_type_common.hpp"
+#include "feature_vector_decorator.hpp"
 #include "feature_vector_nominal_allocated.hpp"
 #include "mlrl/common/data/tuple.hpp"
 #include "mlrl/common/input/feature_vector_binary.hpp"
