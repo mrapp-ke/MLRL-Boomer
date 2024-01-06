@@ -1,6 +1,6 @@
 #include "mlrl/common/input/feature_type_numerical.hpp"
 
-#include "feature_type_common.hpp"
+#include "feature_vector_decorator.hpp"
 #include "feature_vector_numerical_allocated.hpp"
 #include "mlrl/common/input/feature_vector_equal.hpp"
 #include "mlrl/common/iterator/index_iterator.hpp"
