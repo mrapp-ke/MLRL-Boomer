@@ -7,11 +7,11 @@
 #include "feature_vector_nominal_allocated.hpp"
 #include "mlrl/common/input/feature_vector_equal.hpp"
 
-template<typename Decorator>
+template<typename View, typename Decorator>
 static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVectorDecorator(
-  const Decorator& decorator, std::unique_ptr<IFeatureVector>& existing, const CoverageMask& coverageMask) {
+  const View& view, std::unique_ptr<IFeatureVector>& existing, const CoverageMask& coverageMask) {
     std::unique_ptr<Decorator> filteredDecoratorPtr =
-      createFilteredFeatureVectorDecorator(decorator, existing, coverageMask);
+      createFilteredFeatureVectorDecorator<View, Decorator>(view, existing, coverageMask);
 
     // Filter the indices of examples not associated with the majority value...
     AllocatedNominalFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().firstView;
@@ -20,8 +20,8 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
     uint32 n = 0;
 
     for (uint32 i = 0; i < filteredFeatureVector.numValues; i++) {
-        NominalFeatureVector::index_const_iterator indexIterator = decorator.getView().firstView.indices_cbegin(i);
-        NominalFeatureVector::index_const_iterator indicesEnd = decorator.getView().firstView.indices_cend(i);
+        NominalFeatureVector::index_const_iterator indexIterator = view.getView().firstView.indices_cbegin(i);
+        NominalFeatureVector::index_const_iterator indicesEnd = view.getView().firstView.indices_cend(i);
         uint32 numIndices = indicesEnd - indexIterator;
         filteredIndptrIterator[i] = n;
 
