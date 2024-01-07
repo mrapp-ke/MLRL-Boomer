@@ -44,6 +44,22 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
 }
 
 /**
+ * An abstract base class for all decorators that provide access to the values and indices of the training examples
+ * stored in a `NominalFeatureVector`.
+ */
+class AbstractNominalFeatureVectorView : public AbstractFeatureVectorDecorator<NominalFeatureVector> {
+    public:
+
+        /**
+         * @param firstView A reference to an object of type `NominalFeatureVector`
+         */
+        AbstractNominalFeatureVectorView(NominalFeatureVector&& firstView)
+            : AbstractFeatureVectorDecorator(std::move(firstView), AllocatedMissingFeatureVector()) {}
+
+        virtual ~AbstractNominalFeatureVectorView() override {}
+};
+
+/**
  * An abstract base class for all decorators that provide access to the values and indices of training examples stored
  * in an `AllocatedNominalFeatureVector`.
  */
@@ -51,7 +67,7 @@ class AbstractNominalFeatureVectorDecorator : public AbstractFeatureVectorDecora
     public:
 
         /**
-         * @param firstView   A reference to an object of template type `FeatureVector`
+         * @param firstView   A reference to an object of type `AllocatedNominalFeatureVector`
          * @param secondView  A reference to an object of type `AllocatedMissingFeatureVector`
          */
         AbstractNominalFeatureVectorDecorator(AllocatedNominalFeatureVector&& firstView,
@@ -60,13 +76,23 @@ class AbstractNominalFeatureVectorDecorator : public AbstractFeatureVectorDecora
                                                                             std::move(secondView)) {}
 
         /**
-         * @param A reference to an object of type `AbstractNominalFeatureVectorDecorator` that should be copied
+         * @param other A reference to an object of type `AbstractNominalFeatureVectorDecorator` that should be copied
          */
         AbstractNominalFeatureVectorDecorator(const AbstractNominalFeatureVectorDecorator& other)
             : AbstractNominalFeatureVectorDecorator(
               AllocatedNominalFeatureVector(other.view.firstView.numValues,
                                             other.view.firstView.indptr[other.view.firstView.numValues],
                                             other.view.firstView.majorityValue),
+              AllocatedMissingFeatureVector()) {}
+
+        /**
+         * @param other A reference to an object of type `AbstractNominalFeatureVectorView` that should be copied
+         */
+        AbstractNominalFeatureVectorDecorator(const AbstractNominalFeatureVectorView& other)
+            : AbstractNominalFeatureVectorDecorator(
+              AllocatedNominalFeatureVector(other.getView().firstView.numValues,
+                                            other.getView().firstView.indptr[other.getView().firstView.numValues],
+                                            other.getView().firstView.majorityValue),
               AllocatedMissingFeatureVector()) {}
 
         virtual ~AbstractNominalFeatureVectorDecorator() override {}
