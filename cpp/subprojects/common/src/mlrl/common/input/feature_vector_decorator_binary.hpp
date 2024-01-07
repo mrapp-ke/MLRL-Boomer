@@ -24,8 +24,11 @@ class BinaryFeatureVectorDecorator final : public AbstractNominalFeatureVectorDe
          * @param other A reference to an object of type `BinaryFeatureVectorDecorator` that should be copied
          */
         BinaryFeatureVectorDecorator(const BinaryFeatureVectorDecorator& other)
-            : AbstractNominalFeatureVectorDecorator(AllocatedNominalFeatureVector(other.view.firstView),
-                                                    AllocatedMissingFeatureVector()) {}
+            : AbstractNominalFeatureVectorDecorator(
+              AllocatedNominalFeatureVector(other.view.firstView.numValues,
+                                            other.view.firstView.indptr[other.view.firstView.numValues],
+                                            other.view.firstView.majorityValue),
+              AllocatedMissingFeatureVector()) {}
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     uint32 start, uint32 end) const override {
@@ -34,6 +37,8 @@ class BinaryFeatureVectorDecorator final : public AbstractNominalFeatureVectorDe
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const CoverageMask& coverageMask) const override {
-            return createFilteredNominalFeatureVectorDecorator(*this, existing, coverageMask);
+            return createFilteredNominalFeatureVectorDecorator<BinaryFeatureVectorDecorator,
+                                                               BinaryFeatureVectorDecorator>(*this, existing,
+                                                                                             coverageMask);
         }
 };

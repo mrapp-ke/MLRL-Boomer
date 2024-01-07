@@ -7,8 +7,8 @@
 #include "mlrl/common/input/feature_vector.hpp"
 #include "mlrl/common/input/feature_vector_missing.hpp"
 
-template<typename Decorator>
-static inline std::unique_ptr<Decorator> createFilteredFeatureVectorDecorator(const Decorator& decorator,
+template<typename View, typename Decorator>
+static inline std::unique_ptr<Decorator> createFilteredFeatureVectorDecorator(const View& view,
                                                                               std::unique_ptr<IFeatureVector>& existing,
                                                                               const CoverageMask& coverageMask) {
     std::unique_ptr<Decorator> filteredDecoratorPtr;
@@ -32,13 +32,13 @@ static inline std::unique_ptr<Decorator> createFilteredFeatureVectorDecorator(co
         }
     } else {
         // Create a new feature vector...
-        filteredDecoratorPtr = std::make_unique<Decorator>(decorator);
+        filteredDecoratorPtr = std::make_unique<Decorator>(view);
 
         // Add the indices of examples with missing feature values...
         MissingFeatureVector& missingFeatureVector = filteredDecoratorPtr->getView().secondView;
 
-        for (auto it = decorator.getView().secondView.indices_cbegin();
-             it != decorator.getView().secondView.indices_cend(); it++) {
+        for (auto it = view.getView().secondView.indices_cbegin(); it != view.getView().secondView.indices_cend();
+             it++) {
             uint32 index = *it;
 
             if (coverageMask.isCovered(index)) {
