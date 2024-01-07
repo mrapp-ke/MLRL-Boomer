@@ -47,34 +47,36 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
       dynamic_cast<const BinaryFeatureVectorDecorator*>(filtered.get());
     EXPECT_TRUE(filteredDecorator != nullptr);
 
-    // Check filtered indices...
-    const BinaryFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
-    BinaryFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(0);
-    BinaryFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(0);
-    uint32 numIndices = indicesEnd - indicesBegin;
-    EXPECT_EQ(numIndices, numMinorityExamples / 2);
-    std::unordered_set<uint32> indices;
+    if (filteredDecorator) {
+        // Check filtered indices...
+        const BinaryFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        BinaryFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(0);
+        BinaryFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(0);
+        uint32 numIndices = indicesEnd - indicesBegin;
+        EXPECT_EQ(numIndices, numMinorityExamples / 2);
+        std::unordered_set<uint32> indices;
 
-    for (auto it = indicesBegin; it != indicesEnd; it++) {
-        indices.emplace(*it);
-    }
-
-    for (uint32 i = 0; i < numMinorityExamples; i++) {
-        if (i % 2 == 0) {
-            EXPECT_TRUE(indices.find(i) != indices.end());
-        } else {
-            EXPECT_TRUE(indices.find(i) == indices.end());
+        for (auto it = indicesBegin; it != indicesEnd; it++) {
+            indices.emplace(*it);
         }
-    }
 
-    // Check missing indices...
-    const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        for (uint32 i = 0; i < numMinorityExamples; i++) {
+            if (i % 2 == 0) {
+                EXPECT_TRUE(indices.find(i) != indices.end());
+            } else {
+                EXPECT_TRUE(indices.find(i) == indices.end());
+            }
+        }
 
-    for (uint32 i = numMinorityExamples; i < numExamples; i++) {
-        if (i % 2 == 0) {
-            EXPECT_TRUE(filteredMissingFeatureVector[i]);
-        } else {
-            EXPECT_FALSE(filteredMissingFeatureVector[i]);
+        // Check missing indices...
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+
+        for (uint32 i = numMinorityExamples; i < numExamples; i++) {
+            if (i % 2 == 0) {
+                EXPECT_TRUE(filteredMissingFeatureVector[i]);
+            } else {
+                EXPECT_FALSE(filteredMissingFeatureVector[i]);
+            }
         }
     }
 }
@@ -115,34 +117,36 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
     EXPECT_TRUE(filteredDecorator != nullptr);
     EXPECT_TRUE(existing.get() == nullptr);
 
-    // Check filtered indices...
-    const BinaryFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
-    BinaryFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(0);
-    BinaryFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(0);
-    uint32 numIndices = indicesEnd - indicesBegin;
-    EXPECT_EQ(numIndices, numMinorityExamples / 2);
-    std::unordered_set<uint32> indices;
+    if (filteredDecorator) {
+        // Check filtered indices...
+        const BinaryFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        BinaryFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(0);
+        BinaryFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(0);
+        uint32 numIndices = indicesEnd - indicesBegin;
+        EXPECT_EQ(numIndices, numMinorityExamples / 2);
+        std::unordered_set<uint32> indices;
 
-    for (auto it = indicesBegin; it != indicesEnd; it++) {
-        indices.emplace(*it);
-    }
-
-    for (uint32 i = 0; i < numMinorityExamples; i++) {
-        if (i % 2 == 0) {
-            EXPECT_TRUE(indices.find(i) != indices.end());
-        } else {
-            EXPECT_TRUE(indices.find(i) == indices.end());
+        for (auto it = indicesBegin; it != indicesEnd; it++) {
+            indices.emplace(*it);
         }
-    }
 
-    // Check missing indices...
-    const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        for (uint32 i = 0; i < numMinorityExamples; i++) {
+            if (i % 2 == 0) {
+                EXPECT_TRUE(indices.find(i) != indices.end());
+            } else {
+                EXPECT_TRUE(indices.find(i) == indices.end());
+            }
+        }
 
-    for (uint32 i = numMinorityExamples; i < numExamples; i++) {
-        if (i % 2 == 0) {
-            EXPECT_TRUE(filteredMissingFeatureVector[i]);
-        } else {
-            EXPECT_FALSE(filteredMissingFeatureVector[i]);
+        // Check missing indices...
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+
+        for (uint32 i = numMinorityExamples; i < numExamples; i++) {
+            if (i % 2 == 0) {
+                EXPECT_TRUE(filteredMissingFeatureVector[i]);
+            } else {
+                EXPECT_FALSE(filteredMissingFeatureVector[i]);
+            }
         }
     }
 }
