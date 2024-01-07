@@ -4,6 +4,168 @@
 
 #include <gtest/gtest.h>
 
+TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) {
+    uint32 numValues = 4;
+    uint32 numExamplesPerValue = 10;
+    uint32 numMinorityExamples = numValues * numExamplesPerValue;
+    AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
+    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
+    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
+    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+
+    for (uint32 i = 0; i < numValues; i++) {
+        valueIterator[i] = i;
+        indptrIterator[i] = i * numExamplesPerValue;
+
+        for (uint32 j = 0; j < numExamplesPerValue; j++) {
+            uint32 index = (i * numExamplesPerValue) + j;
+            indexIterator[index] = index;
+        }
+    }
+
+    OrdinalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
+    std::unique_ptr<IFeatureVector> existing;
+    uint32 start = 1;
+    uint32 end = 3;
+    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, start, end);
+    const OrdinalFeatureVectorView* filteredDecorator = dynamic_cast<const OrdinalFeatureVectorView*>(filtered.get());
+    EXPECT_TRUE(filteredDecorator != nullptr);
+
+    if (filteredDecorator) {
+        // Check filtered indices...
+        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        EXPECT_EQ(filteredFeatureVector.numValues, end - start);
+        OrdinalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
+
+        for (uint32 i = 0; i < end - start; i++) {
+            EXPECT_EQ(valuesBegin[i], start + i);
+            OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            uint32 numIndices = indicesEnd - indicesBegin;
+            EXPECT_EQ(numIndices, numExamplesPerValue);
+
+            for (uint32 j = 0; j < numIndices; j++) {
+                EXPECT_EQ(indicesBegin[j], ((i + start) * numExamplesPerValue) + j);
+            }
+        }
+    }
+}
+
+TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithIndices) {
+    uint32 numValues = 4;
+    uint32 numExamplesPerValue = 10;
+    uint32 numMinorityExamples = numValues * numExamplesPerValue;
+    AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
+    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
+    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
+    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+
+    for (uint32 i = 0; i < numValues; i++) {
+        valueIterator[i] = i;
+        indptrIterator[i] = i * numExamplesPerValue;
+
+        for (uint32 j = 0; j < numExamplesPerValue; j++) {
+            uint32 index = (i * numExamplesPerValue) + j;
+            indexIterator[index] = index;
+        }
+    }
+
+    OrdinalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
+    std::unique_ptr<IFeatureVector> existing;
+    uint32 start = 1;
+    uint32 end = 3;
+    std::unique_ptr<IFeatureVector> filtered =
+      decorator.createFilteredFeatureVector(existing, 0, numValues)->createFilteredFeatureVector(existing, start, end);
+    const OrdinalFeatureVectorView* filteredDecorator = dynamic_cast<const OrdinalFeatureVectorView*>(filtered.get());
+    EXPECT_TRUE(filteredDecorator != nullptr);
+
+    if (filteredDecorator) {
+        // Check filtered indices...
+        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        EXPECT_EQ(filteredFeatureVector.numValues, end - start);
+        OrdinalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
+
+        for (uint32 i = 0; i < end - start; i++) {
+            EXPECT_EQ(valuesBegin[i], start + i);
+            OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            uint32 numIndices = indicesEnd - indicesBegin;
+            EXPECT_EQ(numIndices, numExamplesPerValue);
+
+            for (uint32 j = 0; j < numIndices; j++) {
+                EXPECT_EQ(indicesBegin[j], ((i + start) * numExamplesPerValue) + j);
+            }
+        }
+    }
+}
+
+TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithCoverageMask) {
+    uint32 numValues = 4;
+    uint32 numExamplesPerValue = 10;
+    uint32 numMinorityExamples = numValues * numExamplesPerValue;
+    AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
+    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
+    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
+    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+
+    for (uint32 i = 0; i < numValues; i++) {
+        valueIterator[i] = i;
+        indptrIterator[i] = i * numExamplesPerValue;
+
+        for (uint32 j = 0; j < numExamplesPerValue; j++) {
+            uint32 index = (i * numExamplesPerValue) + j;
+            indexIterator[index] = index;
+        }
+    }
+
+    CoverageMask coverageMask(numMinorityExamples);
+    uint32 indicatorValue = 1;
+    coverageMask.setIndicatorValue(indicatorValue);
+    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+
+    for (uint32 i = 0; i < numMinorityExamples; i++) {
+        if (i % 2 == 0) {
+            coverageMaskIterator[i] = indicatorValue;
+        }
+    }
+
+    OrdinalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
+    std::unique_ptr<IFeatureVector> existing;
+    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, 0, numValues)
+                                                 ->createFilteredFeatureVector(existing, coverageMask);
+    const OrdinalFeatureVectorDecorator* filteredDecorator =
+      dynamic_cast<const OrdinalFeatureVectorDecorator*>(filtered.get());
+    EXPECT_TRUE(filteredDecorator != nullptr);
+
+    if (filteredDecorator) {
+        // Check filtered indices...
+        const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+
+        for (uint32 i = 0; i < numValues; i++) {
+            OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            uint32 numIndices = indicesEnd - indicesBegin;
+            EXPECT_EQ(numIndices, numExamplesPerValue / 2);
+
+            std::unordered_set<uint32> indices;
+
+            for (auto it = indicesBegin; it != indicesEnd; it++) {
+                indices.emplace(*it);
+            }
+
+            for (uint32 j = 0; j < numExamplesPerValue; j++) {
+                uint32 index = (i * numExamplesPerValue) + j;
+
+                if (index % 2 == 0) {
+                    EXPECT_TRUE(indices.find(index) != indices.end());
+                } else {
+                    EXPECT_TRUE(indices.find(index) == indices.end());
+                }
+            }
+        }
+    }
+}
+
 TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMask) {
     uint32 numValues = 3;
     uint32 numExamplesPerValue = 10;
@@ -14,11 +176,12 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
     AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
-        valueIterator[i] = i + 1;
+        valueIterator[i] = i;
         indptrIterator[i] = i * numExamplesPerValue;
 
         for (uint32 j = 0; j < numExamplesPerValue; j++) {
-            indexIterator[(i * numExamplesPerValue) + j] = j;
+            uint32 index = (i * numExamplesPerValue) + j;
+            indexIterator[index] = index;
         }
     }
 
@@ -64,11 +227,13 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
                 indices.emplace(*it);
             }
 
-            for (uint32 i = 0; i < numExamplesPerValue; i++) {
-                if (i % 2 == 0) {
-                    EXPECT_TRUE(indices.find(i) != indices.end());
+            for (uint32 j = 0; j < numExamplesPerValue; j++) {
+                uint32 index = (i * numExamplesPerValue) + j;
+
+                if (index % 2 == 0) {
+                    EXPECT_TRUE(indices.find(index) != indices.end());
                 } else {
-                    EXPECT_TRUE(indices.find(i) == indices.end());
+                    EXPECT_TRUE(indices.find(index) == indices.end());
                 }
             }
         }
@@ -96,11 +261,12 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
     AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
 
     for (uint32 i = 0; i < numValues; i++) {
-        valueIterator[i] = i + 1;
+        valueIterator[i] = i;
         indptrIterator[i] = i * numExamplesPerValue;
 
         for (uint32 j = 0; j < numExamplesPerValue; j++) {
-            indexIterator[(i * numExamplesPerValue) + j] = j;
+            uint32 index = (i * numExamplesPerValue) + j;
+            indexIterator[index] = index;
         }
     }
 
@@ -147,11 +313,13 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
                 indices.emplace(*it);
             }
 
-            for (uint32 i = 0; i < numExamplesPerValue; i++) {
-                if (i % 2 == 0) {
-                    EXPECT_TRUE(indices.find(i) != indices.end());
+            for (uint32 j = 0; j < numExamplesPerValue; j++) {
+                uint32 index = (i * numExamplesPerValue) + j;
+
+                if (index % 2 == 0) {
+                    EXPECT_TRUE(indices.find(index) != indices.end());
                 } else {
-                    EXPECT_TRUE(indices.find(i) == indices.end());
+                    EXPECT_TRUE(indices.find(index) == indices.end());
                 }
             }
         }
@@ -178,7 +346,8 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
 
     for (uint32 i = 0; i < numValues; i++) {
         for (uint32 j = 0; j < numExamplesPerValue; j++) {
-            indexIterator[(i * numExamplesPerValue) + j] = j;
+            uint32 index = (i * numExamplesPerValue) + j;
+            indexIterator[index] = index;
         }
     }
 

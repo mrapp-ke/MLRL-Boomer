@@ -7,6 +7,16 @@
 #include "feature_vector_nominal_allocated.hpp"
 #include "mlrl/common/input/feature_vector_equal.hpp"
 
+template<typename Decorator, typename View>
+static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVectorView(const Decorator& decorator,
+                                                                                     uint32 start, uint32 end) {
+    const NominalFeatureVector& featureVector = decorator.getView().firstView;
+    NominalFeatureVector filteredFeatureVector(
+      &featureVector.values[start], featureVector.indices, &featureVector.indptr[start], end - start,
+      featureVector.indptr[featureVector.numValues], featureVector.majorityValue);
+    return std::make_unique<View>(std::move(filteredFeatureVector));
+}
+
 template<typename View, typename Decorator>
 static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVectorDecorator(
   const View& view, std::unique_ptr<IFeatureVector>& existing, const CoverageMask& coverageMask) {
