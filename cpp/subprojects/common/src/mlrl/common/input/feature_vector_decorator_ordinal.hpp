@@ -24,11 +24,7 @@ class OrdinalFeatureVectorDecorator final : public AbstractNominalFeatureVectorD
          * @param other A reference to an object of type `OrdinalFeatureVectorDecorator` that should be copied
          */
         OrdinalFeatureVectorDecorator(const OrdinalFeatureVectorDecorator& other)
-            : OrdinalFeatureVectorDecorator(
-              AllocatedNominalFeatureVector(other.view.firstView.numValues,
-                                            other.view.firstView.indptr[other.view.firstView.numValues],
-                                            other.view.firstView.majorityValue),
-              AllocatedMissingFeatureVector()) {}
+            : AbstractNominalFeatureVectorDecorator(other) {}
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     uint32 start, uint32 end) const override {

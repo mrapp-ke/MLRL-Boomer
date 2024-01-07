@@ -47,4 +47,27 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
  * An abstract base class for all decorators that provide access to the values and indices of training examples stored
  * in an `AllocatedNominalFeatureVector`.
  */
-typedef AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector> AbstractNominalFeatureVectorDecorator;
+class AbstractNominalFeatureVectorDecorator : public AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector> {
+    public:
+
+        /**
+         * @param firstView   A reference to an object of template type `FeatureVector`
+         * @param secondView  A reference to an object of type `AllocatedMissingFeatureVector`
+         */
+        AbstractNominalFeatureVectorDecorator(AllocatedNominalFeatureVector&& firstView,
+                                              AllocatedMissingFeatureVector&& secondView)
+            : AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector>(std::move(firstView),
+                                                                            std::move(secondView)) {}
+
+        /**
+         * @param A reference to an object of type `AbstractNominalFeatureVectorDecorator` that should be copied
+         */
+        AbstractNominalFeatureVectorDecorator(const AbstractNominalFeatureVectorDecorator& other)
+            : AbstractNominalFeatureVectorDecorator(
+              AllocatedNominalFeatureVector(other.view.firstView.numValues,
+                                            other.view.firstView.indptr[other.view.firstView.numValues],
+                                            other.view.firstView.majorityValue),
+              AllocatedMissingFeatureVector()) {}
+
+        virtual ~AbstractNominalFeatureVectorDecorator() override {}
+};
