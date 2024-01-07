@@ -56,7 +56,9 @@ class NumericalFeatureVectorDecorator final : public AbstractFeatureVectorDecora
                 }
             }
 
-            if (n > 0) {
+            if (n > 0
+                && (filteredFeatureVector.sparse
+                    || !isEqual(filteredFeatureVector[0].value, filteredFeatureVector[n - 1].value))) {
                 filteredFeatureVector.resize(n, true);
                 return filteredDecoratorPtr;
             }
