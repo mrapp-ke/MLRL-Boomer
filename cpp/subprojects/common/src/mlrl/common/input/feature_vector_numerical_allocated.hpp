@@ -14,17 +14,20 @@ class MLRLCOMMON_API AllocatedNumericalFeatureVector : public ResizableAllocator
         /**
          * @param numElements   The number of elements in the vector, excluding those associated with the sparse value
          * @param sparseValue   The value of sparse elements not explicitly stored in the vector
+         * @param sparse        True, if there are any sparse elements not explicitly stored in the vector, false
+         *                      otherwise
          */
-        AllocatedNumericalFeatureVector(uint32 numElements, float32 sparseValue = 0)
+        AllocatedNumericalFeatureVector(uint32 numElements, float32 sparseValue = 0, bool sparse = false)
             : ResizableAllocator<NumericalFeatureVector>(numElements) {
             NumericalFeatureVector::sparseValue = sparseValue;
+            NumericalFeatureVector::sparse = sparse;
         }
 
         /**
          * @param other A reference to an object of type `AllocatedNumericalFeatureVector` that should be copied
          */
         AllocatedNumericalFeatureVector(const AllocatedNumericalFeatureVector& other)
-            : AllocatedNumericalFeatureVector(other.numElements, other.sparseValue) {}
+            : AllocatedNumericalFeatureVector(other.numElements, other.sparseValue, other.sparse) {}
 
         /**
          * @param other A reference to an object of type `AllocatedNumericalFeatureVector` that should be moved

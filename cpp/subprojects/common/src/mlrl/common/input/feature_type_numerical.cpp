@@ -63,12 +63,13 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
       createNumericalFeatureVector(indexIterator, valueIterator, numIndices);
 
     // Check if all feature values are equal...
-    const NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().firstView;
+    NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().firstView;
     uint32 numElements = numericalFeatureVector.numElements;
 
     if (numElements > 0
         && (numElements < numIndices
             || !isEqual(numericalFeatureVector[0].value, numericalFeatureVector[numElements - 1].value))) {
+        numericalFeatureVector.sparse = numElements < numIndices;
         return featureVectorDecoratorPtr;
     }
 

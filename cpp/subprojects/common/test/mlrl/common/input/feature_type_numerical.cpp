@@ -40,6 +40,7 @@ TEST(NumericalFeatureTypeTest, createNumericalFeatureVectorFromFortranContiguous
         // Check dimensionality of feature vector...
         const NumericalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
         EXPECT_FLOAT_EQ(featureVector.sparseValue, 0.0);
+        EXPECT_FALSE(featureVector.sparse);
         EXPECT_EQ(featureVector.numElements, (uint32) 5);
 
         // Check if regular feature values are sorted...
@@ -115,6 +116,7 @@ TEST(NumericalFeatureTypeTest, createNumericalFeatureVectorFromCscView) {
         // Check dimensionality of feature vector...
         const NumericalFeatureVector& featureVector = featureVectorDecorator->getView().firstView;
         EXPECT_FLOAT_EQ(featureVector.sparseValue, 0.0);
+        EXPECT_TRUE(featureVector.sparse);
         EXPECT_EQ(featureVector.numElements, (uint32) 5);
 
         // Check if regular feature values are sorted...

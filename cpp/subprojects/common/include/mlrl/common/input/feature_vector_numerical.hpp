@@ -19,6 +19,11 @@ class MLRLCOMMON_API NumericalFeatureVector : public Vector<IndexedValue<float32
         float32 sparseValue;
 
         /**
+         * True, if there are any sparse elements not explicitly stored in the vector, false otherwise.
+         */
+        bool sparse;
+
+        /**
          * @param array         A pointer to an array of type `IndexedValue<float32>` that stores the values in the
          *                      feature vector
          * @param numElements   The number of elements in the vector, excluding those associated with the sparse value
