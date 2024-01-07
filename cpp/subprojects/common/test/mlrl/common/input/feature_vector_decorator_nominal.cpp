@@ -46,38 +46,40 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
       dynamic_cast<const NominalFeatureVectorDecorator*>(filtered.get());
     EXPECT_TRUE(filteredDecorator != nullptr);
 
-    // Check filtered indices...
-    const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+    if (filteredDecorator) {
+        // Check filtered indices...
+        const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
 
-    for (uint32 i = 0; i < numValues; i++) {
-        NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-        NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
-        uint32 numIndices = indicesEnd - indicesBegin;
-        EXPECT_EQ(numIndices, numExamplesPerValue / 2);
+        for (uint32 i = 0; i < numValues; i++) {
+            NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            uint32 numIndices = indicesEnd - indicesBegin;
+            EXPECT_EQ(numIndices, numExamplesPerValue / 2);
 
-        std::unordered_set<uint32> indices;
+            std::unordered_set<uint32> indices;
 
-        for (auto it = indicesBegin; it != indicesEnd; it++) {
-            indices.emplace(*it);
-        }
+            for (auto it = indicesBegin; it != indicesEnd; it++) {
+                indices.emplace(*it);
+            }
 
-        for (uint32 i = 0; i < numExamplesPerValue; i++) {
-            if (i % 2 == 0) {
-                EXPECT_TRUE(indices.find(i) != indices.end());
-            } else {
-                EXPECT_TRUE(indices.find(i) == indices.end());
+            for (uint32 i = 0; i < numExamplesPerValue; i++) {
+                if (i % 2 == 0) {
+                    EXPECT_TRUE(indices.find(i) != indices.end());
+                } else {
+                    EXPECT_TRUE(indices.find(i) == indices.end());
+                }
             }
         }
-    }
 
-    // Check missing indices...
-    const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        // Check missing indices...
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
 
-    for (uint32 i = numMinorityExamples; i < numExamples; i++) {
-        if (i % 2 == 0) {
-            EXPECT_TRUE(filteredMissingFeatureVector[i]);
-        } else {
-            EXPECT_FALSE(filteredMissingFeatureVector[i]);
+        for (uint32 i = numMinorityExamples; i < numExamples; i++) {
+            if (i % 2 == 0) {
+                EXPECT_TRUE(filteredMissingFeatureVector[i]);
+            } else {
+                EXPECT_FALSE(filteredMissingFeatureVector[i]);
+            }
         }
     }
 }
@@ -127,38 +129,40 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
     EXPECT_TRUE(filteredDecorator != nullptr);
     EXPECT_TRUE(existing.get() == nullptr);
 
-    // Check filtered indices...
-    const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+    if (filteredDecorator) {
+        // Check filtered indices...
+        const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
 
-    for (uint32 i = 0; i < numValues; i++) {
-        NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
-        NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
-        uint32 numIndices = indicesEnd - indicesBegin;
-        EXPECT_EQ(numIndices, numExamplesPerValue / 2);
+        for (uint32 i = 0; i < numValues; i++) {
+            NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
+            NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
+            uint32 numIndices = indicesEnd - indicesBegin;
+            EXPECT_EQ(numIndices, numExamplesPerValue / 2);
 
-        std::unordered_set<uint32> indices;
+            std::unordered_set<uint32> indices;
 
-        for (auto it = indicesBegin; it != indicesEnd; it++) {
-            indices.emplace(*it);
-        }
+            for (auto it = indicesBegin; it != indicesEnd; it++) {
+                indices.emplace(*it);
+            }
 
-        for (uint32 i = 0; i < numExamplesPerValue; i++) {
-            if (i % 2 == 0) {
-                EXPECT_TRUE(indices.find(i) != indices.end());
-            } else {
-                EXPECT_TRUE(indices.find(i) == indices.end());
+            for (uint32 i = 0; i < numExamplesPerValue; i++) {
+                if (i % 2 == 0) {
+                    EXPECT_TRUE(indices.find(i) != indices.end());
+                } else {
+                    EXPECT_TRUE(indices.find(i) == indices.end());
+                }
             }
         }
-    }
 
-    // Check missing indices...
-    const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        // Check missing indices...
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
 
-    for (uint32 i = numMinorityExamples; i < numExamples; i++) {
-        if (i % 2 == 0) {
-            EXPECT_TRUE(filteredMissingFeatureVector[i]);
-        } else {
-            EXPECT_FALSE(filteredMissingFeatureVector[i]);
+        for (uint32 i = numMinorityExamples; i < numExamples; i++) {
+            if (i % 2 == 0) {
+                EXPECT_TRUE(filteredMissingFeatureVector[i]);
+            } else {
+                EXPECT_FALSE(filteredMissingFeatureVector[i]);
+            }
         }
     }
 }

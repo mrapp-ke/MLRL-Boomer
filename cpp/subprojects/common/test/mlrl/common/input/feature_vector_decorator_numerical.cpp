@@ -171,31 +171,33 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverag
       dynamic_cast<const NumericalFeatureVectorDecorator*>(filtered.get());
     EXPECT_TRUE(filteredDecorator != nullptr);
 
-    // Check filtered indices...
-    const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
-    std::unordered_set<uint32> indices;
+    if (filteredDecorator) {
+        // Check filtered indices...
+        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        std::unordered_set<uint32> indices;
 
-    for (auto it = filteredFeatureVector.cbegin(); it != filteredFeatureVector.cend(); it++) {
-        const IndexedValue<float32>& entry = *it;
-        indices.emplace(entry.index);
-    }
-
-    for (uint32 i = 0; i < numDenseExamples; i++) {
-        if (i % 2 == 0) {
-            EXPECT_TRUE(indices.find(i) != indices.end());
-        } else {
-            EXPECT_TRUE(indices.find(i) == indices.end());
+        for (auto it = filteredFeatureVector.cbegin(); it != filteredFeatureVector.cend(); it++) {
+            const IndexedValue<float32>& entry = *it;
+            indices.emplace(entry.index);
         }
-    }
 
-    // Check missing indices...
-    const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        for (uint32 i = 0; i < numDenseExamples; i++) {
+            if (i % 2 == 0) {
+                EXPECT_TRUE(indices.find(i) != indices.end());
+            } else {
+                EXPECT_TRUE(indices.find(i) == indices.end());
+            }
+        }
 
-    for (uint32 i = numDenseExamples; i < numExamples; i++) {
-        if (i % 2 == 0) {
-            EXPECT_TRUE(filteredMissingFeatureVector[i]);
-        } else {
-            EXPECT_FALSE(filteredMissingFeatureVector[i]);
+        // Check missing indices...
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+
+        for (uint32 i = numDenseExamples; i < numExamples; i++) {
+            if (i % 2 == 0) {
+                EXPECT_TRUE(filteredMissingFeatureVector[i]);
+            } else {
+                EXPECT_FALSE(filteredMissingFeatureVector[i]);
+            }
         }
     }
 }
@@ -238,32 +240,34 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverag
     EXPECT_TRUE(filteredDecorator != nullptr);
     EXPECT_TRUE(existing.get() == nullptr);
 
-    // Check filtered indices...
-    const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+    if (filteredDecorator) {
+        // Check filtered indices...
+        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
 
-    std::unordered_set<uint32> indices;
+        std::unordered_set<uint32> indices;
 
-    for (auto it = filteredFeatureVector.cbegin(); it != filteredFeatureVector.cend(); it++) {
-        const IndexedValue<float32>& entry = *it;
-        indices.emplace(entry.index);
-    }
-
-    for (uint32 i = 0; i < numDenseExamples; i++) {
-        if (i % 2 == 0) {
-            EXPECT_TRUE(indices.find(i) != indices.end());
-        } else {
-            EXPECT_TRUE(indices.find(i) == indices.end());
+        for (auto it = filteredFeatureVector.cbegin(); it != filteredFeatureVector.cend(); it++) {
+            const IndexedValue<float32>& entry = *it;
+            indices.emplace(entry.index);
         }
-    }
 
-    // Check missing indices...
-    const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+        for (uint32 i = 0; i < numDenseExamples; i++) {
+            if (i % 2 == 0) {
+                EXPECT_TRUE(indices.find(i) != indices.end());
+            } else {
+                EXPECT_TRUE(indices.find(i) == indices.end());
+            }
+        }
 
-    for (uint32 i = numDenseExamples; i < numExamples; i++) {
-        if (i % 2 == 0) {
-            EXPECT_TRUE(filteredMissingFeatureVector[i]);
-        } else {
-            EXPECT_FALSE(filteredMissingFeatureVector[i]);
+        // Check missing indices...
+        const MissingFeatureVector& filteredMissingFeatureVector = filteredDecorator->getView().secondView;
+
+        for (uint32 i = numDenseExamples; i < numExamples; i++) {
+            if (i % 2 == 0) {
+                EXPECT_TRUE(filteredMissingFeatureVector[i]);
+            } else {
+                EXPECT_FALSE(filteredMissingFeatureVector[i]);
+            }
         }
     }
 }
