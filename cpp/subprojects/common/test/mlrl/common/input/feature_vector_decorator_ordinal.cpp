@@ -27,7 +27,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) 
     std::unique_ptr<IFeatureVector> existing;
     uint32 start = 1;
     uint32 end = 3;
-    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, start, end);
+    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, start, end, false);
     const OrdinalFeatureVectorView* filteredDecorator = dynamic_cast<const OrdinalFeatureVectorView*>(filtered.get());
     EXPECT_TRUE(filteredDecorator != nullptr);
 
@@ -74,8 +74,8 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithI
     std::unique_ptr<IFeatureVector> existing;
     uint32 start = 1;
     uint32 end = 3;
-    std::unique_ptr<IFeatureVector> filtered =
-      decorator.createFilteredFeatureVector(existing, 0, numValues)->createFilteredFeatureVector(existing, start, end);
+    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, 0, numValues, false)
+                                                 ->createFilteredFeatureVector(existing, start, end, false);
     const OrdinalFeatureVectorView* filteredDecorator = dynamic_cast<const OrdinalFeatureVectorView*>(filtered.get());
     EXPECT_TRUE(filteredDecorator != nullptr);
 
@@ -131,7 +131,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithC
 
     OrdinalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
     std::unique_ptr<IFeatureVector> existing;
-    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, 0, numValues)
+    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, 0, numValues, false)
                                                  ->createFilteredFeatureVector(existing, coverageMask);
     const OrdinalFeatureVectorDecorator* filteredDecorator =
       dynamic_cast<const OrdinalFeatureVectorDecorator*>(filtered.get());

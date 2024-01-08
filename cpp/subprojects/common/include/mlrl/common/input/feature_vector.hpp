@@ -25,10 +25,12 @@ class IFeatureVector {
          *                  reused or a null pointer, if no such object is available
          * @param start     The index of the first feature value to be retained (inclusive)
          * @param end       The index of the last feature value to be retained (exclusive)
+         * @param inverse   True, if feature values in the range [start, end) should not be retained, but discarded
          * @return          An unique pointer to an object of type `IFeatureVector` that has been created
          */
         virtual std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
-                                                                            uint32 start, uint32 end) const = 0;
+                                                                            uint32 start, uint32 end,
+                                                                            bool inverse) const = 0;
 
         /**
          * Creates and returns a copy of this vector that does only store the feature values of training examples marked

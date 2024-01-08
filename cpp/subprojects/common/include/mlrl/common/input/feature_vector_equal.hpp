@@ -13,7 +13,8 @@ class EqualFeatureVector final : public IFeatureVector {
     public:
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
-                                                                    uint32 start, uint32 end) const override;
+                                                                    uint32 start, uint32 end,
+                                                                    bool inverse) const override;
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const CoverageMask& coverageMask) const override;
