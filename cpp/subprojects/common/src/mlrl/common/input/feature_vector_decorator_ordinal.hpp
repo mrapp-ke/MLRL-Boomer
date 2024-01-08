@@ -5,6 +5,16 @@
 
 #include "feature_vector_decorator_nominal_common.hpp"
 
+template<typename Decorator, typename View>
+static inline std::unique_ptr<IFeatureVector> createFilteredOrdinalFeatureVectorView(const Decorator& decorator,
+                                                                                     uint32 start, uint32 end) {
+    const NominalFeatureVector& featureVector = decorator.getView().firstView;
+    NominalFeatureVector filteredFeatureVector(
+      &featureVector.values[start], featureVector.indices, &featureVector.indptr[start], end - start,
+      featureVector.indptr[featureVector.numValues], featureVector.majorityValue);
+    return std::make_unique<View>(std::move(filteredFeatureVector));
+}
+
 // Forward declarations
 class OrdinalFeatureVectorDecorator;
 
@@ -23,7 +33,7 @@ class OrdinalFeatureVectorView final : public AbstractNominalFeatureVectorView {
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     uint32 start, uint32 end) const override {
-            return createFilteredNominalFeatureVectorView<OrdinalFeatureVectorView, OrdinalFeatureVectorView>(
+            return createFilteredOrdinalFeatureVectorView<OrdinalFeatureVectorView, OrdinalFeatureVectorView>(
               *this, start, end);
         }
 
@@ -63,7 +73,7 @@ class OrdinalFeatureVectorDecorator final : public AbstractNominalFeatureVectorD
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     uint32 start, uint32 end) const override {
-            return createFilteredNominalFeatureVectorView<OrdinalFeatureVectorDecorator, OrdinalFeatureVectorView>(
+            return createFilteredOrdinalFeatureVectorView<OrdinalFeatureVectorDecorator, OrdinalFeatureVectorView>(
               *this, start, end);
         }
 
