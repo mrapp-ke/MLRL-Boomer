@@ -27,7 +27,8 @@ class BinaryFeatureVectorDecorator final : public AbstractNominalFeatureVectorDe
             : AbstractNominalFeatureVectorDecorator(other) {}
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
-                                                                    uint32 start, uint32 end) const override {
+                                                                    uint32 start, uint32 end,
+                                                                    bool inverse) const override {
             return std::make_unique<EqualFeatureVector>();
         }
 

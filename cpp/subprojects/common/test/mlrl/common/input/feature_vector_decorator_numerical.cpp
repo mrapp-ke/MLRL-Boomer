@@ -19,7 +19,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices
     std::unique_ptr<IFeatureVector> existing;
     uint32 start = 2;
     uint32 end = 7;
-    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, start, end);
+    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, start, end, false);
     const NumericalFeatureVectorView* filteredDecorator =
       dynamic_cast<const NumericalFeatureVectorView*>(filtered.get());
     EXPECT_TRUE(filteredDecorator != nullptr);
@@ -57,8 +57,9 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWit
     std::unique_ptr<IFeatureVector> existing;
     uint32 start = 2;
     uint32 end = 7;
-    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, 0, numDenseExamples)
-                                                 ->createFilteredFeatureVector(existing, start, end);
+    std::unique_ptr<IFeatureVector> filtered =
+      decorator.createFilteredFeatureVector(existing, 0, numDenseExamples, false)
+        ->createFilteredFeatureVector(existing, start, end, false);
     const NumericalFeatureVectorView* filteredDecorator =
       dynamic_cast<const NumericalFeatureVectorView*>(filtered.get());
     EXPECT_TRUE(filteredDecorator != nullptr);
@@ -105,8 +106,9 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWit
 
     NumericalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
     std::unique_ptr<IFeatureVector> existing;
-    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, 0, numDenseExamples)
-                                                 ->createFilteredFeatureVector(existing, coverageMask);
+    std::unique_ptr<IFeatureVector> filtered =
+      decorator.createFilteredFeatureVector(existing, 0, numDenseExamples, false)
+        ->createFilteredFeatureVector(existing, coverageMask);
     const NumericalFeatureVectorDecorator* filteredDecorator =
       dynamic_cast<const NumericalFeatureVectorDecorator*>(filtered.get());
     EXPECT_TRUE(filteredDecorator != nullptr);
