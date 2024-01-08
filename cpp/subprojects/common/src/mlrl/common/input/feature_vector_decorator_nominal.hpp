@@ -5,35 +5,6 @@
 
 #include "feature_vector_decorator_nominal_common.hpp"
 
-// Forward declarations
-class NominalFeatureVectorDecorator;
-
-/**
- * Provides random read and write access, as well as read and write access via iterators, to the values and indices of
- * training examples stored in a `NominalFeatureVector`.
- */
-class NominalFeatureVectorView final : public AbstractNominalFeatureVectorView {
-    public:
-
-        /**
-         * @param firstView A reference to an object of type `NominalFeatureVector`
-         */
-        NominalFeatureVectorView(NominalFeatureVector&& firstView)
-            : AbstractNominalFeatureVectorView(std::move(firstView)) {}
-
-        std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
-                                                                    uint32 start, uint32 end) const override {
-            return createFilteredNominalFeatureVectorView<NominalFeatureVectorView, NominalFeatureVectorView>(
-              *this, start, end);
-        }
-
-        std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
-                                                                    const CoverageMask& coverageMask) const override {
-            return createFilteredNominalFeatureVectorDecorator<NominalFeatureVectorView, NominalFeatureVectorDecorator>(
-              *this, existing, coverageMask);
-        }
-};
-
 /**
  * Provides random read and write access, as well as read and write access via iterators, to the values and indices of
  * training examples stored in an `AllocatedNominalFeatureVector`.
@@ -55,16 +26,9 @@ class NominalFeatureVectorDecorator final : public AbstractNominalFeatureVectorD
         NominalFeatureVectorDecorator(const NominalFeatureVectorDecorator& other)
             : AbstractNominalFeatureVectorDecorator(other) {}
 
-        /**
-         * @param other A reference to an object of type `NominalFeatureVectorView` that should be copied
-         */
-        NominalFeatureVectorDecorator(const NominalFeatureVectorView& other)
-            : AbstractNominalFeatureVectorDecorator(other) {}
-
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     uint32 start, uint32 end) const override {
-            return createFilteredNominalFeatureVectorView<NominalFeatureVectorDecorator, NominalFeatureVectorView>(
-              *this, start, end);
+            return std::make_unique<EqualFeatureVector>();
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
