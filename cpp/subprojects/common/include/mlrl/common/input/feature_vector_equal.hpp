@@ -12,6 +12,9 @@
 class EqualFeatureVector final : public IFeatureVector {
     public:
 
+        void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
+                                             IWeightedStatistics& statistics) const override;
+
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override;
 

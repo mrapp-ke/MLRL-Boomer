@@ -26,6 +26,11 @@ class NominalFeatureVectorDecorator final : public AbstractNominalFeatureVectorD
         NominalFeatureVectorDecorator(const NominalFeatureVectorDecorator& other)
             : AbstractNominalFeatureVectorDecorator(other) {}
 
+        void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
+                                             IWeightedStatistics& statistics) const override {
+            // TODO Implement
+        }
+
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {
             return std::make_unique<EqualFeatureVector>();

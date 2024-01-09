@@ -64,6 +64,11 @@ class NumericalFeatureVectorView final : public AbstractFeatureVectorDecorator<N
         NumericalFeatureVectorView(NumericalFeatureVector&& firstView)
             : AbstractFeatureVectorDecorator(std::move(firstView), AllocatedMissingFeatureVector()) {}
 
+        void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
+                                             IWeightedStatistics& statistics) const override {
+            // TODO Implement
+        }
+
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {
             return createFilteredNumericalFeatureVectorView<NumericalFeatureVectorView, NumericalFeatureVectorView>(
@@ -111,6 +116,11 @@ class NumericalFeatureVectorDecorator final : public AbstractFeatureVectorDecora
               AllocatedNumericalFeatureVector(other.getView().firstView.numElements,
                                               other.getView().firstView.sparseValue, other.getView().firstView.sparse),
               AllocatedMissingFeatureVector()) {}
+
+        void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
+                                             IWeightedStatistics& statistics) const override {
+            // TODO Implement
+        }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {
