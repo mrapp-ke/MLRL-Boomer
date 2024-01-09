@@ -7,7 +7,7 @@
 TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) {
     BinaryFeatureVectorDecorator decorator(AllocatedNominalFeatureVector(1, 0, 1), AllocatedMissingFeatureVector());
     std::unique_ptr<IFeatureVector> existing;
-    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, 0, 1, false);
+    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, Interval(0, 1));
     const EqualFeatureVector* filteredFeatureVector = dynamic_cast<const EqualFeatureVector*>(filtered.get());
     EXPECT_TRUE(filteredFeatureVector != nullptr);
 }

@@ -65,10 +65,9 @@ class NumericalFeatureVectorView final : public AbstractFeatureVectorDecorator<N
             : AbstractFeatureVectorDecorator(std::move(firstView), AllocatedMissingFeatureVector()) {}
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
-                                                                    uint32 start, uint32 end,
-                                                                    bool inverse) const override {
+                                                                    const Interval& interval) const override {
             return createFilteredNumericalFeatureVectorView<NumericalFeatureVectorView, NumericalFeatureVectorView>(
-              *this, start, end);
+              *this, interval.start, interval.end);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
@@ -114,10 +113,10 @@ class NumericalFeatureVectorDecorator final : public AbstractFeatureVectorDecora
               AllocatedMissingFeatureVector()) {}
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
-                                                                    uint32 start, uint32 end,
-                                                                    bool inverse) const override {
+                                                                    const Interval& interval) const override {
             return createFilteredNumericalFeatureVectorView<NumericalFeatureVectorDecorator,
-                                                            NumericalFeatureVectorView>(*this, start, end);
+                                                            NumericalFeatureVectorView>(*this, interval.start,
+                                                                                        interval.end);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,

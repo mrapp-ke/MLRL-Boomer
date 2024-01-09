@@ -25,27 +25,26 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) 
 
     OrdinalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
     std::unique_ptr<IFeatureVector> existing;
-    uint32 start = 1;
-    uint32 end = 3;
-    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, start, end, false);
+    Interval interval(1, 3);
+    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, interval);
     const OrdinalFeatureVectorView* filteredDecorator = dynamic_cast<const OrdinalFeatureVectorView*>(filtered.get());
     EXPECT_TRUE(filteredDecorator != nullptr);
 
     if (filteredDecorator) {
         // Check filtered indices...
         const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
-        EXPECT_EQ(filteredFeatureVector.numValues, end - start);
+        EXPECT_EQ(filteredFeatureVector.numValues, interval.end - interval.start);
         OrdinalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
 
-        for (uint32 i = 0; i < end - start; i++) {
-            EXPECT_EQ(valuesBegin[i], start + i);
+        for (uint32 i = 0; i < interval.end - interval.start; i++) {
+            EXPECT_EQ(valuesBegin[i], interval.start + i);
             OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
             OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerValue);
 
             for (uint32 j = 0; j < numIndices; j++) {
-                EXPECT_EQ(indicesBegin[j], ((i + start) * numExamplesPerValue) + j);
+                EXPECT_EQ(indicesBegin[j], ((i + interval.start) * numExamplesPerValue) + j);
             }
         }
     }
@@ -72,28 +71,27 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithI
 
     OrdinalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
     std::unique_ptr<IFeatureVector> existing;
-    uint32 start = 1;
-    uint32 end = 3;
-    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, 0, numValues, false)
-                                                 ->createFilteredFeatureVector(existing, start, end, false);
+    Interval interval(1, 3);
+    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, Interval(0, numValues))
+                                                 ->createFilteredFeatureVector(existing, interval);
     const OrdinalFeatureVectorView* filteredDecorator = dynamic_cast<const OrdinalFeatureVectorView*>(filtered.get());
     EXPECT_TRUE(filteredDecorator != nullptr);
 
     if (filteredDecorator) {
         // Check filtered indices...
         const OrdinalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
-        EXPECT_EQ(filteredFeatureVector.numValues, end - start);
+        EXPECT_EQ(filteredFeatureVector.numValues, interval.end - interval.start);
         OrdinalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
 
-        for (uint32 i = 0; i < end - start; i++) {
-            EXPECT_EQ(valuesBegin[i], start + i);
+        for (uint32 i = 0; i < interval.end - interval.start; i++) {
+            EXPECT_EQ(valuesBegin[i], interval.start + i);
             OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
             OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
             EXPECT_EQ(numIndices, numExamplesPerValue);
 
             for (uint32 j = 0; j < numIndices; j++) {
-                EXPECT_EQ(indicesBegin[j], ((i + start) * numExamplesPerValue) + j);
+                EXPECT_EQ(indicesBegin[j], ((i + interval.start) * numExamplesPerValue) + j);
             }
         }
     }
@@ -131,7 +129,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithC
 
     OrdinalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
     std::unique_ptr<IFeatureVector> existing;
-    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, 0, numValues, false)
+    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, Interval(0, numValues))
                                                  ->createFilteredFeatureVector(existing, coverageMask);
     const OrdinalFeatureVectorDecorator* filteredDecorator =
       dynamic_cast<const OrdinalFeatureVectorDecorator*>(filtered.get());

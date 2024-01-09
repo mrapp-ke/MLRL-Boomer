@@ -5,7 +5,7 @@
 TEST(EqualFeatureVectorTest, createFilteredFeatureVectorFromIndices) {
     EqualFeatureVector featureVector;
     std::unique_ptr<IFeatureVector> existing;
-    EXPECT_THROW(featureVector.createFilteredFeatureVector(existing, 0, 1, false), std::runtime_error);
+    EXPECT_THROW(featureVector.createFilteredFeatureVector(existing, Interval(0, 1)), std::runtime_error);
 }
 
 TEST(EqualFeatureVectorTest, createFilteredFeatureVectorFromCoverageMask) {

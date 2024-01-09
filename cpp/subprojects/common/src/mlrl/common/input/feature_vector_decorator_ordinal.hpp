@@ -32,10 +32,9 @@ class OrdinalFeatureVectorView final : public AbstractNominalFeatureVectorView {
             : AbstractNominalFeatureVectorView(std::move(firstView)) {}
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
-                                                                    uint32 start, uint32 end,
-                                                                    bool inverse) const override {
+                                                                    const Interval& interval) const override {
             return createFilteredOrdinalFeatureVectorView<OrdinalFeatureVectorView, OrdinalFeatureVectorView>(
-              *this, start, end);
+              *this, interval.start, interval.end);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
@@ -73,10 +72,9 @@ class OrdinalFeatureVectorDecorator final : public AbstractNominalFeatureVectorD
             : AbstractNominalFeatureVectorDecorator(other) {}
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
-                                                                    uint32 start, uint32 end,
-                                                                    bool inverse) const override {
+                                                                    const Interval& interval) const override {
             return createFilteredOrdinalFeatureVectorView<OrdinalFeatureVectorDecorator, OrdinalFeatureVectorView>(
-              *this, start, end);
+              *this, interval.start, interval.end);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
