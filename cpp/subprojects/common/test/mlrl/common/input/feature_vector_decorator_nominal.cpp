@@ -23,7 +23,7 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) 
 
     NominalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
     std::unique_ptr<IFeatureVector> existing;
-    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, 1, 2, false);
+    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, Interval(1, 2));
     const EqualFeatureVector* filteredDecorator = dynamic_cast<const EqualFeatureVector*>(filtered.get());
     EXPECT_TRUE(filteredDecorator != nullptr);
 }
