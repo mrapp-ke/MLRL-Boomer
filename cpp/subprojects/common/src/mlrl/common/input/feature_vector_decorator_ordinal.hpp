@@ -31,6 +31,11 @@ class OrdinalFeatureVectorView final : public AbstractNominalFeatureVectorView {
         OrdinalFeatureVectorView(NominalFeatureVector&& firstView)
             : AbstractNominalFeatureVectorView(std::move(firstView)) {}
 
+        void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
+                                             IWeightedStatistics& statistics) const override {
+            // TODO Implement
+        }
+
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {
             return createFilteredOrdinalFeatureVectorView<OrdinalFeatureVectorView, OrdinalFeatureVectorView>(
@@ -70,6 +75,11 @@ class OrdinalFeatureVectorDecorator final : public AbstractNominalFeatureVectorD
          */
         OrdinalFeatureVectorDecorator(const OrdinalFeatureVectorView& other)
             : AbstractNominalFeatureVectorDecorator(other) {}
+
+        void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
+                                             IWeightedStatistics& statistics) const override {
+            // TODO Implement
+        }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {

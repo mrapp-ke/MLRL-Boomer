@@ -7,6 +7,7 @@
 #include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/input/interval.hpp"
 #include "mlrl/common/input/missing_feature_vector.hpp"
+#include "mlrl/common/statistics/statistics_weighted.hpp"
 #include "mlrl/common/thresholds/coverage_mask.hpp"
 
 /**
@@ -17,6 +18,18 @@ class IFeatureVector {
     public:
 
         virtual ~IFeatureVector() {}
+
+        /**
+         * Updates a given `CoverageMask` and `IWeightedStatistics` depending on the indices of training examples
+         * included in a specific `Interval`.
+         *
+         * @param interval      A reference to an object of type `Interval` that includes the indices of all covered
+         *                      training examples
+         * @param coverageMask  A reference to an object of type `CoverageMask` that should be updated
+         * @param statistics    A reference to an object of type `IWeightedStatistics` that should be updated
+         */
+        virtual void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
+                                                     IWeightedStatistics& statistics) const = 0;
 
         /**
          * Creates and returns a copy of this vector that does only store the feature values of training examples
