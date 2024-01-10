@@ -1,7 +1,7 @@
 #include "mlrl/common/input/feature_vector_equal.hpp"
 
 void EqualFeatureVector::updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& CoverageMask,
-                                                         IWeightedStatistics& statistics) const {
+                                                         uint32 indicatorValue, IWeightedStatistics& statistics) const {
     throw std::runtime_error("Function EqualFeatureVector::updateCoverageMaskAndStatistics should never be called");
 }
 
