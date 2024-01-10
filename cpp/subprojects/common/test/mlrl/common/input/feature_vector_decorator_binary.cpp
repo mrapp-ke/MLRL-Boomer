@@ -1,8 +1,93 @@
 #include "mlrl/common/input/feature_vector_decorator_binary.hpp"
 
 #include "mlrl/common/input/feature_vector_binary.hpp"
+#include "statistics_weighted.hpp"
 
 #include <gtest/gtest.h>
+
+TEST(BinaryFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
+    uint32 numMinorityExamples = 10;
+    AllocatedNominalFeatureVector featureVector(1, numMinorityExamples, 1);
+    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+
+    for (uint32 i = 0; i < numMinorityExamples; i++) {
+        indexIterator[i] = i;
+    }
+
+    WeightedStatistics statistics;
+    uint32 numExamples = numMinorityExamples + 15;
+
+    for (uint32 i = 0; i < numExamples; i++) {
+        statistics.addCoveredStatistic(i);
+    }
+
+    BinaryFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
+    Interval interval(0, 1);
+    CoverageMask coverageMask(numExamples);
+    uint32 indicatorValue = 1;
+    decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
+    EXPECT_EQ(coverageMask.getIndicatorValue(), indicatorValue);
+    const BinaryFeatureVector& binaryFeatureVector = decorator.getView().firstView;
+
+    for (auto it = binaryFeatureVector.indices_cbegin(0); it != binaryFeatureVector.indices_cend(0); it++) {
+        uint32 index = *it;
+        EXPECT_TRUE(coverageMask.isCovered(index));
+        EXPECT_TRUE(statistics.coveredStatistics.find(index) != statistics.coveredStatistics.end());
+    }
+
+    for (uint32 i = numMinorityExamples; i < numExamples; i++) {
+        EXPECT_FALSE(coverageMask.isCovered(i));
+        EXPECT_FALSE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
+    }
+}
+
+TEST(BinaryFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) {
+    uint32 numMinorityExamples = 10;
+    AllocatedNominalFeatureVector featureVector(1, numMinorityExamples, 1);
+    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+
+    for (uint32 i = 0; i < numMinorityExamples; i++) {
+        indexIterator[i] = i;
+    }
+
+    AllocatedMissingFeatureVector missingFeatureVector;
+    uint32 numMissingExamples = 5;
+
+    for (uint32 i = numMinorityExamples; i < numMinorityExamples + numMissingExamples; i++) {
+        missingFeatureVector.set(i, true);
+    }
+
+    WeightedStatistics statistics;
+    uint32 numExamples = numMinorityExamples + numMissingExamples + 15;
+
+    for (uint32 i = 0; i < numExamples; i++) {
+        statistics.addCoveredStatistic(i);
+    }
+
+    BinaryFeatureVectorDecorator decorator(std::move(featureVector), std::move(missingFeatureVector));
+    Interval interval(0, 1, true);
+    CoverageMask coverageMask(numExamples);
+    uint32 indicatorValue = 1;
+    decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
+    EXPECT_EQ(coverageMask.getIndicatorValue(), 0);
+    const BinaryFeatureVector& binaryFeatureVector = decorator.getView().firstView;
+
+    for (auto it = binaryFeatureVector.indices_cbegin(0); it != binaryFeatureVector.indices_cend(0); it++) {
+        uint32 index = *it;
+        EXPECT_FALSE(coverageMask.isCovered(index));
+        EXPECT_FALSE(statistics.coveredStatistics.find(index) != statistics.coveredStatistics.end());
+    }
+
+    for (uint32 i = numMinorityExamples; i < numMinorityExamples + numMissingExamples; i++) {
+        EXPECT_FALSE(coverageMask.isCovered(i));
+        EXPECT_FALSE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
+    }
+
+    for (uint32 i = numMinorityExamples + numMissingExamples; i < numExamples; i++) {
+        EXPECT_TRUE(coverageMask.isCovered(i));
+        EXPECT_TRUE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
+    }
+}
 
 TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) {
     BinaryFeatureVectorDecorator decorator(AllocatedNominalFeatureVector(1, 0, 1), AllocatedMissingFeatureVector());

@@ -7,6 +7,21 @@
 #include "mlrl/common/input/feature_vector.hpp"
 #include "mlrl/common/input/feature_vector_missing.hpp"
 
+template<typename View>
+static inline void updateCoverageMaskAndStatisticsBasedOnMissingFeatureVector(
+  const View& view, CoverageMask::iterator coverageMaskIterator, uint32 indicatorValue,
+  IWeightedStatistics& statistics) {
+    // Iterate the indices of examples with missing feature values and set the corresponding values in `coverageMask` to
+    // `indicatorValue`, which marks them as uncovered...
+    const MissingFeatureVector& missingFeatureVector = view.getView().secondView;
+
+    for (auto it = missingFeatureVector.indices_cbegin(); it != missingFeatureVector.indices_cend(); it++) {
+        uint32 index = *it;
+        coverageMaskIterator[index] = indicatorValue;
+        statistics.removeCoveredStatistic(index);
+    }
+}
+
 template<typename View, typename Decorator>
 static inline std::unique_ptr<Decorator> createFilteredFeatureVectorDecorator(const View& view,
                                                                               std::unique_ptr<IFeatureVector>& existing,

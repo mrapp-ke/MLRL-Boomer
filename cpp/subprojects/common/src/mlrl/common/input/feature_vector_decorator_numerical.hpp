@@ -76,15 +76,8 @@ class AbstractNumericalFeatureVectorDecorator : public AbstractFeatureVectorDeco
                     statistics.removeCoveredStatistic(index);
                 }
 
-                // Iterate the indices of examples with missing feature values and set the corresponding values in
-                // `coverageMask` to `indicatorValue`, which marks them as uncovered...
-                const MissingFeatureVector& missingFeatureVector = this->view.secondView;
-
-                for (auto it = missingFeatureVector.indices_cbegin(); it != missingFeatureVector.indices_cend(); it++) {
-                    uint32 index = *it;
-                    coverageMaskIterator[index] = indicatorValue;
-                    statistics.removeCoveredStatistic(index);
-                }
+                updateCoverageMaskAndStatisticsBasedOnMissingFeatureVector(*this, coverageMaskIterator, indicatorValue,
+                                                                           statistics);
             } else {
                 coverageMask.setIndicatorValue(indicatorValue);
                 statistics.resetCoveredStatistics();

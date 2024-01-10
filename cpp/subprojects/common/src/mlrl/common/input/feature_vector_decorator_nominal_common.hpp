@@ -7,6 +7,50 @@
 #include "feature_vector_nominal_allocated.hpp"
 #include "mlrl/common/input/feature_vector_equal.hpp"
 
+template<typename View>
+static inline void updateCoverageMaskAndStatisticsInternally(const View& view, const Interval& interval,
+                                                             CoverageMask& coverageMask, uint32 indicatorValue,
+                                                             IWeightedStatistics& statistics) {
+    const NominalFeatureVector& featureVector = view.getView().firstView;
+    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+
+    if (interval.inverse) {
+        // Discard the indices that correspond to the values in the range [interval.start, interval.end) and set the
+        // corresponding values in `coverageMask` to `indicatorValue`, which marks them as uncovered...
+        for (uint32 i = interval.start; i < interval.end; i++) {
+            NominalFeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(i);
+            NominalFeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(i);
+            uint32 numIndices = indicesEnd - indexIterator;
+
+            for (uint32 j = 0; j < numIndices; j++) {
+                uint32 index = indexIterator[j];
+                coverageMaskIterator[index] = indicatorValue;
+                statistics.removeCoveredStatistic(index);
+            }
+        }
+
+        updateCoverageMaskAndStatisticsBasedOnMissingFeatureVector(view, coverageMaskIterator, indicatorValue,
+                                                                   statistics);
+    } else {
+        coverageMask.setIndicatorValue(indicatorValue);
+        statistics.resetCoveredStatistics();
+
+        // Retain the indices in the range [interval.start, interval.end) and set the corresponding values in the given
+        // `coverageMask` to `indicatorValue` to mark them as covered...
+        for (uint32 i = interval.start; i < interval.end; i++) {
+            NominalFeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(i);
+            NominalFeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(i);
+            uint32 numIndices = indicesEnd - indexIterator;
+
+            for (uint32 j = 0; j < numIndices; j++) {
+                uint32 index = indexIterator[j];
+                coverageMaskIterator[index] = indicatorValue;
+                statistics.addCoveredStatistic(index);
+            }
+        }
+    }
+}
+
 template<typename View, typename Decorator>
 static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVectorDecorator(
   const View& view, std::unique_ptr<IFeatureVector>& existing, const CoverageMask& coverageMask) {
@@ -57,6 +101,12 @@ class AbstractNominalFeatureVectorView : public AbstractFeatureVectorDecorator<N
             : AbstractFeatureVectorDecorator(std::move(firstView), AllocatedMissingFeatureVector()) {}
 
         virtual ~AbstractNominalFeatureVectorView() override {}
+
+        void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
+                                             uint32 indicatorValue,
+                                             IWeightedStatistics& statistics) const override final {
+            updateCoverageMaskAndStatisticsInternally(*this, interval, coverageMask, indicatorValue, statistics);
+        }
 };
 
 /**
@@ -96,4 +146,10 @@ class AbstractNominalFeatureVectorDecorator : public AbstractFeatureVectorDecora
               AllocatedMissingFeatureVector()) {}
 
         virtual ~AbstractNominalFeatureVectorDecorator() override {}
+
+        void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
+                                             uint32 indicatorValue,
+                                             IWeightedStatistics& statistics) const override final {
+            updateCoverageMaskAndStatisticsInternally(*this, interval, coverageMask, indicatorValue, statistics);
+        }
 };
