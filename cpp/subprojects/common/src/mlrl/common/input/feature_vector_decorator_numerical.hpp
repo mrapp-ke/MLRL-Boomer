@@ -48,6 +48,58 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNumericalFeatureVect
     return std::make_unique<EqualFeatureVector>();
 }
 
+template<typename FeatureVector>
+class AbstractNumericalFeatureVectorDecorator : public AbstractFeatureVectorDecorator<FeatureVector> {
+    public:
+
+        /**
+         * @param firstView   A reference to an object of template type `FeatureVector`
+         * @param secondView  A reference to an object of type `AllocatedMissingFeatureVector`
+         */
+        AbstractNumericalFeatureVectorDecorator(FeatureVector&& firstView, AllocatedMissingFeatureVector&& secondView)
+            : AbstractFeatureVectorDecorator<FeatureVector>(std::move(firstView), std::move(secondView)) {}
+
+        virtual ~AbstractNumericalFeatureVectorDecorator() override {}
+
+        void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
+                                             uint32 indicatorValue,
+                                             IWeightedStatistics& statistics) const override final {
+            const FeatureVector& featureVector = this->view.firstView;
+            CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
+
+            if (interval.inverse) {
+                // Discard the indices in the range [interval.start, interval.end) and set the corresponding values in
+                // `coverageMask` to `indicatorValue`, which marks them as uncovered...
+                for (uint32 i = interval.start; i < interval.end; i++) {
+                    uint32 index = featureVector[i].index;
+                    coverageMaskIterator[index] = indicatorValue;
+                    statistics.removeCoveredStatistic(index);
+                }
+
+                // Iterate the indices of examples with missing feature values and set the corresponding values in
+                // `coverageMask` to `indicatorValue`, which marks them as uncovered...
+                const MissingFeatureVector& missingFeatureVector = this->view.secondView;
+
+                for (auto it = missingFeatureVector.indices_cbegin(); it != missingFeatureVector.indices_cend(); it++) {
+                    uint32 index = *it;
+                    coverageMaskIterator[index] = indicatorValue;
+                    statistics.removeCoveredStatistic(index);
+                }
+            } else {
+                coverageMask.setIndicatorValue(indicatorValue);
+                statistics.resetCoveredStatistics();
+
+                // Retain the indices in the range [interval.start, interval.end) and set the corresponding values in
+                // the given `coverageMask` to `indicatorValue` to mark them as covered...
+                for (uint32 i = interval.start; i < interval.end; i++) {
+                    uint32 index = featureVector[i].index;
+                    coverageMaskIterator[index] = indicatorValue;
+                    statistics.addCoveredStatistic(index);
+                }
+            }
+        }
+};
+
 // Forward declarations
 class NumericalFeatureVectorDecorator;
 
@@ -55,19 +107,15 @@ class NumericalFeatureVectorDecorator;
  * Provides random read and write access, as well as read and write access via iterators, to the indices and values of
  * training examples stored in a `NumericalFeatureVector`.
  */
-class NumericalFeatureVectorView final : public AbstractFeatureVectorDecorator<NumericalFeatureVector> {
+class NumericalFeatureVectorView final : public AbstractNumericalFeatureVectorDecorator<NumericalFeatureVector> {
     public:
 
         /**
          * @param firstView A reference to an object of type `NumericalFeatureVector`
          */
         NumericalFeatureVectorView(NumericalFeatureVector&& firstView)
-            : AbstractFeatureVectorDecorator(std::move(firstView), AllocatedMissingFeatureVector()) {}
-
-        void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
-                                             uint32 indicatorValue, IWeightedStatistics& statistics) const override {
-            // TODO Implement
-        }
+            : AbstractNumericalFeatureVectorDecorator<NumericalFeatureVector>(std::move(firstView),
+                                                                              AllocatedMissingFeatureVector()) {}
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {
@@ -87,7 +135,8 @@ class NumericalFeatureVectorView final : public AbstractFeatureVectorDecorator<N
  * Provides random read and write access, as well as read and write access via iterators, to the indices and values of
  * training examples stored in an `AllocatedNumericalFeatureVector`.
  */
-class NumericalFeatureVectorDecorator final : public AbstractFeatureVectorDecorator<AllocatedNumericalFeatureVector> {
+class NumericalFeatureVectorDecorator final
+    : public AbstractNumericalFeatureVectorDecorator<AllocatedNumericalFeatureVector> {
     public:
 
         /**
@@ -96,8 +145,8 @@ class NumericalFeatureVectorDecorator final : public AbstractFeatureVectorDecora
          */
         NumericalFeatureVectorDecorator(AllocatedNumericalFeatureVector&& firstView,
                                         AllocatedMissingFeatureVector&& secondView)
-            : AbstractFeatureVectorDecorator<AllocatedNumericalFeatureVector>(std::move(firstView),
-                                                                              std::move(secondView)) {}
+            : AbstractNumericalFeatureVectorDecorator<AllocatedNumericalFeatureVector>(std::move(firstView),
+                                                                                       std::move(secondView)) {}
 
         /**
          * @param other A reference to an object of type `NumericalFeatureVectorDecorator` that should be copied
@@ -116,11 +165,6 @@ class NumericalFeatureVectorDecorator final : public AbstractFeatureVectorDecora
               AllocatedNumericalFeatureVector(other.getView().firstView.numElements,
                                               other.getView().firstView.sparseValue, other.getView().firstView.sparse),
               AllocatedMissingFeatureVector()) {}
-
-        void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
-                                             uint32 indicatorValue, IWeightedStatistics& statistics) const override {
-            // TODO Implement
-        }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {

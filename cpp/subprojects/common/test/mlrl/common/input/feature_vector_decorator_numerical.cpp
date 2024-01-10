@@ -1,6 +1,186 @@
 #include "mlrl/common/input/feature_vector_decorator_numerical.hpp"
 
+#include "statistics_weighted.hpp"
+
 #include <gtest/gtest.h>
+
+TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
+    uint32 numDenseExamples = 10;
+    AllocatedNumericalFeatureVector featureVector(numDenseExamples, -1, true);
+    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+
+    for (uint32 i = 0; i < numDenseExamples; i++) {
+        IndexedValue<float32>& entry = iterator[i];
+        entry.index = i;
+        entry.value = (float32) i;
+    }
+
+    WeightedStatistics statistics;
+
+    for (uint32 i = 0; i < numDenseExamples; i++) {
+        statistics.addCoveredStatistic(i);
+    }
+
+    NumericalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
+    Interval interval(2, 8);
+    CoverageMask coverageMask(numDenseExamples);
+    uint32 indicatorValue = 1;
+    decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
+    EXPECT_EQ(coverageMask.getIndicatorValue(), indicatorValue);
+
+    for (uint32 i = 0; i < interval.start; i++) {
+        EXPECT_FALSE(coverageMask.isCovered(i));
+        EXPECT_FALSE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
+    }
+
+    for (uint32 i = interval.start; i < interval.end; i++) {
+        EXPECT_TRUE(coverageMask.isCovered(i));
+        EXPECT_TRUE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
+    }
+
+    for (uint32 i = interval.end; i < numDenseExamples; i++) {
+        EXPECT_FALSE(coverageMask.isCovered(i));
+        EXPECT_FALSE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
+    }
+}
+
+TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) {
+    uint32 numDenseExamples = 10;
+    AllocatedNumericalFeatureVector featureVector(numDenseExamples, -1, true);
+    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+
+    for (uint32 i = 0; i < numDenseExamples; i++) {
+        IndexedValue<float32>& entry = iterator[i];
+        entry.index = i;
+        entry.value = (float32) i;
+    }
+
+    AllocatedMissingFeatureVector missingFeatureVector;
+    uint32 numMissingExamples = 5;
+    uint32 numExamples = numDenseExamples + numMissingExamples;
+
+    for (uint32 i = numDenseExamples; i < numExamples; i++) {
+        missingFeatureVector.set(i, true);
+    }
+
+    WeightedStatistics statistics;
+
+    for (uint32 i = 0; i < numExamples; i++) {
+        statistics.addCoveredStatistic(i);
+    }
+
+    NumericalFeatureVectorDecorator decorator(std::move(featureVector), std::move(missingFeatureVector));
+    Interval interval(2, 8, true);
+    CoverageMask coverageMask(numExamples);
+    uint32 indicatorValue = 1;
+    decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
+    EXPECT_EQ(coverageMask.getIndicatorValue(), 0);
+
+    for (uint32 i = 0; i < interval.start; i++) {
+        EXPECT_TRUE(coverageMask.isCovered(i));
+        EXPECT_TRUE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
+    }
+
+    for (uint32 i = interval.start; i < interval.end; i++) {
+        EXPECT_FALSE(coverageMask.isCovered(i));
+        EXPECT_FALSE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
+    }
+
+    for (uint32 i = interval.end; i < numDenseExamples; i++) {
+        EXPECT_TRUE(coverageMask.isCovered(i));
+        EXPECT_TRUE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
+    }
+
+    for (uint32 i = numDenseExamples; i < numExamples; i++) {
+        EXPECT_FALSE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
+    }
+}
+
+TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromView) {
+    uint32 numDenseExamples = 10;
+    AllocatedNumericalFeatureVector featureVector(numDenseExamples, -1, true);
+    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+
+    for (uint32 i = 0; i < numDenseExamples; i++) {
+        IndexedValue<float32>& entry = iterator[i];
+        entry.index = i;
+        entry.value = (float32) i;
+    }
+
+    WeightedStatistics statistics;
+
+    for (uint32 i = 0; i < numDenseExamples; i++) {
+        statistics.addCoveredStatistic(i);
+    }
+
+    NumericalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
+    std::unique_ptr<IFeatureVector> existing;
+    std::unique_ptr<IFeatureVector> filtered =
+      decorator.createFilteredFeatureVector(existing, Interval(0, numDenseExamples));
+    Interval interval(2, 8);
+    CoverageMask coverageMask(numDenseExamples);
+    uint32 indicatorValue = 1;
+    filtered->updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
+    EXPECT_EQ(coverageMask.getIndicatorValue(), indicatorValue);
+
+    for (uint32 i = 0; i < interval.start; i++) {
+        EXPECT_FALSE(coverageMask.isCovered(i));
+        EXPECT_FALSE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
+    }
+
+    for (uint32 i = interval.start; i < interval.end; i++) {
+        EXPECT_TRUE(coverageMask.isCovered(i));
+        EXPECT_TRUE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
+    }
+
+    for (uint32 i = interval.end; i < numDenseExamples; i++) {
+        EXPECT_FALSE(coverageMask.isCovered(i));
+        EXPECT_FALSE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
+    }
+}
+
+TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromViewInverse) {
+    uint32 numDenseExamples = 10;
+    AllocatedNumericalFeatureVector featureVector(numDenseExamples, -1, true);
+    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+
+    for (uint32 i = 0; i < numDenseExamples; i++) {
+        IndexedValue<float32>& entry = iterator[i];
+        entry.index = i;
+        entry.value = (float32) i;
+    }
+
+    WeightedStatistics statistics;
+
+    for (uint32 i = 0; i < numDenseExamples; i++) {
+        statistics.addCoveredStatistic(i);
+    }
+
+    NumericalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
+    std::unique_ptr<IFeatureVector> existing;
+    std::unique_ptr<IFeatureVector> filtered =
+      decorator.createFilteredFeatureVector(existing, Interval(0, numDenseExamples));
+    Interval interval(2, 8, true);
+    CoverageMask coverageMask(numDenseExamples);
+    uint32 indicatorValue = 1;
+    filtered->updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
+    EXPECT_EQ(coverageMask.getIndicatorValue(), 0);
+
+    for (uint32 i = 0; i < interval.start; i++) {
+        EXPECT_TRUE(coverageMask.isCovered(i));
+        EXPECT_TRUE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
+    }
+
+    for (uint32 i = interval.start; i < interval.end; i++) {
+        EXPECT_FALSE(coverageMask.isCovered(i));
+        EXPECT_FALSE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
+    }
+
+    for (uint32 i = interval.end; i < numDenseExamples; i++) {
+        EXPECT_TRUE(coverageMask.isCovered(i));
+        EXPECT_TRUE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
+    }
+}
 
 TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) {
     uint32 numDenseExamples = 10;
