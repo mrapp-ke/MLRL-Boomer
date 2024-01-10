@@ -23,13 +23,14 @@ class IFeatureVector {
          * Updates a given `CoverageMask` and `IWeightedStatistics` depending on the indices of training examples
          * included in a specific `Interval`.
          *
-         * @param interval      A reference to an object of type `Interval` that includes the indices of all covered
-         *                      training examples
-         * @param coverageMask  A reference to an object of type `CoverageMask` that should be updated
-         * @param statistics    A reference to an object of type `IWeightedStatistics` that should be updated
+         * @param interval        A reference to an object of type `Interval` that includes the indices of all covered
+         *                        training examples
+         * @param coverageMask    A reference to an object of type `CoverageMask` that should be updated
+         * @param indicatorValue  The indicator value that should be used for updating the given `CoverageMask`
+         * @param statistics      A reference to an object of type `IWeightedStatistics` that should be updated
          */
         virtual void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
-                                                     IWeightedStatistics& statistics) const = 0;
+                                                     uint32 indicatorValue, IWeightedStatistics& statistics) const = 0;
 
         /**
          * Creates and returns a copy of this vector that does only store the feature values of training examples

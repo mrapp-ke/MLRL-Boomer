@@ -65,7 +65,7 @@ class NumericalFeatureVectorView final : public AbstractFeatureVectorDecorator<N
             : AbstractFeatureVectorDecorator(std::move(firstView), AllocatedMissingFeatureVector()) {}
 
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
-                                             IWeightedStatistics& statistics) const override {
+                                             uint32 indicatorValue, IWeightedStatistics& statistics) const override {
             // TODO Implement
         }
 
@@ -118,7 +118,7 @@ class NumericalFeatureVectorDecorator final : public AbstractFeatureVectorDecora
               AllocatedMissingFeatureVector()) {}
 
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
-                                             IWeightedStatistics& statistics) const override {
+                                             uint32 indicatorValue, IWeightedStatistics& statistics) const override {
             // TODO Implement
         }
 

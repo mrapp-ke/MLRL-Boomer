@@ -27,7 +27,7 @@ class NominalFeatureVectorDecorator final : public AbstractNominalFeatureVectorD
             : AbstractNominalFeatureVectorDecorator(other) {}
 
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
-                                             IWeightedStatistics& statistics) const override {
+                                             uint32 indicatorValue, IWeightedStatistics& statistics) const override {
             // TODO Implement
         }
 
