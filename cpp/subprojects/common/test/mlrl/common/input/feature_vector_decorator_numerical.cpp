@@ -70,7 +70,7 @@ TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse
     }
 
     NumericalFeatureVectorDecorator decorator(std::move(featureVector), std::move(missingFeatureVector));
-    Interval interval(2, 8, true);
+    Interval interval(2, numDenseExamples, true);
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
@@ -117,7 +117,7 @@ TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromVie
     std::unique_ptr<IFeatureVector> existing;
     std::unique_ptr<IFeatureVector> filtered =
       decorator.createFilteredFeatureVector(existing, Interval(0, numDenseExamples));
-    Interval interval(2, 8);
+    Interval interval(2, numDenseExamples);
     CoverageMask coverageMask(numDenseExamples);
     uint32 indicatorValue = 1;
     filtered->updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
@@ -160,7 +160,7 @@ TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromVie
     std::unique_ptr<IFeatureVector> existing;
     std::unique_ptr<IFeatureVector> filtered =
       decorator.createFilteredFeatureVector(existing, Interval(0, numDenseExamples));
-    Interval interval(2, 8, true);
+    Interval interval(2, numDenseExamples, true);
     CoverageMask coverageMask(numDenseExamples);
     uint32 indicatorValue = 1;
     filtered->updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
@@ -197,7 +197,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices
 
     NumericalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
     std::unique_ptr<IFeatureVector> existing;
-    Interval interval(2, 7);
+    Interval interval(2, numDenseExamples);
     std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, interval);
     const NumericalFeatureVectorView* filteredDecorator =
       dynamic_cast<const NumericalFeatureVectorView*>(filtered.get());
@@ -211,7 +211,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices
         EXPECT_EQ(filteredFeatureVector.numElements, interval.end - interval.start);
         NumericalFeatureVector::const_iterator filteredIterator = filteredFeatureVector.cbegin();
 
-        for (uint32 i = 0; i < interval.end - interval.start; i++) {
+        for (uint32 i = 0; i < filteredFeatureVector.numElements; i++) {
             const IndexedValue<float32>& entry = filteredIterator[i];
             EXPECT_EQ(entry.index, interval.start + i);
             EXPECT_EQ(entry.value, (float32) interval.start + i);
@@ -234,7 +234,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWit
 
     NumericalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
     std::unique_ptr<IFeatureVector> existing;
-    Interval interval(2, 7);
+    Interval interval(2, numDenseExamples);
     std::unique_ptr<IFeatureVector> filtered =
       decorator.createFilteredFeatureVector(existing, Interval(0, numDenseExamples))
         ->createFilteredFeatureVector(existing, interval);
@@ -250,12 +250,107 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWit
         EXPECT_EQ(filteredFeatureVector.numElements, interval.end - interval.start);
         NumericalFeatureVector::const_iterator filteredIterator = filteredFeatureVector.cbegin();
 
-        for (uint32 i = 0; i < interval.end - interval.start; i++) {
+        for (uint32 i = 0; i < filteredFeatureVector.numElements; i++) {
             const IndexedValue<float32>& entry = filteredIterator[i];
             EXPECT_EQ(entry.index, interval.start + i);
             EXPECT_EQ(entry.value, (float32) interval.start + i);
         }
     }
+}
+
+TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesInverse) {
+    uint32 numDenseExamples = 10;
+    float32 sparseValue = -1;
+    bool sparse = true;
+    AllocatedNumericalFeatureVector featureVector(numDenseExamples, sparseValue, sparse);
+    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+
+    for (uint32 i = 0; i < numDenseExamples; i++) {
+        IndexedValue<float32>& entry = iterator[i];
+        entry.index = i;
+        entry.value = (float32) i;
+    }
+
+    NumericalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
+    std::unique_ptr<IFeatureVector> existing;
+    Interval interval(2, numDenseExamples, true);
+    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, interval);
+    const NumericalFeatureVectorView* filteredDecorator =
+      dynamic_cast<const NumericalFeatureVectorView*>(filtered.get());
+    EXPECT_TRUE(filteredDecorator != nullptr);
+
+    if (filteredDecorator) {
+        // Check filtered indices...
+        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        EXPECT_EQ(filteredFeatureVector.sparseValue, featureVector.sparseValue);
+        EXPECT_EQ(filteredFeatureVector.sparse, featureVector.sparse);
+        EXPECT_EQ(filteredFeatureVector.numElements, interval.start);
+        NumericalFeatureVector::const_iterator filteredIterator = filteredFeatureVector.cbegin();
+
+        for (uint32 i = 0; i < filteredFeatureVector.numElements; i++) {
+            const IndexedValue<float32>& entry = filteredIterator[i];
+            EXPECT_EQ(entry.index, i);
+            EXPECT_EQ(entry.value, (float32) i);
+        }
+    }
+}
+
+TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithIndicesInverse) {
+    uint32 numDenseExamples = 10;
+    float32 sparseValue = -1;
+    bool sparse = true;
+    AllocatedNumericalFeatureVector featureVector(numDenseExamples, sparseValue, sparse);
+    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+
+    for (uint32 i = 0; i < numDenseExamples; i++) {
+        IndexedValue<float32>& entry = iterator[i];
+        entry.index = i;
+        entry.value = (float32) i;
+    }
+
+    NumericalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
+    std::unique_ptr<IFeatureVector> existing;
+    Interval interval(2, numDenseExamples, true);
+    std::unique_ptr<IFeatureVector> filtered =
+      decorator.createFilteredFeatureVector(existing, Interval(0, numDenseExamples))
+        ->createFilteredFeatureVector(existing, interval);
+    const NumericalFeatureVectorView* filteredDecorator =
+      dynamic_cast<const NumericalFeatureVectorView*>(filtered.get());
+    EXPECT_TRUE(filteredDecorator != nullptr);
+
+    if (filteredDecorator) {
+        // Check filtered indices...
+        const NumericalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        EXPECT_EQ(filteredFeatureVector.sparseValue, featureVector.sparseValue);
+        EXPECT_EQ(filteredFeatureVector.sparse, featureVector.sparse);
+        EXPECT_EQ(filteredFeatureVector.numElements, interval.start);
+        NumericalFeatureVector::const_iterator filteredIterator = filteredFeatureVector.cbegin();
+
+        for (uint32 i = 0; i < filteredFeatureVector.numElements; i++) {
+            const IndexedValue<float32>& entry = filteredIterator[i];
+            EXPECT_EQ(entry.index, i);
+            EXPECT_EQ(entry.value, (float32) i);
+        }
+    }
+}
+
+TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesReturnsEqualFeatureVector) {
+    uint32 numDenseExamples = 10;
+    AllocatedNumericalFeatureVector featureVector(numDenseExamples);
+    AllocatedNumericalFeatureVector::iterator iterator = featureVector.begin();
+
+    for (uint32 i = 0; i < numDenseExamples; i++) {
+        IndexedValue<float32>& entry = iterator[i];
+        entry.index = i;
+        entry.value = (float32) i;
+    }
+
+    NumericalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
+    std::unique_ptr<IFeatureVector> existing;
+    Interval interval(0, 1);
+    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, interval);
+    const EqualFeatureVector* filteredFeatureVector = dynamic_cast<const EqualFeatureVector*>(filtered.get());
+    EXPECT_TRUE(filteredFeatureVector != nullptr);
 }
 
 TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithCoverageMask) {

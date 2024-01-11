@@ -9,12 +9,41 @@
 
 template<typename Decorator, typename View>
 static inline std::unique_ptr<IFeatureVector> createFilteredNumericalFeatureVectorView(const Decorator& decorator,
-                                                                                       uint32 start, uint32 end) {
+                                                                                       const Interval& interval) {
     const NumericalFeatureVector& featureVector = decorator.getView().firstView;
-    NumericalFeatureVector filteredFeatureVector(&featureVector.array[start], end - start);
-    filteredFeatureVector.sparseValue = featureVector.sparseValue;
-    filteredFeatureVector.sparse = featureVector.sparse;
-    return std::make_unique<View>(std::move(filteredFeatureVector));
+    uint32 start = interval.start;
+    uint32 end = interval.end;
+
+    if (interval.inverse) {
+        if (interval.start > 0) {
+            start = 0;
+            end = interval.start;
+        } else {
+            start = interval.end;
+            end = featureVector.numElements;
+        }
+    } else {
+        start = interval.start;
+
+        if (start > 0) {
+            end = featureVector.numElements;
+        } else {
+            end = interval.end;
+        }
+    }
+
+    uint32 numFilteredElements = end - start;
+
+    if (numFilteredElements > 0
+        && (featureVector.sparse
+            || !isEqual(featureVector[start].value, featureVector[numFilteredElements - 1].value))) {
+        NumericalFeatureVector filteredFeatureVector(&featureVector.array[start], numFilteredElements);
+        filteredFeatureVector.sparseValue = featureVector.sparseValue;
+        filteredFeatureVector.sparse = featureVector.sparse;
+        return std::make_unique<View>(std::move(filteredFeatureVector));
+    }
+
+    return std::make_unique<EqualFeatureVector>();
 }
 
 template<typename View, typename Decorator>
@@ -27,21 +56,21 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNumericalFeatureVect
     AllocatedNumericalFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().firstView;
     AllocatedNumericalFeatureVector::iterator filteredIterator = filteredFeatureVector.begin();
     AllocatedNumericalFeatureVector::const_iterator iterator = view.getView().firstView.cbegin();
-    uint32 n = 0;
+    uint32 numFilteredElements = 0;
 
     for (uint32 i = 0; i < filteredFeatureVector.numElements; i++) {
         const IndexedValue<float32>& entry = iterator[i];
 
         if (coverageMask.isCovered(entry.index)) {
-            filteredIterator[n] = entry;
-            n++;
+            filteredIterator[numFilteredElements] = entry;
+            numFilteredElements++;
         }
     }
 
-    if (n > 0
+    if (numFilteredElements > 0
         && (filteredFeatureVector.sparse
-            || !isEqual(filteredFeatureVector[0].value, filteredFeatureVector[n - 1].value))) {
-        filteredFeatureVector.resize(n, true);
+            || !isEqual(filteredFeatureVector[0].value, filteredFeatureVector[numFilteredElements - 1].value))) {
+        filteredFeatureVector.resize(numFilteredElements, true);
         return filteredDecoratorPtr;
     }
 
@@ -113,7 +142,7 @@ class NumericalFeatureVectorView final : public AbstractNumericalFeatureVectorDe
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {
             return createFilteredNumericalFeatureVectorView<NumericalFeatureVectorView, NumericalFeatureVectorView>(
-              *this, interval.start, interval.end);
+              *this, interval);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
@@ -162,8 +191,7 @@ class NumericalFeatureVectorDecorator final
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {
             return createFilteredNumericalFeatureVectorView<NumericalFeatureVectorDecorator,
-                                                            NumericalFeatureVectorView>(*this, interval.start,
-                                                                                        interval.end);
+                                                            NumericalFeatureVectorView>(*this, interval);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
