@@ -58,29 +58,38 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
       createFilteredFeatureVectorDecorator<View, Decorator>(view, existing, coverageMask);
 
     // Filter the indices of examples not associated with the majority value...
+    const NominalFeatureVector& featureVector = view.getView().firstView;
     AllocatedNominalFeatureVector& filteredFeatureVector = filteredDecoratorPtr->getView().firstView;
     AllocatedNominalFeatureVector::index_iterator filteredIndexIterator = filteredFeatureVector.indices;
     AllocatedNominalFeatureVector::index_iterator filteredIndptrIterator = filteredFeatureVector.indptr;
-    uint32 n = 0;
+    AllocatedNominalFeatureVector::value_iterator filteredValueIterator = filteredFeatureVector.values;
+    uint32 numFilteredValues = 0;
+    uint32 numFilteredIndices = 0;
 
     for (uint32 i = 0; i < filteredFeatureVector.numValues; i++) {
-        NominalFeatureVector::index_const_iterator indexIterator = view.getView().firstView.indices_cbegin(i);
-        NominalFeatureVector::index_const_iterator indicesEnd = view.getView().firstView.indices_cend(i);
+        NominalFeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(i);
+        NominalFeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(i);
         uint32 numIndices = indicesEnd - indexIterator;
-        filteredIndptrIterator[i] = n;
+        uint32 indptr = numFilteredIndices;
 
         for (uint32 j = 0; j < numIndices; j++) {
             uint32 index = indexIterator[j];
 
             if (coverageMask.isCovered(index)) {
-                filteredIndexIterator[n] = index;
-                n++;
+                filteredIndexIterator[numFilteredIndices] = index;
+                numFilteredIndices++;
             }
+        }
+
+        if (numFilteredIndices > indptr) {
+            filteredIndptrIterator[numFilteredValues] = indptr;
+            filteredValueIterator[numFilteredValues] = featureVector.values[i];
+            numFilteredValues++;
         }
     }
 
-    if (n > 0) {
-        filteredFeatureVector.resize(n);
+    if (numFilteredIndices > 0) {
+        filteredFeatureVector.resize(numFilteredValues, numFilteredIndices);
         return filteredDecoratorPtr;
     }
 
