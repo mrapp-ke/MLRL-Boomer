@@ -48,11 +48,15 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
         /**
          * Resizes the view by re-allocating the memory it provides access to.
          *
-         * @param numIndices The number of examples not associated with the majority value to which the view should be
-         *                   resized
+         * @param numValues     The number of nominal values
+         * @param numIndices    The number of examples not associated with the majority value to which the view should
+         *                      be resized
          */
-        void resize(uint32 numIndices) {
+        void resize(uint32 numValues, uint32 numIndices) {
+            NominalFeatureVector::values = reallocateMemory(NominalFeatureVector::values, numValues);
             NominalFeatureVector::indices = reallocateMemory(NominalFeatureVector::indices, numIndices);
-            NominalFeatureVector::indptr[NominalFeatureVector::numValues] = numIndices;
+            NominalFeatureVector::indptr = reallocateMemory(NominalFeatureVector::indptr, numValues + 1);
+            NominalFeatureVector::numValues = numValues;
+            NominalFeatureVector::indptr[numValues] = numIndices;
         }
 };
