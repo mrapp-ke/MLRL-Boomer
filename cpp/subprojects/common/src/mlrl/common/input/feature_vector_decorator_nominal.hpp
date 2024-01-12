@@ -88,6 +88,16 @@ class NominalFeatureVectorDecorator final : public AbstractNominalFeatureVectorD
         NominalFeatureVectorDecorator(const NominalFeatureVectorDecorator& other)
             : AbstractNominalFeatureVectorDecorator(other) {}
 
+        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch, SingleRefinementComparator& comparator,
+                                 uint32 minCoverage) const override {
+            ruleRefinementSearch.searchForNominalRefinement(this->view.firstView, comparator, minCoverage);
+        }
+
+        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch, FixedRefinementComparator& comparator,
+                                 uint32 minCoverage) const override {
+            ruleRefinementSearch.searchForNominalRefinement(this->view.firstView, comparator, minCoverage);
+        }
+
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {
             return createFilteredNominalFeatureVectorDecorator<NominalFeatureVectorDecorator,

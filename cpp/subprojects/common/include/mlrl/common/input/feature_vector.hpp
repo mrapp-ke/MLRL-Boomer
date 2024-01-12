@@ -7,6 +7,7 @@
 #include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/input/interval.hpp"
 #include "mlrl/common/input/missing_feature_vector.hpp"
+#include "mlrl/common/rule_refinement/rule_refinement_search.hpp"
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 #include "mlrl/common/thresholds/coverage_mask.hpp"
 
@@ -18,6 +19,30 @@ class IFeatureVector {
     public:
 
         virtual ~IFeatureVector() {}
+
+        /**
+         * Conducts a search for the best refinement of an existing rule that can be created from a this feature vector.
+         *
+         * @param ruleRefinementSearch  A reference to an object of type `RuleRefinementSearch` that should be used for
+         *                              conducting the search
+         * @param comparator            A reference to an object of type `SingleRefinementComparator` that should be
+         *                              used for comparing potential refinements
+         * @param minCoverage           The minimum number of examples that must be covered by the refinement
+         */
+        virtual void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
+                                         SingleRefinementComparator& comparator, uint32 minCoverage) const = 0;
+
+        /**
+         * Conducts a search for the best refinement of an existing rule that can be created from a this feature vector.
+         *
+         * @param ruleRefinementSearch  A reference to an object of type `RuleRefinementSearch` that should be used for
+         *                              conducting the search
+         * @param comparator            A reference to an object of type `MultiRefinementComparator` that should be used
+         *                              for comparing potential refinements
+         * @param minCoverage           The minimum number of examples that must be covered by the refinement
+         */
+        virtual void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
+                                         FixedRefinementComparator& comparator, uint32 minCoverage) const = 0;
 
         /**
          * Updates a given `CoverageMask` and `IWeightedStatistics` depending on the indices of training examples

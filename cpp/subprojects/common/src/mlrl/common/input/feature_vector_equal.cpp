@@ -1,5 +1,11 @@
 #include "mlrl/common/input/feature_vector_equal.hpp"
 
+void EqualFeatureVector::searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
+                                             SingleRefinementComparator& comparator, uint32 minCoverage) const {}
+
+void EqualFeatureVector::searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
+                                             FixedRefinementComparator& comparator, uint32 minCoverage) const {}
+
 void EqualFeatureVector::updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& CoverageMask,
                                                          uint32 indicatorValue, IWeightedStatistics& statistics) const {
     throw std::runtime_error("Function EqualFeatureVector::updateCoverageMaskAndStatistics should never be called");
