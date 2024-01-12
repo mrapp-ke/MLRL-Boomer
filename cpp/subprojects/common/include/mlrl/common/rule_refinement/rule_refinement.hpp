@@ -17,8 +17,8 @@ class IRuleRefinement {
         /**
          * Finds the best refinement of an existing rule.
          *
-         * @param comparator    A reference to an object of type `SingleRefinementComparator` that is used to compare
-         *                      the potential refinements
+         * @param comparator    A reference to an object of type `SingleRefinementComparator` that should be used for
+         *                      comparing potential refinements
          * @param minCoverage   The minimum number of examples that must be covered by the refinement
          */
         virtual void findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) = 0;
@@ -26,8 +26,8 @@ class IRuleRefinement {
         /**
          * Finds the best refinements of an existing rule.
          *
-         * @param comparator    A reference to an object of type `MultiRefinementComparator` that is used to compare the
-         *                      potential refinements
+         * @param comparator    A reference to an object of type `MultiRefinementComparator` that should be used for
+         *                      comparing potential refinements
          * @param minCoverage   The minimum number of examples that must be covered by the refinements
          */
         virtual void findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) = 0;
