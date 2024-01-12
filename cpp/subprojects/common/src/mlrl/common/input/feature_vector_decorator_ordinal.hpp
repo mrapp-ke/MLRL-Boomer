@@ -44,14 +44,21 @@ class OrdinalFeatureVectorDecorator;
  * Provides random read and write access, as well as read and write access via iterators, to the values and indices of
  * training examples stored in an `OrdinalFeatureVector`.
  */
-class OrdinalFeatureVectorView final : public AbstractNominalFeatureVectorView {
+class OrdinalFeatureVectorView final : public AbstractFeatureVectorDecorator<NominalFeatureVector> {
     public:
 
         /**
          * @param firstView A reference to an object of type `NominalFeatureVector`
          */
         OrdinalFeatureVectorView(NominalFeatureVector&& firstView)
-            : AbstractNominalFeatureVectorView(std::move(firstView)) {}
+            : AbstractFeatureVectorDecorator(std::move(firstView), AllocatedMissingFeatureVector()) {}
+
+        void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
+                                             uint32 indicatorValue,
+                                             IWeightedStatistics& statistics) const override final {
+            updateCoverageMaskAndStatisticsBasedOnNominalFeatureVector(*this, interval, coverageMask, indicatorValue,
+                                                                       statistics);
+        }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {
@@ -91,7 +98,11 @@ class OrdinalFeatureVectorDecorator final : public AbstractNominalFeatureVectorD
          * @param other A reference to an object of type `OrdinalFeatureVectorView` that should be copied
          */
         OrdinalFeatureVectorDecorator(const OrdinalFeatureVectorView& other)
-            : AbstractNominalFeatureVectorDecorator(other) {}
+            : OrdinalFeatureVectorDecorator(
+              AllocatedNominalFeatureVector(other.getView().firstView.numValues,
+                                            other.getView().firstView.indptr[other.getView().firstView.numValues],
+                                            other.getView().firstView.majorityValue),
+              AllocatedMissingFeatureVector()) {}
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {
