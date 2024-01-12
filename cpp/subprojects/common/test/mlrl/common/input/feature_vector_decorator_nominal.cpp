@@ -170,6 +170,134 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) 
     EXPECT_TRUE(filteredDecorator != nullptr);
 }
 
+TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesInverse) {
+    uint32 numValues = 4;
+    uint32 numExamplesPerValue = 10;
+    uint32 numMinorityExamples = numValues * numExamplesPerValue;
+    AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
+    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
+    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
+    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+
+    for (uint32 i = 0; i < numValues; i++) {
+        valueIterator[i] = i;
+        indptrIterator[i] = i * numExamplesPerValue;
+
+        for (uint32 j = 0; j < numExamplesPerValue; j++) {
+            uint32 index = (i * numExamplesPerValue) + j;
+            indexIterator[index] = index;
+        }
+    }
+
+    NominalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
+    Interval interval(1, 2, true);
+    std::unique_ptr<IFeatureVector> existing;
+    std::unique_ptr<IFeatureVector> filtered = decorator.createFilteredFeatureVector(existing, interval);
+    const NominalFeatureVectorDecorator* filteredDecorator =
+      dynamic_cast<const NominalFeatureVectorDecorator*>(filtered.get());
+    EXPECT_TRUE(filteredDecorator != nullptr);
+
+    if (filteredDecorator) {
+        // Check filtered indices...
+        const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        EXPECT_EQ(filteredFeatureVector.numValues, interval.start + (numValues - interval.end));
+        NominalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
+        uint32 n = 0;
+
+        for (uint32 i = 0; i < interval.start; i++) {
+            EXPECT_EQ(valuesBegin[n], i);
+            NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(n);
+            NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(n);
+            uint32 numIndices = indicesEnd - indicesBegin;
+            EXPECT_EQ(numIndices, numExamplesPerValue);
+
+            for (uint32 j = 0; j < numIndices; j++) {
+                EXPECT_EQ(indicesBegin[j], (i * numExamplesPerValue) + j);
+            }
+
+            n++;
+        }
+
+        for (uint32 i = interval.end; i < featureVector.numValues; i++) {
+            EXPECT_EQ(valuesBegin[n], i);
+            NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(n);
+            NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(n);
+            uint32 numIndices = indicesEnd - indicesBegin;
+            EXPECT_EQ(numIndices, numExamplesPerValue);
+
+            for (uint32 j = 0; j < numIndices; j++) {
+                EXPECT_EQ(indicesBegin[j], (i * numExamplesPerValue) + j);
+            }
+
+            n++;
+        }
+    }
+}
+
+TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesInverseUsingExisting) {
+    uint32 numValues = 4;
+    uint32 numExamplesPerValue = 10;
+    uint32 numMinorityExamples = numValues * numExamplesPerValue;
+    AllocatedNominalFeatureVector featureVector(numValues, numMinorityExamples, 0);
+    AllocatedNominalFeatureVector::value_iterator valueIterator = featureVector.values;
+    AllocatedNominalFeatureVector::index_iterator indptrIterator = featureVector.indptr;
+    AllocatedNominalFeatureVector::index_iterator indexIterator = featureVector.indices_begin(0);
+
+    for (uint32 i = 0; i < numValues; i++) {
+        valueIterator[i] = i;
+        indptrIterator[i] = i * numExamplesPerValue;
+
+        for (uint32 j = 0; j < numExamplesPerValue; j++) {
+            uint32 index = (i * numExamplesPerValue) + j;
+            indexIterator[index] = index;
+        }
+    }
+
+    std::unique_ptr<IFeatureVector> existing =
+      std::make_unique<NominalFeatureVectorDecorator>(std::move(featureVector), AllocatedMissingFeatureVector());
+    Interval interval(1, 2, true);
+    std::unique_ptr<IFeatureVector> filtered = existing->createFilteredFeatureVector(existing, interval);
+    const NominalFeatureVectorDecorator* filteredDecorator =
+      dynamic_cast<const NominalFeatureVectorDecorator*>(filtered.get());
+    EXPECT_TRUE(filteredDecorator != nullptr);
+
+    if (filteredDecorator) {
+        // Check filtered indices...
+        const NominalFeatureVector& filteredFeatureVector = filteredDecorator->getView().firstView;
+        EXPECT_EQ(filteredFeatureVector.numValues, interval.start + (numValues - interval.end));
+        NominalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
+        uint32 n = 0;
+
+        for (uint32 i = 0; i < interval.start; i++) {
+            EXPECT_EQ(valuesBegin[n], i);
+            NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(n);
+            NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(n);
+            uint32 numIndices = indicesEnd - indicesBegin;
+            EXPECT_EQ(numIndices, numExamplesPerValue);
+
+            for (uint32 j = 0; j < numIndices; j++) {
+                EXPECT_EQ(indicesBegin[j], (i * numExamplesPerValue) + j);
+            }
+
+            n++;
+        }
+
+        for (uint32 i = interval.end; i < featureVector.numValues; i++) {
+            EXPECT_EQ(valuesBegin[n], i);
+            NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(n);
+            NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(n);
+            uint32 numIndices = indicesEnd - indicesBegin;
+            EXPECT_EQ(numIndices, numExamplesPerValue);
+
+            for (uint32 j = 0; j < numIndices; j++) {
+                EXPECT_EQ(indicesBegin[j], (i * numExamplesPerValue) + j);
+            }
+
+            n++;
+        }
+    }
+}
+
 TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMask) {
     uint32 numValues = 3;
     uint32 numExamplesPerValue = 10;
