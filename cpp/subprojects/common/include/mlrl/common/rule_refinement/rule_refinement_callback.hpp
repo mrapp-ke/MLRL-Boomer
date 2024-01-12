@@ -11,6 +11,7 @@
  * @tparam Statistics   The type of the statistics,
  * @tparam Vector       The type of the vector that is returned by the callback
  */
+// TODO Remove template argument Vector and use IFeatureVector instead
 template<typename Statistics, typename Vector>
 class IRuleRefinementCallback {
     public:
