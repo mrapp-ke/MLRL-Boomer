@@ -63,6 +63,7 @@ source_files = [
     'src/mlrl/common/rule_refinement/refinement_comparator_single.cpp',
     'src/mlrl/common/rule_refinement/rule_refinement_approximate.cpp',
     'src/mlrl/common/rule_refinement/rule_refinement_exact.cpp',
+    'src/mlrl/common/rule_refinement/rule_refinement_search.cpp',
     'src/mlrl/common/rule_refinement/score_processor.cpp',
     'src/mlrl/common/sampling/feature_sampling_no.cpp',
     'src/mlrl/common/sampling/feature_sampling_predefined.cpp',
