@@ -53,6 +53,16 @@ class OrdinalFeatureVectorView final : public AbstractFeatureVectorDecorator<Nom
         OrdinalFeatureVectorView(NominalFeatureVector&& firstView)
             : AbstractFeatureVectorDecorator(std::move(firstView), AllocatedMissingFeatureVector()) {}
 
+        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch, SingleRefinementComparator& comparator,
+                                 uint32 minCoverage) const override {
+            ruleRefinementSearch.searchForOrdinalRefinement(this->view.firstView, comparator, minCoverage);
+        }
+
+        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch, FixedRefinementComparator& comparator,
+                                 uint32 minCoverage) const override {
+            ruleRefinementSearch.searchForOrdinalRefinement(this->view.firstView, comparator, minCoverage);
+        }
+
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
                                              uint32 indicatorValue,
                                              IWeightedStatistics& statistics) const override final {
@@ -103,6 +113,16 @@ class OrdinalFeatureVectorDecorator final : public AbstractNominalFeatureVectorD
                                             other.getView().firstView.indptr[other.getView().firstView.numValues],
                                             other.getView().firstView.majorityValue),
               AllocatedMissingFeatureVector()) {}
+
+        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch, SingleRefinementComparator& comparator,
+                                 uint32 minCoverage) const override {
+            ruleRefinementSearch.searchForOrdinalRefinement(this->view.firstView, comparator, minCoverage);
+        }
+
+        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch, FixedRefinementComparator& comparator,
+                                 uint32 minCoverage) const override {
+            ruleRefinementSearch.searchForOrdinalRefinement(this->view.firstView, comparator, minCoverage);
+        }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {
