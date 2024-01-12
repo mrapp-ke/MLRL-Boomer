@@ -8,9 +8,11 @@
 #include "mlrl/common/input/feature_vector_equal.hpp"
 
 template<typename View>
-static inline void updateCoverageMaskAndStatisticsInternally(const View& view, const Interval& interval,
-                                                             CoverageMask& coverageMask, uint32 indicatorValue,
-                                                             IWeightedStatistics& statistics) {
+static inline void updateCoverageMaskAndStatisticsBasedOnNominalFeatureVector(const View& view,
+                                                                              const Interval& interval,
+                                                                              CoverageMask& coverageMask,
+                                                                              uint32 indicatorValue,
+                                                                              IWeightedStatistics& statistics) {
     const NominalFeatureVector& featureVector = view.getView().firstView;
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
@@ -97,28 +99,6 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
 }
 
 /**
- * An abstract base class for all decorators that provide access to the values and indices of the training examples
- * stored in a `NominalFeatureVector`.
- */
-class AbstractNominalFeatureVectorView : public AbstractFeatureVectorDecorator<NominalFeatureVector> {
-    public:
-
-        /**
-         * @param firstView A reference to an object of type `NominalFeatureVector`
-         */
-        AbstractNominalFeatureVectorView(NominalFeatureVector&& firstView)
-            : AbstractFeatureVectorDecorator(std::move(firstView), AllocatedMissingFeatureVector()) {}
-
-        virtual ~AbstractNominalFeatureVectorView() override {}
-
-        void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
-                                             uint32 indicatorValue,
-                                             IWeightedStatistics& statistics) const override final {
-            updateCoverageMaskAndStatisticsInternally(*this, interval, coverageMask, indicatorValue, statistics);
-        }
-};
-
-/**
  * An abstract base class for all decorators that provide access to the values and indices of training examples stored
  * in an `AllocatedNominalFeatureVector`.
  */
@@ -144,21 +124,12 @@ class AbstractNominalFeatureVectorDecorator : public AbstractFeatureVectorDecora
                                             other.view.firstView.majorityValue),
               AllocatedMissingFeatureVector()) {}
 
-        /**
-         * @param other A reference to an object of type `AbstractNominalFeatureVectorView` that should be copied
-         */
-        AbstractNominalFeatureVectorDecorator(const AbstractNominalFeatureVectorView& other)
-            : AbstractNominalFeatureVectorDecorator(
-              AllocatedNominalFeatureVector(other.getView().firstView.numValues,
-                                            other.getView().firstView.indptr[other.getView().firstView.numValues],
-                                            other.getView().firstView.majorityValue),
-              AllocatedMissingFeatureVector()) {}
-
         virtual ~AbstractNominalFeatureVectorDecorator() override {}
 
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
                                              uint32 indicatorValue,
                                              IWeightedStatistics& statistics) const override final {
-            updateCoverageMaskAndStatisticsInternally(*this, interval, coverageMask, indicatorValue, statistics);
+            updateCoverageMaskAndStatisticsBasedOnNominalFeatureVector(*this, interval, coverageMask, indicatorValue,
+                                                                       statistics);
         }
 };
