@@ -87,6 +87,7 @@ DisableFormat:   false
 EmptyLineAfterAccessModifier: Always
 EmptyLineBeforeAccessModifier: Always
 ExperimentalAutoDetectBinPacking: false
+InsertNewlineAtEOF: true
 PackConstructorInitializers: BinPack
 BasedOnStyle:    ''
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
