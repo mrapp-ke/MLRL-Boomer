@@ -529,22 +529,26 @@ static inline void findRefinementInternally(
 }
 
 template<typename IndexVector>
-ExactRuleRefinement<IndexVector>::ExactRuleRefinement(const IndexVector& labelIndices, uint32 numExamples,
-                                                      uint32 featureIndex, bool ordinal, bool nominal,
-                                                      bool hasZeroWeights, std::unique_ptr<Callback> callbackPtr)
-    : labelIndices_(labelIndices), numExamples_(numExamples), featureIndex_(featureIndex), ordinal_(ordinal),
-      nominal_(nominal), hasZeroWeights_(hasZeroWeights), callbackPtr_(std::move(callbackPtr)) {}
+ExactRuleRefinement<IndexVector>::ExactRuleRefinement(const IndexVector& labelIndices,
+                                                      std::unique_ptr<Callback> callbackPtr)
+    : labelIndices_(labelIndices), callbackPtr_(std::move(callbackPtr)) {}
 
 template<typename IndexVector>
 void ExactRuleRefinement<IndexVector>::findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) {
+    // TODO Implement
+    /*
     findRefinementInternally(labelIndices_, numExamples_, featureIndex_, ordinal_, nominal_, minCoverage,
                              hasZeroWeights_, *callbackPtr_, comparator);
+    */
 }
 
 template<typename IndexVector>
 void ExactRuleRefinement<IndexVector>::findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) {
+    // TODO Implement
+    /*
     findRefinementInternally(labelIndices_, numExamples_, featureIndex_, ordinal_, nominal_, minCoverage,
                              hasZeroWeights_, *callbackPtr_, comparator);
+    */
 }
 
 template class ExactRuleRefinement<CompleteIndexVector>;

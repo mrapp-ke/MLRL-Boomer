@@ -22,36 +22,19 @@ class ExactRuleRefinement final : public IRuleRefinement {
 
         const IndexVector& labelIndices_;
 
-        const uint32 numExamples_;
-
-        const uint32 featureIndex_;
-
-        const bool ordinal_;
-
-        const bool nominal_;
-
-        const bool hasZeroWeights_;
-
-        typedef IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector> Callback;
+        typedef IRuleRefinementCallback<IImmutableWeightedStatistics, IFeatureVector> Callback;
 
         const std::unique_ptr<Callback> callbackPtr_;
 
     public:
 
         /**
-         * @param labelIndices      A reference to an object of template type `IndexVector` that provides access to the
-         *                          indices of the labels for which the refined rule is allowed to predict
-         * @param numExamples       The total number of training examples with non-zero weights that are covered by the
-         *                          existing rule
-         * @param featureIndex      The index of the feature, the new condition corresponds to
-         * @param ordinal           True, if the feature at index `featureIndex` is ordinal, false otherwise
-         * @param nominal           True, if the feature at index `featureIndex` is nominal, false otherwise
-         * @param hasZeroWeights    True, if some training examples may have zero weights, false otherwise
-         * @param callbackPtr       An unique pointer to an object of type `IRuleRefinementCallback` that allows to
-         *                          retrieve the information that is required to search for potential refinements
+         * @param labelIndices  A reference to an object of template type `IndexVector` that provides access to the
+         *                      indices of the labels for which the refined rule is allowed to predict
+         * @param callbackPtr   An unique pointer to an object of type `IRuleRefinementCallback` that allows to retrieve
+         *                      the information that is required to search for potential refinements
          */
-        ExactRuleRefinement(const IndexVector& labelIndices, uint32 numExamples, uint32 featureIndex, bool ordinal,
-                            bool nominal, bool hasZeroWeights, std::unique_ptr<Callback> callbackPtr);
+        ExactRuleRefinement(const IndexVector& labelIndices, std::unique_ptr<Callback> callbackPtr);
 
         void findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) override;
 
