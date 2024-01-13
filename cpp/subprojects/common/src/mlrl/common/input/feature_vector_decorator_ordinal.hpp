@@ -56,13 +56,15 @@ class OrdinalFeatureVectorView final : public AbstractFeatureVectorDecorator<Nom
         void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
                                  const IImmutableWeightedStatistics& statistics, SingleRefinementComparator& comparator,
                                  uint32 minCoverage) const override {
-            ruleRefinementSearch.searchForOrdinalRefinement(this->view.firstView, statistics, comparator, minCoverage);
+            ruleRefinementSearch.searchForOrdinalRefinement(this->view.firstView, this->view.secondView, statistics,
+                                                            comparator, minCoverage);
         }
 
         void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
                                  const IImmutableWeightedStatistics& statistics, FixedRefinementComparator& comparator,
                                  uint32 minCoverage) const override {
-            ruleRefinementSearch.searchForOrdinalRefinement(this->view.firstView, statistics, comparator, minCoverage);
+            ruleRefinementSearch.searchForOrdinalRefinement(this->view.firstView, this->view.secondView, statistics,
+                                                            comparator, minCoverage);
         }
 
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
@@ -119,13 +121,15 @@ class OrdinalFeatureVectorDecorator final : public AbstractNominalFeatureVectorD
         void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
                                  const IImmutableWeightedStatistics& statistics, SingleRefinementComparator& comparator,
                                  uint32 minCoverage) const override {
-            ruleRefinementSearch.searchForOrdinalRefinement(this->view.firstView, statistics, comparator, minCoverage);
+            ruleRefinementSearch.searchForOrdinalRefinement(this->view.firstView, this->view.secondView, statistics,
+                                                            comparator, minCoverage);
         }
 
         void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
                                  const IImmutableWeightedStatistics& statistics, FixedRefinementComparator& comparator,
                                  uint32 minCoverage) const override {
-            ruleRefinementSearch.searchForOrdinalRefinement(this->view.firstView, statistics, comparator, minCoverage);
+            ruleRefinementSearch.searchForOrdinalRefinement(this->view.firstView, this->view.secondView, statistics,
+                                                            comparator, minCoverage);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,

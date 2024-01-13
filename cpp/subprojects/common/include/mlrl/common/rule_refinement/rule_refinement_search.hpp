@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/input/feature_vector_binary.hpp"
+#include "mlrl/common/input/feature_vector_missing.hpp"
 #include "mlrl/common/input/feature_vector_nominal.hpp"
 #include "mlrl/common/input/feature_vector_numerical.hpp"
 #include "mlrl/common/input/feature_vector_ordinal.hpp"
@@ -32,6 +33,7 @@ class RuleRefinementSearch final {
          * @param minCoverage   The minimum number of examples that must be covered by the refinement
          */
         void searchForNumericalRefinement(const NumericalFeatureVector& featureVector,
+                                          const MissingFeatureVector& missingFeatureVector,
                                           const IImmutableWeightedStatistics& statistics,
                                           SingleRefinementComparator& comparator, uint32 minCoverage) const;
 
@@ -49,6 +51,7 @@ class RuleRefinementSearch final {
          * @param minCoverage   The minimum number of examples that must be covered by the refinements
          */
         void searchForNumericalRefinement(const NumericalFeatureVector& featureVector,
+                                          const MissingFeatureVector& missingFeatureVector,
                                           const IImmutableWeightedStatistics& statistics,
                                           FixedRefinementComparator& comparator, uint32 minCoverage) const;
 
@@ -66,6 +69,7 @@ class RuleRefinementSearch final {
          * @param minCoverage   The minimum number of examples that must be covered by the refinement
          */
         void searchForNominalRefinement(const NominalFeatureVector& featureVector,
+                                        const MissingFeatureVector& missingFeatureVector,
                                         const IImmutableWeightedStatistics& statistics,
                                         SingleRefinementComparator& comparator, uint32 minCoverage) const;
 
@@ -83,6 +87,7 @@ class RuleRefinementSearch final {
          * @param minCoverage   The minimum number of examples that must be covered by the refinements
          */
         void searchForNominalRefinement(const NominalFeatureVector& featureVector,
+                                        const MissingFeatureVector& missingFeatureVector,
                                         const IImmutableWeightedStatistics& statistics,
                                         FixedRefinementComparator& comparator, uint32 minCoverage) const;
 
@@ -100,6 +105,7 @@ class RuleRefinementSearch final {
          * @param minCoverage   The minimum number of examples that must be covered by the refinement
          */
         void searchForBinaryRefinement(const BinaryFeatureVector& featureVector,
+                                       const MissingFeatureVector& missingFeatureVector,
                                        const IImmutableWeightedStatistics& statistics,
                                        SingleRefinementComparator& comparator, uint32 minCoverage) const;
 
@@ -117,6 +123,7 @@ class RuleRefinementSearch final {
          * @param minCoverage   The minimum number of examples that must be covered by the refinements
          */
         void searchForBinaryRefinement(const BinaryFeatureVector& featureVector,
+                                       const MissingFeatureVector& missingFeatureVector,
                                        const IImmutableWeightedStatistics& statistics,
                                        FixedRefinementComparator& comparator, uint32 minCoverage) const;
 
@@ -134,6 +141,7 @@ class RuleRefinementSearch final {
          * @param minCoverage   The minimum number of examples that must be covered by the refinement
          */
         void searchForOrdinalRefinement(const OrdinalFeatureVector& featureVector,
+                                        const MissingFeatureVector& missingFeatureVector,
                                         const IImmutableWeightedStatistics& statistics,
                                         SingleRefinementComparator& comparator, uint32 minCoverage) const;
 
@@ -151,6 +159,7 @@ class RuleRefinementSearch final {
          * @param minCoverage   The minimum number of examples that must be covered by the refinements
          */
         void searchForOrdinalRefinement(const OrdinalFeatureVector& featureVector,
+                                        const MissingFeatureVector& missingFeatureVector,
                                         const IImmutableWeightedStatistics& statistics,
                                         FixedRefinementComparator& comparator, uint32 minCoverage) const;
 };

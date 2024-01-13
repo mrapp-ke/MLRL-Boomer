@@ -29,13 +29,15 @@ class BinaryFeatureVectorDecorator final : public AbstractNominalFeatureVectorDe
         void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
                                  const IImmutableWeightedStatistics& statistics, SingleRefinementComparator& comparator,
                                  uint32 minCoverage) const override {
-            ruleRefinementSearch.searchForBinaryRefinement(this->view.firstView, statistics, comparator, minCoverage);
+            ruleRefinementSearch.searchForBinaryRefinement(this->view.firstView, this->view.secondView, statistics,
+                                                           comparator, minCoverage);
         }
 
         void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
                                  const IImmutableWeightedStatistics& statistics, FixedRefinementComparator& comparator,
                                  uint32 minCoverage) const override {
-            ruleRefinementSearch.searchForBinaryRefinement(this->view.firstView, statistics, comparator, minCoverage);
+            ruleRefinementSearch.searchForBinaryRefinement(this->view.firstView, this->view.secondView, statistics,
+                                                           comparator, minCoverage);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
