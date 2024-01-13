@@ -107,7 +107,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) 
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
-    EXPECT_EQ(coverageMask.getIndicatorValue(), 0);
+    EXPECT_EQ(coverageMask.getIndicatorValue(), (uint32) 0);
     const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().firstView;
 
     for (uint32 i = 0; i < interval.start; i++) {
@@ -244,7 +244,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromViewI
     std::unique_ptr<IFeatureVector> existing;
     decorator.createFilteredFeatureVector(existing, Interval(0, numValues))
       ->updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
-    EXPECT_EQ(coverageMask.getIndicatorValue(), 0);
+    EXPECT_EQ(coverageMask.getIndicatorValue(), (uint32) 0);
     const OrdinalFeatureVector& ordinalFeatureVector = decorator.getView().firstView;
 
     for (uint32 i = 0; i < interval.start; i++) {
@@ -310,7 +310,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndices) 
         OrdinalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
 
         for (uint32 i = 0; i < filteredFeatureVector.numValues; i++) {
-            EXPECT_EQ(valuesBegin[i], interval.start + i);
+            EXPECT_EQ(valuesBegin[i], (int32) (interval.start + i));
             OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
             OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
@@ -357,7 +357,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithI
         OrdinalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
 
         for (uint32 i = 0; i < filteredFeatureVector.numValues; i++) {
-            EXPECT_EQ(valuesBegin[i], interval.start + i);
+            EXPECT_EQ(valuesBegin[i], (int32) (interval.start + i));
             OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
             OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
@@ -403,7 +403,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesIn
         OrdinalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
 
         for (uint32 i = 0; i < filteredFeatureVector.numValues; i++) {
-            EXPECT_EQ(valuesBegin[i], i);
+            EXPECT_EQ(valuesBegin[i], (int32) i);
             OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
             OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
@@ -450,7 +450,7 @@ TEST(OrdinalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWithI
         OrdinalFeatureVector::value_const_iterator valuesBegin = filteredFeatureVector.values_cbegin();
 
         for (uint32 i = 0; i < filteredFeatureVector.numValues; i++) {
-            EXPECT_EQ(valuesBegin[i], i);
+            EXPECT_EQ(valuesBegin[i], (int32) i);
             OrdinalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(i);
             OrdinalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(i);
             uint32 numIndices = indicesEnd - indicesBegin;
