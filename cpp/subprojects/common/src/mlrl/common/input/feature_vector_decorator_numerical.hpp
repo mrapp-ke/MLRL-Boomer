@@ -93,15 +93,15 @@ class AbstractNumericalFeatureVectorDecorator : public AbstractFeatureVectorDeco
         void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
                                  const IImmutableWeightedStatistics& statistics, SingleRefinementComparator& comparator,
                                  uint32 minCoverage) const override {
-            ruleRefinementSearch.searchForNumericalRefinement(this->view.firstView, statistics, comparator,
-                                                              minCoverage);
+            ruleRefinementSearch.searchForNumericalRefinement(this->view.firstView, this->view.secondView, statistics,
+                                                              comparator, minCoverage);
         }
 
         void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
                                  const IImmutableWeightedStatistics& statistics, FixedRefinementComparator& comparator,
                                  uint32 minCoverage) const override {
-            ruleRefinementSearch.searchForNumericalRefinement(this->view.firstView, statistics, comparator,
-                                                              minCoverage);
+            ruleRefinementSearch.searchForNumericalRefinement(this->view.firstView, this->view.secondView, statistics,
+                                                              comparator, minCoverage);
         }
 
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
