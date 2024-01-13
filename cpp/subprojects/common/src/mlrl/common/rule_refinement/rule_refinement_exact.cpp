@@ -7,9 +7,10 @@ static inline void findRefinementInternally(
   const IndexVector& indexVector, IRuleRefinementCallback<IImmutableWeightedStatistics, IFeatureVector>& callback,
   Comparator& comparator, uint32 minCoverage) {
     IRuleRefinementCallback<IImmutableWeightedStatistics, IFeatureVector>::Result callbackResult = callback.get();
+    const IImmutableWeightedStatistics& statistics = callbackResult.statistics;
     const IFeatureVector& featureVector = callbackResult.vector;
     RuleRefinementSearch ruleRefinementSearch;
-    featureVector.searchForRefinement(ruleRefinementSearch, comparator, minCoverage);
+    featureVector.searchForRefinement(ruleRefinementSearch, statistics, comparator, minCoverage);
 }
 
 template<typename IndexVector>

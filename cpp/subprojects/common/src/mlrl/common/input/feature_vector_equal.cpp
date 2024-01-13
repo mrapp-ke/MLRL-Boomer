@@ -1,9 +1,11 @@
 #include "mlrl/common/input/feature_vector_equal.hpp"
 
 void EqualFeatureVector::searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
+                                             const IImmutableWeightedStatistics& statistics,
                                              SingleRefinementComparator& comparator, uint32 minCoverage) const {}
 
 void EqualFeatureVector::searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
+                                             const IImmutableWeightedStatistics& statistics,
                                              FixedRefinementComparator& comparator, uint32 minCoverage) const {}
 
 void EqualFeatureVector::updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& CoverageMask,

@@ -25,11 +25,15 @@ class IFeatureVector {
          *
          * @param ruleRefinementSearch  A reference to an object of type `RuleRefinementSearch` that should be used for
          *                              conducting the search
+         * @param statistics            A reference to an object of type `IImmutableWeightedStatistics` that provides
+         *                              access to weighted statistics about the labels of the training examples, which
+         *                              should serve as the basis for evaluating the quality of potential refinements
          * @param comparator            A reference to an object of type `SingleRefinementComparator` that should be
          *                              used for comparing potential refinements
          * @param minCoverage           The minimum number of examples that must be covered by the refinement
          */
         virtual void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
+                                         const IImmutableWeightedStatistics& statistics,
                                          SingleRefinementComparator& comparator, uint32 minCoverage) const = 0;
 
         /**
@@ -37,11 +41,15 @@ class IFeatureVector {
          *
          * @param ruleRefinementSearch  A reference to an object of type `RuleRefinementSearch` that should be used for
          *                              conducting the search
+         * @param statistics            A reference to an object of type `IImmutableWeightedStatistics` that provides
+         *                              access to weighted statistics about the labels of the training examples, which
+         *                              should serve as the basis for evaluating the quality of potential refinements
          * @param comparator            A reference to an object of type `MultiRefinementComparator` that should be used
          *                              for comparing potential refinements
          * @param minCoverage           The minimum number of examples that must be covered by the refinement
          */
         virtual void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
+                                         const IImmutableWeightedStatistics& statistics,
                                          FixedRefinementComparator& comparator, uint32 minCoverage) const = 0;
 
         /**
