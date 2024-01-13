@@ -2,7 +2,7 @@
 
 void RuleRefinementSearch::searchForNumericalRefinement(const NumericalFeatureVector& featureVector,
                                                         const MissingFeatureVector& missingFeatureVector,
-                                                        const IImmutableWeightedStatistics& statistics,
+                                                        IWeightedStatisticsSubset& statisticsSubset,
                                                         SingleRefinementComparator& comparator,
                                                         uint32 minCoverage) const {
     // TODO Implement
@@ -10,7 +10,7 @@ void RuleRefinementSearch::searchForNumericalRefinement(const NumericalFeatureVe
 
 void RuleRefinementSearch::searchForNumericalRefinement(const NumericalFeatureVector& featureVector,
                                                         const MissingFeatureVector& missingFeatureVector,
-                                                        const IImmutableWeightedStatistics& statistics,
+                                                        IWeightedStatisticsSubset& statisticsSubset,
                                                         FixedRefinementComparator& comparator,
                                                         uint32 minCoverage) const {
     // TODO Implement
@@ -18,7 +18,7 @@ void RuleRefinementSearch::searchForNumericalRefinement(const NumericalFeatureVe
 
 void RuleRefinementSearch::searchForNominalRefinement(const NominalFeatureVector& featureVector,
                                                       const MissingFeatureVector& missingFeatureVector,
-                                                      const IImmutableWeightedStatistics& statistics,
+                                                      IWeightedStatisticsSubset& statisticsSubset,
                                                       SingleRefinementComparator& comparator,
                                                       uint32 minCoverage) const {
     // TODO Implement
@@ -26,28 +26,28 @@ void RuleRefinementSearch::searchForNominalRefinement(const NominalFeatureVector
 
 void RuleRefinementSearch::searchForNominalRefinement(const NominalFeatureVector& featureVector,
                                                       const MissingFeatureVector& missingFeatureVector,
-                                                      const IImmutableWeightedStatistics& statistics,
+                                                      IWeightedStatisticsSubset& statisticsSubset,
                                                       FixedRefinementComparator& comparator, uint32 minCoverage) const {
     // TODO Implement
 }
 
 void RuleRefinementSearch::searchForBinaryRefinement(const BinaryFeatureVector& featureVector,
                                                      const MissingFeatureVector& missingFeatureVector,
-                                                     const IImmutableWeightedStatistics& statistics,
+                                                     IWeightedStatisticsSubset& statisticsSubset,
                                                      SingleRefinementComparator& comparator, uint32 minCoverage) const {
     // TODO Implement
 }
 
 void RuleRefinementSearch::searchForBinaryRefinement(const BinaryFeatureVector& featureVector,
                                                      const MissingFeatureVector& missingFeatureVector,
-                                                     const IImmutableWeightedStatistics& statistics,
+                                                     IWeightedStatisticsSubset& statisticsSubset,
                                                      FixedRefinementComparator& comparator, uint32 minCoverage) const {
     // TODO Implement
 }
 
 void RuleRefinementSearch::searchForOrdinalRefinement(const OrdinalFeatureVector& featureVector,
                                                       const MissingFeatureVector& missingFeatureVector,
-                                                      const IImmutableWeightedStatistics& statistics,
+                                                      IWeightedStatisticsSubset& statisticsSubset,
                                                       SingleRefinementComparator& comparator,
                                                       uint32 minCoverage) const {
     // TODO Implement
@@ -55,7 +55,7 @@ void RuleRefinementSearch::searchForOrdinalRefinement(const OrdinalFeatureVector
 
 void RuleRefinementSearch::searchForOrdinalRefinement(const OrdinalFeatureVector& featureVector,
                                                       const MissingFeatureVector& missingFeatureVector,
-                                                      const IImmutableWeightedStatistics& statistics,
+                                                      IWeightedStatisticsSubset& statisticsSubset,
                                                       FixedRefinementComparator& comparator, uint32 minCoverage) const {
     // TODO Implement
 }

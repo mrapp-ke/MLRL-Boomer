@@ -4,13 +4,18 @@
 
 template<typename IndexVector, typename Comparator>
 static inline void findRefinementInternally(
-  const IndexVector& indexVector, IRuleRefinementCallback<IImmutableWeightedStatistics, IFeatureVector>& callback,
+  const IndexVector& labelIndices, IRuleRefinementCallback<IImmutableWeightedStatistics, IFeatureVector>& callback,
   Comparator& comparator, uint32 minCoverage) {
+    // Invoke the callback...
     IRuleRefinementCallback<IImmutableWeightedStatistics, IFeatureVector>::Result callbackResult = callback.get();
     const IImmutableWeightedStatistics& statistics = callbackResult.statistics;
     const IFeatureVector& featureVector = callbackResult.vector;
+
+    // Create a new, empty subset of the statistics...
+    std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(labelIndices);
+
     RuleRefinementSearch ruleRefinementSearch;
-    featureVector.searchForRefinement(ruleRefinementSearch, statistics, comparator, minCoverage);
+    featureVector.searchForRefinement(ruleRefinementSearch, *statisticsSubsetPtr, comparator, minCoverage);
 }
 
 template<typename IndexVector>

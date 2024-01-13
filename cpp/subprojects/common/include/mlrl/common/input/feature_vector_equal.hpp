@@ -12,13 +12,11 @@
 class EqualFeatureVector final : public IFeatureVector {
     public:
 
-        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
-                                 const IImmutableWeightedStatistics& statistics, SingleRefinementComparator& comparator,
-                                 uint32 minCoverage) const override;
+        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch, IWeightedStatisticsSubset& statistics,
+                                 SingleRefinementComparator& comparator, uint32 minCoverage) const override;
 
-        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
-                                 const IImmutableWeightedStatistics& statistics, FixedRefinementComparator& comparator,
-                                 uint32 minCoverage) const override;
+        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch, IWeightedStatisticsSubset& statistics,
+                                 FixedRefinementComparator& comparator, uint32 minCoverage) const override;
 
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
                                              uint32 indicatorValue, IWeightedStatistics& statistics) const override;
