@@ -106,7 +106,7 @@ TEST(NominalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) 
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
-    EXPECT_EQ(coverageMask.getIndicatorValue(), 0);
+    EXPECT_EQ(coverageMask.getIndicatorValue(), (uint32) 0);
     const NominalFeatureVector& nominalFeatureVector = decorator.getView().firstView;
 
     for (uint32 i = 0; i < interval.start; i++) {
@@ -205,7 +205,7 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesIn
         uint32 n = 0;
 
         for (uint32 i = 0; i < interval.start; i++) {
-            EXPECT_EQ(valuesBegin[n], i);
+            EXPECT_EQ(valuesBegin[n], (int32) i);
             NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(n);
             NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(n);
             uint32 numIndices = indicesEnd - indicesBegin;
@@ -219,7 +219,7 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesIn
         }
 
         for (uint32 i = interval.end; i < featureVector.numValues; i++) {
-            EXPECT_EQ(valuesBegin[n], i);
+            EXPECT_EQ(valuesBegin[n], (int32) i);
             NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(n);
             NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(n);
             uint32 numIndices = indicesEnd - indicesBegin;
@@ -269,7 +269,7 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesIn
         uint32 n = 0;
 
         for (uint32 i = 0; i < interval.start; i++) {
-            EXPECT_EQ(valuesBegin[n], i);
+            EXPECT_EQ(valuesBegin[n], (int32) i);
             NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(n);
             NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(n);
             uint32 numIndices = indicesEnd - indicesBegin;
@@ -283,7 +283,7 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromIndicesIn
         }
 
         for (uint32 i = interval.end; i < featureVector.numValues; i++) {
-            EXPECT_EQ(valuesBegin[n], i);
+            EXPECT_EQ(valuesBegin[n], (int32) i);
             NominalFeatureVector::index_const_iterator indicesBegin = filteredFeatureVector.indices_cbegin(n);
             NominalFeatureVector::index_const_iterator indicesEnd = filteredFeatureVector.indices_cend(n);
             uint32 numIndices = indicesEnd - indicesBegin;

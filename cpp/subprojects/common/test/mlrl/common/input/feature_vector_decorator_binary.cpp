@@ -69,7 +69,7 @@ TEST(BinaryFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) {
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
-    EXPECT_EQ(coverageMask.getIndicatorValue(), 0);
+    EXPECT_EQ(coverageMask.getIndicatorValue(), (uint32) 0);
     const BinaryFeatureVector& binaryFeatureVector = decorator.getView().firstView;
 
     for (auto it = binaryFeatureVector.indices_cbegin(0); it != binaryFeatureVector.indices_cend(0); it++) {
