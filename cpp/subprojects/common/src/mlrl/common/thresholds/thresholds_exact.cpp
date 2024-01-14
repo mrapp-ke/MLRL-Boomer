@@ -136,7 +136,8 @@ class ExactThresholds final : public AbstractThresholds {
 
                     std::unique_ptr<Callback> callbackPtr =
                       std::make_unique<Callback>(*this, thresholds_.featureInfo_, featureIndex);
-                    return std::make_unique<ExactRuleRefinement<IndexVector>>(labelIndices, std::move(callbackPtr));
+                    return std::make_unique<ExactRuleRefinement<IndexVector>>(labelIndices, featureIndex,
+                                                                              std::move(callbackPtr));
                 }
 
             public:
