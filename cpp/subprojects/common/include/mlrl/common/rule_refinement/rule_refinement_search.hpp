@@ -31,11 +31,14 @@ class RuleRefinementSearch final {
          * @param comparator        A reference to an object of type `SingleRefinementComparator` that should be used
          *                          for comparing potential refinements
          * @param minCoverage       The minimum number of examples that must be covered by the refinement
+         * @param refinement        A reference to an object of type `Refinement` that should be used for storing the
+         *                          properties of the best refinement that is found
          */
         void searchForNumericalRefinement(const NumericalFeatureVector& featureVector,
                                           const MissingFeatureVector& missingFeatureVector,
                                           IWeightedStatisticsSubset& statisticsSubset,
-                                          SingleRefinementComparator& comparator, uint32 minCoverage) const;
+                                          SingleRefinementComparator& comparator, uint32 minCoverage,
+                                          Refinement& refinement) const;
 
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a given numerical
@@ -49,11 +52,14 @@ class RuleRefinementSearch final {
          * @param comparator        A reference to an object of type `MultiRefinementComparator` that should be used for
          *                          comparing potential refinements
          * @param minCoverage       The minimum number of examples that must be covered by the refinements
+         * @param refinement        A reference to an object of type `Refinement` that should be used for storing the
+         *                          properties of the best refinement that is found
          */
         void searchForNumericalRefinement(const NumericalFeatureVector& featureVector,
                                           const MissingFeatureVector& missingFeatureVector,
                                           IWeightedStatisticsSubset& statisticsSubset,
-                                          FixedRefinementComparator& comparator, uint32 minCoverage) const;
+                                          FixedRefinementComparator& comparator, uint32 minCoverage,
+                                          Refinement& refinement) const;
 
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a given nominal
@@ -65,13 +71,16 @@ class RuleRefinementSearch final {
          *                          weighted statistics about the labels of the training examples, which should serve as
          *                          the basis for evaluating the quality of potential refinements
          * @param comparator        A reference to an object of type `SingleRefinementComparator` that should be used
-         * for comparing potential refinements
+         *                          for comparing potential refinements
          * @param minCoverage       The minimum number of examples that must be covered by the refinement
+         * @param refinement        A reference to an object of type `Refinement` that should be used for storing the
+         *                          properties of the best refinement that is found
          */
         void searchForNominalRefinement(const NominalFeatureVector& featureVector,
                                         const MissingFeatureVector& missingFeatureVector,
                                         IWeightedStatisticsSubset& statisticsSubset,
-                                        SingleRefinementComparator& comparator, uint32 minCoverage) const;
+                                        SingleRefinementComparator& comparator, uint32 minCoverage,
+                                        Refinement& refinement) const;
 
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a given nominal
@@ -85,11 +94,14 @@ class RuleRefinementSearch final {
          * @param comparator        A reference to an object of type `MultiRefinementComparator` that should be used for
          *                          comparing potential refinements
          * @param minCoverage       The minimum number of examples that must be covered by the refinements
+         * @param refinement        A reference to an object of type `Refinement` that should be used for storing the
+         *                          properties of the best refinement that is found
          */
         void searchForNominalRefinement(const NominalFeatureVector& featureVector,
                                         const MissingFeatureVector& missingFeatureVector,
                                         IWeightedStatisticsSubset& statisticsSubset,
-                                        FixedRefinementComparator& comparator, uint32 minCoverage) const;
+                                        FixedRefinementComparator& comparator, uint32 minCoverage,
+                                        Refinement& refinement) const;
 
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a given binary feature
@@ -103,11 +115,14 @@ class RuleRefinementSearch final {
          * @param comparator        A reference to an object of type `SingleRefinementComparator` that should be used
          *                          for comparing potential refinements
          * @param minCoverage       The minimum number of examples that must be covered by the refinement
+         * @param refinement        A reference to an object of type `Refinement` that should be used for storing the
+         *                          properties of the best refinement that is found
          */
         void searchForBinaryRefinement(const BinaryFeatureVector& featureVector,
                                        const MissingFeatureVector& missingFeatureVector,
                                        IWeightedStatisticsSubset& statisticsSubset,
-                                       SingleRefinementComparator& comparator, uint32 minCoverage) const;
+                                       SingleRefinementComparator& comparator, uint32 minCoverage,
+                                       Refinement& refinement) const;
 
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a given binary feature
@@ -121,11 +136,14 @@ class RuleRefinementSearch final {
          * @param comparator        A reference to an object of type `MultiRefinementComparator` that should be used for
          *                          comparing potential refinements
          * @param minCoverage       The minimum number of examples that must be covered by the refinements
+         * @param refinement        A reference to an object of type `Refinement` that should be used for storing the
+         *                          properties of the best refinement that is found
          */
         void searchForBinaryRefinement(const BinaryFeatureVector& featureVector,
                                        const MissingFeatureVector& missingFeatureVector,
                                        IWeightedStatisticsSubset& statisticsSubset,
-                                       FixedRefinementComparator& comparator, uint32 minCoverage) const;
+                                       FixedRefinementComparator& comparator, uint32 minCoverage,
+                                       Refinement& refinement) const;
 
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a given ordinal
@@ -139,11 +157,14 @@ class RuleRefinementSearch final {
          * @param comparator        A reference to an object of type `SingleRefinementComparator` that should be used
          *                          for comparing potential refinements
          * @param minCoverage       The minimum number of examples that must be covered by the refinement
+         * @param refinement        A reference to an object of type `Refinement` that should be used for storing the
+         *                          properties of the best refinement that is found
          */
         void searchForOrdinalRefinement(const OrdinalFeatureVector& featureVector,
                                         const MissingFeatureVector& missingFeatureVector,
                                         IWeightedStatisticsSubset& statisticsSubset,
-                                        SingleRefinementComparator& comparator, uint32 minCoverage) const;
+                                        SingleRefinementComparator& comparator, uint32 minCoverage,
+                                        Refinement& refinement) const;
 
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a given ordinal
@@ -157,9 +178,12 @@ class RuleRefinementSearch final {
          * @param comparator        A reference to an object of type `MultiRefinementComparator` that should be used for
          *                          comparing potential refinements
          * @param minCoverage       The minimum number of examples that must be covered by the refinements
+         * @param refinement        A reference to an object of type `Refinement` that should be used for storing the
+         *                          properties of the best refinement that is found
          */
         void searchForOrdinalRefinement(const OrdinalFeatureVector& featureVector,
                                         const MissingFeatureVector& missingFeatureVector,
                                         IWeightedStatisticsSubset& statisticsSubset,
-                                        FixedRefinementComparator& comparator, uint32 minCoverage) const;
+                                        FixedRefinementComparator& comparator, uint32 minCoverage,
+                                        Refinement& refinement) const;
 };
