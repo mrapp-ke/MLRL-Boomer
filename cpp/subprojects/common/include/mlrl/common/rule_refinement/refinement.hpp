@@ -35,5 +35,6 @@ struct Refinement final : public Condition {
          * The index of the last element, e.g., example or bin, that has been processed when evaluating the refined
          * rule.
          */
+        // TODO Remove, if possible
         int64 previous;
 };

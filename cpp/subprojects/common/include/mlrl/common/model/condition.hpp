@@ -85,5 +85,6 @@ struct Condition {
         /**
          * The number of elements that are covered by the condition.
          */
+        // TODO Remove, if possible
         uint32 numCovered;
 };
