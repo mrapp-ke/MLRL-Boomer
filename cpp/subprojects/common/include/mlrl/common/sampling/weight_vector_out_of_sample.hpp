@@ -33,6 +33,13 @@ class OutOfSampleWeightVector final {
         uint32 getNumElements() const;
 
         /**
+         * Returns the number of non-zero weights.
+         *
+         * @return The number of non-zero weights
+         */
+        uint32 getNumNonZeroWeights() const;
+
+        /**
          * Returns the weight at a specific position.
          *
          * @param pos   The position
