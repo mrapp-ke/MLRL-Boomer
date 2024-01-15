@@ -105,6 +105,13 @@ namespace boosting {
                   ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, labelIndices)) {}
 
             /**
+             * @see `IStatisticsSubset::getNumNonZeroWeights`
+             */
+            uint32 getNumNonZeroWeights() const override final {
+                return weights_.getNumNonZeroWeights();
+            }
+
+            /**
              * @see `IStatisticsSubset::hasNonZeroWeight`
              */
             bool hasNonZeroWeight(uint32 statisticIndex) const override final {

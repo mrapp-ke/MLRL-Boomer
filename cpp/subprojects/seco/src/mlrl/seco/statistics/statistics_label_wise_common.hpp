@@ -138,6 +138,13 @@ namespace seco {
                   ruleEvaluationPtr_(ruleEvaluationFactory.create(labelIndices)) {}
 
             /**
+             * @see `IStatisticsSubset::getNumNonZeroWeights`
+             */
+            uint32 getNumNonZeroWeights() const override final {
+                return weights_.getNumNonZeroWeights();
+            }
+
+            /**
              * @see `IStatisticsSubset::hasNonZeroWeight`
              */
             bool hasNonZeroWeight(uint32 statisticIndex) const override final {
