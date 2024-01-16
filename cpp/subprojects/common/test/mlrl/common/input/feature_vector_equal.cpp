@@ -12,5 +12,7 @@ TEST(EqualFeatureVectorTest, createFilteredFeatureVectorFromCoverageMask) {
     EqualFeatureVector featureVector;
     std::unique_ptr<IFeatureVector> existing;
     CoverageMask coverageMask(10);
-    EXPECT_THROW(featureVector.createFilteredFeatureVector(existing, coverageMask), std::runtime_error);
+    std::unique_ptr<IFeatureVector> filteredPtr = featureVector.createFilteredFeatureVector(existing, coverageMask);
+    const EqualFeatureVector* filtered = dynamic_cast<const EqualFeatureVector*>(filteredPtr.get());
+    EXPECT_TRUE(filtered != nullptr);
 }
