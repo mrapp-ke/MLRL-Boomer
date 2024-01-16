@@ -182,9 +182,6 @@ class ExactThresholds final : public AbstractThresholds {
                 }
 
                 void filterThresholds(const Condition& condition) override {
-                    numModifications_++;
-                    numCoveredExamples_ = condition.numCovered;
-
                     uint32 featureIndex = condition.featureIndex;
                     auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry()).first;
                     FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
@@ -204,6 +201,8 @@ class ExactThresholds final : public AbstractThresholds {
                         featureVector = cacheEntry.vectorPtr.get();
                     }
 
+                    numModifications_++;
+                    numCoveredExamples_ = condition.numCovered;
                     // TODO Pass condition directly
                     Interval interval(condition.start, condition.end, !condition.covered);
                     featureVector->updateCoverageMaskAndStatistics(interval, coverageMask_, numModifications_,
