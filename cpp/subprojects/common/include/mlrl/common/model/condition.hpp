@@ -21,9 +21,9 @@ enum Comparator : uint8 {
  * A union of types that may be used for the threshold used by a condition of a rule.
  */
 union Threshold {
-    float32 numerical;
-    int32 nominal;
-    int32 ordinal;
+        float32 numerical;
+        int32 nominal;
+        int32 ordinal;
 };
 
 /**
