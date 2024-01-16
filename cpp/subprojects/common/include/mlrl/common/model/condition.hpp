@@ -18,6 +18,15 @@ enum Comparator : uint8 {
 };
 
 /**
+ * A union of types that may be used for the threshold used by a condition of a rule.
+ */
+union Threshold {
+    float32 numerical;
+    int32 nominal;
+    int32 ordinal;
+};
+
+/**
  * Stores the properties of a condition of a rule. It consists of the index of the feature, the condition corresponds
  * to, the type of the operator that is used by the condition, as well as a threshold. In addition, it stores the range
  * [start, end) that corresponds to the elements, e.g. examples or bins, that are covered (or uncovered, if
@@ -65,7 +74,7 @@ struct Condition {
         /**
          * The threshold that is used by the condition.
          */
-        float32 threshold;
+        Threshold threshold;
 
         /**
          * The index of the first element (inclusive) that is covered (or uncovered) by the condition.
