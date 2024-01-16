@@ -10,8 +10,8 @@ template<typename Threshold, typename Compare>
 bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(View<const float32>::const_iterator begin,
                                                                   View<const float32>::const_iterator end) const {
     uint32 numConditions = this->getNumElements();
-    index_const_iterator featureIndexIterator = this->indices_cbegin();
-    threshold_const_iterator thresholdIterator = this->values_cbegin();
+    typename ConditionVector<Threshold, Compare>::index_const_iterator featureIndexIterator = this->indices_cbegin();
+    typename ConditionVector<Threshold, Compare>::value_const_iterator thresholdIterator = this->values_cbegin();
 
     for (uint32 i = 0; i < numConditions; i++) {
         uint32 featureIndex = featureIndexIterator[i];
@@ -34,8 +34,8 @@ bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(View<uint32>::
                                                                   float32* tmpArray1, uint32* tmpArray2,
                                                                   uint32 n) const {
     uint32 numConditions = this->getNumElements();
-    index_const_iterator featureIndexIterator = this->indices_cbegin();
-    threshold_const_iterator thresholdIterator = this->values_cbegin();
+    typename ConditionVector<Threshold, Compare>::index_const_iterator featureIndexIterator = this->indices_cbegin();
+    typename ConditionVector<Threshold, Compare>::value_const_iterator thresholdIterator = this->values_cbegin();
 
     for (uint32 i = 0; i < numConditions; i++) {
         uint32 featureIndex = featureIndexIterator[i];
@@ -59,19 +59,19 @@ uint32 ConjunctiveBody::getNumNumericalLeq() const {
     return numericalLeqVector_.getNumElements();
 }
 
-ConjunctiveBody::threshold_iterator ConjunctiveBody::numerical_leq_thresholds_begin() {
+ConjunctiveBody::numerical_threshold_iterator ConjunctiveBody::numerical_leq_thresholds_begin() {
     return numericalLeqVector_.values_begin();
 }
 
-ConjunctiveBody::threshold_iterator ConjunctiveBody::numerical_leq_thresholds_end() {
+ConjunctiveBody::numerical_threshold_iterator ConjunctiveBody::numerical_leq_thresholds_end() {
     return numericalLeqVector_.values_end();
 }
 
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::numerical_leq_thresholds_cbegin() const {
+ConjunctiveBody::numerical_threshold_const_iterator ConjunctiveBody::numerical_leq_thresholds_cbegin() const {
     return numericalLeqVector_.values_cbegin();
 }
 
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::numerical_leq_thresholds_cend() const {
+ConjunctiveBody::numerical_threshold_const_iterator ConjunctiveBody::numerical_leq_thresholds_cend() const {
     return numericalLeqVector_.values_cend();
 }
 
@@ -95,19 +95,19 @@ uint32 ConjunctiveBody::getNumNumericalGr() const {
     return numericalGrVector_.getNumElements();
 }
 
-ConjunctiveBody::threshold_iterator ConjunctiveBody::numerical_gr_thresholds_begin() {
+ConjunctiveBody::numerical_threshold_iterator ConjunctiveBody::numerical_gr_thresholds_begin() {
     return numericalGrVector_.values_begin();
 }
 
-ConjunctiveBody::threshold_iterator ConjunctiveBody::numerical_gr_thresholds_end() {
+ConjunctiveBody::numerical_threshold_iterator ConjunctiveBody::numerical_gr_thresholds_end() {
     return numericalGrVector_.values_end();
 }
 
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::numerical_gr_thresholds_cbegin() const {
+ConjunctiveBody::numerical_threshold_const_iterator ConjunctiveBody::numerical_gr_thresholds_cbegin() const {
     return numericalGrVector_.values_cbegin();
 }
 
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::numerical_gr_thresholds_cend() const {
+ConjunctiveBody::numerical_threshold_const_iterator ConjunctiveBody::numerical_gr_thresholds_cend() const {
     return numericalGrVector_.values_cend();
 }
 
@@ -131,19 +131,19 @@ uint32 ConjunctiveBody::getNumOrdinalLeq() const {
     return ordinalLeqVector_.getNumElements();
 }
 
-ConjunctiveBody::threshold_iterator ConjunctiveBody::ordinal_leq_thresholds_begin() {
+ConjunctiveBody::ordinal_threshold_iterator ConjunctiveBody::ordinal_leq_thresholds_begin() {
     return ordinalLeqVector_.values_begin();
 }
 
-ConjunctiveBody::threshold_iterator ConjunctiveBody::ordinal_leq_thresholds_end() {
+ConjunctiveBody::ordinal_threshold_iterator ConjunctiveBody::ordinal_leq_thresholds_end() {
     return ordinalLeqVector_.values_end();
 }
 
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::ordinal_leq_thresholds_cbegin() const {
+ConjunctiveBody::ordinal_threshold_const_iterator ConjunctiveBody::ordinal_leq_thresholds_cbegin() const {
     return ordinalLeqVector_.values_cbegin();
 }
 
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::ordinal_leq_thresholds_cend() const {
+ConjunctiveBody::ordinal_threshold_const_iterator ConjunctiveBody::ordinal_leq_thresholds_cend() const {
     return ordinalLeqVector_.values_cend();
 }
 
@@ -167,19 +167,19 @@ uint32 ConjunctiveBody::getNumOrdinalGr() const {
     return ordinalGrVector_.getNumElements();
 }
 
-ConjunctiveBody::threshold_iterator ConjunctiveBody::ordinal_gr_thresholds_begin() {
+ConjunctiveBody::ordinal_threshold_iterator ConjunctiveBody::ordinal_gr_thresholds_begin() {
     return ordinalGrVector_.values_begin();
 }
 
-ConjunctiveBody::threshold_iterator ConjunctiveBody::ordinal_gr_thresholds_end() {
+ConjunctiveBody::ordinal_threshold_iterator ConjunctiveBody::ordinal_gr_thresholds_end() {
     return ordinalGrVector_.values_end();
 }
 
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::ordinal_gr_thresholds_cbegin() const {
+ConjunctiveBody::ordinal_threshold_const_iterator ConjunctiveBody::ordinal_gr_thresholds_cbegin() const {
     return ordinalGrVector_.values_cbegin();
 }
 
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::ordinal_gr_thresholds_cend() const {
+ConjunctiveBody::ordinal_threshold_const_iterator ConjunctiveBody::ordinal_gr_thresholds_cend() const {
     return ordinalGrVector_.values_cend();
 }
 
@@ -203,19 +203,19 @@ uint32 ConjunctiveBody::getNumNominalEq() const {
     return nominalEqVector_.getNumElements();
 }
 
-ConjunctiveBody::threshold_iterator ConjunctiveBody::nominal_eq_thresholds_begin() {
+ConjunctiveBody::nominal_threshold_iterator ConjunctiveBody::nominal_eq_thresholds_begin() {
     return nominalEqVector_.values_begin();
 }
 
-ConjunctiveBody::threshold_iterator ConjunctiveBody::nominal_eq_thresholds_end() {
+ConjunctiveBody::nominal_threshold_iterator ConjunctiveBody::nominal_eq_thresholds_end() {
     return nominalEqVector_.values_end();
 }
 
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::nominal_eq_thresholds_cbegin() const {
+ConjunctiveBody::nominal_threshold_const_iterator ConjunctiveBody::nominal_eq_thresholds_cbegin() const {
     return nominalEqVector_.values_cbegin();
 }
 
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::nominal_eq_thresholds_cend() const {
+ConjunctiveBody::nominal_threshold_const_iterator ConjunctiveBody::nominal_eq_thresholds_cend() const {
     return nominalEqVector_.values_cend();
 }
 
@@ -239,19 +239,19 @@ uint32 ConjunctiveBody::getNumNominalNeq() const {
     return nominalNeqVector_.getNumElements();
 }
 
-ConjunctiveBody::threshold_iterator ConjunctiveBody::nominal_neq_thresholds_begin() {
+ConjunctiveBody::nominal_threshold_iterator ConjunctiveBody::nominal_neq_thresholds_begin() {
     return nominalNeqVector_.values_begin();
 }
 
-ConjunctiveBody::threshold_iterator ConjunctiveBody::nominal_neq_thresholds_end() {
+ConjunctiveBody::nominal_threshold_iterator ConjunctiveBody::nominal_neq_thresholds_end() {
     return nominalNeqVector_.values_end();
 }
 
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::nominal_neq_thresholds_cbegin() const {
+ConjunctiveBody::nominal_threshold_const_iterator ConjunctiveBody::nominal_neq_thresholds_cbegin() const {
     return nominalNeqVector_.values_cbegin();
 }
 
-ConjunctiveBody::threshold_const_iterator ConjunctiveBody::nominal_neq_thresholds_cend() const {
+ConjunctiveBody::nominal_threshold_const_iterator ConjunctiveBody::nominal_neq_thresholds_cend() const {
     return nominalNeqVector_.values_cend();
 }
 
