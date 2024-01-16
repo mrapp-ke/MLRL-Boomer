@@ -1,6 +1,7 @@
 #include "mlrl/common/rule_refinement/rule_refinement_search.hpp"
 
 #include "rule_refinement_search_binary.hpp"
+#include "rule_refinement_search_nominal.hpp"
 
 static inline void addMissingStatistics(IWeightedStatisticsSubset& statisticsSubset,
                                         const MissingFeatureVector& missingFeatureVector) {
@@ -34,7 +35,7 @@ void RuleRefinementSearch::searchForNominalRefinement(const NominalFeatureVector
                                                       SingleRefinementComparator& comparator, uint32 minCoverage,
                                                       Refinement& refinement) const {
     addMissingStatistics(statisticsSubset, missingFeatureVector);
-    // TODO Implement
+    searchForNominalRefinementInternally(featureVector, statisticsSubset, comparator, minCoverage, refinement);
 }
 
 void RuleRefinementSearch::searchForNominalRefinement(const NominalFeatureVector& featureVector,
@@ -43,7 +44,7 @@ void RuleRefinementSearch::searchForNominalRefinement(const NominalFeatureVector
                                                       FixedRefinementComparator& comparator, uint32 minCoverage,
                                                       Refinement& refinement) const {
     addMissingStatistics(statisticsSubset, missingFeatureVector);
-    // TODO Implement
+    searchForNominalRefinementInternally(featureVector, statisticsSubset, comparator, minCoverage, refinement);
 }
 
 void RuleRefinementSearch::searchForBinaryRefinement(const BinaryFeatureVector& featureVector,
