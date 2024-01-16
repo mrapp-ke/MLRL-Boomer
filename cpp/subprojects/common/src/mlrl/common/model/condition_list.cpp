@@ -76,13 +76,13 @@ std::unique_ptr<ConjunctiveBody> ConditionList::createConjunctiveBody() const {
             }
             case NOMINAL_EQ: {
                 bodyPtr->nominal_eq_indices_begin()[nominalEqIndex] = featureIndex;
-                bodyPtr->nominal_eq_thresholds_begin()[nominalEqIndex] = threshold.numerical;
+                bodyPtr->nominal_eq_thresholds_begin()[nominalEqIndex] = threshold.nominal;
                 nominalEqIndex++;
                 break;
             }
             case NOMINAL_NEQ: {
                 bodyPtr->nominal_neq_indices_begin()[nominalNeqIndex] = featureIndex;
-                bodyPtr->nominal_neq_thresholds_begin()[nominalNeqIndex] = threshold.numerical;
+                bodyPtr->nominal_neq_thresholds_begin()[nominalNeqIndex] = threshold.nominal;
                 nominalNeqIndex++;
                 break;
             }

@@ -83,8 +83,15 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.end = r;
                         refinement.numCovered = coverage;
                         refinement.covered = false;
-                        refinement.threshold.numerical = thresholdIterator[r - 1];
-                        refinement.comparator = nominal ? NOMINAL_NEQ : (ordinal ? ORDINAL_GR : NUMERICAL_GR);
+
+                        if (nominal) {
+                            refinement.threshold.nominal = (int32) thresholdIterator[r - 1];
+                            refinement.comparator = NOMINAL_NEQ;
+                        } else {
+                            refinement.threshold.numerical = thresholdIterator[r - 1];
+                            refinement.comparator = ordinal ? ORDINAL_GR : NUMERICAL_GR;
+                        }
+
                         comparator.pushRefinement(refinement, scoreVector);
                     }
                 }
@@ -119,8 +126,15 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                     refinement.end = sparseBinIndex;
                     refinement.numCovered = numCovered;
                     refinement.covered = true;
-                    refinement.threshold.numerical = thresholdIterator[sparseBinIndex - 1];
-                    refinement.comparator = nominal ? NOMINAL_EQ : (ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ);
+
+                    if (nominal) {
+                        refinement.threshold.nominal = (int32) thresholdIterator[sparseBinIndex - 1];
+                        refinement.comparator = NOMINAL_EQ;
+                    } else {
+                        refinement.threshold.numerical = thresholdIterator[sparseBinIndex - 1];
+                        refinement.comparator = ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ;
+                    }
+
                     comparator.pushRefinement(refinement, scoreVector);
                 }
             }
@@ -139,8 +153,15 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                     refinement.end = sparseBinIndex;
                     refinement.numCovered = coverage;
                     refinement.covered = false;
-                    refinement.threshold.numerical = thresholdIterator[sparseBinIndex - 1];
-                    refinement.comparator = nominal ? NOMINAL_NEQ : (ordinal ? ORDINAL_GR : NUMERICAL_GR);
+
+                    if (nominal) {
+                        refinement.threshold.nominal = (int32) thresholdIterator[sparseBinIndex - 1];
+                        refinement.comparator = NOMINAL_NEQ;
+                    } else {
+                        refinement.threshold.numerical = thresholdIterator[sparseBinIndex - 1];
+                        refinement.comparator = ordinal ? ORDINAL_GR : NUMERICAL_GR;
+                    }
+
                     comparator.pushRefinement(refinement, scoreVector);
                 }
             }
@@ -191,7 +212,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.covered = true;
 
                         if (nominal) {
-                            refinement.threshold.numerical = thresholdIterator[firstR];
+                            refinement.threshold.nominal = (int32) thresholdIterator[firstR];
                             refinement.comparator = NOMINAL_EQ;
                         } else {
                             refinement.threshold.numerical = thresholdIterator[r];
@@ -218,7 +239,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.covered = false;
 
                         if (nominal) {
-                            refinement.threshold.numerical = thresholdIterator[firstR];
+                            refinement.threshold.nominal = (int32) thresholdIterator[firstR];
                             refinement.comparator = NOMINAL_NEQ;
                         } else {
                             refinement.threshold.numerical = thresholdIterator[r];
@@ -261,10 +282,10 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                     refinement.covered = true;
 
                     if (nominal) {
-                        refinement.threshold.numerical = thresholdIterator[firstR];
+                        refinement.threshold.numerical = (int32) thresholdIterator[firstR];
                         refinement.comparator = NOMINAL_EQ;
                     } else {
-                        refinement.threshold.numerical = thresholdIterator[sparseBinIndex];
+                        refinement.threshold.numerical = (int32) thresholdIterator[sparseBinIndex];
                         refinement.comparator = ordinal ? ORDINAL_GR : NUMERICAL_GR;
                     }
 
@@ -288,7 +309,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                     refinement.covered = false;
 
                     if (nominal) {
-                        refinement.threshold.numerical = thresholdIterator[firstR];
+                        refinement.threshold.nominal = (int32) thresholdIterator[firstR];
                         refinement.comparator = NOMINAL_NEQ;
                     } else {
                         refinement.threshold.numerical = thresholdIterator[sparseBinIndex];
@@ -320,7 +341,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.end = sparseBinIndex + 1;
                         refinement.numCovered = coverage;
                         refinement.covered = false;
-                        refinement.threshold.numerical = thresholdIterator[sparseBinIndex];
+                        refinement.threshold.nominal = (int32) thresholdIterator[sparseBinIndex];
                         refinement.comparator = NOMINAL_NEQ;
                         comparator.pushRefinement(refinement, scoreVector);
                     }
@@ -340,7 +361,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.end = sparseBinIndex + 1;
                         refinement.numCovered = coverage;
                         refinement.covered = true;
-                        refinement.threshold.numerical = thresholdIterator[sparseBinIndex];
+                        refinement.threshold.nominal = (int32) thresholdIterator[sparseBinIndex];
                         refinement.comparator = NOMINAL_EQ;
                         comparator.pushRefinement(refinement, scoreVector);
                     }

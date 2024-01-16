@@ -15,8 +15,8 @@ bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(View<const flo
 
     for (uint32 i = 0; i < numConditions; i++) {
         uint32 featureIndex = featureIndexIterator[i];
-        float32 threshold = thresholdIterator[i];
-        float32 featureValue = begin[featureIndex];
+        Threshold threshold = thresholdIterator[i];
+        Threshold featureValue = (Threshold) begin[featureIndex];
 
         if (!compare_(featureValue, threshold)) {
             return false;
@@ -39,8 +39,8 @@ bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(View<uint32>::
 
     for (uint32 i = 0; i < numConditions; i++) {
         uint32 featureIndex = featureIndexIterator[i];
-        float32 threshold = thresholdIterator[i];
-        float32 featureValue = tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : 0;
+        Threshold threshold = thresholdIterator[i];
+        Threshold featureValue = (Threshold) (tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : 0);
 
         if (!compare_(featureValue, threshold)) {
             return false;

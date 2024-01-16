@@ -3,6 +3,7 @@
 """
 
 
+ctypedef int int32
 ctypedef long int int64
 ctypedef unsigned char uint8
 ctypedef unsigned int uint32
