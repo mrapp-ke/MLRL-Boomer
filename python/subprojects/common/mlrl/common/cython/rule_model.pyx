@@ -358,47 +358,50 @@ cdef class RuleList(RuleModel):
         cdef uint32 num_nominal_neq = nominal_neq_thresholds.shape[0] if nominal_neq_thresholds is not None else 0
         cdef unique_ptr[ConjunctiveBodyImpl] body_ptr = make_unique[ConjunctiveBodyImpl](
             num_numerical_leq, num_numerical_gr, num_ordinal_leq, num_ordinal_gr, num_nominal_eq, num_nominal_neq)
-        cdef ConjunctiveBodyImpl.threshold_iterator threshold_iterator = body_ptr.get().numerical_leq_thresholds_begin()
+        cdef ConjunctiveBodyImpl.numerical_threshold_iterator numerical_threshold_iterator = \
+            body_ptr.get().numerical_leq_thresholds_begin()
         cdef ConjunctiveBodyImpl.index_iterator index_iterator = body_ptr.get().numerical_leq_indices_begin()
         cdef uint32 i
 
         for i in range(num_numerical_leq):
-            threshold_iterator[i] = numerical_leq_thresholds[i]
+            numerical_threshold_iterator[i] = numerical_leq_thresholds[i]
             index_iterator[i] = numerical_leq_indices[i]
 
-        threshold_iterator = body_ptr.get().numerical_gr_thresholds_begin()
+        numerical_threshold_iterator = body_ptr.get().numerical_gr_thresholds_begin()
         index_iterator = body_ptr.get().numerical_gr_indices_begin()
 
         for i in range(num_numerical_gr):
-            threshold_iterator[i] = numerical_gr_thresholds[i]
+            numerical_threshold_iterator[i] = numerical_gr_thresholds[i]
             index_iterator[i] = numerical_gr_indices[i]
 
-        threshold_iterator = body_ptr.get().ordinal_leq_thresholds_begin()
+        cdef ConjunctiveBodyImpl.ordinal_threshold_iterator ordinal_threshold_iterator = \
+            body_ptr.get().ordinal_leq_thresholds_begin()
         index_iterator = body_ptr.get().ordinal_leq_indices_begin()
 
         for i in range(num_ordinal_leq):
-            threshold_iterator[i] = ordinal_leq_thresholds[i]
+            ordinal_threshold_iterator[i] = ordinal_leq_thresholds[i]
             index_iterator[i] = ordinal_leq_indices[i]
 
-        threshold_iterator = body_ptr.get().ordinal_gr_thresholds_begin()
+        ordinal_threshold_iterator = body_ptr.get().ordinal_gr_thresholds_begin()
         index_iterator = body_ptr.get().ordinal_gr_indices_begin()
 
         for i in range(num_ordinal_gr):
-            threshold_iterator[i] = ordinal_gr_thresholds[i]
+            ordinal_threshold_iterator[i] = ordinal_gr_thresholds[i]
             index_iterator[i] = ordinal_gr_indices[i]
 
-        threshold_iterator = body_ptr.get().nominal_eq_thresholds_begin()
+        cdef ConjunctiveBodyImpl.nominal_threshold_iterator nominal_threshold_iterator = \
+            body_ptr.get().nominal_eq_thresholds_begin()
         index_iterator = body_ptr.get().nominal_eq_indices_begin()
 
         for i in range(num_nominal_eq):
-            threshold_iterator[i] = nominal_eq_thresholds[i]
+            nominal_threshold_iterator[i] = nominal_eq_thresholds[i]
             index_iterator[i] = nominal_eq_indices[i]
 
-        threshold_iterator = body_ptr.get().nominal_neq_thresholds_begin()
+        nominal_threshold_iterator = body_ptr.get().nominal_neq_thresholds_begin()
         index_iterator = body_ptr.get().nominal_neq_indices_begin()
 
         for i in range(num_nominal_neq):
-            threshold_iterator[i] = nominal_neq_thresholds[i]
+            nominal_threshold_iterator[i] = nominal_neq_thresholds[i]
             index_iterator[i] = nominal_neq_indices[i]
 
         return <unique_ptr[IBody]>move(body_ptr)

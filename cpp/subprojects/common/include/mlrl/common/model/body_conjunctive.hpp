@@ -184,15 +184,38 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
                         uint32 numNominalEq, uint32 numNominalNeq);
 
         /**
-         * An iterator that provides access to the thresholds that are used by the conditions in the body and allows to
-         * modify them.
+         * An iterator that provides access to the thresholds that are used by numerical conditions in the body and
+         * allows to modify them.
          */
-        typedef View<float32>::iterator threshold_iterator;
+        typedef View<float32>::iterator numerical_threshold_iterator;
 
         /**
-         * An iterator that provides read-only access to the thresholds that are used by the conditions in the body.
+         * An iterator that provides read-only access to the thresholds that are used by numerical conditions in the
+         * body.
          */
-        typedef View<float32>::const_iterator threshold_const_iterator;
+        typedef View<float32>::const_iterator numerical_threshold_const_iterator;
+
+        /**
+         * An iterator that provides access to the thresholds that are used by ordinal conditions in the body and allows
+         * to modify them.
+         */
+        typedef View<float32>::iterator ordinal_threshold_iterator;
+
+        /**
+         * An iterator that provides read-only access to the thresholds that are used by ordinal conditions in the body.
+         */
+        typedef View<float32>::const_iterator ordinal_threshold_const_iterator;
+
+        /**
+         * An iterator that provides access to the threshold that are used by nominal conditions in the body and allows
+         * to modify them.
+         */
+        typedef View<float32>::iterator nominal_threshold_iterator;
+
+        /**
+         * An iterator that provides read-only access to the thresholds that are used by nominal conditions in the body.
+         */
+        typedef View<float32>::const_iterator nominal_threshold_const_iterator;
 
         /**
          * An iterator that provides access to the feature indices that correspond to the conditions in the body and
@@ -214,36 +237,36 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         uint32 getNumNumericalLeq() const;
 
         /**
-         * Returns a `threshold_iterator` to the beginning of the thresholds that correspond to numerical conditions
-         * that use the <= operator.
-         *
-         * @return A `threshold_iterator` to the beginning
-         */
-        threshold_iterator numerical_leq_thresholds_begin();
-
-        /**
-         * Returns a `threshold_iterator` to the end of the thresholds that correspond to numerical conditions that use
-         * the <= operator.
-         *
-         * @return A `threshold_iterator` to the end
-         */
-        threshold_iterator numerical_leq_thresholds_end();
-
-        /**
-         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to numerical
+         * Returns a `numerical_threshold_iterator` to the beginning of the thresholds that correspond to numerical
          * conditions that use the <= operator.
          *
-         * @return A `threshold_const_iterator` to the beginning
+         * @return A `numerical_threshold_iterator` to the beginning
          */
-        threshold_const_iterator numerical_leq_thresholds_cbegin() const;
+        numerical_threshold_iterator numerical_leq_thresholds_begin();
 
         /**
-         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to numerical conditions
+         * Returns a `numerical_threshold_iterator` to the end of the thresholds that correspond to numerical conditions
          * that use the <= operator.
          *
-         * @return A `threshold_const_iterator` to the end
+         * @return A `numerical_threshold_iterator` to the end
          */
-        threshold_const_iterator numerical_leq_thresholds_cend() const;
+        numerical_threshold_iterator numerical_leq_thresholds_end();
+
+        /**
+         * Returns a `numerical_threshold_const_iterator` to the beginning of the thresholds that correspond to
+         * numerical conditions that use the <= operator.
+         *
+         * @return A `numerical_threshold_const_iterator` to the beginning
+         */
+        numerical_threshold_const_iterator numerical_leq_thresholds_cbegin() const;
+
+        /**
+         * Returns a `numerical_threshold_const_iterator` to the end of the thresholds that correspond to numerical
+         * conditions that use the <= operator.
+         *
+         * @return A `numerical_threshold_const_iterator` to the end
+         */
+        numerical_threshold_const_iterator numerical_leq_thresholds_cend() const;
 
         /**
          * Returns an `index_iterator` to the beginning of the feature indices that correspond to numerical conditions
@@ -285,36 +308,36 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         uint32 getNumNumericalGr() const;
 
         /**
-         * Returns a `threshold_iterator` to the beginning of the thresholds that correspond to numerical conditions
-         * that use the > operator.
-         *
-         * @return A `threshold_iterator` to the beginning
-         */
-        threshold_iterator numerical_gr_thresholds_begin();
-
-        /**
-         * Returns a `threshold_iterator` to the end of the thresholds that correspond to numerical conditions that use
-         * the > operator.
-         *
-         * @return A `threshold_iterator` to the end
-         */
-        threshold_iterator numerical_gr_thresholds_end();
-
-        /**
-         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to numerical
+         * Returns a `numerical_threshold_iterator` to the beginning of the thresholds that correspond to numerical
          * conditions that use the > operator.
          *
-         * @return A `threshold_const_iterator` to the beginning
+         * @return A `numerical_threshold_iterator` to the beginning
          */
-        threshold_const_iterator numerical_gr_thresholds_cbegin() const;
+        numerical_threshold_iterator numerical_gr_thresholds_begin();
 
         /**
-         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to numerical conditions
+         * Returns a `numerical_threshold_iterator` to the end of the thresholds that correspond to numerical conditions
          * that use the > operator.
          *
-         * @return A `threshold_const_iterator` to the end
+         * @return A `numerical_threshold_iterator` to the end
          */
-        threshold_const_iterator numerical_gr_thresholds_cend() const;
+        numerical_threshold_iterator numerical_gr_thresholds_end();
+
+        /**
+         * Returns a `numerical_threshold_const_iterator` to the beginning of the thresholds that correspond to
+         * numerical conditions that use the > operator.
+         *
+         * @return A `numerical_threshold_const_iterator` to the beginning
+         */
+        numerical_threshold_const_iterator numerical_gr_thresholds_cbegin() const;
+
+        /**
+         * Returns a `numerical_threshold_const_iterator` to the end of the thresholds that correspond to numerical
+         * conditions that use the > operator.
+         *
+         * @return A `numerical_threshold_const_iterator` to the end
+         */
+        numerical_threshold_const_iterator numerical_gr_thresholds_cend() const;
 
         /**
          * Returns an `index_iterator` to the beginning of the feature indices that correspond to numerical conditions
@@ -356,36 +379,36 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         uint32 getNumOrdinalLeq() const;
 
         /**
-         * Returns a `threshold_iterator` to the beginning of the thresholds that correspond to ordinal conditions that
-         * use the <= operator.
+         * Returns an `ordinal_threshold_iterator` to the beginning of the thresholds that correspond to ordinal
+         * conditions that use the <= operator.
          *
-         * @return A `threshold_iterator` to the beginning
+         * @return An `ordinal_threshold_iterator` to the beginning
          */
-        threshold_iterator ordinal_leq_thresholds_begin();
+        ordinal_threshold_iterator ordinal_leq_thresholds_begin();
 
         /**
-         * Returns a `threshold_iterator` to the end of the thresholds that correspond to ordinal conditions that use
-         * the <= operator.
-         *
-         * @return A `threshold_iterator` to the end
-         */
-        threshold_iterator ordinal_leq_thresholds_end();
-
-        /**
-         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to ordinal conditions
+         * Returns an `ordinal_threshold_iterator` to the end of the thresholds that correspond to ordinal conditions
          * that use the <= operator.
          *
-         * @return A `threshold_const_iterator` to the beginning
+         * @return An `ordinal_threshold_iterator` to the end
          */
-        threshold_const_iterator ordinal_leq_thresholds_cbegin() const;
+        ordinal_threshold_iterator ordinal_leq_thresholds_end();
 
         /**
-         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to ordinal conditions that
-         * use the <= operator.
+         * Returns an `ordinal_threshold_const_iterator` to the beginning of the thresholds that correspond to ordinal
+         * conditions that use the <= operator.
          *
-         * @return A `threshold_const_iterator` to the end
+         * @return An `ordinal_threshold_const_iterator` to the beginning
          */
-        threshold_const_iterator ordinal_leq_thresholds_cend() const;
+        ordinal_threshold_const_iterator ordinal_leq_thresholds_cbegin() const;
+
+        /**
+         * Returns an `ordinal_threshold_const_iterator` to the end of the thresholds that correspond to ordinal
+         * conditions that use the <= operator.
+         *
+         * @return An `ordinal_threshold_const_iterator` to the end
+         */
+        ordinal_threshold_const_iterator ordinal_leq_thresholds_cend() const;
 
         /**
          * Returns an `index_iterator` to the beginning of the feature indices that correspond to ordinal conditions
@@ -427,36 +450,36 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         uint32 getNumOrdinalGr() const;
 
         /**
-         * Returns a `threshold_iterator` to the beginning of the thresholds that correspond to ordinal conditions that
-         * use the > operator.
+         * Returns an `ordinal_threshold_iterator` to the beginning of the thresholds that correspond to ordinal
+         * conditions that use the > operator.
          *
-         * @return A `threshold_iterator` to the beginning
+         * @return An `ordinal_threshold_iterator` to the beginning
          */
-        threshold_iterator ordinal_gr_thresholds_begin();
+        ordinal_threshold_iterator ordinal_gr_thresholds_begin();
 
         /**
-         * Returns a `threshold_iterator` to the end of the thresholds that correspond to ordinal conditions that use
-         * the > operator.
-         *
-         * @return A `threshold_iterator` to the end
-         */
-        threshold_iterator ordinal_gr_thresholds_end();
-
-        /**
-         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to ordinal conditions
+         * Returns an `ordinal_threshold_iterator` to the end of the thresholds that correspond to ordinal conditions
          * that use the > operator.
          *
-         * @return A `threshold_const_iterator` to the beginning
+         * @return An `ordinal_threshold_iterator` to the end
          */
-        threshold_const_iterator ordinal_gr_thresholds_cbegin() const;
+        ordinal_threshold_iterator ordinal_gr_thresholds_end();
 
         /**
-         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to ordinal conditions that
-         * use the > operator.
+         * Returns an `ordinal_threshold_const_iterator` to the beginning of the thresholds that correspond to ordinal
+         * conditions that use the > operator.
          *
-         * @return A `threshold_const_iterator` to the end
+         * @return An `ordinal_threshold_const_iterator` to the beginning
          */
-        threshold_const_iterator ordinal_gr_thresholds_cend() const;
+        ordinal_threshold_const_iterator ordinal_gr_thresholds_cbegin() const;
+
+        /**
+         * Returns an `ordinal_threshold_const_iterator` to the end of the thresholds that correspond to ordinal
+         * conditions that use the > operator.
+         *
+         * @return An `ordinal_threshold_const_iterator` to the end
+         */
+        ordinal_threshold_const_iterator ordinal_gr_thresholds_cend() const;
 
         /**
          * Returns an `index_iterator` to the beginning of the feature indices that correspond to ordinal conditions
@@ -498,36 +521,36 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         uint32 getNumNominalEq() const;
 
         /**
-         * Returns a `threshold_iterator` to the beginning of the thresholds that correspond to nominal conditions that
-         * use the == operator.
+         * Returns a `nominal_threshold_iterator` to the beginning of the thresholds that correspond to nominal
+         * conditions that use the == operator.
          *
-         * @return A `threshold_iterator` to the beginning
+         * @return A `nominal_threshold_iterator` to the beginning
          */
-        threshold_iterator nominal_eq_thresholds_begin();
+        nominal_threshold_iterator nominal_eq_thresholds_begin();
 
         /**
-         * Returns a `threshold_iterator` to the end of the thresholds that correspond to nominal conditions that use
-         * the == operator.
-         *
-         * @return A `threshold_iterator` to the end
-         */
-        threshold_iterator nominal_eq_thresholds_end();
-
-        /**
-         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to nominal conditions
+         * Returns a `nominal_threshold_iterator` to the end of the thresholds that correspond to nominal conditions
          * that use the == operator.
          *
-         * @return A `threshold_const_iterator` to the beginning
+         * @return A `nominal_threshold_iterator` to the end
          */
-        threshold_const_iterator nominal_eq_thresholds_cbegin() const;
+        nominal_threshold_iterator nominal_eq_thresholds_end();
 
         /**
-         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to nominal conditions that
-         * use the == operator.
+         * Returns a `nominal_threshold_const_iterator` to the beginning of the thresholds that correspond to nominal
+         * conditions that use the == operator.
          *
-         * @return A `threshold_const_iterator` to the end
+         * @return A `nominal_threshold_const_iterator` to the beginning
          */
-        threshold_const_iterator nominal_eq_thresholds_cend() const;
+        nominal_threshold_const_iterator nominal_eq_thresholds_cbegin() const;
+
+        /**
+         * Returns a `nominal_threshold_const_iterator` to the end of the thresholds that correspond to nominal
+         * conditions that use the == operator.
+         *
+         * @return A `nominal_threshold_const_iterator` to the end
+         */
+        nominal_threshold_const_iterator nominal_eq_thresholds_cend() const;
 
         /**
          * Returns an `index_iterator` to the beginning of the feature indices that correspond to nominal conditions
@@ -569,36 +592,36 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
         uint32 getNumNominalNeq() const;
 
         /**
-         * Returns a `threshold_iterator` to the beginning of the thresholds that correspond to nominal conditions that
-         * use the != operator.
+         * Returns a `nominal_threshold_iterator` to the beginning of the thresholds that correspond to nominal
+         * conditions that use the != operator.
          *
-         * @return A `threshold_iterator` to the beginning
+         * @return A `nominal_threshold_iterator` to the beginning
          */
-        threshold_iterator nominal_neq_thresholds_begin();
+        nominal_threshold_iterator nominal_neq_thresholds_begin();
 
         /**
-         * Returns a `threshold_iterator` to the end of the thresholds that correspond to nominal conditions that use
-         * the != operator.
-         *
-         * @return A `threshold_iterator` to the end
-         */
-        threshold_iterator nominal_neq_thresholds_end();
-
-        /**
-         * Returns a `threshold_const_iterator` to the beginning of the thresholds that correspond to nominal conditions
+         * Returns a `nominal_threshold_iterator` to the end of the thresholds that correspond to nominal conditions
          * that use the != operator.
          *
-         * @return A `threshold_const_iterator` to the beginning
+         * @return A `nominal_threshold_iterator` to the end
          */
-        threshold_const_iterator nominal_neq_thresholds_cbegin() const;
+        nominal_threshold_iterator nominal_neq_thresholds_end();
 
         /**
-         * Returns a `threshold_const_iterator` to the end of the thresholds that correspond to nominal conditions that
-         * use the != operator.
+         * Returns a `nominal_threshold_const_iterator` to the beginning of the thresholds that correspond to nominal
+         * conditions that use the != operator.
          *
-         * @return A `threshold_const_iterator` to the end
+         * @return A `nominal_threshold_const_iterator` to the beginning
          */
-        threshold_const_iterator nominal_neq_thresholds_cend() const;
+        nominal_threshold_const_iterator nominal_neq_thresholds_cbegin() const;
+
+        /**
+         * Returns a `nominal_threshold_const_iterator` to the end of the thresholds that correspond to nominal
+         * conditions that use the != operator.
+         *
+         * @return A `nominal_threshold_const_iterator` to the end
+         */
+        nominal_threshold_const_iterator nominal_neq_thresholds_cend() const;
 
         /**
          * Returns an `index_iterator` to the beginning of the feature indices that correspond to nominal conditions

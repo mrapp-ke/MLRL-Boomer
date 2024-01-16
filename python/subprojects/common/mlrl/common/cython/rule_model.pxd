@@ -23,9 +23,17 @@ cdef extern from "mlrl/common/model/body_conjunctive.hpp" nogil:
 
     cdef cppclass ConjunctiveBodyImpl"ConjunctiveBody"(IBody):
 
-        ctypedef float32* threshold_iterator
+        ctypedef float32* numerical_threshold_iterator
 
-        ctypedef const float32* threshold_const_iterator
+        ctypedef const float32* numerical_threshold_const_iterator
+
+        ctypedef float32* ordinal_threshold_iterator
+
+        ctypedef const float32* ordinal_threshold_const_iterator
+
+        ctypedef float32* nominal_threshold_iterator
+
+        ctypedef const float32* nominal_threshold_const_iterator
 
         ctypedef uint32* index_iterator
 
@@ -39,9 +47,9 @@ cdef extern from "mlrl/common/model/body_conjunctive.hpp" nogil:
 
         uint32 getNumNumericalLeq() const
 
-        threshold_iterator numerical_leq_thresholds_begin()
+        numerical_threshold_iterator numerical_leq_thresholds_begin()
 
-        threshold_const_iterator numerical_leq_thresholds_cbegin() const
+        numerical_threshold_const_iterator numerical_leq_thresholds_cbegin() const
 
         index_iterator numerical_leq_indices_begin()
 
@@ -49,9 +57,9 @@ cdef extern from "mlrl/common/model/body_conjunctive.hpp" nogil:
 
         uint32 getNumNumericalGr() const
 
-        threshold_iterator numerical_gr_thresholds_begin()
+        numerical_threshold_iterator numerical_gr_thresholds_begin()
 
-        threshold_const_iterator numerical_gr_thresholds_cbegin() const
+        numerical_threshold_const_iterator numerical_gr_thresholds_cbegin() const
 
         index_iterator numerical_gr_indices_begin()
 
@@ -59,9 +67,9 @@ cdef extern from "mlrl/common/model/body_conjunctive.hpp" nogil:
 
         uint32 getNumOrdinalLeq() const
 
-        threshold_iterator ordinal_leq_thresholds_begin()
+        ordinal_threshold_iterator ordinal_leq_thresholds_begin()
 
-        threshold_const_iterator ordinal_leq_thresholds_cbegin() const
+        ordinal_threshold_const_iterator ordinal_leq_thresholds_cbegin() const
 
         index_iterator ordinal_leq_indices_begin()
 
@@ -69,9 +77,9 @@ cdef extern from "mlrl/common/model/body_conjunctive.hpp" nogil:
 
         uint32 getNumOrdinalGr() const
 
-        threshold_iterator ordinal_gr_thresholds_begin()
+        ordinal_threshold_iterator ordinal_gr_thresholds_begin()
 
-        threshold_const_iterator ordinal_gr_thresholds_cbegin() const
+        ordinal_threshold_const_iterator ordinal_gr_thresholds_cbegin() const
 
         index_iterator ordinal_gr_indices_begin()
 
@@ -79,9 +87,9 @@ cdef extern from "mlrl/common/model/body_conjunctive.hpp" nogil:
 
         uint32 getNumNominalEq() const
 
-        threshold_iterator nominal_eq_thresholds_begin()
+        nominal_threshold_iterator nominal_eq_thresholds_begin()
 
-        threshold_const_iterator nominal_eq_thresholds_cbegin() const
+        nominal_threshold_const_iterator nominal_eq_thresholds_cbegin() const
 
         index_iterator nominal_eq_indices_begin()
 
@@ -89,9 +97,9 @@ cdef extern from "mlrl/common/model/body_conjunctive.hpp" nogil:
 
         uint32 getNumNominalNeq() const
 
-        threshold_iterator nominal_neq_thresholds_begin()
+        nominal_threshold_iterator nominal_neq_thresholds_begin()
 
-        threshold_const_iterator nominal_neq_thresholds_cbegin() const
+        nominal_threshold_const_iterator nominal_neq_thresholds_cbegin() const
 
         index_iterator nominal_neq_indices_begin()
 
