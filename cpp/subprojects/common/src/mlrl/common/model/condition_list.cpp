@@ -87,7 +87,7 @@ std::unique_ptr<ConjunctiveBody> ConditionList::createConjunctiveBody() const {
                 break;
             }
             default: {
-                break;
+                throw std::runtime_error("Encountered unexpected comparator type");
             }
         }
     }
