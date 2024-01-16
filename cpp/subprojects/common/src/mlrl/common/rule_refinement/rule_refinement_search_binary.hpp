@@ -42,7 +42,7 @@ static inline void searchForBinaryRefinementInternally(const BinaryFeatureVector
             refinement.numCovered = numCovered;
             refinement.covered = true;
             refinement.comparator = NOMINAL_EQ;
-            refinement.threshold = valueIterator[0];
+            refinement.threshold.numerical = valueIterator[0];
             comparator.pushRefinement(refinement, scoreVector);
         }
     }
@@ -63,7 +63,7 @@ static inline void searchForBinaryRefinementInternally(const BinaryFeatureVector
             refinement.numCovered = numUncovered;
             refinement.covered = false;
             refinement.comparator = NOMINAL_EQ;
-            refinement.threshold = featureVector.majorityValue;
+            refinement.threshold.numerical = featureVector.majorityValue;
             comparator.pushRefinement(refinement, scoreVector);
         }
     }
