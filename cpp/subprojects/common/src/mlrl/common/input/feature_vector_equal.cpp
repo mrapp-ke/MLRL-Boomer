@@ -22,5 +22,5 @@ std::unique_ptr<IFeatureVector> EqualFeatureVector::createFilteredFeatureVector(
 
 std::unique_ptr<IFeatureVector> EqualFeatureVector::createFilteredFeatureVector(
   std::unique_ptr<IFeatureVector>& existing, const CoverageMask& coverageMask) const {
-    throw std::runtime_error("Function EqualFeatureVector::createFilteredFeatureVector should never be called");
+    return std::make_unique<EqualFeatureVector>();
 }
