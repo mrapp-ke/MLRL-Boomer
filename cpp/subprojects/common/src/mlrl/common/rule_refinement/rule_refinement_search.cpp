@@ -2,6 +2,7 @@
 
 #include "rule_refinement_search_binary.hpp"
 #include "rule_refinement_search_nominal.hpp"
+#include "rule_refinement_search_numerical.hpp"
 
 static inline void addMissingStatistics(IWeightedStatisticsSubset& statisticsSubset,
                                         const MissingFeatureVector& missingFeatureVector) {
@@ -17,7 +18,7 @@ void RuleRefinementSearch::searchForNumericalRefinement(const NumericalFeatureVe
                                                         SingleRefinementComparator& comparator, uint32 minCoverage,
                                                         Refinement& refinement) const {
     addMissingStatistics(statisticsSubset, missingFeatureVector);
-    // TODO Implement
+    searchForNumericalRefinementInternally(featureVector, statisticsSubset, comparator, minCoverage, refinement);
 }
 
 void RuleRefinementSearch::searchForNumericalRefinement(const NumericalFeatureVector& featureVector,
@@ -26,7 +27,7 @@ void RuleRefinementSearch::searchForNumericalRefinement(const NumericalFeatureVe
                                                         FixedRefinementComparator& comparator, uint32 minCoverage,
                                                         Refinement& refinement) const {
     addMissingStatistics(statisticsSubset, missingFeatureVector);
-    // TODO Implement
+    searchForNumericalRefinementInternally(featureVector, statisticsSubset, comparator, minCoverage, refinement);
 }
 
 void RuleRefinementSearch::searchForNominalRefinement(const NominalFeatureVector& featureVector,
