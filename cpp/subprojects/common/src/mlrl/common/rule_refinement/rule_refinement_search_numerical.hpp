@@ -3,528 +3,293 @@
  */
 #pragma once
 
-static inline uint32 upperBound(FeatureVector::const_iterator iterator, uint32 start, uint32 end, float32 threshold) {
-    while (start < end) {
-        uint32 pivot = start + ((end - start) / 2);
-        float32 featureValue = iterator[pivot].value;
+#include "mlrl/common/input/feature_vector_numerical.hpp"
+#include "mlrl/common/rule_refinement/refinement.hpp"
+#include "mlrl/common/statistics/statistics_subset_weighted.hpp"
+#include "mlrl/common/util/math.hpp"
 
-        if (featureValue <= threshold) {
-            start = pivot + 1;
-        } else {
-            end = pivot;
-        }
-    }
-
-    return start;
-}
-
-static inline void adjustRefinement(Refinement& refinement, FeatureVector::const_iterator iterator) {
-    int64 previous = refinement.previous;
-    int64 end = refinement.end;
-
-    if (std::abs(previous - end) > 1) {
-        if (end < previous) {
-            refinement.end = ((int64) upperBound(iterator, end + 1, previous, refinement.threshold)) - 1;
-        } else {
-            refinement.end = upperBound(iterator, previous + 1, end, refinement.threshold);
-        }
-    }
-}
-
-template<typename IndexIterator, typename RefinementComparator>
-static inline void findRefinementInternally(
-  const IndexIterator& labelIndices, uint32 numExamples, uint32 featureIndex, bool ordinal, bool nominal,
-  uint32 minCoverage, bool hasZeroWeights,
-  IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector>& callback, RefinementComparator& comparator) {
-    Refinement refinement;
-    refinement.featureIndex = featureIndex;
-
-    // Invoke the callback...
-    IRuleRefinementCallback<IImmutableWeightedStatistics, FeatureVector>::Result callbackResult = callback.get();
-    const IImmutableWeightedStatistics& statistics = callbackResult.statistics;
-    const FeatureVector& featureVector = callbackResult.vector;
-    FeatureVector::const_iterator featureVectorIterator = featureVector.cbegin();
-    uint32 numFeatureValues = featureVector.getNumElements();
-
-    // Create a new, empty subset of the statistics...
-    std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(labelIndices);
-
-    for (auto it = featureVector.missing_indices_cbegin(); it != featureVector.missing_indices_cend(); it++) {
-        uint32 i = *it;
-        statisticsSubsetPtr->addToMissing(i);
-    }
-
-    // In the following, we start by processing all examples with feature values < 0...
+template<typename Comparator>
+static inline void searchForNumericalRefinementInternally(const NumericalFeatureVector& featureVector,
+                                                          IWeightedStatisticsSubset& statisticsSubset,
+                                                          Comparator& comparator, uint32 minCoverage,
+                                                          Refinement& refinement) {
+    float32 sparseValue = featureVector.sparseValue;
+    float32 previousValue = sparseValue;
+    uint32 numExamplesWithNonZeroWeights = statisticsSubset.getNumNonZeroWeights();
+    uint32 numFeatureValues = featureVector.numElements;
     uint32 numCovered = 0;
-    int64 firstR = 0;
-    int64 lastNegativeR = -1;
-    float32 previousThreshold = 0;
-    int64 previousR = 0;
-    int64 r;
+    int64 i = 0;
 
-    // Traverse examples with feature values < 0 in ascending order until the first example with non-zero weight is
-    // encountered...
-    for (r = 0; r < numFeatureValues; r++) {
-        float32 currentThreshold = featureVectorIterator[r].value;
+    // Traverse examples with feature values `f < sparseValue` in ascending order until the first example with non-zero
+    // weight is encountered...
+    for (; i < numFeatureValues; i++) {
+        const IndexedValue<float32>& entry = featureVector[i];
+        float32 currentValue = entry.value;
 
-        if (currentThreshold >= 0) {
+        if (currentValue >= sparseValue) {
             break;
         }
 
-        lastNegativeR = r;
-        uint32 i = featureVectorIterator[r].index;
+        uint32 index = entry.index;
 
-        if (statisticsSubsetPtr->hasNonZeroWeight(i)) {
+        if (statisticsSubset.hasNonZeroWeight(index)) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
-            statisticsSubsetPtr->addToSubset(i);
+            statisticsSubset.addToSubset(index);
             numCovered++;
-            previousThreshold = currentThreshold;
-            previousR = r;
+            previousValue = currentValue;
             break;
         }
     }
 
-    uint32 numAccumulated = numCovered;
-
-    // Traverse the remaining examples with feature values < 0 in ascending order...
+    // Traverse the remaining examples with feature values `f < sparseValue` in ascending order...
     if (numCovered > 0) {
-        for (r = r + 1; r < numFeatureValues; r++) {
-            float32 currentThreshold = featureVectorIterator[r].value;
+        for (i = i + 1; i < numFeatureValues; i++) {
+            const IndexedValue<float32>& entry = featureVector[i];
+            float32 currentValue = entry.value;
 
-            if (currentThreshold >= 0) {
+            if (currentValue >= sparseValue) {
                 break;
             }
 
-            lastNegativeR = r;
-            uint32 i = featureVectorIterator[r].index;
+            uint32 index = entry.index;
 
-            // Do only consider examples that are included in the current sub-sample...
-            if (statisticsSubsetPtr->hasNonZeroWeight(i)) {
+            // Do only consider examples with non-zero weights...
+            if (statisticsSubset.hasNonZeroWeight(index)) {
                 // Thresholds that separate between examples with the same feature value must not be considered...
-                if (previousThreshold != currentThreshold) {
-                    // Check if a condition that uses the <= operator (or the == operator in case of a nominal feature)
-                    // covers at least `minCoverage` examples...
+                if (previousValue != currentValue) {
+                    // Check if a condition using the <= operator covers at least `minCoverage` examples...
                     if (numCovered >= minCoverage) {
-                        // Determine the best prediction for the covered examples...
-                        const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
+                        // Determine the best prediction for examples covered by a condition using the <= operator...
+                        const IScoreVector& scoreVector = statisticsSubset.calculateScores();
 
                         // Check if the quality of the prediction is better than the quality of the current rule...
                         if (comparator.isImprovement(scoreVector)) {
-                            refinement.start = firstR;
-                            refinement.end = r;
-                            refinement.previous = previousR;
+                            refinement.start = 0;
+                            refinement.end = i;
                             refinement.numCovered = numCovered;
                             refinement.covered = true;
-
-                            if (nominal) {
-                                refinement.comparator = NOMINAL_EQ;
-                                refinement.threshold = previousThreshold;
-                            } else {
-                                refinement.comparator = ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ;
-                                refinement.threshold = arithmeticMean(previousThreshold, currentThreshold);
-                            }
-
+                            refinement.comparator = NUMERICAL_LEQ;
+                            refinement.threshold.numerical = arithmeticMean(previousValue, currentValue);
                             comparator.pushRefinement(refinement, scoreVector);
                         }
                     }
 
-                    // Check if a condition that uses the > operator (or the != operator in case of a nominal feature)
-                    // covers at least `minCoverage` examples...
-                    uint32 coverage = numExamples - numCovered;
+                    // Check if a condition using the > operator covers at least `minCoverage` examples...
+                    uint32 numUncovered = numExamplesWithNonZeroWeights - numCovered;
 
-                    if (coverage >= minCoverage) {
-                        // Determine the best prediction for the covered examples...
-                        const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScoresUncovered();
+                    if (numUncovered >= minCoverage) {
+                        // Determine the best prediction for examples covered by a condition using the > operator...
+                        const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncovered();
 
                         // Check if the quality of the prediction is better than the quality of the current rule...
                         if (comparator.isImprovement(scoreVector)) {
-                            refinement.start = firstR;
-                            refinement.end = r;
-                            refinement.previous = previousR;
-                            refinement.numCovered = coverage;
+                            refinement.start = 0;
+                            refinement.end = i;
+                            refinement.numCovered = numUncovered;
                             refinement.covered = false;
-
-                            if (nominal) {
-                                refinement.comparator = NOMINAL_NEQ;
-                                refinement.threshold = previousThreshold;
-                            } else {
-                                refinement.comparator = ordinal ? ORDINAL_GR : NUMERICAL_GR;
-                                refinement.threshold = arithmeticMean(previousThreshold, currentThreshold);
-                            }
-
+                            refinement.comparator = NUMERICAL_GR;
+                            refinement.threshold.numerical = arithmeticMean(previousValue, currentValue);
                             comparator.pushRefinement(refinement, scoreVector);
                         }
                     }
-
-                    // Reset the subset in case of a nominal feature, as the previous examples will not be covered by
-                    // the next condition...
-                    if (nominal) {
-                        statisticsSubsetPtr->resetSubset();
-                        numCovered = 0;
-                        firstR = r;
-                    }
                 }
-
-                previousThreshold = currentThreshold;
-                previousR = r;
 
                 // Add the example to the subset to mark it as covered by upcoming refinements...
-                statisticsSubsetPtr->addToSubset(i);
+                statisticsSubset.addToSubset(index);
                 numCovered++;
-                numAccumulated++;
             }
+
+            // Remember the feature value of the current example even if its weight is zero, because the thresholds of
+            // potential conditions should be calculated based on all examples...
+            previousValue = currentValue;
         }
 
-        // If the feature is nominal and the examples that have been iterated so far do not have the same feature value,
-        // or if not all examples have been iterated so far, we must evaluate additional conditions
-        // `f == previousThreshold` and `f != previousThreshold`...
-        if (nominal && numCovered > 0 && (numCovered < numAccumulated || numAccumulated < numExamples)) {
-            // Check if a condition that uses the == operator covers at least `minCoverage` examples...
-            if (numCovered >= minCoverage) {
-                // Determine the best prediction for the covered examples...
-                const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
-
-                // Check if the quality of the prediction is better than the quality of the current rule...
-                if (comparator.isImprovement(scoreVector)) {
-                    refinement.start = firstR;
-                    refinement.end = (lastNegativeR + 1);
-                    refinement.previous = previousR;
-                    refinement.numCovered = numCovered;
-                    refinement.covered = true;
-                    refinement.comparator = NOMINAL_EQ;
-                    refinement.threshold = previousThreshold;
-                    comparator.pushRefinement(refinement, scoreVector);
-                }
-            }
-
-            // Check if a condition that uses the != operator covers at least `minCoverage` examples...
-            uint32 coverage = numExamples - numCovered;
-
-            if (coverage >= minCoverage) {
-                // Determine the best prediction for the covered examples...
-                const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScoresUncovered();
-
-                // Check if the quality of the prediction is better than the quality of the current rule...
-                if (comparator.isImprovement(scoreVector)) {
-                    refinement.start = firstR;
-                    refinement.end = (lastNegativeR + 1);
-                    refinement.previous = previousR;
-                    refinement.numCovered = coverage;
-                    refinement.covered = false;
-                    refinement.comparator = NOMINAL_NEQ;
-                    refinement.threshold = previousThreshold;
-                    comparator.pushRefinement(refinement, scoreVector);
-                }
-            }
-        }
-
-        // Reset the subset, if any examples with feature value < 0 have been processed...
-        statisticsSubsetPtr->resetSubset();
+        // Reset the subset, if any examples with feature value `f < sparseValue` have been processed...
+        statisticsSubset.resetSubset();
     }
 
-    float32 previousThresholdNegative = previousThreshold;
-    int64 previousRNegative = previousR;
-    uint32 numAccumulatedNegative = numAccumulated;
-
-    // We continue by processing all examples with feature values >= 0...
+    // Traverse examples with feature values `f >= sparseValue` in descending order until the first example with
+    // non-zero weight is encountered...
+    float32 lastValueLessThanSparseValue = previousValue;
+    int64 firstExampleWithSparseValueOrGreater = i;
+    uint32 numCoveredLessThanSparseValue = numCovered;
     numCovered = 0;
-    firstR = ((int64) numFeatureValues) - 1;
 
-    // Traverse examples with feature values >= 0 in descending order until the first example with non-zero weight is
-    // encountered...
-    for (r = firstR; r > lastNegativeR; r--) {
-        uint32 i = featureVectorIterator[r].index;
+    for (i = numFeatureValues - 1; i >= firstExampleWithSparseValueOrGreater; i--) {
+        const IndexedValue<float32>& entry = featureVector[i];
+        uint32 index = entry.index;
 
-        if (statisticsSubsetPtr->hasNonZeroWeight(i)) {
+        if (statisticsSubset.hasNonZeroWeight(index)) {
             // Add the example to the subset to mark it as covered by upcoming refinements...
-            statisticsSubsetPtr->addToSubset(i);
+            statisticsSubset.addToSubset(index);
             numCovered++;
-            previousThreshold = featureVectorIterator[r].value;
-            previousR = r;
+            previousValue = entry.value;
             break;
         }
     }
 
-    numAccumulated = numCovered;
+    // Traverse the remaining examples with feature values `f >= sparseValue` in descending order...
+    if (numCovered > 0 && i > 0) {
+        for (i = i - 1; i > firstExampleWithSparseValueOrGreater; i--) {
+            const IndexedValue<float32>& entry = featureVector[i];
+            float32 currentValue = entry.value;
+            uint32 index = entry.index;
 
-    // Traverse the remaining examples with feature values >= 0 in descending order...
-    if (numCovered > 0) {
-        for (r = r - 1; r > lastNegativeR; r--) {
-            uint32 i = featureVectorIterator[r].index;
-
-            // Do only consider examples that are included in the current sub-sample...
-            if (statisticsSubsetPtr->hasNonZeroWeight(i)) {
-                float32 currentThreshold = featureVectorIterator[r].value;
-
+            // Do only consider examples with non-zero weights...
+            if (statisticsSubset.hasNonZeroWeight(index)) {
                 // Thresholds that separate between examples with the same feature value must not be considered...
-                if (previousThreshold != currentThreshold) {
-                    // Check if a condition that uses the > operator (or the == operator in case of a nominal feature)
-                    // covers at least `minCoverage` examples...
+                if (previousValue != currentValue) {
+                    // Check if a condition using the > operator covers at least `minCoverage` examples...
                     if (numCovered >= minCoverage) {
                         // Determine the best prediction for the covered examples...
-                        const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
+                        const IScoreVector& scoreVector = statisticsSubset.calculateScores();
 
                         // Check if the quality of the prediction is better than the quality of the current rule...
                         if (comparator.isImprovement(scoreVector)) {
-                            refinement.start = firstR;
-                            refinement.end = r;
-                            refinement.previous = previousR;
+                            refinement.start = i + 1;
+                            refinement.end = numFeatureValues;
                             refinement.numCovered = numCovered;
                             refinement.covered = true;
-
-                            if (nominal) {
-                                refinement.comparator = NOMINAL_EQ;
-                                refinement.threshold = previousThreshold;
-                            } else {
-                                refinement.comparator = ordinal ? ORDINAL_GR : NUMERICAL_GR;
-                                refinement.threshold = arithmeticMean(currentThreshold, previousThreshold);
-                            }
-
+                            refinement.comparator = NUMERICAL_GR;
+                            refinement.threshold.numerical = arithmeticMean(currentValue, previousValue);
                             comparator.pushRefinement(refinement, scoreVector);
                         }
                     }
 
-                    // Check if a condition that uses the <= operator (or the != operator in case of a nominal feature)
-                    // covers at least `minCoverage` examples...
-                    uint32 coverage = numExamples - numCovered;
+                    // Check if a condition using the <= operator covers at least `minCoverage` examples...
+                    uint32 numUncovered = numExamplesWithNonZeroWeights - numCovered;
 
-                    if (coverage >= minCoverage) {
+                    if (numUncovered >= minCoverage) {
                         // Determine the best prediction for the covered examples...
-                        const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScoresUncovered();
+                        const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncovered();
 
                         // Check if the quality of the prediction is better than the quality of the current rule...
                         if (comparator.isImprovement(scoreVector)) {
-                            refinement.start = firstR;
-                            refinement.end = r;
-                            refinement.previous = previousR;
-                            refinement.numCovered = coverage;
+                            refinement.start = i + 1;
+                            refinement.end = numFeatureValues;
+                            refinement.numCovered = numUncovered;
                             refinement.covered = false;
-
-                            if (nominal) {
-                                refinement.comparator = NOMINAL_NEQ;
-                                refinement.threshold = previousThreshold;
-                            } else {
-                                refinement.comparator = ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ;
-                                refinement.threshold = arithmeticMean(currentThreshold, previousThreshold);
-                            }
-
+                            refinement.comparator = NUMERICAL_LEQ;
+                            refinement.threshold.numerical = arithmeticMean(currentValue, previousValue);
                             comparator.pushRefinement(refinement, scoreVector);
                         }
                     }
-
-                    // Reset the subset in case of a nominal feature, as the previous examples will not be covered by
-                    // the next condition...
-                    if (nominal) {
-                        statisticsSubsetPtr->resetSubset();
-                        numCovered = 0;
-                        firstR = r;
-                    }
                 }
-
-                previousThreshold = currentThreshold;
-                previousR = r;
 
                 // Add the example to the subset to mark it as covered by upcoming refinements...
-                statisticsSubsetPtr->addToSubset(i);
+                statisticsSubset.addToSubset(index);
                 numCovered++;
-                numAccumulated++;
             }
+
+            // Remember the feature value of the current example even if its weight is zero, because the thresholds of
+            // potential conditions should be calculated based on all examples...
+            previousValue = currentValue;
         }
     }
 
-    // If the feature is nominal and the examples with feature values >= 0 that have been iterated so far do not all
-    // have the same feature value, we must evaluate additional conditions `f == previousThreshold` and
-    // `f != previousThreshold`...
-    if (nominal && numCovered > 0 && numCovered < numAccumulated) {
-        // Check if a condition that uses the == operator covers at least `minCoverage` examples...
+    // If there are examples with sparse feature values, we must evaluate conditions separating these examples from the
+    // ones that have already been traversed...
+    bool sparse = featureVector.sparse;
+
+    if (sparse) {
+        // Check if the condition `f > arithmeticMean(sparseValue, previousValue)` covers at least `minCoverage`
+        // examples...
         if (numCovered >= minCoverage) {
-            // Determine the best prediction for the covered examples...
-            const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
+            // Determine the best prediction for examples covered by the condition...
+            const IScoreVector& scoreVector = statisticsSubset.calculateScores();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
             if (comparator.isImprovement(scoreVector)) {
-                refinement.start = firstR;
-                refinement.end = lastNegativeR;
-                refinement.previous = previousR;
+                refinement.start = firstExampleWithSparseValueOrGreater;
+                refinement.end = numFeatureValues;
                 refinement.numCovered = numCovered;
                 refinement.covered = true;
-                refinement.comparator = NOMINAL_EQ;
-                refinement.threshold = previousThreshold;
+                refinement.comparator = NUMERICAL_GR;
+                refinement.threshold.numerical = arithmeticMean(sparseValue, previousValue);
                 comparator.pushRefinement(refinement, scoreVector);
             }
         }
 
-        // Check if a condition that uses the != operator covers at least `minCoverage` examples...
-        uint32 coverage = numExamples - numCovered;
+        // Check if the condition `f <= arithmeticMean(sparseValue, previousValue)` covers at least `minCoverage`
+        // examples...
+        uint32 numUncovered = numExamplesWithNonZeroWeights - numCovered;
 
-        if (coverage >= minCoverage) {
-            // Determine the best prediction for the covered examples...
-            const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScoresUncovered();
+        if (numUncovered >= minCoverage) {
+            // Determine the best prediction for examples covered by the condition...
+            const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncovered();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
             if (comparator.isImprovement(scoreVector)) {
-                refinement.start = firstR;
-                refinement.end = lastNegativeR;
-                refinement.previous = previousR;
-                refinement.numCovered = coverage;
+                refinement.start = firstExampleWithSparseValueOrGreater;
+                refinement.end = numFeatureValues;
+                refinement.numCovered = numUncovered;
                 refinement.covered = false;
-                refinement.comparator = NOMINAL_NEQ;
-                refinement.threshold = previousThreshold;
+                refinement.comparator = NUMERICAL_LEQ;
+                refinement.threshold.numerical = arithmeticMean(sparseValue, previousValue);
                 comparator.pushRefinement(refinement, scoreVector);
             }
         }
     }
 
-    uint32 numAccumulatedTotal = numAccumulatedNegative + numAccumulated;
-
-    // If the number of all examples that have been iterated so far (including those with feature values < 0 and those
-    // with feature values >= 0) is less than the total number of examples, this means that there are examples with
-    // sparse, i.e. zero, feature values. In such case, we must explicitly test conditions that separate these examples
-    // from the ones that have already been iterated...
-    if (numAccumulatedTotal > 0 && numAccumulatedTotal < numExamples) {
-        // If the feature is nominal, we must reset the subset once again to ensure that the accumulated state includes
-        // all examples that have been processed so far...
-        if (nominal) {
-            statisticsSubsetPtr->resetSubset();
-            firstR = ((int64) numFeatureValues) - 1;
-        }
-
-        // Check if the condition `f > previousThreshold / 2` (or `f != 0` in case of a nominal feature) covers at least
-        // `minCoverage` examples...
-        uint32 coverage = nominal ? numAccumulatedTotal : numAccumulated;
-
-        if (coverage >= minCoverage) {
-            // Determine the best prediction for the covered examples...
-            const IScoreVector& scoreVector =
-              nominal ? statisticsSubsetPtr->calculateScoresAccumulated() : statisticsSubsetPtr->calculateScores();
-
-            // Check if the quality of the prediction is better than the quality of the current rule...
-            if (comparator.isImprovement(scoreVector)) {
-                refinement.start = firstR;
-                refinement.covered = true;
-                refinement.numCovered = coverage;
-
-                if (nominal) {
-                    refinement.end = -1;
-                    refinement.previous = -1;
-                    refinement.comparator = NOMINAL_NEQ;
-                    refinement.threshold = 0.0;
-                } else {
-                    refinement.end = lastNegativeR;
-                    refinement.previous = previousR;
-                    refinement.comparator = ordinal ? ORDINAL_GR : NUMERICAL_GR;
-                    refinement.threshold = previousThreshold * 0.5;
-                }
-
-                comparator.pushRefinement(refinement, scoreVector);
-            }
-        }
-
-        // Check if the condition `f <= previousThreshold / 2` (or `f == 0` in case of a nominal feature) covers at
-        // least `minCoverage` examples...
-        coverage = numExamples - (nominal ? numAccumulatedTotal : numAccumulated);
-
-        if (coverage >= minCoverage) {
-            // Determine the best prediction for the covered examples...
-            const IScoreVector& scoreVector = nominal ? statisticsSubsetPtr->calculateScoresUncoveredAccumulated()
-                                                      : statisticsSubsetPtr->calculateScoresUncovered();
-
-            // Check if the quality of the prediction is better than the quality of the current rule...
-            if (comparator.isImprovement(scoreVector)) {
-                refinement.start = firstR;
-                refinement.covered = false;
-                refinement.numCovered = coverage;
-
-                if (nominal) {
-                    refinement.end = -1;
-                    refinement.previous = -1;
-                    refinement.comparator = NOMINAL_EQ;
-                    refinement.threshold = 0.0;
-                } else {
-                    refinement.end = lastNegativeR;
-                    refinement.previous = previousR;
-                    refinement.numCovered = (numExamples - numAccumulated);
-                    refinement.comparator = ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ;
-                    refinement.threshold = previousThreshold * 0.5;
-                }
-
-                comparator.pushRefinement(refinement, scoreVector);
-            }
-        }
-    }
-
-    // If the feature is numerical and there are other examples than those with feature values < 0 that have been
-    // processed earlier, we must evaluate additional conditions that separate the examples with feature values < 0 from
-    // the remaining ones (unlike in the nominal case, these conditions cannot be evaluated earlier, because it remains
-    // unclear what the thresholds of the conditions should be until the examples with feature values >= 0 have been
-    // processed).
-    if (!nominal && numAccumulatedNegative > 0 && numAccumulatedNegative < numExamples) {
-        // Check if a condition that uses the <= operator covers at least `minCoverage` examples...
-        if (numAccumulatedNegative >= minCoverage) {
-            // Determine the best prediction for the covered examples...
-            const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScoresAccumulated();
+    // If there have been examples with feature values `f < sparseValue`, we must evaluate conditions that separate
+    // these examples from the remaining ones...
+    if (numCoveredLessThanSparseValue > 0 && numCoveredLessThanSparseValue < numExamplesWithNonZeroWeights) {
+        // Check if the condition `f <= arithmeticMean(lastValueLessThanSparseValue, sparseValue)` or
+        // `f <= arithmeticMean(lastValueLessThanSparseValue, previousValue)` covers at least `minCoverage` examples...
+        if (numCoveredLessThanSparseValue >= minCoverage) {
+            // Determine the best prediction for the examples covered by the condition...
+            const IScoreVector& scoreVector = statisticsSubset.calculateScoresAccumulated();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
             if (comparator.isImprovement(scoreVector)) {
                 refinement.start = 0;
-                refinement.end = (lastNegativeR + 1);
-                refinement.previous = previousRNegative;
-                refinement.numCovered = numAccumulatedNegative;
+                refinement.end = firstExampleWithSparseValueOrGreater;
+                refinement.numCovered = numCoveredLessThanSparseValue;
                 refinement.covered = true;
-                refinement.comparator = ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ;
+                refinement.comparator = NUMERICAL_LEQ;
 
-                if (numAccumulatedTotal < numExamples) {
-                    // If the condition separates an example with feature value < 0 from an (sparse) example with
-                    // feature value == 0
-                    refinement.threshold = previousThresholdNegative * 0.5;
+                if (sparse) {
+                    // If the condition separates an example with feature value `f < sparseValue` from an example with
+                    // sparse feature value...
+                    refinement.threshold.numerical = arithmeticMean(lastValueLessThanSparseValue, sparseValue);
                 } else {
-                    // If the condition separates an example with feature value < 0 from an example with feature value
-                    // > 0
-                    refinement.threshold = arithmeticMean(previousThresholdNegative, previousThreshold);
+                    // If the condition separates an example with feature value `f < 0` from an example with feature
+                    // value `f > sparseValue`...
+                    refinement.threshold.numerical = arithmeticMean(lastValueLessThanSparseValue, previousValue);
                 }
 
                 comparator.pushRefinement(refinement, scoreVector);
             }
         }
 
-        // Check if a condition that uses the > operator covers at least `minCoverage` examples...
-        uint32 coverage = numExamples - numAccumulatedNegative;
+        // Check if the condition `f > arithmeticMean(lastValueLessThanSparseValue, sparseValue)` or
+        // `f > arithmeticMean(lastValueLessThanSparseValue, previousValue)` covers at least `minCoverage` examples...
+        uint32 numUncovered = numExamplesWithNonZeroWeights - numCoveredLessThanSparseValue;
 
-        if (coverage >= minCoverage) {
-            // Determine the best prediction for the covered examples...
-            const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScoresUncoveredAccumulated();
+        if (numUncovered >= minCoverage) {
+            // Determine the best prediction for the examples covered by the condition...
+            const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncoveredAccumulated();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
             if (comparator.isImprovement(scoreVector)) {
                 refinement.start = 0;
-                refinement.end = (lastNegativeR + 1);
-                refinement.previous = previousRNegative;
-                refinement.numCovered = coverage;
+                refinement.end = firstExampleWithSparseValueOrGreater;
+                refinement.numCovered = numUncovered;
                 refinement.covered = false;
-                refinement.comparator = ordinal ? ORDINAL_GR : NUMERICAL_GR;
+                refinement.comparator = NUMERICAL_GR;
 
-                if (numAccumulatedTotal < numExamples) {
-                    // If the condition separates an example with feature value < 0 from an (sparse) example with
-                    // feature value == 0
-                    refinement.threshold = previousThresholdNegative * 0.5;
+                if (sparse) {
+                    // If the condition separates an example with feature value `f < sparseValue` from an example with
+                    // sparse feature value...
+                    refinement.threshold = arithmeticMean(lastValueLessThanSparseValue, sparseValue);
                 } else {
-                    // If the condition separates an example with feature value < 0 from an example with feature value
-                    // > 0
-                    refinement.threshold = arithmeticMean(previousThresholdNegative, previousThreshold);
+                    // If the condition separates an example with feature value `f < sparseValue` from an example with
+                    // feature value `f > sparseValue`...
+                    refinement.threshold = arithmeticMean(lastValueLessThanSparseValue, previousValue);
                 }
 
                 comparator.pushRefinement(refinement, scoreVector);
             }
-        }
-    }
-
-    // If there are examples with zero weights, those examples have not been considered when searching for potential
-    // refinements. In this case, we need to identify the examples that are covered by a refinement, including those
-    // that have previously been ignored, and adjust the value `refinement.end`, which specifies the position that
-    // separates the covered from the uncovered examples, accordingly.
-    if (hasZeroWeights) {
-        for (auto it = comparator.begin(); it != comparator.end(); it++) {
-            adjustRefinement(*it, featureVectorIterator);
         }
     }
 }

@@ -35,32 +35,6 @@ union Threshold {
 struct Condition {
     public:
 
-        Condition() {}
-
-        /**
-         * @param other A reference to an existing condition to be copied
-         */
-        Condition(const Condition& other)
-            : featureIndex(other.featureIndex), comparator(other.comparator), threshold(other.threshold),
-              start(other.start), end(other.end), covered(other.covered), numCovered(other.numCovered) {}
-
-        /**
-         * Assigns the properties of an existing condition to this condition.
-         *
-         * @param rhs   A reference to the existing condition
-         * @return      A reference to the modified condition
-         */
-        Condition& operator=(const Condition& rhs) {
-            featureIndex = rhs.featureIndex;
-            comparator = rhs.comparator;
-            threshold = rhs.threshold;
-            start = rhs.start;
-            end = rhs.end;
-            covered = rhs.covered;
-            numCovered = rhs.numCovered;
-            return *this;
-        }
-
         /**
          * The index of the feature, the condition corresponds to.
          */
@@ -96,4 +70,30 @@ struct Condition {
          */
         // TODO Remove, if possible
         uint32 numCovered;
+
+        Condition() {}
+
+        /**
+         * @param other A reference to an existing condition to be copied
+         */
+        Condition(const Condition& other)
+            : featureIndex(other.featureIndex), comparator(other.comparator), threshold(other.threshold),
+              start(other.start), end(other.end), covered(other.covered), numCovered(other.numCovered) {}
+
+        /**
+         * Assigns the properties of an existing condition to this condition.
+         *
+         * @param rhs   A reference to the existing condition
+         * @return      A reference to the modified condition
+         */
+        Condition& operator=(const Condition& rhs) {
+            featureIndex = rhs.featureIndex;
+            comparator = rhs.comparator;
+            threshold = rhs.threshold;
+            start = rhs.start;
+            end = rhs.end;
+            covered = rhs.covered;
+            numCovered = rhs.numCovered;
+            return *this;
+        }
 };
