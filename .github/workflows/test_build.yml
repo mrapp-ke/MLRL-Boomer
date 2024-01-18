@@ -116,6 +116,14 @@ jobs:
       - name: Generate Documentation
         if: ${{ needs.changes.outputs.doc == 'true' }}
         run: ./build doc
+      - name: Upload documentation as an artifact
+        if: ${{ needs.changes.outputs.doc == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: doc
+          path: doc/_build/**/*
+          if-no-files-found: error
+
   macos_build:
     needs: changes
     if: ${{ needs.changes.outputs.cpp == 'true' }}
