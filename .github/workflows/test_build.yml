@@ -95,6 +95,18 @@ jobs:
         uses: hendrikmuhs/ccache-action@v1
         with:
           key: ${{ runner.os }}-test-build-ccache
+      - name: Compile via GCC
+        if: ${{ needs.changes.outputs.cpp == 'true' }}
+        run: ./build compile_cpp
+      - name: Upload libraries as an artifact
+        if: ${{ needs.changes.outputs.cpp == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: libs-linux-x86_64
+          path: |
+            cpp/build/subprojects/**/lib*.so*
+            !cpp/build/subprojects/**/*.p
+          if-no-files-found: error
       - name: Test C++ code
         if: ${{ needs.changes.outputs.cpp_tests == 'true' }}
         run: ./build tests_cpp
@@ -151,6 +163,12 @@ jobs:
           key: ${{ runner.os }}-test-build-ccache
       - name: Compile via Clang
         run: TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
+      - name: Upload libraries as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libs-macos-x86_64
+          path: cpp/build/subprojects/**/*.dylib
+          if-no-files-found: error
   windows_build:
     needs: changes
     if: ${{ needs.changes.outputs.cpp == 'true' }}
@@ -189,3 +207,11 @@ jobs:
           $env:INCLUDE += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\include"
           $env:LIB += ";$($pwd.Path)\vcpkg\packages\opencl_x64-windows\lib"
           ./build.bat compile
+      - name: Upload libraries as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libs-windows-amd64
+          path: |
+            cpp/build/subprojects/**/mlrl*.lib
+            cpp/build/subprojects/**/*.dll
+          if-no-files-found: error
