@@ -37,6 +37,7 @@ A major update to the BOOMER algorithm that introduces the following changes.
 - The fundamental data structures used to implement vectors and matrices have been reworked to ease reusing existing functionality and avoiding redundant code.
 - Markdown files are now used for writing the documentation.
 - A consistent style is now enforced for Markdown files by applying the tool `mdformat` via continuous integration.
+- C++ 17 or newer is now required for compiling the project.
 
 ## Version 0.9.0 (Jul. 2nd, 2023)
 
