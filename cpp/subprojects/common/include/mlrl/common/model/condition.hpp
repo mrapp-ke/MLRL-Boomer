@@ -5,6 +5,8 @@
 
 #include "mlrl/common/data/types.hpp"
 
+#include <variant>
+
 /**
  * An enum that specifies all possible types of operators used by a condition of a rule.
  */
@@ -20,11 +22,7 @@ enum Comparator : uint8 {
 /**
  * A union of types that may be used for the threshold used by a condition of a rule.
  */
-union Threshold {
-        float32 numerical;
-        int32 nominal;
-        int32 ordinal;
-};
+typedef std::variant<float32, int32> Threshold;
 
 /**
  * Stores the properties of a condition of a rule. It consists of the index of the feature, the condition corresponds
