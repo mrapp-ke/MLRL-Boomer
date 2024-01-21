@@ -21,7 +21,6 @@ struct Refinement final : public Condition {
          */
         Refinement& operator=(const Refinement& rhs) {
             Condition::operator=(rhs);
-            previous = rhs.previous;
             return *this;
         }
 
@@ -30,11 +29,4 @@ struct Refinement final : public Condition {
          * the refined rule, as well as its overall quality.
          */
         std::unique_ptr<IEvaluatedPrediction> headPtr;
-
-        /**
-         * The index of the last element, e.g., example or bin, that has been processed when evaluating the refined
-         * rule.
-         */
-        // TODO Remove, if possible
-        int64 previous;
 };
