@@ -13,6 +13,12 @@ struct Refinement final : public Condition {
     public:
 
         /**
+         * An unique pointer to an object of type `IEvaluatedPrediction` that stores the scores that are predicted by
+         * the refined rule, as well as its overall quality.
+         */
+        std::unique_ptr<IEvaluatedPrediction> headPtr;
+
+        /**
          * Assigns the properties of an existing refinement, except for the scores that are predicted by the refined
          * rule, to this refinement.
          *
@@ -23,10 +29,4 @@ struct Refinement final : public Condition {
             Condition::operator=(rhs);
             return *this;
         }
-
-        /**
-         * An unique pointer to an object of type `IEvaluatedPrediction` that stores the scores that are predicted by
-         * the refined rule, as well as its overall quality.
-         */
-        std::unique_ptr<IEvaluatedPrediction> headPtr;
 };
