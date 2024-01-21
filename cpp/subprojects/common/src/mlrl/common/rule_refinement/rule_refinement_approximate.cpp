@@ -61,8 +61,8 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                     if (comparator.isImprovement(scoreVector)) {
                         refinement.start = firstR;
                         refinement.end = r;
+                        refinement.inverse = false;
                         refinement.numCovered = numCovered;
-                        refinement.covered = true;
                         refinement.threshold = thresholdIterator[r - 1];
                         refinement.comparator = nominal ? NOMINAL_EQ : (ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ);
                         comparator.pushRefinement(refinement, scoreVector);
@@ -81,8 +81,8 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                     if (comparator.isImprovement(scoreVector)) {
                         refinement.start = firstR;
                         refinement.end = r;
+                        refinement.inverse = true;
                         refinement.numCovered = coverage;
-                        refinement.covered = false;
 
                         if (nominal) {
                             refinement.threshold = (int32) thresholdIterator[r - 1];
@@ -124,8 +124,8 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                 if (comparator.isImprovement(scoreVector)) {
                     refinement.start = firstR;
                     refinement.end = sparseBinIndex;
+                    refinement.inverse = false;
                     refinement.numCovered = numCovered;
-                    refinement.covered = true;
 
                     if (nominal) {
                         refinement.threshold = (int32) thresholdIterator[sparseBinIndex - 1];
@@ -151,8 +151,8 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                 if (comparator.isImprovement(scoreVector)) {
                     refinement.start = firstR;
                     refinement.end = sparseBinIndex;
+                    refinement.inverse = true;
                     refinement.numCovered = coverage;
-                    refinement.covered = false;
 
                     if (nominal) {
                         refinement.threshold = (int32) thresholdIterator[sparseBinIndex - 1];
@@ -208,8 +208,8 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                     if (comparator.isImprovement(scoreVector)) {
                         refinement.start = firstR;
                         refinement.end = r;
+                        refinement.inverse = false;
                         refinement.numCovered = numCovered;
-                        refinement.covered = true;
 
                         if (nominal) {
                             refinement.threshold = (int32) thresholdIterator[firstR];
@@ -235,8 +235,8 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                     if (comparator.isImprovement(scoreVector)) {
                         refinement.start = firstR;
                         refinement.end = r;
+                        refinement.inverse = true;
                         refinement.numCovered = coverage;
-                        refinement.covered = false;
 
                         if (nominal) {
                             refinement.threshold = (int32) thresholdIterator[firstR];
@@ -278,8 +278,8 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                 if (comparator.isImprovement(scoreVector)) {
                     refinement.start = firstR;
                     refinement.end = sparseBinIndex;
+                    refinement.inverse = false;
                     refinement.numCovered = numCovered;
-                    refinement.covered = true;
 
                     if (nominal) {
                         refinement.threshold = (int32) thresholdIterator[firstR];
@@ -305,8 +305,8 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                 if (comparator.isImprovement(scoreVector)) {
                     refinement.start = firstR;
                     refinement.end = sparseBinIndex;
+                    refinement.inverse = true;
                     refinement.numCovered = coverage;
-                    refinement.covered = false;
 
                     if (nominal) {
                         refinement.threshold = (int32) thresholdIterator[firstR];
@@ -339,8 +339,8 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                     if (comparator.isImprovement(scoreVector)) {
                         refinement.start = sparseBinIndex;
                         refinement.end = sparseBinIndex + 1;
+                        refinement.inverse = true;
                         refinement.numCovered = coverage;
-                        refinement.covered = false;
                         refinement.threshold = (int32) thresholdIterator[sparseBinIndex];
                         refinement.comparator = NOMINAL_NEQ;
                         comparator.pushRefinement(refinement, scoreVector);
@@ -359,8 +359,8 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                     if (comparator.isImprovement(scoreVector)) {
                         refinement.start = sparseBinIndex;
                         refinement.end = sparseBinIndex + 1;
+                        refinement.inverse = false;
                         refinement.numCovered = coverage;
-                        refinement.covered = true;
                         refinement.threshold = (int32) thresholdIterator[sparseBinIndex];
                         refinement.comparator = NOMINAL_EQ;
                         comparator.pushRefinement(refinement, scoreVector);

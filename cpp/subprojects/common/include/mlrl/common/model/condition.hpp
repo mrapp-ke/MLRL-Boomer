@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/types.hpp"
+#include "mlrl/common/input/interval.hpp"
 
 #include <variant>
 
@@ -30,7 +30,7 @@ typedef std::variant<float32, int32> Threshold;
  * [start, end) that corresponds to the elements, e.g. examples or bins, that are covered (or uncovered, if
  * `covered == false`) by the condition, as well as the sum of the weights of all covered elements.
  */
-struct Condition {
+struct Condition : public Interval {
     public:
 
         /**
@@ -49,35 +49,20 @@ struct Condition {
         Threshold threshold;
 
         /**
-         * The index of the first element (inclusive) that is covered (or uncovered) by the condition.
-         */
-        int64 start;
-
-        /**
-         * The index of the last element (exclusive) that is covered (or uncovered) by the condition.
-         */
-        int64 end;
-
-        /**
-         * True, if the elements in [start, end) are covered by the condition, false otherwise.
-         */
-        bool covered;
-
-        /**
          * The number of elements that are covered by the condition.
          */
         uint32 numCovered;
 
-        Condition() {}
+        Condition() : Interval() {}
 
         /**
          * @param other A reference to an existing condition to be copied
          */
         Condition(const Condition& other)
-            : featureIndex(other.featureIndex), comparator(other.comparator), threshold(other.threshold),
-              start(other.start), end(other.end), covered(other.covered), numCovered(other.numCovered) {}
+            : Interval(other.start, other.end, other.inverse), featureIndex(other.featureIndex),
+              comparator(other.comparator), threshold(other.threshold), numCovered(other.numCovered) {}
 
-        virtual ~Condition() {}
+        virtual ~Condition() override {}
 
         /**
          * Assigns the properties of an existing condition to this condition.
@@ -86,12 +71,10 @@ struct Condition {
          * @return      A reference to the modified condition
          */
         Condition& operator=(const Condition& rhs) {
+            Interval::operator=(rhs);
             featureIndex = rhs.featureIndex;
             comparator = rhs.comparator;
             threshold = rhs.threshold;
-            start = rhs.start;
-            end = rhs.end;
-            covered = rhs.covered;
             numCovered = rhs.numCovered;
             return *this;
         }

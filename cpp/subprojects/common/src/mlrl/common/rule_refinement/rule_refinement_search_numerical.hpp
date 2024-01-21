@@ -66,8 +66,8 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                         if (comparator.isImprovement(scoreVector)) {
                             refinement.start = 0;
                             refinement.end = i;
+                            refinement.inverse = false;
                             refinement.numCovered = numCovered;
-                            refinement.covered = true;
                             refinement.comparator = NUMERICAL_LEQ;
                             refinement.threshold = arithmeticMean(previousValue, currentValue);
                             comparator.pushRefinement(refinement, scoreVector);
@@ -85,8 +85,8 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                         if (comparator.isImprovement(scoreVector)) {
                             refinement.start = 0;
                             refinement.end = i;
+                            refinement.inverse = true;
                             refinement.numCovered = numUncovered;
-                            refinement.covered = false;
                             refinement.comparator = NUMERICAL_GR;
                             refinement.threshold = arithmeticMean(previousValue, currentValue);
                             comparator.pushRefinement(refinement, scoreVector);
@@ -148,8 +148,8 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                         if (comparator.isImprovement(scoreVector)) {
                             refinement.start = i + 1;
                             refinement.end = numFeatureValues;
+                            refinement.inverse = false;
                             refinement.numCovered = numCovered;
-                            refinement.covered = true;
                             refinement.comparator = NUMERICAL_GR;
                             refinement.threshold = arithmeticMean(currentValue, previousValue);
                             comparator.pushRefinement(refinement, scoreVector);
@@ -167,8 +167,8 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                         if (comparator.isImprovement(scoreVector)) {
                             refinement.start = i + 1;
                             refinement.end = numFeatureValues;
+                            refinement.inverse = true;
                             refinement.numCovered = numUncovered;
-                            refinement.covered = false;
                             refinement.comparator = NUMERICAL_LEQ;
                             refinement.threshold = arithmeticMean(currentValue, previousValue);
                             comparator.pushRefinement(refinement, scoreVector);
@@ -203,7 +203,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                 refinement.start = firstExampleWithSparseValueOrGreater;
                 refinement.end = numFeatureValues;
                 refinement.numCovered = numCovered;
-                refinement.covered = true;
+                refinement.inverse = false;
                 refinement.comparator = NUMERICAL_GR;
                 refinement.threshold = arithmeticMean(sparseValue, previousValue);
                 comparator.pushRefinement(refinement, scoreVector);
@@ -223,7 +223,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                 refinement.start = firstExampleWithSparseValueOrGreater;
                 refinement.end = numFeatureValues;
                 refinement.numCovered = numUncovered;
-                refinement.covered = false;
+                refinement.inverse = true;
                 refinement.comparator = NUMERICAL_LEQ;
                 refinement.threshold = arithmeticMean(sparseValue, previousValue);
                 comparator.pushRefinement(refinement, scoreVector);
@@ -245,7 +245,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                 refinement.start = 0;
                 refinement.end = firstExampleWithSparseValueOrGreater;
                 refinement.numCovered = numCoveredLessThanSparseValue;
-                refinement.covered = true;
+                refinement.inverse = false;
                 refinement.comparator = NUMERICAL_LEQ;
 
                 if (sparse) {
@@ -275,7 +275,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                 refinement.start = 0;
                 refinement.end = firstExampleWithSparseValueOrGreater;
                 refinement.numCovered = numUncovered;
-                refinement.covered = false;
+                refinement.inverse = true;
                 refinement.comparator = NUMERICAL_GR;
 
                 if (sparse) {

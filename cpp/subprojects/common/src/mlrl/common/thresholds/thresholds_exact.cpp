@@ -203,11 +203,9 @@ class ExactThresholds final : public AbstractThresholds {
 
                     numModifications_++;
                     numCoveredExamples_ = condition.numCovered;
-                    // TODO Pass condition directly
-                    Interval interval(condition.start, condition.end, !condition.covered);
-                    featureVector->updateCoverageMaskAndStatistics(interval, coverageMask_, numModifications_,
+                    featureVector->updateCoverageMaskAndStatistics(condition, coverageMask_, numModifications_,
                                                                    *weightedStatisticsPtr_);
-                    cacheEntry.vectorPtr = featureVector->createFilteredFeatureVector(cacheEntry.vectorPtr, interval);
+                    cacheEntry.vectorPtr = featureVector->createFilteredFeatureVector(cacheEntry.vectorPtr, condition);
                     cacheEntry.numConditions = numModifications_;
                 }
 
