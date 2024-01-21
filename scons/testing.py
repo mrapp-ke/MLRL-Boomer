@@ -14,7 +14,14 @@ def __meson_test(build_dir: str):
 
 
 def __python_unittest(directory: str):
-    run_python_program('unittest', 'discover', '-v', '-f', '-s', directory, install_program=False)
+    run_python_program('unittest',
+                       'discover',
+                       '-v',
+                       '-f',
+                       '-s',
+                       directory,
+                       install_program=False,
+                       additional_dependencies=['unittest-xml-reporting'])
 
 
 def tests_cpp(**_):
