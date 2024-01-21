@@ -8,7 +8,7 @@
 /**
  * Specifies the boundaries of an interval that includes/excludes certain elements in a vector.
  */
-struct Interval final {
+struct Interval {
     public:
 
         /**
@@ -26,6 +26,8 @@ struct Interval final {
          */
         bool inverse;
 
+        Interval() {}
+
         /**
          * @param start     The index of the first element to be included
          * @param end       The index of the last elements to be included (exclusive)
@@ -33,4 +35,19 @@ struct Interval final {
          *                  false otherwise
          */
         Interval(uint32 start, uint32 end, bool inverse = false) : start(start), end(end), inverse(inverse) {}
+
+        virtual ~Interval() {}
+
+        /**
+         * Assigns the properties of an existing interval to this interval.
+         *
+         * @param rhs   A reference to the existing interval
+         * @return      A reference to the modified interval
+         */
+        Interval& operator=(const Interval& rhs) {
+            start = rhs.start;
+            end = rhs.end;
+            inverse = rhs.inverse;
+            return *this;
+        }
 };

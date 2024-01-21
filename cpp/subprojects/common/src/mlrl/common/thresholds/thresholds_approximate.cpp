@@ -255,7 +255,7 @@ class ApproximateThresholds final : public AbstractThresholds {
                     const ThresholdVector& thresholdVector = *cacheEntry.thresholdVectorPtr;
                     const IBinIndexVector& binIndices = *cacheEntry.binIndicesPtr;
                     updateCoveredExamples(thresholdVector, binIndices, condition.start, condition.end,
-                                          condition.covered, coverageSet_, *weightedStatisticsPtr_);
+                                          !condition.inverse, coverageSet_, *weightedStatisticsPtr_);
                 }
 
                 void resetThresholds() override {

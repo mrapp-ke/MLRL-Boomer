@@ -43,8 +43,8 @@ static inline void searchForNominalRefinementInternally(const NominalFeatureVect
             if (comparator.isImprovement(scoreVector)) {
                 refinement.start = i;
                 refinement.end = i + 1;
+                refinement.inverse = false;
                 refinement.numCovered = numCovered;
-                refinement.covered = true;
                 refinement.comparator = NOMINAL_EQ;
                 refinement.threshold = valueIterator[i];
                 comparator.pushRefinement(refinement, scoreVector);
@@ -62,8 +62,8 @@ static inline void searchForNominalRefinementInternally(const NominalFeatureVect
             if (comparator.isImprovement(scoreVector)) {
                 refinement.start = i;
                 refinement.end = i + 1;
+                refinement.inverse = true;
                 refinement.numCovered = numUncovered;
-                refinement.covered = false;
                 refinement.comparator = NOMINAL_NEQ;
                 refinement.threshold = valueIterator[i];
                 comparator.pushRefinement(refinement, scoreVector);
@@ -87,8 +87,8 @@ static inline void searchForNominalRefinementInternally(const NominalFeatureVect
         if (comparator.isImprovement(scoreVector)) {
             refinement.start = 0;
             refinement.end = numValues;
+            refinement.inverse = false;
             refinement.numCovered = numExamplesWithMinorityValue;
-            refinement.covered = true;
             refinement.comparator = NOMINAL_NEQ;
             refinement.threshold = featureVector.majorityValue;
             comparator.pushRefinement(refinement, scoreVector);
@@ -107,8 +107,8 @@ static inline void searchForNominalRefinementInternally(const NominalFeatureVect
         if (comparator.isImprovement(scoreVector)) {
             refinement.start = 0;
             refinement.end = numValues;
+            refinement.inverse = true;
             refinement.numCovered = numExamplesWithMajorityValue;
-            refinement.covered = false;
             refinement.comparator = NOMINAL_EQ;
             refinement.threshold = featureVector.majorityValue;
             comparator.pushRefinement(refinement, scoreVector);
