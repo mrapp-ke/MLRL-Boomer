@@ -110,6 +110,13 @@ jobs:
       - name: Test C++ code
         if: ${{ needs.changes.outputs.cpp_tests == 'true' }}
         run: ./build tests_cpp
+      - name: Publish C++ test results
+        if: ${{ needs.changes.outputs.cpp_tests == 'true' }} && (success() || failure())
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          check_name: "C++ Test Results"
+          files: |
+            cpp/build/meson-logs/testlog.junit.xml
       - name: Test Python code
         if: ${{ needs.changes.outputs.cpp == 'true' || needs.changes.outputs.python_tests == 'true' }}
         run: ./build tests_python
