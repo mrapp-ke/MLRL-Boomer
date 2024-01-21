@@ -111,9 +111,6 @@ class ExactThresholds final : public AbstractThresholds {
 
                 const WeightVector& weights_;
 
-                // TODO Remove if possible
-                uint32 numCoveredExamples_;
-
                 CoverageMask coverageMask_;
 
                 uint32 numModifications_;
@@ -154,8 +151,8 @@ class ExactThresholds final : public AbstractThresholds {
                                  std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr,
                                  const WeightVector& weights)
                     : thresholds_(thresholds), weightedStatisticsPtr_(std::move(weightedStatisticsPtr)),
-                      weights_(weights), numCoveredExamples_(weights.getNumNonZeroWeights()),
-                      coverageMask_(thresholds.featureMatrix_.getNumExamples()), numModifications_(0) {}
+                      weights_(weights), coverageMask_(thresholds.featureMatrix_.getNumExamples()),
+                      numModifications_(0) {}
 
                 /**
                  * @param thresholdsSubset A reference to an object of type `ThresholdsSubset` to be copied
@@ -163,8 +160,7 @@ class ExactThresholds final : public AbstractThresholds {
                 ThresholdsSubset(const ThresholdsSubset& thresholdsSubset)
                     : thresholds_(thresholdsSubset.thresholds_),
                       weightedStatisticsPtr_(thresholdsSubset.weightedStatisticsPtr_->copy()),
-                      weights_(thresholdsSubset.weights_), numCoveredExamples_(thresholdsSubset.numCoveredExamples_),
-                      coverageMask_(thresholdsSubset.coverageMask_),
+                      weights_(thresholdsSubset.weights_), coverageMask_(thresholdsSubset.coverageMask_),
                       numModifications_(thresholdsSubset.numModifications_) {}
 
                 std::unique_ptr<IThresholdsSubset> copy() const override {
@@ -202,7 +198,6 @@ class ExactThresholds final : public AbstractThresholds {
                     }
 
                     numModifications_++;
-                    numCoveredExamples_ = condition.numCovered;
                     featureVector->updateCoverageMaskAndStatistics(condition, coverageMask_, numModifications_,
                                                                    *weightedStatisticsPtr_);
                     cacheEntry.vectorPtr = featureVector->createFilteredFeatureVector(cacheEntry.vectorPtr, condition);
@@ -211,7 +206,6 @@ class ExactThresholds final : public AbstractThresholds {
 
                 void resetThresholds() override {
                     numModifications_ = 0;
-                    numCoveredExamples_ = weights_.getNumNonZeroWeights();
                     cacheFiltered_.clear();
                     coverageMask_.reset();
                 }
