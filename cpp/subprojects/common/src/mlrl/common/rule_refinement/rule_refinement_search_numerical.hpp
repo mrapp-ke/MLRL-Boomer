@@ -69,7 +69,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                             refinement.numCovered = numCovered;
                             refinement.covered = true;
                             refinement.comparator = NUMERICAL_LEQ;
-                            refinement.threshold.numerical = arithmeticMean(previousValue, currentValue);
+                            refinement.threshold = arithmeticMean(previousValue, currentValue);
                             comparator.pushRefinement(refinement, scoreVector);
                         }
                     }
@@ -88,7 +88,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                             refinement.numCovered = numUncovered;
                             refinement.covered = false;
                             refinement.comparator = NUMERICAL_GR;
-                            refinement.threshold.numerical = arithmeticMean(previousValue, currentValue);
+                            refinement.threshold = arithmeticMean(previousValue, currentValue);
                             comparator.pushRefinement(refinement, scoreVector);
                         }
                     }
@@ -151,7 +151,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                             refinement.numCovered = numCovered;
                             refinement.covered = true;
                             refinement.comparator = NUMERICAL_GR;
-                            refinement.threshold.numerical = arithmeticMean(currentValue, previousValue);
+                            refinement.threshold = arithmeticMean(currentValue, previousValue);
                             comparator.pushRefinement(refinement, scoreVector);
                         }
                     }
@@ -170,7 +170,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                             refinement.numCovered = numUncovered;
                             refinement.covered = false;
                             refinement.comparator = NUMERICAL_LEQ;
-                            refinement.threshold.numerical = arithmeticMean(currentValue, previousValue);
+                            refinement.threshold = arithmeticMean(currentValue, previousValue);
                             comparator.pushRefinement(refinement, scoreVector);
                         }
                     }
@@ -205,7 +205,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                 refinement.numCovered = numCovered;
                 refinement.covered = true;
                 refinement.comparator = NUMERICAL_GR;
-                refinement.threshold.numerical = arithmeticMean(sparseValue, previousValue);
+                refinement.threshold = arithmeticMean(sparseValue, previousValue);
                 comparator.pushRefinement(refinement, scoreVector);
             }
         }
@@ -225,7 +225,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                 refinement.numCovered = numUncovered;
                 refinement.covered = false;
                 refinement.comparator = NUMERICAL_LEQ;
-                refinement.threshold.numerical = arithmeticMean(sparseValue, previousValue);
+                refinement.threshold = arithmeticMean(sparseValue, previousValue);
                 comparator.pushRefinement(refinement, scoreVector);
             }
         }
@@ -251,11 +251,11 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
                 if (sparse) {
                     // If the condition separates an example with feature value `f < sparseValue` from an example with
                     // sparse feature value...
-                    refinement.threshold.numerical = arithmeticMean(lastValueLessThanSparseValue, sparseValue);
+                    refinement.threshold = arithmeticMean(lastValueLessThanSparseValue, sparseValue);
                 } else {
                     // If the condition separates an example with feature value `f < 0` from an example with feature
                     // value `f > sparseValue`...
-                    refinement.threshold.numerical = arithmeticMean(lastValueLessThanSparseValue, previousValue);
+                    refinement.threshold = arithmeticMean(lastValueLessThanSparseValue, previousValue);
                 }
 
                 comparator.pushRefinement(refinement, scoreVector);

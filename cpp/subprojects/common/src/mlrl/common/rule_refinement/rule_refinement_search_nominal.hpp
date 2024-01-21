@@ -46,7 +46,7 @@ static inline void searchForNominalRefinementInternally(const NominalFeatureVect
                 refinement.numCovered = numCovered;
                 refinement.covered = true;
                 refinement.comparator = NOMINAL_EQ;
-                refinement.threshold.nominal = valueIterator[i];
+                refinement.threshold = valueIterator[i];
                 comparator.pushRefinement(refinement, scoreVector);
             }
         }
@@ -65,7 +65,7 @@ static inline void searchForNominalRefinementInternally(const NominalFeatureVect
                 refinement.numCovered = numUncovered;
                 refinement.covered = false;
                 refinement.comparator = NOMINAL_NEQ;
-                refinement.threshold.nominal = valueIterator[i];
+                refinement.threshold = valueIterator[i];
                 comparator.pushRefinement(refinement, scoreVector);
             }
         }
@@ -90,7 +90,7 @@ static inline void searchForNominalRefinementInternally(const NominalFeatureVect
             refinement.numCovered = numExamplesWithMinorityValue;
             refinement.covered = true;
             refinement.comparator = NOMINAL_NEQ;
-            refinement.threshold.nominal = featureVector.majorityValue;
+            refinement.threshold = featureVector.majorityValue;
             comparator.pushRefinement(refinement, scoreVector);
         }
     }
@@ -110,7 +110,7 @@ static inline void searchForNominalRefinementInternally(const NominalFeatureVect
             refinement.numCovered = numExamplesWithMajorityValue;
             refinement.covered = false;
             refinement.comparator = NOMINAL_EQ;
-            refinement.threshold.nominal = featureVector.majorityValue;
+            refinement.threshold = featureVector.majorityValue;
             comparator.pushRefinement(refinement, scoreVector);
         }
     }
