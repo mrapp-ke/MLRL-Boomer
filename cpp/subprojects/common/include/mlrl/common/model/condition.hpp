@@ -77,6 +77,8 @@ struct Condition {
             : featureIndex(other.featureIndex), comparator(other.comparator), threshold(other.threshold),
               start(other.start), end(other.end), covered(other.covered), numCovered(other.numCovered) {}
 
+        virtual ~Condition() {}
+
         /**
          * Assigns the properties of an existing condition to this condition.
          *
