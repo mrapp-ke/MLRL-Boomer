@@ -14,12 +14,14 @@ def __meson_test(build_dir: str):
 
 
 def __python_unittest(directory: str):
-    run_python_program('unittest',
+    run_python_program('xmlrunner',
                        'discover',
                        '-v',
-                       '-f',
                        '-s',
                        directory,
+                       '-o',
+                       path.join(PYTHON_MODULE.build_dir, 'test-results'),
+                       print_args=True,
                        install_program=False,
                        additional_dependencies=['unittest-xml-reporting'])
 
