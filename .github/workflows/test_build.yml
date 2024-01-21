@@ -56,6 +56,7 @@ jobs:
               - 'python/**/mlrl/**'
             python_tests: &python_tests
               - *python
+              - *cpp_tests
               - 'python/**/tests/**' 
             doc: &doc
               - *build_files
@@ -118,8 +119,15 @@ jobs:
           files: |
             cpp/build/meson-logs/testlog.junit.xml
       - name: Test Python code
-        if: ${{ needs.changes.outputs.cpp == 'true' || needs.changes.outputs.python_tests == 'true' }}
+        if: ${{ needs.changes.outputs.python_tests == 'true' }}
         run: ./build tests_python
+      - name: Publish Python test results
+        if: ${{ needs.changes.outputs.python_tests == 'true' }} && (success() || failure())
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          check_name: "Python Test Results"
+          files: |
+            python/build/test-results/*.xml
       - name: Install Doxygen
         if: ${{ needs.changes.outputs.cpp == 'true' || needs.changes.outputs.doc == 'true' }}
         uses: ssciwr/doxygen-install@v1
