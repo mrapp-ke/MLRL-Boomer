@@ -55,7 +55,7 @@ class MLRLCOMMON_API BinaryDokVector {
          * @return An `index_const_iterator` to the beginning
          */
         index_const_iterator indices_cbegin() const {
-            return indices_->cend();
+            return indices_->cbegin();
         }
 
         /**
