@@ -37,9 +37,8 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNumericalFeatureVect
     if (numFilteredElements > 0
         && (featureVector.sparse
             || !isEqual(featureVector[start].value, featureVector[numFilteredElements - 1].value))) {
-        NumericalFeatureVector filteredFeatureVector(&featureVector.array[start], numFilteredElements);
-        filteredFeatureVector.sparseValue = featureVector.sparseValue;
-        filteredFeatureVector.sparse = featureVector.sparse;
+        NumericalFeatureVector filteredFeatureVector(&featureVector.array[start], numFilteredElements,
+                                                     featureVector.sparseValue, featureVector.sparse);
         return std::make_unique<View>(std::move(filteredFeatureVector));
     }
 
