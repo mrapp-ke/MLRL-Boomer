@@ -64,13 +64,13 @@ std::unique_ptr<ConjunctiveBody> ConditionList::createConjunctiveBody() const {
             }
             case ORDINAL_LEQ: {
                 bodyPtr->ordinal_leq_indices_begin()[ordinalLeqIndex] = featureIndex;
-                bodyPtr->ordinal_leq_thresholds_begin()[ordinalLeqIndex] = std::get<float32>(threshold);
+                bodyPtr->ordinal_leq_thresholds_begin()[ordinalLeqIndex] = std::get<int32>(threshold);
                 ordinalLeqIndex++;
                 break;
             }
             case ORDINAL_GR: {
                 bodyPtr->ordinal_gr_indices_begin()[ordinalGrIndex] = featureIndex;
-                bodyPtr->ordinal_gr_thresholds_begin()[ordinalGrIndex] = std::get<float32>(threshold);
+                bodyPtr->ordinal_gr_thresholds_begin()[ordinalGrIndex] = std::get<int32>(threshold);
                 ordinalGrIndex++;
                 break;
             }
