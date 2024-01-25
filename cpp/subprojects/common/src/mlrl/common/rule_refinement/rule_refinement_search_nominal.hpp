@@ -3,9 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/common/input/feature_vector_nominal.hpp"
 #include "mlrl/common/rule_refinement/refinement.hpp"
-#include "mlrl/common/statistics/statistics_subset_weighted.hpp"
+#include "rule_refinement_search_nominal_common.hpp"
 
 template<typename Comparator>
 static inline void searchForNominalRefinementInternally(const NominalFeatureVector& featureVector,
@@ -19,20 +18,7 @@ static inline void searchForNominalRefinementInternally(const NominalFeatureVect
 
     for (uint32 i = 0; i < numValues; i++) {
         // Mark all examples corresponding to the current minority value as covered...
-        NominalFeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(i);
-        NominalFeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(i);
-        uint32 numIndices = indicesEnd - indexIterator;
-        uint32 numCovered = 0;
-
-        for (uint32 j = 0; j < numIndices; j++) {
-            uint32 index = indexIterator[j];
-
-            // Do only consider examples with non-zero weights...
-            if (statisticsSubset.hasNonZeroWeight(index)) {
-                statisticsSubset.addToSubset(index);
-                numCovered++;
-            }
-        }
+        uint32 numCovered = addAllToSubset(statisticsSubset, featureVector, i);
 
         // Check if a condition using the == operator covers at least `minCoverage` examples...
         if (numCovered >= minCoverage) {

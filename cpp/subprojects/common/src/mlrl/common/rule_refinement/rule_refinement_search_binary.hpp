@@ -5,29 +5,15 @@
 
 #include "mlrl/common/input/feature_vector_binary.hpp"
 #include "mlrl/common/rule_refinement/refinement.hpp"
-#include "mlrl/common/statistics/statistics_subset_weighted.hpp"
+#include "rule_refinement_search_nominal_common.hpp"
 
 template<typename Comparator>
 static inline void searchForBinaryRefinementInternally(const BinaryFeatureVector& featureVector,
                                                        IWeightedStatisticsSubset& statisticsSubset,
                                                        Comparator& comparator, uint32 minCoverage,
                                                        Refinement& refinement) {
-    BinaryFeatureVector::value_const_iterator valueIterator = featureVector.values_cbegin();
-    BinaryFeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(0);
-    BinaryFeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(0);
-    uint32 numIndices = indicesEnd - indexIterator;
-    uint32 numCovered = 0;
-
     // Mark all examples corresponding to the minority value as covered...
-    for (uint32 i = 0; i < numIndices; i++) {
-        uint32 index = indexIterator[i];
-
-        // Do only consider examples with non-zero weights...
-        if (statisticsSubset.hasNonZeroWeight(index)) {
-            statisticsSubset.addToSubset(index);
-            numCovered++;
-        }
-    }
+    uint32 numCovered = addAllToSubset(statisticsSubset, featureVector, 0);
 
     // Check if a condition covering all examples corresponding to the minority value covers at least `minCoverage`
     // examples...
@@ -42,7 +28,7 @@ static inline void searchForBinaryRefinementInternally(const BinaryFeatureVector
             refinement.inverse = false;
             refinement.numCovered = numCovered;
             refinement.comparator = NOMINAL_EQ;
-            refinement.threshold = valueIterator[0];
+            refinement.threshold = featureVector.values_cbegin()[0];
             comparator.pushRefinement(refinement, scoreVector);
         }
     }
