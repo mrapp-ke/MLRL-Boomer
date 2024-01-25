@@ -3,6 +3,7 @@
 #include "rule_refinement_search_binary.hpp"
 #include "rule_refinement_search_nominal.hpp"
 #include "rule_refinement_search_numerical.hpp"
+#include "rule_refinement_search_ordinal.hpp"
 
 static inline void addMissingStatistics(IWeightedStatisticsSubset& statisticsSubset,
                                         const MissingFeatureVector& missingFeatureVector) {
@@ -72,7 +73,7 @@ void RuleRefinementSearch::searchForOrdinalRefinement(const OrdinalFeatureVector
                                                       SingleRefinementComparator& comparator, uint32 minCoverage,
                                                       Refinement& refinement) const {
     addMissingStatistics(statisticsSubset, missingFeatureVector);
-    // TODO Implement
+    searchForOrdinalRefinementInternally(featureVector, statisticsSubset, comparator, minCoverage, refinement);
 }
 
 void RuleRefinementSearch::searchForOrdinalRefinement(const OrdinalFeatureVector& featureVector,
@@ -81,5 +82,5 @@ void RuleRefinementSearch::searchForOrdinalRefinement(const OrdinalFeatureVector
                                                       FixedRefinementComparator& comparator, uint32 minCoverage,
                                                       Refinement& refinement) const {
     addMissingStatistics(statisticsSubset, missingFeatureVector);
-    // TODO Implement
+    searchForOrdinalRefinementInternally(featureVector, statisticsSubset, comparator, minCoverage, refinement);
 }
