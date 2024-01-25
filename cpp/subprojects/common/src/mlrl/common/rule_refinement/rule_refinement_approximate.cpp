@@ -63,8 +63,16 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.end = r;
                         refinement.inverse = false;
                         refinement.numCovered = numCovered;
-                        refinement.threshold = thresholdIterator[r - 1];
-                        refinement.comparator = nominal ? NOMINAL_EQ : (ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ);
+
+                        if (nominal) {
+                            refinement.threshold = (int32) thresholdIterator[r - 1];
+                            refinement.comparator = NOMINAL_EQ;
+                        } else {
+                            refinement.threshold =
+                              ordinal ? (int32) thresholdIterator[r - 1] : thresholdIterator[r - 1];
+                            refinement.comparator = ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ;
+                        }
+
                         comparator.pushRefinement(refinement, scoreVector);
                     }
                 }
@@ -88,7 +96,8 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                             refinement.threshold = (int32) thresholdIterator[r - 1];
                             refinement.comparator = NOMINAL_NEQ;
                         } else {
-                            refinement.threshold = thresholdIterator[r - 1];
+                            refinement.threshold =
+                              ordinal ? (int32) thresholdIterator[r - 1] : thresholdIterator[r - 1];
                             refinement.comparator = ordinal ? ORDINAL_GR : NUMERICAL_GR;
                         }
 
@@ -131,7 +140,8 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.threshold = (int32) thresholdIterator[sparseBinIndex - 1];
                         refinement.comparator = NOMINAL_EQ;
                     } else {
-                        refinement.threshold = thresholdIterator[sparseBinIndex - 1];
+                        refinement.threshold = ordinal ? (int32) thresholdIterator[sparseBinIndex - 1]
+                                                       : thresholdIterator[sparseBinIndex - 1];
                         refinement.comparator = ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ;
                     }
 
@@ -158,7 +168,8 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.threshold = (int32) thresholdIterator[sparseBinIndex - 1];
                         refinement.comparator = NOMINAL_NEQ;
                     } else {
-                        refinement.threshold = thresholdIterator[sparseBinIndex - 1];
+                        refinement.threshold = ordinal ? (int32) thresholdIterator[sparseBinIndex - 1]
+                                                       : thresholdIterator[sparseBinIndex - 1];
                         refinement.comparator = ordinal ? ORDINAL_GR : NUMERICAL_GR;
                     }
 
@@ -215,7 +226,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                             refinement.threshold = (int32) thresholdIterator[firstR];
                             refinement.comparator = NOMINAL_EQ;
                         } else {
-                            refinement.threshold = thresholdIterator[r];
+                            refinement.threshold = ordinal ? (int32) thresholdIterator[r] : thresholdIterator[r];
                             refinement.comparator = ordinal ? ORDINAL_GR : NUMERICAL_GR;
                         }
 
@@ -242,7 +253,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                             refinement.threshold = (int32) thresholdIterator[firstR];
                             refinement.comparator = NOMINAL_NEQ;
                         } else {
-                            refinement.threshold = thresholdIterator[r];
+                            refinement.threshold = ordinal ? (int32) thresholdIterator[r] : thresholdIterator[r];
                             refinement.comparator = ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ;
                         }
 
@@ -285,7 +296,8 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.threshold = (int32) thresholdIterator[firstR];
                         refinement.comparator = NOMINAL_EQ;
                     } else {
-                        refinement.threshold = (int32) thresholdIterator[sparseBinIndex];
+                        refinement.threshold =
+                          ordinal ? (int32) thresholdIterator[sparseBinIndex] : thresholdIterator[sparseBinIndex];
                         refinement.comparator = ordinal ? ORDINAL_GR : NUMERICAL_GR;
                     }
 
@@ -312,7 +324,8 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
                         refinement.threshold = (int32) thresholdIterator[firstR];
                         refinement.comparator = NOMINAL_NEQ;
                     } else {
-                        refinement.threshold = thresholdIterator[sparseBinIndex];
+                        refinement.threshold =
+                          ordinal ? (int32) thresholdIterator[sparseBinIndex] : thresholdIterator[sparseBinIndex];
                         refinement.comparator = ordinal ? ORDINAL_LEQ : NUMERICAL_LEQ;
                     }
 

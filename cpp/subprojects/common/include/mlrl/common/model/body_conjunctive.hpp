@@ -99,7 +99,7 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
                  * @param threshold     The threshold
                  * @return              True, if the feature value satisfies the threshold, false otherwise
                  */
-                inline bool operator()(const float32& featureValue, const float32& threshold) const {
+                inline bool operator()(const int32& featureValue, const int32& threshold) const {
                     return featureValue <= threshold;
                 }
         };
@@ -117,7 +117,7 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
                  * @param threshold     The threshold
                  * @return              True, if the feature value satisfies the threshold, false otherwise
                  */
-                inline bool operator()(const float32& featureValue, const float32& threshold) const {
+                inline bool operator()(const int32& featureValue, const int32& threshold) const {
                     return featureValue > threshold;
                 }
         };
@@ -162,9 +162,9 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
 
         ConditionVector<float32, CompareNumericalGr> numericalGrVector_;
 
-        ConditionVector<float32, CompareOrdinalLeq> ordinalLeqVector_;
+        ConditionVector<int32, CompareOrdinalLeq> ordinalLeqVector_;
 
-        ConditionVector<float32, CompareOrdinalGr> ordinalGrVector_;
+        ConditionVector<int32, CompareOrdinalGr> ordinalGrVector_;
 
         ConditionVector<int32, CompareNominalEq> nominalEqVector_;
 
@@ -199,12 +199,12 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
          * An iterator that provides access to the thresholds that are used by ordinal conditions in the body and allows
          * to modify them.
          */
-        typedef View<float32>::iterator ordinal_threshold_iterator;
+        typedef View<int32>::iterator ordinal_threshold_iterator;
 
         /**
          * An iterator that provides read-only access to the thresholds that are used by ordinal conditions in the body.
          */
-        typedef View<float32>::const_iterator ordinal_threshold_const_iterator;
+        typedef View<int32>::const_iterator ordinal_threshold_const_iterator;
 
         /**
          * An iterator that provides access to the threshold that are used by nominal conditions in the body and allows

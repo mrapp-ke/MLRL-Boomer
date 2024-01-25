@@ -27,9 +27,9 @@ cdef extern from "mlrl/common/model/body_conjunctive.hpp" nogil:
 
         ctypedef const float32* numerical_threshold_const_iterator
 
-        ctypedef float32* ordinal_threshold_iterator
+        ctypedef int32* ordinal_threshold_iterator
 
-        ctypedef const float32* ordinal_threshold_const_iterator
+        ctypedef const int32* ordinal_threshold_const_iterator
 
         ctypedef int32* nominal_threshold_iterator
 

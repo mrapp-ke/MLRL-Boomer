@@ -25,8 +25,8 @@ cdef class ConjunctiveBody:
 
     def __cinit__(self, const uint32[::1] numerical_leq_indices, const float32[::1] numerical_leq_thresholds,
                   const uint32[::1] numerical_gr_indices, const float32[::1] numerical_gr_thresholds,
-                  const uint32[::1] ordinal_leq_indices, const float32[::1] ordinal_leq_thresholds,
-                  const uint32[::1] ordinal_gr_indices, const float32[::1] ordinal_gr_thresholds,
+                  const uint32[::1] ordinal_leq_indices, const int32[::1] ordinal_leq_thresholds,
+                  const uint32[::1] ordinal_gr_indices, const int32[::1] ordinal_gr_thresholds,
                   const uint32[::1] nominal_eq_indices, const int32[::1] nominal_eq_thresholds,
                   const uint32[::1] nominal_neq_indices, const int32[::1] nominal_neq_thresholds):
         """
@@ -45,15 +45,15 @@ cdef class ConjunctiveBody:
         :param ordinal_leq_indices:         A contiguous array of type `uint32`, shape `(num_ordinal_leq_conditions)`,
                                             that stores the feature indices of the oridnal conditions that use the <=
                                             operator or None, if no such conditions are available
-        :param ordinal_leq_thresholds:      A contiguous array of type `float32`, shape `(num_ordinal_leq_conditions)`
+        :param ordinal_leq_thresholds:      A contiguous array of type `int32`, shape `(num_ordinal_leq_conditions)`
                                             that stores the thresholds of the ordinal conditions that use the <=
                                             operator or None, if no such conditions are available
         :param ordinal_gr_indices:          A contiguous array of type `uint32`, shape `(num_ordinal_gr_conditions)`,
                                             that stores the feature indices of the ordinal conditions that use the >
                                             operator or None, if no such conditions are available
-        :param ordinal_gr_thresholds:       A contiguous array of type `float32`, shape `(num_ordinal_gr_conditions)`
-                                            that stores the thresholds of the ordinal conditions that use the > operator
-                                            or None, if no such conditions are available
+        :param ordinal_gr_thresholds:       A contiguous array of type `int32`, shape `(num_ordinal_gr_conditions)` that
+                                            stores the thresholds of the ordinal conditions that use the > operator or
+                                            None, if no such conditions are available
         :param nominal_eq_indices:          A contiguous array of type `uint32`, shape `(num_nominal_eq_conditions)`,
                                             that stores the feature indices of the nominal conditions that use the ==
                                             operator or None, if no such conditions are available
@@ -236,14 +236,14 @@ cdef class RuleList(RuleModel):
         cdef uint32 num_ordinal_leq = body.getNumOrdinalLeq()
         cdef const uint32[::1] ordinal_leq_indices = \
             <uint32[:num_ordinal_leq]>body.ordinal_leq_indices_cbegin() if num_ordinal_leq > 0 else None
-        cdef const float32[::1] ordinal_leq_thresholds = \
-            <float32[:num_ordinal_leq]>body.ordinal_leq_thresholds_cbegin() if num_ordinal_leq > 0 else None
+        cdef const int32[::1] ordinal_leq_thresholds = \
+            <int32[:num_ordinal_leq]>body.ordinal_leq_thresholds_cbegin() if num_ordinal_leq > 0 else None
 
         cdef uint32 num_ordinal_gr = body.getNumOrdinalGr()
         cdef const uint32[::1] ordinal_gr_indices = \
             <uint32[:num_ordinal_gr]>body.ordinal_gr_indices_cbegin() if num_ordinal_gr > 0 else None
-        cdef const float32[::1] ordinal_gr_thresholds = \
-            <float32[:num_ordinal_gr]>body.ordinal_gr_thresholds_cbegin() if num_ordinal_gr > 0 else None
+        cdef const int32[::1] ordinal_gr_thresholds = \
+            <int32[:num_ordinal_gr]>body.ordinal_gr_thresholds_cbegin() if num_ordinal_gr > 0 else None
 
         cdef uint32 num_nominal_eq = body.getNumNominalEq()
         cdef const uint32[::1] nominal_eq_indices = \
@@ -296,11 +296,11 @@ cdef class RuleList(RuleModel):
                 if num_numerical_gr > 0 else None,
             np.asarray(<uint32[:num_numerical_gr]>body.numerical_gr_indices_cbegin()) \
                 if num_numerical_gr > 0 else None,
-            np.asarray(<float32[:num_ordinal_leq]>body.ordinal_leq_thresholds_cbegin()) \
+            np.asarray(<int32[:num_ordinal_leq]>body.ordinal_leq_thresholds_cbegin()) \
                 if num_ordinal_leq > 0 else None,
             np.asarray(<uint32[:num_ordinal_leq]>body.ordinal_leq_indices_cbegin()) \
                 if num_ordinal_leq > 0 else None,
-            np.asarray(<float32[:num_ordinal_gr]>body.ordinal_gr_thresholds_cbegin()) \
+            np.asarray(<int32[:num_ordinal_gr]>body.ordinal_gr_thresholds_cbegin()) \
                 if num_ordinal_gr > 0 else None,
             np.asarray(<uint32[:num_ordinal_gr]>body.ordinal_gr_indices_cbegin()) \
                 if num_ordinal_gr > 0 else None,
@@ -342,9 +342,9 @@ cdef class RuleList(RuleModel):
         cdef const uint32[::1] numerical_leq_indices = body_state[1]
         cdef const float32[::1] numerical_gr_thresholds = body_state[2]
         cdef const uint32[::1] numerical_gr_indices = body_state[3]
-        cdef const float32[::1] ordinal_leq_thresholds = body_state[4]
+        cdef const int32[::1] ordinal_leq_thresholds = body_state[4]
         cdef const uint32[::1] ordinal_leq_indices = body_state[5]
-        cdef const float32[::1] ordinal_gr_thresholds = body_state[6]
+        cdef const int32[::1] ordinal_gr_thresholds = body_state[6]
         cdef const uint32[::1] ordinal_gr_indices = body_state[7]
         cdef const int32[::1] nominal_eq_thresholds = body_state[8]
         cdef const uint32[::1] nominal_eq_indices = body_state[9]
