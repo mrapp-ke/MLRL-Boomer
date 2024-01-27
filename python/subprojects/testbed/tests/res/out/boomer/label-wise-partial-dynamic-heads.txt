@@ -12,22 +12,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-Example-wise F1         67.52
-Example-wise Jaccard    51.7
-Example-wise Precision  82.23
-Example-wise Recall     59.35
-Hamming Accuracy        81.12
-Hamming Loss            18.88
-Macro F1                64.04
-Macro Jaccard           48.29
-Macro Precision         76.77
-Macro Recall            56.63
-Micro F1                66.16
-Micro Jaccard           49.43
-Micro Precision         77.22
-Micro Recall            57.87
-Subset 0/1 Loss         76.02
-Subset Accuracy         23.98
+Example-wise F1         72.53
+Example-wise Jaccard    54.08
+Example-wise Precision  78.32
+Example-wise Recall     62.24
+Hamming Accuracy        81.55
+Hamming Loss            18.45
+Macro F1                66
+Macro Jaccard           50.43
+Macro Precision         75.35
+Macro Recall            60.34
+Micro F1                68.14
+Micro Jaccard           51.67
+Micro Precision         75.82
+Micro Recall            61.87
+Subset 0/1 Loss         72.45
+Subset Accuracy         27.55
 
 INFO Model characteristics:
 
@@ -35,21 +35,21 @@ INFO Model characteristics:
 │ Statistics about conditions   │   Total │   Numerical <= operator │   Numerical > operator │   Ordinal <= operator │   Ordinal > operator │   Nominal == operator │   Nominal != operator │
 ├───────────────────────────────┼─────────┼─────────────────────────┼────────────────────────┼───────────────────────┼──────────────────────┼───────────────────────┼───────────────────────┤
 │ Default rule                  │       0 │                   0.00% │                  0.00% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
-│ 999 local rules               │    6254 │                  50.51% │                 49.49% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
+│ 999 local rules               │    6079 │                  54.24% │                 45.76% │                 0.00% │                0.00% │                 0.00% │                 0.00% │
 └───────────────────────────────┴─────────┴─────────────────────────┴────────────────────────┴───────────────────────┴──────────────────────┴───────────────────────┴───────────────────────┘
 
 ┌────────────────────────────────┬─────────┬────────────┬────────────┐
 │ Statistics about predictions   │   Total │   Positive │   Negative │
 ├────────────────────────────────┼─────────┼────────────┼────────────┤
 │ Default rule                   │       6 │      0.00% │    100.00% │
-│ 999 local rules                │    1567 │     41.48% │     58.52% │
+│ 999 local rules                │    1581 │     40.61% │     59.39% │
 └────────────────────────────────┴─────────┴────────────┴────────────┘
 
 ┌─────────────────────────────┬───────────┬───────────┬───────────┐
 │ Statistics per local rule   │   Minimum │   Average │   Maximum │
 ├─────────────────────────────┼───────────┼───────────┼───────────┤
-│ Conditions                  │         1 │      6.26 │        19 │
-│ Predictions                 │         1 │      1.57 │         3 │
+│ Conditions                  │         1 │      6.09 │        20 │
+│ Predictions                 │         1 │      1.58 │         3 │
 └─────────────────────────────┴───────────┴───────────┴───────────┘
 
 INFO Successfully finished after <duration>

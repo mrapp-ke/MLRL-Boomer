@@ -12,11 +12,11 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-0/1 Loss   36.84
-Accuracy   63.16
-F1         47.76
-Jaccard    31.37
-Precision  47.06
-Recall     48.48
+0/1 Loss   37.89
+Accuracy   62.11
+F1         40
+Jaccard    25
+Precision  44.44
+Recall     36.36
 
 INFO Successfully finished after <duration>
