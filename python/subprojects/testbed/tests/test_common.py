@@ -31,6 +31,8 @@ DIR_MODELS = path.join(path.join(DIR_RES, 'tmp'), 'models')
 
 DATASET_EMOTIONS = 'emotions'
 
+DATASET_EMOTIONS_NOMINAL = 'emotions-nominal'
+
 DATASET_ENRON = 'enron'
 
 DATASET_LANGLOG = 'langlog'
@@ -916,7 +918,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
                  dataset_default: str = DATASET_EMOTIONS,
                  dataset_numerical: str = DATASET_LANGLOG,
                  dataset_binary: str = DATASET_ENRON,
-                 dataset_nominal: str = DATASET_WEATHER,
+                 dataset_nominal: str = DATASET_EMOTIONS_NOMINAL,
                  dataset_single_label: str = DATASET_BREAST_CANCER,
                  expected_output_dir=DIR_OUT,
                  methodName='runTest'):

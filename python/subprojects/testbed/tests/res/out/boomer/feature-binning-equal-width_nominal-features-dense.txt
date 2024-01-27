@@ -1,32 +1,32 @@
 INFO Starting experiment...
 INFO Using separate training and test sets...
-DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/weather.xml"...
-DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/weather.arff"...
-INFO Fitting model to 9 training examples...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions-nominal.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions-nominal.arff"...
+INFO Fitting model to 397 training examples...
 DEBUG A dense matrix is used to store the feature values of the training examples
 DEBUG A dense matrix is used to store the labels of the training examples
 INFO Successfully fit model in <duration>
-INFO Predicting for 5 test examples...
+INFO Predicting for 196 test examples...
 DEBUG A dense matrix is used to store the feature values of the query examples
 DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-Example-wise F1         86.67
-Example-wise Jaccard    60
-Example-wise Precision  80
-Example-wise Recall     60
-Hamming Accuracy        73.33
-Hamming Loss            26.67
-Macro F1                46.3
-Macro Jaccard           37.78
-Macro Precision         93.33
-Macro Recall            44.44
-Micro F1                71.43
-Micro Jaccard           55.56
-Micro Precision         83.33
-Micro Recall            62.5
-Subset 0/1 Loss         60
-Subset Accuracy         40
+Example-wise F1         71.82
+Example-wise Jaccard    49.49
+Example-wise Precision  71.85
+Example-wise Recall     57.74
+Hamming Accuracy        77.81
+Hamming Loss            22.19
+Macro F1                60.28
+Macro Jaccard           43.89
+Macro Precision         67.51
+Macro Recall            55.34
+Micro F1                62.01
+Micro Jaccard           44.94
+Micro Precision         68.27
+Micro Recall            56.8
+Subset 0/1 Loss         75
+Subset Accuracy         25
 
 INFO Successfully finished after <duration>
