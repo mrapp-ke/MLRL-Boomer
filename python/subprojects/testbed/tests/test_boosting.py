@@ -757,7 +757,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using sparse data structures for storing the statistics and a dense label
         representation.
         """
-        builder = BoostingCmdBuilder(dataset=self.dataset_numerical) \
+        builder = BoostingCmdBuilder(dataset=self.dataset_numerical_sparse) \
             .sparse_statistic_format() \
             .sparse_label_format(False) \
             .default_rule(False) \
@@ -770,7 +770,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using sparse data structures for storing the statistics and a sparse label
         representation.
         """
-        builder = BoostingCmdBuilder(dataset=self.dataset_numerical) \
+        builder = BoostingCmdBuilder(dataset=self.dataset_numerical_sparse) \
             .sparse_statistic_format() \
             .sparse_label_format() \
             .default_rule(False) \

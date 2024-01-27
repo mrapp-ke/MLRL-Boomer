@@ -914,26 +914,26 @@ class CommonIntegrationTests(IntegrationTests, ABC):
     def __init__(self,
                  cmd: str,
                  dataset_default: str = DATASET_EMOTIONS,
-                 dataset_numerical: str = DATASET_LANGLOG,
+                 dataset_numerical_sparse: str = DATASET_LANGLOG,
                  dataset_binary: str = DATASET_ENRON,
                  dataset_nominal: str = DATASET_EMOTIONS_NOMINAL,
                  dataset_single_label: str = DATASET_BREAST_CANCER,
                  expected_output_dir=DIR_OUT,
                  methodName='runTest'):
         """
-        :param cmd:                     The command to be run by the integration tests
-        :param dataset_default:         The name of the dataset that should be used by default
-        :param dataset_numerical:       The name of a dataset with numerical features
-        :param dataset_binary:          The name of a dataset with binary features
-        :param dataset_nominal:         The name of a dataset with nominal features
-        :param dataset_single_label:    The name of the dataset that comes with a single label
-        :param expected_output_dir:     The path of the directory that contains the file with the expected output
-        :param methodName:              The name of the test method to be executed
+        :param cmd:                         The command to be run by the integration tests
+        :param dataset_default:             The name of the dataset that should be used by default
+        :param dataset_numerical_sparse:    The name of a dataset with sparse numerical features
+        :param dataset_binary:              The name of a dataset with binary features
+        :param dataset_nominal:             The name of a dataset with nominal features
+        :param dataset_single_label:        The name of the dataset that comes with a single label
+        :param expected_output_dir:         The path of the directory that contains the file with the expected output
+        :param methodName:                  The name of the test method to be executed
         """
         super().__init__(expected_output_dir, methodName)
         self.cmd = cmd
         self.dataset_default = dataset_default
-        self.dataset_numerical = dataset_numerical
+        self.dataset_numerical_sparse = dataset_numerical_sparse
         self.dataset_binary = dataset_binary
         self.dataset_nominal = dataset_nominal
         self.dataset_single_label = dataset_single_label
@@ -1356,7 +1356,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the rule learning algorithm on a dataset with numerical attributes when using a dense feature
         representation.
         """
-        builder = CmdBuilder(self.cmd, dataset=self.dataset_numerical) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_numerical_sparse) \
             .sparse_feature_format(False)
         self.run_cmd(builder, 'numeric-features-dense')
 
@@ -1365,7 +1365,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         Tests the rule learning algorithm on a dataset with numerical attributes when using a sparse feature
         representation.
         """
-        builder = CmdBuilder(self.cmd, dataset=self.dataset_numerical) \
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_numerical_sparse) \
             .sparse_feature_format()
         self.run_cmd(builder, 'numeric-features-sparse')
 
