@@ -11,22 +11,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 1):
 
-Example-wise F1         67.67
-Example-wise Jaccard    45.69
-Example-wise Precision  65.83
-Example-wise Recall     59.17
+Example-wise F1         66.63
+Example-wise Jaccard    46.67
+Example-wise Precision  68.33
+Example-wise Recall     60.56
 Hamming Accuracy        74.72
 Hamming Loss            25.28
-Macro F1                53.1
-Macro Jaccard           39.17
-Macro Precision         69.57
-Macro Recall            56.18
-Micro F1                59.91
-Micro Jaccard           42.77
-Micro Precision         61.82
-Micro Recall            58.12
-Subset 0/1 Loss         78.33
-Subset Accuracy         21.67
+Macro F1                54.04
+Macro Jaccard           40.46
+Macro Precision         74.52
+Macro Recall            57.15
+Micro F1                60.61
+Micro Jaccard           43.48
+Micro Precision         61.4
+Micro Recall            59.83
+Subset 0/1 Loss         81.67
+Subset Accuracy         18.33
 
 INFO Fold 2 / 10:
 DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/seco_fold-2.model"...
@@ -37,20 +37,20 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 2):
 
-Example-wise F1         71.56
-Example-wise Jaccard    44.81
-Example-wise Precision  61.67
-Example-wise Recall     59.17
-Hamming Accuracy        71.94
-Hamming Loss            28.06
-Macro F1                53.12
-Macro Jaccard           38.23
-Macro Precision         64.37
-Macro Recall            57.98
-Micro F1                58.09
-Micro Jaccard           40.94
-Micro Precision         57.85
-Micro Recall            58.33
+Example-wise F1         71.6
+Example-wise Jaccard    43.44
+Example-wise Precision  59.86
+Example-wise Recall     57.22
+Hamming Accuracy        71.67
+Hamming Loss            28.33
+Macro F1                51.61
+Macro Jaccard           36.86
+Macro Precision         65.41
+Macro Recall            56.21
+Micro F1                57.14
+Micro Jaccard           40
+Micro Precision         57.63
+Micro Recall            56.67
 Subset 0/1 Loss         81.67
 Subset Accuracy         18.33
 
@@ -63,22 +63,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 3):
 
-Example-wise F1         68.5
-Example-wise Jaccard    43.89
-Example-wise Precision  65.56
-Example-wise Recall     56.94
-Hamming Accuracy        75.56
-Hamming Loss            24.44
-Macro F1                53.05
-Macro Jaccard           39.21
-Macro Precision         69.8
-Macro Recall            55.52
-Micro F1                60
-Micro Jaccard           42.86
-Micro Precision         62.26
-Micro Recall            57.89
-Subset 0/1 Loss         83.33
-Subset Accuracy         16.67
+Example-wise F1         68.94
+Example-wise Jaccard    46.11
+Example-wise Precision  67.22
+Example-wise Recall     60
+Hamming Accuracy        76.39
+Hamming Loss            23.61
+Macro F1                54.41
+Macro Jaccard           40.73
+Macro Precision         70.14
+Macro Recall            58.02
+Micro F1                61.88
+Micro Jaccard           44.81
+Micro Precision         63.3
+Micro Recall            60.53
+Subset 0/1 Loss         81.67
+Subset Accuracy         18.33
 
 INFO Fold 4 / 10:
 DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/seco_fold-4.model"...
@@ -89,20 +89,20 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 4):
 
-Example-wise F1         69.72
-Example-wise Jaccard    46.67
-Example-wise Precision  62.01
-Example-wise Recall     61.86
-Hamming Accuracy        73.73
-Hamming Loss            26.27
-Macro F1                51.07
-Macro Jaccard           36.97
-Macro Precision         61.61
-Macro Recall            60.72
-Micro F1                57.53
-Micro Jaccard           40.38
-Micro Precision         53.85
-Micro Recall            61.76
+Example-wise F1         70.85
+Example-wise Jaccard    43.47
+Example-wise Precision  60.17
+Example-wise Recall     56.5
+Hamming Accuracy        71.75
+Hamming Loss            28.25
+Macro F1                45.95
+Macro Jaccard           32.42
+Macro Precision         57.93
+Macro Recall            54.2
+Micro F1                53.27
+Micro Jaccard           36.31
+Micro Precision         50.89
+Micro Recall            55.88
 Subset 0/1 Loss         77.97
 Subset Accuracy         22.03
 
@@ -115,22 +115,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 5):
 
-Example-wise F1         74.33
-Example-wise Jaccard    53.81
-Example-wise Precision  70.76
-Example-wise Recall     66.1
-Hamming Accuracy        79.94
-Hamming Loss            20.06
-Macro F1                62.45
-Macro Jaccard           50.22
-Macro Precision         77.29
-Macro Recall            67.76
-Micro F1                68.72
-Micro Jaccard           52.35
-Micro Precision         69.64
-Micro Recall            67.83
-Subset 0/1 Loss         69.49
-Subset Accuracy         30.51
+Example-wise F1         70.32
+Example-wise Jaccard    49.15
+Example-wise Precision  66.53
+Example-wise Recall     65.82
+Hamming Accuracy        77.12
+Hamming Loss            22.88
+Macro F1                59.68
+Macro Jaccard           46.78
+Macro Precision         73.17
+Macro Recall            66.35
+Micro F1                65.53
+Micro Jaccard           48.73
+Micro Precision         64.17
+Micro Recall            66.96
+Subset 0/1 Loss         79.66
+Subset Accuracy         20.34
 
 INFO Fold 6 / 10:
 DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/seco_fold-6.model"...
@@ -141,22 +141,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 6):
 
-Example-wise F1         67.72
-Example-wise Jaccard    39.75
-Example-wise Precision  60.45
-Example-wise Recall     54.8
-Hamming Accuracy        72.32
-Hamming Loss            27.68
-Macro F1                48.42
-Macro Jaccard           35.03
-Macro Precision         64.09
-Macro Recall            55.54
-Micro F1                52.88
-Micro Jaccard           35.95
-Micro Precision         52.88
-Micro Recall            52.88
-Subset 0/1 Loss         88.14
-Subset Accuracy         11.86
+Example-wise F1         68.62
+Example-wise Jaccard    40.73
+Example-wise Precision  59.32
+Example-wise Recall     55.08
+Hamming Accuracy        71.75
+Hamming Loss            28.25
+Macro F1                48.08
+Macro Jaccard           35.09
+Macro Precision         63.51
+Macro Recall            57.73
+Micro F1                53.27
+Micro Jaccard           36.31
+Micro Precision         51.82
+Micro Recall            54.81
+Subset 0/1 Loss         86.44
+Subset Accuracy         13.56
 
 INFO Fold 7 / 10:
 DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/seco_fold-7.model"...
@@ -167,22 +167,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 7):
 
-Example-wise F1         67.85
-Example-wise Jaccard    46.89
-Example-wise Precision  67.8
-Example-wise Recall     62.99
-Hamming Accuracy        76.27
-Hamming Loss            23.73
-Macro F1                48.21
-Macro Jaccard           36.98
-Macro Precision         61.56
-Macro Recall            53.59
-Micro F1                60
-Micro Jaccard           42.86
-Micro Precision         60.58
-Micro Recall            59.43
-Subset 0/1 Loss         84.75
-Subset Accuracy         15.25
+Example-wise F1         70.27
+Example-wise Jaccard    47.88
+Example-wise Precision  69.92
+Example-wise Recall     60.17
+Hamming Accuracy        77.12
+Hamming Loss            22.88
+Macro F1                50.74
+Macro Jaccard           37.37
+Macro Precision         70.42
+Macro Recall            50.56
+Micro F1                59.7
+Micro Jaccard           42.55
+Micro Precision         63.16
+Micro Recall            56.6
+Subset 0/1 Loss         77.97
+Subset Accuracy         22.03
 
 INFO Fold 8 / 10:
 DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/seco_fold-8.model"...
@@ -193,20 +193,20 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 8):
 
-Example-wise F1         79.94
-Example-wise Jaccard    50.85
-Example-wise Precision  61.86
-Example-wise Recall     64.97
-Hamming Accuracy        75.99
-Hamming Loss            24.01
-Macro F1                55.92
-Macro Jaccard           42.3
-Macro Precision         67.13
-Macro Recall            65.16
-Micro F1                62.88
-Micro Jaccard           45.86
-Micro Precision         59.02
-Micro Recall            67.29
+Example-wise F1         74.01
+Example-wise Jaccard    49.21
+Example-wise Precision  67.51
+Example-wise Recall     61.3
+Hamming Accuracy        77.68
+Hamming Loss            22.32
+Macro F1                56.77
+Macro Jaccard           43.33
+Macro Precision         72.29
+Macro Recall            62.36
+Micro F1                63.26
+Micro Jaccard           46.26
+Micro Precision         62.96
+Micro Recall            63.55
 Subset 0/1 Loss         76.27
 Subset Accuracy         23.73
 
@@ -219,22 +219,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 9):
 
-Example-wise F1         73.16
-Example-wise Jaccard    44.63
-Example-wise Precision  67.23
-Example-wise Recall     55.93
-Hamming Accuracy        77.12
-Hamming Loss            22.88
-Macro F1                53.74
-Macro Jaccard           40.08
-Macro Precision         73.66
-Macro Recall            53.7
-Micro F1                61.61
-Micro Jaccard           44.52
-Micro Precision         66.33
-Micro Recall            57.52
-Subset 0/1 Loss         83.05
-Subset Accuracy         16.95
+Example-wise F1         74.41
+Example-wise Jaccard    46.89
+Example-wise Precision  66.67
+Example-wise Recall     58.76
+Hamming Accuracy        76.84
+Hamming Loss            23.16
+Macro F1                53.76
+Macro Jaccard           40.05
+Macro Precision         72.32
+Macro Recall            55.65
+Micro F1                62.39
+Micro Jaccard           45.33
+Micro Precision         64.76
+Micro Recall            60.18
+Subset 0/1 Loss         81.36
+Subset Accuracy         18.64
 
 INFO Fold 10 / 10:
 DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/seco_fold-10.model"...
@@ -245,40 +245,40 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 10):
 
-Example-wise F1         76.61
-Example-wise Jaccard    53.25
-Example-wise Precision  72.03
-Example-wise Recall     64.12
-Hamming Accuracy        79.38
-Hamming Loss            20.62
-Macro F1                54.58
-Macro Jaccard           42.05
-Macro Precision         72.86
-Macro Recall            57.05
-Micro F1                65.4
-Micro Jaccard           48.59
-Micro Precision         68.32
-Micro Recall            62.73
+Example-wise F1         72.77
+Example-wise Jaccard    50
+Example-wise Precision  71.47
+Example-wise Recall     61.3
+Hamming Accuracy        77.68
+Hamming Loss            22.32
+Macro F1                69.42
+Macro Jaccard           39.98
+Macro Precision         54.41
+Macro Recall            54.27
+Micro F1                62.56
+Micro Jaccard           45.52
+Micro Precision         65.35
+Micro Recall            60
 Subset 0/1 Loss         71.19
 Subset Accuracy         28.81
 
 INFO Evaluation result for test data (Average across 10 folds):
 
-Example-wise F1         71.71  ±4.03
-Example-wise Jaccard    47.02  ±4.18
-Example-wise Precision  65.52  ±3.80
-Example-wise Recall     60.61  ±3.77
-Hamming Accuracy        75.7   ±2.54
-Hamming Loss            24.3   ±2.54
-Macro F1                53.37  ±3.84
-Macro Jaccard           40.02  ±4.02
-Macro Precision         68.19  ±5.09
-Macro Recall            58.32  ±4.55
-Micro F1                60.7   ±4.14
-Micro Jaccard           43.71  ±4.30
-Micro Precision         61.25  ±5.38
-Micro Recall            60.38  ±4.37
-Subset 0/1 Loss         79.42  ±5.63
-Subset Accuracy         20.58  ±5.63
+Example-wise F1         70.84  ±2.32
+Example-wise Jaccard    46.36  ±2.84
+Example-wise Precision  65.7   ±4.13
+Example-wise Recall     59.67  ±2.87
+Hamming Accuracy        75.27  ±2.45
+Hamming Loss            24.73  ±2.45
+Macro F1                54.44  ±6.26
+Macro Jaccard           39.31  ±3.89
+Macro Precision         67.41  ±6.53
+Macro Recall            57.25  ±4.20
+Micro F1                59.96  ±3.95
+Micro Jaccard           42.93  ±3.97
+Micro Precision         60.54  ±5.03
+Micro Recall            59.5   ±3.54
+Subset 0/1 Loss         79.58  ±3.87
+Subset Accuracy         20.42  ±3.87
 
 INFO Successfully finished after <duration>
