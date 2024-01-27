@@ -13,11 +13,6 @@ uint32 OutOfSampleWeightVector<WeightVector>::getNumElements() const {
 }
 
 template<typename WeightVector>
-uint32 OutOfSampleWeightVector<WeightVector>::getNumNonZeroWeights() const {
-    return vector_.getNumNonZeroWeights();
-}
-
-template<typename WeightVector>
 bool OutOfSampleWeightVector<WeightVector>::operator[](uint32 pos) const {
     return vector_[pos] == 0;
 }

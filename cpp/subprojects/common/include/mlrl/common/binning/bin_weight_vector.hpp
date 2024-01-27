@@ -18,13 +18,6 @@ class BinWeightVector final : public ClearableViewDecorator<VectorDecorator<Allo
         BinWeightVector(uint32 numElements);
 
         /**
-         * Returns the number of non-zero weights.
-         *
-         * @return The number of non-zero weights
-         */
-        uint32 getNumNonZeroWeights() const;
-
-        /**
          * Increases the weight at a specific position by one.
          *
          * @param pos The position

@@ -111,6 +111,8 @@ class ExactThresholds final : public AbstractThresholds {
 
                 const WeightVector& weights_;
 
+                uint32 numCovered_;
+
                 CoverageMask coverageMask_;
 
                 uint32 numModifications_;
@@ -133,7 +135,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                     std::unique_ptr<Callback> callbackPtr =
                       std::make_unique<Callback>(*this, thresholds_.featureInfo_, featureIndex);
-                    return std::make_unique<ExactRuleRefinement<IndexVector>>(labelIndices, featureIndex,
+                    return std::make_unique<ExactRuleRefinement<IndexVector>>(labelIndices, featureIndex, numCovered_,
                                                                               std::move(callbackPtr));
                 }
 
@@ -151,8 +153,8 @@ class ExactThresholds final : public AbstractThresholds {
                                  std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr,
                                  const WeightVector& weights)
                     : thresholds_(thresholds), weightedStatisticsPtr_(std::move(weightedStatisticsPtr)),
-                      weights_(weights), coverageMask_(thresholds.featureMatrix_.getNumExamples()),
-                      numModifications_(0) {}
+                      weights_(weights), numCovered_(weights.getNumNonZeroWeights()),
+                      coverageMask_(thresholds.featureMatrix_.getNumExamples()), numModifications_(0) {}
 
                 /**
                  * @param thresholdsSubset A reference to an object of type `ThresholdsSubset` to be copied
@@ -160,7 +162,8 @@ class ExactThresholds final : public AbstractThresholds {
                 ThresholdsSubset(const ThresholdsSubset& thresholdsSubset)
                     : thresholds_(thresholdsSubset.thresholds_),
                       weightedStatisticsPtr_(thresholdsSubset.weightedStatisticsPtr_->copy()),
-                      weights_(thresholdsSubset.weights_), coverageMask_(thresholdsSubset.coverageMask_),
+                      weights_(thresholdsSubset.weights_), numCovered_(thresholdsSubset.numCovered_),
+                      coverageMask_(thresholdsSubset.coverageMask_),
                       numModifications_(thresholdsSubset.numModifications_) {}
 
                 std::unique_ptr<IThresholdsSubset> copy() const override {
@@ -198,6 +201,7 @@ class ExactThresholds final : public AbstractThresholds {
                     }
 
                     numModifications_++;
+                    numCovered_ = condition.numCovered;
                     featureVector->updateCoverageMaskAndStatistics(condition, coverageMask_, numModifications_,
                                                                    *weightedStatisticsPtr_);
                     cacheEntry.vectorPtr = featureVector->createFilteredFeatureVector(cacheEntry.vectorPtr, condition);
@@ -206,6 +210,7 @@ class ExactThresholds final : public AbstractThresholds {
 
                 void resetThresholds() override {
                     numModifications_ = 0;
+                    numCovered_ = weights_.getNumNonZeroWeights();
                     cacheFiltered_.clear();
                     coverageMask_.reset();
                 }

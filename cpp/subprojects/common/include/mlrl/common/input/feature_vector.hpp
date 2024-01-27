@@ -23,40 +23,46 @@ class IFeatureVector {
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a this feature vector.
          *
-         * @param ruleRefinementSearch  A reference to an object of type `RuleRefinementSearch` that should be used for
-         *                              conducting the search
-         * @param statisticsSubset      A reference to an object of type `IWeightedStatisticsSubset` that provides
-         *                              access to weighted statistics about the labels of the training examples, which
-         *                              should serve as the basis for evaluating the quality of potential refinements
-         * @param comparator            A reference to an object of type `SingleRefinementComparator` that should be
-         *                              used for comparing potential refinements
-         * @param minCoverage           The minimum number of examples that must be covered by the refinement
-         * @param refinement            A reference to an object of type `Refinement` that should be used for storing
-         *                              the properties of the best refinement that is found
+         * @param ruleRefinementSearch          A reference to an object of type `RuleRefinementSearch` that should be
+         *                                      used for conducting the search
+         * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
+         *                                      provides access to weighted statistics about the labels of the training
+         *                                      examples, which should serve as the basis for evaluating the quality of
+         *                                      potential refinements
+         * @param comparator                    A reference to an object of type `SingleRefinementComparator` that
+         *                                      should be used for comparing potential refinements
+         * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
+         *                                      by a refinement
+         * @param minCoverage                   The minimum number of examples that must be covered by the refinement
+         * @param refinement                    A reference to an object of type `Refinement` that should be used for
+         *                                      storing the properties of the best refinement that is found
          */
         virtual void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
                                          IWeightedStatisticsSubset& statisticsSubet,
-                                         SingleRefinementComparator& comparator, uint32 minCoverage,
-                                         Refinement& refinement) const = 0;
+                                         SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                         uint32 minCoverage, Refinement& refinement) const = 0;
 
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a this feature vector.
          *
-         * @param ruleRefinementSearch  A reference to an object of type `RuleRefinementSearch` that should be used for
-         *                              conducting the search
-         * @param statisticsSubset      A reference to an object of type `IWeightedStatisticsSubset` that provides
-         *                              access to weighted statistics about the labels of the training examples, which
-         *                              should serve as the basis for evaluating the quality of potential refinements
-         * @param comparator            A reference to an object of type `MultiRefinementComparator` that should be used
-         *                              for comparing potential refinements
-         * @param minCoverage           The minimum number of examples that must be covered by the refinement
-         * @param refinement            A reference to an object of type `Refinement` that should be used for storing
-         *                              the properties of the best refinement that is found
+         * @param ruleRefinementSearch          A reference to an object of type `RuleRefinementSearch` that should be
+         *                                      used for conducting the search
+         * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
+         *                                      provides access to weighted statistics about the labels of the training
+         *                                      examples, which should serve as the basis for evaluating the quality of
+         *                                      potential refinements
+         * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should
+         *                                      be used for comparing potential refinements
+         * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
+         *                                      by a refinement
+         * @param minCoverage                   The minimum number of examples that must be covered by the refinement
+         * @param refinement                    A reference to an object of type `Refinement` that should be used for
+         *                                      storing the properties of the best refinement that is found
          */
         virtual void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
                                          IWeightedStatisticsSubset& statisticsSubset,
-                                         FixedRefinementComparator& comparator, uint32 minCoverage,
-                                         Refinement& refinement) const = 0;
+                                         FixedRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                         uint32 minCoverage, Refinement& refinement) const = 0;
 
         /**
          * Updates a given `CoverageMask` and `IWeightedStatistics` depending on the indices of training examples

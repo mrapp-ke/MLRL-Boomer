@@ -2,12 +2,14 @@
 
 void EqualFeatureVector::searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
                                              IWeightedStatisticsSubset& statistics,
-                                             SingleRefinementComparator& comparator, uint32 minCoverage,
+                                             SingleRefinementComparator& comparator,
+                                             uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                              Refinement& refinement) const {}
 
 void EqualFeatureVector::searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
                                              IWeightedStatisticsSubset& statistics,
-                                             FixedRefinementComparator& comparator, uint32 minCoverage,
+                                             FixedRefinementComparator& comparator,
+                                             uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                              Refinement& refinement) const {}
 
 void EqualFeatureVector::updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& CoverageMask,
