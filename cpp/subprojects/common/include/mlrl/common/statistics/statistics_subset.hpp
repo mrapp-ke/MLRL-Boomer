@@ -15,13 +15,6 @@ class IStatisticsSubset {
         virtual ~IStatisticsSubset() {}
 
         /**
-         * Returns the number of statistics with non-zero weights.
-         *
-         * @return The number of statistics with non-zero weights
-         */
-        virtual uint32 getNumNonZeroWeights() const = 0;
-
-        /**
          * Returns whether the statistics at a specific index have a non-zero weight or not.
          *
          * @return True, if the statistics at the given index have a non-zero weight, false otherwise

@@ -10,10 +10,9 @@
 template<typename Comparator>
 static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVector& featureVector,
                                                         IWeightedStatisticsSubset& statisticsSubset,
-                                                        Comparator& comparator, uint32 minCoverage,
-                                                        Refinement& refinement) {
+                                                        Comparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                                        uint32 minCoverage, Refinement& refinement) {
     // Mark all examples corresponding to the first ordinal feature value `f < majorityValue` as covered...
-    uint32 numExamplesWithNonZeroWeights = statisticsSubset.getNumNonZeroWeights();
     NominalFeatureVector::value_const_iterator valueIterator = featureVector.values_cbegin();
     uint32 numValues = featureVector.numValues;
     int32 majorityValue = featureVector.majorityValue;

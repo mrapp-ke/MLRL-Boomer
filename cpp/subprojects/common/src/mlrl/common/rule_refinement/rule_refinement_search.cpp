@@ -16,71 +16,87 @@ static inline void addMissingStatistics(IWeightedStatisticsSubset& statisticsSub
 void RuleRefinementSearch::searchForNumericalRefinement(const NumericalFeatureVector& featureVector,
                                                         const MissingFeatureVector& missingFeatureVector,
                                                         IWeightedStatisticsSubset& statisticsSubset,
-                                                        SingleRefinementComparator& comparator, uint32 minCoverage,
+                                                        SingleRefinementComparator& comparator,
+                                                        uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                                         Refinement& refinement) const {
     addMissingStatistics(statisticsSubset, missingFeatureVector);
-    searchForNumericalRefinementInternally(featureVector, statisticsSubset, comparator, minCoverage, refinement);
+    searchForNumericalRefinementInternally(featureVector, statisticsSubset, comparator, numExamplesWithNonZeroWeights,
+                                           minCoverage, refinement);
 }
 
 void RuleRefinementSearch::searchForNumericalRefinement(const NumericalFeatureVector& featureVector,
                                                         const MissingFeatureVector& missingFeatureVector,
                                                         IWeightedStatisticsSubset& statisticsSubset,
-                                                        FixedRefinementComparator& comparator, uint32 minCoverage,
+                                                        FixedRefinementComparator& comparator,
+                                                        uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                                         Refinement& refinement) const {
     addMissingStatistics(statisticsSubset, missingFeatureVector);
-    searchForNumericalRefinementInternally(featureVector, statisticsSubset, comparator, minCoverage, refinement);
+    searchForNumericalRefinementInternally(featureVector, statisticsSubset, comparator, numExamplesWithNonZeroWeights,
+                                           minCoverage, refinement);
 }
 
 void RuleRefinementSearch::searchForNominalRefinement(const NominalFeatureVector& featureVector,
                                                       const MissingFeatureVector& missingFeatureVector,
                                                       IWeightedStatisticsSubset& statisticsSubset,
-                                                      SingleRefinementComparator& comparator, uint32 minCoverage,
+                                                      SingleRefinementComparator& comparator,
+                                                      uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                                       Refinement& refinement) const {
     addMissingStatistics(statisticsSubset, missingFeatureVector);
-    searchForNominalRefinementInternally(featureVector, statisticsSubset, comparator, minCoverage, refinement);
+    searchForNominalRefinementInternally(featureVector, statisticsSubset, comparator, numExamplesWithNonZeroWeights,
+                                         minCoverage, refinement);
 }
 
 void RuleRefinementSearch::searchForNominalRefinement(const NominalFeatureVector& featureVector,
                                                       const MissingFeatureVector& missingFeatureVector,
                                                       IWeightedStatisticsSubset& statisticsSubset,
-                                                      FixedRefinementComparator& comparator, uint32 minCoverage,
+                                                      FixedRefinementComparator& comparator,
+                                                      uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                                       Refinement& refinement) const {
     addMissingStatistics(statisticsSubset, missingFeatureVector);
-    searchForNominalRefinementInternally(featureVector, statisticsSubset, comparator, minCoverage, refinement);
+    searchForNominalRefinementInternally(featureVector, statisticsSubset, comparator, numExamplesWithNonZeroWeights,
+                                         minCoverage, refinement);
 }
 
 void RuleRefinementSearch::searchForBinaryRefinement(const BinaryFeatureVector& featureVector,
                                                      const MissingFeatureVector& missingFeatureVector,
                                                      IWeightedStatisticsSubset& statisticsSubset,
-                                                     SingleRefinementComparator& comparator, uint32 minCoverage,
+                                                     SingleRefinementComparator& comparator,
+                                                     uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                                      Refinement& refinement) const {
     addMissingStatistics(statisticsSubset, missingFeatureVector);
-    searchForBinaryRefinementInternally(featureVector, statisticsSubset, comparator, minCoverage, refinement);
+    searchForBinaryRefinementInternally(featureVector, statisticsSubset, comparator, numExamplesWithNonZeroWeights,
+                                        minCoverage, refinement);
 }
 
 void RuleRefinementSearch::searchForBinaryRefinement(const BinaryFeatureVector& featureVector,
                                                      const MissingFeatureVector& missingFeatureVector,
                                                      IWeightedStatisticsSubset& statisticsSubset,
-                                                     FixedRefinementComparator& comparator, uint32 minCoverage,
+                                                     FixedRefinementComparator& comparator,
+                                                     uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                                      Refinement& refinement) const {
     addMissingStatistics(statisticsSubset, missingFeatureVector);
-    searchForBinaryRefinementInternally(featureVector, statisticsSubset, comparator, minCoverage, refinement);
+    searchForBinaryRefinementInternally(featureVector, statisticsSubset, comparator, numExamplesWithNonZeroWeights,
+                                        minCoverage, refinement);
 }
 
 void RuleRefinementSearch::searchForOrdinalRefinement(const OrdinalFeatureVector& featureVector,
                                                       const MissingFeatureVector& missingFeatureVector,
                                                       IWeightedStatisticsSubset& statisticsSubset,
-                                                      SingleRefinementComparator& comparator, uint32 minCoverage,
+                                                      SingleRefinementComparator& comparator,
+                                                      uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                                       Refinement& refinement) const {
     addMissingStatistics(statisticsSubset, missingFeatureVector);
-    searchForOrdinalRefinementInternally(featureVector, statisticsSubset, comparator, minCoverage, refinement);
+    searchForOrdinalRefinementInternally(featureVector, statisticsSubset, comparator, numExamplesWithNonZeroWeights,
+                                         minCoverage, refinement);
 }
 
 void RuleRefinementSearch::searchForOrdinalRefinement(const OrdinalFeatureVector& featureVector,
                                                       const MissingFeatureVector& missingFeatureVector,
                                                       IWeightedStatisticsSubset& statisticsSubset,
-                                                      FixedRefinementComparator& comparator, uint32 minCoverage,
+                                                      FixedRefinementComparator& comparator,
+                                                      uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                                       Refinement& refinement) const {
     addMissingStatistics(statisticsSubset, missingFeatureVector);
-    searchForOrdinalRefinementInternally(featureVector, statisticsSubset, comparator, minCoverage, refinement);
+    searchForOrdinalRefinementInternally(featureVector, statisticsSubset, comparator, numExamplesWithNonZeroWeights,
+                                         minCoverage, refinement);
 }

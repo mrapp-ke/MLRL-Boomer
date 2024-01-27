@@ -23,167 +23,191 @@ class RuleRefinementSearch final {
          * Conducts a search for the best refinement of an existing rule that can be created from a given numerical
          * feature vector.
          *
-         * @param featureVector     A reference to an object of type `NumericalFeatureVector`, the refinements should be
-         *                          created from
-         * @param statisticsSubset  A reference to an object of type `IWeightedStatisticsSubset` that provides access to
-         *                          weighted statistics about the labels of the training examples, which should serve as
-         *                          the basis for evaluating the quality of potential refinements
-         * @param comparator        A reference to an object of type `SingleRefinementComparator` that should be used
-         *                          for comparing potential refinements
-         * @param minCoverage       The minimum number of examples that must be covered by the refinement
-         * @param refinement        A reference to an object of type `Refinement` that should be used for storing the
-         *                          properties of the best refinement that is found
+         * @param featureVector                 A reference to an object of type `NumericalFeatureVector`, the
+         *                                      refinements should be created from
+         * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
+         *                                      provides access to weighted statistics about the labels of the training
+         *                                      examples, which should serve as the basis for evaluating the quality of
+         *                                      potential refinements
+         * @param comparator                    A reference to an object of type `SingleRefinementComparator` that
+         *                                      should be used for comparing potential refinements
+         * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
+         *                                      by a refinement
+         * @param minCoverage                   The minimum number of examples that must be covered by the refinement
+         * @param refinement                    A reference to an object of type `Refinement` that should be used for
+         *                                      storing the properties of the best refinement that is found
          */
         void searchForNumericalRefinement(const NumericalFeatureVector& featureVector,
                                           const MissingFeatureVector& missingFeatureVector,
                                           IWeightedStatisticsSubset& statisticsSubset,
-                                          SingleRefinementComparator& comparator, uint32 minCoverage,
-                                          Refinement& refinement) const;
+                                          SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                          uint32 minCoverage, Refinement& refinement) const;
 
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a given numerical
          * feature vector.
          *
-         * @param featureVector     A reference to an object of type `NumericalFeatureVector`, the refinements should be
-         *                          created from
-         * @param statisticsSubset  A reference to an object of type `IWeightedStatisticsSubset` that provides access to
-         *                          weighted statistics about the labels of the training examples, which should serve as
-         *                          the basis for evaluating the quality of potential refinements
-         * @param comparator        A reference to an object of type `MultiRefinementComparator` that should be used for
-         *                          comparing potential refinements
-         * @param minCoverage       The minimum number of examples that must be covered by the refinements
-         * @param refinement        A reference to an object of type `Refinement` that should be used for storing the
-         *                          properties of the best refinement that is found
+         * @param featureVector                 A reference to an object of type `NumericalFeatureVector`, the
+         *                                      refinements should be created from
+         * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
+         *                                      provides access to weighted statistics about the labels of the training
+         *                                      examples, which should serve as the basis for evaluating the quality of
+         *                                      potential refinements
+         * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should
+         *                                      be used for comparing potential refinements
+         * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
+         *                                      by a refinement
+         * @param minCoverage                   The minimum number of examples that must be covered by the refinements
+         * @param refinement                    A reference to an object of type `Refinement` that should be used for
+         *                                      storing the properties of the best refinement that is found
          */
         void searchForNumericalRefinement(const NumericalFeatureVector& featureVector,
                                           const MissingFeatureVector& missingFeatureVector,
                                           IWeightedStatisticsSubset& statisticsSubset,
-                                          FixedRefinementComparator& comparator, uint32 minCoverage,
-                                          Refinement& refinement) const;
+                                          FixedRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                          uint32 minCoverage, Refinement& refinement) const;
 
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a given nominal
          * feature vector.
          *
-         * @param featureVector     A reference to an object of type `NominalFeatureVector`, the refinements should be
-         *                          created from
-         * @param statisticsSubset  A reference to an object of type `IWeightedStatisticsSubset` that provides access to
-         *                          weighted statistics about the labels of the training examples, which should serve as
-         *                          the basis for evaluating the quality of potential refinements
-         * @param comparator        A reference to an object of type `SingleRefinementComparator` that should be used
-         *                          for comparing potential refinements
-         * @param minCoverage       The minimum number of examples that must be covered by the refinement
-         * @param refinement        A reference to an object of type `Refinement` that should be used for storing the
-         *                          properties of the best refinement that is found
+         * @param featureVector                 A reference to an object of type `NominalFeatureVector`, the refinements
+         *                                      should be created from
+         * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
+         *                                      provides access to weighted statistics about the labels of the training
+         *                                      examples, which should serve as the basis for evaluating the quality of
+         *                                      potential refinements
+         * @param comparator                    A reference to an object of type `SingleRefinementComparator` that
+         *                                      should be used for comparing potential refinements
+         * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
+         *                                      by a refinement
+         * @param minCoverage                   The minimum number of examples that must be covered by the refinement
+         * @param refinement                    A reference to an object of type `Refinement` that should be used for
+         *                                      storing the properties of the best refinement that is found
          */
         void searchForNominalRefinement(const NominalFeatureVector& featureVector,
                                         const MissingFeatureVector& missingFeatureVector,
                                         IWeightedStatisticsSubset& statisticsSubset,
-                                        SingleRefinementComparator& comparator, uint32 minCoverage,
-                                        Refinement& refinement) const;
+                                        SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                        uint32 minCoverage, Refinement& refinement) const;
 
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a given nominal
          * feature vector.
          *
-         * @param featureVector     A reference to an object of type `NominalFeatureVector`, the refinements should be
-         *                          created from
-         * @param statisticsSubset  A reference to an object of type `IWeightedStatisticsSubset` that provides access to
-         *                          weighted statistics about the labels of the training examples, which should serve as
-         *                          the basis for evaluating the quality of potential refinements
-         * @param comparator        A reference to an object of type `MultiRefinementComparator` that should be used for
-         *                          comparing potential refinements
-         * @param minCoverage       The minimum number of examples that must be covered by the refinements
-         * @param refinement        A reference to an object of type `Refinement` that should be used for storing the
-         *                          properties of the best refinement that is found
+         * @param featureVector                 A reference to an object of type `NominalFeatureVector`, the refinements
+         *                                      should be created from
+         * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
+         *                                      provides access to weighted statistics about the labels of the training
+         *                                      examples, which should serve as the basis for evaluating the quality of
+         *                                      potential refinements
+         * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should
+         *                                      be used for comparing potential refinements
+         * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
+         *                                      by a refinement
+         * @param minCoverage                   The minimum number of examples that must be covered by the refinements
+         * @param refinement                    A reference to an object of type `Refinement` that should be used for
+         *                                      storing the properties of the best refinement that is found
          */
         void searchForNominalRefinement(const NominalFeatureVector& featureVector,
                                         const MissingFeatureVector& missingFeatureVector,
                                         IWeightedStatisticsSubset& statisticsSubset,
-                                        FixedRefinementComparator& comparator, uint32 minCoverage,
-                                        Refinement& refinement) const;
+                                        FixedRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                        uint32 minCoverage, Refinement& refinement) const;
 
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a given binary feature
          * vector.
          *
-         * @param featureVector     A reference to an object of type `BinaryFeatureVector`, the refinements should be
-         *                          created from
-         * @param statisticsSubset  A reference to an object of type `IWeightedStatisticsSubset` that provides access to
-         *                          weighted statistics about the labels of the training examples, which should serve as
-         *                          the basis for evaluating the quality of potential refinements
-         * @param comparator        A reference to an object of type `SingleRefinementComparator` that should be used
-         *                          for comparing potential refinements
-         * @param minCoverage       The minimum number of examples that must be covered by the refinement
-         * @param refinement        A reference to an object of type `Refinement` that should be used for storing the
-         *                          properties of the best refinement that is found
+         * @param featureVector                 A reference to an object of type `BinaryFeatureVector`, the refinements
+         *                                      should be created from
+         * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
+         *                                      provides access to weighted statistics about the labels of the training
+         *                                      examples, which should serve as the basis for evaluating the quality of
+         *                                      potential refinements
+         * @param comparator                    A reference to an object of type `SingleRefinementComparator` that
+         *                                      should be used for comparing potential refinements
+         * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
+         *                                      by a refinement
+         * @param minCoverage                   The minimum number of examples that must be covered by the refinement
+         * @param refinement                    A reference to an object of type `Refinement` that should be used for
+         *                                      storing the properties of the best refinement that is found
          */
         void searchForBinaryRefinement(const BinaryFeatureVector& featureVector,
                                        const MissingFeatureVector& missingFeatureVector,
                                        IWeightedStatisticsSubset& statisticsSubset,
-                                       SingleRefinementComparator& comparator, uint32 minCoverage,
-                                       Refinement& refinement) const;
+                                       SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                       uint32 minCoverage, Refinement& refinement) const;
 
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a given binary feature
          * vector.
          *
-         * @param featureVector     A reference to an object of type `BinaryFeatureVector`, the refinements should be
-         *                          created from
-         * @param statisticsSubset  A reference to an object of type `IWeightedStatisticsSubset` that provides access to
-         *                          weighted statistics about the labels of the training examples, which should serve as
-         *                          the basis for evaluating the quality of potential refinements
-         * @param comparator        A reference to an object of type `MultiRefinementComparator` that should be used for
-         *                          comparing potential refinements
-         * @param minCoverage       The minimum number of examples that must be covered by the refinements
-         * @param refinement        A reference to an object of type `Refinement` that should be used for storing the
-         *                          properties of the best refinement that is found
+         * @param featureVector                 A reference to an object of type `BinaryFeatureVector`, the refinements
+         *                                      should be created from
+         * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
+         *                                      provides access to weighted statistics about the labels of the training
+         *                                      examples, which should serve as the basis for evaluating the quality of
+         *                                      potential refinements
+         * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should
+         *                                      be used for comparing potential refinements
+         * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
+         *                                      by a refinement
+         * @param minCoverage                   The minimum number of examples that must be covered by the refinements
+         * @param refinement                    A reference to an object of type `Refinement` that should be used for
+         *                                      storing the properties of the best refinement that is found
          */
         void searchForBinaryRefinement(const BinaryFeatureVector& featureVector,
                                        const MissingFeatureVector& missingFeatureVector,
                                        IWeightedStatisticsSubset& statisticsSubset,
-                                       FixedRefinementComparator& comparator, uint32 minCoverage,
-                                       Refinement& refinement) const;
+                                       FixedRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                       uint32 minCoverage, Refinement& refinement) const;
 
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a given ordinal
          * feature vector.
          *
-         * @param featureVector     A reference to an object of type `OrdinalFeatureVector`, the refinements should be
-         *                          created from
-         * @param statisticsSubset  A reference to an object of type `IWeightedStatisticsSubset` that provides access to
-         *                          weighted statistics about the labels of the training examples, which should serve as
-         *                          the basis for evaluating the quality of potential refinements
-         * @param comparator        A reference to an object of type `SingleRefinementComparator` that should be used
-         *                          for comparing potential refinements
-         * @param minCoverage       The minimum number of examples that must be covered by the refinement
-         * @param refinement        A reference to an object of type `Refinement` that should be used for storing the
-         *                          properties of the best refinement that is found
+         * @param featureVector                 A reference to an object of type `OrdinalFeatureVector`, the refinements
+         *                                      should be created from
+         * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
+         *                                      provides access to weighted statistics about the labels of the training
+         *                                      examples, which should serve as the basis for evaluating the quality of
+         *                                      potential refinements
+         * @param comparator                    A reference to an object of type `SingleRefinementComparator` that
+         *                                      should be used for comparing potential refinements
+         * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
+         *                                      by a refinement
+         * @param minCoverage                   The minimum number of examples that must be covered by the refinement
+         * @param refinement                    A reference to an object of type `Refinement` that should be used for
+         *                                      storing the properties of the best refinement that is found
          */
         void searchForOrdinalRefinement(const OrdinalFeatureVector& featureVector,
                                         const MissingFeatureVector& missingFeatureVector,
                                         IWeightedStatisticsSubset& statisticsSubset,
-                                        SingleRefinementComparator& comparator, uint32 minCoverage,
-                                        Refinement& refinement) const;
+                                        SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                        uint32 minCoverage, Refinement& refinement) const;
 
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a given ordinal
          * feature vector.
          *
-         * @param featureVector     A reference to an object of type `OrdinalFeatureVector`, the refinements should be
-         *                          created from
-         * @param statisticsSubset  A reference to an object of type `IWeightedStatisticsSubset` that provides access to
-         *                          weighted statistics about the labels of the training examples, which should serve as
-         *                          the basis for evaluating the quality of potential refinements
-         * @param comparator        A reference to an object of type `MultiRefinementComparator` that should be used for
-         *                          comparing potential refinements
-         * @param minCoverage       The minimum number of examples that must be covered by the refinements
-         * @param refinement        A reference to an object of type `Refinement` that should be used for storing the
-         *                          properties of the best refinement that is found
+         * @param featureVector                 A reference to an object of type `OrdinalFeatureVector`, the refinements
+         *                                      should be created from
+         * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
+         *                                      provides access to weighted statistics about the labels of the training
+         *                                      examples, which should serve as the basis for evaluating the quality of
+         *                                      potential refinements
+         * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should
+         *                                      be used for comparing potential refinements
+         * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
+         *                                      by a refinement
+         * @param minCoverage                   The minimum number of examples that must be covered by the refinements
+         * @param refinement                    A reference to an object of type `Refinement` that should be used for
+         *                                      storing the properties of the best refinement that is found
          */
         void searchForOrdinalRefinement(const OrdinalFeatureVector& featureVector,
                                         const MissingFeatureVector& missingFeatureVector,
                                         IWeightedStatisticsSubset& statisticsSubset,
-                                        FixedRefinementComparator& comparator, uint32 minCoverage,
-                                        Refinement& refinement) const;
+                                        FixedRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                        uint32 minCoverage, Refinement& refinement) const;
 };

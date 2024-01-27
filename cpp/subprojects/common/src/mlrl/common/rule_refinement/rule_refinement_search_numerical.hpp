@@ -11,11 +11,10 @@
 template<typename Comparator>
 static inline void searchForNumericalRefinementInternally(const NumericalFeatureVector& featureVector,
                                                           IWeightedStatisticsSubset& statisticsSubset,
-                                                          Comparator& comparator, uint32 minCoverage,
-                                                          Refinement& refinement) {
+                                                          Comparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                                          uint32 minCoverage, Refinement& refinement) {
     float32 sparseValue = featureVector.sparseValue;
     float32 previousValue = sparseValue;
-    uint32 numExamplesWithNonZeroWeights = statisticsSubset.getNumNonZeroWeights();
     uint32 numFeatureValues = featureVector.numElements;
     uint32 numCovered = 0;
     int64 i = 0;

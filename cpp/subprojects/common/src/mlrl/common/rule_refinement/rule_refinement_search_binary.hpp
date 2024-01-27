@@ -10,8 +10,8 @@
 template<typename Comparator>
 static inline void searchForBinaryRefinementInternally(const BinaryFeatureVector& featureVector,
                                                        IWeightedStatisticsSubset& statisticsSubset,
-                                                       Comparator& comparator, uint32 minCoverage,
-                                                       Refinement& refinement) {
+                                                       Comparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                                       uint32 minCoverage, Refinement& refinement) {
     // Mark all examples corresponding to the minority value as covered...
     uint32 numCovered = addAllToSubset(statisticsSubset, featureVector, 0);
 
@@ -35,7 +35,6 @@ static inline void searchForBinaryRefinementInternally(const BinaryFeatureVector
 
     // Check if a condition covering all examples corresponding to the majority value covers at least `minCoverage`
     // examples...
-    uint32 numExamplesWithNonZeroWeights = statisticsSubset.getNumNonZeroWeights();
     uint32 numUncovered = numExamplesWithNonZeroWeights - numCovered;
 
     if (numUncovered >= minCoverage) {
