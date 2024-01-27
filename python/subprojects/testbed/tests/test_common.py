@@ -33,6 +33,8 @@ DATASET_EMOTIONS = 'emotions'
 
 DATASET_EMOTIONS_NOMINAL = 'emotions-nominal'
 
+DATASET_EMOTIONS_ORDINAL = 'emotions-ordinal'
+
 DATASET_ENRON = 'enron'
 
 DATASET_LANGLOG = 'langlog'
@@ -917,6 +919,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
                  dataset_numerical_sparse: str = DATASET_LANGLOG,
                  dataset_binary: str = DATASET_ENRON,
                  dataset_nominal: str = DATASET_EMOTIONS_NOMINAL,
+                 dataset_ordinal: str = DATASET_EMOTIONS_ORDINAL,
                  dataset_single_label: str = DATASET_BREAST_CANCER,
                  expected_output_dir=DIR_OUT,
                  methodName='runTest'):
@@ -926,6 +929,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         :param dataset_numerical_sparse:    The name of a dataset with sparse numerical features
         :param dataset_binary:              The name of a dataset with binary features
         :param dataset_nominal:             The name of a dataset with nominal features
+        :param dataset_ordinal:             The name of a dataset with ordinal features
         :param dataset_single_label:        The name of the dataset that comes with a single label
         :param expected_output_dir:         The path of the directory that contains the file with the expected output
         :param methodName:                  The name of the test method to be executed
@@ -936,6 +940,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         self.dataset_numerical_sparse = dataset_numerical_sparse
         self.dataset_binary = dataset_binary
         self.dataset_nominal = dataset_nominal
+        self.dataset_ordinal = dataset_ordinal
         self.dataset_single_label = dataset_single_label
 
     @classmethod
@@ -1403,6 +1408,24 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset=self.dataset_nominal) \
             .sparse_feature_format()
         self.run_cmd(builder, 'nominal-features-sparse')
+
+    def test_ordinal_features_dense(self):
+        """
+        Tests the rule learning algorithm on a dataset with ordinal attributes when using a dense feature
+        representation.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_ordinal) \
+            .sparse_feature_format(False)
+        self.run_cmd(builder, 'ordinal-features-dense')
+
+    def test_ordinal_features_sparse(self):
+        """
+        Tests the rule learning algorithm on a dataset with ordinal attributes when using a sparse feature
+        representation.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_ordinal) \
+            .sparse_feature_format()
+        self.run_cmd(builder, 'ordinal-features-sparse')
 
     def test_label_format_dense(self):
         """
