@@ -37,8 +37,6 @@ DATASET_ENRON = 'enron'
 
 DATASET_LANGLOG = 'langlog'
 
-DATASET_WEATHER = 'weather'
-
 DATASET_BREAST_CANCER = 'breast-cancer'
 
 RULE_PRUNING_NO = 'none'
