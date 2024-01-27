@@ -38,7 +38,7 @@ class IFeatureVector {
          *                                      storing the properties of the best refinement that is found
          */
         virtual void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
-                                         IWeightedStatisticsSubset& statisticsSubet,
+                                         IWeightedStatisticsSubset& statisticsSubset,
                                          SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
                                          uint32 minCoverage, Refinement& refinement) const = 0;
 

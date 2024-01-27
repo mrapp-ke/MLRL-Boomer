@@ -25,6 +25,8 @@ class RuleRefinementSearch final {
          *
          * @param featureVector                 A reference to an object of type `NumericalFeatureVector`, the
          *                                      refinements should be created from
+         * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
+         *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
          *                                      provides access to weighted statistics about the labels of the training
          *                                      examples, which should serve as the basis for evaluating the quality of
@@ -49,6 +51,8 @@ class RuleRefinementSearch final {
          *
          * @param featureVector                 A reference to an object of type `NumericalFeatureVector`, the
          *                                      refinements should be created from
+         * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
+         *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
          *                                      provides access to weighted statistics about the labels of the training
          *                                      examples, which should serve as the basis for evaluating the quality of
@@ -73,6 +77,8 @@ class RuleRefinementSearch final {
          *
          * @param featureVector                 A reference to an object of type `NominalFeatureVector`, the refinements
          *                                      should be created from
+         * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
+         *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
          *                                      provides access to weighted statistics about the labels of the training
          *                                      examples, which should serve as the basis for evaluating the quality of
@@ -97,6 +103,8 @@ class RuleRefinementSearch final {
          *
          * @param featureVector                 A reference to an object of type `NominalFeatureVector`, the refinements
          *                                      should be created from
+         * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
+         *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
          *                                      provides access to weighted statistics about the labels of the training
          *                                      examples, which should serve as the basis for evaluating the quality of
@@ -121,6 +129,8 @@ class RuleRefinementSearch final {
          *
          * @param featureVector                 A reference to an object of type `BinaryFeatureVector`, the refinements
          *                                      should be created from
+         * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
+         *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
          *                                      provides access to weighted statistics about the labels of the training
          *                                      examples, which should serve as the basis for evaluating the quality of
@@ -145,6 +155,8 @@ class RuleRefinementSearch final {
          *
          * @param featureVector                 A reference to an object of type `BinaryFeatureVector`, the refinements
          *                                      should be created from
+         * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
+         *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
          *                                      provides access to weighted statistics about the labels of the training
          *                                      examples, which should serve as the basis for evaluating the quality of
@@ -169,6 +181,8 @@ class RuleRefinementSearch final {
          *
          * @param featureVector                 A reference to an object of type `OrdinalFeatureVector`, the refinements
          *                                      should be created from
+         * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
+         *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
          *                                      provides access to weighted statistics about the labels of the training
          *                                      examples, which should serve as the basis for evaluating the quality of
@@ -193,6 +207,8 @@ class RuleRefinementSearch final {
          *
          * @param featureVector                 A reference to an object of type `OrdinalFeatureVector`, the refinements
          *                                      should be created from
+         * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
+         *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
          *                                      provides access to weighted statistics about the labels of the training
          *                                      examples, which should serve as the basis for evaluating the quality of
