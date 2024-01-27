@@ -5,10 +5,11 @@
 
 #include "feature_vector_decorator_nominal_common.hpp"
 
+#include <optional>
+
 template<typename Decorator>
-static inline NominalFeatureVector createFilteredOrdinalFeatureVectorView(const Decorator& decorator,
-                                                                          std::unique_ptr<IFeatureVector>& existing,
-                                                                          const Interval& interval) {
+static inline std::optional<NominalFeatureVector> createFilteredOrdinalFeatureVectorView(
+  const Decorator& decorator, std::unique_ptr<IFeatureVector>& existing, const Interval& interval) {
     const NominalFeatureVector& featureVector = decorator.getView().firstView;
     uint32 start;
     uint32 end;
@@ -32,9 +33,14 @@ static inline NominalFeatureVector createFilteredOrdinalFeatureVectorView(const 
     }
 
     uint32 numFilteredValues = end - start;
-    return NominalFeatureVector(&featureVector.values[start], featureVector.indices, &featureVector.indptr[start],
-                                numFilteredValues, featureVector.indptr[featureVector.numValues],
-                                featureVector.majorityValue);
+
+    if (numFilteredValues > 0) {
+        return NominalFeatureVector(&featureVector.values[start], featureVector.indices, &featureVector.indptr[start],
+                                    numFilteredValues, featureVector.indptr[featureVector.numValues],
+                                    featureVector.majorityValue);
+    }
+
+    return {};
 }
 
 // Forward declarations
@@ -80,9 +86,14 @@ class OrdinalFeatureVectorView final : public AbstractFeatureVectorDecorator<Nom
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {
-            OrdinalFeatureVector filteredFeatureVector =
+            std::optional<OrdinalFeatureVector> filteredFeatureVector =
               createFilteredOrdinalFeatureVectorView(*this, existing, interval);
-            return std::make_unique<OrdinalFeatureVectorView>(std::move(filteredFeatureVector));
+
+            if (filteredFeatureVector) {
+                return std::make_unique<OrdinalFeatureVectorView>(std::move(*filteredFeatureVector));
+            }
+
+            return std::make_unique<EqualFeatureVector>();
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
@@ -141,17 +152,22 @@ class AllocatedOrdinalFeatureVectorView final : public AbstractFeatureVectorDeco
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {
-            OrdinalFeatureVector filteredFeatureVector =
+            std::optional<OrdinalFeatureVector> filteredFeatureVector =
               createFilteredOrdinalFeatureVectorView(*this, existing, interval);
-            AllocatedOrdinalFeatureVectorView* existingView =
-              dynamic_cast<AllocatedOrdinalFeatureVectorView*>(existing.get());
 
-            if (existingView) {
-                return std::make_unique<AllocatedOrdinalFeatureVectorView>(std::move(existingView->allocatedView),
-                                                                           std::move(filteredFeatureVector));
+            if (filteredFeatureVector) {
+                AllocatedOrdinalFeatureVectorView* existingView =
+                  dynamic_cast<AllocatedOrdinalFeatureVectorView*>(existing.get());
+
+                if (existingView) {
+                    return std::make_unique<AllocatedOrdinalFeatureVectorView>(std::move(existingView->allocatedView),
+                                                                               std::move(*filteredFeatureVector));
+                }
+
+                return std::make_unique<OrdinalFeatureVectorView>(std::move(*filteredFeatureVector));
             }
 
-            return std::make_unique<OrdinalFeatureVectorView>(std::move(filteredFeatureVector));
+            return std::make_unique<EqualFeatureVector>();
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
@@ -223,17 +239,22 @@ class OrdinalFeatureVectorDecorator final : public AbstractNominalFeatureVectorD
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {
-            OrdinalFeatureVector filteredFeatureVector =
+            std::optional<OrdinalFeatureVector> filteredFeatureVector =
               createFilteredOrdinalFeatureVectorView(*this, existing, interval);
-            OrdinalFeatureVectorDecorator* existingDecorator =
-              dynamic_cast<OrdinalFeatureVectorDecorator*>(existing.get());
 
-            if (existingDecorator) {
-                return std::make_unique<AllocatedOrdinalFeatureVectorView>(std::move(existingDecorator->view.firstView),
-                                                                           std::move(filteredFeatureVector));
+            if (filteredFeatureVector) {
+                OrdinalFeatureVectorDecorator* existingDecorator =
+                  dynamic_cast<OrdinalFeatureVectorDecorator*>(existing.get());
+
+                if (existingDecorator) {
+                    return std::make_unique<AllocatedOrdinalFeatureVectorView>(
+                      std::move(existingDecorator->view.firstView), std::move(*filteredFeatureVector));
+                }
+
+                return std::make_unique<OrdinalFeatureVectorView>(std::move(*filteredFeatureVector));
             }
 
-            return std::make_unique<OrdinalFeatureVectorView>(std::move(filteredFeatureVector));
+            return std::make_unique<EqualFeatureVector>();
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
