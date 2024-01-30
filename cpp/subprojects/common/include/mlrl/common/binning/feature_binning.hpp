@@ -24,6 +24,7 @@ class IFeatureBinning {
          * thresholds that result from the boundaries of the bins, as well as to a vector that stores the indices of the
          * bins, individual values have been assigned to.
          */
+        // TODO Remove
         struct Result final {
             public:
 
@@ -51,6 +52,7 @@ class IFeatureBinning {
          *                      from the boundaries between the bins, as well as a vector that stores the indices of the
          *                      bins, individual values have been assigned to
          */
+        // TODO Remove
         virtual Result createBins(FeatureVector& featureVector, uint32 numExamples) const = 0;
 };
 
