@@ -152,6 +152,26 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
 
             return result;
         }
+
+        bool isOrdinal() const override {
+            return false;
+        }
+
+        bool isNominal() const override {
+            return false;
+        }
+
+        std::unique_ptr<IFeatureVector> createFeatureVector(
+          uint32 featureIndex, const FortranContiguousView<const float32>& featureMatrix) const override {
+            // TODO Implement
+            return nullptr;
+        }
+
+        std::unique_ptr<IFeatureVector> createFeatureVector(
+          uint32 featureIndex, const CscView<const float32>& featureMatrix) const override {
+            // TODO Implement
+            return nullptr;
+        }
 };
 
 /**

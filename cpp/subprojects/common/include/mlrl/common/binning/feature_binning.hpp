@@ -16,7 +16,7 @@
 /**
  * Defines an interface for methods that assign feature values to bins.
  */
-class IFeatureBinning {
+class IFeatureBinning : public IFeatureType {
     public:
 
         /**
@@ -41,7 +41,7 @@ class IFeatureBinning {
                 std::unique_ptr<IBinIndexVector> binIndicesPtr;
         };
 
-        virtual ~IFeatureBinning() {}
+        virtual ~IFeatureBinning() override {}
 
         /**
          * Assigns the values in a given `FeatureVector` to bins.
