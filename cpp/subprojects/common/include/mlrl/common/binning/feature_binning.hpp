@@ -67,7 +67,8 @@ class IFeatureBinningFactory {
         /**
          * Creates and returns a new object of type `IFeatureBinning`.
          *
-         * @return An unique pointer to an object of type `IFeatureBinning` that has been created
+         * @return An unique pointer to an object of type `IFeatureBinning` that has been created or a null pointer, if
+         *         no feature binning should be used
          */
         virtual std::unique_ptr<IFeatureBinning> create() const = 0;
 };

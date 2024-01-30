@@ -307,6 +307,8 @@ class ExactThresholds final : public AbstractThresholds {
                 }
         };
 
+        const IFeatureBinningFactory& featureBinningFactory_;
+
         const uint32 numThreads_;
 
         std::unordered_map<uint32, std::unique_ptr<IFeatureVector>> cache_;
@@ -320,11 +322,17 @@ class ExactThresholds final : public AbstractThresholds {
          *                              the types of individual features
          * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
          *                              statistics about the labels of the training examples
+         * @param featureBinningFactory A reference to an object of type `IFeatureBinningFactory` that allows to create
+         *                              implementations of the binning method to be used for assigning numerical feature
+         *                              values to bins
+         *                              assign nominal feature values to bins
          * @param numThreads            The number of CPU threads to be used to update statistics in parallel
          */
         ExactThresholds(const IColumnWiseFeatureMatrix& featureMatrix, const IFeatureInfo& featureInfo,
-                        IStatisticsProvider& statisticsProvider, uint32 numThreads)
-            : AbstractThresholds(featureMatrix, featureInfo, statisticsProvider), numThreads_(numThreads) {}
+                        IStatisticsProvider& statisticsProvider, const IFeatureBinningFactory& featureBinningFactory,
+                        uint32 numThreads)
+            : AbstractThresholds(featureMatrix, featureInfo, statisticsProvider),
+              featureBinningFactory_(featureBinningFactory), numThreads_(numThreads) {}
 
         std::unique_ptr<IThresholdsSubset> createSubset(const EqualWeightVector& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
@@ -348,10 +356,13 @@ class ExactThresholds final : public AbstractThresholds {
         }
 };
 
-ExactThresholdsFactory::ExactThresholdsFactory(uint32 numThreads) : numThreads_(numThreads) {}
+ExactThresholdsFactory::ExactThresholdsFactory(std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr,
+                                               uint32 numThreads)
+    : featureBinningFactoryPtr_(std::move(featureBinningFactoryPtr)), numThreads_(numThreads) {}
 
 std::unique_ptr<IThresholds> ExactThresholdsFactory::create(const IColumnWiseFeatureMatrix& featureMatrix,
                                                             const IFeatureInfo& featureInfo,
                                                             IStatisticsProvider& statisticsProvider) const {
-    return std::make_unique<ExactThresholds>(featureMatrix, featureInfo, statisticsProvider, numThreads_);
+    return std::make_unique<ExactThresholds>(featureMatrix, featureInfo, statisticsProvider, *featureBinningFactoryPtr_,
+                                             numThreads_);
 }
