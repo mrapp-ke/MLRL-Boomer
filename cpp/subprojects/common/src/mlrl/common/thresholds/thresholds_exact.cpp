@@ -366,3 +366,15 @@ std::unique_ptr<IThresholds> ExactThresholdsFactory::create(const IColumnWiseFea
     return std::make_unique<ExactThresholds>(featureMatrix, featureInfo, statisticsProvider, *featureBinningFactoryPtr_,
                                              numThreads_);
 }
+
+ExactThresholdsConfig::ExactThresholdsConfig(const std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr,
+                                             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+    : featureBinningConfigPtr_(featureBinningConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
+
+std::unique_ptr<IThresholdsFactory> ExactThresholdsConfig::createThresholdsFactory(
+  const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+    std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr =
+      featureBinningConfigPtr_->createFeatureBinningFactory(featureMatrix, labelMatrix);
+    uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
+    return std::make_unique<ExactThresholdsFactory>(std::move(featureBinningFactoryPtr), numThreads);
+}

@@ -4,7 +4,6 @@
 #include "mlrl/common/binning/bin_index_vector_dense.hpp"
 #include "mlrl/common/binning/bin_index_vector_dok.hpp"
 #include "mlrl/common/data/array.hpp"
-#include "mlrl/common/thresholds/thresholds_approximate.hpp"
 #include "mlrl/common/util/math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
@@ -223,9 +222,7 @@ class EqualWidthFeatureBinningFactory final : public IFeatureBinningFactory {
         }
 };
 
-EqualWidthFeatureBinningConfig::EqualWidthFeatureBinningConfig(
-  const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-    : binRatio_(0.33f), minBins_(2), maxBins_(0), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
+EqualWidthFeatureBinningConfig::EqualWidthFeatureBinningConfig() : binRatio_(0.33f), minBins_(2), maxBins_(0) {}
 
 float32 EqualWidthFeatureBinningConfig::getBinRatio() const {
     return binRatio_;
@@ -258,13 +255,7 @@ IEqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMaxBins(uint
     return *this;
 }
 
-std::unique_ptr<IThresholdsFactory> EqualWidthFeatureBinningConfig::createThresholdsFactory(
+std::unique_ptr<IFeatureBinningFactory> EqualWidthFeatureBinningConfig::createFeatureBinningFactory(
   const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
-    std::unique_ptr<IFeatureBinningFactory> numericalFeatureBinningFactoryPtr =
-      std::make_unique<EqualWidthFeatureBinningFactory>(binRatio_, minBins_, maxBins_);
-    std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr =
-      std::make_unique<NominalFeatureBinningFactory>();
-    uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
-    return std::make_unique<ApproximateThresholdsFactory>(std::move(numericalFeatureBinningFactoryPtr),
-                                                          std::move(nominalFeatureBinningFactoryPtr), numThreads);
+    return std::make_unique<EqualWidthFeatureBinningFactory>(binRatio_, minBins_, maxBins_);
 }

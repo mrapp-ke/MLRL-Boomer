@@ -5,7 +5,6 @@
 #pragma once
 
 #include "mlrl/common/binning/feature_binning.hpp"
-#include "mlrl/common/multi_threading/multi_threading.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure a method that assigns numerical feature values to bins,
@@ -82,16 +81,9 @@ class EqualFrequencyFeatureBinningConfig final : public IFeatureBinningConfig,
 
         uint32 maxBins_;
 
-        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
-
     public:
 
-        /**
-         * @param multiThreadingConfigPtr A reference to an unique pointer that stores the configuration of the
-         *                                multi-threading behavior that should be used for the parallel update of
-         *                                statistics
-         */
-        EqualFrequencyFeatureBinningConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+        EqualFrequencyFeatureBinningConfig();
 
         float32 getBinRatio() const override;
 
@@ -105,6 +97,6 @@ class EqualFrequencyFeatureBinningConfig final : public IFeatureBinningConfig,
 
         IEqualFrequencyFeatureBinningConfig& setMaxBins(uint32 maxBins) override;
 
-        std::unique_ptr<IThresholdsFactory> createThresholdsFactory(const IFeatureMatrix& featureMatrix,
-                                                                    const ILabelMatrix& labelMatrix) const override;
+        std::unique_ptr<IFeatureBinningFactory> createFeatureBinningFactory(
+          const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const override;
 };

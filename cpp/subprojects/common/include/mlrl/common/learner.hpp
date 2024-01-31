@@ -193,6 +193,15 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual std::unique_ptr<IFeatureBinningConfig>& getFeatureBinningConfigPtr() = 0;
 
                 /**
+                 * Returns an unique pointer to the configuration of the class that provides access to the thresholds
+                 * that may be used by the conditions of rules.
+                 *
+                 * @return A reference to an unique pointer of type `IThresholdsConfig` that stores the configuration of
+                 *         the class that provides access to the thresholds that may be used by the conditions of rules
+                 */
+                virtual std::unique_ptr<IThresholdsConfig>& getThresholdsConfigPtr() = 0;
+
+                /**
                  * Returns an unique pointer to the configuration of the method for sampling labels.
                  *
                  * @return A reference to an unique pointer of type `ILabelSamplingConfig` that stores the configuration
@@ -503,8 +512,7 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoFeatureBinning() {
                     std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr =
                       this->getFeatureBinningConfigPtr();
-                    featureBinningConfigPtr =
-                      std::make_unique<NoFeatureBinningConfig>(this->getParallelStatisticUpdateConfigPtr());
+                    featureBinningConfigPtr = std::make_unique<NoFeatureBinningConfig>();
                 }
         };
 
@@ -528,7 +536,7 @@ class MLRLCOMMON_API IRuleLearner {
                     std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr =
                       this->getFeatureBinningConfigPtr();
                     std::unique_ptr<EqualWidthFeatureBinningConfig> ptr =
-                      std::make_unique<EqualWidthFeatureBinningConfig>(this->getParallelStatisticUpdateConfigPtr());
+                      std::make_unique<EqualWidthFeatureBinningConfig>();
                     IEqualWidthFeatureBinningConfig& ref = *ptr;
                     featureBinningConfigPtr = std::move(ptr);
                     return ref;
@@ -555,7 +563,7 @@ class MLRLCOMMON_API IRuleLearner {
                     std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr =
                       this->getFeatureBinningConfigPtr();
                     std::unique_ptr<EqualFrequencyFeatureBinningConfig> ptr =
-                      std::make_unique<EqualFrequencyFeatureBinningConfig>(this->getParallelStatisticUpdateConfigPtr());
+                      std::make_unique<EqualFrequencyFeatureBinningConfig>();
                     IEqualFrequencyFeatureBinningConfig& ref = *ptr;
                     featureBinningConfigPtr = std::move(ptr);
                     return ref;
@@ -1635,6 +1643,12 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<IFeatureBinningConfig> featureBinningConfigPtr_;
 
                 /**
+                 * An unique pointer that stores the configuration of the class that provides access to the thresholds
+                 * that may be used by the conditions of rules.
+                 */
+                std::unique_ptr<IThresholdsConfig> thresholdsConfigPtr_;
+
+                /**
                  * An unique pointer that stores the configuration of the method for sampling labels.
                  */
                 std::unique_ptr<ILabelSamplingConfig> labelSamplingConfigPtr_;
@@ -1755,6 +1769,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<IRuleInductionConfig>& getRuleInductionConfigPtr() override final;
 
                 std::unique_ptr<IFeatureBinningConfig>& getFeatureBinningConfigPtr() override final;
+
+                std::unique_ptr<IThresholdsConfig>& getThresholdsConfigPtr() override final;
 
                 std::unique_ptr<ILabelSamplingConfig>& getLabelSamplingConfigPtr() override final;
 

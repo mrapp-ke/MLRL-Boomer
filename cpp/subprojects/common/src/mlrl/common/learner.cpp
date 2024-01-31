@@ -2,6 +2,7 @@
 
 #include "mlrl/common/prediction/label_space_info_no.hpp"
 #include "mlrl/common/stopping/stopping_criterion_size.hpp"
+#include "mlrl/common/thresholds/thresholds_exact.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 /**
@@ -88,7 +89,9 @@ AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
       ruleModelAssemblageConfigPtr_(std::make_unique<SequentialRuleModelAssemblageConfig>(defaultRuleConfigPtr_)),
       ruleInductionConfigPtr_(
         std::make_unique<GreedyTopDownRuleInductionConfig>(ruleCompareFunction_, parallelRuleRefinementConfigPtr_)),
-      featureBinningConfigPtr_(std::make_unique<NoFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_)),
+      featureBinningConfigPtr_(std::make_unique<NoFeatureBinningConfig>()),
+      thresholdsConfigPtr_(
+        std::make_unique<ExactThresholdsConfig>(featureBinningConfigPtr_, parallelStatisticUpdateConfigPtr_)),
       labelSamplingConfigPtr_(std::make_unique<NoLabelSamplingConfig>()),
       instanceSamplingConfigPtr_(std::make_unique<NoInstanceSamplingConfig>()),
       featureSamplingConfigPtr_(std::make_unique<NoFeatureSamplingConfig>()),
@@ -120,6 +123,10 @@ std::unique_ptr<IRuleInductionConfig>& AbstractRuleLearner::Config::getRuleInduc
 
 std::unique_ptr<IFeatureBinningConfig>& AbstractRuleLearner::Config::getFeatureBinningConfigPtr() {
     return featureBinningConfigPtr_;
+}
+
+std::unique_ptr<IThresholdsConfig>& AbstractRuleLearner::Config::getThresholdsConfigPtr() {
+    return thresholdsConfigPtr_;
 }
 
 std::unique_ptr<ILabelSamplingConfig>& AbstractRuleLearner::Config::getLabelSamplingConfigPtr() {
@@ -210,7 +217,7 @@ std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleMode
 
 std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory(
   const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
-    return config_.getFeatureBinningConfigPtr()->createThresholdsFactory(featureMatrix, labelMatrix);
+    return config_.getThresholdsConfigPtr()->createThresholdsFactory(featureMatrix, labelMatrix);
 }
 
 std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory(
