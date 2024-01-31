@@ -5,17 +5,12 @@
 
 namespace boosting {
 
-    AutomaticFeatureBinningConfig::AutomaticFeatureBinningConfig(
-      const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
-
-    std::unique_ptr<IThresholdsFactory> AutomaticFeatureBinningConfig::createThresholdsFactory(
+    std::unique_ptr<IFeatureBinningFactory> AutomaticFeatureBinningConfig::createFeatureBinningFactory(
       const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
         if (!featureMatrix.isSparse() && featureMatrix.getNumExamples() > 200000) {
-            return EqualWidthFeatureBinningConfig(multiThreadingConfigPtr_)
-              .createThresholdsFactory(featureMatrix, labelMatrix);
+            return EqualWidthFeatureBinningConfig().createFeatureBinningFactory(featureMatrix, labelMatrix);
         } else {
-            return NoFeatureBinningConfig(multiThreadingConfigPtr_).createThresholdsFactory(featureMatrix, labelMatrix);
+            return NoFeatureBinningConfig().createFeatureBinningFactory(featureMatrix, labelMatrix);
         }
     }
 

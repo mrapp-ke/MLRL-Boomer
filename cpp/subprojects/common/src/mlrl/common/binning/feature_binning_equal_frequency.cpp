@@ -3,7 +3,6 @@
 #include "feature_binning_nominal.hpp"
 #include "mlrl/common/binning/bin_index_vector_dense.hpp"
 #include "mlrl/common/binning/bin_index_vector_dok.hpp"
-#include "mlrl/common/thresholds/thresholds_approximate.hpp"
 #include "mlrl/common/util/math.hpp"
 #include "mlrl/common/util/validation.hpp"
 
@@ -204,9 +203,7 @@ class EqualFrequencyFeatureBinningFactory final : public IFeatureBinningFactory 
         }
 };
 
-EqualFrequencyFeatureBinningConfig::EqualFrequencyFeatureBinningConfig(
-  const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-    : binRatio_(0.33f), minBins_(2), maxBins_(0), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
+EqualFrequencyFeatureBinningConfig::EqualFrequencyFeatureBinningConfig() : binRatio_(0.33f), minBins_(2), maxBins_(0) {}
 
 float32 EqualFrequencyFeatureBinningConfig::getBinRatio() const {
     return binRatio_;
@@ -239,13 +236,7 @@ IEqualFrequencyFeatureBinningConfig& EqualFrequencyFeatureBinningConfig::setMaxB
     return *this;
 }
 
-std::unique_ptr<IThresholdsFactory> EqualFrequencyFeatureBinningConfig::createThresholdsFactory(
+std::unique_ptr<IFeatureBinningFactory> EqualFrequencyFeatureBinningConfig::createFeatureBinningFactory(
   const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
-    std::unique_ptr<IFeatureBinningFactory> numericalFeatureBinningFactoryPtr =
-      std::make_unique<EqualFrequencyFeatureBinningFactory>(binRatio_, minBins_, maxBins_);
-    std::unique_ptr<IFeatureBinningFactory> nominalFeatureBinningFactoryPtr =
-      std::make_unique<NominalFeatureBinningFactory>();
-    uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
-    return std::make_unique<ApproximateThresholdsFactory>(std::move(numericalFeatureBinningFactoryPtr),
-                                                          std::move(nominalFeatureBinningFactoryPtr), numThreads);
+    return std::make_unique<EqualFrequencyFeatureBinningFactory>(binRatio_, minBins_, maxBins_);
 }

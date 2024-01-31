@@ -157,8 +157,7 @@ namespace boosting {
                     virtual void useAutomaticFeatureBinning() {
                         std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr =
                           this->getFeatureBinningConfigPtr();
-                        featureBinningConfigPtr =
-                          std::make_unique<AutomaticFeatureBinningConfig>(this->getParallelStatisticUpdateConfigPtr());
+                        featureBinningConfigPtr = std::make_unique<AutomaticFeatureBinningConfig>();
                     }
             };
 
