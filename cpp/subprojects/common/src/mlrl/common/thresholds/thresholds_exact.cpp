@@ -81,8 +81,8 @@ class ExactThresholds final : public AbstractThresholds {
                                 featureVector = cacheIterator->second.get();
 
                                 if (!featureVector) {
-                                    std::unique_ptr<IFeatureType> featureTypePtr =
-                                      featureInfo_.createFeatureType(featureIndex_);
+                                    std::unique_ptr<IFeatureType> featureTypePtr = featureInfo_.createFeatureType(
+                                      featureIndex_, thresholdsSubset_.thresholds_.featureBinningFactory_);
                                     cacheIterator->second =
                                       thresholdsSubset_.thresholds_.featureMatrix_.createFeatureVector(featureIndex_,
                                                                                                        *featureTypePtr);
