@@ -24,12 +24,19 @@ class BitFeatureInfo final : public IMixedFeatureInfo {
         BitFeatureInfo(uint32 numFeatures)
             : ordinalBitVector_(numFeatures, true), nominalBitVector_(numFeatures, true) {}
 
-        std::unique_ptr<IFeatureType> createFeatureType(uint32 featureIndex) const override {
+        std::unique_ptr<IFeatureType> createFeatureType(
+          uint32 featureIndex, const IFeatureBinningFactory& featureBinningFactory) const override {
             if (ordinalBitVector_[featureIndex]) {
                 return std::make_unique<OrdinalFeatureType>();
             } else if (nominalBitVector_[featureIndex]) {
                 return std::make_unique<NominalFeatureType>();
             } else {
+                std::unique_ptr<IFeatureBinning> featureBinningPtr = featureBinningFactory.create();
+
+                if (featureBinningPtr) {
+                    return featureBinningPtr;
+                }
+
                 return std::make_unique<NumericalFeatureType>();
             }
         }

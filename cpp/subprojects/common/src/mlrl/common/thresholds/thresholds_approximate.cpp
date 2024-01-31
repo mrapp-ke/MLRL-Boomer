@@ -200,8 +200,9 @@ class ApproximateThresholds final : public AbstractThresholds {
                         thresholds_.cache_.emplace(featureIndex, IFeatureBinning::Result());
                     }
 
+                    std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr;
                     std::unique_ptr<IFeatureType> featureTypePtr =
-                      thresholds_.featureInfo_.createFeatureType(featureIndex);
+                      thresholds_.featureInfo_.createFeatureType(featureIndex, *featureBinningFactoryPtr);
                     bool ordinal = featureTypePtr->isOrdinal();
                     bool nominal = featureTypePtr->isNominal();
                     std::unique_ptr<Callback> callbackPtr = std::make_unique<Callback>(*this, featureIndex, nominal);
