@@ -44,7 +44,35 @@ TODO
 
 ## Model Characteristics
 
-TODO
+To obtain a quick overview of some statistics that characterize a rule-based model learned by one of the algorithms provided by this project, the command line argument ``--print-model-characteristics`` can be useful:
+
+```text
+boomer --data-dir /path/to/datsets/ --dataset dataset-name --print-model-characteristics true
+```
+
+The above command results in a tabular representation of the characteristics being printed on the console. If one intends to write them into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file instead, the argument ``--store-model-characteristics`` may be used:
+
+```text
+boomer --data-dir /path/to/datsets/ --dataset dataset-name --output-dir /path/to/results/ --store-model-characteristics true
+```
+
+Model characteristics are obtained for each model training during an experiment. This means that a single output file will be created when using on {ref}`train-test-split`:
+
+- `model_characteristics_overall.csv`
+
+When using a {ref}`cross-validation`, several models are trained on different parts of the available data, resulting in multiple output files being saved to the output directory. For example, the following files will be created when conducting a 5-fold cross validation:
+
+- `model_characteristics_fold-1.csv`
+- `model_characteristics_fold-2.csv`
+- `model_characteristics_fold-3.csv`
+- `model_characteristics_fold-4.csv`
+- `model_characteristics_fold-5.csv`
+
+The statistics captured by the previous commands include the following:
+
+- **Statistics about conditions:** Information about the number of rules in a model, as well as the different types of conditons contained in their bodies.
+- **Statistics about predictions:** The distribution of positive and negative predictions provided by the rules in a model.
+- **Statistics per local rule:** The minimum, average, and maximum number of conditions and predictions the rules in a model entail in their bodies and heads, respectively.
 
 (output-rules)=
 
@@ -63,7 +91,7 @@ boomer --data-dir /path/to/datsets/ --dataset dataset-name --output-dir /path/to
 ```
 
 ```{tip}
-Both, the ``--print-rules`` and ``--store-rules`` arguments, come with several options that allow to customize the textual representation of models. An overview of these options is provided in the section {ref}`arguments-output-rules`.
+Both, the ``--print-rules`` and ``--store-rules`` arguments, come with several options that allow to customize the textual representation of models. An overview of these options is provided {ref}`here<arguments-output-rules>`.
 ```
 
 When using {ref}`train-test-split`, only a single model is trained. Consequently, the above command will result in a single output file being created:
