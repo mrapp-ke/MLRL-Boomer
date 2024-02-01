@@ -116,11 +116,11 @@ As an alternative to storing the models learned by an algorithm, the algorithmic
 
 ## Output of Experimental Results
 
-To provide valuable insights into the models learned by an algorithm, the predictions they provide, or the data they have been derived from, a wide variety of experimental results can be written to output files or printed on the console.
+> A more detailed description of the following arguments can be found {ref}`here<experimental-results>`.
 
-- `--output-dir` (Default value = `None`)
+To provide valuable insights into the models learned by an algorithm, the predictions they provide, or the data they have been derived from, a wide variety of experimental results can be written to output files or printed on the console. If the results should be written to files, it is necessary to specify an output directory:
 
-  - An absolute or relative path to the directory where experimental results should be saved.
+- `--output-dir` An absolute or relative path to the directory where experimental results should be saved.
 
 ### Evaluation Results
 
