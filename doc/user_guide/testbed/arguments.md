@@ -332,6 +332,8 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The characteristics of rule models are written into a .csv file. Does only have an effect if the parameter `--output-dir` is specified.
   - `false` The characteristics of rule models are not written into a .csv file.
 
+(arguments-output-rules)=
+
 ### Rules
 
 - `--print-rules` (Default value = `false`)
