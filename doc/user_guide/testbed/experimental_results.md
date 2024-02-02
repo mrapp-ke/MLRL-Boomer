@@ -32,7 +32,46 @@ TODO
 
 ## Data Characteristics
 
-TODO
+To obtain insightful statistics regarding the characteristics of a data set, the command line argument ``--print-data-characteristics`` may be helpful:
+
+```text
+boomer --data-dir /path/to/datsets/ --dataset dataset-name --print-data-characteristics true
+```
+
+If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file, the argument ``--store-data-characteristics`` can be used:
+
+```text
+boomer --data-dir /path/to/datsets/ --dataset dataset-name --output-dir /path/to/results/ --store-data-characteristics true
+```
+
+```{tip}
+As shown {ref}`here<arguments-data-characteristics>`, the arguments ``--print-data-characteristics`` and ``--store-data-characteristics`` come with several options that allow to exclude specific statistics from the respective output. It is also possible to specify whether percentages should be prefered for presenting the statistics. Additionally, the number of decimals to be included in the output can be limited.
+```
+
+The statistics provided by the previous commands are obtained on the training data and therefore depend on the strategy used for splitting a dataset into training and test sets. If {ref}`train-test-split` are used, a single training set is used and its characteristics will be saved to a file:
+
+- `data_characteristics_overall.csv`
+
+In contrast, when using a {ref}`cross-validation`, the data is split into several parts of which each one is used once for training. As a result, multiple output files will be created in a such a scenario. For example, a 5-fold cross validation will result in the following files:
+
+- `data_characteristics_fold-1.csv`
+- `data_characteristics_fold-2.csv`
+- `data_characteristics_fold-3.csv`
+- `data_characteristics_fold-4.csv`
+- `data_characteristics_fold-5.csv`
+
+The output produced by the previous commands includes the following information regarding a dataset's features:
+
+- The total number of examples contained in a dataset, as well as the number of examples per type of feature (numerical, ordinal, or nominal).
+- The sparsity among the feature values of all examples, calculated as the percentage of elements in the feature matrix that are equal to zero.
+
+In addition, the following statistics regarding the labels in a dataset are provided:
+
+- The total number of available labels.
+- The percentage of irrelevant labels among all examples, corresponding to the sparsity of the label matrix.
+- The average label cardinality, i.e., the average number of relevant labels per example.
+- The number of distinct label vectors, i.e., the number of unique label combinations that are present in a dataset.
+- The *label imbalance ratio* [^charte2013], which is an important metric in multi-label classification. It measures to which degree the distribution of relevant and irrelevant labels is unbalanced.
 
 (output-label-vectors)=
 
@@ -129,3 +168,5 @@ Examples that satisfy all conditions in a rule's body are said to be "covered" b
 ## Probability Calibration Models
 
 TODO
+
+[^charte2013]: Charte, Francisco, Antonio J. Rivera, María José del Jesus, and Francisco Herrera (2019). ‘REMEDIAL-HwR: Tackling multilabel imbalance through label decoupling and data resampling hybridization’. In: *Neurocomputing* 326-327, pp. 110–122.

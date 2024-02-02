@@ -258,6 +258,8 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The characteristics of predictions are not written into .csv files.
 
+(arguments-data-characteristics)=
+
 ### Data Characteristics
 
 - `--print-data-characteristics` (Default value = `false`)
