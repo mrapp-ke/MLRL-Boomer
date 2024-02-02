@@ -21,7 +21,7 @@ This release comes with several API changes. For an updated overview of the avai
 
 ### Bugfixes
 
-- An issue has been fixed that caused the number of numerical and ordinal features to be swapped when using the command line arguments `--print-data-characteristics` or `--store-data-characteristics`.
+- An issue has been fixed that caused the number of numerical and nominal features to be swapped when using the command line arguments `--print-data-characteristics` or `--store-data-characteristics`.
 - The correct directory is now used for loading and saving parameter settings when using the command line arguments `--parameter-dir` and `--store-parameters`.
 
 ### API Changes
