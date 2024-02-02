@@ -50,6 +50,8 @@ When providing the option `current_fold`, only a single fold, instead of the ent
     boomer --data-dir /path/to/datsets/ --dataset dataset-name --data-split 'cv{num_folds=5,current_fold=2}'
 ```
 
+(evaluating-training-data)=
+
 ### Evaluation on the Training Data
 
 ```{warning}
@@ -67,6 +69,8 @@ If you are interested in obtaining evaluation results for the training data in a
 
     boomer --data-dir /path/to/datsets/ --dataset dataset-name --data-split cv --evaluate-training-data true
 ```
+
+(prediction-types)=
 
 ## Types of Predictions
 

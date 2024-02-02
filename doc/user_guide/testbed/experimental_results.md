@@ -20,7 +20,39 @@ TODO
 
 ## Predictions
 
-TODO
+In cases where the performance metrics obtained via the arguments ``--print-evaluation`` or ``--store-evaluation`` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console, together with the ground truth labels, by proving the argument ``--print-predictions``:
+
+```text
+boomer --data-dir /path/to/datsets/ --dataset dataset-name --print-predictions true
+```
+
+Alternatively, the argument ``--store-predictions`` can be used to save the predictions, as well as the ground truth labels, to [.arff](http://weka.wikispaces.com/ARFF) files:
+
+```text
+boomer --data-dir /path/to/datsets/ --dataset dataset-name --output-dir /path/to/results/ --store-predictions true
+```
+
+```{tip}
+Depending on the {ref}`prediction-types`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if regression scores or proability estimates are provided). When working with real-valued predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions`` and ``--store-predictions`` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
+```
+
+When using {ref}`train-test-split`, a single model is trained and queried for predictions for the test set. These predictions will be written into a single output file. When using an {ref}`evaluating-training-data`, predictions are also obtained for the training set and written into an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:
+
+- `predictions_train_overall.arff`
+- `predictions_test_overall.arff`
+
+When using a {ref}`cross-validation` for performance evaluation, a model is trained for each fold. Similar to before, the names of the output files indicate whether the predictions correspond to the training or test data:
+
+- `predictions_train_fold-1.arff`
+- `predictions_test_fold-1.arff`
+- `predictions_train_fold-2.arff`
+- `predictions_test_fold-2.arff`
+- `predictions_train_fold-3.arff`
+- `predictions_test_fold-3.arff`
+- `predictions_train_fold-4.arff`
+- `predictions_test_fold-4.arff`
+- `predictions_train_fold-5.arff`
+- `predictions_test_fold-5.arff`
 
 (output-prediction-characteristics)=
 
