@@ -122,6 +122,8 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--output-dir` An absolute or relative path to the directory where experimental results should be saved.
 
+(arguments-evaluation-results)=
+
 ### Evaluation Results
 
 - `--print-evaluation` (Default value = `true`)
@@ -228,6 +230,8 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` Predictions are not written into .arff files.
 
+(arguments-prediction-characteristics)=
+
 ### Prediction Characteristics
 
 - `--print-prediction-characteristics` (Default value = `false`)
@@ -306,6 +310,8 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The characteristics of the training data set are not written into a .csv file.
 
+(arguments-label-vectors)=
+
 ### Label Vectors
 
 - `--print-label-vectors` (Default value = `false`)
@@ -323,6 +329,8 @@ To provide valuable insights into the models learned by an algorithm, the predic
     - `sparse` (Default value = `false`) `true`, if a sparse representation of label vectors should be used, `false` otherwise.
 
   - `false` The unique label vectors contained in the training data are not written into a .csv file.
+
+(arguments-model-characteristics)=
 
 ### Model Characteristics
 
@@ -367,6 +375,8 @@ To provide valuable insights into the models learned by an algorithm, the predic
     - `decimals_head` (Default value = `2`) The number of decimals to be used for predictions in a rule's head or 0, if the number of decimals should not be restricted.
 
   - `false` The induced rules are not written into a .txt file.
+
+(arguments-probability-calibration-models)=
 
 ### Probability Calibration Models
 
