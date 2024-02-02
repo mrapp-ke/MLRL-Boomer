@@ -2,6 +2,8 @@
 tocdepth: 2
 ---
 
+(release-notes)=
+
 # Release Notes
 
 ## Version 0.10.0 (to be released)
