@@ -208,6 +208,8 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The evaluation results are not written into .csv files.
 
+(arguments-predictions)=
+
 ### Predictions
 
 - `--print-predictions` (Default value = `false`)
