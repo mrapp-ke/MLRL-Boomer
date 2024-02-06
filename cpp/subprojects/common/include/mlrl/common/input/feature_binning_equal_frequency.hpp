@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include "mlrl/common/binning/feature_binning.hpp"
+#include "mlrl/common/input/feature_binning.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure a method that assigns numerical feature values to bins,

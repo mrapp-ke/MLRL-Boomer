@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/binning/feature_binning.hpp"
+#include "mlrl/common/input/feature_binning.hpp"
 #include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/thresholds/thresholds.hpp"
 
