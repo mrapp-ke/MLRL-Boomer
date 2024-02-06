@@ -9,6 +9,7 @@ on:
       - '**/*.hpp'
       - '**/*.cpp'
       - '**/*.py'
+      - '**/*.md'
       - '.clang-format'
       - '.isort.cfg'
       - '.pylintrc'
