@@ -14,7 +14,7 @@ class MLRLCOMMON_API AllocatedNominalFeatureVector : public NominalFeatureVector
         /**
          * @param numValues     The number of nominal values
          * @param numIndices    The number of examples not associated with the majority value
-         * @param majorityValue The majority value, i.e., the most frequent value, of the binary feature
+         * @param majorityValue The majority value, i.e., the most frequent value, of the nominal feature
          */
         AllocatedNominalFeatureVector(uint32 numValues, uint32 numIndices, int32 majorityValue = 0)
             : NominalFeatureVector(allocateMemory<int32>(numValues), allocateMemory<uint32>(numIndices),
