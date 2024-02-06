@@ -1,6 +1,7 @@
 #include "mlrl/common/rule_refinement/rule_refinement_search.hpp"
 
 #include "rule_refinement_search_binary.hpp"
+#include "rule_refinement_search_binned.hpp"
 #include "rule_refinement_search_nominal.hpp"
 #include "rule_refinement_search_numerical.hpp"
 #include "rule_refinement_search_ordinal.hpp"
@@ -108,7 +109,8 @@ void RuleRefinementSearch::searchForBinnedRefinement(const BinnedFeatureVector& 
                                                      uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                                      Refinement& refinement) const {
     addMissingStatistics(statisticsSubset, missingFeatureVector);
-    // TODO Implement
+    searchForBinnedRefinementInternally(featureVector, statisticsSubset, comparator, numExamplesWithNonZeroWeights,
+                                        minCoverage, refinement);
 }
 
 void RuleRefinementSearch::searchForBinnedRefinement(const BinnedFeatureVector& featureVector,
@@ -118,5 +120,6 @@ void RuleRefinementSearch::searchForBinnedRefinement(const BinnedFeatureVector& 
                                                      uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                                      Refinement& refinement) const {
     addMissingStatistics(statisticsSubset, missingFeatureVector);
-    // TODO Implement
+    searchForBinnedRefinementInternally(featureVector, statisticsSubset, comparator, numExamplesWithNonZeroWeights,
+                                        minCoverage, refinement);
 }

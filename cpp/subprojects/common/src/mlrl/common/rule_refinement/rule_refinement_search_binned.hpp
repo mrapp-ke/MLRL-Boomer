@@ -3,36 +3,30 @@
  */
 #pragma once
 
-#include "mlrl/common/input/feature_vector_ordinal.hpp"
+#include "mlrl/common/input/feature_vector_binned.hpp"
 #include "mlrl/common/rule_refinement/refinement.hpp"
+#include "mlrl/common/statistics/statistics_subset_weighted.hpp"
 #include "rule_refinement_search_binned_common.hpp"
 
 template<typename Comparator>
-static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVector& featureVector,
-                                                        IWeightedStatisticsSubset& statisticsSubset,
-                                                        Comparator& comparator, uint32 numExamplesWithNonZeroWeights,
-                                                        uint32 minCoverage, Refinement& refinement) {
-    // Mark all examples corresponding to the first ordinal feature value `f < majorityValue` as covered...
-    NominalFeatureVector::value_const_iterator valueIterator = featureVector.values_cbegin();
-    uint32 numValues = featureVector.numValues;
-    int32 majorityValue = featureVector.majorityValue;
+static inline void searchForBinnedRefinementInternally(const BinnedFeatureVector& featureVector,
+                                                       IWeightedStatisticsSubset& statisticsSubset,
+                                                       Comparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                                       uint32 minCoverage, Refinement& refinement) {
+    // Mark all examples corresponding to the first bin with index `i < sparseBinIndex` as covered...
+    BinnedFeatureVector::threshold_const_iterator thresholdIterator = featureVector.thresholds_cbegin();
+    uint32 numBins = featureVector.numBins;
+    int32 sparseBinIndex = featureVector.sparseBinIndex;
     uint32 numCovered = 0;
     int64 i = 0;
-    int32 previousValue = valueIterator[i];
 
-    if (previousValue < majorityValue) {
+    if (i < sparseBinIndex) {
         numCovered += addAllToSubset(statisticsSubset, featureVector, i);
     }
 
-    // Traverse ordinal feature values `f < sparseValue` in ascending order...
+    // Traverse bins with indices `i < sparseBinIndex` in ascending order...
     if (numCovered > 0) {
-        for (i = i + 1; i < numValues; i++) {
-            int32 currentValue = valueIterator[i];
-
-            if (currentValue >= majorityValue) {
-                break;
-            }
-
+        for (i = i + 1; i < sparseBinIndex; i++) {
             // Check if a condition using the <= operator covers at least `minCoverage` examples...
             if (numCovered >= minCoverage) {
                 // Determine the best prediction for the examples covered by a condition using the <= operator...
@@ -44,8 +38,8 @@ static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVect
                     refinement.end = i;
                     refinement.inverse = false;
                     refinement.numCovered = numCovered;
-                    refinement.comparator = ORDINAL_LEQ;
-                    refinement.threshold = previousValue;
+                    refinement.comparator = NUMERICAL_LEQ;
+                    refinement.threshold = thresholdIterator[i - 1];
                     comparator.pushRefinement(refinement, scoreVector);
                 }
             }
@@ -63,37 +57,32 @@ static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVect
                     refinement.end = i;
                     refinement.inverse = true;
                     refinement.numCovered = numUncovered;
-                    refinement.comparator = ORDINAL_GR;
-                    refinement.threshold = previousValue;
+                    refinement.comparator = NUMERICAL_GR;
+                    refinement.threshold = thresholdIterator[i - 1];
                     comparator.pushRefinement(refinement, scoreVector);
                 }
             }
 
-            // Mark all examples corresponding to the current ordinal feature value as covered...
+            // Mark all examples corresponding to the current bin as covered...
             numCovered += addAllToSubset(statisticsSubset, featureVector, i);
-            previousValue = currentValue;
         }
 
-        // Reset the subset, if any examples with feature value `f < majorityValue` have been processed...
+        // Reset the subset, if any bins with indices `i < sparseBinIndex` have been processed...
         statisticsSubset.resetSubset();
     }
 
-    // Mark all examples corresponding to the last ordinal feature value `f > majorityValue` as covered...
-    int32 lastValueLessThanMajorityValue = previousValue;
-    int64 firstValueGreaterThanMajorityValue = i;
-    uint32 numCoveredLessThanMajorityValue = numCovered;
+    // Mark all examples corresponding to the last bin with index `i > sparseBinIndex` as covered...
+    uint32 numCoveredLessThanSparseBinIndex = numCovered;
     numCovered = 0;
-    i = numValues - 1;
+    i = numBins - 1;
 
-    if (valueIterator[i] > majorityValue) {
+    if (i > sparseBinIndex) {
         numCovered += addAllToSubset(statisticsSubset, featureVector, i);
     }
 
-    // Traverse ordinal feature values `f > majorityValue` in descending order...
+    // Traverse bin with indices `i > sparseBinIndex` in descending order...
     if (numCovered > 0) {
-        for (i = i - 1; i >= firstValueGreaterThanMajorityValue; i--) {
-            int32 currentValue = valueIterator[i];
-
+        for (i = i - 1; i > sparseBinIndex; i--) {
             // Check if a condition using the > operator covers at least `minCoverage` examples...
             if (numCovered >= minCoverage) {
                 // Determine the best prediction for the covered examples...
@@ -102,11 +91,11 @@ static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVect
                 // Check if the quality of the prediction is better than the quality of the current rule...
                 if (comparator.isImprovement(scoreVector)) {
                     refinement.start = i + 1;
-                    refinement.end = numValues;
+                    refinement.end = numBins;
                     refinement.inverse = false;
                     refinement.numCovered = numCovered;
-                    refinement.comparator = ORDINAL_GR;
-                    refinement.threshold = currentValue;
+                    refinement.comparator = NUMERICAL_GR;
+                    refinement.threshold = thresholdIterator[i];
                     comparator.pushRefinement(refinement, scoreVector);
                 }
             }
@@ -121,79 +110,82 @@ static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVect
                 // Check if the quality of the prediction is better than the quality of the current rule...
                 if (comparator.isImprovement(scoreVector)) {
                     refinement.start = i + 1;
-                    refinement.end = numValues;
+                    refinement.end = numBins;
                     refinement.inverse = true;
                     refinement.numCovered = numUncovered;
-                    refinement.comparator = ORDINAL_LEQ;
-                    refinement.threshold = currentValue;
+                    refinement.comparator = NUMERICAL_LEQ;
+                    refinement.threshold = thresholdIterator[i];
                     comparator.pushRefinement(refinement, scoreVector);
                 }
             }
 
-            // Mark all examples corresponding to the current ordinal feature value as covered...
+            // Mark all examples corresponding to the current bin as covered...
             numCovered += addAllToSubset(statisticsSubset, featureVector, i);
-            previousValue = currentValue;
         }
     }
 
-    // Check if the condition `f > majorityValue` covers at least `minCoverage` examples...
+    // Check if a condition that covers all bins with indices `i > sparseBinIndex` covers at least `minCoverage`
+    // examples...
     if (numCovered >= minCoverage) {
         // Determine the best prediction for examples covered by the condition...
         const IScoreVector& scoreVector = statisticsSubset.calculateScores();
 
         // Check if the quality of the prediction is better than the quality of the current rule...
         if (comparator.isImprovement(scoreVector)) {
-            refinement.start = firstValueGreaterThanMajorityValue;
-            refinement.end = numValues;
+            refinement.start = sparseBinIndex + 1;
+            refinement.end = numBins;
             refinement.numCovered = numCovered;
             refinement.inverse = false;
-            refinement.comparator = ORDINAL_GR;
-            refinement.threshold = majorityValue;
+            refinement.comparator = NUMERICAL_GR;
+            refinement.threshold = thresholdIterator[sparseBinIndex];
             comparator.pushRefinement(refinement, scoreVector);
         }
     }
 
-    // Check if the condition `f <= majorityValue` covers at least `minCoverage` examples...
+    // Check if a condition that covers all bins with indices `i <= sparseBinIndex` covers at least `minCoverage`
+    // examples...
     uint32 numUncovered = numExamplesWithNonZeroWeights - numCovered;
 
     if (numUncovered >= minCoverage) {
         // Determine the best prediction for examples covered by the condition...
-        const IScoreVector& scoreVector = statisticsSubset.calculateScoresUncovered();
+        const IScoreVector& scoreVector = statisticsSubset.calculateScores();
 
         // Check if the quality of the prediction is better than the quality of the current rule...
         if (comparator.isImprovement(scoreVector)) {
-            refinement.start = firstValueGreaterThanMajorityValue;
-            refinement.end = numValues;
+            refinement.start = sparseBinIndex + 1;
+            refinement.end = numBins;
             refinement.numCovered = numUncovered;
             refinement.inverse = true;
-            refinement.comparator = ORDINAL_LEQ;
-            refinement.threshold = majorityValue;
+            refinement.comparator = NUMERICAL_LEQ;
+            refinement.threshold = thresholdIterator[sparseBinIndex];
             comparator.pushRefinement(refinement, scoreVector);
         }
     }
 
-    // If there have been examples with feature values `f < majorityValue`, we must evaluate conditions that separate
-    // these examples from the remaining ones...
-    if (numCoveredLessThanMajorityValue > 0 && numCoveredLessThanMajorityValue < numExamplesWithNonZeroWeights) {
-        // Check if the condition `f <= lastValueLessThanMajorityValue` covers at least `minCoverage` examples...
-        if (numCoveredLessThanMajorityValue >= minCoverage) {
+    // If there have been bin with indices `i < sparseBinIndex`, we must evaluate conditions that separate the examples
+    // corresponding to these bins from the remaining ones...
+    if (numCoveredLessThanSparseBinIndex > 0 && numCoveredLessThanSparseBinIndex < numExamplesWithNonZeroWeights) {
+        // Check if a condition that covers all bins with indices `i < sparseBinIndex` covers at least `minCoverage`
+        // examples...
+        if (numCoveredLessThanSparseBinIndex >= minCoverage) {
             // Determine the best prediction for the examples covered by the condition...
             const IScoreVector& scoreVector = statisticsSubset.calculateScoresAccumulated();
 
             // Check if the quality of the prediction is better than the quality of the current rule...
             if (comparator.isImprovement(scoreVector)) {
                 refinement.start = 0;
-                refinement.end = firstValueGreaterThanMajorityValue;
-                refinement.numCovered = numCoveredLessThanMajorityValue;
+                refinement.end = sparseBinIndex;
+                refinement.numCovered = numCoveredLessThanSparseBinIndex;
                 refinement.inverse = false;
-                refinement.comparator = ORDINAL_LEQ;
-                refinement.threshold = lastValueLessThanMajorityValue;
+                refinement.comparator = NUMERICAL_LEQ;
+                refinement.threshold = thresholdIterator[sparseBinIndex - 1];
                 comparator.pushRefinement(refinement, scoreVector);
             }
         }
 
-        // Check if the condition `f > lastValueLessThanMajorityValue` covers at least `minCoverage` examples...
-        numUncovered = numExamplesWithNonZeroWeights - numCoveredLessThanMajorityValue;
+        // Check if a condition that covers all bins with indices `i >= sparseBinIndex` covers at least `minCoverage`
+        // examples...
+        numUncovered = numExamplesWithNonZeroWeights - numCoveredLessThanSparseBinIndex;
 
         if (numUncovered >= minCoverage) {
             // Determine the best prediction for the examples covered by the condition...
@@ -202,11 +194,11 @@ static inline void searchForOrdinalRefinementInternally(const OrdinalFeatureVect
             // Check if the quality of the prediction is better than the quality of the current rule...
             if (comparator.isImprovement(scoreVector)) {
                 refinement.start = 0;
-                refinement.end = firstValueGreaterThanMajorityValue;
+                refinement.end = sparseBinIndex;
                 refinement.numCovered = numUncovered;
                 refinement.inverse = true;
-                refinement.comparator = ORDINAL_GR;
-                refinement.threshold = lastValueLessThanMajorityValue;
+                refinement.comparator = NUMERICAL_GR;
+                refinement.threshold = thresholdIterator[sparseBinIndex - 1];
                 comparator.pushRefinement(refinement, scoreVector);
             }
         }
