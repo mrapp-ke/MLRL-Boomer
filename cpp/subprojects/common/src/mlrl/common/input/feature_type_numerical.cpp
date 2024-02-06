@@ -34,13 +34,27 @@ static inline std::unique_ptr<NumericalFeatureVectorDecorator> createNumericalFe
                                                              std::move(missingFeatureVector));
 }
 
-static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
+static inline std::unique_ptr<NumericalFeatureVectorDecorator> createNumericalFeatureVector(
   uint32 featureIndex, const FortranContiguousView<const float32>& featureMatrix) {
     FortranContiguousView<const float32>::value_const_iterator valueIterator =
       featureMatrix.values_cbegin(featureIndex);
     uint32 numRows = featureMatrix.numRows;
+    return createNumericalFeatureVector(IndexIterator(), valueIterator, numRows);
+}
+
+static inline std::unique_ptr<NumericalFeatureVectorDecorator> createNumericalFeatureVector(
+  uint32 featureIndex, const CscView<const float32>& featureMatrix) {
+    CscView<const float32>::index_const_iterator indexIterator = featureMatrix.indices_cbegin(featureIndex);
+    CscView<const float32>::index_const_iterator indicesEnd = featureMatrix.indices_cend(featureIndex);
+    CscView<const float32>::value_const_iterator valueIterator = featureMatrix.values_cbegin(featureIndex);
+    uint32 numIndices = indicesEnd - indexIterator;
+    return createNumericalFeatureVector(indexIterator, valueIterator, numIndices);
+}
+
+static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
+  uint32 featureIndex, const FortranContiguousView<const float32>& featureMatrix) {
     std::unique_ptr<NumericalFeatureVectorDecorator> featureVectorDecoratorPtr =
-      createNumericalFeatureVector(IndexIterator(), valueIterator, numRows);
+      createNumericalFeatureVector(featureIndex, featureMatrix);
 
     // Check if all feature values are equal...
     const NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().firstView;
@@ -55,21 +69,18 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
 
 static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
   uint32 featureIndex, const CscView<const float32>& featureMatrix) {
-    CscView<const float32>::index_const_iterator indexIterator = featureMatrix.indices_cbegin(featureIndex);
-    CscView<const float32>::index_const_iterator indicesEnd = featureMatrix.indices_cend(featureIndex);
-    CscView<const float32>::value_const_iterator valueIterator = featureMatrix.values_cbegin(featureIndex);
-    uint32 numIndices = indicesEnd - indexIterator;
     std::unique_ptr<NumericalFeatureVectorDecorator> featureVectorDecoratorPtr =
-      createNumericalFeatureVector(indexIterator, valueIterator, numIndices);
+      createNumericalFeatureVector(featureIndex, featureMatrix);
 
     // Check if all feature values are equal...
     NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().firstView;
     uint32 numElements = numericalFeatureVector.numElements;
+    uint32 numExamples = featureMatrix.numRows;
 
     if (numElements > 0
-        && (numElements < numIndices
+        && (numElements < numExamples
             || !isEqual(numericalFeatureVector[0].value, numericalFeatureVector[numElements - 1].value))) {
-        numericalFeatureVector.sparse = numElements < numIndices;
+        numericalFeatureVector.sparse = numElements < numExamples;
         return featureVectorDecoratorPtr;
     }
 

@@ -150,7 +150,7 @@ TEST(NumericalFeatureTypeTest, createEqualFeatureVectorFromCscView) {
     uint32* indptr = new uint32[2];
     indptr[0] = 0;
     indptr[1] = numDense;
-    CscView<const float32> view(data, rowIndices, indptr, numDense + 3, 1);
+    CscView<const float32> view(data, rowIndices, indptr, numDense, 1);
 
     // Create feature vector...
     std::unique_ptr<IFeatureVector> featureVectorPtr = NumericalFeatureType().createFeatureVector(0, view);
