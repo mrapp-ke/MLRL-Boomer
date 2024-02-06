@@ -1,7 +1,5 @@
 #include "mlrl/common/input/feature_vector_nominal.hpp"
 
-#include <cstdlib>
-
 NominalFeatureVector::NominalFeatureVector(int32* values, uint32* indices, uint32* indptr, uint32 numValues,
                                            uint32 numIndices, int32 majorityValue)
     : values(values), indices(indices), indptr(indptr), numValues(numValues), majorityValue(majorityValue) {}
