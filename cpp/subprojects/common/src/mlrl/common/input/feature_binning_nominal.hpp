@@ -5,7 +5,7 @@
 
 #include "mlrl/common/binning/bin_index_vector_dense.hpp"
 #include "mlrl/common/binning/bin_index_vector_dok.hpp"
-#include "mlrl/common/binning/feature_binning.hpp"
+#include "mlrl/common/input/feature_binning.hpp"
 
 #include <unordered_map>
 

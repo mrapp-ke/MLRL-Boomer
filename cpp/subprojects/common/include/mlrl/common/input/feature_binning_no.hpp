@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/binning/feature_binning.hpp"
+#include "mlrl/common/input/feature_binning.hpp"
 
 /**
  * Allows to configure a method that does not actually perform any feature binning.

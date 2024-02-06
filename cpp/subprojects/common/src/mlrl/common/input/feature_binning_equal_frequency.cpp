@@ -1,4 +1,4 @@
-#include "mlrl/common/binning/feature_binning_equal_frequency.hpp"
+#include "mlrl/common/input/feature_binning_equal_frequency.hpp"
 
 #include "feature_binning_nominal.hpp"
 #include "mlrl/common/binning/bin_index_vector_dense.hpp"

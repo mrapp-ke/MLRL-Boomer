@@ -1,4 +1,4 @@
-#include "mlrl/common/binning/feature_binning_no.hpp"
+#include "mlrl/common/input/feature_binning_no.hpp"
 
 /**
  * Allows to create instances of the type `IFeatureBinning` that do not actualy perform any feature binning.

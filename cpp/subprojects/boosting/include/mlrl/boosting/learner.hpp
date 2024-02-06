@@ -8,10 +8,10 @@
     #pragma warning(disable : 4250)
 #endif
 
-#include "mlrl/boosting/binning/feature_binning_auto.hpp"
 #include "mlrl/boosting/binning/label_binning_auto.hpp"
 #include "mlrl/boosting/binning/label_binning_equal_width.hpp"
 #include "mlrl/boosting/binning/label_binning_no.hpp"
+#include "mlrl/boosting/input/feature_binning_auto.hpp"
 #include "mlrl/boosting/losses/loss_example_wise_logistic.hpp"
 #include "mlrl/boosting/losses/loss_example_wise_squared_error.hpp"
 #include "mlrl/boosting/losses/loss_example_wise_squared_hinge.hpp"

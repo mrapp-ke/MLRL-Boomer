@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include "mlrl/common/binning/feature_binning_equal_frequency.hpp"
-#include "mlrl/common/binning/feature_binning_equal_width.hpp"
-#include "mlrl/common/binning/feature_binning_no.hpp"
+#include "mlrl/common/input/feature_binning_equal_frequency.hpp"
+#include "mlrl/common/input/feature_binning_equal_width.hpp"
+#include "mlrl/common/input/feature_binning_no.hpp"
 #include "mlrl/common/input/feature_info.hpp"
 #include "mlrl/common/input/feature_matrix_column_wise.hpp"
 #include "mlrl/common/input/feature_matrix_row_wise.hpp"

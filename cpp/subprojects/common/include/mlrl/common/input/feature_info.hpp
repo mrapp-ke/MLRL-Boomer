@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/common/binning/feature_binning.hpp"
 #include "mlrl/common/data/types.hpp"
+#include "mlrl/common/input/feature_binning.hpp"
 #include "mlrl/common/input/feature_type.hpp"
 #include "mlrl/common/util/dll_exports.hpp"
 

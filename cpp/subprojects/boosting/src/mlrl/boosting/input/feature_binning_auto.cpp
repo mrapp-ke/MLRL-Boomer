@@ -1,7 +1,7 @@
-#include "mlrl/boosting/binning/feature_binning_auto.hpp"
+#include "mlrl/boosting/input/feature_binning_auto.hpp"
 
-#include "mlrl/common/binning/feature_binning_equal_width.hpp"
-#include "mlrl/common/binning/feature_binning_no.hpp"
+#include "mlrl/common/input/feature_binning_equal_width.hpp"
+#include "mlrl/common/input/feature_binning_no.hpp"
 
 namespace boosting {
 
