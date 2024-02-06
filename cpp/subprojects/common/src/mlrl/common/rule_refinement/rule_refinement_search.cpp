@@ -100,3 +100,23 @@ void RuleRefinementSearch::searchForOrdinalRefinement(const OrdinalFeatureVector
     searchForOrdinalRefinementInternally(featureVector, statisticsSubset, comparator, numExamplesWithNonZeroWeights,
                                          minCoverage, refinement);
 }
+
+void RuleRefinementSearch::searchForBinnedRefinement(const BinnedFeatureVector& featureVector,
+                                                     const MissingFeatureVector& missingFeatureVector,
+                                                     IWeightedStatisticsSubset& statisticsSubset,
+                                                     SingleRefinementComparator& comparator,
+                                                     uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
+                                                     Refinement& refinement) const {
+    addMissingStatistics(statisticsSubset, missingFeatureVector);
+    // TODO Implement
+}
+
+void RuleRefinementSearch::searchForBinnedRefinement(const BinnedFeatureVector& featureVector,
+                                                     const MissingFeatureVector& missingFeatureVector,
+                                                     IWeightedStatisticsSubset& statisticsSubset,
+                                                     FixedRefinementComparator& comparator,
+                                                     uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
+                                                     Refinement& refinement) const {
+    addMissingStatistics(statisticsSubset, missingFeatureVector);
+    // TODO Implement
+}
