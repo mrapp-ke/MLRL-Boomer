@@ -111,6 +111,7 @@ test_files = [
     'test/mlrl/common/input/feature_type_numerical.cpp',
     'test/mlrl/common/input/feature_type_ordinal.cpp',
     'test/mlrl/common/input/feature_vector_decorator_binary.cpp',
+    'test/mlrl/common/input/feature_vector_decorator_binned.cpp',
     'test/mlrl/common/input/feature_vector_decorator_nominal.cpp',
     'test/mlrl/common/input/feature_vector_decorator_numerical.cpp',
     'test/mlrl/common/input/feature_vector_decorator_ordinal.cpp',
