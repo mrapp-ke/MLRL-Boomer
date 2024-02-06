@@ -1,10 +1,124 @@
 #include "mlrl/common/input/feature_binning_equal_frequency.hpp"
 
 #include "feature_binning_nominal.hpp"
+#include "feature_type_numerical_common.hpp"
+#include "feature_vector_decorator_binned.hpp"
 #include "mlrl/common/binning/bin_index_vector_dense.hpp"
 #include "mlrl/common/binning/bin_index_vector_dok.hpp"
 #include "mlrl/common/util/math.hpp"
 #include "mlrl/common/util/validation.hpp"
+
+static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
+  AllocatedMissingFeatureVector&& missingFeatureVector, const NumericalFeatureVector& numericalFeatureVector,
+  uint32 numExamples, float32 binRatio, uint32 minBins, uint32 maxBins) {
+    uint32 numBins = calculateBoundedFraction(numExamples, binRatio, minBins, maxBins);
+
+    if (numBins > 1) {
+        uint32 numElements = numericalFeatureVector.numElements;
+        AllocatedBinnedFeatureVector binnedFeatureVector(numBins, numElements);
+        AllocatedBinnedFeatureVector::threshold_iterator thresholdIterator = binnedFeatureVector.thresholds_begin();
+        AllocatedBinnedFeatureVector::index_iterator indexIterator = binnedFeatureVector.indices;
+        AllocatedBinnedFeatureVector::index_iterator indptrIterator = binnedFeatureVector.indptr;
+        uint32 numElementsPerBin = (uint32) std::ceil((float64) numElements / (float64) numBins);
+        bool sparse = numericalFeatureVector.sparse;
+        float32 sparseValue = numericalFeatureVector.sparseValue;
+        float32 previousValue = sparseValue;
+        uint32 numElementsInCurrentBin = 0;
+        uint32 binIndex = 0;
+        uint32 numIndices = 0;
+        uint32 i = 0;
+
+        // Iterate feature values `f < sparseValue`...
+        for (; i < numElements; i++) {
+            const IndexedValue<float32>& entry = numericalFeatureVector[i];
+            float32 currentValue = entry.value;
+
+            if (currentValue >= sparseValue) {
+                break;
+            }
+
+            // Feature values that are equal to the previous one must not be assigned to a new bin...
+            if (!isEqual(currentValue, previousValue)) {
+                // Check, if the bin is fully occupied...
+                if (numElementsInCurrentBin >= numElementsPerBin) {
+                    thresholdIterator[binIndex] = arithmeticMean(previousValue, currentValue);
+                    indptrIterator[binIndex + 1] = numIndices;
+                    numElementsInCurrentBin = 0;
+                    binIndex++;
+                }
+
+                previousValue = currentValue;
+            }
+
+            indexIterator[numIndices] = entry.index;
+            numElementsInCurrentBin++;
+            numIndices++;
+        }
+
+        // If there are any sparse values, check if they belong to the current one or the next one...
+        if (sparse) {
+            uint32 numSparseValues = numExamples - numElements;
+
+            if (numElementsInCurrentBin >= numElementsPerBin) {
+                // The sparse values belong to the next bin...
+                thresholdIterator[binIndex] = arithmeticMean(previousValue, sparseValue);
+                indptrIterator[binIndex + 1] = numIndices;
+                numElementsInCurrentBin = numSparseValues;
+                binIndex++;
+            } else {
+                // The sparse values belong to the current bin...
+                numIndices -= numElementsInCurrentBin;
+                numElementsInCurrentBin += numSparseValues;
+            }
+
+            // If the current bin is not fully occupied yet, the subsequent values do also belong to it...
+            previousValue = sparseValue;
+
+            // Skip feature values that are equal to the previous one...
+            for (; i < numElements; i++) {
+                if (numericalFeatureVector[i].value != previousValue) {
+                    break;
+                }
+
+                numElementsInCurrentBin++;
+            }
+        }
+
+        // Set the index of the sparse bin...
+        binnedFeatureVector.sparseBinIndex = binIndex;
+
+        // Iterate feature values `f >= sparseValue`...
+        for (; i < numElements; i++) {
+            const IndexedValue<float32>& entry = numericalFeatureVector[i];
+            float32 currentValue = entry.value;
+
+            // Feature values that are equal to the previous one must not be assigned to a new bin...
+            if (!isEqual(currentValue, previousValue)) {
+                // Check, if the bin is fully occupied...
+                if (numElementsInCurrentBin >= numElementsPerBin) {
+                    thresholdIterator[binIndex] = arithmeticMean(previousValue, currentValue);
+                    indptrIterator[binIndex + 1] = numIndices;
+                    numElementsInCurrentBin = 0;
+                    binIndex++;
+                }
+
+                previousValue = currentValue;
+            }
+
+            indexIterator[numIndices] = entry.index;
+            numElementsInCurrentBin++;
+            numIndices++;
+        }
+
+        if (binIndex > 0) {
+            binnedFeatureVector.resize(binIndex + 1, numIndices);
+            return std::make_unique<BinnedFeatureVectorDecorator>(std::move(binnedFeatureVector),
+                                                                  std::move(missingFeatureVector));
+        }
+    }
+
+    return std::make_unique<EqualFeatureVector>();
+}
 
 static inline uint32 getNumBins(FeatureVector& featureVector, bool sparse, float32 binRatio, uint32 minBins,
                                 uint32 maxBins) {
@@ -162,14 +276,45 @@ class EqualFrequencyFeatureBinning final : public IFeatureBinning {
 
         std::unique_ptr<IFeatureVector> createFeatureVector(
           uint32 featureIndex, const FortranContiguousView<const float32>& featureMatrix) const override {
-            // TODO Implement
-            return nullptr;
+            // Create a numerical feature vector from the given feature matrix...
+            const std::unique_ptr<NumericalFeatureVectorDecorator> featureVectorDecoratorPtr =
+              createNumericalFeatureVector(featureIndex, featureMatrix);
+
+            // Check if all feature values are equal...
+            const NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().firstView;
+            uint32 numElements = numericalFeatureVector.numElements;
+
+            if (numElements > 0
+                && !isEqual(numericalFeatureVector[0].value, numericalFeatureVector[numElements - 1].value)) {
+                return createFeatureVectorInternally(std::move(featureVectorDecoratorPtr->getView().secondView),
+                                                     numericalFeatureVector, featureMatrix.numRows, binRatio_, minBins_,
+                                                     maxBins_);
+            }
+
+            return std::make_unique<EqualFeatureVector>();
         }
 
         std::unique_ptr<IFeatureVector> createFeatureVector(
           uint32 featureIndex, const CscView<const float32>& featureMatrix) const override {
-            // TODO Implement
-            return nullptr;
+            // Create a numerical feature vector from the given feature matrix...
+            const std::unique_ptr<NumericalFeatureVectorDecorator> featureVectorDecoratorPtr =
+              createNumericalFeatureVector(featureIndex, featureMatrix);
+
+            // Check if all feature values are equal...
+            NumericalFeatureVector& numericalFeatureVector = featureVectorDecoratorPtr->getView().firstView;
+            uint32 numElements = numericalFeatureVector.numElements;
+            uint32 numExamples = featureMatrix.numRows;
+
+            if (numElements > 0
+                && (numElements < numExamples
+                    || !isEqual(numericalFeatureVector[0].value, numericalFeatureVector[numElements - 1].value))) {
+                numericalFeatureVector.sparse = numElements < numExamples;
+                return createFeatureVectorInternally(std::move(featureVectorDecoratorPtr->getView().secondView),
+                                                     numericalFeatureVector, numExamples, binRatio_, minBins_,
+                                                     maxBins_);
+            }
+
+            return std::make_unique<EqualFeatureVector>();
         }
 };
 
