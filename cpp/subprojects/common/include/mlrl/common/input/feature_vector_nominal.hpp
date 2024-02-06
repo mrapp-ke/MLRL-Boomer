@@ -99,7 +99,7 @@ class MLRLCOMMON_API NominalFeatureVector {
         typedef uint32* index_iterator;
 
         /**
-         * Returns a `value_const_iterator` to the beginning of the noinal values.
+         * Returns a `value_const_iterator` to the beginning of the nominal values.
          *
          * @return A `value_const_iterator` to the beginning
          */
