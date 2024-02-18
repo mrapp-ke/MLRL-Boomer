@@ -148,14 +148,6 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
         EqualWidthFeatureBinning(float32 binRatio, uint32 minBins, uint32 maxBins)
             : binRatio_(binRatio), minBins_(minBins), maxBins_(maxBins) {}
 
-        bool isOrdinal() const override {
-            return false;
-        }
-
-        bool isNominal() const override {
-            return false;
-        }
-
         std::unique_ptr<IFeatureVector> createFeatureVector(
           uint32 featureIndex, const FortranContiguousView<const float32>& featureMatrix) const override {
             // Create a numerical feature vector from the given feature matrix...

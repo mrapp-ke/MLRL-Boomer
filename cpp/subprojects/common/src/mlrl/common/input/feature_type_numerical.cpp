@@ -42,14 +42,6 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
     return std::make_unique<EqualFeatureVector>();
 }
 
-bool NumericalFeatureType::isOrdinal() const {
-    return false;
-}
-
-bool NumericalFeatureType::isNominal() const {
-    return false;
-}
-
 std::unique_ptr<IFeatureVector> NumericalFeatureType::createFeatureVector(
   uint32 featureIndex, const FortranContiguousView<const float32>& featureMatrix) const {
     return createFeatureVectorInternally(featureIndex, featureMatrix);
