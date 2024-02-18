@@ -1,10 +1,138 @@
 #include "mlrl/common/thresholds/thresholds_exact.hpp"
 
+#include "mlrl/common/iterator/binary_forward_iterator.hpp"
 #include "mlrl/common/rule_refinement/rule_refinement_exact.hpp"
 #include "mlrl/common/util/openmp.hpp"
-#include "thresholds_common.hpp"
 
 #include <unordered_map>
+
+template<typename IndexIterator, typename WeightVector>
+static inline Quality evaluateOutOfSampleInternally(IndexIterator indexIterator, uint32 numExamples,
+                                                    const WeightVector& weights, const CoverageMask& coverageMask,
+                                                    const IStatistics& statistics, const IPrediction& prediction) {
+    OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
+      prediction.createStatisticsSubset(statistics, outOfSampleWeights);
+
+    for (uint32 i = 0; i < numExamples; i++) {
+        uint32 exampleIndex = indexIterator[i];
+
+        if (statisticsSubsetPtr->hasNonZeroWeight(exampleIndex) && coverageMask.isCovered(exampleIndex)) {
+            statisticsSubsetPtr->addToSubset(exampleIndex);
+        }
+    }
+
+    return statisticsSubsetPtr->calculateScores();
+}
+
+template<typename WeightVector>
+static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights, const CoverageSet& coverageSet,
+                                                    const IStatistics& statistics, const IPrediction& prediction) {
+    OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
+      prediction.createStatisticsSubset(statistics, outOfSampleWeights);
+    uint32 numCovered = coverageSet.getNumCovered();
+    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
+
+    for (uint32 i = 0; i < numCovered; i++) {
+        uint32 exampleIndex = coverageSetIterator[i];
+
+        if (statisticsSubsetPtr->hasNonZeroWeight(exampleIndex)) {
+            statisticsSubsetPtr->addToSubset(exampleIndex);
+        }
+    }
+
+    return statisticsSubsetPtr->calculateScores();
+}
+
+template<typename WeightVector>
+static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights, const CoverageSet& coverageSet,
+                                                    BiPartition& partition, const IStatistics& statistics,
+                                                    const IPrediction& prediction) {
+    OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
+      prediction.createStatisticsSubset(statistics, outOfSampleWeights);
+    uint32 numCovered = coverageSet.getNumCovered();
+    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
+    partition.sortSecond();
+    auto holdoutSetIterator = make_binary_forward_iterator(partition.second_cbegin(), partition.second_cend());
+    uint32 previousExampleIndex = 0;
+
+    for (uint32 i = 0; i < numCovered; i++) {
+        uint32 exampleIndex = coverageSetIterator[i];
+        std::advance(holdoutSetIterator, exampleIndex - previousExampleIndex);
+
+        if (*holdoutSetIterator && statisticsSubsetPtr->hasNonZeroWeight(exampleIndex)) {
+            statisticsSubsetPtr->addToSubset(exampleIndex);
+        }
+
+        previousExampleIndex = exampleIndex;
+    }
+
+    return statisticsSubsetPtr->calculateScores();
+}
+
+template<typename IndexIterator>
+static inline void recalculatePredictionInternally(IndexIterator indexIterator, uint32 numExamples,
+                                                   const CoverageMask& coverageMask, const IStatistics& statistics,
+                                                   IPrediction& prediction) {
+    EqualWeightVector weights(numExamples);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics, weights);
+
+    for (uint32 i = 0; i < numExamples; i++) {
+        uint32 exampleIndex = indexIterator[i];
+
+        if (coverageMask.isCovered(exampleIndex)) {
+            statisticsSubsetPtr->addToSubset(exampleIndex);
+        }
+    }
+
+    const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
+    scoreVector.updatePrediction(prediction);
+}
+
+static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, const IStatistics& statistics,
+                                                   IPrediction& prediction) {
+    uint32 numStatistics = statistics.getNumStatistics();
+    EqualWeightVector weights(numStatistics);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics, weights);
+    uint32 numCovered = coverageSet.getNumCovered();
+    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
+
+    for (uint32 i = 0; i < numCovered; i++) {
+        uint32 exampleIndex = coverageSetIterator[i];
+        statisticsSubsetPtr->addToSubset(exampleIndex);
+    }
+
+    const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
+    scoreVector.updatePrediction(prediction);
+}
+
+static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, BiPartition& partition,
+                                                   const IStatistics& statistics, IPrediction& prediction) {
+    uint32 numStatistics = statistics.getNumStatistics();
+    EqualWeightVector weights(numStatistics);
+    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics, weights);
+    uint32 numCovered = coverageSet.getNumCovered();
+    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
+    partition.sortSecond();
+    auto holdoutSetIterator = make_binary_forward_iterator(partition.second_cbegin(), partition.second_cend());
+    uint32 previousExampleIndex = 0;
+
+    for (uint32 i = 0; i < numCovered; i++) {
+        uint32 exampleIndex = coverageSetIterator[i];
+        std::advance(holdoutSetIterator, exampleIndex - previousExampleIndex);
+
+        if (*holdoutSetIterator) {
+            statisticsSubsetPtr->addToSubset(exampleIndex);
+        }
+
+        previousExampleIndex = exampleIndex;
+    }
+
+    const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
+    scoreVector.updatePrediction(prediction);
+}
 
 /**
  * An entry that is stored in a cache and contains an unique pointer to a feature vector. The field `numConditions`
@@ -30,7 +158,7 @@ struct FilteredCacheEntry final {
 /**
  * Provides access to all thresholds that result from the feature values of the training examples.
  */
-class ExactThresholds final : public AbstractThresholds {
+class ExactThresholds final : public IThresholds {
     private:
 
         /**
@@ -307,6 +435,24 @@ class ExactThresholds final : public AbstractThresholds {
                 }
         };
 
+        /**
+         * A reference to an object of type `IColumnWiseFeatureMatrix` that provides column-wise access to the feature
+         * values of the training examples.
+         */
+        const IColumnWiseFeatureMatrix& featureMatrix_;
+
+        /**
+         * A reference to an object of type `IFeatureInfo` that provides information about the types of individual
+         * features.
+         */
+        const IFeatureInfo& featureInfo_;
+
+        /**
+         * A reference to an object of type `IStatisticsProvider` that provides access to statistics about the labels of
+         * the training examples.
+         */
+        IStatisticsProvider& statisticsProvider_;
+
         const IFeatureBinningFactory& featureBinningFactory_;
 
         const uint32 numThreads_;
@@ -331,8 +477,12 @@ class ExactThresholds final : public AbstractThresholds {
         ExactThresholds(const IColumnWiseFeatureMatrix& featureMatrix, const IFeatureInfo& featureInfo,
                         IStatisticsProvider& statisticsProvider, const IFeatureBinningFactory& featureBinningFactory,
                         uint32 numThreads)
-            : AbstractThresholds(featureMatrix, featureInfo, statisticsProvider),
+            : featureMatrix_(featureMatrix), featureInfo_(featureInfo), statisticsProvider_(statisticsProvider),
               featureBinningFactory_(featureBinningFactory), numThreads_(numThreads) {}
+
+        IStatisticsProvider& getStatisticsProvider() const override final {
+            return statisticsProvider_;
+        }
 
         std::unique_ptr<IThresholdsSubset> createSubset(const EqualWeightVector& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
