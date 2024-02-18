@@ -130,14 +130,6 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
                                          sparse);
 }
 
-bool OrdinalFeatureType::isOrdinal() const {
-    return true;
-}
-
-bool OrdinalFeatureType::isNominal() const {
-    return false;
-}
-
 std::unique_ptr<IFeatureVector> OrdinalFeatureType::createFeatureVector(
   uint32 featureIndex, const FortranContiguousView<const float32>& featureMatrix) const {
     return createFeatureVectorInternally(featureIndex, featureMatrix);
