@@ -3,10 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/indexed_value.hpp"
-#include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/input/interval.hpp"
-#include "mlrl/common/input/missing_feature_vector.hpp"
 #include "mlrl/common/rule_refinement/rule_refinement_search.hpp"
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 #include "mlrl/common/thresholds/coverage_mask.hpp"
@@ -102,25 +99,4 @@ class IFeatureVector {
          */
         virtual std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                             const CoverageMask& coverageMask) const = 0;
-};
-
-/**
- * An one-dimensional sparse vector that stores the values of training examples for a certain feature, as well as the
- * indices of examples with missing feature values.
- */
-// TODO Remove
-class FeatureVector final
-    : public ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<IndexedValue<float32>>>>,
-      public OldMissingFeatureVector {
-    public:
-
-        /**
-         * @param numElements The number of elements in the vector
-         */
-        FeatureVector(uint32 numElements);
-
-        /**
-         * Sorts the elements in the vector in ascending order based on their values.
-         */
-        void sortByValues();
 };
