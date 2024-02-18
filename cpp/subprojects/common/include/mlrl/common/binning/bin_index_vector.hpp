@@ -7,10 +7,6 @@
 
 #include <memory>
 
-// Forward declarations
-class IHistogram;
-class IWeightedStatistics;
-
 /**
  * Defines an interface for all classes that provide access to the indices of the bins, individual examples have been
  * assigned to.
@@ -40,14 +36,4 @@ class IBinIndexVector {
          * @param binIndex      The index of the bin, the example should be assigned to
          */
         virtual void setBinIndex(uint32 exampleIndex, uint32 binIndex) = 0;
-
-        /**
-         * Creates and returns a new histogram based on given statistics and the indices that are stored by this vector.
-         *
-         * @param statistics    A reference to an object of type `IWeightedStatistics` that should be used
-         * @param numBins       The number of bins in the histogram
-         * @return              An unique pointer to an object of type `IHistogram` that has been created
-         */
-        virtual std::unique_ptr<IHistogram> createHistogram(const IWeightedStatistics& statistics,
-                                                            uint32 numBins) const = 0;
 };
