@@ -19,7 +19,4 @@ class DokBinIndexVector final : public DokVectorDecorator<AllocatedDokVector<uin
         uint32 getBinIndex(uint32 exampleIndex) const override;
 
         void setBinIndex(uint32 exampleIndex, uint32 binIndex) override;
-
-        std::unique_ptr<IHistogram> createHistogram(const IWeightedStatistics& statistics,
-                                                    uint32 numBins) const override;
 };
