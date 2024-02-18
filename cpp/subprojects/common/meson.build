@@ -108,6 +108,7 @@ test_files = [
     'test/mlrl/common/data/vector_bit.cpp',
     'test/mlrl/common/data/vector_dense.cpp',
     'test/mlrl/common/input/feature_binning_equal_frequency.cpp',
+    'test/mlrl/common/input/feature_binning_equal_width.cpp',
     'test/mlrl/common/input/feature_type_nominal.cpp',
     'test/mlrl/common/input/feature_type_numerical.cpp',
     'test/mlrl/common/input/feature_type_ordinal.cpp',
