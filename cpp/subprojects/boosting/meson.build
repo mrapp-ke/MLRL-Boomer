@@ -10,7 +10,6 @@ source_files = [
     'src/mlrl/boosting/data/vector_statistic_example_wise_dense.cpp',
     'src/mlrl/boosting/data/vector_statistic_label_wise_dense.cpp',
     'src/mlrl/boosting/data/vector_statistic_label_wise_sparse.cpp',
-    'src/mlrl/boosting/data/view_histogram_label_wise_sparse.cpp',
     'src/mlrl/boosting/data/view_statistic_example_wise_dense.cpp',
     'src/mlrl/boosting/input/feature_binning_auto.cpp',
     'src/mlrl/boosting/losses/loss_example_wise_logistic.cpp',
