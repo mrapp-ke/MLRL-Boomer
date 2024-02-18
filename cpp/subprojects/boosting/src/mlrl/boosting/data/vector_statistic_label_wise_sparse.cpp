@@ -164,50 +164,6 @@ namespace boosting {
         }
     }
 
-    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseHistogramView& view, uint32 row,
-                                                     const CompleteIndexVector& indices) {
-        SparseLabelWiseHistogramView::weight_const_iterator weightIterator = view.weights_cbegin();
-        float64 binWeight = weightIterator[row];
-
-        if (binWeight != 0) {
-            sumOfWeights_ += binWeight;
-            addToView(this->view.begin(), view.values_cbegin(row), this->getNumElements());
-        }
-    }
-
-    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseHistogramView& view, uint32 row,
-                                                     const PartialIndexVector& indices) {
-        SparseLabelWiseHistogramView::weight_const_iterator weightIterator = view.weights_cbegin();
-        float64 binWeight = weightIterator[row];
-
-        if (binWeight != 0) {
-            sumOfWeights_ += binWeight;
-            addToView(this->view.begin(), view.values_cbegin(row), indices.cbegin(), indices.getNumElements());
-        }
-    }
-
-    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseHistogramView& view, uint32 row,
-                                                     const CompleteIndexVector& indices, float64 weight) {
-        SparseLabelWiseHistogramView::weight_const_iterator weightIterator = view.weights_cbegin();
-        float64 binWeight = weightIterator[row] * weight;
-
-        if (binWeight != 0) {
-            sumOfWeights_ += binWeight;
-            addToView(this->view.begin(), view.values_cbegin(row), this->getNumElements(), weight);
-        }
-    }
-
-    void SparseLabelWiseStatisticVector::addToSubset(const SparseLabelWiseHistogramView& view, uint32 row,
-                                                     const PartialIndexVector& indices, float64 weight) {
-        SparseLabelWiseHistogramView::weight_const_iterator weightIterator = view.weights_cbegin();
-        float64 binWeight = weightIterator[row] * weight;
-
-        if (binWeight != 0) {
-            sumOfWeights_ += binWeight;
-            addToView(this->view.begin(), view.values_cbegin(row), indices.cbegin(), indices.getNumElements(), weight);
-        }
-    }
-
     void SparseLabelWiseStatisticVector::difference(const SparseLabelWiseStatisticVector& first,
                                                     const CompleteIndexVector& firstIndices,
                                                     const SparseLabelWiseStatisticVector& second) {
