@@ -24,7 +24,6 @@ source_files = [
     'src/mlrl/common/input/feature_vector_numerical.cpp',
     'src/mlrl/common/input/label_matrix_c_contiguous.cpp',
     'src/mlrl/common/input/label_matrix_csr.cpp',
-    'src/mlrl/common/input/missing_feature_vector.cpp',
     'src/mlrl/common/model/body_conjunctive.cpp',
     'src/mlrl/common/model/body_empty.cpp',
     'src/mlrl/common/model/condition_list.cpp',
