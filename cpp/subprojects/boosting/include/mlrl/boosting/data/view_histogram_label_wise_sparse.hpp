@@ -16,6 +16,7 @@ namespace boosting {
      * label-wise decomposable loss function and are stored in a pre-allocated histogram in the list of lists (LIL)
      * format.
      */
+    // TODO Remove
     class MLRLBOOSTING_API SparseLabelWiseHistogramView
         : public CompositeMatrix<AllocatedCContiguousView<Triple<float64>>, AllocatedVector<float64>> {
         public:
