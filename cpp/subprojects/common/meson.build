@@ -22,7 +22,6 @@ source_files = [
     'src/mlrl/common/input/feature_type_nominal.cpp',
     'src/mlrl/common/input/feature_type_numerical.cpp',
     'src/mlrl/common/input/feature_type_ordinal.cpp',
-    'src/mlrl/common/input/feature_vector.cpp',
     'src/mlrl/common/input/feature_vector_binned.cpp',
     'src/mlrl/common/input/feature_vector_equal.cpp',
     'src/mlrl/common/input/feature_vector_nominal.cpp',
