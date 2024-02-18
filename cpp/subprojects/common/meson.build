@@ -2,8 +2,6 @@ project('common', 'cpp')
 
 # Source files
 source_files = [
-    'src/mlrl/common/binning/bin_index_vector_dense.cpp',
-    'src/mlrl/common/binning/bin_index_vector_dok.cpp',
     'src/mlrl/common/binning/bin_weight_vector.cpp',
     'src/mlrl/common/data/vector_bit.cpp',
     'src/mlrl/common/indices/index_iterator.cpp',
