@@ -1,6 +1,5 @@
 #include "mlrl/common/thresholds/thresholds_exact.hpp"
 
-#include "mlrl/common/iterator/binary_forward_iterator.hpp"
 #include "mlrl/common/rule_refinement/rule_refinement_exact.hpp"
 #include "mlrl/common/util/openmp.hpp"
 
@@ -25,53 +24,6 @@ static inline Quality evaluateOutOfSampleInternally(IndexIterator indexIterator,
     return statisticsSubsetPtr->calculateScores();
 }
 
-template<typename WeightVector>
-static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights, const CoverageSet& coverageSet,
-                                                    const IStatistics& statistics, const IPrediction& prediction) {
-    OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
-      prediction.createStatisticsSubset(statistics, outOfSampleWeights);
-    uint32 numCovered = coverageSet.getNumCovered();
-    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
-
-    for (uint32 i = 0; i < numCovered; i++) {
-        uint32 exampleIndex = coverageSetIterator[i];
-
-        if (statisticsSubsetPtr->hasNonZeroWeight(exampleIndex)) {
-            statisticsSubsetPtr->addToSubset(exampleIndex);
-        }
-    }
-
-    return statisticsSubsetPtr->calculateScores();
-}
-
-template<typename WeightVector>
-static inline Quality evaluateOutOfSampleInternally(const WeightVector& weights, const CoverageSet& coverageSet,
-                                                    BiPartition& partition, const IStatistics& statistics,
-                                                    const IPrediction& prediction) {
-    OutOfSampleWeightVector<WeightVector> outOfSampleWeights(weights);
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr =
-      prediction.createStatisticsSubset(statistics, outOfSampleWeights);
-    uint32 numCovered = coverageSet.getNumCovered();
-    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
-    partition.sortSecond();
-    auto holdoutSetIterator = make_binary_forward_iterator(partition.second_cbegin(), partition.second_cend());
-    uint32 previousExampleIndex = 0;
-
-    for (uint32 i = 0; i < numCovered; i++) {
-        uint32 exampleIndex = coverageSetIterator[i];
-        std::advance(holdoutSetIterator, exampleIndex - previousExampleIndex);
-
-        if (*holdoutSetIterator && statisticsSubsetPtr->hasNonZeroWeight(exampleIndex)) {
-            statisticsSubsetPtr->addToSubset(exampleIndex);
-        }
-
-        previousExampleIndex = exampleIndex;
-    }
-
-    return statisticsSubsetPtr->calculateScores();
-}
-
 template<typename IndexIterator>
 static inline void recalculatePredictionInternally(IndexIterator indexIterator, uint32 numExamples,
                                                    const CoverageMask& coverageMask, const IStatistics& statistics,
@@ -85,49 +37,6 @@ static inline void recalculatePredictionInternally(IndexIterator indexIterator, 
         if (coverageMask.isCovered(exampleIndex)) {
             statisticsSubsetPtr->addToSubset(exampleIndex);
         }
-    }
-
-    const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
-    scoreVector.updatePrediction(prediction);
-}
-
-static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, const IStatistics& statistics,
-                                                   IPrediction& prediction) {
-    uint32 numStatistics = statistics.getNumStatistics();
-    EqualWeightVector weights(numStatistics);
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics, weights);
-    uint32 numCovered = coverageSet.getNumCovered();
-    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
-
-    for (uint32 i = 0; i < numCovered; i++) {
-        uint32 exampleIndex = coverageSetIterator[i];
-        statisticsSubsetPtr->addToSubset(exampleIndex);
-    }
-
-    const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
-    scoreVector.updatePrediction(prediction);
-}
-
-static inline void recalculatePredictionInternally(const CoverageSet& coverageSet, BiPartition& partition,
-                                                   const IStatistics& statistics, IPrediction& prediction) {
-    uint32 numStatistics = statistics.getNumStatistics();
-    EqualWeightVector weights(numStatistics);
-    std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = prediction.createStatisticsSubset(statistics, weights);
-    uint32 numCovered = coverageSet.getNumCovered();
-    CoverageSet::const_iterator coverageSetIterator = coverageSet.cbegin();
-    partition.sortSecond();
-    auto holdoutSetIterator = make_binary_forward_iterator(partition.second_cbegin(), partition.second_cend());
-    uint32 previousExampleIndex = 0;
-
-    for (uint32 i = 0; i < numCovered; i++) {
-        uint32 exampleIndex = coverageSetIterator[i];
-        std::advance(holdoutSetIterator, exampleIndex - previousExampleIndex);
-
-        if (*holdoutSetIterator) {
-            statisticsSubsetPtr->addToSubset(exampleIndex);
-        }
-
-        previousExampleIndex = exampleIndex;
     }
 
     const IScoreVector& scoreVector = statisticsSubsetPtr->calculateScores();
@@ -361,18 +270,6 @@ class ExactThresholds final : public IThresholds {
                       thresholds_.statisticsProvider_.get(), head);
                 }
 
-                Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
-                                            const IPrediction& head) const override {
-                    return evaluateOutOfSampleInternally(weights_, coverageState, thresholds_.statisticsProvider_.get(),
-                                                         head);
-                }
-
-                Quality evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
-                                            const IPrediction& head) const override {
-                    return evaluateOutOfSampleInternally(weights_, coverageState, partition,
-                                                         thresholds_.statisticsProvider_.get(), head);
-                }
-
                 void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageState,
                                            IPrediction& head) const override {
                     recalculatePredictionInternally<SinglePartition::const_iterator>(
@@ -385,17 +282,6 @@ class ExactThresholds final : public IThresholds {
                     recalculatePredictionInternally<BiPartition::const_iterator>(
                       partition.first_cbegin(), partition.getNumFirst(), coverageState,
                       thresholds_.statisticsProvider_.get(), head);
-                }
-
-                void recalculatePrediction(const SinglePartition& partition, const CoverageSet& coverageState,
-                                           IPrediction& head) const override {
-                    recalculatePredictionInternally(coverageState, thresholds_.statisticsProvider_.get(), head);
-                }
-
-                void recalculatePrediction(BiPartition& partition, const CoverageSet& coverageState,
-                                           IPrediction& head) const override {
-                    recalculatePredictionInternally(coverageState, partition, thresholds_.statisticsProvider_.get(),
-                                                    head);
                 }
 
                 void applyPrediction(const IPrediction& prediction) override {
