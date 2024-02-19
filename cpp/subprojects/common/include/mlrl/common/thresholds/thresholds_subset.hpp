@@ -11,7 +11,6 @@
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
 #include "mlrl/common/thresholds/coverage_mask.hpp"
-#include "mlrl/common/thresholds/coverage_set.hpp"
 
 #include <memory>
 
@@ -118,44 +117,6 @@ class IThresholdsSubset {
                                             const IPrediction& head) const = 0;
 
         /**
-         * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
-         * that do not belong to the current sub-sample and are marked as covered according to a given object of type
-         * `CoverageSet`.
-         *
-         * For calculating the quality, only examples that belong to the training set and are not included in the
-         * current sub-sample, i.e., only examples with zero weights, are considered.
-         *
-         * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
-         *                      of the training examples that belong to the training set
-         * @param coverageState A reference to an object of type `CoverageSet` that keeps track of the examples that are
-         *                      covered by the rule
-         * @param head          A reference to an object of type `IPrediction` that stores the scores that are predicted
-         *                      by the rule
-         * @return              An object of type `Quality` that stores the calculated quality
-         */
-        virtual Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageSet& coverageState,
-                                            const IPrediction& head) const = 0;
-
-        /**
-         * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
-         * that do not belong to the current sub-sample and are marked as covered according to a given object of type
-         * `CoverageSet`.
-         *
-         * For calculating the quality, only examples that belong to the training set and are not included in the
-         * current sub-sample, i.e., only examples with zero weights, are considered.
-         *
-         * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
-         *                      the training examples that belong to the training set
-         * @param coverageState A reference to an object of type `CoverageSet` that keeps track of the examples that are
-         *                      covered by the rule
-         * @param head          A reference to an object of type `IPrediction` that stores the scores that are predicted
-         *                      by the rule
-         * @return              An object of type `Quality` that stores the calculated quality
-         */
-        virtual Quality evaluateOutOfSample(BiPartition& partition, const CoverageSet& coverageState,
-                                            const IPrediction& head) const = 0;
-
-        /**
          * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
          * covered according to a given object of type `CoverageMask`.
          *
@@ -185,38 +146,6 @@ class IThresholdsSubset {
          * @param head          A reference to an object of type `IPrediction` to be updated
          */
         virtual void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageState,
-                                           IPrediction& head) const = 0;
-
-        /**
-         * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
-         * covered according to a given object of type `CoverageSet`.
-         *
-         * When calculating the updated prediction, the weights of the individual training examples are ignored and
-         * equally distributed weights are assumed instead.
-         *
-         * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
-         *                      of the training examples that belong to the training set
-         * @param coverageState A reference to an object of type `CoverageMask` that keeps track of the examples that
-         *                      are covered by the rule
-         * @param head          A reference to an object of type `IPrediction` to be updated
-         */
-        virtual void recalculatePrediction(const SinglePartition& partition, const CoverageSet& coverageState,
-                                           IPrediction& head) const = 0;
-
-        /**
-         * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
-         * covered according to a given object of type `CoverageSet`.
-         *
-         * When calculating the updated prediction, the weights of the individual training examples are ignored and
-         * equally distributed weights are assumed instead.
-         *
-         * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
-         *                      the training examples that belong to the training set
-         * @param coverageState A reference to an object of type `CoverageSet` that keeps track of the examples that are
-         *                      covered by the rule
-         * @param head          A reference to an object of type `IPrediction` to be updated
-         */
-        virtual void recalculatePrediction(BiPartition& partition, const CoverageSet& coverageState,
                                            IPrediction& head) const = 0;
 
         /**

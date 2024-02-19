@@ -88,7 +88,6 @@ source_files = [
     'src/mlrl/common/stopping/stopping_criterion_size.cpp',
     'src/mlrl/common/stopping/stopping_criterion_time.cpp',
     'src/mlrl/common/thresholds/coverage_mask.cpp',
-    'src/mlrl/common/thresholds/coverage_set.cpp',
     'src/mlrl/common/thresholds/thresholds_exact.cpp',
     'src/mlrl/common/info.cpp',
     'src/mlrl/common/learner.cpp'
