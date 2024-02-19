@@ -3,16 +3,15 @@
  */
 #pragma once
 
+#include "mlrl/common/input/feature_vector.hpp"
+#include "mlrl/common/statistics/statistics_weighted_immutable.hpp"
+
 /**
  * Defines an interface for callbacks that may be invoked by subclasses of the the class `IRuleRefinement` in order to
- * retrieve the information that is required to search for potential refinements. It consists of statistics, as well as
- * a vector that allows to determine the thresholds that may be used by potential conditions.
- *
- * @tparam Statistics   The type of the statistics,
- * @tparam Vector       The type of the vector that is returned by the callback
+ * retrieve the information that is required to search for potential refinements. It consists of
+ * `IImmutableWeightedStatistics`, as well as an `IFeatureVector` that allows to determine the thresholds that may be
+ * used by potential conditions.
  */
-// TODO Remove template argument Vector and use IFeatureVector instead
-template<typename Statistics, typename Vector>
 class IRuleRefinementCallback {
     public:
 
@@ -23,24 +22,25 @@ class IRuleRefinementCallback {
             public:
 
                 /**
-                 * @param statistics    A reference to an object of template type `Statistics` that should be used to
-                 *                      search for potential refinements
-                 * @param vector        A reference to an object of template type `Vector` that should be used to search
+                 * @param statistics    A reference to an object of type `IImmutableWeightedStatistics` that should be
+                 *                      used to search for potential refinements
+                 * @param featureVector A reference to an object of type `IFeatureVector` that should be used to search
                  *                      for potential refinements
                  */
-                Result(const Statistics& statistics, const Vector& vector) : statistics(statistics), vector(vector) {}
+                Result(const IImmutableWeightedStatistics& statistics, const IFeatureVector& featureVector)
+                    : statistics(statistics), featureVector(featureVector) {}
 
                 /**
-                 * A reference to an object of template type `Statistics` that should be used to search for potential
-                 * refinements.
+                 * A reference to an object of type `IImmutableWeightedStatistics` that should be used to search for
+                 * potential refinements.
                  */
-                const Statistics& statistics;
+                const IImmutableWeightedStatistics& statistics;
 
                 /**
-                 * A reference to an object of template type `Vector` that should be used to search for potential
+                 * A reference to an object of type `IFeatureVector` that should be used to search for potential
                  * refinements.
                  */
-                const Vector& vector;
+                const IFeatureVector& featureVector;
         };
 
         virtual ~IRuleRefinementCallback() {}
@@ -48,8 +48,8 @@ class IRuleRefinementCallback {
         /**
          * Invokes the callback and returns its result.
          *
-         * @return An object of type `Result` that stores references to the statistics and the vector that may be used
-         *         to search for potential refinements
+         * @return An object of type `Result` that stores references to the statistics and the feature vector that may
+         *         be used to search for potential refinements
          */
         virtual Result get() = 0;
 };
