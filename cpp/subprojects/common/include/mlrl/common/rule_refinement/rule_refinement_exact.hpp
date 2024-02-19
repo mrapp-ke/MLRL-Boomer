@@ -26,9 +26,7 @@ class ExactRuleRefinement final : public IRuleRefinement {
 
         const uint32 numExamplesWithNonZeroWeights_;
 
-        typedef IRuleRefinementCallback<IImmutableWeightedStatistics, IFeatureVector> Callback;
-
-        const std::unique_ptr<Callback> callbackPtr_;
+        const std::unique_ptr<IRuleRefinementCallback> callbackPtr_;
 
     public:
 
@@ -44,7 +42,7 @@ class ExactRuleRefinement final : public IRuleRefinement {
          *                                      potential refinements
          */
         ExactRuleRefinement(const IndexVector& labelIndices, uint32 featureIndex, uint32 numExamplesWithNonZeroWeights,
-                            std::unique_ptr<Callback> callbackPtr);
+                            std::unique_ptr<IRuleRefinementCallback> callbackPtr);
 
         void findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) override;
 

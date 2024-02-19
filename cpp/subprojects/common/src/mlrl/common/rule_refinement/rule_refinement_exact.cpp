@@ -3,14 +3,13 @@
 #include "mlrl/common/rule_refinement/rule_refinement_search.hpp"
 
 template<typename IndexVector, typename Comparator>
-static inline void findRefinementInternally(
-  const IndexVector& labelIndices, uint32 featureIndex, uint32 numExamplesWithNonZeroWeights,
-  IRuleRefinementCallback<IImmutableWeightedStatistics, IFeatureVector>& callback, Comparator& comparator,
-  uint32 minCoverage) {
+static inline void findRefinementInternally(const IndexVector& labelIndices, uint32 featureIndex,
+                                            uint32 numExamplesWithNonZeroWeights, IRuleRefinementCallback& callback,
+                                            Comparator& comparator, uint32 minCoverage) {
     // Invoke the callback...
-    IRuleRefinementCallback<IImmutableWeightedStatistics, IFeatureVector>::Result callbackResult = callback.get();
+    IRuleRefinementCallback::Result callbackResult = callback.get();
     const IImmutableWeightedStatistics& statistics = callbackResult.statistics;
-    const IFeatureVector& featureVector = callbackResult.vector;
+    const IFeatureVector& featureVector = callbackResult.featureVector;
 
     // Create a new, empty subset of the statistics...
     std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(labelIndices);
@@ -25,7 +24,7 @@ static inline void findRefinementInternally(
 template<typename IndexVector>
 ExactRuleRefinement<IndexVector>::ExactRuleRefinement(const IndexVector& labelIndices, uint32 featureIndex,
                                                       uint32 numExamplesWithNonZeroWeights,
-                                                      std::unique_ptr<Callback> callbackPtr)
+                                                      std::unique_ptr<IRuleRefinementCallback> callbackPtr)
     : labelIndices_(labelIndices), featureIndex_(featureIndex),
       numExamplesWithNonZeroWeights_(numExamplesWithNonZeroWeights), callbackPtr_(std::move(callbackPtr)) {}
 
