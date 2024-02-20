@@ -84,7 +84,7 @@ class ExactThresholds final : public IThresholds {
                  * A callback that allows to retrieve feature vectors. If available, the feature vectors are retrieved
                  * from the cache. Otherwise, they are fetched from the feature matrix.
                  */
-                class Callback final : public IRuleRefinementCallback {
+                class Callback final : public IRuleRefinement::ICallback {
                     private:
 
                         ThresholdsSubset& thresholdsSubset_;
