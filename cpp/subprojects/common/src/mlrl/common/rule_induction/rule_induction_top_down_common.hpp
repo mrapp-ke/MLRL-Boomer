@@ -14,7 +14,7 @@
  * @tparam The type of the comparator that allows comparing different refinements and keeping track of the best one(s)
  */
 template<typename RefinementComparator>
-struct RuleRefinement final {
+struct RuleRefinementEntry final {
     public:
 
         /**
@@ -55,31 +55,32 @@ static inline bool findRefinement(RefinementComparator& refinementComparator, IT
 
     // For each feature, create an object of type `RuleRefinement<RefinementComparator>`...
     uint32 numFeatures = featureIndices.getNumElements();
-    RuleRefinement<RefinementComparator>* ruleRefinements = new RuleRefinement<RefinementComparator>[numFeatures];
+    RuleRefinementEntry<RefinementComparator>* ruleRefinementEntries =
+      new RuleRefinementEntry<RefinementComparator>[numFeatures];
 
     for (uint32 i = 0; i < numFeatures; i++) {
         uint32 featureIndex = featureIndices.getIndex(i);
-        RuleRefinement<RefinementComparator>& ruleRefinement = ruleRefinements[i];
-        ruleRefinement.comparatorPtr = std::make_unique<RefinementComparator>(refinementComparator);
-        ruleRefinement.ruleRefinementPtr = labelIndices.createRuleRefinement(thresholdsSubset, featureIndex);
+        RuleRefinementEntry<RefinementComparator>& ruleRefinementEntry = ruleRefinementEntries[i];
+        ruleRefinementEntry.comparatorPtr = std::make_unique<RefinementComparator>(refinementComparator);
+        ruleRefinementEntry.ruleRefinementPtr = labelIndices.createRuleRefinement(thresholdsSubset, featureIndex);
     }
 
     // Search for the best condition among all available features to be added to the current rule...
 #if MULTI_THREADING_SUPPORT_ENABLED
-    #pragma omp parallel for firstprivate(numFeatures) firstprivate(ruleRefinements) firstprivate(minCoverage) \
+    #pragma omp parallel for firstprivate(numFeatures) firstprivate(ruleRefinementEntries) firstprivate(minCoverage) \
       schedule(dynamic) num_threads(numThreads)
 #endif
     for (int64 i = 0; i < numFeatures; i++) {
-        RuleRefinement<RefinementComparator>& ruleRefinement = ruleRefinements[i];
-        ruleRefinement.ruleRefinementPtr->findRefinement(*ruleRefinement.comparatorPtr, minCoverage);
+        RuleRefinementEntry<RefinementComparator>& ruleRefinementEntry = ruleRefinementEntries[i];
+        ruleRefinementEntry.ruleRefinementPtr->findRefinement(*ruleRefinementEntry.comparatorPtr, minCoverage);
     }
 
     // Pick the best refinement among the refinements that have been found for the different features...
     for (uint32 i = 0; i < numFeatures; i++) {
-        RuleRefinement<RefinementComparator>& ruleRefinement = ruleRefinements[i];
-        foundRefinement |= refinementComparator.merge(*ruleRefinement.comparatorPtr);
+        RuleRefinementEntry<RefinementComparator>& ruleRefinementEntry = ruleRefinementEntries[i];
+        foundRefinement |= refinementComparator.merge(*ruleRefinementEntry.comparatorPtr);
     }
 
-    delete[] ruleRefinements;
+    delete[] ruleRefinementEntries;
     return foundRefinement;
 }
