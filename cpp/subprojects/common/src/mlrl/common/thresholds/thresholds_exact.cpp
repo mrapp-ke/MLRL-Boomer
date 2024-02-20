@@ -1,6 +1,6 @@
 #include "mlrl/common/thresholds/thresholds_exact.hpp"
 
-#include "mlrl/common/rule_refinement/rule_refinement_exact.hpp"
+#include "mlrl/common/rule_refinement/rule_refinement_feature_based.hpp"
 #include "mlrl/common/util/openmp.hpp"
 
 #include <unordered_map>
@@ -157,8 +157,8 @@ class ExactThresholds final : public IThresholds {
                 std::unordered_map<uint32, FilteredCacheEntry> cacheFiltered_;
 
                 template<typename IndexVector>
-                std::unique_ptr<IRuleRefinement> createExactRuleRefinement(const IndexVector& labelIndices,
-                                                                           uint32 featureIndex) {
+                std::unique_ptr<IRuleRefinement> createRuleRefinementInternally(const IndexVector& labelIndices,
+                                                                                uint32 featureIndex) {
                     // Retrieve the `FilteredCacheEntry` from the cache, or insert a new one if it does not already
                     // exist...
                     auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry()).first;
@@ -172,8 +172,8 @@ class ExactThresholds final : public IThresholds {
 
                     std::unique_ptr<Callback> callbackPtr =
                       std::make_unique<Callback>(*this, thresholds_.featureInfo_, featureIndex);
-                    return std::make_unique<ExactRuleRefinement<IndexVector>>(labelIndices, featureIndex, numCovered_,
-                                                                              std::move(callbackPtr));
+                    return std::make_unique<FeatureBasedRuleRefinement<IndexVector>>(
+                      labelIndices, featureIndex, numCovered_, std::move(callbackPtr));
                 }
 
             public:
@@ -209,12 +209,12 @@ class ExactThresholds final : public IThresholds {
 
                 std::unique_ptr<IRuleRefinement> createRuleRefinement(const CompleteIndexVector& labelIndices,
                                                                       uint32 featureIndex) override {
-                    return createExactRuleRefinement(labelIndices, featureIndex);
+                    return createRuleRefinementInternally(labelIndices, featureIndex);
                 }
 
                 std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& labelIndices,
                                                                       uint32 featureIndex) override {
-                    return createExactRuleRefinement(labelIndices, featureIndex);
+                    return createRuleRefinementInternally(labelIndices, featureIndex);
                 }
 
                 void filterThresholds(const Condition& condition) override {

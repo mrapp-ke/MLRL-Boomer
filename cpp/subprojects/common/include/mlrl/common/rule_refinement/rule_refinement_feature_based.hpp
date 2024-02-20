@@ -17,7 +17,7 @@
  *                     rule is allowed to predict
  */
 template<typename IndexVector>
-class ExactRuleRefinement final : public IRuleRefinement {
+class FeatureBasedRuleRefinement final : public IRuleRefinement {
     private:
 
         const IndexVector& labelIndices_;
@@ -41,8 +41,9 @@ class ExactRuleRefinement final : public IRuleRefinement {
          *                                      allows to retrieve the information that is required to search for
          *                                      potential refinements
          */
-        ExactRuleRefinement(const IndexVector& labelIndices, uint32 featureIndex, uint32 numExamplesWithNonZeroWeights,
-                            std::unique_ptr<IRuleRefinementCallback> callbackPtr);
+        FeatureBasedRuleRefinement(const IndexVector& labelIndices, uint32 featureIndex,
+                                   uint32 numExamplesWithNonZeroWeights,
+                                   std::unique_ptr<IRuleRefinementCallback> callbackPtr);
 
         void findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) const override;
 
