@@ -5,7 +5,6 @@
 
 #include "mlrl/common/input/feature_info.hpp"
 #include "mlrl/common/input/feature_matrix_column_wise.hpp"
-#include "mlrl/common/input/label_matrix.hpp"
 #include "mlrl/common/sampling/weight_vector_bit.hpp"
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
 #include "mlrl/common/sampling/weight_vector_equal.hpp"
@@ -79,26 +78,4 @@ class IThresholdsFactory {
         virtual std::unique_ptr<IThresholds> create(const IColumnWiseFeatureMatrix& featureMatrix,
                                                     const IFeatureInfo& featureInfo,
                                                     IStatisticsProvider& statisticsProvider) const = 0;
-};
-
-/**
- * Defines an interface for all classes that allow to configure a class that provides access to thresholds that may be
- * used by the conditions of rules.
- */
-class IThresholdsConfig {
-    public:
-
-        virtual ~IThresholdsConfig() {}
-
-        /**
-         * Creates and returns a new object of type `IThresholdsFactory` according to the specified configuration.
-         *
-         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
-         *                      values of the training examples
-         * @param labelMatrix   A reference to an object of type `ILabelMatrix` that provides access to the labels of
-         *                      the training examples
-         * @return              An unique pointer to an object of type `IThresholdsFactory` that has been created
-         */
-        virtual std::unique_ptr<IThresholdsFactory> createThresholdsFactory(const IFeatureMatrix& featureMatrix,
-                                                                            const ILabelMatrix& labelMatrix) const = 0;
 };
