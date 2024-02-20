@@ -4,10 +4,10 @@
 
 template<typename IndexVector, typename Comparator>
 static inline void findRefinementInternally(const IndexVector& labelIndices, uint32 featureIndex,
-                                            uint32 numExamplesWithNonZeroWeights, IRuleRefinementCallback& callback,
+                                            uint32 numExamplesWithNonZeroWeights, IRuleRefinement::ICallback& callback,
                                             Comparator& comparator, uint32 minCoverage) {
     // Invoke the callback...
-    IRuleRefinementCallback::Result callbackResult = callback.get();
+    IRuleRefinement::ICallback::Result callbackResult = callback.get();
     const IImmutableWeightedStatistics& statistics = callbackResult.statistics;
     const IFeatureVector& featureVector = callbackResult.featureVector;
 
@@ -24,7 +24,7 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
 template<typename IndexVector>
 FeatureBasedRuleRefinement<IndexVector>::FeatureBasedRuleRefinement(
   const IndexVector& labelIndices, uint32 featureIndex, uint32 numExamplesWithNonZeroWeights,
-  std::unique_ptr<IRuleRefinementCallback> callbackPtr)
+  std::unique_ptr<IRuleRefinement::ICallback> callbackPtr)
     : labelIndices_(labelIndices), featureIndex_(featureIndex),
       numExamplesWithNonZeroWeights_(numExamplesWithNonZeroWeights), callbackPtr_(std::move(callbackPtr)) {}
 
