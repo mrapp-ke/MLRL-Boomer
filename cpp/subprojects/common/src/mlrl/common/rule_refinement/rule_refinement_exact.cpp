@@ -29,13 +29,14 @@ ExactRuleRefinement<IndexVector>::ExactRuleRefinement(const IndexVector& labelIn
       numExamplesWithNonZeroWeights_(numExamplesWithNonZeroWeights), callbackPtr_(std::move(callbackPtr)) {}
 
 template<typename IndexVector>
-void ExactRuleRefinement<IndexVector>::findRefinement(SingleRefinementComparator& comparator, uint32 minCoverage) {
+void ExactRuleRefinement<IndexVector>::findRefinement(SingleRefinementComparator& comparator,
+                                                      uint32 minCoverage) const {
     findRefinementInternally(labelIndices_, featureIndex_, numExamplesWithNonZeroWeights_, *callbackPtr_, comparator,
                              minCoverage);
 }
 
 template<typename IndexVector>
-void ExactRuleRefinement<IndexVector>::findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) {
+void ExactRuleRefinement<IndexVector>::findRefinement(FixedRefinementComparator& comparator, uint32 minCoverage) const {
     findRefinementInternally(labelIndices_, featureIndex_, numExamplesWithNonZeroWeights_, *callbackPtr_, comparator,
                              minCoverage);
 }
