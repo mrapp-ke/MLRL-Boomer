@@ -28,27 +28,3 @@ void CoverageMask::reset() {
 bool CoverageMask::isCovered(uint32 pos) const {
     return this->view.array[pos] == indicatorValue_;
 }
-
-std::unique_ptr<ICoverageState> CoverageMask::copy() const {
-    return std::make_unique<CoverageMask>(*this);
-}
-
-Quality CoverageMask::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
-                                          const IPrediction& head) const {
-    return thresholdsSubset.evaluateOutOfSample(partition, *this, head);
-}
-
-Quality CoverageMask::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
-                                          const IPrediction& head) const {
-    return thresholdsSubset.evaluateOutOfSample(partition, *this, head);
-}
-
-void CoverageMask::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const SinglePartition& partition,
-                                         IPrediction& head) const {
-    thresholdsSubset.recalculatePrediction(partition, *this, head);
-}
-
-void CoverageMask::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, BiPartition& partition,
-                                         IPrediction& head) const {
-    thresholdsSubset.recalculatePrediction(partition, *this, head);
-}

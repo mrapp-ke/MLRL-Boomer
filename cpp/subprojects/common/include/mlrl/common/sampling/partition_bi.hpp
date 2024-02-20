@@ -126,10 +126,10 @@ class BiPartition final : public VectorDecorator<AllocatedVector<uint32>>,
                                                                   const IRowWiseLabelMatrix& labelMatrix,
                                                                   IStatistics& statistics) override;
 
-        Quality evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
+        Quality evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
                                     const IPrediction& head) override;
 
-        void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
+        void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
                                    IPrediction& head) override;
 
         std::unique_ptr<IMarginalProbabilityCalibrationModel> fitMarginalProbabilityCalibrationModel(

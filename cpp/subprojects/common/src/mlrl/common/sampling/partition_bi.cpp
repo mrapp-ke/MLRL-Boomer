@@ -76,14 +76,14 @@ std::unique_ptr<IInstanceSampling> BiPartition::createInstanceSampling(const IIn
     return labelMatrix.createInstanceSampling(factory, *this, statistics);
 }
 
-Quality BiPartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
+Quality BiPartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
                                          const IPrediction& head) {
-    return coverageState.evaluateOutOfSample(thresholdsSubset, *this, head);
+    return thresholdsSubset.evaluateOutOfSample(*this, coverageMask, head);
 }
 
-void BiPartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const ICoverageState& coverageState,
+void BiPartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
                                         IPrediction& head) {
-    coverageState.recalculatePrediction(thresholdsSubset, *this, head);
+    thresholdsSubset.recalculatePrediction(*this, coverageMask, head);
 }
 
 std::unique_ptr<IMarginalProbabilityCalibrationModel> BiPartition::fitMarginalProbabilityCalibrationModel(
