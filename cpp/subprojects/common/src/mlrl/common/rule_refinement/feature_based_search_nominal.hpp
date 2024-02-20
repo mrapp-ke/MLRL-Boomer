@@ -3,9 +3,9 @@
  */
 #pragma once
 
+#include "feature_based_search_binned_common.hpp"
 #include "mlrl/common/input/feature_vector_nominal.hpp"
 #include "mlrl/common/rule_refinement/refinement.hpp"
-#include "rule_refinement_search_binned_common.hpp"
 
 template<typename Comparator>
 static inline void searchForNominalRefinementInternally(const NominalFeatureVector& featureVector,

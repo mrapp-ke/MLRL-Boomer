@@ -1,12 +1,12 @@
 #include "mlrl/common/input/feature_vector_equal.hpp"
 
-void EqualFeatureVector::searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
+void EqualFeatureVector::searchForRefinement(FeatureBasedSearch& featureBasedSearch,
                                              IWeightedStatisticsSubset& statisticsSubset,
                                              SingleRefinementComparator& comparator,
                                              uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
                                              Refinement& refinement) const {}
 
-void EqualFeatureVector::searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
+void EqualFeatureVector::searchForRefinement(FeatureBasedSearch& featureBasedSearch,
                                              IWeightedStatisticsSubset& statisticsSubset,
                                              FixedRefinementComparator& comparator,
                                              uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,

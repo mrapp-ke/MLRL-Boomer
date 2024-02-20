@@ -1,6 +1,6 @@
 #include "mlrl/common/rule_refinement/rule_refinement_feature_based.hpp"
 
-#include "mlrl/common/rule_refinement/rule_refinement_search.hpp"
+#include "mlrl/common/rule_refinement/feature_based_search.hpp"
 
 template<typename IndexVector, typename Comparator>
 static inline void findRefinementInternally(const IndexVector& labelIndices, uint32 featureIndex,
@@ -14,10 +14,10 @@ static inline void findRefinementInternally(const IndexVector& labelIndices, uin
     // Create a new, empty subset of the statistics...
     std::unique_ptr<IWeightedStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(labelIndices);
 
-    RuleRefinementSearch ruleRefinementSearch;
+    FeatureBasedSearch featureBasedSearch;
     Refinement refinement;
     refinement.featureIndex = featureIndex;
-    featureVector.searchForRefinement(ruleRefinementSearch, *statisticsSubsetPtr, comparator,
+    featureVector.searchForRefinement(featureBasedSearch, *statisticsSubsetPtr, comparator,
                                       numExamplesWithNonZeroWeights, minCoverage, refinement);
 }
 
