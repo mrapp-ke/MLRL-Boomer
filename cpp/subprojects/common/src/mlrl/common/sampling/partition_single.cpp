@@ -31,13 +31,13 @@ std::unique_ptr<IInstanceSampling> SinglePartition::createInstanceSampling(const
 }
 
 Quality SinglePartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
-                                             const ICoverageState& coverageState, const IPrediction& head) {
-    return coverageState.evaluateOutOfSample(thresholdsSubset, *this, head);
+                                             const CoverageMask& coverageMask, const IPrediction& head) {
+    return thresholdsSubset.evaluateOutOfSample(*this, coverageMask, head);
 }
 
-void SinglePartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset,
-                                            const ICoverageState& coverageState, IPrediction& head) {
-    coverageState.recalculatePrediction(thresholdsSubset, *this, head);
+void SinglePartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
+                                            IPrediction& head) {
+    thresholdsSubset.recalculatePrediction(*this, coverageMask, head);
 }
 
 std::unique_ptr<IMarginalProbabilityCalibrationModel> SinglePartition::fitMarginalProbabilityCalibrationModel(

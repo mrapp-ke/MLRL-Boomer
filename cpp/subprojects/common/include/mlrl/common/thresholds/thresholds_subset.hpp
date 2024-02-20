@@ -70,13 +70,13 @@ class IThresholdsSubset {
         virtual void resetThresholds() = 0;
 
         /**
-         * Returns an object of type `ICoverageState` that keeps track of the elements that are covered by the
-         * refinement that has been applied via the function `applyRefinement`.
+         * Returns an object of type `CoverageMask` that keeps track of the elements that are covered by the refinement
+         * that has been applied via the function `applyRefinement`.
          *
-         * @return A reference to an object of type `ICoverageState` that keeps track of the elements that are covered
-         *         by the refinement
+         * @return A reference to an object of type `CoverageMask` that keeps track of the elements that are covered by
+         *         the refinement
          */
-        virtual const ICoverageState& getCoverageState() const = 0;
+        virtual const CoverageMask& getCoverageMask() const = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
@@ -88,13 +88,13 @@ class IThresholdsSubset {
          *
          * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
          *                      of the training examples that belong to the training set
-         * @param coverageState A reference to an object of type `CoverageMask` that keeps track of the examples that
+         * @param coverageMask  A reference to an object of type `CoverageMask` that keeps track of the examples that
          *                      are covered by the rule
          * @param head          A reference to an object of type `IPrediction` that stores the scores that are predicted
          *                      by the rule
          * @return              An object of type `Quality` that stores the calculated quality
          */
-        virtual Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageState,
+        virtual Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageMask,
                                             const IPrediction& head) const = 0;
 
         /**
@@ -107,13 +107,13 @@ class IThresholdsSubset {
          *
          * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
          *                      the training examples that belong to the training set
-         * @param coverageState A reference to an object of type `CoverageMask` that keeps track of the examples that
+         * @param coverageMask  A reference to an object of type `CoverageMask` that keeps track of the examples that
          *                      are covered by the rule
          * @param head          A reference to an object of type `IPrediction` that stores the scores that are predicted
          *                      by the rule
          * @return              An object of type `Quality` that stores the calculated quality
          */
-        virtual Quality evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
+        virtual Quality evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageMask,
                                             const IPrediction& head) const = 0;
 
         /**
@@ -125,11 +125,11 @@ class IThresholdsSubset {
          *
          * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
          *                      of the training examples that belong to the training set
-         * @param coverageState A reference to an object of type `CoverageMask` that keeps track of the examples that
+         * @param coverageMask  A reference to an object of type `CoverageMask` that keeps track of the examples that
          *                      are covered by the rule
          * @param head          A reference to an object of type `IPrediction` to be updated
          */
-        virtual void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageState,
+        virtual void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageMask,
                                            IPrediction& head) const = 0;
 
         /**
@@ -141,11 +141,11 @@ class IThresholdsSubset {
          *
          * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
          *                      the training examples that belong to the training set
-         * @param coverageState A reference to an object of type `CoverageMask` that keeps track of the examples that
+         * @param coverageMask  A reference to an object of type `CoverageMask` that keeps track of the examples that
          *                      are covered by the rule
          * @param head          A reference to an object of type `IPrediction` to be updated
          */
-        virtual void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageState,
+        virtual void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageMask,
                                            IPrediction& head) const = 0;
 
         /**

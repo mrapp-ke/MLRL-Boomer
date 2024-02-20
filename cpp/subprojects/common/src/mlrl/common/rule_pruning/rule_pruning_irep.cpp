@@ -17,19 +17,19 @@ class Irep final : public IRulePruning {
          */
         Irep(RuleCompareFunction ruleCompareFunction) : ruleCompareFunction_(ruleCompareFunction) {}
 
-        std::unique_ptr<ICoverageState> prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
-                                              ConditionList& conditions, const IPrediction& head) const override {
+        std::unique_ptr<CoverageMask> prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
+                                            ConditionList& conditions, const IPrediction& head) const override {
             uint32 numConditions = conditions.getNumConditions();
-            std::unique_ptr<ICoverageState> bestCoverageStatePtr;
+            std::unique_ptr<CoverageMask> bestCoverageMaskPtr;
 
             // Only rules with more than one condition can be pruned...
             if (numConditions > 1) {
                 // Calculate the quality of the original rule on the prune set...
-                const ICoverageState& originalCoverageState = thresholdsSubset.getCoverageState();
-                Quality bestQuality = partition.evaluateOutOfSample(thresholdsSubset, originalCoverageState, head);
+                const CoverageMask& originalCoverageMask = thresholdsSubset.getCoverageMask();
+                Quality bestQuality = partition.evaluateOutOfSample(thresholdsSubset, originalCoverageMask, head);
 
                 // Create a copy of the original coverage mask...
-                bestCoverageStatePtr = originalCoverageState.copy();
+                bestCoverageMaskPtr = std::make_unique<CoverageMask>(originalCoverageMask);
 
                 // Reset the given thresholds...
                 thresholdsSubset.resetThresholds();
@@ -46,15 +46,15 @@ class Irep final : public IRulePruning {
                     thresholdsSubset.filterThresholds(condition);
 
                     // Calculate the quality of a rule that contains the conditions that have been processed so far...
-                    const ICoverageState& coverageState = thresholdsSubset.getCoverageState();
-                    Quality quality = partition.evaluateOutOfSample(thresholdsSubset, coverageState, head);
+                    const CoverageMask& coverageMask = thresholdsSubset.getCoverageMask();
+                    Quality quality = partition.evaluateOutOfSample(thresholdsSubset, coverageMask, head);
 
                     // Check if the quality is better than the best quality seen so far (reaching the same quality with
                     // fewer conditions is considered an improvement)...
                     if (ruleCompareFunction_.compare(quality, bestQuality)
                         || (numPrunedConditions == 0 && !ruleCompareFunction_.compare(bestQuality, quality))) {
                         bestQuality = quality;
-                        bestCoverageStatePtr = coverageState.copy();
+                        bestCoverageMaskPtr = std::make_unique<CoverageMask>(coverageMask);
                         numPrunedConditions = (numConditions - n);
                     }
 
@@ -68,7 +68,7 @@ class Irep final : public IRulePruning {
                 }
             }
 
-            return bestCoverageStatePtr;
+            return bestCoverageMaskPtr;
         }
 };
 

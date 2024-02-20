@@ -252,35 +252,35 @@ class ExactThresholds final : public IThresholds {
                     coverageMask_.reset();
                 }
 
-                const ICoverageState& getCoverageState() const override {
+                const CoverageMask& getCoverageMask() const override {
                     return coverageMask_;
                 }
 
-                Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageState,
+                Quality evaluateOutOfSample(const SinglePartition& partition, const CoverageMask& coverageMask,
                                             const IPrediction& head) const override {
                     return evaluateOutOfSampleInternally<SinglePartition::const_iterator>(
-                      partition.cbegin(), partition.getNumElements(), weights_, coverageState,
+                      partition.cbegin(), partition.getNumElements(), weights_, coverageMask,
                       thresholds_.statisticsProvider_.get(), head);
                 }
 
-                Quality evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageState,
+                Quality evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageMask,
                                             const IPrediction& head) const override {
                     return evaluateOutOfSampleInternally<BiPartition::const_iterator>(
-                      partition.first_cbegin(), partition.getNumFirst(), weights_, coverageState,
+                      partition.first_cbegin(), partition.getNumFirst(), weights_, coverageMask,
                       thresholds_.statisticsProvider_.get(), head);
                 }
 
-                void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageState,
+                void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageMask,
                                            IPrediction& head) const override {
                     recalculatePredictionInternally<SinglePartition::const_iterator>(
-                      partition.cbegin(), partition.getNumElements(), coverageState,
+                      partition.cbegin(), partition.getNumElements(), coverageMask,
                       thresholds_.statisticsProvider_.get(), head);
                 }
 
-                void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageState,
+                void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageMask,
                                            IPrediction& head) const override {
                     recalculatePredictionInternally<BiPartition::const_iterator>(
-                      partition.first_cbegin(), partition.getNumFirst(), coverageState,
+                      partition.first_cbegin(), partition.getNumFirst(), coverageMask,
                       thresholds_.statisticsProvider_.get(), head);
                 }
 

@@ -32,12 +32,12 @@ class IRulePruning {
          *                          existing rule
          * @param head              A reference to an object of type `IPrediction` that stores the scores that are
          *                          predicted by the existing rule
-         * @return                  An unique pointer to an object of type `ICoverageState` that keeps track of the
+         * @return                  An unique pointer to an object of type `CoverageMask` that keeps track of the
          *                          examples that are covered by the pruned rule or a null pointer if the rule was not
          *                          pruned
          */
-        virtual std::unique_ptr<ICoverageState> prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
-                                                      ConditionList& conditions, const IPrediction& head) const = 0;
+        virtual std::unique_ptr<CoverageMask> prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
+                                                    ConditionList& conditions, const IPrediction& head) const = 0;
 };
 
 /**

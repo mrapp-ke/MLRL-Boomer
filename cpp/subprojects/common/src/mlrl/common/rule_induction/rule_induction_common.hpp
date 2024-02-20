@@ -93,15 +93,15 @@ class AbstractRuleInduction : public IRuleInduction {
                     // Prune rule...
                     IStatisticsProvider& statisticsProvider = thresholds.getStatisticsProvider();
                     statisticsProvider.switchToPruningRuleEvaluation();
-                    std::unique_ptr<ICoverageState> coverageStatePtr =
+                    std::unique_ptr<CoverageMask> coverageMaskPtr =
                       rulePruning.prune(*thresholdsSubsetPtr, partition, *conditionListPtr, *headPtr);
                     statisticsProvider.switchToRegularRuleEvaluation();
 
                     // Re-calculate the scores in the head based on the entire training data...
                     if (recalculatePredictions_) {
-                        const ICoverageState& coverageState =
-                          coverageStatePtr ? *coverageStatePtr : thresholdsSubsetPtr->getCoverageState();
-                        partition.recalculatePrediction(*thresholdsSubsetPtr, coverageState, *headPtr);
+                        const CoverageMask& coverageMask =
+                          coverageMaskPtr ? *coverageMaskPtr : thresholdsSubsetPtr->getCoverageMask();
+                        partition.recalculatePrediction(*thresholdsSubsetPtr, coverageMask, *headPtr);
                     }
                 }
 
