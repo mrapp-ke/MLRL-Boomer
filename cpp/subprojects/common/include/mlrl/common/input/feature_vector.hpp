@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/input/interval.hpp"
-#include "mlrl/common/rule_refinement/rule_refinement_search.hpp"
+#include "mlrl/common/rule_refinement/feature_based_search.hpp"
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 #include "mlrl/common/thresholds/coverage_mask.hpp"
 
@@ -20,7 +20,7 @@ class IFeatureVector {
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a this feature vector.
          *
-         * @param ruleRefinementSearch          A reference to an object of type `RuleRefinementSearch` that should be
+         * @param featureBasedSearch            A reference to an object of type `FeatureBasedSearch` that should be
          *                                      used for conducting the search
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
          *                                      provides access to weighted statistics about the labels of the training
@@ -34,7 +34,7 @@ class IFeatureVector {
          * @param refinement                    A reference to an object of type `Refinement` that should be used for
          *                                      storing the properties of the best refinement that is found
          */
-        virtual void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
+        virtual void searchForRefinement(FeatureBasedSearch& featureBasedSearch,
                                          IWeightedStatisticsSubset& statisticsSubset,
                                          SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
                                          uint32 minCoverage, Refinement& refinement) const = 0;
@@ -42,7 +42,7 @@ class IFeatureVector {
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a this feature vector.
          *
-         * @param ruleRefinementSearch          A reference to an object of type `RuleRefinementSearch` that should be
+         * @param featureBasedSearch            A reference to an object of type `FeatureBasedSearch` that should be
          *                                      used for conducting the search
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
          *                                      provides access to weighted statistics about the labels of the training
@@ -56,7 +56,7 @@ class IFeatureVector {
          * @param refinement                    A reference to an object of type `Refinement` that should be used for
          *                                      storing the properties of the best refinement that is found
          */
-        virtual void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
+        virtual void searchForRefinement(FeatureBasedSearch& featureBasedSearch,
                                          IWeightedStatisticsSubset& statisticsSubset,
                                          FixedRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
                                          uint32 minCoverage, Refinement& refinement) const = 0;

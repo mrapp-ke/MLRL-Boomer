@@ -3,9 +3,9 @@
  */
 #pragma once
 
+#include "feature_based_search_binned_common.hpp"
 #include "mlrl/common/input/feature_vector_binary.hpp"
 #include "mlrl/common/rule_refinement/refinement.hpp"
-#include "rule_refinement_search_binned_common.hpp"
 
 template<typename Comparator>
 static inline void searchForBinaryRefinementInternally(const BinaryFeatureVector& featureVector,

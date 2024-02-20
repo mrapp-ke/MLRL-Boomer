@@ -17,7 +17,7 @@
  * Allows to conduct a search for finding the best refinement of an existing rule that can be created from a given
  * feature vector.
  */
-class RuleRefinementSearch final {
+class FeatureBasedSearch final {
     public:
 
         /**

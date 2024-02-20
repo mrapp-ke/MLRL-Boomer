@@ -214,22 +214,20 @@ class BinnedFeatureVectorDecorator final : public AbstractFeatureVectorDecorator
                                            other.getView().firstView.sparseBinIndex),
               AllocatedMissingFeatureVector()) {}
 
-        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
-                                 IWeightedStatisticsSubset& statisticsSubset, SingleRefinementComparator& comparator,
-                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                 Refinement& refinement) const override {
-            ruleRefinementSearch.searchForBinnedRefinement(this->view.firstView, this->view.secondView,
-                                                           statisticsSubset, comparator, numExamplesWithNonZeroWeights,
-                                                           minCoverage, refinement);
+        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
+                                 SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                 uint32 minCoverage, Refinement& refinement) const override {
+            featureBasedSearch.searchForBinnedRefinement(this->view.firstView, this->view.secondView, statisticsSubset,
+                                                         comparator, numExamplesWithNonZeroWeights, minCoverage,
+                                                         refinement);
         }
 
-        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
-                                 IWeightedStatisticsSubset& statisticsSubset, FixedRefinementComparator& comparator,
-                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                 Refinement& refinement) const override {
-            ruleRefinementSearch.searchForBinnedRefinement(this->view.firstView, this->view.secondView,
-                                                           statisticsSubset, comparator, numExamplesWithNonZeroWeights,
-                                                           minCoverage, refinement);
+        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
+                                 FixedRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                 uint32 minCoverage, Refinement& refinement) const override {
+            featureBasedSearch.searchForBinnedRefinement(this->view.firstView, this->view.secondView, statisticsSubset,
+                                                         comparator, numExamplesWithNonZeroWeights, minCoverage,
+                                                         refinement);
         }
 
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
