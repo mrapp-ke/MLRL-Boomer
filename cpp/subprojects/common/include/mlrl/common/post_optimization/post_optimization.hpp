@@ -9,7 +9,7 @@
 #include "mlrl/common/rule_pruning/rule_pruning.hpp"
 #include "mlrl/common/sampling/feature_sampling.hpp"
 #include "mlrl/common/sampling/label_sampling.hpp"
-#include "mlrl/common/thresholds/thresholds.hpp"
+#include "mlrl/common/thresholds/feature_space.hpp"
 
 /**
  * Defines an interface for all classes that allow to optimize a rule-based model globally once it has been learned.
@@ -22,8 +22,8 @@ class IPostOptimizationPhase {
         /**
          * Optimizes a rule-based model globally once it has been learned.
          *
-         * @param thresholds        A reference to an object of type `IThresholds` that provides access to the
-         *                          thresholds that may be used by the conditions of the rule
+         * @param featureSpace      A reference to an object of type `IFeatureSpace` that provides access to the feature
+         *                          space
          * @param ruleInduction     A reference to an object of type `IRuleInduction` that should be used for inducing
          *                          new rules
          * @param partition         A reference to an object of type `IPartition` that provides access to the indices of
@@ -42,10 +42,11 @@ class IPostOptimizationPhase {
          * @param rng               A reference to an object of type `RNG` that implements the random number generator
          *                          to be used
          */
-        virtual void optimizeModel(IThresholds& thresholds, const IRuleInduction& ruleInduction, IPartition& partition,
-                                   ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
-                                   IFeatureSampling& featureSampling, const IRulePruning& rulePruning,
-                                   const IPostProcessor& postProcessor, RNG& rng) const = 0;
+        virtual void optimizeModel(IFeatureSpace& featureSpace, const IRuleInduction& ruleInduction,
+                                   IPartition& partition, ILabelSampling& labelSampling,
+                                   IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
+                                   const IRulePruning& rulePruning, const IPostProcessor& postProcessor,
+                                   RNG& rng) const = 0;
 };
 
 /**

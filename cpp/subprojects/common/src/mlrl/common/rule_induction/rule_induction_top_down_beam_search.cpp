@@ -312,13 +312,13 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
     protected:
 
-        std::unique_ptr<IThresholdsSubset> growRule(IThresholds& thresholds, const IIndexVector& labelIndices,
+        std::unique_ptr<IThresholdsSubset> growRule(IFeatureSpace& featureSpace, const IIndexVector& labelIndices,
                                                     const IWeightVector& weights, IPartition& partition,
                                                     IFeatureSampling& featureSampling, RNG& rng,
                                                     std::unique_ptr<ConditionList>& conditionListPtr,
                                                     std::unique_ptr<IEvaluatedPrediction>& headPtr) const override {
             // Create a new subset of the given thresholds...
-            std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = weights.createThresholdsSubset(thresholds);
+            std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = weights.createThresholdsSubset(featureSpace);
 
             // Sample features...
             const IIndexVector& sampledFeatureIndices = featureSampling.sample(rng);

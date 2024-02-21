@@ -67,7 +67,7 @@ struct FilteredCacheEntry final {
 /**
  * Provides access to all thresholds that result from the feature values of the training examples.
  */
-class ExactThresholds final : public IThresholds {
+class ExactThresholds final : public IFeatureSpace {
     private:
 
         /**
@@ -321,22 +321,10 @@ class ExactThresholds final : public IThresholds {
                 }
         };
 
-        /**
-         * A reference to an object of type `IColumnWiseFeatureMatrix` that provides column-wise access to the feature
-         * values of the training examples.
-         */
         const IColumnWiseFeatureMatrix& featureMatrix_;
 
-        /**
-         * A reference to an object of type `IFeatureInfo` that provides information about the types of individual
-         * features.
-         */
         const IFeatureInfo& featureInfo_;
 
-        /**
-         * A reference to an object of type `IStatisticsProvider` that provides access to statistics about the labels of
-         * the training examples.
-         */
         IStatisticsProvider& statisticsProvider_;
 
         const IFeatureBinningFactory& featureBinningFactory_;
@@ -396,9 +384,9 @@ ExactThresholdsFactory::ExactThresholdsFactory(std::unique_ptr<IFeatureBinningFa
                                                uint32 numThreads)
     : featureBinningFactoryPtr_(std::move(featureBinningFactoryPtr)), numThreads_(numThreads) {}
 
-std::unique_ptr<IThresholds> ExactThresholdsFactory::create(const IColumnWiseFeatureMatrix& featureMatrix,
-                                                            const IFeatureInfo& featureInfo,
-                                                            IStatisticsProvider& statisticsProvider) const {
+std::unique_ptr<IFeatureSpace> ExactThresholdsFactory::create(const IColumnWiseFeatureMatrix& featureMatrix,
+                                                              const IFeatureInfo& featureInfo,
+                                                              IStatisticsProvider& statisticsProvider) const {
     return std::make_unique<ExactThresholds>(featureMatrix, featureInfo, statisticsProvider, *featureBinningFactoryPtr_,
                                              numThreads_);
 }

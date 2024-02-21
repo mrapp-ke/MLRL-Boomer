@@ -56,16 +56,15 @@ class IThresholdsSubset {
                                                                       uint32 featureIndex) = 0;
 
         /**
-         * Filters the thresholds such that only those thresholds, which correspond to the instance space that is
-         * covered by specific condition of a rule, are included.
+         * Filters the subspace such that it only includes those examples that are covered by specific condition of a
+         * rule.
          *
          * @param condition A reference to an object of type `Condition` that stores the properties of the condition
          */
         virtual void filterThresholds(const Condition& condition) = 0;
 
         /**
-         * Resets the filtered thresholds. This reverts the effects of all previous calls to the function
-         * `filterThresholds`.
+         * Resets the subspace. This reverts the effects of all previous calls to the function `filterThresholds`.
          */
         virtual void resetThresholds() = 0;
 

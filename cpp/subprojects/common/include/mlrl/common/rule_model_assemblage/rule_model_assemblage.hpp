@@ -12,7 +12,7 @@
 #include "mlrl/common/sampling/partition_sampling.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
 #include "mlrl/common/stopping/stopping_criterion.hpp"
-#include "mlrl/common/thresholds/thresholds.hpp"
+#include "mlrl/common/thresholds/feature_space.hpp"
 
 /**
  * Defines an interface for all classes that implement an algorithm for the induction of several rules that will be
@@ -42,8 +42,8 @@ class IRuleModelAssemblage {
          *                              features that may be used by the conditions of a rule
          * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
          *                              the statistics which serve as the basis for learning rules
-         * @param thresholds            A reference to an object of type `IThresholds` that provides access to the
-         *                              thresholds that may be used by the conditions of rules
+         * @param featureSpace          A reference to an object of type `IFeatureSpace` that provides access to the
+         *                              feature space
          * @param rng                   A reference to an object of type `RNG` that implements the random number
          *                              generator to be used
          * @param modelBuilder          A reference to an object of type `IModelBuilder`, the rules should be added to
@@ -52,7 +52,7 @@ class IRuleModelAssemblage {
                                  const IPostProcessor& postProcessor, IPartition& partition,
                                  ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
                                  IFeatureSampling& featureSampling, IStatisticsProvider& statisticsProvider,
-                                 IThresholds& thresholds, IModelBuilder& modelBuilder, RNG& rng) const = 0;
+                                 IFeatureSpace& featureSpace, IModelBuilder& modelBuilder, RNG& rng) const = 0;
 };
 
 /**

@@ -23,8 +23,8 @@ class IRulePruning {
          * prune set.
          *
          * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset`, which contains the thresholds
-         *                          that correspond to the subspace of the instance space that is covered by the
-         *                          existing rule
+         *                          that correspond to the subspace of the feature space that is covered by the existing
+         *                          rule
          * @param partition         A reference to an object of type `IPartition` that provides access to the indices of
          *                          the training examples that belong to the training set and the holdout set,
          *                          respectively
