@@ -37,15 +37,15 @@ class AbstractRuleInduction : public IRuleInduction {
          *                          store the conditions of the rule
          * @param headPtr           A reference to an unique pointer of type `IEvaluatedPrediction` that should be used
          *                          to store the head of the rule
-         * @return                  An unique pointer to an object of type `IThresholdsSubset` that has been used to
+         * @return                  An unique pointer to an object of type `IFeatureSubspace` that has been used to
          *                          grow the rule
          */
-        virtual std::unique_ptr<IThresholdsSubset> growRule(IFeatureSpace& featureSpace,
-                                                            const IIndexVector& labelIndices,
-                                                            const IWeightVector& weights, IPartition& partition,
-                                                            IFeatureSampling& featureSampling, RNG& rng,
-                                                            std::unique_ptr<ConditionList>& conditionListPtr,
-                                                            std::unique_ptr<IEvaluatedPrediction>& headPtr) const = 0;
+        virtual std::unique_ptr<IFeatureSubspace> growRule(IFeatureSpace& featureSpace,
+                                                           const IIndexVector& labelIndices,
+                                                           const IWeightVector& weights, IPartition& partition,
+                                                           IFeatureSampling& featureSampling, RNG& rng,
+                                                           std::unique_ptr<ConditionList>& conditionListPtr,
+                                                           std::unique_ptr<IEvaluatedPrediction>& headPtr) const = 0;
 
     public:
 
@@ -86,7 +86,7 @@ class AbstractRuleInduction : public IRuleInduction {
                         IModelBuilder& modelBuilder) const override final {
             std::unique_ptr<ConditionList> conditionListPtr;
             std::unique_ptr<IEvaluatedPrediction> headPtr;
-            std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = this->growRule(
+            std::unique_ptr<IFeatureSubspace> featureSubspacePtr = this->growRule(
               featureSpace, labelIndices, weights, partition, featureSampling, rng, conditionListPtr, headPtr);
 
             if (headPtr) {
@@ -95,14 +95,14 @@ class AbstractRuleInduction : public IRuleInduction {
                     IStatisticsProvider& statisticsProvider = featureSpace.getStatisticsProvider();
                     statisticsProvider.switchToPruningRuleEvaluation();
                     std::unique_ptr<CoverageMask> coverageMaskPtr =
-                      rulePruning.prune(*thresholdsSubsetPtr, partition, *conditionListPtr, *headPtr);
+                      rulePruning.prune(*featureSubspacePtr, partition, *conditionListPtr, *headPtr);
                     statisticsProvider.switchToRegularRuleEvaluation();
 
                     // Re-calculate the scores in the head based on the entire training data...
                     if (recalculatePredictions_) {
                         const CoverageMask& coverageMask =
-                          coverageMaskPtr ? *coverageMaskPtr : thresholdsSubsetPtr->getCoverageMask();
-                        partition.recalculatePrediction(*thresholdsSubsetPtr, coverageMask, *headPtr);
+                          coverageMaskPtr ? *coverageMaskPtr : featureSubspacePtr->getCoverageMask();
+                        partition.recalculatePrediction(*featureSubspacePtr, coverageMask, *headPtr);
                     }
                 }
 
@@ -110,7 +110,7 @@ class AbstractRuleInduction : public IRuleInduction {
                 headPtr->postProcess(postProcessor);
 
                 // Update the statistics by applying the predictions of the new rule...
-                thresholdsSubsetPtr->applyPrediction(*headPtr);
+                featureSubspacePtr->applyPrediction(*headPtr);
 
                 // Add the induced rule to the model...
                 modelBuilder.addRule(conditionListPtr, headPtr);

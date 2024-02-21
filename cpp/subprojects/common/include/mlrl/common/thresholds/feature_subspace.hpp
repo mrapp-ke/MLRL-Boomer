@@ -15,25 +15,24 @@
 #include <memory>
 
 /**
- * Defines an interface for all classes that provide access a subset of thresholds that may be used by the conditions of
- * a rule with arbitrary body. The thresholds may include only those that correspond to the subspace of the instance
- * space that is covered by the rule.
+ * Defines an interface for all classes that provide access a subspace of the feature space that includes the training
+ * examples covered by a rule.
  */
-class IThresholdsSubset {
+class IFeatureSubspace {
     public:
 
-        virtual ~IThresholdsSubset() {}
+        virtual ~IFeatureSubspace() {}
 
         /**
          * Creates and returns a copy of this object.
          *
-         * @return An unique pointer to an object of type `IThresholdsSubset` that has been created
+         * @return An unique pointer to an object of type `IFeatureSubspace` that has been created
          */
-        virtual std::unique_ptr<IThresholdsSubset> copy() const = 0;
+        virtual std::unique_ptr<IFeatureSubspace> copy() const = 0;
 
         /**
          * Creates and returns a new instance of the type `IRuleRefinement` that allows to find the best refinement of
-         * an existing rule that predicts for all available labels.
+         * a rule that covers all examples included in this subspace and predicts for all available labels.
          *
          * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
          *                      indices of the labels for which the existing rule predicts
@@ -45,7 +44,7 @@ class IThresholdsSubset {
 
         /**
          * Creates and returns a new instance of the type `IRuleRefinement` that allows to find the best refinement of
-         * an existing rule that predicts for a subset of the available labels.
+         * a rule that covers all examples included in this subspace and predicts for a subset of the available labels.
          *
          * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
          *                      indices of the labels for which the existing rule predicts
@@ -56,34 +55,34 @@ class IThresholdsSubset {
                                                                       uint32 featureIndex) = 0;
 
         /**
-         * Filters the subspace such that it only includes those examples that are covered by specific condition of a
-         * rule.
+         * Filters the subspace such that it only includes those training examples that statisfy a specific condition.
          *
-         * @param condition A reference to an object of type `Condition` that stores the properties of the condition
+         * @param condition A reference to an object of type `Condition`
          */
-        virtual void filterThresholds(const Condition& condition) = 0;
+        virtual void filterSubspace(const Condition& condition) = 0;
 
         /**
-         * Resets the subspace. This reverts the effects of all previous calls to the function `filterThresholds`.
+         * Resets the subspace. This reverts the effects of all previous calls to the function `filterSubspace`.
          */
-        virtual void resetThresholds() = 0;
+        virtual void resetSubspace() = 0;
 
         /**
-         * Returns an object of type `CoverageMask` that keeps track of the elements that are covered by the refinement
-         * that has been applied via the function `applyRefinement`.
+         * Returns an object of type `CoverageMask` that keeps track of the training examples that are included in this
+         * subspace.
          *
-         * @return A reference to an object of type `CoverageMask` that keeps track of the elements that are covered by
-         *         the refinement
+         * @return A reference to an object of type `CoverageMask` that keeps track of the training examples that are
+         *         included in this subspace
          */
         virtual const CoverageMask& getCoverageMask() const = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
-         * that do not belong to the current sub-sample and are marked as covered according to a given object of type
+         * that do not belong to the current instance sub-sample and are marked as covered according to a given
          * `CoverageMask`.
          *
          * For calculating the quality, only examples that belong to the training set and are not included in the
-         * current sub-sample, i.e., only examples with zero weights, are considered.
+         * current instance sub-sample, i.e., only examples with zero weights, are considered and assigned equally
+         * distributed weights.
          *
          * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
          *                      of the training examples that belong to the training set
@@ -98,11 +97,12 @@ class IThresholdsSubset {
 
         /**
          * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples
-         * that do not belong to the current sub-sample and are marked as covered according to a given object of type
+         * that do not belong to the current instance sub-sample and are marked as covered according to a given
          * `CoverageMask`.
          *
          * For calculating the quality, only examples that belong to the training set and are not included in the
-         * current sub-sample, i.e., only examples with zero weights, are considered.
+         * current instance sub-sample, i.e., only examples with zero weights, are considered and assigned equally
+         * distributed weights.
          *
          * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
          *                      the training examples that belong to the training set
@@ -117,10 +117,10 @@ class IThresholdsSubset {
 
         /**
          * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
-         * covered according to a given object of type `CoverageMask`.
+         * covered according to a given `CoverageMask`.
          *
          * When calculating the updated prediction, the weights of the individual training examples are ignored and
-         * equally distributed weights are assumed instead.
+         * equally distributed weights are used instead.
          *
          * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
          *                      of the training examples that belong to the training set
@@ -133,10 +133,10 @@ class IThresholdsSubset {
 
         /**
          * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
-         * covered according to a given object of type `CoverageMask`.
+         * covered according to a given `CoverageMask`.
          *
          * When calculating the updated prediction, the weights of the individual training examples are ignored and
-         * equally distributed weights are assumed instead.
+         * equally distributed weights are used instead.
          *
          * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
          *                      the training examples that belong to the training set
@@ -148,14 +148,16 @@ class IThresholdsSubset {
                                            IPrediction& head) const = 0;
 
         /**
-         * Updates the statistics that correspond to the current subset based on the prediction of a rule.
+         * Updates the statistics that correspond to the training examples included in this subspace based on the
+         * prediction of a rule.
          *
          * @param prediction A reference to an object of type `IPrediction` that stores the prediction of the rule
          */
         virtual void applyPrediction(const IPrediction& prediction) = 0;
 
         /**
-         * Reverts the statistics that correspond to the current subset based on the predictions of a rule.
+         * Reverts the statistics that correspond to the training examples included in this subspace based on the
+         * predictions of a rule.
          *
          * @param prediction A reference to an object of type `IPrediction` that stores the prediction of the rule
          */

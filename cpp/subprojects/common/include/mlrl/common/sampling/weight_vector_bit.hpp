@@ -68,5 +68,5 @@ class BitWeightVector final : public IWeightVector {
 
         bool hasZeroWeights() const override;
 
-        std::unique_ptr<IThresholdsSubset> createThresholdsSubset(IFeatureSpace& featureSpace) const override;
+        std::unique_ptr<IFeatureSubspace> createFeatureSubspace(IFeatureSpace& featureSpace) const override;
 };

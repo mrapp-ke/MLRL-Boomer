@@ -9,7 +9,7 @@
 
 /**
  * A single entry of a beam, corresponding to a rule that may be further refined. It stores the conditions and the head
- * of the current rule, as well as an object of type `IThresholdsSubset` that is required to search for potential
+ * of the current rule, as well as an object of type `IFeatureSubspace` that is required to search for potential
  * refinements of the rule and an `IIndexVector` that provides access to the indices of the labels for which these
  * refinements may predict.
  */
@@ -28,10 +28,10 @@ struct BeamEntry final {
         std::unique_ptr<IEvaluatedPrediction> headPtr;
 
         /**
-         * An unique pointer to an object of type `IThresholdsSubset` that may be used to search for potential
+         * An unique pointer to an object of type `IFeatureSubspace` that may be used to search for potential
          * refinements of the rule.
          */
-        std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr;
+        std::unique_ptr<IFeatureSubspace> featureSubspacePtr;
 
         /**
          * A pointer to an object of type `IIndexVector` that provides access to the indices of the labels  for which
@@ -41,10 +41,10 @@ struct BeamEntry final {
 };
 
 static inline void initializeEntry(BeamEntry& entry, Refinement& refinement,
-                                   std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr,
+                                   std::unique_ptr<IFeatureSubspace> featureSubspacePtr,
                                    const IIndexVector& labelIndices, bool keepHead) {
-    thresholdsSubsetPtr->filterThresholds(refinement);
-    entry.thresholdsSubsetPtr = std::move(thresholdsSubsetPtr);
+    featureSubspacePtr->filterSubspace(refinement);
+    entry.featureSubspacePtr = std::move(featureSubspacePtr);
     entry.conditionListPtr = std::make_unique<ConditionList>();
     entry.conditionListPtr->addCondition(refinement);
     entry.headPtr = std::move(refinement.headPtr);
@@ -52,10 +52,10 @@ static inline void initializeEntry(BeamEntry& entry, Refinement& refinement,
 }
 
 static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry, Refinement& refinement,
-                             std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr,
+                             std::unique_ptr<IFeatureSubspace> featureSubspacePtr,
                              std::unique_ptr<ConditionList> conditionListPtr, bool keepHead, uint32 minCoverage) {
-    thresholdsSubsetPtr->filterThresholds(refinement);
-    newEntry.thresholdsSubsetPtr = std::move(thresholdsSubsetPtr);
+    featureSubspacePtr->filterSubspace(refinement);
+    newEntry.featureSubspacePtr = std::move(featureSubspacePtr);
     newEntry.conditionListPtr = std::move(conditionListPtr);
     newEntry.conditionListPtr->addCondition(refinement);
     newEntry.headPtr = std::move(refinement.headPtr);
@@ -68,7 +68,7 @@ static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry, Refinemen
 }
 
 static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry) {
-    newEntry.thresholdsSubsetPtr = std::move(oldEntry.thresholdsSubsetPtr);
+    newEntry.featureSubspacePtr = std::move(oldEntry.featureSubspacePtr);
     newEntry.conditionListPtr = std::move(oldEntry.conditionListPtr);
     newEntry.headPtr = std::move(oldEntry.headPtr);
     newEntry.labelIndices = nullptr;
@@ -107,14 +107,14 @@ class Beam final {
         /**
          * @param refinementComparator  A reference to an object of type `FixedRefinementComparator` that keeps track of
          *                              existing refinements of rules
-         * @param thresholdsSubsetPtr   An unique pointer to an object of type `IThresholdsSubset` that has been used to
+         * @param featureSubspacePtr    An unique pointer to an object of type `IFeatureSubspace` that has been used to
          *                              find the existing refinements of rules
          * @param labelIndices          A reference to an object of type `IIndexVector` that provides access to the
          *                              indices of the labels for which further refinement may predict
          * @param keepHeads             True, if further refinements should predict for the same labels as before, false
          *                              otherwise
          */
-        Beam(FixedRefinementComparator& refinementComparator, std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr,
+        Beam(FixedRefinementComparator& refinementComparator, std::unique_ptr<IFeatureSubspace> featureSubspacePtr,
              const IIndexVector& labelIndices, bool keepHeads)
             : Beam(refinementComparator.getNumElements()) {
             FixedRefinementComparator::iterator iterator = refinementComparator.begin();
@@ -123,13 +123,13 @@ class Beam final {
             for (; i < numEntries_ - 1; i++) {
                 Refinement& refinement = iterator[i];
                 BeamEntry& entry = entries_[i];
-                initializeEntry(entry, refinement, thresholdsSubsetPtr->copy(), labelIndices, keepHeads);
+                initializeEntry(entry, refinement, featureSubspacePtr->copy(), labelIndices, keepHeads);
                 order_.push_back(entry);
             }
 
             Refinement& refinement = iterator[i];
             BeamEntry& entry = entries_[i];
-            initializeEntry(entry, refinement, std::move(thresholdsSubsetPtr), labelIndices, keepHeads);
+            initializeEntry(entry, refinement, std::move(featureSubspacePtr), labelIndices, keepHeads);
             order_.push_back(entry);
         }
 
@@ -181,7 +181,7 @@ class Beam final {
 
                     // Search for refinements of the existing beam entry...
                     FixedRefinementComparator refinementComparator(ruleCompareFunction, beamWidth, minQuality);
-                    foundRefinement = findRefinement(refinementComparator, *entry.thresholdsSubsetPtr, featureIndices,
+                    foundRefinement = findRefinement(refinementComparator, *entry.featureSubspacePtr, featureIndices,
                                                      *entry.labelIndices, minCoverage, numThreads);
 
                     if (foundRefinement) {
@@ -191,39 +191,39 @@ class Beam final {
                         uint32 i = 0;
 
                         // Include all refinements, except for the last one, in the new beam. The corresponding
-                        // `IThresholdsSubset` and `ConditionList` are copied...
+                        // `IFeatureSubspace` and `ConditionList` are copied...
                         for (; i < numRefinements - 1; i++) {
                             Refinement& refinement = iterator[i];
 
                             if (n < beamWidth) {
                                 BeamEntry& newEntry = newEntries[n];
-                                copyEntry(newEntry, entry, refinement, entry.thresholdsSubsetPtr->copy(),
+                                copyEntry(newEntry, entry, refinement, entry.featureSubspacePtr->copy(),
                                           std::make_unique<ConditionList>(*entry.conditionListPtr), keepHeads,
                                           minCoverage);
                                 newOrder.push_back(newEntry);
                                 n++;
                             } else {
                                 BeamEntry& newEntry = newOrder.back();
-                                copyEntry(newEntry, entry, refinement, entry.thresholdsSubsetPtr->copy(),
+                                copyEntry(newEntry, entry, refinement, entry.featureSubspacePtr->copy(),
                                           std::make_unique<ConditionList>(*entry.conditionListPtr), keepHeads,
                                           minCoverage);
                                 minQuality = updateOrder(ruleCompareFunction, newOrder);
                             }
                         }
 
-                        // Include the last refinement in the beam. The corresponding `IThresholdsSubset` and
+                        // Include the last refinement in the beam. The corresponding `IFeatureSubspace` and
                         // `ConditionList` are reused...
                         Refinement& refinement = iterator[i];
 
                         if (n < beamWidth) {
                             BeamEntry& newEntry = newEntries[n];
-                            copyEntry(newEntry, entry, refinement, std::move(entry.thresholdsSubsetPtr),
+                            copyEntry(newEntry, entry, refinement, std::move(entry.featureSubspacePtr),
                                       std::move(entry.conditionListPtr), keepHeads, minCoverage);
                             newOrder.push_back(newEntry);
                             n++;
                         } else {
                             BeamEntry& newEntry = newOrder.back();
-                            copyEntry(newEntry, entry, refinement, std::move(entry.thresholdsSubsetPtr),
+                            copyEntry(newEntry, entry, refinement, std::move(entry.featureSubspacePtr),
                                       std::move(entry.conditionListPtr), keepHeads, minCoverage);
                             minQuality = updateOrder(ruleCompareFunction, newOrder);
                         }
@@ -312,26 +312,26 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
     protected:
 
-        std::unique_ptr<IThresholdsSubset> growRule(IFeatureSpace& featureSpace, const IIndexVector& labelIndices,
-                                                    const IWeightVector& weights, IPartition& partition,
-                                                    IFeatureSampling& featureSampling, RNG& rng,
-                                                    std::unique_ptr<ConditionList>& conditionListPtr,
-                                                    std::unique_ptr<IEvaluatedPrediction>& headPtr) const override {
+        std::unique_ptr<IFeatureSubspace> growRule(IFeatureSpace& featureSpace, const IIndexVector& labelIndices,
+                                                   const IWeightVector& weights, IPartition& partition,
+                                                   IFeatureSampling& featureSampling, RNG& rng,
+                                                   std::unique_ptr<ConditionList>& conditionListPtr,
+                                                   std::unique_ptr<IEvaluatedPrediction>& headPtr) const override {
             // Create a new subset of the given thresholds...
-            std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = weights.createThresholdsSubset(featureSpace);
+            std::unique_ptr<IFeatureSubspace> featureSubspacePtr = weights.createFeatureSubspace(featureSpace);
 
             // Sample features...
             const IIndexVector& sampledFeatureIndices = featureSampling.sample(rng);
 
             // Search for the best refinements using a single condition...
             FixedRefinementComparator refinementComparator(ruleCompareFunction_, beamWidth_);
-            bool foundRefinement = findRefinement(refinementComparator, *thresholdsSubsetPtr, sampledFeatureIndices,
+            bool foundRefinement = findRefinement(refinementComparator, *featureSubspacePtr, sampledFeatureIndices,
                                                   labelIndices, minCoverage_, numThreads_);
 
             if (foundRefinement) {
                 bool keepHeads = maxHeadRefinements_ == 1;
                 std::unique_ptr<Beam> beamPtr =
-                  std::make_unique<Beam>(refinementComparator, std::move(thresholdsSubsetPtr), labelIndices, keepHeads);
+                  std::make_unique<Beam>(refinementComparator, std::move(featureSubspacePtr), labelIndices, keepHeads);
                 uint32 searchDepth = 1;
 
                 while (foundRefinement && (maxConditions_ == 0 || searchDepth < maxConditions_)) {
@@ -351,10 +351,10 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
                 BeamEntry& entry = beamPtr->getBestEntry();
                 conditionListPtr = std::move(entry.conditionListPtr);
                 headPtr = std::move(entry.headPtr);
-                return std::move(entry.thresholdsSubsetPtr);
+                return std::move(entry.featureSubspacePtr);
             }
 
-            return thresholdsSubsetPtr;
+            return featureSubspacePtr;
         }
 };
 

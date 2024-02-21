@@ -4,7 +4,7 @@
 #include "mlrl/common/rule_refinement/prediction.hpp"
 #include "mlrl/common/sampling/instance_sampling.hpp"
 #include "mlrl/common/stopping/stopping_criterion.hpp"
-#include "mlrl/common/thresholds/thresholds_subset.hpp"
+#include "mlrl/common/thresholds/feature_subspace.hpp"
 
 SinglePartition::SinglePartition(uint32 numElements) : numElements_(numElements) {}
 
@@ -30,14 +30,14 @@ std::unique_ptr<IInstanceSampling> SinglePartition::createInstanceSampling(const
     return labelMatrix.createInstanceSampling(factory, *this, statistics);
 }
 
-Quality SinglePartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset,
-                                             const CoverageMask& coverageMask, const IPrediction& head) {
-    return thresholdsSubset.evaluateOutOfSample(*this, coverageMask, head);
+Quality SinglePartition::evaluateOutOfSample(const IFeatureSubspace& featureSubspace, const CoverageMask& coverageMask,
+                                             const IPrediction& head) {
+    return featureSubspace.evaluateOutOfSample(*this, coverageMask, head);
 }
 
-void SinglePartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
+void SinglePartition::recalculatePrediction(const IFeatureSubspace& featureSubspace, const CoverageMask& coverageMask,
                                             IPrediction& head) {
-    thresholdsSubset.recalculatePrediction(*this, coverageMask, head);
+    featureSubspace.recalculatePrediction(*this, coverageMask, head);
 }
 
 std::unique_ptr<IMarginalProbabilityCalibrationModel> SinglePartition::fitMarginalProbabilityCalibrationModel(
