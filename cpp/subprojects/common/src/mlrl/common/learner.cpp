@@ -209,7 +209,7 @@ std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleMode
     return config_.getRuleModelAssemblageConfigPtr()->createRuleModelAssemblageFactory(labelMatrix);
 }
 
-std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory(
+std::unique_ptr<IFeatureSpaceFactory> AbstractRuleLearner::createFeatureSpaceFactory(
   const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
     std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr =
       config_.getFeatureBinningConfigPtr()->createFeatureBinningFactory(featureMatrix, labelMatrix);
@@ -405,11 +405,11 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
     std::unique_ptr<IStatisticsProvider> statisticsProviderPtr =
       labelMatrix.createStatisticsProvider(*statisticsProviderFactoryPtr);
 
-    // Create thresholds...
-    std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr =
-      this->createThresholdsFactory(featureMatrix, labelMatrix);
-    std::unique_ptr<IThresholds> thresholdsPtr =
-      thresholdsFactoryPtr->create(featureMatrix, featureInfo, *statisticsProviderPtr);
+    // Create feature space...
+    std::unique_ptr<IFeatureSpaceFactory> featureSpaceFactoryPtr =
+      this->createFeatureSpaceFactory(featureMatrix, labelMatrix);
+    std::unique_ptr<IFeatureSpace> featureSpacePtr =
+      featureSpaceFactoryPtr->create(featureMatrix, featureInfo, *statisticsProviderPtr);
 
     // Create rule induction...
     std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr =
@@ -445,10 +445,10 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
       ruleModelAssemblageFactoryPtr->create(std::move(stoppingCriterionFactoryPtr));
     ruleModelAssemblagePtr->induceRules(*ruleInductionPtr, *rulePruningPtr, *postProcessorPtr, partition,
                                         *labelSamplingPtr, *instanceSamplingPtr, *featureSamplingPtr,
-                                        *statisticsProviderPtr, *thresholdsPtr, modelBuilder, rng);
+                                        *statisticsProviderPtr, *featureSpacePtr, modelBuilder, rng);
 
     // Post-optimize the model...
-    postOptimizationPtr->optimizeModel(*thresholdsPtr, *ruleInductionPtr, partition, *labelSamplingPtr,
+    postOptimizationPtr->optimizeModel(*featureSpacePtr, *ruleInductionPtr, partition, *labelSamplingPtr,
                                        *instanceSamplingPtr, *featureSamplingPtr, *rulePruningPtr, *postProcessorPtr,
                                        rng);
 

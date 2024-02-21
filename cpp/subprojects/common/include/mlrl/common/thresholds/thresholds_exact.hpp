@@ -4,12 +4,12 @@
 #pragma once
 
 #include "mlrl/common/input/feature_binning.hpp"
-#include "mlrl/common/thresholds/thresholds.hpp"
+#include "mlrl/common/thresholds/feature_space.hpp"
 
 /**
  * A factory that allows to create instances of the type `ExactThresholds`.
  */
-class ExactThresholdsFactory final : public IThresholdsFactory {
+class ExactThresholdsFactory final : public IFeatureSpaceFactory {
     private:
 
         const std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr_;
@@ -27,7 +27,7 @@ class ExactThresholdsFactory final : public IThresholdsFactory {
          */
         ExactThresholdsFactory(std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr, uint32 numThreads);
 
-        std::unique_ptr<IThresholds> create(const IColumnWiseFeatureMatrix& featureMatrix,
-                                            const IFeatureInfo& featureInfo,
-                                            IStatisticsProvider& statisticsProvider) const override;
+        std::unique_ptr<IFeatureSpace> create(const IColumnWiseFeatureMatrix& featureMatrix,
+                                              const IFeatureInfo& featureInfo,
+                                              IStatisticsProvider& statisticsProvider) const override;
 };

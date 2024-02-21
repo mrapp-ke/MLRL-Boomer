@@ -12,16 +12,15 @@
 #include "mlrl/common/thresholds/thresholds_subset.hpp"
 
 /**
- * Defines an interface for all classes that provide access to thresholds that may be used by the first condition of a
- * rule that currently has an empty body and therefore covers the entire instance space.
+ * Defines an interface for all classes that provide access to the feature space.
  */
-class IThresholds {
+class IFeatureSpace {
     public:
 
-        virtual ~IThresholds() {}
+        virtual ~IFeatureSpace() {}
 
         /**
-         * Creates and returns a new subset of the thresholds, which initially contains all of the thresholds.
+         * Creates and returns a new subspace of the feature space, which initially includes the entire feature space.
          *
          * @param weights   A reference to an object of type `EqualWeightVector` that provides access to the weights of
          *                  individual training examples
@@ -30,7 +29,7 @@ class IThresholds {
         virtual std::unique_ptr<IThresholdsSubset> createSubset(const EqualWeightVector& weights) = 0;
 
         /**
-         * Creates and returns a new subset of the thresholds, which initially contains all of the thresholds.
+         * Creates and returns a new subspace of the feature space, which initially includes the entire feature space.
          *
          * @param weights   A reference to an object of type `BitWeightVector` that provides access to the weights of
          *                  individual training examples
@@ -39,7 +38,7 @@ class IThresholds {
         virtual std::unique_ptr<IThresholdsSubset> createSubset(const BitWeightVector& weights) = 0;
 
         /**
-         * Creates and returns a new subset of the thresholds, which initially contains all of the thresholds.
+         * Creates and returns a new subspace of the feature space, which initially includes the entire feature space.
          *
          * @param weights   A reference to an object of type `DenseWeightVector<uint32>` that provides access to the
          *                  weights of individual training examples
@@ -49,7 +48,7 @@ class IThresholds {
 
         /**
          * Returns a reference to an object of type `IStatisticsProvider` that provides access to the statistics that
-         * correspond to individual training examples in the instance space.
+         * correspond to individual training examples in the feature space.
          *
          * @return A reference to an object of type `IStatisticsProvider`
          */
@@ -57,15 +56,15 @@ class IThresholds {
 };
 
 /**
- * Defines an interface for all classes that allow to create instances of the type `IThresholds`.
+ * Defines an interface for all classes that allow to create instances of the type `IFeatureSpace`.
  */
-class IThresholdsFactory {
+class IFeatureSpaceFactory {
     public:
 
-        virtual ~IThresholdsFactory() {}
+        virtual ~IFeatureSpaceFactory() {}
 
         /**
-         * Creates and returns a new object of type `IThresholds`.
+         * Creates and returns a new object of type `IFeatureSpace`.
          *
          * @param featureMatrix         A reference to an object of type `IColumnWiseFeatureMatrix` that provides
          *                              column-wise access to the feature values of individual training examples
@@ -73,9 +72,9 @@ class IThresholdsFactory {
          *                              the types of individual features
          * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
          *                              statistics about the labels of the training examples
-         * @return                      An unique pointer to an object of type `IThresholds` that has been created
+         * @return                      An unique pointer to an object of type `IFeatureSpace` that has been created
          */
-        virtual std::unique_ptr<IThresholds> create(const IColumnWiseFeatureMatrix& featureMatrix,
-                                                    const IFeatureInfo& featureInfo,
-                                                    IStatisticsProvider& statisticsProvider) const = 0;
+        virtual std::unique_ptr<IFeatureSpace> create(const IColumnWiseFeatureMatrix& featureMatrix,
+                                                      const IFeatureInfo& featureInfo,
+                                                      IStatisticsProvider& statisticsProvider) const = 0;
 };

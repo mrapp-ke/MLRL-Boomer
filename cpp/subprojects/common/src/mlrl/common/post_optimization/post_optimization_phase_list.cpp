@@ -36,13 +36,13 @@ class PostOptimizationPhaseList final : public IPostOptimization {
             return *intermediateModelBuilderPtr_;
         }
 
-        void optimizeModel(IThresholds& thresholds, const IRuleInduction& ruleInduction, IPartition& partition,
+        void optimizeModel(IFeatureSpace& featureSpace, const IRuleInduction& ruleInduction, IPartition& partition,
                            ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
                            IFeatureSampling& featureSampling, const IRulePruning& rulePruning,
                            const IPostProcessor& postProcessor, RNG& rng) const override {
             for (auto it = postOptimizationPhases_.cbegin(); it != postOptimizationPhases_.cend(); it++) {
                 const std::unique_ptr<IPostOptimizationPhase>& postOptimizationPhasePtr = *it;
-                postOptimizationPhasePtr->optimizeModel(thresholds, ruleInduction, partition, labelSampling,
+                postOptimizationPhasePtr->optimizeModel(featureSpace, ruleInduction, partition, labelSampling,
                                                         instanceSampling, featureSampling, rulePruning, postProcessor,
                                                         rng);
             }
@@ -71,7 +71,7 @@ class NoPostOptimization final : public IPostOptimization {
             return *modelBuilderPtr_;
         }
 
-        void optimizeModel(IThresholds& thresholds, const IRuleInduction& ruleInduction, IPartition& partition,
+        void optimizeModel(IFeatureSpace& featureSpace, const IRuleInduction& ruleInduction, IPartition& partition,
                            ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
                            IFeatureSampling& featureSampling, const IRulePruning& rulePruning,
                            const IPostProcessor& postProcessor, RNG& rng) const override {

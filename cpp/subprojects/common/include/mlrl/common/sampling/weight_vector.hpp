@@ -8,7 +8,7 @@
 #include <memory>
 
 // Forward declarations
-class IThresholds;
+class IFeatureSpace;
 class IThresholdsSubset;
 
 /**
@@ -30,9 +30,9 @@ class IWeightVector {
          * Creates and returns a new instance of type `IThresholdsSubset` that provides access to the statistics that
          * correspond to individual training examples whose weights are stored in this vector.
          *
-         * @param thresholds    A reference to an object of type `IThresholds` that should be used to create the
+         * @param featureSpace  A reference to an object of type `IFeatureSpace` that should be used to create the
          *                      instance
          * @return              An unique pointer to an object of type `IThresholdsSubset` that has been created
          */
-        virtual std::unique_ptr<IThresholdsSubset> createThresholdsSubset(IThresholds& thresholds) const = 0;
+        virtual std::unique_ptr<IThresholdsSubset> createThresholdsSubset(IFeatureSpace& featureSpace) const = 0;
 };
