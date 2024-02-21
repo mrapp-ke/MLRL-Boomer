@@ -34,7 +34,7 @@ static inline void updateCoverageMaskAndStatisticsBasedOnNominalFeatureVector(co
         updateCoverageMaskAndStatisticsBasedOnMissingFeatureVector(view, coverageMaskIterator, indicatorValue,
                                                                    statistics);
     } else {
-        coverageMask.setIndicatorValue(indicatorValue);
+        coverageMask.indicatorValue = indicatorValue;
         statistics.resetCoveredStatistics();
 
         // Retain the indices in the range [interval.start, interval.end) and set the corresponding values in the given

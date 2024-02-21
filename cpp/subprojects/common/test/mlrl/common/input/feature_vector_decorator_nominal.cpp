@@ -35,7 +35,7 @@ TEST(NominalFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
-    EXPECT_EQ(coverageMask.getIndicatorValue(), indicatorValue);
+    EXPECT_EQ(coverageMask.indicatorValue, indicatorValue);
     const NominalFeatureVector& nominalFeatureVector = decorator.getView().firstView;
 
     for (uint32 i = 0; i < interval.start; i++) {
@@ -106,7 +106,7 @@ TEST(NominalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) 
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
-    EXPECT_EQ(coverageMask.getIndicatorValue(), (uint32) 0);
+    EXPECT_EQ(coverageMask.indicatorValue, (uint32) 0);
     const NominalFeatureVector& nominalFeatureVector = decorator.getView().firstView;
 
     for (uint32 i = 0; i < interval.start; i++) {
@@ -327,7 +327,7 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
 
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
-    coverageMask.setIndicatorValue(indicatorValue);
+    coverageMask.indicatorValue = indicatorValue;
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numExamples; i++) {
@@ -412,7 +412,7 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
 
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
-    coverageMask.setIndicatorValue(indicatorValue);
+    coverageMask.indicatorValue = indicatorValue;
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numExamples; i++) {
@@ -484,7 +484,7 @@ TEST(NominalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageM
     }
 
     CoverageMask coverageMask(numMinorityExamples);
-    coverageMask.setIndicatorValue(1);
+    coverageMask.indicatorValue = 1;
 
     NominalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
     std::unique_ptr<IFeatureVector> existing;

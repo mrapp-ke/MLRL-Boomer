@@ -26,7 +26,7 @@ TEST(BinaryFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
-    EXPECT_EQ(coverageMask.getIndicatorValue(), indicatorValue);
+    EXPECT_EQ(coverageMask.indicatorValue, indicatorValue);
     const BinaryFeatureVector& binaryFeatureVector = decorator.getView().firstView;
 
     for (auto it = binaryFeatureVector.indices_cbegin(0); it != binaryFeatureVector.indices_cend(0); it++) {
@@ -69,7 +69,7 @@ TEST(BinaryFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) {
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
-    EXPECT_EQ(coverageMask.getIndicatorValue(), (uint32) 0);
+    EXPECT_EQ(coverageMask.indicatorValue, (uint32) 0);
     const BinaryFeatureVector& binaryFeatureVector = decorator.getView().firstView;
 
     for (auto it = binaryFeatureVector.indices_cbegin(0); it != binaryFeatureVector.indices_cend(0); it++) {
@@ -116,7 +116,7 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
 
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
-    coverageMask.setIndicatorValue(indicatorValue);
+    coverageMask.indicatorValue = indicatorValue;
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numExamples; i++) {
@@ -185,7 +185,7 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
 
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
-    coverageMask.setIndicatorValue(indicatorValue);
+    coverageMask.indicatorValue = indicatorValue;
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numExamples; i++) {
@@ -246,7 +246,7 @@ TEST(BinaryFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverageMa
     }
 
     CoverageMask coverageMask(numMinorityExamples);
-    coverageMask.setIndicatorValue(1);
+    coverageMask.indicatorValue = 1;
 
     BinaryFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
     std::unique_ptr<IFeatureVector> existing;
