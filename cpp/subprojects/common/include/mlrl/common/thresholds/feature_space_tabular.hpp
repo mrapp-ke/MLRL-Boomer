@@ -7,9 +7,9 @@
 #include "mlrl/common/thresholds/feature_space.hpp"
 
 /**
- * A factory that allows to create instances of the type `ExactThresholds`.
+ * Allows to create objects of type `IFeatureSpace` that provide access to a tabular feature space.
  */
-class ExactThresholdsFactory final : public IFeatureSpaceFactory {
+class TabularFeatureSpaceFactory final : public IFeatureSpaceFactory {
     private:
 
         const std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr_;
@@ -25,7 +25,7 @@ class ExactThresholdsFactory final : public IFeatureSpaceFactory {
          * @param numThreads                The number of CPU threads to be used to update statistics in parallel. Must
          *                                  be at least 1
          */
-        ExactThresholdsFactory(std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr, uint32 numThreads);
+        TabularFeatureSpaceFactory(std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr, uint32 numThreads);
 
         std::unique_ptr<IFeatureSpace> create(const IColumnWiseFeatureMatrix& featureMatrix,
                                               const IFeatureInfo& featureInfo,

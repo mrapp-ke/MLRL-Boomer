@@ -2,7 +2,7 @@
 
 #include "mlrl/common/prediction/label_space_info_no.hpp"
 #include "mlrl/common/stopping/stopping_criterion_size.hpp"
-#include "mlrl/common/thresholds/thresholds_exact.hpp"
+#include "mlrl/common/thresholds/feature_space_tabular.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 /**
@@ -215,7 +215,7 @@ std::unique_ptr<IFeatureSpaceFactory> AbstractRuleLearner::createFeatureSpaceFac
       config_.getFeatureBinningConfigPtr()->createFeatureBinningFactory(featureMatrix, labelMatrix);
     uint32 numThreads =
       config_.getParallelStatisticUpdateConfigPtr()->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
-    return std::make_unique<ExactThresholdsFactory>(std::move(featureBinningFactoryPtr), numThreads);
+    return std::make_unique<TabularFeatureSpaceFactory>(std::move(featureBinningFactoryPtr), numThreads);
 }
 
 std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory(
