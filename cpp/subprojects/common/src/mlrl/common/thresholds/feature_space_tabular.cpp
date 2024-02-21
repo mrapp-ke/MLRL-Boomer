@@ -1,4 +1,4 @@
-#include "mlrl/common/thresholds/thresholds_exact.hpp"
+#include "mlrl/common/thresholds/feature_space_tabular.hpp"
 
 #include "mlrl/common/rule_refinement/rule_refinement_feature_based.hpp"
 #include "mlrl/common/util/openmp.hpp"
@@ -65,19 +65,19 @@ struct FilteredCacheEntry final {
 };
 
 /**
- * Provides access to all thresholds that result from the feature values of the training examples.
+ * Provides access to a tabular feature space.
  */
-class ExactThresholds final : public IFeatureSpace {
+class TabularFeatureSpace final : public IFeatureSpace {
     private:
 
         /**
-         * Provides access to a subset of the thresholds that are stored by an instance of the class `ExactThresholds`.
+         * Provides access to a subset of a `TabularFeatureSpace`.
          *
          * @tparam WeightVector The type of the vector that provides access to the weights of individual training
          *                      examples
          */
         template<typename WeightVector>
-        class ThresholdsSubset final : public IFeatureSubspace {
+        class FeatureSubspace final : public IFeatureSubspace {
             private:
 
                 /**
@@ -87,7 +87,7 @@ class ExactThresholds final : public IFeatureSpace {
                 class Callback final : public IRuleRefinement::ICallback {
                     private:
 
-                        ThresholdsSubset& thresholdsSubset_;
+                        FeatureSubspace& featureSubspace_;
 
                         const IFeatureInfo& featureInfo_;
 
@@ -96,53 +96,52 @@ class ExactThresholds final : public IFeatureSpace {
                     public:
 
                         /**
-                         * @param thresholdsSubset  A reference to an object of type `ThresholdsSubset` that caches the
+                         * @param featureSubspace   A reference to an object of type `FeatureSubspace` that caches the
                          *                          feature vectors
                          * @param featureInfo       A reference to an object of type `IFeatureInfo` that provides
                          *                          information about the types of individual features
                          * @param featureIndex      The index of the feature for which the feature vector should be
                          *                          retrieved
                          */
-                        Callback(ThresholdsSubset& thresholdsSubset, const IFeatureInfo& featureInfo,
-                                 uint32 featureIndex)
-                            : thresholdsSubset_(thresholdsSubset), featureInfo_(featureInfo),
+                        Callback(FeatureSubspace& featureSubspace, const IFeatureInfo& featureInfo, uint32 featureIndex)
+                            : featureSubspace_(featureSubspace), featureInfo_(featureInfo),
                               featureIndex_(featureIndex) {}
 
                         Result get() override {
-                            auto cacheFilteredIterator = thresholdsSubset_.cacheFiltered_.find(featureIndex_);
+                            auto cacheFilteredIterator = featureSubspace_.cacheFiltered_.find(featureIndex_);
                             FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
                             IFeatureVector* featureVector = cacheEntry.vectorPtr.get();
 
                             if (!featureVector) {
-                                auto cacheIterator = thresholdsSubset_.thresholds_.cache_.find(featureIndex_);
+                                auto cacheIterator = featureSubspace_.featureSpace_.cache_.find(featureIndex_);
                                 featureVector = cacheIterator->second.get();
 
                                 if (!featureVector) {
                                     std::unique_ptr<IFeatureType> featureTypePtr = featureInfo_.createFeatureType(
-                                      featureIndex_, thresholdsSubset_.thresholds_.featureBinningFactory_);
+                                      featureIndex_, featureSubspace_.featureSpace_.featureBinningFactory_);
                                     cacheIterator->second =
-                                      thresholdsSubset_.thresholds_.featureMatrix_.createFeatureVector(featureIndex_,
-                                                                                                       *featureTypePtr);
+                                      featureSubspace_.featureSpace_.featureMatrix_.createFeatureVector(
+                                        featureIndex_, *featureTypePtr);
                                     featureVector = cacheIterator->second.get();
                                 }
                             }
 
                             // Filter feature vector, if only a subset of its elements are covered by the current
                             // rule...
-                            uint32 numConditions = thresholdsSubset_.numModifications_;
+                            uint32 numConditions = featureSubspace_.numModifications_;
 
                             if (numConditions > cacheEntry.numConditions) {
                                 cacheEntry.vectorPtr = featureVector->createFilteredFeatureVector(
-                                  cacheEntry.vectorPtr, thresholdsSubset_.coverageMask_);
+                                  cacheEntry.vectorPtr, featureSubspace_.coverageMask_);
                                 cacheEntry.numConditions = numConditions;
                                 featureVector = cacheEntry.vectorPtr.get();
                             }
 
-                            return Result(*thresholdsSubset_.weightedStatisticsPtr_, *featureVector);
+                            return Result(*featureSubspace_.weightedStatisticsPtr_, *featureVector);
                         }
                 };
 
-                ExactThresholds& thresholds_;
+                TabularFeatureSpace& featureSpace_;
 
                 std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr_;
 
@@ -167,11 +166,11 @@ class ExactThresholds final : public IFeatureSpace {
                     // If the `FilteredCacheEntry` in the cache does not refer to an `IFeatureVector`, add an empty
                     // `unique_ptr` to the cache...
                     if (!featureVector) {
-                        thresholds_.cache_.emplace(featureIndex, std::unique_ptr<IFeatureVector>());
+                        featureSpace_.cache_.emplace(featureIndex, std::unique_ptr<IFeatureVector>());
                     }
 
                     std::unique_ptr<Callback> callbackPtr =
-                      std::make_unique<Callback>(*this, thresholds_.featureInfo_, featureIndex);
+                      std::make_unique<Callback>(*this, featureSpace_.featureInfo_, featureIndex);
                     return std::make_unique<FeatureBasedRuleRefinement<IndexVector>>(
                       labelIndices, featureIndex, numCovered_, std::move(callbackPtr));
                 }
@@ -179,32 +178,29 @@ class ExactThresholds final : public IFeatureSpace {
             public:
 
                 /**
-                 * @param thresholds            A reference to an object of type `ExactThresholds` that stores the
-                 *                              thresholds
+                 * @param featureSpace          A reference to an object of type `TabularFeatureSpace`, the subspace has
+                 *                              been created from
                  * @param weightedStatisticsPtr An unique pointer to an object of type `IWeightedStatistics` that
                  *                              provides access to the statistics
                  * @param weights               A reference to an object of template type `WeightVector` that provides
                  *                              access to the weights of individual training examples
                  */
-                ThresholdsSubset(ExactThresholds& thresholds,
-                                 std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr,
-                                 const WeightVector& weights)
-                    : thresholds_(thresholds), weightedStatisticsPtr_(std::move(weightedStatisticsPtr)),
+                FeatureSubspace(TabularFeatureSpace& featureSpace,
+                                std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr, const WeightVector& weights)
+                    : featureSpace_(featureSpace), weightedStatisticsPtr_(std::move(weightedStatisticsPtr)),
                       weights_(weights), numCovered_(weights.getNumNonZeroWeights()),
-                      coverageMask_(thresholds.featureMatrix_.getNumExamples()), numModifications_(0) {}
+                      coverageMask_(featureSpace.featureMatrix_.getNumExamples()), numModifications_(0) {}
 
                 /**
-                 * @param thresholdsSubset A reference to an object of type `ThresholdsSubset` to be copied
+                 * @param other A reference to an object of type `FeatureSubspace` to be copied
                  */
-                ThresholdsSubset(const ThresholdsSubset& thresholdsSubset)
-                    : thresholds_(thresholdsSubset.thresholds_),
-                      weightedStatisticsPtr_(thresholdsSubset.weightedStatisticsPtr_->copy()),
-                      weights_(thresholdsSubset.weights_), numCovered_(thresholdsSubset.numCovered_),
-                      coverageMask_(thresholdsSubset.coverageMask_),
-                      numModifications_(thresholdsSubset.numModifications_) {}
+                FeatureSubspace(const FeatureSubspace& other)
+                    : featureSpace_(other.featureSpace_), weightedStatisticsPtr_(other.weightedStatisticsPtr_->copy()),
+                      weights_(other.weights_), numCovered_(other.numCovered_), coverageMask_(other.coverageMask_),
+                      numModifications_(other.numModifications_) {}
 
                 std::unique_ptr<IFeatureSubspace> copy() const override {
-                    return std::make_unique<ThresholdsSubset<WeightVector>>(*this);
+                    return std::make_unique<FeatureSubspace<WeightVector>>(*this);
                 }
 
                 std::unique_ptr<IRuleRefinement> createRuleRefinement(const CompleteIndexVector& labelIndices,
@@ -225,7 +221,7 @@ class ExactThresholds final : public IFeatureSpace {
 
                     if (!featureVector) {
                         auto cacheIterator =
-                          thresholds_.cache_.emplace(featureIndex, std::unique_ptr<IFeatureVector>()).first;
+                          featureSpace_.cache_.emplace(featureIndex, std::unique_ptr<IFeatureVector>()).first;
                         featureVector = cacheIterator->second.get();
                     }
 
@@ -260,32 +256,32 @@ class ExactThresholds final : public IFeatureSpace {
                                             const IPrediction& head) const override {
                     return evaluateOutOfSampleInternally<SinglePartition::const_iterator>(
                       partition.cbegin(), partition.getNumElements(), weights_, coverageMask,
-                      thresholds_.statisticsProvider_.get(), head);
+                      featureSpace_.statisticsProvider_.get(), head);
                 }
 
                 Quality evaluateOutOfSample(const BiPartition& partition, const CoverageMask& coverageMask,
                                             const IPrediction& head) const override {
                     return evaluateOutOfSampleInternally<BiPartition::const_iterator>(
                       partition.first_cbegin(), partition.getNumFirst(), weights_, coverageMask,
-                      thresholds_.statisticsProvider_.get(), head);
+                      featureSpace_.statisticsProvider_.get(), head);
                 }
 
                 void recalculatePrediction(const SinglePartition& partition, const CoverageMask& coverageMask,
                                            IPrediction& head) const override {
                     recalculatePredictionInternally<SinglePartition::const_iterator>(
                       partition.cbegin(), partition.getNumElements(), coverageMask,
-                      thresholds_.statisticsProvider_.get(), head);
+                      featureSpace_.statisticsProvider_.get(), head);
                 }
 
                 void recalculatePrediction(const BiPartition& partition, const CoverageMask& coverageMask,
                                            IPrediction& head) const override {
                     recalculatePredictionInternally<BiPartition::const_iterator>(
                       partition.first_cbegin(), partition.getNumFirst(), coverageMask,
-                      thresholds_.statisticsProvider_.get(), head);
+                      featureSpace_.statisticsProvider_.get(), head);
                 }
 
                 void applyPrediction(const IPrediction& prediction) override {
-                    IStatistics& statistics = thresholds_.statisticsProvider_.get();
+                    IStatistics& statistics = featureSpace_.statisticsProvider_.get();
                     uint32 numStatistics = statistics.getNumStatistics();
                     const CoverageMask* coverageMaskPtr = &coverageMask_;
                     const IPrediction* predictionPtr = &prediction;
@@ -293,7 +289,7 @@ class ExactThresholds final : public IFeatureSpace {
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(predictionPtr) \
-      firstprivate(statisticsPtr) schedule(dynamic) num_threads(thresholds_.numThreads_)
+      firstprivate(statisticsPtr) schedule(dynamic) num_threads(featureSpace_.numThreads_)
 #endif
                     for (int64 i = 0; i < numStatistics; i++) {
                         if ((*coverageMaskPtr)[i]) {
@@ -303,7 +299,7 @@ class ExactThresholds final : public IFeatureSpace {
                 }
 
                 void revertPrediction(const IPrediction& prediction) override {
-                    IStatistics& statistics = thresholds_.statisticsProvider_.get();
+                    IStatistics& statistics = featureSpace_.statisticsProvider_.get();
                     uint32 numStatistics = statistics.getNumStatistics();
                     const CoverageMask* coverageMaskPtr = &coverageMask_;
                     const IPrediction* predictionPtr = &prediction;
@@ -311,7 +307,7 @@ class ExactThresholds final : public IFeatureSpace {
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numStatistics) firstprivate(coverageMaskPtr) firstprivate(predictionPtr) \
-      firstprivate(statisticsPtr) schedule(dynamic) num_threads(thresholds_.numThreads_)
+      firstprivate(statisticsPtr) schedule(dynamic) num_threads(featureSpace_.numThreads_)
 #endif
                     for (int64 i = 0; i < numStatistics; i++) {
                         if ((*coverageMaskPtr)[i]) {
@@ -348,9 +344,9 @@ class ExactThresholds final : public IFeatureSpace {
          *                              assign nominal feature values to bins
          * @param numThreads            The number of CPU threads to be used to update statistics in parallel
          */
-        ExactThresholds(const IColumnWiseFeatureMatrix& featureMatrix, const IFeatureInfo& featureInfo,
-                        IStatisticsProvider& statisticsProvider, const IFeatureBinningFactory& featureBinningFactory,
-                        uint32 numThreads)
+        TabularFeatureSpace(const IColumnWiseFeatureMatrix& featureMatrix, const IFeatureInfo& featureInfo,
+                            IStatisticsProvider& statisticsProvider,
+                            const IFeatureBinningFactory& featureBinningFactory, uint32 numThreads)
             : featureMatrix_(featureMatrix), featureInfo_(featureInfo), statisticsProvider_(statisticsProvider),
               featureBinningFactory_(featureBinningFactory), numThreads_(numThreads) {}
 
@@ -361,32 +357,32 @@ class ExactThresholds final : public IFeatureSpace {
         std::unique_ptr<IFeatureSubspace> createSubspace(const EqualWeightVector& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
             std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
-            return std::make_unique<ExactThresholds::ThresholdsSubset<EqualWeightVector>>(
+            return std::make_unique<TabularFeatureSpace::FeatureSubspace<EqualWeightVector>>(
               *this, std::move(weightedStatisticsPtr), weights);
         }
 
         std::unique_ptr<IFeatureSubspace> createSubspace(const BitWeightVector& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
             std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
-            return std::make_unique<ExactThresholds::ThresholdsSubset<BitWeightVector>>(
+            return std::make_unique<TabularFeatureSpace::FeatureSubspace<BitWeightVector>>(
               *this, std::move(weightedStatisticsPtr), weights);
         }
 
         std::unique_ptr<IFeatureSubspace> createSubspace(const DenseWeightVector<uint32>& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
             std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
-            return std::make_unique<ExactThresholds::ThresholdsSubset<DenseWeightVector<uint32>>>(
+            return std::make_unique<TabularFeatureSpace::FeatureSubspace<DenseWeightVector<uint32>>>(
               *this, std::move(weightedStatisticsPtr), weights);
         }
 };
 
-ExactThresholdsFactory::ExactThresholdsFactory(std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr,
-                                               uint32 numThreads)
+TabularFeatureSpaceFactory::TabularFeatureSpaceFactory(std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr,
+                                                       uint32 numThreads)
     : featureBinningFactoryPtr_(std::move(featureBinningFactoryPtr)), numThreads_(numThreads) {}
 
-std::unique_ptr<IFeatureSpace> ExactThresholdsFactory::create(const IColumnWiseFeatureMatrix& featureMatrix,
-                                                              const IFeatureInfo& featureInfo,
-                                                              IStatisticsProvider& statisticsProvider) const {
-    return std::make_unique<ExactThresholds>(featureMatrix, featureInfo, statisticsProvider, *featureBinningFactoryPtr_,
-                                             numThreads_);
+std::unique_ptr<IFeatureSpace> TabularFeatureSpaceFactory::create(const IColumnWiseFeatureMatrix& featureMatrix,
+                                                                  const IFeatureInfo& featureInfo,
+                                                                  IStatisticsProvider& statisticsProvider) const {
+    return std::make_unique<TabularFeatureSpace>(featureMatrix, featureInfo, statisticsProvider,
+                                                 *featureBinningFactoryPtr_, numThreads_);
 }
