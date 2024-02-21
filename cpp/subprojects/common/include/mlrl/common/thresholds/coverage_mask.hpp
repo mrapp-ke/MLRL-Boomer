@@ -45,8 +45,8 @@ class CoverageMask final : public DenseVectorDecorator<AllocatedVector<uint32>> 
         /**
          * Returns whether the example at a specific index is covered or not.
          *
-         * @param pos   The index of the example
+         * @param index The index of the example
          * @return      True, if the example at the given index is covered, false otherwise
          */
-        bool isCovered(uint32 pos) const;
+        bool operator[](uint32 index) const;
 };

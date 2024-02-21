@@ -16,7 +16,7 @@ static inline Quality evaluateOutOfSampleInternally(IndexIterator indexIterator,
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = indexIterator[i];
 
-        if (statisticsSubsetPtr->hasNonZeroWeight(exampleIndex) && coverageMask.isCovered(exampleIndex)) {
+        if (statisticsSubsetPtr->hasNonZeroWeight(exampleIndex) && coverageMask[exampleIndex]) {
             statisticsSubsetPtr->addToSubset(exampleIndex);
         }
     }
@@ -34,7 +34,7 @@ static inline void recalculatePredictionInternally(IndexIterator indexIterator, 
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = indexIterator[i];
 
-        if (coverageMask.isCovered(exampleIndex)) {
+        if (coverageMask[exampleIndex]) {
             statisticsSubsetPtr->addToSubset(exampleIndex);
         }
     }
@@ -296,7 +296,7 @@ class ExactThresholds final : public IFeatureSpace {
       firstprivate(statisticsPtr) schedule(dynamic) num_threads(thresholds_.numThreads_)
 #endif
                     for (int64 i = 0; i < numStatistics; i++) {
-                        if (coverageMaskPtr->isCovered(i)) {
+                        if ((*coverageMaskPtr)[i]) {
                             predictionPtr->apply(*statisticsPtr, i);
                         }
                     }
@@ -314,7 +314,7 @@ class ExactThresholds final : public IFeatureSpace {
       firstprivate(statisticsPtr) schedule(dynamic) num_threads(thresholds_.numThreads_)
 #endif
                     for (int64 i = 0; i < numStatistics; i++) {
-                        if (coverageMaskPtr->isCovered(i)) {
+                        if ((*coverageMaskPtr)[i]) {
                             predictionPtr->revert(*statisticsPtr, i);
                         }
                     }

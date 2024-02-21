@@ -61,7 +61,7 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNumericalFeatureVect
     for (uint32 i = 0; i < filteredFeatureVector.numElements; i++) {
         const IndexedValue<float32>& entry = iterator[i];
 
-        if (coverageMask.isCovered(entry.index)) {
+        if (coverageMask[entry.index]) {
             filteredIterator[numFilteredElements] = entry;
             numFilteredElements++;
         }

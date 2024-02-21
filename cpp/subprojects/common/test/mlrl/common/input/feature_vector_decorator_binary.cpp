@@ -31,12 +31,12 @@ TEST(BinaryFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
 
     for (auto it = binaryFeatureVector.indices_cbegin(0); it != binaryFeatureVector.indices_cend(0); it++) {
         uint32 index = *it;
-        EXPECT_TRUE(coverageMask.isCovered(index));
+        EXPECT_TRUE(coverageMask[index]);
         EXPECT_TRUE(statistics.coveredStatistics.find(index) != statistics.coveredStatistics.end());
     }
 
     for (uint32 i = numMinorityExamples; i < numExamples; i++) {
-        EXPECT_FALSE(coverageMask.isCovered(i));
+        EXPECT_FALSE(coverageMask[i]);
         EXPECT_FALSE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
     }
 }
@@ -74,17 +74,17 @@ TEST(BinaryFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse) {
 
     for (auto it = binaryFeatureVector.indices_cbegin(0); it != binaryFeatureVector.indices_cend(0); it++) {
         uint32 index = *it;
-        EXPECT_FALSE(coverageMask.isCovered(index));
+        EXPECT_FALSE(coverageMask[index]);
         EXPECT_FALSE(statistics.coveredStatistics.find(index) != statistics.coveredStatistics.end());
     }
 
     for (uint32 i = numMinorityExamples; i < numMinorityExamples + numMissingExamples; i++) {
-        EXPECT_FALSE(coverageMask.isCovered(i));
+        EXPECT_FALSE(coverageMask[i]);
         EXPECT_FALSE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
     }
 
     for (uint32 i = numMinorityExamples + numMissingExamples; i < numExamples; i++) {
-        EXPECT_TRUE(coverageMask.isCovered(i));
+        EXPECT_TRUE(coverageMask[i]);
         EXPECT_TRUE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
     }
 }
