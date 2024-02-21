@@ -6,13 +6,13 @@
 #include "mlrl/common/input/label_matrix_row_wise.hpp"
 #include "mlrl/common/model/model_builder.hpp"
 #include "mlrl/common/rule_induction/rule_induction.hpp"
+#include "mlrl/common/rule_refinement/feature_space.hpp"
 #include "mlrl/common/sampling/feature_sampling.hpp"
 #include "mlrl/common/sampling/instance_sampling.hpp"
 #include "mlrl/common/sampling/label_sampling.hpp"
 #include "mlrl/common/sampling/partition_sampling.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
 #include "mlrl/common/stopping/stopping_criterion.hpp"
-#include "mlrl/common/thresholds/feature_space.hpp"
 
 /**
  * Defines an interface for all classes that implement an algorithm for the induction of several rules that will be

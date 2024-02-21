@@ -6,11 +6,11 @@
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 #include "mlrl/common/model/condition.hpp"
+#include "mlrl/common/rule_refinement/coverage_mask.hpp"
 #include "mlrl/common/rule_refinement/prediction.hpp"
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
-#include "mlrl/common/thresholds/coverage_mask.hpp"
 
 #include <memory>
 

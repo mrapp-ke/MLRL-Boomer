@@ -1,8 +1,8 @@
 #include "mlrl/common/learner.hpp"
 
 #include "mlrl/common/prediction/label_space_info_no.hpp"
+#include "mlrl/common/rule_refinement/feature_space_tabular.hpp"
 #include "mlrl/common/stopping/stopping_criterion_size.hpp"
-#include "mlrl/common/thresholds/feature_space_tabular.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 /**

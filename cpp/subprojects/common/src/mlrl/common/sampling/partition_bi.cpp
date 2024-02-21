@@ -1,10 +1,10 @@
 #include "mlrl/common/sampling/partition_bi.hpp"
 
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
+#include "mlrl/common/rule_refinement/feature_subspace.hpp"
 #include "mlrl/common/rule_refinement/prediction.hpp"
 #include "mlrl/common/sampling/instance_sampling.hpp"
 #include "mlrl/common/stopping/stopping_criterion.hpp"
-#include "mlrl/common/thresholds/feature_subspace.hpp"
 
 #include <algorithm>
 

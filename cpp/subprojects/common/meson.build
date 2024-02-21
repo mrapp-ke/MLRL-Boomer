@@ -51,7 +51,9 @@ source_files = [
     'src/mlrl/common/rule_model_assemblage/rule_model_assemblage_sequential.cpp',
     'src/mlrl/common/rule_pruning/rule_pruning_irep.cpp',
     'src/mlrl/common/rule_pruning/rule_pruning_no.cpp',
+    'src/mlrl/common/rule_refinement/coverage_mask.cpp',
     'src/mlrl/common/rule_refinement/feature_based_search.cpp',
+    'src/mlrl/common/rule_refinement/feature_space_tabular.cpp',
     'src/mlrl/common/rule_refinement/prediction_complete.cpp',
     'src/mlrl/common/rule_refinement/prediction_partial.cpp',
     'src/mlrl/common/rule_refinement/refinement_comparator_fixed.cpp',
@@ -87,8 +89,6 @@ source_files = [
     'src/mlrl/common/stopping/stopping_criterion_list.cpp',
     'src/mlrl/common/stopping/stopping_criterion_size.cpp',
     'src/mlrl/common/stopping/stopping_criterion_time.cpp',
-    'src/mlrl/common/thresholds/coverage_mask.cpp',
-    'src/mlrl/common/thresholds/feature_space_tabular.cpp',
     'src/mlrl/common/info.cpp',
     'src/mlrl/common/learner.cpp'
 ]

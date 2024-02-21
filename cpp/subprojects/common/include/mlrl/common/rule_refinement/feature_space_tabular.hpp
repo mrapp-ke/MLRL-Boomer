@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/input/feature_binning.hpp"
-#include "mlrl/common/thresholds/feature_space.hpp"
+#include "mlrl/common/rule_refinement/feature_space.hpp"
 
 /**
  * Allows to create objects of type `IFeatureSpace` that provide access to a tabular feature space.

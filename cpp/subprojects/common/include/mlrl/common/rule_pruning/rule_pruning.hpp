@@ -4,8 +4,8 @@
 #pragma once
 
 #include "mlrl/common/model/condition_list.hpp"
+#include "mlrl/common/rule_refinement/feature_subspace.hpp"
 #include "mlrl/common/sampling/partition.hpp"
-#include "mlrl/common/thresholds/feature_subspace.hpp"
 
 /**
  * Defines an interface for all classes that implement a strategy for pruning individual rules based on a "prune set",

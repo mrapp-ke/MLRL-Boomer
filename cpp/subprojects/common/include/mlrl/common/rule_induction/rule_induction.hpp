@@ -8,11 +8,11 @@
 #include "mlrl/common/model/model_builder.hpp"
 #include "mlrl/common/post_processing/post_processor.hpp"
 #include "mlrl/common/rule_pruning/rule_pruning.hpp"
+#include "mlrl/common/rule_refinement/feature_space.hpp"
 #include "mlrl/common/sampling/feature_sampling.hpp"
 #include "mlrl/common/sampling/partition.hpp"
 #include "mlrl/common/sampling/weight_vector.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
-#include "mlrl/common/thresholds/feature_space.hpp"
 
 /**
  * Defines an interface for all classes that implement an algorithm for the induction of individual rules.

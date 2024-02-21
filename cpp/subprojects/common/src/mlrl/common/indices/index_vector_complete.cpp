@@ -1,6 +1,6 @@
 #include "mlrl/common/indices/index_vector_complete.hpp"
 
-#include "mlrl/common/thresholds/feature_subspace.hpp"
+#include "mlrl/common/rule_refinement/feature_subspace.hpp"
 
 CompleteIndexVector::CompleteIndexVector(uint32 numElements) {
     numElements_ = numElements;
