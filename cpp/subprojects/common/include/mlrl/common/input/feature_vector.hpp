@@ -4,9 +4,9 @@
 #pragma once
 
 #include "mlrl/common/input/interval.hpp"
+#include "mlrl/common/rule_refinement/coverage_mask.hpp"
 #include "mlrl/common/rule_refinement/feature_based_search.hpp"
 #include "mlrl/common/statistics/statistics_weighted.hpp"
-#include "mlrl/common/thresholds/coverage_mask.hpp"
 
 /**
  * Defines an interface for all one-dimensional vectors that store the values of training examples for a certain

@@ -1,7 +1,7 @@
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
 
-#include "mlrl/common/thresholds/feature_space.hpp"
-#include "mlrl/common/thresholds/feature_subspace.hpp"
+#include "mlrl/common/rule_refinement/feature_space.hpp"
+#include "mlrl/common/rule_refinement/feature_subspace.hpp"
 
 template<typename T>
 DenseWeightVector<T>::DenseWeightVector(uint32 numElements, bool init)

@@ -1,7 +1,7 @@
 #include "mlrl/common/sampling/weight_vector_equal.hpp"
 
-#include "mlrl/common/thresholds/feature_space.hpp"
-#include "mlrl/common/thresholds/feature_subspace.hpp"
+#include "mlrl/common/rule_refinement/feature_space.hpp"
+#include "mlrl/common/rule_refinement/feature_subspace.hpp"
 
 EqualWeightVector::EqualWeightVector(uint32 numElements) : numElements_(numElements) {}
 

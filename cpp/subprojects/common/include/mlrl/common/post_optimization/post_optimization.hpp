@@ -7,9 +7,9 @@
 #include "mlrl/common/post_processing/post_processor.hpp"
 #include "mlrl/common/rule_induction/rule_induction.hpp"
 #include "mlrl/common/rule_pruning/rule_pruning.hpp"
+#include "mlrl/common/rule_refinement/feature_space.hpp"
 #include "mlrl/common/sampling/feature_sampling.hpp"
 #include "mlrl/common/sampling/label_sampling.hpp"
-#include "mlrl/common/thresholds/feature_space.hpp"
 
 /**
  * Defines an interface for all classes that allow to optimize a rule-based model globally once it has been learned.

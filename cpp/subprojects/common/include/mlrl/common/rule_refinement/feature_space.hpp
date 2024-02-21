@@ -5,11 +5,11 @@
 
 #include "mlrl/common/input/feature_info.hpp"
 #include "mlrl/common/input/feature_matrix_column_wise.hpp"
+#include "mlrl/common/rule_refinement/feature_subspace.hpp"
 #include "mlrl/common/sampling/weight_vector_bit.hpp"
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
 #include "mlrl/common/sampling/weight_vector_equal.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
-#include "mlrl/common/thresholds/feature_subspace.hpp"
 
 /**
  * Defines an interface for all classes that provide access to the feature space.

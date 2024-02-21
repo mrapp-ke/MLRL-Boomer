@@ -1,7 +1,7 @@
 #include "mlrl/common/sampling/weight_vector_bit.hpp"
 
-#include "mlrl/common/thresholds/feature_space.hpp"
-#include "mlrl/common/thresholds/feature_subspace.hpp"
+#include "mlrl/common/rule_refinement/feature_space.hpp"
+#include "mlrl/common/rule_refinement/feature_subspace.hpp"
 
 BitWeightVector::BitWeightVector(uint32 numElements, bool init) : vector_(numElements, init), numNonZeroWeights_(0) {}
 

@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/thresholds/feature_subspace.hpp"
+#include "mlrl/common/rule_refinement/feature_subspace.hpp"
 #include "mlrl/common/util/openmp.hpp"
 
 /**

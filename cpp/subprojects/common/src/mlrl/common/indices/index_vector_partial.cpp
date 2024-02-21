@@ -1,6 +1,6 @@
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
-#include "mlrl/common/thresholds/feature_subspace.hpp"
+#include "mlrl/common/rule_refinement/feature_subspace.hpp"
 
 PartialIndexVector::PartialIndexVector(uint32 numElements, bool init)
     : ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<uint32>>>(

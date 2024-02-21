@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/thresholds/coverage_mask.hpp"
+#include "mlrl/common/rule_refinement/coverage_mask.hpp"
 #include "mlrl/common/util/quality.hpp"
 
 #include <memory>
