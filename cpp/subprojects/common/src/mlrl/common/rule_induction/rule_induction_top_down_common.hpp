@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/thresholds/thresholds_subset.hpp"
+#include "mlrl/common/thresholds/feature_subspace.hpp"
 #include "mlrl/common/util/openmp.hpp"
 
 /**
@@ -36,7 +36,7 @@ struct RuleRefinementEntry final {
  * @tparam RefinementComparator The type of the comparator that is used to compare the potential refinements
  * @param refinementComparator  A reference to an object of template type `RefinementComparator` that should be used to
  *                              compare the potential refinements
- * @param thresholdsSubset      A reference to an object of type `IThresholdsSubset` that should be used to search for
+ * @param featureSubspace       A reference to an object of type `IFeatureSubspace` that should be used to search for
  *                              the potential refinements
  * @param featureIndices        A reference to an object of type `IIndexVector` that provides access to the indices of
  *                              the features that should be considered
@@ -48,7 +48,7 @@ struct RuleRefinementEntry final {
  * @return                      True, if at least one refinement has been found, false otherwise
  */
 template<typename RefinementComparator>
-static inline bool findRefinement(RefinementComparator& refinementComparator, IThresholdsSubset& thresholdsSubset,
+static inline bool findRefinement(RefinementComparator& refinementComparator, IFeatureSubspace& featureSubspace,
                                   const IIndexVector& featureIndices, const IIndexVector& labelIndices,
                                   uint32 minCoverage, uint32 numThreads) {
     bool foundRefinement = false;
@@ -62,7 +62,7 @@ static inline bool findRefinement(RefinementComparator& refinementComparator, IT
         uint32 featureIndex = featureIndices.getIndex(i);
         RuleRefinementEntry<RefinementComparator>& ruleRefinementEntry = ruleRefinementEntries[i];
         ruleRefinementEntry.comparatorPtr = std::make_unique<RefinementComparator>(refinementComparator);
-        ruleRefinementEntry.ruleRefinementPtr = labelIndices.createRuleRefinement(thresholdsSubset, featureIndex);
+        ruleRefinementEntry.ruleRefinementPtr = labelIndices.createRuleRefinement(featureSubspace, featureIndex);
     }
 
     // Search for the best condition among all available features to be added to the current rule...

@@ -79,17 +79,16 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
 
                     // Create a new subset of the given thresholds...
                     const IWeightVector& weights = instanceSampling.sample(rng);
-                    std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr =
-                      weights.createThresholdsSubset(featureSpace);
+                    std::unique_ptr<IFeatureSubspace> featureSubspacePtr = weights.createFeatureSubspace(featureSpace);
 
                     // Filter the thresholds subset according to the conditions of the current rule...
                     for (auto it2 = conditionList.cbegin(); it2 != conditionList.cend(); it2++) {
                         const Condition& condition = *it2;
-                        thresholdsSubsetPtr->filterThresholds(condition);
+                        featureSubspacePtr->filterSubspace(condition);
                     }
 
                     // Revert the statistics based on the predictions of the current rule...
-                    thresholdsSubsetPtr->revertPrediction(prediction);
+                    featureSubspacePtr->revertPrediction(prediction);
 
                     // Learn a new rule...
                     const IIndexVector& labelIndices = refineHeads_ ? labelSampling.sample(rng) : prediction;

@@ -17,7 +17,7 @@ class Irep final : public IRulePruning {
          */
         Irep(RuleCompareFunction ruleCompareFunction) : ruleCompareFunction_(ruleCompareFunction) {}
 
-        std::unique_ptr<CoverageMask> prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
+        std::unique_ptr<CoverageMask> prune(IFeatureSubspace& featureSubspace, IPartition& partition,
                                             ConditionList& conditions, const IPrediction& head) const override {
             uint32 numConditions = conditions.getNumConditions();
             std::unique_ptr<CoverageMask> bestCoverageMaskPtr;
@@ -25,14 +25,14 @@ class Irep final : public IRulePruning {
             // Only rules with more than one condition can be pruned...
             if (numConditions > 1) {
                 // Calculate the quality of the original rule on the prune set...
-                const CoverageMask& originalCoverageMask = thresholdsSubset.getCoverageMask();
-                Quality bestQuality = partition.evaluateOutOfSample(thresholdsSubset, originalCoverageMask, head);
+                const CoverageMask& originalCoverageMask = featureSubspace.getCoverageMask();
+                Quality bestQuality = partition.evaluateOutOfSample(featureSubspace, originalCoverageMask, head);
 
                 // Create a copy of the original coverage mask...
                 bestCoverageMaskPtr = std::make_unique<CoverageMask>(originalCoverageMask);
 
                 // Reset the given thresholds...
-                thresholdsSubset.resetThresholds();
+                featureSubspace.resetSubspace();
 
                 // We process the existing rule's conditions (except for the last one) in the order they have been
                 // learned. At each iteration, we calculate the quality of a rule that only contains the conditions
@@ -43,11 +43,11 @@ class Irep final : public IRulePruning {
                 for (uint32 n = 1; n < numConditions; n++) {
                     // Filter the thresholds by applying the current condition...
                     const Condition& condition = *conditionIterator;
-                    thresholdsSubset.filterThresholds(condition);
+                    featureSubspace.filterSubspace(condition);
 
                     // Calculate the quality of a rule that contains the conditions that have been processed so far...
-                    const CoverageMask& coverageMask = thresholdsSubset.getCoverageMask();
-                    Quality quality = partition.evaluateOutOfSample(thresholdsSubset, coverageMask, head);
+                    const CoverageMask& coverageMask = featureSubspace.getCoverageMask();
+                    Quality quality = partition.evaluateOutOfSample(featureSubspace, coverageMask, head);
 
                     // Check if the quality is better than the best quality seen so far (reaching the same quality with
                     // fewer conditions is considered an improvement)...

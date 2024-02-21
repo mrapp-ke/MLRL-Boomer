@@ -1,7 +1,7 @@
 #include "mlrl/common/sampling/weight_vector_bit.hpp"
 
 #include "mlrl/common/thresholds/feature_space.hpp"
-#include "mlrl/common/thresholds/thresholds_subset.hpp"
+#include "mlrl/common/thresholds/feature_subspace.hpp"
 
 BitWeightVector::BitWeightVector(uint32 numElements, bool init) : vector_(numElements, init), numNonZeroWeights_(0) {}
 
@@ -33,6 +33,6 @@ void BitWeightVector::clear() {
     vector_.clear();
 }
 
-std::unique_ptr<IThresholdsSubset> BitWeightVector::createThresholdsSubset(IFeatureSpace& featureSpace) const {
-    return featureSpace.createSubset(*this);
+std::unique_ptr<IFeatureSubspace> BitWeightVector::createFeatureSubspace(IFeatureSpace& featureSpace) const {
+    return featureSpace.createSubspace(*this);
 }

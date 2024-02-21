@@ -9,7 +9,7 @@
 
 // Forward declarations
 class IRuleRefinement;
-class IThresholdsSubset;
+class IFeatureSubspace;
 
 /**
  * Defines an interface for all classes that provide random access to indices.
@@ -46,11 +46,11 @@ class IIndexVector {
          * Creates and return a new instance of type `IRuleRefinement` that allows to search for the best refinement of
          * an existing rule that predicts only for the labels whose indices are stored in this vector.
          *
-         * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset` that should be used to create
-         *                          the instance
+         * @param featureSubspace   A reference to an object of type `IFeatureSubspace` that should be to search for the
+         *                          refinement
          * @param featureIndex      The index of the feature that should be considered when searching for the refinement
          * @return                  An unique pointer to an object of type `IRuleRefinement` that has been created
          */
-        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
+        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(IFeatureSubspace& featureSubspace,
                                                                       uint32 featureIndex) const = 0;
 };

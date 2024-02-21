@@ -9,7 +9,7 @@
 #include <memory>
 
 // Forward declarations
-class IThresholdsSubset;
+class IFeatureSubspace;
 class SinglePartition;
 class BiPartition;
 class IPrediction;

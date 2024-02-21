@@ -5,7 +5,7 @@
 
 #include "mlrl/common/model/condition_list.hpp"
 #include "mlrl/common/sampling/partition.hpp"
-#include "mlrl/common/thresholds/thresholds_subset.hpp"
+#include "mlrl/common/thresholds/feature_subspace.hpp"
 
 /**
  * Defines an interface for all classes that implement a strategy for pruning individual rules based on a "prune set",
@@ -22,9 +22,8 @@ class IRulePruning {
          * pruned by removing individual conditions in a way that improves over its original quality, measured on the
          * prune set.
          *
-         * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset`, which contains the thresholds
-         *                          that correspond to the subspace of the feature space that is covered by the existing
-         *                          rule
+         * @param featureSubspace   A reference to an object of type `IFeatureSubspace` that includes the training
+         *                          examples covered by the existing rule
          * @param partition         A reference to an object of type `IPartition` that provides access to the indices of
          *                          the training examples that belong to the training set and the holdout set,
          *                          respectively
@@ -36,7 +35,7 @@ class IRulePruning {
          *                          examples that are covered by the pruned rule or a null pointer if the rule was not
          *                          pruned
          */
-        virtual std::unique_ptr<CoverageMask> prune(IThresholdsSubset& thresholdsSubset, IPartition& partition,
+        virtual std::unique_ptr<CoverageMask> prune(IFeatureSubspace& featureSubspace, IPartition& partition,
                                                     ConditionList& conditions, const IPrediction& head) const = 0;
 };
 

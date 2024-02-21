@@ -15,7 +15,7 @@ class IInstanceSampling;
 class IInstanceSamplingFactory;
 class IRowWiseLabelMatrix;
 class IStatistics;
-class IThresholdsSubset;
+class IFeatureSubspace;
 class IPrediction;
 class IMarginalProbabilityCalibrationModel;
 class IMarginalProbabilityCalibrator;
@@ -61,28 +61,28 @@ class IPartition {
          * that do not belong to the current sample and are marked as covered according to a given object of type
          * `CoverageMask`.
          *
-         * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset` that should be used to
-         *                          evaluate the prediction
-         * @param coverageMask      A reference to an object of type `CoverageMask` that keeps track of the examples
-         *                          that are covered by the rule
-         * @param head              A reference to an object of type `IPrediction` that stores the scores that are
-         *                          predicted by the rule
-         * @return                  An object of type `Quality` that stores the calculated quality
+         * @param featureSubspace A reference to an object of type `IFeatureSubspace` that should be used to evaluate
+         *                        the prediction
+         * @param coverageMask    A reference to an object of type `CoverageMask` that keeps track of the examples that
+         *                        are covered by the rule
+         * @param head            A reference to an object of type `IPrediction` that stores the scores that are
+         *                        predicted by the rule
+         * @return                An object of type `Quality` that stores the calculated quality
          */
-        virtual Quality evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
+        virtual Quality evaluateOutOfSample(const IFeatureSubspace& featureSubspace, const CoverageMask& coverageMask,
                                             const IPrediction& head) = 0;
 
         /**
          * Recalculates and updates a rule's prediction based on all examples in the training set that are marked as
          * covered according to a given object of type `CoverageMask`.
          *
-         * @param thresholdsSubset  A reference to an object of type `IThresholdsSubset` that should be used to
-         *                          recalculate the prediction
-         * @param coverageMask      A reference to an object of type `CoverageMask` that keeps track of the examples
-         *                          that are covered by the rule
-         * @param head              A reference to an object of type `IPrediction` to be updated
+         * @param featureSubspace A reference to an object of type `IFeatureSubspace` that should be used to recalculate
+         *                        the prediction
+         * @param coverageMask    A reference to an object of type `CoverageMask` that keeps track of the examples that
+         *                        are covered by the rule
+         * @param head            A reference to an object of type `IPrediction` to be updated
          */
-        virtual void recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
+        virtual void recalculatePrediction(const IFeatureSubspace& featureSubspace, const CoverageMask& coverageMask,
                                            IPrediction& head) = 0;
 
         /**

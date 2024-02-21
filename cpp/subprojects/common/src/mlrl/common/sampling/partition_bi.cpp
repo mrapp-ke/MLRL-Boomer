@@ -4,7 +4,7 @@
 #include "mlrl/common/rule_refinement/prediction.hpp"
 #include "mlrl/common/sampling/instance_sampling.hpp"
 #include "mlrl/common/stopping/stopping_criterion.hpp"
-#include "mlrl/common/thresholds/thresholds_subset.hpp"
+#include "mlrl/common/thresholds/feature_subspace.hpp"
 
 #include <algorithm>
 
@@ -76,14 +76,14 @@ std::unique_ptr<IInstanceSampling> BiPartition::createInstanceSampling(const IIn
     return labelMatrix.createInstanceSampling(factory, *this, statistics);
 }
 
-Quality BiPartition::evaluateOutOfSample(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
+Quality BiPartition::evaluateOutOfSample(const IFeatureSubspace& featureSubspace, const CoverageMask& coverageMask,
                                          const IPrediction& head) {
-    return thresholdsSubset.evaluateOutOfSample(*this, coverageMask, head);
+    return featureSubspace.evaluateOutOfSample(*this, coverageMask, head);
 }
 
-void BiPartition::recalculatePrediction(const IThresholdsSubset& thresholdsSubset, const CoverageMask& coverageMask,
+void BiPartition::recalculatePrediction(const IFeatureSubspace& featureSubspace, const CoverageMask& coverageMask,
                                         IPrediction& head) {
-    thresholdsSubset.recalculatePrediction(*this, coverageMask, head);
+    featureSubspace.recalculatePrediction(*this, coverageMask, head);
 }
 
 std::unique_ptr<IMarginalProbabilityCalibrationModel> BiPartition::fitMarginalProbabilityCalibrationModel(

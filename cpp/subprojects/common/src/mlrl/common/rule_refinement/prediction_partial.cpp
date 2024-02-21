@@ -134,9 +134,9 @@ std::unique_ptr<IStatisticsSubset> PartialPrediction::createStatisticsSubset(
     return statistics.createSubset(indexVector_, weights);
 }
 
-std::unique_ptr<IRuleRefinement> PartialPrediction::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
+std::unique_ptr<IRuleRefinement> PartialPrediction::createRuleRefinement(IFeatureSubspace& featureSubspace,
                                                                          uint32 featureIndex) const {
-    return indexVector_.createRuleRefinement(thresholdsSubset, featureIndex);
+    return indexVector_.createRuleRefinement(featureSubspace, featureIndex);
 }
 
 void PartialPrediction::apply(IStatistics& statistics, uint32 statisticIndex) const {

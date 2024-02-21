@@ -1,7 +1,7 @@
 #include "mlrl/common/thresholds/coverage_mask.hpp"
 
 #include "mlrl/common/rule_refinement/prediction.hpp"
-#include "mlrl/common/thresholds/thresholds_subset.hpp"
+#include "mlrl/common/thresholds/feature_subspace.hpp"
 
 CoverageMask::CoverageMask(uint32 numElements)
     : DenseVectorDecorator<AllocatedVector<uint32>>(AllocatedVector<uint32>(numElements, true)), indicatorValue_(0) {}

@@ -77,7 +77,7 @@ class ExactThresholds final : public IFeatureSpace {
          *                      examples
          */
         template<typename WeightVector>
-        class ThresholdsSubset final : public IThresholdsSubset {
+        class ThresholdsSubset final : public IFeatureSubspace {
             private:
 
                 /**
@@ -203,7 +203,7 @@ class ExactThresholds final : public IFeatureSpace {
                       coverageMask_(thresholdsSubset.coverageMask_),
                       numModifications_(thresholdsSubset.numModifications_) {}
 
-                std::unique_ptr<IThresholdsSubset> copy() const override {
+                std::unique_ptr<IFeatureSubspace> copy() const override {
                     return std::make_unique<ThresholdsSubset<WeightVector>>(*this);
                 }
 
@@ -217,7 +217,7 @@ class ExactThresholds final : public IFeatureSpace {
                     return createRuleRefinementInternally(labelIndices, featureIndex);
                 }
 
-                void filterThresholds(const Condition& condition) override {
+                void filterSubspace(const Condition& condition) override {
                     uint32 featureIndex = condition.featureIndex;
                     auto cacheFilteredIterator = cacheFiltered_.emplace(featureIndex, FilteredCacheEntry()).first;
                     FilteredCacheEntry& cacheEntry = cacheFilteredIterator->second;
@@ -245,7 +245,7 @@ class ExactThresholds final : public IFeatureSpace {
                     cacheEntry.numConditions = numModifications_;
                 }
 
-                void resetThresholds() override {
+                void resetSubspace() override {
                     numModifications_ = 0;
                     numCovered_ = weights_.getNumNonZeroWeights();
                     cacheFiltered_.clear();
@@ -358,21 +358,21 @@ class ExactThresholds final : public IFeatureSpace {
             return statisticsProvider_;
         }
 
-        std::unique_ptr<IThresholdsSubset> createSubset(const EqualWeightVector& weights) override {
+        std::unique_ptr<IFeatureSubspace> createSubspace(const EqualWeightVector& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
             std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
             return std::make_unique<ExactThresholds::ThresholdsSubset<EqualWeightVector>>(
               *this, std::move(weightedStatisticsPtr), weights);
         }
 
-        std::unique_ptr<IThresholdsSubset> createSubset(const BitWeightVector& weights) override {
+        std::unique_ptr<IFeatureSubspace> createSubspace(const BitWeightVector& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
             std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
             return std::make_unique<ExactThresholds::ThresholdsSubset<BitWeightVector>>(
               *this, std::move(weightedStatisticsPtr), weights);
         }
 
-        std::unique_ptr<IThresholdsSubset> createSubset(const DenseWeightVector<uint32>& weights) override {
+        std::unique_ptr<IFeatureSubspace> createSubspace(const DenseWeightVector<uint32>& weights) override {
             IStatistics& statistics = statisticsProvider_.get();
             std::unique_ptr<IWeightedStatistics> weightedStatisticsPtr = statistics.createWeightedStatistics(weights);
             return std::make_unique<ExactThresholds::ThresholdsSubset<DenseWeightVector<uint32>>>(
