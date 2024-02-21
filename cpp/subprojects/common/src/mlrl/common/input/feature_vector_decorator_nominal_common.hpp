@@ -77,7 +77,7 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
         for (uint32 j = 0; j < numIndices; j++) {
             uint32 index = indexIterator[j];
 
-            if (coverageMask.isCovered(index)) {
+            if (coverageMask[index]) {
                 filteredIndexIterator[numFilteredIndices] = index;
                 numFilteredIndices++;
             }

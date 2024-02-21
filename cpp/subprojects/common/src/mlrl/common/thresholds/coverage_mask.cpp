@@ -17,6 +17,6 @@ void CoverageMask::reset() {
     setViewToZeros(this->begin(), this->getNumElements());
 }
 
-bool CoverageMask::isCovered(uint32 pos) const {
-    return this->view.array[pos] == indicatorValue;
+bool CoverageMask::operator[](uint32 index) const {
+    return this->view.array[index] == indicatorValue;
 }
