@@ -6,6 +6,47 @@
 #include "feature_vector_binned_allocated.hpp"
 #include "feature_vector_decorator_binned_common.hpp"
 
+#include <optional>
+
+template<typename Decorator>
+static inline std::optional<BinnedFeatureVector> createFilteredBinnedFeatureVectorView(
+  const Decorator& decorator, std::unique_ptr<IFeatureVector>& existing, const Interval& interval) {
+    const BinnedFeatureVector& featureVector = decorator.getView().firstView;
+    uint32 start;
+    uint32 end;
+
+    if (interval.inverse) {
+        if (interval.start > 0) {
+            start = 0;
+            end = interval.start;
+        } else {
+            start = interval.end;
+            end = featureVector.numBins;
+        }
+    } else {
+        start = interval.start;
+
+        if (start > 0) {
+            end = featureVector.numBins;
+        } else {
+            end = interval.end;
+        }
+    }
+
+    uint32 numFilteredBins = end - start;
+
+    if (numFilteredBins > 0) {
+        uint32 sparseBinIndex = featureVector.sparseBinIndex;
+        sparseBinIndex = sparseBinIndex >= start ? sparseBinIndex - start : 0;
+        sparseBinIndex = sparseBinIndex >= numFilteredBins ? numFilteredBins - 1 : sparseBinIndex;
+        return BinnedFeatureVector(&featureVector.thresholds[start], featureVector.indices,
+                                   &featureVector.indptr[start], numFilteredBins,
+                                   featureVector.indptr[featureVector.numBins], sparseBinIndex);
+    }
+
+    return {};
+}
+
 template<typename View, typename Decorator>
 static inline std::unique_ptr<IFeatureVector> createFilteredBinnedFeatureVectorDecorator(
   const View& view, std::unique_ptr<IFeatureVector>& existing, const CoverageMask& coverageMask) {
@@ -100,8 +141,14 @@ class BinnedFeatureVectorView final : public AbstractFeatureVectorDecorator<Binn
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {
-            // TODO Implement
-            return nullptr;
+            std::optional<BinnedFeatureVector> filteredFeatureVector =
+              createFilteredBinnedFeatureVectorView(*this, existing, interval);
+
+            if (filteredFeatureVector) {
+                return std::make_unique<BinnedFeatureVectorView>(std::move(*filteredFeatureVector));
+            }
+
+            return std::make_unique<EqualFeatureVector>();
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
@@ -158,8 +205,22 @@ class AllocatedBinnedFeatureVectorView final : public AbstractFeatureVectorDecor
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {
-            // TODO Implement
-            return nullptr;
+            std::optional<BinnedFeatureVector> filteredFeatureVector =
+              createFilteredBinnedFeatureVectorView(*this, existing, interval);
+
+            if (filteredFeatureVector) {
+                AllocatedBinnedFeatureVectorView* existingView =
+                  dynamic_cast<AllocatedBinnedFeatureVectorView*>(existing.get());
+
+                if (existingView) {
+                    return std::make_unique<AllocatedBinnedFeatureVectorView>(std::move(existingView->allocatedView),
+                                                                              std::move(*filteredFeatureVector));
+                }
+
+                return std::make_unique<BinnedFeatureVectorView>(std::move(*filteredFeatureVector));
+            }
+
+            return std::make_unique<EqualFeatureVector>();
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
@@ -234,8 +295,22 @@ class BinnedFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDec
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {
-            // TODO Implement
-            return nullptr;
+            std::optional<BinnedFeatureVector> filteredFeatureVector =
+              createFilteredBinnedFeatureVectorView(*this, existing, interval);
+
+            if (filteredFeatureVector) {
+                BinnedFeatureVectorDecorator* existingDecorator =
+                  dynamic_cast<BinnedFeatureVectorDecorator*>(existing.get());
+
+                if (existingDecorator) {
+                    return std::make_unique<AllocatedBinnedFeatureVectorView>(
+                      std::move(existingDecorator->view.firstView), std::move(*filteredFeatureVector));
+                }
+
+                return std::make_unique<BinnedFeatureVectorView>(std::move(*filteredFeatureVector));
+            }
+
+            return std::make_unique<EqualFeatureVector>();
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
