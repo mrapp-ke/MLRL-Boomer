@@ -12,27 +12,9 @@ template<typename Decorator>
 static inline std::optional<BinnedFeatureVector> createFilteredBinnedFeatureVectorView(
   const Decorator& decorator, std::unique_ptr<IFeatureVector>& existing, const Interval& interval) {
     const BinnedFeatureVector& featureVector = decorator.getView().firstView;
-    uint32 start;
-    uint32 end;
-
-    if (interval.inverse) {
-        if (interval.start > 0) {
-            start = 0;
-            end = interval.start;
-        } else {
-            start = interval.end;
-            end = featureVector.numBins;
-        }
-    } else {
-        start = interval.start;
-
-        if (start > 0) {
-            end = featureVector.numBins;
-        } else {
-            end = interval.end;
-        }
-    }
-
+    Tuple<uint32> tuple = getStartAndEndOfOpenInterval(interval, featureVector.numBins);
+    uint32 start = tuple.first;
+    uint32 end = tuple.second;
     uint32 numFilteredBins = end - start;
 
     if (numFilteredBins > 0) {
