@@ -4,8 +4,7 @@
 #pragma once
 
 #include "feature_vector_binned_allocated.hpp"
-#include "feature_vector_decorator.hpp"
-#include "mlrl/common/input/feature_vector_equal.hpp"
+#include "feature_vector_decorator_binned_common.hpp"
 
 template<typename View, typename Decorator>
 static inline std::unique_ptr<IFeatureVector> createFilteredBinnedFeatureVectorDecorator(
@@ -95,7 +94,8 @@ class BinnedFeatureVectorView final : public AbstractFeatureVectorDecorator<Binn
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
                                              uint32 indicatorValue,
                                              IWeightedStatistics& statistics) const override final {
-            // TODO Implement
+            updateCoverageMaskAndStatisticsBasedOnBinnedFeatureVector<BinnedFeatureVectorView, BinnedFeatureVector>(
+              *this, interval, coverageMask, indicatorValue, statistics);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
@@ -151,7 +151,9 @@ class AllocatedBinnedFeatureVectorView final : public AbstractFeatureVectorDecor
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
                                              uint32 indicatorValue,
                                              IWeightedStatistics& statistics) const override final {
-            // TODO Implement
+            updateCoverageMaskAndStatisticsBasedOnBinnedFeatureVector<AllocatedBinnedFeatureVectorView,
+                                                                      BinnedFeatureVector>(
+              *this, interval, coverageMask, indicatorValue, statistics);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
@@ -172,7 +174,7 @@ class AllocatedBinnedFeatureVectorView final : public AbstractFeatureVectorDecor
  * Provides random read and write access, as well as read and write access via iterators, to the values and thresholds
  * stored in an `AllocatedBinnedFeatureVector`.
  */
-class BinnedFeatureVectorDecorator final : public AbstractFeatureVectorDecorator<AllocatedBinnedFeatureVector> {
+class BinnedFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDecorator<AllocatedBinnedFeatureVector> {
     public:
 
         /**
@@ -181,8 +183,8 @@ class BinnedFeatureVectorDecorator final : public AbstractFeatureVectorDecorator
          */
         BinnedFeatureVectorDecorator(AllocatedBinnedFeatureVector&& firstView,
                                      AllocatedMissingFeatureVector&& secondView)
-            : AbstractFeatureVectorDecorator<AllocatedBinnedFeatureVector>(std::move(firstView),
-                                                                           std::move(secondView)) {}
+            : AbstractBinnedFeatureVectorDecorator<AllocatedBinnedFeatureVector>(std::move(firstView),
+                                                                                 std::move(secondView)) {}
 
         /**
          * @param other A reference to an object of type `BinnedFeatureVectorDecorator` that should be copied
@@ -228,12 +230,6 @@ class BinnedFeatureVectorDecorator final : public AbstractFeatureVectorDecorator
             featureBasedSearch.searchForBinnedRefinement(this->view.firstView, this->view.secondView, statisticsSubset,
                                                          comparator, numExamplesWithNonZeroWeights, minCoverage,
                                                          refinement);
-        }
-
-        void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
-                                             uint32 indicatorValue,
-                                             IWeightedStatistics& statistics) const override final {
-            // TODO Implement
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
