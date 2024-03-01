@@ -14,6 +14,11 @@ A major update to the BOOMER algorithm that introduces the following changes.
 This release comes with several API changes. For an updated overview of the available parameters and command line arguments, please refer to the [documentation](https://mlrl-boomer.readthedocs.io/en/0.10.0/).
 ```
 
+### Algorithmic Enhancements
+
+- **Space-efficient data structures are now used for storing feature values**, depending on whether the feature is numerical, ordinal, nominal, or binary. This also enables to use optimized code paths for dealing with these different types of features.
+- **The implementation of feature binning has been reworked** in a way that avoids redundant code and results in a reduction of training times due to the use of the data structures mentioned above.
+
 ### Additions to the Command Line API
 
 - **Information about the program can now be printed** via the argument `-v` or `--version`.
@@ -30,7 +35,6 @@ This release comes with several API changes. For an updated overview of the avai
 
 ### Quality-of-Life Improvements
 
-- The implementation of feature binning has been reworked in a way that helps avoiding redundant code.
 - The documentation has been updated to a more modern theme supporting light and dark theme variants.
 - A build option that allows to disable multi-threading support via OpenMP at compile-time has been added.
 - The groundwork for GPU support was laid. It can be disabled at compile-time via a build option.
