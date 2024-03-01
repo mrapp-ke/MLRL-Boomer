@@ -31,7 +31,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Detect changes
-        uses: dorny/paths-filter@v2
+        uses: dorny/paths-filter@v3
         id: filter
         with:
           filters: |
@@ -209,7 +209,7 @@ jobs:
         with:
           path: C:\Program Files\Git\usr\bin\link.EXE
       - name: Install OpenCL
-        uses: johnwason/vcpkg-action@v5
+        uses: johnwason/vcpkg-action@v6
         with:
           pkgs: opencl
           triplet: x64-windows
