@@ -22,7 +22,7 @@ jobs:
       any: ${{ steps.filter.outputs.any }}
     steps:
       - name: Look up Git repository in cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: .git/
           key: test-build-cache-git-${{ github.run_id }}
@@ -66,7 +66,7 @@ jobs:
               - *python_tests
               - *doc
       - name: Save Git repository to cache
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         if: success() || failure()
         with:
           path: .git/
@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Look up Git repository in cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: .git/
           key: test-build-cache-git-${{ github.run_id }}
@@ -158,7 +158,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Look up Git repository in cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: .git/
           key: test-build-cache-git-${{ github.run_id }}
@@ -193,7 +193,7 @@ jobs:
       SCCACHE_GHA_ENABLED: "true"
     steps:
       - name: Look up Git repository in cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           enableCrossOsArchive: true
           path: .git/
@@ -215,7 +215,7 @@ jobs:
           triplet: x64-windows
           token: ${{ github.token }}
       - name: Prepare sccache
-        uses: mozilla-actions/sccache-action@v0.0.3
+        uses: mozilla-actions/sccache-action@v0.0.4
       - name: Compile via MSVC
         run: |
           $env:TEST_SUPPORT = "disabled"

@@ -19,7 +19,7 @@ jobs:
           python3 -m build --wheel python/subprojects/testbed/
           cp python/subprojects/testbed/dist/*.whl wheelhouse/
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: './wheelhouse/*.whl'
           if-no-files-found: error
@@ -85,7 +85,7 @@ jobs:
         with:
           package-dir: python/subprojects/boosting
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: './wheelhouse/*.whl'
           if-no-files-found: error
@@ -132,7 +132,7 @@ jobs:
         with:
           package-dir: python/subprojects/boosting
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: './wheelhouse/*.whl'
           if-no-files-found: error
