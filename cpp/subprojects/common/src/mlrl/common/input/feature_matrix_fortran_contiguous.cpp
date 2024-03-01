@@ -37,26 +37,9 @@ class FortranContiguousFeatureMatrix final : public DenseMatrixDecorator<Fortran
             return this->getNumCols();
         }
 
-        void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override {
-            value_const_iterator columnIterator = this->values_cbegin(featureIndex);
-            uint32 numElements = this->getNumRows();
-            featureVectorPtr = std::make_unique<FeatureVector>(numElements);
-            FeatureVector::iterator vectorIterator = featureVectorPtr->begin();
-            uint32 i = 0;
-
-            for (uint32 j = 0; j < numElements; j++) {
-                float32 value = columnIterator[j];
-
-                if (std::isnan(value)) {
-                    featureVectorPtr->addMissingIndex(j);
-                } else {
-                    vectorIterator[i].index = j;
-                    vectorIterator[i].value = value;
-                    i++;
-                }
-            }
-
-            featureVectorPtr->setNumElements(i, true);
+        std::unique_ptr<IFeatureVector> createFeatureVector(uint32 featureIndex,
+                                                            const IFeatureType& featureType) const override {
+            return featureType.createFeatureVector(featureIndex, this->getView());
         }
 };
 

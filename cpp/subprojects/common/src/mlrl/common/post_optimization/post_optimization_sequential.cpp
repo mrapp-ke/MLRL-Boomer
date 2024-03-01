@@ -67,7 +67,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
             : modelBuilder_(modelBuilder), numIterations_(numIterations), refineHeads_(refineHeads),
               resampleFeatures_(resampleFeatures) {}
 
-        void optimizeModel(IThresholds& thresholds, const IRuleInduction& ruleInduction, IPartition& partition,
+        void optimizeModel(IFeatureSpace& featureSpace, const IRuleInduction& ruleInduction, IPartition& partition,
                            ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
                            IFeatureSampling& featureSampling, const IRulePruning& rulePruning,
                            const IPostProcessor& postProcessor, RNG& rng) const override {
@@ -79,23 +79,23 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
 
                     // Create a new subset of the given thresholds...
                     const IWeightVector& weights = instanceSampling.sample(rng);
-                    std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = weights.createThresholdsSubset(thresholds);
+                    std::unique_ptr<IFeatureSubspace> featureSubspacePtr = weights.createFeatureSubspace(featureSpace);
 
                     // Filter the thresholds subset according to the conditions of the current rule...
                     for (auto it2 = conditionList.cbegin(); it2 != conditionList.cend(); it2++) {
                         const Condition& condition = *it2;
-                        thresholdsSubsetPtr->filterThresholds(condition);
+                        featureSubspacePtr->filterSubspace(condition);
                     }
 
                     // Revert the statistics based on the predictions of the current rule...
-                    thresholdsSubsetPtr->revertPrediction(prediction);
+                    featureSubspacePtr->revertPrediction(prediction);
 
                     // Learn a new rule...
                     const IIndexVector& labelIndices = refineHeads_ ? labelSampling.sample(rng) : prediction;
                     RuleReplacementBuilder ruleReplacementBuilder(intermediateRule);
 
                     if (resampleFeatures_) {
-                        ruleInduction.induceRule(thresholds, labelIndices, weights, partition, featureSampling,
+                        ruleInduction.induceRule(featureSpace, labelIndices, weights, partition, featureSampling,
                                                  rulePruning, postProcessor, rng, ruleReplacementBuilder);
                     } else {
                         std::unordered_set<uint32> uniqueFeatureIndices;
@@ -114,7 +114,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                         }
 
                         PredefinedFeatureSampling predefinedFeatureSampling(indexVector);
-                        ruleInduction.induceRule(thresholds, labelIndices, weights, partition,
+                        ruleInduction.induceRule(featureSpace, labelIndices, weights, partition,
                                                  predefinedFeatureSampling, rulePruning, postProcessor, rng,
                                                  ruleReplacementBuilder);
                     }

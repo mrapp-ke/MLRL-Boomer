@@ -1,6 +1,7 @@
 #include "mlrl/common/learner.hpp"
 
 #include "mlrl/common/prediction/label_space_info_no.hpp"
+#include "mlrl/common/rule_refinement/feature_space_tabular.hpp"
 #include "mlrl/common/stopping/stopping_criterion_size.hpp"
 #include "mlrl/common/util/validation.hpp"
 
@@ -88,7 +89,7 @@ AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
       ruleModelAssemblageConfigPtr_(std::make_unique<SequentialRuleModelAssemblageConfig>(defaultRuleConfigPtr_)),
       ruleInductionConfigPtr_(
         std::make_unique<GreedyTopDownRuleInductionConfig>(ruleCompareFunction_, parallelRuleRefinementConfigPtr_)),
-      featureBinningConfigPtr_(std::make_unique<NoFeatureBinningConfig>(parallelStatisticUpdateConfigPtr_)),
+      featureBinningConfigPtr_(std::make_unique<NoFeatureBinningConfig>()),
       labelSamplingConfigPtr_(std::make_unique<NoLabelSamplingConfig>()),
       instanceSamplingConfigPtr_(std::make_unique<NoInstanceSamplingConfig>()),
       featureSamplingConfigPtr_(std::make_unique<NoFeatureSamplingConfig>()),
@@ -208,9 +209,13 @@ std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleMode
     return config_.getRuleModelAssemblageConfigPtr()->createRuleModelAssemblageFactory(labelMatrix);
 }
 
-std::unique_ptr<IThresholdsFactory> AbstractRuleLearner::createThresholdsFactory(
+std::unique_ptr<IFeatureSpaceFactory> AbstractRuleLearner::createFeatureSpaceFactory(
   const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
-    return config_.getFeatureBinningConfigPtr()->createThresholdsFactory(featureMatrix, labelMatrix);
+    std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr =
+      config_.getFeatureBinningConfigPtr()->createFeatureBinningFactory(featureMatrix, labelMatrix);
+    uint32 numThreads =
+      config_.getParallelStatisticUpdateConfigPtr()->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
+    return std::make_unique<TabularFeatureSpaceFactory>(std::move(featureBinningFactoryPtr), numThreads);
 }
 
 std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory(
@@ -400,11 +405,11 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
     std::unique_ptr<IStatisticsProvider> statisticsProviderPtr =
       labelMatrix.createStatisticsProvider(*statisticsProviderFactoryPtr);
 
-    // Create thresholds...
-    std::unique_ptr<IThresholdsFactory> thresholdsFactoryPtr =
-      this->createThresholdsFactory(featureMatrix, labelMatrix);
-    std::unique_ptr<IThresholds> thresholdsPtr =
-      thresholdsFactoryPtr->create(featureMatrix, featureInfo, *statisticsProviderPtr);
+    // Create feature space...
+    std::unique_ptr<IFeatureSpaceFactory> featureSpaceFactoryPtr =
+      this->createFeatureSpaceFactory(featureMatrix, labelMatrix);
+    std::unique_ptr<IFeatureSpace> featureSpacePtr =
+      featureSpaceFactoryPtr->create(featureMatrix, featureInfo, *statisticsProviderPtr);
 
     // Create rule induction...
     std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr =
@@ -440,10 +445,10 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
       ruleModelAssemblageFactoryPtr->create(std::move(stoppingCriterionFactoryPtr));
     ruleModelAssemblagePtr->induceRules(*ruleInductionPtr, *rulePruningPtr, *postProcessorPtr, partition,
                                         *labelSamplingPtr, *instanceSamplingPtr, *featureSamplingPtr,
-                                        *statisticsProviderPtr, *thresholdsPtr, modelBuilder, rng);
+                                        *statisticsProviderPtr, *featureSpacePtr, modelBuilder, rng);
 
     // Post-optimize the model...
-    postOptimizationPtr->optimizeModel(*thresholdsPtr, *ruleInductionPtr, partition, *labelSamplingPtr,
+    postOptimizationPtr->optimizeModel(*featureSpacePtr, *ruleInductionPtr, partition, *labelSamplingPtr,
                                        *instanceSamplingPtr, *featureSamplingPtr, *rulePruningPtr, *postProcessorPtr,
                                        rng);
 

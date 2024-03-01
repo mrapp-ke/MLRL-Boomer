@@ -14,11 +14,11 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 1):
 
 Labels                   6
-Label Density           30.56
-Label Sparsity          69.44
-Label Imbalance Ratio    1.66
-Label Cardinality        1.83
-Distinct Label Vectors  18
+Label Density           31.67
+Label Sparsity          68.33
+Label Imbalance Ratio    2.06
+Label Cardinality        1.9
+Distinct Label Vectors  16
 
 INFO Fold 2 / 10:
 INFO Fitting model to 533 training examples...
@@ -32,11 +32,11 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 2):
 
 Labels                   6
-Label Density           33.61
-Label Sparsity          66.39
-Label Imbalance Ratio    7.15
-Label Cardinality        2.02
-Distinct Label Vectors  20
+Label Density           32.78
+Label Sparsity          67.22
+Label Imbalance Ratio    7.11
+Label Cardinality        1.97
+Distinct Label Vectors  19
 
 INFO Fold 3 / 10:
 INFO Fitting model to 533 training examples...
@@ -50,10 +50,10 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 3):
 
 Labels                   6
-Label Density           29.44
-Label Sparsity          70.56
-Label Imbalance Ratio    2.23
-Label Cardinality        1.77
+Label Density           30.28
+Label Sparsity          69.72
+Label Imbalance Ratio    2.1
+Label Cardinality        1.82
 Distinct Label Vectors  15
 
 INFO Fold 4 / 10:
@@ -68,11 +68,11 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 4):
 
 Labels                   6
-Label Density           33.05
-Label Sparsity          66.95
-Label Imbalance Ratio    1.84
-Label Cardinality        1.98
-Distinct Label Vectors  16
+Label Density           31.64
+Label Sparsity          68.36
+Label Imbalance Ratio    1.92
+Label Cardinality        1.9
+Distinct Label Vectors  17
 
 INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
@@ -86,11 +86,11 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 5):
 
 Labels                   6
-Label Density           31.64
-Label Sparsity          68.36
-Label Imbalance Ratio    1.51
-Label Cardinality        1.9
-Distinct Label Vectors  11
+Label Density           33.9
+Label Sparsity          66.1
+Label Imbalance Ratio    1.8
+Label Cardinality        2.03
+Distinct Label Vectors  12
 
 INFO Fold 6 / 10:
 INFO Fitting model to 534 training examples...
@@ -104,11 +104,11 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 6):
 
 Labels                   6
-Label Density           29.38
-Label Sparsity          70.62
-Label Imbalance Ratio    1.67
-Label Cardinality        1.76
-Distinct Label Vectors  17
+Label Density           31.07
+Label Sparsity          68.93
+Label Imbalance Ratio    2
+Label Cardinality        1.86
+Distinct Label Vectors  18
 
 INFO Fold 7 / 10:
 INFO Fitting model to 534 training examples...
@@ -122,10 +122,10 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 7):
 
 Labels                   6
-Label Density           29.38
-Label Sparsity          70.62
-Label Imbalance Ratio    2.62
-Label Cardinality        1.76
+Label Density           26.84
+Label Sparsity          73.16
+Label Imbalance Ratio    2.66
+Label Cardinality        1.61
 Distinct Label Vectors  12
 
 INFO Fold 8 / 10:
@@ -140,11 +140,11 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 8):
 
 Labels                   6
-Label Density           34.46
-Label Sparsity          65.54
-Label Imbalance Ratio    1.9
-Label Cardinality        2.07
-Distinct Label Vectors  12
+Label Density           30.51
+Label Sparsity          69.49
+Label Imbalance Ratio    1.75
+Label Cardinality        1.83
+Distinct Label Vectors  11
 
 INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
@@ -158,11 +158,11 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 9):
 
 Labels                   6
-Label Density           27.68
-Label Sparsity          72.32
-Label Imbalance Ratio    2.09
-Label Cardinality        1.66
-Distinct Label Vectors  13
+Label Density           29.66
+Label Sparsity          70.34
+Label Imbalance Ratio    2.1
+Label Cardinality        1.78
+Distinct Label Vectors  15
 
 INFO Fold 10 / 10:
 INFO Fitting model to 534 training examples...
@@ -178,8 +178,8 @@ INFO Prediction characteristics for test data (Fold 10):
 Labels                   6
 Label Density           28.53
 Label Sparsity          71.47
-Label Imbalance Ratio    2.58
+Label Imbalance Ratio    4.61
 Label Cardinality        1.71
-Distinct Label Vectors  12
+Distinct Label Vectors  13
 
 INFO Successfully finished after <duration>

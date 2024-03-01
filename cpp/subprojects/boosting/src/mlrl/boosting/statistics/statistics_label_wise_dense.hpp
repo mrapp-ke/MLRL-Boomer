@@ -51,8 +51,8 @@ namespace boosting {
     template<typename LabelMatrix>
     class DenseLabelWiseStatistics final
         : public AbstractLabelWiseStatistics<LabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticMatrix,
-                                             DenseLabelWiseStatisticMatrix, NumericCContiguousMatrix<float64>,
-                                             ILabelWiseLoss, IEvaluationMeasure, ILabelWiseRuleEvaluationFactory> {
+                                             NumericCContiguousMatrix<float64>, ILabelWiseLoss, IEvaluationMeasure,
+                                             ILabelWiseRuleEvaluationFactory> {
         public:
 
             /**
@@ -78,8 +78,8 @@ namespace boosting {
                                      std::unique_ptr<DenseLabelWiseStatisticMatrix> statisticMatrixPtr,
                                      std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
                 : AbstractLabelWiseStatistics<LabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticMatrix,
-                                              DenseLabelWiseStatisticMatrix, NumericCContiguousMatrix<float64>,
-                                              ILabelWiseLoss, IEvaluationMeasure, ILabelWiseRuleEvaluationFactory>(
+                                              NumericCContiguousMatrix<float64>, ILabelWiseLoss, IEvaluationMeasure,
+                                              ILabelWiseRuleEvaluationFactory>(
                   std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
                   std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 

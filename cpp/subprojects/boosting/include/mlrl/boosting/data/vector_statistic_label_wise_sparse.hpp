@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/view_histogram_label_wise_sparse.hpp"
+#include "mlrl/common/data/triple.hpp"
 #include "mlrl/common/data/tuple.hpp"
 #include "mlrl/common/data/view_matrix_sparse_set.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
@@ -264,56 +264,6 @@ namespace boosting {
              * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
             void addToSubset(const SparseSetView<Tuple<float64>>& view, uint32 row, const PartialIndexVector& indices,
-                             float64 weight);
-
-            /**
-             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseHistogramView`, whose positions
-             * are given as a `CompleteIndexVector`, to this vector.
-             *
-             * @param view      A reference to an object of type `SparseLabelWiseHistogramView` that stores the
-             *                  gradients and Hessians to be added to this vector
-             * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
-             */
-            void addToSubset(const SparseLabelWiseHistogramView& view, uint32 row, const CompleteIndexVector& indices);
-
-            /**
-             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseHistogramView`, whose positions
-             * are given as a `PartialIndexVector`, to this vector.
-             *
-             * @param view      A reference to an object of type `SparseLabelWiseHistogramView` that stores the
-             *                  gradients and Hessians to be added to this vector
-             * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
-             */
-            void addToSubset(const SparseLabelWiseHistogramView& view, uint32 row, const PartialIndexVector& indices);
-
-            /**
-             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseHistogramView`, whose positions
-             * are given as a `CompleteIndexVector`, to this vector. The gradients and Hessians to be added are
-             * multiplied by a specific weight.
-             *
-             * @param view      A reference to an object of type `SparseLabelWiseHistogramView` that stores the
-             *                  gradients and Hessians to be added to this vector
-             * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `CompleteIndexVector' that provides access to the indices
-             * @param weight    The weight, the gradients and Hessians should be multiplied by
-             */
-            void addToSubset(const SparseLabelWiseHistogramView& view, uint32 row, const CompleteIndexVector& indices,
-                             float64 weight);
-
-            /**
-             * Adds certain gradients and Hessians in a single row of a `SparseLabelWiseHistogramView`, whose positions
-             * are given as a `PartialIndexVector`, to this vector. The gradients and Hessians to be added are
-             * multiplied by a specific weight.
-             *
-             * @param view      A reference to an object of type `SparseLabelWiseHistogramView` that stores the
-             *                  gradients and Hessians to be added to this vector
-             * @param row       The index of the row to be added to this vector
-             * @param indices   A reference to a `PartialIndexVector' that provides access to the indices
-             * @param weight    The weight, the gradients and Hessians should be multiplied by
-             */
-            void addToSubset(const SparseLabelWiseHistogramView& view, uint32 row, const PartialIndexVector& indices,
                              float64 weight);
 
             /**

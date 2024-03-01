@@ -528,24 +528,6 @@ namespace seco {
               const PartialIndexVector& labelIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, labelIndices);
             }
-
-            /**
-             * @see `IWeightedStatistics::createHistogram`
-             */
-            std::unique_ptr<IHistogram> createHistogram(const DenseBinIndexVector& binIndexVector,
-                                                        uint32 numBins) const override {
-                // TODO Support creation of histograms
-                return nullptr;
-            }
-
-            /**
-             * @see `IWeightedStatistics::createHistogram`
-             */
-            std::unique_ptr<IHistogram> createHistogram(const DokBinIndexVector& binIndexVector,
-                                                        uint32 numBins) const override {
-                // TODO Support creation of histograms
-                return nullptr;
-            }
     };
 
     template<typename Prediction, typename CoverageMatrix>
