@@ -16,22 +16,6 @@ class IFeatureType {
         virtual ~IFeatureType() {}
 
         /**
-         * Returns whether the feature is ordinal or not.
-         *
-         * @return True, if the feature is ordinal, false otherwise
-         */
-        // TODO Remove
-        virtual bool isOrdinal() const = 0;
-
-        /**
-         * Returns whether the feature is nominal or not.
-         *
-         * @return True, if the feature is nominal, false otherwise
-         */
-        // TODO Remove
-        virtual bool isNominal() const = 0;
-
-        /**
          * Creates and returns a feature vector that stores the feature values taken from a given Fortran-contiguous
          * matrix for a certain feature.
          *

@@ -3,13 +3,14 @@
  */
 #pragma once
 
+#include "feature_vector_decorator_binned_common.hpp"
 #include "feature_vector_decorator_nominal_common.hpp"
 
 /**
  * Provides random read and write access, as well as read and write access via iterators, to the values and indicies of
  * training examples stored in an `BinaryFeatureVector`.
  */
-class BinaryFeatureVectorDecorator final : public AbstractNominalFeatureVectorDecorator {
+class BinaryFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDecorator<AllocatedNominalFeatureVector> {
     public:
 
         /**
@@ -18,30 +19,29 @@ class BinaryFeatureVectorDecorator final : public AbstractNominalFeatureVectorDe
          */
         BinaryFeatureVectorDecorator(AllocatedNominalFeatureVector&& firstView,
                                      AllocatedMissingFeatureVector&& secondView)
-            : AbstractNominalFeatureVectorDecorator(std::move(firstView), std::move(secondView)) {}
+            : AbstractBinnedFeatureVectorDecorator<AllocatedNominalFeatureVector>(std::move(firstView),
+                                                                                  std::move(secondView)) {}
 
         /**
          * @param other A reference to an object of type `BinaryFeatureVectorDecorator` that should be copied
          */
         BinaryFeatureVectorDecorator(const BinaryFeatureVectorDecorator& other)
-            : AbstractNominalFeatureVectorDecorator(other) {}
+            : AbstractBinnedFeatureVectorDecorator<AllocatedNominalFeatureVector>(other) {}
 
-        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
-                                 IWeightedStatisticsSubset& statisticsSubset, SingleRefinementComparator& comparator,
-                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                 Refinement& refinement) const override {
-            ruleRefinementSearch.searchForBinaryRefinement(this->view.firstView, this->view.secondView,
-                                                           statisticsSubset, comparator, numExamplesWithNonZeroWeights,
-                                                           minCoverage, refinement);
+        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
+                                 SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                 uint32 minCoverage, Refinement& refinement) const override {
+            featureBasedSearch.searchForBinaryRefinement(this->view.firstView, this->view.secondView, statisticsSubset,
+                                                         comparator, numExamplesWithNonZeroWeights, minCoverage,
+                                                         refinement);
         }
 
-        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
-                                 IWeightedStatisticsSubset& statisticsSubset, FixedRefinementComparator& comparator,
-                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                 Refinement& refinement) const override {
-            ruleRefinementSearch.searchForBinaryRefinement(this->view.firstView, this->view.secondView,
-                                                           statisticsSubset, comparator, numExamplesWithNonZeroWeights,
-                                                           minCoverage, refinement);
+        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
+                                 FixedRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                 uint32 minCoverage, Refinement& refinement) const override {
+            featureBasedSearch.searchForBinaryRefinement(this->view.firstView, this->view.secondView, statisticsSubset,
+                                                         comparator, numExamplesWithNonZeroWeights, minCoverage,
+                                                         refinement);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,

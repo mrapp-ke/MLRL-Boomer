@@ -26,20 +26,20 @@ TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatistics) {
     CoverageMask coverageMask(numDenseExamples);
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
-    EXPECT_EQ(coverageMask.getIndicatorValue(), indicatorValue);
+    EXPECT_EQ(coverageMask.indicatorValue, indicatorValue);
 
     for (uint32 i = 0; i < interval.start; i++) {
-        EXPECT_FALSE(coverageMask.isCovered(i));
+        EXPECT_FALSE(coverageMask[i]);
         EXPECT_FALSE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
     }
 
     for (uint32 i = interval.start; i < interval.end; i++) {
-        EXPECT_TRUE(coverageMask.isCovered(i));
+        EXPECT_TRUE(coverageMask[i]);
         EXPECT_TRUE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
     }
 
     for (uint32 i = interval.end; i < numDenseExamples; i++) {
-        EXPECT_FALSE(coverageMask.isCovered(i));
+        EXPECT_FALSE(coverageMask[i]);
         EXPECT_FALSE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
     }
 }
@@ -74,20 +74,20 @@ TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsInverse
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
     decorator.updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
-    EXPECT_EQ(coverageMask.getIndicatorValue(), (uint32) 0);
+    EXPECT_EQ(coverageMask.indicatorValue, (uint32) 0);
 
     for (uint32 i = 0; i < interval.start; i++) {
-        EXPECT_TRUE(coverageMask.isCovered(i));
+        EXPECT_TRUE(coverageMask[i]);
         EXPECT_TRUE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
     }
 
     for (uint32 i = interval.start; i < interval.end; i++) {
-        EXPECT_FALSE(coverageMask.isCovered(i));
+        EXPECT_FALSE(coverageMask[i]);
         EXPECT_FALSE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
     }
 
     for (uint32 i = interval.end; i < numDenseExamples; i++) {
-        EXPECT_TRUE(coverageMask.isCovered(i));
+        EXPECT_TRUE(coverageMask[i]);
         EXPECT_TRUE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
     }
 
@@ -121,20 +121,20 @@ TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromVie
     CoverageMask coverageMask(numDenseExamples);
     uint32 indicatorValue = 1;
     filtered->updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
-    EXPECT_EQ(coverageMask.getIndicatorValue(), indicatorValue);
+    EXPECT_EQ(coverageMask.indicatorValue, indicatorValue);
 
     for (uint32 i = 0; i < interval.start; i++) {
-        EXPECT_FALSE(coverageMask.isCovered(i));
+        EXPECT_FALSE(coverageMask[i]);
         EXPECT_FALSE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
     }
 
     for (uint32 i = interval.start; i < interval.end; i++) {
-        EXPECT_TRUE(coverageMask.isCovered(i));
+        EXPECT_TRUE(coverageMask[i]);
         EXPECT_TRUE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
     }
 
     for (uint32 i = interval.end; i < numDenseExamples; i++) {
-        EXPECT_FALSE(coverageMask.isCovered(i));
+        EXPECT_FALSE(coverageMask[i]);
         EXPECT_FALSE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
     }
 }
@@ -164,20 +164,20 @@ TEST(NumericalFeatureVectorDecoratorTest, updateCoverageMaskAndStatisticsFromVie
     CoverageMask coverageMask(numDenseExamples);
     uint32 indicatorValue = 1;
     filtered->updateCoverageMaskAndStatistics(interval, coverageMask, indicatorValue, statistics);
-    EXPECT_EQ(coverageMask.getIndicatorValue(), (uint32) 0);
+    EXPECT_EQ(coverageMask.indicatorValue, (uint32) 0);
 
     for (uint32 i = 0; i < interval.start; i++) {
-        EXPECT_TRUE(coverageMask.isCovered(i));
+        EXPECT_TRUE(coverageMask[i]);
         EXPECT_TRUE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
     }
 
     for (uint32 i = interval.start; i < interval.end; i++) {
-        EXPECT_FALSE(coverageMask.isCovered(i));
+        EXPECT_FALSE(coverageMask[i]);
         EXPECT_FALSE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
     }
 
     for (uint32 i = interval.end; i < numDenseExamples; i++) {
-        EXPECT_TRUE(coverageMask.isCovered(i));
+        EXPECT_TRUE(coverageMask[i]);
         EXPECT_TRUE(statistics.coveredStatistics.find(i) != statistics.coveredStatistics.end());
     }
 }
@@ -368,7 +368,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromViewWit
 
     CoverageMask coverageMask(numDenseExamples);
     uint32 indicatorValue = 1;
-    coverageMask.setIndicatorValue(indicatorValue);
+    coverageMask.indicatorValue = indicatorValue;
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numDenseExamples; i++) {
@@ -430,7 +430,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverag
 
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
-    coverageMask.setIndicatorValue(indicatorValue);
+    coverageMask.indicatorValue = indicatorValue;
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numExamples; i++) {
@@ -498,7 +498,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverag
 
     CoverageMask coverageMask(numExamples);
     uint32 indicatorValue = 1;
-    coverageMask.setIndicatorValue(indicatorValue);
+    coverageMask.indicatorValue = indicatorValue;
     CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
 
     for (uint32 i = 0; i < numExamples; i++) {
@@ -559,7 +559,7 @@ TEST(NumericalFeatureVectorDecoratorTest, createFilteredFeatureVectorFromCoverag
     }
 
     CoverageMask coverageMask(numDenseExamples);
-    coverageMask.setIndicatorValue(1);
+    coverageMask.indicatorValue = 1;
 
     NumericalFeatureVectorDecorator decorator(std::move(featureVector), AllocatedMissingFeatureVector());
     std::unique_ptr<IFeatureVector> existing;

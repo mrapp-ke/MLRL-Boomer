@@ -13,27 +13,9 @@ template<typename Decorator>
 static inline std::optional<NumericalFeatureVector> createFilteredNumericalFeatureVectorView(
   const Decorator& decorator, std::unique_ptr<IFeatureVector>& existing, const Interval& interval) {
     const NumericalFeatureVector& featureVector = decorator.getView().firstView;
-    uint32 start = interval.start;
-    uint32 end = interval.end;
-
-    if (interval.inverse) {
-        if (interval.start > 0) {
-            start = 0;
-            end = interval.start;
-        } else {
-            start = interval.end;
-            end = featureVector.numElements;
-        }
-    } else {
-        start = interval.start;
-
-        if (start > 0) {
-            end = featureVector.numElements;
-        } else {
-            end = interval.end;
-        }
-    }
-
+    Tuple<uint32> tuple = getStartAndEndOfOpenInterval(interval, featureVector.numElements);
+    uint32 start = tuple.first;
+    uint32 end = tuple.second;
     uint32 numFilteredElements = end - start;
 
     if (numFilteredElements > 0
@@ -61,7 +43,7 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNumericalFeatureVect
     for (uint32 i = 0; i < filteredFeatureVector.numElements; i++) {
         const IndexedValue<float32>& entry = iterator[i];
 
-        if (coverageMask.isCovered(entry.index)) {
+        if (coverageMask[entry.index]) {
             filteredIterator[numFilteredElements] = entry;
             numFilteredElements++;
         }
@@ -90,22 +72,20 @@ class AbstractNumericalFeatureVectorDecorator : public AbstractFeatureVectorDeco
 
         virtual ~AbstractNumericalFeatureVectorDecorator() override {}
 
-        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
-                                 IWeightedStatisticsSubset& statisticsSubset, SingleRefinementComparator& comparator,
-                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                 Refinement& refinement) const override {
-            ruleRefinementSearch.searchForNumericalRefinement(this->view.firstView, this->view.secondView,
-                                                              statisticsSubset, comparator,
-                                                              numExamplesWithNonZeroWeights, minCoverage, refinement);
+        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
+                                 SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                 uint32 minCoverage, Refinement& refinement) const override {
+            featureBasedSearch.searchForNumericalRefinement(this->view.firstView, this->view.secondView,
+                                                            statisticsSubset, comparator, numExamplesWithNonZeroWeights,
+                                                            minCoverage, refinement);
         }
 
-        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
-                                 IWeightedStatisticsSubset& statisticsSubset, FixedRefinementComparator& comparator,
-                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                 Refinement& refinement) const override {
-            ruleRefinementSearch.searchForNumericalRefinement(this->view.firstView, this->view.secondView,
-                                                              statisticsSubset, comparator,
-                                                              numExamplesWithNonZeroWeights, minCoverage, refinement);
+        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
+                                 FixedRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                 uint32 minCoverage, Refinement& refinement) const override {
+            featureBasedSearch.searchForNumericalRefinement(this->view.firstView, this->view.secondView,
+                                                            statisticsSubset, comparator, numExamplesWithNonZeroWeights,
+                                                            minCoverage, refinement);
         }
 
         void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
@@ -126,7 +106,7 @@ class AbstractNumericalFeatureVectorDecorator : public AbstractFeatureVectorDeco
                 updateCoverageMaskAndStatisticsBasedOnMissingFeatureVector(*this, coverageMaskIterator, indicatorValue,
                                                                            statistics);
             } else {
-                coverageMask.setIndicatorValue(indicatorValue);
+                coverageMask.indicatorValue = indicatorValue;
                 statistics.resetCoveredStatistics();
 
                 // Retain the indices in the range [interval.start, interval.end) and set the corresponding values in

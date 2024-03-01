@@ -42,5 +42,5 @@ class DenseWeightVector final : public DenseVectorDecorator<AllocatedVector<T>>,
 
         bool hasZeroWeights() const override;
 
-        std::unique_ptr<IThresholdsSubset> createThresholdsSubset(IThresholds& thresholds) const override;
+        std::unique_ptr<IFeatureSubspace> createFeatureSubspace(IFeatureSpace& featureSpace) const override;
 };

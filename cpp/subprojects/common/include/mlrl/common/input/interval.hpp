@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/data/types.hpp"
+#include "mlrl/common/data/tuple.hpp"
 
 /**
  * Specifies the boundaries of an interval that includes/excludes certain elements in a vector.
@@ -51,3 +51,35 @@ struct Interval {
             return *this;
         }
 };
+
+/**
+ * Returns the start and end index of an open interval `[0, interval.end]` or `[interval.start, maxIndex]`, depending on
+ * a given `Interval`.
+ *
+ * @param interval  A reference to an object of type `Interval`
+ * @param maxIndex  The maximum index of an open interval
+ * @return          A `Tuple` that stores the start and end index
+ */
+static inline Tuple<uint32> getStartAndEndOfOpenInterval(const Interval& interval, uint32 maxIndex) {
+    Tuple<uint32> tuple;
+
+    if (interval.inverse) {
+        if (interval.start > 0) {
+            tuple.first = 0;
+            tuple.second = interval.start;
+        } else {
+            tuple.first = interval.end;
+            tuple.second = maxIndex;
+        }
+    } else {
+        tuple.first = interval.start;
+
+        if (tuple.first > 0) {
+            tuple.second = maxIndex;
+        } else {
+            tuple.second = interval.end;
+        }
+    }
+
+    return tuple;
+}

@@ -241,13 +241,13 @@ The following parameters may be used to control the behavior of the algorithm. T
 
   - `'equal-width'` Examples are assigned to bins, based on their feature values, according to the equal-width binning method. The following options may be provided using the {ref}`bracket-notation`:
 
-    - `bin_ratio` (Default value = `0.33`) A percentage that specifies how many bins should be used. For example, a value of 0.3 means that the number of bins should be set to 30% of the number of distinct values for a feature.
+    - `bin_ratio` (Default value = `0.33`) A percentage that specifies how many bins should be used. For example, a value of 0.3 means that the number of bins should be set to 30% of the total number of available training examples.
     - `min_bins` (Default value = `2`) The minimum number of bins. Must be at least 2.
     - `max_bins` (Default value = `0`) The maximum number of bins. Must be at least min_bins or 0, if the number of bins should not be restricted.
 
   - `'equal-frequency'`. Examples are assigned to bins, based on their feature values, according to the equal-frequency binning method. The following options may be provided using the {ref}`bracket-notation`:
 
-    - `bin_ratio` (Default value = `0.33`) A percentage that specifies how many bins should be used. For example, a value of 0.3 means that the number of bins should be set to 30% of the number of distinct values for a feature.
+    - `bin_ratio` (Default value = `0.33`) A percentage that specifies how many bins should be used. For example, a value of 0.3 means that the number of bins should be set to 30% of the total number of available training examples.
     - `min_bins` (Default value = `2`) The minimum number of bins. Must be at least 2.
     - `max_bins` (Default value = `0`) The maximum number of bins. Must be at least min_bins or 0, if the number of bins should not be restricted.
 

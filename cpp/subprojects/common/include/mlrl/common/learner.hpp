@@ -3,9 +3,9 @@
  */
 #pragma once
 
-#include "mlrl/common/binning/feature_binning_equal_frequency.hpp"
-#include "mlrl/common/binning/feature_binning_equal_width.hpp"
-#include "mlrl/common/binning/feature_binning_no.hpp"
+#include "mlrl/common/input/feature_binning_equal_frequency.hpp"
+#include "mlrl/common/input/feature_binning_equal_width.hpp"
+#include "mlrl/common/input/feature_binning_no.hpp"
 #include "mlrl/common/input/feature_info.hpp"
 #include "mlrl/common/input/feature_matrix_column_wise.hpp"
 #include "mlrl/common/input/feature_matrix_row_wise.hpp"
@@ -503,8 +503,7 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useNoFeatureBinning() {
                     std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr =
                       this->getFeatureBinningConfigPtr();
-                    featureBinningConfigPtr =
-                      std::make_unique<NoFeatureBinningConfig>(this->getParallelStatisticUpdateConfigPtr());
+                    featureBinningConfigPtr = std::make_unique<NoFeatureBinningConfig>();
                 }
         };
 
@@ -528,7 +527,7 @@ class MLRLCOMMON_API IRuleLearner {
                     std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr =
                       this->getFeatureBinningConfigPtr();
                     std::unique_ptr<EqualWidthFeatureBinningConfig> ptr =
-                      std::make_unique<EqualWidthFeatureBinningConfig>(this->getParallelStatisticUpdateConfigPtr());
+                      std::make_unique<EqualWidthFeatureBinningConfig>();
                     IEqualWidthFeatureBinningConfig& ref = *ptr;
                     featureBinningConfigPtr = std::move(ptr);
                     return ref;
@@ -555,7 +554,7 @@ class MLRLCOMMON_API IRuleLearner {
                     std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr =
                       this->getFeatureBinningConfigPtr();
                     std::unique_ptr<EqualFrequencyFeatureBinningConfig> ptr =
-                      std::make_unique<EqualFrequencyFeatureBinningConfig>(this->getParallelStatisticUpdateConfigPtr());
+                      std::make_unique<EqualFrequencyFeatureBinningConfig>();
                     IEqualFrequencyFeatureBinningConfig& ref = *ptr;
                     featureBinningConfigPtr = std::move(ptr);
                     return ref;
@@ -1813,8 +1812,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
           const IRowWiseLabelMatrix& labelMatrix) const;
 
-        std::unique_ptr<IThresholdsFactory> createThresholdsFactory(const IFeatureMatrix& featureMatrix,
-                                                                    const ILabelMatrix& labelMatrix) const;
+        std::unique_ptr<IFeatureSpaceFactory> createFeatureSpaceFactory(const IFeatureMatrix& featureMatrix,
+                                                                        const ILabelMatrix& labelMatrix) const;
 
         std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory(const IFeatureMatrix& featureMatrix,
                                                                           const ILabelMatrix& labelMatrix) const;
