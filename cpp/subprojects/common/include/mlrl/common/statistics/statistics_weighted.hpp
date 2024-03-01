@@ -3,9 +3,6 @@
  */
 #pragma once
 
-#include "mlrl/common/binning/bin_index_vector_dense.hpp"
-#include "mlrl/common/binning/bin_index_vector_dok.hpp"
-#include "mlrl/common/statistics/histogram.hpp"
 #include "mlrl/common/statistics/statistics_weighted_immutable.hpp"
 
 /**
@@ -66,26 +63,4 @@ class IWeightedStatistics : virtual public IImmutableWeightedStatistics {
          * @param statisticIndex The index of the statistic that should be removed
          */
         virtual void removeCoveredStatistic(uint32 statisticIndex) = 0;
-
-        /**
-         * Creates and returns a new histogram based on the statistics.
-         *
-         * @param binIndexVector    A reference to an object of type `DenseBinIndexVector` that stores the indices of
-         *                          the bins, individual examples have been assigned to
-         * @param numBins           The number of bins in the histogram
-         * @return                  An unique pointer to an object of type `IHistogram` that has been created
-         */
-        virtual std::unique_ptr<IHistogram> createHistogram(const DenseBinIndexVector& binIndexVector,
-                                                            uint32 numBins) const = 0;
-
-        /**
-         * Creates and returns a new histogram based on the statistics.
-         *
-         * @param binIndexVector    A reference to an object of type `DokBinIndexVector` that stores the indices of the
-         *                          bins, individual examples have been assigned to
-         * @param numBins           The number of bins in the histogram
-         * @return                  An unique pointer to an object of type `IHistogram` that has been created
-         */
-        virtual std::unique_ptr<IHistogram> createHistogram(const DokBinIndexVector& binIndexVector,
-                                                            uint32 numBins) const = 0;
 };

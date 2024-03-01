@@ -1,6 +1,6 @@
 #include "mlrl/common/indices/index_vector_complete.hpp"
 
-#include "mlrl/common/thresholds/thresholds_subset.hpp"
+#include "mlrl/common/rule_refinement/feature_subspace.hpp"
 
 CompleteIndexVector::CompleteIndexVector(uint32 numElements) {
     numElements_ = numElements;
@@ -30,7 +30,7 @@ CompleteIndexVector::const_iterator CompleteIndexVector::cend() const {
     return IndexIterator(numElements_);
 }
 
-std::unique_ptr<IRuleRefinement> CompleteIndexVector::createRuleRefinement(IThresholdsSubset& thresholdsSubset,
+std::unique_ptr<IRuleRefinement> CompleteIndexVector::createRuleRefinement(IFeatureSubspace& featureSubspace,
                                                                            uint32 featureIndex) const {
-    return thresholdsSubset.createRuleRefinement(*this, featureIndex);
+    return featureSubspace.createRuleRefinement(*this, featureIndex);
 }

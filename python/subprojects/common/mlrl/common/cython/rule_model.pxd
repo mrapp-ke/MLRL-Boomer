@@ -4,7 +4,7 @@ from libcpp cimport bool
 from libcpp.cast cimport dynamic_cast
 from libcpp.memory cimport unique_ptr
 
-from mlrl.common.cython._types cimport float32, float64, uint32
+from mlrl.common.cython._types cimport float32, float64, int32, uint32
 
 
 cdef extern from "mlrl/common/model/body.hpp" nogil:
@@ -27,13 +27,13 @@ cdef extern from "mlrl/common/model/body_conjunctive.hpp" nogil:
 
         ctypedef const float32* numerical_threshold_const_iterator
 
-        ctypedef float32* ordinal_threshold_iterator
+        ctypedef int32* ordinal_threshold_iterator
 
-        ctypedef const float32* ordinal_threshold_const_iterator
+        ctypedef const int32* ordinal_threshold_const_iterator
 
-        ctypedef float32* nominal_threshold_iterator
+        ctypedef int32* nominal_threshold_iterator
 
-        ctypedef const float32* nominal_threshold_const_iterator
+        ctypedef const int32* nominal_threshold_const_iterator
 
         ctypedef uint32* index_iterator
 

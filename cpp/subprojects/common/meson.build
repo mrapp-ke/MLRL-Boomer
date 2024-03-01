@@ -2,17 +2,13 @@ project('common', 'cpp')
 
 # Source files
 source_files = [
-    'src/mlrl/common/binning/bin_index_vector_dense.cpp',
-    'src/mlrl/common/binning/bin_index_vector_dok.cpp',
-    'src/mlrl/common/binning/bin_weight_vector.cpp',
-    'src/mlrl/common/binning/feature_binning_equal_frequency.cpp',
-    'src/mlrl/common/binning/feature_binning_equal_width.cpp',
-    'src/mlrl/common/binning/feature_binning_no.cpp',
-    'src/mlrl/common/binning/threshold_vector.cpp',
     'src/mlrl/common/data/vector_bit.cpp',
     'src/mlrl/common/indices/index_iterator.cpp',
     'src/mlrl/common/indices/index_vector_complete.cpp',
     'src/mlrl/common/indices/index_vector_partial.cpp',
+    'src/mlrl/common/input/feature_binning_equal_frequency.cpp',
+    'src/mlrl/common/input/feature_binning_equal_width.cpp',
+    'src/mlrl/common/input/feature_binning_no.cpp',
     'src/mlrl/common/input/feature_info_equal.cpp',
     'src/mlrl/common/input/feature_info_mixed.cpp',
     'src/mlrl/common/input/feature_matrix_c_contiguous.cpp',
@@ -22,10 +18,12 @@ source_files = [
     'src/mlrl/common/input/feature_type_nominal.cpp',
     'src/mlrl/common/input/feature_type_numerical.cpp',
     'src/mlrl/common/input/feature_type_ordinal.cpp',
-    'src/mlrl/common/input/feature_vector.cpp',
+    'src/mlrl/common/input/feature_vector_binned.cpp',
+    'src/mlrl/common/input/feature_vector_equal.cpp',
+    'src/mlrl/common/input/feature_vector_nominal.cpp',
+    'src/mlrl/common/input/feature_vector_numerical.cpp',
     'src/mlrl/common/input/label_matrix_c_contiguous.cpp',
     'src/mlrl/common/input/label_matrix_csr.cpp',
-    'src/mlrl/common/input/missing_feature_vector.cpp',
     'src/mlrl/common/model/body_conjunctive.cpp',
     'src/mlrl/common/model/body_empty.cpp',
     'src/mlrl/common/model/condition_list.cpp',
@@ -53,12 +51,14 @@ source_files = [
     'src/mlrl/common/rule_model_assemblage/rule_model_assemblage_sequential.cpp',
     'src/mlrl/common/rule_pruning/rule_pruning_irep.cpp',
     'src/mlrl/common/rule_pruning/rule_pruning_no.cpp',
+    'src/mlrl/common/rule_refinement/coverage_mask.cpp',
+    'src/mlrl/common/rule_refinement/feature_based_search.cpp',
+    'src/mlrl/common/rule_refinement/feature_space_tabular.cpp',
     'src/mlrl/common/rule_refinement/prediction_complete.cpp',
     'src/mlrl/common/rule_refinement/prediction_partial.cpp',
     'src/mlrl/common/rule_refinement/refinement_comparator_fixed.cpp',
     'src/mlrl/common/rule_refinement/refinement_comparator_single.cpp',
-    'src/mlrl/common/rule_refinement/rule_refinement_approximate.cpp',
-    'src/mlrl/common/rule_refinement/rule_refinement_exact.cpp',
+    'src/mlrl/common/rule_refinement/rule_refinement_feature_based.cpp',
     'src/mlrl/common/rule_refinement/score_processor.cpp',
     'src/mlrl/common/sampling/feature_sampling_no.cpp',
     'src/mlrl/common/sampling/feature_sampling_predefined.cpp',
@@ -89,10 +89,6 @@ source_files = [
     'src/mlrl/common/stopping/stopping_criterion_list.cpp',
     'src/mlrl/common/stopping/stopping_criterion_size.cpp',
     'src/mlrl/common/stopping/stopping_criterion_time.cpp',
-    'src/mlrl/common/thresholds/coverage_mask.cpp',
-    'src/mlrl/common/thresholds/coverage_set.cpp',
-    'src/mlrl/common/thresholds/thresholds_approximate.cpp',
-    'src/mlrl/common/thresholds/thresholds_exact.cpp',
     'src/mlrl/common/info.cpp',
     'src/mlrl/common/learner.cpp'
 ]
@@ -102,11 +98,22 @@ test_files = [
     'test/mlrl/common/data/array.cpp',
     'test/mlrl/common/data/vector_bit.cpp',
     'test/mlrl/common/data/vector_dense.cpp',
+    'test/mlrl/common/input/feature_binning_equal_frequency.cpp',
+    'test/mlrl/common/input/feature_binning_equal_width.cpp',
+    'test/mlrl/common/input/feature_type_nominal.cpp',
+    'test/mlrl/common/input/feature_type_numerical.cpp',
+    'test/mlrl/common/input/feature_type_ordinal.cpp',
+    'test/mlrl/common/input/feature_vector_decorator_binary.cpp',
+    'test/mlrl/common/input/feature_vector_decorator_binned.cpp',
+    'test/mlrl/common/input/feature_vector_decorator_nominal.cpp',
+    'test/mlrl/common/input/feature_vector_decorator_numerical.cpp',
+    'test/mlrl/common/input/feature_vector_decorator_ordinal.cpp',
+    'test/mlrl/common/input/feature_vector_equal.cpp',
     'test/mlrl/common/info.cpp'
 ]
 
 # Directory containing public headers
-include_directories = include_directories('include')
+include_dir = include_directories('include')
 
 # Directory into which the library should be installed
 install_root = meson.current_source_dir() / '../../../python/subprojects'
@@ -169,24 +176,25 @@ else
 endif
 
 # Library declaration
-common_lib = library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args,
+common_lib = library(lib_name, source_files, include_directories : include_dir, cpp_args : cpp_args,
                      link_args : link_args, version : version, install : true, install_dir : install_dir)
 
 if host_machine.system() == 'windows'
     # On Windows, we must additionally built a static library to link against, as we cannot add DLL exports for all
     # classes that can potentially be used by dependant libraries
-    common_lib = static_library(lib_name, source_files, include_directories : include_directories, cpp_args : cpp_args,
+    common_lib = static_library(lib_name, source_files, include_directories : include_dir, cpp_args : cpp_args,
                                 link_args : link_args)
 endif
 
-common_dep = declare_dependency(include_directories : include_directories, link_with : common_lib)
+common_dep = declare_dependency(include_directories : include_dir, link_with : common_lib)
 
 # Test declaration
 test_support_enabled = get_option('test_support').enabled()
 
 if test_support_enabled
     gtest_test_dep = dependency('gtest', main : true)
-    common_test_dep = declare_dependency(include_directories : include_directories, link_with : common_lib)
+    common_test_dep = declare_dependency(include_directories : [include_dir, include_directories('src')],
+                                         link_with : common_lib)
 
     test_dependencies = [
         gtest_test_dep,

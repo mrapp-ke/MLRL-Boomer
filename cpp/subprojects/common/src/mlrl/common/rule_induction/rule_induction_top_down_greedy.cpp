@@ -47,11 +47,11 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
 
     protected:
 
-        std::unique_ptr<IThresholdsSubset> growRule(IThresholds& thresholds, const IIndexVector& labelIndices,
-                                                    const IWeightVector& weights, IPartition& partition,
-                                                    IFeatureSampling& featureSampling, RNG& rng,
-                                                    std::unique_ptr<ConditionList>& conditionListPtr,
-                                                    std::unique_ptr<IEvaluatedPrediction>& headPtr) const override {
+        std::unique_ptr<IFeatureSubspace> growRule(IFeatureSpace& featureSpace, const IIndexVector& labelIndices,
+                                                   const IWeightVector& weights, IPartition& partition,
+                                                   IFeatureSampling& featureSampling, RNG& rng,
+                                                   std::unique_ptr<ConditionList>& conditionListPtr,
+                                                   std::unique_ptr<IEvaluatedPrediction>& headPtr) const override {
             // The label indices for which the next refinement of the rule may predict
             const IIndexVector* currentLabelIndices = &labelIndices;
             // A list that contains the conditions in the rule's body (in the order they have been learned)
@@ -62,7 +62,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
             bool foundRefinement = true;
 
             // Create a new subset of the given thresholds...
-            std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = weights.createThresholdsSubset(thresholds);
+            std::unique_ptr<IFeatureSubspace> featureSubspacePtr = weights.createFeatureSubspace(featureSpace);
 
             // Search for the best refinement until no improvement in terms of the rule's quality is possible anymore or
             // until the maximum number of conditions has been reached...
@@ -71,7 +71,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
                 const IIndexVector& sampledFeatureIndices = featureSampling.sample(rng);
 
                 // Search for the best refinement...
-                foundRefinement = findRefinement(refinementComparator, *thresholdsSubsetPtr, sampledFeatureIndices,
+                foundRefinement = findRefinement(refinementComparator, *featureSubspacePtr, sampledFeatureIndices,
                                                  *currentLabelIndices, minCoverage_, numThreads_);
 
                 if (foundRefinement) {
@@ -81,7 +81,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
                     bestRefinement.headPtr->sort();
 
                     // Filter the current subset of thresholds by applying the best refinement that has been found...
-                    thresholdsSubsetPtr->filterThresholds(bestRefinement);
+                    featureSubspacePtr->filterSubspace(bestRefinement);
 
                     // Add the new condition...
                     conditionListPtr->addCondition(bestRefinement);
@@ -100,7 +100,7 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
 
             Refinement& bestRefinement = *refinementComparator.begin();
             headPtr = std::move(bestRefinement.headPtr);
-            return thresholdsSubsetPtr;
+            return featureSubspacePtr;
         }
 };
 

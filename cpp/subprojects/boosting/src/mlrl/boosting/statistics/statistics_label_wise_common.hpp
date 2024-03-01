@@ -4,7 +4,6 @@
 #pragma once
 
 #include "mlrl/boosting/statistics/statistics_label_wise.hpp"
-#include "mlrl/common/binning/bin_weight_vector.hpp"
 
 namespace boosting {
 
@@ -276,179 +275,6 @@ namespace boosting {
             }
     };
 
-    /**
-     * Provides access to gradients and Hessians that are calculated according to a differentiable loss function that is
-     * applied label-wise and are organized as a histogram.
-     *
-     * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
-     * @tparam StatisticView            The type of the view that provides access to the original gradients and Hessians
-     * @tparam Histogram                The type of a histogram that stores aggregated gradients and Hessians
-     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
-     *                                  used for calculating the predictions of rules, as well as corresponding quality
-     *                                  scores
-     * @tparam BinIndexVector           The type of the vector that stores the indices of the bins, individual examples
-     *                                  have been assigned to
-     * @tparam WeightVector             The type of the vector that provides access to the weights of individual
-     *                                  statistics
-     */
-    template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
-             typename BinIndexVector, typename WeightVector>
-    class LabelWiseHistogram final
-        : virtual public IHistogram,
-          public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, typename Histogram::view_type,
-                                                              RuleEvaluationFactory, BinWeightVector> {
-        private:
-
-            /**
-             * Provides access to a subset of the gradients and Hessians that are stored by an instance of the class
-             * `LabelWiseHistogram`.
-             *
-             * @tparam IndexVector The type of the vector that provides access to the indices of the labels that are
-             *                     included in the subset
-             */
-            template<typename IndexVector>
-            class WeightedStatisticsSubset final
-                : public AbstractLabelWiseImmutableWeightedStatistics<
-                    StatisticVector, typename Histogram::view_type, RuleEvaluationFactory,
-                    BinWeightVector>::template AbstractWeightedStatisticsSubset<IndexVector> {
-                private:
-
-                    const LabelWiseHistogram& histogram_;
-
-                    std::unique_ptr<StatisticVector> totalCoverableSumVectorPtr_;
-
-                public:
-
-                    /**
-                     * @param histogram         A reference to an object of type `LabelWiseHistogram` that stores the
-                     *                          gradients and Hessians
-                     * @param totalSumVector    A reference to an object of template type `StatisticVector` that stores
-                     *                          the total sums of gradients and Hessians
-                     * @param labelIndices      A reference to an object of template type `IndexVector` that provides
-                     *                          access to the indices of the labels that are included in the subset
-                     */
-                    WeightedStatisticsSubset(const LabelWiseHistogram& histogram, const StatisticVector& totalSumVector,
-                                             const IndexVector& labelIndices)
-                        : AbstractLabelWiseImmutableWeightedStatistics<
-                          StatisticVector, typename Histogram::view_type, RuleEvaluationFactory,
-                          BinWeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(histogram,
-                                                                                                   totalSumVector,
-                                                                                                   labelIndices),
-                          histogram_(histogram) {}
-
-                    /**
-                     * @see `IWeightedStatisticsSubset::addToMissing`
-                     */
-                    void addToMissing(uint32 statisticIndex) override {
-                        // Create a vector for storing the totals sums of gradients and Hessians, if necessary...
-                        if (!totalCoverableSumVectorPtr_) {
-                            totalCoverableSumVectorPtr_ = std::make_unique<StatisticVector>(*this->totalSumVector_);
-                            this->totalSumVector_ = totalCoverableSumVectorPtr_.get();
-                        }
-
-                        // Subtract the gradients and Hessians of the example at the given index (weighted by the given
-                        // weight) from the total sums of gradients and Hessians...
-                        removeLabelWiseStatistic(histogram_.originalWeights_, histogram_.originalStatisticView_,
-                                                 *totalCoverableSumVectorPtr_, statisticIndex);
-                    }
-            };
-
-            const std::unique_ptr<Histogram> histogramPtr_;
-
-            const std::unique_ptr<BinWeightVector> binWeightVectorPtr_;
-
-            const BinIndexVector& binIndexVector_;
-
-            const StatisticView& originalStatisticView_;
-
-            const WeightVector& originalWeights_;
-
-            const StatisticVector& totalSumVector_;
-
-        public:
-
-            /**
-             * @param histogramPtr          An unique pointer to an object of template type `Histogram` that stores the
-             *                              gradients and Hessians in the histogram
-             * @param binWeightVectorPtr    An unique pointer to an object of type `BinWeightVector` that stores the
-             *                              weights of individual bins
-             * @param binIndexVector        A reference to an object of template type `BinIndexVector` that stores the
-             *                              indices of the bins, individual examples have been assigned to
-             * @param originalStatisticView A reference to an object of template type `StatisticView` that provides
-             *                              access to the original gradients and Hessians, the histogram was created
-             *                              from
-             * @param originalWeights       A reference to an object of template type `WeightVector` that provides
-             *                              access to the weights of the original statistics, the histogram was created
-             *                              from
-             * @param totalSumVector        A reference to an object of template type `StatisticVector` that stores the
-             *                              total sums of gradients and Hessians
-             * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory` that allows to
-             *                              create instances of the class that should be used for calculating the
-             *                              predictions of rules, as well as their overall quality
-             */
-            LabelWiseHistogram(std::unique_ptr<Histogram> histogramPtr,
-                               std::unique_ptr<BinWeightVector> binWeightVectorPtr,
-                               const BinIndexVector& binIndexVector, const StatisticView& originalStatisticView,
-                               const WeightVector& originalWeights, const StatisticVector& totalSumVector,
-                               const RuleEvaluationFactory& ruleEvaluationFactory)
-                : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, typename Histogram::view_type,
-                                                               RuleEvaluationFactory, BinWeightVector>(
-                  histogramPtr->getView(), ruleEvaluationFactory, *binWeightVectorPtr),
-                  histogramPtr_(std::move(histogramPtr)), binWeightVectorPtr_(std::move(binWeightVectorPtr)),
-                  binIndexVector_(binIndexVector), originalStatisticView_(originalStatisticView),
-                  originalWeights_(originalWeights), totalSumVector_(totalSumVector) {}
-
-            /**
-             * @see `IHistogram::clear`
-             */
-            void clear() override {
-                histogramPtr_->clear();
-                binWeightVectorPtr_->clear();
-            }
-
-            /**
-             * @see `IHistogram::getBinWeight`
-             */
-            uint32 getBinWeight(uint32 binIndex) const override {
-                return (*binWeightVectorPtr_)[binIndex];
-            }
-
-            /**
-             * @see `IHistogram::addToBin`
-             */
-            void addToBin(uint32 statisticIndex) override {
-                float64 weight = originalWeights_[statisticIndex];
-
-                if (weight > 0) {
-                    uint32 binIndex = binIndexVector_.getBinIndex(statisticIndex);
-
-                    if (binIndex != IBinIndexVector::BIN_INDEX_SPARSE) {
-                        binWeightVectorPtr_->increaseWeight(binIndex);
-                        histogramPtr_->addToRow(binIndex, originalStatisticView_.values_cbegin(statisticIndex),
-                                                originalStatisticView_.values_cend(statisticIndex), weight);
-                    }
-                }
-            }
-
-            /**
-             * @see `IImmutableWeightedStatistics::createSubset`
-             */
-            std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-              const CompleteIndexVector& labelIndices) const override {
-                return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, totalSumVector_,
-                                                                                       labelIndices);
-            }
-
-            /**
-             * @see `IImmutableWeightedStatistics::createSubset`
-             */
-            std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-              const PartialIndexVector& labelIndices) const override {
-                return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, totalSumVector_,
-                                                                                      labelIndices);
-            }
-    };
-
     template<typename StatisticView, typename StatisticVector>
     static inline void addLabelWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
                                              StatisticVector& statisticVector, uint32 statisticIndex) {
@@ -475,20 +301,6 @@ namespace boosting {
         statisticVector.remove(statisticView, statisticIndex, weight);
     }
 
-    template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
-             typename BinIndexVector, typename WeightVector>
-    static inline std::unique_ptr<IHistogram> createLabelWiseHistogramInternally(
-      const BinIndexVector& binIndexVector, const StatisticView& originalStatisticView,
-      const WeightVector& originalWeights, const StatisticVector& totalSumVector,
-      const RuleEvaluationFactory& ruleEvaluationFactory, uint32 numBins) {
-        std::unique_ptr<Histogram> histogramPtr = std::make_unique<Histogram>(numBins, originalStatisticView.numCols);
-        std::unique_ptr<BinWeightVector> binWeightVectorPtr = std::make_unique<BinWeightVector>(numBins);
-        return std::make_unique<LabelWiseHistogram<StatisticVector, StatisticView, Histogram, RuleEvaluationFactory,
-                                                   BinIndexVector, WeightVector>>(
-          std::move(histogramPtr), std::move(binWeightVectorPtr), binIndexVector, originalStatisticView,
-          originalWeights, totalSumVector, ruleEvaluationFactory);
-    }
-
     /**
      * Provides access to weighted gradients and Hessians that are calculated according to a differentiable loss
      * function that is applied label-wise and allows to update the gradients and Hessians after a new rule has been
@@ -496,15 +308,13 @@ namespace boosting {
      *
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
-     * @tparam Histogram                The type of a histogram that stores aggregated gradients and Hessians
      * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
      * @tparam WeightVector             The type of the vector that provides access to the weights of individual
      *                                  statistics
      */
-    template<typename StatisticVector, typename StatisticView, typename Histogram, typename RuleEvaluationFactory,
-             typename WeightVector>
+    template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename WeightVector>
     class LabelWiseWeightedStatistics final
         : virtual public IWeightedStatistics,
           public AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
@@ -601,8 +411,9 @@ namespace boosting {
              * @see `IWeightedStatistics::copy`
              */
             std::unique_ptr<IWeightedStatistics> copy() const override {
-                return std::make_unique<LabelWiseWeightedStatistics<StatisticVector, StatisticView, Histogram,
-                                                                    RuleEvaluationFactory, WeightVector>>(*this);
+                return std::make_unique<
+                  LabelWiseWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector>>(
+                  *this);
             }
 
             /**
@@ -624,28 +435,6 @@ namespace boosting {
              */
             void removeCoveredStatistic(uint32 statisticIndex) override {
                 removeLabelWiseStatistic(this->weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
-            }
-
-            /**
-             * @see `IWeightedStatistics::createHistogram`
-             */
-            std::unique_ptr<IHistogram> createHistogram(const DenseBinIndexVector& binIndexVector,
-                                                        uint32 numBins) const override {
-                return createLabelWiseHistogramInternally<StatisticVector, StatisticView, Histogram,
-                                                          RuleEvaluationFactory, DenseBinIndexVector, WeightVector>(
-                  binIndexVector, this->statisticView_, this->weights_, *totalSumVectorPtr_,
-                  this->ruleEvaluationFactory_, numBins);
-            }
-
-            /**
-             * @see `IWeightedStatistics::createHistogram`
-             */
-            std::unique_ptr<IHistogram> createHistogram(const DokBinIndexVector& binIndexVector,
-                                                        uint32 numBins) const override {
-                return createLabelWiseHistogramInternally<StatisticVector, StatisticView, Histogram,
-                                                          RuleEvaluationFactory, DokBinIndexVector, WeightVector>(
-                  binIndexVector, this->statisticView_, this->weights_, *totalSumVectorPtr_,
-                  this->ruleEvaluationFactory_, numBins);
             }
 
             /**
@@ -698,7 +487,6 @@ namespace boosting {
      *                                  examples
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticMatrix          The type of the matrix that provides access to the gradients and Hessians
-     * @tparam Histogram                The type of a histogram that stores aggregated gradients and Hessians
      * @tparam ScoreMatrix              The type of the matrices that are used to store predicted scores
      * @tparam LossFunction             The type of the loss function that is used to calculate gradients and Hessians
      * @tparam EvaluationMeasure        The type of the evaluation measure that is used to assess the quality of
@@ -707,8 +495,8 @@ namespace boosting {
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
      */
-    template<typename LabelMatrix, typename StatisticVector, typename StatisticMatrix, typename Histogram,
-             typename ScoreMatrix, typename LossFunction, typename EvaluationMeasure, typename RuleEvaluationFactory>
+    template<typename LabelMatrix, typename StatisticVector, typename StatisticMatrix, typename ScoreMatrix,
+             typename LossFunction, typename EvaluationMeasure, typename RuleEvaluationFactory>
     class AbstractLabelWiseStatistics : virtual public ILabelWiseStatistics<RuleEvaluationFactory> {
         private:
 
@@ -969,9 +757,8 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const EqualWeightVector& weights) const override final {
-                return std::make_unique<
-                  LabelWiseWeightedStatistics<StatisticVector, typename StatisticMatrix::view_type, Histogram,
-                                              RuleEvaluationFactory, EqualWeightVector>>(
+                return std::make_unique<LabelWiseWeightedStatistics<
+                  StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory, EqualWeightVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
             }
 
@@ -980,9 +767,8 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const BitWeightVector& weights) const override final {
-                return std::make_unique<
-                  LabelWiseWeightedStatistics<StatisticVector, typename StatisticMatrix::view_type, Histogram,
-                                              RuleEvaluationFactory, BitWeightVector>>(
+                return std::make_unique<LabelWiseWeightedStatistics<
+                  StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory, BitWeightVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
             }
 
@@ -992,7 +778,7 @@ namespace boosting {
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<
-                  LabelWiseWeightedStatistics<StatisticVector, typename StatisticMatrix::view_type, Histogram,
+                  LabelWiseWeightedStatistics<StatisticVector, typename StatisticMatrix::view_type,
                                               RuleEvaluationFactory, DenseWeightVector<uint32>>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
             }

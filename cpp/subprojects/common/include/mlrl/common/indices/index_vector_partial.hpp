@@ -25,6 +25,6 @@ class PartialIndexVector final : public ResizableVectorDecorator<DenseVectorDeco
 
         uint32 getIndex(uint32 pos) const override;
 
-        std::unique_ptr<IRuleRefinement> createRuleRefinement(IThresholdsSubset& thresholdsSubset,
+        std::unique_ptr<IRuleRefinement> createRuleRefinement(IFeatureSubspace& featureSubspace,
                                                               uint32 featureIndex) const override;
 };

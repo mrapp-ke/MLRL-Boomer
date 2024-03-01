@@ -42,29 +42,9 @@ class CscFeatureMatrix final : public IterableSparseMatrixDecorator<MatrixDecora
             return this->getNumCols();
         }
 
-        void fetchFeatureVector(uint32 featureIndex, std::unique_ptr<FeatureVector>& featureVectorPtr) const override {
-            index_const_iterator indexIterator = this->indices_cbegin(featureIndex);
-            index_const_iterator indicesEnd = this->indices_cend(featureIndex);
-            value_const_iterator valueIterator = this->values_cbegin(featureIndex);
-            uint32 numElements = indicesEnd - indexIterator;
-            featureVectorPtr = std::make_unique<FeatureVector>(numElements);
-            FeatureVector::iterator vectorIterator = featureVectorPtr->begin();
-            uint32 i = 0;
-
-            for (uint32 j = 0; j < numElements; j++) {
-                uint32 index = indexIterator[j];
-                float32 value = valueIterator[j];
-
-                if (std::isnan(value)) {
-                    featureVectorPtr->addMissingIndex(index);
-                } else {
-                    vectorIterator[i].index = index;
-                    vectorIterator[i].value = value;
-                    i++;
-                }
-            }
-
-            featureVectorPtr->setNumElements(i, true);
+        std::unique_ptr<IFeatureVector> createFeatureVector(uint32 featureIndex,
+                                                            const IFeatureType& featureType) const override {
+            return featureType.createFeatureVector(featureIndex, this->getView());
         }
 };
 

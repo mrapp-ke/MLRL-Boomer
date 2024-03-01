@@ -8,11 +8,11 @@
 #include "mlrl/common/model/model_builder.hpp"
 #include "mlrl/common/post_processing/post_processor.hpp"
 #include "mlrl/common/rule_pruning/rule_pruning.hpp"
+#include "mlrl/common/rule_refinement/feature_space.hpp"
 #include "mlrl/common/sampling/feature_sampling.hpp"
 #include "mlrl/common/sampling/partition.hpp"
 #include "mlrl/common/sampling/weight_vector.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
-#include "mlrl/common/thresholds/thresholds.hpp"
 
 /**
  * Defines an interface for all classes that implement an algorithm for the induction of individual rules.
@@ -34,8 +34,8 @@ class IRuleInduction {
         /**
          * Induces a new rule.
          *
-         * @param thresholds        A reference to an object of type `IThresholds` that provides access to the
-         *                          thresholds that may be used by the conditions of the rule
+         * @param featureSpace      A reference to an object of type `IFeatureSpace` that provides access to the feature
+         *                          space
          * @param labelIndices      A reference to an object of type `IIndexVector` that provides access to the indices
          *                          of the labels for which the rule may predict
          * @param weights           A reference to an object of type `IWeightVector` that provides access to the weights
@@ -54,8 +54,8 @@ class IRuleInduction {
          * @param modelBuilder      A reference to an object of type `IModelBuilder`, the rule should be added to
          * @return                  True, if a rule has been induced, false otherwise
          */
-        virtual bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
-                                IPartition& partition, IFeatureSampling& featureSampling,
+        virtual bool induceRule(IFeatureSpace& featureSpace, const IIndexVector& labelIndices,
+                                const IWeightVector& weights, IPartition& partition, IFeatureSampling& featureSampling,
                                 const IRulePruning& rulePruning, const IPostProcessor& postProcessor, RNG& rng,
                                 IModelBuilder& modelBuilder) const = 0;
 };
