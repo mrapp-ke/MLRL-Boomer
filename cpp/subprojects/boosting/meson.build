@@ -2,7 +2,6 @@ project('boosting', 'cpp')
 
 # Source files
 source_files = [
-    'src/mlrl/boosting/binning/feature_binning_auto.cpp',
     'src/mlrl/boosting/binning/label_binning_auto.cpp',
     'src/mlrl/boosting/binning/label_binning_equal_width.cpp',
     'src/mlrl/boosting/binning/label_binning_no.cpp',
@@ -11,8 +10,8 @@ source_files = [
     'src/mlrl/boosting/data/vector_statistic_example_wise_dense.cpp',
     'src/mlrl/boosting/data/vector_statistic_label_wise_dense.cpp',
     'src/mlrl/boosting/data/vector_statistic_label_wise_sparse.cpp',
-    'src/mlrl/boosting/data/view_histogram_label_wise_sparse.cpp',
     'src/mlrl/boosting/data/view_statistic_example_wise_dense.cpp',
+    'src/mlrl/boosting/input/feature_binning_auto.cpp',
     'src/mlrl/boosting/losses/loss_example_wise_logistic.cpp',
     'src/mlrl/boosting/losses/loss_example_wise_squared_error.cpp',
     'src/mlrl/boosting/losses/loss_example_wise_squared_hinge.cpp',

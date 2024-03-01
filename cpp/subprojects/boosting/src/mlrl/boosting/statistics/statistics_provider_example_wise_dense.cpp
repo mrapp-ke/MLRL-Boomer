@@ -60,9 +60,9 @@ namespace boosting {
     template<typename LabelMatrix>
     class DenseExampleWiseStatistics final
         : public AbstractExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector,
-                                               DenseExampleWiseStatisticMatrix, DenseExampleWiseStatisticMatrix,
-                                               NumericCContiguousMatrix<float64>, IExampleWiseLoss, IEvaluationMeasure,
-                                               IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory> {
+                                               DenseExampleWiseStatisticMatrix, NumericCContiguousMatrix<float64>,
+                                               IExampleWiseLoss, IEvaluationMeasure, IExampleWiseRuleEvaluationFactory,
+                                               ILabelWiseRuleEvaluationFactory> {
         public:
 
             /**
@@ -88,9 +88,9 @@ namespace boosting {
                                        std::unique_ptr<DenseExampleWiseStatisticMatrix> statisticMatrixPtr,
                                        std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
                 : AbstractExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector,
-                                                DenseExampleWiseStatisticMatrix, DenseExampleWiseStatisticMatrix,
-                                                NumericCContiguousMatrix<float64>, IExampleWiseLoss, IEvaluationMeasure,
-                                                IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>(
+                                                DenseExampleWiseStatisticMatrix, NumericCContiguousMatrix<float64>,
+                                                IExampleWiseLoss, IEvaluationMeasure, IExampleWiseRuleEvaluationFactory,
+                                                ILabelWiseRuleEvaluationFactory>(
                   std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
                   std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 

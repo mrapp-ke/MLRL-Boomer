@@ -46,14 +46,4 @@ class WeightedStatistics final : public IWeightedStatistics {
         void removeCoveredStatistic(uint32 statisticIndex) override {
             coveredStatistics.erase(statisticIndex);
         }
-
-        std::unique_ptr<IHistogram> createHistogram(const DenseBinIndexVector& binIndexVector,
-                                                    uint32 numBins) const override {
-            throw std::runtime_error("not implemented");
-        }
-
-        std::unique_ptr<IHistogram> createHistogram(const DokBinIndexVector& binIndexVector,
-                                                    uint32 numBins) const override {
-            throw std::runtime_error("not implemented");
-        }
 };

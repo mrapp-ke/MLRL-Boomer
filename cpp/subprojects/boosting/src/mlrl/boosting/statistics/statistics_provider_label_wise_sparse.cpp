@@ -7,7 +7,6 @@
 
 #include "mlrl/boosting/data/matrix_sparse_set_numeric.hpp"
 #include "mlrl/boosting/data/vector_statistic_label_wise_sparse.hpp"
-#include "mlrl/boosting/data/view_histogram_label_wise_sparse.hpp"
 #include "mlrl/common/util/openmp.hpp"
 #include "statistics_label_wise_common.hpp"
 #include "statistics_provider_label_wise.hpp"
@@ -30,40 +29,6 @@ namespace boosting {
     };
 
     /**
-     * A histogram that stores gradients and Hessians that have been calculated using a label-wise decomposable
-     * loss function in the list of lists (LIL) format.
-     */
-    class SparseLabelWiseHistogram final
-        : public ClearableViewDecorator<MatrixDecorator<SparseLabelWiseHistogramView>> {
-        public:
-
-            /**
-             * @param numBins   The number of bins in the histogram
-             * @param numCols   The number of columns in the histogram
-             */
-            SparseLabelWiseHistogram(uint32 numBins, uint32 numCols)
-                : ClearableViewDecorator<MatrixDecorator<SparseLabelWiseHistogramView>>(
-                  SparseLabelWiseHistogramView(numBins, numCols)) {}
-
-            /**
-             * Adds all gradients and Hessians in a vector to a specific row of this histogram. The gradients and
-             * Hessians to be added are multiplied by a specific weight.
-             *
-             * @param row       The row
-             * @param begin     An iterator to the beginning of the vector
-             * @param end       An iterator to the end of the vector
-             * @param weight    The weight, the gradients and Hessians should be multiplied by
-             */
-            void addToRow(uint32 row, SparseSetView<Tuple<float64>>::value_const_iterator begin,
-                          SparseSetView<Tuple<float64>>::value_const_iterator end, float64 weight) {
-                if (weight != 0) {
-                    this->view.secondView[row] += weight;
-                    addToSparseLabelWiseStatisticVector(this->view.firstView.values_begin(row), begin, end, weight);
-                }
-            }
-    };
-
-    /**
      * Provides access to gradients and Hessians that have been calculated according to a differentiable loss
      * function that is applied label-wise and are stored using sparse data structures.
      *
@@ -72,9 +37,9 @@ namespace boosting {
     template<typename LabelMatrix>
     class SparseLabelWiseStatistics final
         : public AbstractLabelWiseStatistics<LabelMatrix, SparseLabelWiseStatisticVector,
-                                             SparseLabelWiseStatisticMatrix, SparseLabelWiseHistogram,
-                                             NumericSparseSetMatrix<float64>, ISparseLabelWiseLoss,
-                                             ISparseEvaluationMeasure, ISparseLabelWiseRuleEvaluationFactory> {
+                                             SparseLabelWiseStatisticMatrix, NumericSparseSetMatrix<float64>,
+                                             ISparseLabelWiseLoss, ISparseEvaluationMeasure,
+                                             ISparseLabelWiseRuleEvaluationFactory> {
         public:
 
             /**
@@ -101,9 +66,9 @@ namespace boosting {
                                       std::unique_ptr<SparseLabelWiseStatisticMatrix> statisticViewPtr,
                                       std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr)
                 : AbstractLabelWiseStatistics<LabelMatrix, SparseLabelWiseStatisticVector,
-                                              SparseLabelWiseStatisticMatrix, SparseLabelWiseHistogram,
-                                              NumericSparseSetMatrix<float64>, ISparseLabelWiseLoss,
-                                              ISparseEvaluationMeasure, ISparseLabelWiseRuleEvaluationFactory>(
+                                              SparseLabelWiseStatisticMatrix, NumericSparseSetMatrix<float64>,
+                                              ISparseLabelWiseLoss, ISparseEvaluationMeasure,
+                                              ISparseLabelWiseRuleEvaluationFactory>(
                   std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
                   std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
 

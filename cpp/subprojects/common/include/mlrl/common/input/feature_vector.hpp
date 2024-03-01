@@ -3,13 +3,10 @@
  */
 #pragma once
 
-#include "mlrl/common/data/indexed_value.hpp"
-#include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/input/interval.hpp"
-#include "mlrl/common/input/missing_feature_vector.hpp"
-#include "mlrl/common/rule_refinement/rule_refinement_search.hpp"
+#include "mlrl/common/rule_refinement/coverage_mask.hpp"
+#include "mlrl/common/rule_refinement/feature_based_search.hpp"
 #include "mlrl/common/statistics/statistics_weighted.hpp"
-#include "mlrl/common/thresholds/coverage_mask.hpp"
 
 /**
  * Defines an interface for all one-dimensional vectors that store the values of training examples for a certain
@@ -23,7 +20,7 @@ class IFeatureVector {
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a this feature vector.
          *
-         * @param ruleRefinementSearch          A reference to an object of type `RuleRefinementSearch` that should be
+         * @param featureBasedSearch            A reference to an object of type `FeatureBasedSearch` that should be
          *                                      used for conducting the search
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
          *                                      provides access to weighted statistics about the labels of the training
@@ -37,7 +34,7 @@ class IFeatureVector {
          * @param refinement                    A reference to an object of type `Refinement` that should be used for
          *                                      storing the properties of the best refinement that is found
          */
-        virtual void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
+        virtual void searchForRefinement(FeatureBasedSearch& featureBasedSearch,
                                          IWeightedStatisticsSubset& statisticsSubset,
                                          SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
                                          uint32 minCoverage, Refinement& refinement) const = 0;
@@ -45,7 +42,7 @@ class IFeatureVector {
         /**
          * Conducts a search for the best refinement of an existing rule that can be created from a this feature vector.
          *
-         * @param ruleRefinementSearch          A reference to an object of type `RuleRefinementSearch` that should be
+         * @param featureBasedSearch            A reference to an object of type `FeatureBasedSearch` that should be
          *                                      used for conducting the search
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
          *                                      provides access to weighted statistics about the labels of the training
@@ -59,7 +56,7 @@ class IFeatureVector {
          * @param refinement                    A reference to an object of type `Refinement` that should be used for
          *                                      storing the properties of the best refinement that is found
          */
-        virtual void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
+        virtual void searchForRefinement(FeatureBasedSearch& featureBasedSearch,
                                          IWeightedStatisticsSubset& statisticsSubset,
                                          FixedRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
                                          uint32 minCoverage, Refinement& refinement) const = 0;
@@ -102,25 +99,4 @@ class IFeatureVector {
          */
         virtual std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                             const CoverageMask& coverageMask) const = 0;
-};
-
-/**
- * An one-dimensional sparse vector that stores the values of training examples for a certain feature, as well as the
- * indices of examples with missing feature values.
- */
-// TODO Remove
-class FeatureVector final
-    : public ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<IndexedValue<float32>>>>,
-      public OldMissingFeatureVector {
-    public:
-
-        /**
-         * @param numElements The number of elements in the vector
-         */
-        FeatureVector(uint32 numElements);
-
-        /**
-         * Sorts the elements in the vector in ascending order based on their values.
-         */
-        void sortByValues();
 };

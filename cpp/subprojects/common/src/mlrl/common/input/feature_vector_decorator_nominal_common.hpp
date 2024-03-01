@@ -3,55 +3,8 @@
  */
 #pragma once
 
-#include "feature_vector_decorator.hpp"
 #include "feature_vector_nominal_allocated.hpp"
 #include "mlrl/common/input/feature_vector_equal.hpp"
-
-template<typename View>
-static inline void updateCoverageMaskAndStatisticsBasedOnNominalFeatureVector(const View& view,
-                                                                              const Interval& interval,
-                                                                              CoverageMask& coverageMask,
-                                                                              uint32 indicatorValue,
-                                                                              IWeightedStatistics& statistics) {
-    const NominalFeatureVector& featureVector = view.getView().firstView;
-    CoverageMask::iterator coverageMaskIterator = coverageMask.begin();
-
-    if (interval.inverse) {
-        // Discard the indices that correspond to the values in the range [interval.start, interval.end) and set the
-        // corresponding values in `coverageMask` to `indicatorValue`, which marks them as uncovered...
-        for (uint32 i = interval.start; i < interval.end; i++) {
-            NominalFeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(i);
-            NominalFeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(i);
-            uint32 numIndices = indicesEnd - indexIterator;
-
-            for (uint32 j = 0; j < numIndices; j++) {
-                uint32 index = indexIterator[j];
-                coverageMaskIterator[index] = indicatorValue;
-                statistics.removeCoveredStatistic(index);
-            }
-        }
-
-        updateCoverageMaskAndStatisticsBasedOnMissingFeatureVector(view, coverageMaskIterator, indicatorValue,
-                                                                   statistics);
-    } else {
-        coverageMask.setIndicatorValue(indicatorValue);
-        statistics.resetCoveredStatistics();
-
-        // Retain the indices in the range [interval.start, interval.end) and set the corresponding values in the given
-        // `coverageMask` to `indicatorValue` to mark them as covered...
-        for (uint32 i = interval.start; i < interval.end; i++) {
-            NominalFeatureVector::index_const_iterator indexIterator = featureVector.indices_cbegin(i);
-            NominalFeatureVector::index_const_iterator indicesEnd = featureVector.indices_cend(i);
-            uint32 numIndices = indicesEnd - indexIterator;
-
-            for (uint32 j = 0; j < numIndices; j++) {
-                uint32 index = indexIterator[j];
-                coverageMaskIterator[index] = indicatorValue;
-                statistics.addCoveredStatistic(index);
-            }
-        }
-    }
-}
 
 template<typename View, typename Decorator>
 static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVectorDecorator(
@@ -77,7 +30,7 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
         for (uint32 j = 0; j < numIndices; j++) {
             uint32 index = indexIterator[j];
 
-            if (coverageMask.isCovered(index)) {
+            if (coverageMask[index]) {
                 filteredIndexIterator[numFilteredIndices] = index;
                 numFilteredIndices++;
             }
@@ -97,39 +50,3 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
 
     return std::make_unique<EqualFeatureVector>();
 }
-
-/**
- * An abstract base class for all decorators that provide access to the values and indices of training examples stored
- * in an `AllocatedNominalFeatureVector`.
- */
-class AbstractNominalFeatureVectorDecorator : public AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector> {
-    public:
-
-        /**
-         * @param firstView   A reference to an object of type `AllocatedNominalFeatureVector`
-         * @param secondView  A reference to an object of type `AllocatedMissingFeatureVector`
-         */
-        AbstractNominalFeatureVectorDecorator(AllocatedNominalFeatureVector&& firstView,
-                                              AllocatedMissingFeatureVector&& secondView)
-            : AbstractFeatureVectorDecorator<AllocatedNominalFeatureVector>(std::move(firstView),
-                                                                            std::move(secondView)) {}
-
-        /**
-         * @param other A reference to an object of type `AbstractNominalFeatureVectorDecorator` that should be copied
-         */
-        AbstractNominalFeatureVectorDecorator(const AbstractNominalFeatureVectorDecorator& other)
-            : AbstractNominalFeatureVectorDecorator(
-              AllocatedNominalFeatureVector(other.view.firstView.numValues,
-                                            other.view.firstView.indptr[other.view.firstView.numValues],
-                                            other.view.firstView.majorityValue),
-              AllocatedMissingFeatureVector()) {}
-
-        virtual ~AbstractNominalFeatureVectorDecorator() override {}
-
-        void updateCoverageMaskAndStatistics(const Interval& interval, CoverageMask& coverageMask,
-                                             uint32 indicatorValue,
-                                             IWeightedStatistics& statistics) const override final {
-            updateCoverageMaskAndStatisticsBasedOnNominalFeatureVector(*this, interval, coverageMask, indicatorValue,
-                                                                       statistics);
-        }
-};

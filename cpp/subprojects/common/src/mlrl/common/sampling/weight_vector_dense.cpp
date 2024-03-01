@@ -1,7 +1,7 @@
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
 
-#include "mlrl/common/thresholds/thresholds.hpp"
-#include "mlrl/common/thresholds/thresholds_subset.hpp"
+#include "mlrl/common/rule_refinement/feature_space.hpp"
+#include "mlrl/common/rule_refinement/feature_subspace.hpp"
 
 template<typename T>
 DenseWeightVector<T>::DenseWeightVector(uint32 numElements, bool init)
@@ -23,8 +23,8 @@ bool DenseWeightVector<T>::hasZeroWeights() const {
 }
 
 template<typename T>
-std::unique_ptr<IThresholdsSubset> DenseWeightVector<T>::createThresholdsSubset(IThresholds& thresholds) const {
-    return thresholds.createSubset(*this);
+std::unique_ptr<IFeatureSubspace> DenseWeightVector<T>::createFeatureSubspace(IFeatureSpace& featureSpace) const {
+    return featureSpace.createSubspace(*this);
 }
 
 template class DenseWeightVector<uint32>;

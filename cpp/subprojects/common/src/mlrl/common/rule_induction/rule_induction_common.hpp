@@ -20,8 +20,8 @@ class AbstractRuleInduction : public IRuleInduction {
         /**
          * Must be implemented by subclasses in order to grow a rule.
          *
-         * @param thresholds        A reference to an object of type `IThresholds` that provides access to the
-         *                          thresholds that may be used by the conditions of the rule
+         * @param featureSpace      A reference to an object of type `IFeatureSpace` that provides access to the feature
+         *                          space
          * @param labelIndices      A reference to an object of type `IIndexVector` that provides access to the indices
          *                          of the labels for which the rule may predict
          * @param weights           A reference to an object of type `IWeightVector` that provides access to the weights
@@ -37,14 +37,15 @@ class AbstractRuleInduction : public IRuleInduction {
          *                          store the conditions of the rule
          * @param headPtr           A reference to an unique pointer of type `IEvaluatedPrediction` that should be used
          *                          to store the head of the rule
-         * @return                  An unique pointer to an object of type `IThresholdsSubset` that has been used to
+         * @return                  An unique pointer to an object of type `IFeatureSubspace` that has been used to
          *                          grow the rule
          */
-        virtual std::unique_ptr<IThresholdsSubset> growRule(IThresholds& thresholds, const IIndexVector& labelIndices,
-                                                            const IWeightVector& weights, IPartition& partition,
-                                                            IFeatureSampling& featureSampling, RNG& rng,
-                                                            std::unique_ptr<ConditionList>& conditionListPtr,
-                                                            std::unique_ptr<IEvaluatedPrediction>& headPtr) const = 0;
+        virtual std::unique_ptr<IFeatureSubspace> growRule(IFeatureSpace& featureSpace,
+                                                           const IIndexVector& labelIndices,
+                                                           const IWeightVector& weights, IPartition& partition,
+                                                           IFeatureSampling& featureSampling, RNG& rng,
+                                                           std::unique_ptr<ConditionList>& conditionListPtr,
+                                                           std::unique_ptr<IEvaluatedPrediction>& headPtr) const = 0;
 
     public:
 
@@ -79,29 +80,29 @@ class AbstractRuleInduction : public IRuleInduction {
             modelBuilder.setDefaultRule(defaultPredictionPtr);
         }
 
-        bool induceRule(IThresholds& thresholds, const IIndexVector& labelIndices, const IWeightVector& weights,
+        bool induceRule(IFeatureSpace& featureSpace, const IIndexVector& labelIndices, const IWeightVector& weights,
                         IPartition& partition, IFeatureSampling& featureSampling, const IRulePruning& rulePruning,
                         const IPostProcessor& postProcessor, RNG& rng,
                         IModelBuilder& modelBuilder) const override final {
             std::unique_ptr<ConditionList> conditionListPtr;
             std::unique_ptr<IEvaluatedPrediction> headPtr;
-            std::unique_ptr<IThresholdsSubset> thresholdsSubsetPtr = this->growRule(
-              thresholds, labelIndices, weights, partition, featureSampling, rng, conditionListPtr, headPtr);
+            std::unique_ptr<IFeatureSubspace> featureSubspacePtr = this->growRule(
+              featureSpace, labelIndices, weights, partition, featureSampling, rng, conditionListPtr, headPtr);
 
             if (headPtr) {
                 if (weights.hasZeroWeights()) {
                     // Prune rule...
-                    IStatisticsProvider& statisticsProvider = thresholds.getStatisticsProvider();
+                    IStatisticsProvider& statisticsProvider = featureSpace.getStatisticsProvider();
                     statisticsProvider.switchToPruningRuleEvaluation();
-                    std::unique_ptr<ICoverageState> coverageStatePtr =
-                      rulePruning.prune(*thresholdsSubsetPtr, partition, *conditionListPtr, *headPtr);
+                    std::unique_ptr<CoverageMask> coverageMaskPtr =
+                      rulePruning.prune(*featureSubspacePtr, partition, *conditionListPtr, *headPtr);
                     statisticsProvider.switchToRegularRuleEvaluation();
 
                     // Re-calculate the scores in the head based on the entire training data...
                     if (recalculatePredictions_) {
-                        const ICoverageState& coverageState =
-                          coverageStatePtr ? *coverageStatePtr : thresholdsSubsetPtr->getCoverageState();
-                        partition.recalculatePrediction(*thresholdsSubsetPtr, coverageState, *headPtr);
+                        const CoverageMask& coverageMask =
+                          coverageMaskPtr ? *coverageMaskPtr : featureSubspacePtr->getCoverageMask();
+                        partition.recalculatePrediction(*featureSubspacePtr, coverageMask, *headPtr);
                     }
                 }
 
@@ -109,7 +110,7 @@ class AbstractRuleInduction : public IRuleInduction {
                 headPtr->postProcess(postProcessor);
 
                 // Update the statistics by applying the predictions of the new rule...
-                thresholdsSubsetPtr->applyPrediction(*headPtr);
+                featureSubspacePtr->applyPrediction(*headPtr);
 
                 // Add the induced rule to the model...
                 modelBuilder.addRule(conditionListPtr, headPtr);

@@ -1,7 +1,7 @@
 from mlrl.common.cython._types cimport float32, uint32
 
 
-cdef extern from "mlrl/common/binning/feature_binning_equal_width.hpp" nogil:
+cdef extern from "mlrl/common/input/feature_binning_equal_width.hpp" nogil:
 
     cdef cppclass IEqualWidthFeatureBinningConfig:
 
@@ -20,7 +20,7 @@ cdef extern from "mlrl/common/binning/feature_binning_equal_width.hpp" nogil:
         uint32 getMaxBins() const
 
 
-cdef extern from "mlrl/common/binning/feature_binning_equal_frequency.hpp" nogil:
+cdef extern from "mlrl/common/input/feature_binning_equal_frequency.hpp" nogil:
 
     cdef cppclass IEqualFrequencyFeatureBinningConfig:
 

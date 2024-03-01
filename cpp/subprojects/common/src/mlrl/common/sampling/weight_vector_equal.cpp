@@ -1,7 +1,7 @@
 #include "mlrl/common/sampling/weight_vector_equal.hpp"
 
-#include "mlrl/common/thresholds/thresholds.hpp"
-#include "mlrl/common/thresholds/thresholds_subset.hpp"
+#include "mlrl/common/rule_refinement/feature_space.hpp"
+#include "mlrl/common/rule_refinement/feature_subspace.hpp"
 
 EqualWeightVector::EqualWeightVector(uint32 numElements) : numElements_(numElements) {}
 
@@ -21,6 +21,6 @@ bool EqualWeightVector::hasZeroWeights() const {
     return false;
 }
 
-std::unique_ptr<IThresholdsSubset> EqualWeightVector::createThresholdsSubset(IThresholds& thresholds) const {
-    return thresholds.createSubset(*this);
+std::unique_ptr<IFeatureSubspace> EqualWeightVector::createFeatureSubspace(IFeatureSpace& featureSpace) const {
+    return featureSpace.createSubspace(*this);
 }

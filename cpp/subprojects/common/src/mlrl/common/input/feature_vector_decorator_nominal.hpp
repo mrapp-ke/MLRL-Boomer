@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "feature_vector_decorator_binned_common.hpp"
 #include "feature_vector_decorator_nominal_common.hpp"
 
 template<typename View, typename Decorator>
@@ -71,7 +72,7 @@ static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVector
  * Provides random read and write access, as well as read and write access via iterators, to the values and indices of
  * training examples stored in an `AllocatedNominalFeatureVector`.
  */
-class NominalFeatureVectorDecorator final : public AbstractNominalFeatureVectorDecorator {
+class NominalFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDecorator<AllocatedNominalFeatureVector> {
     public:
 
         /**
@@ -80,30 +81,29 @@ class NominalFeatureVectorDecorator final : public AbstractNominalFeatureVectorD
          */
         NominalFeatureVectorDecorator(AllocatedNominalFeatureVector&& firstView,
                                       AllocatedMissingFeatureVector&& secondView)
-            : AbstractNominalFeatureVectorDecorator(std::move(firstView), std::move(secondView)) {}
+            : AbstractBinnedFeatureVectorDecorator<AllocatedNominalFeatureVector>(std::move(firstView),
+                                                                                  std::move(secondView)) {}
 
         /**
          * @param other A reference to an object of type `NominalFeatureVectorDecorator` that should be copied
          */
         NominalFeatureVectorDecorator(const NominalFeatureVectorDecorator& other)
-            : AbstractNominalFeatureVectorDecorator(other) {}
+            : AbstractBinnedFeatureVectorDecorator<AllocatedNominalFeatureVector>(other) {}
 
-        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
-                                 IWeightedStatisticsSubset& statisticsSubset, SingleRefinementComparator& comparator,
-                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                 Refinement& refinement) const override {
-            ruleRefinementSearch.searchForNominalRefinement(this->view.firstView, this->view.secondView,
-                                                            statisticsSubset, comparator, numExamplesWithNonZeroWeights,
-                                                            minCoverage, refinement);
+        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
+                                 SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                 uint32 minCoverage, Refinement& refinement) const override {
+            featureBasedSearch.searchForNominalRefinement(this->view.firstView, this->view.secondView, statisticsSubset,
+                                                          comparator, numExamplesWithNonZeroWeights, minCoverage,
+                                                          refinement);
         }
 
-        void searchForRefinement(RuleRefinementSearch& ruleRefinementSearch,
-                                 IWeightedStatisticsSubset& statisticsSubset, FixedRefinementComparator& comparator,
-                                 uint32 numExamplesWithNonZeroWeights, uint32 minCoverage,
-                                 Refinement& refinement) const override {
-            ruleRefinementSearch.searchForNominalRefinement(this->view.firstView, this->view.secondView,
-                                                            statisticsSubset, comparator, numExamplesWithNonZeroWeights,
-                                                            minCoverage, refinement);
+        void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
+                                 FixedRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,
+                                 uint32 minCoverage, Refinement& refinement) const override {
+            featureBasedSearch.searchForNominalRefinement(this->view.firstView, this->view.secondView, statisticsSubset,
+                                                          comparator, numExamplesWithNonZeroWeights, minCoverage,
+                                                          refinement);
         }
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,

@@ -30,6 +30,7 @@ This release comes with several API changes. For an updated overview of the avai
 
 ### Quality-of-Life Improvements
 
+- The implementation of feature binning has been reworked in a way that helps avoiding redundant code.
 - The documentation has been updated to a more modern theme supporting light and dark theme variants.
 - A build option that allows to disable multi-threading support via OpenMP at compile-time has been added.
 - The groundwork for GPU support was laid. It can be disabled at compile-time via a build option.

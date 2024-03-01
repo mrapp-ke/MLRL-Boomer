@@ -41,7 +41,7 @@ static inline std::unique_ptr<Decorator> createFilteredFeatureVectorDecorator(co
             uint32 index = *it;
             it++;  // Iterator must be incremented before call to `MissingFeatureVector::set` invalidates it
 
-            if (!coverageMask.isCovered(index)) {
+            if (!coverageMask[index]) {
                 missingFeatureVector.set(index, false);
             }
         }
@@ -56,7 +56,7 @@ static inline std::unique_ptr<Decorator> createFilteredFeatureVectorDecorator(co
              it++) {
             uint32 index = *it;
 
-            if (coverageMask.isCovered(index)) {
+            if (coverageMask[index]) {
                 missingFeatureVector.set(index, true);
             }
         }
