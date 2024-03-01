@@ -24,7 +24,17 @@ The `fit` method accepts two inputs, `x` and `y`:
 - A two-dimensional feature matrix `x`, where each row corresponds to a training example and each column corresponds to a particular feature.
 - An one- or two-dimensional binary feature matrix `y`, where each row corresponds to a training example and each column corresponds to a label. If an element in the matrix is unlike zero, it indicates that the respective label is relevant to an example. Elements that are equal to zero denote irrelevant labels. In multi-label classification, where each example may be associated with several labels, the label matrix is two-dimensional. However, the BOOMER algorithm is also capable of dealing with traditional binary classification problems, where an one-dimensional vector of ground truth labels is provided to the learning algorithm.
 
-Both, `x` and `y`, are expected to be [numpy arrays](https://numpy.org/doc/stable/reference/generated/numpy.array.html) or equivalent [array-like](https://scikit-learn.org/stable/glossary.html#term-array-like) data types. In addition, the BOOMER algorithm does also support to use [scipy sparse matrices](https://docs.scipy.org/doc/scipy/reference/sparse.html).
+Both, `x` and `y`, are expected to be [numpy arrays](https://numpy.org/doc/stable/reference/generated/numpy.array.html) or equivalent [array-like](https://scikit-learn.org/stable/glossary.html#term-array-like) data types.
+
+### Using Sparse Matrices
+
+In addition to dense matrices like [numpy arrays](https://numpy.org/doc/stable/reference/generated/numpy.array.html), the BOOMER algorithm does also support to use [scipy sparse matrices](https://docs.scipy.org/doc/scipy/reference/sparse.html). If certain cases, where the feature matrices consists mostly of zeros (or any other value), this can require significantly less amounts of memory and may speed up training. Sparse matrices can be provided to the `fit` method via the arguments `x` and `y` just as before. Optionally, the value that should be used for sparse elements in the feature matrix `x` can be specified via the keyword argument `sparse_feature_value`:
+
+```python
+clf.fit(x, y, sparse_feature_value = 0.0)
+```
+
+### Setting Algorithmic Parameters
 
 In the previous example the BOOMER algorithm's default configuration is used. However, in many cases it is desirable to adjust its behavior by providing custom values for one or several of its parameters. This can be achieved by passing the names and values of the respective parameters as constructor arguments:
 
@@ -51,3 +61,9 @@ In this example, we use the estimator to predict for the same data that has prev
 ```
 
 In practice, one usually retrieves the data from files rather than manually specifying the values of the feature and label matrices. A collection of benchmark datasets can be found [here](https://github.com/mrapp-ke/Boomer-Datasets).
+
+The argument `x` that must be passed to the `predict` method, has the same semantics as for the `fit` method. It can either be a [numpy array](https://numpy.org/doc/stable/reference/generated/numpy.array.html), an equivalent [array-like](https://scikit-learn.org/stable/glossary.html#term-array-like) data type, or a [scipy sparse matrix](https://docs.scipy.org/doc/scipy/reference/sparse.html). In the latter case, the value that should be used for sparse elements in the feature matrix `x` can be specified via the keyword argument `sparse_feature_value`:
+
+```python
+pred = clf.predict(x sparse_feature_value = 0.0)
+```
