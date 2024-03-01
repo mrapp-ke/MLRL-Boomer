@@ -29,6 +29,8 @@ from mlrl.common.data_types import Float32, Uint8, Uint32
 from mlrl.common.format import format_enum_values
 from mlrl.common.learners import IncrementalLearner, Learner, NominalAttributeLearner, OrdinalAttributeLearner
 
+KWARG_SPARSE_FEATURE_VALUE = 'sparse_feature_value'
+
 KWARG_MAX_RULES = 'max_rules'
 
 
@@ -321,7 +323,11 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         self.prediction_format = prediction_format
 
     # pylint: disable=attribute-defined-outside-init
-    def _fit(self, x, y, **_):
+    def _fit(self, x, y, **kwargs):
+        """
+        :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
+                                       only have an effect if `x` is a `scipy.sparse` matrix
+        """
         # Validate feature matrix and convert it to the preferred format...
         x_sparse_format = SparseFormat.CSC
         x_sparse_policy = parse_sparse_policy('feature_format', self.feature_format)
@@ -339,7 +345,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             x_data = np.ascontiguousarray(x.data, dtype=Float32)
             x_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
             x_indptr = np.ascontiguousarray(x.indptr, dtype=Uint32)
-            feature_matrix = CscFeatureMatrix(x_data, x_indices, x_indptr, x.shape[0], x.shape[1])
+            sparse_feature_value = float(kwargs.get(KWARG_SPARSE_FEATURE_VALUE, 0.0))
+            feature_matrix = CscFeatureMatrix(x_data, x_indices, x_indptr, x.shape[0], x.shape[1], sparse_feature_value)
         else:
             log.debug('A dense matrix is used to store the feature values of the training examples')
             feature_matrix = FortranContiguousFeatureMatrix(x)
