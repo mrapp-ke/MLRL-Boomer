@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Look up Git repository in cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: .git/
           key: test-format-cache-git-${{ github.run_id }}
@@ -62,7 +62,7 @@ jobs:
         if: steps.filter.outputs.md == 'true'
         run: ./build test_format_md
       - name: Save Git repository to cache
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         if: success() || failure()
         with:
           path: .git/
