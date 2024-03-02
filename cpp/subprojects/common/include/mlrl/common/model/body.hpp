@@ -36,6 +36,7 @@ class MLRLCOMMON_API IConditional {
          * @param indicesEnd    An iterator to the end of the example's feature values
          * @param valuesBegin   An iterator to the beginning of the example's feature_indices
          * @param valuesEnd     An iterator to the end of the example's feature indices
+         * @param sparseValue   The value that should be used for sparse feature values
          * @param tmpArray1     An iterator that is used to temporarily store non-zero feature values. May contain
                                 arbitrary values
          * @param tmpArray2     An iterator that is used to temporarily keep track of the feature indices with non-zero
@@ -47,7 +48,8 @@ class MLRLCOMMON_API IConditional {
          */
         virtual bool covers(View<uint32>::const_iterator indicesBegin, View<uint32>::const_iterator indicesEnd,
                             View<float32>::const_iterator valuesBegin, View<float32>::const_iterator valuesEnd,
-                            View<float32>::iterator tmpArray1, View<uint32>::iterator tmpArray2, uint32 n) const = 0;
+                            float32 sparseValue, View<float32>::iterator tmpArray1, View<uint32>::iterator tmpArray2,
+                            uint32 n) const = 0;
 };
 
 /**

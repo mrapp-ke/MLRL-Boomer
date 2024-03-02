@@ -76,7 +76,7 @@ static inline Tuple<int32> getMinorityAndMajorityValue(const std::unordered_map<
 }
 
 template<typename IndexIterator, typename ValueIterator>
-static inline std::unique_ptr<BinaryFeatureVectorDecorator> createBinaryFeatureVector(
+static inline std::unique_ptr<BinaryFeatureVectorDecorator> createBinaryFeatureVectorInternally(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
   const std::unordered_map<int32, Tuple<uint32>>& mapping, int32 minorityValue, int32 majorityValue) {
     const Tuple<uint32>& tuple = mapping.at(minorityValue);
@@ -111,18 +111,19 @@ static inline std::unique_ptr<BinaryFeatureVectorDecorator> createBinaryFeatureV
 template<typename IndexIterator, typename ValueIterator>
 static inline std::unique_ptr<BinaryFeatureVectorDecorator> createBinaryFeatureVector(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
-  std::unordered_map<int32, Tuple<uint32>>& mapping, bool sparse) {
+  std::unordered_map<int32, Tuple<uint32>>& mapping, bool sparse, int32 sparseValue) {
     int32 minorityValue;
     int32 majorityValue;
 
     if (sparse) {
         minorityValue = (*mapping.cbegin()).first;
-        majorityValue = 0;
+        majorityValue = sparseValue;
     } else {
         const Tuple<int32> tuple = getMinorityAndMajorityValue(mapping);
         minorityValue = tuple.first;
         majorityValue = tuple.second;
     }
 
-    return createBinaryFeatureVector(indexIterator, valueIterator, numElements, mapping, minorityValue, majorityValue);
+    return createBinaryFeatureVectorInternally(indexIterator, valueIterator, numElements, mapping, minorityValue,
+                                               majorityValue);
 }
