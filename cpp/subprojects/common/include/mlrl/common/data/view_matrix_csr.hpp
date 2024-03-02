@@ -16,18 +16,19 @@ class MLRLCOMMON_API CsrView : public SparseMatrix<T> {
     public:
 
         /**
-         * @param values    A pointer to an array of template type `T` that stores all non-zero values, the view should
-         *                  provide access to
-         * @param indices   A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the column
-         *                  indices, the values in `values` correspond to
-         * @param indptr    A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices of
-         *                  the first element in `values` and `indices` that corresponds to a certain row. The index at
-         *                  the last position must be equal to `numNonZeroValues`
-         * @param numRows   The number of rows in the view
-         * @param numCols   The number of columns in the view
+         * @param values        A pointer to an array of template type `T` that stores all non-zero values, the view
+         *                      should provide access to
+         * @param indices       A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the
+         *                      column indices, the values in `values` correspond to
+         * @param indptr        A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices
+         *                      of the first element in `values` and `indices` that corresponds to a certain row. The
+         *                      index at the last position must be equal to `numNonZeroValues`
+         * @param numRows       The number of rows in the view
+         * @param numCols       The number of columns in the view
+         * @param sparseValue   The value that should be used for sparse elements in the matrix
          */
-        CsrView(T* values, uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
-            : SparseMatrix<T>(values, indices, indptr, numRows, numCols) {}
+        CsrView(T* values, uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols, T sparseValue = 0)
+            : SparseMatrix<T>(values, indices, indptr, numRows, numCols, sparseValue) {}
 
         /**
          * @param other A const reference to an object of type `CsrView` that should be copied

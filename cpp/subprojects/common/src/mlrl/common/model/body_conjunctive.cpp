@@ -31,8 +31,8 @@ bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(View<uint32>::
                                                                   View<uint32>::const_iterator indicesEnd,
                                                                   View<float32>::const_iterator valuesBegin,
                                                                   View<float32>::const_iterator valuesEnd,
-                                                                  float32* tmpArray1, uint32* tmpArray2,
-                                                                  uint32 n) const {
+                                                                  float32 sparseValue, float32* tmpArray1,
+                                                                  uint32* tmpArray2, uint32 n) const {
     uint32 numConditions = this->getNumElements();
     typename ConditionVector<Threshold, Compare>::index_const_iterator featureIndexIterator = this->indices_cbegin();
     typename ConditionVector<Threshold, Compare>::value_const_iterator thresholdIterator = this->values_cbegin();
@@ -40,7 +40,7 @@ bool ConjunctiveBody::ConditionVector<Threshold, Compare>::covers(View<uint32>::
     for (uint32 i = 0; i < numConditions; i++) {
         uint32 featureIndex = featureIndexIterator[i];
         Threshold threshold = thresholdIterator[i];
-        Threshold featureValue = (Threshold) (tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : 0);
+        Threshold featureValue = (Threshold) (tmpArray2[featureIndex] == n ? tmpArray1[featureIndex] : sparseValue);
 
         if (!compare_(featureValue, threshold)) {
             return false;
@@ -279,7 +279,7 @@ bool ConjunctiveBody::covers(View<const float32>::const_iterator begin, View<con
 
 bool ConjunctiveBody::covers(View<uint32>::const_iterator indicesBegin, View<uint32>::const_iterator indicesEnd,
                              View<float32>::const_iterator valuesBegin, View<float32>::const_iterator valuesEnd,
-                             float32* tmpArray1, uint32* tmpArray2, uint32 n) const {
+                             float32 sparseValue, float32* tmpArray1, uint32* tmpArray2, uint32 n) const {
     // Copy non-zero feature values to the temporary arrays...
     uint32 numNonZeroFeatureValues = valuesEnd - valuesBegin;
 
@@ -290,12 +290,18 @@ bool ConjunctiveBody::covers(View<uint32>::const_iterator indicesBegin, View<uin
         tmpArray2[featureIndex] = n;
     }
 
-    return numericalLeqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
-           && numericalGrVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
-           && ordinalLeqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
-           && ordinalGrVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
-           && nominalEqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n)
-           && nominalNeqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, tmpArray1, tmpArray2, n);
+    return numericalLeqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, sparseValue, tmpArray1,
+                                      tmpArray2, n)
+           && numericalGrVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, sparseValue, tmpArray1,
+                                        tmpArray2, n)
+           && ordinalLeqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, sparseValue, tmpArray1,
+                                       tmpArray2, n)
+           && ordinalGrVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, sparseValue, tmpArray1,
+                                      tmpArray2, n)
+           && nominalEqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, sparseValue, tmpArray1,
+                                      tmpArray2, n)
+           && nominalNeqVector_.covers(indicesBegin, indicesEnd, valuesBegin, valuesEnd, sparseValue, tmpArray1,
+                                       tmpArray2, n);
 }
 
 void ConjunctiveBody::visit(EmptyBodyVisitor emptyBodyVisitor, ConjunctiveBodyVisitor conjunctiveBodyVisitor) const {

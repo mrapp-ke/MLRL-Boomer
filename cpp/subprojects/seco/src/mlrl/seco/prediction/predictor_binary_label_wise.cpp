@@ -84,7 +84,7 @@ namespace seco {
 
             if (body.covers(featureMatrix.indices_cbegin(exampleIndex), featureMatrix.indices_cend(exampleIndex),
                             featureMatrix.values_cbegin(exampleIndex), featureMatrix.values_cend(exampleIndex),
-                            tmpArray1.begin(), tmpArray2.begin(), n)) {
+                            featureMatrix.sparseValue, tmpArray1.begin(), tmpArray2.begin(), n)) {
                 const IHead& head = rule.getHead();
                 applyHead(head, predictionMatrix.values_begin(predictionIndex), mask);
             }
@@ -318,7 +318,7 @@ namespace seco {
 
             if (body.covers(featureMatrix.indices_cbegin(exampleIndex), featureMatrix.indices_cend(exampleIndex),
                             featureMatrix.values_cbegin(exampleIndex), featureMatrix.values_cend(exampleIndex),
-                            tmpArray1.begin(), tmpArray2.begin(), n)) {
+                            featureMatrix.sparseValue, tmpArray1.begin(), tmpArray2.begin(), n)) {
                 const IHead& head = rule.getHead();
                 applyHead(head, predictionRow, numLabels);
             }
