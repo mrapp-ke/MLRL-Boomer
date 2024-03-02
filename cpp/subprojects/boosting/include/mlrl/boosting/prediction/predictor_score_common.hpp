@@ -66,12 +66,13 @@ namespace boosting {
     static inline void applyRule(const RuleList::Rule& rule, View<uint32>::const_iterator featureIndicesBegin,
                                  View<uint32>::const_iterator featureIndicesEnd,
                                  View<float32>::const_iterator featureValuesBegin,
-                                 View<float32>::const_iterator featureValuesEnd, View<float64>::iterator scoreIterator,
-                                 View<float32>::iterator tmpArray1, View<uint32>::iterator tmpArray2, uint32 n) {
+                                 View<float32>::const_iterator featureValuesEnd, float32 sparseFeatureValue,
+                                 View<float64>::iterator scoreIterator, View<float32>::iterator tmpArray1,
+                                 View<uint32>::iterator tmpArray2, uint32 n) {
         const IBody& body = rule.getBody();
 
-        if (body.covers(featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd, tmpArray1,
-                        tmpArray2, n)) {
+        if (body.covers(featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd,
+                        sparseFeatureValue, tmpArray1, tmpArray2, n)) {
             const IHead& head = rule.getHead();
             applyHead(head, scoreIterator);
         }
@@ -81,7 +82,7 @@ namespace boosting {
                                   uint32 numFeatures, View<uint32>::const_iterator featureIndicesBegin,
                                   View<uint32>::const_iterator featureIndicesEnd,
                                   View<float32>::const_iterator featureValuesBegin,
-                                  View<float32>::const_iterator featureValuesEnd,
+                                  View<float32>::const_iterator featureValuesEnd, float32 sparseFeatureValue,
                                   View<float64>::iterator scoreIterator) {
         Array<float32> tmpArray1(numFeatures);
         Array<uint32> tmpArray2(numFeatures, true);
@@ -89,8 +90,8 @@ namespace boosting {
 
         for (; rulesBegin != rulesEnd; rulesBegin++) {
             const RuleList::Rule& rule = *rulesBegin;
-            applyRule(rule, featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd, scoreIterator,
-                      tmpArray1.begin(), tmpArray2.begin(), n);
+            applyRule(rule, featureIndicesBegin, featureIndicesEnd, featureValuesBegin, featureValuesEnd,
+                      sparseFeatureValue, scoreIterator, tmpArray1.begin(), tmpArray2.begin(), n);
             n++;
         }
     }
@@ -109,7 +110,8 @@ namespace boosting {
                                                 uint32 predictionIndex) {
         applyRules(rulesBegin, rulesEnd, featureMatrix.numCols, featureMatrix.indices_cbegin(exampleIndex),
                    featureMatrix.indices_cend(exampleIndex), featureMatrix.values_cbegin(exampleIndex),
-                   featureMatrix.values_cend(exampleIndex), scoreMatrix.values_begin(predictionIndex));
+                   featureMatrix.values_cend(exampleIndex), featureMatrix.sparseValue,
+                   scoreMatrix.values_begin(predictionIndex));
     }
 
     /**
