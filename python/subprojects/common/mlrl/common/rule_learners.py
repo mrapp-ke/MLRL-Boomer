@@ -411,8 +411,12 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         return MixedFeatureInfo(num_features, ordinal_attribute_indices, nominal_attribute_indices)
 
     def _predict_binary(self, x, **kwargs):
+        """
+        :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
+                                       only have an effect if `x` is a `scipy.sparse` matrix
+        """
         learner = self._create_learner()
-        feature_matrix = self.__create_row_wise_feature_matrix(x)
+        feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
         num_labels = self.num_labels_
 
         if learner.can_predict_binary(feature_matrix, num_labels):
@@ -428,11 +432,13 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
 
     def _predict_binary_incrementally(self, x, **kwargs):
         """
-        :keyword max_rules: The maximum number of rules to be used for prediction. Must be at least 1 or 0, if the
-                            number of rules should not be restricted
+        :keyword sparse_feature_value:  The value that should be used for sparse elements in the feature matrix. Does
+                                        only have an effect if `x` is a `scipy.sparse` matrix
+        :keyword max_rules:             The maximum number of rules to be used for prediction. Must be at least 1 or 0,
+                                        if the number of rules should not be restricted
         """
         learner = self._create_learner()
-        feature_matrix = self.__create_row_wise_feature_matrix(x)
+        feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
         num_labels = self.num_labels_
 
         if learner.can_predict_binary(feature_matrix, num_labels):
@@ -453,8 +459,12 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         return super()._predict_binary_incrementally(x, **kwargs)
 
     def _predict_scores(self, x, **kwargs):
+        """
+        :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
+                                       only have an effect if `x` is a `scipy.sparse` matrix
+        """
         learner = self._create_learner()
-        feature_matrix = self.__create_row_wise_feature_matrix(x)
+        feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
         num_labels = self.num_labels_
 
         if learner.can_predict_scores(feature_matrix, num_labels):
@@ -467,11 +477,13 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
 
     def _predict_scores_incrementally(self, x, **kwargs):
         """
-        :keyword max_rules: The maximum number of rules to be used for prediction. Must be at least 1 or 0, if the
-                            number of rules should not be restricted
+        :keyword sparse_feature_value:  The value that should be used for sparse elements in the feature matrix. Does
+                                        only have an effect if `x` is a `scipy.sparse` matrix
+        :keyword max_rules:             The maximum number of rules to be used for prediction. Must be at least 1 or 0,
+                                        if the number of rules should not be restricted
         """
         learner = self._create_learner()
-        feature_matrix = self.__create_row_wise_feature_matrix(x)
+        feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
         num_labels = self.num_labels_
 
         if learner.can_predict_scores(feature_matrix, num_labels):
@@ -488,8 +500,12 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         return super()._predict_scores_incrementally(x, **kwargs)
 
     def _predict_proba(self, x, **kwargs):
+        """
+        :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
+                                       only have an effect if `x` is a `scipy.sparse` matrix
+        """
         learner = self._create_learner()
-        feature_matrix = self.__create_row_wise_feature_matrix(x)
+        feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
         num_labels = self.num_labels_
 
         if learner.can_predict_probabilities(feature_matrix, num_labels):
@@ -505,11 +521,13 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
 
     def _predict_proba_incrementally(self, x, **kwargs):
         """
-        :keyword max_rules: The maximum number of rules to be used for prediction. Must be at least 1 or 0, if the
-                            number of rules should not be restricted
+        :keyword sparse_feature_value:  The value that should be used for sparse elements in the feature matrix. Does
+                                        only have an effect if `x` is a `scipy.sparse` matrix
+        :keyword max_rules:             The maximum number of rules to be used for prediction. Must be at least 1 or 0,
+                                        if the number of rules should not be restricted
         """
         learner = self._create_learner()
-        feature_matrix = self.__create_row_wise_feature_matrix(x)
+        feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
         num_labels = self.num_labels_
 
         if learner.can_predict_probabilities(feature_matrix, num_labels):
@@ -528,7 +546,11 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
 
         return super().predict_proba_incrementally(x, **kwargs)
 
-    def __create_row_wise_feature_matrix(self, x) -> RowWiseFeatureMatrix:
+    def __create_row_wise_feature_matrix(self, x, **kwargs) -> RowWiseFeatureMatrix:
+        """
+        :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
+                                       only have an effect if `x` is a `scipy.sparse` matrix
+        """
         sparse_format = SparseFormat.CSR
         sparse_policy = parse_sparse_policy('feature_format', self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy, dtype=Float32)
@@ -543,7 +565,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             x_data = np.ascontiguousarray(x.data, dtype=Float32)
             x_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
             x_indptr = np.ascontiguousarray(x.indptr, dtype=Uint32)
-            return CsrFeatureMatrix(x_data, x_indices, x_indptr, x.shape[0], x.shape[1])
+            sparse_feature_value = float(kwargs.get(KWARG_SPARSE_FEATURE_VALUE, 0.0))
+            return CsrFeatureMatrix(x_data, x_indices, x_indptr, x.shape[0], x.shape[1], sparse_feature_value)
 
         log.debug('A dense matrix is used to store the feature values of the query examples')
         return CContiguousFeatureMatrix(x)
