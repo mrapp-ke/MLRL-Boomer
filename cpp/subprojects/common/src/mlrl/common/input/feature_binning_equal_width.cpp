@@ -182,6 +182,7 @@ class EqualWidthFeatureBinning final : public IFeatureBinning {
             if (numElements > 0
                 && (numElements < numExamples
                     || !isEqual(numericalFeatureVector[0].value, numericalFeatureVector[numElements - 1].value))) {
+                numericalFeatureVector.sparseValue = featureMatrix.sparseValue;
                 numericalFeatureVector.sparse = numElements < numExamples;
                 return createFeatureVectorInternally(std::move(featureVectorDecoratorPtr->getView().secondView),
                                                      numericalFeatureVector, numExamples, binRatio_, minBins_,

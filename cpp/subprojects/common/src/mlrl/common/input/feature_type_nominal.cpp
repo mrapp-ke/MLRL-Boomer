@@ -56,12 +56,13 @@ static inline std::unique_ptr<NominalFeatureVectorDecorator> createNominalFeatur
 template<typename IndexIterator, typename ValueIterator>
 static inline std::unique_ptr<NominalFeatureVectorDecorator> createNominalFeatureVector(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
-  std::unordered_map<int32, Tuple<uint32>>& mapping, uint32 numValues, uint32 numExamples, bool sparse) {
+  std::unordered_map<int32, Tuple<uint32>>& mapping, uint32 numValues, uint32 numExamples, bool sparse,
+  int32 sparseValue) {
     int32 majorityValue;
     uint32 numMajorityExamples;
 
     if (sparse) {
-        majorityValue = 0;
+        majorityValue = sparseValue;
         numMajorityExamples = 0;
     } else {
         majorityValue = getMajorityValue(mapping);
@@ -75,12 +76,13 @@ static inline std::unique_ptr<NominalFeatureVectorDecorator> createNominalFeatur
 template<typename IndexIterator, typename ValueIterator>
 static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
   IndexIterator indexIterator, ValueIterator valueIterator, uint32 numElements,
-  std::unordered_map<int32, Tuple<uint32>>& mapping, uint32 numValues, uint32 numExamples, bool sparse) {
+  std::unordered_map<int32, Tuple<uint32>>& mapping, uint32 numValues, uint32 numExamples, bool sparse,
+  int32 sparseValue) {
     if (numValues > 2) {
         return createNominalFeatureVector(indexIterator, valueIterator, numElements, mapping, numValues, numExamples,
-                                          sparse);
+                                          sparse, sparseValue);
     } else if (numValues > 1) {
-        return createBinaryFeatureVector(indexIterator, valueIterator, numElements, mapping, sparse);
+        return createBinaryFeatureVector(indexIterator, valueIterator, numElements, mapping, sparse, sparseValue);
     } else {
         return std::make_unique<EqualFeatureVector>();
     }
@@ -95,7 +97,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
     uint32 numExamples = createMapping(valueIterator, numElements, mapping);
     uint32 numValues = (uint32) mapping.size();
     return createFeatureVectorInternally(IndexIterator(), valueIterator, numElements, mapping, numValues, numExamples,
-                                         false);
+                                         false, 0);
 }
 
 static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
@@ -114,7 +116,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
     }
 
     return createFeatureVectorInternally(indexIterator, valuesBegin, numElements, mapping, numValues, numExamples,
-                                         sparse);
+                                         sparse, (int32) featureMatrix.sparseValue);
 }
 
 std::unique_ptr<IFeatureVector> NominalFeatureType::createFeatureVector(

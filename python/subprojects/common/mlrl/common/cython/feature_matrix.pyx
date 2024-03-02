@@ -75,7 +75,7 @@ cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
     """
 
     def __cinit__(self, const float32[::1] values not None, uint32[::1] indices not None, uint32[::1] indptr not None,
-                  uint32 num_examples, uint32 num_features, ):
+                  uint32 num_examples, uint32 num_features, float32 sparse_value = 0.0):
         """
         :param values:          An array of type `float32`, shape `(num_non_zero_values)`, that stores all non-zero
                                 feature values
@@ -86,12 +86,13 @@ cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
                                 at the last position is equal to `num_non_zero_values`
         :param num_examples:    The total number of examples
         :param num_features:    The total number of features
+        :param sparse_value:    The value that should be used for sparse elements in the feature matrix
         """
         self.values = values
         self.indices = indices
         self.indptr = indptr
         self.feature_matrix_ptr = createCscFeatureMatrix(&values[0], &indices[0], &indptr[0], num_examples,
-                                                         num_features)
+                                                         num_features, sparse_value)
 
     cdef IFeatureMatrix* get_feature_matrix_ptr(self):
         return self.feature_matrix_ptr.get()
@@ -139,7 +140,7 @@ cdef class CsrFeatureMatrix(RowWiseFeatureMatrix):
     """
 
     def __cinit__(self, const float32[::1] values not None, uint32[::1] indices not None, uint32[::1] indptr not None,
-                  uint32 num_examples, uint32 num_features):
+                  uint32 num_examples, uint32 num_features, float32 sparse_value = 0.0):
         """
         :param values:          An array of type `float32`, shape `(num_non_zero_values)`, that stores all non-zero
                                 feature values
@@ -150,12 +151,13 @@ cdef class CsrFeatureMatrix(RowWiseFeatureMatrix):
                                 at the last position is equal to `num_non_zero_values`
         :param num_examples:    The total number of examples
         :param num_features:    The total number of features
+        :param sparse_value:    The value that should be used for sparse elements in the feature matrix
         """
         self.values = values
         self.indices = indices
         self.indptr = indptr
         self.feature_matrix_ptr = createCsrFeatureMatrix(&values[0], &indices[0], &indptr[0], num_examples,
-                                                         num_features)
+                                                         num_features, sparse_value)
 
     cdef IFeatureMatrix* get_feature_matrix_ptr(self):
         return self.feature_matrix_ptr.get()

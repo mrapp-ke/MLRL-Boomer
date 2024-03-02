@@ -40,7 +40,7 @@ cdef extern from "mlrl/common/input/feature_matrix_csc.hpp" nogil:
 
 
     unique_ptr[ICscFeatureMatrix] createCscFeatureMatrix(const float32* values, uint32* indices, uint32* indptr,
-                                                         uint32 numRows, uint32 numCols)
+                                                         uint32 numRows, uint32 numCols, float32 sparseValue)
 
 
 cdef extern from "mlrl/common/input/feature_matrix_row_wise.hpp" nogil:
@@ -66,7 +66,7 @@ cdef extern from "mlrl/common/input/feature_matrix_csr.hpp" nogil:
 
 
     unique_ptr[ICsrFeatureMatrix] createCsrFeatureMatrix(const float32* values, uint32* indices, uint32* indptr,
-                                                         uint32 numRows, uint32 numCols)
+                                                         uint32 numRows, uint32 numCols, float32 sparseValue)
 
 
 cdef class FeatureMatrix:
