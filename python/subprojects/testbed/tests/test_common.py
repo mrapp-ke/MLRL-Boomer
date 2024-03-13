@@ -83,6 +83,10 @@ HOLDOUT_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
 
 HOLDOUT_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
+FEATURE_BINNING_EQUAL_WIDTH = 'equal-width'
+
+FEATURE_BINNING_EQUAL_FREQUENCY = 'equal-frequency'
+
 
 def skip_test_on_ci(decorated_function):
     """
@@ -606,6 +610,17 @@ class CmdBuilder:
         """
         self.args.append('--holdout')
         self.args.append(holdout)
+        return self
+
+    def feature_binning(self, feature_binning: str = FEATURE_BINNING_EQUAL_WIDTH):
+        """
+        Configures the algorithm to use a specific method for feature binning.
+
+        :param feature_binning: The name of the method that should be used for feature binning
+        :return:                The builder itself
+        """
+        self.args.append('--feature-binning')
+        self.args.append(feature_binning)
         return self
 
     def build(self) -> List[str]:
@@ -1624,3 +1639,123 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .sequential_post_optimization()
         self.run_cmd(builder, 'sequential-post-optimization')
+
+    def test_feature_binning_equal_width_binary_features_dense(self):
+        """
+        Tests the rule learning algorithm's ability to use equal-width feature binning when applied to a dataset with
+        binary features using a dense feature representation.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_binary) \
+            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
+            .sparse_feature_format(False)
+        self.run_cmd(builder, 'feature-binning-equal-width_binary-features-dense')
+
+    def test_feature_binning_equal_width_binary_features_sparse(self):
+        """
+        Tests the rule learning algorithm's ability to use equal-width feature binning when applied to a dataset with
+        binary features using a sparse feature representation.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_binary) \
+            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
+            .sparse_feature_format()
+        self.run_cmd(builder, 'feature-binning-equal-width_binary-features-sparse')
+
+    def test_feature_binning_equal_width_nominal_features_dense(self):
+        """
+        Tests the rule learning algorithm's ability to use equal-width feature binning when applied to a dataset with
+        nominal features using a dense feature representation.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_nominal) \
+            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
+            .sparse_feature_format(False)
+        self.run_cmd(builder, 'feature-binning-equal-width_nominal-features-dense')
+
+    def test_feature_binning_equal_width_nominal_features_sparse(self):
+        """
+        Tests the rule learning algorithm's ability to use equal-width feature binning when applied to a dataset with
+        nominal features using a sparse feature representation.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_nominal) \
+            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
+            .sparse_feature_format()
+        self.run_cmd(builder, 'feature-binning-equal-width_nominal-features-sparse')
+
+    def test_feature_binning_equal_width_numerical_features_dense(self):
+        """
+        Tests the rule learning algorithm's ability to use equal-width feature binning when applied to a dataset with
+        numerical features using a dense feature representation.
+        """
+        builder = CmdBuilder(self.cmd) \
+            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
+            .sparse_feature_format(False)
+        self.run_cmd(builder, 'feature-binning-equal-width_numerical-features-dense')
+
+    def test_feature_binning_equal_width_numerical_features_sparse(self):
+        """
+        Tests the rule learning algorithm's ability to use equal-width feature binning when applied to a dataset with
+        numerical features using a sparse feature representation.
+        """
+        builder = CmdBuilder(self.cmd) \
+            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
+            .sparse_feature_format()
+        self.run_cmd(builder, 'feature-binning-equal-width_numerical-features-sparse')
+
+    def test_feature_binning_equal_frequency_binary_features_dense(self):
+        """
+        Tests the rule learning algorithm's ability to use equal-frequency feature binning when applied to a dataset
+        with binary features using a dense feature representation.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_binary) \
+            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
+            .sparse_feature_format(False)
+        self.run_cmd(builder, 'feature-binning-equal-frequency_binary-features-dense')
+
+    def test_feature_binning_equal_frequency_binary_features_sparse(self):
+        """
+        Tests the rule learning algorithm's ability to use equal-frequency feature binning when applied to a dataset
+        with binary features using a sparse feature representation.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_binary) \
+            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
+            .sparse_feature_format()
+        self.run_cmd(builder, 'feature-binning-equal-frequency_binary-features-sparse')
+
+    def test_feature_binning_equal_frequency_nominal_features_dense(self):
+        """
+        Tests the rule learning algorithm's ability to use equal-frequency feature binning when applied to a dataset
+        with nominal features using a dense feature representation.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_nominal) \
+            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
+            .sparse_feature_format(False)
+        self.run_cmd(builder, 'feature-binning-equal-frequency_nominal-features-dense')
+
+    def test_feature_binning_equal_frequency_nominal_features_sparse(self):
+        """
+        Tests the rule learning algorithm's ability to use equal-frequency feature binning when applied to a dataset
+        with nominal features using a sparse feature representation.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_nominal) \
+            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
+            .sparse_feature_format()
+        self.run_cmd(builder, 'feature-binning-equal-frequency_nominal-features-sparse')
+
+    def test_feature_binning_equal_frequency_numerical_features_dense(self):
+        """
+        Tests the rule learning algorithm's ability to use equal-frequency feature binning when applied to a dataset
+        with numerical features using a dense feature representation.
+        """
+        builder = CmdBuilder(self.cmd) \
+            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
+            .sparse_feature_format(False)
+        self.run_cmd(builder, 'feature-binning-equal-frequency_numerical-features-dense')
+
+    def test_feature_binning_equal_frequency_numerical_features_sparse(self):
+        """
+        Tests the rule learning algorithm's ability to use equal-frequency feature binning when applied to a dataset
+        with numerical features using a sparse feature representation.
+        """
+        builder = CmdBuilder(self.cmd) \
+            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
+            .sparse_feature_format()
+        self.run_cmd(builder, 'feature-binning-equal-frequency_numerical-features-sparse')

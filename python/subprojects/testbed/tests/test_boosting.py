@@ -3,15 +3,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from os import path
 
-from test_common import DATASET_EMOTIONS, DIR_DATA, DIR_OUT, HOLDOUT_NO, HOLDOUT_RANDOM, \
-    HOLDOUT_STRATIFIED_EXAMPLE_WISE, HOLDOUT_STRATIFIED_LABEL_WISE, PREDICTION_TYPE_PROBABILITIES, \
-    PREDICTION_TYPE_SCORES, CmdBuilder, CommonIntegrationTests, skip_test_on_ci
+from test_common import DATASET_EMOTIONS, DIR_OUT, HOLDOUT_NO, HOLDOUT_RANDOM, HOLDOUT_STRATIFIED_EXAMPLE_WISE, \
+    HOLDOUT_STRATIFIED_LABEL_WISE, PREDICTION_TYPE_PROBABILITIES, PREDICTION_TYPE_SCORES, CmdBuilder, \
+    CommonIntegrationTests, skip_test_on_ci
 
 CMD_BOOMER = 'boomer'
-
-FEATURE_BINNING_EQUAL_WIDTH = 'equal-width'
-
-FEATURE_BINNING_EQUAL_FREQUENCY = 'equal-frequency'
 
 LOSS_LOGISTIC_LABEL_WISE = 'logistic-label-wise'
 
@@ -67,19 +63,8 @@ class BoostingCmdBuilder(CmdBuilder):
     A builder that allows to configure a command for running the BOOMER algorithm.
     """
 
-    def __init__(self, data_dir: str = DIR_DATA, dataset: str = DATASET_EMOTIONS):
-        super().__init__(cmd=CMD_BOOMER, data_dir=data_dir, dataset=dataset)
-
-    def feature_binning(self, feature_binning: str = FEATURE_BINNING_EQUAL_WIDTH):
-        """
-        Configures the algorithm to use a specific method for feature binning.
-
-        :param feature_binning: The name of the method that should be used for feature binning
-        :return:                The builder itself
-        """
-        self.args.append('--feature-binning')
-        self.args.append(feature_binning)
-        return self
+    def __init__(self, dataset: str = DATASET_EMOTIONS):
+        super().__init__(cmd=CMD_BOOMER, dataset=dataset)
 
     def loss(self, loss: str = LOSS_LOGISTIC_LABEL_WISE):
         """
@@ -221,126 +206,6 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .prediction_type(PREDICTION_TYPE_PROBABILITIES) \
             .print_evaluation()
         self.run_cmd(builder, 'single-label-probabilities')
-
-    def test_feature_binning_equal_width_binary_features_dense(self):
-        """
-        Tests the BOOMER algorithm's ability to use equal-width feature binning when applied to a dataset with binary
-        features using a dense feature representation.
-        """
-        builder = BoostingCmdBuilder(dataset=self.dataset_binary) \
-            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format(False)
-        self.run_cmd(builder, 'feature-binning-equal-width_binary-features-dense')
-
-    def test_feature_binning_equal_width_binary_features_sparse(self):
-        """
-        Tests the BOOMER algorithm's ability to use equal-width feature binning when applied to a dataset with binary
-        features using a sparse feature representation.
-        """
-        builder = BoostingCmdBuilder(dataset=self.dataset_binary) \
-            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format()
-        self.run_cmd(builder, 'feature-binning-equal-width_binary-features-sparse')
-
-    def test_feature_binning_equal_width_nominal_features_dense(self):
-        """
-        Tests the BOOMER algorithm's ability to use equal-width feature binning when applied to a dataset with nominal
-        features using a dense feature representation.
-        """
-        builder = BoostingCmdBuilder(dataset=self.dataset_nominal) \
-            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format(False)
-        self.run_cmd(builder, 'feature-binning-equal-width_nominal-features-dense')
-
-    def test_feature_binning_equal_width_nominal_features_sparse(self):
-        """
-        Tests the BOOMER algorithm's ability to use equal-width feature binning when applied to a dataset with nominal
-        features using a sparse feature representation.
-        """
-        builder = BoostingCmdBuilder(dataset=self.dataset_nominal) \
-            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format()
-        self.run_cmd(builder, 'feature-binning-equal-width_nominal-features-sparse')
-
-    def test_feature_binning_equal_width_numerical_features_dense(self):
-        """
-        Tests the BOOMER algorithm's ability to use equal-width feature binning when applied to a dataset with numerical
-        features using a dense feature representation.
-        """
-        builder = BoostingCmdBuilder() \
-            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format(False)
-        self.run_cmd(builder, 'feature-binning-equal-width_numerical-features-dense')
-
-    def test_feature_binning_equal_width_numerical_features_sparse(self):
-        """
-        Tests the BOOMER algorithm's ability to use equal-width feature binning when applied to a dataset with numerical
-        features using a sparse feature representation.
-        """
-        builder = BoostingCmdBuilder() \
-            .feature_binning(FEATURE_BINNING_EQUAL_WIDTH) \
-            .sparse_feature_format()
-        self.run_cmd(builder, 'feature-binning-equal-width_numerical-features-sparse')
-
-    def test_feature_binning_equal_frequency_binary_features_dense(self):
-        """
-        Tests the BOOMER algorithm's ability to use equal-frequency feature binning when applied to a dataset with
-        binary features using a dense feature representation.
-        """
-        builder = BoostingCmdBuilder(dataset=self.dataset_binary) \
-            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format(False)
-        self.run_cmd(builder, 'feature-binning-equal-frequency_binary-features-dense')
-
-    def test_feature_binning_equal_frequency_binary_features_sparse(self):
-        """
-        Tests the BOOMER algorithm's ability to use equal-frequency feature binning when applied to a dataset with
-        binary features using a sparse feature representation.
-        """
-        builder = BoostingCmdBuilder(dataset=self.dataset_binary) \
-            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format()
-        self.run_cmd(builder, 'feature-binning-equal-frequency_binary-features-sparse')
-
-    def test_feature_binning_equal_frequency_nominal_features_dense(self):
-        """
-        Tests the BOOMER algorithm's ability to use equal-frequency feature binning when applied to a dataset with
-        nominal features using a dense feature representation.
-        """
-        builder = BoostingCmdBuilder(dataset=self.dataset_nominal) \
-            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format(False)
-        self.run_cmd(builder, 'feature-binning-equal-frequency_nominal-features-dense')
-
-    def test_feature_binning_equal_frequency_nominal_features_sparse(self):
-        """
-        Tests the BOOMER algorithm's ability to use equal-frequency feature binning when applied to a dataset with
-        nominal features using a sparse feature representation.
-        """
-        builder = BoostingCmdBuilder(dataset=self.dataset_nominal) \
-            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format()
-        self.run_cmd(builder, 'feature-binning-equal-frequency_nominal-features-sparse')
-
-    def test_feature_binning_equal_frequency_numerical_features_dense(self):
-        """
-        Tests the BOOMER algorithm's ability to use equal-frequency feature binning when applied to a dataset with
-        numerical features using a dense feature representation.
-        """
-        builder = BoostingCmdBuilder() \
-            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format(False)
-        self.run_cmd(builder, 'feature-binning-equal-frequency_numerical-features-dense')
-
-    def test_feature_binning_equal_frequency_numerical_features_sparse(self):
-        """
-        Tests the BOOMER algorithm's ability to use equal-frequency feature binning when applied to a dataset with
-        numerical features using a sparse feature representation.
-        """
-        builder = BoostingCmdBuilder() \
-            .feature_binning(FEATURE_BINNING_EQUAL_FREQUENCY) \
-            .sparse_feature_format()
-        self.run_cmd(builder, 'feature-binning-equal-frequency_numerical-features-sparse')
 
     def test_loss_logistic_label_wise(self):
         """
