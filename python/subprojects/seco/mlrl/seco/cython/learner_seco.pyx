@@ -3,6 +3,8 @@
 """
 from libcpp.utility cimport move
 
+from mlrl.common.cython.feature_binning cimport EqualFrequencyFeatureBinningConfig, EqualWidthFeatureBinningConfig, \
+    IEqualFrequencyFeatureBinningConfig, IEqualWidthFeatureBinningConfig
 from mlrl.common.cython.feature_sampling cimport FeatureSamplingWithoutReplacementConfig, \
     IFeatureSamplingWithoutReplacementConfig
 from mlrl.common.cython.instance_sampling cimport ExampleWiseStratifiedInstanceSamplingConfig, \
@@ -28,16 +30,17 @@ from mlrl.seco.cython.lift_function cimport IKlnLiftFunctionConfig, IPeakLiftFun
 from mlrl.seco.cython.stopping_criterion cimport CoverageStoppingCriterionConfig, ICoverageStoppingCriterionConfig
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, DefaultRuleMixin, \
-    ExampleWiseStratifiedBiPartitionSamplingMixin, ExampleWiseStratifiedInstanceSamplingMixin, \
-    FeatureSamplingWithoutReplacementMixin, GreedyTopDownRuleInductionMixin, InstanceSamplingWithoutReplacementMixin, \
-    InstanceSamplingWithReplacementMixin, IrepRulePruningMixin, LabelSamplingWithoutReplacementMixin, \
-    LabelWiseStratifiedBiPartitionSamplingMixin, LabelWiseStratifiedInstanceSamplingMixin, NoFeatureSamplingMixin, \
-    NoGlobalPruningMixin, NoInstanceSamplingMixin, NoLabelSamplingMixin, NoParallelPredictionMixin, \
-    NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, NoPartitionSamplingMixin, NoRulePruningMixin, \
-    NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, \
-    ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, \
-    PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinLabelSamplingMixin, SequentialPostOptimizationMixin, \
-    SequentialRuleModelAssemblageMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
+    EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, ExampleWiseStratifiedBiPartitionSamplingMixin, \
+    ExampleWiseStratifiedInstanceSamplingMixin, FeatureSamplingWithoutReplacementMixin, \
+    GreedyTopDownRuleInductionMixin, InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, \
+    IrepRulePruningMixin, LabelSamplingWithoutReplacementMixin, LabelWiseStratifiedBiPartitionSamplingMixin, \
+    LabelWiseStratifiedInstanceSamplingMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, \
+    NoInstanceSamplingMixin, NoLabelSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, \
+    NoParallelStatisticUpdateMixin, NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, \
+    NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, ParallelPredictionMixin, ParallelRuleRefinementMixin, \
+    ParallelStatisticUpdateMixin, PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, \
+    RoundRobinLabelSamplingMixin, SequentialPostOptimizationMixin, SequentialRuleModelAssemblageMixin, \
+    SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
 
 from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, \
     CoverageStoppingCriterionMixin, FMeasureHeuristicMixin, FMeasurePruningHeuristicMixin, KlnLiftFunctionMixin, \
@@ -74,6 +77,9 @@ cdef class MultiLabelSeCoRuleLearnerConfig(RuleLearnerConfig,
                                            DefaultRuleMixin,
                                            GreedyTopDownRuleInductionMixin,
                                            BeamSearchTopDownRuleInductionMixin,
+                                           NoFeatureBinningMixin,
+                                           EqualWidthFeatureBinningMixin,
+                                           EqualFrequencyFeatureBinningMixin,
                                            NoLabelSamplingMixin,
                                            RoundRobinLabelSamplingMixin,
                                            LabelSamplingWithoutReplacementMixin,
@@ -214,6 +220,25 @@ cdef class MultiLabelSeCoRuleLearnerConfig(RuleLearnerConfig,
             &self.config_ptr.get().useBeamSearchTopDownRuleInduction()
         cdef BeamSearchTopDownRuleInductionConfig config = \
             BeamSearchTopDownRuleInductionConfig.__new__(BeamSearchTopDownRuleInductionConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_no_feature_binning(self):
+        self.config_ptr.get().useNoFeatureBinning()
+
+    def use_equal_width_feature_binning(self) -> EqualWidthFeatureBinningConfig:
+        cdef IEqualWidthFeatureBinningConfig* config_ptr = \
+            &self.config_ptr.get().useEqualWidthFeatureBinning()
+        cdef EqualWidthFeatureBinningConfig config = \
+            EqualWidthFeatureBinningConfig.__new__(EqualWidthFeatureBinningConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_equal_frequency_feature_binning(self) -> EqualFrequencyFeatureBinningConfig:
+        cdef IEqualFrequencyFeatureBinningConfig* config_ptr = \
+            &self.config_ptr.get().useEqualFrequencyFeatureBinning()
+        cdef EqualFrequencyFeatureBinningConfig config = \
+            EqualFrequencyFeatureBinningConfig.__new__(EqualFrequencyFeatureBinningConfig)
         config.config_ptr = config_ptr
         return config
 
