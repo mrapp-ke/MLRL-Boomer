@@ -1,7 +1,6 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-# pylint: disable=duplicate-code
 import os
 import shutil
 
