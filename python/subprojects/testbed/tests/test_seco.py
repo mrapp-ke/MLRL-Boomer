@@ -3,7 +3,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from os import path
 
-from test_common import DATASET_EMOTIONS, DIR_DATA, DIR_OUT, RULE_PRUNING_IREP, CmdBuilder, CommonIntegrationTests
+from test_common import DIR_OUT, RULE_PRUNING_IREP, CmdBuilder, CommonIntegrationTests
 
 CMD_SECO = 'seco'
 
@@ -37,8 +37,8 @@ class SeCoCmdBuilder(CmdBuilder):
     A builder that allows to configure a command for running the separate-and-conquer (SeCo) algorithm.
     """
 
-    def __init__(self, data_dir: str = DIR_DATA, dataset: str = DATASET_EMOTIONS):
-        super().__init__(cmd=CMD_SECO, data_dir=data_dir, dataset=dataset)
+    def __init__(self):
+        super().__init__(cmd=CMD_SECO)
 
     def heuristic(self, heuristic: str = HEURISTIC_F_MEASURE):
         """
