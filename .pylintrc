@@ -31,6 +31,7 @@ max-line-length=120
 # --disable=W".
 disable=no-name-in-module,
         import-error,
+        duplicate-code,
         too-many-ancestors,
         too-many-instance-attributes,
         too-many-arguments,
