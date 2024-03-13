@@ -1,12 +1,13 @@
 from libcpp.memory cimport unique_ptr
 
 from mlrl.common.cython.learner cimport IBeamSearchTopDownRuleInductionMixin, IDefaultRuleMixin, \
+    IEqualFrequencyFeatureBinningMixin, IEqualWidthFeatureBinningMixin, \
     IExampleWiseStratifiedBiPartitionSamplingMixin, IExampleWiseStratifiedInstanceSamplingMixin, \
     IFeatureSamplingWithoutReplacementMixin, IGreedyTopDownRuleInductionMixin, \
     IInstanceSamplingWithoutReplacementMixin, IInstanceSamplingWithReplacementMixin, IIrepRulePruningMixin, \
     ILabelSamplingWithoutReplacementMixin, ILabelWiseStratifiedBiPartitionSamplingMixin, \
-    ILabelWiseStratifiedInstanceSamplingMixin, INoFeatureSamplingMixin, INoInstanceSamplingMixin, \
-    INoLabelSamplingMixin, INoParallelPredictionMixin, INoParallelRuleRefinementMixin, \
+    ILabelWiseStratifiedInstanceSamplingMixin, INoFeatureBinningMixin, INoFeatureSamplingMixin, \
+    INoInstanceSamplingMixin, INoLabelSamplingMixin, INoParallelPredictionMixin, INoParallelRuleRefinementMixin, \
     INoParallelStatisticUpdateMixin, INoPartitionSamplingMixin, INoRulePruningMixin, \
     INoSequentialPostOptimizationMixin, INoSizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
     IParallelPredictionMixin, IParallelRuleRefinementMixin, IParallelStatisticUpdateMixin, \
@@ -51,6 +52,9 @@ cdef extern from "mlrl/seco/learner_seco.hpp" namespace "seco" nogil:
             IDefaultRuleMixin,
             IGreedyTopDownRuleInductionMixin,
             IBeamSearchTopDownRuleInductionMixin,
+            INoFeatureBinningMixin,
+            IEqualWidthFeatureBinningMixin,
+            IEqualFrequencyFeatureBinningMixin,
             INoLabelSamplingMixin,
             IRoundRobinLabelSamplingMixin,
             ILabelSamplingWithoutReplacementMixin,
