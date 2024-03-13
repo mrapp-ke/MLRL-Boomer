@@ -5,7 +5,7 @@ Provides utilities that ease the configuration of separate-and-conquer (SeCo) al
 """
 from typing import Optional
 
-from mlrl.common.config import NONE, RULE_LEARNER_PARAMETERS, NominalParameter
+from mlrl.common.config import NONE, RULE_LEARNER_PARAMETERS, FeatureBinningParameter, NominalParameter
 from mlrl.common.options import Options
 
 from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, FMeasureHeuristicMixin, \
@@ -163,6 +163,7 @@ class PruningHeuristicParameter(NominalParameter):
 
 
 SECO_RULE_LEARNER_PARAMETERS = RULE_LEARNER_PARAMETERS | {
+    FeatureBinningParameter(),
     HeadTypeParameter(),
     LiftFunctionParameter(),
     HeuristicParameter(),

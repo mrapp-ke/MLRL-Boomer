@@ -40,6 +40,7 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
                  instance_sampling: Optional[str] = None,
                  feature_sampling: Optional[str] = None,
                  holdout: Optional[str] = None,
+                 feature_binning: Optional[str] = None,
                  rule_pruning: Optional[str] = None,
                  parallel_rule_refinement: Optional[str] = None,
                  parallel_statistic_update: Optional[str] = None,
@@ -84,6 +85,10 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
                                                 Must be 'random', 'stratified-label-wise', 'stratified-example-wise' or
                                                 'none', if no holdout set should be used. For additional options refer
                                                 to the documentation
+        :param feature_binning:                 The strategy that should be used to assign examples to bins based on
+                                                their feature values. Must be 'equal-width', 'equal-frequency' or
+                                                'none', if no feature binning should be used. For additional options
+                                                refer to the documentation
         :param rule_pruning:                    The strategy that should be used to prune individual rules. Must be
                                                 'irep' or 'none', if no pruning should be used
         :param parallel_rule_refinement:        Whether potential refinements of rules should be searched for in
@@ -111,6 +116,7 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
         self.instance_sampling = instance_sampling
         self.feature_sampling = feature_sampling
         self.holdout = holdout
+        self.feature_binning = feature_binning
         self.rule_pruning = rule_pruning
         self.parallel_rule_refinement = parallel_rule_refinement
         self.parallel_statistic_update = parallel_statistic_update
