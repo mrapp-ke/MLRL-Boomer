@@ -21,7 +21,7 @@ BinarySparsePredictionView::BinarySparsePredictionView(BinarySparsePredictionVie
 BinarySparsePredictionMatrix::BinarySparsePredictionMatrix(const BinaryLilMatrix& lilMatrix, uint32 numCols,
                                                            uint32 numNonZeroElements)
     : IterableBinarySparseMatrixDecorator<MatrixDecorator<BinarySparsePredictionView>>(
-      BinarySparsePredictionView(lilMatrix, numCols, numNonZeroElements)) {}
+        BinarySparsePredictionView(lilMatrix, numCols, numNonZeroElements)) {}
 
 uint32* BinarySparsePredictionMatrix::getIndices() {
     return this->view.indices;

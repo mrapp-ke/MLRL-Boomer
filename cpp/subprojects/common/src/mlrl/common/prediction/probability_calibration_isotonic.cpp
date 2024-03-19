@@ -132,7 +132,7 @@ static inline float64 calibrateProbability(ListOfLists<Tuple<float64>>::const_ro
 
 IsotonicProbabilityCalibrationModel::IsotonicProbabilityCalibrationModel(uint32 numLists)
     : IterableListOfListsDecorator<ViewDecorator<AllocatedListOfLists<Tuple<float64>>>>(
-      AllocatedListOfLists<Tuple<float64>>(numLists, 0)) {}
+        AllocatedListOfLists<Tuple<float64>>(numLists, 0)) {}
 
 void IsotonicProbabilityCalibrationModel::fit() {
     uint32 numLists = this->getNumBinLists();

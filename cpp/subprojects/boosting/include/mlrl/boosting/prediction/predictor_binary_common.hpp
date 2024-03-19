@@ -85,7 +85,7 @@ namespace boosting {
                     IncrementalPredictor(const BinaryPredictor& predictor, uint32 maxRules,
                                          std::shared_ptr<IBinaryTransformation> binaryTransformationPtr)
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<uint8>>(
-                          predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
+                            predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
                           binaryTransformationPtr_(binaryTransformationPtr),
                           realMatrix_(predictor.featureMatrix_.numRows, predictor.numLabels_,
                                       binaryTransformationPtr_ != nullptr),
@@ -274,7 +274,7 @@ namespace boosting {
                     IncrementalPredictor(const SparseBinaryPredictor& predictor, uint32 maxRules,
                                          std::shared_ptr<IBinaryTransformation> binaryTransformationPtr)
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, BinarySparsePredictionMatrix>(
-                          predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
+                            predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
                           binaryTransformationPtr_(binaryTransformationPtr),
                           realMatrix_(predictor.featureMatrix_.numRows, predictor.numLabels_,
                                       binaryTransformationPtr_ != nullptr),

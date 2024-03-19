@@ -234,30 +234,30 @@ class BinnedFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDec
          */
         BinnedFeatureVectorDecorator(const BinnedFeatureVectorDecorator& other)
             : BinnedFeatureVectorDecorator(
-              AllocatedBinnedFeatureVector(other.view.firstView.numBins,
-                                           other.view.firstView.indptr[other.view.firstView.numBins],
-                                           other.view.firstView.sparseBinIndex),
-              AllocatedMissingFeatureVector()) {}
+                AllocatedBinnedFeatureVector(other.view.firstView.numBins,
+                                             other.view.firstView.indptr[other.view.firstView.numBins],
+                                             other.view.firstView.sparseBinIndex),
+                AllocatedMissingFeatureVector()) {}
 
         /**
          * @param other A reference to an object of type `BinnedFeatureVectorView` that should be copied
          */
         BinnedFeatureVectorDecorator(const BinnedFeatureVectorView& other)
             : BinnedFeatureVectorDecorator(
-              AllocatedBinnedFeatureVector(other.getView().firstView.numBins,
-                                           other.getView().firstView.indptr[other.getView().firstView.numBins],
-                                           other.getView().firstView.sparseBinIndex),
-              AllocatedMissingFeatureVector()) {}
+                AllocatedBinnedFeatureVector(other.getView().firstView.numBins,
+                                             other.getView().firstView.indptr[other.getView().firstView.numBins],
+                                             other.getView().firstView.sparseBinIndex),
+                AllocatedMissingFeatureVector()) {}
 
         /**
          * @param other A reference to an object of type `AllocatedBinnedFeatureVectorView` that should be copied
          */
         BinnedFeatureVectorDecorator(const AllocatedBinnedFeatureVectorView& other)
             : BinnedFeatureVectorDecorator(
-              AllocatedBinnedFeatureVector(other.getView().firstView.numBins,
-                                           other.getView().firstView.indptr[other.getView().firstView.numBins],
-                                           other.getView().firstView.sparseBinIndex),
-              AllocatedMissingFeatureVector()) {}
+                AllocatedBinnedFeatureVector(other.getView().firstView.numBins,
+                                             other.getView().firstView.indptr[other.getView().firstView.numBins],
+                                             other.getView().firstView.sparseBinIndex),
+                AllocatedMissingFeatureVector()) {}
 
         void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
                                  SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,

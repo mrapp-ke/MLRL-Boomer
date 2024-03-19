@@ -54,5 +54,5 @@ class ResizableDenseVector final : public ResizableVectorDecorator<DenseVectorDe
          */
         ResizableDenseVector(uint32 numElements, bool init = false)
             : ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<T>>>(
-              ResizableVector<T>(numElements, init)) {}
+                ResizableVector<T>(numElements, init)) {}
 };

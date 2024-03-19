@@ -18,7 +18,7 @@ static inline constexpr uint32 mask(uint32 pos) {
 
 BitVector::BitVector(uint32 numElements, bool init)
     : ClearableViewDecorator<VectorDecorator<AllocatedVector<uint32>>>(
-      AllocatedVector<uint32>(size(numElements), init)),
+        AllocatedVector<uint32>(size(numElements), init)),
       numElements_(numElements) {}
 
 bool BitVector::operator[](uint32 pos) const {

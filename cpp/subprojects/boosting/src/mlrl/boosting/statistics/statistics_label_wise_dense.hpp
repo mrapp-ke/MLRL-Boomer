@@ -25,7 +25,7 @@ namespace boosting {
              */
             DenseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols)
                 : ClearableViewDecorator<MatrixDecorator<AllocatedCContiguousView<Tuple<float64>>>>(
-                  AllocatedCContiguousView<Tuple<float64>>(numRows, numCols)) {}
+                    AllocatedCContiguousView<Tuple<float64>>(numRows, numCols)) {}
 
             /**
              * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
@@ -80,8 +80,8 @@ namespace boosting {
                 : AbstractLabelWiseStatistics<LabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticMatrix,
                                               NumericCContiguousMatrix<float64>, ILabelWiseLoss, IEvaluationMeasure,
                                               ILabelWiseRuleEvaluationFactory>(
-                  std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
-                  std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
+                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
+                    std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 
             /**
              * @see `IBoostingStatistics::visitScoreMatrix`

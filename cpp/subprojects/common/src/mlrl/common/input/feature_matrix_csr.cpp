@@ -27,7 +27,7 @@ class CsrFeatureMatrix final : public MatrixDecorator<CsrView<const float32>>,
         CsrFeatureMatrix(const float32* values, uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols,
                          float32 sparseValue)
             : MatrixDecorator<CsrView<const float32>>(
-              CsrView<const float32>(values, indices, indptr, numRows, numCols, sparseValue)) {}
+                CsrView<const float32>(values, indices, indptr, numRows, numCols, sparseValue)) {}
 
         bool isSparse() const override {
             return true;

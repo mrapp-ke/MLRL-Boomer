@@ -350,10 +350,10 @@ namespace boosting {
                     WeightedStatisticsSubset(const LabelWiseWeightedStatistics& statistics,
                                              const StatisticVector& totalSumVector, const IndexVector& labelIndices)
                         : AbstractLabelWiseImmutableWeightedStatistics<
-                          StatisticVector, StatisticView, RuleEvaluationFactory,
-                          WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(statistics,
-                                                                                                totalSumVector,
-                                                                                                labelIndices) {}
+                            StatisticVector, StatisticView, RuleEvaluationFactory,
+                            WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(statistics,
+                                                                                                  totalSumVector,
+                                                                                                  labelIndices) {}
 
                     /**
                      * @see `IWeightedStatisticsSubset::addToMissing`
@@ -404,7 +404,7 @@ namespace boosting {
             LabelWiseWeightedStatistics(const LabelWiseWeightedStatistics& statistics)
                 : AbstractLabelWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
                                                                WeightVector>(
-                  statistics.statisticView_, statistics.ruleEvaluationFactory_, statistics.weights_),
+                    statistics.statisticView_, statistics.ruleEvaluationFactory_, statistics.weights_),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(*statistics.totalSumVectorPtr_)) {}
 
             /**
