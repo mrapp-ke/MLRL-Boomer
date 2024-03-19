@@ -85,7 +85,7 @@ namespace boosting {
                     IncrementalPredictor(const ProbabilityPredictor& predictor, uint32 maxRules,
                                          std::shared_ptr<IProbabilityTransformation> probabilityTransformationPtr)
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<float64>>(
-                          predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
+                            predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
                           probabilityTransformationPtr_(probabilityTransformationPtr),
                           scoreMatrix_(predictor.featureMatrix_.numRows, predictor.numLabels_,
                                        probabilityTransformationPtr_ != nullptr),

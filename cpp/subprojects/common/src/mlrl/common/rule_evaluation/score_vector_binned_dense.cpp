@@ -9,8 +9,8 @@ template<typename IndexVector>
 DenseBinnedScoreVector<IndexVector>::DenseBinnedScoreVector(const IndexVector& labelIndices, uint32 numBins,
                                                             bool sorted)
     : BinnedVectorDecorator<ViewDecorator<CompositeVector<AllocatedVector<uint32>, ResizableVector<float64>>>>(
-      CompositeVector<AllocatedVector<uint32>, ResizableVector<float64>>(
-        AllocatedVector<uint32>(labelIndices.getNumElements()), ResizableVector<float64>(numBins))),
+        CompositeVector<AllocatedVector<uint32>, ResizableVector<float64>>(
+          AllocatedVector<uint32>(labelIndices.getNumElements()), ResizableVector<float64>(numBins))),
       labelIndices_(labelIndices), sorted_(sorted), maxCapacity_(numBins) {}
 
 template<typename IndexVector>

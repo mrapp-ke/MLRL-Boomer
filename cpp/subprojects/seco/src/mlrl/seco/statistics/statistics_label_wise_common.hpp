@@ -241,8 +241,8 @@ namespace seco {
                                       const IndexVector& labelIndices)
                 : AbstractLabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
                                                     RuleEvaluationFactory, WeightVector, IndexVector>(
-                  labelMatrix, coverageMatrix, majorityLabelVector, *totalSumVectorPtr, ruleEvaluationFactory, weights,
-                  labelIndices),
+                    labelMatrix, coverageMatrix, majorityLabelVector, *totalSumVectorPtr, ruleEvaluationFactory,
+                    weights, labelIndices),
                   totalSumVectorPtr_(std::move(totalSumVectorPtr)) {
                 initializeLabelWiseStatisticVector(weights, labelMatrix, majorityLabelVector, coverageMatrix,
                                                    *totalSumVectorPtr_);
@@ -342,9 +342,9 @@ namespace seco {
                                              const IndexVector& labelIndices)
                         : AbstractLabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
                                                             RuleEvaluationFactory, WeightVector, IndexVector>(
-                          statistics.labelMatrix_, statistics.coverageMatrix_, statistics.majorityLabelVector_,
-                          statistics.totalSumVector_, statistics.ruleEvaluationFactory_, statistics.weights_,
-                          labelIndices),
+                            statistics.labelMatrix_, statistics.coverageMatrix_, statistics.majorityLabelVector_,
+                            statistics.totalSumVector_, statistics.ruleEvaluationFactory_, statistics.weights_,
+                            labelIndices),
                           subsetSumVector_(&statistics.subsetSumVector_), tmpVector_(labelIndices.getNumElements()) {}
 
                     /**

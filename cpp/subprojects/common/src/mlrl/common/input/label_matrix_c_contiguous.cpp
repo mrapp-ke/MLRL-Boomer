@@ -23,7 +23,7 @@ class CContiguousLabelMatrix final : public DenseMatrixDecorator<CContiguousView
          */
         CContiguousLabelMatrix(const uint8* array, uint32 numRows, uint32 numCols)
             : DenseMatrixDecorator<CContiguousView<const uint8>>(
-              CContiguousView<const uint8>(array, numRows, numCols)) {}
+                CContiguousView<const uint8>(array, numRows, numCols)) {}
 
         bool isSparse() const override {
             return false;

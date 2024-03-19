@@ -168,7 +168,7 @@ namespace boosting {
                                                    float64 l2RegularizationWeight, const Blas& blas,
                                                    const Lapack& lapack)
                 : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector>(
-                  labelIndices.getNumElements(), lapack),
+                    labelIndices.getNumElements(), lapack),
                   scoreVector_(labelIndices, true), l1RegularizationWeight_(l1RegularizationWeight),
                   l2RegularizationWeight_(l2RegularizationWeight), blas_(blas), lapack_(lapack) {}
 

@@ -185,20 +185,20 @@ class OrdinalFeatureVectorDecorator final : public AbstractBinnedFeatureVectorDe
          */
         OrdinalFeatureVectorDecorator(const OrdinalFeatureVectorView& other)
             : OrdinalFeatureVectorDecorator(
-              AllocatedNominalFeatureVector(other.getView().firstView.numValues,
-                                            other.getView().firstView.indptr[other.getView().firstView.numValues],
-                                            other.getView().firstView.majorityValue),
-              AllocatedMissingFeatureVector()) {}
+                AllocatedNominalFeatureVector(other.getView().firstView.numValues,
+                                              other.getView().firstView.indptr[other.getView().firstView.numValues],
+                                              other.getView().firstView.majorityValue),
+                AllocatedMissingFeatureVector()) {}
 
         /**
          * @param other A reference to an object of type `AllocatedOrdinalFeatureVectorView` that should be copied
          */
         OrdinalFeatureVectorDecorator(const AllocatedOrdinalFeatureVectorView& other)
             : OrdinalFeatureVectorDecorator(
-              AllocatedNominalFeatureVector(other.getView().firstView.numValues,
-                                            other.getView().firstView.indptr[other.getView().firstView.numValues],
-                                            other.getView().firstView.majorityValue),
-              AllocatedMissingFeatureVector()) {}
+                AllocatedNominalFeatureVector(other.getView().firstView.numValues,
+                                              other.getView().firstView.indptr[other.getView().firstView.numValues],
+                                              other.getView().firstView.majorityValue),
+                AllocatedMissingFeatureVector()) {}
 
         void searchForRefinement(FeatureBasedSearch& featureBasedSearch, IWeightedStatisticsSubset& statisticsSubset,
                                  SingleRefinementComparator& comparator, uint32 numExamplesWithNonZeroWeights,

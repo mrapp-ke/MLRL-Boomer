@@ -38,8 +38,8 @@ namespace seco {
                                      const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory)
                 : AbstractLabelWiseStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector,
                                               ILabelWiseRuleEvaluationFactory>(
-                  labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr), ruleEvaluationFactory) {
-            }
+                    labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr),
+                    ruleEvaluationFactory) {}
     };
 
     static inline std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(

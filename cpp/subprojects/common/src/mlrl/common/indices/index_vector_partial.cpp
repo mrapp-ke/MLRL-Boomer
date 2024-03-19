@@ -4,7 +4,7 @@
 
 PartialIndexVector::PartialIndexVector(uint32 numElements, bool init)
     : ResizableVectorDecorator<DenseVectorDecorator<ResizableVector<uint32>>>(
-      ResizableVector<uint32>(numElements, init)) {}
+        ResizableVector<uint32>(numElements, init)) {}
 
 uint32 PartialIndexVector::getNumElements() const {
     return VectorDecorator<ResizableVector<uint32>>::getNumElements();

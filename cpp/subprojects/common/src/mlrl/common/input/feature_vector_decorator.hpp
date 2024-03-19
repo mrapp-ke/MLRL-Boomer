@@ -83,6 +83,6 @@ class AbstractFeatureVectorDecorator
          */
         AbstractFeatureVectorDecorator(FeatureVector&& firstView, AllocatedMissingFeatureVector&& secondView)
             : ViewDecorator<CompositeView<FeatureVector, AllocatedMissingFeatureVector>>(
-              CompositeView<FeatureVector, AllocatedMissingFeatureVector>(std::move(firstView),
-                                                                          std::move(secondView))) {}
+                CompositeView<FeatureVector, AllocatedMissingFeatureVector>(std::move(firstView),
+                                                                            std::move(secondView))) {}
 };

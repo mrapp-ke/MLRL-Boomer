@@ -203,7 +203,7 @@ namespace boosting {
                                                   float64 l2RegularizationWeight,
                                                   std::unique_ptr<ILabelBinning> binningPtr)
                 : AbstractLabelWiseBinnedRuleEvaluation<StatisticVector, IndexVector>(
-                  labelIndices, true, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)) {}
+                    labelIndices, true, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr)) {}
     };
 
 }
