@@ -69,8 +69,8 @@ namespace boosting {
                                               SparseLabelWiseStatisticMatrix, NumericSparseSetMatrix<float64>,
                                               ISparseLabelWiseLoss, ISparseEvaluationMeasure,
                                               ISparseLabelWiseRuleEvaluationFactory>(
-                  std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
-                  std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
+                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
+                    std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
 
             /**
              * @see `IBoostingStatistics::visitScoreMatrix`

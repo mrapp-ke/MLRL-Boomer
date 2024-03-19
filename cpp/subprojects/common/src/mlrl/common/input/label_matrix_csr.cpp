@@ -26,7 +26,7 @@ class CsrLabelMatrix final : public IterableBinarySparseMatrixDecorator<MatrixDe
          */
         CsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
             : IterableBinarySparseMatrixDecorator<MatrixDecorator<BinaryCsrView>>(
-              BinaryCsrView(indices, indptr, numRows, numCols)) {}
+                BinaryCsrView(indices, indptr, numRows, numCols)) {}
 
         bool isSparse() const override {
             return true;

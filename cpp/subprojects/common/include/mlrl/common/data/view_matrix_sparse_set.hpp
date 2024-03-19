@@ -265,8 +265,8 @@ class MLRLCOMMON_API SparseSetView
          */
         SparseSetView(uint32 numRows, uint32 numCols)
             : CompositeMatrix<AllocatedListOfLists<IndexedValue<T>>, AllocatedCContiguousView<uint32>>(
-              AllocatedListOfLists<IndexedValue<T>>(numRows, numCols),
-              AllocatedCContiguousView<uint32>(numRows, numCols), numRows, numCols) {
+                AllocatedListOfLists<IndexedValue<T>>(numRows, numCols),
+                AllocatedCContiguousView<uint32>(numRows, numCols), numRows, numCols) {
             setViewToValue(this->secondView.array, this->secondView.numRows * this->secondView.numCols, MAX_INDEX);
         }
 
@@ -275,7 +275,7 @@ class MLRLCOMMON_API SparseSetView
          */
         SparseSetView(SparseSetView&& other)
             : CompositeMatrix<AllocatedListOfLists<IndexedValue<T>>, AllocatedCContiguousView<uint32>>(
-              std::move(other)) {}
+                std::move(other)) {}
 
         virtual ~SparseSetView() override {}
 

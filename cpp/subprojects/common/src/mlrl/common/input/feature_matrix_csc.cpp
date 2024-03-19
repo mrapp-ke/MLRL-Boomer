@@ -30,7 +30,7 @@ class CscFeatureMatrix final : public IterableSparseMatrixDecorator<MatrixDecora
         CscFeatureMatrix(const float32* values, uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols,
                          float32 sparseValue)
             : IterableSparseMatrixDecorator<MatrixDecorator<CscView<const float32>>>(
-              CscView<const float32>(values, indices, indptr, numRows, numCols, sparseValue)) {}
+                CscView<const float32>(values, indices, indptr, numRows, numCols, sparseValue)) {}
 
         bool isSparse() const override {
             return true;

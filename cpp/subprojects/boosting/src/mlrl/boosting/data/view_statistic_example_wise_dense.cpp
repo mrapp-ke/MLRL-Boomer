@@ -6,8 +6,8 @@ namespace boosting {
 
     DenseExampleWiseStatisticView::DenseExampleWiseStatisticView(uint32 numRows, uint32 numCols)
         : CompositeMatrix<AllocatedCContiguousView<float64>, AllocatedCContiguousView<float64>>(
-          AllocatedCContiguousView<float64>(numRows, numCols),
-          AllocatedCContiguousView<float64>(numRows, triangularNumber(numCols)), numRows, numCols) {}
+            AllocatedCContiguousView<float64>(numRows, numCols),
+            AllocatedCContiguousView<float64>(numRows, triangularNumber(numCols)), numRows, numCols) {}
 
     DenseExampleWiseStatisticView::DenseExampleWiseStatisticView(DenseExampleWiseStatisticView&& other)
         : CompositeMatrix<AllocatedCContiguousView<float64>, AllocatedCContiguousView<float64>>(std::move(other)) {}

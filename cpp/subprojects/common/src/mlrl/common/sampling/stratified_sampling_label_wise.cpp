@@ -370,7 +370,7 @@ LabelWiseStratification<LabelMatrix, IndexIterator>::LabelWiseStratification(con
                                                                              IndexIterator indicesBegin,
                                                                              IndexIterator indicesEnd)
     : stratificationMatrix_(StratificationMatrix<LabelMatrix, IndexIterator>(
-      labelMatrix, CscLabelMatrix(labelMatrix, indicesBegin, indicesEnd), indicesBegin, indicesEnd)) {}
+        labelMatrix, CscLabelMatrix(labelMatrix, indicesBegin, indicesEnd), indicesBegin, indicesEnd)) {}
 
 template<typename LabelMatrix, typename IndexIterator>
 void LabelWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWeightVector& weightVector,

@@ -23,7 +23,7 @@ class FortranContiguousFeatureMatrix final : public DenseMatrixDecorator<Fortran
          */
         FortranContiguousFeatureMatrix(const float32* array, uint32 numRows, uint32 numCols)
             : DenseMatrixDecorator<FortranContiguousView<const float32>>(
-              FortranContiguousView<const float32>(array, numRows, numCols)) {}
+                FortranContiguousView<const float32>(array, numRows, numCols)) {}
 
         bool isSparse() const override {
             return false;

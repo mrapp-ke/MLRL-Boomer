@@ -29,7 +29,7 @@ namespace boosting {
              */
             DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numCols)
                 : ClearableViewDecorator<MatrixDecorator<DenseExampleWiseStatisticView>>(
-                  DenseExampleWiseStatisticView(numRows, numCols)) {}
+                    DenseExampleWiseStatisticView(numRows, numCols)) {}
 
             /**
              * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
@@ -91,8 +91,8 @@ namespace boosting {
                                                 DenseExampleWiseStatisticMatrix, NumericCContiguousMatrix<float64>,
                                                 IExampleWiseLoss, IEvaluationMeasure, IExampleWiseRuleEvaluationFactory,
                                                 ILabelWiseRuleEvaluationFactory>(
-                  std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
-                  std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
+                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
+                    std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 
             /**
              * @see `IBoostingStatistics::visitScoreMatrix`

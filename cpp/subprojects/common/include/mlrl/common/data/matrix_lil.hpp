@@ -29,5 +29,5 @@ class LilMatrix final : public LilMatrixDecorator<AllocatedListOfLists<IndexedVa
          */
         LilMatrix(uint32 numRows, uint32 numCols)
             : LilMatrixDecorator<AllocatedListOfLists<IndexedValue<T>>>(
-              AllocatedListOfLists<IndexedValue<T>>(numRows, numCols)) {}
+                AllocatedListOfLists<IndexedValue<T>>(numRows, numCols)) {}
 };
