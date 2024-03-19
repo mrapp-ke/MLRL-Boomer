@@ -230,27 +230,27 @@ class NumericalFeatureVectorDecorator final
          */
         NumericalFeatureVectorDecorator(const NumericalFeatureVectorDecorator& other)
             : NumericalFeatureVectorDecorator(
-              AllocatedNumericalFeatureVector(other.view.firstView.numElements, other.view.firstView.sparseValue,
-                                              other.view.firstView.sparse),
-              AllocatedMissingFeatureVector()) {}
+                AllocatedNumericalFeatureVector(other.view.firstView.numElements, other.view.firstView.sparseValue,
+                                                other.view.firstView.sparse),
+                AllocatedMissingFeatureVector()) {}
 
         /**
          * @param other A reference to an object of type `NumericalFeatureVectorView` that should be copied
          */
         NumericalFeatureVectorDecorator(const NumericalFeatureVectorView& other)
-            : NumericalFeatureVectorDecorator(
-              AllocatedNumericalFeatureVector(other.getView().firstView.numElements,
-                                              other.getView().firstView.sparseValue, other.getView().firstView.sparse),
-              AllocatedMissingFeatureVector()) {}
+            : NumericalFeatureVectorDecorator(AllocatedNumericalFeatureVector(other.getView().firstView.numElements,
+                                                                              other.getView().firstView.sparseValue,
+                                                                              other.getView().firstView.sparse),
+                                              AllocatedMissingFeatureVector()) {}
 
         /**
          * @param other A reference to an object of type `AllocatedNumericalFeatureVectorView` that should be copied
          */
         NumericalFeatureVectorDecorator(const AllocatedNumericalFeatureVectorView& other)
-            : NumericalFeatureVectorDecorator(
-              AllocatedNumericalFeatureVector(other.getView().firstView.numElements,
-                                              other.getView().firstView.sparseValue, other.getView().firstView.sparse),
-              AllocatedMissingFeatureVector()) {}
+            : NumericalFeatureVectorDecorator(AllocatedNumericalFeatureVector(other.getView().firstView.numElements,
+                                                                              other.getView().firstView.sparseValue,
+                                                                              other.getView().firstView.sparse),
+                                              AllocatedMissingFeatureVector()) {}
 
         std::unique_ptr<IFeatureVector> createFilteredFeatureVector(std::unique_ptr<IFeatureVector>& existing,
                                                                     const Interval& interval) const override {

@@ -4,7 +4,7 @@ namespace boosting {
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(uint32 numElements, bool init)
         : ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<Tuple<float64>>>>(
-          AllocatedVector<Tuple<float64>>(numElements, init)) {}
+            AllocatedVector<Tuple<float64>>(numElements, init)) {}
 
     DenseLabelWiseStatisticVector::DenseLabelWiseStatisticVector(const DenseLabelWiseStatisticVector& other)
         : DenseLabelWiseStatisticVector(other.getNumElements()) {
