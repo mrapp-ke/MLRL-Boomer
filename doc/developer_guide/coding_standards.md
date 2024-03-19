@@ -49,7 +49,7 @@ If you want to execute the tests for the C++ or Python code independently, you c
 ```
 
 ```{warning}
-Tests for the C++ code are only executed if the project has been compiled with testing support enabled. As described in the section {ref}`build-options`, testing support is enabled by default.
+Tests for the C++ code are only executed if the project has been compiled with testing support enabled. As described in the section {ref}`build-options`, testing support is enabled by default if the [GoogleTest](https://github.com/google/googletest) framework is available on the system.
 ```
 
 The unit and integration tests are run automatically via {ref}`ci` whenever relevant parts of the source code have been modified.

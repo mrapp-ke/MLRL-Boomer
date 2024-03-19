@@ -189,10 +189,10 @@ endif
 common_dep = declare_dependency(include_directories : include_dir, link_with : common_lib)
 
 # Test declaration
-test_support_enabled = get_option('test_support').enabled()
+test_support_option = get_option('test_support')
+gtest_test_dep = dependency('gtest', main : true, required : test_support_option)
 
-if test_support_enabled
-    gtest_test_dep = dependency('gtest', main : true)
+if gtest_test_dep.found()
     common_test_dep = declare_dependency(include_directories : [include_dir, include_directories('src')],
                                          link_with : common_lib)
 

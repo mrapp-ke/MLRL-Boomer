@@ -98,7 +98,7 @@ jobs:
           key: ${{ runner.os }}-test-build-ccache
       - name: Compile via GCC
         if: ${{ needs.changes.outputs.cpp == 'true' }}
-        run: ./build compile_cpp
+        run: TEST_SUPPORT=enabled ./build compile_cpp
       - name: Upload libraries as an artifact
         if: ${{ needs.changes.outputs.cpp == 'true' }}
         uses: actions/upload-artifact@v4
