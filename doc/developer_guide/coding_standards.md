@@ -113,3 +113,57 @@ If you want to format only the C++ source files, you can specify the build targe
 ```
 
 Whenever any source files have been modified, a {ref}`ci` job is run automatically to verify if they adhere to our code style guidelines.
+
+(versioning-scheme)=
+
+## Versioning Scheme
+
+We use [Semantic Versioning](https://semver.org/) to assign unique version numbers in the form `MAJOR.MINOR.PATCH` to the individual releases of our software packages. We refer to releases that come with an incremented major version, as *major releases*. When the minor version is increased by a release, we refer to it as a *feature release*. Updates that include bugfixes or minor improvements come with an increased patch version and are referred to as *bugfix releases*.
+
+```{tip}
+An overview of past releases, together with a description of the changes they introduced compared to the previous version, can be found in the {ref}`release-notes`.
+```
+
+### Bugfix Releases
+
+Bugfix releases are limited to backward-compatible changes, such as bug fixes, performance optimizations, improvements to the build system, or updates of the documentation. They are neither allowed to introduce any compatibility-breaking changes to the command line API, nor to any of the programmatic APIs in the project's Python or C++ code.
+
+### Feature Releases
+
+Feature releases may come with changes that do not break compatibility with the command line API or programmatic APIs provided by previous versions. As a consequence, new functionalities can be added to the algorithms provided by this project, if they do not break existing functionality. In contrast, the removal of features is only allowed for major releases.
+
+Feature releases with the major version `0` are not obliged to maintain API compatibility, because these releases are considered to represent an early stage of development, where things may change drastically from one version to another.
+
+### Major Releases
+
+Increments of the major version indicate big leaps in the software's development. They are reserved for new versions of the software that introduce new functionality, fundamentally change how the software works, or come with compatibility-breaking changes. In general, major releases are not guaranteed to be compatible with past releases in any way. In particular, they may introduce compatibility-breaking API changes, affecting the command line API or programmatic APIs in the project's Python or C++ code. Moreover, models that have been trained using an older version are not guaranteed to work after updating to a new major release and must potentially be trained from scratch.
+
+(dependencies)=
+
+## Dependencies
+
+Adding dependencies to a software project always comes at a cost. Maintainers need to continuously test their software as new versions of dependencies are released and major changes in their APIs may break existing functionality. For this reason, we try to keep the number of dependencies at a minimum.
+
+That being said, we still rely on several dependencies for compiling our source code, generating the documentation, or running the algorithms provided by this project. When using pre-built packages from [PyPI](https://pypi.org/project/mlrl-boomer/), there is no need to care about these dependencies, as they are already included in the packages. When {ref}`compilation`, dependencies are automatically installed by the build system once they are needed, unless explicitly stated in the documentation.
+
+The dependencies that are required by different aspects of the project, such as the build system, the Python code, or the C++ code, are defined in separate `requirements.txt` files. For dependencies that use [Semantic Versioning](https://semver.org/), we specify the earliest and latest version we support. For other dependencies, we demand for a specific version number. This strives to achieve a balance between flexibility for users and comfort for developers. On the one hand, supporting a range of versions provides more freedom to users, as our packages can more flexibly be used together with other ones, relying on the same dependencies. On the other hand, the project's maintainers must not manually update dependencies that have a minor release, while still requiring manual intervention for major updates.
+
+To ease the life of developers, the following command provided by the project's build system may be used to check for outdated dependencies:
+
+````{tab} Linux
+   ```text
+   ./build check_dependencies
+   ```
+````
+
+````{tab} MacOS
+   ```text
+   ./build check_dependencies
+   ```
+````
+
+````{tab} Windows
+   ```
+   build.bat check_dependencies
+   ```
+````
