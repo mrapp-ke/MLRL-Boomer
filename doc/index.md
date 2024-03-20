@@ -49,7 +49,6 @@ developer_guide/project_structure
 developer_guide/compilation
 developer_guide/documentation
 developer_guide/coding_standards
-developer_guide/versioning
 developer_guide/api/python/index
 developer_guide/api/cpp/index
 ```
