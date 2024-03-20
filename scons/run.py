@@ -10,7 +10,7 @@ from functools import reduce
 from os import path
 from typing import List, Optional
 
-from modules import BUILD_MODULE, CPP_MODULE, PYTHON_MODULE
+from modules import ALL_MODULES, BUILD_MODULE, CPP_MODULE, PYTHON_MODULE, Module
 
 
 def __format_command(cmd: str, *args, format_args: bool = True) -> str:
@@ -46,15 +46,23 @@ def __run_command(cmd: str,
     return out
 
 
-def __run_pip_command(requirement: str, *args, **kwargs):
-    return __run_command('python', '-m', 'pip', 'install', requirement, '--upgrade', '--prefer-binary',
-                         '--disable-pip-version-check', *args, **kwargs)
+def __run_pip_command(*args, **kwargs):
+    return __run_command('python', '-m', 'pip', *args, **kwargs)
+
+
+def __run_pip_install_command(requirement: str, *args, **kwargs):
+    return __run_pip_command('install', requirement, '--upgrade', '--prefer-binary', '--disable-pip-version-check',
+                             *args, **kwargs)
 
 
 def __pip_install(requirement: str, dry_run: bool = False):
     try:
         args = ['--dry-run'] if dry_run else []
-        out = __run_pip_command(requirement, *args, print_cmd=False, capture_output=True, exit_on_error=not dry_run)
+        out = __run_pip_install_command(requirement,
+                                        *args,
+                                        print_cmd=False,
+                                        capture_output=True,
+                                        exit_on_error=not dry_run)
         stdout = str(out.stdout).strip()
         stdout_lines = stdout.split('\n')
         dependency = requirement.split(' ')[0]
@@ -62,26 +70,30 @@ def __pip_install(requirement: str, dry_run: bool = False):
         if not reduce(lambda aggr, line: aggr | line.startswith('Requirement already satisfied: ' + dependency),
                       stdout_lines, False):
             if dry_run:
-                __run_pip_command(requirement, print_args=True)
+                __run_pip_install_command(requirement, print_args=True)
             else:
                 print(stdout)
     except RuntimeError:
         __pip_install(requirement)
 
 
-def __find_requirements(requirements_file: str, *dependencies: str) -> List[str]:
+def __normalize_requirement(requirement: str):
+    return requirement.replace('_', '-').lower()
+
+
+def __find_requirements(requirements_file: str, *dependencies: str, raise_error: bool = True) -> List[str]:
     with open(requirements_file, mode='r', encoding='utf-8') as file:
-        requirements = {line.split(' ')[0]: line.strip() for line in file.readlines()}
+        requirements = {__normalize_requirement(line.split(' ')[0]): line.strip() for line in file.readlines()}
 
     if dependencies:
         found_requirements = []
 
         for dependency in dependencies:
-            if dependency not in requirements:
+            if __normalize_requirement(dependency) in requirements:
+                found_requirements.append(requirements[dependency])
+            elif raise_error:
                 raise RuntimeError('Dependency "' + dependency + '" not found in requirements file "'
                                    + requirements_file + '"')
-
-            found_requirements.append(requirements[dependency])
 
         return found_requirements
 
@@ -93,24 +105,28 @@ def __install_dependencies(requirements_file: str, *dependencies: str):
         __pip_install(requirement, dry_run=True)
 
 
+def __install_module_dependencies(module: Module, *dependencies: str):
+    requirements_file = module.requirements_file
+
+    if path.isfile(requirements_file):
+        __install_dependencies(requirements_file, *dependencies)
+
+
 def install_build_dependencies(*dependencies: str):
     """
     Installs one or several dependencies that are required by the build system.
 
     :param dependencies: The names of the dependencies that should be installed
     """
-    __install_dependencies(BUILD_MODULE.requirements_file, *dependencies)
+    __install_module_dependencies(BUILD_MODULE, *dependencies)
 
 
 def install_runtime_dependencies(**_):
     """
     Installs all runtime dependencies that are required by the Python and C++ module.
     """
-    for module in [PYTHON_MODULE, CPP_MODULE]:
-        requirements_file = module.requirements_file
-
-        if path.isfile(requirements_file):
-            __install_dependencies(requirements_file)
+    __install_module_dependencies(PYTHON_MODULE)
+    __install_module_dependencies(CPP_MODULE)
 
 
 def run_program(program: str,
@@ -178,3 +194,48 @@ def run_python_program(program: str,
                 requirements_file=requirements_file,
                 install_program=False,
                 env=env)
+
+
+def check_dependency_versions(**_):
+    """
+    Installs all dependencies used by the project and checks for outdated dependencies.
+    """
+    print('Installing all dependencies...')
+    for module in ALL_MODULES:
+        __install_module_dependencies(module)
+
+    print('Checking for outdated dependencies...')
+    out = __run_pip_command('list', '--outdated', print_cmd=False, capture_output=True)
+    stdout = str(out.stdout).strip()
+    stdout_lines = stdout.split('\n')
+    i = 0
+
+    for line in stdout_lines:
+        i += 1
+
+        if line.startswith('----'):
+            break
+
+    outdated_dependencies = []
+
+    for line in stdout_lines[i:]:
+        dependency = line.split()[0]
+
+        for module in ALL_MODULES:
+            requirements_file = module.requirements_file
+
+            if path.isfile(requirements_file):
+                if __find_requirements(requirements_file, dependency, raise_error=False):
+                    outdated_dependencies.append(line)
+                    break
+
+    if outdated_dependencies:
+        print('The following dependencies are outdated:\n')
+
+        for header_line in stdout_lines[:i]:
+            print(header_line)
+
+        for outdated_dependency in outdated_dependencies:
+            print(outdated_dependency)
+    else:
+        print('All dependencies are up-to-date!')
