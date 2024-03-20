@@ -137,3 +137,33 @@ Feature releases with the major version `0` are not obliged to maintain API comp
 ### Major Releases
 
 Increments of the major version indicate big leaps in the software's development. They are reserved for new versions of the software that introduce new functionality, fundamentally change how the software works, or come with compatibility-breaking changes. In general, major releases are not guaranteed to be compatible with past releases in any way. In particular, they may introduce compatibility-breaking API changes, affecting the command line API or programmatic APIs in the project's Python or C++ code. Moreover, models that have been trained using an older version are not guaranteed to work after updating to a new major release and must potentially be trained from scratch.
+
+(dependencies)=
+
+## Dependencies
+
+Adding dependencies to a software project always comes at a cost. Maintainers need to continuously test their software as new versions of dependencies are released and major changes in their APIs may break existing functionality. For this reason, we try to keep the number of dependencies at a minimum.
+
+That being said, we still rely on several dependencies for compiling our source code, generating the documentation, or running the algorithms provided by this project. When using pre-built packages from [PyPI](https://pypi.org/project/mlrl-boomer/), there is no need to care about these dependencies, as they are already included in the packages. When {ref}`compilation`, dependencies are automatically installed by the build system once they are needed, unless explicitly stated in the documentation.
+
+The dependencies that are required by different aspects of the project, such as the build system, the Python code, or the C++ code, are defined in separate `requirements.txt` files. For dependencies that use [Semantic Versioning](https://semver.org/), we specify the earliest and latest version we support. For other dependencies, we demand for a specific version number. This strives to achieve a balance between flexibility for users and comfort for developers. On the one hand, supporting a range of versions provides more freedom to users, as our packages can more flexibly be used together with other ones, relying on the same dependencies. On the other hand, the project's maintainers must not manually update dependencies that have a minor release, while still requiring manual intervention for major updates.
+
+To ease the life of developers, the following command provided by the project's build system may be used to check for outdated dependencies:
+
+````{tab} Linux
+   ```text
+   ./build check_dependencies
+   ```
+````
+
+````{tab} MacOS
+   ```text
+   ./build check_dependencies
+   ```
+````
+
+````{tab} Windows
+   ```
+   build.bat check_dependencies
+   ```
+````
