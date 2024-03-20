@@ -14,7 +14,7 @@ from compilation import compile_cpp, compile_cython, install_cpp, install_cython
 from documentation import apidoc_cpp, apidoc_cpp_tocfile, apidoc_python, apidoc_python_tocfile, doc
 from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from packaging import build_python_wheel, install_python_wheels
-from run import install_runtime_dependencies
+from run import check_dependency_versions, install_runtime_dependencies
 from testing import tests_cpp, tests_python
 
 from SCons.Script import COMMAND_LINE_TARGETS
@@ -39,6 +39,7 @@ TARGET_NAME_FORMAT = 'format'
 TARGET_NAME_FORMAT_PYTHON = TARGET_NAME_FORMAT + '_python'
 TARGET_NAME_FORMAT_CPP = TARGET_NAME_FORMAT + '_cpp'
 TARGET_NAME_FORMAT_MD = TARGET_NAME_FORMAT + '_md'
+TARGET_NAME_CHECK_DEPENDENCIES = 'check_dependencies'
 TARGET_NAME_VENV = 'venv'
 TARGET_NAME_COMPILE = 'compile'
 TARGET_NAME_COMPILE_CPP = TARGET_NAME_COMPILE + '_cpp'
@@ -58,11 +59,11 @@ TARGET_NAME_DOC = 'doc'
 
 VALID_TARGETS = {
     TARGET_NAME_TEST_FORMAT, TARGET_NAME_TEST_FORMAT_PYTHON, TARGET_NAME_TEST_FORMAT_CPP, TARGET_NAME_TEST_FORMAT_MD,
-    TARGET_NAME_FORMAT, TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP, TARGET_NAME_FORMAT_MD, TARGET_NAME_VENV,
-    TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP, TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL,
-    TARGET_NAME_INSTALL_CPP, TARGET_NAME_INSTALL_CYTHON, TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS,
-    TARGET_NAME_TESTS, TARGET_NAME_TESTS_CPP, TARGET_NAME_TESTS_PYTHON, TARGET_NAME_APIDOC, TARGET_NAME_APIDOC_CPP,
-    TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
+    TARGET_NAME_FORMAT, TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP, TARGET_NAME_FORMAT_MD,
+    TARGET_NAME_CHECK_DEPENDENCIES, TARGET_NAME_VENV, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP,
+    TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL, TARGET_NAME_INSTALL_CPP, TARGET_NAME_INSTALL_CYTHON,
+    TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS, TARGET_NAME_TESTS, TARGET_NAME_TESTS_CPP,
+    TARGET_NAME_TESTS_PYTHON, TARGET_NAME_APIDOC, TARGET_NAME_APIDOC_CPP, TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
 }
 
 DEFAULT_TARGET = TARGET_NAME_INSTALL_WHEELS
@@ -92,6 +93,9 @@ target_format_cpp = __create_phony_target(env, TARGET_NAME_FORMAT_CPP, action=en
 target_format_md = __create_phony_target(env, TARGET_NAME_FORMAT_MD, action=enforce_md_code_style)
 target_format = __create_phony_target(env, TARGET_NAME_FORMAT)
 env.Depends(target_format, [target_format_python, target_format_cpp, target_format_md])
+
+# Define target for checking dependency versions...
+target_check_dependencies = __create_phony_target(env, TARGET_NAME_CHECK_DEPENDENCIES, action=check_dependency_versions)
 
 # Define target for installing runtime dependencies...
 target_venv = __create_phony_target(env, TARGET_NAME_VENV, action=install_runtime_dependencies)
