@@ -99,7 +99,7 @@ class PrePruning final : public IStoppingCriterion {
                         float64 percentageImprovement =
                           (aggregatedScorePast - aggregatedScoreRecent) / aggregatedScoreRecent;
 
-                        if (percentageImprovement <= minImprovement_) {
+                        if (percentageImprovement < minImprovement_) {
                             result.stop = removeUnusedRules_;
                             result.numUsedRules = bestNumRules_;
                             stopped_ = true;

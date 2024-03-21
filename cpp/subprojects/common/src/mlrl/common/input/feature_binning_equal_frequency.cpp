@@ -30,7 +30,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
             const IndexedValue<float32>& entry = numericalFeatureVector[i];
             float32 currentValue = entry.value;
 
-            if (currentValue >= sparseValue) {
+            if (!(currentValue < sparseValue)) {
                 break;
             }
 
