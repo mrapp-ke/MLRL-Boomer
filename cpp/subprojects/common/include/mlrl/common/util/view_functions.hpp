@@ -267,7 +267,7 @@ static inline constexpr bool compareViews(FirstIterator first, uint32 numFirst, 
     }
 
     for (uint32 i = 0; i < numFirst; i++) {
-        if (first[i] != second[i]) {
+        if (!isEqual(first[i], second[i])) {
             return false;
         }
     }

@@ -73,7 +73,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
 
             // Skip feature values that are equal to the previous one...
             for (; i < numElements; i++) {
-                if (numericalFeatureVector[i].value != previousValue) {
+                if (!isEqual(numericalFeatureVector[i].value, previousValue)) {
                     break;
                 }
 
