@@ -16,7 +16,7 @@
  */
 template<typename T>
 static inline constexpr void assertGreater(const std::string& name, const T value, const T threshold) {
-    if (value <= threshold) {
+    if (!(value > threshold)) {
         throw std::invalid_argument("Invalid value given for parameter \"" + name + "\": Must be greater than "
                                     + std::to_string(threshold) + ", but is " + std::to_string(value));
     }
@@ -48,7 +48,7 @@ static inline constexpr void assertGreaterOrEqual(const std::string& name, const
  */
 template<typename T>
 static inline constexpr void assertLess(const std::string& name, const T value, const T threshold) {
-    if (value >= threshold) {
+    if (!(value < threshold)) {
         throw std::invalid_argument("Invalid value given for parameter \"" + name + "\": Must be less than "
                                     + std::to_string(threshold) + ", but is " + std::to_string(value));
     }

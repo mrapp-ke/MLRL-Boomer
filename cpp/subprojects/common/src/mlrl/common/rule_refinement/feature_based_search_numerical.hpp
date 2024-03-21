@@ -25,7 +25,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
         const IndexedValue<float32>& entry = featureVector[i];
         float32 currentValue = entry.value;
 
-        if (currentValue >= sparseValue) {
+        if (!(currentValue < sparseValue)) {
             break;
         }
 
@@ -46,7 +46,7 @@ static inline void searchForNumericalRefinementInternally(const NumericalFeature
             const IndexedValue<float32>& entry = featureVector[i];
             float32 currentValue = entry.value;
 
-            if (currentValue >= sparseValue) {
+            if (!(currentValue < sparseValue)) {
                 break;
             }
 
