@@ -22,7 +22,7 @@ typedef double float64;
  * @return      True if the given values are equal, false otherwise
  */
 template<typename T>
-inline constexpr bool isEqual(T a, T b) {
+inline bool isEqual(T a, T b) {
     return a == b;
 }
 
@@ -34,7 +34,7 @@ inline constexpr bool isEqual(T a, T b) {
  * @return  True if the given values are equal, false otherwise
  */
 template<>
-inline constexpr bool isEqual(float32 a, float32 b) {
+inline bool isEqual(float32 a, float32 b) {
     return std::fabs(a - b)
            <= std::numeric_limits<float32>::epsilon() * std::fmax(1, std::fmax(std::fabs(a), std::fabs(b)));
 }
@@ -47,7 +47,7 @@ inline constexpr bool isEqual(float32 a, float32 b) {
  * @return  True if the given values are equal, false otherwise
  */
 template<>
-inline constexpr bool isEqual(float64 a, float64 b) {
+inline bool isEqual(float64 a, float64 b) {
     return std::fabs(a - b)
            <= std::numeric_limits<float64>::epsilon() * std::fmax(1, std::fmax(std::fabs(a), std::fabs(b)));
 }
@@ -59,6 +59,6 @@ inline constexpr bool isEqual(float64 a, float64 b) {
  * @return  True, if the given value is equal to zero, false otherwise
  */
 template<typename T>
-inline constexpr bool isEqualToZero(T a) {
+inline bool isEqualToZero(T a) {
     return isEqual(a, (T) 0);
 }
