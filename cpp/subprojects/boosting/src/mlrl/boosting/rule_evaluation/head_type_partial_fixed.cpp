@@ -26,10 +26,11 @@ namespace boosting {
     }
 
     IFixedPartialHeadConfig& FixedPartialHeadConfig::setLabelRatio(float32 labelRatio) {
-        if (labelRatio != 0) {
+        if (!isEqual(labelRatio, 0.0f)) {
             assertGreater<float32>("labelRatio", labelRatio, 0);
             assertLess<float32>("labelRatio", labelRatio, 1);
         }
+
         labelRatio_ = labelRatio;
         return *this;
     }

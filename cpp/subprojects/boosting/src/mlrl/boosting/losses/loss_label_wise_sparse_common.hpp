@@ -52,7 +52,7 @@ namespace boosting {
                                                    LabelWiseLoss::UpdateFunction updateFunction) {
         uint32 index = fetchNextStatistic(indexIterator, indicesEnd, scoreIterator, scoresEnd, tuple, updateFunction);
 
-        while (tuple.first == 0 && index < LIMIT) {
+        while (index < LIMIT && isEqual(tuple.first, 0.0)) {
             index = fetchNextStatistic(indexIterator, indicesEnd, scoreIterator, scoresEnd, tuple, updateFunction);
         }
 
@@ -111,7 +111,7 @@ namespace boosting {
         uint32 index =
           fetchNextEvaluation(indexIterator, indicesEnd, scoreIterator, scoresEnd, score, evaluateFunction);
 
-        while (score == 0 && index < LIMIT) {
+        while (index < LIMIT && isEqual(score, 0.0)) {
             index = fetchNextEvaluation(indexIterator, indicesEnd, scoreIterator, scoresEnd, score, evaluateFunction);
         }
 
@@ -189,7 +189,7 @@ namespace boosting {
                     bool trueLabel = labelIterator[index];
                     (*LabelWiseLoss::updateFunction_)(trueLabel, predictedScore, tuple.first, tuple.second);
 
-                    if (tuple.first != 0) {
+                    if (!isEqual(tuple.first, 0.0)) {
                         IndexedValue<Tuple<float64>>& statisticViewEntry = statisticViewRow.emplace(index);
                         statisticViewEntry.value = tuple;
                     } else {
@@ -229,7 +229,7 @@ namespace boosting {
                     float64 predictedScore = scoreMatrixEntry ? scoreMatrixEntry->value : 0;
                     (*LabelWiseLoss::updateFunction_)(trueLabel, predictedScore, tuple.first, tuple.second);
 
-                    if (tuple.first != 0) {
+                    if (!isEqual(tuple.first, 0.0)) {
                         IndexedValue<Tuple<float64>>& statisticViewEntry = statisticViewRow.emplace(index);
                         statisticViewEntry.value = tuple;
                     } else {
