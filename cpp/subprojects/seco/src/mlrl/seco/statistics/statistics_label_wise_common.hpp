@@ -14,7 +14,7 @@ namespace seco {
 
     template<typename WeightVector>
     static inline bool hasNonZeroWeightLabelWise(const WeightVector& weights, uint32 statisticIndex) {
-        return weights[statisticIndex] != 0;
+        return !isEqualToZero(weights[statisticIndex]);
     }
 
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector, typename IndexVector>

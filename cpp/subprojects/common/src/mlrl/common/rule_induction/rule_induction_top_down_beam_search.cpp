@@ -457,7 +457,7 @@ float32 BeamSearchTopDownRuleInductionConfig::getMinSupport() const {
 }
 
 IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::setMinSupport(float32 minSupport) {
-    if (!isEqual(minSupport, 0.0f)) {
+    if (!isEqualToZero(minSupport)) {
         assertGreater<float32>("minSupport", minSupport, 0);
         assertLess<float32>("minSupport", minSupport, 1);
     }
