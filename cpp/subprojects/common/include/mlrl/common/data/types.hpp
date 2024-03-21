@@ -51,3 +51,14 @@ inline constexpr bool isEqual(float64 a, float64 b) {
     return std::fabs(a - b)
            <= std::numeric_limits<float64>::epsilon() * std::fmax(1, std::fmax(std::fabs(a), std::fabs(b)));
 }
+
+/**
+ * Returns whether a specific value is equal to zero or not.
+ *
+ * @param a The value
+ * @return  True, if the given value is equal to zero, false otherwise
+ */
+template<typename T>
+inline constexpr bool isEqualToZero(T a) {
+    return isEqual(a, (T) 0);
+}
