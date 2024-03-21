@@ -80,7 +80,7 @@ static inline constexpr void assertLessOrEqual(const std::string& name, const T 
  */
 template<typename T>
 static inline constexpr void assertMultiple(const std::string& name, const T value, const T other) {
-    if (value % other != 0) {
+    if (!isEqualToZero(value % other)) {
         throw std::invalid_argument("Invalid value given for parameter \"" + name + "\": Must be a multiple of "
                                     + std::to_string(other) + ", but is " + std::to_string(value));
     }

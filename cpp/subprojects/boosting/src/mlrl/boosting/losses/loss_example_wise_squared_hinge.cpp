@@ -154,7 +154,7 @@ namespace boosting {
             for (uint32 j = 0; j < i; j++) {
                 float64 hessianTriangle;
 
-                if (!isEqual(gradient, 0.0)) {
+                if (!isEqualToZero(gradient)) {
                     bool trueLabel2 = *labelIterator4;
                     float64 predictedScore2 = scoreIterator[j];
                     float64 numerator;
