@@ -14,14 +14,40 @@ typedef float float32;
 typedef double float64;
 
 /**
- * Returns whether two floating point values `a` and `b` are (approximately) equal.
+ * Returns whether two values `a` and `b` are equal or not.
  *
- * @tparam T    The type of the floating point values to be compared
- * @param a     The first floating point value
- * @param b     The second floating point value
- * @return      True if the given floating point values are equal, false otherwise
+ * @tparam T    The type of the values to be compared
+ * @param a     The first value
+ * @param b     The second value
+ * @return      True if the given values are equal, false otherwise
  */
 template<typename T>
-static inline constexpr bool isEqual(T a, T b) {
-    return std::fabs(a - b) <= std::numeric_limits<T>::epsilon() * std::fmax(1, std::fmax(std::fabs(a), std::fabs(b)));
+inline constexpr bool isEqual(T a, T b) {
+    return a == b;
+}
+
+/**
+ * Returns whether two values `a` and `b` of type `float32` are (approximately) equal or not.
+ *
+ * @param a The first value
+ * @param b The second value
+ * @return  True if the given values are equal, false otherwise
+ */
+template<>
+inline constexpr bool isEqual(float32 a, float32 b) {
+    return std::fabs(a - b)
+           <= std::numeric_limits<float32>::epsilon() * std::fmax(1, std::fmax(std::fabs(a), std::fabs(b)));
+}
+
+/**
+ * Returns whether two values `a` and `b` of type `float64` are (approximately) equal or not.
+ *
+ * @param a The first value
+ * @param b The second value
+ * @return  True if the given values are equal, false otherwise
+ */
+template<>
+inline constexpr bool isEqual(float64 a, float64 b) {
+    return std::fabs(a - b)
+           <= std::numeric_limits<float64>::epsilon() * std::fmax(1, std::fmax(std::fabs(a), std::fabs(b)));
 }
