@@ -20,6 +20,7 @@ This release comes with several API changes. For an updated overview of the avai
 - **The implementation of feature binning has been reworked** in a way that avoids redundant code and results in a reduction of training times due to the use of the data structures mentioned above.
 - **The value to be used for sparse elements of a feature matrix** can now be specified via the C++ or Python API.
 - **Nominal and ordinal feature values are now represented as integers** to avoid issues due to limited floating point precision.
+- **Safe comparisons of floating point values** are now used to avoid issues due to limited floating point precision.
 
 ### Additions to the Command Line API
 

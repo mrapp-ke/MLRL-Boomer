@@ -34,7 +34,7 @@ class NonZeroIndexForwardIterator {
             for (; iterator_ != end_; iterator_++) {
                 auto value = *iterator_;
 
-                if (value != 0) {
+                if (!isEqualToZero(value)) {
                     break;
                 }
 
@@ -88,7 +88,7 @@ class NonZeroIndexForwardIterator {
             for (; iterator_ != end_; iterator_++) {
                 auto value = *iterator_;
 
-                if (value != 0) {
+                if (!isEqualToZero(value)) {
                     break;
                 }
 
@@ -110,7 +110,7 @@ class NonZeroIndexForwardIterator {
             for (; iterator_ != end_; iterator_++) {
                 auto value = *iterator_;
 
-                if (value != 0) {
+                if (!isEqualToZero(value)) {
                     break;
                 }
 

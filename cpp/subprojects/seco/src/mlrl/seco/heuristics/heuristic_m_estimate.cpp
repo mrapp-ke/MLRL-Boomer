@@ -34,11 +34,11 @@ namespace seco {
                     float64 numEqual = numCoveredEqual + numUncoveredEqual;
                     float64 numTotal = numCovered + numUncoveredEqual + uip + urn;
 
-                    if (numTotal == 0) {
-                        return 0;
+                    if (numTotal > 0) {
+                        return (numCoveredEqual + (m_ * (numEqual / numTotal))) / (numCovered + m_);
                     }
 
-                    return (numCoveredEqual + (m_ * (numEqual / numTotal))) / (numCovered + m_);
+                    return 0;
                 } else {
                     // Equivalent to precision
                     return precision(cin, cip, crn, crp);

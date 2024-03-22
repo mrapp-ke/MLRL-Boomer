@@ -64,7 +64,7 @@ class MLRLCOMMON_API ConjunctiveBody final : public IBody {
                  * @return              True, if the feature value satisfies the threshold, false otherwise
                  */
                 inline bool operator()(const float32& featureValue, const float32& threshold) const {
-                    return featureValue <= threshold;
+                    return !(featureValue > threshold);
                 }
         };
 

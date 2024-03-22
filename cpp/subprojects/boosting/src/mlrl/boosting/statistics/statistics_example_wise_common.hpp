@@ -13,7 +13,7 @@ namespace boosting {
 
     template<typename WeightVector>
     static inline bool hasNonZeroWeightExampleWise(const WeightVector& weights, uint32 statisticIndex) {
-        return weights[statisticIndex] != 0;
+        return !isEqualToZero(weights[statisticIndex]);
     }
 
     template<typename StatisticView, typename StatisticVector, typename IndexVector>
