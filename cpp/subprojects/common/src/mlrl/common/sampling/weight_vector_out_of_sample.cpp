@@ -14,7 +14,7 @@ uint32 OutOfSampleWeightVector<WeightVector>::getNumElements() const {
 
 template<typename WeightVector>
 bool OutOfSampleWeightVector<WeightVector>::operator[](uint32 pos) const {
-    return vector_[pos] == 0;
+    return isEqualToZero(vector_[pos]);
 }
 
 template class OutOfSampleWeightVector<EqualWeightVector>;

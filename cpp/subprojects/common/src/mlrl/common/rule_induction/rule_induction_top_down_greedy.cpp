@@ -175,8 +175,11 @@ float32 GreedyTopDownRuleInductionConfig::getMinSupport() const {
 }
 
 IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setMinSupport(float32 minSupport) {
-    if (minSupport != 0) assertGreater<float32>("minSupport", minSupport, 0);
-    if (minSupport != 0) assertLess<float32>("minSupport", minSupport, 1);
+    if (!isEqualToZero(minSupport)) {
+        assertGreater<float32>("minSupport", minSupport, 0);
+        assertLess<float32>("minSupport", minSupport, 1);
+    }
+
     minSupport_ = minSupport;
     return *this;
 }

@@ -29,11 +29,11 @@ namespace seco {
         float64 numUncovered = numUncoveredEqual + uip + urn;
         float64 numTotal = numCovered + numUncovered;
 
-        if (numCovered == 0 || numTotal == 0) {
-            return 0;
+        if (numCovered > 0 && numTotal > 0) {
+            return (numCovered / numTotal) * ((numCoveredEqual / numCovered) - (numEqual / numTotal));
         }
 
-        return (numCovered / numTotal) * ((numCoveredEqual / numCovered) - (numEqual / numTotal));
+        return 0;
     }
 
 }
