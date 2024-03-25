@@ -5,6 +5,8 @@ build:
     python: "latest"
   apt_packages:
     - doxygen
+    - opencl-headers
+    - ocl-icd-opencl-dev
   commands:
     - export READTHEDOCS_OUTPUT="doc/_build"
     - ./build doc
