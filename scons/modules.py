@@ -393,7 +393,7 @@ class DocumentationModule(Module):
         """
         The directory, where the documentation should be stored.
         """
-        return path.join(self.root_dir, '_build')
+        return path.join(self.root_dir, '_build', 'html')
 
     def find_build_files(self) -> List[str]:
         """
