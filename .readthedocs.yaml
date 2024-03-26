@@ -8,4 +8,4 @@ build:
   commands:
     - GPU_SUPPORT=disabled ./build doc
     - mkdir $READTHEDOCS_OUTPUT
-    - ln -s doc/_build/html $READTHEDOCS_OUTPUT
+    - cp -r doc/_build/html $READTHEDOCS_OUTPUT
