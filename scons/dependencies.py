@@ -49,7 +49,7 @@ def __normalize_requirement(requirement: str):
 
 def __find_requirements(requirements_file: str, *dependencies: str, raise_error: bool = True) -> List[str]:
     with open(requirements_file, mode='r', encoding='utf-8') as file:
-        requirements = {__normalize_requirement(line.split(' ')[0]): line.strip() for line in file.readlines()}
+        requirements = {__normalize_requirement(line.split(' ')[0].strip()): line.strip() for line in file.readlines()}
 
     if dependencies:
         found_requirements = []

@@ -15,7 +15,7 @@ def __build_python_wheel(package_dir: str):
                        '--wheel',
                        package_dir,
                        print_args=True,
-                       additional_dependencies=['wheel'])
+                       additional_dependencies=['wheel', 'setuptools'])
 
 
 def __install_python_wheels(wheels: List[str]):
