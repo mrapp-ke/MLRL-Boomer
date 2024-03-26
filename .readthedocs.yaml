@@ -7,4 +7,4 @@ build:
     - doxygen
   commands:
     - export READTHEDOCS_OUTPUT="doc/_build"
-    - TEST_SUPPORT=disabled ./build doc
+    - GPU_SUPPORT=disabled ./build doc
