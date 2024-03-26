@@ -6,5 +6,6 @@ build:
   apt_packages:
     - doxygen
   commands:
-    - export READTHEDOCS_OUTPUT="doc/_build"
     - GPU_SUPPORT=disabled ./build doc
+    - mkdir $READTHEDOCS_OUTPUT
+    - ln -s doc/_build/html $READTHEDOCS_OUTPUT
