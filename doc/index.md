@@ -62,5 +62,6 @@ maxdepth: 2
 misc/references
 misc/CHANGELOG
 misc/CONTRIBUTORS
+misc/CODE_OF_CONDUCT
 misc/LICENSE
 ```
