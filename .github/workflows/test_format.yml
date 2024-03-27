@@ -1,19 +1,7 @@
 name: 'Check code style'
 on:
-  push:
-    paths:
-      - '.github/workflows/test_format.yml'
-      - 'build'
-      - 'build.bat'
-      - 'scons/**'
-      - '**/*.hpp'
-      - '**/*.cpp'
-      - '**/*.py'
-      - '**/*.md'
-      - '.clang-format'
-      - '.isort.cfg'
-      - '.pylintrc'
-      - '.style.yapf'
+  pull_request:
+    types: [opened, reopened, synchronize]
 jobs:
   test_format:
     name: Check code style
