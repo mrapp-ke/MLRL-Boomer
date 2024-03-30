@@ -197,10 +197,6 @@ jobs:
         uses: actions/checkout@v4
       - name: Prepare MSVC
         uses: ilammy/msvc-dev-cmd@v1
-      - name: Remove conflicting link.exe
-        uses: JesseTG/rm@v1.0.3
-        with:
-          path: C:\Program Files\Git\usr\bin\link.EXE
       - name: Install OpenCL
         uses: johnwason/vcpkg-action@v6
         with:
