@@ -6,7 +6,7 @@
 [![Build](https://github.com/mrapp-ke/MLRL-Boomer/actions/workflows/test_build.yml/badge.svg)](https://github.com/mrapp-ke/MLRL-Boomer/actions/workflows/test_build.yml)
 [![Code style](https://github.com/mrapp-ke/MLRL-Boomer/actions/workflows/test_format.yml/badge.svg)](https://github.com/mrapp-ke/MLRL-Boomer/actions/workflows/test_format.yml)
 
-**Important links:** [Documentation](https://mlrl-boomer.readthedocs.io) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html) | [Contributors](https://mlrl-boomer.readthedocs.io/en/latest/misc/CONTRIBUTORS.html) | [Code of Conduct](https://mlrl-boomer.readthedocs.io/en/latest/misc/CODE_OF_CONDUCT.html) | [License](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html)
+**Important links:** [Documentation](https://mlrl-boomer.readthedocs.io/en/latest/) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html) | [Contributors](https://mlrl-boomer.readthedocs.io/en/latest/misc/CONTRIBUTORS.html) | [Code of Conduct](https://mlrl-boomer.readthedocs.io/en/latest/misc/CODE_OF_CONDUCT.html) | [License](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html)
 
 This software package provides **utilities for training and evaluating single- and multi-label rule learning algorithms** that have been implemented using the "MLRL-Common" library, including the following ones:
 
