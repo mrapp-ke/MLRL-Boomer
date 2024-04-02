@@ -6,7 +6,7 @@
 [![Build](https://github.com/mrapp-ke/MLRL-Boomer/actions/workflows/test_build.yml/badge.svg)](https://github.com/mrapp-ke/MLRL-Boomer/actions/workflows/test_build.yml)
 [![Code style](https://github.com/mrapp-ke/MLRL-Boomer/actions/workflows/test_format.yml/badge.svg)](https://github.com/mrapp-ke/MLRL-Boomer/actions/workflows/test_format.yml)
 
-**Important links:** [Documentation](https://mlrl-boomer.readthedocs.io) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CHANGELOG.md) | [Contributors](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CONTRIBUTORS.md) | [Code of Conduct](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CODE_OF_CONDUCT.md) | [License](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/LICENSE.md)
+**Important links:** [Documentation](https://mlrl-boomer.readthedocs.io) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html) | [Contributors](https://mlrl-boomer.readthedocs.io/en/latest/misc/CONTRIBUTORS.html) | [Code of Conduct](https://mlrl-boomer.readthedocs.io/en/latest/misc/CODE_OF_CONDUCT.html) | [License](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html)
 
 This software package provides common modules to be used by different types of **multi-label rule learning (MLRL)** algorithms that integrate with the popular [scikit-learn](https://scikit-learn.org) machine learning framework.
 
@@ -75,4 +75,4 @@ A prediction algorithm is needed to derive predictions from the rules in a previ
 
 ## License
 
-This project is open source software licensed under the terms of the [MIT license](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/LICENSE.md). We welcome contributions to the project to enhance its functionality and make it more accessible to a broader audience. A frequently updated list of contributors is available [here](https://github.com/mrapp-ke/MLRL-Boomer/blob/92ea9ac5e4b8f6c9b7557d0bee250ce9f75a32f4/CONTRIBUTORS.md). 
+This project is open source software licensed under the terms of the [MIT license](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html). We welcome contributions to the project to enhance its functionality and make it more accessible to a broader audience. A frequently updated list of contributors is available [here](https://mlrl-boomer.readthedocs.io/en/latest/misc/CONTRIBUTORS.html). 
