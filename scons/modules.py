@@ -5,8 +5,10 @@ Provides access to directories and files belonging to different modules that are
 """
 from abc import ABC, abstractmethod
 from glob import glob
-from os import path, walk
-from typing import Callable, List
+from os import environ, path, walk
+from typing import Callable, List, Optional
+
+from environment import get_env_array
 
 
 def find_files_recursively(directory: str,
@@ -87,6 +89,15 @@ class SourceModule(Module, ABC):
             The name of the subproject.
             """
             return path.basename(self.root_dir)
+
+        def is_enabled(self) -> bool:
+            """
+            Returns whether the subproject is enabled or not.
+
+            :return: True, if the subproject is enabled, False otherwise
+            """
+            enabled_subprojects = get_env_array(environ, 'SUBPROJECTS')
+            return not enabled_subprojects or self.name in enabled_subprojects
 
 
 class PythonModule(SourceModule):
@@ -185,16 +196,18 @@ class PythonModule(SourceModule):
     def root_dir(self) -> str:
         return 'python'
 
-    def find_subprojects(self) -> List[Subproject]:
+    def find_subprojects(self, return_all: bool = False) -> List[Subproject]:
         """
         Finds and returns all subprojects that are part of the Python code.
 
-        :return: A list that contains all subrojects that have been found
+        :param return_all:  True, if all subprojects should be returned, even if they are disabled, False otherwise
+        :return:            A list that contains all subrojects that have been found
         """
-        return [
+        subprojects = [
             PythonModule.Subproject(self, file) for file in glob(path.join(self.root_dir, 'subprojects', '*'))
             if path.isdir(file)
         ]
+        return subprojects if return_all else [subproject for subproject in subprojects if subproject.is_enabled()]
 
     def find_subproject(self, file: str) -> Optional[Subproject]:
         """
@@ -237,16 +250,19 @@ class CppModule(SourceModule):
     def root_dir(self) -> str:
         return 'cpp'
 
-    def find_subprojects(self) -> List[Subproject]:
+    def find_subprojects(self, return_all: bool = False) -> List[Subproject]:
         """
         Finds and returns all subprojects that are part of the C++ code.
 
-        :return: A list that contains all subrojects that have been found
+        
+        :param return_all:  True, if all subprojects should be returned, even if they are disabled, False otherwise
+        :return:            A list that contains all subrojects that have been found
         """
-        return [
+        subprojects = [
             CppModule.Subproject(self, file) for file in glob(path.join(self.root_dir, 'subprojects', '*'))
             if path.isdir(file)
         ]
+        return subprojects if return_all else [subproject for subproject in subprojects if subproject.is_enabled()]
 
 
 class BuildModule(Module):
