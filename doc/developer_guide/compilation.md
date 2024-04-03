@@ -61,9 +61,8 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
 
 Additional build- or run-time dependencies will automatically be installed when following the instructions below and must not be installed manually.
 
-```{tip}
+`````{tip}
 Instead of following the instructions below step by step, the following command, which automatically executes all necessary steps, can be used for simplicity.
-```
 
 ````{tab} Linux
    ```text
@@ -84,6 +83,30 @@ Instead of following the instructions below step by step, the following command,
 ````
 
 Whenever any C++, Cython or Python source files have been modified, the above command must be run again in order to rebuild modified files and install updated wheel packages into the virtual environment. If any compilation files do already exist, this will only result in the affected parts of the code to be rebuilt.
+`````
+
+`````{note}
+As shown in {ref}`project-structure`, this project is organized in terms of several subprojects. By default, all of these subprojects are built when following the instructions below. However, the environment variable `SUBPROJECTS` may be used to restrict individual steps of the build process, such as the compilation of C++ and Cython code, the assemblage of Python packages, and the generation of apidocs, to a subset of the available subprojects. As shown below, multiple subprojects can be specified as a comma-separated list:
+
+````{tab} Linux
+   ```text
+   SUBPROJECTS=common,boosting ./build
+   ```
+````
+
+````{tab} MacOS
+   ```text
+   SUBPROJECTS=common,boosting ./build
+   ```
+````
+
+````{tab} Windows
+   ```text
+   $env:SUBPROJECTS = "common,boosting"
+   build.bat
+   ```
+````
+`````
 
 ## Creating a Virtual Environment
 
