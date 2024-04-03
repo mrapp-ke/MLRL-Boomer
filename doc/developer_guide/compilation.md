@@ -317,7 +317,7 @@ Certain functionalities of the project can be enabled or disabled at compile-tim
 
 ### Testing Support
 
-This project comes with unit tests for the C++ code it contains (see {ref}`testing`). They are based on the [GoogleTest](https://github.com/google/googletest) framework. When building the project on a system where this dependency is available, the testing code is compiled and linked against the shared libraries it is supposed to test. By default, the build option `test_support` is set to `auto`, i.e., the testing code is only compiled if GoogleTest is available and no error will be raised otherwise. To enforce the compilation of the testing code, the build option can be set to `enabled`. Setting it to `disabled` will prevent the code from being compiled even if GoogleTest is available. Alternatively, the desired value can be specified via the environment variable `TEST_SUPPORT`.enabled
+This project comes with unit tests for the C++ code it contains (see {ref}`testing`). They are based on the [GoogleTest](https://github.com/google/googletest) framework. When building the project on a system where this dependency is available, the testing code is compiled and linked against the shared libraries it is supposed to test. By default, the build option `test_support` is set to `auto`, i.e., the testing code is only compiled if GoogleTest is available and no error will be raised otherwise. To enforce the compilation of the testing code, the build option can be set to `enabled`. Setting it to `disabled` will prevent the code from being compiled even if GoogleTest is available. Alternatively, the desired value can be specified via the environment variable `TEST_SUPPORT`.
 
 (multi-threading-support)=
 
