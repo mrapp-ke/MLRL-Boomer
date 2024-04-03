@@ -1,3 +1,9 @@
 project('mlrl-python', default_options : ['cpp_std=c++17', 'buildtype=release'])
-subproject('boosting')
-subproject('seco')
+
+subprojects = get_option('subprojects')
+
+foreach subproject_name : ['common', 'boosting', 'seco']
+    if subprojects.length() == 0 or subprojects.contains(subproject_name)
+        subproject(subproject_name)
+    endif
+endforeach
