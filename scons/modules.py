@@ -196,18 +196,18 @@ class PythonModule(SourceModule):
             if path.isdir(file)
         ]
 
-    def find_subproject(self, file: str) -> Subproject:
+    def find_subproject(self, file: str) -> Optional[Subproject]:
         """
         Finds and returns the subproject to which a given file belongs.
 
         :param file:    The path of the file
-        :return:        The subproject to which the given file belongs
+        :return:        The subproject to which the given file belongs or None, if no such subproject is available
         """
         for subproject in self.find_subprojects():
             if file.startswith(subproject.root_dir):
                 return subproject
 
-        raise ValueError('File "' + file + '" does not belong to a Python subproject')
+        return None
 
 
 class CppModule(SourceModule):
@@ -436,12 +436,13 @@ class DocumentationModule(Module):
         """
         return DocumentationModule.PythonApidocSubproject(self, python_subproject)
 
-    def find_cpp_apidoc_subproject(self, file: str) -> CppApidocSubproject:
+    def find_cpp_apidoc_subproject(self, file: str) -> Optional[CppApidocSubproject]:
         """
         Finds and returns the `CppApidocSubproject` to which a given file belongs.
 
         :param file:    The path of the file
-        :return:        The `CppApiSubproject` to which the given file belongs
+        :return:        The `CppApiSubproject` to which the given file belongs or None, if no such subproject is
+                        available
         """
         for subproject in CPP_MODULE.find_subprojects():
             apidoc_subproject = self.get_cpp_apidoc_subproject(subproject)
@@ -449,14 +450,15 @@ class DocumentationModule(Module):
             if file.startswith(apidoc_subproject.build_dir):
                 return apidoc_subproject
 
-        raise ValueError('File "' + file + '" does not belong to a C++ API documentation subproject')
+        return None
 
-    def find_python_apidoc_subproject(self, file: str) -> PythonApidocSubproject:
+    def find_python_apidoc_subproject(self, file: str) -> Optional[PythonApidocSubproject]:
         """
         Finds and returns the `PythonApidocSubproject` to which a given file belongs.
 
         :param file:    The path of the file
-        :return:        The `PythonApidocSubproject` to which the given file belongs
+        :return:        The `PythonApidocSubproject` to which the given file belongs or None, if no such subproject is
+                        available
         """
         for subproject in PYTHON_MODULE.find_subprojects():
             apidoc_subproject = self.get_python_apidoc_subproject(subproject)
@@ -464,7 +466,7 @@ class DocumentationModule(Module):
             if file.startswith(apidoc_subproject.build_dir):
                 return apidoc_subproject
 
-        raise ValueError('File "' + file + '" does not belong to a Python API documentation subproject')
+        return None
 
 
 BUILD_MODULE = BuildModule()
