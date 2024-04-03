@@ -22,13 +22,20 @@ class BuildOptions:
         A single build option.
         """
 
-        def __init__(self, subpackage: str, name: str):
+        def __init__(self, name: str, subpackage: Optional[str] = None):
             """
-            :param subpackage:  The subpackage, the build option corresponds to
             :param name:        The name of the build option
+            :param subpackage:  The subpackage, the build option corresponds to, or None, if it is a global option
             """
-            self.subpackage = subpackage
             self.name = name
+            self.subpackage = subpackage
+
+        @property
+        def key(self) -> str:
+            """
+            The key to be used for setting the build option.
+            """
+            return (self.subpackage + ':' if self.subpackage else '') + self.name
 
         @abstractmethod
         def get_value(self) -> Optional[str]:
@@ -38,9 +45,17 @@ class BuildOptions:
             :return: The value to be set or None, if no value should be set
             """
 
+    class ArrayBuildOption(BuildOption):
+        """
+        A build option that allows to specify an array of values at compile-time. 
+        """
+
+        def get_value(self) -> Optional[str]:
+            return get_env(environ, self.name.upper(), None)
+
     class FeatureBuildOption(BuildOption):
         """
-        A single build option for enabling or disabling a feature at compile-time.
+        A build option for enabling or disabling a feature at compile-time.
         """
 
         def get_value(self) -> Optional[str]:
@@ -49,15 +64,26 @@ class BuildOptions:
     def __init__(self):
         self.build_options = []
 
-    def add_feature(self, subpackage: str, name: str) -> 'BuildOptions':
+    def add_array(self, name: str, subpackage: Optional[str] = None) -> 'BuildOptions':
+        """
+        Adds a build option that allows to specify an array of values at compile-time.
+
+        :param name:        The name of the build option
+        :param subpackage:  The subpackage, the build option corresponds to, or None, if it is a global option
+        :return:            The `BuildOptions` itself
+        """
+        self.build_options.append(BuildOptions.ArrayBuildOption(name=name, subpackage=subpackage))
+        return self
+
+    def add_feature(self, name: str, subpackage: Optional[str] = None) -> 'BuildOptions':
         """
         Adds a build option for enabling or disabling a feature at compile-time.
 
-        :param subpackage:  The subpackage, the build option corresponds to
         :param name:        The name of the build option
+        :param subpackage:  The subpackage, the build option corresponds to, or None, if it is a global option
         :return:            The `BuildOptions` itself
         """
-        self.build_options.append(BuildOptions.FeatureBuildOption(subpackage=subpackage, name=name))
+        self.build_options.append(BuildOptions.FeatureBuildOption(name=name, subpackage=subpackage))
         return self
 
     def to_args(self) -> List[str]:
@@ -73,15 +99,20 @@ class BuildOptions:
 
             if value:
                 args.append('-D')
-                args.append(build_option.subpackage + ':' + build_option.name + '=' + value)
+                args.append(build_option.key + '=' + value)
 
         return args
 
 
 CPP_BUILD_OPTIONS = BuildOptions() \
-        .add_feature(subpackage='common', name='test_support') \
-        .add_feature(subpackage='common', name='multi_threading_support') \
-        .add_feature(subpackage='common', name='gpu_support')
+        .add_array(name='subprojects') \
+        .add_feature(name='test_support', subpackage='common') \
+        .add_feature(name='multi_threading_support', subpackage='common') \
+        .add_feature(name='gpu_support', subpackage='common')
+
+
+CYTHON_BUILD_OPTIONS = BuildOptions() \
+        .add_array(name='subprojects')
 
 
 def __meson_setup(root_dir: str,
@@ -137,13 +168,14 @@ def setup_cython(**_):
     """
     Sets up the build system for compiling the Cython code.
     """
-    __meson_setup(PYTHON_MODULE.root_dir, PYTHON_MODULE.build_dir, dependencies=['cython'])
+    __meson_setup(PYTHON_MODULE.root_dir, PYTHON_MODULE.build_dir, CYTHON_BUILD_OPTIONS, dependencies=['cython'])
 
 
 def compile_cython(**_):
     """
     Compiles the Cython code.
     """
+    __meson_configure(PYTHON_MODULE.build_dir, CYTHON_BUILD_OPTIONS)
     print('Compiling Cython code...')
     __meson_compile(PYTHON_MODULE.build_dir)
 
