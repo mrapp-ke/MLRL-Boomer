@@ -1,0 +1,58 @@
+name: Publish platform wheels
+on:
+  workflow_call:
+    inputs:
+      subproject:
+        required: true
+        type: string
+      pypi_repository:
+        required: true
+        type: string
+    secrets:
+      pypi_username:
+        required: true
+      pypi_password:
+        required: true
+jobs:
+  publish_platform_wheels:
+    name: Publish platform wheels
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install OpenMP
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install libomp
+          brew link libomp --force
+      - name: Prepare MSVC
+        if: matrix.os == 'windows-latest'
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Build package
+        uses: pypa/cibuildwheel@v2.17
+        env:
+          CIBW_BEFORE_BUILD_LINUX: ./build --clean && SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=disabled GPU_SUPPORT=disabled ./build install
+          CIBW_BEFORE_BUILD_MACOS: rm -rf venv && ./build --clean && SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=disabled GPU_SUPPORT=disabled ./build install
+          CIBW_BEFORE_BUILD_WINDOWS: .\build.bat --clean && set SUBPROJECTS=${{ inputs.subproject }} && set TEST_SUPPORT=disabled && set GPU_SUPPORT=disabled && .\build.bat install
+          CIBW_BUILD_FRONTEND: build
+          CIBW_ARCHS: auto64
+          CIBW_SKIP: 'pp* *musllinux*'
+        with:
+          package-dir: python/subprojects/${{ inputs.subproject }}/
+      - name: Upload wheels to PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.pypi_username }}
+          TWINE_PASSWORD: ${{ secrets.pypi_password }}
+          TWINE_REPOSITORY: ${{ inputs.pypi_repository }}
+        run: |
+          python3 -m pip install twine
+          python3 -m twine upload --non-interactive --skip-existing wheelhouse/*
+      - name: Upload wheels as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ inputs.subproject }}-${{ runner.os }}-x86_64
+          path: 'wheelhouse/*.whl'
+          if-no-files-found: error

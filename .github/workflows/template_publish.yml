@@ -1,0 +1,76 @@
+name: Publish wheel packages
+on:
+  workflow_call:
+    inputs:
+      pypi_repository:
+        required: true
+        type: string
+    secrets:
+      pypi_username:
+        required: true
+      pypi_password:
+        required: true
+jobs:
+  publish_pure_testbed:
+    name: testbed (pure wheels)
+    uses: ./.github/workflows/template_publish_pure.yml
+    with:
+      subproject: testbed
+      pypi_repository: ${{ inputs.pypi_repository }}
+    secrets:
+      pypi_username: ${{ secrets.pypi_username}}
+      pypi_password: ${{ secrets.pypi_password }}
+  publish_platform_common:
+    name: common (platform wheels)
+    uses: ./.github/workflows/template_publish_platform.yml
+    with:
+      subproject: common
+      pypi_repository: ${{ inputs.pypi_repository }}
+    secrets:
+      pypi_username: ${{ secrets.pypi_username}}
+      pypi_password: ${{ secrets.pypi_password }}
+  publish_platform_boosting:
+    name: boosting (platform wheels)
+    uses: ./.github/workflows/template_publish_platform.yml
+    with:
+      subproject: boosting
+      pypi_repository: ${{ inputs.pypi_repository }}
+    secrets:
+      pypi_username: ${{ secrets.pypi_username}}
+      pypi_password: ${{ secrets.pypi_password }}
+  publish_platform_seco:
+    name: seco (platform wheels)
+    uses: ./.github/workflows/template_publish_platform.yml
+    with:
+      subproject: seco
+      pypi_repository: ${{ inputs.pypi_repository }}
+    secrets:
+      pypi_username: ${{ secrets.pypi_username}}
+      pypi_password: ${{ secrets.pypi_password }}
+  publish_non_native_common:
+    name: common (non-native platform wheels)
+    uses: ./.github/workflows/template_publish_non_native.yml
+    with:
+      subproject: common
+      pypi_repository: ${{ inputs.pypi_repository }}
+    secrets:
+      pypi_username: ${{ secrets.pypi_username}}
+      pypi_password: ${{ secrets.pypi_password }}
+  publish_non_native_boosting:
+    name: boosting (non-native platform wheels)
+    uses: ./.github/workflows/template_publish_non_native.yml
+    with:
+      subproject: boosting
+      pypi_repository: ${{ inputs.pypi_repository }}
+    secrets:
+      pypi_username: ${{ secrets.pypi_username}}
+      pypi_password: ${{ secrets.pypi_password }}
+  publish_non_native_seco:
+    name: seco (non-native platform wheels)
+    uses: ./.github/workflows/template_publish_non_native.yml
+    with:
+      subproject: seco
+      pypi_repository: ${{ inputs.pypi_repository }}
+    secrets:
+      pypi_username: ${{ secrets.pypi_username}}
+      pypi_password: ${{ secrets.pypi_password }}
