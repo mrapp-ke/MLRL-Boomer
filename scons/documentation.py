@@ -107,12 +107,14 @@ def apidoc_cpp(env, target, source):
     """
     if target:
         apidoc_subproject = DOC_MODULE.find_cpp_apidoc_subproject(target[0].path)
-        subproject_name = apidoc_subproject.name
-        print('Generating C++ API documentation for subproject "' + subproject_name + '"...')
-        include_dir = path.join(apidoc_subproject.source_subproject.root_dir, 'include')
-        build_dir = apidoc_subproject.build_dir
-        __doxygen(project_name=subproject_name, input_dir=include_dir, output_dir=build_dir)
-        __breathe_apidoc(source_dir=path.join(build_dir, 'xml'), output_dir=build_dir, project=subproject_name)
+
+        if apidoc_subproject:
+            subproject_name = apidoc_subproject.name
+            print('Generating C++ API documentation for subproject "' + subproject_name + '"...')
+            include_dir = path.join(apidoc_subproject.source_subproject.root_dir, 'include')
+            build_dir = apidoc_subproject.build_dir
+            __doxygen(project_name=subproject_name, input_dir=include_dir, output_dir=build_dir)
+            __breathe_apidoc(source_dir=path.join(build_dir, 'xml'), output_dir=build_dir, project=subproject_name)
 
 
 def apidoc_cpp_tocfile(**_):
@@ -145,10 +147,12 @@ def apidoc_python(env, target, source):
     """
     if target:
         apidoc_subproject = DOC_MODULE.find_python_apidoc_subproject(target[0].path)
-        print('Generating Python API documentation for subproject "' + apidoc_subproject.name + '"...')
-        build_dir = apidoc_subproject.build_dir
-        makedirs(build_dir, exist_ok=True)
-        __sphinx_apidoc(source_dir=apidoc_subproject.source_subproject.source_dir, output_dir=build_dir)
+
+        if apidoc_subproject:
+            print('Generating Python API documentation for subproject "' + apidoc_subproject.name + '"...')
+            build_dir = apidoc_subproject.build_dir
+            makedirs(build_dir, exist_ok=True)
+            __sphinx_apidoc(source_dir=apidoc_subproject.source_subproject.source_dir, output_dir=build_dir)
 
 
 def apidoc_python_tocfile(**_):

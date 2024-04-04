@@ -41,8 +41,10 @@ def build_python_wheel(env, target, source):
     """
     if target:
         subproject = PYTHON_MODULE.find_subproject(target[0].path)
-        print('Building Python wheels for subproject "' + subproject.name + '"...')
-        __build_python_wheel(subproject.root_dir)
+
+        if subproject:
+            print('Building Python wheels for subproject "' + subproject.name + '"...')
+            __build_python_wheel(subproject.root_dir)
 
 
 # pylint: disable=unused-argument
@@ -56,5 +58,7 @@ def install_python_wheels(env, target, source):
     """
     if source:
         subproject = PYTHON_MODULE.find_subproject(source[0].path)
-        print('Installing Python wheels for subproject "' + subproject.name + '"...')
-        __install_python_wheels(subproject.find_wheels())
+
+        if subproject:
+            print('Installing Python wheels for subproject "' + subproject.name + '"...')
+            __install_python_wheels(subproject.find_wheels())

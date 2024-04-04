@@ -61,9 +61,8 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
 
 Additional build- or run-time dependencies will automatically be installed when following the instructions below and must not be installed manually.
 
-```{tip}
+`````{tip}
 Instead of following the instructions below step by step, the following command, which automatically executes all necessary steps, can be used for simplicity.
-```
 
 ````{tab} Linux
    ```text
@@ -84,6 +83,30 @@ Instead of following the instructions below step by step, the following command,
 ````
 
 Whenever any C++, Cython or Python source files have been modified, the above command must be run again in order to rebuild modified files and install updated wheel packages into the virtual environment. If any compilation files do already exist, this will only result in the affected parts of the code to be rebuilt.
+`````
+
+`````{note}
+As shown in {ref}`project-structure`, this project is organized in terms of several subprojects. By default, all of these subprojects are built when following the instructions below. However, the environment variable `SUBPROJECTS` may be used to restrict individual steps of the build process, such as the compilation of C++ and Cython code, the assemblage of Python packages, and the generation of apidocs, to a subset of the available subprojects. As shown below, multiple subprojects can be specified as a comma-separated list:
+
+````{tab} Linux
+   ```text
+   SUBPROJECTS=common,boosting ./build
+   ```
+````
+
+````{tab} MacOS
+   ```text
+   SUBPROJECTS=common,boosting ./build
+   ```
+````
+
+````{tab} Windows
+   ```text
+   $env:SUBPROJECTS = "common,boosting"
+   build.bat
+   ```
+````
+`````
 
 ## Creating a Virtual Environment
 
@@ -317,7 +340,7 @@ Certain functionalities of the project can be enabled or disabled at compile-tim
 
 ### Testing Support
 
-This project comes with unit tests for the C++ code it contains (see {ref}`testing`). They are based on the [GoogleTest](https://github.com/google/googletest) framework. When building the project on a system where this dependency is available, the testing code is compiled and linked against the shared libraries it is supposed to test. By default, the build option `test_support` is set to `auto`, i.e., the testing code is only compiled if GoogleTest is available and no error will be raised otherwise. To enforce the compilation of the testing code, the build option can be set to `enabled`. Setting it to `disabled` will prevent the code from being compiled even if GoogleTest is available. Alternatively, the desired value can be specified via the environment variable `TEST_SUPPORT`.enabled
+This project comes with unit tests for the C++ code it contains (see {ref}`testing`). They are based on the [GoogleTest](https://github.com/google/googletest) framework. When building the project on a system where this dependency is available, the testing code is compiled and linked against the shared libraries it is supposed to test. By default, the build option `test_support` is set to `auto`, i.e., the testing code is only compiled if GoogleTest is available and no error will be raised otherwise. To enforce the compilation of the testing code, the build option can be set to `enabled`. Setting it to `disabled` will prevent the code from being compiled even if GoogleTest is available. Alternatively, the desired value can be specified via the environment variable `TEST_SUPPORT`.
 
 (multi-threading-support)=
 
