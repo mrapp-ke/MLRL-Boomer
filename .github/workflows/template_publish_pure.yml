@@ -1,0 +1,42 @@
+name: Publish pure wheels
+on:
+  workflow_call:
+    inputs:
+      subproject:
+        required: true
+        type: string
+      pypi_repository:
+        required: true
+        type: string
+    secrets:
+      pypi_username:
+        required: true
+      pypi_password:
+        required: true
+jobs:
+  publish_pure_wheels:
+    name: Publish pure wheels
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build package
+        run: |
+          SUBPROJECTS=${{ inputs.subproject }} ./build build_wheels
+          mkdir wheelhouse
+          cp python/subprojects/**/dist/*.whl wheelhouse/
+
+      - name: Upload wheels to PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.pypi_password }}
+          TWINE_PASSWORD: ${{ secrets.pypi_password }}
+          TWINE_REPOSITORY: ${{ inputs.pypi_repository }}
+        run: |
+          python3 -m pip install twine
+          python3 -m twine upload --non-interactive --skip-existing wheelhouse/*
+      - name: Upload wheels as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ inputs.subproject }}-any
+          path: 'wheelhouse/*.whl'
+          if-no-files-found: error

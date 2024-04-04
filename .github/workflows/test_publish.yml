@@ -1,0 +1,46 @@
+name: Test publishing packages
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      build_files: ${{ steps.filter.outputs.build_files }}
+    steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .git/
+          key: test-publish-cache-git-${{ github.run_id }}
+          restore-keys: |
+            test-publish-cache-git
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Detect changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            build_files:
+              - '.github/workflows/test_publish.yml'
+              - 'build'
+              - 'build.bat'
+              - 'scons/**'
+      - name: Save Git repository to cache
+        uses: actions/cache/save@v4
+        if: success() || failure()
+        with:
+          path: .git/
+          key: test-publish-cache-git-${{ github.run_id }}
+  test_publish:
+    needs: changes
+    if: ${{ needs.changes.outputs.build_files == 'true' }}
+    name: Test publishing wheel packages
+    uses: ./.github/workflows/template_publish.yml
+    with:
+      pypi_repository: testpypi
+    secrets:
+      pypi_username: ${{ secrets.PYPI_USERNAME}}
+      pypi_password: ${{ secrets.PYPI_PASSWORD }}

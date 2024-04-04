@@ -1,0 +1,53 @@
+name: Publish non-native platform wheels
+on:
+  workflow_call:
+    inputs:
+      subproject:
+        required: true
+        type: string
+      pypi_repository:
+        required: true
+        type: string
+    secrets:
+      pypi_username:
+        required: true
+      pypi_password:
+        required: true
+jobs:
+  publish_non_native_wheels:
+    name: Publish non-native platform wheels
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up QEMU
+        if: runner.os == 'Linux'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: all
+      - name: Build package
+        uses: pypa/cibuildwheel@v2.17
+        env:
+          CIBW_BEFORE_BUILD_LINUX: ./build --clean && SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=disabled GPU_SUPPORT=disabled ./build install
+          CIBW_BUILD_FRONTEND: build
+          CIBW_ARCHS_LINUX: aarch64
+          CIBW_SKIP: 'pp* *musllinux*'
+        with:
+          package-dir: python/subprojects/${{ inputs.subproject }}/
+      - name: Upload wheels to PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.pypi_username }}
+          TWINE_PASSWORD: ${{ secrets.pypi_password }}
+          TWINE_REPOSITORY: ${{ inputs.pypi_repository }}
+        run: |
+          python3 -m pip install twine
+          python3 -m twine upload --non-interactive --skip-existing wheelhouse/*
+      - name: Upload wheels as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ inputs.subproject }}-${{ runner.os }}-aarch64
+          path: 'wheelhouse/*.whl'
+          if-no-files-found: error
