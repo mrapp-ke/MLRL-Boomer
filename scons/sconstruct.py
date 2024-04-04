@@ -141,7 +141,7 @@ if not COMMAND_LINE_TARGETS \
         or TARGET_NAME_INSTALL in COMMAND_LINE_TARGETS:
     __print_if_clean(env, 'Removing shared libraries from source tree...')
 
-    for subproject in PYTHON_MODULE.find_subprojects():
+    for subproject in PYTHON_MODULE.find_subprojects(return_all=True):
         env.Clean([target_install_cpp, DEFAULT_TARGET], subproject.find_shared_libraries())
 
 if not COMMAND_LINE_TARGETS \
@@ -149,7 +149,7 @@ if not COMMAND_LINE_TARGETS \
         or TARGET_NAME_INSTALL in COMMAND_LINE_TARGETS:
     __print_if_clean(env, 'Removing extension modules from source tree...')
 
-    for subproject in PYTHON_MODULE.find_subprojects():
+    for subproject in PYTHON_MODULE.find_subprojects(return_all=True):
         env.Clean([target_install_cython, DEFAULT_TARGET], subproject.find_extension_modules())
 
 # Define targets for building and installing Python wheels...
@@ -177,7 +177,7 @@ env.Depends(target_install_wheels, [target_install] + commands_install_wheels)
 if not COMMAND_LINE_TARGETS or TARGET_NAME_BUILD_WHEELS in COMMAND_LINE_TARGETS:
     __print_if_clean(env, 'Removing Python wheels...')
 
-    for subproject in PYTHON_MODULE.find_subprojects():
+    for subproject in PYTHON_MODULE.find_subprojects(return_all=True):
         env.Clean([target_build_wheels, DEFAULT_TARGET], subproject.build_dirs)
 
 # Define targets for running automated tests...
@@ -242,7 +242,7 @@ if not COMMAND_LINE_TARGETS \
     __print_if_clean(env, 'Removing C++ API documentation...')
     env.Clean([target_apidoc_cpp, DEFAULT_TARGET], DOC_MODULE.apidoc_tocfile_cpp)
 
-    for subproject in CPP_MODULE.find_subprojects():
+    for subproject in CPP_MODULE.find_subprojects(return_all=True):
         apidoc_subproject = DOC_MODULE.get_cpp_apidoc_subproject(subproject)
         env.Clean([target_apidoc_cpp, DEFAULT_TARGET], apidoc_subproject.build_dir)
 
@@ -252,7 +252,7 @@ if not COMMAND_LINE_TARGETS \
     __print_if_clean(env, 'Removing Python API documentation...')
     env.Clean([target_apidoc_python, DEFAULT_TARGET], DOC_MODULE.apidoc_tocfile_python)
 
-    for subproject in PYTHON_MODULE.find_subprojects():
+    for subproject in PYTHON_MODULE.find_subprojects(return_all=True):
         apidoc_subproject = DOC_MODULE.get_python_apidoc_subproject(subproject)
         env.Clean([target_apidoc_python, DEFAULT_TARGET], apidoc_subproject.build_dir)
 
