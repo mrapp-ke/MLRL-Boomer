@@ -52,37 +52,37 @@ std::unique_ptr<ConjunctiveBody> ConditionList::createConjunctiveBody() const {
         switch (condition.comparator) {
             case NUMERICAL_LEQ: {
                 bodyPtr->numerical_leq_indices_begin()[numericalLeqIndex] = featureIndex;
-                bodyPtr->numerical_leq_thresholds_begin()[numericalLeqIndex] = std::get<float32>(threshold);
+                bodyPtr->numerical_leq_thresholds_begin()[numericalLeqIndex] = *std::get_if<float32>(&threshold);
                 numericalLeqIndex++;
                 break;
             }
             case NUMERICAL_GR: {
                 bodyPtr->numerical_gr_indices_begin()[numericalGrIndex] = featureIndex;
-                bodyPtr->numerical_gr_thresholds_begin()[numericalGrIndex] = std::get<float32>(threshold);
+                bodyPtr->numerical_gr_thresholds_begin()[numericalGrIndex] = *std::get_if<float32>(&threshold);
                 numericalGrIndex++;
                 break;
             }
             case ORDINAL_LEQ: {
                 bodyPtr->ordinal_leq_indices_begin()[ordinalLeqIndex] = featureIndex;
-                bodyPtr->ordinal_leq_thresholds_begin()[ordinalLeqIndex] = std::get<int32>(threshold);
+                bodyPtr->ordinal_leq_thresholds_begin()[ordinalLeqIndex] = *std::get_if<int32>(&threshold);
                 ordinalLeqIndex++;
                 break;
             }
             case ORDINAL_GR: {
                 bodyPtr->ordinal_gr_indices_begin()[ordinalGrIndex] = featureIndex;
-                bodyPtr->ordinal_gr_thresholds_begin()[ordinalGrIndex] = std::get<int32>(threshold);
+                bodyPtr->ordinal_gr_thresholds_begin()[ordinalGrIndex] = *std::get_if<int32>(&threshold);
                 ordinalGrIndex++;
                 break;
             }
             case NOMINAL_EQ: {
                 bodyPtr->nominal_eq_indices_begin()[nominalEqIndex] = featureIndex;
-                bodyPtr->nominal_eq_thresholds_begin()[nominalEqIndex] = std::get<int32>(threshold);
+                bodyPtr->nominal_eq_thresholds_begin()[nominalEqIndex] = *std::get_if<int32>(&threshold);
                 nominalEqIndex++;
                 break;
             }
             case NOMINAL_NEQ: {
                 bodyPtr->nominal_neq_indices_begin()[nominalNeqIndex] = featureIndex;
-                bodyPtr->nominal_neq_thresholds_begin()[nominalNeqIndex] = std::get<int32>(threshold);
+                bodyPtr->nominal_neq_thresholds_begin()[nominalNeqIndex] = *std::get_if<int32>(&threshold);
                 nominalNeqIndex++;
                 break;
             }
