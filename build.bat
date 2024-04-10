@@ -13,7 +13,7 @@ if not "%1"=="" if "%2"=="" (
     )
 )
 
-if not exist "%VENV_DIR%" if "%CLEAN%"=="false" (
+if not exist "%VENV_DIR%" (
     echo Creating virtual Python environment...
     python -m venv "%VENV_DIR%" || exit
 )
