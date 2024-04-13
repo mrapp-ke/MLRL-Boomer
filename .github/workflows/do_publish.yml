@@ -1,0 +1,14 @@
+name: Publish release packages
+on:
+  push:
+    tags:
+      - **
+jobs:
+  publish_packages:
+    name: Publish wheel packages
+    uses: ./.github/workflows/template_publish.yml
+    with:
+      pypi_repository: pypi
+    secrets:
+      pypi_username: ${{ secrets.PYPI_USERNAME }}
+      pypi_password: ${{ secrets.PYPI_PASSWORD }}
