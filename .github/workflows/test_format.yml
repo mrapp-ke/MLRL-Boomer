@@ -1,4 +1,4 @@
-name: 'Check code style'
+name: Check code style
 on:
   pull_request:
     types: [opened, reopened, synchronize]
@@ -38,7 +38,7 @@ jobs:
               - '.pylintrc'
               - '.style.yapf'
             md:
-              - '*build_files'
+              - *build_files
               - '**/*.md'
       - name: Check C++ code style
         if: steps.filter.outputs.cpp == 'true'
