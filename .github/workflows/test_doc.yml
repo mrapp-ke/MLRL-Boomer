@@ -1,0 +1,90 @@
+name: Test building documentation
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      cpp: ${{ steps.filter.outputs.cpp }}
+      python: ${{ steps.filter.outputs.python }}
+      doc: ${{ steps.filter.outputs.doc }}
+      any: ${{ steps.filter.outputs.any }}
+    steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .git/
+          key: test-doc-cache-git-${{ github.run_id }}
+          restore-keys: |
+            test-doc-cache-git
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Detect changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            build_files: &build_files
+              - '.github/workflows/test_doc.yml'
+              - 'build'
+              - 'build.bat'
+              - 'scons/**'
+            cpp: &cpp
+              - *build_files
+              - 'cpp/**/include/**'
+              - 'cpp/**/src/**'
+              - '**/*.pxd'
+              - '**/*.pyx'
+              - '**/meson.build'
+            python: &python
+              - *build_files
+              - 'python/requirements.txt'
+              - 'python/**/mlrl/**'
+            doc: &doc
+              - *build_files
+              - 'doc/**'
+            any:
+              - *cpp
+              - *python
+              - *doc
+      - name: Save Git repository to cache
+        uses: actions/cache/save@v4
+        if: success() || failure()
+        with:
+          path: .git/
+          key: test-doc-cache-git-${{ github.run_id }}
+  linux_build:
+    needs: changes
+    if: ${{ needs.changes.outputs.any == 'true' }}
+    name: Test building documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .git/
+          key: test-doc-cache-git-${{ github.run_id }}
+          restore-keys: |
+            test-doc-cache-git
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Prepare ccache
+        uses: hendrikmuhs/ccache-action@v1
+        with:
+          key: ${{ runner.os }}-test-doc-ccache
+      - name: Install Doxygen
+        uses: ssciwr/doxygen-install@v1
+      - name: Generate C++ Apidoc
+        if: ${{ needs.changes.outputs.cpp == 'true' && needs.changes.outputs.doc != 'true' }}
+        run: GPU_SUPPORT=disabled ./build apidoc_cpp
+      - name: Generate Python Apidoc
+        if: ${{ needs.changes.outputs.python == 'true' && needs.changes.outputs.doc != 'true' }}
+        run: GPU_SUPPORT=disabled ./build apidoc_python
+      - name: Install Roboto font
+        if: ${{ needs.changes.outputs.doc == 'true' }}
+        run: sudo apt install -y fonts-roboto
+      - name: Generate Documentation
+        if: ${{ needs.changes.outputs.doc == 'true' }}
+        run: GPU_SUPPORT=disabled ./build doc

@@ -1,4 +1,4 @@
-name: 'Test build'
+name: Test build
 on:
   pull_request:
     types: [opened, reopened, synchronize]
@@ -11,7 +11,6 @@ jobs:
       cpp_tests: ${{ steps.filter.outputs.cpp_tests }}
       python: ${{ steps.filter.outputs.python }}
       python_tests: ${{ steps.filter.outputs.python_tests }}
-      doc: ${{ steps.filter.outputs.doc }}
       any: ${{ steps.filter.outputs.any }}
     steps:
       - name: Look up Git repository in cache
@@ -51,13 +50,9 @@ jobs:
               - *python
               - *cpp_tests
               - 'python/**/tests/**' 
-            doc: &doc
-              - *build_files
-              - 'doc/**'
             any:
               - *cpp_tests
               - *python_tests
-              - *doc
       - name: Save Git repository to cache
         uses: actions/cache/save@v4
         if: success() || failure()
@@ -121,29 +116,6 @@ jobs:
           check_name: "Python Test Results"
           files: |
             python/build/test-results/*.xml
-      - name: Install Doxygen
-        if: ${{ needs.changes.outputs.cpp == 'true' || needs.changes.outputs.doc == 'true' }}
-        uses: ssciwr/doxygen-install@v1
-      - name: Generate C++ Apidoc
-        if: ${{ needs.changes.outputs.cpp == 'true' }}
-        run: ./build apidoc_cpp
-      - name: Generate Python Apidoc
-        if: ${{ needs.changes.outputs.python == 'true' }}
-        run: ./build apidoc_python
-      - name: Install Roboto font
-        if: ${{ needs.changes.outputs.doc == 'true' }}
-        run: sudo apt install -y fonts-roboto
-      - name: Generate Documentation
-        if: ${{ needs.changes.outputs.doc == 'true' }}
-        run: ./build doc
-      - name: Upload documentation as an artifact
-        if: ${{ needs.changes.outputs.doc == 'true' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: doc
-          path: doc/_build/**/*
-          if-no-files-found: error
-
   macos_build:
     needs: changes
     if: ${{ needs.changes.outputs.cpp == 'true' }}
