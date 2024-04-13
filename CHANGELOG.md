@@ -44,7 +44,7 @@ This release comes with several API changes. For an updated overview of the avai
 - Added support for unit testing the project's C++ code. Compilation of the tests can be disabled via a build option.
 - The Python code is now checked for common issues by applying `pylint` via continuous integration.
 - The Makefile has been replaced with wrapper scripts triggering a [SCons](https://scons.org/) build.
-- The runtime of continuous integration jobs has been optimized by running individual steps only if necessary and caching files across subsequent runs.
+- The runtime of continuous integration jobs has been optimized by running individual steps only if necessary, caching files across subsequent runs, and making use of parallelization.
 - When built via continuous integration, libraries and the documentation are now uploaded as artifacts.
 - When tests are run via continuous integration, a summary of the test results is now added to merge requests and Github workflows.
 - The fundamental data structures used to implement vectors and matrices have been reworked to ease reusing existing functionality and avoiding redundant code.
