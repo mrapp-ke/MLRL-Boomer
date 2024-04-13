@@ -3,9 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for running external programs during the build process.
 """
-import sys
-
-from os import path
 from typing import List, Optional
 
 from command_line import run_command
@@ -69,7 +66,7 @@ def run_python_program(program: str,
     if additional_dependencies:
         dependencies.extend(additional_dependencies)
 
-    run_program(path.join(path.dirname(sys.executable), 'python'),
+    run_program('python',
                 '-m',
                 program,
                 *args,

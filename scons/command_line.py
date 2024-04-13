@@ -7,10 +7,29 @@ import subprocess
 import sys
 
 from functools import reduce
+from os import path
 
 
 def __format_command(cmd: str, *args, format_args: bool = True) -> str:
     return cmd + (reduce(lambda aggr, argument: aggr + ' ' + argument, args, '') if format_args else '')
+
+
+def __is_virtual_environment() -> bool:
+    return sys.prefix != sys.base_prefix
+
+
+def __get_qualified_command(cmd: str) -> str:
+    if __is_virtual_environment():
+        # On Windows, we use the relative path to the command's executable within the virtual environment, if such an
+        # executable exists. This circumvents situations where the PATH environment variable has not been updated after
+        # activating the virtual environment. This can prevent the executables from being found or can lead to the wrong
+        # executable, from outside the virtual environment, being executed.
+        executable = path.join(sys.prefix, 'Scripts', cmd + '.exe')
+
+        if path.isfile(executable):
+            return executable
+
+    return cmd
 
 
 def run_command(cmd: str,
@@ -31,6 +50,8 @@ def run_command(cmd: str,
     :param exit_on_error:   True, if the build system should be terminated when an error occurs, False otherwise
     :param env:             The environment variables to be passed to the program
     """
+    cmd = __get_qualified_command(cmd)
+
     if print_cmd:
         print('Running external command "' + __format_command(cmd, *args, format_args=print_args) + '"...')
 

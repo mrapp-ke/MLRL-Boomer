@@ -13,15 +13,15 @@ if not "%1"=="" if "%2"=="" (
     )
 )
 
-if not exist "%VENV_DIR%" if "%CLEAN%"=="false" (
+if not exist "%VENV_DIR%" (
     echo Creating virtual Python environment...
     python -m venv "%VENV_DIR%" || exit
 )
 
 if exist "%VENV_DIR%" (
     call %VENV_DIR%\Scripts\activate || exit
-    python -c "import sys;sys.path.append('%SCONS_DIR%');import dependencies;dependencies.install_build_dependencies('scons')" || exit
-    scons --silent --file %SCONS_DIR%\sconstruct.py %* || exit
+    .\%VENV_DIR%\Scripts\python -c "import sys;sys.path.append('%SCONS_DIR%');import dependencies;dependencies.install_build_dependencies('scons')" || exit
+    .\%VENV_DIR%\Scripts\python -m SCons --silent --file %SCONS_DIR%\sconstruct.py %* || exit
     call deactivate || exit
 )
 
