@@ -2,7 +2,7 @@
 
 # Using the Command Line API
 
-As an alternative to using the BOOMER algorithm in your own Python program (see {ref}`usage`), the command line API that is provided by the package [mlrl-testbed](https://pypi.org/project/mlrl-testbed/) (see {ref}`installation`) can be used to run experiments without the need to write code. Currently, it provides the following functionalities:
+As an alternative to using algorithms provided by this project in your own Python program (see {ref}`usage`), the command line API that is provided by the package [mlrl-testbed](https://pypi.org/project/mlrl-testbed/) (see {ref}`installation`) can be used to run experiments without the need to write code. Currently, it provides the following functionalities:
 
 - The predictive performance in terms of commonly used evaluation measures can be assessed by using predefined splits of a dataset into training and test data or via [cross validation](<https://en.wikipedia.org/wiki/Cross-validation_(statistics)>).
 - Experimental results can be written into output files. This includes evaluation scores, the predictions of a model, textual representations of rules, as well as the characteristics of models or datasets.
@@ -10,11 +10,19 @@ As an alternative to using the BOOMER algorithm in your own Python program (see 
 
 ## Running Experiments
 
-In the following, a minimal working example of how to use the command line API for applying the BOOMER algorithm to a particular dataset is shown:
+In the following, a minimal working example of how to use the command line API for applying the BOOMER algorithm, or the SeCO algorithm, to a particular dataset is shown:
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name
+   ```
+````
 
 Both arguments that are included in the above command are mandatory:
 
@@ -34,21 +42,45 @@ If an .xml file is not provided, the program tries to retrieve the number of lab
 
 In addition to the mandatory arguments that must be provided to the command line API for specifying the dataset used for training, a wide variety of optional arguments for customizing the program's behavior are available as well. An overview of all available command line arguments is provided in the section {ref}`arguments`. For example, they can be used to specify an output directory, where experimental results should be stored:
 
-```text
-boomer --data-dir /path/to/datsets/ --dataset dataset-name --output-dir /path/to/output/
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datsets/ --dataset dataset-name --output-dir /path/to/output/
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datsets/ --dataset dataset-name --output-dir /path/to/output/
+   ```
+````
 
 Moreover, algorithmic parameters that control the behavior of the machine learning algorithm can be set via command line arguments as well. For example, as shown in the section {ref}`setting-algorithmic-parameters`, the value of the parameter `feature_binning` can be specified as follows:
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --feature-binning equal-width
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --feature-binning equal-width
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --feature-binning equal-width
+   ```
+````
 
 Some algorithmic parameters, including the parameter `feature_binning`, come with additional options in the form of key-value pairs. They can be specified by using a {ref}`bracket-notation` as shown below:
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
+   ```
+````
 
 (bracket-notation)=
 
