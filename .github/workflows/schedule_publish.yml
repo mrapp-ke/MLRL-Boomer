@@ -1,0 +1,13 @@
+name: Regularly publish packages
+on:
+  schedule:
+    - cron: '30 1 1 * *'
+jobs:
+  publish_packages:
+    name: Publish wheel packages
+    uses: ./.github/workflows/template_publish.yml
+    with:
+      pypi_repository: testpypi
+    secrets:
+      pypi_username: ${{ secrets.PYPI_USERNAME }}
+      pypi_password: ${{ secrets.PYPI_PASSWORD }}

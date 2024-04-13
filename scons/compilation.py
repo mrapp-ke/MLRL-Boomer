@@ -3,7 +3,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for compiling C++ and Cython code.
 """
-from abc import ABC, abstractmethod
 from os import environ
 from typing import List, Optional
 
@@ -17,7 +16,7 @@ class BuildOptions:
     Allows to obtain build options from environment variables.
     """
 
-    class BuildOption(ABC):
+    class BuildOption:
         """
         A single build option.
         """
@@ -37,53 +36,32 @@ class BuildOptions:
             """
             return (self.subpackage + ':' if self.subpackage else '') + self.name
 
-        @abstractmethod
-        def get_value(self) -> Optional[str]:
+        @property
+        def value(self) -> Optional[str]:
             """
             Returns the value to be set for the build option.
 
             :return: The value to be set or None, if no value should be set
             """
+            value = get_env(environ, self.name.upper(), None)
 
-    class ArrayBuildOption(BuildOption):
-        """
-        A build option that allows to specify an array of values at compile-time. 
-        """
+            if value:
+                value = value.strip()
 
-        def get_value(self) -> Optional[str]:
-            return get_env(environ, self.name.upper(), None)
-
-    class FeatureBuildOption(BuildOption):
-        """
-        A build option for enabling or disabling a feature at compile-time.
-        """
-
-        def get_value(self) -> Optional[str]:
-            return get_env(environ, self.name.upper(), None)
+            return value
 
     def __init__(self):
         self.build_options = []
 
-    def add_array(self, name: str, subpackage: Optional[str] = None) -> 'BuildOptions':
+    def add(self, name: str, subpackage: Optional[str] = None) -> 'BuildOptions':
         """
-        Adds a build option that allows to specify an array of values at compile-time.
+        Adds a build option.
 
         :param name:        The name of the build option
         :param subpackage:  The subpackage, the build option corresponds to, or None, if it is a global option
         :return:            The `BuildOptions` itself
         """
-        self.build_options.append(BuildOptions.ArrayBuildOption(name=name, subpackage=subpackage))
-        return self
-
-    def add_feature(self, name: str, subpackage: Optional[str] = None) -> 'BuildOptions':
-        """
-        Adds a build option for enabling or disabling a feature at compile-time.
-
-        :param name:        The name of the build option
-        :param subpackage:  The subpackage, the build option corresponds to, or None, if it is a global option
-        :return:            The `BuildOptions` itself
-        """
-        self.build_options.append(BuildOptions.FeatureBuildOption(name=name, subpackage=subpackage))
+        self.build_options.append(BuildOptions.BuildOption(name=name, subpackage=subpackage))
         return self
 
     def to_args(self) -> List[str]:
@@ -95,7 +73,7 @@ class BuildOptions:
         args = []
 
         for build_option in self.build_options:
-            value = build_option.get_value()
+            value = build_option.value
 
             if value:
                 args.append('-D')
@@ -105,14 +83,14 @@ class BuildOptions:
 
 
 CPP_BUILD_OPTIONS = BuildOptions() \
-        .add_array(name='subprojects') \
-        .add_feature(name='test_support', subpackage='common') \
-        .add_feature(name='multi_threading_support', subpackage='common') \
-        .add_feature(name='gpu_support', subpackage='common')
+        .add(name='subprojects') \
+        .add(name='test_support', subpackage='common') \
+        .add(name='multi_threading_support', subpackage='common') \
+        .add(name='gpu_support', subpackage='common')
 
 
 CYTHON_BUILD_OPTIONS = BuildOptions() \
-        .add_array(name='subprojects')
+        .add(name='subprojects')
 
 
 def __meson_setup(root_dir: str,
