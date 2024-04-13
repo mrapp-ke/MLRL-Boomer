@@ -1,8 +1,7 @@
 name: Publish release packages
 on:
-  push:
-    tags:
-      - **
+  release:
+    types: [ published ]
 jobs:
   publish_packages:
     name: Publish wheel packages
