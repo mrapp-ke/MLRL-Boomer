@@ -2,7 +2,7 @@
 
 # Overview of Parameters
 
-The behavior of the BOOMER algorithm can be controlled in a fine-grained manner via a large number of parameters. Values for these parameters may be provided as constructor arguments to the class `Boomer` as shown in the section {ref}`usage`. They can also be used to configure the algorithm when using the {ref}`testbed`.
+The behavior of the BOOMER algorithm can be controlled in a fine-grained manner via a large number of parameters. Values for these parameters may be provided as constructor arguments to the class `mlrl.boosting.Boomer` as shown in the section {ref}`usage`. They can also be used to configure the algorithm when using the {ref}`testbed`.
 
 All of the parameters that are mentioned below are optional. If not specified manually, default settings that work well in most of the cases are used. In the following, an overview of all available parameters, as well as their default values, is provided.
 
@@ -32,7 +32,7 @@ The following parameters allow to specify the preferred format for representing 
 
 The following parameters may be used to control the behavior of the algorithm. They should be carefully adjusted to the machine learning task one aims to solve in order to achieve optimal results in terms of training efficiency and predictive performance.
 
-### Loss Minimization and Regularization
+### Heuristics
 
 - `loss` (Default value = `'logistic-label-wise'`)
 
