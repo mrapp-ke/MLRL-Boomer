@@ -6,24 +6,6 @@ The behavior of the BOOMER algorithm can be controlled in a fine-grained manner 
 
 All of the parameters that are mentioned below are optional. If not specified manually, default settings that work well in most of the cases are used. In the following, an overview of all available parameters, as well as their default values, is provided.
 
-(bracket-notation)=
-
-## Bracket Notation
-
-Each parameter is identified by an unique name. Depending on the type of a parameter, it either accepts numbers as possible values or allows to specify a string that corresponds to a predefined set of possible values (boolean values are also represented as strings).
-
-In addition to the specified value, some parameters allow to provide additional options as key-value pairs. These options must be provided by using the following bracket notation:
-
-```text
-'value{key1=value1,key2=value2}'
-```
-
-For example, the parameter `feature_binning` allows to provide additional options and may be configured as follows:
-
-```text
-'equal-width{bin_ratio=0.33,min_bins=2,max_bins=64}'
-```
-
 ## Data Format
 
 The following parameters allow to specify the preferred format for representing the training data. Depending on the characteristics of a dataset, these parameters may help to reduce the memory footprint of the algorithm or the time it needs for training.

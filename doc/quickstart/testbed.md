@@ -49,3 +49,21 @@ Some algorithmic parameters, including the parameter `feature_binning`, come wit
 ```text
 boomer --data-dir /path/to/datasets/ --dataset dataset-name --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
 ```
+
+(bracket-notation)=
+
+## Bracket Notation
+
+Each algorithmic parameter is identified by an unique name. Depending on the type of a parameter, it either accepts numbers as possible values or allows to specify a string that corresponds to a predefined set of possible values (boolean values are also represented as strings).
+
+In addition to the specified value, some parameters allow to provide additional options as key-value pairs. These options must be provided by using the following bracket notation:
+
+```text
+'value{key1=value1,key2=value2}'
+```
+
+For example, the parameter `feature_binning` allows to provide additional options and may be configured as follows:
+
+```text
+'equal-width{bin_ratio=0.33,min_bins=2,max_bins=64}'
+```
