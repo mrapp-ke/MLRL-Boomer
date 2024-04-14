@@ -13,11 +13,10 @@ from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
 from mlrl.common.rule_learners import RuleLearner
 
 from mlrl.seco.config import SECO_RULE_LEARNER_PARAMETERS
-from mlrl.seco.cython.learner_seco import MultiLabelSeCoRuleLearner as MultiLabelSeCoRuleLearnerWrapper, \
-    MultiLabelSeCoRuleLearnerConfig
+from mlrl.seco.cython.learner_seco import SeCo as SeCoWrapper, SeCoConfig
 
 
-class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
+class SeCo(RuleLearner, ClassifierMixin, MultiOutputMixin):
     """
     A scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label classification
     rules.
@@ -123,6 +122,6 @@ class MultiLabelSeCoRuleLearner(RuleLearner, ClassifierMixin, MultiOutputMixin):
         self.parallel_prediction = parallel_prediction
 
     def _create_learner(self) -> RuleLearnerWrapper:
-        config = MultiLabelSeCoRuleLearnerConfig()
+        config = SeCoConfig()
         configure_rule_learner(self, config, SECO_RULE_LEARNER_PARAMETERS)
-        return MultiLabelSeCoRuleLearnerWrapper(config)
+        return SeCoWrapper(config)

@@ -1,8 +1,8 @@
-(parameters)=
+(seco-parameters)=
 
 # Overview of Parameters
 
-The behavior of the BOOMER algorithm can be controlled in a fine-grained manner via a large number of parameters. Values for these parameters may be provided as constructor arguments to the class `mlrl.boosting.Boomer` as shown in the section {ref}`usage`. They can also be used to configure the algorithm when using the {ref}`testbed`.
+The behavior of the SeCo algorithm can be controlled in a fine-grained manner via a large number of parameters. Values for these parameters may be provided as constructor arguments to the class `mlrl.seco.SeCo` as shown in the section {ref}`usage`. They can also be used to configure the algorithm when using the {ref}`testbed`.
 
 All of the parameters that are mentioned below are optional. If not specified manually, default settings that work well in most of the cases are used. In the following, an overview of all available parameters, as well as their default values, is provided.
 
@@ -34,32 +34,43 @@ The following parameters may be used to control the behavior of the algorithm. T
 
 ### Heuristics
 
-- `loss` (Default value = `'logistic-label-wise'`)
+- `heuristic` (Default value = `'f-measure'`)
 
-  - `'logistic-label-wise'` A variant of the logistic loss function that is applied to each label individually.
-  - `'logistic-example-wise'` A variant of the logistic loss function that takes all labels into account at the same time.
-  - `'squared-error-label-wise'` A variant of the squared error loss that is applied to each label individually.
-  - `'squared-error-example-wise'` A variant of the squared error loss that takes all labels into account at the same time.
-  - `'squared-hinge-label-wise'` A variant of the squared hinge loss that is applied to each label individually.
-  - `'squared-hinge-example-wise'` A variant of the squared hinge loss that takes all labels into account at the same time.
+  - `'accuracy'` Uses the heuristic "Accuracy" for evaluating the quality of rules. It measures the fraction of correctly predicted labels among all labels, i.e., in contrast to the heuristic "Precision", examples that are not covered by a rule are taken into account as well.
+  - `'precision'` Uses the metric "Precision" for evaluating the quality of rules. It measures the fraction of correctly predicted labels among all labels that are covered by a rule.
+  - `'recall'` Uses the heuristic "Recall" for evaluating the quality of rules. It measures the fraction of uncovered labels among all labels for which a rule's prediction is (or would be) correct, i.e., for which the ground truth is equal to the rule's prediction.
+  - `'laplace'` Uses the heuristic "Laplace" for evaluating the quality of rules. It implements a Laplace-corrected variant of the heuristic "Precision".
+  - `'weighted-relative-accuracy'` Use the heuristic "Weighted Relative Accuracy" (WRA) for evaluating the quality of rules.
+  - `'f-measure'` Uses the heuristic "F-Measure" for evaluating the quality of rules. It calculates as the (weighted) harmonic mean between the heuristics "Precision" and "Recall", where the parameter "beta" allows to trade off between both heuristics. If `beta = 1`, both heuristics are weighed equally. If `beta = 0`, this heuristic is equivalent to "Precision". As beta approaches infinity, this heuristic becomes equivalent to "Recall".
 
-- `shrinkage` (Default value = `0.3`)
+    - `beta` (Default value = `1.0`) The value of the parameter "beta".
 
-  - The shrinkage parameter, a.k.a. the "learning rate", that is used to shrink the weight of individual rules. Must be in (0, 1\].
+  - `'m-estimate'` Uses the heuristic "M-Estimate" for evaluating the quality of rules. It trades off between the heuristics "Precision" and "WRA", where the "m" parameter controls the trade-off between both heuristics. If `m = 0`, this heuristic is equivalent to "Precision". As `m` approaches infinity, the isometrics of this heuristic become equivalent to those of "WRA".
 
-- `l1_regularization_weight` (Default value = `0.0`)
+    - `m` (Default value = `22.466`) The value of the parameter "m".
 
-  - The weight of the L1 regularization. Must be at least 0. If 0 is used, the L1 regularization is turned off entirely. Increasing the value causes the model to become more conservative.
+- `pruning_heuristic` (Default value `'accuracy'`)
 
-- `l2_regularization_weight` (Default value = `1.0`)
+  - `'accuracy'` Uses the heuristic "Accuracy" for evaluating the quality of rules that should be pruned.
+  - `'precision'` Uses the heuristic "Precision" for evaluating the quality of rules that should be pruned.
+  - `'recall'` Uses the heuristic "Recall" for evaluating the quality of rules that should be pruned.
+  - `'laplace'` Uses the heuristic "Laplace" for evaluating the quality of rules that should be pruned.
+  - `'weighted-relative-accuracy'` Uses the heuristic "Weighted Relative Accuracy" (WRA) for evaluating the quality of rules that should be pruned.
+  - `'f-measure'` Uses the heuristic "F-Measure" for evaluating the quality of rules that should be pruned.
+  - `'m-estimate'` Uses the heuristic "M-Estimate" for evaluating the quality of rules that should be pruned.
 
-  - The weight of the L2 regularization. Must be at least 0. If 0 is used, the L2 regularization is turned off entirely. Increasing the value causes the model to become more conservative.
+### Lift Functions
+
+- `lift_function` (Default value `'peak'`)
+
+  - `'none'` No lift function is used for evaluating the quality of multi-label rules.
+  - `'kln'` The "KLN" lift function is used for evaluating the quality of multi-label rules. This lift function monotonously increases according to the natural logarithm of the number of labels for which a rule predicts.
+  - `'peak'` The "Peak" lift function is used for evaluating the quality of multi-label rules. This lift function increases monotonously until a certain number of labels, where the maximum lift is reached, and monotonously decreases afterwards.
 
 ### Rule Induction
 
-- `default_rule` (Default value = `'auto'`)
+- `default_rule` (Default value = `'true'`)
 
-  - `'auto'` A default rule that provides a default prediction for all examples is included as the first rule of a model unless it prevents a sparse format for the representation of gradients and Hessians from being used (see parameter `statistic_format`).
   - `'true'` A default rule that provides a default prediction for all examples is included as the first rule of a model.
   - `'false'` No default rule is used.
 
@@ -83,24 +94,11 @@ The following parameters may be used to control the behavior of the algorithm. T
     - `max_head_refinements` (Default value = `1`) The maximum number of times the head of a rule may be refined. Must be at least 1 or 0, if the number of refinements should not be restricted.
     - `recalculate_predictions` (Default value = `'true'`) `'true'`, if the predictions of rules should be recalculated on the entire training data if the parameter `instance_sampling` is not set to `'none'`, `'false'`, if the predictions of rules should not be recalculated.
 
-- `head_type` (Default value = `'auto'`)
-
-  - `'auto'` The most suitable type of rule heads is chosen automatically, depending on the loss function.
+- `head_type` (Default value = `'single-label'`)
 
   - `'single-label'` If all rules should predict for a single label.
 
-  - `'partial-fixed'` If all rules should predict for a predefined number of labels. The following options may be provided using the {ref}`bracket-notation`:
-
-    - `label_ratio` (Default value = `0.0`) A percentage that specifies for how many labels the rules should predict or 0, if the percentage should be calculated based on the average label cardinality. For example, a value of 0.05 means that the rules should predict for 5% of the available labels.
-    - `min_labels` (Default value = `2`) The minimum number of labels for which the rules should predict. Must be at least 2.
-    - `max_labels` (Default value = `0`) The maximum number of labels for which the rules should predict or 0, if the number of predictions should not be restricted.
-
-  - `'partial-dynamic'` If all rules should predict for a subset of the available labels that is determined dynamically. The following options may be provided using the {ref}`bracket-notation`:
-
-    - `threshold` (Default value = `0.02`) A threshold that affects for how many labels the rules should predict. A smaller threshold results in less labels being selected. A greater threshold results in more labels being selected. E.g., a threshold of 0.02 means that a rule will only predict for a label if the estimated predictive quality `q` for this particular label satisfies the inequality `q^exponent > q_best^exponent * (1 - 0.02)`, where `q_best` is the best quality among all labels. Must be in (0, 1)
-    - `exponent` (Default value = `2.0`) An exponent that is used to weigh the estimated predictive quality for individual labels. E.g., an exponent of 2 means that the estimated predictive quality `q` for a particular label is weighed as `q^2`. Must be at least 1.
-
-  - `'complete'` If all rules should predict for all labels simultaneously, potentially capturing dependencies between the labels.
+  - `'partial'` If all rules should predict for a subset of the available labels.
 
 ### Stopping Criteria
 
@@ -118,7 +116,7 @@ The following parameters may be used to control the behavior of the algorithm. T
 
   - `'none'` No holdout set is created.
 
-  - `'auto'` The most suitable strategy for creating a holdout set is chosen automatically, depending on whether a holdout set is needed according to the parameters `--global_pruning`, `--marginal-probability-calibration` or `--joint-probability-calibration`.
+  - `'auto'` The most suitable strategy for creating a holdout set is chosen automatically, depending on whether a holdout set is needed according to the parameter `--global_pruning`.
 
   - `'random'` The available examples are randomly split into a training set and a holdout set. The following options may be provided using the {ref}`bracket-notation`:
 
@@ -136,29 +134,6 @@ The following parameters may be used to control the behavior of the algorithm. T
 
   - `'none'` No method for pruning individual rules is used.
   - `'irep'` Trailing conditions of rules may be pruned on a holdout set, similar to the IREP algorithm. Does only have an effect if the parameter `instance_sampling` is not set to `'none'`.
-
-- `global_pruning` (Default value = `'none'`)
-
-  - `'none'` No strategy for pruning entire rules is used.
-
-  - `'post-pruning'` Keeps track of the number of rules in a model that perform best on the training or holdout set according to the loss function. The following options may be provided using the {ref}`bracket-notation`:
-
-    - `use_holdout_set` (Default value = `'true'`) `'true'`, if the quality of the current model should be measured on the holdout set, if available, `'false'`, if the training set should be used instead.
-    - `remove_unused_rules` (Default value = `'true'`) `'true'`, if unused rules should be removed from the final model, `'false'` otherwise.
-    - `min_rules` (Default value = `100`) The minimum number of rules that must be included in a model. Must be at least 1
-    - `interval` (Default value = `1`) The interval to be used to check whether the current model is the best one evaluated so far. For example, a value of 10 means that the best model may contain 10, 20, ... rules. Must be at least 1
-
-  - `'pre-pruning'` Stops the induction of new rules as soon as the performance of the model does not improve on the training or holdout set according to the loss function. The following options may be provided using the {ref}`bracket-notation`:
-
-    - `use_holdout_set` (Default value = `'true'`) `'true'`, if the quality of the current model should be measured on the holdout set, if available, `'false'`, if the training set should be used instead.
-    - `remove_unused_rules` (Default value = `'true'`) `'true'`, if the induction of rules should be stopped as soon as the stopping criterion is met, `'false'`, if additional rules should be included in the model without being used for prediction.
-    - `min_rules` (Default value = `100`) The minimum number of rules that must be included in a model. Must be at least 1.
-    - `update_interval` (Default value = `1`) The interval to be used to update the quality of the current model. For example, a value of 5 means that the model quality is assessed every 5 rules. Must be at least 1.
-    - `stop_interval` (Default value = `1`) The interval to be used to decide whether the induction of rules should be stopped. For example, a value of 10 means that the rule induction might be stopped after 10, 20, ... rules. Must be a multiple of update_interval.
-    - `num_past` (Default value = `50`) The number of quality scores of past iterations to be stored in a buffer. Must be at least 1.
-    - `num_recent` (Default value = `50`) The number of quality scores of the most recent iterations to be stored in a buffer. Must be at least 1.
-    - `aggregation` (Default value = `'min'`) The name of the aggregation function that should be used to aggregate the scores in both buffers. Must be `'min'`, `'max'` or `'avg'`.
-    - `min_improvement` (Default value = `0.005`) The minimum improvement in percent that must be reached when comparing the aggregated scores in both buffers for the rule induction to be continued. Must be in \[0, 1\].
 
 - `sequential_post_optimization` (Default value = `'false'`)
 
@@ -233,74 +208,6 @@ The following parameters may be used to control the behavior of the algorithm. T
     - `min_bins` (Default value = `2`) The minimum number of bins. Must be at least 2.
     - `max_bins` (Default value = `0`) The maximum number of bins. Must be at least min_bins or 0, if the number of bins should not be restricted.
 
-- `label_binning` (Default Value = `'auto'`)
-
-  - `'none'` No label binning is used.
-
-  - `'auto'` The most suitable strategy for label-binning is chosen automatically based on the loss function and the type of rule heads.
-
-  - `'equal-width'` The labels for which a rule may predict are assigned to bins according to the equal-width binning method. The following options may be provided using the {ref}`bracket-notation`:
-
-    - `bin_ratio` (Default value = `0.04`) A percentage that specifies how many bins should be used. For example, a value of 0.04 means that number of bins should be set to 4% of the number of labels.
-    - `min_bins` (Default value = `1`) The minimum number of bins. Must be at least 1.
-    - `max_bins` (Default value = `0`) The maximum number of bins or 0, if the number of bins should not be restricted.
-
-- `statistic_format` (Default value `'auto'`)
-
-  - `'auto'` The most suitable format for the representation of gradients and Hessians is chosen automatically, depending on the loss function, the type of rule heads, the characteristics of the label matrix and whether a default rule is used or not.
-  - `'dense'` A dense format is used for the representation of gradients and Hessians.
-  - `'sparse'` A sparse format is used for the representation of gradients and Hessians, if supported by the loss function.
-
-### Probability Calibration
-
-- `marginal_probability_calibration` (Default value = `'none'`)
-
-  - `'none'` Marginal probabilities are not calibrated.
-
-  - `'isotonic'` Marginal probabilities are calibrated via isotonic regression.
-
-    - `'use_holdout_set'` (Default value = `'true'`) `'true'`, if the calibration model should be fit to the examples in the holdout set, if available, `'false'`, if the training set should be used instead.
-
-- `joint_probability_calibration` (Default value = `'none'`)
-
-  - `'none'` Joint probabilities are not calibrated.
-
-  - `'isotonic'` Joint probabilities are calibrated via isotonic regression.
-
-    - `'use_holdout_set'` (Default value = `'true'`) `'true'`, if the calibration model should be fit to the examples in the holdout set, if available, `'false'`, if the training set should be used instead.
-
-### Prediction
-
-- `binary_predictor` (Default value = `'auto'`)
-
-  - `'auto'` The most suitable strategy for predicting binary labels is chosen automatically, depending on the loss function.
-
-  - `'label-wise'` The prediction for an example is determined for each label independently. The following options may be provided using the {ref}`bracket-notation`:
-
-    - `based_on_probabilities` (Default value = `'false'`) `'true'`, if binary predictions should be derived from probability estimates rather than regression scores if supported by the loss function, `'false'` otherwise.
-    - `use_probability_calibration` (Default value = `'true'`) `'true'`, if a model for the calibration of probabilities should be used, if available, `'false'` otherwise. Does only have an effect if the option `based_on_probabilities` is set to `'true'`.
-
-  - `'example-wise'` The label vector that is predicted for an example is chosen from the set of label vectors encountered in the training data. The following options may be provided using the {ref}`bracket-notation`:
-
-    - `based_on_probabilities` (Default value = `'false'`) `'true'`, if binary predictions should be derived from probability estimates rather than regression scores if supported by the loss function, `'false'` otherwise.
-    - `use_probability_calibration` (Default value = `'true'`) `'true'`, if a model for the calibration of probabilities should be used, if available, `'false'` otherwise. Does only have an effect if the option `based_on_probabilities` is set to `'true'`.
-
-  - `'gfm'` The label vector that is predicted for an example is chosen according to the general F-measure maximizer (GFM).
-
-    - `use_probability_calibration` (Default value = `'true'`) `'true'`, if a model for the calibration of probabilities should be used, if available, `'false'` otherwise.
-
-- `probability_predictor` (Default value = `'auto'`)
-
-  - `'auto'` The most suitable strategy for predicting probability estimates is chosen automatically, depending on the loss function.
-
-  - `'label-wise'` The prediction for an example is determined for each label independently
-
-    - `use_probability_calibration` (Default value = `'true'`) `'true'`, if a model for the calibration of probabilities should be used, if available, `'false'` otherwise.
-
-  - `'marginalized'` The prediction for an example is determined via marginalization over the set of label vectors encountered in the training data.
-
-    - `use_probability_calibration` (Default value = `'true'`) `'true'`, if a model for the calibration of probabilities should be used, if available, `'false'` otherwise.
-
 ## Multi-Threading
 
 The following parameters allow to specify whether multi-threading should be used for different aspects of the algorithm. Depending on your hardware, they may help to reduce the time needed for training or prediction.
@@ -309,9 +216,7 @@ The following parameters allow to specify whether multi-threading should be used
 To be able to use the algorithm's multi-threading capabilities, it must have been compiled with multi-threading support enabled, which should be the case with pre-built packages available on [PyPI](https://pypi.org/). Please refer to the section {ref}`build-options` if you intend to compile the program yourself, or if you want to check if multi-threading support is enabled for your installation.
 ```
 
-- `parallel_rule_refinement` (Default value = `'auto'`)
-
-  - `'auto'` The number of threads to be used to search for potential refinements of rules in parallel is chosen automatically, depending on the loss function.
+- `parallel_rule_refinement` (Default value = `'true'`)
 
   - `'false'` No multi-threading is used to search for potential refinements of rules.
 
@@ -319,13 +224,11 @@ To be able to use the algorithm's multi-threading capabilities, it must have bee
 
     - `num_preferred_threads` (Default value = `0`) The number of preferred threads. Must be at least 1 or 0, if the number of cores available on the machine should be used. If not enough CPU cores are available or if multi-threading support is disabled, as many threads as possible will be used.
 
-- `parallel_statistic_update` (Default value = `'auto'`)
+- `parallel_statistic_update` (Default value = `'false'`)
 
-  - `'auto'` The number of threads to be used to calculate the gradients and Hessians for different examples in parallel is chosen automatically, depending on the loss function.
+  - `'false'` No multi-threading is used to assess the correctness of predictions for different examples.
 
-  - `'false'` No multi-threading is used to calculate the gradients and Hessians of different examples.
-
-  - `'true'` Multi-threading is used to calculate the gradients and Hessians of different examples in parallel. The following options may be provided using the {ref}`bracket-notation`:
+  - `'true'` Multi-threading is used to assess the correctness of predictions for different examples in parallel. The following options may be provided using the {ref}`bracket-notation`:
 
     - `num_preferred_threads` (Default value = `0`) The number of preferred threads. Must be at least 1 or 0, if the number of cores available on the machine should be used. If not enough CPU cores are available or if multi-threading support is disabled, as many threads as possible will be used.
 
