@@ -97,14 +97,14 @@ cdef extern from "mlrl/seco/learner_seco.hpp" namespace "seco" nogil:
         unique_ptr[IMultiLabelSeCoRuleLearnerConfig] configPtr)
 
 
-cdef class MultiLabelSeCoRuleLearnerConfig(RuleLearnerConfig):
+cdef class SeCoConfig(RuleLearnerConfig):
 
     # Attributes:
 
     cdef unique_ptr[IMultiLabelSeCoRuleLearnerConfig] config_ptr
 
 
-cdef class MultiLabelSeCoRuleLearner(RuleLearner):
+cdef class SeCo(RuleLearner):
 
     # Attributes:
 

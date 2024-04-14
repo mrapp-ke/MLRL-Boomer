@@ -16,6 +16,7 @@ This release comes with several API changes. For an updated overview of the avai
 
 ### Algorithmic Enhancements
 
+- **The project does now provide a Separate-and-Conquer (SeCo) algorithm** based on traditional rule learning techniques that are particularly well-suited for learning interpretable models.
 - **Space-efficient data structures are now used for storing feature values**, depending on whether the feature is numerical, ordinal, nominal, or binary. This also enables to use optimized code paths for dealing with these different types of features.
 - **The implementation of feature binning has been reworked** in a way that avoids redundant code and results in a reduction of training times due to the use of the data structures mentioned above.
 - **The value to be used for sparse elements of a feature matrix** can now be specified via the C++ or Python API.
