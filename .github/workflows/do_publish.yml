@@ -3,6 +3,19 @@ on:
   release:
     types: [ published ]
 jobs:
+  reset_development_version:
+    name: Reset development version
+    runs-on: ubuntu-latest
+    if: ${{ github.event.release.target_commitish == 'main' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup git
+        uses: fregante/setup-git-user@v2
+      - name: Reset development version
+        run: |
+          ./build reset_development_version
+          git add VERSION.dev && git commit -m "[Bot] Update development version to $(cat VERSION.dev)." && git push
   publish_packages:
     name: Publish wheel packages
     uses: ./.github/workflows/template_publish.yml
