@@ -16,7 +16,7 @@ from documentation import apidoc_cpp, apidoc_cpp_tocfile, apidoc_python, apidoc_
 from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from packaging import build_python_wheel, install_python_wheels
 from testing import tests_cpp, tests_python
-from versioning import increment_development_version
+from versioning import increment_development_version, reset_development_version
 
 from SCons.Script import COMMAND_LINE_TARGETS
 from SCons.Script.SConscript import SConsEnvironment
@@ -33,6 +33,7 @@ def __print_if_clean(environment, message: str):
 
 # Define target names...
 TARGET_NAME_INCREMENT_DEVELOPMENT_VERSION = 'increment_development_version'
+TARGET_NAME_RESET_DEVELOPMENT_VERSION = 'reset_development_version'
 TARGET_NAME_TEST_FORMAT = 'test_format'
 TARGET_NAME_TEST_FORMAT_PYTHON = TARGET_NAME_TEST_FORMAT + '_python'
 TARGET_NAME_TEST_FORMAT_CPP = TARGET_NAME_TEST_FORMAT + '_cpp'
@@ -60,10 +61,10 @@ TARGET_NAME_APIDOC_PYTHON = TARGET_NAME_APIDOC + '_python'
 TARGET_NAME_DOC = 'doc'
 
 VALID_TARGETS = {
-    TARGET_NAME_INCREMENT_DEVELOPMENT_VERSION, TARGET_NAME_TEST_FORMAT, TARGET_NAME_TEST_FORMAT_PYTHON,
-    TARGET_NAME_TEST_FORMAT_CPP, TARGET_NAME_TEST_FORMAT_MD, TARGET_NAME_FORMAT, TARGET_NAME_FORMAT_PYTHON,
-    TARGET_NAME_FORMAT_CPP, TARGET_NAME_FORMAT_MD, TARGET_NAME_CHECK_DEPENDENCIES, TARGET_NAME_VENV,
-    TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP, TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL,
+    TARGET_NAME_INCREMENT_DEVELOPMENT_VERSION, TARGET_NAME_RESET_DEVELOPMENT_VERSION, TARGET_NAME_TEST_FORMAT,
+    TARGET_NAME_TEST_FORMAT_PYTHON, TARGET_NAME_TEST_FORMAT_CPP, TARGET_NAME_TEST_FORMAT_MD, TARGET_NAME_FORMAT,
+    TARGET_NAME_FORMAT_PYTHON, TARGET_NAME_FORMAT_CPP, TARGET_NAME_FORMAT_MD, TARGET_NAME_CHECK_DEPENDENCIES,
+    TARGET_NAME_VENV, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP, TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL,
     TARGET_NAME_INSTALL_CPP, TARGET_NAME_INSTALL_CYTHON, TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS,
     TARGET_NAME_TESTS, TARGET_NAME_TESTS_CPP, TARGET_NAME_TESTS_PYTHON, TARGET_NAME_APIDOC, TARGET_NAME_APIDOC_CPP,
     TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
@@ -87,6 +88,9 @@ env.SConsignFile(name=path.relpath(path.join(BUILD_MODULE.build_dir, '.sconsign'
 target_increment_development_version = __create_phony_target(env,
                                                              TARGET_NAME_INCREMENT_DEVELOPMENT_VERSION,
                                                              action=increment_development_version)
+target_reset_development_version = __create_phony_target(env,
+                                                         TARGET_NAME_RESET_DEVELOPMENT_VERSION,
+                                                         action=reset_development_version)
 
 # Define targets for checking code style definitions...
 target_test_format_python = __create_phony_target(env, TARGET_NAME_TEST_FORMAT_PYTHON, action=check_python_code_style)

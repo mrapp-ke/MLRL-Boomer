@@ -60,3 +60,12 @@ def increment_development_version(**_):
     dev = __get_current_development_version()
     dev += 1
     __update_development_version(dev)
+
+
+def reset_development_version(**_):
+    """
+    Resets the development version.
+    """
+    dev = __get_current_development_version()
+    dev = 0
+    __update_development_version(dev)
