@@ -1,0 +1,30 @@
+name: Check for disallowed file changes
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+jobs:
+  test_file_changes:
+    name: Check for disallowed file changes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Look up Git repository in cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .git/
+          key: test-file-changes-cache-git-${{ github.run_id }}
+          restore-keys: |
+            test-file-changes-cache-git
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Prevent disallowed file changes
+        uses: xalvarez/prevent-file-change-action@v1
+        with:
+          githubToken: ${{ secrets.ACTIONS_TOKEN }}
+          pattern: ^VERSION.dev$
+          allowNewFiles: true
+      - name: Save Git repository to cache
+        uses: actions/cache/save@v4
+        if: success() || failure()
+        with:
+          path: .git/
+          key: test-file-changes-cache-git-${{ github.run_id }}
