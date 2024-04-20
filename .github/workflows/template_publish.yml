@@ -3,13 +3,13 @@ on:
   workflow_call:
     inputs:
       pypi_repository:
-        required: true
+        required: false
         type: string
     secrets:
       pypi_username:
-        required: true
+        required: false
       pypi_password:
-        required: true
+        required: false
 jobs:
   publish_pure_testbed:
     name: testbed (pure wheels)
