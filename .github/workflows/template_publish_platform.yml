@@ -6,13 +6,13 @@ on:
         required: true
         type: string
       pypi_repository:
-        required: true
+        required: false
         type: string
     secrets:
       pypi_username:
-        required: true
+        required: false
       pypi_password:
-        required: true
+        required: false
 jobs:
   publish_platform_wheels:
     name: Publish platform wheels
@@ -43,6 +43,7 @@ jobs:
         with:
           package-dir: python/subprojects/${{ inputs.subproject }}/
       - name: Upload wheels to PyPI
+        if: ${{ inputs.pypi_repository }}
         env:
           TWINE_USERNAME: ${{ secrets.pypi_username }}
           TWINE_PASSWORD: ${{ secrets.pypi_password }}

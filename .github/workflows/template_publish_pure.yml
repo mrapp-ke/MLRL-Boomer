@@ -6,13 +6,13 @@ on:
         required: true
         type: string
       pypi_repository:
-        required: true
+        required: false
         type: string
     secrets:
       pypi_username:
-        required: true
+        required: false
       pypi_password:
-        required: true
+        required: false
 jobs:
   publish_pure_wheels:
     name: Publish pure wheels
@@ -25,10 +25,10 @@ jobs:
           SUBPROJECTS=${{ inputs.subproject }} ./build build_wheels
           mkdir wheelhouse
           cp python/subprojects/**/dist/*.whl wheelhouse/
-
       - name: Upload wheels to PyPI
+        if: ${{ inputs.pypi_repository }}
         env:
-          TWINE_USERNAME: ${{ secrets.pypi_password }}
+          TWINE_USERNAME: ${{ secrets.pypi_username }}
           TWINE_PASSWORD: ${{ secrets.pypi_password }}
           TWINE_REPOSITORY: ${{ inputs.pypi_repository }}
         run: |
