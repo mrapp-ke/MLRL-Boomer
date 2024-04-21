@@ -3,11 +3,27 @@ on:
   schedule:
     - cron: '30 1 1 * *'
 jobs:
+  update_development_version:
+    name: Update development version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup git
+        uses: fregante/setup-git-user@v2
+      - name: Update development version
+        run: |
+          ./build increment_development_version
+          git add VERSION.dev
+          git commit -m "[Bot] Update development version to $(cat VERSION.dev)."
+          git push
   publish_packages:
     name: Publish wheel packages
+    needs: update_development_version
     uses: ./.github/workflows/template_publish.yml
     with:
       pypi_repository: testpypi
+      dev_release: true
     secrets:
       pypi_username: ${{ secrets.PYPI_USERNAME }}
       pypi_password: ${{ secrets.PYPI_PASSWORD }}

@@ -39,8 +39,3 @@ jobs:
     if: ${{ needs.changes.outputs.build_files == 'true' }}
     name: Test publishing wheel packages
     uses: ./.github/workflows/template_publish.yml
-    with:
-      pypi_repository: testpypi
-    secrets:
-      pypi_username: ${{ secrets.PYPI_USERNAME}}
-      pypi_password: ${{ secrets.PYPI_PASSWORD }}
