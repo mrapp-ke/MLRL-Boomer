@@ -5,14 +5,17 @@ on:
       subproject:
         required: true
         type: string
+      dev_release:
+        required: false
+        type: boolean
       pypi_repository:
-        required: true
+        required: false
         type: string
     secrets:
       pypi_username:
-        required: true
+        required: false
       pypi_password:
-        required: true
+        required: false
 jobs:
   publish_platform_wheels:
     name: Publish platform wheels
@@ -23,6 +26,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Set version
+        if: ${{ inputs.dev_release == 'true' }}
+        run: |
+          echo ".dev$(cat VERSION.dev)" | tee -a VERSION >/dev/null
+          echo "Set version to $(cat VERSION)"
       - name: Install OpenMP
         if: matrix.os == 'macos-latest'
         run: |
@@ -43,6 +51,7 @@ jobs:
         with:
           package-dir: python/subprojects/${{ inputs.subproject }}/
       - name: Upload wheels to PyPI
+        if: ${{ inputs.pypi_repository }}
         env:
           TWINE_USERNAME: ${{ secrets.pypi_username }}
           TWINE_PASSWORD: ${{ secrets.pypi_password }}

@@ -2,20 +2,24 @@ name: Publish wheel packages
 on:
   workflow_call:
     inputs:
+      dev_release:
+        required: false
+        type: boolean
       pypi_repository:
-        required: true
+        required: false
         type: string
     secrets:
       pypi_username:
-        required: true
+        required: false
       pypi_password:
-        required: true
+        required: false
 jobs:
   publish_pure_testbed:
     name: testbed (pure wheels)
     uses: ./.github/workflows/template_publish_pure.yml
     with:
       subproject: testbed
+      dev_release: ${{ inputs.dev_release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets:
       pypi_username: ${{ secrets.pypi_username}}
@@ -25,6 +29,7 @@ jobs:
     uses: ./.github/workflows/template_publish_platform.yml
     with:
       subproject: common
+      dev_release: ${{ inputs.dev_release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets:
       pypi_username: ${{ secrets.pypi_username}}
@@ -34,6 +39,7 @@ jobs:
     uses: ./.github/workflows/template_publish_platform.yml
     with:
       subproject: boosting
+      dev_release: ${{ inputs.dev_release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets:
       pypi_username: ${{ secrets.pypi_username}}
@@ -43,6 +49,7 @@ jobs:
     uses: ./.github/workflows/template_publish_platform.yml
     with:
       subproject: seco
+      dev_release: ${{ inputs.dev_release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets:
       pypi_username: ${{ secrets.pypi_username}}
@@ -52,6 +59,7 @@ jobs:
     uses: ./.github/workflows/template_publish_non_native.yml
     with:
       subproject: common
+      dev_release: ${{ inputs.dev_release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets:
       pypi_username: ${{ secrets.pypi_username}}
@@ -61,6 +69,7 @@ jobs:
     uses: ./.github/workflows/template_publish_non_native.yml
     with:
       subproject: boosting
+      dev_release: ${{ inputs.dev_release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets:
       pypi_username: ${{ secrets.pypi_username}}
@@ -70,6 +79,7 @@ jobs:
     uses: ./.github/workflows/template_publish_non_native.yml
     with:
       subproject: seco
+      dev_release: ${{ inputs.dev_release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets:
       pypi_username: ${{ secrets.pypi_username}}
