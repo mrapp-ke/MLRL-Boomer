@@ -25,6 +25,10 @@ jobs:
           filters: |
             build_files:
               - '.github/workflows/test_publish.yml'
+              - '.github/workflows/template_publish.yml'
+              - '.github/workflows/template_publish_non_native.yml'
+              - '.github/workflows/template_publish_platform.yml'
+              - '.github/workflows/template_publish_pure.yml'
               - 'build'
               - 'build.bat'
               - 'scons/**'
