@@ -5,6 +5,8 @@ Provides utility functions for updating the project's version.
 """
 import sys
 
+from typing import Tuple
+
 VERSION_FILE = 'VERSION'
 
 DEV_VERSION_FILE = VERSION_FILE + '.dev'
@@ -53,6 +55,35 @@ def __update_development_version(dev: int):
     __write_version_file(DEV_VERSION_FILE, updated_version)
 
 
+def __parse_version(version: str) -> Tuple[int, int, int]:
+    parts = version.split('.')
+
+    if len(parts) != 3:
+        print('Version must be given in format MAJOR.MINOR.PATCH or MAJOR.MINOR.PATCH.devN, but got: ' + version)
+        sys.exit(-1)
+
+    major = __parse_version_number(parts[0])
+    minor = __parse_version_number(parts[1])
+    patch = __parse_version_number(parts[2])
+    return major, minor, patch
+
+
+def __format_version(major: int, minor: int, patch: int) -> str:
+    return str(major) + '.' + str(minor) + '.' + str(patch)
+
+
+def __get_current_version() -> Tuple[int, int, int]:
+    current_version = __read_version_file(VERSION_FILE)
+    print('Current version is "' + current_version + '"')
+    return __parse_version(current_version)
+
+
+def __update_version(major: int, minor: int, patch: int):
+    updated_version = __format_version(major, minor, patch)
+    print('Updated version to "' + updated_version + '"')
+    __write_version_file(VERSION_FILE, updated_version)
+
+
 def increment_development_version(**_):
     """
     Increments the development version.
@@ -66,6 +97,35 @@ def reset_development_version(**_):
     """
     Resets the development version.
     """
-    dev = __get_current_development_version()
-    dev = 0
-    __update_development_version(dev)
+    __get_current_development_version()
+    __update_development_version(0)
+
+
+def increment_patch_version(**_):
+    """
+    Increments the patch version.
+    """
+    major, minor, patch = __get_current_version()
+    patch += 1
+    __update_version(major, minor, patch)
+
+
+def increment_minor_version(**_):
+    """
+    Increments the minor version.
+    """
+    major, minor, patch = __get_current_version()
+    minor += 1
+    patch = 0
+    __update_version(major, minor, patch)
+
+
+def increment_major_version(**_):
+    """
+    Increments the major version.
+    """
+    major, minor, patch = __get_current_version()
+    major += 1
+    minor = 0
+    patch = 0
+    __update_version(major, minor, patch)
