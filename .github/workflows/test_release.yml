@@ -24,7 +24,7 @@ jobs:
         with:
           filters: |
             build_files:
-              - '.github/workflows/test_publish.yml'
+              - '.github/workflows/test_release.yml'
               - '.github/workflows/template_publish.yml'
               - '.github/workflows/template_publish_non_native.yml'
               - '.github/workflows/template_publish_platform.yml'
@@ -38,7 +38,7 @@ jobs:
         with:
           path: .git/
           key: test-publish-cache-git-${{ github.run_id }}
-  test_publish:
+  test_release:
     needs: changes
     if: ${{ needs.changes.outputs.build_files == 'true' }}
     name: Test publishing wheel packages
