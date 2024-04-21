@@ -12,6 +12,7 @@ on:
 jobs:
   update_development_version:
     name: Update development version
+    if: "!contains(github.event.head_commit.message, '[Bot]')"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
