@@ -16,13 +16,14 @@ A track record of past runs can be found on Github in the [Actions](https://gith
 
 The workflow definitions of individual CI jobs can be found in the directory [.github/workflows/](https://github.com/mrapp-ke/MLRL-Boomer/tree/8ed4f36af5e449c5960a4676bc0a6a22de195979/.github/workflows). Currently, the following jobs are used in the project:
 
-- `release.yml` is used for publishing pre-built packages on [PyPI](https://pypi.org/) (see {ref}`installation`). For this purpose, the project is built from source for each of the target platforms and architectures, using virtualization in some cases. The job is run automatically when a new release was published on [Github](https://github.com/mrapp-ke/MLRL-Boomer/releases).
+- `release.yml` is used for publishing pre-built packages on [PyPI](https://pypi.org/) (see {ref}`installation`). For this purpose, the project is built from source for each of the target platforms and architectures, using virtualization in some cases. The job is run automatically when a new release was published on [Github](https://github.com/mrapp-ke/MLRL-Boomer/releases). It does also increment the project's major version number and merge the release branch into its upstream branches (see {ref}`release-process`).
 - `release_development.yml` publishes development versions of packages on [Test-PyPI](https://test.pypi.org/) whenever changes to the project's source code have been pushed to the main branch. The packages built by each of these runs are also saved as [artifacts](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts) and can be downloaded as zip archives.
 - `test_release.yml` ensures that the packages to be released for different architectures and Python versions can be built. The job is run for pull requests that modify relevant parts of the source code.
 - `test_build.yml` builds the project for each of the supported target platforms, i.e., Linux, Windows, and MacOS (see {ref}`compilation`). In the Linux environment, this job does also execute all available unit and integration tests (see {ref}`testing`). It is run for pull requests whenever relevant parts of the project's source code have been modified.
 - `test_doc.yml` generates the latest documentation (see {ref}`documentation`) whenever relevant parts of the source code are affected by a pull request.
 - `test_format.yml` ensures that all source files in the project adhere to our coding style guidelines (see {ref}`code-style`). This job is run automatically for pull requests whenever they include any changes affecting the relevant source files.
 - `test_file_changes.yml` prevents pull requests from modifying certain files that must not be modified manually, but are intended to only be updated via Github Actions.
+- `merge_feature.yml` and `merge_bugfix.yml` are used to merge changes that have been pushed to the feature or bugfix branch into downstream branches via pull requests (see {ref}`release-process`).
 
 (testing)=
 
@@ -141,6 +142,20 @@ Feature releases with the major version `0` are not obliged to maintain API comp
 ### Major Releases
 
 Increments of the major version indicate big leaps in the software's development. They are reserved for new versions of the software that introduce new functionality, fundamentally change how the software works, or come with compatibility-breaking changes. In general, major releases are not guaranteed to be compatible with past releases in any way. In particular, they may introduce compatibility-breaking API changes, affecting the command line API or programmatic APIs in the project's Python or C++ code. Moreover, models that have been trained using an older version are not guaranteed to work after updating to a new major release and must potentially be trained from scratch.
+
+(release-process)=
+
+## Release Process
+
+To enable releasing new major, feature, or bugfix releases at any time, we maintain a branch for each type of release:
+
+- `main` contains all changes that will be included in the next major release (including changes on the feature and bugfix branch).
+- `feature` comes with the changes that will be part of an upcoming feature release (including changes on the bugfix branch).
+- `bugfix` is restricted to minor changes that will be published as a bugfix release.
+
+We do not allow directly pushing to the above branches. Instead, all changes must be submitted via pull requests and require certain checks to pass. Once modifications to one of the branches have been merged, {ref}`ci` jobs are used to automatically update downstream branches via pull requests. If all checks run for such pull requests are successful, they are merged automatically. If there are any merge conflicts, they must be resolved manually. Following this procedure, changes to the feature brach are merged into the main branch (see `merge_feature.yml`). Changes to the bugfix branch are first merged into the feature branch and then into the main branch (see `merge_bugfix.yml`).
+
+Whenever a new release has been published, the release branch is merged into the upstream branches (see `release.yml`), i.e., major releases result in the feature and bugfix branches being updated, whereas minor releases result in the bugfix branch to be updated. The version of the release branch and the affected branches are updated accordingly. The version of a branch is specified in the file `VERSION` in the project's root directory. Similarly, the file `VERSION.dev` is used to keep track of the version number used for development releases (see `release_development.yml`).
 
 (dependencies)=
 
