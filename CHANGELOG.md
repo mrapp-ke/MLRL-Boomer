@@ -22,10 +22,11 @@ This release comes with several API changes. For an updated overview of the avai
 - **The value to be used for sparse elements of a feature matrix** can now be specified via the C++ or Python API.
 - **Nominal and ordinal feature values are now represented as integers** to avoid issues due to limited floating point precision.
 - **Safe comparisons of floating point values** are now used to avoid issues due to limited floating point precision.
+- **Fundamental data structures for vectors and matrices have been reworked** to ease reusing existing functionality and avoiding redundant code.
 
 ### Additions to the Command Line API
 
-- **Information about the program can now be printed** via the argument `-v` or `--version`.
+- **Information abused to implementout the program can now be printed** via the argument `-v` or `--version`.
 - **Data characteristics do now include the number of ordinal attributes** when printed on the console or written to a file via the command line argument `--print-data-characteristics` or `--store-data-characteristics`.
 
 ### Bugfixes
@@ -45,11 +46,10 @@ This release comes with several API changes. For an updated overview of the avai
 - Added support for unit testing the project's C++ code. Compilation of the tests can be disabled via a build option.
 - The Python code is now checked for common issues by applying `pylint` via continuous integration.
 - The Makefile has been replaced with wrapper scripts triggering a [SCons](https://scons.org/) build.
-- Development versions of wheel packages are now frequently built via continuous integration, uploaded as artifacts, and published on [Test-PyPI](https://test.pypi.org/).
+- Development versions of wheel packages are now regularly built via continuous integration, uploaded as artifacts, and published on [Test-PyPI](https://test.pypi.org/).
+- Continuous integration is now used to maintain separate branches for major, feature, and bugfix releases and keep them up-to-date.
 - The runtime of continuous integration jobs has been optimized by running individual steps only if necessary, caching files across subsequent runs, and making use of parallelization.
-- When built via continuous integration, libraries and the documentation are now uploaded as artifacts.
 - When tests are run via continuous integration, a summary of the test results is now added to merge requests and Github workflows.
-- The fundamental data structures used to implement vectors and matrices have been reworked to ease reusing existing functionality and avoiding redundant code.
 - Markdown files are now used for writing the documentation.
 - A consistent style is now enforced for Markdown files by applying the tool `mdformat` via continuous integration.
 - C++ 17 or newer is now required for compiling the project.
