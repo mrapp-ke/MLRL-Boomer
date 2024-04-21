@@ -1,7 +1,14 @@
-name: Regularly publish packages
+name: Publish development packages
 on:
-  schedule:
-    - cron: '30 1 1 * *'
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'cpp/**/include/**'
+      - 'cpp/**/src/**'
+      - '**/*.pxd'
+      - '**/*.pyx'
+      - 'python/**/mlrl/**'
 jobs:
   update_development_version:
     name: Update development version
