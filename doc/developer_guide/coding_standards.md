@@ -22,6 +22,7 @@ The workflow definitions of individual CI jobs can be found in the directory [.g
 - `test_build.yml` builds the project for each of the supported target platforms, i.e., Linux, Windows, and MacOS (see {ref}`compilation`). In the Linux environment, this job does also execute all available unit and integration tests (see {ref}`testing`). It is run for pull requests whenever relevant parts of the project's source code have been modified.
 - `test_doc.yml` generates the latest documentation (see {ref}`documentation`) whenever relevant parts of the source code are affected by a pull request.
 - `test_format.yml` ensures that all source files in the project adhere to our coding style guidelines (see {ref}`code-style`). This job is run automatically for pull requests whenever they include any changes affecting the relevant source files.
+- `test_file_changes.yml` prevents pull requests from modifying certain files that must not be modified manually, but are intended to only be updated via Github Actions.
 
 (testing)=
 
