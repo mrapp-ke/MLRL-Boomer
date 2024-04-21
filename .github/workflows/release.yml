@@ -3,19 +3,61 @@ on:
   release:
     types: [ published ]
 jobs:
-  reset_development_version:
-    name: Reset development version
+  merge_release:
+    name: Merge into upstream branches
     runs-on: ubuntu-latest
-    if: ${{ github.event.release.target_commitish == 'main' }}
     steps:
+      - name: Generate token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.TOKEN_APP_ID }}
+          private-key: ${{ secrets.TOKEN_APP_SECRET }}
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
       - name: Setup git
         uses: fregante/setup-git-user@v2
-      - name: Reset development version
+      - name: Checkout release branch
+        run: |
+          git checkout ${{ github.event.release.target_commitish }}
+      - name: Update major version
+        if: ${{ github.event.release.target_commitish == 'main' }}
         run: |
           ./build reset_development_version
-          git add VERSION.dev && git commit -m "[Bot] Update development version to $(cat VERSION.dev)." && git push
+          git add VERSION.dev && git commit -m "[Bot] Update development version to $(cat VERSION.dev)." && git push origin main
+          ./build increment_major_version
+          git add VERSION
+          git commit -m "[Bot] Update version to $(cat VERSION)."
+          git push origin main
+      - name: Merge into feature branch
+        if: ${{ github.event.release.target_commitish == 'main' }}
+        run: |
+          git checkout -b feature origin/feature
+          git merge origin/main --strategy-option theirs -m "[Bot] Merge branch \"main\" into \"feature\"."
+          ./build increment_minor_version
+          git add VERSION
+          git commit -m "[Bot] Update version to $(cat VERSION)."
+          git push origin feature
+      - name: Merge into bugfix branch
+        if: ${{ github.event.release.target_commitish == 'main' }} || ${{ github.event.release.target_commitish == 'feature' }}
+        run: |
+          git checkout -b bugfix origin/bugfix
+          git merge origin/feature --strategy-option theirs -m "[Bot] Merge branch \"main\" into \"bugfix\"."
+          ./build increment_patch_version
+          git add VERSION
+          git commit -m "[Bot] Update version to $(cat VERSION)."
+          git push origin bugfix
+      - name: Update patch version
+        if: ${{ github.event.release.target_commitish == 'bugfix' }}
+        run: |
+          git checkout -b bugfix origin/bugfix
+          ./build increment_patch_version
+          git add VERSION
+          git commit -m "[Bot] Update version to $(cat VERSION)."
+          git push origin bugfix
   publish_packages:
     name: Publish wheel packages
     uses: ./.github/workflows/template_publish.yml
