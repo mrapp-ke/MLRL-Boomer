@@ -7,7 +7,7 @@ To remember the parameters that have been used for training a model, it might be
 On the one hand, this requires to specify a directory where parameter settings should be saved via the command line argument `--parameter-dir`. On the other hand, the argument `--store-parameters true` instructs the program to save custom parameters that are set via command line argments (see {ref}`setting-algorithmic-parameters`). For example, the following command sets a custom value for the parameter `shrinkage`, which will be stored in an output file:
 
 ```text
-boomer --data-dir /path/to/datsets/ --dataset dataset-name --parameter-dir /path/to/parameters --store-parameters true --shrinkage 0.5
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --parameter-dir /path/to/parameters --store-parameters true --shrinkage 0.5
 ```
 
 ```{note}
@@ -35,5 +35,5 @@ When executing the previously mentioned command again, the program will restore 
 If you want to print all custom parameters that are used by a learning algorithm on the console, you can specify the argument `--print-parameters true`:
 
 ```text
-boomer --data-dir /path/to/datsets/ --dataset dataset-name --print-parameters true --shrinkage 0.5
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-parameters true --shrinkage 0.5
 ```
