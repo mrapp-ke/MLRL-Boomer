@@ -35,9 +35,8 @@ jobs:
   fail_on_file_changes:
     name: Fail on disallowed file changes
     needs: changes
-    if: "!contains(github.event.head_commit.message, '[Bot]')"
     runs-on: ubuntu-latest
     steps:
       - name: Fail on disallowed file changes
-        if: ${{ needs.changes.outputs.any == 'true' }}
+        if: ${{ !contains(github.event.head_commit.message, '[Bot]') && needs.changes.outputs.any == 'true' }}
         run: exit 1
