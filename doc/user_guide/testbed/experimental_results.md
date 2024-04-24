@@ -23,13 +23,13 @@ TODO
 In cases where the performance metrics obtained via the arguments ``--print-evaluation`` or ``--store-evaluation`` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console, together with the ground truth labels, by proving the argument ``--print-predictions``:
 
 ```text
-boomer --data-dir /path/to/datsets/ --dataset dataset-name --print-predictions true
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-predictions true
 ```
 
 Alternatively, the argument ``--store-predictions`` can be used to save the predictions, as well as the ground truth labels, to [.arff](http://weka.wikispaces.com/ARFF) files:
 
 ```text
-boomer --data-dir /path/to/datsets/ --dataset dataset-name --output-dir /path/to/results/ --store-predictions true
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-predictions true
 ```
 
 ```{tip}
@@ -58,7 +58,42 @@ When using a {ref}`cross-validation` for performance evaluation, a model is trai
 
 ## Prediction Characteristics
 
-TODO
+By using the command line argument ``--print-prediction-characteristics``, characteristics regarding a model's predictions can be printed:
+
+```text
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-prediction-characteristics true
+```
+
+Alternatively, they statistics can be written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file by using the argument ``--store-prediction-characteristics``:
+
+```text
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-prediction-characteristics true
+```
+
+```{tip}
+The output produced by the arguments ``--print-data-characteristics`` and ``--store-data-characteristics`` can be customized via several options described {ref}`here<arguments-prediction-characteristics>`. It is possible to exclude certain statistics from the output, to specify whether they should be given as percentages, and how many decimal places should be used.
+```
+
+The statistics obtained via the arguments given above correspond to the test data for which predictions are obtained from the model. Consequently, they depend on the strategy used for splitting a dataset into training and test sets. When using {ref}`train-test-split`, predictions for a single test set are obtained and their characteristics are written into a file. In addition, statistics for the training data are written into an additional output file when using an {ref}`evaluating-training-data`:
+
+- `prediction_characteristics_train_overall.arff`
+- `prediction_characteristics_test_overall.arff`
+
+When using a {ref}`cross-validation`, the data is split into several parts of which each one is used once for prediction. Multiple output files are needed to save the statistics for different cross validation folds. For example, a 5-fold cross validation results in the following files:
+
+- `prediction_characteristics_fold-1.csv`
+- `prediction_characteristics_fold-2.csv`
+- `prediction_characteristics_fold-3.csv`
+- `prediction_characteristics_fold-4.csv`
+- `prediction_characteristics_fold-5.csv`
+
+The statistics obtained via the previous commands include the following:
+
+- The number of labels for which predictions have been obtained.
+- The percentage of labels predicted as irrelevant for all examples, indicating the sparsity of the prediction matrix.
+- The average label cardinality, i.e., the average number of labels predicted as relevant for each example.
+- The number of distinct label vectors, i.e., the number of unique label combinations, predicted for different examples.
+- The *label imbalance ratio* [^charte2013] that measures the imbalance between labels predicted as relevant and irrelevant, respectively.
 
 (output-data-characteristics)=
 
@@ -67,13 +102,13 @@ TODO
 To obtain insightful statistics regarding the characteristics of a data set, the command line argument ``--print-data-characteristics`` may be helpful:
 
 ```text
-boomer --data-dir /path/to/datsets/ --dataset dataset-name --print-data-characteristics true
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-data-characteristics true
 ```
 
 If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file, the argument ``--store-data-characteristics`` can be used:
 
 ```text
-boomer --data-dir /path/to/datsets/ --dataset dataset-name --output-dir /path/to/results/ --store-data-characteristics true
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-data-characteristics true
 ```
 
 ```{tip}
@@ -118,13 +153,13 @@ TODO
 To obtain a quick overview of some statistics that characterize a rule-based model learned by one of the algorithms provided by this project, the command line argument ``--print-model-characteristics`` can be useful:
 
 ```text
-boomer --data-dir /path/to/datsets/ --dataset dataset-name --print-model-characteristics true
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-model-characteristics true
 ```
 
 The above command results in a tabular representation of the characteristics being printed on the console. If one intends to write them into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file instead, the argument ``--store-model-characteristics`` may be used:
 
 ```text
-boomer --data-dir /path/to/datsets/ --dataset dataset-name --output-dir /path/to/results/ --store-model-characteristics true
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-model-characteristics true
 ```
 
 Model characteristics are obtained for each model training during an experiment. This means that a single output file will be created when using on {ref}`train-test-split`:
@@ -152,13 +187,13 @@ The statistics captured by the previous commands include the following:
 It is considered one of the advantages of rule-based machine learning models that they capture patterns found in the training data in a human-comprehensible form. This enables to manually inspect the models and reason about their predictive behavior. To help with this task, the command line API allows to output the rules in a model using a textual representation. If the text should be printed on the console, the following command specifying the argument ``--print-rules`` can be used:
 
 ```text
-boomer --data-dir /path/to/datsets/ --dataset dataset-name --print-rules true
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-rules true
 ```
 
 Alternatively, by using the argument ``--store-rules``, a textual representation of models can be written into a text file in the specifed output directory: 
 
 ```text
-boomer --data-dir /path/to/datsets/ --dataset dataset-name --output-dir /path/to/results/ --store-rules true
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-rules true
 ```
 
 ```{tip}
