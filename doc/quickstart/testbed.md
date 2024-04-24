@@ -44,13 +44,13 @@ In addition to the mandatory arguments that must be provided to the command line
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datsets/ --dataset dataset-name --output-dir /path/to/output/
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/output/
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datsets/ --dataset dataset-name --output-dir /path/to/output/
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/output/
    ```
 ````
 
