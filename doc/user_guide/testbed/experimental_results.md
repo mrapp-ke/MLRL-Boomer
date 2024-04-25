@@ -144,7 +144,41 @@ In addition, the following statistics regarding the labels in a dataset are prov
 
 ## Label Vectors
 
-TODO
+We refer to the unique labels combinations present for different examples in a dataset as label vectors. They can be printed by using the command line argument ``--print-label-vectors``: 
+
+```text
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-label-vectors true
+```
+
+If you prefer writing the label vectors into an output file, the argument ``--store-label-vectors`` can be used:
+
+```text
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --store-label-vectors true
+```
+
+When using {ref}`train-test-split` for splitting the available data into distinct training and test sets, a single output file is created. It stores the label vectors present in the training data:
+
+- `label_vectors_overall.csv`
+
+When using a {ref}`cross-validation`, several models are trained on different parts of the dataset. The label vectors present in each of these training sets are written into separate output files. For example, the following files result from a 5-fold cross validation:
+
+- `label_vectors_fold-1.csv`
+- `label_vectors_fold-2.csv`
+- `label_vectors_fold-3.csv`
+- `label_vectors_fold-4.csv`
+- `label_vectors_fold-5.csv`
+
+The above commands output each label vector present in a dataset, as well as their frequency, i.e., the number of examples they are associated with. Moreover, each label vector is assigned an unique index. By default, feature vectors are given in the following format, where the n-th element indicates whether the n-th label is relevant (1) or not (0):
+
+```text
+[0 0 1 1 1 0]
+```
+
+By setting the option ``sparse`` to the value ``true``, an alternative representation can be used (see {ref}`here<arguments-label-vectors>`). It consists of the indices of all relevant labels in a label vector (counting from zero and sorted in increasing order), while all irrelevant ones are omitted. Due to its compactness, this representation is particularly well-suited when dealing with a large number of labels:
+
+```text
+[2 3 4]
+```
 
 (output-model-characteristics)=
 
