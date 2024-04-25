@@ -222,7 +222,7 @@ To be able to use the algorithm's multi-threading capabilities, it must have bee
 
   - `'true'` Multi-threading is used to search for potential refinements of rules in parallel. The following options may be provided using the {ref}`bracket-notation`:
 
-    - `num_preferred_threads` (Default value = `0`) The number of preferred threads. Must be at least 1 or 0, if the number of cores available on the machine should be used. If not enough CPU cores are available or if multi-threading support is disabled, as many threads as possible will be used.
+    - `num_preferred_threads` (Default value = `0`) The number of preferred threads. Must be at least 1 or 0, if the number of cores available on the machine should be used. If not enough CPU cores are available or if multi-threading support is disabled, as many threads as possible are used.
 
 - `parallel_statistic_update` (Default value = `'false'`)
 
@@ -230,7 +230,7 @@ To be able to use the algorithm's multi-threading capabilities, it must have bee
 
   - `'true'` Multi-threading is used to assess the correctness of predictions for different examples in parallel. The following options may be provided using the {ref}`bracket-notation`:
 
-    - `num_preferred_threads` (Default value = `0`) The number of preferred threads. Must be at least 1 or 0, if the number of cores available on the machine should be used. If not enough CPU cores are available or if multi-threading support is disabled, as many threads as possible will be used.
+    - `num_preferred_threads` (Default value = `0`) The number of preferred threads. Must be at least 1 or 0, if the number of cores available on the machine should be used. If not enough CPU cores are available or if multi-threading support is disabled, as many threads as possible are used.
 
 - `parallel_prediction` (Default value = `'true'`)
 
@@ -238,4 +238,4 @@ To be able to use the algorithm's multi-threading capabilities, it must have bee
 
   - `'true'` Multi-threading is used to obtain predictions for different examples in parallel. The following options may be provided using the {ref}`bracket-notation`:
 
-    - `num_preferred_threads` (Default value = `0`) The number of preferred threads. Must be at least 1 or 0, if the number of cores available on the machine should be used. If not enough CPU cores are available or if multi-threading support is disabled, as many threads as possible will be used.
+    - `num_preferred_threads` (Default value = `0`) The number of preferred threads. Must be at least 1 or 0, if the number of cores available on the machine should be used. If not enough CPU cores are available or if multi-threading support is disabled, as many threads as possible are used.

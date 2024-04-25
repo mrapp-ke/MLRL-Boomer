@@ -18,34 +18,34 @@ The simplest and computationally least demanding strategy for obtaining training
 boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split train-test
 ```
 
-Following the argument `--dataset`, the program will load the training data from a file named `dataset-name_training.arff`. Similarly, it will expect the test data to be stored in a file named `dataset-name_test.arff`. If these files are not available, the program will look for a file with the name `dataset-name.arff` and split it into training and test data automatically.
+Following the argument `--dataset`, the program loads the training data from a file named `dataset-name_training.arff`. Similarly, it expects the test data to be stored in a file named `dataset-name_test.arff`. If these files are not available, the program searches for a file with the name `dataset-name.arff` and splits it into training and test data automatically.
 
-When it is the responsibility of the command line API to split a given dataset into training and test tests, 66% of the data will be included in the training set, whereas the remaining 33% will be part of the test set. Although this ratio is frequently used in machine learning, you can easily adjust it by providing the option `test_size`:
+When it is the responsibility of the command line API to split a given dataset into training and test tests, 66% of the data are included in the training set, whereas the remaining 33% are part of the test set. Although this ratio is frequently used in machine learning, you can easily adjust it by providing the option `test_size`:
 
 ```text
 boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split 'train-test{test_size=0.25}'
 ```
 
-This command will tell the command line API to include 75% of the available data in the training set and use the remaining 25% for the test set.
+This command instructs the command line API to include 75% of the available data in the training set and use the remaining 25% for the test set.
 
 (cross-validation)=
 
 ### Cross Validation
 
-A more elaborate strategy for splitting data into training and test sets, which results in more realistic performance estimates, but also entails greater computational costs, is referred to as [cross validation](<https://en.wikipedia.org/wiki/Cross-validation_(statistics)>) (CV). The basic idea is to split the available data into several, equally-sized, parts. Afterwards, several machine learning models are trained and evaluated on different portions of the data using the same learning method. Each of these parts will be used for testing exactly once, whereas the remaining ones make up the training set. The performance estimates that are obtained for each of these subsequent runs, referred to as *folds*, are finally averaged to obtain a single score and corresponding [standard deviation](https://en.wikipedia.org/wiki/Standard_deviation). The command line API can be instructed to perform a cross validation using the argument `--data-split cv`:
+A more elaborate strategy for splitting data into training and test sets, which results in more realistic performance estimates, but also entails greater computational costs, is referred to as [cross validation](<https://en.wikipedia.org/wiki/Cross-validation_(statistics)>) (CV). The basic idea is to split the available data into several, equally-sized, parts. Afterwards, several machine learning models are trained and evaluated on different portions of the data using the same learning method. Each of these parts are used for testing exactly once, whereas the remaining ones make up the training set. The performance estimates that are obtained for each of these subsequent runs, referred to as *folds*, are finally averaged to obtain a single score and corresponding [standard deviation](https://en.wikipedia.org/wiki/Standard_deviation). The command line API can be instructed to perform a cross validation using the argument `--data-split cv`:
 
 ```text
 boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split cv
 ```
 
-By default, a 10-fold cross validation, where ten models are trained and evaluated, will be performed. The number of folds can easily be adjusted via the option `num_folds`. For example, the following command results in a 5-fold CV being used:
+By default, a 10-fold cross validation, where ten models are trained and evaluated, is performed. The number of folds can easily be adjusted via the option `num_folds`. For example, the following command results in a 5-fold CV being used:
 
 ```text
 boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split 'cv{num_folds=5}'
 ```
 
 ```{tip}
-When providing the option `current_fold`, only a single fold, instead of the entire procedure, will be performed. This is particularly useful, if one intends to train and evaluate the models for each individual fold in parallel on different machines. For example, the following command does only execute the second fold of a 5-fold CV:
+When providing the option `current_fold`, only a single fold, instead of the entire procedure, is performed. This is particularly useful, if one intends to train and evaluate the models for each individual fold in parallel on different machines. For example, the following command does only execute the second fold of a 5-fold CV:
 
     boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split 'cv{num_folds=5,current_fold=2}'
 ```
@@ -58,7 +58,7 @@ When providing the option `current_fold`, only a single fold, instead of the ent
 The configuraton described in this section should only be used for testing purposes, as the evaluation results will be highly biased and overly optimistic.
 ```
 
-Sometimes, evaluating the performance of a model on the data it has been trained on can be helpful for analyzing the behavior of a machine learning algorithm, e.g., if one needs to check if the approach is able to fit the data accurately. For this purpose, the command line API allows to use the argument `--data-split none`, which will not result in the given data to be split at all. Instead, the learning algorithm will be applied to the entire dataset and predictions will be obtained from the resulting model for the exact same data points. The argument can be specified as follows:
+Sometimes, evaluating the performance of a model on the data it has been trained on can be helpful for analyzing the behavior of a machine learning algorithm, e.g., if one needs to check if the approach is able to fit the data accurately. For this purpose, the command line API allows to use the argument `--data-split none`, which results in the given data not being split at all. Instead, the learning algorithm is applied to the entire dataset and predictions are be obtained from the resulting model for the exact same data points. The argument can be specified as follows:
 
 ```text
 boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split none
@@ -108,7 +108,7 @@ The most common type of prediction used for multi-label classification are binar
 boomer --data-dir /path/to/datasets/ --dataset dataset-name --prediction-type binary
 ```
 
-In a multi-label setting, the quality of binary predictions is assessed in terms of commonly used [multi-label classification metrics](https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics) implemented by the [scikit-learn](https://scikit-learn.org) framework. If a dataset contains only a single label, the evaluation will be restricted to classification metrics that are suited for single-label classification problems.
+In a multi-label setting, the quality of binary predictions is assessed in terms of commonly used [multi-label classification metrics](https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics) implemented by the [scikit-learn](https://scikit-learn.org) framework. If a dataset contains only a single label, the evaluation is restricted to classification metrics that are suited for single-label classification problems.
 
 ## Incremental Evaluation
 
@@ -118,13 +118,13 @@ When evaluating the predictive performance of an [ensemble method](https://en.wi
 boomer --data-dir /path/to/datasets/ --dataset dataset-name --incremental-evaluation true
 ```
 
-When using the above command, the rule-based model that is learned by the BOOMER algorithm will be evaluated repeatedly as more rules are added to it. Evaluation results will be obtained for a model consisting of a single rule, two rules, three rules, and so on. Of course, because the evaluation is performed multiple times, this evaluation strategy comes with a large computational overhead. Therefore, depending on the size of the final model, it might be necessary to limit the number of evaluations via the following options:
+When using the above command, the rule-based model that is learned by the BOOMER algorithm is evaluated repeatedly as more rules are added to it. Evaluation results are obtained for a model consisting of a single rule, two rules, three rules, and so on. Of course, because the evaluation is performed multiple times, this evaluation strategy comes with a large computational overhead. Therefore, depending on the size of the final model, it might be necessary to limit the number of evaluations via the following options:
 
 - `min_size` specifies the minimum number of ensemble members that must be included in a model for the first evaluation to be performed.
 - `max_size` specifies the maximum number of ensemble members to be evaluated.
 - `step_size` allows to to specify after how many additional ensemble members the evaluation should be repeated.
 
-For example, the following command may be used for the incremental evaluation of a BOOMER model that consists of up to 1000 rules. The model will be evaluated for the first time after 200 rules have been added. Subsequent evaluations will be perfomed when the model comprises 400, 600, 800, and 1000 rules.
+For example, the following command may be used for the incremental evaluation of a BOOMER model that consists of up to 1000 rules. The model is evaluated for the first time after 200 rules have been added. Subsequent evaluations are perfomed when the model comprises 400, 600, 800, and 1000 rules.
 
 ```text
 boomer --data-dir /path/to/datasets/ --dataset dataset-name --incremental-evaluation 'true{min_size=200,max_size=1000,step_size=200}'

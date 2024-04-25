@@ -59,7 +59,7 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    ```
 ````
 
-Additional build- or run-time dependencies will automatically be installed when following the instructions below and must not be installed manually.
+Additional build- or run-time dependencies are automatically installed when following the instructions below and must not be installed manually.
 
 `````{tip}
 Instead of following the instructions below step by step, the following command, which automatically executes all necessary steps, can be used for simplicity.
@@ -82,7 +82,7 @@ Instead of following the instructions below step by step, the following command,
    ```
 ````
 
-Whenever any C++, Cython or Python source files have been modified, the above command must be run again in order to rebuild modified files and install updated wheel packages into the virtual environment. If any compilation files do already exist, this will only result in the affected parts of the code to be rebuilt.
+Whenever any C++, Cython or Python source files have been modified, the above command must be run again in order to rebuild modified files and install updated wheel packages into the virtual environment. If any compilation files already exist, this does only result in the affected parts of the code to be rebuilt.
 `````
 
 `````{note}
@@ -340,7 +340,7 @@ Certain functionalities of the project can be enabled or disabled at compile-tim
 
 ### Testing Support
 
-This project comes with unit tests for the C++ code it contains (see {ref}`testing`). They are based on the [GoogleTest](https://github.com/google/googletest) framework. When building the project on a system where this dependency is available, the testing code is compiled and linked against the shared libraries it is supposed to test. By default, the build option `test_support` is set to `auto`, i.e., the testing code is only compiled if GoogleTest is available and no error will be raised otherwise. To enforce the compilation of the testing code, the build option can be set to `enabled`. Setting it to `disabled` will prevent the code from being compiled even if GoogleTest is available. Alternatively, the desired value can be specified via the environment variable `TEST_SUPPORT`.
+This project comes with unit tests for the C++ code it contains (see {ref}`testing`). They are based on the [GoogleTest](https://github.com/google/googletest) framework. When building the project on a system where this dependency is available, the testing code is compiled and linked against the shared libraries it is supposed to test. By default, the build option `test_support` is set to `auto`, i.e., the testing code is only compiled if GoogleTest is available and no error is raised otherwise. To enforce the compilation of the testing code, the build option can be set to `enabled`. Setting it to `disabled` prevents the code from being compiled even if GoogleTest is available. Alternatively, the desired value can be specified via the environment variable `TEST_SUPPORT`.
 
 (multi-threading-support)=
 
@@ -348,7 +348,7 @@ This project comes with unit tests for the C++ code it contains (see {ref}`testi
 
 By default, the project is built with multi-threading support enabled. This requires [OpenMP](https://www.openmp.org/) to be available on the host system. In order to compile the project without multi-threading support, e.g., because OpenMP is not available, the build option `multi_threading_support` can be set to `disabled` instead of `enabled`. Alternatively, the desired value can be specified via the environment variable `MULTI_THREADING_SUPPORT`.
 
-When using the {ref}`testbed`, the command `boomer --version` or `boomer -v` can be executed to check whether the program was built with multi-threading support enabled or not. It will print the build options used for compilation, as well as information about the CPU cores available on the system for multi-threading.
+When using the {ref}`testbed`, the command `boomer --version` or `boomer -v` can be executed to check whether the program was built with multi-threading support enabled or not. It prints the build options used for compilation, as well as information about the CPU cores available on the system for multi-threading.
 
 If you need to access this information programmatically in your own Python or C++ code, the following code snippets can be used (see {ref}`python-apidoc` and {ref}`cpp-apidoc`):
 
@@ -380,7 +380,7 @@ So far, GPU support is still at an early stage of development. No algorithm prov
 
 GPU support via [OpenCL](https://www.khronos.org/opencl/) is enabled by default when building the project. However, it can be disabled at compile-time by setting the build option `gpu_support` to `disabled` instead of `enabled`. Alternatively, the desired value can be specified via the environment variable `GPU_SUPPORT`.
 
-An easy way to check whether the program was built with GPU support enabled or not, is to run the `boomer --version` or `boomer -v` command that is provided by the {ref}`testbed`. It will print the build options used for compiling the program, together with a list of supported GPUs available on your machine.
+An easy way to check whether the program was built with GPU support enabled or not, is to run the `boomer --version` or `boomer -v` command that is provided by the {ref}`testbed`. It prints the build options used for compiling the program, together with a list of supported GPUs available on your machine.
 
 Alternatively, this information can be retrieved programmatically via the Python or C++ API as shown below (see {ref}`python-apidoc` and {ref}`cpp-apidoc`):
 
