@@ -12,11 +12,11 @@ boomer --data-dir /path/to/datasets/ --dataset dataset-name --model-dir /path/to
 The path of the directory, where models should be saved, can be either absolute or relative to the working directory.
 ```
 
-If {ref}`train-test-split` are used for evaluating the predictive performance of models, a single model will be fit to the training data and stored in a file:
+If {ref}`train-test-split` are used for evaluating the predictive performance of models, a single model is fit to the training data and stored in a file:
 
 - `boomer.model`
 
-If a {ref}`cross-validation` is performed instead, one model is trained per cross validation fold and all of these models are stored in the specified directory. For example, a 5-fold cross validation will result in the following files:
+If a {ref}`cross-validation` is performed instead, one model is trained per cross validation fold and all of these models are stored in the specified directory. For example, a 5-fold cross validation results in the following files:
 
 - `boomer_fold-1.model`
 - `boomer_fold-2.model`
@@ -24,4 +24,4 @@ If a {ref}`cross-validation` is performed instead, one model is trained per cros
 - `boomer_fold-4.model`
 - `boomer_fold-5.model`
 
-When executing the aforementioned command again, the program will recognize the previously stored models in the specified directory. Instead of training them from scratch, the models will then be loaded from the respective files, which should be much faster than training them again.
+When executing the aforementioned command again, the program recognizes the previously stored models in the specified directory. Instead of training them from scratch, the models are then loaded from the respective files, which should be much faster than training them again.
