@@ -36,7 +36,7 @@ boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/t
 Depending on the {ref}`prediction-types`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if regression scores or proability estimates are provided). When working with real-valued predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions`` and ``--store-predictions`` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
 ```
 
-When using {ref}`train-test-split`, a single model is trained and queried for predictions for the test set. These predictions will be written into a single output file. When using an {ref}`evaluating-training-data`, predictions are also obtained for the training set and written into an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:
+When using {ref}`train-test-split`, a single model is trained and queried for predictions for the test set. These predictions are written into a single output file. When using an {ref}`evaluating-training-data`, predictions are also obtained for the training set and written into an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:
 
 - `predictions_train_overall.arff`
 - `predictions_test_overall.arff`
@@ -115,11 +115,11 @@ boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/t
 As shown {ref}`here<arguments-data-characteristics>`, the arguments ``--print-data-characteristics`` and ``--store-data-characteristics`` come with several options that allow to exclude specific statistics from the respective output. It is also possible to specify whether percentages should be prefered for presenting the statistics. Additionally, the number of decimals to be included in the output can be limited.
 ```
 
-The statistics provided by the previous commands are obtained on the training data and therefore depend on the strategy used for splitting a dataset into training and test sets. If {ref}`train-test-split` are used, a single training set is used and its characteristics will be saved to a file:
+The statistics provided by the previous commands are obtained on the training data and therefore depend on the strategy used for splitting a dataset into training and test sets. If {ref}`train-test-split` are used, a single training set is used and its characteristics are saved to a file:
 
 - `data_characteristics_overall.csv`
 
-In contrast, when using a {ref}`cross-validation`, the data is split into several parts of which each one is used once for training. As a result, multiple output files will be created in a such a scenario. For example, a 5-fold cross validation will result in the following files:
+In contrast, when using a {ref}`cross-validation`, the data is split into several parts of which each one is used once for training. As a result, multiple output files are created in a such a scenario. For example, a 5-fold cross validation results in the following files:
 
 - `data_characteristics_fold-1.csv`
 - `data_characteristics_fold-2.csv`
@@ -162,11 +162,11 @@ The above command results in a tabular representation of the characteristics bei
 boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-model-characteristics true
 ```
 
-Model characteristics are obtained for each model training during an experiment. This means that a single output file will be created when using on {ref}`train-test-split`:
+Model characteristics are obtained for each model training during an experiment. This means that a single output file is created when using on {ref}`train-test-split`:
 
 - `model_characteristics_overall.csv`
 
-When using a {ref}`cross-validation`, several models are trained on different parts of the available data, resulting in multiple output files being saved to the output directory. For example, the following files will be created when conducting a 5-fold cross validation:
+When using a {ref}`cross-validation`, several models are trained on different parts of the available data, resulting in multiple output files being saved to the output directory. For example, the following files are created when conducting a 5-fold cross validation:
 
 - `model_characteristics_fold-1.csv`
 - `model_characteristics_fold-2.csv`
@@ -200,7 +200,7 @@ boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/t
 Both, the ``--print-rules`` and ``--store-rules`` arguments, come with several options that allow to customize the textual representation of models. An overview of these options is provided {ref}`here<arguments-output-rules>`.
 ```
 
-When using {ref}`train-test-split`, only a single model is trained. Consequently, the above command will result in a single output file being created:
+When using {ref}`train-test-split`, only a single model is trained. Consequently, the above command results in a single output file being created:
 
 - `rules_overall.csv`
 

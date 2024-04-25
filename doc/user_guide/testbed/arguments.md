@@ -35,11 +35,11 @@ One of the most important capabilities of the command line API is to train machi
 
 - `--data-split` (Default value = `train-test`)
 
-  - `train-test` The available data is split into a single training and test set. Given that `dataset-name` is provided as the value of the argument `--dataset`, the training data must be stored in a file named `dataset-name_training.arff`, whereas the test data must be stored in a file named `dataset-name_test.arff`. If no such files are available, the program will look for a file with the name `dataset-name.arff` and split it into training and test data automatically. The following options may be specified using the {ref}`bracket-notation`:
+  - `train-test` The available data is split into a single training and test set. Given that `dataset-name` is provided as the value of the argument `--dataset`, the training data must be stored in a file named `dataset-name_training.arff`, whereas the test data must be stored in a file named `dataset-name_test.arff`. If no such files are available, the program searches for a file with the name `dataset-name.arff` and splits it into training and test data automatically. The following options may be specified using the {ref}`bracket-notation`:
 
     - `test_size` (Default value = `0.33`) The fraction of the available data to be included in the test set, if the training and test set are not provided as separate files. Must be in (0, 1).
 
-  - `cross-validation` A cross validation is performed. Given that `dataset-name` is provided as the value of the argument `--dataset`, the data for individual folds must be stored in files named `dataset-name_fold-1`, `dataset-name_fold-2`, etc.. If no such files are available, the program will look for a file with the name `dataset-name.arff` and split it into training and test data for the individual folds automatically. The following options may be specified using the {ref}`bracket-notation`:
+  - `cross-validation` A cross validation is performed. Given that `dataset-name` is provided as the value of the argument `--dataset`, the data for individual folds must be stored in files named `dataset-name_fold-1`, `dataset-name_fold-2`, etc.. If no such files are available, the program searches for a file with the name `dataset-name.arff` and splits it into training and test data for the individual folds automatically. The following options may be specified using the {ref}`bracket-notation`:
 
     - `num_folds` (Default value = `10`) The total number of cross validation folds to be performed. Must be at least 2.
     - `current_fold` (Default value = `0`) The cross validation fold to be performed. Must be in \[1, `num_folds`\] or 0, if all folds should be performed.
@@ -92,7 +92,7 @@ Because the training of models can be time-consuming, it might be desirable to s
 
 - `--model-dir` (Default value = `None`)
 
-  - An absolute or relative path to the directory where models should be stored. If such models are found in the specified directory, they will be used instead of learning a new model from scratch. If no models are available, the trained models will be saved in the specified directory once training has completed.
+  - An absolute or relative path to the directory where models should be stored. If such models are found in the specified directory, they are used instead of learning a new model from scratch. If no models are available, the trained models are saved in the specified directory once training has completed.
 
 ## Saving and Loading Parameters
 
