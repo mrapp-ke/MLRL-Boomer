@@ -18,7 +18,7 @@ jobs:
           export MAIN_VERSION="$(cat VERSION)"
           git fetch origin feature:feature
           git reset --hard feature
-          echo $MAIN_VERSION > VERSION
+          echo -n "${MAIN_VERSION}" > VERSION
       - name: Generate token
         uses: actions/create-github-app-token@v1
         id: app-token
