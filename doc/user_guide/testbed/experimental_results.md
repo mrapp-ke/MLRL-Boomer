@@ -268,6 +268,38 @@ Examples that satisfy all conditions in a rule's body are said to be "covered" b
 
 ## Probability Calibration Models
 
-TODO
+Some machine learning algorithms provided by this project allow to obtain probabilistic predictions. These predictions can optionally be fine-tuned via calibration models to improve the reliability of the probability estimates. We support two types of calibration models for tuning marginal and joint probabilities, respectively. If one needs to inspect these calibration models, the command line arguments ``--print-marginal-probability-calibration-model`` and ``--print-joint-probability-calibration-model`` may be helpful:
+
+```text
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-marginal-probability-calibration-model true --print-joint-probabiliy-calibration-model true
+```
+
+Alternatively, a representations of the calibration models can be written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files by using the arguments ``--store-marginal-probability-calibration-model`` and ``--store-joint-probability-calibration-model``
+
+```text
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --store-marginal-probability-calibration-model true --store-joint-probabiliy-calibration-model true
+```
+
+```{tip}
+All of the above commands come with options for customizing the textual representation of models. A more detailed description of these options is available {ref}`here<arguments-probability-calibration-models>`.
+```
+
+Calibration models are learned during training and depend on the training data. {ref}`train-test-split`, where only a single model is trained, result in a single file being created for each type of calibration model:
+
+- `marginal_probability_calibration_model_overall.csv`
+- `joint_probability_calibration_model_overall.csv`
+
+In contrast, a {ref}`cross-validation` produces multiple output files. Each one corresponds to a calibration model learned on the training data for an individual fold. For example, the following files are created when using a 5-fold cross validation:
+
+- `marginal_probability_calibration_model_fold-1.csv`
+- `marginal_probability_calibration_model_fold-2.csv`
+- `marginal_probability_calibration_model_fold-3.csv`
+- `marginal_probability_calibration_model_fold-4.csv`
+- `marginal_probability_calibration_model_fold-5.csv`
+- `joint_probability_calibration_model_fold-1.csv`
+- `joint_probability_calibration_model_fold-2.csv`
+- `joint_probability_calibration_model_fold-3.csv`
+- `joint_probability_calibration_model_fold-4.csv`
+- `joint_probability_calibration_model_fold-5.csv`
 
 [^charte2013]: Charte, Francisco, Antonio J. Rivera, María José del Jesus, and Francisco Herrera (2019). ‘REMEDIAL-HwR: Tackling multilabel imbalance through label decoupling and data resampling hybridization’. In: *Neurocomputing* 326-327, pp. 110–122.
