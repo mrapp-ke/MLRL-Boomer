@@ -36,7 +36,7 @@ boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/t
 Depending on the {ref}`prediction-types`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if regression scores or proability estimates are provided). When working with real-valued predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions`` and ``--store-predictions`` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
 ```
 
-When using {ref}`train-test-split`, a single model is trained and queried for predictions for the test set. These predictions will be written into a single output file. When using an {ref}`evaluating-training-data`, predictions are also obtained for the training set and written into an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:
+When using {ref}`train-test-split`, a single model is trained and queried for predictions for the test set. These predictions are written into a single output file. When using an {ref}`evaluating-training-data`, predictions are also obtained for the training set and written into an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:
 
 - `predictions_train_overall.arff`
 - `predictions_test_overall.arff`
@@ -89,11 +89,11 @@ When using a {ref}`cross-validation`, the data is split into several parts of wh
 
 The statistics obtained via the previous commands include the following:
 
-- The number of labels for which predictions have been obtained.
-- The percentage of labels predicted as irrelevant for all examples, indicating the sparsity of the prediction matrix.
-- The average label cardinality, i.e., the average number of labels predicted as relevant for each example.
-- The number of distinct label vectors, i.e., the number of unique label combinations, predicted for different examples.
-- The *label imbalance ratio* [^charte2013] that measures the imbalance between labels predicted as relevant and irrelevant, respectively.
+- **The number of labels:** Indicates for how many lables predictions have been obtained.
+- **The sparsity of the prediction matrix:** The percentage of labels predicted as irrelevant for all examples.
+- **The average label cardinality:** The average number of labels predicted as relevant for each example.
+- **The number of distinct label vectors:** The number of unique label combinations predicted for different examples.
+- **The label imbalance ratio:** A measure for the imbalance between labels predicted as relevant and irrelevant, respectively. [^charte2013]
 
 (output-data-characteristics)=
 
@@ -115,11 +115,11 @@ boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/t
 As shown {ref}`here<arguments-data-characteristics>`, the arguments ``--print-data-characteristics`` and ``--store-data-characteristics`` come with several options that allow to exclude specific statistics from the respective output. It is also possible to specify whether percentages should be prefered for presenting the statistics. Additionally, the number of decimals to be included in the output can be limited.
 ```
 
-The statistics provided by the previous commands are obtained on the training data and therefore depend on the strategy used for splitting a dataset into training and test sets. If {ref}`train-test-split` are used, a single training set is used and its characteristics will be saved to a file:
+The statistics provided by the previous commands are obtained on the training data and therefore depend on the strategy used for splitting a dataset into training and test sets. If {ref}`train-test-split` are used, a single training set is used and its characteristics are saved to a file:
 
 - `data_characteristics_overall.csv`
 
-In contrast, when using a {ref}`cross-validation`, the data is split into several parts of which each one is used once for training. As a result, multiple output files will be created in a such a scenario. For example, a 5-fold cross validation will result in the following files:
+In contrast, when using a {ref}`cross-validation`, the data is split into several parts of which each one is used once for training. As a result, multiple output files are created in a such a scenario. For example, a 5-fold cross validation results in the following files:
 
 - `data_characteristics_fold-1.csv`
 - `data_characteristics_fold-2.csv`
@@ -129,22 +129,56 @@ In contrast, when using a {ref}`cross-validation`, the data is split into severa
 
 The output produced by the previous commands includes the following information regarding a dataset's features:
 
-- The total number of examples contained in a dataset, as well as the number of examples per type of feature (numerical, ordinal, or nominal).
-- The sparsity among the feature values of all examples, calculated as the percentage of elements in the feature matrix that are equal to zero.
+- **The number of examples contained in a dataset:** Besides the total number, the number of examples per type of feature (numerical, ordinal, or nominal) is also given.
+- **The sparsity of the feature matrix:** This statistic calculates as the percentage of elements in the feature matrix that are equal to zero.
 
 In addition, the following statistics regarding the labels in a dataset are provided:
 
-- The total number of available labels.
-- The percentage of irrelevant labels among all examples, corresponding to the sparsity of the label matrix.
-- The average label cardinality, i.e., the average number of relevant labels per example.
-- The number of distinct label vectors, i.e., the number of unique label combinations that are present in a dataset.
-- The *label imbalance ratio* [^charte2013], which is an important metric in multi-label classification. It measures to which degree the distribution of relevant and irrelevant labels is unbalanced.
+- **The total number of available labels**
+- **The sparsity of the label matrix:** This statistic calculates as the percentage of irrelevant labels among all examples.
+- **The average label cardinality:** The average number of relevant labels per example.
+- **The number of distinct label vectors:** The number of unique label combinations present in a dataset.
+- **The label imbalance ratio:** An important metric in multi-label classification measuring to which degree the distribution of relevant and irrelevant labels is unbalanced. [^charte2013]
 
 (output-label-vectors)=
 
 ## Label Vectors
 
-TODO
+We refer to the unique labels combinations present for different examples in a dataset as label vectors. They can be printed by using the command line argument ``--print-label-vectors``: 
+
+```text
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-label-vectors true
+```
+
+If you prefer writing the label vectors into an output file, the argument ``--store-label-vectors`` can be used:
+
+```text
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --store-label-vectors true
+```
+
+When using {ref}`train-test-split` for splitting the available data into distinct training and test sets, a single output file is created. It stores the label vectors present in the training data:
+
+- `label_vectors_overall.csv`
+
+When using a {ref}`cross-validation`, several models are trained on different parts of the dataset. The label vectors present in each of these training sets are written into separate output files. For example, the following files result from a 5-fold cross validation:
+
+- `label_vectors_fold-1.csv`
+- `label_vectors_fold-2.csv`
+- `label_vectors_fold-3.csv`
+- `label_vectors_fold-4.csv`
+- `label_vectors_fold-5.csv`
+
+The above commands output each label vector present in a dataset, as well as their frequency, i.e., the number of examples they are associated with. Moreover, each label vector is assigned an unique index. By default, feature vectors are given in the following format, where the n-th element indicates whether the n-th label is relevant (1) or not (0):
+
+```text
+[0 0 1 1 1 0]
+```
+
+By setting the option ``sparse`` to the value ``true``, an alternative representation can be used (see {ref}`here<arguments-label-vectors>`). It consists of the indices of all relevant labels in a label vector (counting from zero and sorted in increasing order), while all irrelevant ones are omitted. Due to its compactness, this representation is particularly well-suited when dealing with a large number of labels:
+
+```text
+[2 3 4]
+```
 
 (output-model-characteristics)=
 
@@ -162,11 +196,11 @@ The above command results in a tabular representation of the characteristics bei
 boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-model-characteristics true
 ```
 
-Model characteristics are obtained for each model training during an experiment. This means that a single output file will be created when using on {ref}`train-test-split`:
+Model characteristics are obtained for each model training during an experiment. This means that a single output file is created when using on {ref}`train-test-split`:
 
 - `model_characteristics_overall.csv`
 
-When using a {ref}`cross-validation`, several models are trained on different parts of the available data, resulting in multiple output files being saved to the output directory. For example, the following files will be created when conducting a 5-fold cross validation:
+When using a {ref}`cross-validation`, several models are trained on different parts of the available data, resulting in multiple output files being saved to the output directory. For example, the following files are created when conducting a 5-fold cross validation:
 
 - `model_characteristics_fold-1.csv`
 - `model_characteristics_fold-2.csv`
@@ -200,7 +234,7 @@ boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/t
 Both, the ``--print-rules`` and ``--store-rules`` arguments, come with several options that allow to customize the textual representation of models. An overview of these options is provided {ref}`here<arguments-output-rules>`.
 ```
 
-When using {ref}`train-test-split`, only a single model is trained. Consequently, the above command will result in a single output file being created:
+When using {ref}`train-test-split`, only a single model is trained. Consequently, the above command results in a single output file being created:
 
 - `rules_overall.csv`
 
@@ -234,6 +268,38 @@ Examples that satisfy all conditions in a rule's body are said to be "covered" b
 
 ## Probability Calibration Models
 
-TODO
+Some machine learning algorithms provided by this project allow to obtain probabilistic predictions. These predictions can optionally be fine-tuned via calibration models to improve the reliability of the probability estimates. We support two types of calibration models for tuning marginal and joint probabilities, respectively. If one needs to inspect these calibration models, the command line arguments ``--print-marginal-probability-calibration-model`` and ``--print-joint-probability-calibration-model`` may be helpful:
+
+```text
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-marginal-probability-calibration-model true --print-joint-probabiliy-calibration-model true
+```
+
+Alternatively, a representations of the calibration models can be written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files by using the arguments ``--store-marginal-probability-calibration-model`` and ``--store-joint-probability-calibration-model``
+
+```text
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --store-marginal-probability-calibration-model true --store-joint-probabiliy-calibration-model true
+```
+
+```{tip}
+All of the above commands come with options for customizing the textual representation of models. A more detailed description of these options is available {ref}`here<arguments-probability-calibration-models>`.
+```
+
+Calibration models are learned during training and depend on the training data. {ref}`train-test-split`, where only a single model is trained, result in a single file being created for each type of calibration model:
+
+- `marginal_probability_calibration_model_overall.csv`
+- `joint_probability_calibration_model_overall.csv`
+
+In contrast, a {ref}`cross-validation` produces multiple output files. Each one corresponds to a calibration model learned on the training data for an individual fold. For example, the following files are created when using a 5-fold cross validation:
+
+- `marginal_probability_calibration_model_fold-1.csv`
+- `marginal_probability_calibration_model_fold-2.csv`
+- `marginal_probability_calibration_model_fold-3.csv`
+- `marginal_probability_calibration_model_fold-4.csv`
+- `marginal_probability_calibration_model_fold-5.csv`
+- `joint_probability_calibration_model_fold-1.csv`
+- `joint_probability_calibration_model_fold-2.csv`
+- `joint_probability_calibration_model_fold-3.csv`
+- `joint_probability_calibration_model_fold-4.csv`
+- `joint_probability_calibration_model_fold-5.csv`
 
 [^charte2013]: Charte, Francisco, Antonio J. Rivera, María José del Jesus, and Francisco Herrera (2019). ‘REMEDIAL-HwR: Tackling multilabel imbalance through label decoupling and data resampling hybridization’. In: *Neurocomputing* 326-327, pp. 110–122.
