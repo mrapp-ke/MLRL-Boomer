@@ -10,7 +10,7 @@ DEBUG A sparse matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data:
 
-Example-wise F1         43.85
+Example-wise F1         39.26
 Example-wise Jaccard    31.25
 Example-wise Precision  69.64
 Example-wise Recall     51.53

@@ -12,7 +12,7 @@ INFO Predicting for 196 test examples using a model of size 50...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 50:
 
-Example-wise F1         81.16
+Example-wise F1         53.61
 Example-wise Jaccard    44.98
 Example-wise Precision  68.11
 Example-wise Recall     47.62
@@ -33,7 +33,7 @@ INFO Predicting for 196 test examples using a model of size 100...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 100:
 
-Example-wise F1         82.69
+Example-wise F1         60.24
 Example-wise Jaccard    52.13
 Example-wise Precision  71.77
 Example-wise Recall     56.12
@@ -54,7 +54,7 @@ INFO Predicting for 196 test examples using a model of size 150...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 150:
 
-Example-wise F1         82.28
+Example-wise F1         64.42
 Example-wise Jaccard    56.25
 Example-wise Precision  74.49
 Example-wise Recall     61.73
@@ -75,7 +75,7 @@ INFO Predicting for 196 test examples using a model of size 200...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 200:
 
-Example-wise F1         82.14
+Example-wise F1         63.78
 Example-wise Jaccard    55.48
 Example-wise Precision  73.47
 Example-wise Recall     61.31
@@ -96,7 +96,7 @@ INFO Predicting for 196 test examples using a model of size 250...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 250:
 
-Example-wise F1         81.97
+Example-wise F1         64.63
 Example-wise Jaccard    56.42
 Example-wise Precision  73.38
 Example-wise Recall     63.01
@@ -117,7 +117,7 @@ INFO Predicting for 196 test examples using a model of size 300...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 300:
 
-Example-wise F1         81.84
+Example-wise F1         65.51
 Example-wise Jaccard    57.4
 Example-wise Precision  73.89
 Example-wise Recall     64.12
@@ -138,7 +138,7 @@ INFO Predicting for 196 test examples using a model of size 350...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 350:
 
-Example-wise F1         82.24
+Example-wise F1         64.9
 Example-wise Jaccard    56.93
 Example-wise Precision  72.96
 Example-wise Recall     63.61
@@ -159,7 +159,7 @@ INFO Predicting for 196 test examples using a model of size 400...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 400:
 
-Example-wise F1         82.91
+Example-wise F1         64.03
 Example-wise Jaccard    56.38
 Example-wise Precision  71.43
 Example-wise Recall     63.18
@@ -180,7 +180,7 @@ INFO Predicting for 196 test examples using a model of size 450...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 450:
 
-Example-wise F1         82.26
+Example-wise F1         64.4
 Example-wise Jaccard    56.42
 Example-wise Precision  72.11
 Example-wise Recall     63.61
@@ -201,7 +201,7 @@ INFO Predicting for 196 test examples using a model of size 500...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 500:
 
-Example-wise F1         82.24
+Example-wise F1         65.41
 Example-wise Jaccard    57.27
 Example-wise Precision  73.72
 Example-wise Recall     64.2
@@ -222,7 +222,7 @@ INFO Predicting for 196 test examples using a model of size 550...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 550:
 
-Example-wise F1         81.89
+Example-wise F1         65.05
 Example-wise Jaccard    56.76
 Example-wise Precision  73.47
 Example-wise Recall     63.78
@@ -243,7 +243,7 @@ INFO Predicting for 196 test examples using a model of size 600...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 600:
 
-Example-wise F1         81.89
+Example-wise F1         65.05
 Example-wise Jaccard    56.76
 Example-wise Precision  73.21
 Example-wise Recall     64.2
@@ -264,7 +264,7 @@ INFO Predicting for 196 test examples using a model of size 650...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 650:
 
-Example-wise F1         82.53
+Example-wise F1         65.19
 Example-wise Jaccard    57.1
 Example-wise Precision  72.79
 Example-wise Recall     64.46
@@ -285,7 +285,7 @@ INFO Predicting for 196 test examples using a model of size 700...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 700:
 
-Example-wise F1         81.8
+Example-wise F1         64.97
 Example-wise Jaccard    56.59
 Example-wise Precision  73.38
 Example-wise Recall     64.03
@@ -306,7 +306,7 @@ INFO Predicting for 196 test examples using a model of size 750...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 750:
 
-Example-wise F1         82.28
+Example-wise F1         64.93
 Example-wise Jaccard    56.76
 Example-wise Precision  72.7
 Example-wise Recall     64.2
@@ -327,7 +327,7 @@ INFO Predicting for 196 test examples using a model of size 800...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 800:
 
-Example-wise F1         82.35
+Example-wise F1         64.49
 Example-wise Jaccard    56.38
 Example-wise Precision  71.94
 Example-wise Recall     64.12
@@ -348,7 +348,7 @@ INFO Predicting for 196 test examples using a model of size 850...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 850:
 
-Example-wise F1         82.09
+Example-wise F1         65.26
 Example-wise Jaccard    57.06
 Example-wise Precision  72.7
 Example-wise Recall     64.88
@@ -369,7 +369,7 @@ INFO Predicting for 196 test examples using a model of size 900...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 900:
 
-Example-wise F1         82.4
+Example-wise F1         64.54
 Example-wise Jaccard    56.46
 Example-wise Precision  71.6
 Example-wise Recall     64.54
@@ -390,7 +390,7 @@ INFO Predicting for 196 test examples using a model of size 950...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 950:
 
-Example-wise F1         82.57
+Example-wise F1         64.71
 Example-wise Jaccard    56.72
 Example-wise Precision  71.34
 Example-wise Recall     64.88
@@ -411,7 +411,7 @@ INFO Predicting for 196 test examples using a model of size 1000...
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data using a model of size 1000:
 
-Example-wise F1         82.48
+Example-wise F1         65.65
 Example-wise Jaccard    57.65
 Example-wise Precision  72.62
 Example-wise Recall     65.39
