@@ -6,7 +6,7 @@ tocdepth: 2
 
 # Release Notes
 
-## Version 0.10.0 (to be released)
+## Version 0.10.0 (May, 5th, 2024)
 
 A major update to the BOOMER algorithm that introduces the following changes.
 
@@ -26,7 +26,7 @@ This release comes with several API changes. For an updated overview of the avai
 
 ### Additions to the Command Line API
 
-- **Information abused to implementout the program can now be printed** via the argument `-v` or `--version`.
+- **Information about the program can now be printed** via the argument `-v` or `--version`.
 - **Data characteristics do now include the number of ordinal attributes** when printed on the console or written to a file via the command line argument `--print-data-characteristics` or `--store-data-characteristics`.
 
 ### Bugfixes
@@ -41,7 +41,7 @@ This release comes with several API changes. For an updated overview of the avai
 ### Quality-of-Life Improvements
 
 - The documentation has been updated to a more modern theme supporting light and dark theme variants.
-- A build option that allows to disable multi-threading support via OpenMP at compile-time has been added.
+- A build option that allows disabling multi-threading support via OpenMP at compile-time has been added.
 - The groundwork for GPU support was laid. It can be disabled at compile-time via a build option.
 - Added support for unit testing the project's C++ code. Compilation of the tests can be disabled via a build option.
 - The Python code is now checked for common issues by applying `pylint` via continuous integration.
