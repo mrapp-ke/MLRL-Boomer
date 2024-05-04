@@ -14,8 +14,16 @@ Not all machine learning methods can deal with nominal or binary features out-of
 
 Even though nominal and binary features are natively supported in an efficient way by all algorithms provided by this project, it might still be useful to use one-hot-encoding if one seeks for a fair comparison with machine learning approaches that cannot deal with such features. In such cases, you can provide the argument `--one-hot-encoding true` to the command line API:
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --one-hot-encoding true
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --one-hot-encoding true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --one-hot-encoding true
+   ```
+````
 
 Under the hood, the program makes use of scikit-learn's [OneHotEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html) for pre-processing the data.
