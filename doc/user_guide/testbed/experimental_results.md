@@ -14,13 +14,45 @@ The path of the directory, where experimental results should be saved, can be ei
 
 ## Evaluation Results
 
-TODO
+By default, the predictive performance of all models trained during an experiment is evaluated in terms of commonly used evaluation metrics and the evaluation results are printed to the console. In addition, if the argument `--output-dir` is given, the evaluation results are also written into output files. The command line argument `--print-evaluation` can be used to explicitly enable or disable printing the evaluation results:
+
+```text
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-evaluation true
+```
+
+Accordingly, the argument `--store-evaluation` allows to enable or disable saving the evaluation results to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files:
+
+```
+boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-evaluation true
+```
+
+```{tip}
+The command line arguments ``--print-evaluation`` and ``--store-evaluation`` come with several options for customization described {ref}`here<arguments-evaluation-results>`. It is possible to specify the performance metrics that should be used for evaluation by providing a black- or whitelist. Moreover, one can specify whether performance scores should be given as percentages and the number of decimals used for these scores can be chosen freely.
+```
+
+The number of models evaluated during an experiment varies depending on the strategy used for splitting the available data into training and test sets. When using {ref}`train-test-split`, only a single model is evaluated. The performance scores according to different metrics that assess the quality of the model's predictions are saved to a single output file. In addition, if an {ref}`evaluating-training-data` is used, the performance scores for the model's predictions on the training set are also evaluated and written to a file. As shown below, the names of the output files specify whether predictions for the training or test set have been evaluated:
+
+- `evaluation_train_overall.csv`
+- `evaluation_test_overall.csv`
+
+When using a {ref}`cross-validation`, a model is trained and evaluated for each fold. Again, the names of the output files specify whether predictions for the training or test data have been evaluated:
+
+- `evaluation_train_fold-1.csv`
+- `evaluation_test_fold-1.csv`
+- `evaluation_train_fold-2.csv`
+- `evaluation_test_fold-2.csv`
+- `evaluation_train_fold-3.csv`
+- `evaluation_test_fold-3.csv`
+- `evaluation_train_fold-4.csv`
+- `evaluation_test_fold-4.csv`
+- `evaluation_train_fold-5.csv`
+- `evaluation_test_fold-5.csv`
 
 (output-predictions)=
 
 ## Predictions
 
-In cases where the performance metrics obtained via the arguments ``--print-evaluation`` or ``--store-evaluation`` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console, together with the ground truth labels, by proving the argument ``--print-predictions``:
+In cases where the {ref}`output-evaluation-results` obtained via the arguments ``--print-evaluation`` or ``--store-evaluation`` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console, together with the ground truth labels, by proving the argument ``--print-predictions``:
 
 ```text
 boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-predictions true
