@@ -4,9 +4,17 @@
 
 Because the training of machine learning models can be time-consuming, they are usually trained once and then reused later for making predictions. For this purpose, the command line API provides means to store models on disk and load them from the created files later on. This requires to specify the path of a directory, where models should be saved, via the command line argument `--model-dir`:
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --model-dir /path/to/models
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --model-dir /path/to/models
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --model-dir /path/to/models
+   ```
+````
 
 ```{note}
 The path of the directory, where models should be saved, can be either absolute or relative to the working directory.

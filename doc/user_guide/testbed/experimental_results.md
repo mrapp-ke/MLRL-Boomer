@@ -14,23 +14,87 @@ The path of the directory, where experimental results should be saved, can be ei
 
 ## Evaluation Results
 
-TODO
+By default, the predictive performance of all models trained during an experiment is evaluated in terms of commonly used evaluation metrics and the evaluation results are printed to the console. In addition, if the argument `--output-dir` is given, the evaluation results are also written into output files. The command line argument `--print-evaluation` can be used to explicitly enable or disable printing the evaluation results:
+
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-evaluation true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --print-evaluation true
+   ```
+````
+
+Accordingly, the argument `--store-evaluation` allows to enable or disable saving the evaluation results to [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files:
+
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-evaluation true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-evaluation true
+   ```
+````
+
+```{tip}
+The command line arguments ``--print-evaluation`` and ``--store-evaluation`` come with several options for customization described {ref}`here<arguments-evaluation-results>`. It is possible to specify the performance metrics that should be used for evaluation by providing a black- or whitelist. Moreover, one can specify whether performance scores should be given as percentages and the number of decimals used for these scores can be chosen freely.
+```
+
+The number of models evaluated during an experiment varies depending on the strategy used for splitting the available data into training and test sets. When using {ref}`train-test-split`, only a single model is evaluated. The performance scores according to different metrics that assess the quality of the model's predictions are saved to a single output file. In addition, if an {ref}`evaluating-training-data` is used, the performance scores for the model's predictions on the training set are also evaluated and written to a file. As shown below, the names of the output files specify whether predictions for the training or test set have been evaluated:
+
+- `evaluation_train_overall.csv`
+- `evaluation_test_overall.csv`
+
+When using a {ref}`cross-validation`, a model is trained and evaluated for each fold. Again, the names of the output files specify whether predictions for the training or test data have been evaluated:
+
+- `evaluation_train_fold-1.csv`
+- `evaluation_test_fold-1.csv`
+- `evaluation_train_fold-2.csv`
+- `evaluation_test_fold-2.csv`
+- `evaluation_train_fold-3.csv`
+- `evaluation_test_fold-3.csv`
+- `evaluation_train_fold-4.csv`
+- `evaluation_test_fold-4.csv`
+- `evaluation_train_fold-5.csv`
+- `evaluation_test_fold-5.csv`
 
 (output-predictions)=
 
 ## Predictions
 
-In cases where the performance metrics obtained via the arguments ``--print-evaluation`` or ``--store-evaluation`` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console, together with the ground truth labels, by proving the argument ``--print-predictions``:
+In cases where the {ref}`output-evaluation-results` obtained via the arguments ``--print-evaluation`` or ``--store-evaluation`` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console, together with the ground truth labels, by proving the argument ``--print-predictions``:
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-predictions true
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-predictions true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --print-predictions true
+   ```
+````
 
 Alternatively, the argument ``--store-predictions`` can be used to save the predictions, as well as the ground truth labels, to [.arff](http://weka.wikispaces.com/ARFF) files:
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-predictions true
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-predictions true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --print-prediction-characteristics true
+   ```
+````
 
 ```{tip}
 Depending on the {ref}`prediction-types`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if regression scores or proability estimates are provided). When working with real-valued predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions`` and ``--store-predictions`` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
@@ -60,15 +124,31 @@ When using a {ref}`cross-validation` for performance evaluation, a model is trai
 
 By using the command line argument ``--print-prediction-characteristics``, characteristics regarding a model's predictions can be printed:
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-prediction-characteristics true
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-prediction-characteristics true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-predictions true
+   ```
+````
 
 Alternatively, they statistics can be written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file by using the argument ``--store-prediction-characteristics``:
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-prediction-characteristics true
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-prediction-characteristics true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-prediction-characteristics true
+   ```
+````
 
 ```{tip}
 The output produced by the arguments ``--print-data-characteristics`` and ``--store-data-characteristics`` can be customized via several options described {ref}`here<arguments-prediction-characteristics>`. It is possible to exclude certain statistics from the output, to specify whether they should be given as percentages, and how many decimal places should be used.
@@ -101,15 +181,31 @@ The statistics obtained via the previous commands include the following:
 
 To obtain insightful statistics regarding the characteristics of a data set, the command line argument ``--print-data-characteristics`` may be helpful:
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-data-characteristics true
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-data-characteristics true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --print-data-characteristics true
+   ```
+````
 
 If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file, the argument ``--store-data-characteristics`` can be used:
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-data-characteristics true
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-data-characteristics true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-data-characteristics true
+   ```
+````
 
 ```{tip}
 As shown {ref}`here<arguments-data-characteristics>`, the arguments ``--print-data-characteristics`` and ``--store-data-characteristics`` come with several options that allow to exclude specific statistics from the respective output. It is also possible to specify whether percentages should be prefered for presenting the statistics. Additionally, the number of decimals to be included in the output can be limited.
@@ -146,15 +242,31 @@ In addition, the following statistics regarding the labels in a dataset are prov
 
 We refer to the unique labels combinations present for different examples in a dataset as label vectors. They can be printed by using the command line argument ``--print-label-vectors``: 
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-label-vectors true
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-label-vectors true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --print-label-vectors true
+   ```
+````
 
 If you prefer writing the label vectors into an output file, the argument ``--store-label-vectors`` can be used:
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --store-label-vectors true
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --store-label-vectors true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --store-label-vectors true
+   ```
+````
 
 When using {ref}`train-test-split` for splitting the available data into distinct training and test sets, a single output file is created. It stores the label vectors present in the training data:
 
@@ -186,15 +298,31 @@ By setting the option ``sparse`` to the value ``true``, an alternative represent
 
 To obtain a quick overview of some statistics that characterize a rule-based model learned by one of the algorithms provided by this project, the command line argument ``--print-model-characteristics`` can be useful:
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-model-characteristics true
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-model-characteristics true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --print-model-characteristics true
+   ```
+````
 
 The above command results in a tabular representation of the characteristics being printed on the console. If one intends to write them into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file instead, the argument ``--store-model-characteristics`` may be used:
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-model-characteristics true
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-model-characteristics true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-model-characteristics true
+   ```
+````
 
 Model characteristics are obtained for each model training during an experiment. This means that a single output file is created when using on {ref}`train-test-split`:
 
@@ -220,15 +348,31 @@ The statistics captured by the previous commands include the following:
 
 It is considered one of the advantages of rule-based machine learning models that they capture patterns found in the training data in a human-comprehensible form. This enables to manually inspect the models and reason about their predictive behavior. To help with this task, the command line API allows to output the rules in a model using a textual representation. If the text should be printed on the console, the following command specifying the argument ``--print-rules`` can be used:
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-rules true
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-rules true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --print-rules true
+   ```
+````
 
 Alternatively, by using the argument ``--store-rules``, a textual representation of models can be written into a text file in the specifed output directory: 
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-rules true
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-rules true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-rules true
+   ```
+````
 
 ```{tip}
 Both, the ``--print-rules`` and ``--store-rules`` arguments, come with several options that allow to customize the textual representation of models. An overview of these options is provided {ref}`here<arguments-output-rules>`.
@@ -270,15 +414,31 @@ Examples that satisfy all conditions in a rule's body are said to be "covered" b
 
 Some machine learning algorithms provided by this project allow to obtain probabilistic predictions. These predictions can optionally be fine-tuned via calibration models to improve the reliability of the probability estimates. We support two types of calibration models for tuning marginal and joint probabilities, respectively. If one needs to inspect these calibration models, the command line arguments ``--print-marginal-probability-calibration-model`` and ``--print-joint-probability-calibration-model`` may be helpful:
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-marginal-probability-calibration-model true --print-joint-probabiliy-calibration-model true
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-marginal-probability-calibration-model true --print-joint-probabiliy-calibration-model true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --print-marginal-probability-calibration-model true --print-joint-probabiliy-calibration-model true
+   ```
+````
 
 Alternatively, a representations of the calibration models can be written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files by using the arguments ``--store-marginal-probability-calibration-model`` and ``--store-joint-probability-calibration-model``
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset dataset-name --store-marginal-probability-calibration-model true --store-joint-probabiliy-calibration-model true
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset dataset-name --store-marginal-probability-calibration-model true --store-joint-probabiliy-calibration-model true
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset dataset-name --store-marginal-probability-calibration-model true --store-joint-probabiliy-calibration-model true
+   ```
+````
 
 ```{tip}
 All of the above commands come with options for customizing the textual representation of models. A more detailed description of these options is available {ref}`here<arguments-probability-calibration-models>`.
