@@ -34,13 +34,8 @@ jobs:
             cpp: &cpp
               - *build_files
               - 'cpp/**/include/**'
-              - 'cpp/**/src/**'
-              - '**/*.pxd'
-              - '**/*.pyx'
-              - '**/meson.build'
             python: &python
               - *build_files
-              - 'python/requirements.txt'
               - 'python/**/mlrl/**'
             doc: &doc
               - *build_files
