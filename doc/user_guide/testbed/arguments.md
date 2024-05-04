@@ -425,12 +425,28 @@ In accordance with the syntax that is typically used by command line programs, t
 
 For example, the value of the parameter `feature_binning` may be set as follows:
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset name --feature-binning equal-width
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset name --feature-binning equal-width
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset name --feature-binning equal-width
+   ```
+````
 
 Some algorithmic parameters, including the parameter `feature_binning`, allow to specify additional options as key-value pairs by using a {ref}`bracket-notation`. This is also supported by the command line API, where the options may not contain any spaces and special characters like `{` or `}` must be escaped by using single-quotes (`'`):
 
-```text
-boomer --data-dir /path/to/datasets/ --dataset name --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
-```
+````{tab} BOOMER
+   ```text
+   boomer --data-dir /path/to/datasets/ --dataset name --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
+   ```
+````
+
+````{tab} SeCo
+   ```text
+   seco --data-dir /path/to/datasets/ --dataset name --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'seco --data-dir /path/to/datasets/ --dataset name --feature-binning equal-width
+   ```
+````
