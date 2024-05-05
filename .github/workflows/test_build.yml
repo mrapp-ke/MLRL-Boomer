@@ -123,9 +123,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install OpenMP
-        run: |
-          brew install libomp
-          brew link libomp --force
+        run: brew install libomp
       - name: Install OpenCL
         run: brew install opencl-clhpp-headers
       - name: Prepare ccache
@@ -133,7 +131,7 @@ jobs:
         with:
           key: ${{ runner.os }}-test-build-ccache
       - name: Compile via Clang
-        run: TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/usr/local/opt/opencl-clhpp-headers/include ./build compile
+        run: TEST_SUPPORT=disabled CPLUS_INCLUDE_PATH=/opt/homebrew/opt/libomp/include/:/opt/homebrew/opt/opencl-clhpp-headers/include/ LIBRARY_PATH=/opt/homebrew/opt/libomp/lib/ ./build compile
   windows_build:
     needs: changes
     if: ${{ needs.changes.outputs.cpp == 'true' }}
