@@ -33,6 +33,9 @@ jobs:
           SUBPROJECTS=${{ inputs.subproject }} ./build build_wheels
           mkdir wheelhouse
           cp python/subprojects/**/dist/*.whl wheelhouse/
+      - name: Setup Python
+        if: ${{ inputs.pypi_repository }}
+        uses: actions/setup-python@v5
       - name: Upload wheels to PyPI
         if: ${{ inputs.pypi_repository }}
         env:
@@ -40,10 +43,8 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.pypi_password }}
           TWINE_REPOSITORY: ${{ inputs.pypi_repository }}
         run: |
-          source venv/bin/activate
-          python3 -m pip install twine
-          python3 -m twine upload --non-interactive --skip-existing wheelhouse/*
-          deactivate
+          python -m pip install twine
+          python -m twine upload --non-interactive --skip-existing wheelhouse/*
       - name: Upload wheels as artifacts
         if: ${{ inputs.pypi_repository }}
         uses: actions/upload-artifact@v4
