@@ -24,6 +24,7 @@ The workflow definitions of individual CI jobs can be found in the directory [.g
 - `test_format.yml` ensures that all source files in the project adhere to our coding style guidelines (see {ref}`code-style`). This job is run automatically for pull requests whenever they include any changes affecting the relevant source files.
 - `test_file_changes.yml` prevents pull requests from modifying certain files that must not be modified manually, but are intended to only be updated via Github Actions.
 - `merge_feature.yml` and `merge_bugfix.yml` are used to merge changes that have been pushed to the feature or bugfix branch into downstream branches via pull requests (see {ref}`release-process`).
+- `merge_release.yml` is used to merge all changes included in a new release published on [Github](https://github.com/mrapp-ke/MLRL-Boomer/releases) into upstream branches and update the version numbers of these branches.
 
 (testing)=
 
@@ -157,7 +158,7 @@ We do not allow directly pushing to the above branches. Instead, all changes mus
 
 Once modifications to one of the branches have been merged, {ref}`ci` jobs are used to automatically update downstream branches via pull requests. If all checks for such pull requests are successful, they are merged automatically. If there are any merge conflicts, they must be resolved manually. Following this procedure, changes to the feature brach are merged into the main branch (see `merge_feature.yml`), whereas changes to the bugfix branch are first merged into the feature branch and then into the main branch (see `merge_bugfix.yml`).
 
-Whenever a new release has been published, the release branch is merged into the upstream branches (see `release.yml`), i.e., major releases result in the feature and bugfix branches being updated, whereas minor releases result in the bugfix branch being updated. The version of the release branch and the affected branches are updated accordingly. The version of a branch is specified in the file `VERSION` in the project's root directory. Similarly, the file `VERSION.dev` is used to keep track of the version number used for development releases (see `release_development.yml`).
+Whenever a new release has been published, the release branch is merged into the upstream branches (see `merge_release.yml`), i.e., major releases result in the feature and bugfix branches being updated, whereas minor releases result in the bugfix branch being updated. The version of the release branch and the affected branches are updated accordingly. The version of a branch is specified in the file `VERSION` in the project's root directory. Similarly, the file `VERSION.dev` is used to keep track of the version number used for development releases (see `release_development.yml`).
 
 (dependencies)=
 
