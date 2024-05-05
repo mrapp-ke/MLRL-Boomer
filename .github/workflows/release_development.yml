@@ -33,5 +33,5 @@ jobs:
       pypi_repository: testpypi
       dev_release: true
     secrets:
-      pypi_username: ${{ secrets.PYPI_USERNAME }}
-      pypi_password: ${{ secrets.PYPI_PASSWORD }}
+      pypi_username: ${{ secrets.TEST_PYPI_USERNAME }}
+      pypi_password: ${{ secrets.TEST_PYPI_PASSWORD }}
