@@ -98,21 +98,15 @@ def check_md_code_style(**_):
     """
     Check if the Markdown files adhere to the code style definitions. If this is not the case, an error is raised.
     """
-    directory = '.'
-    print('Checking Markdown code style in the directory "' + directory + '"...')
-    __mdformat(directory)
-    directory = DOC_MODULE.root_dir
-    print('Checking Markdown code style in the directory "' + directory + '"...')
-    __mdformat(directory, recursive=True)
+    for directory, recursive in [('.', False), (DOC_MODULE.root_dir, True), (PYTHON_MODULE.root_dir, True)]:
+        print('Checking Markdown code style in the directory "' + directory + '"...')
+        __mdformat(directory, recursive=recursive)
 
 
 def enforce_md_code_style(**_):
     """
     Enforces the Markdown files to adhere to the code style definitions.
     """
-    directory = '.'
-    print('Formatting Markdown files in the directory "' + directory + '"...')
-    __mdformat(directory, enforce_changes=True)
-    directory = DOC_MODULE.root_dir
-    print('Formatting Markdown files in the directory "' + directory + '"...')
-    __mdformat(directory, recursive=True, enforce_changes=True)
+    for directory, recursive in [('.', False), (DOC_MODULE.root_dir, True), (PYTHON_MODULE.root_dir, True)]:
+        print('Formatting Markdown files in the directory "' + directory + '"...')
+        __mdformat(directory, recursive=recursive, enforce_changes=True)
