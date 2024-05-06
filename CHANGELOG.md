@@ -6,7 +6,7 @@ tocdepth: 2
 
 # Release Notes
 
-## Version 0.10.0 (May, 5th, 2024)
+## Version 0.10.0 (May 5th, 2024)
 
 A major update to the BOOMER algorithm that introduces the following changes.
 
