@@ -1,12 +1,12 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/logo_dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="assets/logo_light.svg">
-    <img alt="BOOMER - Gradient Boosted Multi-Label Classification Rules" src="assets/logo_light.svg">
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/mrapp-ke/MLRL-Boomer/blob/ee00568fba2a38a22649e6dd3f99baf8fbf53941/assets/logo_dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://github.com/mrapp-ke/MLRL-Boomer/blob/ee00568fba2a38a22649e6dd3f99baf8fbf53941/assets/logo_light.svg">
+    <img alt="BOOMER - Gradient Boosted Multi-Label Classification Rules" src="https://github.com/mrapp-ke/MLRL-Boomer/blob/ee00568fba2a38a22649e6dd3f99baf8fbf53941/assets/logo_light.svg">
   </picture>
 </p>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![PyPI version](https://badge.fury.io/py/mlrl-boomer.svg)](https://badge.fury.io/py/mlrl-boomer) [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest) [![Build](https://github.com/mrapp-ke/MLRL-Boomer/actions/workflows/test_build.yml/badge.svg)](https://github.com/mrapp-ke/MLRL-Boomer/actions/workflows/test_build.yml) [![Code style](https://github.com/mrapp-ke/MLRL-Boomer/actions/workflows/test_format.yml/badge.svg)](https://github.com/mrapp-ke/MLRL-Boomer/actions/workflows/test_format.yml) [![X URL](https://img.shields.io/twitter/url?label=Follow&style=social&url=https%3A%2F%2Ftwitter.com%2FBOOMER_ML)](https://twitter.com/BOOMER_ML)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![PyPI version](https://badge.fury.io/py/mlrl-boomer.svg)](https://badge.fury.io/py/mlrl-boomer) [![Documentation Status](https://readthedocs.org/projects/mlrl-boomer/badge/?version=latest)](https://mlrl-boomer.readthedocs.io/en/latest/?badge=latest) [![X URL](https://img.shields.io/twitter/url?label=Follow&style=social&url=https%3A%2F%2Ftwitter.com%2FBOOMER_ML)](https://twitter.com/BOOMER_ML)
 
 **Important links:** [Documentation](https://mlrl-boomer.readthedocs.io/en/latest/) | [Issue Tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues) | [Changelog](https://mlrl-boomer.readthedocs.io/en/latest/misc/CHANGELOG.html) | [Contributors](https://mlrl-boomer.readthedocs.io/en/latest/misc/CONTRIBUTORS.html) | [Code of Conduct](https://mlrl-boomer.readthedocs.io/en/latest/misc/CODE_OF_CONDUCT.html) | [License](https://mlrl-boomer.readthedocs.io/en/latest/misc/LICENSE.html)
 
