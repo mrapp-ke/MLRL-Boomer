@@ -43,10 +43,10 @@ Both, `x` and `y`, are expected to be [numpy arrays](https://numpy.org/doc/stabl
 
 ### Using Sparse Matrices
 
-In addition to dense matrices like [numpy arrays](https://numpy.org/doc/stable/reference/generated/numpy.array.html), the algorithms also support to use [scipy sparse matrices](https://docs.scipy.org/doc/scipy/reference/sparse.html). If certain cases, where the feature matrices consists mostly of zeros (or any other value), this can require significantly less amounts of memory and may speed up training. Sparse matrices can be provided to the `fit` method via the arguments `x` and `y` just as before. Optionally, the value that should be used for sparse elements in the feature matrix `x` can be specified via the keyword argument `sparse_feature_value`:
+In addition to dense matrices like [numpy arrays](https://numpy.org/doc/stable/reference/generated/numpy.array.html), the algorithms also support to use [scipy sparse matrices](https://docs.scipy.org/doc/scipy/reference/sparse.html). If certain cases, where the feature or label matrix consists mostly of zeros (or any other value), this can require significantly less amounts of memory and may speed up training. Sparse matrices can be provided to the `fit` method via the arguments `x` and `y` just as before. Optionally, the value that should be used for sparse elements in the matrix `x` or `y` can be specified via the keyword argument `sparse_feature_value` or `sparse_label_value`, respectively:
 
 ```python
-clf.fit(x, y, sparse_feature_value = 0.0)
+clf.fit(x, y, sparse_feature_value = 0.0, sparse_label_value = 0)
 ```
 
 ### Setting Algorithmic Parameters
