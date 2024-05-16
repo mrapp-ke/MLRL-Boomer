@@ -14,26 +14,34 @@ class MLRLCOMMON_API BinaryCscView : public BinarySparseMatrix {
     public:
 
         /**
-         * @param indices   A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the row
-         *                  indices, the values in the matrix correspond to
-         * @param indptr    A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices of
-         *                  the first element in `indices` that corresponds to a certain column. The index at the last
-         *                  position must be equal to `numNonZeroValues`
-         * @param numRows   The number of rows in the view
-         * @param numCols   The number of columns in the view
+         * True, if non-zero values are associated with sparse elements in the matrix instead of dense ones, false
+         * otherwise.
          */
-        BinaryCscView(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
-            : BinarySparseMatrix(indices, indptr, numRows, numCols) {}
+        bool sparseValue;
+
+        /**
+         * @param indices       A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the row
+         *                      indices, the values in the matrix correspond to
+         * @param indptr        A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices
+         *                      of the first element in `indices` that corresponds to a certain column. The index at the
+         *                      position must be equal to `numNonZeroValues`
+         * @param numRows       The number of rows in the view
+         * @param numCols       The number of columns in the view
+         * @param sparseValue   True, if non-zero values should be associated with sparse elements in the matrix instead
+         *                      of dense ones, false otherwise
+         */
+        BinaryCscView(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols, bool sparseValue = false)
+            : BinarySparseMatrix(indices, indptr, numRows, numCols), sparseValue(sparseValue) {}
 
         /**
          * @param other A const reference to an object of type `BinaryCscView` that should be copied
          */
-        BinaryCscView(const BinaryCscView& other) : BinarySparseMatrix(other) {}
+        BinaryCscView(const BinaryCscView& other) : BinarySparseMatrix(other), sparseValue(other.sparseValue) {}
 
         /**
          * @param other A reference to an object of type `BinaryCscView` that should be moved
          */
-        BinaryCscView(BinaryCscView&& other) : BinarySparseMatrix(std::move(other)) {}
+        BinaryCscView(BinaryCscView&& other) : BinarySparseMatrix(std::move(other)), sparseValue(other.sparseValue) {}
 
         virtual ~BinaryCscView() override {}
 
