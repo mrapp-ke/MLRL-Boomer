@@ -31,6 +31,8 @@ from mlrl.common.learners import IncrementalLearner, Learner, NominalAttributeLe
 
 KWARG_SPARSE_FEATURE_VALUE = 'sparse_feature_value'
 
+KWARG_SPARSE_LABEL_VALUE = 'sparse_label_value'
+
 KWARG_MAX_RULES = 'max_rules'
 
 
@@ -325,8 +327,11 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
     # pylint: disable=attribute-defined-outside-init
     def _fit(self, x, y, **kwargs):
         """
-        :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
-                                       only have an effect if `x` is a `scipy.sparse` matrix
+        :keyword sparse_feature_value:  The value that should be used for sparse elements in the feature matrix. Does
+                                        only have an effect if `x` is a `scipy.sparse` matrix
+        :keyword sparse_label_value:    A non-zero value, if relevant labels should be associated with sparse elements
+                                        in the label matrix instead of dense ones, zero otherwise. Does only have an
+                                        effect if `y` is a `scipy.sparse` matrix
         """
         # Validate feature matrix and convert it to the preferred format...
         x_sparse_format = SparseFormat.CSC
@@ -372,7 +377,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             log.debug('A sparse matrix is used to store the labels of the training examples')
             y_indices = np.ascontiguousarray(y.indices, dtype=Uint32)
             y_indptr = np.ascontiguousarray(y.indptr, dtype=Uint32)
-            label_matrix = CsrLabelMatrix(y_indices, y_indptr, y.shape[0], y.shape[1])
+            sparse_label_value = kwargs.get(KWARG_SPARSE_LABEL_VALUE, 0) != 0
+            label_matrix = CsrLabelMatrix(y_indices, y_indptr, y.shape[0], y.shape[1], sparse_label_value)
         else:
             log.debug('A dense matrix is used to store the labels of the training examples')
             label_matrix = CContiguousLabelMatrix(y)
