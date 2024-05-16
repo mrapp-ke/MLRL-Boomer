@@ -77,7 +77,7 @@ cdef class CsrLabelMatrix(RowWiseLabelMatrix):
     """
 
     def __cinit__(self, uint32[::1] indices not None, uint32[::1] indptr not None, uint32 num_examples,
-                  uint32 num_labels):
+                  uint32 num_labels, sparse_value: bool = False):
         """
         :param indices:         An array of type `uint32`, shape `(num_non_zero_values)`, that stores the
                                 column-indices, the relevant labels correspond to
@@ -86,10 +86,12 @@ cdef class CsrLabelMatrix(RowWiseLabelMatrix):
                                 position is equal to `num_non_zero_values`
         :param num_examples:    The total number of examples
         :param num_labels:      The total number of labels
+        :param sparse_value:    True, if relevant labels should be associated with sparse elements in the matrix instead
+                                of dense ones, false otherwise
         """
         self.indices = indices
         self.indptr = indptr
-        self.label_matrix_ptr = createCsrLabelMatrix(&indices[0], &indptr[0], num_examples, num_labels)
+        self.label_matrix_ptr = createCsrLabelMatrix(&indices[0], &indptr[0], num_examples, num_labels, sparse_value)
 
     cdef ILabelMatrix* get_label_matrix_ptr(self):
         return self.label_matrix_ptr.get()

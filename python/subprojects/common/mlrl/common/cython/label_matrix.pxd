@@ -41,7 +41,7 @@ cdef extern from "mlrl/common/input/label_matrix_csr.hpp" nogil:
         pass
 
 
-    unique_ptr[ICsrLabelMatrix] createCsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
+    unique_ptr[ICsrLabelMatrix] createCsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols, bool sparseValue)
 
 
 cdef class LabelMatrix:
