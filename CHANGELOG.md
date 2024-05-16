@@ -6,6 +6,14 @@ tocdepth: 2
 
 # Release Notes
 
+## Version 0.11.0 (to be released)
+
+A major update to the BOOMER algorithm that introduces the following changes.
+
+### Algorithmic Enhancements
+
+- **The value to be used for sparse elements of a label matrix** can now be specified via the C++ or Python API.
+
 ## Version 0.10.0 (May 5th, 2024)
 
 A major update to the BOOMER algorithm that introduces the following changes.
