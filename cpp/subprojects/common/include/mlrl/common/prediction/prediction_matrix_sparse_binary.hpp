@@ -19,8 +19,11 @@ class MLRLCOMMON_API BinarySparsePredictionView final : public AllocatedBinaryCs
          * @param lilMatrix         A reference to an object of type `BinaryLilMatrix` to be copied
          * @param numCols           The number of columns of the given `BinaryLilMatrix`
          * @param numDenseElements  The number of dense elements explicitly stored in the given `BinaryLilMatrix`
+         * @param sparseValue       True, if non-zero values should be associated with sparse elements in the matrix
+         *                          instead of dense ones, false otherwise
          */
-        BinarySparsePredictionView(const BinaryLilMatrix& lilMatrix, uint32 numCols, uint32 numDenseElements);
+        BinarySparsePredictionView(const BinaryLilMatrix& lilMatrix, uint32 numCols, uint32 numDenseElements,
+                                   bool sparseValue = false);
 
         /**
          * @param other A reference to an object of type `BinarySparsePredictionView` that should be moved
