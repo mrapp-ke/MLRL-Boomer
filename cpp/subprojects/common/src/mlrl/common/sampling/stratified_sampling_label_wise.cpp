@@ -137,7 +137,8 @@ class CscLabelMatrix final : public AllocatedBinaryCscView {
          */
         CscLabelMatrix(const BinaryCsrView& labelMatrix, CompleteIndexVector::const_iterator indicesBegin,
                        CompleteIndexVector::const_iterator indicesEnd)
-            : AllocatedBinaryCscView(labelMatrix.getNumDenseElements(), labelMatrix.numRows, labelMatrix.numCols) {
+            : AllocatedBinaryCscView(labelMatrix.getNumDenseElements(), labelMatrix.numRows, labelMatrix.numCols,
+                                     labelMatrix.sparseValue) {
             BinarySparseMatrix::indices = copyLabelMatrix(BinarySparseMatrix::indices, BinarySparseMatrix::indptr,
                                                           labelMatrix, indicesBegin, indicesEnd);
         }
@@ -151,7 +152,8 @@ class CscLabelMatrix final : public AllocatedBinaryCscView {
          */
         CscLabelMatrix(const BinaryCsrView& labelMatrix, PartialIndexVector::const_iterator indicesBegin,
                        PartialIndexVector::const_iterator indicesEnd)
-            : AllocatedBinaryCscView(labelMatrix.getNumDenseElements(), labelMatrix.numRows, labelMatrix.numCols) {
+            : AllocatedBinaryCscView(labelMatrix.getNumDenseElements(), labelMatrix.numRows, labelMatrix.numCols,
+                                     labelMatrix.sparseValue) {
             BinarySparseMatrix::indices = copyLabelMatrix(BinarySparseMatrix::indices, BinarySparseMatrix::indptr,
                                                           labelMatrix, indicesBegin, indicesEnd);
         }
@@ -237,7 +239,7 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
         StratificationMatrix(const LabelMatrix& rowWiseLabelMatrix, const CscLabelMatrix& columnWiseLabelMatrix,
                              IndexIterator indicesBegin, IndexIterator indicesEnd)
             : AllocatedBinaryCscView(columnWiseLabelMatrix.getNumDenseElements(), indicesEnd - indicesBegin,
-                                     columnWiseLabelMatrix.numCols) {
+                                     columnWiseLabelMatrix.numCols, columnWiseLabelMatrix.sparseValue) {
             // Create an array that stores for each label the number of examples that are associated with the label, as
             // well as a sorted map that stores all label indices in increasing order of the number of associated
             // examples...

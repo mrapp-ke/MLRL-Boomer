@@ -139,9 +139,12 @@ class MLRLCOMMON_API BinaryCscViewAllocator : public Matrix {
          * @param numDenseElements  The number of dense elements explicitly stored in the view
          * @param numRows           The number of rows in the view
          * @param numCols           The number of columns in the view
+         * @param sparseValue       True, if non-zero values should be associated with sparse elements in the matrix
+         *                          instead of dense ones, false otherwise
          */
-        BinaryCscViewAllocator(uint32 numDenseElements, uint32 numRows, uint32 numCols)
-            : Matrix(allocateMemory<uint32>(numDenseElements), allocateMemory<uint32>(numCols + 1), numRows, numCols) {
+        BinaryCscViewAllocator(uint32 numDenseElements, uint32 numRows, uint32 numCols, bool sparseValue = false)
+            : Matrix(allocateMemory<uint32>(numDenseElements), allocateMemory<uint32>(numCols + 1), numRows, numCols,
+                     sparseValue) {
             Matrix::indptr[0] = 0;
             Matrix::indptr[numCols] = numDenseElements;
         }
