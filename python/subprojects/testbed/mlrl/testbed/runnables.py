@@ -1210,14 +1210,3 @@ class RuleLearnerRunnable(LearnerRunnable):
             output_writers.append(output_writer)
 
         return output_writers
-
-    def _create_model_characteristics_writer(self, args) -> Optional[OutputWriter]:
-        sinks = []
-
-        if args.print_model_characteristics:
-            sinks.append(ModelCharacteristicsWriter.LogSink())
-
-        if args.store_model_characteristics and args.output_dir is not None:
-            sinks.append(ModelCharacteristicsWriter.CsvSink(output_dir=args.output_dir))
-
-        return RuleModelCharacteristicsWriter(sinks) if len(sinks) > 0 else None
