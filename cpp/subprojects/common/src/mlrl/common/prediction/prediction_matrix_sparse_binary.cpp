@@ -41,6 +41,6 @@ uint32* BinarySparsePredictionMatrix::releaseIndptr() {
 
 std::unique_ptr<BinarySparsePredictionMatrix> createBinarySparsePredictionMatrix(const BinaryLilMatrix& lilMatrix,
                                                                                  uint32 numCols,
-                                                                                 uint32 numNonZeroElements) {
-    return std::make_unique<BinarySparsePredictionMatrix>(lilMatrix, numCols, numNonZeroElements);
+                                                                                 uint32 numDenseElements) {
+    return std::make_unique<BinarySparsePredictionMatrix>(lilMatrix, numCols, numDenseElements);
 }
