@@ -136,15 +136,14 @@ class MLRLCOMMON_API BinaryCscViewAllocator : public Matrix {
     public:
 
         /**
-         * @param numNonZeroElements    The number of non-zero values in the view
-         * @param numRows               The number of rows in the view
-         * @param numCols               The number of columns in the view
+         * @param numDenseElements  The number of dense elements explicitly stored in the view
+         * @param numRows           The number of rows in the view
+         * @param numCols           The number of columns in the view
          */
-        BinaryCscViewAllocator(uint32 numNonZeroElements, uint32 numRows, uint32 numCols)
-            : Matrix(allocateMemory<uint32>(numNonZeroElements), allocateMemory<uint32>(numCols + 1), numRows,
-                     numCols) {
+        BinaryCscViewAllocator(uint32 numDenseElements, uint32 numRows, uint32 numCols)
+            : Matrix(allocateMemory<uint32>(numDenseElements), allocateMemory<uint32>(numCols + 1), numRows, numCols) {
             Matrix::indptr[0] = 0;
-            Matrix::indptr[numCols] = numNonZeroElements;
+            Matrix::indptr[numCols] = numDenseElements;
         }
 
         /**
