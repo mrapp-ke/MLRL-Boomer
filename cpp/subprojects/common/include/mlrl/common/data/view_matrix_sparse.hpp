@@ -154,4 +154,13 @@ class MLRLCOMMON_API IterableSparseMatrixDecorator : public IterableBinarySparse
         value_iterator values_end(uint32 index) {
             return Matrix::view.values_end(index);
         }
+
+        /**
+         * Returns the number of dense elements explicitly stored in the matrix.
+         *
+         * @return The number of dense elements explicitly stored in the matrix
+         */
+        uint32 getNumDenseElements() const {
+            return Matrix::view.getNumDenseElements();
+        }
 };
