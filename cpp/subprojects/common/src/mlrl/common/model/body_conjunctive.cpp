@@ -280,7 +280,7 @@ bool ConjunctiveBody::covers(View<const float32>::const_iterator begin, View<con
 bool ConjunctiveBody::covers(View<uint32>::const_iterator indicesBegin, View<uint32>::const_iterator indicesEnd,
                              View<float32>::const_iterator valuesBegin, View<float32>::const_iterator valuesEnd,
                              float32 sparseValue, float32* tmpArray1, uint32* tmpArray2, uint32 n) const {
-    // Copy non-zero feature values to the temporary arrays...
+    // Copy dense feature values to the temporary arrays...
     uint32 numNonZeroFeatureValues = valuesEnd - valuesBegin;
 
     for (uint32 i = 0; i < numNonZeroFeatureValues; i++) {

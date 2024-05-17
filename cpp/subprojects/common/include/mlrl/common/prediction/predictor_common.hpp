@@ -119,7 +119,8 @@ class BinarySparsePredictionDispatcher final {
                  * @param exampleIndex      The index of the query example to predict for
                  * @param predictionIndex   The index of the row in the prediction matrix, where the predictions should
                  *                          be stored
-                 * @return                  The number of non-zero predictions
+                 * @return                  The number of dense elements explicitly stored in the affected row of the
+                                            prediction matrix
                  */
                 virtual uint32 predictForExample(const FeatureMatrix& featureMatrix,
                                                  typename Model::const_iterator rulesBegin,
@@ -141,7 +142,8 @@ class BinarySparsePredictionDispatcher final {
          *                      used for prediction
          * @param numThreads    The number of CPU threads to be used to make predictions for different query examples in
          *                      parallel. Must be at least 1
-         * @return              The total number of non-zero predictions
+         * @return              The total number of dense predictions explicitly stored in the affected row of the
+                                prediction matrix
          */
         uint32 predict(const IPredictionDelegate& delegate, const FeatureMatrix& featureMatrix,
                        typename Model::const_iterator rulesBegin, typename Model::const_iterator rulesEnd,

@@ -18,11 +18,11 @@ class MLRLCOMMON_API ICsrLabelMatrix : virtual public IRowWiseLabelMatrix {
 /**
  * Creates and returns a new object of the type `ICsrLabelMatrix`.
  *
- * @param indices       A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the
- *                      column-indices, the relevant labels correspond to
+ * @param indices       A pointer to an array of type `uint32`, shape `(numDenseElements)`, that stores the
+ *                      column-indices of all dense elements explicitly stored in the matrix
  * @param indptr        A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices of the
  *                      first element in `indices` that corresponds to a certain row. The index at the last position is
- *                      equal to `numNonZeroValues`
+ *                      equal to `numDenseElements`
  * @param numRows       The number of rows in the label matrix
  * @param numCols       The number of columns in the label matrix
  * @param sparseValue   True, if relevant labels should be assosiated with sparse elements in the matrix instead of

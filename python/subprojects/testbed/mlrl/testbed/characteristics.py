@@ -34,7 +34,7 @@ def density(matrix) -> float:
 
     :param matrix:  A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_rows, num_cols)`, that stores the feature
                     values of training examples or their labels
-    :return:        The fraction of non-zero elements in the given matrix among all elements
+    :return:        The fraction of dense elements explicitly stored in the given matrix among all elements
     """
     num_elements = matrix.shape[0] * matrix.shape[1]
 

@@ -20,11 +20,11 @@ class MLRLCOMMON_API BinaryCsrView : public BinarySparseMatrix {
         bool sparseValue;
 
         /**
-         * @param indices       A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the
-         *                      column indices, the values in the matrix correspond to
+         * @param indices       A pointer to an array of type `uint32`, shape `(numDenseElements)`, that stores the
+         *                      column indices of all dense elements explicitly stored in the matrix
          * @param indptr        A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices
          *                      of the first element in `indices` that corresponds to a certain row. The index at the
-         *                      last position musts be equal to `numNonZeroValues`
+         *                      last position musts be equal to `numDenseElements`
          * @param numRows       The number of rows in the view
          * @param numCols       The number of columns in the view
          * @param sparseValue   True, if non-zero values should be associated with sparse elements in the matrix instead

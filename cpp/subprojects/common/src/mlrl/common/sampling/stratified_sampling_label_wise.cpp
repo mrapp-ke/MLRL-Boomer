@@ -41,7 +41,7 @@ static inline uint32* copyLabelMatrix(uint32* indices, uint32* indptr, const Bin
     // Set column indices of the CSC matrix to zero...
     setViewToZeros(indptr, numLabels);
 
-    // Determine the number of non-zero elements per column...
+    // Determine the number of dense elements per column...
     for (uint32 i = 0; i < numExamples; i++) {
         uint32 exampleIndex = indicesBegin[i];
         BinaryCsrView::index_const_iterator labelIndexIterator = labelMatrix.indices_cbegin(exampleIndex);
@@ -53,7 +53,7 @@ static inline uint32* copyLabelMatrix(uint32* indices, uint32* indptr, const Bin
         }
     }
 
-    // Update the column indices of the CSC matrix with respect to the number of non-zero elements that correspond to
+    // Update the column indices of the CSC matrix with respect to the number of dense elements that correspond to
     // previous columns...
     uint32 tmp = 0;
 
@@ -280,7 +280,7 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
                 // Remove the label from the sorted map...
                 sortedLabelIndices.erase(firstEntry);
 
-                // Add the number of non-zero labels that have been processed so far to the array of column indices...
+                // Add the number of dense elements that have been processed so far to the array of column indices...
                 BinarySparseMatrix::indptr[numCols] = numNonZeroElements;
                 numCols++;
 
@@ -336,7 +336,7 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
                   reallocateMemory(BinarySparseMatrix::indices, numNonZeroElements + numRemaining);
                 BinarySparseMatrix::indptr = reallocateMemory(BinarySparseMatrix::indptr, numCols + 2);
 
-                // Add the number of non-zero labels that have been processed so far to the array of column indices...
+                // Add the number of dense elements that have been processed so far to the array of column indices...
                 BinarySparseMatrix::indptr[numCols] = numNonZeroElements;
                 numCols++;
 
