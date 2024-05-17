@@ -39,11 +39,11 @@ def density(matrix) -> float:
     num_elements = matrix.shape[0] * matrix.shape[1]
 
     if issparse(matrix):
-        num_non_zero = matrix.nnz
+        num_dense_elements = matrix.nnz
     else:
-        num_non_zero = np.count_nonzero(matrix)
+        num_dense_elements = np.count_nonzero(matrix)
 
-    return num_non_zero / num_elements if num_elements > 0 else 0
+    return num_dense_elements / num_elements if num_elements > 0 else 0
 
 
 def label_cardinality(y) -> float:

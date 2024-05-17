@@ -89,8 +89,9 @@ def is_sparse(matrix, sparse_format: SparseFormat, dtype, sparse_values: bool = 
         size_int = np.dtype(Uint32).itemsize
         size_data = np.dtype(dtype).itemsize
         size_sparse_data = size_data if sparse_values else 0
-        num_non_zero = matrix.nnz
-        size_sparse = (num_non_zero * size_sparse_data) + (num_non_zero * size_int) + (num_pointers * size_int)
+        num_dense_elements = matrix.nnz
+        size_sparse = (num_dense_elements * size_sparse_data) + (num_dense_elements * size_int) + (num_pointers
+                                                                                                   * size_int)
         size_dense = np.prod(matrix.shape) * size_data
         return size_sparse < size_dense
     return False

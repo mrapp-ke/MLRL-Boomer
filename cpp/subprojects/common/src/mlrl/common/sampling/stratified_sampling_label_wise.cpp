@@ -256,7 +256,7 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
 
             // Allocate arrays for storing the row and column indices of the labels to be processed by the sampling
             // method in the CSC format...
-            uint32 numNonZeroElements = 0;
+            uint32 numDenseElements = 0;
             uint32 numCols = 0;
 
             // Create a boolean array that stores whether individual examples remain to be processed (1) or not (0)...
@@ -281,7 +281,7 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
                 sortedLabelIndices.erase(firstEntry);
 
                 // Add the number of dense elements that have been processed so far to the array of column indices...
-                BinarySparseMatrix::indptr[numCols] = numNonZeroElements;
+                BinarySparseMatrix::indptr[numCols] = numDenseElements;
                 numCols++;
 
                 // Iterate the examples that are associated with the current label, if no weight has been set yet...
@@ -296,8 +296,8 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
                         mask.set(exampleIndex, false);
 
                         // Add the example's index to the array of row indices...
-                        BinarySparseMatrix::indices[numNonZeroElements] = exampleIndex;
-                        numNonZeroElements++;
+                        BinarySparseMatrix::indices[numDenseElements] = exampleIndex;
+                        numDenseElements++;
 
                         // For each label that is associated with the example, decrement the number of associated
                         // examples by one...
@@ -328,33 +328,33 @@ class StratificationMatrix final : public AllocatedBinaryCscView {
             }
 
             // If there are examples that are not associated with any labels, we handle them separately..
-            uint32 numRemaining = Matrix::numRows - numNonZeroElements;
+            uint32 numRemaining = Matrix::numRows - numDenseElements;
 
             if (numRemaining > 0) {
                 // Adjust the size of the arrays that are used to store row and column indices...
                 BinarySparseMatrix::indices =
-                  reallocateMemory(BinarySparseMatrix::indices, numNonZeroElements + numRemaining);
+                  reallocateMemory(BinarySparseMatrix::indices, numDenseElements + numRemaining);
                 BinarySparseMatrix::indptr = reallocateMemory(BinarySparseMatrix::indptr, numCols + 2);
 
                 // Add the number of dense elements that have been processed so far to the array of column indices...
-                BinarySparseMatrix::indptr[numCols] = numNonZeroElements;
+                BinarySparseMatrix::indptr[numCols] = numDenseElements;
                 numCols++;
 
                 // Iterate the weights of all examples to find those whose weight has not been set yet...
                 for (uint32 i = 0; i < numTotalExamples; i++) {
                     if (mask[i]) {
                         // Add the example's index to the array of row indices...
-                        BinarySparseMatrix::indices[numNonZeroElements] = i;
-                        numNonZeroElements++;
+                        BinarySparseMatrix::indices[numDenseElements] = i;
+                        numDenseElements++;
                     }
                 }
             } else {
                 // Adjust the size of the arrays that are used to store row and column indices...
-                BinarySparseMatrix::indices = reallocateMemory(BinarySparseMatrix::indices, numNonZeroElements);
+                BinarySparseMatrix::indices = reallocateMemory(BinarySparseMatrix::indices, numDenseElements);
                 BinarySparseMatrix::indptr = reallocateMemory(BinarySparseMatrix::indptr, numCols + 1);
             }
 
-            BinarySparseMatrix::indptr[numCols] = numNonZeroElements;
+            BinarySparseMatrix::indptr[numCols] = numDenseElements;
             Matrix::numCols = numCols;
         }
 
