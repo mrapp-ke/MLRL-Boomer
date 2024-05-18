@@ -34,16 +34,16 @@ def density(matrix) -> float:
 
     :param matrix:  A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_rows, num_cols)`, that stores the feature
                     values of training examples or their labels
-    :return:        The fraction of non-zero elements in the given matrix among all elements
+    :return:        The fraction of dense elements explicitly stored in the given matrix among all elements
     """
     num_elements = matrix.shape[0] * matrix.shape[1]
 
     if issparse(matrix):
-        num_non_zero = matrix.nnz
+        num_dense_elements = matrix.nnz
     else:
-        num_non_zero = np.count_nonzero(matrix)
+        num_dense_elements = np.count_nonzero(matrix)
 
-    return num_non_zero / num_elements if num_elements > 0 else 0
+    return num_dense_elements / num_elements if num_elements > 0 else 0
 
 
 def label_cardinality(y) -> float:
