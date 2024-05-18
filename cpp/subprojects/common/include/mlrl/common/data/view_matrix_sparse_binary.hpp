@@ -164,11 +164,11 @@ class MLRLCOMMON_API IterableBinarySparseMatrixDecorator : public Matrix {
         }
 
         /**
-         * Returns the number of non-zero elements in the matrix.
+         * Returns the number of dense elements explicitly stored in the matrix.
          *
-         * @return The number of non-zero elements
+         * @return The number of dense elements explicitly stored in the matrix
          */
-        uint32 getNumNonZeroElements() const {
-            return Matrix::view.getNumNonZeroElements();
+        uint32 getNumDenseElements() const {
+            return Matrix::view.getNumDenseElements();
         }
 };
