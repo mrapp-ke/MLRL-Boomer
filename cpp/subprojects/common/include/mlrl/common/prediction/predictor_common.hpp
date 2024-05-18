@@ -151,10 +151,10 @@ class BinarySparsePredictionDispatcher final {
             uint32 numExamples = featureMatrix.numRows;
             const IPredictionDelegate* delegatePtr = &delegate;
             const FeatureMatrix* featureMatrixPtr = &featureMatrix;
-            uint32 numNonZeroElements = 0;
+            uint32 numDenseElements = 0;
 
 #if MULTI_THREADING_SUPPORT_ENABLED
-    #pragma omp parallel for reduction(+ : numNonZeroElements) firstprivate(numExamples) firstprivate(delegatePtr) \
+    #pragma omp parallel for reduction(+ : numDenseElements) firstprivate(numExamples) firstprivate(delegatePtr) \
       firstprivate(rulesBegin) firstprivate(rulesEnd) firstprivate(featureMatrixPtr) schedule(dynamic) \
       num_threads(numThreads)
 #endif
@@ -164,11 +164,11 @@ class BinarySparsePredictionDispatcher final {
 #else
                 uint32 threadIndex = 1;
 #endif
-                numNonZeroElements +=
+                numDenseElements +=
                   delegatePtr->predictForExample(*featureMatrixPtr, rulesBegin, rulesEnd, threadIndex, i, i);
             }
 
-            return numNonZeroElements;
+            return numDenseElements;
         }
 };
 
