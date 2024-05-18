@@ -25,7 +25,7 @@ cdef extern from "mlrl/common/prediction/prediction_matrix_sparse_binary.hpp" no
 
         # Functions:
 
-        uint32 getNumNonZeroElements() const
+        uint32 getNumDenseElements() const
 
         uint32 getNumRows() const
 
