@@ -79,11 +79,11 @@ cdef class CsrLabelMatrix(RowWiseLabelMatrix):
     def __cinit__(self, uint32[::1] indices not None, uint32[::1] indptr not None, uint32 num_examples,
                   uint32 num_labels):
         """
-        :param indices:         An array of type `uint32`, shape `(num_non_zero_values)`, that stores the
-                                column-indices, the relevant labels correspond to
+        :param indices:         An array of type `uint32`, shape `(num_dense_elements)`, that stores the column-indices
+                                of all dense elements explicitly stored in the matrix
         :param indptr:          An array of type `uint32`, shape `(num_examples + 1)`, that stores the indices of the
                                 first element in `indices` that corresponds to a certain example. The index at the last
-                                position is equal to `num_non_zero_values`
+                                position is equal to `num_dense_elements`
         :param num_examples:    The total number of examples
         :param num_labels:      The total number of labels
         """
