@@ -77,13 +77,13 @@ cdef class CscFeatureMatrix(ColumnWiseFeatureMatrix):
     def __cinit__(self, const float32[::1] values not None, uint32[::1] indices not None, uint32[::1] indptr not None,
                   uint32 num_examples, uint32 num_features, float32 sparse_value = 0.0):
         """
-        :param values:          An array of type `float32`, shape `(num_non_zero_values)`, that stores all non-zero
-                                feature values
-        :param indices:         An array of type `uint32`, shape `(num_non_zero_values)`, that stores the row-indices,
+        :param values:          An array of type `float32`, shape `(num_dense_elements)`, that stores the values of all
+                                dense elements explicitly stored in the matrix
+        :param indices:         An array of type `uint32`, shape `(num_dense_elements)`, that stores the row-indices,
                                 the values in `values` correspond to
         :param indptr:          An array of type `uint32`, shape `(num_features + 1)`, that stores the indices of the
                                 first element in `values` and `indices` that corresponds to a certain feature. The index
-                                at the last position is equal to `num_non_zero_values`
+                                at the last position is equal to `num_dense_elements`
         :param num_examples:    The total number of examples
         :param num_features:    The total number of features
         :param sparse_value:    The value that should be used for sparse elements in the feature matrix
@@ -142,13 +142,13 @@ cdef class CsrFeatureMatrix(RowWiseFeatureMatrix):
     def __cinit__(self, const float32[::1] values not None, uint32[::1] indices not None, uint32[::1] indptr not None,
                   uint32 num_examples, uint32 num_features, float32 sparse_value = 0.0):
         """
-        :param values:          An array of type `float32`, shape `(num_non_zero_values)`, that stores all non-zero
-                                feature values
-        :param indices:         An array of type `uint32`, shape `(num_non_zero_values)`, that stores the
-                                column-indices, the values in `values` correspond to
+        :param values:          An array of type `float32`, shape `(num_dense_elements)`, that stores the values of all
+                                dense elements explicitly stored in the matrix
+        :param indices:         An array of type `uint32`, shape `(num_dense_elements)`, that stores the column-indices,
+                                the values in `values` correspond to
         :param indptr:          An array of type `uint32`, shape `(num_examples + 1)`, that stores the indices of the
                                 first element in `values` and `indices` that corresponds to a certain example. The index
-                                at the last position is equal to `num_non_zero_values`
+                                at the last position is equal to `num_dense_elements`
         :param num_examples:    The total number of examples
         :param num_features:    The total number of features
         :param sparse_value:    The value that should be used for sparse elements in the feature matrix

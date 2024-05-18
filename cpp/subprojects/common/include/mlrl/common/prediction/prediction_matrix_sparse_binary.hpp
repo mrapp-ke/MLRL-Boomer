@@ -44,40 +44,40 @@ class MLRLCOMMON_API BinarySparsePredictionMatrix final
         BinarySparsePredictionMatrix(const BinaryLilMatrix& lilMatrix, uint32 numCols, uint32 numNonZeroElements);
 
         /**
-         * Returns a pointer to the array that stores the column indices, the non-zero values in the matrix correspond
-         * to.
+         * Returns a pointer to the array that stores the column indices of all dense elements explicitly stored in the
+         * matrix.
          *
-         @return  A pointer to the array that stores the column indices, the non-zero values in the matrix correspond
-         *        to
+         * @return A pointer to the array that stores the column indices of all dense elements explicitly stored in the
+         *         matrix
          */
         uint32* getIndices();
 
         /**
-         * Releases the ownership of the array that stores the column indices, the non-zero values in the matrix
-         * correspond to. As a result, the behavior of this matrix becomes undefined and it should not be used anymore.
-         * The caller is responsible for freeing the memory that is occupied by the array.
+         * Releases the ownership of the array that stores the column indices of all dense elements explicitly stored in
+         * the matrix. As a result, the behavior of this matrix becomes undefined and it should not be used anymore. The
+         * caller is responsible for freeing the memory that is occupied by the array.
          *
-         * @return  A pointer to the array that stores the column indices, the non-zero values in the matrix correspond
-         *          to
+         * @return A pointer to the array that stores the column indices of all dense elements explicitly stored in the
+         *         matrix
          */
         uint32* releaseIndices();
 
         /**
-         * Returns a pointer to the array that stores the indices of the first non-zero element that corresponds to a
+         * Returns a pointer to the array that stores the indices of the first dense element that corresponds to a
          * certain row.
          *
-         * @return  A pointer to the array that stores the indices of the first non-zero element that corresponds to a
-         *          certain row
+         * @return A pointer to the array that stores the indices of the first dense element that corresponds to a
+         *         certain row
          */
         uint32* getIndptr();
 
         /**
-         * Releases the ownership of the array that stores the indices of the first non-zero element that corresponds to
-         * a certain row. As a result, the behavior of this matrix becomes undefined and it should not be used anymore.
+         * Releases the ownership of the array that stores the indices of the first dense element that corresponds to a
+         * certain row. As a result, the behavior of this matrix becomes undefined and it should not be used anymore.
          * The caller is responsible for freeing the memory that is occupied by the array.
          *
-         * @return  A pointer to an array that stores the indices of the first non-zero element that corresponds to a
-         *          certain row
+         * @return A pointer to an array that stores the indices of the first dense element that corresponds to a
+         *         certain row
          */
         uint32* releaseIndptr();
 };
