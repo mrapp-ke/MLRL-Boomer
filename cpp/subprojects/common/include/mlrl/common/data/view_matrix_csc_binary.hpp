@@ -108,11 +108,11 @@ class MLRLCOMMON_API BinaryCscView : public BinarySparseMatrix {
         }
 
         /**
-         * Returns the number of non-zero elements in the view.
+         * Returns the number of dense elements explicitly stored in the view.
          *
-         * @return The number of non-zero elements
+         * @return The number of dense elements explicitly stored in the view
          */
-        uint32 getNumNonZeroElements() const {
+        uint32 getNumDenseElements() const {
             return BinarySparseMatrix::indptr[Matrix::numCols];
         }
 };
