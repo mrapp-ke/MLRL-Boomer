@@ -395,9 +395,9 @@ namespace seco {
             std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
                 BinaryLilMatrix predictionMatrix(featureMatrix_.numRows, numLabels_);
                 Delegate delegate(predictionMatrix, numLabels_);
-                uint32 numNonZeroElements = Dispatcher().predict(delegate, featureMatrix_, model_.used_cbegin(maxRules),
-                                                                 model_.used_cend(maxRules), numThreads_);
-                return createBinarySparsePredictionMatrix(predictionMatrix, numLabels_, numNonZeroElements);
+                uint32 numDenseElements = Dispatcher().predict(delegate, featureMatrix_, model_.used_cbegin(maxRules),
+                                                               model_.used_cend(maxRules), numThreads_);
+                return createBinarySparsePredictionMatrix(predictionMatrix, numLabels_, numDenseElements);
             }
 
             /**
