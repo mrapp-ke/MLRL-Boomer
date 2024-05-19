@@ -13,7 +13,7 @@ def enforce_dense(array, order: str, dtype, sparse_value=0) -> np.ndarray:
     Converts a given array into a `np.ndarray`, if necessary, and enforces a specific memory layout and data type to be
     used.
 
-    :param array:           A `np.ndarray` or `scipy.sparse.matrix` to be converted
+    :param array:           A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` to be converted
     :param order:           The memory layout to be used. Must be `C` or `F`
     :param dtype:           The data type to be used
     :param sparse_value:    The value that should be used for sparse elements in the given array

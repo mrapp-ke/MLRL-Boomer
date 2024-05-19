@@ -10,7 +10,7 @@ from mlrl.common.cython._arrays cimport array_uint32, c_matrix_float64, c_matrix
 
 import numpy as np
 
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_array
 
 
 cdef class IncrementalBinaryPredictor:
@@ -125,7 +125,7 @@ cdef class IncrementalSparseBinaryPredictor:
         members are remaining, only the available ones will be used for updating the current predictions.
 
         :param step_size:   The number of additional ensemble members to be considered for prediction
-        :return:            A `scipy.sparse.csr_matrix` of type `uint8`, shape `(num_examples, num_labels)` that stores
+        :return:            A `scipy.sparse.csr_array` of type `uint8`, shape `(num_examples, num_labels)` that stores
                             the predictions
         """
         cdef BinarySparsePredictionMatrix* prediction_matrix_ptr = &self.predictor_ptr.get().applyNext(step_size)
@@ -137,7 +137,7 @@ cdef class IncrementalSparseBinaryPredictor:
         data = np.ones(shape=(num_dense_elements), dtype=np.uint8) if num_dense_elements > 0 else np.asarray([])
         pred_indices = np.asarray(view_uint32(indices, num_dense_elements) if num_dense_elements > 0 else [])
         pred_indptr = np.asarray(view_uint32(indptr, num_rows + 1))
-        return csr_matrix((data, pred_indices, pred_indptr), shape=(num_rows, num_cols))
+        return csr_array((data, pred_indices, pred_indptr), shape=(num_rows, num_cols))
 
 
 cdef class SparseBinaryPredictor:
@@ -145,13 +145,13 @@ cdef class SparseBinaryPredictor:
     Allows to predict sparse binary labels for given query examples.
     """
 
-    def predict(self, uint32 max_rules) -> csr_matrix:
+    def predict(self, uint32 max_rules) -> csr_array:
         """
         Obtains and returns predictions for all query examples.
 
         :param max_rules:   The maximum number of rules to be used for prediction or 0, if the number of rules should
                             not be restricted
-        :return:            A `scipy.sparse.csr_matrix` of type `uint8`, shape `(num_examples, num_labels)` that stores
+        :return:            A `scipy.sparse.csr_array` of type `uint8`, shape `(num_examples, num_labels)` that stores
                             the predictions
         """
         cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = \
@@ -164,7 +164,7 @@ cdef class SparseBinaryPredictor:
         data = np.ones(shape=(num_dense_elements), dtype=np.uint8) if num_dense_elements > 0 else np.asarray([])
         pred_indices = np.asarray(array_uint32(indices, num_dense_elements) if num_dense_elements > 0 else [])
         pred_indptr = np.asarray(array_uint32(indptr, num_rows + 1))
-        return csr_matrix((data, pred_indices, pred_indptr), shape=(num_rows, num_cols))
+        return csr_array((data, pred_indices, pred_indptr), shape=(num_rows, num_cols))
 
     def can_predict_incrementally(self) -> bool:
         """
