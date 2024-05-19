@@ -79,16 +79,17 @@ class IncrementalLearner(ABC):
             ensemble members are remaining, only the available ones will be used for updating the current predictions.
 
             :param step_size:   The number of additional ensemble members to be considered for prediction
-            :return:            A `numpy.ndarray` or `scipy.sparse` matrix of shape `(num_examples, num_labels)`, that
-                                stores the updated prediction for individual examples and labels
+            :return:            A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` of shape
+                                `(num_examples, num_labels)`, that stores the updated prediction for individual examples
+                                and labels
             """
 
     def predict_incrementally(self, x, **kwargs) -> IncrementalPredictor:
         """
         Returns an `IncrementalPredictor` that allows to obtain predictions for given query examples incrementally.
 
-        :param x:                   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`,
-                                    that stores the feature values of the query examples
+        :param x:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                                    `(num_examples, num_features)`, that stores the feature values of the query examples
         :keyword predict_scores:    True, if regression scores should be obtained, False, if binary predictions should
                                     be obtained
         :return:                    The `IncrementalPredictor` that has been created
@@ -104,8 +105,8 @@ class IncrementalLearner(ABC):
         Returns an `IncrementalPredictor` that allows to obtain probability estimates for given query examples
         incrementally.
 
-        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
-                    feature values of the query examples
+        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_features)`, that stores the feature values of the query examples
         :return:    The `IncrementalPredictor` that has been created
         """
         check_is_fitted(self)
@@ -116,8 +117,8 @@ class IncrementalLearner(ABC):
         May be overridden by subclasses in order to create an `IncrementalPredictor` that allows to obtain binary
         predictions for given query examples incrementally.
 
-        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
-                    feature values of the query examples
+        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_features)`, that stores the feature values of the query examples
         :return:    The `IncrementalPredictor` that has been created
         """
         raise RuntimeError('Incremental prediction of binary labels not supported using the current configuration')
@@ -127,8 +128,8 @@ class IncrementalLearner(ABC):
         May be overridden by subclasses in order to create an `IncrementalPredictor` that allows to obtain regression
         scores for given query examples incrementally.
 
-        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
-                    feature values of the query examples
+        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_features)`, that stores the feature values of the query examples
         :return:    The `IncrementalPredictor` that has been created
         """
         raise RuntimeError('Incremental prediction of regression scores not supported using the current configuration')
@@ -138,8 +139,8 @@ class IncrementalLearner(ABC):
         May be overridden by subclasses in order to create an `IncrementalPredictor` that allows to obtain probability
         estimates for given query examples incrementally.
 
-        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
-                    feature values of the query examples
+        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_features)`, that stores the feature values of the query examples
         :return:    The `IncrementalPredictor` that has been created
         """
         raise RuntimeError('Incremental prediction of probabilities not supported using the current configuration')
@@ -155,10 +156,11 @@ class Learner(BaseEstimator, ABC):
         """
         Fits a model to given training examples and their corresponding ground truth labels.
 
-        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
-                    feature values of the training examples
-        :param y:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the
-                    labels of the training examples according to the ground truth
+        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_features)`, that stores the feature values of the training examples
+        :param y:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_labels)`, that stores the labels of the training examples according to the
+                    ground truth
         :return:    The fitted learner
         """
         self.model_ = self._fit(x, y, **kwargs)
@@ -169,10 +171,10 @@ class Learner(BaseEstimator, ABC):
         Obtains and returns predictions for given query examples. If the optional keyword argument `predict_scores` is
         set to `True`, regression scores are obtained instead of binary predictions.
 
-        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
-                    feature values of the query examples
-        :return:    A `numpy.ndarray` or `scipy.sparse` matrix of shape `(num_examples, num_labels)`, that stores the
-                    prediction for individual examples and labels
+        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_features)`, that stores the feature values of the query examples
+        :return:    A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` of shape
+                    `(num_examples, num_labels)`, that stores the prediction for individual examples and labels
         """
         check_is_fitted(self)
 
@@ -184,10 +186,10 @@ class Learner(BaseEstimator, ABC):
         """
         Obtains and returns probability estimates for given query examples.
 
-        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
-                    feature values of the query examples
-        :return:    A `numpy.ndarray` or `scipy.sparse` matrix of shape `(num_examples, num_labels)`, that stores the
-                    probabilities for individual examples and labels
+        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_features)`, that stores the feature values of the query examples
+        :return:    A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` of shape
+                    `(num_examples, num_labels)`, that stores the probabilities for individual examples and labels
         """
         check_is_fitted(self)
         return self._predict_proba(x, **kwargs)
@@ -198,10 +200,11 @@ class Learner(BaseEstimator, ABC):
         Must be implemented by subclasses in order to fit a new model to given training examples and their corresponding
         ground truth labels.
 
-        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
-                    feature values of the training examples
-        :param y:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the
-                    labels of the training examples according to the ground truth
+        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_features)`, that stores the feature values of the training examples
+        :param y:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_labels)`, that stores the labels of the training examples according to the
+                    ground truth
         :return:    The model that has been trained
         """
 
@@ -209,10 +212,10 @@ class Learner(BaseEstimator, ABC):
         """
         May be overridden by subclasses in order to obtain binary predictions for given query examples.
 
-        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
-                    feature values of the query examples
-        :return:    A `numpy.ndarray` or `scipy.sparse` matrix of shape `(num_examples, num_labels)`, that stores the
-                    prediction for individual examples and labels
+        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_features)`, that stores the feature values of the query examples
+        :return:    A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` of shape
+                    `(num_examples, num_labels)`, that stores the prediction for individual examples and labels
         """
         raise RuntimeError('Prediction of binary labels not supported using the current configuration')
 
@@ -220,10 +223,10 @@ class Learner(BaseEstimator, ABC):
         """
         May be overridden by subclasses in order to obtain regression scores for given query examples.
 
-        :param x:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores the
-                    feature values of the query examples
-        :return:    A `numpy.ndarray` or `scipy.sparse` matrix of shape `(num_examples, num_labels)`, that stores the
-                    regression scores for individual examples and labels
+        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_features)`, that stores the feature values of the query examples
+        :return:    A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_labels)`, that stores the regression scores for individual examples and labels
         """
         raise RuntimeError('Prediction of regression scores not supported using the current configuration')
 

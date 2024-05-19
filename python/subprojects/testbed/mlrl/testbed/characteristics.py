@@ -32,8 +32,8 @@ def density(matrix) -> float:
     """
     Calculates and returns the density of a given feature or label matrix.
 
-    :param matrix:  A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_rows, num_cols)`, that stores the feature
-                    values of training examples or their labels
+    :param matrix:  A `numpy.ndarray` or `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_rows, num_cols)`, that stores the feature values of training examples or their labels
     :return:        The fraction of dense elements explicitly stored in the given matrix among all elements
     """
     num_elements = matrix.shape[0] * matrix.shape[1]
@@ -50,8 +50,8 @@ def label_cardinality(y) -> float:
     """
     Calculates and returns the average label cardinality of a given label matrix.
 
-    :param y:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the labels
-                of training examples
+    :param y:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                `(num_examples, num_labels)`, that stores the labels of training examples
     :return:    The average number of relevant labels per training example
     """
     if issparse(y):
@@ -67,8 +67,8 @@ def distinct_label_vectors(y) -> int:
     """
     Determines and returns the number of distinct label vectors in a label matrix.
 
-    :param y:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the labels
-                of training examples
+    :param y:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                `(num_examples, num_labels)`, that stores the labels of training examples
     :return:    The number of distinct label vectors in the given matrix
     """
     if issparse(y):
@@ -82,8 +82,8 @@ def label_imbalance_ratio(y) -> float:
     """
     Calculates and returns the average label imbalance ratio of a given label matrix.
 
-    :param y:   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the labels
-                of training examples
+    :param y:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                `(num_examples, num_labels)`, that stores the labels of training examples
     :return:    The label imbalance ratio averaged over the available labels
     """
     if issparse(y):
@@ -107,7 +107,8 @@ class LabelCharacteristics(Formattable, Tabularizable):
 
     def __init__(self, y):
         """
-        :param y: A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the labels
+        :param y: A `numpy.ndarray`, `scipy.sparse.spmatrix`, `scipy.sparse.sparray`, shape
+                  `(num_examples, num_labels)`, that stores the labels
         """
         self._y = y
         self.num_labels = y.shape[1]
