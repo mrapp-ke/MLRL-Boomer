@@ -190,10 +190,10 @@ class OutputWriter(ABC):
         sinks.
 
         :param meta_data:           The meta-data of the data set
-        :param x:                   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`,
-                                    that stores the feature values
-        :param y:                   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                    stores the ground truth labels
+        :param x:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                                    `(num_examples, num_features)`, that stores the feature values
+        :param y:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                                    `(num_examples, num_labels)`, that stores the ground truth labels
         :param data_split:          Information about the split of the available data, the output data corresponds to
         :param learner:             The learner that has been trained
         :param data_type:           Specifies whether the predictions and ground truth labels correspond to the training
@@ -201,9 +201,9 @@ class OutputWriter(ABC):
         :param prediction_type:     The type of the predictions or None, if no predictions have been obtained
         :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
                                     incrementally or None, if no predictions have been obtained
-        :param predictions:         A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                    stores the predictions for the query examples or None, if no predictions have been
-                                    obtained
+        :param predictions:         A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                                    `(num_examples, num_labels)`, that stores the predictions for the query examples or
+                                    None, if no predictions have been obtained
         :param train_time:          The time needed for training or 0, if no model has been trained
         :param predict_time:        The time needed for prediction or 0, if no predictions have been obtained
         :return:                    The output data that has been generated or None, if no output data was generated
@@ -225,10 +225,10 @@ class OutputWriter(ABC):
         Generates the output data and writes it to all available sinks.
 
         :param meta_data:           The meta-data of the data set
-        :param x:                   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`,
-                                    that stores the feature values
-        :param y:                   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                    stores the ground truth labels
+        :param x:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                                    `(num_examples, num_features)`, that stores the feature values
+        :param y:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                                    `(num_examples, num_labels)`, that stores the ground truth labels
         :param data_split:          Information about the split of the available data, the output data corresponds to
         :param learner:             The learner that has been trained
         :param data_type:           Specifies whether the predictions and ground truth labels correspond to the training
@@ -236,9 +236,9 @@ class OutputWriter(ABC):
         :param prediction_type:     The type of the predictions or None, if no predictions have been obtained
         :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
                                     incrementally or None, if no predictions have been obtained
-        :param predictions:         A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                    stores the predictions for the query examples or None, if no predictions have been
-                                    obtained
+        :param predictions:         A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                                    `(num_examples, num_labels)`, that stores the predictions for the query examples or
+                                    None, if no predictions have been obtained
         :param train_time:          The time needed for training or 0, if no model has been trained
         :param predict_time:        The time needed for prediction or 0, if no predictions have been obtained
         """

@@ -15,10 +15,11 @@ from xml.dom import minidom
 import arff
 import numpy as np
 
-from scipy.sparse import coo_matrix, csc_matrix, dok_matrix, issparse, lil_matrix
+from scipy.sparse import coo_array, csc_array, dok_array, lil_array
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 
+from mlrl.common.arrays import is_sparse
 from mlrl.common.data_types import Float32, Uint8
 
 from mlrl.testbed.io import ENCODING_UTF8, write_xml_file
@@ -107,7 +108,7 @@ def load_data_set_and_meta_data(data_dir: str,
                                 arff_file_name: str,
                                 xml_file_name: str,
                                 feature_dtype=Float32,
-                                label_dtype=Uint8) -> Tuple[lil_matrix, lil_matrix, MetaData]:
+                                label_dtype=Uint8) -> Tuple[lil_array, lil_array, MetaData]:
     """
     Loads a multi-label data set from an ARFF file and the corresponding Mulan XML file.
 
@@ -116,8 +117,8 @@ def load_data_set_and_meta_data(data_dir: str,
     :param xml_file_name:   The name of the XML file (including the suffix)
     :param feature_dtype:   The requested type of the feature matrix
     :param label_dtype:     The requested type of the label matrix
-    :return:                A `scipy.sparse.lil_matrix` of type `feature_dtype`, shape `(num_examples, num_features)`,
-                            representing the feature values of the examples, a `scipy.sparse.lil_matrix` of type
+    :return:                A `scipy.sparse.lil_array` of type `feature_dtype`, shape `(num_examples, num_features)`,
+                            representing the feature values of the examples, a `scipy.sparse.lil_array` of type
                             `label_dtype`, shape `(num_examples, num_labels)`, representing the corresponding label
                             vectors, as well as the data set's meta-data
     """
@@ -148,7 +149,7 @@ def load_data_set(data_dir: str,
                   arff_file_name: str,
                   meta_data: MetaData,
                   feature_dtype=Float32,
-                  label_dtype=Uint8) -> Tuple[lil_matrix, lil_matrix]:
+                  label_dtype=Uint8) -> Tuple[lil_array, lil_array]:
     """
     Loads a multi-label data set from an ARFF file given its meta-data.
 
@@ -157,8 +158,8 @@ def load_data_set(data_dir: str,
     :param meta_data:       The meta-data
     :param feature_dtype:   The requested data type of the feature matrix
     :param label_dtype:     The requested data type of the label matrix
-    :return:                A `scipy.sparse.lil_matrix` of type `feature_dtype`, shape `(num_examples, num_features)`,
-                            representing the feature values of the examples, as well as a `scipy.sparse.lil_matrix` of
+    :return:                A `scipy.sparse.lil_array` of type `feature_dtype`, shape `(num_examples, num_features)`,
+                            representing the feature values of the examples, as well as a `scipy.sparse.lil_array` of
                             type `label_dtype`, shape `(num_examples, num_labels)`, representing the corresponding
                             label vectors
     """
@@ -195,10 +196,12 @@ def save_data_set(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nda
 
     :param output_dir:      The path of the directory where the ARFF file should be saved
     :param arff_file_name:  The name of the ARFF file (including the suffix)
-    :param x:               A `np.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores
-                            the features of the examples that are contained in the data set
-    :param y:               A `np.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the
-                            labels of the examples that are contained in the data set
+    :param x:               A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                            `(num_examples, num_features)`, that stores the features of the examples that are contained
+                            in the data set
+    :param y:               A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                            `(num_examples, num_labels)`, that stores the labels of the examples that are contained in
+                            the data set
     :return:                The meta-data of the data set that has been saved
     """
 
@@ -217,17 +220,19 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
 
     :param output_dir:      The path of the directory where the ARFF file should be saved
     :param arff_file_name:  The name of the ARFF file (including the suffix)
-    :param x:               A `np.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores
-                            the features of the examples that are contained in the data set
-    :param y:               A `np.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the
-                            labels of the examples that are contained in the data set
+    :param x:               A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                            `(num_examples, num_features)`, that stores the features of the examples that are contained
+                            in the data set
+    :param y:               A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                            `(num_examples, num_labels)`, that stores the labels of the examples that are contained in
+                            the data set
     :param meta_data:       The meta-data of the data set that should be saved
     """
     arff_file = path.join(output_dir, arff_file_name)
     log.debug('Saving data set to file \'%s\'...', str(arff_file))
-    sparse = issparse(x) and issparse(y)
-    x = dok_matrix(x)
-    y = dok_matrix(y)
+    sparse = is_sparse(x) and is_sparse(y)
+    x = dok_array(x)
+    y = dok_array(y)
     x_prefix = 0
     y_prefix = 0
 
@@ -296,10 +301,10 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
     given meta-data, where the attributes have been removed, will be returned, as the original attributes become invalid
     by applying one-hot-encoding.
 
-    :param x:           A `np.ndarray` or `scipy.sparse.matrix`, shape `(num_examples, num_features)`, representing the
-                        features of the examples in the data set
-    :param y:           A `np.ndarray` or `scipy.sparse.matrix`, shape `(num_examples, num_labels)`, representing the
-                        labels of the examples in the data set
+    :param x:           A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                        `(num_examples, num_features)`, representing the features of the examples in the data set
+    :param y:           A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                        `(num_examples, num_labels)`, representing the labels of the examples in the data set
     :param meta_data:   The meta-data of the data set
     :param encoder:     The 'ColumnTransformer' to be used or None, if a new encoder should be created
     :return:            A `np.ndarray`, shape `(num_examples, num_encoded_features)`, representing the encoded features
@@ -311,7 +316,7 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
              (len(meta_data.attributes) - num_nominal_attributes))
 
     if num_nominal_attributes > 0:
-        if issparse(x):
+        if is_sparse(x):
             x = x.toarray()
 
         old_shape = x.shape
@@ -334,17 +339,17 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
     return x, None, meta_data
 
 
-def __create_feature_and_label_matrix(matrix: csc_matrix, meta_data: MetaData,
-                                      label_dtype) -> Tuple[lil_matrix, lil_matrix]:
+def __create_feature_and_label_matrix(matrix: csc_array, meta_data: MetaData,
+                                      label_dtype) -> Tuple[lil_array, lil_array]:
     """
     Creates and returns the feature and label matrix from a single matrix, representing the values in an ARFF file.
 
-    :param matrix:      A `scipy.sparse.csc_matrix` of type `feature_dtype`, shape
+    :param matrix:      A `scipy.sparse.csc_array` of type `feature_dtype`, shape
                         `(num_examples, num_features + num_labels)`, representing the values in an ARFF file
     :param meta_data:   The meta-data of the data set
     :param label_dtype: The requested type of the label matrix
-    :return:            A `scipy.sparse.lil_matrix` of type `feature_dtype`, shape `(num_examples, num_features)`,
-                        representing the feature matrix, as well as `scipy.sparse.lil_matrix` of type `label_dtype`,
+    :return:            A `scipy.sparse.lil_array` of type `feature_dtype`, shape `(num_examples, num_features)`,
+                        representing the feature matrix, as well as `scipy.sparse.lil_array` of type `label_dtype`,
                         shape `(num_examples, num_labels)`, representing the label matrix
     """
     num_labels = len(meta_data.labels)
@@ -361,13 +366,13 @@ def __create_feature_and_label_matrix(matrix: csc_matrix, meta_data: MetaData,
     return x, y
 
 
-def __load_arff(arff_file: str, feature_dtype) -> Tuple[csc_matrix, list, str]:
+def __load_arff(arff_file: str, feature_dtype) -> Tuple[csc_array, list, str]:
     """
     Loads the content of an ARFF file.
 
     :param arff_file:       The path of the ARFF file (including the suffix)
     :param feature_dtype:   The type, the data should be converted to
-    :return:                A `np.sparse.csc_matrix` of type `feature_dtype`, containing the values in the ARFF file, a
+    :return:                A `np.sparse.csc_array` of type `feature_dtype`, containing the values in the ARFF file, a
                             list that contains a description of each attribute in the ARFF file, as well as its
                             @relation name
     """
@@ -378,12 +383,12 @@ def __load_arff(arff_file: str, feature_dtype) -> Tuple[csc_matrix, list, str]:
         matrix_row_indices = data[1]
         matrix_col_indices = data[2]
         shape = (max(matrix_row_indices) + 1, max(matrix_col_indices) + 1)
-        matrix = coo_matrix((matrix_data, (matrix_row_indices, matrix_col_indices)), shape=shape, dtype=feature_dtype)
+        matrix = coo_array((matrix_data, (matrix_row_indices, matrix_col_indices)), shape=shape, dtype=feature_dtype)
         matrix = matrix.tocsc()
     except arff.BadLayout:
         arff_dict = __load_arff_as_dict(arff_file, sparse=False)
         data = arff_dict['data']
-        matrix = csc_matrix(data, dtype=feature_dtype)
+        matrix = csc_array(data, dtype=feature_dtype)
 
     attributes = arff_dict['attributes']
     relation = arff_dict['relation']

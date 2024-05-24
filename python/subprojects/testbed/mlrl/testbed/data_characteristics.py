@@ -39,8 +39,8 @@ class FeatureCharacteristics:
     def __init__(self, meta_data: MetaData, x):
         """
         :param meta_data:   The meta-data of the data set
-        :param x:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that
-                            stores the feature values
+        :param x:           A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                            `(num_examples, num_features)`, that stores the feature values
         """
         self._x = x
         self._meta_data = meta_data
