@@ -109,7 +109,7 @@ def should_enforce_sparse(matrix,
     `scipy.sparse.csr_matrix` or `scipy.sparse.csc_matrix`.
 
     If the given policy is `SparsePolicy.FORCE_SPARSE`, the matrix will always be converted into the specified sparse
-    format, if possible.
+    format, if possible.  Dense matrices will never be converted into a sparse format.
 
     If the given policy is `SparsePolicy.FORCE_DENSE`, the matrix will always be converted into a dense matrix.
 
@@ -123,7 +123,7 @@ def should_enforce_sparse(matrix,
     """
     if not issparse(matrix):
         # Given matrix is dense
-        return policy == SparsePolicy.FORCE_SPARSE
+        return False
     if isspmatrix_lil(matrix) or isspmatrix_coo(matrix) or isspmatrix_dok(matrix) or isspmatrix_csr(
             matrix) or isspmatrix_csc(matrix):
         # Given matrix is in a format that might be converted into the specified sparse format
