@@ -11,10 +11,9 @@ from typing import Optional
 
 import numpy as np
 
-from scipy.sparse import issparse, isspmatrix_coo, isspmatrix_csc, isspmatrix_csr, isspmatrix_dok, isspmatrix_lil
 from sklearn.utils import check_array
 
-from mlrl.common.arrays import enforce_2d, enforce_dense
+from mlrl.common.arrays import SparseFormat, enforce_2d, enforce_dense, is_sparse, is_sparse_and_memory_efficient
 from mlrl.common.cython.feature_info import EqualFeatureInfo, FeatureInfo, MixedFeatureInfo
 from mlrl.common.cython.feature_matrix import CContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
     FortranContiguousFeatureMatrix, RowWiseFeatureMatrix
@@ -44,14 +43,6 @@ class SparsePolicy(Enum):
     FORCE_DENSE = 'dense'
 
 
-class SparseFormat(Enum):
-    """
-    Specifies all valid textual representations of sparse matrix formats.
-    """
-    CSC = 'csc'
-    CSR = 'csr'
-
-
 def parse_sparse_policy(parameter_name: str, value: Optional[str]) -> SparsePolicy:
     """
     Parses and returns a parameter value that specifies a `SparsePolicy` to be used for converting matrices into sparse
@@ -71,50 +62,26 @@ def parse_sparse_policy(parameter_name: str, value: Optional[str]) -> SparsePoli
                          + format_enum_values(SparsePolicy) + ', but is "' + str(value) + '"') from error
 
 
-def is_sparse(matrix, sparse_format: SparseFormat, dtype, sparse_values: bool = True) -> bool:
-    """
-    Returns whether a given matrix is considered sparse or not. A matrix is considered sparse if it is given in a sparse
-    format and is expected to occupy less memory than a dense matrix.
-
-    :param matrix:          A `np.ndarray` or `scipy.sparse.matrix` to be checked
-    :param sparse_format:   The `SparseFormat` to be used
-    :param dtype:           The type of the values that should be stored in the matrix
-    :param sparse_values:   True, if the values must explicitly be stored when using a sparse format, False otherwise
-    :return:                True, if the given matrix is considered sparse, False otherwise
-    """
-    if issparse(matrix):
-        num_pointers = matrix.shape[1 if sparse_format == SparseFormat.CSC else 0]
-        size_int = np.dtype(Uint32).itemsize
-        size_data = np.dtype(dtype).itemsize
-        size_sparse_data = size_data if sparse_values else 0
-        num_dense_elements = matrix.nnz
-        size_sparse = (num_dense_elements * size_sparse_data) + (num_dense_elements * size_int) + (num_pointers
-                                                                                                   * size_int)
-        size_dense = np.prod(matrix.shape) * size_data
-        return size_sparse < size_dense
-    return False
-
-
 def should_enforce_sparse(matrix,
                           sparse_format: SparseFormat,
                           policy: SparsePolicy,
                           dtype,
                           sparse_values: bool = True) -> bool:
     """
-    Returns whether it is preferable to convert a given matrix into a `scipy.sparse.csr_matrix` or
-    `scipy.sparse.csc_matrix`, depending on the format of the given matrix and a given `SparsePolicy`:
+    Returns whether it is preferable to convert a given matrix into a `scipy.sparse.csr_array` or
+    `scipy.sparse.csc_array`, depending on the format of the given matrix and a given `SparsePolicy`:
 
     If the given policy is `SparsePolicy.AUTO`, the matrix will be converted into the given sparse format, if possible
     and if the sparse matrix is expected to occupy less memory than a dense matrix. To be able to convert the matrix
-    into a sparse format, it must be a `scipy.sparse.lil_matrix`, `scipy.sparse.dok_matrix`, `scipy.sparse.coo_matrix`,
-    `scipy.sparse.csr_matrix` or `scipy.sparse.csc_matrix`.
+    into a sparse format, it must be a `scipy.sparse.spmatrix` or `scipy.sparse.sparray` in the LIL, DOK, COO, CSR or
+    CSC format.
 
     If the given policy is `SparsePolicy.FORCE_SPARSE`, the matrix will always be converted into the specified sparse
     format, if possible.  Dense matrices will never be converted into a sparse format.
 
     If the given policy is `SparsePolicy.FORCE_DENSE`, the matrix will always be converted into a dense matrix.
 
-    :param matrix:          A `np.ndarray` or `scipy.sparse.matrix` to be checked
+    :param matrix:          A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` to be checked
     :param sparse_format:   The `SparseFormat` to be used
     :param policy:          The `SparsePolicy` to be used
     :param dtype:           The type of the values that should be stored in the matrix
@@ -122,14 +89,19 @@ def should_enforce_sparse(matrix,
     :return:                True, if it is preferable to convert the matrix into a sparse matrix of the given format,
                             False otherwise
     """
-    if not issparse(matrix):
+    if not is_sparse(matrix):
         # Given matrix is dense
         return False
-    if isspmatrix_lil(matrix) or isspmatrix_coo(matrix) or isspmatrix_dok(matrix) or isspmatrix_csr(
-            matrix) or isspmatrix_csc(matrix):
+
+    supported_formats = [SparseFormat.LIL, SparseFormat.COO, SparseFormat.DOK, SparseFormat.CSR, SparseFormat.CSC]
+
+    if is_sparse(matrix, supported_formats=supported_formats):
         # Given matrix is in a format that might be converted into the specified sparse format
         if policy == SparsePolicy.AUTO:
-            return is_sparse(matrix, sparse_format=sparse_format, dtype=dtype, sparse_values=sparse_values)
+            return is_sparse_and_memory_efficient(matrix,
+                                                  sparse_format=sparse_format,
+                                                  dtype=dtype,
+                                                  sparse_values=sparse_values)
         return policy == SparsePolicy.FORCE_SPARSE
 
     raise ValueError('Matrix of type ' + type(matrix).__name__ + ' cannot be converted to format "' + str(sparse_format)
@@ -327,7 +299,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
     def _fit(self, x, y, **kwargs):
         """
         :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
-                                       only have an effect if `x` is a `scipy.sparse` matrix
+                                       only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
         """
         # Validate feature matrix and convert it to the preferred format...
         sparse_feature_value = float(kwargs.get(KWARG_SPARSE_FEATURE_VALUE, 0.0))
@@ -343,7 +315,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
                                 dtype=Float32,
                                 force_all_finite='allow-nan')
 
-        if issparse(x):
+        if is_sparse(x):
             log.debug('A sparse matrix is used to store the feature values of the training examples')
             x_data = np.ascontiguousarray(x.data, dtype=Float32)
             x_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
@@ -358,7 +330,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         prediction_sparse_policy = parse_sparse_policy('prediction_format', self.prediction_format)
         self.sparse_predictions_ = prediction_sparse_policy != SparsePolicy.FORCE_DENSE and (
             prediction_sparse_policy == SparsePolicy.FORCE_SPARSE
-            or is_sparse(y, sparse_format=y_sparse_format, dtype=Uint8, sparse_values=False))
+            or is_sparse_and_memory_efficient(y, sparse_format=y_sparse_format, dtype=Uint8, sparse_values=False))
 
         y_sparse_policy = parse_sparse_policy('label_format', self.label_format)
         y_enforce_sparse = should_enforce_sparse(y,
@@ -370,7 +342,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
                         accept_sparse=y_sparse_format.value,
                         dtype=Uint8)
 
-        if issparse(y):
+        if is_sparse(y):
             log.debug('A sparse matrix is used to store the labels of the training examples')
             y_indices = np.ascontiguousarray(y.indices, dtype=Uint32)
             y_indptr = np.ascontiguousarray(y.indptr, dtype=Uint32)
@@ -415,7 +387,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
     def _predict_binary(self, x, **kwargs):
         """
         :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
-                                       only have an effect if `x` is a `scipy.sparse` matrix
+                                       only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
         """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
@@ -435,7 +407,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
     def _predict_binary_incrementally(self, x, **kwargs):
         """
         :keyword sparse_feature_value:  The value that should be used for sparse elements in the feature matrix. Does
-                                        only have an effect if `x` is a `scipy.sparse` matrix
+                                        only have an effect if `x` is a `scipy.sparse.spmatrix` or
+                                        `scipy.sparse.sparray`
         :keyword max_rules:             The maximum number of rules to be used for prediction. Must be at least 1 or 0,
                                         if the number of rules should not be restricted
         """
@@ -463,7 +436,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
     def _predict_scores(self, x, **kwargs):
         """
         :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
-                                       only have an effect if `x` is a `scipy.sparse` matrix
+                                       only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
         """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
@@ -480,7 +453,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
     def _predict_scores_incrementally(self, x, **kwargs):
         """
         :keyword sparse_feature_value:  The value that should be used for sparse elements in the feature matrix. Does
-                                        only have an effect if `x` is a `scipy.sparse` matrix
+                                        only have an effect if `x` is a `scipy.sparse.spmatrix` or
+                                        `scipy.sparse.sparray`
         :keyword max_rules:             The maximum number of rules to be used for prediction. Must be at least 1 or 0,
                                         if the number of rules should not be restricted
         """
@@ -504,7 +478,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
     def _predict_proba(self, x, **kwargs):
         """
         :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
-                                       only have an effect if `x` is a `scipy.sparse` matrix
+                                       only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
         """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
@@ -524,7 +498,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
     def _predict_proba_incrementally(self, x, **kwargs):
         """
         :keyword sparse_feature_value:  The value that should be used for sparse elements in the feature matrix. Does
-                                        only have an effect if `x` is a `scipy.sparse` matrix
+                                        only have an effect if `x` is a `scipy.sparse.spmatrix` or
+                                        `scipy.sparse.sparray`
         :keyword max_rules:             The maximum number of rules to be used for prediction. Must be at least 1 or 0,
                                         if the number of rules should not be restricted
         """
@@ -564,7 +539,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
                                 dtype=Float32,
                                 force_all_finite='allow-nan')
 
-        if issparse(x):
+        if is_sparse(x):
             log.debug('A sparse matrix is used to store the feature values of the query examples')
             x_data = np.ascontiguousarray(x.data, dtype=Float32)
             x_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
