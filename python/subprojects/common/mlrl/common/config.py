@@ -22,7 +22,7 @@ from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, Equa
     PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinLabelSamplingMixin, \
     SequentialPostOptimizationMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
 from mlrl.common.cython.stopping_criterion import AggregationFunction
-from mlrl.common.format import format_dict_keys, format_string_set
+from mlrl.common.format import format_dict_keys, format_set
 from mlrl.common.options import BooleanOption, Options, parse_param, parse_param_and_options
 
 AUTOMATIC = 'auto'
@@ -200,7 +200,7 @@ class NominalParameter(Parameter, ABC):
                 suffix = ' For additional options refer to the documentation.'
                 supported_values = set(supported_values.keys())
             else:
-                description += format_string_set(supported_values)
+                description += format_set(supported_values)
                 suffix = ''
 
             description += '.'

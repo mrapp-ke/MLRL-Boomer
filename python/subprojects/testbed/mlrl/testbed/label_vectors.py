@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
-from scipy.sparse import lil_matrix
+from scipy.sparse import lil_array
 
 from mlrl.common.cython.label_space_info import LabelVectorSet, LabelVectorSetVisitor
 from mlrl.common.data_types import Uint8
@@ -43,14 +43,14 @@ class LabelVectorWriter(OutputWriter):
         def __init__(self, num_labels: int, y=None):
             """
             :param num_labels:  The total number of available labels
-            :param y:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                stores the ground truth labels
+            :param y:           A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                                `(num_examples, num_labels)`, that stores the ground truth labels
             """
             self.num_labels = num_labels
 
             if y is not None:
                 unique_label_vector_strings: Dict[str, int] = {}
-                y = lil_matrix(y)
+                y = lil_array(y)
                 separator = ','
 
                 for label_vector in y.rows:
