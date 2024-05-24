@@ -14,7 +14,7 @@ import numpy as np
 from scipy.sparse import issparse, isspmatrix_coo, isspmatrix_csc, isspmatrix_csr, isspmatrix_dok, isspmatrix_lil
 from sklearn.utils import check_array
 
-from mlrl.common.arrays import enforce_2d, enforce_dense
+from mlrl.common.arrays import SparseFormat, enforce_2d, enforce_dense
 from mlrl.common.cython.feature_info import EqualFeatureInfo, FeatureInfo, MixedFeatureInfo
 from mlrl.common.cython.feature_matrix import CContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
     FortranContiguousFeatureMatrix, RowWiseFeatureMatrix
@@ -42,14 +42,6 @@ class SparsePolicy(Enum):
     AUTO = 'auto'
     FORCE_SPARSE = 'sparse'
     FORCE_DENSE = 'dense'
-
-
-class SparseFormat(Enum):
-    """
-    Specifies all valid textual representations of sparse matrix formats.
-    """
-    CSC = 'csc'
-    CSR = 'csr'
 
 
 def parse_sparse_policy(parameter_name: str, value: Optional[str]) -> SparsePolicy:
