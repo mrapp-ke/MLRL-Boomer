@@ -109,7 +109,7 @@ def should_enforce_sparse(matrix,
     `scipy.sparse.csr_matrix` or `scipy.sparse.csc_matrix`.
 
     If the given policy is `SparsePolicy.FORCE_SPARSE`, the matrix will always be converted into the specified sparse
-    format, if possible.
+    format, if possible.  Dense matrices will never be converted into a sparse format.
 
     If the given policy is `SparsePolicy.FORCE_DENSE`, the matrix will always be converted into a dense matrix.
 
@@ -123,7 +123,7 @@ def should_enforce_sparse(matrix,
     """
     if not issparse(matrix):
         # Given matrix is dense
-        return policy == SparsePolicy.FORCE_SPARSE
+        return False
     if isspmatrix_lil(matrix) or isspmatrix_coo(matrix) or isspmatrix_dok(matrix) or isspmatrix_csr(
             matrix) or isspmatrix_csc(matrix):
         # Given matrix is in a format that might be converted into the specified sparse format
@@ -329,14 +329,16 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
                                        only have an effect if `x` is a `scipy.sparse` matrix
         """
         # Validate feature matrix and convert it to the preferred format...
+        sparse_feature_value = float(kwargs.get(KWARG_SPARSE_FEATURE_VALUE, 0.0))
         x_sparse_format = SparseFormat.CSC
         x_sparse_policy = parse_sparse_policy('feature_format', self.feature_format)
         x_enforce_sparse = should_enforce_sparse(x,
                                                  sparse_format=x_sparse_format,
                                                  policy=x_sparse_policy,
                                                  dtype=Float32)
-        x = self._validate_data((x if x_enforce_sparse else enforce_2d(enforce_dense(x, order='F', dtype=Float32))),
-                                accept_sparse=(x_sparse_format.value if x_enforce_sparse else False),
+        x = self._validate_data(x if x_enforce_sparse else enforce_2d(
+            enforce_dense(x, order='F', dtype=Float32, sparse_value=sparse_feature_value)),
+                                accept_sparse=x_sparse_format.value,
                                 dtype=Float32,
                                 force_all_finite='allow-nan')
 
@@ -345,7 +347,6 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             x_data = np.ascontiguousarray(x.data, dtype=Float32)
             x_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
             x_indptr = np.ascontiguousarray(x.indptr, dtype=Uint32)
-            sparse_feature_value = float(kwargs.get(KWARG_SPARSE_FEATURE_VALUE, 0.0))
             feature_matrix = CscFeatureMatrix(x_data, x_indices, x_indptr, x.shape[0], x.shape[1], sparse_feature_value)
         else:
             log.debug('A dense matrix is used to store the feature values of the training examples')
@@ -364,8 +365,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
                                                  policy=y_sparse_policy,
                                                  dtype=Uint8,
                                                  sparse_values=False)
-        y = check_array((y if y_enforce_sparse else enforce_2d(enforce_dense(y, order='C', dtype=Uint8))),
-                        accept_sparse=(y_sparse_format.value if y_enforce_sparse else False),
+        y = check_array(y if y_enforce_sparse else enforce_2d(enforce_dense(y, order='C', dtype=Uint8)),
+                        accept_sparse=y_sparse_format.value,
                         dtype=Uint8)
 
         if issparse(y):
@@ -551,12 +552,14 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
                                        only have an effect if `x` is a `scipy.sparse` matrix
         """
+        sparse_feature_value = float(kwargs.get(KWARG_SPARSE_FEATURE_VALUE, 0.0))
         sparse_format = SparseFormat.CSR
         sparse_policy = parse_sparse_policy('feature_format', self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy, dtype=Float32)
-        x = self._validate_data(x if enforce_sparse else enforce_2d(enforce_dense(x, order='C', dtype=Float32)),
+        x = self._validate_data(x if enforce_sparse else enforce_2d(
+            enforce_dense(x, order='C', dtype=Float32, sparse_value=sparse_feature_value)),
                                 reset=False,
-                                accept_sparse=(sparse_format.value if enforce_sparse else False),
+                                accept_sparse=sparse_format.value,
                                 dtype=Float32,
                                 force_all_finite='allow-nan')
 
@@ -565,7 +568,6 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             x_data = np.ascontiguousarray(x.data, dtype=Float32)
             x_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
             x_indptr = np.ascontiguousarray(x.indptr, dtype=Uint32)
-            sparse_feature_value = float(kwargs.get(KWARG_SPARSE_FEATURE_VALUE, 0.0))
             return CsrFeatureMatrix(x_data, x_indices, x_indptr, x.shape[0], x.shape[1], sparse_feature_value)
 
         log.debug('A dense matrix is used to store the feature values of the query examples')
