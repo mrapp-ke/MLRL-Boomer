@@ -11,6 +11,9 @@ import numpy as np
 from scipy.sparse import issparse, isspmatrix_coo, isspmatrix_csc, isspmatrix_csr, isspmatrix_dok, isspmatrix_lil, \
     sparray
 
+from mlrl.common.data_types import Uint32
+from mlrl.common.format import format_string_iterable
+
 
 class SparseFormat(Enum):
     """
@@ -95,6 +98,36 @@ def is_sparse(array, supported_formats: Optional[Set[SparseFormat]] = None) -> b
         return False
 
     return issparse(array)
+
+
+def is_sparse_and_memory_efficient(array, sparse_format: SparseFormat, dtype, sparse_values: bool = True) -> bool:
+    """
+    Returns whether a given matrix uses sparse format and is expected to occupy less memory than a dense matrix.
+
+    :param array:           A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` to be checked
+    :param sparse_format:   The `SparseFormat` to be used. Must be `SparseFormat.CSC` or `SparseFormat.CSR`
+    :param dtype:           The type of the values that should be stored in the matrix
+    :param sparse_values:   True, if the values must explicitly be stored when using a sparse format, False otherwise
+    :return:                True, if the given matrix uses a sparse format an is expected to occupy less memory than a
+                            dense matrix, False otherwise
+    """
+    supported_formats = {SparseFormat.CSC, SparseFormat.CSR}
+
+    if sparse_format not in supported_formats:
+        raise ValueError('Unable to estimate memory requirements of given sparse format: Must be one of '
+                         + format_string_iterable(supported_formats) + ', but is "' + str(sparse_format) + '"')
+
+    if is_sparse(array):
+        num_pointers = array.shape[1 if sparse_format == SparseFormat.CSC else 0]
+        size_int = np.dtype(Uint32).itemsize
+        size_data = np.dtype(dtype).itemsize
+        size_sparse_data = size_data if sparse_values else 0
+        num_dense_elements = array.nnz
+        size_sparse = (num_dense_elements * size_sparse_data) + (num_dense_elements * size_int) + (num_pointers
+                                                                                                   * size_int)
+        size_dense = np.prod(array.shape) * size_data
+        return size_sparse < size_dense
+    return False
 
 
 def enforce_dense(array, order: str, dtype, sparse_value=0) -> np.ndarray:
