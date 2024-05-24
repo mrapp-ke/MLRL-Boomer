@@ -24,7 +24,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set version
-        if: ${{ inputs.dev_release == 'true' }}
+        if: ${{ inputs.dev_release == true }}
         run: |
           echo ".dev$(cat VERSION.dev)" | tee -a VERSION >/dev/null
           echo "Set version to $(cat VERSION)"
