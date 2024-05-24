@@ -12,7 +12,7 @@ from scipy.sparse import issparse, isspmatrix_coo, isspmatrix_csc, isspmatrix_cs
     sparray
 
 from mlrl.common.data_types import Uint32
-from mlrl.common.format import format_string_iterable
+from mlrl.common.format import format_iterable
 
 
 class SparseFormat(Enum):
@@ -115,7 +115,7 @@ def is_sparse_and_memory_efficient(array, sparse_format: SparseFormat, dtype, sp
 
     if sparse_format not in supported_formats:
         raise ValueError('Unable to estimate memory requirements of given sparse format: Must be one of '
-                         + format_string_iterable(supported_formats) + ', but is "' + str(sparse_format) + '"')
+                         + format_iterable(supported_formats) + ', but is "' + str(sparse_format) + '"')
 
     if is_sparse(array):
         num_pointers = array.shape[1 if sparse_format == SparseFormat.CSC else 0]
