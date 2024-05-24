@@ -47,7 +47,7 @@ class Evaluation(ABC):
         :param predict_function:        The function to be invoked if binary result or regression scores should be
                                         obtained
         :param predict_proba_function:  The function to be invoked if probability estimates should be obtained
-        :param x:                       A `numpy.ndarray` or `scipy.sparse` matrix, shape
+        :param x:                       A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                                         `(num_examples, num_features)`, that stores the feature values of the query
                                         examples
         :return:                        The return value of the invoked function
@@ -92,12 +92,13 @@ class Evaluation(ABC):
                                     incrementally
         :param train_time:          The time needed to train the model
         :param predict_time:        The time needed to obtain the predictions
-        :param x:                   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`,
-                                    that stores the feature values of the query examples
-        :param y:                   A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                    stores the ground truth labels of the query examples
-        :param predictions:         A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                    stores the predictions for the query examples
+        :param x:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                                    `(num_examples, num_features)`, that stores the feature values of the query examples
+        :param y:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                                    `(num_examples, num_labels)`, that stores the ground truth labels of the query
+                                    examples
+        :param predictions:         A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` matrix, shape
+                                    `(num_examples, num_labels)`, that stores the predictions for the query examples
         :param learner:             The learner, the predictions have been obtained from
         """
         for output_writer in self.output_writers:
@@ -117,10 +118,10 @@ class Evaluation(ABC):
                             data
         :param train_time:  The time needed to train the model
         :param learner:     The learner, the predictions should be obtained from
-        :param x:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that
-                            stores the feature values of the query examples
-        :param y:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores
-                            the ground truth labels of the query examples
+        :param x:           A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                            `(num_examples, num_features)`, that stores the feature values of the query examples
+        :param y:           A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                            `(num_examples, num_labels)`, that stores the ground truth labels of the query examples
         """
 
 
@@ -363,10 +364,11 @@ class Experiment(DataSplitter.Callback):
         Fits a learner to training data.
 
         :param learner: The learner
-        :param x:       A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_features)`, that stores
-                        the feature values of the training examples
-        :param y:       A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that stores the
-                        labels of the training examples according to the ground truth
+        :param x:       A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                        `(num_examples, num_features)`, that stores the feature values of the training examples
+        :param y:       A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                        `(num_examples, num_labels)`, that stores the labels of the training examples according to the
+                        ground truth
         :return:        The time needed for training
         """
         start_time = timer()

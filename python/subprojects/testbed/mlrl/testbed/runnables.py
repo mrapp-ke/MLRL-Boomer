@@ -14,7 +14,7 @@ from typing import Dict, Iterable, List, Optional, Set
 
 from mlrl.common.config import NONE, Parameter, configure_argument_parser, create_kwargs_from_parameters
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
-from mlrl.common.format import format_dict_keys, format_enum_values, format_string_iterable
+from mlrl.common.format import format_dict_keys, format_enum_values, format_iterable
 from mlrl.common.info import PythonPackageInfo
 from mlrl.common.options import BooleanOption, parse_param_and_options
 from mlrl.common.rule_learners import SparsePolicy
@@ -134,7 +134,7 @@ class Runnable(ABC):
             authors = self.authors
 
             if len(authors) > 0:
-                result += ' ' + format_string_iterable(authors)
+                result += ' ' + format_iterable(authors)
 
             return ('Copyright (c)' if len(result) > 0 else '') + result
 
@@ -207,7 +207,7 @@ class Runnable(ABC):
 
         @staticmethod
         def __format_parent_packages(parent_packages: Set[str]) -> str:
-            return 'used by ' + format_string_iterable(parent_packages) if len(parent_packages) > 0 else ''
+            return 'used by ' + format_iterable(parent_packages) if len(parent_packages) > 0 else ''
 
         def __format_package_info(self) -> str:
             rows = []
