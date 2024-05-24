@@ -329,13 +329,15 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
                                        only have an effect if `x` is a `scipy.sparse` matrix
         """
         # Validate feature matrix and convert it to the preferred format...
+        sparse_feature_value = float(kwargs.get(KWARG_SPARSE_FEATURE_VALUE, 0.0))
         x_sparse_format = SparseFormat.CSC
         x_sparse_policy = parse_sparse_policy('feature_format', self.feature_format)
         x_enforce_sparse = should_enforce_sparse(x,
                                                  sparse_format=x_sparse_format,
                                                  policy=x_sparse_policy,
                                                  dtype=Float32)
-        x = self._validate_data(x if x_enforce_sparse else enforce_2d(enforce_dense(x, order='F', dtype=Float32)),
+        x = self._validate_data(x if x_enforce_sparse else enforce_2d(
+            enforce_dense(x, order='F', dtype=Float32, sparse_value=sparse_feature_value)),
                                 accept_sparse=x_sparse_format.value,
                                 dtype=Float32,
                                 force_all_finite='allow-nan')
@@ -345,7 +347,6 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             x_data = np.ascontiguousarray(x.data, dtype=Float32)
             x_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
             x_indptr = np.ascontiguousarray(x.indptr, dtype=Uint32)
-            sparse_feature_value = float(kwargs.get(KWARG_SPARSE_FEATURE_VALUE, 0.0))
             feature_matrix = CscFeatureMatrix(x_data, x_indices, x_indptr, x.shape[0], x.shape[1], sparse_feature_value)
         else:
             log.debug('A dense matrix is used to store the feature values of the training examples')
@@ -551,10 +552,12 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
                                        only have an effect if `x` is a `scipy.sparse` matrix
         """
+        sparse_feature_value = float(kwargs.get(KWARG_SPARSE_FEATURE_VALUE, 0.0))
         sparse_format = SparseFormat.CSR
         sparse_policy = parse_sparse_policy('feature_format', self.feature_format)
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy, dtype=Float32)
-        x = self._validate_data(x if enforce_sparse else enforce_2d(enforce_dense(x, order='C', dtype=Float32)),
+        x = self._validate_data(x if enforce_sparse else enforce_2d(
+            enforce_dense(x, order='C', dtype=Float32, sparse_value=sparse_feature_value)),
                                 reset=False,
                                 accept_sparse=sparse_format.value,
                                 dtype=Float32,
@@ -565,7 +568,6 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             x_data = np.ascontiguousarray(x.data, dtype=Float32)
             x_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
             x_indptr = np.ascontiguousarray(x.indptr, dtype=Uint32)
-            sparse_feature_value = float(kwargs.get(KWARG_SPARSE_FEATURE_VALUE, 0.0))
             return CsrFeatureMatrix(x_data, x_indices, x_indptr, x.shape[0], x.shape[1], sparse_feature_value)
 
         log.debug('A dense matrix is used to store the feature values of the query examples')
