@@ -15,10 +15,11 @@ from xml.dom import minidom
 import arff
 import numpy as np
 
-from scipy.sparse import coo_array, csc_array, dok_array, issparse, lil_array
+from scipy.sparse import coo_array, csc_array, dok_array, lil_array
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 
+from mlrl.common.arrays import is_sparse
 from mlrl.common.data_types import Float32, Uint8
 
 from mlrl.testbed.io import ENCODING_UTF8, write_xml_file
@@ -229,7 +230,7 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
     """
     arff_file = path.join(output_dir, arff_file_name)
     log.debug('Saving data set to file \'%s\'...', str(arff_file))
-    sparse = issparse(x) and issparse(y)
+    sparse = is_sparse(x) and is_sparse(y)
     x = dok_array(x)
     y = dok_array(y)
     x_prefix = 0
@@ -315,7 +316,7 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
              (len(meta_data.attributes) - num_nominal_attributes))
 
     if num_nominal_attributes > 0:
-        if issparse(x):
+        if is_sparse(x):
             x = x.toarray()
 
         old_shape = x.shape
