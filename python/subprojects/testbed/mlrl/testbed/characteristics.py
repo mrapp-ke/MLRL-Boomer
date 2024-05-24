@@ -8,8 +8,7 @@ from typing import Dict, List, Optional
 
 import numpy as np
 
-from scipy.sparse import issparse
-
+from mlrl.common.arrays import is_sparse
 from mlrl.common.options import Options
 
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
@@ -38,7 +37,7 @@ def density(matrix) -> float:
     """
     num_elements = matrix.shape[0] * matrix.shape[1]
 
-    if issparse(matrix):
+    if is_sparse(matrix):
         num_dense_elements = matrix.nnz
     else:
         num_dense_elements = np.count_nonzero(matrix)
@@ -54,7 +53,7 @@ def label_cardinality(y) -> float:
                 `(num_examples, num_labels)`, that stores the labels of training examples
     :return:    The average number of relevant labels per training example
     """
-    if issparse(y):
+    if is_sparse(y):
         y = y.tolil()
         num_relevant_per_example = y.getnnz(axis=1)
     else:
@@ -71,7 +70,7 @@ def distinct_label_vectors(y) -> int:
                 `(num_examples, num_labels)`, that stores the labels of training examples
     :return:    The number of distinct label vectors in the given matrix
     """
-    if issparse(y):
+    if is_sparse(y):
         y = y.tolil()
         return np.unique(y.rows).shape[0]
 
@@ -86,7 +85,7 @@ def label_imbalance_ratio(y) -> float:
                 `(num_examples, num_labels)`, that stores the labels of training examples
     :return:    The label imbalance ratio averaged over the available labels
     """
-    if issparse(y):
+    if is_sparse(y):
         y = y.tocsc()
         num_relevant_per_label = y.getnnz(axis=0)
     else:
