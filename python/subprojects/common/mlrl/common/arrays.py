@@ -3,9 +3,19 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for handling arrays.
 """
+from enum import Enum
+
 import numpy as np
 
 from scipy.sparse import issparse
+
+
+class SparseFormat(Enum):
+    """
+    Specifies all valid textual representations of sparse matrix formats.
+    """
+    CSC = 'csc'
+    CSR = 'csr'
 
 
 def enforce_dense(array, order: str, dtype, sparse_value=0) -> np.ndarray:
