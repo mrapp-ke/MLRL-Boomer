@@ -335,8 +335,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
                                                  sparse_format=x_sparse_format,
                                                  policy=x_sparse_policy,
                                                  dtype=Float32)
-        x = self._validate_data((x if x_enforce_sparse else enforce_2d(enforce_dense(x, order='F', dtype=Float32))),
-                                accept_sparse=(x_sparse_format.value if x_enforce_sparse else False),
+        x = self._validate_data(x if x_enforce_sparse else enforce_2d(enforce_dense(x, order='F', dtype=Float32)),
+                                accept_sparse=x_sparse_format.value,
                                 dtype=Float32,
                                 force_all_finite='allow-nan')
 
@@ -364,8 +364,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
                                                  policy=y_sparse_policy,
                                                  dtype=Uint8,
                                                  sparse_values=False)
-        y = check_array((y if y_enforce_sparse else enforce_2d(enforce_dense(y, order='C', dtype=Uint8))),
-                        accept_sparse=(y_sparse_format.value if y_enforce_sparse else False),
+        y = check_array(y if y_enforce_sparse else enforce_2d(enforce_dense(y, order='C', dtype=Uint8)),
+                        accept_sparse=y_sparse_format.value,
                         dtype=Uint8)
 
         if issparse(y):
@@ -556,7 +556,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         enforce_sparse = should_enforce_sparse(x, sparse_format=sparse_format, policy=sparse_policy, dtype=Float32)
         x = self._validate_data(x if enforce_sparse else enforce_2d(enforce_dense(x, order='C', dtype=Float32)),
                                 reset=False,
-                                accept_sparse=(sparse_format.value if enforce_sparse else False),
+                                accept_sparse=sparse_format.value,
                                 dtype=Float32,
                                 force_all_finite='allow-nan')
 
