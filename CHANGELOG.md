@@ -6,6 +6,14 @@ tocdepth: 2
 
 # Release Notes
 
+## Version 0.11.0 (to be released)
+
+A major update to the BOOMER algorithm that introduces the following changes.
+
+### Additions to the Command Line API
+
+- **The value to be used for sparse elements in the feature matrix can be specified** via the argument `--sparse-feature-value`.
+
 ## Version 0.10.0 (May 5th, 2024)
 
 A major update to the BOOMER algorithm that introduces the following changes.
