@@ -316,7 +316,9 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
                                 force_all_finite='allow-nan')
 
         if is_sparse(x):
-            log.debug('A sparse matrix is used to store the feature values of the training examples')
+            log.debug(
+                'A sparse matrix with sparse value %s is used to store the feature values of the training examples',
+                sparse_feature_value)
             x_data = np.ascontiguousarray(x.data, dtype=Float32)
             x_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
             x_indptr = np.ascontiguousarray(x.indptr, dtype=Uint32)
@@ -540,7 +542,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
                                 force_all_finite='allow-nan')
 
         if is_sparse(x):
-            log.debug('A sparse matrix is used to store the feature values of the query examples')
+            log.debug('A sparse matrix with sparse value %s is used to store the feature values of the query examples',
+                      sparse_feature_value)
             x_data = np.ascontiguousarray(x.data, dtype=Float32)
             x_indices = np.ascontiguousarray(x.indices, dtype=Uint32)
             x_indptr = np.ascontiguousarray(x.indptr, dtype=Uint32)

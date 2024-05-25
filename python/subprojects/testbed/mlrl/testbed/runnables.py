@@ -12,12 +12,14 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, Iterable, List, Optional, Set
 
+from sklearn.base import BaseEstimator
+
 from mlrl.common.config import NONE, Parameter, configure_argument_parser, create_kwargs_from_parameters
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.format import format_dict_keys, format_enum_values, format_iterable
 from mlrl.common.info import PythonPackageInfo
 from mlrl.common.options import BooleanOption, parse_param_and_options
-from mlrl.common.rule_learners import SparsePolicy
+from mlrl.common.rule_learners import KWARG_SPARSE_FEATURE_VALUE, SparsePolicy
 
 from mlrl.testbed.characteristics import OPTION_DISTINCT_LABEL_VECTORS, OPTION_LABEL_CARDINALITY, \
     OPTION_LABEL_DENSITY, OPTION_LABEL_IMBALANCE_RATIO, OPTION_LABEL_SPARSITY, OPTION_LABELS
@@ -641,23 +643,65 @@ class LearnerRunnable(Runnable, ABC):
 
     def _run(self, args):
         prediction_type = self.__create_prediction_type(args)
-        train_evaluation = self._create_evaluation(
-            args, prediction_type,
-            self._create_evaluation_output_writers(args, prediction_type) if args.evaluate_training_data else [])
-        test_evaluation = self._create_evaluation(args, prediction_type,
-                                                  self._create_evaluation_output_writers(args, prediction_type))
+        train_evaluation = self._create_train_evaluation(args, prediction_type)
+        test_evaluation = self._create_test_evaluation(args, prediction_type)
         data_splitter = self.__create_data_splitter(args)
-        experiment = Experiment(base_learner=self._create_learner(args),
-                                learner_name=self.learner_name,
-                                data_splitter=data_splitter,
-                                pre_training_output_writers=self._create_pre_training_output_writers(args),
-                                post_training_output_writers=self._create_post_training_output_writers(args),
-                                pre_execution_hook=self.__create_pre_execution_hook(args, data_splitter),
-                                train_evaluation=train_evaluation,
-                                test_evaluation=test_evaluation,
-                                parameter_input=self._create_parameter_input(args),
-                                persistence=self._create_persistence(args))
+        pre_execution_hook = self.__create_pre_execution_hook(args, data_splitter)
+        base_learner = self._create_learner(args)
+        pre_training_output_writers = self._create_pre_training_output_writers(args)
+        post_training_output_writers = self._create_post_training_output_writers(args)
+        parameter_input = self._create_parameter_input(args)
+        persistence = self._create_persistence(args)
+        experiment = self._create_experiment(args,
+                                             base_learner=base_learner,
+                                             learner_name=self.learner_name,
+                                             data_splitter=data_splitter,
+                                             train_evaluation=train_evaluation,
+                                             test_evaluation=test_evaluation,
+                                             pre_training_output_writers=pre_training_output_writers,
+                                             post_training_output_writers=post_training_output_writers,
+                                             pre_execution_hook=pre_execution_hook,
+                                             parameter_input=parameter_input,
+                                             persistence=persistence)
         experiment.run()
+
+    # pylint: disable=unused-argument
+    def _create_experiment(self, args, base_learner: BaseEstimator, learner_name: str, data_splitter: DataSplitter,
+                           pre_training_output_writers: List[OutputWriter],
+                           post_training_output_writers: List[OutputWriter],
+                           pre_execution_hook: Optional[Experiment.ExecutionHook],
+                           train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
+                           parameter_input: Optional[ParameterInput],
+                           persistence: Optional[ModelPersistence]) -> Experiment:
+        """
+        May be overridden by subclasses in order to create the `Experiment` that should be run.
+
+        :param args:                            The command line arguments
+        :param base_learner:                    The classifier or ranker to be trained
+        :param learner_name:                    The name of the classifier or ranker
+        :param data_splitter:                   The method to be used for splitting the available data into training and
+                                                test sets
+        :param pre_training_output_writers:     A list that contains all output writers to be invoked before training
+        :param post_training_output_writers:    A list that contains all output writers to be invoked after training
+        :param pre_execution_hook:              An operation that should be executed before the experiment
+        :param train_evaluation:                The method to be used for evaluating the predictions for the training
+                                                data or None, if the predictions should not be evaluated
+        :param test_evaluation:                 The method to be used for evaluating the predictions for the test data
+                                                or None, if the predictions should not be evaluated
+        :param parameter_input:                 The input that should be used to read the parameter settings
+        :param persistence:                     The `ModelPersistence` that should be used for loading and saving models
+        :return:                                The `Experiment` that has been created
+        """
+        return Experiment(base_learner=base_learner,
+                          learner_name=learner_name,
+                          data_splitter=data_splitter,
+                          pre_training_output_writers=pre_training_output_writers,
+                          post_training_output_writers=post_training_output_writers,
+                          pre_execution_hook=pre_execution_hook,
+                          train_evaluation=train_evaluation,
+                          test_evaluation=test_evaluation,
+                          parameter_input=parameter_input,
+                          persistence=persistence)
 
     def _create_pre_training_output_writers(self, args) -> List[OutputWriter]:
         """
@@ -733,12 +777,40 @@ class LearnerRunnable(Runnable, ABC):
         """
         return None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
 
+    def _create_train_evaluation(self, args, prediction_type: PredictionType) -> Optional[Evaluation]:
+        """
+        May be overridden by subclasses in order to create the `Evaluation` that should be used for evaluating
+        predictions obtained from a previously trained model for the training data.
+
+        :param args:            The command line arguments
+        :param prediction_type: The type of the predictions to be obtained
+        :return:                The `Evaluation` that has been created
+        """
+        if args.evaluate_training_data:
+            output_writers = self._create_evaluation_output_writers(args, prediction_type)
+        else:
+            output_writers = []
+
+        return self._create_evaluation(args, prediction_type, output_writers)
+
+    def _create_test_evaluation(self, args, prediction_type: PredictionType) -> Optional[Evaluation]:
+        """
+        May be overridden by subclasses in order to create the `Evaluation` that should be used for evaluating
+        predictions obtained from a previously trained model for the test data.
+
+        :param args:            The command line arguments
+        :param prediction_type: The type of the predictions to be obtained
+        :return:                The `Evaluation` that has been created
+        """
+        output_writers = self._create_evaluation_output_writers(args, prediction_type)
+        return self._create_evaluation(args, prediction_type, output_writers)
+
     # pylint: disable=unused-argument
     def _create_evaluation(self, args, prediction_type: PredictionType,
                            output_writers: List[OutputWriter]) -> Optional[Evaluation]:
         """
-        May be overridden by subclasses in order to create the `Evaluation` that should be used to evaluate predictions
-        that are obtained from a previously trained model.
+        May be overridden by subclasses in order to create the `Evaluation` that should be used for evaluating
+        predictions obtained from a previously trained model.
 
         :param args:            The command line arguments
         :param prediction_type: The type of the predictions to be obtained
@@ -963,6 +1035,10 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES = PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES
 
+    PARAM_FEATURE_FORMAT = '--feature-format'
+
+    PARAM_SPARSE_FEATURE_VALUE = '--sparse-feature-value'
+
     def __init__(self,
                  description: str,
                  learner_name: str,
@@ -1038,11 +1114,17 @@ class RuleLearnerRunnable(LearnerRunnable):
                             + 'an output file or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does '
                             + 'only have an effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For '
                             + 'additional options refer to the documentation.')
-        parser.add_argument('--feature-format',
+        parser.add_argument(self.PARAM_FEATURE_FORMAT,
                             type=str,
                             default=None,
                             help='The format to be used for the representation of the feature matrix. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
+        parser.add_argument(self.PARAM_SPARSE_FEATURE_VALUE,
+                            type=float,
+                            default=0.0,
+                            help='The value that should be used for sparse elements in the feature matrix. Does only '
+                            + 'have an effect if a sparse format is used for the representation of the feature matrix, '
+                            + 'depending on the parameter ' + self.PARAM_FEATURE_FORMAT + '.')
         parser.add_argument('--label-format',
                             type=str,
                             default=None,
@@ -1054,6 +1136,27 @@ class RuleLearnerRunnable(LearnerRunnable):
                             help='The format to be used for the representation of predictions. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
         configure_argument_parser(parser, self.config_type, self.parameters)
+
+    def _create_experiment(self, args, base_learner: BaseEstimator, learner_name: str, data_splitter: DataSplitter,
+                           pre_training_output_writers: List[OutputWriter],
+                           post_training_output_writers: List[OutputWriter],
+                           pre_execution_hook: Optional[Experiment.ExecutionHook],
+                           train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
+                           parameter_input: Optional[ParameterInput],
+                           persistence: Optional[ModelPersistence]) -> Experiment:
+        kwargs = {KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
+        return Experiment(base_learner=base_learner,
+                          learner_name=learner_name,
+                          data_splitter=data_splitter,
+                          pre_training_output_writers=pre_training_output_writers,
+                          post_training_output_writers=post_training_output_writers,
+                          pre_execution_hook=pre_execution_hook,
+                          train_evaluation=train_evaluation,
+                          test_evaluation=test_evaluation,
+                          parameter_input=parameter_input,
+                          persistence=persistence,
+                          fit_kwargs=kwargs,
+                          predict_kwargs=kwargs)
 
     def _create_learner(self, args):
         kwargs = create_kwargs_from_parameters(args, self.parameters)
