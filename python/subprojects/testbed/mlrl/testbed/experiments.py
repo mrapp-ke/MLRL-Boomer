@@ -8,7 +8,7 @@ import logging as log
 from abc import ABC, abstractmethod
 from functools import reduce
 from timeit import default_timer as timer
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 
@@ -38,7 +38,7 @@ class Evaluation(ABC):
         self.prediction_type = prediction_type
         self.output_writers = output_writers
 
-    def _invoke_prediction_function(self, learner, predict_function, predict_proba_function, x):
+    def _invoke_prediction_function(self, learner, predict_function, predict_proba_function, x, **kwargs):
         """
         May be used by subclasses in order to invoke the correct prediction function, depending on the type of
         result that should be obtained.
@@ -50,6 +50,7 @@ class Evaluation(ABC):
         :param x:                       A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                                         `(num_examples, num_features)`, that stores the feature values of the query
                                         examples
+        :param kwargs:                  Optional keyword arguments to be passed to the `predict_function`
         :return:                        The return value of the invoked function
         """
         prediction_type = self.prediction_type
@@ -57,9 +58,9 @@ class Evaluation(ABC):
         if prediction_type == PredictionType.SCORES:
             try:
                 if isinstance(learner, Learner):
-                    result = predict_function(x, predict_scores=True)
+                    result = predict_function(x, predict_scores=True, **kwargs)
                 elif isinstance(learner, RegressorMixin):
-                    result = predict_function(x)
+                    result = predict_function(x, **kwargs)
                 else:
                     raise RuntimeError()
             except RuntimeError:
@@ -72,7 +73,7 @@ class Evaluation(ABC):
                 log.error('Prediction of probabilities not supported')
                 result = None
         else:
-            result = predict_function(x)
+            result = predict_function(x, **kwargs)
 
         return result
 
@@ -107,7 +108,7 @@ class Evaluation(ABC):
 
     @abstractmethod
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
-                             learner, x, y):
+                             learner, x, y, **kwargs):
         """
         Must be implemented by subclasses in order to obtain and evaluate predictions for given query examples from a
         previously trained model.
@@ -122,6 +123,7 @@ class Evaluation(ABC):
                             `(num_examples, num_features)`, that stores the feature values of the query examples
         :param y:           A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                             `(num_examples, num_labels)`, that stores the ground truth labels of the query examples
+        :param kwargs:      Optional keyword arguments to be passed to the model when obtaining predictions
         """
 
 
@@ -131,10 +133,10 @@ class GlobalEvaluation(Evaluation):
     """
 
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
-                             learner, x, y):
+                             learner, x, y, **kwargs):
         log.info('Predicting for %s %s examples...', x.shape[0], data_type.value)
         start_time = timer()
-        predictions = self._invoke_prediction_function(learner, learner.predict, learner.predict_proba, x)
+        predictions = self._invoke_prediction_function(learner, learner.predict, learner.predict_proba, x, **kwargs)
         end_time = timer()
         predict_time = end_time - start_time
 
@@ -173,12 +175,12 @@ class IncrementalEvaluation(Evaluation):
         self.step_size = step_size
 
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
-                             learner, x, y):
+                             learner, x, y, **kwargs):
         if not isinstance(learner, IncrementalLearner):
             raise ValueError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
 
         incremental_predictor = self._invoke_prediction_function(learner, learner.predict_incrementally,
-                                                                 learner.predict_proba_incrementally, x)
+                                                                 learner.predict_proba_incrementally, x, **kwargs)
 
         if incremental_predictor is not None:
             step_size = self.step_size
@@ -244,7 +246,9 @@ class Experiment(DataSplitter.Callback):
                  train_evaluation: Optional[Evaluation] = None,
                  test_evaluation: Optional[Evaluation] = None,
                  parameter_input: Optional[ParameterInput] = None,
-                 persistence: Optional[ModelPersistence] = None):
+                 persistence: Optional[ModelPersistence] = None,
+                 fit_kwargs: Optional[Dict[str, Any]] = None,
+                 predict_kwargs: Optional[Dict[str, Any]] = None):
         """
         :param base_learner:                    The classifier or ranker to be trained
         :param learner_name:                    The name of the classifier or ranker
@@ -259,6 +263,10 @@ class Experiment(DataSplitter.Callback):
                                                 or None, if the predictions should not be evaluated
         :param parameter_input:                 The input that should be used to read the parameter settings
         :param persistence:                     The `ModelPersistence` that should be used for loading and saving models
+        :param fit_kwargs:                      Optional keyword arguments to be passed to the learner when fitting a
+                                                model
+        :param predict_kwargs:                  Optional keyword arguments to be passed to the learner when obtaining
+                                                predictions from a model
         """
         self.base_learner = base_learner
         self.learner_name = learner_name
@@ -270,6 +278,8 @@ class Experiment(DataSplitter.Callback):
         self.test_evaluation = test_evaluation
         self.parameter_input = parameter_input
         self.persistence = persistence
+        self.fit_kwargs = fit_kwargs
+        self.predict_kwargs = predict_kwargs
 
     def run(self):
         """
@@ -332,7 +342,7 @@ class Experiment(DataSplitter.Callback):
             train_time = 0
         else:
             log.info('Fitting model to %s training examples...', train_x.shape[0])
-            train_time = self.__train(current_learner, train_x, train_y)
+            train_time = self.__train(current_learner, train_x, train_y, **self.fit_kwargs)
             log.info('Successfully fit model in %s', format_duration(train_time))
 
             # Save model to disk...
@@ -344,7 +354,7 @@ class Experiment(DataSplitter.Callback):
         if evaluation is not None and data_split.is_train_test_separated():
             data_type = DataType.TRAINING
             evaluation.predict_and_evaluate(meta_data, data_split, data_type, train_time, current_learner, train_x,
-                                            train_y)
+                                            train_y, **self.predict_kwargs)
 
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
@@ -352,14 +362,14 @@ class Experiment(DataSplitter.Callback):
         if evaluation is not None:
             data_type = DataType.TEST if data_split.is_train_test_separated() else DataType.TRAINING
             evaluation.predict_and_evaluate(meta_data, data_split, data_type, train_time, current_learner, test_x,
-                                            test_y)
+                                            test_y, **self.predict_kwargs)
 
         # Write output data after model was trained...
         for output_writer in self.post_training_output_writers:
             output_writer.write_output(meta_data, train_x, train_y, data_split, current_learner, train_time=train_time)
 
     @staticmethod
-    def __train(learner, x, y):
+    def __train(learner, x, y, **kwargs):
         """
         Fits a learner to training data.
 
@@ -369,10 +379,11 @@ class Experiment(DataSplitter.Callback):
         :param y:       A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                         `(num_examples, num_labels)`, that stores the labels of the training examples according to the
                         ground truth
+        :param kwargs:  Optional keyword arguments to be passed to the learner when fitting model
         :return:        The time needed for training
         """
         start_time = timer()
-        learner.fit(x, y)
+        learner.fit(x, y, **kwargs)
         end_time = timer()
         return end_time - start_time
 
