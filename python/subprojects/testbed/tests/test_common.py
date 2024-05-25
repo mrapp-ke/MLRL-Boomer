@@ -206,6 +206,17 @@ class CmdBuilder:
         self.args.append('cross-validation{num_folds=' + str(num_folds) + ',current_fold=' + str(current_fold) + '}')
         return self
 
+    def sparse_feature_value(self, sparse_feature_value: float = 0.0):
+        """
+        Configures the value that should be used for sparse elements in the feature matrix.
+
+        :param sparse_feature_value:    The value that should be used for sparse elements in the feature matrix
+        :return:                        The builder itself
+        """
+        self.args.append('--sparse-feature-value')
+        self.args.append(str(sparse_feature_value))
+        return self
+
     def evaluate_training_data(self, evaluate_training_data: bool = True):
         """
         Configures whether the rule learner should be evaluated on the training data or not.
@@ -966,6 +977,15 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             raise SkipTest('Integration tests are only supported on Linux')
 
         super().setUpClass()
+
+    def test_sparse_feature_value(self):
+        """
+        Tests the training of the rule learning algorithm when using a custom value for the sparse elements in the
+        feature matrix.
+        """
+        builder = CmdBuilder(self.cmd, dataset=self.dataset_numerical_sparse) \
+            .sparse_feature_value(1.0)
+        self.run_cmd(builder, 'sparse-feature-value')
 
     def test_meka_format(self):
         """

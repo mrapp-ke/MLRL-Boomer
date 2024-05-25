@@ -25,6 +25,10 @@ The following mandatory arguments must always be given to specify the dataset th
 - `--data-dir` An absolute or relative path to the directory where the data set files are located.
 - `--dataset` The name of the data set files (without suffix).
 
+Optionally, the following arguments can be used to provide additional information about the dataset.
+
+- `--sparse-feature-value` (Default value = `0.0`) The value that should be used for sparse elements in the feature matrix. Does only have an effect if a sparse format is used for the representation of the feature matrix, depending on the parameter `--feature-format`.
+
 ## Performance Evaluation
 
 > A more detailed description of the following arguments can be found {ref}`here<evaluation>`.
