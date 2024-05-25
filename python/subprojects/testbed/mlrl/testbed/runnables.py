@@ -641,11 +641,8 @@ class LearnerRunnable(Runnable, ABC):
 
     def _run(self, args):
         prediction_type = self.__create_prediction_type(args)
-        train_evaluation = self._create_evaluation(
-            args, prediction_type,
-            self._create_evaluation_output_writers(args, prediction_type) if args.evaluate_training_data else [])
-        test_evaluation = self._create_evaluation(args, prediction_type,
-                                                  self._create_evaluation_output_writers(args, prediction_type))
+        train_evaluation = self._create_train_evaluation(args, prediction_type)
+        test_evaluation = self._create_test_evaluation(args, prediction_type)
         data_splitter = self.__create_data_splitter(args)
         experiment = Experiment(base_learner=self._create_learner(args),
                                 learner_name=self.learner_name,
@@ -733,12 +730,40 @@ class LearnerRunnable(Runnable, ABC):
         """
         return None if args.model_dir is None else ModelPersistence(model_dir=args.model_dir)
 
+    def _create_train_evaluation(self, args, prediction_type: PredictionType) -> Optional[Evaluation]:
+        """
+        May be overridden by subclasses in order to create the `Evaluation` that should be used for evaluating
+        predictions obtained from a previously trained model for the training data.
+
+        :param args:            The command line arguments
+        :param prediction_type: The type of the predictions to be obtained
+        :return:                The `Evaluation` that has been created
+        """
+        if args.evaluate_training_data:
+            output_writers = self._create_evaluation_output_writers(args, prediction_type)
+        else:
+            output_writers = []
+
+        return self._create_evaluation(args, prediction_type, output_writers)
+
+    def _create_test_evaluation(self, args, prediction_type: PredictionType) -> Optional[Evaluation]:
+        """
+        May be overridden by subclasses in order to create the `Evaluation` that should be used for evaluating
+        predictions obtained from a previously trained model for the test data.
+
+        :param args:            The command line arguments
+        :param prediction_type: The type of the predictions to be obtained
+        :return:                The `Evaluation` that has been created
+        """
+        output_writers = self._create_evaluation_output_writers(args, prediction_type)
+        return self._create_evaluation(args, prediction_type, output_writers)
+
     # pylint: disable=unused-argument
     def _create_evaluation(self, args, prediction_type: PredictionType,
                            output_writers: List[OutputWriter]) -> Optional[Evaluation]:
         """
-        May be overridden by subclasses in order to create the `Evaluation` that should be used to evaluate predictions
-        that are obtained from a previously trained model.
+        May be overridden by subclasses in order to create the `Evaluation` that should be used for evaluating
+        predictions obtained from a previously trained model.
 
         :param args:            The command line arguments
         :param prediction_type: The type of the predictions to be obtained
