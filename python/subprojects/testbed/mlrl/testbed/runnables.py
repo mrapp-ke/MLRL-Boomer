@@ -19,7 +19,7 @@ from mlrl.common.cython.validation import assert_greater, assert_greater_or_equa
 from mlrl.common.format import format_dict_keys, format_enum_values, format_iterable
 from mlrl.common.info import PythonPackageInfo
 from mlrl.common.options import BooleanOption, parse_param_and_options
-from mlrl.common.rule_learners import SparsePolicy
+from mlrl.common.rule_learners import KWARG_SPARSE_FEATURE_VALUE, SparsePolicy
 
 from mlrl.testbed.characteristics import OPTION_DISTINCT_LABEL_VECTORS, OPTION_LABEL_CARDINALITY, \
     OPTION_LABEL_DENSITY, OPTION_LABEL_IMBALANCE_RATIO, OPTION_LABEL_SPARSITY, OPTION_LABELS
@@ -671,7 +671,8 @@ class LearnerRunnable(Runnable, ABC):
                            post_training_output_writers: List[OutputWriter],
                            pre_execution_hook: Optional[Experiment.ExecutionHook],
                            train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
-                           parameter_input: Optional[ParameterInput], persistence: Optional[ModelPersistence]) -> Experiment:
+                           parameter_input: Optional[ParameterInput],
+                           persistence: Optional[ModelPersistence]) -> Experiment:
         """
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 
@@ -1034,6 +1035,10 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     STORE_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES = PRINT_JOINT_PROBABILITY_CALIBRATION_MODEL_VALUES
 
+    PARAM_FEATURE_FORMAT = '--feature-format'
+
+    PARAM_SPARSE_FEATURE_VALUE = '--sparse-feature-value'
+
     def __init__(self,
                  description: str,
                  learner_name: str,
@@ -1109,11 +1114,17 @@ class RuleLearnerRunnable(LearnerRunnable):
                             + 'an output file or not. Must be one of ' + format_enum_values(BooleanOption) + '. Does '
                             + 'only have an effect if the parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For '
                             + 'additional options refer to the documentation.')
-        parser.add_argument('--feature-format',
+        parser.add_argument(self.PARAM_FEATURE_FORMAT,
                             type=str,
                             default=None,
                             help='The format to be used for the representation of the feature matrix. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
+        parser.add_argument(self.PARAM_SPARSE_FEATURE_VALUE,
+                            type=float,
+                            default=0.0,
+                            help='The value that should be used for sparse elements in the feature matrix. Does only '
+                            + 'have an effect if a sparse format is used for the representation of the feature matrix, '
+                            + 'depending on the parameter ' + self.PARAM_FEATURE_FORMAT + '.')
         parser.add_argument('--label-format',
                             type=str,
                             default=None,
@@ -1125,6 +1136,27 @@ class RuleLearnerRunnable(LearnerRunnable):
                             help='The format to be used for the representation of predictions. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
         configure_argument_parser(parser, self.config_type, self.parameters)
+
+    def _create_experiment(self, args, base_learner: BaseEstimator, learner_name: str, data_splitter: DataSplitter,
+                           pre_training_output_writers: List[OutputWriter],
+                           post_training_output_writers: List[OutputWriter],
+                           pre_execution_hook: Optional[Experiment.ExecutionHook],
+                           train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
+                           parameter_input: Optional[ParameterInput],
+                           persistence: Optional[ModelPersistence]) -> Experiment:
+        kwargs = {KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
+        return Experiment(base_learner=base_learner,
+                          learner_name=learner_name,
+                          data_splitter=data_splitter,
+                          pre_training_output_writers=pre_training_output_writers,
+                          post_training_output_writers=post_training_output_writers,
+                          pre_execution_hook=pre_execution_hook,
+                          train_evaluation=train_evaluation,
+                          test_evaluation=test_evaluation,
+                          parameter_input=parameter_input,
+                          persistence=persistence,
+                          fit_kwargs=kwargs,
+                          predict_kwargs=kwargs)
 
     def _create_learner(self, args):
         kwargs = create_kwargs_from_parameters(args, self.parameters)
