@@ -25,9 +25,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Set version
         if: ${{ inputs.dev_release == true }}
-        run: |
-          echo ".dev$(cat VERSION.dev)" | tee -a VERSION >/dev/null
-          echo "Set version to $(cat VERSION)"
+        run: ./build apply_development_version
       - name: Build package
         run: |
           SUBPROJECTS=${{ inputs.subproject }} ./build build_wheels
