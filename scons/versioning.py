@@ -5,7 +5,7 @@ Provides utility functions for updating the project's version.
 """
 import sys
 
-from typing import Tuple
+from typing import Optional, Tuple
 
 VERSION_FILE = 'VERSION'
 
@@ -68,8 +68,13 @@ def __parse_version(version: str) -> Tuple[int, int, int]:
     return major, minor, patch
 
 
-def __format_version(major: int, minor: int, patch: int) -> str:
-    return str(major) + '.' + str(minor) + '.' + str(patch)
+def __format_version(major: int, minor: int, patch: int, dev: Optional[int] = None) -> str:
+    version = str(major) + '.' + str(minor) + '.' + str(patch)
+
+    if dev is not None:
+        version += '.dev' + str(dev)
+
+    return version
 
 
 def __get_current_version() -> Tuple[int, int, int]:
@@ -78,8 +83,8 @@ def __get_current_version() -> Tuple[int, int, int]:
     return __parse_version(current_version)
 
 
-def __update_version(major: int, minor: int, patch: int):
-    updated_version = __format_version(major, minor, patch)
+def __update_version(major: int, minor: int, patch: int, dev: Optional[int] = None):
+    updated_version = __format_version(major, minor, patch, dev)
     print('Updated version to "' + updated_version + '"')
     __write_version_file(VERSION_FILE, updated_version)
 
@@ -99,6 +104,15 @@ def reset_development_version(**_):
     """
     __get_current_development_version()
     __update_development_version(0)
+
+
+def apply_development_version(**_):
+    """
+    Appends the development version to the current semantic version.
+    """
+    major, minor, patch = __get_current_version()
+    dev = __get_current_development_version()
+    __update_version(major, minor, patch, dev)
 
 
 def increment_patch_version(**_):
