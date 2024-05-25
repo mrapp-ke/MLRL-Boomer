@@ -12,6 +12,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, Iterable, List, Optional, Set
 
+from sklearn.base import BaseEstimator
+
 from mlrl.common.config import NONE, Parameter, configure_argument_parser, create_kwargs_from_parameters
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
 from mlrl.common.format import format_dict_keys, format_enum_values, format_iterable
@@ -644,17 +646,61 @@ class LearnerRunnable(Runnable, ABC):
         train_evaluation = self._create_train_evaluation(args, prediction_type)
         test_evaluation = self._create_test_evaluation(args, prediction_type)
         data_splitter = self.__create_data_splitter(args)
-        experiment = Experiment(base_learner=self._create_learner(args),
-                                learner_name=self.learner_name,
-                                data_splitter=data_splitter,
-                                pre_training_output_writers=self._create_pre_training_output_writers(args),
-                                post_training_output_writers=self._create_post_training_output_writers(args),
-                                pre_execution_hook=self.__create_pre_execution_hook(args, data_splitter),
-                                train_evaluation=train_evaluation,
-                                test_evaluation=test_evaluation,
-                                parameter_input=self._create_parameter_input(args),
-                                persistence=self._create_persistence(args))
+        pre_execution_hook = self.__create_pre_execution_hook(args, data_splitter)
+        base_learner = self._create_learner(args)
+        pre_training_output_writers = self._create_pre_training_output_writers(args)
+        post_training_output_writers = self._create_post_training_output_writers(args)
+        parameter_input = self._create_parameter_input(args)
+        persistence = self._create_persistence(args)
+        experiment = self._create_experiment(args,
+                                             base_learner=base_learner,
+                                             learner_name=self.learner_name,
+                                             data_splitter=data_splitter,
+                                             train_evaluation=train_evaluation,
+                                             test_evaluation=test_evaluation,
+                                             pre_training_output_writers=pre_training_output_writers,
+                                             post_training_output_writers=post_training_output_writers,
+                                             pre_execution_hook=pre_execution_hook,
+                                             parameter_input=parameter_input,
+                                             persistence=persistence)
         experiment.run()
+
+    # pylint: disable=unused-argument
+    def _create_experiment(self, args, base_learner: BaseEstimator, learner_name: str, data_splitter: DataSplitter,
+                           pre_training_output_writers: List[OutputWriter],
+                           post_training_output_writers: List[OutputWriter],
+                           pre_execution_hook: Optional[Experiment.ExecutionHook],
+                           train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
+                           parameter_input: Optional[ParameterInput], persistence: Optional[ModelPersistence]) -> Experiment:
+        """
+        May be overridden by subclasses in order to create the `Experiment` that should be run.
+
+        :param args:                            The command line arguments
+        :param base_learner:                    The classifier or ranker to be trained
+        :param learner_name:                    The name of the classifier or ranker
+        :param data_splitter:                   The method to be used for splitting the available data into training and
+                                                test sets
+        :param pre_training_output_writers:     A list that contains all output writers to be invoked before training
+        :param post_training_output_writers:    A list that contains all output writers to be invoked after training
+        :param pre_execution_hook:              An operation that should be executed before the experiment
+        :param train_evaluation:                The method to be used for evaluating the predictions for the training
+                                                data or None, if the predictions should not be evaluated
+        :param test_evaluation:                 The method to be used for evaluating the predictions for the test data
+                                                or None, if the predictions should not be evaluated
+        :param parameter_input:                 The input that should be used to read the parameter settings
+        :param persistence:                     The `ModelPersistence` that should be used for loading and saving models
+        :return:                                The `Experiment` that has been created
+        """
+        return Experiment(base_learner=base_learner,
+                          learner_name=learner_name,
+                          data_splitter=data_splitter,
+                          pre_training_output_writers=pre_training_output_writers,
+                          post_training_output_writers=post_training_output_writers,
+                          pre_execution_hook=pre_execution_hook,
+                          train_evaluation=train_evaluation,
+                          test_evaluation=test_evaluation,
+                          parameter_input=parameter_input,
+                          persistence=persistence)
 
     def _create_pre_training_output_writers(self, args) -> List[OutputWriter]:
         """
