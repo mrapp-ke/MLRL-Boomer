@@ -9,7 +9,7 @@ from libcpp.utility cimport move
 from mlrl.common.cython.feature_info cimport FeatureInfo
 from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseFeatureMatrix
 from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
-from mlrl.common.cython.label_space_info cimport create_label_space_info
+from mlrl.common.cython.output_space_info cimport create_output_space_info
 from mlrl.common.cython.prediction cimport BinaryPredictor, ProbabilityPredictor, ScorePredictor, SparseBinaryPredictor
 from mlrl.common.cython.probability_calibration cimport create_joint_probability_calibration_model, \
     create_marginal_probability_calibration_model
@@ -38,13 +38,13 @@ cdef class TrainingResult:
     trained, as well as additional information that is necessary for obtaining predictions for unseen data.
     """
 
-    def __cinit__(self, uint32 num_outputs, RuleModel rule_model not None, LabelSpaceInfo label_space_info not None,
+    def __cinit__(self, uint32 num_outputs, RuleModel rule_model not None, OutputSpaceInfo output_space_info not None,
                   MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
                   JointProbabilityCalibrationModel joint_probability_calibration_model not None):
         """
         :param num_outputs:                             The number of outputs for which a model has been trained
         :param rule_model:                              The `RuleModel` that has been trained
-        :param label_space_info:                        The `LabelSpaceInfo` that may be used as a basis for making
+        :param output_space_info:                       The `OutputSpaceInfo` that may be used as a basis for making
                                                         predictions
         :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
                                                         the calibration of marginal probabilities
@@ -53,7 +53,7 @@ cdef class TrainingResult:
         """
         self.num_outputs = num_outputs
         self.rule_model = rule_model
-        self.label_space_info = label_space_info
+        self.output_space_info = output_space_info
         self.marginal_probability_calibration_model = marginal_probability_calibration_model
         self.joint_probability_calibration_model = joint_probability_calibration_model
 
@@ -87,18 +87,18 @@ cdef class RuleLearner:
             dereference(label_matrix.get_row_wise_label_matrix_ptr()), random_state)
         cdef uint32 num_outputs = training_result_ptr.get().getNumOutputs()
         cdef unique_ptr[IRuleModel] rule_model_ptr = move(training_result_ptr.get().getRuleModel())
-        cdef unique_ptr[ILabelSpaceInfo] label_space_info_ptr = move(training_result_ptr.get().getLabelSpaceInfo())
+        cdef unique_ptr[IOutputSpaceInfo] output_space_info_ptr = move(training_result_ptr.get().getOutputSpaceInfo())
         cdef unique_ptr[IMarginalProbabilityCalibrationModel] marginal_probability_calibration_model_ptr = \
             move(training_result_ptr.get().getMarginalProbabilityCalibrationModel())
         cdef unique_ptr[IJointProbabilityCalibrationModel] joint_probability_calibration_model_ptr = \
             move(training_result_ptr.get().getJointProbabilityCalibrationModel())
         cdef RuleModel rule_model = create_rule_model(move(rule_model_ptr))
-        cdef LabelSpaceInfo label_space_info = create_label_space_info(move(label_space_info_ptr))
+        cdef OutputSpaceInfo output_space_info = create_output_space_info(move(output_space_info_ptr))
         cdef MarginalProbabilityCalibrationModel marginal_probability_calibration_model = \
             create_marginal_probability_calibration_model(move(marginal_probability_calibration_model_ptr))
         cdef JointProbabilityCalibrationModel joint_probability_calibration_model = \
             create_joint_probability_calibration_model(move(joint_probability_calibration_model_ptr))
-        return TrainingResult.__new__(TrainingResult, num_outputs, rule_model, label_space_info,
+        return TrainingResult.__new__(TrainingResult, num_outputs, rule_model, output_space_info,
                                       marginal_probability_calibration_model, joint_probability_calibration_model)
 
     def can_predict_binary(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
@@ -114,7 +114,7 @@ cdef class RuleLearner:
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
 
     def create_binary_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
-                                LabelSpaceInfo label_space_info not None,
+                                OutputSpaceInfo output_space_info not None,
                                 MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
                                 JointProbabilityCalibrationModel joint_probability_calibration_model not None,
                                 uint32 num_labels) -> BinaryPredictor:
@@ -125,7 +125,7 @@ cdef class RuleLearner:
         :param feature_matrix:                          A `RowWiseFeatureMatrix` that provides row-wise access to the
                                                         feature values of the query examples
         :param rule_model:                              The `RuleModel` that should be used to obtain predictions
-        :param label_space_info:                        The `LabelSpaceInfo` that provides information about the label
+        :param output_space_info:                       The `OutputSpaceInfo` that provides information about the output
                                                         space that may be used as a basis for obtaining predictions
         :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
                                                         the calibration of marginal probabilities
@@ -138,7 +138,7 @@ cdef class RuleLearner:
         cdef unique_ptr[IBinaryPredictor] predictor_ptr = move(self.get_rule_learner_ptr().createBinaryPredictor(
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
             dereference(rule_model.get_rule_model_ptr()),
-            dereference(label_space_info.get_label_space_info_ptr()),
+            dereference(output_space_info.get_output_space_info_ptr()),
             dereference(marginal_probability_calibration_model.get_marginal_probability_calibration_model_ptr()),
             dereference(joint_probability_calibration_model.get_joint_probability_calibration_model_ptr()),
             num_labels))
@@ -147,7 +147,7 @@ cdef class RuleLearner:
         return binary_predictor
 
     def create_sparse_binary_predictor(self, RowWiseFeatureMatrix feature_matrix not None,
-                                       RuleModel rule_model not None, LabelSpaceInfo label_space_info not None,
+                                       RuleModel rule_model not None, OutputSpaceInfo output_space_info not None,
                                        MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
                                        JointProbabilityCalibrationModel joint_probability_calibration_model not None,
                                        uint32 num_labels) -> SparseBinaryPredictor:
@@ -158,7 +158,7 @@ cdef class RuleLearner:
         :param feature_matrix:                          A `RowWiseFeatureMatrix` that provides row-wise access to the
                                                         feature values of the query examples
         :param rule_model:                              The `RuleModel` that should be used to obtain predictions
-        :param label_space_info:                        The `LabelSpaceInfo` that provides information about the label
+        :param output_space_info:                       The `OutputSpaceInfo` that provides information about the output
                                                         space that may be used as a basis for obtaining predictions
         :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
                                                         the calibration of marginal probabilities
@@ -172,7 +172,7 @@ cdef class RuleLearner:
             move(self.get_rule_learner_ptr().createSparseBinaryPredictor(
                 dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
                 dereference(rule_model.get_rule_model_ptr()),
-                dereference(label_space_info.get_label_space_info_ptr()),
+                dereference(output_space_info.get_output_space_info_ptr()),
                 dereference(marginal_probability_calibration_model.get_marginal_probability_calibration_model_ptr()),
                 dereference(joint_probability_calibration_model.get_joint_probability_calibration_model_ptr()),
                 num_labels))
@@ -193,7 +193,7 @@ cdef class RuleLearner:
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
 
     def create_score_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
-                               LabelSpaceInfo label_space_info not None, uint32 num_labels) -> ScorePredictor:
+                               OutputSpaceInfo output_space_info not None, uint32 num_labels) -> ScorePredictor:
         """
         Creates and returns a predictor that may be used to predict regression scores for given query examples. If the
         prediction of regression scores is not supported by the rule learner, a `RuntimeError` is thrown.
@@ -201,7 +201,7 @@ cdef class RuleLearner:
         :param feature_matrix:      A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
                                     query examples
         :param rule_model:          The `RuleModel` that should be used to obtain predictions
-        :param label_space_info:    The `LabelSpaceInfo` that provides information about the label space that may be
+        :param output_space_info:   The `OutputSpaceInfo` that provides information about the output space that may be
                                     used as a basis for obtaining predictions
         :param num_labels:          The number of labels to predict for
         :return:                    A `ScorePredictor` that may be used to predict regression scores for the given query
@@ -210,7 +210,7 @@ cdef class RuleLearner:
         cdef unique_ptr[IScorePredictor] predictor_ptr = move(self.get_rule_learner_ptr().createScorePredictor(
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
             dereference(rule_model.get_rule_model_ptr()),
-            dereference(label_space_info.get_label_space_info_ptr()),
+            dereference(output_space_info.get_output_space_info_ptr()),
             num_labels))
         cdef ScorePredictor score_predictor = ScorePredictor.__new__(ScorePredictor)
         score_predictor.predictor_ptr = move(predictor_ptr)
@@ -229,7 +229,7 @@ cdef class RuleLearner:
             dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
 
     def create_probability_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
-                                     LabelSpaceInfo label_space_info not None,
+                                     OutputSpaceInfo output_space_info not None,
                                      MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
                                      JointProbabilityCalibrationModel joint_probability_calibration_model not None,
                                      uint32 num_labels) -> ProbabilityPredictor:
@@ -240,7 +240,7 @@ cdef class RuleLearner:
         :param feature_matrix:                          A `RowWiseFeatureMatrix` that provides row-wise access to the
                                                         feature values of the query examples
         :param rule_model:                              The `RuleModel` that should be used to obtain predictions
-        :param label_space_info:                        The `LabelSpaceInfo` that provides information about the label
+        :param output_space_info:                       The `OutputSpaceInfo` that provides information about the output
                                                         space that may be used as a basis for obtaining predictions
         :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
                                                         the calibration of marginal probabilities
@@ -254,7 +254,7 @@ cdef class RuleLearner:
             move(self.get_rule_learner_ptr().createProbabilityPredictor(
                 dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
                 dereference(rule_model.get_rule_model_ptr()),
-                dereference(label_space_info.get_label_space_info_ptr()),
+                dereference(output_space_info.get_output_space_info_ptr()),
                 dereference(marginal_probability_calibration_model.get_marginal_probability_calibration_model_ptr()),
                 dereference(joint_probability_calibration_model.get_joint_probability_calibration_model_ptr()),
                 num_labels))

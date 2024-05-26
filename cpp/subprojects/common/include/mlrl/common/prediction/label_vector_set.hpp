@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/input/label_matrix_row_wise.hpp"
-#include "mlrl/common/prediction/label_space_info.hpp"
+#include "mlrl/common/prediction/output_space_info.hpp"
 
 #include <functional>
 #include <vector>
@@ -12,7 +12,7 @@
 /**
  * Defines an interface for all classes that provide access to a set of unique label vectors.
  */
-class MLRLCOMMON_API ILabelVectorSet : public ILabelSpaceInfo {
+class MLRLCOMMON_API ILabelVectorSet : public IOutputSpaceInfo {
     public:
 
         virtual ~ILabelVectorSet() override {}

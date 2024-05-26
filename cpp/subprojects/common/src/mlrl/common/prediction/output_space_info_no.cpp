@@ -1,4 +1,4 @@
-#include "mlrl/common/prediction/label_space_info_no.hpp"
+#include "mlrl/common/prediction/output_space_info_no.hpp"
 
 #include "mlrl/common/model/rule_list.hpp"
 #include "mlrl/common/prediction/predictor_binary.hpp"
@@ -7,9 +7,9 @@
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
 
 /**
- * An implementation of the type `INoLabelSpaceInfo` that does not provide any information about the label space.
+ * An implementation of the type `INoOutputSpaceInfo` that does not provide any information about the output space.
  */
-class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
+class NoOutputSpaceInfo final : public INoOutputSpaceInfo {
     public:
 
         std::unique_ptr<IJointProbabilityCalibrator> createJointProbabilityCalibrator(
@@ -79,6 +79,6 @@ class NoLabelSpaceInfo final : public INoLabelSpaceInfo {
         }
 };
 
-std::unique_ptr<INoLabelSpaceInfo> createNoLabelSpaceInfo() {
-    return std::make_unique<NoLabelSpaceInfo>();
+std::unique_ptr<INoOutputSpaceInfo> createNoOutputSpaceInfo() {
+    return std::make_unique<NoOutputSpaceInfo>();
 }

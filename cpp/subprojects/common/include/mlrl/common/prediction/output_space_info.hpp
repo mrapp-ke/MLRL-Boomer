@@ -23,17 +23,17 @@ class IProbabilityPredictor;
 class IProbabilityPredictorFactory;
 
 /**
- * Defines an interface for all classes that provide information about the label space that may be used as a basis for
+ * Defines an interface for all classes that provide information about the output space that may be used as a basis for
  * making predictions.
  */
-class MLRLCOMMON_API ILabelSpaceInfo {
+class MLRLCOMMON_API IOutputSpaceInfo {
     public:
 
-        virtual ~ILabelSpaceInfo() {}
+        virtual ~IOutputSpaceInfo() {}
 
         /**
          * Creates and returns a new instance of the class `IJointProbabilityCalibrator`, based on the type of this
-         * information about the label space.
+         * information about the output space.
          *
          * @param factory                             A reference to an object of type
          *                                            `IJointProbabilityCalibratorFactory` that should be used to create
@@ -50,7 +50,7 @@ class MLRLCOMMON_API ILabelSpaceInfo {
 
         /**
          * Creates and returns a new instance of the class `IBinaryPredictor`, based on the type of this information
-         * about the label space.
+         * about the output space.
          *
          * @param factory                             A reference to an object of type `IBinaryPredictorFactory` that
          *                                            should be used to create the instance
@@ -75,7 +75,7 @@ class MLRLCOMMON_API ILabelSpaceInfo {
 
         /**
          * Creates and returns a new instance of the class `IBinaryPredictor`, based on the type of this information
-         * about the label space.
+         * about the output space.
          *
          * @param factory                             A reference to an object of type `IBinaryPredictorFactory` that
          *                                            should be used to create the instance
@@ -100,7 +100,7 @@ class MLRLCOMMON_API ILabelSpaceInfo {
 
         /**
          * Creates and returns a new instance of the class `ISparseBinaryPredictor`, based on the type of this
-         * information about the label space.
+         * information about the output space.
          *
          * @param factory                             A reference to an object of type `ISparseBinaryPredictorFactory`
          *                                            that should be used to create the instance
@@ -125,7 +125,7 @@ class MLRLCOMMON_API ILabelSpaceInfo {
 
         /**
          * Creates and returns a new instance of the class `ISparseBinaryPredictor`, based on the type of this
-         * information about the label space.
+         * information about the output space.
          *
          * @param factory                             A reference to an object of type `ISparseBinaryPredictorFactory`
          *                                            that should be used to create the instance
@@ -150,7 +150,7 @@ class MLRLCOMMON_API ILabelSpaceInfo {
 
         /**
          * Creates and returns a new instance of the class `IScorePredictor`, based on the type of this information
-         * about the label space.
+         * about the output space.
          *
          * @param factory       A reference to an object of type `IScorePredictorFactory` that should be used to create
          *                      the instance
@@ -166,7 +166,7 @@ class MLRLCOMMON_API ILabelSpaceInfo {
 
         /**
          * Creates and returns a new instance of the class `IScorePredictor`, based on the type of this information
-         * about the label space.
+         * about the output space.
          *
          * @param factory       A reference to an object of type `IScorePredictorFactory` that should be used to create
          *                      the instance
@@ -183,7 +183,7 @@ class MLRLCOMMON_API ILabelSpaceInfo {
 
         /**
          * Creates and returns a new instance of the class `IProbabilityPredictor`, based on the type of this
-         * information about the label space.
+         * information about the output space.
          *
          * @param factory                             A reference to an object of type `IProbabilityPredictorFactory`
          *                                            that should be used to create the instance
@@ -208,7 +208,7 @@ class MLRLCOMMON_API ILabelSpaceInfo {
 
         /**
          * Creates and returns a new instance of the class `IProbabilityPredictor`, based on the type of this
-         * information about the label space.
+         * information about the output space.
          *
          * @param factory                             A reference to an object of type `IProbabilityPredictorFactory`
          *                                            that should be used to create the instance

@@ -10,7 +10,7 @@ import numpy as np
 
 from scipy.sparse import lil_array
 
-from mlrl.common.cython.label_space_info import LabelVectorSet, LabelVectorSetVisitor
+from mlrl.common.cython.output_space_info import LabelVectorSet, LabelVectorSetVisitor
 from mlrl.common.data_types import Uint8
 from mlrl.common.options import Options
 from mlrl.common.rule_learners import RuleLearner
@@ -150,7 +150,7 @@ class LabelVectorSetWriter(LabelVectorWriter):
 
         def visit_label_vector(self, label_vector: np.ndarray, frequency: int):
             """
-            See :func:`mlrl.common.cython.label_space_info.LabelVectorSetVisitor.visit_label_vector`
+            See :func:`mlrl.common.cython.output_space_info.LabelVectorSetVisitor.visit_label_vector`
             """
             self.label_vectors.unique_label_vectors.append((label_vector, frequency))
 
@@ -159,11 +159,11 @@ class LabelVectorSetWriter(LabelVectorWriter):
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         if isinstance(learner, RuleLearner):
-            label_space_info = learner.label_space_info_
+            output_space_info = learner.output_space_info_
 
-            if isinstance(label_space_info, LabelVectorSet):
+            if isinstance(output_space_info, LabelVectorSet):
                 visitor = LabelVectorSetWriter.Visitor(num_labels=y.shape[1])
-                label_space_info.visit(visitor)
+                output_space_info.visit(visitor)
                 return visitor.label_vectors
 
         return super()._generate_output_data(meta_data, x, y, data_split, learner, data_type, prediction_type,
