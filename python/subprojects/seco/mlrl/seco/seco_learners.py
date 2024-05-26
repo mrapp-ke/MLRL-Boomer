@@ -35,7 +35,7 @@ class SeCo(RuleLearner, ClassifierMixin, MultiOutputMixin):
                  lift_function: Optional[str] = None,
                  heuristic: Optional[str] = None,
                  pruning_heuristic: Optional[str] = None,
-                 label_sampling: Optional[str] = None,
+                 output_sampling: Optional[str] = None,
                  instance_sampling: Optional[str] = None,
                  feature_sampling: Optional[str] = None,
                  holdout: Optional[str] = None,
@@ -67,10 +67,10 @@ class SeCo(RuleLearner, ClassifierMixin, MultiOutputMixin):
                                                 'precision', 'recall', 'weighted-relative-accuracy', 'f-measure',
                                                 'm-estimate' or 'laplace'. For additional options refer to the
                                                 documentation
-        :param label_sampling:                  The strategy that should be used to sample from the available labels
-                                                whenever a new rule is learned. Must be 'without-replacement' or 'none',
-                                                if no sampling should be used. For additional options refer to the
-                                                documentation
+        :param output_sampling:                 The strategy that should be used to sample from the available outputs
+                                                whenever a new rule is learned. Must be 'round-robin',
+                                                'without-replacement' or 'none', if no sampling should be used. For
+                                                additional options refer to the documentation
         :param instance_sampling:               The strategy that should be used to sample from the available the
                                                 training examples whenever a new rule is learned. Must be
                                                 'with-replacement', 'without-replacement', 'stratified_label_wise',
@@ -111,7 +111,7 @@ class SeCo(RuleLearner, ClassifierMixin, MultiOutputMixin):
         self.lift_function = lift_function
         self.heuristic = heuristic
         self.pruning_heuristic = pruning_heuristic
-        self.label_sampling = label_sampling
+        self.output_sampling = output_sampling
         self.instance_sampling = instance_sampling
         self.feature_sampling = feature_sampling
         self.holdout = holdout

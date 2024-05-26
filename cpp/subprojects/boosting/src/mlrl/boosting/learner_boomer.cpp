@@ -6,7 +6,7 @@ namespace boosting {
         this->useSequentialRuleModelAssemblage();
         this->useGreedyTopDownRuleInduction();
         this->useDefaultRule();
-        this->useNoLabelSampling();
+        this->useNoOutputSampling();
         this->useNoInstanceSampling();
         this->useFeatureSamplingWithoutReplacement();
         this->useParallelPrediction();

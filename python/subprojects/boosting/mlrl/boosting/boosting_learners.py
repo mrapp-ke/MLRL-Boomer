@@ -39,7 +39,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                  joint_probability_calibration: Optional[str] = None,
                  binary_predictor: Optional[str] = None,
                  probability_predictor: Optional[str] = None,
-                 label_sampling: Optional[str] = None,
+                 output_sampling: Optional[str] = None,
                  instance_sampling: Optional[str] = None,
                  feature_sampling: Optional[str] = None,
                  holdout: Optional[str] = None,
@@ -95,10 +95,10 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                                                     be 'label-wise', 'marginalized' or 'auto', if the most suitable
                                                     strategy should be chosen automatically, depending on the loss
                                                     function
-        :param label_sampling:                      The strategy that should be used to sample from the available labels
-                                                    whenever a new rule is learned. Must be 'without-replacement' or
-                                                    'none', if no sampling should be used. For additional options refer
-                                                    to the documentation
+        :param output_sampling:                     The strategy that should be used to sample from the available
+                                                    outputs whenever a new rule is learned. Must be 'round-robin',
+                                                    'without-replacement' or 'none', if no sampling should be used. For
+                                                    additional options refer to the documentation
         :param instance_sampling:                   The strategy that should be used to sample from the available the
                                                     training examples whenever a new rule is learned. Must be
                                                     'with-replacement', 'without-replacement', 'stratified_label_wise',
@@ -159,7 +159,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         self.joint_probability_calibration = joint_probability_calibration
         self.binary_predictor = binary_predictor
         self.probability_predictor = probability_predictor
-        self.label_sampling = label_sampling
+        self.output_sampling = output_sampling
         self.instance_sampling = instance_sampling
         self.feature_sampling = feature_sampling
         self.holdout = holdout

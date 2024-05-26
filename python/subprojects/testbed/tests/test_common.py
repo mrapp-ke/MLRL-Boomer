@@ -69,11 +69,11 @@ FEATURE_SAMPLING_NO = 'none'
 
 FEATURE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
 
-LABEL_SAMPLING_NO = 'none'
+OUTPUT_SAMPLING_NO = 'none'
 
-LABEL_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
+OUTPUT_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
 
-LABEL_SAMPLING_ROUND_ROBIN = 'round-robin'
+OUTPUT_SAMPLING_ROUND_ROBIN = 'round-robin'
 
 HOLDOUT_NO = 'none'
 
@@ -557,15 +557,15 @@ class CmdBuilder:
         self.args.append(feature_sampling)
         return self
 
-    def label_sampling(self, label_sampling: str = LABEL_SAMPLING_WITHOUT_REPLACEMENT):
+    def output_sampling(self, output_sampling: str = OUTPUT_SAMPLING_WITHOUT_REPLACEMENT):
         """
-        Configures the rule learner to sample from the available labels.
+        Configures the rule learner to sample from the available outputs.
 
-        :param label_sampling:  The name of the sampling method that should be used
+        :param output_sampling: The name of the sampling method that should be used
         :return:                The builder itself
         """
-        self.args.append('--label-sampling')
-        self.args.append(label_sampling)
+        self.args.append('--output-sampling')
+        self.args.append(output_sampling)
         return self
 
     def rule_pruning(self, rule_pruning: str = RULE_PRUNING_IREP):
@@ -1603,29 +1603,29 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .feature_sampling(FEATURE_SAMPLING_WITHOUT_REPLACEMENT)
         self.run_cmd(builder, 'feature-sampling-without-replacement')
 
-    def test_label_sampling_no(self):
+    def test_output_sampling_no(self):
         """
-        Tests the rule learning algorithm when not using a method to sample from the available labels.
+        Tests the rule learning algorithm when not using a method to sample from the available outputs.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .label_sampling(LABEL_SAMPLING_NO)
-        self.run_cmd(builder, 'label-sampling-no')
+            .output_sampling(OUTPUT_SAMPLING_NO)
+        self.run_cmd(builder, 'output-sampling-no')
 
-    def test_label_sampling_round_robin(self):
+    def test_output_sampling_round_robin(self):
         """
-        Tests the rule learning algorithm when using a method that samples single labels in a round-robin fashion.
+        Tests the rule learning algorithm when using a method that samples single outputs in a round-robin fashion.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .label_sampling(LABEL_SAMPLING_ROUND_ROBIN)
-        self.run_cmd(builder, 'label-sampling-round-robin')
+            .output_sampling(OUTPUT_SAMPLING_ROUND_ROBIN)
+        self.run_cmd(builder, 'output-sampling-round-robin')
 
-    def test_label_sampling_without_replacement(self):
+    def test_output_sampling_without_replacement(self):
         """
-        Tests the rule learning algorithm when using a method to sample from the available labels without replacement.
+        Tests the rule learning algorithm when using a method to sample from the available outputs without replacement.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .label_sampling(LABEL_SAMPLING_WITHOUT_REPLACEMENT)
-        self.run_cmd(builder, 'label-sampling-without-replacement')
+            .output_sampling(OUTPUT_SAMPLING_WITHOUT_REPLACEMENT)
+        self.run_cmd(builder, 'output-sampling-without-replacement')
 
     def test_pruning_no(self):
         """

@@ -22,8 +22,8 @@ from mlrl.common.cython.feature_sampling import FeatureSamplingWithoutReplacemen
 from mlrl.common.cython.instance_sampling import ExampleWiseStratifiedInstanceSamplingConfig, \
     InstanceSamplingWithoutReplacementConfig, InstanceSamplingWithReplacementConfig, \
     LabelWiseStratifiedInstanceSamplingConfig
-from mlrl.common.cython.label_sampling import LabelSamplingWithoutReplacementConfig
 from mlrl.common.cython.multi_threading import ManualMultiThreadingConfig
+from mlrl.common.cython.output_sampling import OutputSamplingWithoutReplacementConfig
 from mlrl.common.cython.partition_sampling import ExampleWiseStratifiedBiPartitionSamplingConfig, \
     LabelWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization import SequentialPostOptimizationConfig
@@ -386,46 +386,45 @@ class EqualFrequencyFeatureBinningMixin(ABC):
         pass
 
 
-class NoLabelSamplingMixin(ABC):
+class NoOutputSamplingMixin(ABC):
     """
-    Allows to configure a rule learner to not use label sampling.
+    Allows to configure a rule learner to not use output sampling.
     """
 
     @abstractmethod
-    def use_no_label_sampling(self):
+    def use_no_output_sampling(self):
         """
-        Configures the rule learner to not sample from the available labels whenever a new rule should be learned.
+        Configures the rule learner to not sample from the available outputs whenever a new rule should be learned.
         """
         pass
 
 
-class RoundRobinLabelSamplingMixin(ABC):
+class RoundRobinOutputSamplingMixin(ABC):
     """
-    Allows to configure a rule learner to sample single labels in a round-robin fashion.
+    Allows to configure a rule learner to sample one output at a time in a round-robin fashion.
     """
 
     @abstractmethod
-    def use_round_robin_label_sampling(self):
+    def use_round_robin_output_sampling(self):
         """
-        Configures the rule learner to sample a single label in a round-robin fashion whenever a new rule should be
-        learned.
+        Configures the rule learner to sample a one output at a time in a round-robin fashion whenever a new rule should
+        be learned.
         """
         pass
 
 
-class LabelSamplingWithoutReplacementMixin(ABC):
+class OutputSamplingWithoutReplacementMixin(ABC):
     """
-    Allows to configure a rule learner to use label sampling without replacement.
+    Allows to configure a rule learner to use output sampling without replacement.
     """
 
     @abstractmethod
-    def use_label_sampling_without_replacement(self) -> LabelSamplingWithoutReplacementConfig:
+    def use_output_sampling_without_replacement(self) -> OutputSamplingWithoutReplacementConfig:
         """
-        Configures the rule learner to sample from the available labels with replacement whenever a new rule should be
+        Configures the rule learner to sample from the available outputs with replacement whenever a new rule should be
         learned.
 
-        :return: A `LabelSamplingWithoutReplacementConfig` that allows further configuration of the method for sampling
-                 labels
+        :return: An `OutputSamplingWithoutReplacementConfig` that allows further configuration of the sampling method
         """
         pass
 
