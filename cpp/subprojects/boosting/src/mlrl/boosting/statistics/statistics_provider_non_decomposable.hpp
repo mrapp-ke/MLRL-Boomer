@@ -3,14 +3,14 @@
  */
 #pragma once
 
-#include "mlrl/boosting/statistics/statistics_example_wise.hpp"
-#include "mlrl/boosting/statistics/statistics_label_wise.hpp"
+#include "mlrl/boosting/statistics/statistics_decomposable.hpp"
+#include "mlrl/boosting/statistics/statistics_non_decomposable.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
 
 namespace boosting {
 
     /**
-     * Provides access to an object of type `IExampleWiseStatistics`.
+     * Provides access to an object of type `INonDecomposableStatistics`.
      *
      * @tparam LabelWiseRuleEvaluationFactory   The type of the classes that may be used for calculating the label-wise
      *                                          predictions of rules, as well as their overall quality
@@ -18,17 +18,17 @@ namespace boosting {
      *                                          example-wise predictions of rules, as well as their overall quality
      */
     template<typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
-    class ExampleWiseStatisticsProvider final : public IStatisticsProvider {
+    class NonDecomposableStatisticsProvider final : public IStatisticsProvider {
         private:
 
-            typedef IExampleWiseStatistics<ExampleWiseRuleEvaluationFactory, LabelWiseRuleEvaluationFactory>
-              ExampleWiseStatistics;
+            typedef INonDecomposableStatistics<ExampleWiseRuleEvaluationFactory, LabelWiseRuleEvaluationFactory>
+              NonDecomposableStatistics;
 
             const ExampleWiseRuleEvaluationFactory& regularRuleEvaluationFactory_;
 
             const ExampleWiseRuleEvaluationFactory& pruningRuleEvaluationFactory_;
 
-            const std::unique_ptr<ExampleWiseStatistics> statisticsPtr_;
+            const std::unique_ptr<NonDecomposableStatistics> statisticsPtr_;
 
         public:
 
@@ -39,12 +39,12 @@ namespace boosting {
              * @param pruningRuleEvaluationFactory  A reference to an object of template type
              *                                      `ExampleWiseRuleEvaluationFactory` to switch to when invoking the
              *                                      function `switchToPruningRuleEvaluation`
-             * @param statisticsPtr                 An unique pointer to an object of type `IExampleWiseStatistics` to
-             *                                      provide access to
+             * @param statisticsPtr                 An unique pointer to an object of type `INonDecomposableStatistics`
+             *                                      to provide access to
              */
-            ExampleWiseStatisticsProvider(const ExampleWiseRuleEvaluationFactory& regularRuleEvaluationFactory,
-                                          const ExampleWiseRuleEvaluationFactory& pruningRuleEvaluationFactory,
-                                          std::unique_ptr<ExampleWiseStatistics> statisticsPtr)
+            NonDecomposableStatisticsProvider(const ExampleWiseRuleEvaluationFactory& regularRuleEvaluationFactory,
+                                              const ExampleWiseRuleEvaluationFactory& pruningRuleEvaluationFactory,
+                                              std::unique_ptr<NonDecomposableStatistics> statisticsPtr)
                 : regularRuleEvaluationFactory_(regularRuleEvaluationFactory),
                   pruningRuleEvaluationFactory_(pruningRuleEvaluationFactory),
                   statisticsPtr_(std::move(statisticsPtr)) {}
@@ -72,8 +72,8 @@ namespace boosting {
     };
 
     /**
-     * Provides access to an object of type `IExampleWiseStatistics` that can be converted into an object of type
-     * `ILabelWiseStatistics`.
+     * Provides access to an object of type `INonDecomposableStatistics` that can be converted into an object of type
+     * `IDecomposableStatistics`.
      *
      * @tparam LabelWiseRuleEvaluationFactory   The type of the classes that may be used for calculating the label-wise
      *                                          predictions of rules, as well as their overall quality
@@ -81,19 +81,19 @@ namespace boosting {
      *                                          example-wise predictions of rules, as well as their overall quality
      */
     template<typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
-    class ConvertibleExampleWiseStatisticsProvider final : public IStatisticsProvider {
+    class ConvertibleNonDecomposableStatisticsProvider final : public IStatisticsProvider {
         private:
 
-            typedef IExampleWiseStatistics<ExampleWiseRuleEvaluationFactory, LabelWiseRuleEvaluationFactory>
-              ExampleWiseStatistics;
+            typedef INonDecomposableStatistics<ExampleWiseRuleEvaluationFactory, LabelWiseRuleEvaluationFactory>
+              NonDecomposableStatistics;
 
             const LabelWiseRuleEvaluationFactory& regularRuleEvaluationFactory_;
 
             const LabelWiseRuleEvaluationFactory& pruningRuleEvaluationFactory_;
 
-            std::unique_ptr<ExampleWiseStatistics> exampleWiseStatisticsPtr_;
+            std::unique_ptr<NonDecomposableStatistics> nonDecomposableStatisticsPtr_;
 
-            std::unique_ptr<ILabelWiseStatistics<LabelWiseRuleEvaluationFactory>> labelWiseStatisticsPtr_;
+            std::unique_ptr<IDecomposableStatistics<LabelWiseRuleEvaluationFactory>> decomposableStatisticsPtr_;
 
             const uint32 numThreads_;
 
@@ -106,29 +106,29 @@ namespace boosting {
              * @param pruningRuleEvaluationFactory  A reference to an object of template type
              *                                      `LabelWiseRuleEvaluationFactory` to switch to when invoking the
              *                                      function `switchToPruningRuleEvaluation`
-             * @param statisticsPtr                 An unique pointer to an object of type `IExampleWiseStatistics` to
-             *                                      provide access to
+             * @param statisticsPtr                 An unique pointer to an object of type `INonDecomposableStatistics`
+             *                                      to provide access to
              * @param numThreads                    The number of threads that should be used to convert the statistics
              *                                      for individual examples in parallel
              */
-            ConvertibleExampleWiseStatisticsProvider(const LabelWiseRuleEvaluationFactory& regularRuleEvaluationFactory,
-                                                     const LabelWiseRuleEvaluationFactory& pruningRuleEvaluationFactory,
-                                                     std::unique_ptr<ExampleWiseStatistics> statisticsPtr,
-                                                     uint32 numThreads)
+            ConvertibleNonDecomposableStatisticsProvider(
+              const LabelWiseRuleEvaluationFactory& regularRuleEvaluationFactory,
+              const LabelWiseRuleEvaluationFactory& pruningRuleEvaluationFactory,
+              std::unique_ptr<NonDecomposableStatistics> statisticsPtr, uint32 numThreads)
                 : regularRuleEvaluationFactory_(regularRuleEvaluationFactory),
                   pruningRuleEvaluationFactory_(pruningRuleEvaluationFactory),
-                  exampleWiseStatisticsPtr_(std::move(statisticsPtr)), numThreads_(numThreads) {}
+                  nonDecomposableStatisticsPtr_(std::move(statisticsPtr)), numThreads_(numThreads) {}
 
             /**
              * @see `IStatisticsProvider::get`
              */
             IStatistics& get() const override {
-                ExampleWiseStatistics* exampleWiseStatistics = exampleWiseStatisticsPtr_.get();
+                NonDecomposableStatistics* nonDecomposableStatistics = nonDecomposableStatisticsPtr_.get();
 
-                if (exampleWiseStatistics) {
-                    return *exampleWiseStatistics;
+                if (nonDecomposableStatistics) {
+                    return *nonDecomposableStatistics;
                 } else {
-                    return *labelWiseStatisticsPtr_;
+                    return *decomposableStatisticsPtr_;
                 }
             }
 
@@ -136,14 +136,14 @@ namespace boosting {
              * @see `IStatisticsProvider::switchToRegularRuleEvaluation`
              */
             void switchToRegularRuleEvaluation() override {
-                ExampleWiseStatistics* exampleWiseStatistics = exampleWiseStatisticsPtr_.get();
+                NonDecomposableStatistics* nonDecomposableStatistics = nonDecomposableStatisticsPtr_.get();
 
-                if (exampleWiseStatistics) {
-                    labelWiseStatisticsPtr_ =
-                      exampleWiseStatistics->toLabelWiseStatistics(regularRuleEvaluationFactory_, numThreads_);
-                    exampleWiseStatisticsPtr_.reset();
+                if (nonDecomposableStatistics) {
+                    decomposableStatisticsPtr_ =
+                      nonDecomposableStatistics->toDecomposableStatistics(regularRuleEvaluationFactory_, numThreads_);
+                    nonDecomposableStatisticsPtr_.reset();
                 } else {
-                    labelWiseStatisticsPtr_->setRuleEvaluationFactory(regularRuleEvaluationFactory_);
+                    decomposableStatisticsPtr_->setRuleEvaluationFactory(regularRuleEvaluationFactory_);
                 }
             }
 
@@ -151,14 +151,14 @@ namespace boosting {
              * @see `IStatisticsProvider::switchToPruningRuleEvaluation`
              */
             void switchToPruningRuleEvaluation() override {
-                ExampleWiseStatistics* exampleWiseStatistics = exampleWiseStatisticsPtr_.get();
+                NonDecomposableStatistics* nonDecomposableStatistics = nonDecomposableStatisticsPtr_.get();
 
-                if (exampleWiseStatistics) {
-                    labelWiseStatisticsPtr_ =
-                      exampleWiseStatistics->toLabelWiseStatistics(pruningRuleEvaluationFactory_, numThreads_);
-                    exampleWiseStatisticsPtr_.reset();
+                if (nonDecomposableStatistics) {
+                    decomposableStatisticsPtr_ =
+                      nonDecomposableStatistics->toDecomposableStatistics(pruningRuleEvaluationFactory_, numThreads_);
+                    nonDecomposableStatisticsPtr_.reset();
                 } else {
-                    labelWiseStatisticsPtr_->setRuleEvaluationFactory(pruningRuleEvaluationFactory_);
+                    decomposableStatisticsPtr_->setRuleEvaluationFactory(pruningRuleEvaluationFactory_);
                 }
             }
     };

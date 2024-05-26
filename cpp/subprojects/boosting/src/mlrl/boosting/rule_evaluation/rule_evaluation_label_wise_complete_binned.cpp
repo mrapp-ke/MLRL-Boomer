@@ -10,21 +10,21 @@ namespace boosting {
         : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
           labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>>
-      LabelWiseCompleteBinnedRuleEvaluationFactory::create(const DenseLabelWiseStatisticVector& statisticVector,
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
+      LabelWiseCompleteBinnedRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
                                                            const CompleteIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         return std::make_unique<
-          LabelWiseCompleteBinnedRuleEvaluation<DenseLabelWiseStatisticVector, CompleteIndexVector>>(
+          LabelWiseCompleteBinnedRuleEvaluation<DenseDecomposableStatisticVector, CompleteIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>>
-      LabelWiseCompleteBinnedRuleEvaluationFactory::create(const DenseLabelWiseStatisticVector& statisticVector,
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
+      LabelWiseCompleteBinnedRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
                                                            const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         return std::make_unique<
-          LabelWiseCompleteBinnedRuleEvaluation<DenseLabelWiseStatisticVector, PartialIndexVector>>(
+          LabelWiseCompleteBinnedRuleEvaluation<DenseDecomposableStatisticVector, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 

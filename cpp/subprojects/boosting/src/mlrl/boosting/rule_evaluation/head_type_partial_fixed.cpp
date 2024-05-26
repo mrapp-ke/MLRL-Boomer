@@ -1,8 +1,8 @@
 #include "mlrl/boosting/rule_evaluation/head_type_partial_fixed.hpp"
 
-#include "mlrl/boosting/statistics/statistics_provider_example_wise_dense.hpp"
-#include "mlrl/boosting/statistics/statistics_provider_label_wise_dense.hpp"
-#include "mlrl/boosting/statistics/statistics_provider_label_wise_sparse.hpp"
+#include "mlrl/boosting/statistics/statistics_provider_decomposable_dense.hpp"
+#include "mlrl/boosting/statistics/statistics_provider_decomposable_sparse.hpp"
+#include "mlrl/boosting/statistics/statistics_provider_non_decomposable_dense.hpp"
 #include "mlrl/common/util/validation.hpp"
 
 namespace boosting {
@@ -69,7 +69,7 @@ namespace boosting {
           labelBinningConfigPtr_->createLabelWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels_, maxLabels_);
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
           labelBinningConfigPtr_->createLabelWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels_, maxLabels_);
-        return std::make_unique<DenseLabelWiseStatisticsProviderFactory>(
+        return std::make_unique<DenseDecomposableStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
@@ -86,7 +86,7 @@ namespace boosting {
           labelBinningConfigPtr_->createLabelWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels_, maxLabels_);
         std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
           labelBinningConfigPtr_->createLabelWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels_, maxLabels_);
-        return std::make_unique<SparseLabelWiseStatisticsProviderFactory>(
+        return std::make_unique<SparseDecomposableStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
           std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
@@ -107,7 +107,7 @@ namespace boosting {
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
           labelBinningConfigPtr_->createExampleWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels_, maxLabels_,
                                                                                      blas, lapack);
-        return std::make_unique<DenseExampleWiseStatisticsProviderFactory>(
+        return std::make_unique<DenseNonDecomposableStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }

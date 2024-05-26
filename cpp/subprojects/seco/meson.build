@@ -20,7 +20,7 @@ source_files = [
     'src/mlrl/seco/rule_evaluation/head_type_single.cpp',
     'src/mlrl/seco/rule_evaluation/rule_evaluation_label_wise_partial.cpp',
     'src/mlrl/seco/rule_evaluation/rule_evaluation_label_wise_single.cpp',
-    'src/mlrl/seco/statistics/statistics_provider_label_wise_dense.cpp',
+    'src/mlrl/seco/statistics/statistics_provider_decomposable_dense.cpp',
     'src/mlrl/seco/stopping/stopping_criterion_coverage.cpp',
     'src/mlrl/seco/info.cpp',
     'src/mlrl/seco/learner.cpp',

@@ -4,18 +4,18 @@
 #pragma once
 
 #include "mlrl/boosting/data/matrix_c_contiguous_numeric.hpp"
-#include "mlrl/boosting/data/vector_statistic_label_wise_dense.hpp"
+#include "mlrl/boosting/data/vector_statistic_decomposable_dense.hpp"
 #include "mlrl/boosting/losses/loss_label_wise.hpp"
 #include "mlrl/common/measures/measure_evaluation.hpp"
-#include "statistics_label_wise_common.hpp"
+#include "statistics_decomposable_common.hpp"
 
 namespace boosting {
 
     /**
-     * A matrix that stores gradients and Hessians that have been calculated using a label-wise decomposable loss
-     * function using C-contiguous arrays.
+     * A matrix that stores gradients and Hessians that have been calculated using a decomposable loss function using
+     * C-contiguous arrays.
      */
-    class DenseLabelWiseStatisticMatrix final
+    class DenseDecomposableStatisticMatrix final
         : public ClearableViewDecorator<MatrixDecorator<AllocatedCContiguousView<Tuple<float64>>>> {
         public:
 
@@ -23,7 +23,7 @@ namespace boosting {
              * @param numRows   The number of rows in the matrix
              * @param numCols   The number of columns in the matrix
              */
-            DenseLabelWiseStatisticMatrix(uint32 numRows, uint32 numCols)
+            DenseDecomposableStatisticMatrix(uint32 numRows, uint32 numCols)
                 : ClearableViewDecorator<MatrixDecorator<AllocatedCContiguousView<Tuple<float64>>>>(
                     AllocatedCContiguousView<Tuple<float64>>(numRows, numCols)) {}
 
@@ -43,16 +43,16 @@ namespace boosting {
     };
 
     /**
-     * Provides access to gradients and Hessians that have been calculated according to a differentiable loss function
-     * that is applied label-wise and are stored using dense data structures.
+     * Provides access to gradients and Hessians that have been calculated according to a decomposable loss function and
+     * are stored using dense data structures.
      *
      * @tparam LabelMatrix The type of the matrix that provides access to the labels of the training examples
      */
     template<typename LabelMatrix>
-    class DenseLabelWiseStatistics final
-        : public AbstractLabelWiseStatistics<LabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticMatrix,
-                                             NumericCContiguousMatrix<float64>, ILabelWiseLoss, IEvaluationMeasure,
-                                             ILabelWiseRuleEvaluationFactory> {
+    class DenseDecomposableStatistics final
+        : public AbstractDecomposableStatistics<LabelMatrix, DenseDecomposableStatisticVector,
+                                                DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
+                                                ILabelWiseLoss, IEvaluationMeasure, ILabelWiseRuleEvaluationFactory> {
         public:
 
             /**
@@ -66,20 +66,20 @@ namespace boosting {
              *                              predictions of rules, as well as their overall quality
              * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
              *                              to the labels of the training examples
-             * @param statisticMatrixPtr    An unique pointer to an object of type `DenseLabelWiseStatisticMatrix` that
-             *                              provides access to the gradients and Hessians
+             * @param statisticMatrixPtr    An unique pointer to an object of type `DenseDecomposableStatisticMatrix`
+             *                              that provides access to the gradients and Hessians
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericCContiguousMatrix` that
              *                              stores the currently predicted scores
              */
-            DenseLabelWiseStatistics(std::unique_ptr<ILabelWiseLoss> lossPtr,
-                                     std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr,
-                                     const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
-                                     const LabelMatrix& labelMatrix,
-                                     std::unique_ptr<DenseLabelWiseStatisticMatrix> statisticMatrixPtr,
-                                     std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
-                : AbstractLabelWiseStatistics<LabelMatrix, DenseLabelWiseStatisticVector, DenseLabelWiseStatisticMatrix,
-                                              NumericCContiguousMatrix<float64>, ILabelWiseLoss, IEvaluationMeasure,
-                                              ILabelWiseRuleEvaluationFactory>(
+            DenseDecomposableStatistics(std::unique_ptr<ILabelWiseLoss> lossPtr,
+                                        std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr,
+                                        const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
+                                        const LabelMatrix& labelMatrix,
+                                        std::unique_ptr<DenseDecomposableStatisticMatrix> statisticMatrixPtr,
+                                        std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
+                : AbstractDecomposableStatistics<LabelMatrix, DenseDecomposableStatisticVector,
+                                                 DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
+                                                 ILabelWiseLoss, IEvaluationMeasure, ILabelWiseRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
                     std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 

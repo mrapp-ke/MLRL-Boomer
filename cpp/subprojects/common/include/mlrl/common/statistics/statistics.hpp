@@ -13,8 +13,8 @@
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 
 /**
- * Defines an interface for all classes that provide access to statistics about the labels of the training examples,
- * which serve as the basis for learning a new rule or refining an existing one.
+ * Defines an interface for all classes that provide access to statistics about the quality of predictions for training
+ * examples, which serve as the basis for learning a new rule or refining an existing one.
  */
 class IStatistics {
     public:
@@ -36,7 +36,7 @@ class IStatistics {
         virtual uint32 getNumLabels() const = 0;
 
         /**
-         * Updates a specific statistic based on the prediction of a rule that predicts for all available labels.
+         * Updates a specific statistic based on the prediction of a rule that predicts for all available outputs.
          *
          * This function must be called for each statistic that is covered by the new rule before learning the next
          * rule.
@@ -49,7 +49,7 @@ class IStatistics {
 
         /**
          * Updates a specific statistic based on the prediction of a rule that predicts for a subset of the available
-         * labels.
+         * outputs.
          *
          * This function must be called for each statistic that is covered by the new rule before learning the next
          * rule.
@@ -62,7 +62,7 @@ class IStatistics {
 
         /**
          * Reverts a specific statistic that has previously been updated via the function `applyPrediction` based on the
-         * prediction of a rule that predicts for all available labels.
+         * prediction of a rule that predicts for all available outputs.
          *
          * @param statisticIndex    The index of the statistic to be reverted
          * @param prediction        A reference to an object of type `CompletePrediction` that stores the scores that
@@ -72,7 +72,7 @@ class IStatistics {
 
         /**
          * Reverts a specific statistic that has previously been updated via the function `applyPrediction` based on the
-         * prediction of a rule that predicts for a subset of the available labels.
+         * prediction of a rule that predicts for a subset of the available outputs.
          *
          * @param statisticIndex    The index of the statistic to be reverted
          * @param prediction        A reference to an object of type `PartialPrediction` that stores the scores that are

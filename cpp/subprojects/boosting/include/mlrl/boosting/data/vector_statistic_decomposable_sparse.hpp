@@ -13,16 +13,16 @@ namespace boosting {
 
     /**
      * An one-dimensional vector that stores aggregated gradients and Hessians that have been calculated using a
-     * label-wise decomposable loss function in a C-contiguous array. For each element in the vector a single gradient
-     * and Hessian, as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
+     * decomposable loss function in a C-contiguous array. For each element in the vector a single gradient and Hessian,
+     * as well as the sums of the weights of the aggregated gradients and Hessians, is stored.
      */
-    class SparseLabelWiseStatisticVector final
+    class SparseDecomposableStatisticVector final
         : public ClearableViewDecorator<VectorDecorator<AllocatedVector<Triple<float64>>>> {
         private:
 
             /**
              * An iterator that provides random read-only access to the statistics in a
-             * `SparseLabelWiseStatisticVector`.
+             * `SparseDecomposableStatisticVector`.
              */
             class ConstIterator final {
                 private:
@@ -35,7 +35,7 @@ namespace boosting {
 
                     /**
                      * @param iterator      An iterator that provides access to the elements in a
-                     *                      `SparseLabelWiseStatisticVector`
+                     *                      `SparseDecomposableStatisticVector`
                      * @param sumOfWeights  The sum of the weights of all statistics that have been added to the vector
                      */
                     ConstIterator(View<Triple<float64>>::const_iterator iterator, float64 sumOfWeights);
@@ -142,12 +142,12 @@ namespace boosting {
              * @param init          True, if all gradients and Hessians in the vector should be initialized with zero,
              *                      false otherwise
              */
-            SparseLabelWiseStatisticVector(uint32 numElements, bool init = false);
+            SparseDecomposableStatisticVector(uint32 numElements, bool init = false);
 
             /**
-             * @param other A reference to an object of type `SparseLabelWiseStatisticVector` to be copied
+             * @param other A reference to an object of type `SparseDecomposableStatisticVector` to be copied
              */
-            SparseLabelWiseStatisticVector(const SparseLabelWiseStatisticVector& other);
+            SparseDecomposableStatisticVector(const SparseDecomposableStatisticVector& other);
 
             /**
              * An iterator that provides read-only access to the elements in the vector.
@@ -171,10 +171,10 @@ namespace boosting {
             /**
              * Adds all gradients and Hessians in another vector to this vector.
              *
-             * @param vector A reference to an object of type `SparseLabelWiseStatisticVector` that stores the gradients
-             *               and Hessians to be added to this vector
+             * @param vector A reference to an object of type `SparseDecomposableStatisticVector` that stores the
+             *               gradients and Hessians to be added to this vector
              */
-            void add(const SparseLabelWiseStatisticVector& vector);
+            void add(const SparseDecomposableStatisticVector& vector);
 
             /**
              * Adds all gradients and Hessians in a single row of a `SparseSetView` to this vector.
@@ -271,30 +271,30 @@ namespace boosting {
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `CompleteIndexVector`.
              *
-             * @param first         A reference to an object of type `SparseLabelWiseStatisticVector` that stores the
+             * @param first         A reference to an object of type `SparseDecomposableStatisticVector` that stores the
              *                      gradients and Hessians in the first vector
              * @param firstIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
              *                      indices
-             * @param second        A reference to an object of type `SparseLabelWiseStatisticVector` that stores the
+             * @param second        A reference to an object of type `SparseDecomposableStatisticVector` that stores the
              *                      gradients and Hessians in the second vector
              */
-            void difference(const SparseLabelWiseStatisticVector& first, const CompleteIndexVector& firstIndices,
-                            const SparseLabelWiseStatisticVector& second);
+            void difference(const SparseDecomposableStatisticVector& first, const CompleteIndexVector& firstIndices,
+                            const SparseDecomposableStatisticVector& second);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `PartialIndexVector`.
              *
-             * @param first         A reference to an object of type `SparseLabelWiseStatisticVector` that stores the
+             * @param first         A reference to an object of type `SparseDecomposableStatisticVector` that stores the
              *                      gradients and Hessians in the first vector
              * @param firstIndices  A reference to an object of type `PartialIndexVector` that provides access to the
              *                      indices
-             * @param second        A reference to an object of type `SparseLabelWiseStatisticVector` that stores the
+             * @param second        A reference to an object of type `SparseDecomposableStatisticVector` that stores the
              *                      gradients and Hessians in the second vector
              */
-            void difference(const SparseLabelWiseStatisticVector& first, const PartialIndexVector& firstIndices,
-                            const SparseLabelWiseStatisticVector& second);
+            void difference(const SparseDecomposableStatisticVector& first, const PartialIndexVector& firstIndices,
+                            const SparseDecomposableStatisticVector& second);
 
             /**
              * @see `ClearableViewDecorator::clear`
@@ -309,9 +309,9 @@ namespace boosting {
      * @param begin         An iterator to the beginning of the statistics to be added
      * @param end           An iterator to the end of the statistics to be added
      */
-    static inline void addToSparseLabelWiseStatisticVector(View<Triple<float64>>::iterator statistics,
-                                                           SparseSetView<Tuple<float64>>::value_const_iterator begin,
-                                                           SparseSetView<Tuple<float64>>::value_const_iterator end) {
+    static inline void addToSparseDecomposableStatisticVector(View<Triple<float64>>::iterator statistics,
+                                                              SparseSetView<Tuple<float64>>::value_const_iterator begin,
+                                                              SparseSetView<Tuple<float64>>::value_const_iterator end) {
         uint32 numElements = end - begin;
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -333,10 +333,10 @@ namespace boosting {
      * @param end           An iterator to the end of the statistics to be added
      * @param weight        The weight, the statistics should be multiplied by
      */
-    static inline void addToSparseLabelWiseStatisticVector(View<Triple<float64>>::iterator statistics,
-                                                           SparseSetView<Tuple<float64>>::value_const_iterator begin,
-                                                           SparseSetView<Tuple<float64>>::value_const_iterator end,
-                                                           float64 weight) {
+    static inline void addToSparseDecomposableStatisticVector(View<Triple<float64>>::iterator statistics,
+                                                              SparseSetView<Tuple<float64>>::value_const_iterator begin,
+                                                              SparseSetView<Tuple<float64>>::value_const_iterator end,
+                                                              float64 weight) {
         uint32 numElements = end - begin;
 
         for (uint32 i = 0; i < numElements; i++) {
@@ -356,7 +356,7 @@ namespace boosting {
      * @param begin         An iterator to the beginning of the statistics to be removed
      * @param end           An iterator to the end of the statistics to be removed
      */
-    static inline void removeFromSparseLabelWiseStatisticVector(
+    static inline void removeFromSparseDecomposableStatisticVector(
       View<Triple<float64>>::iterator statistics, SparseSetView<Tuple<float64>>::value_const_iterator begin,
       SparseSetView<Tuple<float64>>::value_const_iterator end) {
         uint32 numElements = end - begin;
@@ -380,7 +380,7 @@ namespace boosting {
      * @param end           An iterator to the end of the statistics to be removed
      * @param weight        The weight, the statistics should be multiplied by
      */
-    static inline void removeFromSparseLabelWiseStatisticVector(
+    static inline void removeFromSparseDecomposableStatisticVector(
       View<Triple<float64>>::iterator statistics, SparseSetView<Tuple<float64>>::value_const_iterator begin,
       SparseSetView<Tuple<float64>>::value_const_iterator end, float64 weight) {
         uint32 numElements = end - begin;

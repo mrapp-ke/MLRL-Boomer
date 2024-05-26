@@ -47,7 +47,7 @@ class IWeightedStatisticsSubset : virtual public IStatisticsSubset {
          * called since then.
          *
          * @return A reference to an object of type `IScoreVector` that stores the scores to be predicted by the rule
-         *         for each considered label, as well as a numerical score that assesses their overall quality
+         *         for each considered output, as well as a numerical score that assesses their overall quality
          */
         virtual const IScoreVector& calculateScoresAccumulated() = 0;
 
@@ -59,7 +59,7 @@ class IWeightedStatisticsSubset : virtual public IStatisticsSubset {
          * predicted scores.
          *
          * @return A reference to an object of type `IScoreVector` that stores the scores to be predicted by the rule
-         *         for each considered label, as well as a numerical score that assesses their overall quality
+         *         for each considered output, as well as a numerical score that assesses their overall quality
          */
         virtual const IScoreVector& calculateScoresUncovered() = 0;
 
@@ -73,7 +73,7 @@ class IWeightedStatisticsSubset : virtual public IStatisticsSubset {
          * called since then.
          *
          * @return A reference to an object of type `IScoreVector` that stores the scores to be predicted by the rule
-         *         for each considered label, as well as a numerical score that assesses their overall quality
+         *         for each considered output, as well as a numerical score that assesses their overall quality
          */
         virtual const IScoreVector& calculateScoresUncoveredAccumulated() = 0;
 };

@@ -28,12 +28,12 @@ namespace boosting {
              */
             LabelWiseCompleteRuleEvaluationFactory(float64 l1RegularizationWeight, float64 l2RegularizationWeight);
 
-            std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
-              const DenseLabelWiseStatisticVector& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>> create(
+              const DenseDecomposableStatisticVector& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
-              const DenseLabelWiseStatisticVector& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>> create(
+              const DenseDecomposableStatisticVector& statisticVector,
               const PartialIndexVector& indexVector) const override;
     };
 

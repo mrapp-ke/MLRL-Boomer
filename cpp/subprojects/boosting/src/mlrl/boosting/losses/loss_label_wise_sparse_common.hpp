@@ -60,11 +60,11 @@ namespace boosting {
     }
 
     template<typename IndexIterator>
-    static inline void updateLabelWiseStatisticsInternally(IndexIterator indicesBegin, IndexIterator indicesEnd,
-                                                           SparseSetView<float64>::value_const_iterator scoresBegin,
-                                                           SparseSetView<float64>::value_const_iterator scoresEnd,
-                                                           SparseSetView<Tuple<float64>>::row row,
-                                                           LabelWiseLoss::UpdateFunction updateFunction) {
+    static inline void updateDecomposableStatisticsInternally(IndexIterator indicesBegin, IndexIterator indicesEnd,
+                                                              SparseSetView<float64>::value_const_iterator scoresBegin,
+                                                              SparseSetView<float64>::value_const_iterator scoresEnd,
+                                                              SparseSetView<Tuple<float64>>::row row,
+                                                              LabelWiseLoss::UpdateFunction updateFunction) {
         row.clear();
         Tuple<float64> tuple;
         uint32 index;
@@ -154,27 +154,27 @@ namespace boosting {
 
             // Keep functions from the parent class rather than hiding them.
             using LabelWiseLoss::evaluate;
-            using LabelWiseLoss::updateLabelWiseStatistics;
+            using LabelWiseLoss::updateDecomposableStatistics;
 
-            void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                           const SparseSetView<float64>& scoreMatrix,
-                                           CompleteIndexVector::const_iterator labelIndicesBegin,
-                                           CompleteIndexVector::const_iterator labelIndicesEnd,
-                                           SparseSetView<Tuple<float64>>& statisticView) const override {
+            void updateDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                                              const SparseSetView<float64>& scoreMatrix,
+                                              CompleteIndexVector::const_iterator labelIndicesBegin,
+                                              CompleteIndexVector::const_iterator labelIndicesEnd,
+                                              SparseSetView<Tuple<float64>>& statisticView) const override {
                 auto indicesBegin = make_non_zero_index_forward_iterator(labelMatrix.values_cbegin(exampleIndex),
                                                                          labelMatrix.values_cend(exampleIndex));
                 auto indicesEnd = make_non_zero_index_forward_iterator(labelMatrix.values_cend(exampleIndex),
                                                                        labelMatrix.values_cend(exampleIndex));
-                updateLabelWiseStatisticsInternally(indicesBegin, indicesEnd, scoreMatrix.values_cbegin(exampleIndex),
-                                                    scoreMatrix.values_cend(exampleIndex), statisticView[exampleIndex],
-                                                    LabelWiseLoss::updateFunction_);
+                updateDecomposableStatisticsInternally(
+                  indicesBegin, indicesEnd, scoreMatrix.values_cbegin(exampleIndex),
+                  scoreMatrix.values_cend(exampleIndex), statisticView[exampleIndex], LabelWiseLoss::updateFunction_);
             }
 
-            void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                           const SparseSetView<float64>& scoreMatrix,
-                                           PartialIndexVector::const_iterator labelIndicesBegin,
-                                           PartialIndexVector::const_iterator labelIndicesEnd,
-                                           SparseSetView<Tuple<float64>>& statisticView) const override {
+            void updateDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                                              const SparseSetView<float64>& scoreMatrix,
+                                              PartialIndexVector::const_iterator labelIndicesBegin,
+                                              PartialIndexVector::const_iterator labelIndicesEnd,
+                                              SparseSetView<Tuple<float64>>& statisticView) const override {
                 const SparseSetView<float64>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
                 CContiguousView<const uint8>::value_const_iterator labelIterator =
                   labelMatrix.values_cbegin(exampleIndex);
@@ -198,22 +198,22 @@ namespace boosting {
                 }
             }
 
-            void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                           const SparseSetView<float64>& scoreMatrix,
-                                           CompleteIndexVector::const_iterator labelIndicesBegin,
-                                           CompleteIndexVector::const_iterator labelIndicesEnd,
-                                           SparseSetView<Tuple<float64>>& statisticView) const override {
-                updateLabelWiseStatisticsInternally(
+            void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                              const SparseSetView<float64>& scoreMatrix,
+                                              CompleteIndexVector::const_iterator labelIndicesBegin,
+                                              CompleteIndexVector::const_iterator labelIndicesEnd,
+                                              SparseSetView<Tuple<float64>>& statisticView) const override {
+                updateDecomposableStatisticsInternally(
                   labelMatrix.indices_cbegin(exampleIndex), labelMatrix.indices_cend(exampleIndex),
                   scoreMatrix.values_cbegin(exampleIndex), scoreMatrix.values_cend(exampleIndex),
                   statisticView[exampleIndex], LabelWiseLoss::updateFunction_);
             }
 
-            void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                           const SparseSetView<float64>& scoreMatrix,
-                                           PartialIndexVector::const_iterator labelIndicesBegin,
-                                           PartialIndexVector::const_iterator labelIndicesEnd,
-                                           SparseSetView<Tuple<float64>>& statisticView) const override {
+            void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                              const SparseSetView<float64>& scoreMatrix,
+                                              PartialIndexVector::const_iterator labelIndicesBegin,
+                                              PartialIndexVector::const_iterator labelIndicesEnd,
+                                              SparseSetView<Tuple<float64>>& statisticView) const override {
                 const SparseSetView<float64>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
                 BinaryCsrView::index_const_iterator indexIterator = labelMatrix.indices_cbegin(exampleIndex);
                 BinaryCsrView::index_const_iterator indicesEnd = labelMatrix.indices_cend(exampleIndex);

@@ -51,20 +51,20 @@ namespace boosting {
               float32 labelRatio, uint32 minLabels, uint32 maxLabels, float64 l1RegularizationWeight,
               float64 l2RegularizationWeight, std::unique_ptr<ILabelBinningFactory> labelBinningFactoryPtr);
 
-            std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
-              const DenseLabelWiseStatisticVector& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>> create(
+              const DenseDecomposableStatisticVector& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> create(
-              const DenseLabelWiseStatisticVector& statisticVector,
+            std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>> create(
+              const DenseDecomposableStatisticVector& statisticVector,
               const PartialIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> create(
-              const SparseLabelWiseStatisticVector& statisticVector,
+            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector>> create(
+              const SparseDecomposableStatisticVector& statisticVector,
               const CompleteIndexVector& indexVector) const override;
 
-            std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> create(
-              const SparseLabelWiseStatisticVector& statisticVector,
+            std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector>> create(
+              const SparseDecomposableStatisticVector& statisticVector,
               const PartialIndexVector& indexVector) const override;
     };
 

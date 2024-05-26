@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/vector_statistic_example_wise_dense.hpp"
+#include "mlrl/boosting/data/vector_statistic_non_decomposable_dense.hpp"
 #include "rule_evaluation_label_wise_partial_fixed_common.hpp"
 
 namespace boosting {
@@ -23,8 +23,8 @@ namespace boosting {
      */
     static inline void sortLabelWiseCriteria(
       SparseArrayVector<float64>::iterator tmpIterator,
-      DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator,
-      DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator, uint32 numLabels,
+      DenseNonDecomposableStatisticVector::gradient_const_iterator gradientIterator,
+      DenseNonDecomposableStatisticVector::hessian_diagonal_const_iterator hessianIterator, uint32 numLabels,
       uint32 numPredictions, float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
         for (uint32 i = 0; i < numLabels; i++) {
             IndexedValue<float64>& entry = tmpIterator[i];

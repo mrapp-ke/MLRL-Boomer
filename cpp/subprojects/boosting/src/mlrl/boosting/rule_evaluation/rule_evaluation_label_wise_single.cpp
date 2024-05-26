@@ -75,30 +75,35 @@ namespace boosting {
       float64 l1RegularizationWeight, float64 l2RegularizationWeight)
         : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseSingleOutputRuleEvaluationFactory::create(
-      const DenseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
+      LabelWiseSingleOutputRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
+                                                         const CompleteIndexVector& indexVector) const {
         return std::make_unique<
-          LabelWiseSingleOutputRuleEvaluation<DenseLabelWiseStatisticVector, CompleteIndexVector>>(
+          LabelWiseSingleOutputRuleEvaluation<DenseDecomposableStatisticVector, CompleteIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseSingleOutputRuleEvaluationFactory::create(
-      const DenseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
-        return std::make_unique<LabelWiseSingleOutputRuleEvaluation<DenseLabelWiseStatisticVector, PartialIndexVector>>(
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
+      LabelWiseSingleOutputRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
+                                                         const PartialIndexVector& indexVector) const {
+        return std::make_unique<
+          LabelWiseSingleOutputRuleEvaluation<DenseDecomposableStatisticVector, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseSingleOutputRuleEvaluationFactory::create(
-      const SparseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector>>
+      LabelWiseSingleOutputRuleEvaluationFactory::create(const SparseDecomposableStatisticVector& statisticVector,
+                                                         const CompleteIndexVector& indexVector) const {
         return std::make_unique<
-          LabelWiseSingleOutputRuleEvaluation<SparseLabelWiseStatisticVector, CompleteIndexVector>>(
+          LabelWiseSingleOutputRuleEvaluation<SparseDecomposableStatisticVector, CompleteIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseSingleOutputRuleEvaluationFactory::create(
-      const SparseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector>>
+      LabelWiseSingleOutputRuleEvaluationFactory::create(const SparseDecomposableStatisticVector& statisticVector,
+                                                         const PartialIndexVector& indexVector) const {
         return std::make_unique<
-          LabelWiseSingleOutputRuleEvaluation<SparseLabelWiseStatisticVector, PartialIndexVector>>(
+          LabelWiseSingleOutputRuleEvaluation<SparseDecomposableStatisticVector, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 

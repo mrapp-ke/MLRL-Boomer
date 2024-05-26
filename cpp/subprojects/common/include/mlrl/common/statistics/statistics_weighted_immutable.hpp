@@ -10,8 +10,8 @@
 #include <memory>
 
 /**
- * Defines an interface for all classes that provide access to weighted statistics about the labels of the training
- * examples, which serve as the basis for learning a new rule or refining an existing one.
+ * Defines an interface for all classes that provide access to weighted statistics about the quality of predictions for
+ * training examples, which serve as the basis for learning a new rule or refining an existing one.
  */
 class IImmutableWeightedStatistics {
     public:

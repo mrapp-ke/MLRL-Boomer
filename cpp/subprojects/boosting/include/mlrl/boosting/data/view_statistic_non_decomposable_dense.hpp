@@ -14,7 +14,7 @@ namespace boosting {
      * Implements row-wise read and write access to the gradients and Hessians that have been calculated using a
      * non-decomposable loss function and are stored in pre-allocated C-contiguous arrays.
      */
-    class MLRLBOOSTING_API DenseExampleWiseStatisticView
+    class MLRLBOOSTING_API DenseNonDecomposableStatisticView
         : public CompositeMatrix<AllocatedCContiguousView<float64>, AllocatedCContiguousView<float64>> {
         public:
 
@@ -22,14 +22,14 @@ namespace boosting {
              * @param numRows   The number of rows in the view
              * @param numCols   The number of columns in the view
              */
-            DenseExampleWiseStatisticView(uint32 numRows, uint32 numCols);
+            DenseNonDecomposableStatisticView(uint32 numRows, uint32 numCols);
 
             /**
-             * @param other A reference to an object of type `DenseExampleWiseStatisticView` that should be copied
+             * @param other A reference to an object of type `DenseNonDecomposableStatisticView` that should be copied
              */
-            DenseExampleWiseStatisticView(DenseExampleWiseStatisticView&& other);
+            DenseNonDecomposableStatisticView(DenseNonDecomposableStatisticView&& other);
 
-            virtual ~DenseExampleWiseStatisticView() override {}
+            virtual ~DenseNonDecomposableStatisticView() override {}
 
             /**
              * An iterator that provides read-only access to the gradients.

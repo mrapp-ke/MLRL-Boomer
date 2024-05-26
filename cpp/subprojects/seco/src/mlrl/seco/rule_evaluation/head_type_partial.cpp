@@ -1,7 +1,7 @@
 #include "mlrl/seco/rule_evaluation/head_type_partial.hpp"
 
 #include "mlrl/seco/rule_evaluation/rule_evaluation_label_wise_partial.hpp"
-#include "mlrl/seco/statistics/statistics_provider_label_wise_dense.hpp"
+#include "mlrl/seco/statistics/statistics_provider_decomposable_dense.hpp"
 #include "rule_evaluation_label_wise_majority.hpp"
 
 namespace seco {
@@ -24,9 +24,9 @@ namespace seco {
           std::make_unique<LabelWisePartialRuleEvaluationFactory>(
             pruningHeuristicConfigPtr_->createHeuristicFactory(),
             liftFunctionConfigPtr_->createLiftFunctionFactory(labelMatrix));
-        return std::make_unique<DenseLabelWiseStatisticsProviderFactory>(std::move(defaultRuleEvaluationFactoryPtr),
-                                                                         std::move(regularRuleEvaluationFactoryPtr),
-                                                                         std::move(pruningRuleEvaluationFactoryPtr));
+        return std::make_unique<DenseDecomposableStatisticsProviderFactory>(std::move(defaultRuleEvaluationFactoryPtr),
+                                                                            std::move(regularRuleEvaluationFactoryPtr),
+                                                                            std::move(pruningRuleEvaluationFactoryPtr));
     }
 
 }

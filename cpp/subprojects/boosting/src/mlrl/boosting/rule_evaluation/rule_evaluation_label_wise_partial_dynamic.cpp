@@ -90,33 +90,33 @@ namespace boosting {
         : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>>
-      LabelWiseDynamicPartialRuleEvaluationFactory::create(const DenseLabelWiseStatisticVector& statisticVector,
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
+      LabelWiseDynamicPartialRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
                                                            const CompleteIndexVector& indexVector) const {
         return std::make_unique<
-          LabelWiseDynamicPartialRuleEvaluation<DenseLabelWiseStatisticVector, CompleteIndexVector>>(
+          LabelWiseDynamicPartialRuleEvaluation<DenseDecomposableStatisticVector, CompleteIndexVector>>(
           indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>>
-      LabelWiseDynamicPartialRuleEvaluationFactory::create(const DenseLabelWiseStatisticVector& statisticVector,
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
+      LabelWiseDynamicPartialRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
                                                            const PartialIndexVector& indexVector) const {
-        return std::make_unique<LabelWiseCompleteRuleEvaluation<DenseLabelWiseStatisticVector, PartialIndexVector>>(
+        return std::make_unique<LabelWiseCompleteRuleEvaluation<DenseDecomposableStatisticVector, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>>
-      LabelWiseDynamicPartialRuleEvaluationFactory::create(const SparseLabelWiseStatisticVector& statisticVector,
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector>>
+      LabelWiseDynamicPartialRuleEvaluationFactory::create(const SparseDecomposableStatisticVector& statisticVector,
                                                            const CompleteIndexVector& indexVector) const {
         return std::make_unique<
-          LabelWiseDynamicPartialRuleEvaluation<SparseLabelWiseStatisticVector, CompleteIndexVector>>(
+          LabelWiseDynamicPartialRuleEvaluation<SparseDecomposableStatisticVector, CompleteIndexVector>>(
           indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>>
-      LabelWiseDynamicPartialRuleEvaluationFactory::create(const SparseLabelWiseStatisticVector& statisticVector,
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector>>
+      LabelWiseDynamicPartialRuleEvaluationFactory::create(const SparseDecomposableStatisticVector& statisticVector,
                                                            const PartialIndexVector& indexVector) const {
-        return std::make_unique<LabelWiseCompleteRuleEvaluation<SparseLabelWiseStatisticVector, PartialIndexVector>>(
+        return std::make_unique<LabelWiseCompleteRuleEvaluation<SparseDecomposableStatisticVector, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 

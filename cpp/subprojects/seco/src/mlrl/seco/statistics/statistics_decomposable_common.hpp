@@ -4,43 +4,44 @@
 #pragma once
 
 #include "mlrl/common/data/vector_sparse_array_binary.hpp"
-#include "mlrl/seco/statistics/statistics_label_wise.hpp"
+#include "mlrl/seco/statistics/statistics_decomposable.hpp"
 
 namespace seco {
 
-    static inline bool hasNonZeroWeightLabelWise(const EqualWeightVector& weights, uint32 statisticIndex) {
+    static inline bool hasNonZeroWeightDecomposable(const EqualWeightVector& weights, uint32 statisticIndex) {
         return true;
     }
 
     template<typename WeightVector>
-    static inline bool hasNonZeroWeightLabelWise(const WeightVector& weights, uint32 statisticIndex) {
+    static inline bool hasNonZeroWeightDecomposable(const WeightVector& weights, uint32 statisticIndex) {
         return !isEqualToZero(weights[statisticIndex]);
     }
 
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector, typename IndexVector>
-    static inline void addLabelWiseStatisticToSubset(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
-                                                     const BinarySparseArrayVector& majorityLabelVector,
-                                                     const CoverageMatrix& coverageMatrix,
-                                                     ConfusionMatrixVector& vector, const IndexVector& labelIndices,
-                                                     uint32 statisticIndex) {
+    static inline void addDecomposableStatisticToSubset(const EqualWeightVector& weights,
+                                                        const LabelMatrix& labelMatrix,
+                                                        const BinarySparseArrayVector& majorityLabelVector,
+                                                        const CoverageMatrix& coverageMatrix,
+                                                        ConfusionMatrixVector& vector, const IndexVector& labelIndices,
+                                                        uint32 statisticIndex) {
         vector.addToSubset(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
                            coverageMatrix, labelIndices, 1);
     }
 
     template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
              typename IndexVector>
-    static inline void addLabelWiseStatisticToSubset(const WeightVector& weights, const LabelMatrix& labelMatrix,
-                                                     const BinarySparseArrayVector& majorityLabelVector,
-                                                     const CoverageMatrix& coverageMatrix,
-                                                     ConfusionMatrixVector& vector, const IndexVector& labelIndices,
-                                                     uint32 statisticIndex) {
+    static inline void addDecomposableStatisticToSubset(const WeightVector& weights, const LabelMatrix& labelMatrix,
+                                                        const BinarySparseArrayVector& majorityLabelVector,
+                                                        const CoverageMatrix& coverageMatrix,
+                                                        ConfusionMatrixVector& vector, const IndexVector& labelIndices,
+                                                        uint32 statisticIndex) {
         float64 weight = weights[statisticIndex];
         vector.addToSubset(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
                            coverageMatrix, labelIndices, weight);
     }
 
     /**
-     * An abstract base class for all subsets of confusion matrices that are computed independently for each label.
+     * An abstract base class for all subsets of confusion matrices that are computed independently for each output.
      *
      * @tparam LabelMatrix              The type of the matrix that provides access to the labels of the training
      *                                  examples
@@ -57,7 +58,7 @@ namespace seco {
      */
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
              typename RuleEvaluationFactory, typename WeightVector, typename IndexVector>
-    class AbstractLabelWiseStatisticsSubset : virtual public IStatisticsSubset {
+    class AbstractDecomposableStatisticsSubset : virtual public IStatisticsSubset {
         protected:
 
             /**
@@ -127,11 +128,11 @@ namespace seco {
              *                              provides access to the indices of the labels that are included in
              *                              the subset
              */
-            AbstractLabelWiseStatisticsSubset(const LabelMatrix& labelMatrix, const CoverageMatrix& coverageMatrix,
-                                              const BinarySparseArrayVector& majorityLabelVector,
-                                              const ConfusionMatrixVector& totalSumVector,
-                                              const RuleEvaluationFactory& ruleEvaluationFactory,
-                                              const WeightVector& weights, const IndexVector& labelIndices)
+            AbstractDecomposableStatisticsSubset(const LabelMatrix& labelMatrix, const CoverageMatrix& coverageMatrix,
+                                                 const BinarySparseArrayVector& majorityLabelVector,
+                                                 const ConfusionMatrixVector& totalSumVector,
+                                                 const RuleEvaluationFactory& ruleEvaluationFactory,
+                                                 const WeightVector& weights, const IndexVector& labelIndices)
                 : sumVector_(labelIndices.getNumElements(), true), labelMatrix_(labelMatrix),
                   coverageMatrix_(coverageMatrix), majorityLabelVector_(majorityLabelVector),
                   totalSumVector_(totalSumVector), weights_(weights), labelIndices_(labelIndices),
@@ -141,15 +142,15 @@ namespace seco {
              * @see `IStatisticsSubset::hasNonZeroWeight`
              */
             bool hasNonZeroWeight(uint32 statisticIndex) const override final {
-                return hasNonZeroWeightLabelWise(weights_, statisticIndex);
+                return hasNonZeroWeightDecomposable(weights_, statisticIndex);
             }
 
             /**
              * @see `IStatisticsSubset::addToSubset`
              */
             void addToSubset(uint32 statisticIndex) override final {
-                addLabelWiseStatisticToSubset(weights_, labelMatrix_, majorityLabelVector_, coverageMatrix_, sumVector_,
-                                              labelIndices_, statisticIndex);
+                addDecomposableStatisticToSubset(weights_, labelMatrix_, majorityLabelVector_, coverageMatrix_,
+                                                 sumVector_, labelIndices_, statisticIndex);
             }
 
             /**
@@ -162,11 +163,10 @@ namespace seco {
     };
 
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void initializeLabelWiseStatisticVector(const EqualWeightVector& weights,
-                                                          const LabelMatrix& labelMatrix,
-                                                          const BinarySparseArrayVector& majorityLabelVector,
-                                                          const CoverageMatrix& coverageMatrix,
-                                                          ConfusionMatrixVector& statisticVector) {
+    static inline void initializeDecomposableStatisticticticticticVector(
+      const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
+      const BinarySparseArrayVector& majorityLabelVector, const CoverageMatrix& coverageMatrix,
+      ConfusionMatrixVector& statisticVector) {
         uint32 numStatistics = weights.getNumElements();
 
         for (uint32 i = 0; i < numStatistics; i++) {
@@ -176,10 +176,11 @@ namespace seco {
     }
 
     template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void initializeLabelWiseStatisticVector(const WeightVector& weights, const LabelMatrix& labelMatrix,
-                                                          const BinarySparseArrayVector& majorityLabelVector,
-                                                          const CoverageMatrix& coverageMatrix,
-                                                          ConfusionMatrixVector& statisticVector) {
+    static inline void initializeDecomposableStatisticVector(const WeightVector& weights,
+                                                             const LabelMatrix& labelMatrix,
+                                                             const BinarySparseArrayVector& majorityLabelVector,
+                                                             const CoverageMatrix& coverageMatrix,
+                                                             ConfusionMatrixVector& statisticVector) {
         uint32 numStatistics = weights.getNumElements();
 
         for (uint32 i = 0; i < numStatistics; i++) {
@@ -190,7 +191,7 @@ namespace seco {
     }
 
     /**
-     * A subset of confusion matrices that are computed independently for each label.
+     * A subset of confusion matrices that are computed independently for each output.
      *
      * @tparam LabelMatrix              The type of the matrix that provides access to the labels of the training
      *                                  examples
@@ -207,9 +208,9 @@ namespace seco {
      */
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
              typename RuleEvaluationFactory, typename WeightVector, typename IndexVector>
-    class LabelWiseStatisticsSubset final
-        : public AbstractLabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
-                                                   RuleEvaluationFactory, WeightVector, IndexVector> {
+    class DecomposableStatisticsSubset final
+        : public AbstractDecomposableStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                      RuleEvaluationFactory, WeightVector, IndexVector> {
         private:
 
             const std::unique_ptr<ConfusionMatrixVector> totalSumVectorPtr_;
@@ -234,54 +235,54 @@ namespace seco {
              *                              provides access to the indices of the labels that are included in
              *                              the subset
              */
-            LabelWiseStatisticsSubset(std::unique_ptr<ConfusionMatrixVector> totalSumVectorPtr,
-                                      const LabelMatrix& labelMatrix, const CoverageMatrix& coverageMatrix,
-                                      const BinarySparseArrayVector& majorityLabelVector,
-                                      const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights,
-                                      const IndexVector& labelIndices)
-                : AbstractLabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
-                                                    RuleEvaluationFactory, WeightVector, IndexVector>(
+            DecomposableStatisticsSubset(std::unique_ptr<ConfusionMatrixVector> totalSumVectorPtr,
+                                         const LabelMatrix& labelMatrix, const CoverageMatrix& coverageMatrix,
+                                         const BinarySparseArrayVector& majorityLabelVector,
+                                         const RuleEvaluationFactory& ruleEvaluationFactory,
+                                         const WeightVector& weights, const IndexVector& labelIndices)
+                : AbstractDecomposableStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                       RuleEvaluationFactory, WeightVector, IndexVector>(
                     labelMatrix, coverageMatrix, majorityLabelVector, *totalSumVectorPtr, ruleEvaluationFactory,
                     weights, labelIndices),
                   totalSumVectorPtr_(std::move(totalSumVectorPtr)) {
-                initializeLabelWiseStatisticVector(weights, labelMatrix, majorityLabelVector, coverageMatrix,
-                                                   *totalSumVectorPtr_);
+                initializeDecomposableStatisticVector(weights, labelMatrix, majorityLabelVector, coverageMatrix,
+                                                      *totalSumVectorPtr_);
             }
     };
 
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void addLabelWiseStatistic(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
-                                             const BinarySparseArrayVector& majorityLabelVector,
-                                             const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
-                                             uint32 statisticIndex) {
+    static inline void addDecomposableStatistic(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
+                                                const BinarySparseArrayVector& majorityLabelVector,
+                                                const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
+                                                uint32 statisticIndex) {
         vector.add(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
                    coverageMatrix, 1);
     }
 
     template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void addLabelWiseStatistic(const WeightVector& weights, const LabelMatrix& labelMatrix,
-                                             const BinarySparseArrayVector& majorityLabelVector,
-                                             const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
-                                             uint32 statisticIndex) {
+    static inline void addDecomposableStatistic(const WeightVector& weights, const LabelMatrix& labelMatrix,
+                                                const BinarySparseArrayVector& majorityLabelVector,
+                                                const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
+                                                uint32 statisticIndex) {
         float64 weight = weights[statisticIndex];
         vector.add(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
                    coverageMatrix, weight);
     }
 
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void removeLabelWiseStatistic(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
-                                                const BinarySparseArrayVector& majorityLabelVector,
-                                                const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
-                                                uint32 statisticIndex) {
+    static inline void removeDecomposableStatistic(const EqualWeightVector& weights, const LabelMatrix& labelMatrix,
+                                                   const BinarySparseArrayVector& majorityLabelVector,
+                                                   const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
+                                                   uint32 statisticIndex) {
         vector.remove(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
                       coverageMatrix, 1);
     }
 
     template<typename WeightVector, typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector>
-    static inline void removeLabelWiseStatistic(const WeightVector& weights, const LabelMatrix& labelMatrix,
-                                                const BinarySparseArrayVector& majorityLabelVector,
-                                                const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
-                                                uint32 statisticIndex) {
+    static inline void removeDecomposableStatistic(const WeightVector& weights, const LabelMatrix& labelMatrix,
+                                                   const BinarySparseArrayVector& majorityLabelVector,
+                                                   const CoverageMatrix& coverageMatrix, ConfusionMatrixVector& vector,
+                                                   uint32 statisticIndex) {
         float64 weight = weights[statisticIndex];
         vector.remove(statisticIndex, labelMatrix, majorityLabelVector.cbegin(), majorityLabelVector.cend(),
                       coverageMatrix, weight);
@@ -289,7 +290,7 @@ namespace seco {
 
     /**
      * An abstract base class for all statistics that provide access to the elements of weighted confusion matrices that
-     * are computed independently for each label.
+     * are computed independently for each output.
      *
      * @tparam LabelMatrix              The type of the matrix that provides access to the labels of the training
      *                                  examples
@@ -304,12 +305,12 @@ namespace seco {
      */
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
              typename RuleEvaluationFactory, typename WeightVector>
-    class LabelWiseWeightedStatistics final : public IWeightedStatistics {
+    class DecomposableWeightedStatistics final : public IWeightedStatistics {
         private:
 
             /**
              * Provides access to a subset of the confusion matrices that are stored by an instance of the class
-             * `LabelWiseWeightedStatistics`.
+             * `DecomposableWeightedStatistics`.
              *
              * @tparam IndexVector The type of the vector that provides access to the indices of the labels that are
              *                     included in the subset
@@ -317,8 +318,8 @@ namespace seco {
             template<typename IndexVector>
             class WeightedStatisticsSubset final
                 : virtual public IWeightedStatisticsSubset,
-                  public AbstractLabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
-                                                           RuleEvaluationFactory, WeightVector, IndexVector> {
+                  public AbstractDecomposableStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                              RuleEvaluationFactory, WeightVector, IndexVector> {
                 private:
 
                     const ConfusionMatrixVector* subsetSumVector_;
@@ -332,16 +333,16 @@ namespace seco {
                 public:
 
                     /**
-                     * @param statistics            A reference to an object of type `LabelWiseWeightedStatistics` that
-                     *                              stores the confusion matrices
+                     * @param statistics            A reference to an object of type `DecomposableWeightedStatistics`
+                     *                              that stores the confusion matrices
                      * @param labelIndices          A reference to an object of template type `IndexVector` that
                      *                              provides access to the indices of the labels that are included in
                      *                              the subset
                      */
-                    WeightedStatisticsSubset(const LabelWiseWeightedStatistics& statistics,
+                    WeightedStatisticsSubset(const DecomposableWeightedStatistics& statistics,
                                              const IndexVector& labelIndices)
-                        : AbstractLabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
-                                                            RuleEvaluationFactory, WeightVector, IndexVector>(
+                        : AbstractDecomposableStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                               RuleEvaluationFactory, WeightVector, IndexVector>(
                             statistics.labelMatrix_, statistics.coverageMatrix_, statistics.majorityLabelVector_,
                             statistics.totalSumVector_, statistics.ruleEvaluationFactory_, statistics.weights_,
                             labelIndices),
@@ -357,11 +358,11 @@ namespace seco {
                             subsetSumVector_ = totalCoverableSumVectorPtr_.get();
                         }
 
-                        // For each label, subtract the confusion matrices of the example at the given index (weighted
+                        // For each output, subtract the confusion matrices of the example at the given index (weighted
                         // by the given weight) from the total sum of confusion matrices...
-
-                        removeLabelWiseStatistic(this->weights_, this->labelMatrix_, this->majorityLabelVector_,
-                                                 this->coverageMatrix_, *totalCoverableSumVectorPtr_, statisticIndex);
+                        removeDecomposableStatistic(this->weights_, this->labelMatrix_, this->majorityLabelVector_,
+                                                    this->coverageMatrix_, *totalCoverableSumVectorPtr_,
+                                                    statisticIndex);
                     }
 
                     /**
@@ -372,11 +373,11 @@ namespace seco {
                             // Allocate a vector for storing the accumulated confusion matrices, if necessary...
                             accumulatedSumVectorPtr_ = std::make_unique<ConfusionMatrixVector>(this->sumVector_);
                         } else {
-                            // Add the confusion matrix for each label to the accumulated confusion matrix...
+                            // Add the confusion matrix for each output to the accumulated confusion matrix...
                             accumulatedSumVectorPtr_->add(this->sumVector_.cbegin(), this->sumVector_.cend());
                         }
 
-                        // Reset the confusion matrix for each label to zero...
+                        // Reset the confusion matrix for each output to zero...
                         this->sumVector_.clear();
                     }
 
@@ -447,22 +448,23 @@ namespace seco {
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              */
-            LabelWiseWeightedStatistics(const LabelMatrix& labelMatrix, const CoverageMatrix& coverageMatrix,
-                                        const BinarySparseArrayVector& majorityLabelVector,
-                                        const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights)
+            DecomposableWeightedStatistics(const LabelMatrix& labelMatrix, const CoverageMatrix& coverageMatrix,
+                                           const BinarySparseArrayVector& majorityLabelVector,
+                                           const RuleEvaluationFactory& ruleEvaluationFactory,
+                                           const WeightVector& weights)
                 : weights_(weights), ruleEvaluationFactory_(ruleEvaluationFactory), labelMatrix_(labelMatrix),
                   majorityLabelVector_(majorityLabelVector), totalSumVector_(labelMatrix.numCols, true),
                   subsetSumVector_(labelMatrix.numCols, true), coverageMatrix_(coverageMatrix) {
-                initializeLabelWiseStatisticVector(weights, labelMatrix, majorityLabelVector, coverageMatrix,
-                                                   totalSumVector_);
-                initializeLabelWiseStatisticVector(weights, labelMatrix, majorityLabelVector, coverageMatrix,
-                                                   subsetSumVector_);
+                initializeDecomposableStatisticVector(weights, labelMatrix, majorityLabelVector, coverageMatrix,
+                                                      totalSumVector_);
+                initializeDecomposableStatisticVector(weights, labelMatrix, majorityLabelVector, coverageMatrix,
+                                                      subsetSumVector_);
             }
 
             /**
-             * @param statistics A reference to an object of type `LabelWiseWeightedStatistics` to be copied
+             * @param statistics A reference to an object of type `DecomposableWeightedStatistics` to be copied
              */
-            LabelWiseWeightedStatistics(const LabelWiseWeightedStatistics& statistics)
+            DecomposableWeightedStatistics(const DecomposableWeightedStatistics& statistics)
                 : weights_(statistics.weights_), ruleEvaluationFactory_(statistics.ruleEvaluationFactory_),
                   labelMatrix_(statistics.labelMatrix_), majorityLabelVector_(statistics.majorityLabelVector_),
                   totalSumVector_(statistics.totalSumVector_), subsetSumVector_(statistics.subsetSumVector_),
@@ -486,8 +488,8 @@ namespace seco {
              * @see `IWeightedStatistics::copy`
              */
             std::unique_ptr<IWeightedStatistics> copy() const override {
-                return std::make_unique<LabelWiseWeightedStatistics<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
-                                                                    RuleEvaluationFactory, WeightVector>>(*this);
+                return std::make_unique<DecomposableWeightedStatistics<
+                  LabelMatrix, CoverageMatrix, ConfusionMatrixVector, RuleEvaluationFactory, WeightVector>>(*this);
             }
 
             /**
@@ -501,16 +503,16 @@ namespace seco {
              * @see `IWeightedStatistics::addCoveredStatistic`
              */
             void addCoveredStatistic(uint32 statisticIndex) override {
-                addLabelWiseStatistic(weights_, labelMatrix_, majorityLabelVector_, coverageMatrix_, subsetSumVector_,
-                                      statisticIndex);
+                addDecomposableStatistic(weights_, labelMatrix_, majorityLabelVector_, coverageMatrix_,
+                                         subsetSumVector_, statisticIndex);
             }
 
             /**
              * @see `IWeightedStatistics::removeCoveredStatistic`
              */
             void removeCoveredStatistic(uint32 statisticIndex) override {
-                removeLabelWiseStatistic(weights_, labelMatrix_, majorityLabelVector_, coverageMatrix_,
-                                         subsetSumVector_, statisticIndex);
+                removeDecomposableStatistic(weights_, labelMatrix_, majorityLabelVector_, coverageMatrix_,
+                                            subsetSumVector_, statisticIndex);
             }
 
             /**
@@ -531,20 +533,20 @@ namespace seco {
     };
 
     template<typename Prediction, typename CoverageMatrix>
-    static inline void applyLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                          CoverageMatrix& coverageMatrix,
-                                                          View<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                          View<uint32>::const_iterator majorityLabelIndicesEnd) {
+    static inline void applyDecomposablePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                             CoverageMatrix& coverageMatrix,
+                                                             View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                                             View<uint32>::const_iterator majorityLabelIndicesEnd) {
         coverageMatrix.increaseCoverage(statisticIndex, majorityLabelIndicesBegin, majorityLabelIndicesEnd,
                                         prediction.values_cbegin(), prediction.values_cend(),
                                         prediction.indices_cbegin(), prediction.indices_cend());
     }
 
     template<typename Prediction, typename CoverageMatrix>
-    static inline void revertLabelWisePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                           CoverageMatrix& coverageMatrix,
-                                                           View<uint32>::const_iterator majorityLabelIndicesBegin,
-                                                           View<uint32>::const_iterator majorityLabelIndicesEnd) {
+    static inline void revertDecomposablePredictionInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                              CoverageMatrix& coverageMatrix,
+                                                              View<uint32>::const_iterator majorityLabelIndicesBegin,
+                                                              View<uint32>::const_iterator majorityLabelIndicesEnd) {
         coverageMatrix.decreaseCoverage(statisticIndex, majorityLabelIndicesBegin, majorityLabelIndicesEnd,
                                         prediction.values_cbegin(), prediction.values_cend(),
                                         prediction.indices_cbegin(), prediction.indices_cend());
@@ -558,15 +560,15 @@ namespace seco {
       const WeightVector& weights, const IndexVector& labelIndices) {
         std::unique_ptr<ConfusionMatrixVector> totalSumVectorPtr =
           std::make_unique<ConfusionMatrixVector>(labelMatrix.numRows, true);
-        return std::make_unique<LabelWiseStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
-                                                          RuleEvaluationFactory, WeightVector, IndexVector>>(
+        return std::make_unique<DecomposableStatisticsSubset<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                             RuleEvaluationFactory, WeightVector, IndexVector>>(
           std::move(totalSumVectorPtr), labelMatrix, coverageMatrix, majorityLabelVector, ruleEvaluationFactory,
           weights, labelIndices);
     }
 
     /**
      * An abstract base class for all statistics that provide access to the elements of confusion matrices that are
-     * computed independently for each label.
+     * computed independently for each output.
      *
      * @tparam LabelMatrix              The type of the matrix that provides access to the labels of the training
      *                                  examples
@@ -579,7 +581,7 @@ namespace seco {
      */
     template<typename LabelMatrix, typename CoverageMatrix, typename ConfusionMatrixVector,
              typename RuleEvaluationFactory>
-    class AbstractLabelWiseStatistics : public ILabelWiseStatistics<RuleEvaluationFactory> {
+    class AbstractDecomposableStatistics : public IDecomposableStatistics<RuleEvaluationFactory> {
         private:
 
             const RuleEvaluationFactory* ruleEvaluationFactory_;
@@ -604,10 +606,10 @@ namespace seco {
              *                                  calculating the predictions of rules, as well as corresponding quality
              *                                  scores
              */
-            AbstractLabelWiseStatistics(const LabelMatrix& labelMatrix,
-                                        std::unique_ptr<CoverageMatrix> coverageMatrixPtr,
-                                        std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
-                                        const RuleEvaluationFactory& ruleEvaluationFactory)
+            AbstractDecomposableStatistics(const LabelMatrix& labelMatrix,
+                                           std::unique_ptr<CoverageMatrix> coverageMatrixPtr,
+                                           std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
+                                           const RuleEvaluationFactory& ruleEvaluationFactory)
                 : ruleEvaluationFactory_(&ruleEvaluationFactory), labelMatrix_(labelMatrix),
                   majorityLabelVectorPtr_(std::move(majorityLabelVectorPtr)),
                   coverageMatrixPtr_(std::move(coverageMatrixPtr)) {}
@@ -620,7 +622,7 @@ namespace seco {
             }
 
             /**
-             * @see `ILabelWiseStatistics::setRuleEvaluationFactory`
+             * @see `IDecomposableStatistics::setRuleEvaluationFactory`
              */
             void setRuleEvaluationFactory(const RuleEvaluationFactory& ruleEvaluationFactory) override final {
                 ruleEvaluationFactory_ = &ruleEvaluationFactory;
@@ -644,7 +646,7 @@ namespace seco {
              * @see `IStatistics::applyPrediction`
              */
             void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                applyLabelWisePredictionInternally<CompletePrediction, CoverageMatrix>(
+                applyDecomposablePredictionInternally<CompletePrediction, CoverageMatrix>(
                   statisticIndex, prediction, *coverageMatrixPtr_, majorityLabelVectorPtr_->cbegin(),
                   majorityLabelVectorPtr_->cend());
             }
@@ -653,7 +655,7 @@ namespace seco {
              * @see `IStatistics::applyPrediction`
              */
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                applyLabelWisePredictionInternally<PartialPrediction, CoverageMatrix>(
+                applyDecomposablePredictionInternally<PartialPrediction, CoverageMatrix>(
                   statisticIndex, prediction, *coverageMatrixPtr_, majorityLabelVectorPtr_->cbegin(),
                   majorityLabelVectorPtr_->cend());
             }
@@ -662,7 +664,7 @@ namespace seco {
              * @see `IStatistics::revertPrediction`
              */
             void revertPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                revertLabelWisePredictionInternally<CompletePrediction, CoverageMatrix>(
+                revertDecomposablePredictionInternally<CompletePrediction, CoverageMatrix>(
                   statisticIndex, prediction, *coverageMatrixPtr_, majorityLabelVectorPtr_->cbegin(),
                   majorityLabelVectorPtr_->cend());
             }
@@ -671,7 +673,7 @@ namespace seco {
              * @see `IStatistics::revertPrediction`
              */
             void revertPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                revertLabelWisePredictionInternally<PartialPrediction, CoverageMatrix>(
+                revertDecomposablePredictionInternally<PartialPrediction, CoverageMatrix>(
                   statisticIndex, prediction, *coverageMatrixPtr_, majorityLabelVectorPtr_->cbegin(),
                   majorityLabelVectorPtr_->cend());
             }
@@ -835,8 +837,8 @@ namespace seco {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const EqualWeightVector& weights) const override final {
-                return std::make_unique<LabelWiseWeightedStatistics<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
-                                                                    RuleEvaluationFactory, EqualWeightVector>>(
+                return std::make_unique<DecomposableWeightedStatistics<
+                  LabelMatrix, CoverageMatrix, ConfusionMatrixVector, RuleEvaluationFactory, EqualWeightVector>>(
                   labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_, *ruleEvaluationFactory_, weights);
             }
 
@@ -845,8 +847,8 @@ namespace seco {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const BitWeightVector& weights) const override final {
-                return std::make_unique<LabelWiseWeightedStatistics<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
-                                                                    RuleEvaluationFactory, BitWeightVector>>(
+                return std::make_unique<DecomposableWeightedStatistics<
+                  LabelMatrix, CoverageMatrix, ConfusionMatrixVector, RuleEvaluationFactory, BitWeightVector>>(
                   labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_, *ruleEvaluationFactory_, weights);
             }
 
@@ -855,8 +857,9 @@ namespace seco {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const DenseWeightVector<uint32>& weights) const override final {
-                return std::make_unique<LabelWiseWeightedStatistics<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
-                                                                    RuleEvaluationFactory, DenseWeightVector<uint32>>>(
+                return std::make_unique<
+                  DecomposableWeightedStatistics<LabelMatrix, CoverageMatrix, ConfusionMatrixVector,
+                                                 RuleEvaluationFactory, DenseWeightVector<uint32>>>(
                   labelMatrix_, *coverageMatrixPtr_, *majorityLabelVectorPtr_, *ruleEvaluationFactory_, weights);
             }
     };

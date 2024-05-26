@@ -3,15 +3,15 @@
     #pragma warning(disable : 4250)
 #endif
 
-#include "mlrl/boosting/statistics/statistics_provider_example_wise_dense.hpp"
+#include "mlrl/boosting/statistics/statistics_provider_non_decomposable_dense.hpp"
 
 #include "mlrl/boosting/data/matrix_c_contiguous_numeric.hpp"
-#include "mlrl/boosting/data/vector_statistic_example_wise_dense.hpp"
-#include "mlrl/boosting/data/view_statistic_example_wise_dense.hpp"
+#include "mlrl/boosting/data/vector_statistic_non_decomposable_dense.hpp"
+#include "mlrl/boosting/data/view_statistic_non_decomposable_dense.hpp"
 #include "mlrl/common/util/openmp.hpp"
-#include "statistics_example_wise_common.hpp"
-#include "statistics_label_wise_dense.hpp"
-#include "statistics_provider_example_wise.hpp"
+#include "statistics_decomposable_dense.hpp"
+#include "statistics_non_decomposable_common.hpp"
+#include "statistics_provider_non_decomposable.hpp"
 
 namespace boosting {
 
@@ -19,17 +19,17 @@ namespace boosting {
      * A matrix that stores gradients and Hessians that have been calculated using a non-decomposable loss function
      * using C-contiguous arrays.
      */
-    class DenseExampleWiseStatisticMatrix final
-        : public ClearableViewDecorator<MatrixDecorator<DenseExampleWiseStatisticView>> {
+    class DenseNonDecomposableStatisticMatrix final
+        : public ClearableViewDecorator<MatrixDecorator<DenseNonDecomposableStatisticView>> {
         public:
 
             /**
              * @param numRows The number of rows in the matrix
              * @param numCols The number of columns in the matrix
              */
-            DenseExampleWiseStatisticMatrix(uint32 numRows, uint32 numCols)
-                : ClearableViewDecorator<MatrixDecorator<DenseExampleWiseStatisticView>>(
-                    DenseExampleWiseStatisticView(numRows, numCols)) {}
+            DenseNonDecomposableStatisticMatrix(uint32 numRows, uint32 numCols)
+                : ClearableViewDecorator<MatrixDecorator<DenseNonDecomposableStatisticView>>(
+                    DenseNonDecomposableStatisticView(numRows, numCols)) {}
 
             /**
              * Adds all gradients and Hessians in a vector to a specific row of this matrix. The gradients and Hessians
@@ -52,17 +52,17 @@ namespace boosting {
     };
 
     /**
-     * Provides access to gradients and Hessians that have been calculated according to a differentiable loss function
-     * that is applied example-wise and are stored using dense data structures.
+     * Provides access to gradients and Hessians that have been calculated according to a non-decomposable loss function
+     * and are stored using dense data structures.
      *
      * @tparam LabelMatrix The type of the matrix that provides access to the labels of the training examples
      */
     template<typename LabelMatrix>
-    class DenseExampleWiseStatistics final
-        : public AbstractExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector,
-                                               DenseExampleWiseStatisticMatrix, NumericCContiguousMatrix<float64>,
-                                               IExampleWiseLoss, IEvaluationMeasure, IExampleWiseRuleEvaluationFactory,
-                                               ILabelWiseRuleEvaluationFactory> {
+    class DenseNonDecomposableStatistics final
+        : public AbstractNonDecomposableStatistics<
+            LabelMatrix, DenseNonDecomposableStatisticVector, DenseNonDecomposableStatisticMatrix,
+            NumericCContiguousMatrix<float64>, IExampleWiseLoss, IEvaluationMeasure, IExampleWiseRuleEvaluationFactory,
+            ILabelWiseRuleEvaluationFactory> {
         public:
 
             /**
@@ -76,21 +76,21 @@ namespace boosting {
              *                              scores, of rules
              * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
              *                              to the labels of the training examples
-             * @param statisticMatrixPtr    An unique pointer to an object of type `DenseExampleWiseStatisticMatrix`
+             * @param statisticMatrixPtr    An unique pointer to an object of type `DenseNonDecomposableStatisticMatrix`
              *                              that stores to the gradients and Hessians
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericCContiguousMatrix` that
              *                              stores the currently predicted scores
              */
-            DenseExampleWiseStatistics(std::unique_ptr<IExampleWiseLoss> lossPtr,
-                                       std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr,
-                                       const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory,
-                                       const LabelMatrix& labelMatrix,
-                                       std::unique_ptr<DenseExampleWiseStatisticMatrix> statisticMatrixPtr,
-                                       std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
-                : AbstractExampleWiseStatistics<LabelMatrix, DenseExampleWiseStatisticVector,
-                                                DenseExampleWiseStatisticMatrix, NumericCContiguousMatrix<float64>,
-                                                IExampleWiseLoss, IEvaluationMeasure, IExampleWiseRuleEvaluationFactory,
-                                                ILabelWiseRuleEvaluationFactory>(
+            DenseNonDecomposableStatistics(std::unique_ptr<IExampleWiseLoss> lossPtr,
+                                           std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr,
+                                           const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory,
+                                           const LabelMatrix& labelMatrix,
+                                           std::unique_ptr<DenseNonDecomposableStatisticMatrix> statisticMatrixPtr,
+                                           std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
+                : AbstractNonDecomposableStatistics<
+                    LabelMatrix, DenseNonDecomposableStatisticVector, DenseNonDecomposableStatisticMatrix,
+                    NumericCContiguousMatrix<float64>, IExampleWiseLoss, IEvaluationMeasure,
+                    IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
                     std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 
@@ -103,29 +103,31 @@ namespace boosting {
             }
 
             /**
-             * @see `IExampleWiseStatistics::toLabelWiseStatistics`
+             * @see `INonDecomposableStatistics::toDecomposableStatistics`
              */
-            std::unique_ptr<ILabelWiseStatistics<ILabelWiseRuleEvaluationFactory>> toLabelWiseStatistics(
+            std::unique_ptr<IDecomposableStatistics<ILabelWiseRuleEvaluationFactory>> toDecomposableStatistics(
               const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads) override final {
                 uint32 numRows = this->statisticMatrixPtr_->getNumRows();
                 uint32 numCols = this->statisticMatrixPtr_->getNumCols();
-                std::unique_ptr<DenseLabelWiseStatisticMatrix> labelWiseStatisticMatrixPtr =
-                  std::make_unique<DenseLabelWiseStatisticMatrix>(numRows, numCols);
-                CContiguousView<Tuple<float64>>* labelWiseStatisticMatrixRawPtr =
-                  &labelWiseStatisticMatrixPtr->getView();
-                DenseExampleWiseStatisticView* exampleWiseStatisticViewRawPtr = &this->statisticMatrixPtr_->getView();
+                std::unique_ptr<DenseDecomposableStatisticMatrix> decomposableStatisticMatrixPtr =
+                  std::make_unique<DenseDecomposableStatisticMatrix>(numRows, numCols);
+                CContiguousView<Tuple<float64>>* decomposableStatisticMatrixRawPtr =
+                  &decomposableStatisticMatrixPtr->getView();
+                DenseNonDecomposableStatisticView* NonDecomposableStatisticViewRawPtr =
+                  &this->statisticMatrixPtr_->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
-    #pragma omp parallel for firstprivate(numRows) firstprivate(numCols) firstprivate(labelWiseStatisticMatrixRawPtr) \
-      firstprivate(exampleWiseStatisticViewRawPtr) schedule(dynamic) num_threads(numThreads)
+    #pragma omp parallel for firstprivate(numRows) firstprivate(numCols) \
+      firstprivate(decomposableStatisticMatrixRawPtr) firstprivate(NonDecomposableStatisticViewRawPtr) \
+      schedule(dynamic) num_threads(numThreads)
 #endif
                 for (int64 i = 0; i < numRows; i++) {
                     CContiguousView<Tuple<float64>>::value_iterator iterator =
-                      labelWiseStatisticMatrixRawPtr->values_begin(i);
-                    DenseExampleWiseStatisticView::gradient_const_iterator gradientIterator =
-                      exampleWiseStatisticViewRawPtr->gradients_cbegin(i);
-                    DenseExampleWiseStatisticView::hessian_diagonal_const_iterator hessianIterator =
-                      exampleWiseStatisticViewRawPtr->hessians_diagonal_cbegin(i);
+                      decomposableStatisticMatrixRawPtr->values_begin(i);
+                    DenseNonDecomposableStatisticView::gradient_const_iterator gradientIterator =
+                      NonDecomposableStatisticViewRawPtr->gradients_cbegin(i);
+                    DenseNonDecomposableStatisticView::hessian_diagonal_const_iterator hessianIterator =
+                      NonDecomposableStatisticViewRawPtr->hessians_diagonal_cbegin(i);
 
                     for (uint32 j = 0; j < numCols; j++) {
                         Tuple<float64>& tuple = iterator[j];
@@ -134,15 +136,15 @@ namespace boosting {
                     }
                 }
 
-                return std::make_unique<DenseLabelWiseStatistics<LabelMatrix>>(
+                return std::make_unique<DenseDecomposableStatistics<LabelMatrix>>(
                   std::move(this->lossPtr_), std::move(this->evaluationMeasurePtr_), ruleEvaluationFactory,
-                  this->labelMatrix_, std::move(labelWiseStatisticMatrixPtr), std::move(this->scoreMatrixPtr_));
+                  this->labelMatrix_, std::move(decomposableStatisticMatrixPtr), std::move(this->scoreMatrixPtr_));
             }
     };
 
     template<typename LabelMatrix>
     static inline std::unique_ptr<
-      IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>
+      INonDecomposableStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>
       createStatistics(const IExampleWiseLossFactory& lossFactory,
                        const IEvaluationMeasureFactory& evaluationMeasureFactory,
                        const IExampleWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
@@ -151,29 +153,29 @@ namespace boosting {
         uint32 numLabels = labelMatrix.numCols;
         std::unique_ptr<IExampleWiseLoss> lossPtr = lossFactory.createExampleWiseLoss();
         std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr = evaluationMeasureFactory.createEvaluationMeasure();
-        std::unique_ptr<DenseExampleWiseStatisticMatrix> statisticMatrixPtr =
-          std::make_unique<DenseExampleWiseStatisticMatrix>(numExamples, numLabels);
+        std::unique_ptr<DenseNonDecomposableStatisticMatrix> statisticMatrixPtr =
+          std::make_unique<DenseNonDecomposableStatisticMatrix>(numExamples, numLabels);
         std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr =
           std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numLabels, true);
         const IExampleWiseLoss* lossRawPtr = lossPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
         const CContiguousView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
-        DenseExampleWiseStatisticView* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
+        DenseNonDecomposableStatisticView* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
     #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(labelMatrixPtr) \
       firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
 #endif
         for (int64 i = 0; i < numExamples; i++) {
-            lossRawPtr->updateExampleWiseStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr, *statisticMatrixRawPtr);
+            lossRawPtr->updateNonDecomposableStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr, *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<DenseExampleWiseStatistics<LabelMatrix>>(
+        return std::make_unique<DenseNonDecomposableStatistics<LabelMatrix>>(
           std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
           std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
     }
 
-    DenseExampleWiseStatisticsProviderFactory::DenseExampleWiseStatisticsProviderFactory(
+    DenseNonDecomposableStatisticsProviderFactory::DenseNonDecomposableStatisticsProviderFactory(
       std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr,
       std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
       std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
@@ -185,27 +187,27 @@ namespace boosting {
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {}
 
-    std::unique_ptr<IStatisticsProvider> DenseExampleWiseStatisticsProviderFactory::create(
+    std::unique_ptr<IStatisticsProvider> DenseNonDecomposableStatisticsProviderFactory::create(
       const CContiguousView<const uint8>& labelMatrix) const {
-        std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>
+        std::unique_ptr<INonDecomposableStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>
           statisticsPtr = createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_,
                                            *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);
         return std::make_unique<
-          ExampleWiseStatisticsProvider<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>(
+          NonDecomposableStatisticsProvider<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    std::unique_ptr<IStatisticsProvider> DenseExampleWiseStatisticsProviderFactory::create(
+    std::unique_ptr<IStatisticsProvider> DenseNonDecomposableStatisticsProviderFactory::create(
       const BinaryCsrView& labelMatrix) const {
-        std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>
+        std::unique_ptr<INonDecomposableStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>
           statisticsPtr = createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_,
                                            *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);
         return std::make_unique<
-          ExampleWiseStatisticsProvider<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>(
+          NonDecomposableStatisticsProvider<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    DenseConvertibleExampleWiseStatisticsProviderFactory::DenseConvertibleExampleWiseStatisticsProviderFactory(
+    DenseConvertibleNonDecomposableStatisticsProviderFactory::DenseConvertibleNonDecomposableStatisticsProviderFactory(
       std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr,
       std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
       std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
@@ -217,23 +219,23 @@ namespace boosting {
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {}
 
-    std::unique_ptr<IStatisticsProvider> DenseConvertibleExampleWiseStatisticsProviderFactory::create(
+    std::unique_ptr<IStatisticsProvider> DenseConvertibleNonDecomposableStatisticsProviderFactory::create(
       const CContiguousView<const uint8>& labelMatrix) const {
-        std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>
+        std::unique_ptr<INonDecomposableStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>
           statisticsPtr = createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_,
                                            *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);
-        return std::make_unique<
-          ConvertibleExampleWiseStatisticsProvider<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>(
+        return std::make_unique<ConvertibleNonDecomposableStatisticsProvider<IExampleWiseRuleEvaluationFactory,
+                                                                             ILabelWiseRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr), numThreads_);
     }
 
-    std::unique_ptr<IStatisticsProvider> DenseConvertibleExampleWiseStatisticsProviderFactory::create(
+    std::unique_ptr<IStatisticsProvider> DenseConvertibleNonDecomposableStatisticsProviderFactory::create(
       const BinaryCsrView& labelMatrix) const {
-        std::unique_ptr<IExampleWiseStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>
+        std::unique_ptr<INonDecomposableStatistics<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>
           statisticsPtr = createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_,
                                            *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);
-        return std::make_unique<
-          ConvertibleExampleWiseStatisticsProvider<IExampleWiseRuleEvaluationFactory, ILabelWiseRuleEvaluationFactory>>(
+        return std::make_unique<ConvertibleNonDecomposableStatisticsProvider<IExampleWiseRuleEvaluationFactory,
+                                                                             ILabelWiseRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr), numThreads_);
     }
 

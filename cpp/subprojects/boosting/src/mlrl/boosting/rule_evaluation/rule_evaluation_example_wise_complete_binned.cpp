@@ -10,8 +10,8 @@ namespace boosting {
         : l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
           labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)), blas_(blas), lapack_(lapack) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>>
-      ExampleWiseCompleteBinnedRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>>
+      ExampleWiseCompleteBinnedRuleEvaluationFactory::create(const DenseNonDecomposableStatisticVector& statisticVector,
                                                              const CompleteIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
@@ -20,8 +20,8 @@ namespace boosting {
           lapack_);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>>
-      ExampleWiseCompleteBinnedRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>>
+      ExampleWiseCompleteBinnedRuleEvaluationFactory::create(const DenseNonDecomposableStatisticVector& statisticVector,
                                                              const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());

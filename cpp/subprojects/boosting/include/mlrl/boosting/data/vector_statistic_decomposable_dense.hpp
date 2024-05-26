@@ -13,10 +13,10 @@ namespace boosting {
 
     /**
      * An one-dimensional vector that stores aggregated gradients and Hessians that have been calculated using a
-     * label-wise decomposable loss function in a C-contiguous array. For each element in the vector a single gradient
-     * and Hessian is stored.
+     * decomposable loss function in a C-contiguous array. For each element in the vector a single gradient and Hessian
+     * is stored.
      */
-    class DenseLabelWiseStatisticVector final
+    class DenseDecomposableStatisticVector final
         : public ClearableViewDecorator<DenseVectorDecorator<AllocatedVector<Tuple<float64>>>> {
         public:
 
@@ -25,20 +25,20 @@ namespace boosting {
              * @param init          True, if all gradients and Hessians in the vector should be initialized with zero,
              *                      false otherwise
              */
-            DenseLabelWiseStatisticVector(uint32 numElements, bool init = false);
+            DenseDecomposableStatisticVector(uint32 numElements, bool init = false);
 
             /**
-             * @param other A reference to an object of type `DenseLabelWiseStatisticVector` to be copied
+             * @param other A reference to an object of type `DenseDecomposableStatisticVector` to be copied
              */
-            DenseLabelWiseStatisticVector(const DenseLabelWiseStatisticVector& other);
+            DenseDecomposableStatisticVector(const DenseDecomposableStatisticVector& other);
 
             /**
              * Adds all gradients and Hessians in another vector to this vector.
              *
-             * @param vector A reference to an object of type `DenseLabelWiseStatisticVector` that stores the gradients
-             *               and Hessians to be added to this vector
+             * @param vector A reference to an object of type `DenseDecomposableStatisticVector` that stores the
+             *               gradients and Hessians to be added to this vector
              */
-            void add(const DenseLabelWiseStatisticVector& vector);
+            void add(const DenseDecomposableStatisticVector& vector);
 
             /**
              * Adds all gradients and Hessians in a single row of a `CContiguousView` to this vector.
@@ -137,30 +137,30 @@ namespace boosting {
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `CompleteIndexVector`.
              *
-             * @param first         A reference to an object of type `DenseLabelWiseStatisticVector` that stores the
+             * @param first         A reference to an object of type `DenseDecomposableStatisticVector` that stores the
              *                      gradients and Hessians in the first vector
              * @param firstIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
              *                      indices
-             * @param second        A reference to an object of type `DenseLabelWiseStatisticVector` that stores the
+             * @param second        A reference to an object of type `DenseDecomposableStatisticVector` that stores the
              *                      gradients and Hessians in the second vector
              */
-            void difference(const DenseLabelWiseStatisticVector& first, const CompleteIndexVector& firstIndices,
-                            const DenseLabelWiseStatisticVector& second);
+            void difference(const DenseDecomposableStatisticVector& first, const CompleteIndexVector& firstIndices,
+                            const DenseDecomposableStatisticVector& second);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `PartialIndexVector`.
              *
-             * @param first         A reference to an object of type `DenseLabelWiseStatisticVector` that stores the
+             * @param first         A reference to an object of type `DenseDecomposableStatisticVector` that stores the
              *                      gradients and Hessians in the first vector
              * @param firstIndices  A reference to an object of type `PartialIndexVector` that provides access to the
              *                      indices
-             * @param second        A reference to an object of type `DenseLabelWiseStatisticVector` that stores the
+             * @param second        A reference to an object of type `DenseDecomposableStatisticVector` that stores the
              *                      gradients and Hessians in the second vector
              */
-            void difference(const DenseLabelWiseStatisticVector& first, const PartialIndexVector& firstIndices,
-                            const DenseLabelWiseStatisticVector& second);
+            void difference(const DenseDecomposableStatisticVector& first, const PartialIndexVector& firstIndices,
+                            const DenseDecomposableStatisticVector& second);
     };
 
 }

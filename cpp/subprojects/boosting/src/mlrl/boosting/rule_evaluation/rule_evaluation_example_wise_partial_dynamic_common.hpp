@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/vector_statistic_example_wise_dense.hpp"
+#include "mlrl/boosting/data/vector_statistic_non_decomposable_dense.hpp"
 #include "rule_evaluation_label_wise_partial_dynamic_common.hpp"
 
 namespace boosting {
@@ -23,8 +23,8 @@ namespace boosting {
      */
     template<typename ScoreIterator>
     static inline std::pair<float64, float64> getMinAndMaxScore(
-      ScoreIterator scoreIterator, DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator,
-      DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator, uint32 numLabels,
+      ScoreIterator scoreIterator, DenseNonDecomposableStatisticVector::gradient_const_iterator gradientIterator,
+      DenseNonDecomposableStatisticVector::hessian_diagonal_const_iterator hessianIterator, uint32 numLabels,
       float64 l1RegularizationWeight, float64 l2RegularizationWeight) {
         float64 score = calculateLabelWiseScore(gradientIterator[0], hessianIterator[0], l1RegularizationWeight,
                                                 l2RegularizationWeight);

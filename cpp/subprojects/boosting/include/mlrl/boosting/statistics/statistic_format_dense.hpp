@@ -9,7 +9,7 @@
 namespace boosting {
 
     /**
-     * Allows to configure a dense format for storing statistics about the labels of the training examples.
+     * Allows to configure a dense format for storing statistics about the quality of predictions for training examples.
      */
     class DenseStatisticsConfig final : public IStatisticsConfig {
         private:

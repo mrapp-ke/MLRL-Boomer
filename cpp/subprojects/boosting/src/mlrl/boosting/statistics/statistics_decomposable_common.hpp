@@ -3,41 +3,37 @@
  */
 #pragma once
 
-#include "mlrl/boosting/statistics/statistics_example_wise.hpp"
+#include "mlrl/boosting/statistics/statistics_decomposable.hpp"
 
 namespace boosting {
 
-    static inline bool hasNonZeroWeightExampleWise(const EqualWeightVector& weights, uint32 statisticIndex) {
+    static inline bool hasNonZeroWeightDecomposable(const EqualWeightVector& weights, uint32 statisticIndex) {
         return true;
     }
 
     template<typename WeightVector>
-    static inline bool hasNonZeroWeightExampleWise(const WeightVector& weights, uint32 statisticIndex) {
+    static inline bool hasNonZeroWeightDecomposable(const WeightVector& weights, uint32 statisticIndex) {
         return !isEqualToZero(weights[statisticIndex]);
     }
 
     template<typename StatisticView, typename StatisticVector, typename IndexVector>
-    static inline void addExampleWiseStatisticToSubset(const EqualWeightVector& weights,
-                                                       const StatisticView& statisticView, StatisticVector& vector,
-                                                       const IndexVector& labelIndices, uint32 statisticIndex) {
-        vector.addToSubset(statisticView.gradients_cbegin(statisticIndex), statisticView.gradients_cend(statisticIndex),
-                           statisticView.hessians_cbegin(statisticIndex), statisticView.hessians_cend(statisticIndex),
-                           labelIndices);
+    static inline void addDecomposableStatisticToSubset(const EqualWeightVector& weights,
+                                                        const StatisticView& statisticView, StatisticVector& vector,
+                                                        const IndexVector& labelIndices, uint32 statisticIndex) {
+        vector.addToSubset(statisticView, statisticIndex, labelIndices);
     }
 
     template<typename WeightVector, typename StatisticView, typename StatisticVector, typename IndexVector>
-    static inline void addExampleWiseStatisticToSubset(const WeightVector& weights, const StatisticView& statisticView,
-                                                       StatisticVector& vector, const IndexVector& labelIndices,
-                                                       uint32 statisticIndex) {
+    static inline void addDecomposableStatisticToSubset(const WeightVector& weights, const StatisticView& statisticView,
+                                                        StatisticVector& vector, const IndexVector& labelIndices,
+                                                        uint32 statisticIndex) {
         float64 weight = weights[statisticIndex];
-        vector.addToSubset(statisticView.gradients_cbegin(statisticIndex), statisticView.gradients_cend(statisticIndex),
-                           statisticView.hessians_cbegin(statisticIndex), statisticView.hessians_cend(statisticIndex),
-                           labelIndices, weight);
+        vector.addToSubset(statisticView, statisticIndex, labelIndices, weight);
     }
 
     /**
-     *  A subset of gradients and Hessians that are calculated according to a differentiable loss function that is
-     * applied example-wise and are accessible via a view.
+     * A subset of gradients and Hessians that are calculated according to a decomposable loss function and are
+     * accessible via a view.
      *
      * @tparam StatisticVector          The type of the vector that is used to store the sums of gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
@@ -51,7 +47,7 @@ namespace boosting {
      */
     template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename WeightVector,
              typename IndexVector>
-    class ExampleWiseStatisticsSubset : virtual public IStatisticsSubset {
+    class DecomposableStatisticsSubset : virtual public IStatisticsSubset {
         protected:
 
             /**
@@ -96,9 +92,9 @@ namespace boosting {
              * @param labelIndices          A reference to an object of template type `IndexVector` that provides access
              *                              to the indices of the labels that are included in the subset
              */
-            ExampleWiseStatisticsSubset(const StatisticView& statisticView,
-                                        const RuleEvaluationFactory& ruleEvaluationFactory, const WeightVector& weights,
-                                        const IndexVector& labelIndices)
+            DecomposableStatisticsSubset(const StatisticView& statisticView,
+                                         const RuleEvaluationFactory& ruleEvaluationFactory,
+                                         const WeightVector& weights, const IndexVector& labelIndices)
                 : sumVector_(labelIndices.getNumElements(), true), statisticView_(statisticView), weights_(weights),
                   labelIndices_(labelIndices),
                   ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, labelIndices)) {}
@@ -107,14 +103,14 @@ namespace boosting {
              * @see `IStatisticsSubset::hasNonZeroWeight`
              */
             bool hasNonZeroWeight(uint32 statisticIndex) const override final {
-                return hasNonZeroWeightExampleWise(weights_, statisticIndex);
+                return hasNonZeroWeightDecomposable(weights_, statisticIndex);
             }
 
             /**
              * @see `IStatisticsSubset::addToSubset`
              */
             void addToSubset(uint32 statisticIndex) override final {
-                addExampleWiseStatisticToSubset(weights_, statisticView_, sumVector_, labelIndices_, statisticIndex);
+                addDecomposableStatisticToSubset(weights_, statisticView_, sumVector_, labelIndices_, statisticIndex);
             }
 
             /**
@@ -127,7 +123,7 @@ namespace boosting {
 
     /**
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated
-     * according to a differentiable loss function that is applied example-wise.
+     * according to a decomposable loss function.
      *
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
@@ -138,20 +134,20 @@ namespace boosting {
      *                                  statistics
      */
     template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename WeightVector>
-    class AbstractExampleWiseImmutableWeightedStatistics : virtual public IImmutableWeightedStatistics {
+    class AbstractDecomposableImmutableWeightedStatistics : virtual public IImmutableWeightedStatistics {
         protected:
 
             /**
              * An abstract base class for all subsets of the gradients and Hessians that are stored by an instance of
-             * the class `AbstractExampleWiseImmutableWeightedStatistics`.
+             * the class `AbstractDecomposableImmutableWeightedStatistics`.
              *
              * @tparam IndexVector The type of the vector that provides access to the indices of the labels that are
              *                     included in the subset
              */
             template<typename IndexVector>
             class AbstractWeightedStatisticsSubset
-                : public ExampleWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                     WeightVector, IndexVector>,
+                : public DecomposableStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                      WeightVector, IndexVector>,
                   virtual public IWeightedStatisticsSubset {
                 private:
 
@@ -171,20 +167,20 @@ namespace boosting {
 
                     /**
                      * @param statistics        A reference to an object of type
-                     *                          `AbstractExampleWiseImmutableWeightedStatistics` that stores the
+                     *                          `AbstractDecomposableImmutableWeightedStatistics` that stores the
                      *                          gradients and Hessians
                      * @param totalSumVector    A reference to an object of template type `StatisticVector` that stores
                      *                          the total sums of gradients and Hessians
                      * @param labelIndices      A reference to an object of template type `IndexVector` that provides
                      *                          access to the indices of the labels that are included in the subset
                      */
-                    AbstractWeightedStatisticsSubset(const AbstractExampleWiseImmutableWeightedStatistics& statistics,
+                    AbstractWeightedStatisticsSubset(const AbstractDecomposableImmutableWeightedStatistics& statistics,
                                                      const StatisticVector& totalSumVector,
                                                      const IndexVector& labelIndices)
-                        : ExampleWiseStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                      WeightVector, IndexVector>(statistics.statisticView_,
-                                                                                 statistics.ruleEvaluationFactory_,
-                                                                                 statistics.weights_, labelIndices),
+                        : DecomposableStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                       WeightVector, IndexVector>(statistics.statisticView_,
+                                                                                  statistics.ruleEvaluationFactory_,
+                                                                                  statistics.weights_, labelIndices),
                           tmpVector_(labelIndices.getNumElements()), totalSumVector_(&totalSumVector) {}
 
                     /**
@@ -198,9 +194,7 @@ namespace boosting {
                         } else {
                             // Add the sums of gradients and Hessians to the accumulated sums of gradients and
                             // Hessians...
-                            accumulatedSumVectorPtr_->add(
-                              this->sumVector_.gradients_cbegin(), this->sumVector_.gradients_cend(),
-                              this->sumVector_.hessians_cbegin(), this->sumVector_.hessians_cend());
+                            accumulatedSumVectorPtr_->add(this->sumVector_);
                         }
 
                         // Reset the sums of gradients and Hessians to zero...
@@ -218,11 +212,7 @@ namespace boosting {
                      * @see `IWeightedStatisticsSubset::calculateScoresUncovered`
                      */
                     const IScoreVector& calculateScoresUncovered() override final {
-                        tmpVector_.difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
-                                              totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(),
-                                              this->labelIndices_, this->sumVector_.gradients_cbegin(),
-                                              this->sumVector_.gradients_cend(), this->sumVector_.hessians_cbegin(),
-                                              this->sumVector_.hessians_cend());
+                        tmpVector_.difference(*totalSumVector_, this->labelIndices_, this->sumVector_);
                         return this->ruleEvaluationPtr_->calculateScores(tmpVector_);
                     }
 
@@ -230,11 +220,7 @@ namespace boosting {
                      * @see `IWeightedStatisticsSubset::calculateScoresUncoveredAccumulated`
                      */
                     const IScoreVector& calculateScoresUncoveredAccumulated() override final {
-                        tmpVector_.difference(
-                          totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
-                          totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(), this->labelIndices_,
-                          accumulatedSumVectorPtr_->gradients_cbegin(), accumulatedSumVectorPtr_->gradients_cend(),
-                          accumulatedSumVectorPtr_->hessians_cbegin(), accumulatedSumVectorPtr_->hessians_cend());
+                        tmpVector_.difference(*totalSumVector_, this->labelIndices_, *accumulatedSumVectorPtr_);
                         return this->ruleEvaluationPtr_->calculateScores(tmpVector_);
                     }
             };
@@ -269,9 +255,9 @@ namespace boosting {
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              */
-            AbstractExampleWiseImmutableWeightedStatistics(const StatisticView& statisticView,
-                                                           const RuleEvaluationFactory& ruleEvaluationFactory,
-                                                           const WeightVector& weights)
+            AbstractDecomposableImmutableWeightedStatistics(const StatisticView& statisticView,
+                                                            const RuleEvaluationFactory& ruleEvaluationFactory,
+                                                            const WeightVector& weights)
                 : statisticView_(statisticView), ruleEvaluationFactory_(ruleEvaluationFactory), weights_(weights) {}
 
             /**
@@ -289,44 +275,35 @@ namespace boosting {
             }
     };
 
-    template<typename WeightVector, typename StatisticView, typename StatisticVector>
-    static inline void addExampleWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
-                                               StatisticVector& statisticVector, uint32 statisticIndex) {
-        float64 weight = weights[statisticIndex];
-        statisticVector.add(statisticView.gradients_cbegin(statisticIndex),
-                            statisticView.gradients_cend(statisticIndex), statisticView.hessians_cbegin(statisticIndex),
-                            statisticView.hessians_cend(statisticIndex), weight);
-    }
-
     template<typename StatisticView, typename StatisticVector>
-    static inline void addExampleWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
-                                               StatisticVector& statisticVector, uint32 statisticIndex) {
-        statisticVector.add(statisticView.gradients_cbegin(statisticIndex),
-                            statisticView.gradients_cend(statisticIndex), statisticView.hessians_cbegin(statisticIndex),
-                            statisticView.hessians_cend(statisticIndex));
+    static inline void addDecomposableStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
+                                                StatisticVector& statisticVector, uint32 statisticIndex) {
+        statisticVector.add(statisticView, statisticIndex);
     }
 
     template<typename WeightVector, typename StatisticView, typename StatisticVector>
-    static inline void removeExampleWiseStatistic(const WeightVector& weights, const StatisticView& statisticView,
-                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
+    static inline void addDecomposableStatistic(const WeightVector& weights, const StatisticView& statisticView,
+                                                StatisticVector& statisticVector, uint32 statisticIndex) {
         float64 weight = weights[statisticIndex];
-        statisticVector.remove(
-          statisticView.gradients_cbegin(statisticIndex), statisticView.gradients_cend(statisticIndex),
-          statisticView.hessians_cbegin(statisticIndex), statisticView.hessians_cend(statisticIndex), weight);
+        statisticVector.add(statisticView, statisticIndex, weight);
     }
 
     template<typename StatisticView, typename StatisticVector>
-    static inline void removeExampleWiseStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
-                                                  StatisticVector& statisticVector, uint32 statisticIndex) {
-        statisticVector.remove(
-          statisticView.gradients_cbegin(statisticIndex), statisticView.gradients_cend(statisticIndex),
-          statisticView.hessians_cbegin(statisticIndex), statisticView.hessians_cend(statisticIndex));
+    static inline void removeDecomposableStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
+                                                   StatisticVector& statisticVector, uint32 statisticIndex) {
+        statisticVector.remove(statisticView, statisticIndex);
+    }
+
+    template<typename WeightVector, typename StatisticView, typename StatisticVector>
+    static inline void removeDecomposableStatistic(const WeightVector& weights, const StatisticView& statisticView,
+                                                   StatisticVector& statisticVector, uint32 statisticIndex) {
+        float64 weight = weights[statisticIndex];
+        statisticVector.remove(statisticView, statisticIndex, weight);
     }
 
     /**
-     * Provides access to weighted gradients and Hessians that are calculated according to a differentiable loss
-     * function that is applied example-wise and allows to update the gradients and Hessians after a new rule has been
-     * learned.
+     * Provides access to weighted gradients and Hessians that are calculated according to a decomposable loss function
+     * and allows to update the gradients and Hessians after a new rule has been learned.
      *
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticView            The type of the view that provides access to the gradients and Hessians
@@ -337,22 +314,22 @@ namespace boosting {
      *                                  statistics
      */
     template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename WeightVector>
-    class ExampleWiseWeightedStatistics final
+    class DecomposableWeightedStatistics final
         : virtual public IWeightedStatistics,
-          public AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                                WeightVector> {
+          public AbstractDecomposableImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                                 WeightVector> {
         private:
 
             /**
              * Provides access to a subset of the gradients and Hessians that are stored by an instance of the class
-             * `ExampleWiseWeightedStatistics`.
+             * `DecomposableWeightedStatistics`.
              *
              * @tparam IndexVector The type of the vector that provides access to the indices of the labels that are
              *                     included in the subset
              */
             template<typename IndexVector>
             class WeightedStatisticsSubset final
-                : public AbstractExampleWiseImmutableWeightedStatistics<
+                : public AbstractDecomposableImmutableWeightedStatistics<
                     StatisticVector, StatisticView, RuleEvaluationFactory,
                     WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector> {
                 private:
@@ -362,16 +339,16 @@ namespace boosting {
                 public:
 
                     /**
-                     * @param statistics        A reference to an object of type `ExampleWiseWeightedStatistics` that
+                     * @param statistics        A reference to an object of type `DecomposableWeightedStatistics` that
                      *                          stores the gradients and Hessians
                      * @param totalSumVector    A reference to an object of template type `StatisticVector` that stores
                      *                          the total sums of gradients and Hessians
                      * @param labelIndices      A reference to an object of template type `IndexVector` that provides
                      *                          access to the indices of the labels that are included in the subset
                      */
-                    WeightedStatisticsSubset(const ExampleWiseWeightedStatistics& statistics,
+                    WeightedStatisticsSubset(const DecomposableWeightedStatistics& statistics,
                                              const StatisticVector& totalSumVector, const IndexVector& labelIndices)
-                        : AbstractExampleWiseImmutableWeightedStatistics<
+                        : AbstractDecomposableImmutableWeightedStatistics<
                             StatisticVector, StatisticView, RuleEvaluationFactory,
                             WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(statistics,
                                                                                                   totalSumVector,
@@ -389,8 +366,8 @@ namespace boosting {
 
                         // Subtract the gradients and Hessians of the example at the given index (weighted by the given
                         // weight) from the total sums of gradients and Hessians...
-                        removeExampleWiseStatistic(this->weights_, this->statisticView_, *totalCoverableSumVectorPtr_,
-                                                   statisticIndex);
+                        removeDecomposableStatistic(this->weights_, this->statisticView_, *totalCoverableSumVectorPtr_,
+                                                    statisticIndex);
                     }
             };
 
@@ -407,26 +384,26 @@ namespace boosting {
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
              */
-            ExampleWiseWeightedStatistics(const StatisticView& statisticView,
-                                          const RuleEvaluationFactory& ruleEvaluationFactory,
-                                          const WeightVector& weights)
-                : AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                                 WeightVector>(statisticView, ruleEvaluationFactory,
-                                                                               weights),
+            DecomposableWeightedStatistics(const StatisticView& statisticView,
+                                           const RuleEvaluationFactory& ruleEvaluationFactory,
+                                           const WeightVector& weights)
+                : AbstractDecomposableImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                                  WeightVector>(statisticView, ruleEvaluationFactory,
+                                                                                weights),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(statisticView.numCols, true)) {
                 uint32 numStatistics = weights.getNumElements();
 
                 for (uint32 i = 0; i < numStatistics; i++) {
-                    addExampleWiseStatistic(weights, statisticView, *totalSumVectorPtr_, i);
+                    addDecomposableStatistic(weights, statisticView, *totalSumVectorPtr_, i);
                 }
             }
 
             /**
-             * @param statistics A reference to an object of type `ExampleWiseWeightedStatistics` to be copied
+             * @param statistics A reference to an object of type `DecomposableWeightedStatistics` to be copied
              */
-            ExampleWiseWeightedStatistics(const ExampleWiseWeightedStatistics& statistics)
-                : AbstractExampleWiseImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
-                                                                 WeightVector>(
+            DecomposableWeightedStatistics(const DecomposableWeightedStatistics& statistics)
+                : AbstractDecomposableImmutableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory,
+                                                                  WeightVector>(
                     statistics.statisticView_, statistics.ruleEvaluationFactory_, statistics.weights_),
                   totalSumVectorPtr_(std::make_unique<StatisticVector>(*statistics.totalSumVectorPtr_)) {}
 
@@ -435,7 +412,7 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> copy() const override {
                 return std::make_unique<
-                  ExampleWiseWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector>>(
+                  DecomposableWeightedStatistics<StatisticVector, StatisticView, RuleEvaluationFactory, WeightVector>>(
                   *this);
             }
 
@@ -450,14 +427,14 @@ namespace boosting {
              * @see `IWeightedStatistics::addCoveredStatistic`
              */
             void addCoveredStatistic(uint32 statisticIndex) override {
-                addExampleWiseStatistic(this->weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
+                addDecomposableStatistic(this->weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
             }
 
             /**
              * @see `IWeightedStatistics::removeCoveredStatistic`
              */
             void removeCoveredStatistic(uint32 statisticIndex) override {
-                removeExampleWiseStatistic(this->weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
+                removeDecomposableStatistic(this->weights_, this->statisticView_, *totalSumVectorPtr_, statisticIndex);
             }
 
             /**
@@ -479,69 +456,67 @@ namespace boosting {
             }
     };
 
-    template<typename LabelMatrix, typename StatisticView, typename ScoreMatrix, typename LossFunction>
-    static inline void updateExampleWiseStatisticsInternally(uint32 statisticIndex, const LabelMatrix& labelMatrix,
-                                                             StatisticView& statisticView, ScoreMatrix& scoreMatrix,
-                                                             const LossFunction& lossFunction) {
-        lossFunction.updateExampleWiseStatistics(statisticIndex, labelMatrix, scoreMatrix.getView(), statisticView);
+    template<typename Prediction, typename ScoreMatrix>
+    static inline void applyPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                 ScoreMatrix& scoreMatrix) {
+        scoreMatrix.addToRowFromSubset(statisticIndex, prediction.values_cbegin(), prediction.values_cend(),
+                                       prediction.indices_cbegin(), prediction.indices_cend());
+    }
+
+    template<typename Prediction, typename ScoreMatrix>
+    static inline void revertPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                  ScoreMatrix& scoreMatrix) {
+        scoreMatrix.removeFromRowFromSubset(statisticIndex, prediction.values_cbegin(), prediction.values_cend(),
+                                            prediction.indices_cbegin(), prediction.indices_cend());
+    }
+
+    template<typename Prediction, typename LabelMatrix, typename StatisticView, typename ScoreMatrix,
+             typename LossFunction>
+    static inline void updateDecomposableStatisticsInternally(uint32 statisticIndex, const Prediction& prediction,
+                                                              const LabelMatrix& labelMatrix,
+                                                              StatisticView& statisticView, ScoreMatrix& scoreMatrix,
+                                                              const LossFunction& lossFunction) {
+        lossFunction.updateDecomposableStatistics(statisticIndex, labelMatrix, scoreMatrix, prediction.indices_cbegin(),
+                                                  prediction.indices_cend(), statisticView);
     }
 
     /**
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated
-     * according to a differentiable loss function that is applied example-wise.
+     * according to a decomposable loss function.
      *
-     * @tparam LabelMatrix                      The type of the matrix that provides access to the labels of the
-     *                                          training examples
-     * @tparam StatisticVector                  The type of the vectors that are used to store gradients and Hessians
-     * @tparam StatisticMatrix                  The type of the matrix that stores the gradients and Hessians
-     * @tparam ScoreMatrix                      The type of the matrices that are used to store predicted scores
-     * @tparam LossFunction                     The type of the loss function that is used to calculate gradients and
-     *                                          Hessians
-     * @tparam EvaluationMeasure                The type of the evaluation measure that is used to assess the quality of
-     *                                          predictions for a specific statistic
-     * @tparam ExampleWiseRuleEvaluationFactory The type of the factory that allows to create instances of the class
-     *                                          that is used for calculating the example-wise predictions of rules, as
-     *                                          well as their overall quality
-     * @tparam LabelWiseRuleEvaluationFactory   The type of the factory that allows to create instances of the class
-     *                                          that is used for calculating the label-wise predictions of rules, as
-     *                                          well as their overall quality
+     * @tparam LabelMatrix              The type of the matrix that provides access to the labels of the training
+     *                                  examples
+     * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
+     * @tparam StatisticMatrix          The type of the matrix that provides access to the gradients and Hessians
+     * @tparam ScoreMatrix              The type of the matrices that are used to store predicted scores
+     * @tparam LossFunction             The type of the loss function that is used to calculate gradients and Hessians
+     * @tparam EvaluationMeasure        The type of the evaluation measure that is used to assess the quality of
+     *                                  predictions for a specific statistic
+     * @tparam RuleEvaluationFactory    The type of the factory that allows to create instances of the class that is
+     *                                  used for calculating the predictions of rules, as well as corresponding quality
+     *                                  scores
      */
     template<typename LabelMatrix, typename StatisticVector, typename StatisticMatrix, typename ScoreMatrix,
-             typename LossFunction, typename EvaluationMeasure, typename ExampleWiseRuleEvaluationFactory,
-             typename LabelWiseRuleEvaluationFactory>
-    class AbstractExampleWiseStatistics
-        : virtual public IExampleWiseStatistics<ExampleWiseRuleEvaluationFactory, LabelWiseRuleEvaluationFactory> {
+             typename LossFunction, typename EvaluationMeasure, typename RuleEvaluationFactory>
+    class AbstractDecomposableStatistics : virtual public IDecomposableStatistics<RuleEvaluationFactory> {
         private:
 
-            const ExampleWiseRuleEvaluationFactory* ruleEvaluationFactory_;
+            const std::unique_ptr<LossFunction> lossPtr_;
+
+            const std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr_;
+
+            const RuleEvaluationFactory* ruleEvaluationFactory_;
+
+            const LabelMatrix& labelMatrix_;
+
+            const std::unique_ptr<StatisticMatrix> statisticMatrixPtr_;
 
         protected:
 
             /**
-             * An unique pointer to the loss function that should be used for calculating gradients and Hessians.
+             * An unique pointer to an object of template type `ScoreMatrix` that stores the currently predicted scores.
              */
-            std::unique_ptr<LossFunction> lossPtr_;
-
-            /**
-             * An unique pointer to the evaluation measure that should be used to assess the quality of predictions for
-             * a specific statistic.
-             */
-            std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr_;
-
-            /**
-             * The label matrix that provides access to the labels of the training examples.
-             */
-            const LabelMatrix& labelMatrix_;
-
-            /**
-             * An unique pointer to an object of template type `StatisticMatrix` that stores the gradients and Hessians.
-             */
-            const std::unique_ptr<StatisticMatrix> statisticMatrixPtr_;
-
-            /**
-             * The score matrix that stores the currently predicted scores.
-             */
-            std::unique_ptr<ScoreMatrix> scoreMatrixPtr_;
+            const std::unique_ptr<ScoreMatrix> scoreMatrixPtr_;
 
         public:
 
@@ -552,32 +527,30 @@ namespace boosting {
              * @param evaluationMeasurePtr  An unique pointer to an object of template type `EvaluationMeasure` that
              *                              implements the evaluation measure that should be used to assess the quality
              *                              of predictions for a specific statistic
-             * @param ruleEvaluationFactory A reference to an object of template type `ExampleWiseRuleEvaluationFactory`
-             *                              that allows to create instances of the class that should be used for
-             *                              calculating the predictions of rules, as well as corresponding quality
-             *                              scores
+             * @param ruleEvaluationFactory A reference to an object of type `RuleEvaluationFactory` that allows to
+             *                              create instances of the class that should be used for calculating the
+             *                              predictions of rules, as well as their overall quality
              * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
              *                              to the labels of the training examples
-             * @param statisticMatrixPtr    An unique pointer to an object of template type `StatisticView` that stores
-             *                              the gradients and Hessians
+             * @param statisticMatrixPtr    An unique pointer to an object of template type `StatisticMatrix` that
+             *                              provides access to the gradients and Hessians
              * @param scoreMatrixPtr        An unique pointer to an object of template type `ScoreMatrix` that stores
              *                              the currently predicted scores
              */
-            AbstractExampleWiseStatistics(std::unique_ptr<LossFunction> lossPtr,
-                                          std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
-                                          const ExampleWiseRuleEvaluationFactory& ruleEvaluationFactory,
-                                          const LabelMatrix& labelMatrix,
-                                          std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
-                                          std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-                : ruleEvaluationFactory_(&ruleEvaluationFactory), lossPtr_(std::move(lossPtr)),
-                  evaluationMeasurePtr_(std::move(evaluationMeasurePtr)), labelMatrix_(labelMatrix),
+            AbstractDecomposableStatistics(std::unique_ptr<LossFunction> lossPtr,
+                                           std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
+                                           const RuleEvaluationFactory& ruleEvaluationFactory,
+                                           const LabelMatrix& labelMatrix,
+                                           std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
+                                           std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
+                : lossPtr_(std::move(lossPtr)), evaluationMeasurePtr_(std::move(evaluationMeasurePtr)),
+                  ruleEvaluationFactory_(&ruleEvaluationFactory), labelMatrix_(labelMatrix),
                   statisticMatrixPtr_(std::move(statisticMatrixPtr)), scoreMatrixPtr_(std::move(scoreMatrixPtr)) {}
 
             /**
-             * @see `IExampleWiseStatistics::setRuleEvaluationFactory`
+             * @see `IDecomposableStatistics::setRuleEvaluationFactory`
              */
-            void setRuleEvaluationFactory(
-              const ExampleWiseRuleEvaluationFactory& ruleEvaluationFactory) override final {
+            void setRuleEvaluationFactory(const RuleEvaluationFactory& ruleEvaluationFactory) override final {
                 this->ruleEvaluationFactory_ = &ruleEvaluationFactory;
             }
 
@@ -600,8 +573,9 @@ namespace boosting {
              */
             void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
                 applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, statisticMatrixPtr_->getView(),
-                                                      *scoreMatrixPtr_, *lossPtr_);
+                updateDecomposableStatisticsInternally(statisticIndex, prediction, labelMatrix_,
+                                                       statisticMatrixPtr_->getView(), scoreMatrixPtr_->getView(),
+                                                       *lossPtr_);
             }
 
             /**
@@ -609,8 +583,9 @@ namespace boosting {
              */
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
                 applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, statisticMatrixPtr_->getView(),
-                                                      *scoreMatrixPtr_, *lossPtr_);
+                updateDecomposableStatisticsInternally(statisticIndex, prediction, labelMatrix_,
+                                                       statisticMatrixPtr_->getView(), scoreMatrixPtr_->getView(),
+                                                       *lossPtr_);
             }
 
             /**
@@ -618,8 +593,9 @@ namespace boosting {
              */
             void revertPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
                 revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, statisticMatrixPtr_->getView(),
-                                                      *scoreMatrixPtr_, *lossPtr_);
+                updateDecomposableStatisticsInternally(statisticIndex, prediction, labelMatrix_,
+                                                       statisticMatrixPtr_->getView(), scoreMatrixPtr_->getView(),
+                                                       *lossPtr_);
             }
 
             /**
@@ -627,8 +603,9 @@ namespace boosting {
              */
             void revertPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
                 revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                updateExampleWiseStatisticsInternally(statisticIndex, labelMatrix_, statisticMatrixPtr_->getView(),
-                                                      *scoreMatrixPtr_, *lossPtr_);
+                updateDecomposableStatisticsInternally(statisticIndex, prediction, labelMatrix_,
+                                                       statisticMatrixPtr_->getView(), scoreMatrixPtr_->getView(),
+                                                       *lossPtr_);
             }
 
             /**
@@ -643,10 +620,10 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
                                                             const EqualWeightVector& weights) const override final {
-                return std::make_unique<ExampleWiseStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
-                  EqualWeightVector, CompleteIndexVector>>(statisticMatrixPtr_->getView(), *ruleEvaluationFactory_,
-                                                           weights, labelIndices);
+                return std::make_unique<
+                  DecomposableStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
+                                               RuleEvaluationFactory, EqualWeightVector, CompleteIndexVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
@@ -655,8 +632,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
                                                             const EqualWeightVector& weights) const override final {
                 return std::make_unique<
-                  ExampleWiseStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
-                                              ExampleWiseRuleEvaluationFactory, EqualWeightVector, PartialIndexVector>>(
+                  DecomposableStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
+                                               RuleEvaluationFactory, EqualWeightVector, PartialIndexVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
 
@@ -666,8 +643,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
                                                             const BitWeightVector& weights) const override final {
                 return std::make_unique<
-                  ExampleWiseStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
-                                              ExampleWiseRuleEvaluationFactory, BitWeightVector, CompleteIndexVector>>(
+                  DecomposableStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
+                                               RuleEvaluationFactory, BitWeightVector, CompleteIndexVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
 
@@ -677,8 +654,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
                                                             const BitWeightVector& weights) const override final {
                 return std::make_unique<
-                  ExampleWiseStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
-                                              ExampleWiseRuleEvaluationFactory, BitWeightVector, PartialIndexVector>>(
+                  DecomposableStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
+                                               RuleEvaluationFactory, BitWeightVector, PartialIndexVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
 
@@ -687,10 +664,10 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& labelIndices, const DenseWeightVector<uint32>& weights) const override final {
-                return std::make_unique<ExampleWiseStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
-                  DenseWeightVector<uint32>, CompleteIndexVector>>(statisticMatrixPtr_->getView(),
-                                                                   *ruleEvaluationFactory_, weights, labelIndices);
+                return std::make_unique<
+                  DecomposableStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
+                                               RuleEvaluationFactory, DenseWeightVector<uint32>, CompleteIndexVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
@@ -698,10 +675,10 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& labelIndices, const DenseWeightVector<uint32>& weights) const override final {
-                return std::make_unique<ExampleWiseStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
-                  DenseWeightVector<uint32>, PartialIndexVector>>(statisticMatrixPtr_->getView(),
-                                                                  *ruleEvaluationFactory_, weights, labelIndices);
+                return std::make_unique<
+                  DecomposableStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
+                                               RuleEvaluationFactory, DenseWeightVector<uint32>, PartialIndexVector>>(
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
 
             /**
@@ -710,8 +687,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& labelIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
-                return std::make_unique<ExampleWiseStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                return std::make_unique<DecomposableStatisticsSubset<
+                  StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
                   OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
@@ -722,8 +699,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& labelIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
-                return std::make_unique<ExampleWiseStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                return std::make_unique<DecomposableStatisticsSubset<
+                  StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
                   OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
@@ -734,8 +711,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& labelIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
-                return std::make_unique<ExampleWiseStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                return std::make_unique<DecomposableStatisticsSubset<
+                  StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
                   OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
@@ -746,8 +723,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& labelIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
-                return std::make_unique<ExampleWiseStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                return std::make_unique<DecomposableStatisticsSubset<
+                  StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
                   OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
@@ -758,8 +735,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& labelIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
-                return std::make_unique<ExampleWiseStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                return std::make_unique<DecomposableStatisticsSubset<
+                  StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
                   OutOfSampleWeightVector<DenseWeightVector<uint32>>, CompleteIndexVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
@@ -770,8 +747,8 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& labelIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
-                return std::make_unique<ExampleWiseStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                return std::make_unique<DecomposableStatisticsSubset<
+                  StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
                   OutOfSampleWeightVector<DenseWeightVector<uint32>>, PartialIndexVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
@@ -781,9 +758,8 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const EqualWeightVector& weights) const override final {
-                return std::make_unique<
-                  ExampleWiseWeightedStatistics<StatisticVector, typename StatisticMatrix::view_type,
-                                                ExampleWiseRuleEvaluationFactory, EqualWeightVector>>(
+                return std::make_unique<DecomposableWeightedStatistics<
+                  StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory, EqualWeightVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
             }
 
@@ -792,9 +768,8 @@ namespace boosting {
              */
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const BitWeightVector& weights) const override final {
-                return std::make_unique<
-                  ExampleWiseWeightedStatistics<StatisticVector, typename StatisticMatrix::view_type,
-                                                ExampleWiseRuleEvaluationFactory, BitWeightVector>>(
+                return std::make_unique<DecomposableWeightedStatistics<
+                  StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory, BitWeightVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
             }
 
@@ -804,8 +779,8 @@ namespace boosting {
             std::unique_ptr<IWeightedStatistics> createWeightedStatistics(
               const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<
-                  ExampleWiseWeightedStatistics<StatisticVector, typename StatisticMatrix::view_type,
-                                                ExampleWiseRuleEvaluationFactory, DenseWeightVector<uint32>>>(
+                  DecomposableWeightedStatistics<StatisticVector, typename StatisticMatrix::view_type,
+                                                 RuleEvaluationFactory, DenseWeightVector<uint32>>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
             }
     };

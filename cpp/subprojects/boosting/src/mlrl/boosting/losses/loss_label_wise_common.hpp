@@ -44,11 +44,11 @@ namespace boosting {
             LabelWiseLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction)
                 : updateFunction_(updateFunction), evaluateFunction_(evaluateFunction) {}
 
-            void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                           const CContiguousView<float64>& scoreMatrix,
-                                           CompleteIndexVector::const_iterator labelIndicesBegin,
-                                           CompleteIndexVector::const_iterator labelIndicesEnd,
-                                           CContiguousView<Tuple<float64>>& statisticView) const override final {
+            void updateDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                                              const CContiguousView<float64>& scoreMatrix,
+                                              CompleteIndexVector::const_iterator labelIndicesBegin,
+                                              CompleteIndexVector::const_iterator labelIndicesEnd,
+                                              CContiguousView<Tuple<float64>>& statisticView) const override final {
                 CContiguousView<Tuple<float64>>::value_iterator statisticIterator =
                   statisticView.values_begin(exampleIndex);
                 CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
@@ -64,11 +64,11 @@ namespace boosting {
                 }
             }
 
-            void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                           const CContiguousView<float64>& scoreMatrix,
-                                           PartialIndexVector::const_iterator labelIndicesBegin,
-                                           PartialIndexVector::const_iterator labelIndicesEnd,
-                                           CContiguousView<Tuple<float64>>& statisticView) const override final {
+            void updateDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                                              const CContiguousView<float64>& scoreMatrix,
+                                              PartialIndexVector::const_iterator labelIndicesBegin,
+                                              PartialIndexVector::const_iterator labelIndicesEnd,
+                                              CContiguousView<Tuple<float64>>& statisticView) const override final {
                 CContiguousView<Tuple<float64>>::value_iterator statisticIterator =
                   statisticView.values_begin(exampleIndex);
                 CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
@@ -85,11 +85,11 @@ namespace boosting {
                 }
             }
 
-            void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                           const CContiguousView<float64>& scoreMatrix,
-                                           CompleteIndexVector::const_iterator labelIndicesBegin,
-                                           CompleteIndexVector::const_iterator labelIndicesEnd,
-                                           CContiguousView<Tuple<float64>>& statisticView) const override final {
+            void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                              const CContiguousView<float64>& scoreMatrix,
+                                              CompleteIndexVector::const_iterator labelIndicesBegin,
+                                              CompleteIndexVector::const_iterator labelIndicesEnd,
+                                              CContiguousView<Tuple<float64>>& statisticView) const override final {
                 CContiguousView<Tuple<float64>>::value_iterator statisticIterator =
                   statisticView.values_begin(exampleIndex);
                 CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
@@ -106,11 +106,11 @@ namespace boosting {
                 }
             }
 
-            void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                           const CContiguousView<float64>& scoreMatrix,
-                                           PartialIndexVector::const_iterator labelIndicesBegin,
-                                           PartialIndexVector::const_iterator labelIndicesEnd,
-                                           CContiguousView<Tuple<float64>>& statisticView) const override final {
+            void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                              const CContiguousView<float64>& scoreMatrix,
+                                              PartialIndexVector::const_iterator labelIndicesBegin,
+                                              PartialIndexVector::const_iterator labelIndicesEnd,
+                                              CContiguousView<Tuple<float64>>& statisticView) const override final {
                 CContiguousView<Tuple<float64>>::value_iterator statisticIterator =
                   statisticView.values_begin(exampleIndex);
                 CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
