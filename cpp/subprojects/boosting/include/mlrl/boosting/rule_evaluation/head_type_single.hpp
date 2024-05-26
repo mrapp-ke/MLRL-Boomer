@@ -11,9 +11,9 @@
 namespace boosting {
 
     /**
-     * Allows to configure single-label rule heads that predict for a single label.
+     * Allows to configure single-output heads that predict for a single output.
      */
-    class SingleLabelHeadConfig final : public IHeadConfig {
+    class SingleOutputHeadConfig final : public IHeadConfig {
         private:
 
             const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr_;
@@ -37,10 +37,10 @@ namespace boosting {
              * @param l2RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L2
              *                                  regularization
              */
-            SingleLabelHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
-                                  const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
-                                  const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
-                                  const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr);
+            SingleOutputHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
+                                   const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
+                                   const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
+                                   const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
@@ -56,7 +56,7 @@ namespace boosting {
 
             bool isPartial() const override;
 
-            bool isSingleLabel() const override;
+            bool isSingleOutput() const override;
     };
 
 }

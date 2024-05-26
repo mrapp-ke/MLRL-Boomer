@@ -428,20 +428,20 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to induce rules with
-             * single-label heads that predict for a single label.
+             * single-output heads that predict for a single output.
              */
-            class ISingleLabelHeadMixin : public virtual IBoostingRuleLearner::IConfig {
+            class ISingleOutputHeadMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ISingleLabelHeadMixin() override {}
+                    virtual ~ISingleOutputHeadMixin() override {}
 
                     /**
-                     * Configures the rule learner to induce rules with single-label heads that predict for a single
-                     * label.
+                     * Configures the rule learner to induce rules with single-output heads that predict for a single
+                     * output.
                      */
-                    virtual void useSingleLabelHeads() {
+                    virtual void useSingleOutputHeads() {
                         std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
-                        headConfigPtr = std::make_unique<SingleLabelHeadConfig>(
+                        headConfigPtr = std::make_unique<SingleOutputHeadConfig>(
                           this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr(),
                           this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
                     }

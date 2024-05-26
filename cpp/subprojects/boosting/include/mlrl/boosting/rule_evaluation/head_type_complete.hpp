@@ -56,7 +56,7 @@ namespace boosting {
 
             bool isPartial() const override;
 
-            bool isSingleLabel() const override;
+            bool isSingleOutput() const override;
     };
 
 }

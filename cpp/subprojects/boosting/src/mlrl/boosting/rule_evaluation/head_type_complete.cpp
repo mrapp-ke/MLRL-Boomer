@@ -64,7 +64,7 @@ namespace boosting {
         return false;
     }
 
-    bool CompleteHeadConfig::isSingleLabel() const {
+    bool CompleteHeadConfig::isSingleOutput() const {
         return false;
     }
 

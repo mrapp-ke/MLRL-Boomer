@@ -92,7 +92,7 @@ namespace boosting {
         return true;
     }
 
-    bool DynamicPartialHeadConfig::isSingleLabel() const {
+    bool DynamicPartialHeadConfig::isSingleOutput() const {
         return false;
     }
 

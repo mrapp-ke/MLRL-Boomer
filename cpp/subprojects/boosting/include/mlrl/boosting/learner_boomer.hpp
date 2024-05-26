@@ -36,7 +36,7 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::ICompleteHeadMixin,
                             virtual public IBoostingRuleLearner::IDynamicPartialHeadMixin,
                             virtual public IBoostingRuleLearner::IFixedPartialHeadMixin,
-                            virtual public IBoostingRuleLearner::ISingleLabelHeadMixin,
+                            virtual public IBoostingRuleLearner::ISingleOutputHeadMixin,
                             virtual public IBoostingRuleLearner::IAutomaticHeadMixin,
                             virtual public IBoostingRuleLearner::IDenseStatisticsMixin,
                             virtual public IBoostingRuleLearner::ISparseStatisticsMixin,

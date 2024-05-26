@@ -65,7 +65,7 @@ from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, Automati
     LabelWiseBinaryPredictorMixin, LabelWiseLogisticLossMixin, LabelWiseProbabilityPredictorMixin, \
     LabelWiseScorePredictorMixin, LabelWiseSquaredErrorLossMixin, LabelWiseSquaredHingeLossMixin, \
     MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
-    NoLabelBinningMixin, SingleLabelHeadMixin, SparseStatisticsMixin
+    NoLabelBinningMixin, SingleOutputHeadMixin, SparseStatisticsMixin
 
 
 cdef class BoomerConfig(RuleLearnerConfig,
@@ -83,7 +83,7 @@ cdef class BoomerConfig(RuleLearnerConfig,
                         CompleteHeadMixin,
                         FixedPartialHeadMixin,
                         DynamicPartialHeadMixin,
-                        SingleLabelHeadMixin,
+                        SingleOutputHeadMixin,
                         AutomaticHeadMixin,
                         DenseStatisticsMixin,
                         SparseStatisticsMixin,
@@ -403,8 +403,8 @@ cdef class BoomerConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_single_label_heads(self):
-        self.config_ptr.get().useSingleLabelHeads()
+    def use_single_output_heads(self):
+        self.config_ptr.get().useSingleOutputHeads()
 
     def use_automatic_statistics(self):
         self.config_ptr.get().useAutomaticStatistics()

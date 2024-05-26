@@ -87,7 +87,7 @@ The following parameters may be used to control the behavior of the algorithm. T
 
   - `'auto'` The most suitable type of rule heads is chosen automatically, depending on the loss function.
 
-  - `'single-label'` If all rules should predict for a single label.
+  - `'single'` If all rules should predict for a single output.
 
   - `'partial-fixed'` If all rules should predict for a predefined number of labels. The following options may be provided using the {ref}`bracket-notation`:
 

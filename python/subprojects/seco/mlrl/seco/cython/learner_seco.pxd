@@ -19,7 +19,7 @@ from mlrl.seco.cython.learner cimport IAccuracyHeuristicMixin, IAccuracyPruningH
     ILabelWiseBinaryPredictorMixin, ILaplaceHeuristicMixin, ILaplacePruningHeuristicMixin, IMEstimateHeuristicMixin, \
     IMEstimatePruningHeuristicMixin, INoCoverageStoppingCriterionMixin, INoLiftFunctionMixin, IPartialHeadMixin, \
     IPeakLiftFunctionMixin, IPrecisionHeuristicMixin, IPrecisionPruningHeuristicMixin, IRecallHeuristicMixin, \
-    IRecallPruningHeuristicMixin, ISingleLabelHeadMixin, IWraHeuristicMixin, IWraPruningHeuristicMixin
+    IRecallPruningHeuristicMixin, ISingleOutputHeadMixin, IWraHeuristicMixin, IWraPruningHeuristicMixin
 
 
 cdef extern from "mlrl/seco/learner_seco.hpp" namespace "seco" nogil:
@@ -27,7 +27,7 @@ cdef extern from "mlrl/seco/learner_seco.hpp" namespace "seco" nogil:
     cdef cppclass IMultiLabelSeCoRuleLearnerConfig"seco::IMultiLabelSeCoRuleLearner::IConfig"(
             INoCoverageStoppingCriterionMixin,
             ICoverageStoppingCriterionMixin,
-            ISingleLabelHeadMixin,
+            ISingleOutputHeadMixin,
             IPartialHeadMixin,
             INoLiftFunctionMixin,
             IPeakLiftFunctionMixin,

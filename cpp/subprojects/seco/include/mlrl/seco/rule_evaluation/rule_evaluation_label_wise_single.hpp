@@ -11,9 +11,9 @@ namespace seco {
 
     /**
      * Allows to create instances of the class `ILabelWiseRuleEvaluationFactory` that allow to calculate the predictions
-     * of single-label rules, which predict for a single label.
+     * of single-output rules, which predict for a single output.
      */
-    class LabelWiseSingleLabelRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
+    class LabelWiseSingleOutputRuleEvaluationFactory final : public ILabelWiseRuleEvaluationFactory {
         private:
 
             const std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr_;
@@ -24,7 +24,7 @@ namespace seco {
              * @param heuristicFactoryPtr An unique pointer to an object of type `IHeuristicFactory`, that allows to
              *                            create implementations of the heuristic to be optimized
              */
-            LabelWiseSingleLabelRuleEvaluationFactory(std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr);
+            LabelWiseSingleOutputRuleEvaluationFactory(std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr);
 
             std::unique_ptr<IRuleEvaluation> create(const CompleteIndexVector& indexVector) const override;
 

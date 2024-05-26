@@ -116,7 +116,7 @@ namespace boosting {
         return true;
     }
 
-    bool FixedPartialHeadConfig::isSingleLabel() const {
+    bool FixedPartialHeadConfig::isSingleOutput() const {
         return false;
     }
 

@@ -30,7 +30,7 @@ The algorithm that is provided by this project currently supports the following 
 
 - **Label-wise decomposable or non-decomposable loss functions** can be minimized in expectation.
 - **L1 and L2 regularization** can be used.
-- **Single-label, partial, or complete heads** can be used by rules, i.e., they can predict for an individual label, a subset of the available labels, or all labels. Predicting for multiple labels simultaneously enables rules to model local dependencies between labels.
+- **Single-output, partial, or complete heads** can be used by rules, i.e., they can predict for an individual label, a subset of the available labels, or all labels. Predicting for multiple labels simultaneously enables rules to model local dependencies between labels.
 - **Various strategies for predicting regression scores, labels or probabilities** are available.
 - **Isotonic regression models can be used to calibrate marginal and joint probabilities** predicted by a model.
 - **Rules can be constructed via a greedy search or a beam search.** The latter may help to improve the quality of individual rules.

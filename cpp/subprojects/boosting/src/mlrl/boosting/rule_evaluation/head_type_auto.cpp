@@ -18,8 +18,8 @@ namespace boosting {
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
       const ILabelWiseLossConfig& lossConfig) const {
         if (labelMatrix.getNumLabels() > 1) {
-            SingleLabelHeadConfig headConfig(labelBinningConfigPtr_, multiThreadingConfigPtr_,
-                                             l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
+            SingleOutputHeadConfig headConfig(labelBinningConfigPtr_, multiThreadingConfigPtr_,
+                                              l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
             return headConfig.createStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
         } else {
             CompleteHeadConfig headConfig(labelBinningConfigPtr_, multiThreadingConfigPtr_, l1RegularizationConfigPtr_,
@@ -32,8 +32,8 @@ namespace boosting {
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
       const ISparseLabelWiseLossConfig& lossConfig) const {
         if (labelMatrix.getNumLabels() > 1) {
-            SingleLabelHeadConfig headConfig(labelBinningConfigPtr_, multiThreadingConfigPtr_,
-                                             l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
+            SingleOutputHeadConfig headConfig(labelBinningConfigPtr_, multiThreadingConfigPtr_,
+                                              l1RegularizationConfigPtr_, l2RegularizationConfigPtr_);
             return headConfig.createStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
         } else {
             CompleteHeadConfig headConfig(labelBinningConfigPtr_, multiThreadingConfigPtr_, l1RegularizationConfigPtr_,
@@ -54,7 +54,7 @@ namespace boosting {
         return lossConfigPtr_->isDecomposable();
     }
 
-    bool AutomaticHeadConfig::isSingleLabel() const {
+    bool AutomaticHeadConfig::isSingleOutput() const {
         return lossConfigPtr_->isDecomposable();
     }
 

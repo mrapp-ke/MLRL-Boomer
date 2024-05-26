@@ -55,8 +55,8 @@ class SeCo(RuleLearner, ClassifierMixin, MultiOutputMixin):
         :param sequential_post_optimization:    Whether each rule in a previously learned model should be optimized by
                                                 being relearned in the context of the other rules or not. Must be 'true'
                                                 or 'false'. For additional options refer to the documentation
-        :param head_type:                       The type of the rule heads that should be used. Must be 'single-label'
-                                                or 'partial'
+        :param head_type:                       The type of the rule heads that should be used. Must be 'single' or
+                                                'partial'
         :param lift_function:                   The lift function that should be used for the induction of partial rule
                                                 heads. Must be 'peak', 'kln' or 'none'. For additional options refer to
                                                 the documentation
