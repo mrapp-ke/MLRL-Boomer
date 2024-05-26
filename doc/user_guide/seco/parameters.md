@@ -94,9 +94,9 @@ The following parameters may be used to control the behavior of the algorithm. T
     - `max_head_refinements` (Default value = `1`) The maximum number of times the head of a rule may be refined. Must be at least 1 or 0, if the number of refinements should not be restricted.
     - `recalculate_predictions` (Default value = `'true'`) `'true'`, if the predictions of rules should be recalculated on the entire training data if the parameter `instance_sampling` is not set to `'none'`, `'false'`, if the predictions of rules should not be recalculated.
 
-- `head_type` (Default value = `'single-label'`)
+- `head_type` (Default value = `'single'`)
 
-  - `'single-label'` If all rules should predict for a single label.
+  - `'single'` If all rules should predict for a single output.
 
   - `'partial'` If all rules should predict for a subset of the available labels.
 

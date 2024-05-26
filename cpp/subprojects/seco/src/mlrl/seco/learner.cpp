@@ -7,7 +7,7 @@ namespace seco {
 
     AbstractSeCoRuleLearner::Config::Config()
         : AbstractRuleLearner::Config(SECO_RULE_COMPARE_FUNCTION),
-          headConfigPtr_(std::make_unique<SingleLabelHeadConfig>(heuristicConfigPtr_, pruningHeuristicConfigPtr_)),
+          headConfigPtr_(std::make_unique<SingleOutputHeadConfig>(heuristicConfigPtr_, pruningHeuristicConfigPtr_)),
           heuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
           pruningHeuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
           liftFunctionConfigPtr_(std::make_unique<NoLiftFunctionConfig>()) {}

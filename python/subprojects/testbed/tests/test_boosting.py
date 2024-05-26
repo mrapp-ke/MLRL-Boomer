@@ -21,7 +21,7 @@ LOSS_SQUARED_ERROR_LABEL_WISE = 'squared-error-label-wise'
 
 LOSS_SQUARED_ERROR_EXAMPLE_WISE = 'squared-error-example-wise'
 
-HEAD_TYPE_SINGLE_LABEL = 'single-label'
+HEAD_TYPE_SINGLE = 'single'
 
 HEAD_TYPE_COMPLETE = 'complete'
 
@@ -132,7 +132,7 @@ class BoostingCmdBuilder(CmdBuilder):
         self.args.append(str(default_rule).lower())
         return self
 
-    def head_type(self, head_type: str = HEAD_TYPE_SINGLE_LABEL):
+    def head_type(self, head_type: str = HEAD_TYPE_SINGLE):
         """
         Configures the algorithm to use a specific type of rule heads.
 
@@ -627,7 +627,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .sparse_label_format(False) \
             .default_rule(False) \
             .loss(LOSS_SQUARED_HINGE_LABEL_WISE) \
-            .head_type(HEAD_TYPE_SINGLE_LABEL)
+            .head_type(HEAD_TYPE_SINGLE)
         self.run_cmd(builder, 'statistics-sparse_label-format-dense')
 
     def test_statistics_sparse_label_format_sparse(self):
@@ -640,19 +640,19 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .sparse_label_format() \
             .default_rule(False) \
             .loss(LOSS_SQUARED_HINGE_LABEL_WISE) \
-            .head_type(HEAD_TYPE_SINGLE_LABEL)
+            .head_type(HEAD_TYPE_SINGLE)
         self.run_cmd(builder, 'statistics-sparse_label-format-sparse')
 
-    def test_label_wise_single_label_heads(self):
+    def test_decomposable_single_output_heads(self):
         """
         Tests the BOOMER algorithm when using a label-wise decomposable loss function for the induction of rules with
-        single-label heads.
+        single-output heads.
         """
         builder = BoostingCmdBuilder() \
             .loss(LOSS_LOGISTIC_LABEL_WISE) \
-            .head_type(HEAD_TYPE_SINGLE_LABEL) \
+            .head_type(HEAD_TYPE_SINGLE) \
             .print_model_characteristics()
-        self.run_cmd(builder, 'label-wise-single-label-heads')
+        self.run_cmd(builder, 'label-wise-single-output-heads')
 
     def test_label_wise_complete_heads(self):
         """
@@ -726,13 +726,13 @@ class BoostingIntegrationTests(CommonIntegrationTests):
     def test_example_wise_single_label_heads(self):
         """
         Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules with
-        single-label heads.
+        single-output heads.
         """
         builder = BoostingCmdBuilder() \
             .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
-            .head_type(HEAD_TYPE_SINGLE_LABEL) \
+            .head_type(HEAD_TYPE_SINGLE) \
             .print_model_characteristics()
-        self.run_cmd(builder, 'example-wise-single-label-heads')
+        self.run_cmd(builder, 'example-wise-single-output-heads')
 
     @skip_test_on_ci
     def test_example_wise_complete_heads(self):

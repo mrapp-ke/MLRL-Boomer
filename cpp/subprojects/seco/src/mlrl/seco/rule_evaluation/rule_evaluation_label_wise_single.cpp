@@ -8,13 +8,13 @@
 namespace seco {
 
     /**
-     * Allows to calculate the predictions of single-label rules, as well as their overall quality, such that they
-     * optimize a heuristic that is applied using label-wise averaging.
+     * Allows to calculate the predictions of single-output rules, as well as their overall quality, such that they
+     * optimize a heuristic that is applied using output-wise averaging.
      *
      * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
      */
     template<typename T>
-    class LabelWiseSingleLabelRuleEvaluation final : public IRuleEvaluation {
+    class LabelWiseSingleOutputRuleEvaluation final : public IRuleEvaluation {
         private:
 
             const T& labelIndices_;
@@ -33,7 +33,7 @@ namespace seco {
              * @param heuristicPtr  An unique pointer to an object of type `IHeuristic` that implements the heuristic to
              *                      be optimized
              */
-            LabelWiseSingleLabelRuleEvaluation(const T& labelIndices, std::unique_ptr<IHeuristic> heuristicPtr)
+            LabelWiseSingleOutputRuleEvaluation(const T& labelIndices, std::unique_ptr<IHeuristic> heuristicPtr)
                 : labelIndices_(labelIndices), indexVector_(1), scoreVector_(indexVector_, true),
                   heuristicPtr_(std::move(heuristicPtr)) {}
 
@@ -69,22 +69,22 @@ namespace seco {
             }
     };
 
-    LabelWiseSingleLabelRuleEvaluationFactory::LabelWiseSingleLabelRuleEvaluationFactory(
+    LabelWiseSingleOutputRuleEvaluationFactory::LabelWiseSingleOutputRuleEvaluationFactory(
       std::unique_ptr<IHeuristicFactory> heuristicFactoryPtr)
         : heuristicFactoryPtr_(std::move(heuristicFactoryPtr)) {}
 
-    std::unique_ptr<IRuleEvaluation> LabelWiseSingleLabelRuleEvaluationFactory::create(
+    std::unique_ptr<IRuleEvaluation> LabelWiseSingleOutputRuleEvaluationFactory::create(
       const CompleteIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
-        return std::make_unique<LabelWiseSingleLabelRuleEvaluation<CompleteIndexVector>>(indexVector,
-                                                                                         std::move(heuristicPtr));
+        return std::make_unique<LabelWiseSingleOutputRuleEvaluation<CompleteIndexVector>>(indexVector,
+                                                                                          std::move(heuristicPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation> LabelWiseSingleLabelRuleEvaluationFactory::create(
+    std::unique_ptr<IRuleEvaluation> LabelWiseSingleOutputRuleEvaluationFactory::create(
       const PartialIndexVector& indexVector) const {
         std::unique_ptr<IHeuristic> heuristicPtr = heuristicFactoryPtr_->create();
-        return std::make_unique<LabelWiseSingleLabelRuleEvaluation<PartialIndexVector>>(indexVector,
-                                                                                        std::move(heuristicPtr));
+        return std::make_unique<LabelWiseSingleOutputRuleEvaluation<PartialIndexVector>>(indexVector,
+                                                                                         std::move(heuristicPtr));
     }
 
 }

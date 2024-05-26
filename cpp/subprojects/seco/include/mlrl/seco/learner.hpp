@@ -148,21 +148,21 @@ namespace seco {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to induce rules with
-             * single-label heads that predict for a single label.
+             * single-output heads that predict for a single output.
              */
-            class ISingleLabelHeadMixin : virtual public ISeCoRuleLearner::IConfig {
+            class ISingleOutputHeadMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~ISingleLabelHeadMixin() override {}
+                    virtual ~ISingleOutputHeadMixin() override {}
 
                     /**
-                     * Configures the rule learner to induce rules with single-label heads that predict for a single
-                     * label.
+                     * Configures the rule learner to induce rules with single-output heads that predict for a single
+                     * output.
                      */
-                    virtual void useSingleLabelHeads() {
+                    virtual void useSingleOutputHeads() {
                         std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
-                        headConfigPtr = std::make_unique<SingleLabelHeadConfig>(this->getHeuristicConfigPtr(),
-                                                                                this->getPruningHeuristicConfigPtr());
+                        headConfigPtr = std::make_unique<SingleOutputHeadConfig>(this->getHeuristicConfigPtr(),
+                                                                                 this->getPruningHeuristicConfigPtr());
                     }
             };
 

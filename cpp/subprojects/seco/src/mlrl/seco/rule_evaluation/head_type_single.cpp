@@ -6,18 +6,18 @@
 
 namespace seco {
 
-    SingleLabelHeadConfig::SingleLabelHeadConfig(const std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr,
-                                                 const std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr)
+    SingleOutputHeadConfig::SingleOutputHeadConfig(const std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr,
+                                                   const std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr)
         : heuristicConfigPtr_(heuristicConfigPtr), pruningHeuristicConfigPtr_(pruningHeuristicConfigPtr) {}
 
-    std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::createStatisticsProviderFactory(
+    std::unique_ptr<IStatisticsProviderFactory> SingleOutputHeadConfig::createStatisticsProviderFactory(
       const IRowWiseLabelMatrix& labelMatrix) const {
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
           std::make_unique<LabelWiseMajorityRuleEvaluationFactory>();
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-          std::make_unique<LabelWiseSingleLabelRuleEvaluationFactory>(heuristicConfigPtr_->createHeuristicFactory());
+          std::make_unique<LabelWiseSingleOutputRuleEvaluationFactory>(heuristicConfigPtr_->createHeuristicFactory());
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-          std::make_unique<LabelWiseSingleLabelRuleEvaluationFactory>(
+          std::make_unique<LabelWiseSingleOutputRuleEvaluationFactory>(
             pruningHeuristicConfigPtr_->createHeuristicFactory());
         return std::make_unique<DenseLabelWiseStatisticsProviderFactory>(std::move(defaultRuleEvaluationFactoryPtr),
                                                                          std::move(regularRuleEvaluationFactoryPtr),

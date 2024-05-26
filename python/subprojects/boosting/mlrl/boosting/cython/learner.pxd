@@ -118,11 +118,11 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
         IDynamicPartialHeadConfig& useDynamicPartialHeads()
 
 
-    cdef cppclass ISingleLabelHeadMixin"boosting::IBoostingRuleLearner::ISingleLabelHeadMixin":
+    cdef cppclass ISingleOutputHeadMixin"boosting::IBoostingRuleLearner::ISingleOutputHeadMixin":
 
         # Functions:
         
-        void useSingleLabelHeads()
+        void useSingleOutputHeads()
 
 
     cdef cppclass IAutomaticHeadMixin"boosting::IBoostingRuleLearner::IAutomaticHeadMixin":

@@ -22,7 +22,7 @@ from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, Automati
     IsotonicMarginalProbabilityCalibrationMixin, L1RegularizationMixin, L2RegularizationMixin, \
     LabelWiseBinaryPredictorMixin, LabelWiseLogisticLossMixin, LabelWiseProbabilityPredictorMixin, \
     LabelWiseSquaredErrorLossMixin, LabelWiseSquaredHingeLossMixin, MarginalizedProbabilityPredictorMixin, \
-    NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, NoLabelBinningMixin, SingleLabelHeadMixin, \
+    NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, NoLabelBinningMixin, SingleOutputHeadMixin, \
     SparseStatisticsMixin
 
 PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
@@ -286,7 +286,7 @@ class HeadTypeParameter(NominalParameter):
     A parameter that allows to configure the type of the rule heads that should be used.
     """
 
-    HEAD_TYPE_SINGLE = 'single-label'
+    HEAD_TYPE_SINGLE = 'single'
 
     HEAD_TYPE_PARTIAL_FIXED = 'partial-fixed'
 
@@ -306,7 +306,7 @@ class HeadTypeParameter(NominalParameter):
 
     def __init__(self):
         super().__init__(name='head_type', description='The type of the rule heads that should be used')
-        self.add_value(name=self.HEAD_TYPE_SINGLE, mixin=SingleLabelHeadMixin)
+        self.add_value(name=self.HEAD_TYPE_SINGLE, mixin=SingleOutputHeadMixin)
         self.add_value(name=self.HEAD_TYPE_PARTIAL_FIXED,
                        mixin=FixedPartialHeadMixin,
                        options={self.OPTION_LABEL_RATIO, self.OPTION_MIN_LABELS, self.OPTION_MAX_LABELS})
@@ -317,7 +317,7 @@ class HeadTypeParameter(NominalParameter):
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == self.HEAD_TYPE_SINGLE:
-            config.use_single_label_heads()
+            config.use_single_output_heads()
         elif value == self.HEAD_TYPE_PARTIAL_FIXED:
             conf = config.use_fixed_partial_heads()
             conf.set_label_ratio(options.get_float(self.OPTION_LABEL_RATIO, conf.get_label_ratio()))

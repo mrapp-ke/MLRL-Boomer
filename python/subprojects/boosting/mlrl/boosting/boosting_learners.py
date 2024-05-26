@@ -73,10 +73,10 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         :param sequential_post_optimization:        Whether each rule in a previously learned model should be optimized
                                                     by being relearned in the context of the other rules or not. Must be
                                                     'true' or 'false'. For additional options refer to the documentation
-        :param head_type:                           The type of the rule heads that should be used. Must be
-                                                    'single-label', 'complete', 'partial-fixed', 'partial-dynamic' or
-                                                    'auto', if the type of the heads should be chosen automatically. For
-                                                    additional options refer to the documentation
+        :param head_type:                           The type of the rule heads that should be used. Must be 'single',
+                                                    'complete', 'partial-fixed', 'partial-dynamic' or 'auto', if the
+                                                    type of the heads should be chosen automatically. For additional
+                                                    options refer to the documentation
         :param loss:                                The loss function to be minimized. Must be
                                                     'squared-error-label-wise', 'squared-error-example-wise',
                                                     'squared-hinge-label-wise', 'squared-hinge-example-wise',

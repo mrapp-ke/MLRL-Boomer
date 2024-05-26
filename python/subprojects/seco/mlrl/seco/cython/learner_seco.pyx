@@ -47,13 +47,13 @@ from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeur
     LabelWiseBinaryPredictionMixin, LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, MEstimateHeuristicMixin, \
     MEstimatePruningHeuristicMixin, NoCoverageStoppingCriterionMixin, NoLiftFunctionMixin, PartialHeadMixin, \
     PeakLiftFunctionMixin, PrecisionHeuristicMixin, PrecisionPruningHeuristicMixin, RecallHeuristicMixin, \
-    RecallPruningHeuristicMixin, SingleLabelHeadMixin, WraHeuristicMixin, WraPruningHeuristicMixin
+    RecallPruningHeuristicMixin, SingleOutputHeadMixin, WraHeuristicMixin, WraPruningHeuristicMixin
 
 
 cdef class SeCoConfig(RuleLearnerConfig,
                       NoCoverageStoppingCriterionMixin,
                       CoverageStoppingCriterionMixin,
-                      SingleLabelHeadMixin,
+                      SingleOutputHeadMixin,
                       PartialHeadMixin,
                       NoLiftFunctionMixin,
                       PeakLiftFunctionMixin,
@@ -132,8 +132,8 @@ cdef class SeCoConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_single_label_heads(self):
-        self.config_ptr.get().useSingleLabelHeads()
+    def use_single_output_heads(self):
+        self.config_ptr.get().useSingleOutputHeads()
 
     def use_partial_heads(self):
         self.config_ptr.get().usePartialHeads()
