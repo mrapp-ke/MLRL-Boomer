@@ -38,11 +38,11 @@ cdef class TrainingResult:
     trained, as well as additional information that is necessary for obtaining predictions for unseen data.
     """
 
-    def __cinit__(self, uint32 num_labels, RuleModel rule_model not None, LabelSpaceInfo label_space_info not None,
+    def __cinit__(self, uint32 num_outputs, RuleModel rule_model not None, LabelSpaceInfo label_space_info not None,
                   MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
                   JointProbabilityCalibrationModel joint_probability_calibration_model not None):
         """
-        :param num_labels:                              The number of labels for which a model has been trained
+        :param num_outputs:                             The number of outputs for which a model has been trained
         :param rule_model:                              The `RuleModel` that has been trained
         :param label_space_info:                        The `LabelSpaceInfo` that may be used as a basis for making
                                                         predictions
@@ -51,7 +51,7 @@ cdef class TrainingResult:
         :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
                                                         calibration of joint probabilities    
         """
-        self.num_labels = num_labels
+        self.num_outputs = num_outputs
         self.rule_model = rule_model
         self.label_space_info = label_space_info
         self.marginal_probability_calibration_model = marginal_probability_calibration_model
@@ -85,7 +85,7 @@ cdef class RuleLearner:
             dereference(feature_info.get_feature_info_ptr()),
             dereference(feature_matrix.get_column_wise_feature_matrix_ptr()),
             dereference(label_matrix.get_row_wise_label_matrix_ptr()), random_state)
-        cdef uint32 num_labels = training_result_ptr.get().getNumLabels()
+        cdef uint32 num_outputs = training_result_ptr.get().getNumOutputs()
         cdef unique_ptr[IRuleModel] rule_model_ptr = move(training_result_ptr.get().getRuleModel())
         cdef unique_ptr[ILabelSpaceInfo] label_space_info_ptr = move(training_result_ptr.get().getLabelSpaceInfo())
         cdef unique_ptr[IMarginalProbabilityCalibrationModel] marginal_probability_calibration_model_ptr = \
@@ -98,7 +98,7 @@ cdef class RuleLearner:
             create_marginal_probability_calibration_model(move(marginal_probability_calibration_model_ptr))
         cdef JointProbabilityCalibrationModel joint_probability_calibration_model = \
             create_joint_probability_calibration_model(move(joint_probability_calibration_model_ptr))
-        return TrainingResult.__new__(TrainingResult, num_labels, rule_model, label_space_info,
+        return TrainingResult.__new__(TrainingResult, num_outputs, rule_model, label_space_info,
                                       marginal_probability_calibration_model, joint_probability_calibration_model)
 
     def can_predict_binary(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:

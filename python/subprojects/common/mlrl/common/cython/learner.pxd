@@ -32,7 +32,7 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         # Functions:
 
-        uint32 getNumLabels() const
+        uint32 getNumOutputs() const
 
         unique_ptr[IRuleModel]& getRuleModel()
 
@@ -373,7 +373,7 @@ cdef class TrainingResult:
 
     # Attributes:
 
-    cdef readonly uint32 num_labels
+    cdef readonly uint32 num_outputs
 
     cdef readonly RuleModel rule_model
 

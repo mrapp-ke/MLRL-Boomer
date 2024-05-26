@@ -360,7 +360,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         learner = self._create_learner()
         random_state = int(self.random_state) if self.random_state else 1
         training_result = learner.fit(feature_info, feature_matrix, label_matrix, random_state)
-        self.num_labels_ = training_result.num_labels
+        self.num_outputs_ = training_result.num_outputs
         self.label_space_info_ = training_result.label_space_info
         self.marginal_probability_calibration_model_ = training_result.marginal_probability_calibration_model
         self.joint_probability_calibration_model_ = training_result.joint_probability_calibration_model
@@ -393,15 +393,15 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
-        num_labels = self.num_labels_
+        num_outputs = self.num_outputs_
 
-        if learner.can_predict_binary(feature_matrix, num_labels):
+        if learner.can_predict_binary(feature_matrix, num_outputs):
             sparse_predictions = self.sparse_predictions_
             log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
             return create_binary_predictor(learner, self.model_, self.label_space_info_,
                                            self.marginal_probability_calibration_model_,
-                                           self.joint_probability_calibration_model_, num_labels, feature_matrix,
+                                           self.joint_probability_calibration_model_, num_outputs, feature_matrix,
                                            sparse_predictions).predict(max_rules)
 
         return super()._predict_binary(x, **kwargs)
@@ -416,15 +416,15 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
-        num_labels = self.num_labels_
+        num_outputs = self.num_outputs_
 
-        if learner.can_predict_binary(feature_matrix, num_labels):
+        if learner.can_predict_binary(feature_matrix, num_outputs):
             sparse_predictions = self.sparse_predictions_
             log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
             model = self.model_
             predictor = create_binary_predictor(learner, model, self.label_space_info_,
                                                 self.marginal_probability_calibration_model_,
-                                                self.joint_probability_calibration_model_, num_labels, feature_matrix,
+                                                self.joint_probability_calibration_model_, num_outputs, feature_matrix,
                                                 sparse_predictions)
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 
@@ -442,12 +442,12 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
-        num_labels = self.num_labels_
+        num_outputs = self.num_outputs_
 
-        if learner.can_predict_scores(feature_matrix, num_labels):
+        if learner.can_predict_scores(feature_matrix, num_outputs):
             log.debug('A dense matrix is used to store the predicted regression scores')
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
-            return create_score_predictor(learner, self.model_, self.label_space_info_, num_labels,
+            return create_score_predictor(learner, self.model_, self.label_space_info_, num_outputs,
                                           feature_matrix).predict(max_rules)
 
         return super()._predict_scores(x, **kwargs)
@@ -462,12 +462,12 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
-        num_labels = self.num_labels_
+        num_outputs = self.num_outputs_
 
-        if learner.can_predict_scores(feature_matrix, num_labels):
+        if learner.can_predict_scores(feature_matrix, num_outputs):
             log.debug('A dense matrix is used to store the predicted regression scores')
             model = self.model_
-            predictor = create_score_predictor(learner, model, self.label_space_info_, num_labels, feature_matrix)
+            predictor = create_score_predictor(learner, model, self.label_space_info_, num_outputs, feature_matrix)
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
@@ -484,15 +484,15 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
-        num_labels = self.num_labels_
+        num_outputs = self.num_outputs_
 
-        if learner.can_predict_probabilities(feature_matrix, num_labels):
+        if learner.can_predict_probabilities(feature_matrix, num_outputs):
             log.debug('A dense matrix is used to store the predicted probability estimates')
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
             return convert_into_sklearn_compatible_probabilities(
                 create_probability_predictor(learner, self.model_, self.label_space_info_,
                                              self.marginal_probability_calibration_model_,
-                                             self.joint_probability_calibration_model_, num_labels,
+                                             self.joint_probability_calibration_model_, num_outputs,
                                              feature_matrix).predict(max_rules))
 
         return super()._predict_proba(x, **kwargs)
@@ -507,14 +507,14 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
-        num_labels = self.num_labels_
+        num_outputs = self.num_outputs_
 
-        if learner.can_predict_probabilities(feature_matrix, num_labels):
+        if learner.can_predict_probabilities(feature_matrix, num_outputs):
             log.debug('A dense matrix is used to store the predicted probability estimates')
             model = self.model_
             predictor = create_probability_predictor(learner, model, self.label_space_info_,
                                                      self.marginal_probability_calibration_model_,
-                                                     self.joint_probability_calibration_model_, num_labels,
+                                                     self.joint_probability_calibration_model_, num_outputs,
                                                      feature_matrix)
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 

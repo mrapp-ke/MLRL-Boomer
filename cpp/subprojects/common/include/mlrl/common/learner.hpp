@@ -62,11 +62,11 @@ class MLRLCOMMON_API ITrainingResult {
         virtual ~ITrainingResult() {}
 
         /**
-         * Returns the number of labels for which a model has been trained.
+         * Returns the number of outputs for which a model has been trained.
          *
-         * @return The number of labels
+         * @return The number of outputs
          */
-        virtual uint32 getNumLabels() const = 0;
+        virtual uint32 getNumOutputs() const = 0;
 
         /**
          * Returns the model that has been trained.
