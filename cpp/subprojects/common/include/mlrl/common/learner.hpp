@@ -16,7 +16,7 @@
 #include "mlrl/common/post_optimization/post_optimization_sequential.hpp"
 #include "mlrl/common/post_optimization/post_optimization_unused_rule_removal.hpp"
 #include "mlrl/common/post_processing/post_processor_no.hpp"
-#include "mlrl/common/prediction/label_space_info.hpp"
+#include "mlrl/common/prediction/output_space_info.hpp"
 #include "mlrl/common/prediction/prediction_matrix_dense.hpp"
 #include "mlrl/common/prediction/prediction_matrix_sparse_binary.hpp"
 #include "mlrl/common/prediction/predictor_binary.hpp"
@@ -83,20 +83,20 @@ class MLRLCOMMON_API ITrainingResult {
         virtual const std::unique_ptr<IRuleModel>& getRuleModel() const = 0;
 
         /**
-         * Returns information about the label space that may be used as a basis for making predictions.
+         * Returns information about the output space that may be used as a basis for making predictions.
          *
-         * @return An unique pointer to an object of type `ILabelSpaceInfo` that may be used as a basis for making
+         * @return An unique pointer to an object of type `IOutputSpaceInfo` that may be used as a basis for making
          *         predictions
          */
-        virtual std::unique_ptr<ILabelSpaceInfo>& getLabelSpaceInfo() = 0;
+        virtual std::unique_ptr<IOutputSpaceInfo>& getOutputSpaceInfo() = 0;
 
         /**
-         * Returns information about the label space that may be used as a basis for making predictions.
+         * Returns information about the output space that may be used as a basis for making predictions.
          *
-         * @return An unique pointer to an object of type `ILabelSpaceInfo` that may be used as a basis for making
+         * @return An unique pointer to an object of type `IOutputSpaceInfo` that may be used as a basis for making
          *         predictions
          */
-        virtual const std::unique_ptr<ILabelSpaceInfo>& getLabelSpaceInfo() const = 0;
+        virtual const std::unique_ptr<IOutputSpaceInfo>& getOutputSpaceInfo() const = 0;
 
         /**
          * Returns a model that may be used for the calibration of marginal probabilities.
@@ -1391,8 +1391,8 @@ class MLRLCOMMON_API IRuleLearner {
          *                                            examples
          * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
          *                                            to obtain predictions
-         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                            information about the label space that may be used as a basis for
+         * @param outputSpaceInfo                     A reference to an object of type `IOutputSpaceInfo` that provides
+         *                                            information about the output space that may be used as a basis for
          *                                            obtaining predictions
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
@@ -1406,7 +1406,7 @@ class MLRLCOMMON_API IRuleLearner {
          */
         virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
@@ -1440,8 +1440,8 @@ class MLRLCOMMON_API IRuleLearner {
          *                                            examples
          * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
          *                                            to obtain predictions
-         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                            information about the label space that may be used as a basis for
+         * @param outputSpaceInfo                     A reference to an object of type `IOutputSpaceInfo` that provides
+         *                                            information about the output space that may be used as a basis for
          *                                            obtaining predictions
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
@@ -1456,7 +1456,7 @@ class MLRLCOMMON_API IRuleLearner {
          */
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
@@ -1509,15 +1509,15 @@ class MLRLCOMMON_API IRuleLearner {
          *                                row-wise access to the feature values of the query examples
          * @param ruleModel               A reference to an object of type `IRuleModel` that should be used to obtain
          *                                predictions
-         * @param labelSpaceInfo          A reference to an object of type `ILabelSpaceInfo` that provides information
-         *                                about the label space that may be used as a basis for obtaining predictions
+         * @param outputSpaceInfo         A reference to an object of type `IOutputSpaceInfo` that provides information
+         *                                about the output space that may be used as a basis for obtaining predictions
          * @param numLabels               The number of labels to predict for
          * @return                        An unique pointer to an object of type `IScorePredictor` that may be used to
          *                                predict regression scores for the given query examples
          */
         virtual std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                                       const IRuleModel& ruleModel,
-                                                                      const ILabelSpaceInfo& labelSpaceInfo,
+                                                                      const IOutputSpaceInfo& outputSpaceInfo,
                                                                       uint32 numLabels) const = 0;
 
         /**
@@ -1572,8 +1572,8 @@ class MLRLCOMMON_API IRuleLearner {
          *                                            examples
          * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
          *                                            to obtain predictions
-         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                            information about the label space that may be used as a basis for
+         * @param outputSpaceInfo                     A reference to an object of type `IOutputSpaceInfo` that provides
+         *                                            information about the output space that may be used as a basis for
          *                                            obtaining predictions
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
@@ -1588,7 +1588,7 @@ class MLRLCOMMON_API IRuleLearner {
          */
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 };
@@ -1887,14 +1887,14 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         virtual std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const = 0;
 
         /**
-         * May be overridden by subclasses in order to create the `ILabelSpaceInfo` to be used by the rule learner as a
+         * May be overridden by subclasses in order to create the `IOutputSpaceInfo` to be used by the rule learner as a
          * basis for for making predictions.
          *
          * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
          *                      the labels of the training examples
-         * @return              An unique pointer to an object of type `ILabelSpaceInfo` that has been created
+         * @return              An unique pointer to an object of type `IOutputSpaceInfo` that has been created
          */
-        virtual std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(const IRowWiseLabelMatrix& labelMatrix) const;
+        virtual std::unique_ptr<IOutputSpaceInfo> createOutputSpaceInfo(const IRowWiseLabelMatrix& labelMatrix) const;
 
         /**
          * May be overridden by subclasses in order to create the `IBinaryPredictorFactory` to be used by the rule
@@ -1972,7 +1972,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
@@ -1981,7 +1981,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
@@ -1995,7 +1995,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                               const IRuleModel& ruleModel,
-                                                              const ILabelSpaceInfo& labelSpaceInfo,
+                                                              const IOutputSpaceInfo& outputSpaceInfo,
                                                               uint32 numLabels) const override;
 
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix,
@@ -2008,7 +2008,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 };

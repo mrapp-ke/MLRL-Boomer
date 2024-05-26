@@ -37,9 +37,9 @@ A module for the assemblage of a rule model that consists of several rules. Curr
 
 A wide variety of sampling methods, including **sampling with and without replacement**, as well as **stratified sampling techniques**, is provided by this package. They can be used to learn new rules on a subset of the available training examples, features, or labels.
 
-### (Label Space) Statistics
+### (Output Space) Statistics
 
-So-called label space statistics serve as the basis for assessing the quality of potential rules and determining their predictions. The notion of the statistics heavily depend on the rule learning algorithm at hand. For this reason, no particular implementation is currently included in this package.
+So-called output space statistics serve as the basis for assessing the quality of potential rules and determining their predictions. The notion of the statistics heavily depend on the rule learning algorithm at hand. For this reason, no particular implementation is currently included in this package.
 
 ### Post-Processing
 

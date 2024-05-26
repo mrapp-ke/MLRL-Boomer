@@ -11,8 +11,8 @@ from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstance
     ILabelWiseStratifiedInstanceSamplingConfig
 from mlrl.common.cython.label_matrix cimport IRowWiseLabelMatrix
 from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig
-from mlrl.common.cython.label_space_info cimport ILabelSpaceInfo, LabelSpaceInfo
 from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
+from mlrl.common.cython.output_space_info cimport IOutputSpaceInfo, OutputSpaceInfo
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
     ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig
@@ -36,7 +36,7 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         unique_ptr[IRuleModel]& getRuleModel()
 
-        unique_ptr[ILabelSpaceInfo]& getLabelSpaceInfo()
+        unique_ptr[IOutputSpaceInfo]& getOutputSpaceInfo()
 
         unique_ptr[IMarginalProbabilityCalibrationModel]& getMarginalProbabilityCalibrationModel()
 
@@ -344,13 +344,13 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         unique_ptr[IBinaryPredictor] createBinaryPredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo,
+            const IOutputSpaceInfo& outputSpaceInfo,
             const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
             const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
 
         unique_ptr[ISparseBinaryPredictor] createSparseBinaryPredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo,
+            const IOutputSpaceInfo& outputSpaceInfo,
             const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
             const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
 
@@ -358,13 +358,13 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         unique_ptr[IScorePredictor] createScorePredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) except +
+            const IOutputSpaceInfo& outputSpaceInfo, uint32 numLabels) except +
 
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
 
         unique_ptr[IProbabilityPredictor] createProbabilityPredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo,
+            const IOutputSpaceInfo& outputSpaceInfo,
             const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
             const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
 
@@ -377,7 +377,7 @@ cdef class TrainingResult:
 
     cdef readonly RuleModel rule_model
 
-    cdef readonly LabelSpaceInfo label_space_info
+    cdef readonly OutputSpaceInfo output_space_info
 
     cdef readonly MarginalProbabilityCalibrationModel marginal_probability_calibration_model
     

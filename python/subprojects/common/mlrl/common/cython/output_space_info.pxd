@@ -4,19 +4,19 @@ from libcpp.memory cimport unique_ptr
 from mlrl.common.cython._types cimport uint32
 
 
-cdef extern from "mlrl/common/prediction/label_space_info.hpp" nogil:
+cdef extern from "mlrl/common/prediction/output_space_info.hpp" nogil:
 
-    cdef cppclass ILabelSpaceInfo:
+    cdef cppclass IOutputSpaceInfo:
         pass
 
 
-cdef extern from "mlrl/common/prediction/label_space_info_no.hpp" nogil:
+cdef extern from "mlrl/common/prediction/output_space_info_no.hpp" nogil:
 
-    cdef cppclass INoLabelSpaceInfo(ILabelSpaceInfo):
+    cdef cppclass INoOutputSpaceInfo(IOutputSpaceInfo):
         pass
 
 
-    unique_ptr[INoLabelSpaceInfo] createNoLabelSpaceInfo()
+    unique_ptr[INoOutputSpaceInfo] createNoOutputSpaceInfo()
 
 
 cdef extern from "mlrl/common/input/label_vector.hpp" nogil:
@@ -45,7 +45,7 @@ ctypedef void (*LabelVectorVisitor)(const LabelVector&, uint32)
 
 cdef extern from "mlrl/common/prediction/label_vector_set.hpp" nogil:
 
-    cdef cppclass ILabelVectorSet(ILabelSpaceInfo):
+    cdef cppclass ILabelVectorSet(IOutputSpaceInfo):
 
         # Functions:
 
@@ -57,7 +57,7 @@ cdef extern from "mlrl/common/prediction/label_vector_set.hpp" nogil:
     unique_ptr[ILabelVectorSet] createLabelVectorSet()
 
 
-ctypedef INoLabelSpaceInfo* NoLabelSpaceInfoPtr
+ctypedef INoOutputSpaceInfo* NoOutputSpaceInfoPtr
 
 ctypedef ILabelVectorSet* LabelVectorSetPtr
 
@@ -82,21 +82,21 @@ cdef extern from *:
     LabelVectorVisitor wrapLabelVectorVisitor(void* self, LabelVectorCythonVisitor visitor)
 
 
-cdef class LabelSpaceInfo:
+cdef class OutputSpaceInfo:
 
     # Functions:
 
-    cdef ILabelSpaceInfo* get_label_space_info_ptr(self)
+    cdef IOutputSpaceInfo* get_output_space_info_ptr(self)
 
 
-cdef class NoLabelSpaceInfo(LabelSpaceInfo):
+cdef class NoOutputSpaceInfo(OutputSpaceInfo):
 
     # Attributes:
 
-    cdef unique_ptr[INoLabelSpaceInfo] label_space_info_ptr
+    cdef unique_ptr[INoOutputSpaceInfo] output_space_info_ptr
 
 
-cdef class LabelVectorSet(LabelSpaceInfo):
+cdef class LabelVectorSet(OutputSpaceInfo):
 
     # Attributes:
 
@@ -115,24 +115,24 @@ cdef class LabelVectorSet(LabelSpaceInfo):
     cdef unique_ptr[LabelVector] __deserialize_label_vector(self, object label_vector_state)
 
 
-cdef inline LabelSpaceInfo create_label_space_info(unique_ptr[ILabelSpaceInfo] label_space_info_ptr):
-    cdef ILabelSpaceInfo* ptr = label_space_info_ptr.release()
+cdef inline OutputSpaceInfo create_output_space_info(unique_ptr[IOutputSpaceInfo] output_space_info_ptr):
+    cdef IOutputSpaceInfo* ptr = output_space_info_ptr.release()
     cdef ILabelVectorSet* label_vector_set_ptr = dynamic_cast[LabelVectorSetPtr](ptr)
-    cdef INoLabelSpaceInfo* no_label_space_info_ptr
+    cdef INoOutputSpaceInfo* no_output_space_info_ptr
     cdef LabelVectorSet label_vector_set
-    cdef NoLabelSpaceInfo no_label_space_info
+    cdef NoOutputSpaceInfo no_output_space_info
 
     if label_vector_set_ptr != NULL:
         label_vector_set = LabelVectorSet.__new__(LabelVectorSet)
         label_vector_set.label_vector_set_ptr = unique_ptr[ILabelVectorSet](label_vector_set_ptr)
         return label_vector_set
     else:
-        no_label_space_info_ptr = dynamic_cast[NoLabelSpaceInfoPtr](ptr)
+        no_output_space_info_ptr = dynamic_cast[NoOutputSpaceInfoPtr](ptr)
 
-        if no_label_space_info_ptr != NULL:
-            no_label_space_info = NoLabelSpaceInfo.__new__(NoLabelSpaceInfo)
-            no_label_space_info.label_space_info_ptr = unique_ptr[INoLabelSpaceInfo](no_label_space_info_ptr)
-            return no_label_space_info
+        if no_output_space_info_ptr != NULL:
+            no_output_space_info = NoOutputSpaceInfo.__new__(NoOutputSpaceInfo)
+            no_output_space_info.output_space_info_ptr = unique_ptr[INoOutputSpaceInfo](no_output_space_info_ptr)
+            return no_output_space_info
         else:
             del ptr
-            raise RuntimeError('Encountered unsupported ILabelSpaceInfo object')
+            raise RuntimeError('Encountered unsupported IOutputSpaceInfo object')

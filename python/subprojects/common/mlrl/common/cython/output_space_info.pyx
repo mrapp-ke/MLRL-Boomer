@@ -11,28 +11,28 @@ import numpy as np
 SERIALIZATION_VERSION = 3
 
 
-cdef class LabelSpaceInfo:
+cdef class OutputSpaceInfo:
     """
-    Provides information about the label space that may be used as a basis for making predictions.
+    Provides information about the output space that may be used as a basis for making predictions.
     """
 
-    cdef ILabelSpaceInfo* get_label_space_info_ptr(self):
+    cdef IOutputSpaceInfo* get_output_space_info_ptr(self):
         pass
 
 
-cdef class NoLabelSpaceInfo(LabelSpaceInfo):
+cdef class NoOutputSpaceInfo(OutputSpaceInfo):
     """
-    Does not provide any information about the label space.
+    Does not provide any information about the output space.
     """
 
-    cdef ILabelSpaceInfo* get_label_space_info_ptr(self):
-        return self.label_space_info_ptr.get()
+    cdef IOutputSpaceInfo* get_output_space_info_ptr(self):
+        return self.output_space_info_ptr.get()
 
     def __reduce__(self):
-        return (NoLabelSpaceInfo, (), ())
+        return (NoOutputSpaceInfo, (), ())
 
     def __setstate__(self, state):
-        self.label_space_info_ptr = createNoLabelSpaceInfo()
+        self.output_space_info_ptr = createNoOutputSpaceInfo()
 
 
 class LabelVectorSetVisitor:
@@ -53,7 +53,7 @@ class LabelVectorSetVisitor:
         pass
 
 
-cdef class LabelVectorSet(LabelSpaceInfo):
+cdef class LabelVectorSet(OutputSpaceInfo):
     """
     Stores a set of unique label vectors, as well as their frequency.
     """
@@ -69,7 +69,7 @@ cdef class LabelVectorSet(LabelSpaceInfo):
             wrapLabelVectorVisitor(<void*>self, <LabelVectorCythonVisitor>self.__visit_label_vector))
         self.visitor = None
 
-    cdef ILabelSpaceInfo* get_label_space_info_ptr(self):
+    cdef IOutputSpaceInfo* get_output_space_info_ptr(self):
         return self.label_vector_set_ptr.get()
 
     cdef __visit_label_vector(self, const LabelVector& label_vector, uint32 frequency):
@@ -113,7 +113,7 @@ cdef class LabelVectorSet(LabelSpaceInfo):
         cdef int version = state[0]
 
         if version != SERIALIZATION_VERSION:
-            raise AssertionError('Version of the serialized LabelSpaceInfo is ' + str(version) + ', expected '
+            raise AssertionError('Version of the serialized OutputSpaceInfo is ' + str(version) + ', expected '
                                  + str(SERIALIZATION_VERSION))
 
         cdef list label_vector_list = state[1]
