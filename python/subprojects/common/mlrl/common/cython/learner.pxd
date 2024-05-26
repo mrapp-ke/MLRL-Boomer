@@ -10,8 +10,8 @@ from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstance
     IInstanceSamplingWithoutReplacementConfig, IInstanceSamplingWithReplacementConfig, \
     ILabelWiseStratifiedInstanceSamplingConfig
 from mlrl.common.cython.label_matrix cimport IRowWiseLabelMatrix
-from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig
 from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
+from mlrl.common.cython.output_sampling cimport IOutputSamplingWithoutReplacementConfig
 from mlrl.common.cython.output_space_info cimport IOutputSpaceInfo, OutputSpaceInfo
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
     ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
@@ -99,25 +99,25 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
         IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning()
 
 
-    cdef cppclass INoLabelSamplingMixin"IRuleLearner::INoLabelSamplingMixin":
+    cdef cppclass INoOutputSamplingMixin"IRuleLearner::INoOutputSamplingMixin":
 
         # Functions:
 
-        void useNoLabelSampling()
+        void useNoOutputSampling()
 
 
-    cdef cppclass IRoundRobinLabelSamplingMixin"IRuleLearner::IRoundRobinLabelSamplingMixin":
+    cdef cppclass IRoundRobinOutputSamplingMixin"IRuleLearner::IRoundRobinOutputSamplingMixin":
 
         # Functions:
 
-        void useRoundRobinLabelSampling()
+        void useRoundRobinOutputSampling()
     
     
-    cdef cppclass ILabelSamplingWithoutReplacementMixin"IRuleLearner::ILabelSamplingWithoutReplacementMixin":
+    cdef cppclass IOutputSamplingWithoutReplacementMixin"IRuleLearner::IOutputSamplingWithoutReplacementMixin":
 
         # Functions:
 
-        ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement()
+        IOutputSamplingWithoutReplacementConfig& useOutputSamplingWithoutReplacement()
 
 
     cdef cppclass INoInstanceSamplingMixin"IRuleLearner::INoInstanceSamplingMixin":

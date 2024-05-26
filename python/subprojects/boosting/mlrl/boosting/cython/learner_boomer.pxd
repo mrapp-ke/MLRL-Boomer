@@ -6,16 +6,16 @@ from mlrl.common.cython.learner cimport IBeamSearchTopDownRuleInductionMixin, ID
     IExampleWiseStratifiedBiPartitionSamplingMixin, IExampleWiseStratifiedInstanceSamplingMixin, \
     IFeatureSamplingWithoutReplacementMixin, IGreedyTopDownRuleInductionMixin, \
     IInstanceSamplingWithoutReplacementMixin, IInstanceSamplingWithReplacementMixin, IIrepRulePruningMixin, \
-    ILabelSamplingWithoutReplacementMixin, ILabelWiseStratifiedBiPartitionSamplingMixin, \
-    ILabelWiseStratifiedInstanceSamplingMixin, INoFeatureBinningMixin, INoFeatureSamplingMixin, INoGlobalPruningMixin, \
-    INoInstanceSamplingMixin, INoJointProbabilityCalibrationMixin, INoLabelSamplingMixin, \
-    INoMarginalProbabilityCalibrationMixin, INoParallelPredictionMixin, INoParallelRuleRefinementMixin, \
-    INoParallelStatisticUpdateMixin, INoPartitionSamplingMixin, INoPostProcessorMixin, INoRulePruningMixin, \
-    INoSequentialPostOptimizationMixin, INoSizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
-    IParallelPredictionMixin, IParallelRuleRefinementMixin, IParallelStatisticUpdateMixin, IPostPruningMixin, \
-    IPrePruningMixin, IRandomBiPartitionSamplingMixin, IRoundRobinLabelSamplingMixin, IRuleLearner, \
-    ISequentialPostOptimizationMixin, ISequentialRuleModelAssemblageMixin, ISizeStoppingCriterionMixin, \
-    ITimeStoppingCriterionMixin, RuleLearner, RuleLearnerConfig
+    ILabelWiseStratifiedBiPartitionSamplingMixin, ILabelWiseStratifiedInstanceSamplingMixin, INoFeatureBinningMixin, \
+    INoFeatureSamplingMixin, INoGlobalPruningMixin, INoInstanceSamplingMixin, INoJointProbabilityCalibrationMixin, \
+    INoMarginalProbabilityCalibrationMixin, INoOutputSamplingMixin, INoParallelPredictionMixin, \
+    INoParallelRuleRefinementMixin, INoParallelStatisticUpdateMixin, INoPartitionSamplingMixin, INoPostProcessorMixin, \
+    INoRulePruningMixin, INoSequentialPostOptimizationMixin, INoSizeStoppingCriterionMixin, \
+    INoTimeStoppingCriterionMixin, IOutputSamplingWithoutReplacementMixin, IParallelPredictionMixin, \
+    IParallelRuleRefinementMixin, IParallelStatisticUpdateMixin, IPostPruningMixin, IPrePruningMixin, \
+    IRandomBiPartitionSamplingMixin, IRoundRobinOutputSamplingMixin, IRuleLearner, ISequentialPostOptimizationMixin, \
+    ISequentialRuleModelAssemblageMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, RuleLearner, \
+    RuleLearnerConfig
 
 from mlrl.boosting.cython.learner cimport DdotFunction, DspmvFunction, DsysvFunction, IAutomaticBinaryPredictorMixin, \
     IAutomaticDefaultRuleMixin, IAutomaticFeatureBinningMixin, IAutomaticHeadMixin, IAutomaticLabelBinningMixin, \
@@ -79,9 +79,9 @@ cdef extern from "mlrl/boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             INoFeatureBinningMixin,
                                                             IEqualWidthFeatureBinningMixin,
                                                             IEqualFrequencyFeatureBinningMixin,
-                                                            INoLabelSamplingMixin,
-                                                            IRoundRobinLabelSamplingMixin,
-                                                            ILabelSamplingWithoutReplacementMixin,
+                                                            INoOutputSamplingMixin,
+                                                            IRoundRobinOutputSamplingMixin,
+                                                            IOutputSamplingWithoutReplacementMixin,
                                                             INoInstanceSamplingMixin,
                                                             IInstanceSamplingWithoutReplacementMixin,
                                                             IInstanceSamplingWithReplacementMixin,

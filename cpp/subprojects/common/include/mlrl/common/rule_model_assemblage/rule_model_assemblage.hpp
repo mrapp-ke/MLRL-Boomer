@@ -9,7 +9,7 @@
 #include "mlrl/common/rule_refinement/feature_space.hpp"
 #include "mlrl/common/sampling/feature_sampling.hpp"
 #include "mlrl/common/sampling/instance_sampling.hpp"
-#include "mlrl/common/sampling/label_sampling.hpp"
+#include "mlrl/common/sampling/output_sampling.hpp"
 #include "mlrl/common/sampling/partition_sampling.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
 #include "mlrl/common/stopping/stopping_criterion.hpp"
@@ -34,8 +34,8 @@ class IRuleModelAssemblage {
          * @param partition             A reference to an object of type `IPartition` that provides access to the
          *                              indices of the training examples that belong to the training set and the holdout
          *                              set, respectively
-         * @param labelSampling         A reference to an object of type `ILabelSampling` to be used for sampling the
-         *                              labels whenever a new rule is induced
+         * @param outputSampling        A reference to an object of type `IOutputSampling` to be used for sampling the
+         *                              outputs whenever a new rule is induced
          * @param instanceSampling      A reference to an object of type `IInstanceSampling` to be used for sampling the
          *                              examples whenever a new rule is induced
          * @param featureSampling       A reference to an object of type `IFeatureSampling` to be used for sampling the
@@ -50,7 +50,7 @@ class IRuleModelAssemblage {
          */
         virtual void induceRules(const IRuleInduction& ruleInduction, const IRulePruning& rulePruning,
                                  const IPostProcessor& postProcessor, IPartition& partition,
-                                 ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
+                                 IOutputSampling& outputSampling, IInstanceSampling& instanceSampling,
                                  IFeatureSampling& featureSampling, IStatisticsProvider& statisticsProvider,
                                  IFeatureSpace& featureSpace, IModelBuilder& modelBuilder, RNG& rng) const = 0;
 };

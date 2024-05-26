@@ -38,9 +38,9 @@
 #include "mlrl/common/sampling/instance_sampling_stratified_label_wise.hpp"
 #include "mlrl/common/sampling/instance_sampling_with_replacement.hpp"
 #include "mlrl/common/sampling/instance_sampling_without_replacement.hpp"
-#include "mlrl/common/sampling/label_sampling_no.hpp"
-#include "mlrl/common/sampling/label_sampling_round_robin.hpp"
-#include "mlrl/common/sampling/label_sampling_without_replacement.hpp"
+#include "mlrl/common/sampling/output_sampling_no.hpp"
+#include "mlrl/common/sampling/output_sampling_round_robin.hpp"
+#include "mlrl/common/sampling/output_sampling_without_replacement.hpp"
 #include "mlrl/common/sampling/partition_sampling_bi_random.hpp"
 #include "mlrl/common/sampling/partition_sampling_bi_stratified_example_wise.hpp"
 #include "mlrl/common/sampling/partition_sampling_bi_stratified_label_wise.hpp"
@@ -193,12 +193,12 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual std::unique_ptr<IFeatureBinningConfig>& getFeatureBinningConfigPtr() = 0;
 
                 /**
-                 * Returns an unique pointer to the configuration of the method for sampling labels.
+                 * Returns an unique pointer to the configuration of the method for sampling outputs.
                  *
-                 * @return A reference to an unique pointer of type `ILabelSamplingConfig` that stores the configuration
-                 *         of the method for sampling labels
+                 * @return A reference to an unique pointer of type `IOutputSamplingConfig` that stores the
+                 *         configuration of the method for sampling outputs
                  */
-                virtual std::unique_ptr<ILabelSamplingConfig>& getLabelSamplingConfigPtr() = 0;
+                virtual std::unique_ptr<IOutputSamplingConfig>& getOutputSamplingConfigPtr() = 0;
 
                 /**
                  * Returns an unique pointer to the configuration of the method for sampling instances.
@@ -562,65 +562,68 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to not use label sampling.
+         * Defines an interface for all classes that allow to configure a rule learner to not use output sampling.
          */
-        class INoLabelSamplingMixin : virtual public IRuleLearner::IConfig {
+        class INoOutputSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~INoLabelSamplingMixin() override {}
+                virtual ~INoOutputSamplingMixin() override {}
 
                 /**
-                 * Configures the rule learner to not sample from the available labels whenever a new rule should be
+                 * Configures the rule learner to not sample from the available outputs whenever a new rule should be
                  * learned.
                  */
-                virtual void useNoLabelSampling() {
-                    std::unique_ptr<ILabelSamplingConfig>& labelSamplingConfigPtr = this->getLabelSamplingConfigPtr();
-                    labelSamplingConfigPtr = std::make_unique<NoLabelSamplingConfig>();
+                virtual void useNoOutputSampling() {
+                    std::unique_ptr<IOutputSamplingConfig>& outputSamplingConfigPtr =
+                      this->getOutputSamplingConfigPtr();
+                    outputSamplingConfigPtr = std::make_unique<NoOutputSamplingConfig>();
                 }
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to use label sampling without
+         * Defines an interface for all classes that allow to configure a rule learner to use output sampling without
          * replacement.
          */
-        class ILabelSamplingWithoutReplacementMixin : virtual public IRuleLearner::IConfig {
+        class IOutputSamplingWithoutReplacementMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~ILabelSamplingWithoutReplacementMixin() override {}
+                virtual ~IOutputSamplingWithoutReplacementMixin() override {}
 
                 /**
-                 * Configures the rule learner to sample from the available labels with replacement whenever a new rule
+                 * Configures the rule learner to sample from the available outputs with replacement whenever a new rule
                  * should be learned.
                  *
-                 * @return A reference to an object of type `ILabelSamplingWithoutReplacementConfig` that allows further
-                 *         configuration of the method for sampling labels
+                 * @return A reference to an object of type `IOutputSamplingWithoutReplacementConfig` that allows
+                 *         further configuration of the sampling method
                  */
-                virtual ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() {
-                    std::unique_ptr<ILabelSamplingConfig>& labelSamplingConfigPtr = this->getLabelSamplingConfigPtr();
-                    std::unique_ptr<LabelSamplingWithoutReplacementConfig> ptr =
-                      std::make_unique<LabelSamplingWithoutReplacementConfig>();
-                    ILabelSamplingWithoutReplacementConfig& ref = *ptr;
-                    labelSamplingConfigPtr = std::move(ptr);
+                virtual IOutputSamplingWithoutReplacementConfig& useOutputSamplingWithoutReplacement() {
+                    std::unique_ptr<IOutputSamplingConfig>& outputSamplingConfigPtr =
+                      this->getOutputSamplingConfigPtr();
+                    std::unique_ptr<OutputSamplingWithoutReplacementConfig> ptr =
+                      std::make_unique<OutputSamplingWithoutReplacementConfig>();
+                    IOutputSamplingWithoutReplacementConfig& ref = *ptr;
+                    outputSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to sample single labels in a
-         * round-robin fashion.
+         * Defines an interface for all classes that allow to configure a rule learner to sample one output at a time in
+         * a round-robin fashion.
          */
-        class IRoundRobinLabelSamplingMixin : virtual public IRuleLearner::IConfig {
+        class IRoundRobinOutputSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IRoundRobinLabelSamplingMixin() override {}
+                virtual ~IRoundRobinOutputSamplingMixin() override {}
 
                 /**
-                 * Configures the rule learner to sample a single labels in a round-robin fashion whenever a new rule
-                 * should be learned.
+                 * Configures the rule learner to sample one output at a time in a round-robin fashion whenever a new
+                 * rule should be learned.
                  */
-                virtual void useRoundRobinLabelSampling() {
-                    std::unique_ptr<ILabelSamplingConfig>& labelSamplingConfigPtr = this->getLabelSamplingConfigPtr();
-                    labelSamplingConfigPtr = std::make_unique<RoundRobinLabelSamplingConfig>();
+                virtual void useRoundRobinOutputSampling() {
+                    std::unique_ptr<IOutputSamplingConfig>& outputSamplingConfigPtr =
+                      this->getOutputSamplingConfigPtr();
+                    outputSamplingConfigPtr = std::make_unique<RoundRobinOutputSamplingConfig>();
                 }
         };
 
@@ -1634,9 +1637,9 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<IFeatureBinningConfig> featureBinningConfigPtr_;
 
                 /**
-                 * An unique pointer that stores the configuration of the method for sampling labels.
+                 * An unique pointer that stores the configuration of the method for sampling outputs.
                  */
-                std::unique_ptr<ILabelSamplingConfig> labelSamplingConfigPtr_;
+                std::unique_ptr<IOutputSamplingConfig> outputSamplingConfigPtr_;
 
                 /**
                  * An unique pointer that stores the configuration of the method for sampling instances.
@@ -1755,7 +1758,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<IFeatureBinningConfig>& getFeatureBinningConfigPtr() override final;
 
-                std::unique_ptr<ILabelSamplingConfig>& getLabelSamplingConfigPtr() override final;
+                std::unique_ptr<IOutputSamplingConfig>& getOutputSamplingConfigPtr() override final;
 
                 std::unique_ptr<IInstanceSamplingConfig>& getInstanceSamplingConfigPtr() override final;
 
@@ -1818,7 +1821,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory(const IFeatureMatrix& featureMatrix,
                                                                           const ILabelMatrix& labelMatrix) const;
 
-        std::unique_ptr<ILabelSamplingFactory> createLabelSamplingFactory(const ILabelMatrix& labelMatrix) const;
+        std::unique_ptr<IOutputSamplingFactory> createOutputSamplingFactory(const ILabelMatrix& labelMatrix) const;
 
         std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const;
 

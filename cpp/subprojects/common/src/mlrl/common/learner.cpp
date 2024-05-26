@@ -90,7 +90,7 @@ AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
       ruleInductionConfigPtr_(
         std::make_unique<GreedyTopDownRuleInductionConfig>(ruleCompareFunction_, parallelRuleRefinementConfigPtr_)),
       featureBinningConfigPtr_(std::make_unique<NoFeatureBinningConfig>()),
-      labelSamplingConfigPtr_(std::make_unique<NoLabelSamplingConfig>()),
+      outputSamplingConfigPtr_(std::make_unique<NoOutputSamplingConfig>()),
       instanceSamplingConfigPtr_(std::make_unique<NoInstanceSamplingConfig>()),
       featureSamplingConfigPtr_(std::make_unique<NoFeatureSamplingConfig>()),
       partitionSamplingConfigPtr_(std::make_unique<NoPartitionSamplingConfig>()),
@@ -123,8 +123,8 @@ std::unique_ptr<IFeatureBinningConfig>& AbstractRuleLearner::Config::getFeatureB
     return featureBinningConfigPtr_;
 }
 
-std::unique_ptr<ILabelSamplingConfig>& AbstractRuleLearner::Config::getLabelSamplingConfigPtr() {
-    return labelSamplingConfigPtr_;
+std::unique_ptr<IOutputSamplingConfig>& AbstractRuleLearner::Config::getOutputSamplingConfigPtr() {
+    return outputSamplingConfigPtr_;
 }
 
 std::unique_ptr<IInstanceSamplingConfig>& AbstractRuleLearner::Config::getInstanceSamplingConfigPtr() {
@@ -223,9 +223,9 @@ std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionF
     return config_.getRuleInductionConfigPtr()->createRuleInductionFactory(featureMatrix, labelMatrix);
 }
 
-std::unique_ptr<ILabelSamplingFactory> AbstractRuleLearner::createLabelSamplingFactory(
+std::unique_ptr<IOutputSamplingFactory> AbstractRuleLearner::createOutputSamplingFactory(
   const ILabelMatrix& labelMatrix) const {
-    return config_.getLabelSamplingConfigPtr()->createLabelSamplingFactory(labelMatrix);
+    return config_.getOutputSamplingConfigPtr()->createOutputSamplingFactory(labelMatrix);
 }
 
 std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSamplingFactory() const {
@@ -416,9 +416,9 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
       this->createRuleInductionFactory(featureMatrix, labelMatrix);
     std::unique_ptr<IRuleInduction> ruleInductionPtr = ruleInductionFactoryPtr->create();
 
-    // Create label sampling...
-    std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr = this->createLabelSamplingFactory(labelMatrix);
-    std::unique_ptr<ILabelSampling> labelSamplingPtr = labelSamplingFactoryPtr->create();
+    // Create output sampling...
+    std::unique_ptr<IOutputSamplingFactory> outputSamplingFactoryPtr = this->createOutputSamplingFactory(labelMatrix);
+    std::unique_ptr<IOutputSampling> outputSamplingPtr = outputSamplingFactoryPtr->create();
 
     // Create instance sampling...
     std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr = this->createInstanceSamplingFactory();
@@ -444,11 +444,11 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
     std::unique_ptr<IRuleModelAssemblage> ruleModelAssemblagePtr =
       ruleModelAssemblageFactoryPtr->create(std::move(stoppingCriterionFactoryPtr));
     ruleModelAssemblagePtr->induceRules(*ruleInductionPtr, *rulePruningPtr, *postProcessorPtr, partition,
-                                        *labelSamplingPtr, *instanceSamplingPtr, *featureSamplingPtr,
+                                        *outputSamplingPtr, *instanceSamplingPtr, *featureSamplingPtr,
                                         *statisticsProviderPtr, *featureSpacePtr, modelBuilder, rng);
 
     // Post-optimize the model...
-    postOptimizationPtr->optimizeModel(*featureSpacePtr, *ruleInductionPtr, partition, *labelSamplingPtr,
+    postOptimizationPtr->optimizeModel(*featureSpacePtr, *ruleInductionPtr, partition, *outputSamplingPtr,
                                        *instanceSamplingPtr, *featureSamplingPtr, *rulePruningPtr, *postProcessorPtr,
                                        rng);
 

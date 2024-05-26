@@ -19,7 +19,7 @@ from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, Equa
     NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
     NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, \
     NoTimeStoppingCriterionMixin, ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, \
-    PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinLabelSamplingMixin, \
+    PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinOutputSamplingMixin, \
     SequentialPostOptimizationMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.format import format_dict_keys, format_set
@@ -367,29 +367,29 @@ class FeatureBinningParameter(NominalParameter):
             conf.set_max_bins(options.get_int(OPTION_MAX_BINS, conf.get_max_bins()))
 
 
-class LabelSamplingParameter(NominalParameter):
+class OutputSamplingParameter(NominalParameter):
     """
-    A parameter that allows to configure the strategy to be used for label sampling.
+    A parameter that allows to configure the strategy to be used for output sampling.
     """
 
-    LABEL_SAMPLING_ROUND_ROBIN = 'round-robin'
+    OUTPUT_SAMPLING_ROUND_ROBIN = 'round-robin'
 
     def __init__(self):
-        super().__init__(name='label_sampling', description='The name of the strategy to be used for label sampling')
+        super().__init__(name='output_sampling', description='The name of the strategy to be used for output sampling')
         self.add_value(name=NONE, mixin=NoFeatureSamplingMixin)
         self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
                        mixin=FeatureSamplingWithoutReplacementMixin,
                        options={OPTION_NUM_SAMPLES})
-        self.add_value(name=self.LABEL_SAMPLING_ROUND_ROBIN, mixin=RoundRobinLabelSamplingMixin)
+        self.add_value(name=self.OUTPUT_SAMPLING_ROUND_ROBIN, mixin=RoundRobinOutputSamplingMixin)
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == NONE:
-            config.use_no_label_sampling()
+            config.use_no_output_sampling()
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
-            conf = config.use_label_sampling_without_replacement()
+            conf = config.use_output_sampling_without_replacement()
             conf.set_num_samples(options.get_int(OPTION_NUM_SAMPLES, conf.get_num_samples()))
-        elif value == self.LABEL_SAMPLING_ROUND_ROBIN:
-            config.use_round_robin_label_sampling()
+        elif value == self.OUTPUT_SAMPLING_ROUND_ROBIN:
+            config.use_round_robin_output_sampling()
 
 
 class InstanceSamplingParameter(NominalParameter):
@@ -759,7 +759,7 @@ class SequentialPostOptimizationParameter(NominalParameter):
 RULE_LEARNER_PARAMETERS = {
     RuleInductionParameter(),
     FeatureBinningParameter(),
-    LabelSamplingParameter(),
+    OutputSamplingParameter(),
     InstanceSamplingParameter(),
     FeatureSamplingParameter(),
     PartitionSamplingParameter(),
