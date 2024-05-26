@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/vector_statistic_label_wise_dense.hpp"
+#include "mlrl/boosting/data/vector_statistic_decomposable_dense.hpp"
 #include "mlrl/common/data/vector_sparse_array.hpp"
 #include "rule_evaluation_label_wise_common.hpp"
 

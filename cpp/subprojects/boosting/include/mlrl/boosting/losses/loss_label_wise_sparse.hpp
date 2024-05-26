@@ -22,7 +22,7 @@ namespace boosting {
             virtual ~ISparseLabelWiseLoss() override {}
 
             // Keep functions from the parent class rather than hiding them
-            using ILabelWiseLoss::updateLabelWiseStatistics;
+            using ILabelWiseLoss::updateDecomposableStatistics;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -37,11 +37,12 @@ namespace boosting {
              * @param labelIndicesEnd   A `CompleteIndexVector::const_iterator` to the end of the label indices
              * @param statisticView     A reference to an object of type `SparseSetView` to be updated
              */
-            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                                   const SparseSetView<float64>& scoreMatrix,
-                                                   CompleteIndexVector::const_iterator labelIndicesBegin,
-                                                   CompleteIndexVector::const_iterator labelIndicesEnd,
-                                                   SparseSetView<Tuple<float64>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(uint32 exampleIndex,
+                                                      const CContiguousView<const uint8>& labelMatrix,
+                                                      const SparseSetView<float64>& scoreMatrix,
+                                                      CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                      CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                      SparseSetView<Tuple<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -56,11 +57,12 @@ namespace boosting {
              * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
              * @param statisticView     A reference to an object of type `SparseSetView` to be updated
              */
-            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                                   const SparseSetView<float64>& scoreMatrix,
-                                                   PartialIndexVector::const_iterator labelIndicesBegin,
-                                                   PartialIndexVector::const_iterator labelIndicesEnd,
-                                                   SparseSetView<Tuple<float64>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(uint32 exampleIndex,
+                                                      const CContiguousView<const uint8>& labelMatrix,
+                                                      const SparseSetView<float64>& scoreMatrix,
+                                                      PartialIndexVector::const_iterator labelIndicesBegin,
+                                                      PartialIndexVector::const_iterator labelIndicesEnd,
+                                                      SparseSetView<Tuple<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -75,11 +77,11 @@ namespace boosting {
              * @param labelIndicesEnd   A `CompleteIndexVector::const_iterator` to the end of the label indices
              * @param statisticView     A reference to an object of type `SparseSetView` to be updated
              */
-            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                   const SparseSetView<float64>& scoreMatrix,
-                                                   CompleteIndexVector::const_iterator labelIndicesBegin,
-                                                   CompleteIndexVector::const_iterator labelIndicesEnd,
-                                                   SparseSetView<Tuple<float64>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                                      const SparseSetView<float64>& scoreMatrix,
+                                                      CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                      CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                      SparseSetView<Tuple<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -94,11 +96,11 @@ namespace boosting {
              * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
              * @param statisticView     A reference to an object of type `SparseSetView` to be updated
              */
-            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                   const SparseSetView<float64>& scoreMatrix,
-                                                   PartialIndexVector::const_iterator labelIndicesBegin,
-                                                   PartialIndexVector::const_iterator labelIndicesEnd,
-                                                   SparseSetView<Tuple<float64>>& statisticView) const = 0;
+            virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                                      const SparseSetView<float64>& scoreMatrix,
+                                                      PartialIndexVector::const_iterator labelIndicesBegin,
+                                                      PartialIndexVector::const_iterator labelIndicesEnd,
+                                                      SparseSetView<Tuple<float64>>& statisticView) const = 0;
     };
 
     /**

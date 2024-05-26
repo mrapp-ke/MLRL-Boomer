@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/view_statistic_example_wise_dense.hpp"
+#include "mlrl/boosting/data/view_statistic_non_decomposable_dense.hpp"
 #include "mlrl/boosting/losses/loss_label_wise.hpp"
 
 namespace boosting {
@@ -24,12 +24,12 @@ namespace boosting {
              *                      the labels of the training examples
              * @param scoreMatrix   A reference to an object of type `CContiguousView` that stores the currently
              *                      predicted scores
-             * @param statisticView A reference to an object of type `DenseExampleWiseStatisticView` to be updated
+             * @param statisticView A reference to an object of type `DenseNonDecomposableStatisticView` to be updated
              */
-            virtual void updateExampleWiseStatistics(uint32 exampleIndex,
-                                                     const CContiguousView<const uint8>& labelMatrix,
-                                                     const CContiguousView<float64>& scoreMatrix,
-                                                     DenseExampleWiseStatisticView& statisticView) const = 0;
+            virtual void updateNonDecomposableStatistics(uint32 exampleIndex,
+                                                         const CContiguousView<const uint8>& labelMatrix,
+                                                         const CContiguousView<float64>& scoreMatrix,
+                                                         DenseNonDecomposableStatisticView& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index.
@@ -39,11 +39,11 @@ namespace boosting {
              *                      the labels of the training examples
              * @param scoreMatrix   A reference to an object of type `CContiguousView` that stores the currently
              *                      predicted scores
-             * @param statisticView A reference to an object of type `DenseExampleWiseStatisticView` to be updated
+             * @param statisticView A reference to an object of type `DenseNonDecomposableStatisticView` to be updated
              */
-            virtual void updateExampleWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                     const CContiguousView<float64>& scoreMatrix,
-                                                     DenseExampleWiseStatisticView& statisticView) const = 0;
+            virtual void updateNonDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                                         const CContiguousView<float64>& scoreMatrix,
+                                                         DenseNonDecomposableStatisticView& statisticView) const = 0;
     };
 
     /**

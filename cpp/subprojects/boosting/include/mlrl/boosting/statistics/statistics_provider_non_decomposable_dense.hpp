@@ -5,16 +5,16 @@
 #pragma once
 
 #include "mlrl/boosting/losses/loss_example_wise.hpp"
-#include "mlrl/boosting/statistics/statistics_example_wise.hpp"
+#include "mlrl/boosting/statistics/statistics_non_decomposable.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
 
 namespace boosting {
 
     /**
      * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
-     * `IExampleWiseStatistics`, which uses dense data structures to store the statistics.
+     * `INonDecomposableStatistics`, which uses dense data structures to store the statistics.
      */
-    class DenseExampleWiseStatisticsProviderFactory final : public IStatisticsProviderFactory {
+    class DenseNonDecomposableStatisticsProviderFactory final : public IStatisticsProviderFactory {
         private:
 
             const std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr_;
@@ -54,7 +54,7 @@ namespace boosting {
              * @param numThreads                        The number of CPU threads to be used to calculate the initial
              *                                          statistics in parallel. Must be at least 1
              */
-            DenseExampleWiseStatisticsProviderFactory(
+            DenseNonDecomposableStatisticsProviderFactory(
               std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr,
               std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
               std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
@@ -74,10 +74,10 @@ namespace boosting {
 
     /**
      * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
-     * `IExampleWiseStatistics`, which uses dense data structures to store the statistics and can be converted into an
-     * object of type `ILabelWiseStatistics`.
+     * `INonDecomposableStatistics`, which uses dense data structures to store the statistics and can be converted into
+     * an object of type `IDecomposableStatistics`.
      */
-    class DenseConvertibleExampleWiseStatisticsProviderFactory final : public IStatisticsProviderFactory {
+    class DenseConvertibleNonDecomposableStatisticsProviderFactory final : public IStatisticsProviderFactory {
         private:
 
             const std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr_;
@@ -117,7 +117,7 @@ namespace boosting {
              * @param numThreads                        The number of CPU threads to be used to calculate the initial
              *                                          statistics in parallel. Must be at least 1
              */
-            DenseConvertibleExampleWiseStatisticsProviderFactory(
+            DenseConvertibleNonDecomposableStatisticsProviderFactory(
               std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr,
               std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
               std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,

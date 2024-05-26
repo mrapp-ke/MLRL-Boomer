@@ -16,7 +16,7 @@ namespace boosting {
      * stored. In a vector that stores `n` gradients `(n * (n + 1)) / 2` Hessians are stored. The Hessians can be viewed
      * as a symmetric Hessian matrix with `n` rows and columns.
      */
-    class DenseExampleWiseStatisticVector final
+    class DenseNonDecomposableStatisticVector final
         : public ClearableViewDecorator<
             ViewDecorator<CompositeVector<AllocatedVector<float64>, AllocatedVector<float64>>>> {
         public:
@@ -26,12 +26,12 @@ namespace boosting {
              * @param init         True, if all gradients and Hessians in the vector should be initialized with zero,
              *                     false otherwise
              */
-            DenseExampleWiseStatisticVector(uint32 numGradients, bool init = false);
+            DenseNonDecomposableStatisticVector(uint32 numGradients, bool init = false);
 
             /**
-             * @param other A reference to an object of type `DenseExampleWiseStatisticVector` to be copied
+             * @param other A reference to an object of type `DenseNonDecomposableStatisticVector` to be copied
              */
-            DenseExampleWiseStatisticVector(const DenseExampleWiseStatisticVector& other);
+            DenseNonDecomposableStatisticVector(const DenseNonDecomposableStatisticVector& other);
 
             /**
              * An iterator that provides access to the gradients in the vector and allows to modify them.

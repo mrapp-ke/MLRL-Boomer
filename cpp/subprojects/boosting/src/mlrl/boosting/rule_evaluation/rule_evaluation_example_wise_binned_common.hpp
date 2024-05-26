@@ -51,8 +51,8 @@ namespace boosting {
      */
     template<typename BinIndexIterator>
     static inline void aggregateGradientsAndHessians(
-      DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator,
-      DenseExampleWiseStatisticVector::hessian_const_iterator hessianIterator, uint32 numElements,
+      DenseNonDecomposableStatisticVector::gradient_const_iterator gradientIterator,
+      DenseNonDecomposableStatisticVector::hessian_const_iterator hessianIterator, uint32 numElements,
       BinIndexIterator binIndexIterator, View<uint32>::const_iterator binIndices, View<float64>::iterator gradients,
       View<float64>::iterator hessians, uint32 maxBins) {
         for (uint32 i = 0; i < numElements; i++) {
@@ -241,7 +241,7 @@ namespace boosting {
                                                     float64 l1RegularizationWeight, float64 l2RegularizationWeight,
                                                     std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
                                                     const Lapack& lapack)
-                : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector>(maxBins, lapack),
+                : AbstractExampleWiseRuleEvaluation<DenseNonDecomposableStatisticVector, IndexVector>(maxBins, lapack),
                   maxBins_(maxBins), scoreVector_(labelIndices, maxBins + 1, indicesSorted),
                   aggregatedGradients_(maxBins), aggregatedHessians_(triangularNumber(maxBins)), binIndices_(maxBins),
                   numElementsPerBin_(maxBins), criteria_(labelIndices.getNumElements()),
@@ -255,7 +255,7 @@ namespace boosting {
             /**
              * @see `IRuleEvaluation::evaluate`
              */
-            const IScoreVector& calculateScores(DenseExampleWiseStatisticVector& statisticVector) override final {
+            const IScoreVector& calculateScores(DenseNonDecomposableStatisticVector& statisticVector) override final {
                 // Calculate label-wise criteria...
                 uint32 numCriteria =
                   this->calculateLabelWiseCriteria(statisticVector, criteria_.begin(), scoreVector_.getNumElements(),
@@ -331,23 +331,23 @@ namespace boosting {
 
     /**
      * Allows to calculate the predictions of complete rules, as well as their overall quality, based on the gradients
-     * and Hessians that are stored by a `DenseExampleWiseStatisticVector` using L1 and L2 regularization. The labels
-     * are assigned to bins based on the gradients and Hessians.
+     * and Hessians that are stored by a `DenseNonDecomposableStatisticVector` using L1 and L2 regularization. The
+     * labels are assigned to bins based on the gradients and Hessians.
      *
      * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
      *                     calculated
      */
     template<typename IndexVector>
     class DenseExampleWiseCompleteBinnedRuleEvaluation final
-        : public AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector> {
+        : public AbstractExampleWiseBinnedRuleEvaluation<DenseNonDecomposableStatisticVector, IndexVector> {
         protected:
 
-            uint32 calculateLabelWiseCriteria(const DenseExampleWiseStatisticVector& statisticVector,
+            uint32 calculateLabelWiseCriteria(const DenseNonDecomposableStatisticVector& statisticVector,
                                               View<float64>::iterator criteria, uint32 numCriteria,
                                               float64 l1RegularizationWeight, float64 l2RegularizationWeight) override {
-                DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
+                DenseNonDecomposableStatisticVector::gradient_const_iterator gradientIterator =
                   statisticVector.gradients_cbegin();
-                DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
+                DenseNonDecomposableStatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
@@ -379,7 +379,7 @@ namespace boosting {
                                                          float64 l1RegularizationWeight, float64 l2RegularizationWeight,
                                                          std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas,
                                                          const Lapack& lapack)
-                : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector>(
+                : AbstractExampleWiseBinnedRuleEvaluation<DenseNonDecomposableStatisticVector, IndexVector>(
                     labelIndices, true, maxBins, l1RegularizationWeight, l2RegularizationWeight, std::move(binningPtr),
                     blas, lapack) {}
     };

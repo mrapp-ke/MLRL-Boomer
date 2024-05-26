@@ -81,33 +81,37 @@ namespace boosting {
         : labelRatio_(labelRatio), minLabels_(minLabels), maxLabels_(maxLabels),
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseFixedPartialRuleEvaluationFactory::create(
-      const DenseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
+      LabelWiseFixedPartialRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
+                                                         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
           calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_);
         return std::make_unique<
-          LabelWiseFixedPartialRuleEvaluation<DenseLabelWiseStatisticVector, CompleteIndexVector>>(
+          LabelWiseFixedPartialRuleEvaluation<DenseDecomposableStatisticVector, CompleteIndexVector>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>> LabelWiseFixedPartialRuleEvaluationFactory::create(
-      const DenseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
-        return std::make_unique<LabelWiseCompleteRuleEvaluation<DenseLabelWiseStatisticVector, PartialIndexVector>>(
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
+      LabelWiseFixedPartialRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
+                                                         const PartialIndexVector& indexVector) const {
+        return std::make_unique<LabelWiseCompleteRuleEvaluation<DenseDecomposableStatisticVector, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseFixedPartialRuleEvaluationFactory::create(
-      const SparseLabelWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector>>
+      LabelWiseFixedPartialRuleEvaluationFactory::create(const SparseDecomposableStatisticVector& statisticVector,
+                                                         const CompleteIndexVector& indexVector) const {
         uint32 numPredictions =
           calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_);
         return std::make_unique<
-          LabelWiseFixedPartialRuleEvaluation<SparseLabelWiseStatisticVector, CompleteIndexVector>>(
+          LabelWiseFixedPartialRuleEvaluation<SparseDecomposableStatisticVector, CompleteIndexVector>>(
           indexVector, numPredictions, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>> LabelWiseFixedPartialRuleEvaluationFactory::create(
-      const SparseLabelWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
-        return std::make_unique<LabelWiseCompleteRuleEvaluation<SparseLabelWiseStatisticVector, PartialIndexVector>>(
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector>>
+      LabelWiseFixedPartialRuleEvaluationFactory::create(const SparseDecomposableStatisticVector& statisticVector,
+                                                         const PartialIndexVector& indexVector) const {
+        return std::make_unique<LabelWiseCompleteRuleEvaluation<SparseDecomposableStatisticVector, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_);
     }
 

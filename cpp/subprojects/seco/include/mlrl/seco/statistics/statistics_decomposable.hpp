@@ -11,16 +11,16 @@ namespace seco {
 
     /**
      * Defines an interface for all classes that allow to store the elements of confusion matrices that are computed
-     * independently for each label.
+     * independently for each output.
      *
      * @tparam RuleEvaluationFactory The type of the classes that may be used for calculating the predictions or rules,
      *                               as well as their overall quality
      */
     template<typename RuleEvaluationFactory>
-    class ILabelWiseStatistics : public ICoverageStatistics {
+    class IDecomposableStatistics : public ICoverageStatistics {
         public:
 
-            virtual ~ILabelWiseStatistics() override {}
+            virtual ~IDecomposableStatistics() override {}
 
             /**
              * Sets the factory that allows to create instances of the class that is used for calculating the

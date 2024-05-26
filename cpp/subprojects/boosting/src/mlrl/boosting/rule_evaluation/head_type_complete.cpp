@@ -1,8 +1,8 @@
 #include "mlrl/boosting/rule_evaluation/head_type_complete.hpp"
 
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_label_wise_complete.hpp"
-#include "mlrl/boosting/statistics/statistics_provider_example_wise_dense.hpp"
-#include "mlrl/boosting/statistics/statistics_provider_label_wise_dense.hpp"
+#include "mlrl/boosting/statistics/statistics_provider_decomposable_dense.hpp"
+#include "mlrl/boosting/statistics/statistics_provider_non_decomposable_dense.hpp"
 
 namespace boosting {
 
@@ -30,7 +30,7 @@ namespace boosting {
           std::make_unique<LabelWiseCompleteRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
         std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
           std::make_unique<LabelWiseCompleteRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
-        return std::make_unique<DenseLabelWiseStatisticsProviderFactory>(
+        return std::make_unique<DenseDecomposableStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
@@ -55,7 +55,7 @@ namespace boosting {
           labelBinningConfigPtr_->createExampleWiseCompleteRuleEvaluationFactory(blas, lapack);
         std::unique_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
           labelBinningConfigPtr_->createExampleWiseCompleteRuleEvaluationFactory(blas, lapack);
-        return std::make_unique<DenseExampleWiseStatisticsProviderFactory>(
+        return std::make_unique<DenseNonDecomposableStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }

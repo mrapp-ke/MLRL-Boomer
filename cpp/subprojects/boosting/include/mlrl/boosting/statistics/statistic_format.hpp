@@ -52,16 +52,16 @@ namespace boosting {
               const Lapack& lapack) const = 0;
 
             /**
-             * Returns whether a dense format is used for storing statistics about the labels of the training examples
-             * or not.
+             * Returns whether a dense format is used for storing statistics about the quality of predictions for
+             * training examples or not.
              *
              * @return True, if a dense format is used, false otherwise
              */
             virtual bool isDense() const = 0;
 
             /**
-             * Returns whether a sparse format is used for storing statistics about the labels of the training examples
-             * or not.
+             * Returns whether a sparse format is used for storing statistics about the quality of predictions for
+             * training examples or not.
              *
              * @return True, if a sparse format is used, false otherwise
              */

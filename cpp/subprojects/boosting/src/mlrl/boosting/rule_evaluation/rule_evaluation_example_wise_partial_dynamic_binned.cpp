@@ -8,15 +8,15 @@ namespace boosting {
     /**
      * Allows to calculate the predictions of partial rules that predict for a subset of the available labels that is
      * determined dynamically, as well as their overall quality, based on the gradients and Hessians that are stored by
-     * a `DenseExampleWiseStatisticVector` using L1 and L2 regularization. The labels are assigned to bins based on the
-     * gradients and Hessians.
+     * a `DenseNonDecomposableStatisticVector` using L1 and L2 regularization. The labels are assigned to bins based on
+     * the gradients and Hessians.
      *
      * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
      *                     calculated
      */
     template<typename IndexVector>
     class DenseExampleWiseDynamicPartialBinnedRuleEvaluation final
-        : public AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, PartialIndexVector> {
+        : public AbstractExampleWiseBinnedRuleEvaluation<DenseNonDecomposableStatisticVector, PartialIndexVector> {
         private:
 
             const IndexVector& labelIndices_;
@@ -29,13 +29,13 @@ namespace boosting {
 
         protected:
 
-            uint32 calculateLabelWiseCriteria(const DenseExampleWiseStatisticVector& statisticVector, float64* criteria,
-                                              uint32 numCriteria, float64 l1RegularizationWeight,
+            uint32 calculateLabelWiseCriteria(const DenseNonDecomposableStatisticVector& statisticVector,
+                                              float64* criteria, uint32 numCriteria, float64 l1RegularizationWeight,
                                               float64 l2RegularizationWeight) override {
                 uint32 numLabels = statisticVector.getNumGradients();
-                DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
+                DenseNonDecomposableStatisticVector::gradient_const_iterator gradientIterator =
                   statisticVector.gradients_cbegin();
-                DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
+                DenseNonDecomposableStatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
 
                 const std::pair<float64, float64> pair =
@@ -88,7 +88,7 @@ namespace boosting {
               const IndexVector& labelIndices, uint32 maxBins, std::unique_ptr<PartialIndexVector> indexVectorPtr,
               float32 threshold, float32 exponent, float64 l1RegularizationWeight, float64 l2RegularizationWeight,
               std::unique_ptr<ILabelBinning> binningPtr, const Blas& blas, const Lapack& lapack)
-                : AbstractExampleWiseBinnedRuleEvaluation<DenseExampleWiseStatisticVector, PartialIndexVector>(
+                : AbstractExampleWiseBinnedRuleEvaluation<DenseNonDecomposableStatisticVector, PartialIndexVector>(
                     *indexVectorPtr, true, maxBins, l1RegularizationWeight, l2RegularizationWeight,
                     std::move(binningPtr), blas, lapack),
                   labelIndices_(labelIndices), indexVectorPtr_(std::move(indexVectorPtr)), threshold_(1.0 - threshold),
@@ -102,9 +102,9 @@ namespace boosting {
           l2RegularizationWeight_(l2RegularizationWeight), labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)),
           blas_(blas), lapack_(lapack) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>>
       ExampleWiseDynamicPartialBinnedRuleEvaluationFactory::create(
-        const DenseExampleWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
+        const DenseNonDecomposableStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const {
         uint32 numElements = indexVector.getNumElements();
         std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(numElements);
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
@@ -114,9 +114,9 @@ namespace boosting {
           l2RegularizationWeight_, std::move(labelBinningPtr), blas_, lapack_);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>>
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>>
       ExampleWiseDynamicPartialBinnedRuleEvaluationFactory::create(
-        const DenseExampleWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
+        const DenseNonDecomposableStatisticVector& statisticVector, const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         uint32 maxBins = labelBinningPtr->getMaxBins(indexVector.getNumElements());
         return std::make_unique<DenseExampleWiseCompleteBinnedRuleEvaluation<PartialIndexVector>>(

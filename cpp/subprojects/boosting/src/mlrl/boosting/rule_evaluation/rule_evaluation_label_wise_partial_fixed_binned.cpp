@@ -78,45 +78,45 @@ namespace boosting {
           l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
           labelBinningFactoryPtr_(std::move(labelBinningFactoryPtr)) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>>
-      LabelWiseFixedPartialBinnedRuleEvaluationFactory::create(const DenseLabelWiseStatisticVector& statisticVector,
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
+      LabelWiseFixedPartialBinnedRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
                                                                const CompleteIndexVector& indexVector) const {
         std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(
           calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         return std::make_unique<
-          LabelWiseFixedPartialBinnedRuleEvaluation<DenseLabelWiseStatisticVector, CompleteIndexVector>>(
+          LabelWiseFixedPartialBinnedRuleEvaluation<DenseDecomposableStatisticVector, CompleteIndexVector>>(
           indexVector, std::move(indexVectorPtr), l1RegularizationWeight_, l2RegularizationWeight_,
           std::move(labelBinningPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseLabelWiseStatisticVector>>
-      LabelWiseFixedPartialBinnedRuleEvaluationFactory::create(const DenseLabelWiseStatisticVector& statisticVector,
+    std::unique_ptr<IRuleEvaluation<DenseDecomposableStatisticVector>>
+      LabelWiseFixedPartialBinnedRuleEvaluationFactory::create(const DenseDecomposableStatisticVector& statisticVector,
                                                                const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         return std::make_unique<
-          LabelWiseCompleteBinnedRuleEvaluation<DenseLabelWiseStatisticVector, PartialIndexVector>>(
+          LabelWiseCompleteBinnedRuleEvaluation<DenseDecomposableStatisticVector, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>>
-      LabelWiseFixedPartialBinnedRuleEvaluationFactory::create(const SparseLabelWiseStatisticVector& statisticVector,
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector>>
+      LabelWiseFixedPartialBinnedRuleEvaluationFactory::create(const SparseDecomposableStatisticVector& statisticVector,
                                                                const CompleteIndexVector& indexVector) const {
         std::unique_ptr<PartialIndexVector> indexVectorPtr = std::make_unique<PartialIndexVector>(
           calculateBoundedFraction(indexVector.getNumElements(), labelRatio_, minLabels_, maxLabels_));
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         return std::make_unique<
-          LabelWiseFixedPartialBinnedRuleEvaluation<SparseLabelWiseStatisticVector, CompleteIndexVector>>(
+          LabelWiseFixedPartialBinnedRuleEvaluation<SparseDecomposableStatisticVector, CompleteIndexVector>>(
           indexVector, std::move(indexVectorPtr), l1RegularizationWeight_, l2RegularizationWeight_,
           std::move(labelBinningPtr));
     }
 
-    std::unique_ptr<IRuleEvaluation<SparseLabelWiseStatisticVector>>
-      LabelWiseFixedPartialBinnedRuleEvaluationFactory::create(const SparseLabelWiseStatisticVector& statisticVector,
+    std::unique_ptr<IRuleEvaluation<SparseDecomposableStatisticVector>>
+      LabelWiseFixedPartialBinnedRuleEvaluationFactory::create(const SparseDecomposableStatisticVector& statisticVector,
                                                                const PartialIndexVector& indexVector) const {
         std::unique_ptr<ILabelBinning> labelBinningPtr = labelBinningFactoryPtr_->create();
         return std::make_unique<
-          LabelWiseCompleteBinnedRuleEvaluation<SparseLabelWiseStatisticVector, PartialIndexVector>>(
+          LabelWiseCompleteBinnedRuleEvaluation<SparseDecomposableStatisticVector, PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, std::move(labelBinningPtr));
     }
 

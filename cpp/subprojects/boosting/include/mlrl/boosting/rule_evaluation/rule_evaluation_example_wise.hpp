@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/data/vector_statistic_example_wise_dense.hpp"
+#include "mlrl/boosting/data/vector_statistic_non_decomposable_dense.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
@@ -25,32 +25,34 @@ namespace boosting {
             /**
              * Creates and returns a new object of type `IRuleEvaluation` that allows to calculate the predictions of
              * rules that predict for all available labels, based on the gradients and Hessians that are stored by a `
-             * DenseExampleWiseStatisticVector`.
+             * DenseNonDecomposableStatisticVector`.
              *
-             * @param statisticVector   A reference to an object of type `DenseExampleWiseStatisticVector`. This vector
-             *                          is only used to identify the function that is able to deal with this particular
-             *                          type of vector via function overloading
+             * @param statisticVector   A reference to an object of type `DenseNonDecomposableStatisticVector`. This
+             *                          vector is only used to identify the function that is able to deal with this
+             *                          particular type of vector via function overloading
              * @param indexVector       A reference to an object of type `CompleteIndexVector` that provides access to
              *                          the indices of the labels for which the rules may predict
              * @return                  An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
-            virtual std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
-              const DenseExampleWiseStatisticVector& statisticVector, const CompleteIndexVector& indexVector) const = 0;
+            virtual std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>> create(
+              const DenseNonDecomposableStatisticVector& statisticVector,
+              const CompleteIndexVector& indexVector) const = 0;
 
             /**
              * Creates and returns a new object of type `IRuleEvaluation` that allows to calculate the predictions of
              * rules that predict for a subset of the available labels, based on the gradients and Hessians that are
-             * stored by a `DenseExampleWiseStatisticVector`.
+             * stored by a `DenseNonDecomposableStatisticVector`.
              *
-             * @param statisticVector   A reference to an object of type `DenseExampleWiseStatisticVector`. This vector
-             *                          is only used to identify the function that is able to deal with this particular
-             *                          type of vector via function overloading
+             * @param statisticVector   A reference to an object of type `DenseNonDecomposableStatisticVector`. This
+             *                          vector is only used to identify the function that is able to deal with this
+             *                          particular type of vector via function overloading
              * @param indexVector       A reference to an object of type `PartialIndexVector` that provides access to
              *                          the indices of the labels for which the rules may predict
              * @return                  An unique pointer to an object of type `IRuleEvaluation` that has been created
              */
-            virtual std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>> create(
-              const DenseExampleWiseStatisticVector& statisticVector, const PartialIndexVector& indexVector) const = 0;
+            virtual std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>> create(
+              const DenseNonDecomposableStatisticVector& statisticVector,
+              const PartialIndexVector& indexVector) const = 0;
     };
 
 }

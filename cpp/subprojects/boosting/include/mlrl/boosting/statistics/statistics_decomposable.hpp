@@ -10,16 +10,16 @@ namespace boosting {
 
     /**
      * Defines an interface for all classes that store gradients and Hessians that have been calculated according to a
-     * differentiable loss function that is applied label-wise.
+     * decomposable loss function.
      *
      * @tparam RuleEvaluationFactory The type of the classes that may be used for calculating the predictions of rules,
      *                               as well as their overall quality
      */
     template<typename RuleEvaluationFactory>
-    class ILabelWiseStatistics : virtual public IBoostingStatistics {
+    class IDecomposableStatistics : virtual public IBoostingStatistics {
         public:
 
-            virtual ~ILabelWiseStatistics() override {}
+            virtual ~IDecomposableStatistics() override {}
 
             /**
              * Sets the factory that allows to create instances of the class that is used for calculating the

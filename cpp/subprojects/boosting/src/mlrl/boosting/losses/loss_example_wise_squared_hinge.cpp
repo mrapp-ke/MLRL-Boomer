@@ -6,10 +6,10 @@
 namespace boosting {
 
     template<typename LabelIterator>
-    static inline void updateLabelWiseStatisticsInternally(View<float64>::const_iterator scoreIterator,
-                                                           LabelIterator labelIterator,
-                                                           View<Tuple<float64>>::iterator statisticIterator,
-                                                           uint32 numLabels) {
+    static inline void updateDecomposableStatisticsInternally(View<float64>::const_iterator scoreIterator,
+                                                              LabelIterator labelIterator,
+                                                              View<Tuple<float64>>::iterator statisticIterator,
+                                                              uint32 numLabels) {
         LabelIterator labelIterator2 = labelIterator;
 
         // For each label `i`, calculate `x_i = predictedScore_i^2 - 2 * predictedScore_i + 1` if trueLabel_i = 1 and
@@ -81,10 +81,10 @@ namespace boosting {
     }
 
     template<typename LabelIterator>
-    static inline void updateExampleWiseStatisticsInternally(
+    static inline void updateNonDecomposableStatisticsInternally(
       View<float64>::const_iterator scoreIterator, LabelIterator labelIterator,
-      DenseExampleWiseStatisticView::gradient_iterator gradientIterator,
-      DenseExampleWiseStatisticView::hessian_iterator hessianIterator, uint32 numLabels) {
+      DenseNonDecomposableStatisticView::gradient_iterator gradientIterator,
+      DenseNonDecomposableStatisticView::hessian_iterator hessianIterator, uint32 numLabels) {
         LabelIterator labelIterator2 = labelIterator;
         LabelIterator labelIterator3 = labelIterator;
 
@@ -231,65 +231,67 @@ namespace boosting {
     class ExampleWiseSquaredHingeLoss final : public IExampleWiseLoss {
         public:
 
-            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                                   const CContiguousView<float64>& scoreMatrix,
-                                                   CompleteIndexVector::const_iterator labelIndicesBegin,
-                                                   CompleteIndexVector::const_iterator labelIndicesEnd,
-                                                   CContiguousView<Tuple<float64>>& statisticView) const override {
-                updateLabelWiseStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
-                                                    labelMatrix.values_cbegin(exampleIndex),
-                                                    statisticView.values_begin(exampleIndex), labelMatrix.numCols);
+            virtual void updateDecomposableStatistics(uint32 exampleIndex,
+                                                      const CContiguousView<const uint8>& labelMatrix,
+                                                      const CContiguousView<float64>& scoreMatrix,
+                                                      CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                      CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                      CContiguousView<Tuple<float64>>& statisticView) const override {
+                updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
+                                                       labelMatrix.values_cbegin(exampleIndex),
+                                                       statisticView.values_begin(exampleIndex), labelMatrix.numCols);
             }
 
-            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                                   const CContiguousView<float64>& scoreMatrix,
-                                                   PartialIndexVector::const_iterator labelIndicesBegin,
-                                                   PartialIndexVector::const_iterator labelIndicesEnd,
-                                                   CContiguousView<Tuple<float64>>& statisticView) const override {
-                updateLabelWiseStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
-                                                    labelMatrix.values_cbegin(exampleIndex),
-                                                    statisticView.values_begin(exampleIndex), labelMatrix.numCols);
+            virtual void updateDecomposableStatistics(uint32 exampleIndex,
+                                                      const CContiguousView<const uint8>& labelMatrix,
+                                                      const CContiguousView<float64>& scoreMatrix,
+                                                      PartialIndexVector::const_iterator labelIndicesBegin,
+                                                      PartialIndexVector::const_iterator labelIndicesEnd,
+                                                      CContiguousView<Tuple<float64>>& statisticView) const override {
+                updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
+                                                       labelMatrix.values_cbegin(exampleIndex),
+                                                       statisticView.values_begin(exampleIndex), labelMatrix.numCols);
             }
 
-            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                   const CContiguousView<float64>& scoreMatrix,
-                                                   CompleteIndexVector::const_iterator labelIndicesBegin,
-                                                   CompleteIndexVector::const_iterator labelIndicesEnd,
-                                                   CContiguousView<Tuple<float64>>& statisticView) const override {
+            virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                                      const CContiguousView<float64>& scoreMatrix,
+                                                      CompleteIndexVector::const_iterator labelIndicesBegin,
+                                                      CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                      CContiguousView<Tuple<float64>>& statisticView) const override {
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));
-                updateLabelWiseStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
-                                                    statisticView.values_begin(exampleIndex), labelMatrix.numCols);
+                updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
+                                                       statisticView.values_begin(exampleIndex), labelMatrix.numCols);
             }
 
-            virtual void updateLabelWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                                   const CContiguousView<float64>& scoreMatrix,
-                                                   PartialIndexVector::const_iterator labelIndicesBegin,
-                                                   PartialIndexVector::const_iterator labelIndicesEnd,
-                                                   CContiguousView<Tuple<float64>>& statisticView) const override {
+            virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                                      const CContiguousView<float64>& scoreMatrix,
+                                                      PartialIndexVector::const_iterator labelIndicesBegin,
+                                                      PartialIndexVector::const_iterator labelIndicesEnd,
+                                                      CContiguousView<Tuple<float64>>& statisticView) const override {
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));
-                updateLabelWiseStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
-                                                    statisticView.values_begin(exampleIndex), labelMatrix.numCols);
+                updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
+                                                       statisticView.values_begin(exampleIndex), labelMatrix.numCols);
             }
 
-            void updateExampleWiseStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
-                                             const CContiguousView<float64>& scoreMatrix,
-                                             DenseExampleWiseStatisticView& statisticView) const override {
-                updateExampleWiseStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
-                                                      labelMatrix.values_cbegin(exampleIndex),
-                                                      statisticView.gradients_begin(exampleIndex),
-                                                      statisticView.hessians_begin(exampleIndex), labelMatrix.numCols);
+            void updateNonDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
+                                                 const CContiguousView<float64>& scoreMatrix,
+                                                 DenseNonDecomposableStatisticView& statisticView) const override {
+                updateNonDecomposableStatisticsInternally(
+                  scoreMatrix.values_cbegin(exampleIndex), labelMatrix.values_cbegin(exampleIndex),
+                  statisticView.gradients_begin(exampleIndex), statisticView.hessians_begin(exampleIndex),
+                  labelMatrix.numCols);
             }
 
-            void updateExampleWiseStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
-                                             const CContiguousView<float64>& scoreMatrix,
-                                             DenseExampleWiseStatisticView& statisticView) const override {
+            void updateNonDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
+                                                 const CContiguousView<float64>& scoreMatrix,
+                                                 DenseNonDecomposableStatisticView& statisticView) const override {
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));
-                updateExampleWiseStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
-                                                      statisticView.gradients_begin(exampleIndex),
-                                                      statisticView.hessians_begin(exampleIndex), labelMatrix.numCols);
+                updateNonDecomposableStatisticsInternally(
+                  scoreMatrix.values_cbegin(exampleIndex), labelIterator, statisticView.gradients_begin(exampleIndex),
+                  statisticView.hessians_begin(exampleIndex), labelMatrix.numCols);
             }
 
             /**

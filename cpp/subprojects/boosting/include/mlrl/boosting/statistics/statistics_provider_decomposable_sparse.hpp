@@ -5,16 +5,16 @@
 
 #include "mlrl/boosting/losses/loss_label_wise_sparse.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp"
-#include "mlrl/boosting/statistics/statistics_label_wise.hpp"
+#include "mlrl/boosting/statistics/statistics_decomposable.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
 
 namespace boosting {
 
     /**
      * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
-     * `ILabelWiseStatistics`, which uses sparse data structures to store the statistics.
+     * `IDecomposableStatistics`, which uses sparse data structures to store the statistics.
      */
-    class SparseLabelWiseStatisticsProviderFactory final : public IStatisticsProviderFactory {
+    class SparseDecomposableStatisticsProviderFactory final : public IStatisticsProviderFactory {
         private:
 
             const std::unique_ptr<ISparseLabelWiseLossFactory> lossFactoryPtr_;
@@ -49,7 +49,7 @@ namespace boosting {
              * @param numThreads                        The number of CPU threads to be used to calculate the initial
              *                                          statistics in parallel. Must be at least 1
              */
-            SparseLabelWiseStatisticsProviderFactory(
+            SparseDecomposableStatisticsProviderFactory(
               std::unique_ptr<ISparseLabelWiseLossFactory> lossFactoryPtr,
               std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
               std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,

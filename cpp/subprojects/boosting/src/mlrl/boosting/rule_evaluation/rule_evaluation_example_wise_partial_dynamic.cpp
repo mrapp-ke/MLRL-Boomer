@@ -9,14 +9,14 @@ namespace boosting {
     /**
      * Allows to calculate the predictions of partial rules that predict for a subset of the available labels that is
      * determined dynamically, as well as their overall quality, based on the gradients and Hessians that are stored by
-     * a `DenseExampleWiseStatisticVector` using L1 and L2 regularization.
+     * a `DenseNonDecomposableStatisticVector` using L1 and L2 regularization.
      *
      * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
      *                     calculated
      */
     template<typename IndexVector>
     class DenseExampleWiseDynamicPartialRuleEvaluation final
-        : public AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector> {
+        : public AbstractExampleWiseRuleEvaluation<DenseNonDecomposableStatisticVector, IndexVector> {
         private:
 
             const IndexVector& labelIndices_;
@@ -59,7 +59,7 @@ namespace boosting {
                                                          float32 exponent, float64 l1RegularizationWeight,
                                                          float64 l2RegularizationWeight, const Blas& blas,
                                                          const Lapack& lapack)
-                : AbstractExampleWiseRuleEvaluation<DenseExampleWiseStatisticVector, IndexVector>(
+                : AbstractExampleWiseRuleEvaluation<DenseNonDecomposableStatisticVector, IndexVector>(
                     labelIndices.getNumElements(), lapack),
                   labelIndices_(labelIndices), indexVector_(labelIndices.getNumElements()),
                   scoreVector_(indexVector_, true), threshold_(1.0 - threshold), exponent_(exponent),
@@ -69,11 +69,11 @@ namespace boosting {
             /**
              * @see `IRuleEvaluation::evaluate`
              */
-            const IScoreVector& calculateScores(DenseExampleWiseStatisticVector& statisticVector) override {
+            const IScoreVector& calculateScores(DenseNonDecomposableStatisticVector& statisticVector) override {
                 uint32 numLabels = statisticVector.getNumGradients();
-                DenseExampleWiseStatisticVector::gradient_const_iterator gradientIterator =
+                DenseNonDecomposableStatisticVector::gradient_const_iterator gradientIterator =
                   statisticVector.gradients_cbegin();
-                DenseExampleWiseStatisticVector::hessian_diagonal_const_iterator hessianIterator =
+                DenseNonDecomposableStatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
                 typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
                 const std::pair<float64, float64> pair =
@@ -128,15 +128,15 @@ namespace boosting {
         : threshold_(threshold), exponent_(exponent), l1RegularizationWeight_(l1RegularizationWeight),
           l2RegularizationWeight_(l2RegularizationWeight), blas_(blas), lapack_(lapack) {}
 
-    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>>
-      ExampleWiseDynamicPartialRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>>
+      ExampleWiseDynamicPartialRuleEvaluationFactory::create(const DenseNonDecomposableStatisticVector& statisticVector,
                                                              const CompleteIndexVector& indexVector) const {
         return std::make_unique<DenseExampleWiseDynamicPartialRuleEvaluation<CompleteIndexVector>>(
           indexVector, threshold_, exponent_, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
     }
 
-    std::unique_ptr<IRuleEvaluation<DenseExampleWiseStatisticVector>>
-      ExampleWiseDynamicPartialRuleEvaluationFactory::create(const DenseExampleWiseStatisticVector& statisticVector,
+    std::unique_ptr<IRuleEvaluation<DenseNonDecomposableStatisticVector>>
+      ExampleWiseDynamicPartialRuleEvaluationFactory::create(const DenseNonDecomposableStatisticVector& statisticVector,
                                                              const PartialIndexVector& indexVector) const {
         return std::make_unique<DenseExampleWiseCompleteRuleEvaluation<PartialIndexVector>>(
           indexVector, l1RegularizationWeight_, l2RegularizationWeight_, blas_, lapack_);
