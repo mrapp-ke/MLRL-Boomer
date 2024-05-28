@@ -29,9 +29,9 @@ namespace boosting {
 
         protected:
 
-            uint32 calculateLabelWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
-                                              uint32 numCriteria, float64 l1RegularizationWeight,
-                                              float64 l2RegularizationWeight) override {
+            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
+                                               uint32 numCriteria, float64 l1RegularizationWeight,
+                                               float64 l2RegularizationWeight) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 const std::pair<float64, float64> pair =
@@ -44,8 +44,8 @@ namespace boosting {
 
                 for (uint32 i = 0; i < numElements; i++) {
                     const Tuple<float64>& tuple = statisticIterator[i];
-                    float64 score = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
-                                                            l2RegularizationWeight);
+                    float64 score = calculateOutputWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
+                                                             l2RegularizationWeight);
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) > threshold) {
                         indexIterator[n] = labelIndexIterator[i];

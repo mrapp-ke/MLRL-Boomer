@@ -46,14 +46,14 @@ namespace boosting {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 const Tuple<float64>& firstTuple = statisticIterator[0];
-                float64 bestScore = calculateLabelWiseScore(firstTuple.first, firstTuple.second,
-                                                            l1RegularizationWeight_, l2RegularizationWeight_);
+                float64 bestScore = calculateOutputWiseScore(firstTuple.first, firstTuple.second,
+                                                             l1RegularizationWeight_, l2RegularizationWeight_);
                 uint32 bestIndex = 0;
 
                 for (uint32 i = 1; i < numElements; i++) {
                     const Tuple<float64>& tuple = statisticIterator[i];
-                    float64 score = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight_,
-                                                            l2RegularizationWeight_);
+                    float64 score = calculateOutputWiseScore(tuple.first, tuple.second, l1RegularizationWeight_,
+                                                             l2RegularizationWeight_);
 
                     if (std::abs(score) > std::abs(bestScore)) {
                         bestIndex = i;

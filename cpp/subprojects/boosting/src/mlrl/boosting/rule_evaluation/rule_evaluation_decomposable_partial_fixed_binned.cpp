@@ -27,14 +27,14 @@ namespace boosting {
 
         protected:
 
-            uint32 calculateLabelWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
-                                              uint32 numCriteria, float64 l1RegularizationWeight,
-                                              float64 l2RegularizationWeight) override {
+            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector, float64* criteria,
+                                               uint32 numCriteria, float64 l1RegularizationWeight,
+                                               float64 l2RegularizationWeight) override {
                 uint32 numElements = statisticVector.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
-                sortLabelWiseScores(tmpIterator, statisticIterator, numElements, numCriteria, l1RegularizationWeight,
-                                    l2RegularizationWeight);
+                sortOutputWiseScores(tmpIterator, statisticIterator, numElements, numCriteria, l1RegularizationWeight,
+                                     l2RegularizationWeight);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
                 typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
 

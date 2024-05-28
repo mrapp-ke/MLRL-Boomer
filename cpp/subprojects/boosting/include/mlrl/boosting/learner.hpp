@@ -28,7 +28,7 @@
 #include "mlrl/boosting/prediction/predictor_probability_auto.hpp"
 #include "mlrl/boosting/prediction/predictor_probability_label_wise.hpp"
 #include "mlrl/boosting/prediction/predictor_probability_marginalized.hpp"
-#include "mlrl/boosting/prediction/predictor_score_label_wise.hpp"
+#include "mlrl/boosting/prediction/predictor_score_output_wise.hpp"
 #include "mlrl/boosting/prediction/probability_calibration_isotonic.hpp"
 #include "mlrl/boosting/rule_evaluation/head_type_auto.hpp"
 #include "mlrl/boosting/rule_evaluation/head_type_complete.hpp"
@@ -875,24 +875,24 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a predictor that
-             * predicts label-wise regression scores for given query examples by summing up the scores that are provided
-             * by individual rules for each label individually.
+             * predicts output-wise regression scores for given query examples by summing up the scores that are
+             * provided by individual rules for each output individually.
              */
-            class ILabelWiseScorePredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IOutputWiseScorePredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseScorePredictorMixin() override {}
+                    virtual ~IOutputWiseScorePredictorMixin() override {}
 
                     /**
-                     * Configures the rule learner to use a predictor that predicts label-wise regression scores for
+                     * Configures the rule learner to use a predictor that predicts output-wise regression scores for
                      * given query examples by summing up the scores that are provided by individual rules for each
-                     * label individually.
+                     * output individually.
                      */
-                    virtual void useLabelWiseScorePredictor() {
+                    virtual void useOutputWiseScorePredictor() {
                         std::unique_ptr<IScorePredictorConfig>& scorePredictorConfigPtr =
                           this->getScorePredictorConfigPtr();
                         scorePredictorConfigPtr =
-                          std::make_unique<LabelWiseScorePredictorConfig>(this->getParallelPredictionConfigPtr());
+                          std::make_unique<OutputWiseScorePredictorConfig>(this->getParallelPredictionConfigPtr());
                     }
             };
 

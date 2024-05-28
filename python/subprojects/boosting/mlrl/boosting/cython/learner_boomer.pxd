@@ -25,10 +25,10 @@ from mlrl.boosting.cython.learner cimport DdotFunction, DspmvFunction, DsysvFunc
     IDenseStatisticsMixin, IDynamicPartialHeadMixin, IEqualWidthLabelBinningMixin, IExampleWiseBinaryPredictorMixin, \
     IFixedPartialHeadMixin, IGfmBinaryPredictorMixin, IIsotonicJointProbabilityCalibrationMixin, \
     IIsotonicMarginalProbabilityCalibrationMixin, IL1RegularizationMixin, IL2RegularizationMixin, \
-    ILabelWiseBinaryPredictorMixin, ILabelWiseProbabilityPredictorMixin, ILabelWiseScorePredictorMixin, \
-    IMarginalizedProbabilityPredictorMixin, INoDefaultRuleMixin, INoL1RegularizationMixin, INoL2RegularizationMixin, \
-    INoLabelBinningMixin, INonDecomposableLogisticLossMixin, INonDecomposableSquaredErrorLossMixin, \
-    INonDecomposableSquaredHingeLossMixin, ISingleOutputHeadMixin, ISparseStatisticsMixin
+    ILabelWiseBinaryPredictorMixin, ILabelWiseProbabilityPredictorMixin, IMarginalizedProbabilityPredictorMixin, \
+    INoDefaultRuleMixin, INoL1RegularizationMixin, INoL2RegularizationMixin, INoLabelBinningMixin, \
+    INonDecomposableLogisticLossMixin, INonDecomposableSquaredErrorLossMixin, INonDecomposableSquaredHingeLossMixin, \
+    IOutputWiseScorePredictorMixin, ISingleOutputHeadMixin, ISparseStatisticsMixin
 
 
 cdef extern from "mlrl/boosting/learner_boomer.hpp" namespace "boosting" nogil:
@@ -67,7 +67,7 @@ cdef extern from "mlrl/boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IExampleWiseBinaryPredictorMixin,
                                                             IGfmBinaryPredictorMixin,
                                                             IAutomaticBinaryPredictorMixin,
-                                                            ILabelWiseScorePredictorMixin,
+                                                            IOutputWiseScorePredictorMixin,
                                                             ILabelWiseProbabilityPredictorMixin,
                                                             IMarginalizedProbabilityPredictorMixin,
                                                             IAutomaticProbabilityPredictorMixin,

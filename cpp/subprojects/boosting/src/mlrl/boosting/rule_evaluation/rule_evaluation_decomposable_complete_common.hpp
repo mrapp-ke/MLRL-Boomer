@@ -49,8 +49,8 @@ namespace boosting {
 
                 for (uint32 i = 0; i < numElements; i++) {
                     const Tuple<float64>& tuple = statisticIterator[i];
-                    float64 predictedScore = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight_,
-                                                                     l2RegularizationWeight_);
+                    float64 predictedScore = calculateOutputWiseScore(tuple.first, tuple.second,
+                                                                      l1RegularizationWeight_, l2RegularizationWeight_);
                     valueIterator[i] = predictedScore;
                     quality += calculateOutputWiseQuality(predictedScore, tuple.first, tuple.second,
                                                           l1RegularizationWeight_, l2RegularizationWeight_);

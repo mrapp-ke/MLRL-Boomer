@@ -27,18 +27,18 @@ namespace boosting {
 
         protected:
 
-            uint32 calculateLabelWiseCriteria(const DenseNonDecomposableStatisticVector& statisticVector,
-                                              float64* criteria, uint32 numCriteria, float64 l1RegularizationWeight,
-                                              float64 l2RegularizationWeight) override {
-                uint32 numLabels = statisticVector.getNumGradients();
+            uint32 calculateOutputWiseCriteria(const DenseNonDecomposableStatisticVector& statisticVector,
+                                               float64* criteria, uint32 numCriteria, float64 l1RegularizationWeight,
+                                               float64 l2RegularizationWeight) override {
+                uint32 numOutputs = statisticVector.getNumGradients();
                 uint32 numPredictions = indexVectorPtr_->getNumElements();
                 DenseNonDecomposableStatisticVector::gradient_const_iterator gradientIterator =
                   statisticVector.gradients_cbegin();
                 DenseNonDecomposableStatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
                 SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
-                sortLabelWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numLabels, numPredictions,
-                                      l1RegularizationWeight, l2RegularizationWeight);
+                sortOutputWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions,
+                                       l1RegularizationWeight, l2RegularizationWeight);
                 PartialIndexVector::iterator indexIterator = indexVectorPtr_->begin();
                 typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
 
