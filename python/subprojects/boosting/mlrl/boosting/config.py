@@ -290,11 +290,11 @@ class HeadTypeParameter(NominalParameter):
 
     HEAD_TYPE_PARTIAL_FIXED = 'partial-fixed'
 
-    OPTION_LABEL_RATIO = 'label_ratio'
+    OPTION_OUTPUT_RATIO = 'output_ratio'
 
-    OPTION_MIN_LABELS = 'min_labels'
+    OPTION_MIN_OUTPUTS = 'min_outputs'
 
-    OPTION_MAX_LABELS = 'max_labels'
+    OPTION_MAX_OUTPUTS = 'max_outputs'
 
     HEAD_TYPE_PARTIAL_DYNAMIC = 'partial-dynamic'
 
@@ -309,7 +309,7 @@ class HeadTypeParameter(NominalParameter):
         self.add_value(name=self.HEAD_TYPE_SINGLE, mixin=SingleOutputHeadMixin)
         self.add_value(name=self.HEAD_TYPE_PARTIAL_FIXED,
                        mixin=FixedPartialHeadMixin,
-                       options={self.OPTION_LABEL_RATIO, self.OPTION_MIN_LABELS, self.OPTION_MAX_LABELS})
+                       options={self.OPTION_OUTPUT_RATIO, self.OPTION_MIN_OUTPUTS, self.OPTION_MAX_OUTPUTS})
         self.add_value(name=self.HEAD_TYPE_PARTIAL_DYNAMIC,
                        mixin=DynamicPartialHeadMixin,
                        options={self.OPTION_THRESHOLD, self.OPTION_EXPONENT})
@@ -320,9 +320,9 @@ class HeadTypeParameter(NominalParameter):
             config.use_single_output_heads()
         elif value == self.HEAD_TYPE_PARTIAL_FIXED:
             conf = config.use_fixed_partial_heads()
-            conf.set_label_ratio(options.get_float(self.OPTION_LABEL_RATIO, conf.get_label_ratio()))
-            conf.set_min_labels(options.get_int(self.OPTION_MIN_LABELS, conf.get_min_labels()))
-            conf.set_max_labels(options.get_int(self.OPTION_MAX_LABELS, conf.get_max_labels()))
+            conf.set_output_ratio(options.get_float(self.OPTION_OUTPUT_RATIO, conf.get_output_ratio()))
+            conf.set_min_outputs(options.get_int(self.OPTION_MIN_OUTPUTS, conf.get_min_outputs()))
+            conf.set_max_outputs(options.get_int(self.OPTION_MAX_OUTPUTS, conf.get_max_outputs()))
         elif value == self.HEAD_TYPE_PARTIAL_DYNAMIC:
             conf = config.use_dynamic_partial_heads()
             conf.set_threshold(options.get_float(self.OPTION_THRESHOLD, conf.get_threshold()))

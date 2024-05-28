@@ -11,7 +11,7 @@
 namespace boosting {
 
     /**
-     * Allows to configure complete rule heads that predict for all available labels.
+     * Allows to configure complete rule heads that predict for all available outputs.
      */
     class CompleteHeadConfig final : public IHeadConfig {
         private:

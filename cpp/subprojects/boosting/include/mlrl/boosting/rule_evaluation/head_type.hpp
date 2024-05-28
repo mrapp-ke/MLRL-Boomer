@@ -75,8 +75,8 @@ namespace boosting {
               const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const = 0;
 
             /**
-             * Returns, whether the heads of rules are partial, i.e., they predict for a subset of the available labels,
-             * or not.
+             * Returns, whether the heads of rules are partial, i.e., they predict for a subset of the available
+             * outputs, or not.
              *
              * @return True, if the heads of rules are partial, false otherwise
              */

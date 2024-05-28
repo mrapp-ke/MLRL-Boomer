@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/boosting/losses/loss_label_wise_sparse.hpp"
-#include "mlrl/boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp"
+#include "mlrl/boosting/rule_evaluation/rule_evaluation_decomposable_sparse.hpp"
 #include "mlrl/boosting/statistics/statistics_decomposable.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
 
@@ -21,9 +21,9 @@ namespace boosting {
 
             const std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
 
-            const std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
+            const std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
 
-            const std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
+            const std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
 
             const uint32 numThreads_;
 
@@ -39,21 +39,21 @@ namespace boosting {
              *                                          implementations of the evaluation measure that should be used
              *                                          for assessing the quality of predictions
              * @param regularRuleEvaluationFactoryPtr   An unique pointer to an object of type
-             *                                          `ISparseLabelWiseRuleEvaluationFactory` that should be used for
-             *                                          calculating the predictions, as well as corresponding quality
-             *                                          scores, of all remaining rules
+             *                                          `ISparseDecomposableRuleEvaluationFactory` that should be used
+             *                                          for calculating the predictions, as well as corresponding
+             *                                          quality scores, of all remaining rules
              * @param pruningRuleEvaluationFactoryPtr   An unique pointer to an object of type
-             *                                          `ISparseLabelWiseRuleEvaluationFactory` that should be used for
-             *                                          calculating the predictions, as well as corresponding quality
-             *                                          scores, when pruning rules
+             *                                          `ISparseDecomposableRuleEvaluationFactory` that should be used
+             *                                          for calculating the predictions, as well as corresponding
+             *                                          quality scores, when pruning rules
              * @param numThreads                        The number of CPU threads to be used to calculate the initial
              *                                          statistics in parallel. Must be at least 1
              */
             SparseDecomposableStatisticsProviderFactory(
               std::unique_ptr<ISparseLabelWiseLossFactory> lossFactoryPtr,
               std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
-              std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
-              std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
+              std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+              std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
               uint32 numThreads);
 
             /**

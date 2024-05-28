@@ -7,17 +7,17 @@ cdef extern from "mlrl/boosting/rule_evaluation/head_type_partial_fixed.hpp" nam
 
         # Functions:
 
-        float32 getLabelRatio() const
+        float32 getOutputRatio() const
 
-        IFixedPartialHeadConfig& setLabelRatio(float32 labelRatio) except +
+        IFixedPartialHeadConfig& setOutputRatio(float32 outputRatio) except +
 
-        uint32 getMinLabels() const
+        uint32 getMinOutputs() const
 
-        IFixedPartialHeadConfig& setMinLabels(uint32 minLabels) except +
+        IFixedPartialHeadConfig& setMinOutputs(uint32 minOutputs) except +
 
-        uint32 getMaxLabels() const
+        uint32 getMaxOutputs() const
 
-        IFixedPartialHeadConfig& setMaxLabels(uint32 maxLabels) except +
+        IFixedPartialHeadConfig& setMaxOutputs(uint32 maxOutputs) except +
 
 
 cdef extern from "mlrl/boosting/rule_evaluation/head_type_partial_dynamic.hpp" namespace "boosting" nogil:

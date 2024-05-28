@@ -39,7 +39,7 @@ namespace boosting {
         : public AbstractDecomposableStatistics<LabelMatrix, SparseDecomposableStatisticVector,
                                                 SparseDecomposableStatisticMatrix, NumericSparseSetMatrix<float64>,
                                                 ISparseLabelWiseLoss, ISparseEvaluationMeasure,
-                                                ISparseLabelWiseRuleEvaluationFactory> {
+                                                ISparseDecomposableRuleEvaluationFactory> {
         public:
 
             /**
@@ -49,7 +49,7 @@ namespace boosting {
              * @param evaluationMeasurePtr  An unique pointer to an object of type `ISparseEvaluationMeasure` that
              *                              implements the evaluation measure that should be used to assess the quality
              *                              of predictions for a specific statistic
-             * @param ruleEvaluationFactory A reference to an object of type `ISparseLabelWiseRuleEvaluationFactory`,
+             * @param ruleEvaluationFactory A reference to an object of type `ISparseDecomposableRuleEvaluationFactory`,
              *                              that allows to create instances of the class that is used for calculating
              *                              the predictions of rules, as well as their overall quality
              * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
@@ -61,14 +61,14 @@ namespace boosting {
              */
             SparseDecomposableStatistics(std::unique_ptr<ISparseLabelWiseLoss> lossPtr,
                                          std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr,
-                                         const ISparseLabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
+                                         const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                                          const LabelMatrix& labelMatrix,
                                          std::unique_ptr<SparseDecomposableStatisticMatrix> statisticViewPtr,
                                          std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr)
                 : AbstractDecomposableStatistics<LabelMatrix, SparseDecomposableStatisticVector,
                                                  SparseDecomposableStatisticMatrix, NumericSparseSetMatrix<float64>,
                                                  ISparseLabelWiseLoss, ISparseEvaluationMeasure,
-                                                 ISparseLabelWiseRuleEvaluationFactory>(
+                                                 ISparseDecomposableRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
                     std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
 
@@ -82,9 +82,9 @@ namespace boosting {
     };
 
     template<typename LabelMatrix>
-    static inline std::unique_ptr<IDecomposableStatistics<ISparseLabelWiseRuleEvaluationFactory>> createStatistics(
+    static inline std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> createStatistics(
       const ISparseLabelWiseLossFactory& lossFactory, const ISparseEvaluationMeasureFactory& evaluationMeasureFactory,
-      const ISparseLabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
+      const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
       const LabelMatrix& labelMatrix) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
@@ -117,8 +117,8 @@ namespace boosting {
     SparseDecomposableStatisticsProviderFactory::SparseDecomposableStatisticsProviderFactory(
       std::unique_ptr<ISparseLabelWiseLossFactory> lossFactoryPtr,
       std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
-      std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
-      std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
+      std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+      std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
         : lossFactoryPtr_(std::move(lossFactoryPtr)),
           evaluationMeasureFactoryPtr_(std::move(evaluationMeasureFactoryPtr)),
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
@@ -126,19 +126,19 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> SparseDecomposableStatisticsProviderFactory::create(
       const CContiguousView<const uint8>& labelMatrix) const {
-        std::unique_ptr<IDecomposableStatistics<ISparseLabelWiseRuleEvaluationFactory>> statisticsPtr =
+        std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *regularRuleEvaluationFactoryPtr_,
                            numThreads_, labelMatrix);
-        return std::make_unique<DecomposableStatisticsProvider<ISparseLabelWiseRuleEvaluationFactory>>(
+        return std::make_unique<DecomposableStatisticsProvider<ISparseDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
     std::unique_ptr<IStatisticsProvider> SparseDecomposableStatisticsProviderFactory::create(
       const BinaryCsrView& labelMatrix) const {
-        std::unique_ptr<IDecomposableStatistics<ISparseLabelWiseRuleEvaluationFactory>> statisticsPtr =
+        std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *regularRuleEvaluationFactoryPtr_,
                            numThreads_, labelMatrix);
-        return std::make_unique<DecomposableStatisticsProvider<ISparseLabelWiseRuleEvaluationFactory>>(
+        return std::make_unique<DecomposableStatisticsProvider<ISparseDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 }

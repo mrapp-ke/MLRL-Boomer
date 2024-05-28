@@ -354,7 +354,7 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to induce rules with complete
-             * heads that predict for all available labels.
+             * heads that predict for all available outputs.
              */
             class ICompleteHeadMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
@@ -363,7 +363,7 @@ namespace boosting {
 
                     /**
                      * Configures the rule learner to induce rules with complete heads that predict for all available
-                     * labels.
+                     * outputs.
                      */
                     virtual void useCompleteHeads() {
                         std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
@@ -375,7 +375,7 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to induce rules with partial
-             * heads that predict for a predefined number of labels.
+             * heads that predict for a predefined number of outputs.
              */
             class IFixedPartialHeadMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
@@ -384,7 +384,7 @@ namespace boosting {
 
                     /**
                      * Configures the rule learner to induce rules with partial heads that predict for a predefined
-                     * number of labels.
+                     * number of outputs.
                      *
                      * @return A reference to an object of type `IFixedPartialHeadConfig` that allows further
                      *         configuration of the rule heads
@@ -401,7 +401,7 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to induce rules with partial
-             * heads that predict for a subset of the available labels that is determined dynamically.
+             * heads that predict for a subset of the available outputs that is determined dynamically.
              */
             class IDynamicPartialHeadMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
@@ -410,7 +410,7 @@ namespace boosting {
 
                     /**
                      * Configures the rule learner to induce rules with partial heads that predict for a subset of the
-                     * available labels that is determined dynamically. Only those labels for which the square of the
+                     * available outputs that is determined dynamically. Only those outputs for which the square of the
                      * predictive quality exceeds a certain threshold are included in a rule head.
                      *
                      * @return A reference to an object of type `IDynamicPartialHeadConfig` that allows further
