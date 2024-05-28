@@ -50,9 +50,9 @@ namespace boosting {
      */
     template<typename LabelMatrix>
     class DenseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<LabelMatrix, DenseDecomposableStatisticVector,
-                                                DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
-                                                ILabelWiseLoss, IEvaluationMeasure, ILabelWiseRuleEvaluationFactory> {
+        : public AbstractDecomposableStatistics<
+            LabelMatrix, DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix,
+            NumericCContiguousMatrix<float64>, ILabelWiseLoss, IEvaluationMeasure, IDecomposableRuleEvaluationFactory> {
         public:
 
             /**
@@ -61,7 +61,7 @@ namespace boosting {
              * @param evaluationMeasurePtr  An unique pointer to an object of type `IEvaluationMeasure` that implements
              *                              the evaluation measure that should be used to assess the quality of
              *                              predictions for a specific statistic
-             * @param ruleEvaluationFactory A reference to an object of type `ILabelWiseRuleEvaluationFactory`, that
+             * @param ruleEvaluationFactory A reference to an object of type `IDecomposableRuleEvaluationFactory`, that
              *                              allows to create instances of the class that is used for calculating the
              *                              predictions of rules, as well as their overall quality
              * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
@@ -73,13 +73,14 @@ namespace boosting {
              */
             DenseDecomposableStatistics(std::unique_ptr<ILabelWiseLoss> lossPtr,
                                         std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr,
-                                        const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory,
+                                        const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                                         const LabelMatrix& labelMatrix,
                                         std::unique_ptr<DenseDecomposableStatisticMatrix> statisticMatrixPtr,
                                         std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
                 : AbstractDecomposableStatistics<LabelMatrix, DenseDecomposableStatisticVector,
                                                  DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
-                                                 ILabelWiseLoss, IEvaluationMeasure, ILabelWiseRuleEvaluationFactory>(
+                                                 ILabelWiseLoss, IEvaluationMeasure,
+                                                 IDecomposableRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
                     std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 

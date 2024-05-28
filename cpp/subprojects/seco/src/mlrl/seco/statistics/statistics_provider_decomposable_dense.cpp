@@ -18,7 +18,7 @@ namespace seco {
     template<typename LabelMatrix>
     class DenseDecomposableStatistics final
         : public AbstractDecomposableStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector,
-                                                ILabelWiseRuleEvaluationFactory> {
+                                                IDecomposableRuleEvaluationFactory> {
         public:
 
             /**
@@ -28,22 +28,23 @@ namespace seco {
              *                                  how often individual examples and labels have been covered
              * @param majorityLabelVectorPtr    An unique pointer to an object of type `BinarySparseArrayVector` that
              *                                  stores the predictions of the default rule
-             * @param ruleEvaluationFactory     A reference to an object of type `ILabelWiseRuleEvaluationFactory` that
-             *                                  allows to create instances of the class that is used for calculating the
-             *                                  predictions of rules, as well as their overall quality
+             * @param ruleEvaluationFactory     A reference to an object of type `IDecomposableRuleEvaluationFactory`
+             *                                  that allows to create instances of the class that is used for
+             *                                  calculating the predictions of rules, as well as their overall quality
              */
             DenseDecomposableStatistics(const LabelMatrix& labelMatrix,
                                         std::unique_ptr<DenseCoverageMatrix> coverageMatrixPtr,
                                         std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr,
-                                        const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory)
+                                        const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory)
                 : AbstractDecomposableStatistics<LabelMatrix, DenseCoverageMatrix, DenseConfusionMatrixVector,
-                                                 ILabelWiseRuleEvaluationFactory>(
+                                                 IDecomposableRuleEvaluationFactory>(
                     labelMatrix, std::move(coverageMatrixPtr), std::move(majorityLabelVectorPtr),
                     ruleEvaluationFactory) {}
     };
 
-    static inline std::unique_ptr<IDecomposableStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
-      const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, const CContiguousView<const uint8>& labelMatrix) {
+    static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
+      const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
+      const CContiguousView<const uint8>& labelMatrix) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
         std::unique_ptr<ResizableBinarySparseArrayVector> majorityLabelVectorPtr =
@@ -79,8 +80,8 @@ namespace seco {
           ruleEvaluationFactory);
     }
 
-    static inline std::unique_ptr<IDecomposableStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
-      const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, const BinaryCsrView& labelMatrix) {
+    static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
+      const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, const BinaryCsrView& labelMatrix) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
         std::unique_ptr<ResizableBinarySparseArrayVector> majorityLabelVectorPtr =
@@ -123,26 +124,26 @@ namespace seco {
     }
 
     DenseDecomposableStatisticsProviderFactory::DenseDecomposableStatisticsProviderFactory(
-      std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-      std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
-      std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr)
+      std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
+      std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+      std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr)
         : defaultRuleEvaluationFactoryPtr_(std::move(defaultRuleEvaluationFactoryPtr)),
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)) {}
 
     std::unique_ptr<IStatisticsProvider> DenseDecomposableStatisticsProviderFactory::create(
       const CContiguousView<const uint8>& labelMatrix) const {
-        std::unique_ptr<IDecomposableStatistics<ILabelWiseRuleEvaluationFactory>> statisticsPtr =
+        std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix);
-        return std::make_unique<DecomposableStatisticsProvider<ILabelWiseRuleEvaluationFactory>>(
+        return std::make_unique<DecomposableStatisticsProvider<IDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
     std::unique_ptr<IStatisticsProvider> DenseDecomposableStatisticsProviderFactory::create(
       const BinaryCsrView& labelMatrix) const {
-        std::unique_ptr<IDecomposableStatistics<ILabelWiseRuleEvaluationFactory>> statisticsPtr =
+        std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(*defaultRuleEvaluationFactoryPtr_, labelMatrix);
-        return std::make_unique<DecomposableStatisticsProvider<ILabelWiseRuleEvaluationFactory>>(
+        return std::make_unique<DecomposableStatisticsProvider<IDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 

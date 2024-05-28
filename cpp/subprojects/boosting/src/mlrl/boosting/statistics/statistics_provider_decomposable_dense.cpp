@@ -12,9 +12,10 @@
 namespace boosting {
 
     template<typename LabelMatrix>
-    static inline std::unique_ptr<IDecomposableStatistics<ILabelWiseRuleEvaluationFactory>> createStatistics(
+    static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
       const ILabelWiseLossFactory& lossFactory, const IEvaluationMeasureFactory& evaluationMeasureFactory,
-      const ILabelWiseRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads, const LabelMatrix& labelMatrix) {
+      const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
+      const LabelMatrix& labelMatrix) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
         std::unique_ptr<ILabelWiseLoss> lossPtr = lossFactory.createLabelWiseLoss();
@@ -45,9 +46,9 @@ namespace boosting {
     DenseDecomposableStatisticsProviderFactory::DenseDecomposableStatisticsProviderFactory(
       std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr,
       std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
-      std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
-      std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
-      std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
+      std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
+      std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+      std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
         : lossFactoryPtr_(std::move(lossFactoryPtr)),
           evaluationMeasureFactoryPtr_(std::move(evaluationMeasureFactoryPtr)),
           defaultRuleEvaluationFactoryPtr_(std::move(defaultRuleEvaluationFactoryPtr)),
@@ -56,17 +57,17 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProvider> DenseDecomposableStatisticsProviderFactory::create(
       const CContiguousView<const uint8>& labelMatrix) const {
-        std::unique_ptr<IDecomposableStatistics<ILabelWiseRuleEvaluationFactory>> statisticsPtr = createStatistics(
+        std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr = createStatistics(
           *lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);
-        return std::make_unique<DecomposableStatisticsProvider<ILabelWiseRuleEvaluationFactory>>(
+        return std::make_unique<DecomposableStatisticsProvider<IDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
     std::unique_ptr<IStatisticsProvider> DenseDecomposableStatisticsProviderFactory::create(
       const BinaryCsrView& labelMatrix) const {
-        std::unique_ptr<IDecomposableStatistics<ILabelWiseRuleEvaluationFactory>> statisticsPtr = createStatistics(
+        std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr = createStatistics(
           *lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *defaultRuleEvaluationFactoryPtr_, numThreads_, labelMatrix);
-        return std::make_unique<DecomposableStatisticsProvider<ILabelWiseRuleEvaluationFactory>>(
+        return std::make_unique<DecomposableStatisticsProvider<IDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 

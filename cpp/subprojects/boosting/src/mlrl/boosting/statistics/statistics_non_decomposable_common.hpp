@@ -491,30 +491,34 @@ namespace boosting {
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated
      * according to a non-decomposable loss function.
      *
-     * @tparam LabelMatrix                      The type of the matrix that provides access to the labels of the
-     *                                          training examples
-     * @tparam StatisticVector                  The type of the vectors that are used to store gradients and Hessians
-     * @tparam StatisticMatrix                  The type of the matrix that stores the gradients and Hessians
-     * @tparam ScoreMatrix                      The type of the matrices that are used to store predicted scores
-     * @tparam LossFunction                     The type of the loss function that is used to calculate gradients and
-     *                                          Hessians
-     * @tparam EvaluationMeasure                The type of the evaluation measure that is used to assess the quality of
-     *                                          predictions for a specific statistic
-     * @tparam ExampleWiseRuleEvaluationFactory The type of the factory that allows to create instances of the class
-     *                                          that is used for calculating the example-wise predictions of rules, as
-     *                                          well as their overall quality
-     * @tparam LabelWiseRuleEvaluationFactory   The type of the factory that allows to create instances of the class
-     *                                          that is used for calculating the label-wise predictions of rules, as
-     *                                          well as their overall quality
+     * @tparam LabelMatrix                          The type of the matrix that provides access to the labels of the
+     *                                              training examples
+     * @tparam StatisticVector                      The type of the vectors that are used to store gradients and
+     *                                              Hessians
+     * @tparam StatisticMatrix                      The type of the matrix that stores the gradients and Hessians
+     * @tparam ScoreMatrix                          The type of the matrices that are used to store predicted scores
+     * @tparam LossFunction                         The type of the loss function that is used to calculate gradients
+     *                                              and Hessians
+     * @tparam EvaluationMeasure                    The type of the evaluation measure that is used to assess the
+     *                                              quality of predictions for a specific statistic
+     * @tparam NonDecomposableRuleEvaluationFactory The type of the factory that allows to create instances of the class
+     *                                              that is used for calculating the predictions of rules, as well as
+     *                                              their overall quality, based on gradients and Hessians that have
+     *                                              been calculated according to a non-decomposable loss function
+     * @tparam DecomposableRuleEvaluationFactory    The type of the factory that allows to create instances of the class
+     *                                              that is used for calculating the predictions of rules, as well as
+     *                                              their overall quality, based on gradients and Hessians that have
+     *                                              been calculated according to a decomposable loss function
      */
     template<typename LabelMatrix, typename StatisticVector, typename StatisticMatrix, typename ScoreMatrix,
-             typename LossFunction, typename EvaluationMeasure, typename ExampleWiseRuleEvaluationFactory,
-             typename LabelWiseRuleEvaluationFactory>
+             typename LossFunction, typename EvaluationMeasure, typename NonDecomposableRuleEvaluationFactory,
+             typename DecomposableRuleEvaluationFactory>
     class AbstractNonDecomposableStatistics
-        : virtual public INonDecomposableStatistics<ExampleWiseRuleEvaluationFactory, LabelWiseRuleEvaluationFactory> {
+        : virtual public INonDecomposableStatistics<NonDecomposableRuleEvaluationFactory,
+                                                    DecomposableRuleEvaluationFactory> {
         private:
 
-            const ExampleWiseRuleEvaluationFactory* ruleEvaluationFactory_;
+            const NonDecomposableRuleEvaluationFactory* ruleEvaluationFactory_;
 
         protected:
 
@@ -553,10 +557,10 @@ namespace boosting {
              * @param evaluationMeasurePtr  An unique pointer to an object of template type `EvaluationMeasure` that
              *                              implements the evaluation measure that should be used to assess the quality
              *                              of predictions for a specific statistic
-             * @param ruleEvaluationFactory A reference to an object of template type `ExampleWiseRuleEvaluationFactory`
-             *                              that allows to create instances of the class that should be used for
-             *                              calculating the predictions of rules, as well as corresponding quality
-             *                              scores
+             * @param ruleEvaluationFactory A reference to an object of template type
+             *                              `NonDecomposableRuleEvaluationFactory` that allows to create instances of
+             *                              the class that should be used for calculating the predictions of rules, as
+             *                              well as their overall quality
              * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
              *                              to the labels of the training examples
              * @param statisticMatrixPtr    An unique pointer to an object of template type `StatisticView` that stores
@@ -566,7 +570,7 @@ namespace boosting {
              */
             AbstractNonDecomposableStatistics(std::unique_ptr<LossFunction> lossPtr,
                                               std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
-                                              const ExampleWiseRuleEvaluationFactory& ruleEvaluationFactory,
+                                              const NonDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                                               const LabelMatrix& labelMatrix,
                                               std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                                               std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
@@ -578,7 +582,7 @@ namespace boosting {
              * @see `INonDecomposableStatistics::setRuleEvaluationFactory`
              */
             void setRuleEvaluationFactory(
-              const ExampleWiseRuleEvaluationFactory& ruleEvaluationFactory) override final {
+              const NonDecomposableRuleEvaluationFactory& ruleEvaluationFactory) override final {
                 this->ruleEvaluationFactory_ = &ruleEvaluationFactory;
             }
 
@@ -645,7 +649,7 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
                                                             const EqualWeightVector& weights) const override final {
                 return std::make_unique<NonDecomposableStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  StatisticVector, typename StatisticMatrix::view_type, NonDecomposableRuleEvaluationFactory,
                   EqualWeightVector, CompleteIndexVector>>(statisticMatrixPtr_->getView(), *ruleEvaluationFactory_,
                                                            weights, labelIndices);
             }
@@ -656,7 +660,7 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
                                                             const EqualWeightVector& weights) const override final {
                 return std::make_unique<NonDecomposableStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  StatisticVector, typename StatisticMatrix::view_type, NonDecomposableRuleEvaluationFactory,
                   EqualWeightVector, PartialIndexVector>>(statisticMatrixPtr_->getView(), *ruleEvaluationFactory_,
                                                           weights, labelIndices);
             }
@@ -667,7 +671,7 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
                                                             const BitWeightVector& weights) const override final {
                 return std::make_unique<NonDecomposableStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  StatisticVector, typename StatisticMatrix::view_type, NonDecomposableRuleEvaluationFactory,
                   BitWeightVector, CompleteIndexVector>>(statisticMatrixPtr_->getView(), *ruleEvaluationFactory_,
                                                          weights, labelIndices);
             }
@@ -678,7 +682,7 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
                                                             const BitWeightVector& weights) const override final {
                 return std::make_unique<NonDecomposableStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  StatisticVector, typename StatisticMatrix::view_type, NonDecomposableRuleEvaluationFactory,
                   BitWeightVector, PartialIndexVector>>(statisticMatrixPtr_->getView(), *ruleEvaluationFactory_,
                                                         weights, labelIndices);
             }
@@ -689,7 +693,7 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const CompleteIndexVector& labelIndices, const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<NonDecomposableStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  StatisticVector, typename StatisticMatrix::view_type, NonDecomposableRuleEvaluationFactory,
                   DenseWeightVector<uint32>, CompleteIndexVector>>(statisticMatrixPtr_->getView(),
                                                                    *ruleEvaluationFactory_, weights, labelIndices);
             }
@@ -700,7 +704,7 @@ namespace boosting {
             std::unique_ptr<IStatisticsSubset> createSubset(
               const PartialIndexVector& labelIndices, const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<NonDecomposableStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  StatisticVector, typename StatisticMatrix::view_type, NonDecomposableRuleEvaluationFactory,
                   DenseWeightVector<uint32>, PartialIndexVector>>(statisticMatrixPtr_->getView(),
                                                                   *ruleEvaluationFactory_, weights, labelIndices);
             }
@@ -712,7 +716,7 @@ namespace boosting {
               const CompleteIndexVector& labelIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
                 return std::make_unique<NonDecomposableStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  StatisticVector, typename StatisticMatrix::view_type, NonDecomposableRuleEvaluationFactory,
                   OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
@@ -724,7 +728,7 @@ namespace boosting {
               const PartialIndexVector& labelIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
                 return std::make_unique<NonDecomposableStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  StatisticVector, typename StatisticMatrix::view_type, NonDecomposableRuleEvaluationFactory,
                   OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
@@ -736,7 +740,7 @@ namespace boosting {
               const CompleteIndexVector& labelIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
                 return std::make_unique<NonDecomposableStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  StatisticVector, typename StatisticMatrix::view_type, NonDecomposableRuleEvaluationFactory,
                   OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
@@ -748,7 +752,7 @@ namespace boosting {
               const PartialIndexVector& labelIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
                 return std::make_unique<NonDecomposableStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  StatisticVector, typename StatisticMatrix::view_type, NonDecomposableRuleEvaluationFactory,
                   OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
@@ -760,7 +764,7 @@ namespace boosting {
               const CompleteIndexVector& labelIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
                 return std::make_unique<NonDecomposableStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  StatisticVector, typename StatisticMatrix::view_type, NonDecomposableRuleEvaluationFactory,
                   OutOfSampleWeightVector<DenseWeightVector<uint32>>, CompleteIndexVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
@@ -772,7 +776,7 @@ namespace boosting {
               const PartialIndexVector& labelIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
                 return std::make_unique<NonDecomposableStatisticsSubset<
-                  StatisticVector, typename StatisticMatrix::view_type, ExampleWiseRuleEvaluationFactory,
+                  StatisticVector, typename StatisticMatrix::view_type, NonDecomposableRuleEvaluationFactory,
                   OutOfSampleWeightVector<DenseWeightVector<uint32>>, PartialIndexVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
             }
@@ -784,7 +788,7 @@ namespace boosting {
               const EqualWeightVector& weights) const override final {
                 return std::make_unique<
                   NonDecomposableWeightedStatistics<StatisticVector, typename StatisticMatrix::view_type,
-                                                    ExampleWiseRuleEvaluationFactory, EqualWeightVector>>(
+                                                    NonDecomposableRuleEvaluationFactory, EqualWeightVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
             }
 
@@ -795,7 +799,7 @@ namespace boosting {
               const BitWeightVector& weights) const override final {
                 return std::make_unique<
                   NonDecomposableWeightedStatistics<StatisticVector, typename StatisticMatrix::view_type,
-                                                    ExampleWiseRuleEvaluationFactory, BitWeightVector>>(
+                                                    NonDecomposableRuleEvaluationFactory, BitWeightVector>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
             }
 
@@ -806,7 +810,7 @@ namespace boosting {
               const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<
                   NonDecomposableWeightedStatistics<StatisticVector, typename StatisticMatrix::view_type,
-                                                    ExampleWiseRuleEvaluationFactory, DenseWeightVector<uint32>>>(
+                                                    NonDecomposableRuleEvaluationFactory, DenseWeightVector<uint32>>>(
                   statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights);
             }
     };

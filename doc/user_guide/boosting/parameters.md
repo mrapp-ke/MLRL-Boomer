@@ -91,9 +91,9 @@ The following parameters may be used to control the behavior of the algorithm. T
 
   - `'partial-fixed'` If all rules should predict for a predefined number of labels. The following options may be provided using the {ref}`bracket-notation`:
 
-    - `label_ratio` (Default value = `0.0`) A percentage that specifies for how many labels the rules should predict or 0, if the percentage should be calculated based on the average label cardinality. For example, a value of 0.05 means that the rules should predict for 5% of the available labels.
-    - `min_labels` (Default value = `2`) The minimum number of labels for which the rules should predict. Must be at least 2.
-    - `max_labels` (Default value = `0`) The maximum number of labels for which the rules should predict or 0, if the number of predictions should not be restricted.
+    - `output_ratio` (Default value = `0.0`) A percentage that specifies for how many labels the rules should predict or 0, if the percentage should be calculated based on the average label cardinality. For example, a value of 0.05 means that the rules should predict for 5% of the available labels.
+    - `min_outputs` (Default value = `2`) The minimum number of labels for which the rules should predict. Must be at least 2.
+    - `max_outputs` (Default value = `0`) The maximum number of labels for which the rules should predict or 0, if the number of predictions should not be restricted.
 
   - `'partial-dynamic'` If all rules should predict for a subset of the available labels that is determined dynamically. The following options may be provided using the {ref}`bracket-notation`:
 

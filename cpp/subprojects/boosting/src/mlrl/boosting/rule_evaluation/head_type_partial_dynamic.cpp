@@ -41,12 +41,12 @@ namespace boosting {
         std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr = lossConfig.createLabelWiseLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createEvaluationMeasureFactory();
-        std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-          labelBinningConfigPtr_->createLabelWiseCompleteRuleEvaluationFactory();
-        std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-          labelBinningConfigPtr_->createLabelWiseDynamicPartialRuleEvaluationFactory(threshold_, exponent_);
-        std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-          labelBinningConfigPtr_->createLabelWiseDynamicPartialRuleEvaluationFactory(threshold_, exponent_);
+        std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
+          labelBinningConfigPtr_->createDecomposableCompleteRuleEvaluationFactory();
+        std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+          labelBinningConfigPtr_->createDecomposableDynamicPartialRuleEvaluationFactory(threshold_, exponent_);
+        std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+          labelBinningConfigPtr_->createDecomposableDynamicPartialRuleEvaluationFactory(threshold_, exponent_);
         return std::make_unique<DenseDecomposableStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
@@ -59,10 +59,10 @@ namespace boosting {
         std::unique_ptr<ISparseLabelWiseLossFactory> lossFactoryPtr = lossConfig.createSparseLabelWiseLossFactory();
         std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createSparseEvaluationMeasureFactory();
-        std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-          labelBinningConfigPtr_->createLabelWiseDynamicPartialRuleEvaluationFactory(threshold_, exponent_);
-        std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-          labelBinningConfigPtr_->createLabelWiseDynamicPartialRuleEvaluationFactory(threshold_, exponent_);
+        std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+          labelBinningConfigPtr_->createDecomposableDynamicPartialRuleEvaluationFactory(threshold_, exponent_);
+        std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+          labelBinningConfigPtr_->createDecomposableDynamicPartialRuleEvaluationFactory(threshold_, exponent_);
         return std::make_unique<SparseDecomposableStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
           std::move(pruningRuleEvaluationFactoryPtr), numThreads);
@@ -75,14 +75,14 @@ namespace boosting {
         std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr = lossConfig.createExampleWiseLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createExampleWiseLossFactory();
-        std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-          labelBinningConfigPtr_->createExampleWiseCompleteRuleEvaluationFactory(blas, lapack);
-        std::unique_ptr<IExampleWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-          labelBinningConfigPtr_->createExampleWiseDynamicPartialRuleEvaluationFactory(threshold_, exponent_, blas,
-                                                                                       lapack);
-        std::unique_ptr<IExampleWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-          labelBinningConfigPtr_->createExampleWiseDynamicPartialRuleEvaluationFactory(threshold_, exponent_, blas,
-                                                                                       lapack);
+        std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
+          labelBinningConfigPtr_->createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
+        std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+          labelBinningConfigPtr_->createNonDecomposableDynamicPartialRuleEvaluationFactory(threshold_, exponent_, blas,
+                                                                                           lapack);
+        std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+          labelBinningConfigPtr_->createNonDecomposableDynamicPartialRuleEvaluationFactory(threshold_, exponent_, blas,
+                                                                                           lapack);
         return std::make_unique<DenseNonDecomposableStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);

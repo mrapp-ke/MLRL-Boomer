@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include "mlrl/seco/rule_evaluation/rule_evaluation_label_wise.hpp"
+#include "mlrl/seco/rule_evaluation/rule_evaluation_decomposable.hpp"
 #include "mlrl/seco/statistics/statistics.hpp"
 
 namespace seco {

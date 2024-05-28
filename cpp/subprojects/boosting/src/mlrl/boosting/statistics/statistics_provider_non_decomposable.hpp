@@ -12,21 +12,25 @@ namespace boosting {
     /**
      * Provides access to an object of type `INonDecomposableStatistics`.
      *
-     * @tparam LabelWiseRuleEvaluationFactory   The type of the classes that may be used for calculating the label-wise
-     *                                          predictions of rules, as well as their overall quality
-     * @tparam ExampleWiseRuleEvaluationFactory The type of the classes that may be used for calculating the
-     *                                          example-wise predictions of rules, as well as their overall quality
+     * @tparam DecomposableRuleEvaluationFactory    The type of the classes that may be used for calculating predictions
+     *                                              of rules, as well as their overall quality, based on gradients and
+     *                                              Hessians that have been calculated according to a decomposable loss
+     *                                              function
+     * @tparam NonDecomposableRuleEvaluationFactory The type of the classes that may be used for calculating predictions
+     *                                              of rules, as well as their overall quality, based on gradients and
+     *                                              Hessians that have been calculated according to a non-decomposable
+     *                                              loss function
      */
-    template<typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
+    template<typename NonDecomposableRuleEvaluationFactory, typename DecomposableRuleEvaluationFactory>
     class NonDecomposableStatisticsProvider final : public IStatisticsProvider {
         private:
 
-            typedef INonDecomposableStatistics<ExampleWiseRuleEvaluationFactory, LabelWiseRuleEvaluationFactory>
+            typedef INonDecomposableStatistics<NonDecomposableRuleEvaluationFactory, DecomposableRuleEvaluationFactory>
               NonDecomposableStatistics;
 
-            const ExampleWiseRuleEvaluationFactory& regularRuleEvaluationFactory_;
+            const NonDecomposableRuleEvaluationFactory& regularRuleEvaluationFactory_;
 
-            const ExampleWiseRuleEvaluationFactory& pruningRuleEvaluationFactory_;
+            const NonDecomposableRuleEvaluationFactory& pruningRuleEvaluationFactory_;
 
             const std::unique_ptr<NonDecomposableStatistics> statisticsPtr_;
 
@@ -34,16 +38,16 @@ namespace boosting {
 
             /**
              * @param regularRuleEvaluationFactory  A reference to an object of template type
-             *                                      `ExampleWiseRuleEvaluationFactory` to switch to when invoking the
-             *                                      function `switchToRegularRuleEvaluation`
+             *                                      `NonDecomposableRuleEvaluationFactory` to switch to when invoking
+             *                                      the function `switchToRegularRuleEvaluation`
              * @param pruningRuleEvaluationFactory  A reference to an object of template type
-             *                                      `ExampleWiseRuleEvaluationFactory` to switch to when invoking the
-             *                                      function `switchToPruningRuleEvaluation`
+             *                                      `NonDecomposableRuleEvaluationFactory` to switch to when invoking
+             *                                      the function `switchToPruningRuleEvaluation`
              * @param statisticsPtr                 An unique pointer to an object of type `INonDecomposableStatistics`
              *                                      to provide access to
              */
-            NonDecomposableStatisticsProvider(const ExampleWiseRuleEvaluationFactory& regularRuleEvaluationFactory,
-                                              const ExampleWiseRuleEvaluationFactory& pruningRuleEvaluationFactory,
+            NonDecomposableStatisticsProvider(const NonDecomposableRuleEvaluationFactory& regularRuleEvaluationFactory,
+                                              const NonDecomposableRuleEvaluationFactory& pruningRuleEvaluationFactory,
                                               std::unique_ptr<NonDecomposableStatistics> statisticsPtr)
                 : regularRuleEvaluationFactory_(regularRuleEvaluationFactory),
                   pruningRuleEvaluationFactory_(pruningRuleEvaluationFactory),
@@ -75,25 +79,29 @@ namespace boosting {
      * Provides access to an object of type `INonDecomposableStatistics` that can be converted into an object of type
      * `IDecomposableStatistics`.
      *
-     * @tparam LabelWiseRuleEvaluationFactory   The type of the classes that may be used for calculating the label-wise
-     *                                          predictions of rules, as well as their overall quality
-     * @tparam ExampleWiseRuleEvaluationFactory The type of the classes that may be used for calculating the
-     *                                          example-wise predictions of rules, as well as their overall quality
+     * @tparam DecomposableRuleEvaluationFactory    The type of the classes that may be used for calculating predictions
+     *                                              of rules, as well as their overall quality, based on gradients and
+     *                                              Hessians that have been calculated according to a decomposable loss
+     *                                              function
+     * @tparam NonDecomposableRuleEvaluationFactory The type of the classes that may be used for calculating predictions
+     *                                              of rules, as well as their overall quality, based on gradients and
+     *                                              Hessians that have been calculated according to a non-decomposable
+     *                                              loss function
      */
-    template<typename ExampleWiseRuleEvaluationFactory, typename LabelWiseRuleEvaluationFactory>
+    template<typename NonDecomposableRuleEvaluationFactory, typename DecomposableRuleEvaluationFactory>
     class ConvertibleNonDecomposableStatisticsProvider final : public IStatisticsProvider {
         private:
 
-            typedef INonDecomposableStatistics<ExampleWiseRuleEvaluationFactory, LabelWiseRuleEvaluationFactory>
+            typedef INonDecomposableStatistics<NonDecomposableRuleEvaluationFactory, DecomposableRuleEvaluationFactory>
               NonDecomposableStatistics;
 
-            const LabelWiseRuleEvaluationFactory& regularRuleEvaluationFactory_;
+            const DecomposableRuleEvaluationFactory& regularRuleEvaluationFactory_;
 
-            const LabelWiseRuleEvaluationFactory& pruningRuleEvaluationFactory_;
+            const DecomposableRuleEvaluationFactory& pruningRuleEvaluationFactory_;
 
             std::unique_ptr<NonDecomposableStatistics> nonDecomposableStatisticsPtr_;
 
-            std::unique_ptr<IDecomposableStatistics<LabelWiseRuleEvaluationFactory>> decomposableStatisticsPtr_;
+            std::unique_ptr<IDecomposableStatistics<DecomposableRuleEvaluationFactory>> decomposableStatisticsPtr_;
 
             const uint32 numThreads_;
 
@@ -101,10 +109,10 @@ namespace boosting {
 
             /**
              * @param regularRuleEvaluationFactory  A reference to an object of template type
-             *                                      `LabelWiseRuleEvaluationFactory` to switch to when invoking the
+             *                                      `DecomposableRuleEvaluationFactory` to switch to when invoking the
              *                                      function `switchToRegularRuleEvaluation`
              * @param pruningRuleEvaluationFactory  A reference to an object of template type
-             *                                      `LabelWiseRuleEvaluationFactory` to switch to when invoking the
+             *                                      `DecomposableRuleEvaluationFactory` to switch to when invoking the
              *                                      function `switchToPruningRuleEvaluation`
              * @param statisticsPtr                 An unique pointer to an object of type `INonDecomposableStatistics`
              *                                      to provide access to
@@ -112,8 +120,8 @@ namespace boosting {
              *                                      for individual examples in parallel
              */
             ConvertibleNonDecomposableStatisticsProvider(
-              const LabelWiseRuleEvaluationFactory& regularRuleEvaluationFactory,
-              const LabelWiseRuleEvaluationFactory& pruningRuleEvaluationFactory,
+              const DecomposableRuleEvaluationFactory& regularRuleEvaluationFactory,
+              const DecomposableRuleEvaluationFactory& pruningRuleEvaluationFactory,
               std::unique_ptr<NonDecomposableStatistics> statisticsPtr, uint32 numThreads)
                 : regularRuleEvaluationFactory_(regularRuleEvaluationFactory),
                   pruningRuleEvaluationFactory_(pruningRuleEvaluationFactory),
