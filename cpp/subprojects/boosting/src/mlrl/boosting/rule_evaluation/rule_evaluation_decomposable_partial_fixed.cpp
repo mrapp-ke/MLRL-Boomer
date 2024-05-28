@@ -52,8 +52,8 @@ namespace boosting {
                 uint32 numPredictions = indexVector_.getNumElements();
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
                 SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
-                sortLabelWiseScores(tmpIterator, statisticIterator, numElements, numPredictions,
-                                    l1RegularizationWeight_, l2RegularizationWeight_);
+                sortOutputWiseScores(tmpIterator, statisticIterator, numElements, numPredictions,
+                                     l1RegularizationWeight_, l2RegularizationWeight_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
                 typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();

@@ -521,17 +521,17 @@ class AutomaticBinaryPredictorMixin(ABC):
         pass
             
              
-class LabelWiseScorePredictorMixin(ABC):
+class OutputWiseScorePredictorMixin(ABC):
     """
-    Allows to configure a rule learner to use a predictor that predicts label-wise regression scores for given query
-    examples by summing up the scores that are provided by individual rules for each label individually.
+    Allows to configure a rule learner to use a predictor that predicts output-wise regression scores for given query
+    examples by summing up the scores that are provided by individual rules for each output individually.
     """
 
     @abstractmethod
-    def use_label_wise_score_predictor(self):
+    def use_output_wise_score_predictor(self):
         """
-        Configures the rule learner to use a predictor that predict label-wise regression scores for given query
-        examples by summing up the scores that are provided by individual rules for each label individually.
+        Configures the rule learner to use a predictor that predict output-wise regression scores for given query
+        examples by summing up the scores that are provided by individual rules for each output individually.
         """
         pass
             

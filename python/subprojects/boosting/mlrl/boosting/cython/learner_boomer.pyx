@@ -62,10 +62,10 @@ from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, Automati
     DenseStatisticsMixin, DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, \
     FixedPartialHeadMixin, GfmBinaryPredictorMixin, IsotonicJointProbabilityCalibrationMixin, \
     IsotonicMarginalProbabilityCalibrationMixin, L1RegularizationMixin, L2RegularizationMixin, \
-    LabelWiseBinaryPredictorMixin, LabelWiseProbabilityPredictorMixin, LabelWiseScorePredictorMixin, \
-    MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
-    NoLabelBinningMixin, NonDecomposableLogisticLossMixin, NonDecomposableSquaredErrorLossMixin, \
-    NonDecomposableSquaredHingeLossMixin, SingleOutputHeadMixin, SparseStatisticsMixin
+    LabelWiseBinaryPredictorMixin, LabelWiseProbabilityPredictorMixin, MarginalizedProbabilityPredictorMixin, \
+    NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, NoLabelBinningMixin, \
+    NonDecomposableLogisticLossMixin, NonDecomposableSquaredErrorLossMixin, NonDecomposableSquaredHingeLossMixin, \
+    OutputWiseScorePredictorMixin, SingleOutputHeadMixin, SparseStatisticsMixin
 
 
 cdef class BoomerConfig(RuleLearnerConfig,
@@ -103,7 +103,7 @@ cdef class BoomerConfig(RuleLearnerConfig,
                         ExampleWiseBinaryPredictorMixin,
                         GfmBinaryPredictorMixin,
                         AutomaticBinaryPredictorMixin,
-                        LabelWiseScorePredictorMixin,
+                        OutputWiseScorePredictorMixin,
                         LabelWiseProbabilityPredictorMixin,
                         MarginalizedProbabilityPredictorMixin,
                         AutomaticProbabilityPredictorMixin,
@@ -508,8 +508,8 @@ cdef class BoomerConfig(RuleLearnerConfig,
     def use_automatic_binary_predictor(self):
         self.config_ptr.get().useLabelWiseBinaryPredictor()
 
-    def use_label_wise_score_predictor(self):
-        self.config_ptr.get().useLabelWiseScorePredictor()
+    def use_output_wise_score_predictor(self):
+        self.config_ptr.get().useOutputWiseScorePredictor()
 
     def use_label_wise_probability_predictor(self) -> LabelWiseProbabilityPredictorConfig:
         cdef ILabelWiseProbabilityPredictorConfig* config_ptr = \

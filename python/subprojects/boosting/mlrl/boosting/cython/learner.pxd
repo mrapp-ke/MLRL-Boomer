@@ -258,11 +258,11 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
         void useAutomaticBinaryPredictor()
 
 
-    cdef cppclass ILabelWiseScorePredictorMixin"boosting::IBoostingRuleLearner::ILabelWiseScorePredictorMixin":
+    cdef cppclass IOutputWiseScorePredictorMixin"boosting::IBoostingRuleLearner::IOutputWiseScorePredictorMixin":
 
         # Functions:
 
-        void useLabelWiseScorePredictor()
+        void useOutputWiseScorePredictor()
 
 
     cdef cppclass ILabelWiseProbabilityPredictorMixin \

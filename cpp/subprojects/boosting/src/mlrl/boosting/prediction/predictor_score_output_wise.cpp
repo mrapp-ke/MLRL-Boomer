@@ -1,14 +1,14 @@
-#include "mlrl/boosting/prediction/predictor_score_label_wise.hpp"
+#include "mlrl/boosting/prediction/predictor_score_output_wise.hpp"
 
 #include "mlrl/boosting/prediction/predictor_score_common.hpp"
 
 namespace boosting {
 
     /**
-     * Allows to create instances of the type `IScorePredictor` that predict label-wise regression scores for given
-     * query examples by summing up the scores that are provided by individual rules for each label individually.
+     * Allows to create instances of the type `IScorePredictor` that predict output-wise regression scores for given
+     * query examples by summing up the scores that are provided by individual rules for each output individually.
      */
-    class LabelWiseScorePredictorFactory final : public IScorePredictorFactory {
+    class OutputWiseScorePredictorFactory final : public IScorePredictorFactory {
         private:
 
             const uint32 numThreads_;
@@ -19,7 +19,7 @@ namespace boosting {
              * @param numThreads The number of CPU threads to be used to make predictions for different query examples
              *                   in parallel. Must be at least 1
              */
-            LabelWiseScorePredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
+            OutputWiseScorePredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
 
             /**
              * @see `IPredictorFactory::create`
@@ -42,17 +42,17 @@ namespace boosting {
             }
     };
 
-    LabelWiseScorePredictorConfig::LabelWiseScorePredictorConfig(
+    OutputWiseScorePredictorConfig::OutputWiseScorePredictorConfig(
       const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
-    std::unique_ptr<IScorePredictorFactory> LabelWiseScorePredictorConfig::createPredictorFactory(
+    std::unique_ptr<IScorePredictorFactory> OutputWiseScorePredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-        return std::make_unique<LabelWiseScorePredictorFactory>(numThreads);
+        return std::make_unique<OutputWiseScorePredictorFactory>(numThreads);
     }
 
-    bool LabelWiseScorePredictorConfig::isLabelVectorSetNeeded() const {
+    bool OutputWiseScorePredictorConfig::isLabelVectorSetNeeded() const {
         return false;
     }
 

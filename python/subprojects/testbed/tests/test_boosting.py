@@ -509,19 +509,19 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .set_model_dir()
         self.run_cmd(builder, 'predictor-binary-gfm_sparse_incremental')
 
-    def test_predictor_score_label_wise(self):
+    def test_predictor_score_output_wise(self):
         """
-        Tests the BOOMER algorithm when predicting regression scores that are obtained in label-wise manner.
+        Tests the BOOMER algorithm when predicting regression scores that are obtained in an output-wise manner.
         """
         builder = BoostingCmdBuilder() \
             .prediction_type(PREDICTION_TYPE_SCORES) \
             .print_predictions()
-        self.run_cmd(builder, 'predictor-score-label-wise')
+        self.run_cmd(builder, 'predictor-score-output-wise')
 
-    def test_predictor_score_label_wise_incremental(self):
+    def test_predictor_score_output_wise_incremental(self):
         """
         Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting regression
-        scores that are obtained in a label-wise manner.
+        scores that are obtained in an output-wise manner.
         """
         builder = BoostingCmdBuilder() \
             .prediction_type(PREDICTION_TYPE_SCORES) \
@@ -529,7 +529,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
-        self.run_cmd(builder, 'predictor-score-label-wise_incremental')
+        self.run_cmd(builder, 'predictor-score-output-wise_incremental')
 
     def test_predictor_probability_label_wise(self):
         """

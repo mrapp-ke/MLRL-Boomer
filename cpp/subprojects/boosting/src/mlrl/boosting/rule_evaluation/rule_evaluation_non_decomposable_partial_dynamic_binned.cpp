@@ -29,9 +29,9 @@ namespace boosting {
 
         protected:
 
-            uint32 calculateLabelWiseCriteria(const DenseNonDecomposableStatisticVector& statisticVector,
-                                              float64* criteria, uint32 numCriteria, float64 l1RegularizationWeight,
-                                              float64 l2RegularizationWeight) override {
+            uint32 calculateOutputWiseCriteria(const DenseNonDecomposableStatisticVector& statisticVector,
+                                               float64* criteria, uint32 numCriteria, float64 l1RegularizationWeight,
+                                               float64 l2RegularizationWeight) override {
                 uint32 numLabels = statisticVector.getNumGradients();
                 DenseNonDecomposableStatisticVector::gradient_const_iterator gradientIterator =
                   statisticVector.gradients_cbegin();

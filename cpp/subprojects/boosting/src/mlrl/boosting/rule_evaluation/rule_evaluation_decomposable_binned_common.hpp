@@ -32,8 +32,8 @@ namespace boosting {
         for (uint32 i = 0; i < numElements; i++) {
             uint32 weight = weights[i];
             const Tuple<float64>& tuple = statisticIterator[i];
-            float64 predictedScore = calculateLabelWiseScore(tuple.first, tuple.second, weight * l1RegularizationWeight,
-                                                             weight * l2RegularizationWeight);
+            float64 predictedScore = calculateOutputWiseScore(
+              tuple.first, tuple.second, weight * l1RegularizationWeight, weight * l2RegularizationWeight);
             scoreIterator[i] = predictedScore;
             quality += calculateOutputWiseQuality(predictedScore, tuple.first, tuple.second,
                                                   weight * l1RegularizationWeight, weight * l2RegularizationWeight);
@@ -74,21 +74,21 @@ namespace boosting {
         protected:
 
             /**
-             * Must be implemented by subclasses in order to calculate label-wise criteria that are used to determine
-             * the mapping from labels to bins.
+             * Must be implemented by subclasses in order to calculate output-wise criteria that are used to determine
+             * the mapping from outputs to bins.
              *
              * @param statisticVector           A reference to an object of template type `StatisticVector` that stores
              *                                  the gradients and Hessians
-             * @param criteria                  An iterator, the label-wise criteria should be written to
-             * @param numCriteria               The number of label-wise criteria to be calculated
+             * @param criteria                  An iterator, the output-wise criteria should be written to
+             * @param numCriteria               The number of output-wise criteria to be calculated
              * @param l1RegularizationWeight    The L1 regularization weight
              * @param l2RegularizationWeight    The L2 regularization weight
-             * @return                          The number of label-wise criteria that have been calculated
+             * @return                          The number of output-wise criteria that have been calculated
              */
-            virtual uint32 calculateLabelWiseCriteria(const StatisticVector& statisticVector,
-                                                      View<float64>::iterator criteria, uint32 numCriteria,
-                                                      float64 l1RegularizationWeight,
-                                                      float64 l2RegularizationWeight) = 0;
+            virtual uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector,
+                                                       View<float64>::iterator criteria, uint32 numCriteria,
+                                                       float64 l1RegularizationWeight,
+                                                       float64 l2RegularizationWeight) = 0;
 
         public:
 
@@ -122,8 +122,8 @@ namespace boosting {
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override final {
                 // Calculate label-wise criteria...
                 uint32 numCriteria =
-                  this->calculateLabelWiseCriteria(statisticVector, criteria_.begin(), scoreVector_.getNumElements(),
-                                                   l1RegularizationWeight_, l2RegularizationWeight_);
+                  this->calculateOutputWiseCriteria(statisticVector, criteria_.begin(), scoreVector_.getNumElements(),
+                                                    l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Obtain information about the bins to be used...
                 LabelInfo labelInfo = binningPtr_->getLabelInfo(criteria_.cbegin(), numCriteria);
@@ -173,15 +173,15 @@ namespace boosting {
         : public AbstractDecomposableBinnedRuleEvaluation<StatisticVector, IndexVector> {
         protected:
 
-            uint32 calculateLabelWiseCriteria(const StatisticVector& statisticVector, View<float64>::iterator criteria,
-                                              uint32 numCriteria, float64 l1RegularizationWeight,
-                                              float64 l2RegularizationWeight) override {
+            uint32 calculateOutputWiseCriteria(const StatisticVector& statisticVector, View<float64>::iterator criteria,
+                                               uint32 numCriteria, float64 l1RegularizationWeight,
+                                               float64 l2RegularizationWeight) override {
                 typename StatisticVector::const_iterator statisticIterator = statisticVector.cbegin();
 
                 for (uint32 i = 0; i < numCriteria; i++) {
                     const Tuple<float64>& tuple = statisticIterator[i];
-                    criteria[i] = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
-                                                          l2RegularizationWeight);
+                    criteria[i] = calculateOutputWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
+                                                           l2RegularizationWeight);
                 }
 
                 return numCriteria;

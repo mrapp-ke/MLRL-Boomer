@@ -31,7 +31,7 @@ source_files = [
     'src/mlrl/boosting/prediction/predictor_probability_auto.cpp',
     'src/mlrl/boosting/prediction/predictor_probability_label_wise.cpp',
     'src/mlrl/boosting/prediction/predictor_probability_marginalized.cpp',
-    'src/mlrl/boosting/prediction/predictor_score_label_wise.cpp',
+    'src/mlrl/boosting/prediction/predictor_score_output_wise.cpp',
     'src/mlrl/boosting/prediction/probability_calibration_isotonic.cpp',
     'src/mlrl/boosting/prediction/probability_function_chain_rule.cpp',
     'src/mlrl/boosting/prediction/probability_function_logistic.cpp',

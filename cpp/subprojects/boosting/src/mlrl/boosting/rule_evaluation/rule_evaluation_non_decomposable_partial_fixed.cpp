@@ -64,15 +64,15 @@ namespace boosting {
              * @see `IRuleEvaluation::evaluate`
              */
             const IScoreVector& calculateScores(DenseNonDecomposableStatisticVector& statisticVector) override {
-                uint32 numLabels = statisticVector.getNumGradients();
+                uint32 numOutputs = statisticVector.getNumGradients();
                 uint32 numPredictions = indexVector_.getNumElements();
                 DenseNonDecomposableStatisticVector::gradient_const_iterator gradientIterator =
                   statisticVector.gradients_cbegin();
                 DenseNonDecomposableStatisticVector::hessian_diagonal_const_iterator hessianIterator =
                   statisticVector.hessians_diagonal_cbegin();
                 SparseArrayVector<float64>::iterator tmpIterator = tmpVector_.begin();
-                sortLabelWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numLabels, numPredictions,
-                                      l1RegularizationWeight_, l2RegularizationWeight_);
+                sortOutputWiseCriteria(tmpIterator, gradientIterator, hessianIterator, numOutputs, numPredictions,
+                                       l1RegularizationWeight_, l2RegularizationWeight_);
 
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();

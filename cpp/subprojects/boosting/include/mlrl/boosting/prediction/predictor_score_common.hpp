@@ -149,9 +149,8 @@ namespace boosting {
     };
 
     /**
-     * An implementation of the type `IScorePredictor` that allows to predict label-wise regression scores for given
-     * query examples by summing up the scores that are predicted by individual rules in a rule-based model for each
-     * label individually.
+     * An implementation of the type `IScorePredictor` that allows to predict scores for given query examples by summing
+     * up the scores that are predicted by individual rules in a rule-based model for each output.
      *
      * @tparam FeatureMatrix    The type of the feature matrix that provides row-wise access to the feature values of
      *                          the query examples
