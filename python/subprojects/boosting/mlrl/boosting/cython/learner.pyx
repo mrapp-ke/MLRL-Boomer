@@ -7,7 +7,7 @@ from mlrl.boosting.cython.head_type import DynamicPartialHeadConfig, FixedPartia
 from mlrl.boosting.cython.label_binning import EqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor import ConstantShrinkageConfig
 from mlrl.boosting.cython.prediction import ExampleWiseBinaryPredictorConfig, GfmBinaryPredictorConfig, \
-    LabelWiseBinaryPredictorConfig, LabelWiseProbabilityPredictorConfig, MarginalizedProbabilityPredictorConfig
+    LabelWiseBinaryPredictorConfig, MarginalizedProbabilityPredictorConfig, OutputWiseProbabilityPredictorConfig
 from mlrl.boosting.cython.probability_calibration import IsotonicJointProbabilityCalibratorConfig, \
     IsotonicMarginalProbabilityCalibratorConfig
 from mlrl.boosting.cython.regularization import ManualRegularizationConfig
@@ -536,19 +536,19 @@ class OutputWiseScorePredictorMixin(ABC):
         pass
             
              
-class LabelWiseProbabilityPredictorMixin(ABC):
+class OutputWiseProbabilityPredictorMixin(ABC):
     """
     Allows to configure a rule learner to use a predictor that predicts label-wise probabilities for given query
-    examples by transforming the regression scores that are predicted for each label individually into probabilities.
+    examples by transforming the individual regression scores that are predicted for each label into probabilities.
     """
 
     @abstractmethod
-    def use_label_wise_probability_predictor(self) -> LabelWiseProbabilityPredictorConfig:
+    def use_output_wise_probability_predictor(self) -> OutputWiseProbabilityPredictorConfig:
         """
         Configures the rule learner to use a predictor that predicts label-wise probabilities for given query examples
-        by transforming the regression scores that are predicted for each label individually into probabilities.
+        by transforming the individual regression scores that are predicted for each label into probabilities.
 
-        :return: A `LabelWiseProbabilityPredictorConfig` that allows further configuration of the predictor
+        :return: A `OutputWiseProbabilityPredictorConfig` that allows further configuration of the predictor
         """
         pass
             

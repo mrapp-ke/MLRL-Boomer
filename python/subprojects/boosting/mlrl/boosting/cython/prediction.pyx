@@ -3,7 +3,7 @@
 """
 
 
-cdef class LabelWiseProbabilityPredictorConfig:
+cdef class OutputWiseProbabilityPredictorConfig:
     """
     Allows to configure a predictor that predicts label-wise probabilities for given query examples, which estimate the
     chance of individual labels to be relevant, by summing up the scores that are provided by individual rules of an
@@ -20,13 +20,13 @@ cdef class LabelWiseProbabilityPredictorConfig:
         return self.config_ptr.isProbabilityCalibrationModelUsed()
 
     def set_use_probability_calibration_model(
-        self, use_probability_calibration_model: bool) -> LabelWiseProbabilityPredictorConfig:
+        self, use_probability_calibration_model: bool) -> OutputWiseProbabilityPredictorConfig:
         """
         Sets whether a model for the calibration of probabilities should be used, if available, or not.
 
         :param use_probability_calibration_model:   True, if a model for the calibration of probabilities should be
                                                     used, if available, false otherwise
-        :return:                                    A `LabelWiseProbabilityPredictorConfig` that allows further
+        :return:                                    A `OutputWiseProbabilityPredictorConfig` that allows further
                                                     configuration of the predictor
         """
         self.config_ptr.setUseProbabilityCalibrationModel(use_probability_calibration_model)

@@ -26,8 +26,8 @@
 #include "mlrl/boosting/prediction/predictor_binary_gfm.hpp"
 #include "mlrl/boosting/prediction/predictor_binary_label_wise.hpp"
 #include "mlrl/boosting/prediction/predictor_probability_auto.hpp"
-#include "mlrl/boosting/prediction/predictor_probability_label_wise.hpp"
 #include "mlrl/boosting/prediction/predictor_probability_marginalized.hpp"
+#include "mlrl/boosting/prediction/predictor_probability_output_wise.hpp"
 #include "mlrl/boosting/prediction/predictor_score_output_wise.hpp"
 #include "mlrl/boosting/prediction/probability_calibration_isotonic.hpp"
 #include "mlrl/boosting/rule_evaluation/head_type_auto.hpp"
@@ -898,29 +898,29 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a predictor that
-             * predicts label-wise probabilities for given query examples by transforming the regression scores that are
-             * predicted for each label individually into probabilities.
+             * predicts label-wise probabilities for given query examples by transforming the individual regression
+             * scores that are predicted for each label into probabilities.
              */
-            class ILabelWiseProbabilityPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IOutputWiseProbabilityPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseProbabilityPredictorMixin() override {}
+                    virtual ~IOutputWiseProbabilityPredictorMixin() override {}
 
                     /**
                      * Configures the rule learner to use a predictor that predicts label-wise probabilities for given
-                     * query examples by transforming the regression scores that are predicted for each label
-                     * individually into probabilities.
+                     * query examples by transforming the individual regression scores that are predicted for each label
+                     * into probabilities.
                      *
-                     * @return A reference to an object of type `ILabelWiseProbabilityPredictorConfig` that allows
+                     * @return A reference to an object of type `IOutputWiseProbabilityPredictorConfig` that allows
                      *         further configuration of the predictor
                      */
-                    virtual ILabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor() {
+                    virtual IOutputWiseProbabilityPredictorConfig& useOutputWiseProbabilityPredictor() {
                         std::unique_ptr<IProbabilityPredictorConfig>& probabilityPredictorConfigPtr =
                           this->getProbabilityPredictorConfigPtr();
-                        std::unique_ptr<LabelWiseProbabilityPredictorConfig> ptr =
-                          std::make_unique<LabelWiseProbabilityPredictorConfig>(this->getLossConfigPtr(),
-                                                                                this->getParallelPredictionConfigPtr());
-                        ILabelWiseProbabilityPredictorConfig& ref = *ptr;
+                        std::unique_ptr<OutputWiseProbabilityPredictorConfig> ptr =
+                          std::make_unique<OutputWiseProbabilityPredictorConfig>(
+                            this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                        IOutputWiseProbabilityPredictorConfig& ref = *ptr;
                         probabilityPredictorConfigPtr = std::move(ptr);
                         return ref;
                     }

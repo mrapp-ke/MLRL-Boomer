@@ -19,10 +19,11 @@ from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, Automati
     DecomposableSquaredErrorLossMixin, DecomposableSquaredHingeLossMixin, DenseStatisticsMixin, \
     DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, FixedPartialHeadMixin, \
     GfmBinaryPredictorMixin, IsotonicJointProbabilityCalibrationMixin, IsotonicMarginalProbabilityCalibrationMixin, \
-    L1RegularizationMixin, L2RegularizationMixin, LabelWiseBinaryPredictorMixin, LabelWiseProbabilityPredictorMixin, \
+    L1RegularizationMixin, L2RegularizationMixin, LabelWiseBinaryPredictorMixin, \
     MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
     NoLabelBinningMixin, NonDecomposableLogisticLossMixin, NonDecomposableSquaredErrorLossMixin, \
-    NonDecomposableSquaredHingeLossMixin, SingleOutputHeadMixin, SparseStatisticsMixin
+    NonDecomposableSquaredHingeLossMixin, OutputWiseProbabilityPredictorMixin, SingleOutputHeadMixin, \
+    SparseStatisticsMixin
 
 PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
 
@@ -431,15 +432,15 @@ class ProbabilityPredictorParameter(NominalParameter):
     A parameter that allows to configure the strategy to be used for predicting probabilities.
     """
 
-    PROBABILITY_PREDICTOR_LABEL_WISE = 'label-wise'
+    PROBABILITY_PREDICTOR_OUTPUT_WISE = 'output-wise'
 
     PROBABILITY_PREDICTOR_MARGINALIZED = 'marginalized'
 
     def __init__(self):
         super().__init__(name='probability_predictor',
                          description='The name of the strategy to be used for predicting probabilities')
-        self.add_value(name=self.PROBABILITY_PREDICTOR_LABEL_WISE,
-                       mixin=LabelWiseProbabilityPredictorMixin,
+        self.add_value(name=self.PROBABILITY_PREDICTOR_OUTPUT_WISE,
+                       mixin=OutputWiseProbabilityPredictorMixin,
                        options={OPTION_USE_PROBABILITY_CALIBRATION_MODEL})
         self.add_value(name=self.PROBABILITY_PREDICTOR_MARGINALIZED,
                        mixin=MarginalizedProbabilityPredictorMixin,
@@ -450,8 +451,8 @@ class ProbabilityPredictorParameter(NominalParameter):
                        + 'based on the parameter ' + LossParameter().argument_name)
 
     def _configure(self, config, value: str, options: Optional[Options]):
-        if value == self.PROBABILITY_PREDICTOR_LABEL_WISE:
-            conf = config.use_label_wise_probability_predictor()
+        if value == self.PROBABILITY_PREDICTOR_OUTPUT_WISE:
+            conf = config.use_output_wise_probability_predictor()
             conf.set_use_probability_calibration_model(
                 options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL,
                                  conf.is_probability_calibration_model_used()))

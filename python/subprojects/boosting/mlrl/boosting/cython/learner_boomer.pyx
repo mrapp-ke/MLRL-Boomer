@@ -33,8 +33,8 @@ from mlrl.boosting.cython.label_binning cimport EqualWidthLabelBinningConfig, IE
 from mlrl.boosting.cython.post_processor cimport ConstantShrinkageConfig, IConstantShrinkageConfig
 from mlrl.boosting.cython.prediction cimport ExampleWiseBinaryPredictorConfig, GfmBinaryPredictorConfig, \
     IExampleWiseBinaryPredictorConfig, IGfmBinaryPredictorConfig, ILabelWiseBinaryPredictorConfig, \
-    ILabelWiseProbabilityPredictorConfig, IMarginalizedProbabilityPredictorConfig, LabelWiseBinaryPredictorConfig, \
-    LabelWiseProbabilityPredictorConfig, MarginalizedProbabilityPredictorConfig
+    IMarginalizedProbabilityPredictorConfig, IOutputWiseProbabilityPredictorConfig, LabelWiseBinaryPredictorConfig, \
+    MarginalizedProbabilityPredictorConfig, OutputWiseProbabilityPredictorConfig
 from mlrl.boosting.cython.probability_calibration cimport IIsotonicJointProbabilityCalibratorConfig, \
     IIsotonicMarginalProbabilityCalibratorConfig, IsotonicJointProbabilityCalibratorConfig, \
     IsotonicMarginalProbabilityCalibratorConfig
@@ -62,9 +62,9 @@ from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, Automati
     DenseStatisticsMixin, DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, \
     FixedPartialHeadMixin, GfmBinaryPredictorMixin, IsotonicJointProbabilityCalibrationMixin, \
     IsotonicMarginalProbabilityCalibrationMixin, L1RegularizationMixin, L2RegularizationMixin, \
-    LabelWiseBinaryPredictorMixin, LabelWiseProbabilityPredictorMixin, MarginalizedProbabilityPredictorMixin, \
-    NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, NoLabelBinningMixin, \
-    NonDecomposableLogisticLossMixin, NonDecomposableSquaredErrorLossMixin, NonDecomposableSquaredHingeLossMixin, \
+    LabelWiseBinaryPredictorMixin, MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoL1RegularizationMixin, \
+    NoL2RegularizationMixin, NoLabelBinningMixin, NonDecomposableLogisticLossMixin, \
+    NonDecomposableSquaredErrorLossMixin, NonDecomposableSquaredHingeLossMixin, OutputWiseProbabilityPredictorMixin, \
     OutputWiseScorePredictorMixin, SingleOutputHeadMixin, SparseStatisticsMixin
 
 
@@ -104,7 +104,7 @@ cdef class BoomerConfig(RuleLearnerConfig,
                         GfmBinaryPredictorMixin,
                         AutomaticBinaryPredictorMixin,
                         OutputWiseScorePredictorMixin,
-                        LabelWiseProbabilityPredictorMixin,
+                        OutputWiseProbabilityPredictorMixin,
                         MarginalizedProbabilityPredictorMixin,
                         AutomaticProbabilityPredictorMixin,
                         SequentialRuleModelAssemblageMixin,
@@ -511,11 +511,11 @@ cdef class BoomerConfig(RuleLearnerConfig,
     def use_output_wise_score_predictor(self):
         self.config_ptr.get().useOutputWiseScorePredictor()
 
-    def use_label_wise_probability_predictor(self) -> LabelWiseProbabilityPredictorConfig:
-        cdef ILabelWiseProbabilityPredictorConfig* config_ptr = \
-            &self.config_ptr.get().useLabelWiseProbabilityPredictor()
-        cdef LabelWiseProbabilityPredictorConfig config = \
-            LabelWiseProbabilityPredictorConfig.__new__(LabelWiseProbabilityPredictorConfig)
+    def use_output_wise_probability_predictor(self) -> OutputWiseProbabilityPredictorConfig:
+        cdef IOutputWiseProbabilityPredictorConfig* config_ptr = \
+            &self.config_ptr.get().useOutputWiseProbabilityPredictor()
+        cdef OutputWiseProbabilityPredictorConfig config = \
+            OutputWiseProbabilityPredictorConfig.__new__(OutputWiseProbabilityPredictorConfig)
         config.config_ptr = config_ptr
         return config
 

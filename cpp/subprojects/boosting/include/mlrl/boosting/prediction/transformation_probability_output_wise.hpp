@@ -9,10 +9,10 @@
 namespace boosting {
 
     /**
-     * An implementation of the class `IProbabilityTransformation` that transforms aggregated scores into probability
-     * estimates via element-wise application of a `IMarginalProbabilityFunction`.
+     * An implementation of the class `IProbabilityTransformation` that transforms scores that have been aggregated for
+     * individual labels into probability estimates via element-wise application of an `IMarginalProbabilityFunction`.
      */
-    class LabelWiseProbabilityTransformation final : public IProbabilityTransformation {
+    class OutputWiseProbabilityTransformation final : public IProbabilityTransformation {
         private:
 
             const std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr_;
@@ -25,7 +25,7 @@ namespace boosting {
              *                                       regression scores that are predicted for individual labels into
              *                                       probabilities
              */
-            LabelWiseProbabilityTransformation(
+            OutputWiseProbabilityTransformation(
               std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr);
 
             void apply(View<float64>::const_iterator scoresBegin, View<float64>::const_iterator scoresEnd,
