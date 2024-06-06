@@ -42,7 +42,7 @@ class MLRLCOMMON_API ILabelSpaceInfo {
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
          *                                            calibration of marginal probabilities
          * @return                                    An unique pointer to an object of type
-         *                                            `IJointProbabilityPredictor` that has been created
+         *                                            `IJointProbabilityCalibrator` that has been created
          */
         virtual std::unique_ptr<IJointProbabilityCalibrator> createJointProbabilityCalibrator(
           const IJointProbabilityCalibratorFactory& factory,
