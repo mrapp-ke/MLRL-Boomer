@@ -7,7 +7,7 @@ from mlrl.boosting.cython.head_type import DynamicPartialHeadConfig, FixedPartia
 from mlrl.boosting.cython.label_binning import EqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor import ConstantShrinkageConfig
 from mlrl.boosting.cython.prediction import ExampleWiseBinaryPredictorConfig, GfmBinaryPredictorConfig, \
-    LabelWiseBinaryPredictorConfig, MarginalizedProbabilityPredictorConfig, OutputWiseProbabilityPredictorConfig
+    MarginalizedProbabilityPredictorConfig, OutputWiseBinaryPredictorConfig, OutputWiseProbabilityPredictorConfig
 from mlrl.boosting.cython.probability_calibration import IsotonicJointProbabilityCalibratorConfig, \
     IsotonicMarginalProbabilityCalibratorConfig
 from mlrl.boosting.cython.regularization import ManualRegularizationConfig
@@ -449,7 +449,7 @@ class IsotonicJointProbabilityCalibrationMixin(ABC):
         pass
 
 
-class LabelWiseBinaryPredictorMixin(ABC):
+class OutputWiseBinaryPredictorMixin(ABC):
     """
     Allows to configure a predictor that predicts whether individual labels of given query examples are relevant or
     irrelevant by discretizing the regression scores or probability estimates that are predicted for each label
@@ -457,13 +457,13 @@ class LabelWiseBinaryPredictorMixin(ABC):
     """
 
     @abstractmethod
-    def use_label_wise_binary_predictor(self) -> LabelWiseBinaryPredictorConfig:
+    def use_output_wise_binary_predictor(self) -> OutputWiseBinaryPredictorConfig:
         """
         Configures the rule learner to use a predictor that predicts whether individual labels of given query examples
         are relevant or irrelevant by discretizing the regression scores or probability estimates that are predicted for
         each label individually.
 
-        :return: A `LabelWiseBinaryPredictorConfig` that allows further configuration of the predictor
+        :return: A `OutputWiseBinaryPredictorConfig` that allows further configuration of the predictor
         """
         pass
             

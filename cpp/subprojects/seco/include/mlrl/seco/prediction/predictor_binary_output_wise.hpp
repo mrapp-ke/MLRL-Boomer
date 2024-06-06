@@ -14,7 +14,7 @@ namespace seco {
      * covers an example, its prediction (1 if the label is relevant, 0 otherwise) is applied to each label
      * individually, if none of the previous rules has already predicted for a particular example and label.
      */
-    class LabelWiseBinaryPredictorConfig final : public IBinaryPredictorConfig {
+    class OutputWiseBinaryPredictorConfig final : public IBinaryPredictorConfig {
         private:
 
             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
@@ -26,7 +26,7 @@ namespace seco {
              *                                multi-threading behavior that should be used to predict for several query
              *                                examples in parallel
              */
-            LabelWiseBinaryPredictorConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+            OutputWiseBinaryPredictorConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
             /**
              * @see `IPredictorConfig::createPredictorFactory`

@@ -1,4 +1,4 @@
-#include "mlrl/seco/prediction/predictor_binary_label_wise.hpp"
+#include "mlrl/seco/prediction/predictor_binary_output_wise.hpp"
 
 #include "mlrl/common/data/array.hpp"
 #include "mlrl/common/data/vector_bit.hpp"
@@ -104,7 +104,7 @@ namespace seco {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class LabelWiseBinaryPredictor final : public IBinaryPredictor {
+    class OutputWiseBinaryPredictor final : public IBinaryPredictor {
         private:
 
             class PredictionDelegate final
@@ -145,8 +145,8 @@ namespace seco {
              * @param numThreads    The number of CPU threads to be used to make predictions for different query
              *                      examples in parallel. Must be at least 1
              */
-            LabelWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
-                                     uint32 numThreads)
+            OutputWiseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
+                                      uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
 
             /**
@@ -185,7 +185,7 @@ namespace seco {
      * applied to each label individually, if none of the previous rules has already predicted for a particular example
      * and label.
      */
-    class LabelWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
+    class OutputWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
         private:
 
             const uint32 numThreads_;
@@ -196,7 +196,7 @@ namespace seco {
              * @param numThreads The number of CPU threads to be used to make predictions for different query examples
              *                   in parallel. Must be at least 1
              */
-            LabelWiseBinaryPredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
+            OutputWiseBinaryPredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
 
             std::unique_ptr<IBinaryPredictor> create(
               const CContiguousView<const float32>& featureMatrix, const RuleList& model,
@@ -204,7 +204,7 @@ namespace seco {
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
-                return std::make_unique<LabelWiseBinaryPredictor<CContiguousView<const float32>, RuleList>>(
+                return std::make_unique<OutputWiseBinaryPredictor<CContiguousView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
             }
 
@@ -213,7 +213,7 @@ namespace seco {
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
-                return std::make_unique<LabelWiseBinaryPredictor<CsrView<const float32>, RuleList>>(
+                return std::make_unique<OutputWiseBinaryPredictor<CsrView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
             }
     };
@@ -339,7 +339,7 @@ namespace seco {
      * @tparam Model            The type of the rule-based model that is used to obtain predictions
      */
     template<typename FeatureMatrix, typename Model>
-    class LabelWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
+    class OutputWiseSparseBinaryPredictor final : public ISparseBinaryPredictor {
         private:
 
             typedef BinarySparsePredictionDispatcher<FeatureMatrix, Model> Dispatcher;
@@ -385,8 +385,8 @@ namespace seco {
              * @param numThreads    The number of CPU threads to be used to make predictions for different query
              *                      examples in parallel. Must be at least 1
              */
-            LabelWiseSparseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
-                                           uint32 numThreads)
+            OutputWiseSparseBinaryPredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels,
+                                            uint32 numThreads)
                 : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
 
             /**
@@ -424,7 +424,7 @@ namespace seco {
      * otherwise) is applied to each label individually, if none of the previous rules has already predicted for a
      * particular example and label.
      */
-    class LabelWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
+    class OutputWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
         private:
 
             const uint32 numThreads_;
@@ -435,7 +435,7 @@ namespace seco {
              * @param numThreads The number of CPU threads to be used to make predictions for different query examples
              *                   in parallel. Must be at least 1
              */
-            LabelWiseSparseBinaryPredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
+            OutputWiseSparseBinaryPredictorFactory(uint32 numThreads) : numThreads_(numThreads) {}
 
             std::unique_ptr<ISparseBinaryPredictor> create(
               const CContiguousView<const float32>& featureMatrix, const RuleList& model,
@@ -443,7 +443,7 @@ namespace seco {
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
-                return std::make_unique<LabelWiseSparseBinaryPredictor<CContiguousView<const float32>, RuleList>>(
+                return std::make_unique<OutputWiseSparseBinaryPredictor<CContiguousView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
             }
 
@@ -452,28 +452,28 @@ namespace seco {
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel,
               uint32 numLabels) const override {
-                return std::make_unique<LabelWiseSparseBinaryPredictor<CsrView<const float32>, RuleList>>(
+                return std::make_unique<OutputWiseSparseBinaryPredictor<CsrView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_);
             }
     };
 
-    LabelWiseBinaryPredictorConfig::LabelWiseBinaryPredictorConfig(
+    OutputWiseBinaryPredictorConfig::OutputWiseBinaryPredictorConfig(
       const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
-    std::unique_ptr<IBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createPredictorFactory(
+    std::unique_ptr<IBinaryPredictorFactory> OutputWiseBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, const uint32 numLabels) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-        return std::make_unique<LabelWiseBinaryPredictorFactory>(numThreads);
+        return std::make_unique<OutputWiseBinaryPredictorFactory>(numThreads);
     }
 
-    std::unique_ptr<ISparseBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createSparsePredictorFactory(
+    std::unique_ptr<ISparseBinaryPredictorFactory> OutputWiseBinaryPredictorConfig::createSparsePredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, const uint32 numLabels) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-        return std::make_unique<LabelWiseSparseBinaryPredictorFactory>(numThreads);
+        return std::make_unique<OutputWiseSparseBinaryPredictorFactory>(numThreads);
     }
 
-    bool LabelWiseBinaryPredictorConfig::isLabelVectorSetNeeded() const {
+    bool OutputWiseBinaryPredictorConfig::isLabelVectorSetNeeded() const {
         return false;
     }
 

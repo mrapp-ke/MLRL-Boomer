@@ -32,9 +32,9 @@ from mlrl.boosting.cython.head_type cimport DynamicPartialHeadConfig, FixedParti
 from mlrl.boosting.cython.label_binning cimport EqualWidthLabelBinningConfig, IEqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport ConstantShrinkageConfig, IConstantShrinkageConfig
 from mlrl.boosting.cython.prediction cimport ExampleWiseBinaryPredictorConfig, GfmBinaryPredictorConfig, \
-    IExampleWiseBinaryPredictorConfig, IGfmBinaryPredictorConfig, ILabelWiseBinaryPredictorConfig, \
-    IMarginalizedProbabilityPredictorConfig, IOutputWiseProbabilityPredictorConfig, LabelWiseBinaryPredictorConfig, \
-    MarginalizedProbabilityPredictorConfig, OutputWiseProbabilityPredictorConfig
+    IExampleWiseBinaryPredictorConfig, IGfmBinaryPredictorConfig, IMarginalizedProbabilityPredictorConfig, \
+    IOutputWiseBinaryPredictorConfig, IOutputWiseProbabilityPredictorConfig, MarginalizedProbabilityPredictorConfig, \
+    OutputWiseBinaryPredictorConfig, OutputWiseProbabilityPredictorConfig
 from mlrl.boosting.cython.probability_calibration cimport IIsotonicJointProbabilityCalibratorConfig, \
     IIsotonicMarginalProbabilityCalibratorConfig, IsotonicJointProbabilityCalibratorConfig, \
     IsotonicMarginalProbabilityCalibratorConfig
@@ -62,9 +62,9 @@ from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, Automati
     DenseStatisticsMixin, DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, \
     FixedPartialHeadMixin, GfmBinaryPredictorMixin, IsotonicJointProbabilityCalibrationMixin, \
     IsotonicMarginalProbabilityCalibrationMixin, L1RegularizationMixin, L2RegularizationMixin, \
-    LabelWiseBinaryPredictorMixin, MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoL1RegularizationMixin, \
-    NoL2RegularizationMixin, NoLabelBinningMixin, NonDecomposableLogisticLossMixin, \
-    NonDecomposableSquaredErrorLossMixin, NonDecomposableSquaredHingeLossMixin, OutputWiseProbabilityPredictorMixin, \
+    MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
+    NoLabelBinningMixin, NonDecomposableLogisticLossMixin, NonDecomposableSquaredErrorLossMixin, \
+    NonDecomposableSquaredHingeLossMixin, OutputWiseBinaryPredictorMixin, OutputWiseProbabilityPredictorMixin, \
     OutputWiseScorePredictorMixin, SingleOutputHeadMixin, SparseStatisticsMixin
 
 
@@ -99,7 +99,7 @@ cdef class BoomerConfig(RuleLearnerConfig,
                         AutomaticLabelBinningMixin,
                         IsotonicMarginalProbabilityCalibrationMixin,
                         IsotonicJointProbabilityCalibrationMixin,
-                        LabelWiseBinaryPredictorMixin,
+                        OutputWiseBinaryPredictorMixin,
                         ExampleWiseBinaryPredictorMixin,
                         GfmBinaryPredictorMixin,
                         AutomaticBinaryPredictorMixin,
@@ -485,10 +485,10 @@ cdef class BoomerConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_label_wise_binary_predictor(self) -> LabelWiseBinaryPredictorConfig:
-        cdef ILabelWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useLabelWiseBinaryPredictor()
-        cdef LabelWiseBinaryPredictorConfig config = \
-            LabelWiseBinaryPredictorConfig.__new__(LabelWiseBinaryPredictorConfig)
+    def use_output_wise_binary_predictor(self) -> OutputWiseBinaryPredictorConfig:
+        cdef IOutputWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useOutputWiseBinaryPredictor()
+        cdef OutputWiseBinaryPredictorConfig config = \
+            OutputWiseBinaryPredictorConfig.__new__(OutputWiseBinaryPredictorConfig)
         config.config_ptr = config_ptr
         return config
 
@@ -506,7 +506,7 @@ cdef class BoomerConfig(RuleLearnerConfig,
         return config
 
     def use_automatic_binary_predictor(self):
-        self.config_ptr.get().useLabelWiseBinaryPredictor()
+        self.config_ptr.get().useOutputWiseBinaryPredictor()
 
     def use_output_wise_score_predictor(self):
         self.config_ptr.get().useOutputWiseScorePredictor()

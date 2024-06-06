@@ -16,8 +16,8 @@ from mlrl.common.cython.learner cimport IBeamSearchTopDownRuleInductionMixin, ID
 
 from mlrl.seco.cython.learner cimport IAccuracyHeuristicMixin, IAccuracyPruningHeuristicMixin, \
     ICoverageStoppingCriterionMixin, IFMeasureHeuristicMixin, IFMeasurePruningHeuristicMixin, IKlnLiftFunctionMixin, \
-    ILabelWiseBinaryPredictorMixin, ILaplaceHeuristicMixin, ILaplacePruningHeuristicMixin, IMEstimateHeuristicMixin, \
-    IMEstimatePruningHeuristicMixin, INoCoverageStoppingCriterionMixin, INoLiftFunctionMixin, IPartialHeadMixin, \
+    ILaplaceHeuristicMixin, ILaplacePruningHeuristicMixin, IMEstimateHeuristicMixin, IMEstimatePruningHeuristicMixin, \
+    INoCoverageStoppingCriterionMixin, INoLiftFunctionMixin, IOutputWiseBinaryPredictorMixin, IPartialHeadMixin, \
     IPeakLiftFunctionMixin, IPrecisionHeuristicMixin, IPrecisionPruningHeuristicMixin, IRecallHeuristicMixin, \
     IRecallPruningHeuristicMixin, ISingleOutputHeadMixin, IWraHeuristicMixin, IWraPruningHeuristicMixin
 
@@ -46,7 +46,7 @@ cdef extern from "mlrl/seco/learner_seco.hpp" namespace "seco" nogil:
             IRecallPruningHeuristicMixin,
             IWraHeuristicMixin,
             IWraPruningHeuristicMixin,
-            ILabelWiseBinaryPredictorMixin,
+            IOutputWiseBinaryPredictorMixin,
             ISequentialRuleModelAssemblageMixin,
             IDefaultRuleMixin,
             IGreedyTopDownRuleInductionMixin,

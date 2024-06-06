@@ -19,11 +19,10 @@ from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, Automati
     DecomposableSquaredErrorLossMixin, DecomposableSquaredHingeLossMixin, DenseStatisticsMixin, \
     DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, FixedPartialHeadMixin, \
     GfmBinaryPredictorMixin, IsotonicJointProbabilityCalibrationMixin, IsotonicMarginalProbabilityCalibrationMixin, \
-    L1RegularizationMixin, L2RegularizationMixin, LabelWiseBinaryPredictorMixin, \
-    MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
-    NoLabelBinningMixin, NonDecomposableLogisticLossMixin, NonDecomposableSquaredErrorLossMixin, \
-    NonDecomposableSquaredHingeLossMixin, OutputWiseProbabilityPredictorMixin, SingleOutputHeadMixin, \
-    SparseStatisticsMixin
+    L1RegularizationMixin, L2RegularizationMixin, MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, \
+    NoL1RegularizationMixin, NoL2RegularizationMixin, NoLabelBinningMixin, NonDecomposableLogisticLossMixin, \
+    NonDecomposableSquaredErrorLossMixin, NonDecomposableSquaredHingeLossMixin, OutputWiseBinaryPredictorMixin, \
+    OutputWiseProbabilityPredictorMixin, SingleOutputHeadMixin, SparseStatisticsMixin
 
 PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
 
@@ -380,7 +379,7 @@ class BinaryPredictorParameter(NominalParameter):
     A parameter that allows to configure the strategy to be used for predicting binary labels.
     """
 
-    BINARY_PREDICTOR_LABEL_WISE = 'label-wise'
+    BINARY_PREDICTOR_OUTPUT_WISE = 'output-wise'
 
     BINARY_PREDICTOR_EXAMPLE_WISE = 'example-wise'
 
@@ -389,8 +388,8 @@ class BinaryPredictorParameter(NominalParameter):
     def __init__(self):
         super().__init__(name='binary_predictor',
                          description='The name of the strategy to be used for predicting binary labels')
-        self.add_value(name=self.BINARY_PREDICTOR_LABEL_WISE,
-                       mixin=LabelWiseBinaryPredictorMixin,
+        self.add_value(name=self.BINARY_PREDICTOR_OUTPUT_WISE,
+                       mixin=OutputWiseBinaryPredictorMixin,
                        options={OPTION_BASED_ON_PROBABILITIES, OPTION_USE_PROBABILITY_CALIBRATION_MODEL})
         self.add_value(name=self.BINARY_PREDICTOR_EXAMPLE_WISE,
                        mixin=ExampleWiseBinaryPredictorMixin,
@@ -404,8 +403,8 @@ class BinaryPredictorParameter(NominalParameter):
                        + 'based on the parameter ' + LossParameter().argument_name)
 
     def _configure(self, config, value: str, options: Optional[Options]):
-        if value == self.BINARY_PREDICTOR_LABEL_WISE:
-            conf = config.use_label_wise_binary_predictor()
+        if value == self.BINARY_PREDICTOR_OUTPUT_WISE:
+            conf = config.use_output_wise_binary_predictor()
             conf.set_based_on_probabilities(
                 options.get_bool(OPTION_BASED_ON_PROBABILITIES, conf.is_based_on_probabilities()))
             conf.set_use_probability_calibration_model(

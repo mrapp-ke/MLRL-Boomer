@@ -37,9 +37,9 @@ PROBABILITY_CALIBRATOR_ISOTONIC = 'isotonic'
 
 BINARY_PREDICTOR_AUTO = 'auto'
 
-BINARY_PREDICTOR_LABEL_WISE = 'label-wise'
+BINARY_PREDICTOR_OUTPUT_WISE = 'output-wise'
 
-BINARY_PREDICTOR_LABEL_WISE_BASED_ON_PROBABILITIES = BINARY_PREDICTOR_LABEL_WISE + '{based_on_probabilities=true}'
+BINARY_PREDICTOR_OUTPUT_WISE_BASED_ON_PROBABILITIES = BINARY_PREDICTOR_OUTPUT_WISE + '{based_on_probabilities=true}'
 
 BINARY_PREDICTOR_EXAMPLE_WISE = 'example-wise'
 
@@ -258,16 +258,16 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .loss(LOSS_SQUARED_ERROR_NON_DECOMPOSABLE)
         self.run_cmd(builder, 'loss-squared-error-non-decomposable')
 
-    def test_predictor_binary_label_wise(self):
+    def test_predictor_binary_output_wise(self):
         """
         Tests the BOOMER algorithm when predicting binary labels that are obtained for each label individually.
         """
         builder = BoostingCmdBuilder() \
-            .binary_predictor(BINARY_PREDICTOR_LABEL_WISE) \
+            .binary_predictor(BINARY_PREDICTOR_OUTPUT_WISE) \
             .print_predictions()
-        self.run_cmd(builder, 'predictor-binary-label-wise')
+        self.run_cmd(builder, 'predictor-binary-output-wise')
 
-    def test_predictor_binary_label_wise_based_on_probabilities(self):
+    def test_predictor_binary_output_wise_based_on_probabilities(self):
         """
         Tests the BOOMER algorithm when predicting binary labels that are obtained for each label individually based on
         probability estimates.
@@ -278,25 +278,25 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .store_marginal_probability_calibration_model() \
             .set_output_dir() \
             .store_evaluation(False) \
-            .binary_predictor(BINARY_PREDICTOR_LABEL_WISE_BASED_ON_PROBABILITIES) \
+            .binary_predictor(BINARY_PREDICTOR_OUTPUT_WISE_BASED_ON_PROBABILITIES) \
             .print_predictions() \
             .set_model_dir()
-        self.run_cmd(builder, 'predictor-binary-label-wise_based-on-probabilities')
+        self.run_cmd(builder, 'predictor-binary-output-wise_based-on-probabilities')
 
-    def test_predictor_binary_label_wise_incremental(self):
+    def test_predictor_binary_output_wise_incremental(self):
         """
         Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting binary labels
         that are obtained for each label individually.
         """
         builder = BoostingCmdBuilder() \
-            .binary_predictor(BINARY_PREDICTOR_LABEL_WISE) \
+            .binary_predictor(BINARY_PREDICTOR_OUTPUT_WISE) \
             .incremental_evaluation() \
             .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
-        self.run_cmd(builder, 'predictor-binary-label-wise_incremental')
+        self.run_cmd(builder, 'predictor-binary-output-wise_incremental')
 
-    def test_predictor_binary_label_wise_incremental_based_on_probabilities(self):
+    def test_predictor_binary_output_wise_incremental_based_on_probabilities(self):
         """
         Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting binary labels
         that are obtained for each label individually based on probability estimates.
@@ -305,37 +305,37 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .marginal_probability_calibration() \
             .print_marginal_probability_calibration_model() \
             .store_marginal_probability_calibration_model() \
-            .binary_predictor(BINARY_PREDICTOR_LABEL_WISE_BASED_ON_PROBABILITIES) \
+            .binary_predictor(BINARY_PREDICTOR_OUTPUT_WISE_BASED_ON_PROBABILITIES) \
             .incremental_evaluation() \
             .set_output_dir() \
             .print_evaluation() \
             .store_evaluation() \
             .set_model_dir()
-        self.run_cmd(builder, 'predictor-binary-label-wise_incremental_based-on-probabilities')
+        self.run_cmd(builder, 'predictor-binary-output-wise_incremental_based-on-probabilities')
 
-    def test_predictor_binary_label_wise_sparse(self):
+    def test_predictor_binary_output_wise_sparse(self):
         """
         Tests the BOOMER algorithm when predicting sparse binary labels that are obtained for each label individually.
         """
         builder = BoostingCmdBuilder() \
-            .binary_predictor(BINARY_PREDICTOR_LABEL_WISE) \
+            .binary_predictor(BINARY_PREDICTOR_OUTPUT_WISE) \
             .print_predictions() \
             .sparse_prediction_format()
-        self.run_cmd(builder, 'predictor-binary-label-wise_sparse')
+        self.run_cmd(builder, 'predictor-binary-output-wise_sparse')
 
-    def test_predictor_binary_label_wise_sparse_incremental(self):
+    def test_predictor_binary_output_wise_sparse_incremental(self):
         """
         Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting sparse binary
         labels that are obtained for each label individually.
         """
         builder = BoostingCmdBuilder() \
-            .binary_predictor(BINARY_PREDICTOR_LABEL_WISE) \
+            .binary_predictor(BINARY_PREDICTOR_OUTPUT_WISE) \
             .sparse_prediction_format() \
             .incremental_evaluation() \
             .set_output_dir() \
             .print_evaluation() \
             .store_evaluation()
-        self.run_cmd(builder, 'predictor-binary-label-wise_sparse_incremental')
+        self.run_cmd(builder, 'predictor-binary-output-wise_sparse_incremental')
 
     def test_predictor_binary_example_wise(self):
         """
