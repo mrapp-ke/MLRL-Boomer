@@ -11,7 +11,7 @@
 #include "mlrl/common/prediction/predictor.hpp"
 
 /**
- * Defines an interface for all classes that allow to predict regression scores for given query examples.
+ * Defines an interface for all classes that allow to predict scores for given query examples.
  */
 class IScorePredictor : public IPredictor<DensePredictionMatrix<float64>> {
     public:

@@ -12,8 +12,8 @@ namespace boosting {
 
     /**
      * Defines an interface for all classes that allow to configure a predictor that predicts whether individual labels
-     * of given query examples are relevant or irrelevant by discretizing the individual regression scores or
-     * probability estimates that are predicted for each label.
+     * of given query examples are relevant or irrelevant by discretizing the individual scores or probability estimates
+     * that are predicted for each label.
      */
     class MLRLBOOSTING_API IOutputWiseBinaryPredictorConfig {
         public:
@@ -21,20 +21,18 @@ namespace boosting {
             virtual ~IOutputWiseBinaryPredictorConfig() {}
 
             /**
-             * Returns whether binary predictions are derived from probability estimates rather than regression scores
-             * or not.
+             * Returns whether binary predictions are derived from probability estimates rather than scores or not.
              *
-             * @return True, if binary predictions are derived from probability estimates rather than regression scores,
-             *         false otherwise
+             * @return True, if binary predictions are derived from probability estimates rather than scores, false
+             *         otherwise
              */
             virtual bool isBasedOnProbabilities() const = 0;
 
             /**
-             * Sets whether binary predictions should be derived from probability estimates rather than regression
-             * scores or not.
+             * Sets whether binary predictions should be derived from probability estimates rather than scores or not.
              *
              * @param basedOnProbabilities  True, if binary predictions should be derived from probability estimates
-             *                              rather than regression scores, false otherwise
+             *                              rather than scores, false otherwise
              * @return                      A reference to an object of type `IOutputWiseBinaryPredictorConfig` that
              *                              allows further configuration of the predictor
              */
@@ -62,8 +60,7 @@ namespace boosting {
 
     /**
      * Allows to configure a predictor that predicts whether individual labels of given query examples are relevant or
-     * irrelevant by discretizing the individual regression scores or probability estimates that are predicted for each
-     * label.
+     * irrelevant by discretizing the individual scores or probability estimates that are predicted for each label.
      */
     class OutputWiseBinaryPredictorConfig final : public IOutputWiseBinaryPredictorConfig,
                                                   public IBinaryPredictorConfig {

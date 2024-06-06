@@ -8,8 +8,7 @@ namespace boosting {
 
     /**
      * Allows to create instances of the type `IProbabilityPredictor` that allow to predict label-wise probabilities for
-     * given query examples by transforming the individual regression scores that are predicted for each label into
-     * probabilities.
+     * given query examples by transforming the individual scores that are predicted for each label into probabilities.
      */
     class OutputWiseProbabilityPredictorFactory final : public IProbabilityPredictorFactory {
         private:
@@ -26,8 +25,8 @@ namespace boosting {
              * @param marginalProbabilityFunctionFactoryPtr An unique pointer to an object of type
              *                                              `IMarginalProbabilityFunctionFactory` that allows to create
              *                                              implementations of the transformation function to be used to
-             *                                              transform regression scores that are predicted for
-             *                                              individual labels into probabilities
+             *                                              transform scores that are predicted for individual labels
+             *                                              into probabilities
              * @param marginalProbabilityCalibrationModel   A pointer to an object of type
              *                                              `IMarginalProbabilityCalibrationModel` to be used for the
              *                                              calibration of marginal probabilities or a null pointer, if

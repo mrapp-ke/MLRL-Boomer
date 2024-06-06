@@ -452,16 +452,15 @@ class IsotonicJointProbabilityCalibrationMixin(ABC):
 class OutputWiseBinaryPredictorMixin(ABC):
     """
     Allows to configure a predictor that predicts whether individual labels of given query examples are relevant or
-    irrelevant by discretizing the regression scores or probability estimates that are predicted for each label
-    individually.
+    irrelevant by discretizing the scores or probability estimates that are predicted for each label individually.
     """
 
     @abstractmethod
     def use_output_wise_binary_predictor(self) -> OutputWiseBinaryPredictorConfig:
         """
         Configures the rule learner to use a predictor that predicts whether individual labels of given query examples
-        are relevant or irrelevant by discretizing the regression scores or probability estimates that are predicted for
-        each label individually.
+        are relevant or irrelevant by discretizing the scores or probability estimates that are predicted for each label
+        individually.
 
         :return: A `OutputWiseBinaryPredictorConfig` that allows further configuration of the predictor
         """
@@ -471,16 +470,14 @@ class OutputWiseBinaryPredictorMixin(ABC):
 class ExampleWiseBinaryPredictorMixin(ABC):
     """
     Allows to configure a rule learner to use a predictor that predicts known label vectors for given query examples by
-    comparing the predicted regression scores or probability estimates to the label vectors encountered in the training
-    data.
+    comparing the predicted scores or probability estimates to the label vectors encountered in the training data.
     """
             
     @abstractmethod
     def use_example_wise_binary_predictor(self) -> ExampleWiseBinaryPredictorConfig:
         """
         Configures the rule learner to use a predictor that predicts known label vectors for given query examples by
-        comparing the predicted regression scores or probability estimates to the label vectors encountered in the
-        training data.
+        comparing the predicted scores or probability estimates to the label vectors encountered in the training data.
 
         :return: An `ExampleWiseBinaryPredictorConfig` that allows further configuration of the predictor
         """
@@ -490,16 +487,16 @@ class ExampleWiseBinaryPredictorMixin(ABC):
 class GfmBinaryPredictorMixin(ABC):
     """
     Allows to configure a rule learner to use a predictor that predicts whether individual labels of given query
-    examples are relevant or irrelevant by discretizing the regression scores or probability estimates that are
-    predicted for each label according to the general F-measure maximizer (GFM).
+    examples are relevant or irrelevant by discretizing the scores or probability estimates that are predicted for each
+    label according to the general F-measure maximizer (GFM).
     """
 
     @abstractmethod
     def use_gfm_binary_predictor(self) -> GfmBinaryPredictorConfig:
         """
         Configures the rule learner to use a predictor that predicts whether individual labels of given query examples
-        are relevant or irrelevant by discretizing the regression scores or probability estimates that are predicted for
-        each label according to the general F-measure maximizer (GFM).
+        are relevant or irrelevant by discretizing the scores or probability estimates that are predicted for each label
+        according to the general F-measure maximizer (GFM).
 
         :return: A `GfmBinaryPredictorConfig` that allows further configuration of the predictor
         """
@@ -523,15 +520,15 @@ class AutomaticBinaryPredictorMixin(ABC):
              
 class OutputWiseScorePredictorMixin(ABC):
     """
-    Allows to configure a rule learner to use a predictor that predicts output-wise regression scores for given query
-    examples by summing up the scores that are provided by individual rules for each output individually.
+    Allows to configure a rule learner to use a predictor that predicts output-wise scores for given query examples by
+    summing up the scores that are provided by individual rules for each output individually.
     """
 
     @abstractmethod
     def use_output_wise_score_predictor(self):
         """
-        Configures the rule learner to use a predictor that predict output-wise regression scores for given query
-        examples by summing up the scores that are provided by individual rules for each output individually.
+        Configures the rule learner to use a predictor that predict output-wise scores for given query examples by
+        summing up the scores that are provided by individual rules for each output individually.
         """
         pass
             
@@ -539,14 +536,14 @@ class OutputWiseScorePredictorMixin(ABC):
 class OutputWiseProbabilityPredictorMixin(ABC):
     """
     Allows to configure a rule learner to use a predictor that predicts label-wise probabilities for given query
-    examples by transforming the individual regression scores that are predicted for each label into probabilities.
+    examples by transforming the individual scores that are predicted for each label into probabilities.
     """
 
     @abstractmethod
     def use_output_wise_probability_predictor(self) -> OutputWiseProbabilityPredictorConfig:
         """
         Configures the rule learner to use a predictor that predicts label-wise probabilities for given query examples
-        by transforming the individual regression scores that are predicted for each label into probabilities.
+        by transforming the individual scores that are predicted for each label into probabilities.
 
         :return: A `OutputWiseProbabilityPredictorConfig` that allows further configuration of the predictor
         """

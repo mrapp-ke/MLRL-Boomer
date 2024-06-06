@@ -559,7 +559,7 @@ std::unique_ptr<IScorePredictor> AbstractRuleLearner::createScorePredictor(const
         return featureMatrix.createScorePredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo, numLabels);
     }
 
-    throw std::runtime_error("The rule learner does not support to predict regression scores");
+    throw std::runtime_error("The rule learner does not support to predict scores");
 }
 
 bool AbstractRuleLearner::canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix,

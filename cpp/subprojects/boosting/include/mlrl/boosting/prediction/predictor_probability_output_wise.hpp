@@ -12,7 +12,7 @@ namespace boosting {
 
     /**
      * Defines an interface for all classes that allow to configure a predictor that predicts label-wise probabilities
-     * for given query examples by transforming the individual regression scores that are predicted for each label into
+     * for given query examples by transforming the individual scores that are predicted for each label into
      * probabilities.
      */
     class MLRLBOOSTING_API IOutputWiseProbabilityPredictorConfig {
@@ -42,7 +42,7 @@ namespace boosting {
 
     /**
      * Allows to configure a predictor that predicts label-wise probabilities for given query examples by transforming
-     * the individual regression scores that are predicted for each label into probabilities.
+     * the individual scores that are predicted for each label into probabilities.
      */
     class OutputWiseProbabilityPredictorConfig final : public IOutputWiseProbabilityPredictorConfig,
                                                        public IProbabilityPredictorConfig {

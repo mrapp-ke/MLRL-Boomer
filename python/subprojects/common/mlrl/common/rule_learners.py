@@ -139,7 +139,7 @@ def create_binary_predictor(learner: RuleLearnerWrapper, model: RuleModel, outpu
 def create_score_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
                            num_labels: int, feature_matrix: RowWiseFeatureMatrix):
     """
-    Creates and returns a predictor for predicting regression scores.
+    Creates and returns a predictor for predicting scores.
 
     :param learner:             The learner for which the predictor should be created
     :param model:               The model to be used for prediction
@@ -445,7 +445,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         num_outputs = self.num_outputs_
 
         if learner.can_predict_scores(feature_matrix, num_outputs):
-            log.debug('A dense matrix is used to store the predicted regression scores')
+            log.debug('A dense matrix is used to store the predicted scores')
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
             return create_score_predictor(learner, self.model_, self.output_space_info_, num_outputs,
                                           feature_matrix).predict(max_rules)
@@ -465,7 +465,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         num_outputs = self.num_outputs_
 
         if learner.can_predict_scores(feature_matrix, num_outputs):
-            log.debug('A dense matrix is used to store the predicted regression scores')
+            log.debug('A dense matrix is used to store the predicted scores')
             model = self.model_
             predictor = create_score_predictor(learner, model, self.output_space_info_, num_outputs, feature_matrix)
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))

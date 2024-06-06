@@ -43,8 +43,8 @@ namespace boosting {
 
     /**
      * Allows to create instances of the type `IBinaryPredictor` that allow to predict known label vectors for given
-     * query examples by comparing the predicted regression scores or probability estimates to the label vectors
-     * encountered in the training data.
+     * query examples by comparing the predicted scores or probability estimates to the label vectors encountered in the
+     * training data.
      */
     class ExampleWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
         private:
@@ -133,8 +133,8 @@ namespace boosting {
 
     /**
      * Allows to create instances of the type `ISparseBinaryPredictor` that allow to predict known label vectors for
-     * given query examples by comparing the predicted regression scores or probability estimates to the label vectors
-     * encountered in the training data.
+     * given query examples by comparing the predicted scores or probability estimates to the label vectors encountered
+     * in the training data.
      */
     class ExampleWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
         private:
