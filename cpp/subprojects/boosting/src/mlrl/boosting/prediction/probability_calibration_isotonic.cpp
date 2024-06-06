@@ -213,8 +213,8 @@ namespace boosting {
              * @param marginalProbabilityFunctionFactory  A reference to an object of type
              *                                            `IMarginalProbabilityFunctionFactory` that allows to create
              *                                            implementations of the transformation function to be used to
-             *                                            transform regression scores that are predicted for
-             *                                            individual labels into marginal probabilities
+             *                                            transform scores that are predicted for individual labels into
+             *                                            marginal probabilities
              * @param useHoldoutSet                       True, if the calibration model should be fit to the examples
              *                                            in the holdout set, if available, false otherwise
              */
@@ -281,8 +281,8 @@ namespace boosting {
              * @param marginalProbabilityFunctionFactoryPtr An unique pointer to an object of type
              *                                              `IMarginalProbabilityFunctionFactory` that allows to create
              *                                              implementations of the transformation function to be used to
-             *                                              transform regression scores that are predicted for
-             *                                              individual labels into marginal probabilities
+             *                                              transform scores that are predicted for individual labels
+             *                                              into marginal probabilities
              * @param useHoldoutSet                         True, if the calibration model should be fit to the examples
              *                                              in the holdout set, if available, false otherwise
              */
@@ -542,8 +542,8 @@ namespace boosting {
              * @param jointProbabilityFunctionFactory     A reference to an object of type
              *                                            `IJointProbabilityFunctionFactory` that allows to create
              *                                            implementations of the transformation function to be used to
-             *                                            transform regression scores that are predicted for individual
-             *                                            labels into marginal probabilities
+             *                                            transform scores that are predicted for individual labels into
+             *                                            marginal probabilities
              * @param useHoldoutSet                       True, if the calibration model should be fit to the examples
              *                                            in the holdout set, if available, false otherwise
              * @param labelVectorSet                      A reference to an object of type `LabelVectorSet` that stores
@@ -614,8 +614,8 @@ namespace boosting {
              * @param jointProbabilityFunctionFactoryPtr  An unique pointer to an object of type
              *                                            `IJointProbabilityFunctionFactory` that allows to create
              *                                            implementations of the transformation function to be used to
-             *                                            transform regression scores that are predicted for individual
-             *                                            labels into joint probabilities
+             *                                            transform scores that are predicted for individual labels into
+             *                                            joint probabilities
              * @param useHoldoutSet                       True, if the calibration model should be fit to the examples
              *                                            in the holdout set, if available, false otherwise
              */

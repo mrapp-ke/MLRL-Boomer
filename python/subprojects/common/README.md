@@ -69,7 +69,7 @@ Post-optimization methods can be employed to further improve the predictive perf
 
 ### Prediction algorithm
 
-A prediction algorithm is needed to derive predictions from the rules in a previously assembled model. As prediction methods heavily depend on the rule learning algorithm at hand, no implementation is provided by this package out-of-the-box. However, it defines interfaces for the prediction of **regression scores, binary predictions, or probability estimates.**
+A prediction algorithm is needed to derive predictions from the rules in a previously assembled model. As prediction methods heavily depend on the rule learning algorithm at hand, no implementation is provided by this package out-of-the-box. However, it defines interfaces for the prediction of **scores, binary predictions, or probability estimates.**
 
 ## License
 

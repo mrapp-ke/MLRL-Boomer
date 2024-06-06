@@ -438,8 +438,8 @@ class BinaryEvaluationWriter(EvaluationWriter):
 
 class ScoreEvaluationWriter(EvaluationWriter):
     """
-    Evaluates the quality of regression scores provided by a single- or multi-output regressor according to commonly
-    used regression and ranking measures.
+    Evaluates the quality of scores provided by a single- or multi-output regressor according to commonly used
+    regression and ranking measures.
     """
 
     def __init__(self, sinks: List[OutputWriter.Sink]):

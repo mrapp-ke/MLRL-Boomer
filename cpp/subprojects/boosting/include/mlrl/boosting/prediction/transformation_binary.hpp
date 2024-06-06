@@ -9,7 +9,7 @@
 namespace boosting {
 
     /**
-     * Defines an interface for all classes that allow to transform regression scores into binary predictions.
+     * Defines an interface for all classes that allow to transform scores into binary predictions.
      */
     class IBinaryTransformation {
         public:
@@ -17,10 +17,10 @@ namespace boosting {
             virtual ~IBinaryTransformation() {}
 
             /**
-             * Transforms regression scores into binary predictions.
+             * Transforms scores into binary predictions.
              *
-             * @param scoresBegin       An iterator to the beginning of the regression scores
-             * @param scoresEnd         An iterator to the end of the regression scores
+             * @param scoresBegin       An iterator to the beginning of the scores
+             * @param scoresEnd         An iterator to the end of the scores
              * @param predictionBegin   An iterator to the beginning of the binary predictions
              * @param predictionEnd     An iterator to the end of the binary predictions
              */
@@ -28,10 +28,10 @@ namespace boosting {
                                View<uint8>::iterator predictionBegin, View<uint8>::iterator predictionEnd) const = 0;
 
             /**
-             * Transforms regression scores into sparse binary predictions.
+             * Transforms scores into sparse binary predictions.
              *
-             * @param scoresBegin   An iterator to the beginning of the regression scores
-             * @param scoresEnd     An iterator to the end of the regression scores
+             * @param scoresBegin   An iterator to the beginning of the scores
+             * @param scoresEnd     An iterator to the end of the scores
              * @param predictionRow An object of type `BinaryLilMatrix::row` that should be used to store the binary
              *                      predictions
              */

@@ -12,8 +12,8 @@ namespace boosting {
 
     /**
      * Defines an interface for all classes that allow to configure a predictor that predicts whether individual labels
-     * of given query examples are relevant or irrelevant by discretizing the regression scores or probability estimates
-     * that are predicted for each label according to the general F-measure maximizer (GFM).
+     * of given query examples are relevant or irrelevant by discretizing the scores or probability estimates that are
+     * predicted for each label according to the general F-measure maximizer (GFM).
      */
     class MLRLBOOSTING_API IGfmBinaryPredictorConfig {
         public:
@@ -41,8 +41,8 @@ namespace boosting {
 
     /**
      * Allows to configure a predictor that predicts whether individual labels of given query examples are relevant or
-     * irrelevant by discretizing the regression scores or probability estimates that are predicted for each label
-     * according to the general F-measure maximizer (GFM).
+     * irrelevant by discretizing the scores or probability estimates that are predicted for each label according to the
+     * general F-measure maximizer (GFM).
      */
     class GfmBinaryPredictorConfig final : public IGfmBinaryPredictorConfig,
                                            public IBinaryPredictorConfig {

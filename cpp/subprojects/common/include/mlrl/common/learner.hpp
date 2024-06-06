@@ -357,12 +357,11 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual std::unique_ptr<IBinaryPredictorConfig>& getBinaryPredictorConfigPtr() = 0;
 
                 /**
-                 * Returns an unique pointer to the configuration of the predictor that allows to predict regression
-                 * scores.
+                 * Returns an unique pointer to the configuration of the predictor that allows to predict scores.
                  *
                  * @return A reference to an unique pointer of type `IScorePredictorConfig` that stores the
-                 *         configuration of the predictor that allows to predict regression scores or a null pointer, if
-                 *         the prediction of regression scores is not supported
+                 *         configuration of the predictor that allows to predict scores or a null pointer, if the
+                 *         prediction of scores is not supported
                  */
                 virtual std::unique_ptr<IScorePredictorConfig>& getScorePredictorConfigPtr() = 0;
 
@@ -1464,50 +1463,50 @@ class MLRLCOMMON_API IRuleLearner {
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
-         * Returns whether the rule learner is able to predict regression scores or not.
+         * Returns whether the rule learner is able to predict scores or not.
          *
          * @param featureMatrix     A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise
          *                          access to the feature values of the query examples
          * @param trainingResult    A reference to an object of type `ITrainingResult` that provides access to the model
          *                          and additional information that should be used to obtain predictions
-         * @return                  True, if the rule learner is able to predict regression scores, false otherwise
+         * @return                  True, if the rule learner is able to predict scores, false otherwise
          */
         virtual bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix,
                                       const ITrainingResult& trainingResult) const = 0;
 
         /**
-         * Returns whether the rule learner is able to predict regression scores or not.
+         * Returns whether the rule learner is able to predict scores or not.
          *
          * @param featureMatrix     A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise
          *                          access to the feature values of the query examples
          * @param numLabels         The number of labels to predict for
-         * @return                  True, if the rule learner is able to predict regression scores, false otherwise
+         * @return                  True, if the rule learner is able to predict scores, false otherwise
          */
         virtual bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
 
         /**
-         * Creates and returns a predictor that may be used to predict regression scores for given query examples. If
-         * the prediction of regression scores is not supported by the rule learner, a `std::runtime_error` is thrown.
+         * Creates and returns a predictor that may be used to predict scores for given query examples. If the
+         * prediction of scores is not supported by the rule learner, a `std::runtime_error` is thrown.
          *
-         * @throws std::runtime_exception   The exception that is thrown if the prediction of regression scores is not
-         *                                  supported by the rule learner
+         * @throws std::runtime_exception   The exception that is thrown if the prediction of scores is not supported by
+         *                                  the rule learner
          * @param featureMatrix             A reference to an object of type `IRowWiseFeatureMatrix` that provides
          *                                  row-wise access to the feature values of the query examples
          * @param trainingResult            A reference to an object of type `ITrainingResult` that provides access to
          *                                  the model and additional information that should be used to obtain
          *                                  predictions
          * @return                          An unique pointer to an object of type `IScorePredictor` that may be used to
-         *                                  predict regression scores for the given query examples
+         *                                  predict scores for the given query examples
          */
         virtual std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                                       const ITrainingResult& trainingResult) const = 0;
 
         /**
-         * Creates and returns a predictor that may be used to predict regression scores for given query examples. If
-         * the prediction of regression scores is not supported by the rule learner, a `std::runtime_error` is thrown.
+         * Creates and returns a predictor that may be used to predict scores for given query examples. If the
+         * prediction of scores is not supported by the rule learner, a `std::runtime_error` is thrown.
          *
-         * @throws std::runtime_exception The exception that is thrown if the prediction of regression scores is not
-         *                                supported by the rule learner
+         * @throws std::runtime_exception The exception that is thrown if the prediction of scores is not supported by
+         *                                the rule learner
          * @param featureMatrix           A reference to an object of type `IRowWiseFeatureMatrix` that provides
          *                                row-wise access to the feature values of the query examples
          * @param ruleModel               A reference to an object of type `IRuleModel` that should be used to obtain
@@ -1516,7 +1515,7 @@ class MLRLCOMMON_API IRuleLearner {
          *                                about the output space that may be used as a basis for obtaining predictions
          * @param numLabels               The number of labels to predict for
          * @return                        An unique pointer to an object of type `IScorePredictor` that may be used to
-         *                                predict regression scores for the given query examples
+         *                                predict scores for the given query examples
          */
         virtual std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                                       const IRuleModel& ruleModel,
@@ -1735,8 +1734,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<IBinaryPredictorConfig> binaryPredictorConfigPtr_;
 
                 /**
-                 * An unique pointer that stores the configuration of the predictor that allows to predict regression
-                 * scores.
+                 * An unique pointer that stores the configuration of the predictor that allows to predict scores.
                  */
                 std::unique_ptr<IScorePredictorConfig> scorePredictorConfigPtr_;
 
@@ -1928,13 +1926,13 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         /**
          * May be overridden by subclasses in order to create the `IScorePredictorFactory` to be used by the rule
-         * learner for predicting regression scores.
+         * learner for predicting scores.
          *
          * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
          *                      to the feature values of the query examples
          * @param numLabels     The number of labels to predict for
          * @return              An unique pointer to an object of type `IScorePredictorFactory` that has been created or
-         *                      a null pointer, if the rule learner does not support to predict regression scores
+         *                      a null pointer, if the rule learner does not support to predict scores
          */
         virtual std::unique_ptr<IScorePredictorFactory> createScorePredictorFactory(
           const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const;

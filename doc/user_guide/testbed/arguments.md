@@ -59,7 +59,7 @@ One of the most important capabilities of the command line API is to train machi
 
 - `--prediction-type` (Default value = `binary`)
 
-  - `scores` The learner is instructed to predict regression scores. In this case, ranking measures are used for evaluation.
+  - `scores` The learner is instructed to predict scores. In this case, ranking measures are used for evaluation.
   - `probabilities` The learner is instructed to predict probability estimates. In this case, ranking measures are used for evaluation.
   - `binary` The learner is instructed to predict binary labels. In this case, bipartition evaluation measures are used for evaluation.
 

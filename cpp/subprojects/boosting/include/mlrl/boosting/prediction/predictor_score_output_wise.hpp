@@ -9,8 +9,8 @@
 namespace boosting {
 
     /**
-     * Allows to configure a predictor that predicts output-wise regression scores for given query examples by summing
-     * up the scores that are provided by individual rules for each output individually.
+     * Allows to configure a predictor that predicts output-wise scores for given query examples by summing up the
+     * scores that are provided by individual rules for each output individually.
      */
     class OutputWiseScorePredictorConfig final : public IScorePredictorConfig {
         private:

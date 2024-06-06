@@ -5,8 +5,8 @@
 namespace boosting {
 
     /**
-     * Allows to create instances of the type `IScorePredictor` that predict output-wise regression scores for given
-     * query examples by summing up the scores that are provided by individual rules for each output individually.
+     * Allows to create instances of the type `IScorePredictor` that predict output-wise scores for given query examples
+     * by summing up the scores that are provided by individual rules for each output individually.
      */
     class OutputWiseScorePredictorFactory final : public IScorePredictorFactory {
         private:

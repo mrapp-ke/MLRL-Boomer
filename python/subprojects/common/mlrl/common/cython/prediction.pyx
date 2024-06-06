@@ -193,7 +193,7 @@ cdef class SparseBinaryPredictor:
 
 cdef class IncrementalScorePredictor:
     """
-    Allows to predict regression scores for given query examples incrementally.
+    Allows to predict scores for given query examples incrementally.
     """
 
     def has_next(self) -> bool:
@@ -230,7 +230,7 @@ cdef class IncrementalScorePredictor:
 
 cdef class ScorePredictor:
     """
-    Allows to predict regression scores for given query examples.
+    Allows to predict scores for given query examples.
     """
 
     def predict(self, uint32 max_rules) -> np.ndarray:
@@ -260,12 +260,12 @@ cdef class ScorePredictor:
 
     def create_incremental_predictor(self, uint32 max_rules) -> IncrementalScorePredictor:
         """
-        Creates and returns a predictor that allows to predict regression scores incrementally. If incremental
-        prediction is not supported, a `RuntimeError` is thrown.
+        Creates and returns a predictor that allows to predict scores incrementally. If incremental prediction is not
+        supported, a `RuntimeError` is thrown.
 
         :param max_rules:   The maximum number of rules to be used for prediction. Must be at least 1 or 0, if the
                             number of rules should not be restricted
-        :return:            A predictor that allows to predict regression scores incrementally
+        :return:            A predictor that allows to predict scores incrementally
         """
         if max_rules != 0:
             assert_greater_or_equal('max_rules', max_rules, 1)

@@ -10,8 +10,8 @@ namespace boosting {
 
     /**
      * Allows to create instances of the type `IBinaryPredictor` that allow to predict whether individual labels of
-     * given query examples are relevant or irrelevant by discretizing the individual regression scores or probability
-     * estimates that are predicted for each label.
+     * given query examples are relevant or irrelevant by discretizing the individual scores or probability estimates
+     * that are predicted for each label.
      */
     class OutputWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
         private:
@@ -81,8 +81,8 @@ namespace boosting {
 
     /**
      * Allows to create instances of the type `ISparseBinaryPredictor` that allow to predict whether individual labels
-     * of given query examples are relevant or irrelevant by discretizing the regression scores or probability estimates
-     * that are predicted for each label individually.
+     * of given query examples are relevant or irrelevant by discretizing the scores or probability estimates that are
+     * predicted for each label individually.
      */
     class OutputWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
         private:

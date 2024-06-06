@@ -44,8 +44,7 @@ class Evaluation(ABC):
         result that should be obtained.
 
         :param learner:                 The learner, the result should be obtained from
-        :param predict_function:        The function to be invoked if binary result or regression scores should be
-                                        obtained
+        :param predict_function:        The function to be invoked if binary results or scores should be obtained
         :param predict_proba_function:  The function to be invoked if probability estimates should be obtained
         :param x:                       A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                                         `(num_examples, num_features)`, that stores the feature values of the query
@@ -64,7 +63,7 @@ class Evaluation(ABC):
                 else:
                     raise RuntimeError()
             except RuntimeError:
-                log.error('Prediction of regression scores not supported')
+                log.error('Prediction of scores not supported')
                 result = None
         elif prediction_type == PredictionType.PROBABILITIES:
             try:

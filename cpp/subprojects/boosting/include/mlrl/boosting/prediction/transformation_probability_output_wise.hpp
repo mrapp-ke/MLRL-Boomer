@@ -22,8 +22,7 @@ namespace boosting {
             /**
              * @param marginalProbabilityFunctionPtr An unique pointer to an object of type
              *                                       `IMarginalProbabilityFunction` that should be used to transform
-             *                                       regression scores that are predicted for individual labels into
-             *                                       probabilities
+             *                                       scores that are predicted for individual labels into probabilities
              */
             OutputWiseProbabilityTransformation(
               std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr);

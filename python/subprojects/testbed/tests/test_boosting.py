@@ -188,15 +188,14 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         super().__init__(cmd=CMD_BOOMER, expected_output_dir=path.join(DIR_OUT, CMD_BOOMER), methodName=methodName)
 
-    def test_single_label_regression(self):
+    def test_single_label_scores(self):
         """
-        Tests the evaluation of the rule learning algorithm when predicting regression scores for a single-label
-        problem.
+        Tests the evaluation of the rule learning algorithm when predicting scores for a single-label problem.
         """
         builder = BoostingCmdBuilder(dataset=self.dataset_single_label) \
             .prediction_type(PREDICTION_TYPE_SCORES) \
             .print_evaluation()
-        self.run_cmd(builder, 'single-label-regression')
+        self.run_cmd(builder, 'single-label-scores')
 
     def test_single_label_probabilities(self):
         """
@@ -511,7 +510,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
 
     def test_predictor_score_output_wise(self):
         """
-        Tests the BOOMER algorithm when predicting regression scores that are obtained in an output-wise manner.
+        Tests the BOOMER algorithm when predicting scores that are obtained in an output-wise manner.
         """
         builder = BoostingCmdBuilder() \
             .prediction_type(PREDICTION_TYPE_SCORES) \
@@ -520,8 +519,8 @@ class BoostingIntegrationTests(CommonIntegrationTests):
 
     def test_predictor_score_output_wise_incremental(self):
         """
-        Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting regression
-        scores that are obtained in an output-wise manner.
+        Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting scores that are
+        obtained in an output-wise manner.
         """
         builder = BoostingCmdBuilder() \
             .prediction_type(PREDICTION_TYPE_SCORES) \
