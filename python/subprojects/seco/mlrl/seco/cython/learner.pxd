@@ -152,8 +152,8 @@ cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
         void useWraPruningHeuristic()
 
 
-    cdef cppclass ILabelWiseBinaryPredictorMixin"seco::ISeCoRuleLearner::ILabelWiseBinaryPredictorMixin":
+    cdef cppclass IOutputWiseBinaryPredictorMixin"seco::ISeCoRuleLearner::IOutputWiseBinaryPredictorMixin":
 
         # Functions:
 
-        void useLabelWiseBinaryPredictor()
+        void useOutputWiseBinaryPredictor()

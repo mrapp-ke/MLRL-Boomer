@@ -88,7 +88,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                                                     probabilities. Must be 'isotonic' or 'none', if no probability
                                                     calibration should be used
         :param binary_predictor:                    The strategy that should be used for predicting binary labels. Must
-                                                    be 'label-wise', 'example-wise', 'gfm' or 'auto', if the most
+                                                    be 'output-wise', 'example-wise', 'gfm' or 'auto', if the most
                                                     suitable strategy should be chosen automatically, depending on the
                                                     loss function
         :param probability_predictor:               The strategy that should be used for predicting probabilities. Must

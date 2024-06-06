@@ -24,7 +24,7 @@
 #include "mlrl/boosting/prediction/predictor_binary_auto.hpp"
 #include "mlrl/boosting/prediction/predictor_binary_example_wise.hpp"
 #include "mlrl/boosting/prediction/predictor_binary_gfm.hpp"
-#include "mlrl/boosting/prediction/predictor_binary_label_wise.hpp"
+#include "mlrl/boosting/prediction/predictor_binary_output_wise.hpp"
 #include "mlrl/boosting/prediction/predictor_probability_auto.hpp"
 #include "mlrl/boosting/prediction/predictor_probability_marginalized.hpp"
 #include "mlrl/boosting/prediction/predictor_probability_output_wise.hpp"
@@ -765,28 +765,28 @@ namespace boosting {
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a predictor that
              * predicts whether individual labels of given query examples are relevant or irrelevant by discretizing the
-             * regression scores or probability estimates that are predicted for each label individually.
+             * individual regression scores or probability estimates that are predicted for each label.
              */
-            class ILabelWiseBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IOutputWiseBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseBinaryPredictorMixin() override {}
+                    virtual ~IOutputWiseBinaryPredictorMixin() override {}
 
                     /**
                      * Configures the rule learner to use a predictor that predicts whether individual labels of given
-                     * query examples are relevant or irrelevant by discretizing the regression scores or probability
-                     * estimates that are predicted for each label individually.
+                     * query examples are relevant or irrelevant by discretizing the individual regression scores or
+                     * probability estimates that are predicted for each label.
                      *
-                     * @return A reference to an object of type `ILabelWiseBinaryPredictorConfig` that allows further
+                     * @return A reference to an object of type `IOutputWiseBinaryPredictorConfig` that allows further
                      *         configuration of the predictor
                      */
-                    virtual ILabelWiseBinaryPredictorConfig& useLabelWiseBinaryPredictor() {
+                    virtual IOutputWiseBinaryPredictorConfig& useOutputWiseBinaryPredictor() {
                         std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
                           this->getBinaryPredictorConfigPtr();
-                        std::unique_ptr<LabelWiseBinaryPredictorConfig> ptr =
-                          std::make_unique<LabelWiseBinaryPredictorConfig>(this->getLossConfigPtr(),
-                                                                           this->getParallelPredictionConfigPtr());
-                        ILabelWiseBinaryPredictorConfig& ref = *ptr;
+                        std::unique_ptr<OutputWiseBinaryPredictorConfig> ptr =
+                          std::make_unique<OutputWiseBinaryPredictorConfig>(this->getLossConfigPtr(),
+                                                                            this->getParallelPredictionConfigPtr());
+                        IOutputWiseBinaryPredictorConfig& ref = *ptr;
                         binaryPredictorConfigPtr = std::move(ptr);
                         return ref;
                     }

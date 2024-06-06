@@ -304,7 +304,7 @@ class WraPruningHeuristicMixin(ABC):
         pass
 
 
-class LabelWiseBinaryPredictionMixin(ABC):
+class OutputWiseBinaryPredictionMixin(ABC):
     """
     Allows to configure a rule learner to use a predictor for predicting whether individual labels of given query
     examples are relevant or irrelevant by processing rules of an existing rule-based model in the order they have been
@@ -312,7 +312,7 @@ class LabelWiseBinaryPredictionMixin(ABC):
     """
 
     @abstractmethod
-    def use_label_wise_binary_predictor(self):
+    def use_output_wise_binary_predictor(self):
         """
         Configures the rule learner to use predictor for predicting whether individual labels of given query examples
         are relevant or irrelevant by processing rules of an existing rule-based model in the order they have been

@@ -15,7 +15,7 @@ source_files = [
     'src/mlrl/seco/lift_functions/lift_function_no.cpp',
     'src/mlrl/seco/lift_functions/lift_function_peak.cpp',
     'src/mlrl/seco/model/decision_list_builder.cpp',
-    'src/mlrl/seco/prediction/predictor_binary_label_wise.cpp',
+    'src/mlrl/seco/prediction/predictor_binary_output_wise.cpp',
     'src/mlrl/seco/rule_evaluation/head_type_partial.cpp',
     'src/mlrl/seco/rule_evaluation/head_type_single.cpp',
     'src/mlrl/seco/rule_evaluation/rule_evaluation_decomposable_partial.cpp',

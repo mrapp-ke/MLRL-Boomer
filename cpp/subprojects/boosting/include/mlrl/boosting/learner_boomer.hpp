@@ -52,7 +52,7 @@ namespace boosting {
                             virtual public IBoostingRuleLearner::IAutomaticLabelBinningMixin,
                             virtual public IBoostingRuleLearner::IIsotonicMarginalProbabilityCalibrationMixin,
                             virtual public IBoostingRuleLearner::IIsotonicJointProbabilityCalibrationMixin,
-                            virtual public IBoostingRuleLearner::ILabelWiseBinaryPredictorMixin,
+                            virtual public IBoostingRuleLearner::IOutputWiseBinaryPredictorMixin,
                             virtual public IBoostingRuleLearner::IExampleWiseBinaryPredictorMixin,
                             virtual public IBoostingRuleLearner::IGfmBinaryPredictorMixin,
                             virtual public IBoostingRuleLearner::IAutomaticBinaryPredictorMixin,

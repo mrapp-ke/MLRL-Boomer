@@ -275,7 +275,7 @@ The following parameters may be used to control the behavior of the algorithm. T
 
   - `'auto'` The most suitable strategy for predicting binary labels is chosen automatically, depending on the loss function.
 
-  - `'label-wise'` The prediction for an example is determined for each label independently. The following options may be provided using the {ref}`bracket-notation`:
+  - `'output-wise'` The prediction for an example is determined for each label independently. The following options may be provided using the {ref}`bracket-notation`:
 
     - `based_on_probabilities` (Default value = `'false'`) `'true'`, if binary predictions should be derived from probability estimates rather than regression scores if supported by the loss function, `'false'` otherwise.
     - `use_probability_calibration` (Default value = `'true'`) `'true'`, if a model for the calibration of probabilities should be used, if available, `'false'` otherwise. Does only have an effect if the option `based_on_probabilities` is set to `'true'`.

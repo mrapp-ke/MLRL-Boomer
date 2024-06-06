@@ -9,10 +9,11 @@
 namespace boosting {
 
     /**
-     * An implementation of the class `IBinaryTransformation` that transforms regression scores that are predicted for
-     * individual labels into binary predictions via element-wise application of an `IDiscretizationFunction`.
+     * An implementation of the class `IBinaryTransformation` that transforms the individual regression scores or
+     * probability estimates that are predicted for each label into binary predictions via element-wise application of
+     * an `IDiscretizationFunction`.
      */
-    class LabelWiseBinaryTransformation final : public IBinaryTransformation {
+    class OutputWiseBinaryTransformation final : public IBinaryTransformation {
         private:
 
             std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr_;
@@ -23,7 +24,7 @@ namespace boosting {
              * @param discretizationFunctionPtr An unique pointer to an object of type `IDiscretizationFunction` that
              *                                  should be used to discretize regression scores
              */
-            LabelWiseBinaryTransformation(std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr);
+            OutputWiseBinaryTransformation(std::unique_ptr<IDiscretizationFunction> discretizationFunctionPtr);
 
             void apply(View<float64>::const_iterator scoresBegin, View<float64>::const_iterator scoresEnd,
                        View<uint8>::iterator predictionBegin, View<uint8>::iterator predictionEnd) const override;

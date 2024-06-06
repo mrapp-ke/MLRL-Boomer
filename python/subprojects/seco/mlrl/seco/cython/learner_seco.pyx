@@ -44,8 +44,8 @@ from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, Defa
 
 from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, \
     CoverageStoppingCriterionMixin, FMeasureHeuristicMixin, FMeasurePruningHeuristicMixin, KlnLiftFunctionMixin, \
-    LabelWiseBinaryPredictionMixin, LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, MEstimateHeuristicMixin, \
-    MEstimatePruningHeuristicMixin, NoCoverageStoppingCriterionMixin, NoLiftFunctionMixin, PartialHeadMixin, \
+    LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, MEstimateHeuristicMixin, MEstimatePruningHeuristicMixin, \
+    NoCoverageStoppingCriterionMixin, NoLiftFunctionMixin, OutputWiseBinaryPredictionMixin, PartialHeadMixin, \
     PeakLiftFunctionMixin, PrecisionHeuristicMixin, PrecisionPruningHeuristicMixin, RecallHeuristicMixin, \
     RecallPruningHeuristicMixin, SingleOutputHeadMixin, WraHeuristicMixin, WraPruningHeuristicMixin
 
@@ -72,7 +72,7 @@ cdef class SeCoConfig(RuleLearnerConfig,
                       RecallPruningHeuristicMixin,
                       WraHeuristicMixin,
                       WraPruningHeuristicMixin,
-                      LabelWiseBinaryPredictionMixin,
+                      OutputWiseBinaryPredictionMixin,
                       SequentialRuleModelAssemblageMixin,
                       DefaultRuleMixin,
                       GreedyTopDownRuleInductionMixin,
@@ -390,8 +390,8 @@ cdef class SeCoConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_label_wise_binary_predictor(self):
-        self.config_ptr.get().useLabelWiseBinaryPredictor()
+    def use_output_wise_binary_predictor(self):
+        self.config_ptr.get().useOutputWiseBinaryPredictor()
 
 
 cdef class SeCo(RuleLearner):

@@ -1,19 +1,19 @@
-#include "mlrl/boosting/prediction/predictor_binary_label_wise.hpp"
+#include "mlrl/boosting/prediction/predictor_binary_output_wise.hpp"
 
 #include "mlrl/boosting/prediction/discretization_function_probability.hpp"
 #include "mlrl/boosting/prediction/discretization_function_score.hpp"
 #include "mlrl/boosting/prediction/predictor_binary_common.hpp"
-#include "mlrl/boosting/prediction/transformation_binary_label_wise.hpp"
+#include "mlrl/boosting/prediction/transformation_binary_output_wise.hpp"
 #include "mlrl/common/prediction/probability_calibration_no.hpp"
 
 namespace boosting {
 
     /**
      * Allows to create instances of the type `IBinaryPredictor` that allow to predict whether individual labels of
-     * given query examples are relevant or irrelevant by discretizing the regression scores or probability estimates
-     * that are predicted for each label individually.
+     * given query examples are relevant or irrelevant by discretizing the individual regression scores or probability
+     * estimates that are predicted for each label.
      */
-    class LabelWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
+    class OutputWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
         private:
 
             const std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr_;
@@ -35,7 +35,7 @@ namespace boosting {
              * @param numThreads                            The number of CPU threads to be used to make predictions for
              *                                              different query examples in parallel. Must be at least 1
              */
-            LabelWiseBinaryPredictorFactory(
+            OutputWiseBinaryPredictorFactory(
               std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr,
               const IMarginalProbabilityCalibrationModel* marginalProbabilityCalibrationModel, uint32 numThreads)
                 : discretizationFunctionFactoryPtr_(std::move(discretizationFunctionFactoryPtr)),
@@ -55,7 +55,7 @@ namespace boosting {
                                                               ? *marginalProbabilityCalibrationModel_
                                                               : marginalProbabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-                  std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
+                  std::make_unique<OutputWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<BinaryPredictor<CContiguousView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(binaryTransformationPtr));
             }
@@ -73,7 +73,7 @@ namespace boosting {
                                                               ? *marginalProbabilityCalibrationModel_
                                                               : marginalProbabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-                  std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
+                  std::make_unique<OutputWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<BinaryPredictor<CsrView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(binaryTransformationPtr));
             }
@@ -84,7 +84,7 @@ namespace boosting {
      * of given query examples are relevant or irrelevant by discretizing the regression scores or probability estimates
      * that are predicted for each label individually.
      */
-    class LabelWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
+    class OutputWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
         private:
 
             const std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr_;
@@ -106,7 +106,7 @@ namespace boosting {
              * @param numThreads                            The number of CPU threads to be used to make predictions for
              *                                              different query examples in parallel. Must be at least 1
              */
-            LabelWiseSparseBinaryPredictorFactory(
+            OutputWiseSparseBinaryPredictorFactory(
               std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr,
               const IMarginalProbabilityCalibrationModel* marginalProbabilityCalibrationModel, uint32 numThreads)
                 : discretizationFunctionFactoryPtr_(std::move(discretizationFunctionFactoryPtr)),
@@ -126,7 +126,7 @@ namespace boosting {
                                                               ? *marginalProbabilityCalibrationModel_
                                                               : marginalProbabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-                  std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
+                  std::make_unique<OutputWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<SparseBinaryPredictor<CContiguousView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(binaryTransformationPtr));
             }
@@ -144,7 +144,7 @@ namespace boosting {
                                                               ? *marginalProbabilityCalibrationModel_
                                                               : marginalProbabilityCalibrationModel);
                 std::unique_ptr<IBinaryTransformation> binaryTransformationPtr =
-                  std::make_unique<LabelWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
+                  std::make_unique<OutputWiseBinaryTransformation>(std::move(discretizationFunctionPtr));
                 return std::make_unique<SparseBinaryPredictor<CsrView<const float32>, RuleList>>(
                   featureMatrix, model, numLabels, numThreads_, std::move(binaryTransformationPtr));
             }
@@ -168,62 +168,62 @@ namespace boosting {
         }
     }
 
-    LabelWiseBinaryPredictorConfig::LabelWiseBinaryPredictorConfig(
+    OutputWiseBinaryPredictorConfig::OutputWiseBinaryPredictorConfig(
       const std::unique_ptr<ILossConfig>& lossConfigPtr,
       const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
         : basedOnProbabilities_(false), lossConfigPtr_(lossConfigPtr),
           multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
-    bool LabelWiseBinaryPredictorConfig::isBasedOnProbabilities() const {
+    bool OutputWiseBinaryPredictorConfig::isBasedOnProbabilities() const {
         return basedOnProbabilities_;
     }
 
-    ILabelWiseBinaryPredictorConfig& LabelWiseBinaryPredictorConfig::setBasedOnProbabilities(
+    IOutputWiseBinaryPredictorConfig& OutputWiseBinaryPredictorConfig::setBasedOnProbabilities(
       bool basedOnProbabilities) {
         basedOnProbabilities_ = basedOnProbabilities;
         return *this;
     }
 
-    bool LabelWiseBinaryPredictorConfig::isProbabilityCalibrationModelUsed() const {
+    bool OutputWiseBinaryPredictorConfig::isProbabilityCalibrationModelUsed() const {
         return noMarginalProbabilityCalibrationModelPtr_ == nullptr;
     }
 
-    ILabelWiseBinaryPredictorConfig& LabelWiseBinaryPredictorConfig::setUseProbabilityCalibrationModel(
+    IOutputWiseBinaryPredictorConfig& OutputWiseBinaryPredictorConfig::setUseProbabilityCalibrationModel(
       bool useProbabilityCalibrationModel) {
         noMarginalProbabilityCalibrationModelPtr_ =
           useProbabilityCalibrationModel ? nullptr : createNoProbabilityCalibrationModel();
         return *this;
     }
 
-    std::unique_ptr<IBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createPredictorFactory(
+    std::unique_ptr<IBinaryPredictorFactory> OutputWiseBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr =
           createDiscretizationFunctionFactory(basedOnProbabilities_, *lossConfigPtr_);
 
         if (discretizationFunctionFactoryPtr) {
             uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-            return std::make_unique<LabelWiseBinaryPredictorFactory>(
+            return std::make_unique<OutputWiseBinaryPredictorFactory>(
               std::move(discretizationFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(), numThreads);
         }
 
         return nullptr;
     }
 
-    std::unique_ptr<ISparseBinaryPredictorFactory> LabelWiseBinaryPredictorConfig::createSparsePredictorFactory(
+    std::unique_ptr<ISparseBinaryPredictorFactory> OutputWiseBinaryPredictorConfig::createSparsePredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr =
           createDiscretizationFunctionFactory(basedOnProbabilities_, *lossConfigPtr_);
 
         if (discretizationFunctionFactoryPtr) {
             uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
-            return std::make_unique<LabelWiseSparseBinaryPredictorFactory>(
+            return std::make_unique<OutputWiseSparseBinaryPredictorFactory>(
               std::move(discretizationFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(), numThreads);
         }
 
         return nullptr;
     }
 
-    bool LabelWiseBinaryPredictorConfig::isLabelVectorSetNeeded() const {
+    bool OutputWiseBinaryPredictorConfig::isLabelVectorSetNeeded() const {
         return false;
     }
 }

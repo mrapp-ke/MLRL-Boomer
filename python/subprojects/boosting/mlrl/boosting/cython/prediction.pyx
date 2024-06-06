@@ -115,7 +115,7 @@ cdef class ExampleWiseBinaryPredictorConfig:
         return self
 
 
-cdef class LabelWiseBinaryPredictorConfig:
+cdef class OutputWiseBinaryPredictorConfig:
     """
     Allows to configure a predictor that predicts whether individual labels of given query examples are relevant or
     irrelevant by discretizing the regression scores or probability estimates that are predicted for each label
@@ -131,14 +131,14 @@ cdef class LabelWiseBinaryPredictorConfig:
         """
         return self.config_ptr.isBasedOnProbabilities()
 
-    def set_based_on_probabilities(self, based_on_probabilities: bool) -> LabelWiseBinaryPredictorConfig:
+    def set_based_on_probabilities(self, based_on_probabilities: bool) -> OutputWiseBinaryPredictorConfig:
         """
         Sets whether binary predictions should be derived from probability estimates rather than regression scores or
         not.
 
         :param based_on_probabilities:  True, if binary predictions should be derived from probability estimates rather
                                         than regression scores, False otherwise
-        :return:                        A `LabelWiseBinaryPredictorConfig` that allows further configuration of the
+        :return:                        A `OutputWiseBinaryPredictorConfig` that allows further configuration of the
                                         predictor
         """
         self.config_ptr.setBasedOnProbabilities(based_on_probabilities)
@@ -153,14 +153,14 @@ cdef class LabelWiseBinaryPredictorConfig:
         return self.config_ptr.isProbabilityCalibrationModelUsed()
 
     def set_use_probability_calibration_model(
-        self, use_probability_calibration_model: bool) -> LabelWiseBinaryPredictorConfig:
+        self, use_probability_calibration_model: bool) -> OutputWiseBinaryPredictorConfig:
         """
         Sets whether a model for the calibration of probabilities should be used, if available, or not.
 
         :param use_probability_calibration_model:   True, if a model for the calibration of probabilities should be
                                                     used, if available, false otherwise
-        :return:                                    A `LabelWiseBinaryPredictorConfig` that allows further configuration
-                                                    of the predictor
+        :return:                                    A `OutputWiseBinaryPredictorConfig` that allows further
+                                                    configuration of the predictor
         """
         self.config_ptr.setUseProbabilityCalibrationModel(use_probability_calibration_model)
         return self

@@ -25,11 +25,10 @@ from mlrl.boosting.cython.learner cimport DdotFunction, DspmvFunction, DsysvFunc
     IDenseStatisticsMixin, IDynamicPartialHeadMixin, IEqualWidthLabelBinningMixin, IExampleWiseBinaryPredictorMixin, \
     IFixedPartialHeadMixin, IGfmBinaryPredictorMixin, IIsotonicJointProbabilityCalibrationMixin, \
     IIsotonicMarginalProbabilityCalibrationMixin, IL1RegularizationMixin, IL2RegularizationMixin, \
-    ILabelWiseBinaryPredictorMixin, IMarginalizedProbabilityPredictorMixin, INoDefaultRuleMixin, \
-    INoL1RegularizationMixin, INoL2RegularizationMixin, INoLabelBinningMixin, INonDecomposableLogisticLossMixin, \
-    INonDecomposableSquaredErrorLossMixin, INonDecomposableSquaredHingeLossMixin, \
-    IOutputWiseProbabilityPredictorMixin, IOutputWiseScorePredictorMixin, ISingleOutputHeadMixin, \
-    ISparseStatisticsMixin
+    IMarginalizedProbabilityPredictorMixin, INoDefaultRuleMixin, INoL1RegularizationMixin, INoL2RegularizationMixin, \
+    INoLabelBinningMixin, INonDecomposableLogisticLossMixin, INonDecomposableSquaredErrorLossMixin, \
+    INonDecomposableSquaredHingeLossMixin, IOutputWiseBinaryPredictorMixin, IOutputWiseProbabilityPredictorMixin, \
+    IOutputWiseScorePredictorMixin, ISingleOutputHeadMixin, ISparseStatisticsMixin
 
 
 cdef extern from "mlrl/boosting/learner_boomer.hpp" namespace "boosting" nogil:
@@ -64,7 +63,7 @@ cdef extern from "mlrl/boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IAutomaticLabelBinningMixin,
                                                             IIsotonicMarginalProbabilityCalibrationMixin,
                                                             IIsotonicJointProbabilityCalibrationMixin,
-                                                            ILabelWiseBinaryPredictorMixin,
+                                                            IOutputWiseBinaryPredictorMixin,
                                                             IExampleWiseBinaryPredictorMixin,
                                                             IGfmBinaryPredictorMixin,
                                                             IAutomaticBinaryPredictorMixin,
