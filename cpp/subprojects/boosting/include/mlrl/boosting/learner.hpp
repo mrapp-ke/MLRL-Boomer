@@ -12,12 +12,12 @@
 #include "mlrl/boosting/binning/label_binning_equal_width.hpp"
 #include "mlrl/boosting/binning/label_binning_no.hpp"
 #include "mlrl/boosting/input/feature_binning_auto.hpp"
-#include "mlrl/boosting/losses/loss_example_wise_logistic.hpp"
-#include "mlrl/boosting/losses/loss_example_wise_squared_error.hpp"
-#include "mlrl/boosting/losses/loss_example_wise_squared_hinge.hpp"
-#include "mlrl/boosting/losses/loss_label_wise_logistic.hpp"
-#include "mlrl/boosting/losses/loss_label_wise_squared_error.hpp"
-#include "mlrl/boosting/losses/loss_label_wise_squared_hinge.hpp"
+#include "mlrl/boosting/losses/loss_decomposable_logistic.hpp"
+#include "mlrl/boosting/losses/loss_decomposable_squared_error.hpp"
+#include "mlrl/boosting/losses/loss_decomposable_squared_hinge.hpp"
+#include "mlrl/boosting/losses/loss_non_decomposable_logistic.hpp"
+#include "mlrl/boosting/losses/loss_non_decomposable_squared_error.hpp"
+#include "mlrl/boosting/losses/loss_non_decomposable_squared_hinge.hpp"
 #include "mlrl/boosting/multi_threading/parallel_rule_refinement_auto.hpp"
 #include "mlrl/boosting/multi_threading/parallel_statistic_update_auto.hpp"
 #include "mlrl/boosting/post_processing/shrinkage_constant.hpp"
@@ -528,115 +528,117 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
-             * implements a multi-label variant of the logistic loss that is applied example-wise.
+             * implements a multivariate variant of the logistic loss that is non-decomposable.
              */
-            class IExampleWiseLogisticLossMixin : virtual public IBoostingRuleLearner::IConfig {
+            class INonDecomposableLogisticLossMixin : virtual public IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IExampleWiseLogisticLossMixin() override {}
+                    virtual ~INonDecomposableLogisticLossMixin() override {}
 
                     /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * logistic loss that is applied example-wise.
+                     * Configures the rule learner to use a loss function that implements a multivariate variant of the
+                     * logistic loss that is non-decomposable.
                      */
-                    virtual void useExampleWiseLogisticLoss() {
+                    virtual void useNonDecomposableLogisticLoss() {
                         std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
-                        lossConfigPtr = std::make_unique<ExampleWiseLogisticLossConfig>(this->getHeadConfigPtr());
+                        lossConfigPtr = std::make_unique<NonDecomposableLogisticLossConfig>(this->getHeadConfigPtr());
                     }
             };
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
-             * implements a multi-label variant of the squared error loss that is applied example-wise.
+             * implements a multivariate variant of the squared error loss that is non-decomposable.
              */
-            class IExampleWiseSquaredErrorLossMixin : virtual public IBoostingRuleLearner::IConfig {
+            class INonDecomposableSquaredErrorLossMixin : virtual public IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IExampleWiseSquaredErrorLossMixin() override {}
+                    virtual ~INonDecomposableSquaredErrorLossMixin() override {}
 
                     /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * squared error loss that is applied example-wise.
+                     * Configures the rule learner to use a loss function that implements a multivariate variant of the
+                     * squared error loss that is non-decomposable.
                      */
-                    virtual void useExampleWiseSquaredErrorLoss() {
+                    virtual void useNonDecomposableSquaredErrorLoss() {
                         std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
-                        lossConfigPtr = std::make_unique<ExampleWiseSquaredErrorLossConfig>(this->getHeadConfigPtr());
+                        lossConfigPtr =
+                          std::make_unique<NonDecomposableSquaredErrorLossConfig>(this->getHeadConfigPtr());
                     }
             };
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
-             * implements a multi-label variant of the squared hinge loss that is applied example-wise.
+             * implements a multivariate variant of the squared hinge loss that is non-decomposable.
              */
-            class IExampleWiseSquaredHingeLossMixin : virtual public IBoostingRuleLearner::IConfig {
+            class INonDecomposableSquaredHingeLossMixin : virtual public IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IExampleWiseSquaredHingeLossMixin() override {}
+                    virtual ~INonDecomposableSquaredHingeLossMixin() override {}
 
                     /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * squared hinge loss that is applied example-wise.
+                     * Configures the rule learner to use a loss function that implements a multivariate variant of the
+                     * squared hinge loss that is non-decomposable.
                      */
-                    virtual void useExampleWiseSquaredHingeLoss() {
+                    virtual void useNonDecomposableSquaredHingeLoss() {
                         std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
-                        lossConfigPtr = std::make_unique<ExampleWiseSquaredHingeLossConfig>(this->getHeadConfigPtr());
+                        lossConfigPtr =
+                          std::make_unique<NonDecomposableSquaredHingeLossConfig>(this->getHeadConfigPtr());
                     }
             };
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
-             * implements a multi-label variant of the logistic loss that is applied label-wise.
+             * implements a multivariate variant of the logistic loss that is decomposable.
              */
-            class ILabelWiseLogisticLossMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IDecomposableLogisticLossMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseLogisticLossMixin() override {}
+                    virtual ~IDecomposableLogisticLossMixin() override {}
 
                     /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * logistic loss that is applied label-wise.
+                     * Configures the rule learner to use a loss function that implements a multivariate variant of the
+                     * logistic loss that is applied decomposable.
                      */
-                    virtual void useLabelWiseLogisticLoss() {
+                    virtual void useDecomposableLogisticLoss() {
                         std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
-                        lossConfigPtr = std::make_unique<LabelWiseLogisticLossConfig>(this->getHeadConfigPtr());
+                        lossConfigPtr = std::make_unique<DecomposableLogisticLossConfig>(this->getHeadConfigPtr());
                     }
             };
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
-             * implements a multi-label variant of the squared error loss that is applied label-wise.
+             * implements a multivariate variant of the squared error loss that is decomposable.
              */
-            class ILabelWiseSquaredErrorLossMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IDecomposableSquaredErrorLossMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseSquaredErrorLossMixin() override {}
+                    virtual ~IDecomposableSquaredErrorLossMixin() override {}
 
                     /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * squared error loss that is applied label-wise.
+                     * Configures the rule learner to use a loss function that implements a multivariate variant of the
+                     * squared error loss that is decomposable.
                      */
-                    virtual void useLabelWiseSquaredErrorLoss() {
+                    virtual void useDecomposableSquaredErrorLoss() {
                         std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
-                        lossConfigPtr = std::make_unique<LabelWiseSquaredErrorLossConfig>(this->getHeadConfigPtr());
+                        lossConfigPtr = std::make_unique<DecomposableSquaredErrorLossConfig>(this->getHeadConfigPtr());
                     }
             };
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
-             * implements a multi-label variant of the squared hinge loss that is applied label-wise.
+             * implements a multivariate variant of the squared hinge loss that is decomposable.
              */
-            class ILabelWiseSquaredHingeLossMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IDecomposableSquaredHingeLossMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseSquaredHingeLossMixin() override {}
+                    virtual ~IDecomposableSquaredHingeLossMixin() override {}
 
                     /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * squared hinge loss that is applied label-wise.
+                     * Configures the rule learner to use a loss function that implements a multivariate variant of the
+                     * squared hinge loss that is decomposable.
                      */
-                    virtual void useLabelWiseSquaredHingeLoss() {
+                    virtual void useDecomposableSquaredHingeLoss() {
                         std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
-                        lossConfigPtr = std::make_unique<LabelWiseSquaredHingeLossConfig>(this->getHeadConfigPtr());
+                        lossConfigPtr = std::make_unique<DecomposableSquaredHingeLossConfig>(this->getHeadConfigPtr());
                     }
             };
 

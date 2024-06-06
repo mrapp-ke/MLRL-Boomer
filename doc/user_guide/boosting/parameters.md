@@ -34,14 +34,14 @@ The following parameters may be used to control the behavior of the algorithm. T
 
 ### Heuristics
 
-- `loss` (Default value = `'logistic-label-wise'`)
+- `loss` (Default value = `'logistic-decomposable'`)
 
-  - `'logistic-label-wise'` A variant of the logistic loss function that is applied to each label individually.
-  - `'logistic-example-wise'` A variant of the logistic loss function that takes all labels into account at the same time.
-  - `'squared-error-label-wise'` A variant of the squared error loss that is applied to each label individually.
-  - `'squared-error-example-wise'` A variant of the squared error loss that takes all labels into account at the same time.
-  - `'squared-hinge-label-wise'` A variant of the squared hinge loss that is applied to each label individually.
-  - `'squared-hinge-example-wise'` A variant of the squared hinge loss that takes all labels into account at the same time.
+  - `'logistic-decomposable'` A variant of the logistic loss function that is applied to each label individually.
+  - `'logistic-non-decomposable'` A variant of the logistic loss function that takes all labels into account at the same time.
+  - `'squared-error-decomposable'` A variant of the squared error loss that is applied to each label individually.
+  - `'squared-error-non-decomposable'` A variant of the squared error loss that takes all labels into account at the same time.
+  - `'squared-hinge-decomposable'` A variant of the squared hinge loss that is applied to each label individually.
+  - `'squared-hinge-non-decomposable'` A variant of the squared hinge loss that takes all labels into account at the same time.
 
 - `shrinkage` (Default value = `0.3`)
 

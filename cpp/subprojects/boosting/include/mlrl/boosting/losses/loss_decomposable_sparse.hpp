@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/losses/loss_label_wise.hpp"
+#include "mlrl/boosting/losses/loss_decomposable.hpp"
 #include "mlrl/common/data/tuple.hpp"
 #include "mlrl/common/data/view_matrix_sparse_set.hpp"
 #include "mlrl/common/measures/measure_evaluation_sparse.hpp"
@@ -11,18 +11,18 @@
 namespace boosting {
 
     /**
-     * Defines an interface for all (decomposable) loss functions that are applied label-wise and are suited for the use
-     * of sparse data structures. To meet this requirement, the gradients and Hessians that are computed by the loss
-     * function should be zero, if the prediction for a label is correct.
+     * Defines an interface for all decomposable loss functions that are suited for the use of sparse data structures.
+     * To meet this requirement, the gradients and Hessians that are computed by the loss function should be zero, if
+     * the prediction for a label is correct.
      */
-    class ISparseLabelWiseLoss : virtual public ILabelWiseLoss,
-                                 public ISparseEvaluationMeasure {
+    class ISparseDecomposableLoss : virtual public IDecomposableLoss,
+                                    public ISparseEvaluationMeasure {
         public:
 
-            virtual ~ISparseLabelWiseLoss() override {}
+            virtual ~ISparseDecomposableLoss() override {}
 
             // Keep functions from the parent class rather than hiding them
-            using ILabelWiseLoss::updateDecomposableStatistics;
+            using IDecomposableLoss::updateDecomposableStatistics;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -104,52 +104,52 @@ namespace boosting {
     };
 
     /**
-     * Defines an interface for all factories that allow to create instances of the type `ISparseLabelWiseLoss`.
+     * Defines an interface for all factories that allow to create instances of the type `ISparseDecomposableLoss`.
      */
-    class ISparseLabelWiseLossFactory : public ILabelWiseLossFactory,
-                                        public ISparseEvaluationMeasureFactory {
+    class ISparseDecomposableLossFactory : public IDecomposableLossFactory,
+                                           public ISparseEvaluationMeasureFactory {
         public:
 
-            virtual ~ISparseLabelWiseLossFactory() override {}
+            virtual ~ISparseDecomposableLossFactory() override {}
 
             /**
-             * Creates and returns a new object of type `ISparseLabelWiseLoss`.
+             * Creates and returns a new object of type `ISparseDecomposableLoss`.
              *
-             * @return An unique pointer to an object of type `ISparseLabelWiseLoss` that has been created
+             * @return An unique pointer to an object of type `ISparseDecomposableLoss` that has been created
              */
-            virtual std::unique_ptr<ISparseLabelWiseLoss> createSparseLabelWiseLoss() const = 0;
+            virtual std::unique_ptr<ISparseDecomposableLoss> createSparseDecomposableLoss() const = 0;
 
             /**
-             * @see `ILabelWiseLossFactory::createLabelWiseLoss`
+             * @see `IDecomposableLossFactory::createDecomposableLoss`
              */
-            std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const override final {
-                return this->createSparseLabelWiseLoss();
+            std::unique_ptr<IDecomposableLoss> createDecomposableLoss() const override final {
+                return this->createSparseDecomposableLoss();
             }
 
             /**
              * @see `ISparseEvaluationMeasureFactory::createSparseEvaluationMeasure`
              */
             std::unique_ptr<ISparseEvaluationMeasure> createSparseEvaluationMeasure() const override final {
-                return this->createSparseLabelWiseLoss();
+                return this->createSparseDecomposableLoss();
             }
     };
 
     /**
-     * Defines an interface for all classes that allow to configure a (decomposable) loss function that is applied
-     * label-wise and is suited for the use of sparse data structures.
+     * Defines an interface for all classes that allow to configure a decomposable loss function that is suited for the
+     * use of sparse data structures.
      */
-    class ISparseLabelWiseLossConfig : public ILabelWiseLossConfig {
+    class ISparseDecomposableLossConfig : public IDecomposableLossConfig {
         public:
 
-            virtual ~ISparseLabelWiseLossConfig() override {}
+            virtual ~ISparseDecomposableLossConfig() override {}
 
             /**
-             * Creates and returns a new object of type `ISparseLabelWiseLossFactory` according to the specified
+             * Creates and returns a new object of type `ISparseDecomposableLossFactory` according to the specified
              * configuration.
              *
-             * @return An unique pointer to an object of type `ISparseLabelWiseLossFactory` that has been created
+             * @return An unique pointer to an object of type `ISparseDecomposableLossFactory` that has been created
              */
-            virtual std::unique_ptr<ISparseLabelWiseLossFactory> createSparseLabelWiseLossFactory() const = 0;
+            virtual std::unique_ptr<ISparseDecomposableLossFactory> createSparseDecomposableLossFactory() const = 0;
 
             /**
              * Creates and returns a new object of type `ISparseEvaluationMeasureFactory` according to the specified
@@ -158,11 +158,11 @@ namespace boosting {
              * @return An unique pointer to an object of type `ISparseEvaluationMeasureFactory` that has been created
              */
             std::unique_ptr<ISparseEvaluationMeasureFactory> createSparseEvaluationMeasureFactory() const {
-                return this->createSparseLabelWiseLossFactory();
+                return this->createSparseDecomposableLossFactory();
             }
 
-            std::unique_ptr<ILabelWiseLossFactory> createLabelWiseLossFactory() const override final {
-                return this->createSparseLabelWiseLossFactory();
+            std::unique_ptr<IDecomposableLossFactory> createDecomposableLossFactory() const override final {
+                return this->createSparseDecomposableLossFactory();
             }
 
             bool isSparse() const override final {

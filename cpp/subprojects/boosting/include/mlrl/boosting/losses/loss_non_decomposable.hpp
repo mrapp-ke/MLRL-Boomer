@@ -4,17 +4,17 @@
 #pragma once
 
 #include "mlrl/boosting/data/view_statistic_non_decomposable_dense.hpp"
-#include "mlrl/boosting/losses/loss_label_wise.hpp"
+#include "mlrl/boosting/losses/loss_decomposable.hpp"
 
 namespace boosting {
 
     /**
      * Defines an interface for all (non-decomposable) loss functions that are applied example-wise.
      */
-    class IExampleWiseLoss : public ILabelWiseLoss {
+    class INonDecomposableLoss : public IDecomposableLoss {
         public:
 
-            virtual ~IExampleWiseLoss() override {}
+            virtual ~INonDecomposableLoss() override {}
 
             /**
              * Updates the statistics of the example at a specific index.
@@ -47,22 +47,22 @@ namespace boosting {
     };
 
     /**
-     * Defines an interface for all factories that allow to create instances of the type `IExampleWiseLoss`.
+     * Defines an interface for all factories that allow to create instances of the type `INonDecomposableLoss`.
      */
-    class IExampleWiseLossFactory : public ILabelWiseLossFactory {
+    class INonDecomposableLossFactory : public IDecomposableLossFactory {
         public:
 
-            virtual ~IExampleWiseLossFactory() override {}
+            virtual ~INonDecomposableLossFactory() override {}
 
             /**
-             * Creates and returns a new object of type `IExampleWiseLoss`.
+             * Creates and returns a new object of type `INonDecomposableLoss`.
              *
-             * @return An unique pointer to an object of type `IExampleWiseLoss` that has been created
+             * @return An unique pointer to an object of type `INonDecomposableLoss` that has been created
              */
-            virtual std::unique_ptr<IExampleWiseLoss> createExampleWiseLoss() const = 0;
+            virtual std::unique_ptr<INonDecomposableLoss> createNonDecomposableLoss() const = 0;
 
-            std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const override final {
-                return this->createExampleWiseLoss();
+            std::unique_ptr<IDecomposableLoss> createDecomposableLoss() const override final {
+                return this->createNonDecomposableLoss();
             }
     };
 
@@ -70,25 +70,25 @@ namespace boosting {
      * Defines an interface for all classes that allow to configure a (non-decomposable) loss function that is applied
      * example-wise.
      */
-    class IExampleWiseLossConfig : public ILossConfig {
+    class INonDecomposableLossConfig : public ILossConfig {
         public:
 
-            virtual ~IExampleWiseLossConfig() override {}
+            virtual ~INonDecomposableLossConfig() override {}
 
             /**
-             * Creates and returns a new object of type `IExampleWiseLossFactory` according to the specified
+             * Creates and returns a new object of type `INonDecomposableLossFactory` according to the specified
              * configuration.
              *
-             * @return An unique pointer to an object of type `IExampleWiseLossFactory` that has been created
+             * @return An unique pointer to an object of type `INonDecomposableLossFactory` that has been created
              */
-            virtual std::unique_ptr<IExampleWiseLossFactory> createExampleWiseLossFactory() const = 0;
+            virtual std::unique_ptr<INonDecomposableLossFactory> createNonDecomposableLossFactory() const = 0;
 
             std::unique_ptr<IEvaluationMeasureFactory> createEvaluationMeasureFactory() const override final {
-                return this->createExampleWiseLossFactory();
+                return this->createNonDecomposableLossFactory();
             }
 
             std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const override final {
-                return this->createExampleWiseLossFactory();
+                return this->createNonDecomposableLossFactory();
             }
 
             bool isDecomposable() const override final {

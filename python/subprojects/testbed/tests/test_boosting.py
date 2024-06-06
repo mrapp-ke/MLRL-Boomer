@@ -9,17 +9,17 @@ from test_common import DATASET_EMOTIONS, DIR_OUT, HOLDOUT_NO, HOLDOUT_RANDOM, H
 
 CMD_BOOMER = 'boomer'
 
-LOSS_LOGISTIC_LABEL_WISE = 'logistic-label-wise'
+LOSS_LOGISTIC_DECOMPOSABLE = 'logistic-decomposable'
 
-LOSS_LOGISTIC_EXAMPLE_WISE = 'logistic-example-wise'
+LOSS_LOGISTIC_NON_DECOMPOSABLE = 'logistic-non-decomposable'
 
-LOSS_SQUARED_HINGE_LABEL_WISE = 'squared-hinge-label-wise'
+LOSS_SQUARED_HINGE_DECOMPOSABLE = 'squared-hinge-decomposable'
 
-LOSS_SQUARED_HINGE_EXAMPLE_WISE = 'squared-hinge-example-wise'
+LOSS_SQUARED_HINGE_NON_DECOMPOSABLE = 'squared-hinge-non-decomposable'
 
-LOSS_SQUARED_ERROR_LABEL_WISE = 'squared-error-label-wise'
+LOSS_SQUARED_ERROR_DECOMPOSABLE = 'squared-error-decomposable'
 
-LOSS_SQUARED_ERROR_EXAMPLE_WISE = 'squared-error-example-wise'
+LOSS_SQUARED_ERROR_NON_DECOMPOSABLE = 'squared-error-non-decomposable'
 
 HEAD_TYPE_SINGLE = 'single'
 
@@ -66,7 +66,7 @@ class BoostingCmdBuilder(CmdBuilder):
     def __init__(self, dataset: str = DATASET_EMOTIONS):
         super().__init__(cmd=CMD_BOOMER, dataset=dataset)
 
-    def loss(self, loss: str = LOSS_LOGISTIC_LABEL_WISE):
+    def loss(self, loss: str = LOSS_LOGISTIC_DECOMPOSABLE):
         """
         Configures the algorithm to use a specific loss function.
 
@@ -207,56 +207,56 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_evaluation()
         self.run_cmd(builder, 'single-label-probabilities')
 
-    def test_loss_logistic_label_wise(self):
+    def test_loss_logistic_decomposable(self):
         """
-        Tests the BOOMER algorithm when using the label-wise logistic loss function.
+        Tests the BOOMER algorithm when using the decomposable logistic loss function.
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_LOGISTIC_LABEL_WISE)
-        self.run_cmd(builder, 'loss-logistic-label-wise')
+            .loss(LOSS_LOGISTIC_DECOMPOSABLE)
+        self.run_cmd(builder, 'loss-logistic-decomposable')
 
     @skip_test_on_ci
-    def test_loss_logistic_example_wise(self):
+    def test_loss_logistic_non_decomposable(self):
         """
-        Tests the BOOMER algorithm when using the example-wise logistic loss function.
+        Tests the BOOMER algorithm when using the non-decomposable logistic loss function.
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_LOGISTIC_EXAMPLE_WISE)
-        self.run_cmd(builder, 'loss-logistic-example-wise')
+            .loss(LOSS_LOGISTIC_NON_DECOMPOSABLE)
+        self.run_cmd(builder, 'loss-logistic-non-decomposable')
 
-    def test_loss_squared_hinge_label_wise(self):
+    def test_loss_squared_hinge_decomposable(self):
         """
-        Tests the BOOMER algorithm when using the label-wise squared hinge loss function.
-        """
-        builder = BoostingCmdBuilder() \
-            .loss(LOSS_SQUARED_HINGE_LABEL_WISE)
-        self.run_cmd(builder, 'loss-squared-hinge-label-wise')
-
-    @skip_test_on_ci
-    def test_loss_squared_hinge_example_wise(self):
-        """
-        Tests the BOOMER algorithm when using the example-wise squared hinge loss function.
+        Tests the BOOMER algorithm when using the decomposable squared hinge loss function.
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_SQUARED_HINGE_EXAMPLE_WISE)
-        self.run_cmd(builder, 'loss-squared-hinge-example-wise')
-
-    def test_loss_squared_error_label_wise(self):
-        """
-        Tests the BOOMER algorithm when using the label-wise squared error loss function.
-        """
-        builder = BoostingCmdBuilder() \
-            .loss(LOSS_SQUARED_ERROR_LABEL_WISE)
-        self.run_cmd(builder, 'loss-squared-error-label-wise')
+            .loss(LOSS_SQUARED_HINGE_DECOMPOSABLE)
+        self.run_cmd(builder, 'loss-squared-hinge-decomposable')
 
     @skip_test_on_ci
-    def test_loss_squared_error_example_wise(self):
+    def test_loss_squared_hinge_non_decomposable(self):
         """
-        Tests the BOOMER algorithm when using the example-wise squared error loss function.
+        Tests the BOOMER algorithm when using the non-decomposable squared hinge loss function.
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_SQUARED_ERROR_EXAMPLE_WISE)
-        self.run_cmd(builder, 'loss-squared-error-example-wise')
+            .loss(LOSS_SQUARED_HINGE_NON_DECOMPOSABLE)
+        self.run_cmd(builder, 'loss-squared-hinge-non-decomposable')
+
+    def test_loss_squared_error_decomposable(self):
+        """
+        Tests the BOOMER algorithm when using the decomposable squared error loss function.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_SQUARED_ERROR_DECOMPOSABLE)
+        self.run_cmd(builder, 'loss-squared-error-decomposable')
+
+    @skip_test_on_ci
+    def test_loss_squared_error_non_decomposable(self):
+        """
+        Tests the BOOMER algorithm when using the non-decomposable squared error loss function.
+        """
+        builder = BoostingCmdBuilder() \
+            .loss(LOSS_SQUARED_ERROR_NON_DECOMPOSABLE)
+        self.run_cmd(builder, 'loss-squared-error-non-decomposable')
 
     def test_predictor_binary_label_wise(self):
         """
@@ -626,7 +626,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .sparse_statistic_format() \
             .sparse_label_format(False) \
             .default_rule(False) \
-            .loss(LOSS_SQUARED_HINGE_LABEL_WISE) \
+            .loss(LOSS_SQUARED_HINGE_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_SINGLE)
         self.run_cmd(builder, 'statistics-sparse_label-format-dense')
 
@@ -639,7 +639,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .sparse_statistic_format() \
             .sparse_label_format() \
             .default_rule(False) \
-            .loss(LOSS_SQUARED_HINGE_LABEL_WISE) \
+            .loss(LOSS_SQUARED_HINGE_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_SINGLE)
         self.run_cmd(builder, 'statistics-sparse_label-format-sparse')
 
@@ -649,7 +649,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         heads.
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_LOGISTIC_LABEL_WISE) \
+            .loss(LOSS_LOGISTIC_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_SINGLE) \
             .print_model_characteristics()
         self.run_cmd(builder, 'decomposable-single-output-heads')
@@ -660,7 +660,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         heads.
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_LOGISTIC_LABEL_WISE) \
+            .loss(LOSS_LOGISTIC_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_COMPLETE) \
             .print_model_characteristics()
         self.run_cmd(builder, 'decomposable-complete-heads')
@@ -671,7 +671,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         induction of rules with complete heads.
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_LOGISTIC_LABEL_WISE) \
+            .loss(LOSS_LOGISTIC_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_COMPLETE) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics()
@@ -683,7 +683,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         number of labels
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_LOGISTIC_LABEL_WISE) \
+            .loss(LOSS_LOGISTIC_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_PARTIAL_FIXED) \
             .print_model_characteristics()
         self.run_cmd(builder, 'decomposable-partial-fixed-heads')
@@ -694,7 +694,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         induction of rules that predict for a number of labels
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_LOGISTIC_LABEL_WISE) \
+            .loss(LOSS_LOGISTIC_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_PARTIAL_FIXED) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics()
@@ -706,7 +706,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         dynamically determined subset of the available labels.
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_LOGISTIC_LABEL_WISE) \
+            .loss(LOSS_LOGISTIC_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_PARTIAL_DYNAMIC) \
             .print_model_characteristics()
         self.run_cmd(builder, 'decomposable-partial-dynamic-heads')
@@ -717,7 +717,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         induction of rules that predict for a dynamically determined subset of the available labels.
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_LOGISTIC_LABEL_WISE) \
+            .loss(LOSS_LOGISTIC_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_PARTIAL_DYNAMIC) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics()
@@ -729,7 +729,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         single-output heads.
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
+            .loss(LOSS_LOGISTIC_NON_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_SINGLE) \
             .print_model_characteristics()
         self.run_cmd(builder, 'non-decomposable-single-output-heads')
@@ -741,7 +741,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         heads.
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
+            .loss(LOSS_LOGISTIC_NON_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_COMPLETE) \
             .label_binning(LABEL_BINNING_NO) \
             .print_model_characteristics()
@@ -754,7 +754,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         induction of rules with complete heads.
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
+            .loss(LOSS_LOGISTIC_NON_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_COMPLETE) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics()
@@ -767,7 +767,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         for a number of labels
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
+            .loss(LOSS_LOGISTIC_NON_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_PARTIAL_FIXED) \
             .label_binning(LABEL_BINNING_NO) \
             .print_model_characteristics()
@@ -780,7 +780,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         induction of rules that predict for a number of labels
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
+            .loss(LOSS_LOGISTIC_NON_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_PARTIAL_FIXED) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics()
@@ -793,7 +793,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         for a dynamically determined subset of the available labels.
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
+            .loss(LOSS_LOGISTIC_NON_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_PARTIAL_DYNAMIC) \
             .label_binning(LABEL_BINNING_NO) \
             .print_model_characteristics()
@@ -806,7 +806,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         induction of rules that predict for a dynamically determined subset of the available labels.
         """
         builder = BoostingCmdBuilder() \
-            .loss(LOSS_LOGISTIC_EXAMPLE_WISE) \
+            .loss(LOSS_LOGISTIC_NON_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_PARTIAL_DYNAMIC) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
             .print_model_characteristics()

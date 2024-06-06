@@ -1,6 +1,6 @@
-#include "mlrl/boosting/losses/loss_label_wise_logistic.hpp"
+#include "mlrl/boosting/losses/loss_decomposable_logistic.hpp"
 
-#include "loss_label_wise_common.hpp"
+#include "loss_decomposable_common.hpp"
 #include "mlrl/boosting/prediction/probability_function_chain_rule.hpp"
 #include "mlrl/boosting/prediction/probability_function_logistic.hpp"
 #include "mlrl/boosting/util/math.hpp"
@@ -65,42 +65,42 @@ namespace boosting {
     }
 
     /**
-     * Allows to create instances of the type `ILabelWiseLoss` that implement a multi-label variant of the logistic loss
-     * that is applied label-wise.
+     * Allows to create instances of the type `IDecomposableLoss` that implement a multivariate variant of the logistic
+     * loss that is decomposable.
      */
-    class LabelWiseLogisticLossFactory final : public ILabelWiseLossFactory {
+    class DecomposableLogisticLossFactory final : public IDecomposableLossFactory {
         public:
 
-            std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const override {
-                return std::make_unique<LabelWiseLoss>(&updateGradientAndHessian, &evaluatePrediction);
+            std::unique_ptr<IDecomposableLoss> createDecomposableLoss() const override {
+                return std::make_unique<DecomposableLoss>(&updateGradientAndHessian, &evaluatePrediction);
             }
     };
 
-    LabelWiseLogisticLossConfig::LabelWiseLogisticLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr)
+    DecomposableLogisticLossConfig::DecomposableLogisticLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr)
         : headConfigPtr_(headConfigPtr) {}
 
-    std::unique_ptr<IStatisticsProviderFactory> LabelWiseLogisticLossConfig::createStatisticsProviderFactory(
+    std::unique_ptr<IStatisticsProviderFactory> DecomposableLogisticLossConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
       const Lapack& lapack, bool preferSparseStatistics) const {
         return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
     }
 
     std::unique_ptr<IMarginalProbabilityFunctionFactory>
-      LabelWiseLogisticLossConfig::createMarginalProbabilityFunctionFactory() const {
+      DecomposableLogisticLossConfig::createMarginalProbabilityFunctionFactory() const {
         return std::make_unique<LogisticFunctionFactory>();
     }
 
     std::unique_ptr<IJointProbabilityFunctionFactory>
-      LabelWiseLogisticLossConfig::createJointProbabilityFunctionFactory() const {
+      DecomposableLogisticLossConfig::createJointProbabilityFunctionFactory() const {
         return std::make_unique<ChainRuleFactory>(this->createMarginalProbabilityFunctionFactory());
     }
 
-    float64 LabelWiseLogisticLossConfig::getDefaultPrediction() const {
+    float64 DecomposableLogisticLossConfig::getDefaultPrediction() const {
         return 0;
     }
 
-    std::unique_ptr<ILabelWiseLossFactory> LabelWiseLogisticLossConfig::createLabelWiseLossFactory() const {
-        return std::make_unique<LabelWiseLogisticLossFactory>();
+    std::unique_ptr<IDecomposableLossFactory> DecomposableLogisticLossConfig::createDecomposableLossFactory() const {
+        return std::make_unique<DecomposableLogisticLossFactory>();
     }
 
 }

@@ -3,16 +3,16 @@
  */
 #pragma once
 
-#include "mlrl/boosting/losses/loss_example_wise.hpp"
+#include "mlrl/boosting/losses/loss_non_decomposable.hpp"
 #include "mlrl/boosting/rule_evaluation/head_type.hpp"
 
 namespace boosting {
 
     /**
-     * Allows to configure a loss function that implements a multi-label variant of the logistic loss that is applied
-     * example-wise.
+     * Allows to configure a loss function that implements a multivariate variant of the squared error loss that is
+     * non-decomposable.
      */
-    class ExampleWiseLogisticLossConfig final : public IExampleWiseLossConfig {
+    class NonDecomposableSquaredErrorLossConfig final : public INonDecomposableLossConfig {
         private:
 
             const std::unique_ptr<IHeadConfig>& headConfigPtr_;
@@ -22,7 +22,7 @@ namespace boosting {
             /**
              * @param headConfigPtr A reference to an unique pointer that stores the configuration of rule heads
              */
-            ExampleWiseLogisticLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr);
+            NonDecomposableSquaredErrorLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
@@ -35,7 +35,7 @@ namespace boosting {
 
             float64 getDefaultPrediction() const override;
 
-            std::unique_ptr<IExampleWiseLossFactory> createExampleWiseLossFactory() const override;
+            std::unique_ptr<INonDecomposableLossFactory> createNonDecomposableLossFactory() const override;
     };
 
 }

@@ -13,18 +13,18 @@ namespace boosting {
 
     template<typename LabelMatrix>
     static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
-      const ILabelWiseLossFactory& lossFactory, const IEvaluationMeasureFactory& evaluationMeasureFactory,
+      const IDecomposableLossFactory& lossFactory, const IEvaluationMeasureFactory& evaluationMeasureFactory,
       const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
       const LabelMatrix& labelMatrix) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
-        std::unique_ptr<ILabelWiseLoss> lossPtr = lossFactory.createLabelWiseLoss();
+        std::unique_ptr<IDecomposableLoss> lossPtr = lossFactory.createDecomposableLoss();
         std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr = evaluationMeasureFactory.createEvaluationMeasure();
         std::unique_ptr<DenseDecomposableStatisticMatrix> statisticMatrixPtr =
           std::make_unique<DenseDecomposableStatisticMatrix>(numExamples, numLabels);
         std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr =
           std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numLabels, true);
-        const ILabelWiseLoss* lossRawPtr = lossPtr.get();
+        const IDecomposableLoss* lossRawPtr = lossPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
         const CContiguousView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
         CContiguousView<Tuple<float64>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
@@ -44,7 +44,7 @@ namespace boosting {
     }
 
     DenseDecomposableStatisticsProviderFactory::DenseDecomposableStatisticsProviderFactory(
-      std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr,
+      std::unique_ptr<IDecomposableLossFactory> lossFactoryPtr,
       std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
       std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
       std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,

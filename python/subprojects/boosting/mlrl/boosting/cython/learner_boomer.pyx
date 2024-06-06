@@ -58,14 +58,14 @@ from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, Automati
     AutomaticFeatureBinningMixin, AutomaticHeadMixin, AutomaticLabelBinningMixin, \
     AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, AutomaticPartitionSamplingMixin, \
     AutomaticProbabilityPredictorMixin, AutomaticStatisticsMixin, CompleteHeadMixin, ConstantShrinkageMixin, \
+    DecomposableLogisticLossMixin, DecomposableSquaredErrorLossMixin, DecomposableSquaredHingeLossMixin, \
     DenseStatisticsMixin, DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, \
-    ExampleWiseLogisticLossMixin, ExampleWiseSquaredErrorLossMixin, ExampleWiseSquaredHingeLossMixin, \
     FixedPartialHeadMixin, GfmBinaryPredictorMixin, IsotonicJointProbabilityCalibrationMixin, \
     IsotonicMarginalProbabilityCalibrationMixin, L1RegularizationMixin, L2RegularizationMixin, \
-    LabelWiseBinaryPredictorMixin, LabelWiseLogisticLossMixin, LabelWiseProbabilityPredictorMixin, \
-    LabelWiseScorePredictorMixin, LabelWiseSquaredErrorLossMixin, LabelWiseSquaredHingeLossMixin, \
+    LabelWiseBinaryPredictorMixin, LabelWiseProbabilityPredictorMixin, LabelWiseScorePredictorMixin, \
     MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
-    NoLabelBinningMixin, SingleOutputHeadMixin, SparseStatisticsMixin
+    NoLabelBinningMixin, NonDecomposableLogisticLossMixin, NonDecomposableSquaredErrorLossMixin, \
+    NonDecomposableSquaredHingeLossMixin, SingleOutputHeadMixin, SparseStatisticsMixin
 
 
 cdef class BoomerConfig(RuleLearnerConfig,
@@ -88,12 +88,12 @@ cdef class BoomerConfig(RuleLearnerConfig,
                         DenseStatisticsMixin,
                         SparseStatisticsMixin,
                         AutomaticStatisticsMixin,
-                        ExampleWiseLogisticLossMixin,
-                        ExampleWiseSquaredErrorLossMixin,
-                        ExampleWiseSquaredHingeLossMixin,
-                        LabelWiseLogisticLossMixin,
-                        LabelWiseSquaredErrorLossMixin,
-                        LabelWiseSquaredHingeLossMixin,
+                        DecomposableLogisticLossMixin,
+                        DecomposableSquaredErrorLossMixin,
+                        DecomposableSquaredHingeLossMixin,
+                        NonDecomposableLogisticLossMixin,
+                        NonDecomposableSquaredHingeLossMixin,
+                        NonDecomposableSquaredErrorLossMixin,
                         NoLabelBinningMixin,
                         EqualWidthLabelBinningMixin,
                         AutomaticLabelBinningMixin,
@@ -433,23 +433,23 @@ cdef class BoomerConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_example_wise_logistic_loss(self):
-        self.config_ptr.get().useExampleWiseLogisticLoss()
+    def use_non_decomposable_logistic_loss(self):
+        self.config_ptr.get().useNonDecomposableLogisticLoss()
 
-    def use_example_wise_squared_error_loss(self):
-        self.config_ptr.get().useExampleWiseSquaredErrorLoss()
+    def use_non_decomposable_squared_error_loss(self):
+        self.config_ptr.get().useNonDecomposableSquaredErrorLoss()
 
-    def use_example_wise_squared_hinge_loss(self):
-        self.config_ptr.get().useExampleWiseSquaredHingeLoss()
+    def use_non_decomposable_squared_hinge_loss(self):
+        self.config_ptr.get().useNonDecomposableSquaredHingeLoss()
 
-    def use_label_wise_logistic_loss(self):
-        self.config_ptr.get().useLabelWiseLogisticLoss()
+    def use_decomposable_logistic_loss(self):
+        self.config_ptr.get().useDecomposableLogisticLoss()
 
-    def use_label_wise_squared_error_loss(self):
-        self.config_ptr.get().useLabelWiseSquaredErrorLoss()
+    def use_decomposable_squared_error_loss(self):
+        self.config_ptr.get().useDecomposableSquaredErrorLoss()
 
-    def use_label_wise_squared_hinge_loss(self):
-        self.config_ptr.get().useLabelWiseSquaredHingeLoss()
+    def use_decomposable_squared_hinge_loss(self):
+        self.config_ptr.get().useDecomposableSquaredHingeLoss()
 
     def use_no_label_binning(self):
         self.config_ptr.get().useNoLabelBinning()

@@ -44,15 +44,15 @@ namespace boosting {
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const ILabelWiseLossConfig& lossConfig) const override;
+              const IDecomposableLossConfig& lossConfig) const override;
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const ISparseLabelWiseLossConfig& lossConfig) const override;
+              const ISparseDecomposableLossConfig& lossConfig) const override;
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const override;
+              const INonDecomposableLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const override;
 
             bool isPartial() const override;
 

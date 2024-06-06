@@ -61,13 +61,14 @@ namespace boosting {
     class DenseNonDecomposableStatistics final
         : public AbstractNonDecomposableStatistics<
             LabelMatrix, DenseNonDecomposableStatisticVector, DenseNonDecomposableStatisticMatrix,
-            NumericCContiguousMatrix<float64>, IExampleWiseLoss, IEvaluationMeasure,
+            NumericCContiguousMatrix<float64>, INonDecomposableLoss, IEvaluationMeasure,
             INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory> {
         public:
 
             /**
-             * @param lossPtr               An unique pointer to an object of type `IExampleWiseLoss` that implements
-             *                              the loss function to be used for calculating gradients and Hessians
+             * @param lossPtr               An unique pointer to an object of type `INonDecomposableLoss` that
+             *                              implements the loss function to be used for calculating gradients and
+             *                              Hessians
              * @param evaluationMeasurePtr  An unique pointer to an object of type `IEvaluationMeasure` that implements
              *                              the evaluation measure that should be used to assess the quality of
              *                              predictions
@@ -81,7 +82,7 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericCContiguousMatrix` that
              *                              stores the currently predicted scores
              */
-            DenseNonDecomposableStatistics(std::unique_ptr<IExampleWiseLoss> lossPtr,
+            DenseNonDecomposableStatistics(std::unique_ptr<INonDecomposableLoss> lossPtr,
                                            std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr,
                                            const INonDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                                            const LabelMatrix& labelMatrix,
@@ -89,7 +90,7 @@ namespace boosting {
                                            std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
                 : AbstractNonDecomposableStatistics<
                     LabelMatrix, DenseNonDecomposableStatisticVector, DenseNonDecomposableStatisticMatrix,
-                    NumericCContiguousMatrix<float64>, IExampleWiseLoss, IEvaluationMeasure,
+                    NumericCContiguousMatrix<float64>, INonDecomposableLoss, IEvaluationMeasure,
                     INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
                     std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
@@ -145,19 +146,19 @@ namespace boosting {
     template<typename LabelMatrix>
     static inline std::unique_ptr<
       INonDecomposableStatistics<INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>>
-      createStatistics(const IExampleWiseLossFactory& lossFactory,
+      createStatistics(const INonDecomposableLossFactory& lossFactory,
                        const IEvaluationMeasureFactory& evaluationMeasureFactory,
                        const INonDecomposableRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
                        const LabelMatrix& labelMatrix) {
         uint32 numExamples = labelMatrix.numRows;
         uint32 numLabels = labelMatrix.numCols;
-        std::unique_ptr<IExampleWiseLoss> lossPtr = lossFactory.createExampleWiseLoss();
+        std::unique_ptr<INonDecomposableLoss> lossPtr = lossFactory.createNonDecomposableLoss();
         std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr = evaluationMeasureFactory.createEvaluationMeasure();
         std::unique_ptr<DenseNonDecomposableStatisticMatrix> statisticMatrixPtr =
           std::make_unique<DenseNonDecomposableStatisticMatrix>(numExamples, numLabels);
         std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr =
           std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numLabels, true);
-        const IExampleWiseLoss* lossRawPtr = lossPtr.get();
+        const INonDecomposableLoss* lossRawPtr = lossPtr.get();
         const LabelMatrix* labelMatrixPtr = &labelMatrix;
         const CContiguousView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
         DenseNonDecomposableStatisticView* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
@@ -176,7 +177,7 @@ namespace boosting {
     }
 
     DenseNonDecomposableStatisticsProviderFactory::DenseNonDecomposableStatisticsProviderFactory(
-      std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr,
+      std::unique_ptr<INonDecomposableLossFactory> lossFactoryPtr,
       std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
       std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
       std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
@@ -210,7 +211,7 @@ namespace boosting {
     }
 
     DenseConvertibleNonDecomposableStatisticsProviderFactory::DenseConvertibleNonDecomposableStatisticsProviderFactory(
-      std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr,
+      std::unique_ptr<INonDecomposableLossFactory> lossFactoryPtr,
       std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
       std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
       std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,

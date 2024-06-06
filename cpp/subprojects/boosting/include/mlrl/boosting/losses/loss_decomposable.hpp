@@ -12,12 +12,12 @@
 namespace boosting {
 
     /**
-     * Defines an interface for all (decomposable) loss functions that are applied label-wise.
+     * Defines an interface for all decomposable loss functions.
      */
-    class ILabelWiseLoss : public ILoss {
+    class IDecomposableLoss : public ILoss {
         public:
 
-            virtual ~ILabelWiseLoss() override {}
+            virtual ~IDecomposableLoss() override {}
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -99,26 +99,26 @@ namespace boosting {
     };
 
     /**
-     * Defines an interface for all factories that allow to create instances of the type `ILabelWiseLoss`.
+     * Defines an interface for all factories that allow to create instances of the type `IDecomposableLoss`.
      */
-    class ILabelWiseLossFactory : public IEvaluationMeasureFactory,
-                                  public IDistanceMeasureFactory {
+    class IDecomposableLossFactory : public IEvaluationMeasureFactory,
+                                     public IDistanceMeasureFactory {
         public:
 
-            virtual ~ILabelWiseLossFactory() override {}
+            virtual ~IDecomposableLossFactory() override {}
 
             /**
-             * Creates and returns a new object of type `ILabelWiseLoss`.
+             * Creates and returns a new object of type `IDecomposableLoss`.
              *
-             * @return An unique pointer to an object of type `ILabelWiseLoss` that has been created
+             * @return An unique pointer to an object of type `IDecomposableLoss` that has been created
              */
-            virtual std::unique_ptr<ILabelWiseLoss> createLabelWiseLoss() const = 0;
+            virtual std::unique_ptr<IDecomposableLoss> createDecomposableLoss() const = 0;
 
             /**
              * @see `IEvaluationMeasureFactory::createEvaluationMeasure`
              */
             std::unique_ptr<IEvaluationMeasure> createEvaluationMeasure() const override final {
-                return this->createLabelWiseLoss();
+                return this->createDecomposableLoss();
             }
 
             /**
@@ -127,33 +127,32 @@ namespace boosting {
             std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
               const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override final {
-                return this->createLabelWiseLoss();
+                return this->createDecomposableLoss();
             }
     };
 
     /**
-     * Defines an interface for all classes that allow to configure a (decomposable) loss function that is applied
-     * label-wise.
+     * Defines an interface for all classes that allow to configure a decomposable loss function.
      */
-    class ILabelWiseLossConfig : public ILossConfig {
+    class IDecomposableLossConfig : public ILossConfig {
         public:
 
-            virtual ~ILabelWiseLossConfig() override {}
+            virtual ~IDecomposableLossConfig() override {}
 
             /**
-             * Creates and returns a new object of type `ILabelWiseLossFactory` according to the specified
+             * Creates and returns a new object of type `IDecomposableLossFactory` according to the specified
              * configuration.
              *
-             * @return An unique pointer to an object of type `ILabelWiseLossFactory` that has been created
+             * @return An unique pointer to an object of type `IDecomposableLossFactory` that has been created
              */
-            virtual std::unique_ptr<ILabelWiseLossFactory> createLabelWiseLossFactory() const = 0;
+            virtual std::unique_ptr<IDecomposableLossFactory> createDecomposableLossFactory() const = 0;
 
             std::unique_ptr<IEvaluationMeasureFactory> createEvaluationMeasureFactory() const override final {
-                return this->createLabelWiseLossFactory();
+                return this->createDecomposableLossFactory();
             }
 
             std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const override final {
-                return this->createLabelWiseLossFactory();
+                return this->createDecomposableLossFactory();
             }
 
             bool isDecomposable() const override final {

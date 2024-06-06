@@ -284,92 +284,92 @@ class AutomaticStatisticsMixin(ABC):
         pass
             
              
-class ExampleWiseLogisticLossMixin(ABC):
+class NonDecomposableLogisticLossMixin(ABC):
     """
-    Allows to configure a rule learner to use a loss function that implements a multi-label variant of the logistic loss
-    that is applied example-wise.
+    Allows to configure a rule learner to use a loss function that implements a multivariate variant of the logistic
+    loss that is non-decomposable.
     """
 
     @abstractmethod
-    def use_example_wise_logistic_loss(self):
+    def use_non_decomposable_logistic_loss(self):
         """
-        Configures the rule learner to use a loss function that implements a multi-label variant of the logistic loss
-        that is applied example-wise.
+        Configures the rule learner to use a loss function that implements a multivariate variant of the logistic loss
+        that is non-decomposable.
         """
         pass
             
              
-class ExampleWiseSquaredErrorLossMixin(ABC):
+class NonDecomposableSquaredErrorLossMixin(ABC):
     """
-    Allows to configure a rule learner to use a loss function that implements a multi-label variant of the squared error
-    loss that is applied example-wise.
+    Allows to configure a rule learner to use a loss function that implements a multivariate variant of the squared
+    error loss that is non-decomposable.
     """
 
     @abstractmethod
-    def use_example_wise_squared_error_loss(self):
+    def use_non_decomposable_squared_error_loss(self):
         """
-        Configures the rule learner to use a loss function that implements a multi-label variant of the squared error
-        loss that is applied example-wise.
+        Configures the rule learner to use a loss function that implements a multivariant variant of the squared error
+        loss that is non-decomposable.
         """
         pass
             
              
-class ExampleWiseSquaredHingeLossMixin(ABC):
+class NonDecomposableSquaredHingeLossMixin(ABC):
     """
-    Allows to configure a rule learner to use a loss function that implements a multi-label variant of the squared hinge
-    loss that is applied example-wise.
+    Allows to configure a rule learner to use a loss function that implements a multivariate variant of the squared
+    hinge loss that is non-decomposable.
     """
 
     @abstractmethod
-    def use_example_wise_squared_hinge_loss(self):
+    def use_non_decomposable_squared_hinge_loss(self):
         """
-        Configures the rule learner to use a loss function that implements a multi-label variant of the squared hinge
-        loss that is applied example-wise.
+        Configures the rule learner to use a loss function that implements a multivariate variant of the squared hinge
+        loss that is non-decomposable.
         """
         pass
             
              
-class LabelWiseLogisticLossMixin(ABC):
+class DecomposableLogisticLossMixin(ABC):
     """
-    Allows to configure a rule learner to use a loss function that implements a multi-label variant of the logistic loss
-    that is applied label-wise.
+    Allows to configure a rule learner to use a loss function that implements a multivariate variant of the logistic
+    loss that is decomposable.
     """
 
     @abstractmethod
-    def use_label_wise_logistic_loss(self):
+    def use_decomposable_logistic_loss(self):
         """
-        Configures the rule learner to use a loss function that implements a multi-label variant of the logistic loss
-        that is applied label-wise.
+        Configures the rule learner to use a loss function that implements a multivariate variant of the logistic loss
+        that is decomposable.
         """
         pass
             
              
-class LabelWiseSquaredErrorLossMixin(ABC):
+class DecomposableSquaredErrorLossMixin(ABC):
     """
-    Allows to configure a rule learner to use a loss function that implements a multi-label variant of the squared error
-    loss that is applied label-wise.
+    Allows to configure a rule learner to use a loss function that implements a multivariate variant of the squared
+    error loss that is decomposable.
     """
 
     @abstractmethod
-    def use_label_wise_squared_error_loss(self):
+    def use_decomposable_squared_error_loss(self):
         """
-        Configures the rule learner to use a loss function that implements a multi-label variant of the squared error
-        loss that is applied label-wise.
+        Configures the rule learner to use a loss function that implements a multivariate variant of the squared error
+        loss that is decomposable.
         """
         pass
             
              
-class LabelWiseSquaredHingeLossMixin(ABC):
+class DecomposableSquaredHingeLossMixin(ABC):
     """
-    Allows to configure a rule learner to use a loss function that implements a multi-label variant of the squared hinge
-    loss that is applied label-wise.
+    Allows to configure a rule learner to use a loss function that implements a multivariate variant of the squared
+    hinge loss that is decomposable.
     """
 
     @abstractmethod
-    def use_label_wise_squared_hinge_loss(self):
+    def use_decomposable_squared_hinge_loss(self):
         """
-        Configures the rule learner to use a loss function that implements a multi-label variant of the squared hinge
-        loss that is applied label-wise.
+        Configures the rule learner to use a loss function that implements a multivariate variant of the squared hinge
+        loss that is decomposable.
         """
         pass
             

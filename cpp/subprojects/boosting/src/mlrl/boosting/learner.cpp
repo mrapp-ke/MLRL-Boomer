@@ -10,7 +10,7 @@ namespace boosting {
           headConfigPtr_(std::make_unique<CompleteHeadConfig>(labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_,
                                                               l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)),
           statisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(lossConfigPtr_)),
-          lossConfigPtr_(std::make_unique<LabelWiseLogisticLossConfig>(headConfigPtr_)),
+          lossConfigPtr_(std::make_unique<DecomposableLogisticLossConfig>(headConfigPtr_)),
           l1RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
           l2RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
           labelBinningConfigPtr_(
