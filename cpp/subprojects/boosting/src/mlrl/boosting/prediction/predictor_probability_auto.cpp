@@ -1,7 +1,7 @@
 #include "mlrl/boosting/prediction/predictor_probability_auto.hpp"
 
-#include "mlrl/boosting/prediction/predictor_probability_label_wise.hpp"
 #include "mlrl/boosting/prediction/predictor_probability_marginalized.hpp"
+#include "mlrl/boosting/prediction/predictor_probability_output_wise.hpp"
 
 namespace boosting {
 
@@ -13,7 +13,7 @@ namespace boosting {
     std::unique_ptr<IProbabilityPredictorFactory> AutomaticProbabilityPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         if (lossConfigPtr_->isDecomposable()) {
-            return LabelWiseProbabilityPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+            return OutputWiseProbabilityPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
               .createPredictorFactory(featureMatrix, numLabels);
         } else {
             return MarginalizedProbabilityPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
@@ -23,7 +23,7 @@ namespace boosting {
 
     bool AutomaticProbabilityPredictorConfig::isLabelVectorSetNeeded() const {
         if (lossConfigPtr_->isDecomposable()) {
-            return LabelWiseProbabilityPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+            return OutputWiseProbabilityPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
               .isLabelVectorSetNeeded();
         } else {
             return MarginalizedProbabilityPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)

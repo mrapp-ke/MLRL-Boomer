@@ -92,7 +92,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                                                     suitable strategy should be chosen automatically, depending on the
                                                     loss function
         :param probability_predictor:               The strategy that should be used for predicting probabilities. Must
-                                                    be 'label-wise', 'marginalized' or 'auto', if the most suitable
+                                                    be 'output-wise', 'marginalized' or 'auto', if the most suitable
                                                     strategy should be chosen automatically, depending on the loss
                                                     function
         :param output_sampling:                     The strategy that should be used to sample from the available

@@ -2,7 +2,7 @@ from mlrl.boosting.cython.head_type cimport IDynamicPartialHeadConfig, IFixedPar
 from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
 from mlrl.boosting.cython.prediction cimport IExampleWiseBinaryPredictorConfig, IGfmBinaryPredictorConfig, \
-    ILabelWiseBinaryPredictorConfig, ILabelWiseProbabilityPredictorConfig, IMarginalizedProbabilityPredictorConfig
+    ILabelWiseBinaryPredictorConfig, IMarginalizedProbabilityPredictorConfig, IOutputWiseProbabilityPredictorConfig
 from mlrl.boosting.cython.probability_calibration cimport IIsotonicJointProbabilityCalibratorConfig, \
     IIsotonicMarginalProbabilityCalibratorConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
@@ -265,12 +265,12 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
         void useOutputWiseScorePredictor()
 
 
-    cdef cppclass ILabelWiseProbabilityPredictorMixin \
-        "boosting::IBoostingRuleLearner::ILabelWiseProbabilityPredictorMixin":
+    cdef cppclass IOutputWiseProbabilityPredictorMixin \
+        "boosting::IBoostingRuleLearner::IOutputWiseProbabilityPredictorMixin":
 
         # Functions:
 
-        ILabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor()
+        IOutputWiseProbabilityPredictorConfig& useOutputWiseProbabilityPredictor()
 
 
     cdef cppclass IMarginalizedProbabilityPredictorMixin\

@@ -12,13 +12,13 @@ namespace boosting {
 
     /**
      * Defines an interface for all classes that allow to configure a predictor that predicts label-wise probabilities
-     * for given query examples by transforming the regression scores that are predicted for each label individually
-     * into probabilities.
+     * for given query examples by transforming the individual regression scores that are predicted for each label into
+     * probabilities.
      */
-    class MLRLBOOSTING_API ILabelWiseProbabilityPredictorConfig {
+    class MLRLBOOSTING_API IOutputWiseProbabilityPredictorConfig {
         public:
 
-            virtual ~ILabelWiseProbabilityPredictorConfig() {}
+            virtual ~IOutputWiseProbabilityPredictorConfig() {}
 
             /**
              * Returns whether a model for the calibration of probabilities is used, if available, or not.
@@ -33,23 +33,19 @@ namespace boosting {
              * @param useProbabilityCalibrationModel    True, if a model for the calibration of probabilities should be
              *                                          used, if available, false otherwise
              * @return                                  A reference to an object of type
-             *                                          `ILabelWiseProbabilityPredictorConfig` that allows further
+             *                                          `IOutputWiseProbabilityPredictorConfig` that allows further
              *                                          configuration of the predictor
              */
-            virtual ILabelWiseProbabilityPredictorConfig& setUseProbabilityCalibrationModel(
+            virtual IOutputWiseProbabilityPredictorConfig& setUseProbabilityCalibrationModel(
               bool useProbabilityCalibrationModel) = 0;
     };
 
     /**
      * Allows to configure a predictor that predicts label-wise probabilities for given query examples by transforming
-     * the regression scores that are predicted for each label individually into probabilities.
-     *
-     * summing up the scores that are provided by individual rules of
-     * an existing rule-based model and transforming the aggregated scores into probabilities in [0, 1] according to a
-     * certain transformation function that is applied to each label individually.
+     * the individual regression scores that are predicted for each label into probabilities.
      */
-    class LabelWiseProbabilityPredictorConfig final : public ILabelWiseProbabilityPredictorConfig,
-                                                      public IProbabilityPredictorConfig {
+    class OutputWiseProbabilityPredictorConfig final : public IOutputWiseProbabilityPredictorConfig,
+                                                       public IProbabilityPredictorConfig {
         private:
 
             std::unique_ptr<IMarginalProbabilityCalibrationModel> noMarginalProbabilityCalibrationModelPtr_;
@@ -67,12 +63,12 @@ namespace boosting {
              *                                  multi-threading behavior that should be used to predict for several
              *                                  query examples in parallel
              */
-            LabelWiseProbabilityPredictorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,
-                                                const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+            OutputWiseProbabilityPredictorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,
+                                                 const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
 
             bool isProbabilityCalibrationModelUsed() const override;
 
-            ILabelWiseProbabilityPredictorConfig& setUseProbabilityCalibrationModel(
+            IOutputWiseProbabilityPredictorConfig& setUseProbabilityCalibrationModel(
               bool useProbabilityCalibrationModel) override;
 
             /**

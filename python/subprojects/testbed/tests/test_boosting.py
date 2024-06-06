@@ -49,7 +49,7 @@ BINARY_PREDICTOR_GFM = 'gfm'
 
 PROBABILITY_PREDICTOR_AUTO = 'auto'
 
-PROBABILITY_PREDICTOR_LABEL_WISE = 'label-wise'
+PROBABILITY_PREDICTOR_OUTPUT_WISE = 'output-wise'
 
 PROBABILITY_PREDICTOR_MARGINALIZED = 'marginalized'
 
@@ -531,10 +531,10 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .store_evaluation()
         self.run_cmd(builder, 'predictor-score-output-wise_incremental')
 
-    def test_predictor_probability_label_wise(self):
+    def test_predictor_probability_output_wise(self):
         """
-        Tests the BOOMER algorithm when predicting probabilities that are obtained by applying a label-wise
-        transformation function.
+        Tests the BOOMER algorithm when predicting probabilities that are obtained by applying a transformation function
+        to each output.
         """
         builder = BoostingCmdBuilder() \
             .marginal_probability_calibration() \
@@ -543,28 +543,28 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .set_output_dir() \
             .store_evaluation(False) \
             .prediction_type(PREDICTION_TYPE_PROBABILITIES) \
-            .probability_predictor(PROBABILITY_PREDICTOR_LABEL_WISE) \
+            .probability_predictor(PROBABILITY_PREDICTOR_OUTPUT_WISE) \
             .print_predictions() \
             .set_model_dir()
-        self.run_cmd(builder, 'predictor-probability-label-wise')
+        self.run_cmd(builder, 'predictor-probability-output-wise')
 
-    def test_predictor_probability_label_wise_incremental(self):
+    def test_predictor_probability_output_wise_incremental(self):
         """
         Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting probabilities
-        that are obtained by applying a label-wise transformation function.
+        that are obtained by applying a transformation function to each output.
         """
         builder = BoostingCmdBuilder() \
             .marginal_probability_calibration() \
             .print_marginal_probability_calibration_model() \
             .store_marginal_probability_calibration_model() \
             .prediction_type(PREDICTION_TYPE_PROBABILITIES) \
-            .probability_predictor(PROBABILITY_PREDICTOR_LABEL_WISE) \
+            .probability_predictor(PROBABILITY_PREDICTOR_OUTPUT_WISE) \
             .incremental_evaluation() \
             .set_output_dir() \
             .print_evaluation() \
             .store_evaluation() \
             .set_model_dir()
-        self.run_cmd(builder, 'predictor-probability-label-wise_incremental')
+        self.run_cmd(builder, 'predictor-probability-output-wise_incremental')
 
     def test_predictor_probability_marginalized(self):
         """

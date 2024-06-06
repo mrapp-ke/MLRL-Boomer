@@ -293,7 +293,7 @@ The following parameters may be used to control the behavior of the algorithm. T
 
   - `'auto'` The most suitable strategy for predicting probability estimates is chosen automatically, depending on the loss function.
 
-  - `'label-wise'` The prediction for an example is determined for each label independently
+  - `'output-wise'` The prediction for an example is determined for each label independently
 
     - `use_probability_calibration` (Default value = `'true'`) `'true'`, if a model for the calibration of probabilities should be used, if available, `'false'` otherwise.
 
