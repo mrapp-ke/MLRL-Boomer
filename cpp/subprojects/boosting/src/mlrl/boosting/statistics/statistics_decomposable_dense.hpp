@@ -5,7 +5,7 @@
 
 #include "mlrl/boosting/data/matrix_c_contiguous_numeric.hpp"
 #include "mlrl/boosting/data/vector_statistic_decomposable_dense.hpp"
-#include "mlrl/boosting/losses/loss_label_wise.hpp"
+#include "mlrl/boosting/losses/loss_decomposable.hpp"
 #include "mlrl/common/measures/measure_evaluation.hpp"
 #include "statistics_decomposable_common.hpp"
 
@@ -50,14 +50,15 @@ namespace boosting {
      */
     template<typename LabelMatrix>
     class DenseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<
-            LabelMatrix, DenseDecomposableStatisticVector, DenseDecomposableStatisticMatrix,
-            NumericCContiguousMatrix<float64>, ILabelWiseLoss, IEvaluationMeasure, IDecomposableRuleEvaluationFactory> {
+        : public AbstractDecomposableStatistics<LabelMatrix, DenseDecomposableStatisticVector,
+                                                DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
+                                                IDecomposableLoss, IEvaluationMeasure,
+                                                IDecomposableRuleEvaluationFactory> {
         public:
 
             /**
-             * @param lossPtr               An unique pointer to an object of type `ILabelWiseLoss` that implements the
-             *                              loss function that should be used for calculating gradients and Hessians
+             * @param lossPtr               An unique pointer to an object of type `IDecomposableLoss` that implements
+             *                              the loss function that should be used for calculating gradients and Hessians
              * @param evaluationMeasurePtr  An unique pointer to an object of type `IEvaluationMeasure` that implements
              *                              the evaluation measure that should be used to assess the quality of
              *                              predictions for a specific statistic
@@ -71,7 +72,7 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericCContiguousMatrix` that
              *                              stores the currently predicted scores
              */
-            DenseDecomposableStatistics(std::unique_ptr<ILabelWiseLoss> lossPtr,
+            DenseDecomposableStatistics(std::unique_ptr<IDecomposableLoss> lossPtr,
                                         std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr,
                                         const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                                         const LabelMatrix& labelMatrix,
@@ -79,7 +80,7 @@ namespace boosting {
                                         std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
                 : AbstractDecomposableStatistics<LabelMatrix, DenseDecomposableStatisticVector,
                                                  DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
-                                                 ILabelWiseLoss, IEvaluationMeasure,
+                                                 IDecomposableLoss, IEvaluationMeasure,
                                                  IDecomposableRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
                     std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}

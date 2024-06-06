@@ -1,6 +1,6 @@
-#include "mlrl/boosting/losses/loss_label_wise_squared_hinge.hpp"
+#include "mlrl/boosting/losses/loss_decomposable_squared_hinge.hpp"
 
-#include "loss_label_wise_sparse_common.hpp"
+#include "loss_decomposable_sparse_common.hpp"
 
 namespace boosting {
 
@@ -40,48 +40,49 @@ namespace boosting {
     }
 
     /**
-     * Allows to create instances of the type `ILabelWiseLoss` that implement a multi-label variant of the squared hinge
-     * loss that is applied label-wise.
+     * Allows to create instances of the type `IDecomposableLoss` that implement a multivariate variant of the squared
+     * hinge loss that is decomposable.
      */
-    class LabelWiseSquaredHingeLossFactory final : public ISparseLabelWiseLossFactory {
+    class DecomposableSquaredHingeLossFactory final : public ISparseDecomposableLossFactory {
         public:
 
-            std::unique_ptr<ISparseLabelWiseLoss> createSparseLabelWiseLoss() const override {
-                return std::make_unique<SparseLabelWiseLoss>(&updateGradientAndHessian, &evaluatePrediction);
+            std::unique_ptr<ISparseDecomposableLoss> createSparseDecomposableLoss() const override {
+                return std::make_unique<SparseDecomposableLoss>(&updateGradientAndHessian, &evaluatePrediction);
             }
     };
 
-    LabelWiseSquaredHingeLossConfig::LabelWiseSquaredHingeLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr)
+    DecomposableSquaredHingeLossConfig::DecomposableSquaredHingeLossConfig(
+      const std::unique_ptr<IHeadConfig>& headConfigPtr)
         : headConfigPtr_(headConfigPtr) {}
 
-    std::unique_ptr<IStatisticsProviderFactory> LabelWiseSquaredHingeLossConfig::createStatisticsProviderFactory(
+    std::unique_ptr<IStatisticsProviderFactory> DecomposableSquaredHingeLossConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
       const Lapack& lapack, bool preferSparseStatistics) const {
         if (preferSparseStatistics) {
             return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
         } else {
             return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix,
-                                                                   static_cast<const ILabelWiseLossConfig&>(*this));
+                                                                   static_cast<const IDecomposableLossConfig&>(*this));
         }
     }
 
     std::unique_ptr<IMarginalProbabilityFunctionFactory>
-      LabelWiseSquaredHingeLossConfig::createMarginalProbabilityFunctionFactory() const {
+      DecomposableSquaredHingeLossConfig::createMarginalProbabilityFunctionFactory() const {
         return nullptr;
     }
 
     std::unique_ptr<IJointProbabilityFunctionFactory>
-      LabelWiseSquaredHingeLossConfig::createJointProbabilityFunctionFactory() const {
+      DecomposableSquaredHingeLossConfig::createJointProbabilityFunctionFactory() const {
         return nullptr;
     }
 
-    float64 LabelWiseSquaredHingeLossConfig::getDefaultPrediction() const {
+    float64 DecomposableSquaredHingeLossConfig::getDefaultPrediction() const {
         return 0.5;
     }
 
-    std::unique_ptr<ISparseLabelWiseLossFactory> LabelWiseSquaredHingeLossConfig::createSparseLabelWiseLossFactory()
-      const {
-        return std::make_unique<LabelWiseSquaredHingeLossFactory>();
+    std::unique_ptr<ISparseDecomposableLossFactory>
+      DecomposableSquaredHingeLossConfig::createSparseDecomposableLossFactory() const {
+        return std::make_unique<DecomposableSquaredHingeLossFactory>();
     }
 
 }

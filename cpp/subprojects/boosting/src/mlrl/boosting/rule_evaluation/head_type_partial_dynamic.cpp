@@ -36,9 +36,9 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProviderFactory> DynamicPartialHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const ILabelWiseLossConfig& lossConfig) const {
+      const IDecomposableLossConfig& lossConfig) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
-        std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr = lossConfig.createLabelWiseLossFactory();
+        std::unique_ptr<IDecomposableLossFactory> lossFactoryPtr = lossConfig.createDecomposableLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createEvaluationMeasureFactory();
         std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
@@ -54,9 +54,10 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProviderFactory> DynamicPartialHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const ISparseLabelWiseLossConfig& lossConfig) const {
+      const ISparseDecomposableLossConfig& lossConfig) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
-        std::unique_ptr<ISparseLabelWiseLossFactory> lossFactoryPtr = lossConfig.createSparseLabelWiseLossFactory();
+        std::unique_ptr<ISparseDecomposableLossFactory> lossFactoryPtr =
+          lossConfig.createSparseDecomposableLossFactory();
         std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createSparseEvaluationMeasureFactory();
         std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
@@ -70,11 +71,11 @@ namespace boosting {
 
     std::unique_ptr<IStatisticsProviderFactory> DynamicPartialHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+      const INonDecomposableLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
-        std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr = lossConfig.createExampleWiseLossFactory();
+        std::unique_ptr<INonDecomposableLossFactory> lossFactoryPtr = lossConfig.createNonDecomposableLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
-          lossConfig.createExampleWiseLossFactory();
+          lossConfig.createNonDecomposableLossFactory();
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
           labelBinningConfigPtr_->createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =

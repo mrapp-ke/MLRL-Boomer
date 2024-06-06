@@ -1,4 +1,4 @@
-#include "mlrl/boosting/losses/loss_label_wise.hpp"
+#include "mlrl/boosting/losses/loss_decomposable.hpp"
 #include "mlrl/common/iterator/binary_forward_iterator.hpp"
 #include "mlrl/common/util/math.hpp"
 
@@ -7,10 +7,11 @@
 namespace boosting {
 
     /**
-     * An implementation of the type `ILabelWiseLoss` that relies on an "update function" and an "evaluation function"
-     * for updating the gradients and Hessians and evaluation the predictions for an individual label, respectively.
+     * An implementation of the type `IDecomposableLoss` that relies on an "update function" and an "evaluation
+     * function" for updating the gradients and Hessians and evaluating the predictions for an individual label,
+     * respectively.
      */
-    class LabelWiseLoss : virtual public ILabelWiseLoss {
+    class DecomposableLoss : virtual public IDecomposableLoss {
         public:
 
             /**
@@ -41,7 +42,7 @@ namespace boosting {
              * @param updateFunction    The "update function" to be used for updating gradients and Hessians
              * @param evaluateFunction  The "evaluation function" to be used for evaluating predictions
              */
-            LabelWiseLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction)
+            DecomposableLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction)
                 : updateFunction_(updateFunction), evaluateFunction_(evaluateFunction) {}
 
             void updateDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,

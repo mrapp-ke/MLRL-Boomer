@@ -8,8 +8,8 @@
     #pragma warning(disable : 4250)
 #endif
 
-#include "loss_label_wise_common.hpp"
-#include "mlrl/boosting/losses/loss_label_wise_sparse.hpp"
+#include "loss_decomposable_common.hpp"
+#include "mlrl/boosting/losses/loss_decomposable_sparse.hpp"
 #include "mlrl/common/iterator/non_zero_index_forward_iterator.hpp"
 
 #include <algorithm>
@@ -22,7 +22,7 @@ namespace boosting {
     static inline uint32 fetchNextStatistic(IndexIterator& indexIterator, IndexIterator indicesEnd,
                                             SparseSetView<float64>::value_const_iterator& scoreIterator,
                                             SparseSetView<float64>::value_const_iterator scoresEnd,
-                                            Tuple<float64>& tuple, LabelWiseLoss::UpdateFunction updateFunction) {
+                                            Tuple<float64>& tuple, DecomposableLoss::UpdateFunction updateFunction) {
         uint32 labelIndex = indexIterator == indicesEnd ? LIMIT : *indexIterator;
         uint32 scoreIndex = scoreIterator == scoresEnd ? LIMIT : (*scoreIterator).index;
 
@@ -49,7 +49,7 @@ namespace boosting {
                                                    SparseSetView<float64>::value_const_iterator& scoreIterator,
                                                    SparseSetView<float64>::value_const_iterator scoresEnd,
                                                    Tuple<float64>& tuple,
-                                                   LabelWiseLoss::UpdateFunction updateFunction) {
+                                                   DecomposableLoss::UpdateFunction updateFunction) {
         uint32 index = fetchNextStatistic(indexIterator, indicesEnd, scoreIterator, scoresEnd, tuple, updateFunction);
 
         while (index < LIMIT && isEqualToZero(tuple.first)) {
@@ -64,7 +64,7 @@ namespace boosting {
                                                               SparseSetView<float64>::value_const_iterator scoresBegin,
                                                               SparseSetView<float64>::value_const_iterator scoresEnd,
                                                               SparseSetView<Tuple<float64>>::row row,
-                                                              LabelWiseLoss::UpdateFunction updateFunction) {
+                                                              DecomposableLoss::UpdateFunction updateFunction) {
         row.clear();
         Tuple<float64> tuple;
         uint32 index;
@@ -81,7 +81,7 @@ namespace boosting {
     static inline uint32 fetchNextEvaluation(IndexIterator& indexIterator, IndexIterator indicesEnd,
                                              SparseSetView<float64>::value_const_iterator& scoreIterator,
                                              SparseSetView<float64>::value_const_iterator scoresEnd, float64& score,
-                                             LabelWiseLoss::EvaluateFunction evaluateFunction) {
+                                             DecomposableLoss::EvaluateFunction evaluateFunction) {
         uint32 labelIndex = indexIterator == indicesEnd ? LIMIT : *indexIterator;
         uint32 scoreIndex = scoreIterator == scoresEnd ? LIMIT : (*scoreIterator).index;
 
@@ -107,7 +107,8 @@ namespace boosting {
     static inline uint32 fetchNextNonZeroEvaluation(IndexIterator& indexIterator, IndexIterator indicesEnd,
                                                     SparseSetView<float64>::value_const_iterator& scoreIterator,
                                                     SparseSetView<float64>::value_const_iterator scoresEnd,
-                                                    float64& score, LabelWiseLoss::EvaluateFunction evaluateFunction) {
+                                                    float64& score,
+                                                    DecomposableLoss::EvaluateFunction evaluateFunction) {
         uint32 index =
           fetchNextEvaluation(indexIterator, indicesEnd, scoreIterator, scoresEnd, score, evaluateFunction);
 
@@ -122,7 +123,7 @@ namespace boosting {
     static inline float64 evaluateInternally(IndexIterator indicesBegin, IndexIterator indicesEnd,
                                              SparseSetView<float64>::value_const_iterator scoresBegin,
                                              SparseSetView<float64>::value_const_iterator scoresEnd,
-                                             LabelWiseLoss::EvaluateFunction evaluateFunction, uint32 numLabels) {
+                                             DecomposableLoss::EvaluateFunction evaluateFunction, uint32 numLabels) {
         float64 mean = 0;
         float64 score = 0;
         uint32 i = 0;
@@ -137,24 +138,24 @@ namespace boosting {
     }
 
     /**
-     * An implementation of the type `ISparseLabelWiseLoss` that relies on an "update function" and an
-     * "evaluation function" for updating the gradients and Hessians and evaluation the predictions for an individual
-     * label, respectively.
+     * An implementation of the type `ISparseDecomposableLoss` that relies on an "update function" and an "evaluation
+     * function" for updating the gradients and Hessians and evaluation the predictions for an individual label,
+     * respectively.
      */
-    class SparseLabelWiseLoss final : public LabelWiseLoss,
-                                      public ISparseLabelWiseLoss {
+    class SparseDecomposableLoss final : public DecomposableLoss,
+                                         public ISparseDecomposableLoss {
         public:
 
             /**
              * @param updateFunction    The "update function" to be used for updating gradients and Hessians
              * @param evaluateFunction  The "evaluation function" to be used for evaluating predictions
              */
-            SparseLabelWiseLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction)
-                : LabelWiseLoss(updateFunction, evaluateFunction) {}
+            SparseDecomposableLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction)
+                : DecomposableLoss(updateFunction, evaluateFunction) {}
 
             // Keep functions from the parent class rather than hiding them.
-            using LabelWiseLoss::evaluate;
-            using LabelWiseLoss::updateDecomposableStatistics;
+            using DecomposableLoss::evaluate;
+            using DecomposableLoss::updateDecomposableStatistics;
 
             void updateDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                                               const SparseSetView<float64>& scoreMatrix,
@@ -165,9 +166,10 @@ namespace boosting {
                                                                          labelMatrix.values_cend(exampleIndex));
                 auto indicesEnd = make_non_zero_index_forward_iterator(labelMatrix.values_cend(exampleIndex),
                                                                        labelMatrix.values_cend(exampleIndex));
-                updateDecomposableStatisticsInternally(
-                  indicesBegin, indicesEnd, scoreMatrix.values_cbegin(exampleIndex),
-                  scoreMatrix.values_cend(exampleIndex), statisticView[exampleIndex], LabelWiseLoss::updateFunction_);
+                updateDecomposableStatisticsInternally(indicesBegin, indicesEnd,
+                                                       scoreMatrix.values_cbegin(exampleIndex),
+                                                       scoreMatrix.values_cend(exampleIndex),
+                                                       statisticView[exampleIndex], DecomposableLoss::updateFunction_);
             }
 
             void updateDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
@@ -187,7 +189,7 @@ namespace boosting {
                     const IndexedValue<float64>* scoreMatrixEntry = scoreMatrixRow[index];
                     float64 predictedScore = scoreMatrixEntry ? scoreMatrixEntry->value : 0;
                     bool trueLabel = labelIterator[index];
-                    (*LabelWiseLoss::updateFunction_)(trueLabel, predictedScore, tuple.first, tuple.second);
+                    (*DecomposableLoss::updateFunction_)(trueLabel, predictedScore, tuple.first, tuple.second);
 
                     if (!isEqualToZero(tuple.first)) {
                         IndexedValue<Tuple<float64>>& statisticViewEntry = statisticViewRow.emplace(index);
@@ -206,7 +208,7 @@ namespace boosting {
                 updateDecomposableStatisticsInternally(
                   labelMatrix.indices_cbegin(exampleIndex), labelMatrix.indices_cend(exampleIndex),
                   scoreMatrix.values_cbegin(exampleIndex), scoreMatrix.values_cend(exampleIndex),
-                  statisticView[exampleIndex], LabelWiseLoss::updateFunction_);
+                  statisticView[exampleIndex], DecomposableLoss::updateFunction_);
             }
 
             void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
@@ -227,7 +229,7 @@ namespace boosting {
                     bool trueLabel = indexIterator != indicesEnd && *indexIterator == index;
                     const IndexedValue<float64>* scoreMatrixEntry = scoreMatrixRow[index];
                     float64 predictedScore = scoreMatrixEntry ? scoreMatrixEntry->value : 0;
-                    (*LabelWiseLoss::updateFunction_)(trueLabel, predictedScore, tuple.first, tuple.second);
+                    (*DecomposableLoss::updateFunction_)(trueLabel, predictedScore, tuple.first, tuple.second);
 
                     if (!isEqualToZero(tuple.first)) {
                         IndexedValue<Tuple<float64>>& statisticViewEntry = statisticViewRow.emplace(index);
@@ -248,7 +250,7 @@ namespace boosting {
                 auto indicesEnd = make_non_zero_index_forward_iterator(labelMatrix.values_cend(exampleIndex),
                                                                        labelMatrix.values_cend(exampleIndex));
                 return evaluateInternally(indicesBegin, indicesEnd, scoreMatrix.values_cbegin(exampleIndex),
-                                          scoreMatrix.values_cend(exampleIndex), LabelWiseLoss::evaluateFunction_,
+                                          scoreMatrix.values_cend(exampleIndex), DecomposableLoss::evaluateFunction_,
                                           labelMatrix.numCols);
             }
 
@@ -260,7 +262,7 @@ namespace boosting {
                 return evaluateInternally(
                   labelMatrix.indices_cbegin(exampleIndex), labelMatrix.indices_cend(exampleIndex),
                   scoreMatrix.values_cbegin(exampleIndex), scoreMatrix.values_cend(exampleIndex),
-                  LabelWiseLoss::evaluateFunction_, labelMatrix.numCols);
+                  DecomposableLoss::evaluateFunction_, labelMatrix.numCols);
             }
     };
 

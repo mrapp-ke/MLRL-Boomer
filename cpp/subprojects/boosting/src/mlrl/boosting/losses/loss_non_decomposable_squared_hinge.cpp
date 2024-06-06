@@ -1,4 +1,4 @@
-#include "mlrl/boosting/losses/loss_example_wise_squared_hinge.hpp"
+#include "mlrl/boosting/losses/loss_non_decomposable_squared_hinge.hpp"
 
 #include "mlrl/common/iterator/binary_forward_iterator.hpp"
 #include "mlrl/common/util/math.hpp"
@@ -225,10 +225,10 @@ namespace boosting {
     }
 
     /**
-     * An implementation of the type `IExampleWiseLoss` that implements a multi-label variant of the squared hinge loss
-     * that is applied example-wise.
+     * An implementation of the type `INonDecomposableLoss` that implements a multivariate variant of the squared hinge
+     * loss that is non-decomposable.
      */
-    class ExampleWiseSquaredHingeLoss final : public IExampleWiseLoss {
+    class NonDecomposableSquaredHingeLoss final : public INonDecomposableLoss {
         public:
 
             virtual void updateDecomposableStatistics(uint32 exampleIndex,
@@ -326,43 +326,44 @@ namespace boosting {
     };
 
     /**
-     * Allows to create instances of the type `IExampleWiseLoss` that implement a multi-label variant of the squared
-     * hinge loss that is applied example-wise.
+     * Allows to create instances of the type `INonDecomposableLoss` that implement a multivariate variant of the
+     * squared hinge loss that is non-decomposable.
      */
-    class ExampleWiseSquaredHingeLossFactory final : public IExampleWiseLossFactory {
+    class NonDecomposableSquaredHingeLossFactory final : public INonDecomposableLossFactory {
         public:
 
-            std::unique_ptr<IExampleWiseLoss> createExampleWiseLoss() const override {
-                return std::make_unique<ExampleWiseSquaredHingeLoss>();
+            std::unique_ptr<INonDecomposableLoss> createNonDecomposableLoss() const override {
+                return std::make_unique<NonDecomposableSquaredHingeLoss>();
             }
     };
 
-    ExampleWiseSquaredHingeLossConfig::ExampleWiseSquaredHingeLossConfig(
+    NonDecomposableSquaredHingeLossConfig::NonDecomposableSquaredHingeLossConfig(
       const std::unique_ptr<IHeadConfig>& headConfigPtr)
         : headConfigPtr_(headConfigPtr) {}
 
-    std::unique_ptr<IStatisticsProviderFactory> ExampleWiseSquaredHingeLossConfig::createStatisticsProviderFactory(
+    std::unique_ptr<IStatisticsProviderFactory> NonDecomposableSquaredHingeLossConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
       const Lapack& lapack, bool preferSparseStatistics) const {
         return headConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, *this, blas, lapack);
     }
 
     std::unique_ptr<IMarginalProbabilityFunctionFactory>
-      ExampleWiseSquaredHingeLossConfig::createMarginalProbabilityFunctionFactory() const {
+      NonDecomposableSquaredHingeLossConfig::createMarginalProbabilityFunctionFactory() const {
         return nullptr;
     }
 
     std::unique_ptr<IJointProbabilityFunctionFactory>
-      ExampleWiseSquaredHingeLossConfig::createJointProbabilityFunctionFactory() const {
+      NonDecomposableSquaredHingeLossConfig::createJointProbabilityFunctionFactory() const {
         return nullptr;
     }
 
-    float64 ExampleWiseSquaredHingeLossConfig::getDefaultPrediction() const {
+    float64 NonDecomposableSquaredHingeLossConfig::getDefaultPrediction() const {
         return 0.5;
     }
 
-    std::unique_ptr<IExampleWiseLossFactory> ExampleWiseSquaredHingeLossConfig::createExampleWiseLossFactory() const {
-        return std::make_unique<ExampleWiseSquaredHingeLossFactory>();
+    std::unique_ptr<INonDecomposableLossFactory>
+      NonDecomposableSquaredHingeLossConfig::createNonDecomposableLossFactory() const {
+        return std::make_unique<NonDecomposableSquaredHingeLossFactory>();
     }
 
 }

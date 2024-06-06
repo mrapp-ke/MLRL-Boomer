@@ -78,9 +78,9 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                                                     type of the heads should be chosen automatically. For additional
                                                     options refer to the documentation
         :param loss:                                The loss function to be minimized. Must be
-                                                    'squared-error-label-wise', 'squared-error-example-wise',
-                                                    'squared-hinge-label-wise', 'squared-hinge-example-wise',
-                                                    'logistic-label-wise' or 'logistic-example-wise'
+                                                    'squared-error-decomposable', 'squared-error-non-decomposable',
+                                                    'squared-hinge-decomposable', 'squared-hinge-non-decomposable',
+                                                    'logistic-decomposable' or 'logistic-non-decomposable'
         :param marginal_probability_calibration:    The method that should be used for the calibration of marginal
                                                     probabilities. Must be 'isotonic' or 'none', if no probability
                                                     calibration should be used.

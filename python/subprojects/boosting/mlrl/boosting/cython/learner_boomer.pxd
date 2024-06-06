@@ -21,14 +21,14 @@ from mlrl.boosting.cython.learner cimport DdotFunction, DspmvFunction, DsysvFunc
     IAutomaticDefaultRuleMixin, IAutomaticFeatureBinningMixin, IAutomaticHeadMixin, IAutomaticLabelBinningMixin, \
     IAutomaticParallelRuleRefinementMixin, IAutomaticParallelStatisticUpdateMixin, IAutomaticPartitionSamplingMixin, \
     IAutomaticProbabilityPredictorMixin, IAutomaticStatisticsMixin, ICompleteHeadMixin, IConstantShrinkageMixin, \
+    IDecomposableLogisticLossMixin, IDecomposableSquaredErrorLossMixin, IDecomposableSquaredHingeLossMixin, \
     IDenseStatisticsMixin, IDynamicPartialHeadMixin, IEqualWidthLabelBinningMixin, IExampleWiseBinaryPredictorMixin, \
-    IExampleWiseLogisticLossMixin, IExampleWiseSquaredErrorLossMixin, IExampleWiseSquaredHingeLossMixin, \
     IFixedPartialHeadMixin, IGfmBinaryPredictorMixin, IIsotonicJointProbabilityCalibrationMixin, \
     IIsotonicMarginalProbabilityCalibrationMixin, IL1RegularizationMixin, IL2RegularizationMixin, \
-    ILabelWiseBinaryPredictorMixin, ILabelWiseLogisticLossMixin, ILabelWiseProbabilityPredictorMixin, \
-    ILabelWiseScorePredictorMixin, ILabelWiseSquaredErrorLossMixin, ILabelWiseSquaredHingeLossMixin, \
+    ILabelWiseBinaryPredictorMixin, ILabelWiseProbabilityPredictorMixin, ILabelWiseScorePredictorMixin, \
     IMarginalizedProbabilityPredictorMixin, INoDefaultRuleMixin, INoL1RegularizationMixin, INoL2RegularizationMixin, \
-    INoLabelBinningMixin, ISingleOutputHeadMixin, ISparseStatisticsMixin
+    INoLabelBinningMixin, INonDecomposableLogisticLossMixin, INonDecomposableSquaredErrorLossMixin, \
+    INonDecomposableSquaredHingeLossMixin, ISingleOutputHeadMixin, ISparseStatisticsMixin
 
 
 cdef extern from "mlrl/boosting/learner_boomer.hpp" namespace "boosting" nogil:
@@ -52,12 +52,12 @@ cdef extern from "mlrl/boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             IDenseStatisticsMixin,
                                                             ISparseStatisticsMixin,
                                                             IAutomaticStatisticsMixin,
-                                                            IExampleWiseLogisticLossMixin,
-                                                            IExampleWiseSquaredErrorLossMixin,
-                                                            IExampleWiseSquaredHingeLossMixin,
-                                                            ILabelWiseLogisticLossMixin,
-                                                            ILabelWiseSquaredErrorLossMixin,
-                                                            ILabelWiseSquaredHingeLossMixin,
+                                                            IDecomposableLogisticLossMixin,
+                                                            IDecomposableSquaredErrorLossMixin,
+                                                            IDecomposableSquaredHingeLossMixin,
+                                                            INonDecomposableLogisticLossMixin,
+                                                            INonDecomposableSquaredErrorLossMixin,
+                                                            INonDecomposableSquaredHingeLossMixin,
                                                             INoLabelBinningMixin,
                                                             IEqualWidthLabelBinningMixin,
                                                             IAutomaticLabelBinningMixin,

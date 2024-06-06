@@ -15,15 +15,14 @@ from mlrl.common.options import BooleanOption, Options
 from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
     AutomaticFeatureBinningMixin, AutomaticLabelBinningMixin, AutomaticParallelRuleRefinementMixin, \
     AutomaticParallelStatisticUpdateMixin, AutomaticPartitionSamplingMixin, AutomaticProbabilityPredictorMixin, \
-    AutomaticStatisticsMixin, CompleteHeadMixin, ConstantShrinkageMixin, DenseStatisticsMixin, \
-    DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, \
-    ExampleWiseLogisticLossMixin, ExampleWiseSquaredErrorLossMixin, ExampleWiseSquaredHingeLossMixin, \
-    FixedPartialHeadMixin, GfmBinaryPredictorMixin, IsotonicJointProbabilityCalibrationMixin, \
-    IsotonicMarginalProbabilityCalibrationMixin, L1RegularizationMixin, L2RegularizationMixin, \
-    LabelWiseBinaryPredictorMixin, LabelWiseLogisticLossMixin, LabelWiseProbabilityPredictorMixin, \
-    LabelWiseSquaredErrorLossMixin, LabelWiseSquaredHingeLossMixin, MarginalizedProbabilityPredictorMixin, \
-    NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, NoLabelBinningMixin, SingleOutputHeadMixin, \
-    SparseStatisticsMixin
+    AutomaticStatisticsMixin, CompleteHeadMixin, ConstantShrinkageMixin, DecomposableLogisticLossMixin, \
+    DecomposableSquaredErrorLossMixin, DecomposableSquaredHingeLossMixin, DenseStatisticsMixin, \
+    DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, FixedPartialHeadMixin, \
+    GfmBinaryPredictorMixin, IsotonicJointProbabilityCalibrationMixin, IsotonicMarginalProbabilityCalibrationMixin, \
+    L1RegularizationMixin, L2RegularizationMixin, LabelWiseBinaryPredictorMixin, LabelWiseProbabilityPredictorMixin, \
+    MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
+    NoLabelBinningMixin, NonDecomposableLogisticLossMixin, NonDecomposableSquaredErrorLossMixin, \
+    NonDecomposableSquaredHingeLossMixin, SingleOutputHeadMixin, SparseStatisticsMixin
 
 PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
 
@@ -245,40 +244,40 @@ class LossParameter(NominalParameter):
     A parameter that allows to configure the loss function to be minimized during training.
     """
 
-    LOSS_LOGISTIC_LABEL_WISE = 'logistic-label-wise'
+    LOSS_LOGISTIC_DECOMPOSABLE = 'logistic-decomposable'
 
-    LOSS_LOGISTIC_EXAMPLE_WISE = 'logistic-example-wise'
+    LOSS_LOGISTIC_NON_DECOMPOSABLE = 'logistic-non-decomposable'
 
-    LOSS_SQUARED_ERROR_LABEL_WISE = 'squared-error-label-wise'
+    LOSS_SQUARED_ERROR_DECOMPOSABLE = 'squared-error-decomposable'
 
-    LOSS_SQUARED_ERROR_EXAMPLE_WISE = 'squared-error-example-wise'
+    LOSS_SQUARED_ERROR_NON_DECOMPOSABLE = 'squared-error-non-decomposable'
 
-    LOSS_SQUARED_HINGE_LABEL_WISE = 'squared-hinge-label-wise'
+    LOSS_SQUARED_HINGE_DECOMPOSABLE = 'squared-hinge-decomposable'
 
-    LOSS_SQUARED_HINGE_EXAMPLE_WISE = 'squared-hinge-example-wise'
+    LOSS_SQUARED_HINGE_NON_DECOMPOSABLE = 'squared-hinge-non-decomposable'
 
     def __init__(self):
         super().__init__(name='loss', description='The name of the loss function to be minimized during training')
-        self.add_value(name=self.LOSS_LOGISTIC_LABEL_WISE, mixin=LabelWiseLogisticLossMixin)
-        self.add_value(name=self.LOSS_LOGISTIC_EXAMPLE_WISE, mixin=ExampleWiseLogisticLossMixin)
-        self.add_value(name=self.LOSS_SQUARED_ERROR_LABEL_WISE, mixin=LabelWiseSquaredErrorLossMixin)
-        self.add_value(name=self.LOSS_SQUARED_ERROR_EXAMPLE_WISE, mixin=ExampleWiseSquaredErrorLossMixin)
-        self.add_value(name=self.LOSS_SQUARED_HINGE_LABEL_WISE, mixin=LabelWiseSquaredHingeLossMixin)
-        self.add_value(name=self.LOSS_SQUARED_HINGE_EXAMPLE_WISE, mixin=ExampleWiseSquaredHingeLossMixin)
+        self.add_value(name=self.LOSS_LOGISTIC_DECOMPOSABLE, mixin=DecomposableLogisticLossMixin)
+        self.add_value(name=self.LOSS_LOGISTIC_NON_DECOMPOSABLE, mixin=NonDecomposableLogisticLossMixin)
+        self.add_value(name=self.LOSS_SQUARED_ERROR_DECOMPOSABLE, mixin=DecomposableSquaredErrorLossMixin)
+        self.add_value(name=self.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE, mixin=NonDecomposableSquaredErrorLossMixin)
+        self.add_value(name=self.LOSS_SQUARED_HINGE_DECOMPOSABLE, mixin=DecomposableSquaredHingeLossMixin)
+        self.add_value(name=self.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE, mixin=NonDecomposableSquaredHingeLossMixin)
 
     def _configure(self, config, value: str, _: Optional[Options]):
-        if value == self.LOSS_LOGISTIC_LABEL_WISE:
-            config.use_label_wise_logistic_loss()
-        elif value == self.LOSS_LOGISTIC_EXAMPLE_WISE:
-            config.use_example_wise_logistic_loss()
-        elif value == self.LOSS_SQUARED_ERROR_LABEL_WISE:
-            config.use_label_wise_squared_error_loss()
-        elif value == self.LOSS_SQUARED_ERROR_EXAMPLE_WISE:
-            config.use_example_wise_squared_error_loss()
-        elif value == self.LOSS_SQUARED_HINGE_LABEL_WISE:
-            config.use_label_wise_squared_hinge_loss()
-        elif value == self.LOSS_SQUARED_HINGE_EXAMPLE_WISE:
-            config.use_example_wise_squared_hinge_loss()
+        if value == self.LOSS_LOGISTIC_DECOMPOSABLE:
+            config.use_decomposable_logistic_loss()
+        elif value == self.LOSS_LOGISTIC_NON_DECOMPOSABLE:
+            config.use_non_decomposable_logistic_loss()
+        elif value == self.LOSS_SQUARED_ERROR_DECOMPOSABLE:
+            config.use_decomposable_squared_error_loss()
+        elif value == self.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE:
+            config.use_non_decomposable_squared_error_loss()
+        elif value == self.LOSS_SQUARED_HINGE_DECOMPOSABLE:
+            config.use_decomposable_squared_hinge_loss()
+        elif value == self.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE:
+            config.use_non_decomposable_squared_hinge_loss()
 
 
 class HeadTypeParameter(NominalParameter):
