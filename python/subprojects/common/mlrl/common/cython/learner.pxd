@@ -8,13 +8,13 @@ from mlrl.common.cython.feature_matrix cimport IColumnWiseFeatureMatrix, IRowWis
 from mlrl.common.cython.feature_sampling cimport IFeatureSamplingWithoutReplacementConfig
 from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstanceSamplingConfig, \
     IInstanceSamplingWithoutReplacementConfig, IInstanceSamplingWithReplacementConfig, \
-    ILabelWiseStratifiedInstanceSamplingConfig
+    IOutputWiseStratifiedInstanceSamplingConfig
 from mlrl.common.cython.label_matrix cimport IRowWiseLabelMatrix
 from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
 from mlrl.common.cython.output_sampling cimport IOutputSamplingWithoutReplacementConfig
 from mlrl.common.cython.output_space_info cimport IOutputSpaceInfo, OutputSpaceInfo
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
-    ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
+    IOutputWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig
 from mlrl.common.cython.prediction cimport IBinaryPredictor, IProbabilityPredictor, IScorePredictor, \
     ISparseBinaryPredictor
@@ -141,11 +141,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
         IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement()
 
 
-    cdef cppclass ILabelWiseStratifiedInstanceSamplingMixin"IRuleLearner::ILabelWiseStratifiedInstanceSamplingMixin":
+    cdef cppclass IOutputWiseStratifiedInstanceSamplingMixin"IRuleLearner::IOutputWiseStratifiedInstanceSamplingMixin":
 
         # Functions:
 
-        ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling()
+        IOutputWiseStratifiedInstanceSamplingConfig& useOutputWiseStratifiedInstanceSampling()
 
 
     cdef cppclass IExampleWiseStratifiedInstanceSamplingMixin \
@@ -184,12 +184,12 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
         IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling()
 
 
-    cdef cppclass ILabelWiseStratifiedBiPartitionSamplingMixin\
-        "IRuleLearner::ILabelWiseStratifiedBiPartitionSamplingMixin":
+    cdef cppclass IOutputWiseStratifiedBiPartitionSamplingMixin\
+        "IRuleLearner::IOutputWiseStratifiedBiPartitionSamplingMixin":
 
         # Functions:
 
-        ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling()
+        IOutputWiseStratifiedBiPartitionSamplingConfig& useOutputWiseStratifiedBiPartitionSampling()
 
 
     cdef cppclass IExampleWiseStratifiedBiPartitionSamplingMixin\

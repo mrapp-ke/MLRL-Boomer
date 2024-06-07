@@ -14,13 +14,14 @@ from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, Equa
     EqualWidthFeatureBinningMixin, ExampleWiseStratifiedBiPartitionSamplingMixin, \
     ExampleWiseStratifiedInstanceSamplingMixin, FeatureSamplingWithoutReplacementMixin, \
     GreedyTopDownRuleInductionMixin, InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, \
-    IrepRulePruningMixin, LabelWiseStratifiedBiPartitionSamplingMixin, LabelWiseStratifiedInstanceSamplingMixin, \
-    NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, NoInstanceSamplingMixin, \
-    NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
+    IrepRulePruningMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, \
+    NoInstanceSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
     NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, \
-    NoTimeStoppingCriterionMixin, ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, \
-    PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinOutputSamplingMixin, \
-    SequentialPostOptimizationMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
+    NoTimeStoppingCriterionMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
+    OutputWiseStratifiedInstanceSamplingMixin, ParallelPredictionMixin, ParallelRuleRefinementMixin, \
+    ParallelStatisticUpdateMixin, PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, \
+    RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, SizeStoppingCriterionMixin, \
+    TimeStoppingCriterionMixin
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.format import format_dict_keys, format_set
 from mlrl.common.options import BooleanOption, Options, parse_param, parse_param_and_options
@@ -35,7 +36,7 @@ SAMPLING_WITH_REPLACEMENT = 'with-replacement'
 
 SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
 
-SAMPLING_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
+SAMPLING_STRATIFIED_OUTPUT_WISE = 'stratified-output-wise'
 
 SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
@@ -407,8 +408,8 @@ class InstanceSamplingParameter(NominalParameter):
         self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
                        mixin=InstanceSamplingWithoutReplacementMixin,
                        options={OPTION_SAMPLE_SIZE})
-        self.add_value(name=SAMPLING_STRATIFIED_LABEL_WISE,
-                       mixin=LabelWiseStratifiedInstanceSamplingMixin,
+        self.add_value(name=SAMPLING_STRATIFIED_OUTPUT_WISE,
+                       mixin=OutputWiseStratifiedInstanceSamplingMixin,
                        options={OPTION_SAMPLE_SIZE})
         self.add_value(name=SAMPLING_STRATIFIED_EXAMPLE_WISE,
                        mixin=ExampleWiseStratifiedInstanceSamplingMixin,
@@ -423,8 +424,8 @@ class InstanceSamplingParameter(NominalParameter):
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
             conf = config.use_instance_sampling_without_replacement()
             conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
-        elif value == SAMPLING_STRATIFIED_LABEL_WISE:
-            conf = config.use_label_wise_stratified_instance_sampling()
+        elif value == SAMPLING_STRATIFIED_OUTPUT_WISE:
+            conf = config.use_output_wise_stratified_instance_sampling()
             conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
         elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
             conf = config.use_example_wise_stratified_instance_sampling()
@@ -470,8 +471,8 @@ class PartitionSamplingParameter(NominalParameter):
         self.add_value(name=self.PARTITION_SAMPLING_RANDOM,
                        mixin=RandomBiPartitionSamplingMixin,
                        options={self.OPTION_HOLDOUT_SET_SIZE})
-        self.add_value(name=SAMPLING_STRATIFIED_LABEL_WISE,
-                       mixin=LabelWiseStratifiedBiPartitionSamplingMixin,
+        self.add_value(name=SAMPLING_STRATIFIED_OUTPUT_WISE,
+                       mixin=OutputWiseStratifiedBiPartitionSamplingMixin,
                        options={self.OPTION_HOLDOUT_SET_SIZE})
         self.add_value(name=SAMPLING_STRATIFIED_EXAMPLE_WISE,
                        mixin=ExampleWiseStratifiedBiPartitionSamplingMixin,
@@ -483,8 +484,8 @@ class PartitionSamplingParameter(NominalParameter):
         elif value == self.PARTITION_SAMPLING_RANDOM:
             conf = config.use_random_bi_partition_sampling()
             conf.set_holdout_set_size(options.get_float(self.OPTION_HOLDOUT_SET_SIZE, conf.get_holdout_set_size()))
-        elif value == SAMPLING_STRATIFIED_LABEL_WISE:
-            conf = config.use_label_wise_stratified_bi_partition_sampling()
+        elif value == SAMPLING_STRATIFIED_OUTPUT_WISE:
+            conf = config.use_output_wise_stratified_bi_partition_sampling()
             conf.set_holdout_set_size(options.get_float(self.OPTION_HOLDOUT_SET_SIZE, conf.get_holdout_set_size()))
         elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
             conf = config.use_example_wise_stratified_bi_partition_sampling()

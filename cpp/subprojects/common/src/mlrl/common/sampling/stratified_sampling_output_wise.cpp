@@ -1,4 +1,4 @@
-#include "mlrl/common/sampling/stratified_sampling_label_wise.hpp"
+#include "mlrl/common/sampling/stratified_sampling_output_wise.hpp"
 
 #include "mlrl/common/data/array.hpp"
 #include "mlrl/common/data/indexed_value.hpp"

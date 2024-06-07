@@ -11,10 +11,10 @@
  * training examples using stratification, such that for each label the proportion of relevant and irrelevant examples
  * is maintained.
  */
-class MLRLCOMMON_API ILabelWiseStratifiedInstanceSamplingConfig {
+class MLRLCOMMON_API IOutputWiseStratifiedInstanceSamplingConfig {
     public:
 
-        virtual ~ILabelWiseStratifiedInstanceSamplingConfig() {}
+        virtual ~IOutputWiseStratifiedInstanceSamplingConfig() {}
 
         /**
          * Returns the fraction of examples that are included in a sample.
@@ -28,29 +28,29 @@ class MLRLCOMMON_API ILabelWiseStratifiedInstanceSamplingConfig {
          *
          * @param sampleSize    The fraction of examples that should be included in a sample, e.g., a value of 0.6
          *                      corresponds to 60 % of the available training examples. Must be in (0, 1)
-         * @return              A reference to an object of type `ILabelWiseStratifiedInstanceSamplingConfig` that
+         * @return              A reference to an object of type `IOutputWiseStratifiedInstanceSamplingConfig` that
          *                      allows further configuration of the method for sampling instances
          */
-        virtual ILabelWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize) = 0;
+        virtual IOutputWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize) = 0;
 };
 
 /**
  * Allows to configure a method for selecting a subset of the available training examples using stratification, such
  * that for each label the proportion of relevant and irrelevant examples is maintained.
  */
-class LabelWiseStratifiedInstanceSamplingConfig final : public IInstanceSamplingConfig,
-                                                        public ILabelWiseStratifiedInstanceSamplingConfig {
+class OutputWiseStratifiedInstanceSamplingConfig final : public IInstanceSamplingConfig,
+                                                         public IOutputWiseStratifiedInstanceSamplingConfig {
     private:
 
         float32 sampleSize_;
 
     public:
 
-        LabelWiseStratifiedInstanceSamplingConfig();
+        OutputWiseStratifiedInstanceSamplingConfig();
 
         float32 getSampleSize() const override;
 
-        ILabelWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize) override;
+        IOutputWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize) override;
 
         std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const override;
 };
