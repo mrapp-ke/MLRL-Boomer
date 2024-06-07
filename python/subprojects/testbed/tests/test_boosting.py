@@ -4,7 +4,7 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 from os import path
 
 from test_common import DATASET_EMOTIONS, DIR_OUT, HOLDOUT_NO, HOLDOUT_RANDOM, HOLDOUT_STRATIFIED_EXAMPLE_WISE, \
-    HOLDOUT_STRATIFIED_LABEL_WISE, PREDICTION_TYPE_PROBABILITIES, PREDICTION_TYPE_SCORES, CmdBuilder, \
+    HOLDOUT_STRATIFIED_OUTPUT_WISE, PREDICTION_TYPE_PROBABILITIES, PREDICTION_TYPE_SCORES, CmdBuilder, \
     CommonIntegrationTests, skip_test_on_ci
 
 CMD_BOOMER = 'boomer'
@@ -831,16 +831,16 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_model_characteristics()
         self.run_cmd(builder, 'post-pruning_random-holdout')
 
-    def test_global_post_pruning_stratified_label_wise_holdout(self):
+    def test_global_post_pruning_stratified_output_wise_holdout(self):
         """
         Tests the BOOMER algorithm when using a holdout set that is created via label-wise stratified sampling for
         global post-pruning.
         """
         builder = BoostingCmdBuilder() \
             .global_pruning(GLOBAL_PRUNING_POST) \
-            .holdout(HOLDOUT_STRATIFIED_LABEL_WISE) \
+            .holdout(HOLDOUT_STRATIFIED_OUTPUT_WISE) \
             .print_model_characteristics()
-        self.run_cmd(builder, 'post-pruning_stratified-label-wise-holdout')
+        self.run_cmd(builder, 'post-pruning_stratified-output-wise-holdout')
 
     def test_global_post_pruning_stratified_example_wise_holdout(self):
         """
@@ -873,16 +873,16 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_model_characteristics()
         self.run_cmd(builder, 'pre-pruning_random-holdout')
 
-    def test_global_pre_pruning_stratified_label_wise_holdout(self):
+    def test_global_pre_pruning_stratified_output_wise_holdout(self):
         """
         Tests the BOOMER algorithm when using a holdout set that is created via label-wise stratified sampling for
         global pre-pruning.
         """
         builder = BoostingCmdBuilder() \
             .global_pruning(GLOBAL_PRUNING_PRE) \
-            .holdout(HOLDOUT_STRATIFIED_LABEL_WISE) \
+            .holdout(HOLDOUT_STRATIFIED_OUTPUT_WISE) \
             .print_model_characteristics()
-        self.run_cmd(builder, 'pre-pruning_stratified-label-wise-holdout')
+        self.run_cmd(builder, 'pre-pruning_stratified-output-wise-holdout')
 
     def test_global_pre_pruning_stratified_example_wise_holdout(self):
         """

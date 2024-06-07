@@ -10,10 +10,10 @@
  * examples into a training set and a holdout set using stratification, such that for each label the proportion of
  * relevant and irrelevant examples is maintained.
  */
-class MLRLCOMMON_API ILabelWiseStratifiedBiPartitionSamplingConfig {
+class MLRLCOMMON_API IOutputWiseStratifiedBiPartitionSamplingConfig {
     public:
 
-        virtual ~ILabelWiseStratifiedBiPartitionSamplingConfig() {}
+        virtual ~IOutputWiseStratifiedBiPartitionSamplingConfig() {}
 
         /**
          * Returns the fraction of examples that are included in the holdout set.
@@ -27,30 +27,30 @@ class MLRLCOMMON_API ILabelWiseStratifiedBiPartitionSamplingConfig {
          *
          * @param holdoutSetSize    The fraction of examples that should be included in the holdout set, e.g. a value of
          *                          0.6 corresponds to 60 % of the available examples. Must be in (0, 1)
-         * @return                  A reference to an object of type `ILabelWiseStratifiedBiPartitionSamplingConfig`
+         * @return                  A reference to an object of type `IOutputWiseStratifiedBiPartitionSamplingConfig`
          *                          that allows further configuration of the method for partitioning the available
          *                          training examples into a training set and a holdout set
          */
-        virtual ILabelWiseStratifiedBiPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize) = 0;
+        virtual IOutputWiseStratifiedBiPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize) = 0;
 };
 
 /**
  * Allows to configure a method for partitioning the available training examples into a training set and a holdout set
  * using stratification, such that for each label the proportion of relevant and irrelevant examples is maintained.
  */
-class LabelWiseStratifiedBiPartitionSamplingConfig final : public IPartitionSamplingConfig,
-                                                           public ILabelWiseStratifiedBiPartitionSamplingConfig {
+class OutputWiseStratifiedBiPartitionSamplingConfig final : public IPartitionSamplingConfig,
+                                                            public IOutputWiseStratifiedBiPartitionSamplingConfig {
     private:
 
         float32 holdoutSetSize_;
 
     public:
 
-        LabelWiseStratifiedBiPartitionSamplingConfig();
+        OutputWiseStratifiedBiPartitionSamplingConfig();
 
         float32 getHoldoutSetSize() const override;
 
-        ILabelWiseStratifiedBiPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize) override;
+        IOutputWiseStratifiedBiPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize) override;
 
         std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const override;
 };

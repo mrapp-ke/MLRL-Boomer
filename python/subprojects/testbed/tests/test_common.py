@@ -61,7 +61,7 @@ INSTANCE_SAMPLING_WITH_REPLACEMENT = 'with-replacement'
 
 INSTANCE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
 
-INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
+INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE = 'stratified-output-wise'
 
 INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
@@ -79,7 +79,7 @@ HOLDOUT_NO = 'none'
 
 HOLDOUT_RANDOM = 'random'
 
-HOLDOUT_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
+HOLDOUT_STRATIFIED_OUTPUT_WISE = 'stratified-output-wise'
 
 HOLDOUT_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
@@ -1569,14 +1569,14 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .instance_sampling(INSTANCE_SAMPLING_WITHOUT_REPLACEMENT)
         self.run_cmd(builder, 'instance-sampling-without-replacement')
 
-    def test_instance_sampling_stratified_label_wise(self):
+    def test_instance_sampling_stratified_output_wise(self):
         """
         Tests the rule learning algorithm when using a method to sample from the available training examples using
         label-wise stratification.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE)
-        self.run_cmd(builder, 'instance-sampling-stratified-label-wise')
+            .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE)
+        self.run_cmd(builder, 'instance-sampling-stratified-output-wise')
 
     def test_instance_sampling_stratified_example_wise(self):
         """

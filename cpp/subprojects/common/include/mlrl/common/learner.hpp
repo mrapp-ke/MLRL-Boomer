@@ -35,7 +35,7 @@
 #include "mlrl/common/sampling/feature_sampling_without_replacement.hpp"
 #include "mlrl/common/sampling/instance_sampling_no.hpp"
 #include "mlrl/common/sampling/instance_sampling_stratified_example_wise.hpp"
-#include "mlrl/common/sampling/instance_sampling_stratified_label_wise.hpp"
+#include "mlrl/common/sampling/instance_sampling_stratified_output_wise.hpp"
 #include "mlrl/common/sampling/instance_sampling_with_replacement.hpp"
 #include "mlrl/common/sampling/instance_sampling_without_replacement.hpp"
 #include "mlrl/common/sampling/output_sampling_no.hpp"
@@ -43,7 +43,7 @@
 #include "mlrl/common/sampling/output_sampling_without_replacement.hpp"
 #include "mlrl/common/sampling/partition_sampling_bi_random.hpp"
 #include "mlrl/common/sampling/partition_sampling_bi_stratified_example_wise.hpp"
-#include "mlrl/common/sampling/partition_sampling_bi_stratified_label_wise.hpp"
+#include "mlrl/common/sampling/partition_sampling_bi_stratified_output_wise.hpp"
 #include "mlrl/common/sampling/partition_sampling_no.hpp"
 #include "mlrl/common/stopping/global_pruning_post.hpp"
 #include "mlrl/common/stopping/global_pruning_pre.hpp"
@@ -703,25 +703,25 @@ class MLRLCOMMON_API IRuleLearner {
          * Defines an interface for all classes that allow to configure a rule learner to use label-wise stratified
          * instance sampling.
          */
-        class ILabelWiseStratifiedInstanceSamplingMixin : virtual public IRuleLearner::IConfig {
+        class IOutputWiseStratifiedInstanceSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~ILabelWiseStratifiedInstanceSamplingMixin() override {}
+                virtual ~IOutputWiseStratifiedInstanceSamplingMixin() override {}
 
                 /**
                  * Configures the rule learner to sample from the available training examples using stratification, such
                  * that for each label the proportion of relevant and irrelevant examples is maintained, whenever a new
                  * rule should be learned.
                  *
-                 * @return A reference to an object of type `ILabelWiseStratifiedInstanceSamplingConfig` that allows
+                 * @return A reference to an object of type `IOutputWiseStratifiedInstanceSamplingConfig` that allows
                  *         further configuration of the method for sampling instances
                  */
-                virtual ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling() {
+                virtual IOutputWiseStratifiedInstanceSamplingConfig& useOutputWiseStratifiedInstanceSampling() {
                     std::unique_ptr<IInstanceSamplingConfig>& instanceSamplingConfigPtr =
                       this->getInstanceSamplingConfigPtr();
-                    std::unique_ptr<LabelWiseStratifiedInstanceSamplingConfig> ptr =
-                      std::make_unique<LabelWiseStratifiedInstanceSamplingConfig>();
-                    ILabelWiseStratifiedInstanceSamplingConfig& ref = *ptr;
+                    std::unique_ptr<OutputWiseStratifiedInstanceSamplingConfig> ptr =
+                      std::make_unique<OutputWiseStratifiedInstanceSamplingConfig>();
+                    IOutputWiseStratifiedInstanceSamplingConfig& ref = *ptr;
                     instanceSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
@@ -855,26 +855,26 @@ class MLRLCOMMON_API IRuleLearner {
          * training examples into a training set and a holdout set using stratification, such that for each label the
          * proportion of relevant and irrelevant examples is maintained.
          */
-        class ILabelWiseStratifiedBiPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
+        class IOutputWiseStratifiedBiPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~ILabelWiseStratifiedBiPartitionSamplingMixin() override {}
+                virtual ~IOutputWiseStratifiedBiPartitionSamplingMixin() override {}
 
                 /**
                  * Configures the rule learner to partition the available training examples into a training set and a
                  * holdout set using stratification, such that for each label the proportion of relevant and irrelevant
                  * examples is maintained.
                  *
-                 * @return A reference to an object of type `ILabelWiseStratifiedBiPartitionSamplingConfig` that allows
+                 * @return A reference to an object of type `IOutputWiseStratifiedBiPartitionSamplingConfig` that allows
                  *         further configuration of the method for partitioning the available training examples into a
                  *         training and a holdout set
                  */
-                virtual ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() {
+                virtual IOutputWiseStratifiedBiPartitionSamplingConfig& useOutputWiseStratifiedBiPartitionSampling() {
                     std::unique_ptr<IPartitionSamplingConfig>& partitionSamplingConfigPtr =
                       this->getPartitionSamplingConfigPtr();
-                    std::unique_ptr<LabelWiseStratifiedBiPartitionSamplingConfig> ptr =
-                      std::make_unique<LabelWiseStratifiedBiPartitionSamplingConfig>();
-                    ILabelWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
+                    std::unique_ptr<OutputWiseStratifiedBiPartitionSamplingConfig> ptr =
+                      std::make_unique<OutputWiseStratifiedBiPartitionSamplingConfig>();
+                    IOutputWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
                     partitionSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }

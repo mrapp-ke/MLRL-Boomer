@@ -21,11 +21,11 @@ from mlrl.common.cython.feature_binning import EqualFrequencyFeatureBinningConfi
 from mlrl.common.cython.feature_sampling import FeatureSamplingWithoutReplacementConfig
 from mlrl.common.cython.instance_sampling import ExampleWiseStratifiedInstanceSamplingConfig, \
     InstanceSamplingWithoutReplacementConfig, InstanceSamplingWithReplacementConfig, \
-    LabelWiseStratifiedInstanceSamplingConfig
+    OutputWiseStratifiedInstanceSamplingConfig
 from mlrl.common.cython.multi_threading import ManualMultiThreadingConfig
 from mlrl.common.cython.output_sampling import OutputSamplingWithoutReplacementConfig
 from mlrl.common.cython.partition_sampling import ExampleWiseStratifiedBiPartitionSamplingConfig, \
-    LabelWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
+    OutputWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization import SequentialPostOptimizationConfig
 from mlrl.common.cython.rule_induction import BeamSearchTopDownRuleInductionConfig, GreedyTopDownRuleInductionConfig
 from mlrl.common.cython.stopping_criterion import PostPruningConfig, PrePruningConfig, SizeStoppingCriterionConfig, \
@@ -478,19 +478,19 @@ class InstanceSamplingWithoutReplacementMixin(ABC):
         pass
 
 
-class LabelWiseStratifiedInstanceSamplingMixin(ABC):
+class OutputWiseStratifiedInstanceSamplingMixin(ABC):
     """
     Allows to configure a rule learner to use label-wise stratified instance sampling.
     """
 
     @abstractmethod
-    def use_label_wise_stratified_instance_sampling(self) -> LabelWiseStratifiedInstanceSamplingConfig:
+    def use_output_wise_stratified_instance_sampling(self) -> OutputWiseStratifiedInstanceSamplingConfig:
         """
         Configures the rule learner to sample from the available training examples using stratification, such that for
         each label the proportion of relevant and irrelevant examples is maintained, whenever a new rule should be
         learned.
 
-        :return: A `LabelWiseStratifiedInstanceSamplingConfig` that allows further configuration of the method for
+        :return: An `OutputWiseStratifiedInstanceSamplingConfig` that allows further configuration of the method for
                  sampling instances
         """
         pass
@@ -576,19 +576,19 @@ class RandomBiPartitionSamplingMixin(ABC):
         pass
 
 
-class LabelWiseStratifiedBiPartitionSamplingMixin(ABC):
+class OutputWiseStratifiedBiPartitionSamplingMixin(ABC):
     """
     Allows to configure a rule learner to partition the available training examples into a training set and a holdout
     set using stratification, such that for each label the proportion of relevant and irrelevant examples is maintained.
     """
 
     @abstractmethod
-    def use_label_wise_stratified_bi_partition_sampling(self) -> LabelWiseStratifiedBiPartitionSamplingConfig:
+    def use_output_wise_stratified_bi_partition_sampling(self) -> OutputWiseStratifiedBiPartitionSamplingConfig:
         """
         Configures the rule learner to partition the available training examples into a training set and a holdout set
         using stratification, such that for each label the proportion of relevant and irrelevant examples is maintained.
 
-        :return: A `LabelWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
+        :return: An `OutputWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
                  partitioning the available training examples into a training and a holdout set
         """
         pass

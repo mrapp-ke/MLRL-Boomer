@@ -73,15 +73,15 @@ class SeCo(RuleLearner, ClassifierMixin, MultiOutputMixin):
                                                 additional options refer to the documentation
         :param instance_sampling:               The strategy that should be used to sample from the available the
                                                 training examples whenever a new rule is learned. Must be
-                                                'with-replacement', 'without-replacement', 'stratified_label_wise',
-                                                'stratified_example_wise' or 'none', if no sampling should be used. For
+                                                'with-replacement', 'without-replacement', 'stratified-output-wise',
+                                                'stratified-example-wise' or 'none', if no sampling should be used. For
                                                 additional options refer to the documentation
         :param feature_sampling:                The strategy that is used to sample from the available features whenever
                                                 a rule is refined. Must be 'without-replacement' or 'none', if no
                                                 sampling should be used. For additional options refer to the
                                                 documentation
         :param holdout:                         The name of the strategy that should be used to creating a holdout set.
-                                                Must be 'random', 'stratified-label-wise', 'stratified-example-wise' or
+                                                Must be 'random', 'stratified-output-wise', 'stratified-example-wise' or
                                                 'none', if no holdout set should be used. For additional options refer
                                                 to the documentation
         :param feature_binning:                 The strategy that should be used to assign examples to bins based on
