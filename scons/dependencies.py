@@ -17,8 +17,8 @@ def __run_pip_command(*args, **kwargs):
 
 
 def __run_pip_install_command(requirement: str, *args, **kwargs):
-    return __run_pip_command('install', requirement, '--upgrade', '--prefer-binary', '--disable-pip-version-check',
-                             *args, **kwargs)
+    return __run_pip_command('install', requirement, '--upgrade', '--upgrade-strategy', 'eager', '--prefer-binary',
+                             '--disable-pip-version-check', *args, **kwargs)
 
 
 def __pip_install(requirement: str, dry_run: bool = False):
