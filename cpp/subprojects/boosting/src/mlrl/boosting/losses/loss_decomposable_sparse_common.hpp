@@ -23,22 +23,22 @@ namespace boosting {
                                             SparseSetView<float64>::value_const_iterator& scoreIterator,
                                             SparseSetView<float64>::value_const_iterator scoresEnd,
                                             Tuple<float64>& tuple, DecomposableLoss::UpdateFunction updateFunction) {
-        uint32 labelIndex = indexIterator == indicesEnd ? LIMIT : *indexIterator;
+        uint32 outputIndex = indexIterator == indicesEnd ? LIMIT : *indexIterator;
         uint32 scoreIndex = scoreIterator == scoresEnd ? LIMIT : (*scoreIterator).index;
 
-        if (scoreIndex < labelIndex) {
+        if (scoreIndex < outputIndex) {
             (*updateFunction)(false, (*scoreIterator).value, tuple.first, tuple.second);
             scoreIterator++;
             return scoreIndex;
-        } else if (labelIndex < scoreIndex) {
+        } else if (outputIndex < scoreIndex) {
             (*updateFunction)(true, 0, tuple.first, tuple.second);
             indexIterator++;
-            return labelIndex;
-        } else if (labelIndex < LIMIT) {
+            return outputIndex;
+        } else if (outputIndex < LIMIT) {
             (*updateFunction)(true, (*scoreIterator).value, tuple.first, tuple.second);
             scoreIterator++;
             indexIterator++;
-            return labelIndex;
+            return outputIndex;
         }
 
         return LIMIT;
@@ -82,22 +82,22 @@ namespace boosting {
                                              SparseSetView<float64>::value_const_iterator& scoreIterator,
                                              SparseSetView<float64>::value_const_iterator scoresEnd, float64& score,
                                              DecomposableLoss::EvaluateFunction evaluateFunction) {
-        uint32 labelIndex = indexIterator == indicesEnd ? LIMIT : *indexIterator;
+        uint32 outputIndex = indexIterator == indicesEnd ? LIMIT : *indexIterator;
         uint32 scoreIndex = scoreIterator == scoresEnd ? LIMIT : (*scoreIterator).index;
 
-        if (scoreIndex < labelIndex) {
+        if (scoreIndex < outputIndex) {
             score = (*evaluateFunction)(false, (*scoreIterator).value);
             scoreIterator++;
             return scoreIndex;
-        } else if (labelIndex < scoreIndex) {
+        } else if (outputIndex < scoreIndex) {
             score = (*evaluateFunction)(true, 0);
             indexIterator++;
-            return labelIndex;
-        } else if (labelIndex < LIMIT) {
+            return outputIndex;
+        } else if (outputIndex < LIMIT) {
             score = (*evaluateFunction)(true, (*scoreIterator).value);
             scoreIterator++;
             indexIterator++;
-            return labelIndex;
+            return outputIndex;
         }
 
         return LIMIT;
@@ -159,14 +159,14 @@ namespace boosting {
 
             void updateDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                                               const SparseSetView<float64>& scoreMatrix,
-                                              CompleteIndexVector::const_iterator labelIndicesBegin,
-                                              CompleteIndexVector::const_iterator labelIndicesEnd,
+                                              CompleteIndexVector::const_iterator indicesBegin,
+                                              CompleteIndexVector::const_iterator indicesEnd,
                                               SparseSetView<Tuple<float64>>& statisticView) const override {
-                auto indicesBegin = make_non_zero_index_forward_iterator(labelMatrix.values_cbegin(exampleIndex),
-                                                                         labelMatrix.values_cend(exampleIndex));
-                auto indicesEnd = make_non_zero_index_forward_iterator(labelMatrix.values_cend(exampleIndex),
-                                                                       labelMatrix.values_cend(exampleIndex));
-                updateDecomposableStatisticsInternally(indicesBegin, indicesEnd,
+                auto labelIndicesBegin = make_non_zero_index_forward_iterator(labelMatrix.values_cbegin(exampleIndex),
+                                                                              labelMatrix.values_cend(exampleIndex));
+                auto labelIndicesEnd = make_non_zero_index_forward_iterator(labelMatrix.values_cend(exampleIndex),
+                                                                            labelMatrix.values_cend(exampleIndex));
+                updateDecomposableStatisticsInternally(labelIndicesBegin, labelIndicesEnd,
                                                        scoreMatrix.values_cbegin(exampleIndex),
                                                        scoreMatrix.values_cend(exampleIndex),
                                                        statisticView[exampleIndex], DecomposableLoss::updateFunction_);
@@ -174,18 +174,18 @@ namespace boosting {
 
             void updateDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                                               const SparseSetView<float64>& scoreMatrix,
-                                              PartialIndexVector::const_iterator labelIndicesBegin,
-                                              PartialIndexVector::const_iterator labelIndicesEnd,
+                                              PartialIndexVector::const_iterator indicesBegin,
+                                              PartialIndexVector::const_iterator indicesEnd,
                                               SparseSetView<Tuple<float64>>& statisticView) const override {
                 const SparseSetView<float64>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
                 CContiguousView<const uint8>::value_const_iterator labelIterator =
                   labelMatrix.values_cbegin(exampleIndex);
                 SparseSetView<Tuple<float64>>::row statisticViewRow = statisticView[exampleIndex];
-                uint32 numElements = labelIndicesEnd - labelIndicesBegin;
+                uint32 numElements = indicesEnd - indicesBegin;
                 Tuple<float64> tuple;
 
                 for (uint32 i = 0; i < numElements; i++) {
-                    uint32 index = labelIndicesBegin[i];
+                    uint32 index = indicesBegin[i];
                     const IndexedValue<float64>* scoreMatrixEntry = scoreMatrixRow[index];
                     float64 predictedScore = scoreMatrixEntry ? scoreMatrixEntry->value : 0;
                     bool trueLabel = labelIterator[index];
@@ -202,8 +202,8 @@ namespace boosting {
 
             void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                               const SparseSetView<float64>& scoreMatrix,
-                                              CompleteIndexVector::const_iterator labelIndicesBegin,
-                                              CompleteIndexVector::const_iterator labelIndicesEnd,
+                                              CompleteIndexVector::const_iterator indicesBegin,
+                                              CompleteIndexVector::const_iterator indicesEnd,
                                               SparseSetView<Tuple<float64>>& statisticView) const override {
                 updateDecomposableStatisticsInternally(
                   labelMatrix.indices_cbegin(exampleIndex), labelMatrix.indices_cend(exampleIndex),
@@ -213,20 +213,20 @@ namespace boosting {
 
             void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                               const SparseSetView<float64>& scoreMatrix,
-                                              PartialIndexVector::const_iterator labelIndicesBegin,
-                                              PartialIndexVector::const_iterator labelIndicesEnd,
+                                              PartialIndexVector::const_iterator indicesBegin,
+                                              PartialIndexVector::const_iterator indicesEnd,
                                               SparseSetView<Tuple<float64>>& statisticView) const override {
                 const SparseSetView<float64>::const_row scoreMatrixRow = scoreMatrix[exampleIndex];
-                BinaryCsrView::index_const_iterator indexIterator = labelMatrix.indices_cbegin(exampleIndex);
-                BinaryCsrView::index_const_iterator indicesEnd = labelMatrix.indices_cend(exampleIndex);
+                BinaryCsrView::index_const_iterator labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
+                BinaryCsrView::index_const_iterator labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
                 SparseSetView<Tuple<float64>>::row statisticViewRow = statisticView[exampleIndex];
-                uint32 numElements = labelIndicesEnd - labelIndicesBegin;
+                uint32 numElements = indicesEnd - indicesBegin;
                 Tuple<float64> tuple;
 
                 for (uint32 i = 0; i < numElements; i++) {
-                    uint32 index = labelIndicesBegin[i];
-                    indexIterator = std::lower_bound(indexIterator, indicesEnd, index);
-                    bool trueLabel = indexIterator != indicesEnd && *indexIterator == index;
+                    uint32 index = indicesBegin[i];
+                    labelIndicesBegin = std::lower_bound(labelIndicesBegin, labelIndicesEnd, index);
+                    bool trueLabel = labelIndicesBegin != labelIndicesEnd && *labelIndicesBegin == index;
                     const IndexedValue<float64>* scoreMatrixEntry = scoreMatrixRow[index];
                     float64 predictedScore = scoreMatrixEntry ? scoreMatrixEntry->value : 0;
                     (*DecomposableLoss::updateFunction_)(trueLabel, predictedScore, tuple.first, tuple.second);

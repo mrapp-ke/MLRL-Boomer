@@ -90,161 +90,162 @@ class IStatistics {
         virtual float64 evaluatePrediction(uint32 statisticIndex) const = 0;
 
         /**
-         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those outputs, whose indices
          * are provided by a specific `CompleteIndexVector`.
          *
-         * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
-         *                      indices of the labels that should be included in the subset
+         * @param outputIndices A reference to an object of type `CompleteIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
          * @param weights       A reference to an object of type `EqualWeightVector` that provides access to the weights
          *                      of individual training examples
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                                 const EqualWeightVector& weights) const = 0;
 
         /**
-         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those outputs, whose indices
          * are provided by a specific `PartialIndexVector`.
          *
-         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
-         *                      indices of the labels that should be included in the subset
+         * @param outputIndices A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
          * @param weights       A reference to an object of type `EqualWeightVector` that provides access to the weights
          *                      of individual training examples
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                                 const EqualWeightVector& weights) const = 0;
 
         /**
-         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those outputs, whose indices
          * are provided by a specific `CompleteIndexVector`.
          *
-         * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
-         *                      indices of the labels that should be included in the subset
+         * @param outputIndices A reference to an object of type `CompleteIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
          * @param weights       A reference to an object of type `BitWeightVector` that provides access to the weights
          *                      of individual training examples
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                                 const BitWeightVector& weights) const = 0;
 
         /**
-         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those outputs, whose indices
          * are provided by a specific `PartialIndexVector`.
          *
-         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
-         *                      indices of the labels that should be included in the subset
+         * @param outputIndices A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
          * @param weights       A reference to an object of type `BitWeightVector` that provides access to the weights
          *                      of individual training examples
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                                 const BitWeightVector& weights) const = 0;
 
         /**
-         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those outputs, whose indices
          * are provided by a specific `CompleteIndexVector`.
          *
-         * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
-         *                      indices of the labels that should be included in the subset
+         * @param outputIndices A reference to an object of type `CompleteIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
          * @param weights       A reference to an object of type `DenseWeightVector<uint32>` that provides access to the
          *                      weights of individual training examples
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                                 const DenseWeightVector<uint32>& weights) const = 0;
 
         /**
-         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those outputs, whose indices
          * are provided by a specific `PartialIndexVector`.
          *
-         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
-         *                      indices of the labels that should be included in the subset
+         * @param outputIndices A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
          * @param weights       A reference to an object of type `DenseWeightVector<uint32>` that provides access to the
          *                      weights of individual training examples
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
-        virtual std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
+        virtual std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                                 const DenseWeightVector<uint32>& weights) const = 0;
 
         /**
-         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those outputs, whose indices
          * are provided by a specific `CompleteIndexVector`.
          *
-         * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
-         *                      indices of the labels that should be included in the subset
+         * @param outputIndices A reference to an object of type `CompleteIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
          * @param weights       A reference to an object of type `OutOfSampleWeightVector<EqualWeightVector>` that
          *                      provides access to the weights of individual training examples
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createSubset(
-          const CompleteIndexVector& labelIndices, const OutOfSampleWeightVector<EqualWeightVector>& weights) const = 0;
+          const CompleteIndexVector& outputIndices,
+          const OutOfSampleWeightVector<EqualWeightVector>& weights) const = 0;
 
         /**
-         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those outputs, whose indices
          * are provided by a specific `PartialIndexVector`.
          *
-         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
-         *                      indices of the labels that should be included in the subset
+         * @param outputIndices A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
          * @param weights       A reference to an object of type `OutOfSampleWeightVector<EqualWeightVector>` that
          *                      provides access to the weights of individual training examples
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createSubset(
-          const PartialIndexVector& labelIndices, const OutOfSampleWeightVector<EqualWeightVector>& weights) const = 0;
+          const PartialIndexVector& outputIndices, const OutOfSampleWeightVector<EqualWeightVector>& weights) const = 0;
 
         /**
-         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those outputs, whose indices
          * are provided by a specific `CompleteIndexVector`.
          *
-         * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
-         *                      indices of the labels that should be included in the subset
+         * @param outputIndices A reference to an object of type `CompleteIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
          * @param weights       A reference to an object of type `OutOfSampleWeightVector<BitWeightVector>` that
          *                      provides access to the weights of individual training examples
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createSubset(
-          const CompleteIndexVector& labelIndices, const OutOfSampleWeightVector<BitWeightVector>& weights) const = 0;
+          const CompleteIndexVector& outputIndices, const OutOfSampleWeightVector<BitWeightVector>& weights) const = 0;
 
         /**
-         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those outputs, whose indices
          * are provided by a specific `PartialIndexVector`.
          *
-         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
-         *                      indices of the labels that should be included in the subset
+         * @param outputIndices A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
          * @param weights       A reference to an object of type `OutOfSampleWeightVector<BitWeightVector>` that
          *                      provides access to the weights of individual training examples
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createSubset(
-          const PartialIndexVector& labelIndices, const OutOfSampleWeightVector<BitWeightVector>& weights) const = 0;
+          const PartialIndexVector& outputIndices, const OutOfSampleWeightVector<BitWeightVector>& weights) const = 0;
 
         /**
-         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those outputs, whose indices
          * are provided by a specific `CompleteIndexVector`.
          *
-         * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
-         *                      indices of the labels that should be included in the subset
+         * @param outputIndices A reference to an object of type `CompleteIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
          * @param weights       A reference to an object of type `OutOfSampleWeightVector<DenseWeightVector<uint32>>`
          *                      that provides access to the weights of individual training examples
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createSubset(
-          const CompleteIndexVector& labelIndices,
+          const CompleteIndexVector& outputIndices,
           const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const = 0;
 
         /**
-         * Creates and returns a new object of type `IStatisticsSubset` that includes only those labels, whose indices
+         * Creates and returns a new object of type `IStatisticsSubset` that includes only those outputs, whose indices
          * are provided by a specific `PartialIndexVector`.
          *
-         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
-         *                      indices of the labels that should be included in the subset
+         * @param outputIndices A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the outputs that should be included in the subset
          * @param weights       A reference to an object of type `OutOfSampleWeightVector<DenseWeightVector<uint32>>`
          *                      that provides access to the weights of individual training examples
          * @return              An unique pointer to an object of type `IStatisticsSubset` that has been created
          */
         virtual std::unique_ptr<IStatisticsSubset> createSubset(
-          const PartialIndexVector& labelIndices,
+          const PartialIndexVector& outputIndices,
           const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const = 0;
 
         /**

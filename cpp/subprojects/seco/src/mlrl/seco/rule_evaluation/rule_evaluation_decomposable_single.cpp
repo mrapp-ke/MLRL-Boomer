@@ -11,13 +11,14 @@ namespace seco {
      * Allows to calculate the predictions of single-output rules, as well as their overall quality, such that they
      * optimize a heuristic that is applied to each output individually.
      *
-     * @tparam T The type of the vector that provides access to the labels for which predictions should be calculated
+     * @tparam IndexVector The type of the vector that provides access to the indices of the labels for which
+     *                     predictions should be calculated
      */
-    template<typename T>
+    template<typename IndexVector>
     class DecomposableSingleOutputRuleEvaluation final : public IRuleEvaluation {
         private:
 
-            const T& labelIndices_;
+            const IndexVector& labelIndices_;
 
             PartialIndexVector indexVector_;
 
@@ -28,12 +29,13 @@ namespace seco {
         public:
 
             /**
-             * @param labelIndices  A reference to an object of template type `T` that provides access to the indices of
-             *                      the labels for which the rules may predict
+             * @param labelIndices  A reference to an object of template type `IndexVector` that provides access to the
+             *                      indices of the labels for which the rules may predict
              * @param heuristicPtr  An unique pointer to an object of type `IHeuristic` that implements the heuristic to
              *                      be optimized
              */
-            DecomposableSingleOutputRuleEvaluation(const T& labelIndices, std::unique_ptr<IHeuristic> heuristicPtr)
+            DecomposableSingleOutputRuleEvaluation(const IndexVector& labelIndices,
+                                                   std::unique_ptr<IHeuristic> heuristicPtr)
                 : labelIndices_(labelIndices), indexVector_(1), scoreVector_(indexVector_, true),
                   heuristicPtr_(std::move(heuristicPtr)) {}
 
@@ -42,7 +44,7 @@ namespace seco {
                                                 const DenseConfusionMatrixVector& confusionMatricesTotal,
                                                 const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 uint32 numElements = labelIndices_.getNumElements();
-                typename T::const_iterator indexIterator = labelIndices_.cbegin();
+                typename IndexVector::const_iterator indexIterator = labelIndices_.cbegin();
                 DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
                 uint32 bestIndex = indexIterator[0];

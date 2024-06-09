@@ -6,18 +6,18 @@
 #include "mlrl/common/rule_refinement/score_processor.hpp"
 
 template<typename IndexVector>
-DenseScoreVector<IndexVector>::DenseScoreVector(const IndexVector& labelIndices, bool sorted)
-    : ViewDecorator<AllocatedView<float64>>(AllocatedView<float64>(labelIndices.getNumElements())),
-      labelIndices_(labelIndices), sorted_(sorted) {}
+DenseScoreVector<IndexVector>::DenseScoreVector(const IndexVector& outputIndices, bool sorted)
+    : ViewDecorator<AllocatedView<float64>>(AllocatedView<float64>(outputIndices.getNumElements())),
+      outputIndices_(outputIndices), sorted_(sorted) {}
 
 template<typename IndexVector>
 typename DenseScoreVector<IndexVector>::index_const_iterator DenseScoreVector<IndexVector>::indices_cbegin() const {
-    return labelIndices_.cbegin();
+    return outputIndices_.cbegin();
 }
 
 template<typename IndexVector>
 typename DenseScoreVector<IndexVector>::index_const_iterator DenseScoreVector<IndexVector>::indices_cend() const {
-    return labelIndices_.cend();
+    return outputIndices_.cend();
 }
 
 template<typename IndexVector>
@@ -42,12 +42,12 @@ typename DenseScoreVector<IndexVector>::value_const_iterator DenseScoreVector<In
 
 template<typename IndexVector>
 uint32 DenseScoreVector<IndexVector>::getNumElements() const {
-    return labelIndices_.getNumElements();
+    return outputIndices_.getNumElements();
 }
 
 template<typename IndexVector>
 bool DenseScoreVector<IndexVector>::isPartial() const {
-    return labelIndices_.isPartial();
+    return outputIndices_.isPartial();
 }
 
 template<typename IndexVector>

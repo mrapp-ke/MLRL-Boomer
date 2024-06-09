@@ -206,8 +206,8 @@ namespace boosting {
             virtual void updateDecomposableStatistics(uint32 exampleIndex,
                                                       const CContiguousView<const uint8>& labelMatrix,
                                                       const CContiguousView<float64>& scoreMatrix,
-                                                      CompleteIndexVector::const_iterator labelIndicesBegin,
-                                                      CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                      CompleteIndexVector::const_iterator indicesBegin,
+                                                      CompleteIndexVector::const_iterator indicesEnd,
                                                       CContiguousView<Tuple<float64>>& statisticView) const override {
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
                                                        labelMatrix.values_cbegin(exampleIndex),
@@ -217,8 +217,8 @@ namespace boosting {
             virtual void updateDecomposableStatistics(uint32 exampleIndex,
                                                       const CContiguousView<const uint8>& labelMatrix,
                                                       const CContiguousView<float64>& scoreMatrix,
-                                                      PartialIndexVector::const_iterator labelIndicesBegin,
-                                                      PartialIndexVector::const_iterator labelIndicesEnd,
+                                                      PartialIndexVector::const_iterator indicesBegin,
+                                                      PartialIndexVector::const_iterator indicesEnd,
                                                       CContiguousView<Tuple<float64>>& statisticView) const override {
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex),
                                                        labelMatrix.values_cbegin(exampleIndex),
@@ -227,8 +227,8 @@ namespace boosting {
 
             virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                                       const CContiguousView<float64>& scoreMatrix,
-                                                      CompleteIndexVector::const_iterator labelIndicesBegin,
-                                                      CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                      CompleteIndexVector::const_iterator indicesBegin,
+                                                      CompleteIndexVector::const_iterator indicesEnd,
                                                       CContiguousView<Tuple<float64>>& statisticView) const override {
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));
@@ -238,8 +238,8 @@ namespace boosting {
 
             virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                                       const CContiguousView<float64>& scoreMatrix,
-                                                      PartialIndexVector::const_iterator labelIndicesBegin,
-                                                      PartialIndexVector::const_iterator labelIndicesEnd,
+                                                      PartialIndexVector::const_iterator indicesBegin,
+                                                      PartialIndexVector::const_iterator indicesEnd,
                                                       CContiguousView<Tuple<float64>>& statisticView) const override {
                 auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
                                                                   labelMatrix.indices_cend(exampleIndex));

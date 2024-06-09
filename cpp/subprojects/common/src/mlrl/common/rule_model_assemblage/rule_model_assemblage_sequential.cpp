@@ -55,9 +55,9 @@ class SequentialRuleModelAssemblage final : public IRuleModelAssemblage {
                 }
 
                 const IWeightVector& weights = instanceSampling.sample(rng);
-                const IIndexVector& labelIndices = outputSampling.sample(rng);
-                bool success = ruleInduction.induceRule(featureSpace, labelIndices, weights, partition, featureSampling,
-                                                        rulePruning, postProcessor, rng, modelBuilder);
+                const IIndexVector& outputIndices = outputSampling.sample(rng);
+                bool success = ruleInduction.induceRule(featureSpace, outputIndices, weights, partition,
+                                                        featureSampling, rulePruning, postProcessor, rng, modelBuilder);
 
                 if (success) {
                     numRules++;

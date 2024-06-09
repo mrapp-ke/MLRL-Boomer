@@ -91,11 +91,11 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                     featureSubspacePtr->revertPrediction(prediction);
 
                     // Learn a new rule...
-                    const IIndexVector& labelIndices = refineHeads_ ? outputSampling.sample(rng) : prediction;
+                    const IIndexVector& outputIndices = refineHeads_ ? outputSampling.sample(rng) : prediction;
                     RuleReplacementBuilder ruleReplacementBuilder(intermediateRule);
 
                     if (resampleFeatures_) {
-                        ruleInduction.induceRule(featureSpace, labelIndices, weights, partition, featureSampling,
+                        ruleInduction.induceRule(featureSpace, outputIndices, weights, partition, featureSampling,
                                                  rulePruning, postProcessor, rng, ruleReplacementBuilder);
                     } else {
                         std::unordered_set<uint32> uniqueFeatureIndices;
@@ -114,7 +114,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                         }
 
                         PredefinedFeatureSampling predefinedFeatureSampling(indexVector);
-                        ruleInduction.induceRule(featureSpace, labelIndices, weights, partition,
+                        ruleInduction.induceRule(featureSpace, outputIndices, weights, partition,
                                                  predefinedFeatureSampling, rulePruning, postProcessor, rng,
                                                  ruleReplacementBuilder);
                     }

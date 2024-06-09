@@ -11,15 +11,15 @@ namespace boosting {
      * their overall quality, based on the gradients and Hessians that are stored by a
      * `DenseNonDecomposableStatisticVector` using L1 and L2 regularization.
      *
-     * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
-     *                     calculated
+     * @tparam IndexVector The type of the vector that provides access to the indices of the outputs for which
+     *                     predictions should be calculated
      */
     template<typename IndexVector>
     class DenseNonDecomposableFixedPartialRuleEvaluation final
         : public AbstractNonDecomposableRuleEvaluation<DenseNonDecomposableStatisticVector, IndexVector> {
         private:
 
-            const IndexVector& labelIndices_;
+            const IndexVector& outputIndices_;
 
             PartialIndexVector indexVector_;
 
@@ -38,9 +38,9 @@ namespace boosting {
         public:
 
             /**
-             * @param labelIndices              A reference to an object of template type `IndexVector` that provides
-             *                                  access to the indices of the labels for which the rules may predict
-             * @param numPredictions            The number of labels for which the rules should predict
+             * @param outputIndices             A reference to an object of template type `IndexVector` that provides
+             *                                  access to the indices of the outputs for which the rules may predict
+             * @param numPredictions            The number of outputs for which the rules should predict
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
@@ -50,15 +50,15 @@ namespace boosting {
              * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
              *                                  routines
              */
-            DenseNonDecomposableFixedPartialRuleEvaluation(const IndexVector& labelIndices, uint32 numPredictions,
+            DenseNonDecomposableFixedPartialRuleEvaluation(const IndexVector& outputIndices, uint32 numPredictions,
                                                            float64 l1RegularizationWeight,
                                                            float64 l2RegularizationWeight, const Blas& blas,
                                                            const Lapack& lapack)
                 : AbstractNonDecomposableRuleEvaluation<DenseNonDecomposableStatisticVector, IndexVector>(
                     numPredictions, lapack),
-                  labelIndices_(labelIndices), indexVector_(numPredictions), scoreVector_(indexVector_, false),
+                  outputIndices_(outputIndices), indexVector_(numPredictions), scoreVector_(indexVector_, false),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight),
-                  blas_(blas), lapack_(lapack), tmpVector_(labelIndices.getNumElements()) {}
+                  blas_(blas), lapack_(lapack), tmpVector_(outputIndices.getNumElements()) {}
 
             /**
              * @see `IRuleEvaluation::evaluate`
@@ -77,12 +77,12 @@ namespace boosting {
                 // Copy gradients to the vector of ordinates and add the L1 regularization weight...
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 typename DenseScoreVector<IndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
-                typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
+                typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
 
                 for (uint32 i = 0; i < numPredictions; i++) {
                     const IndexedValue<float64>& entry = tmpIterator[i];
                     uint32 index = entry.index;
-                    indexIterator[i] = labelIndexIterator[index];
+                    indexIterator[i] = outputIndexIterator[index];
                     valueIterator[i] = -gradientIterator[index];
                 }
 

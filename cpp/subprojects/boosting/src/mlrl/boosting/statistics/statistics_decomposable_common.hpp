@@ -19,16 +19,16 @@ namespace boosting {
     template<typename StatisticView, typename StatisticVector, typename IndexVector>
     static inline void addDecomposableStatisticToSubset(const EqualWeightVector& weights,
                                                         const StatisticView& statisticView, StatisticVector& vector,
-                                                        const IndexVector& labelIndices, uint32 statisticIndex) {
-        vector.addToSubset(statisticView, statisticIndex, labelIndices);
+                                                        const IndexVector& outputIndices, uint32 statisticIndex) {
+        vector.addToSubset(statisticView, statisticIndex, outputIndices);
     }
 
     template<typename WeightVector, typename StatisticView, typename StatisticVector, typename IndexVector>
     static inline void addDecomposableStatisticToSubset(const WeightVector& weights, const StatisticView& statisticView,
-                                                        StatisticVector& vector, const IndexVector& labelIndices,
+                                                        StatisticVector& vector, const IndexVector& outputIndices,
                                                         uint32 statisticIndex) {
         float64 weight = weights[statisticIndex];
-        vector.addToSubset(statisticView, statisticIndex, labelIndices, weight);
+        vector.addToSubset(statisticView, statisticIndex, outputIndices, weight);
     }
 
     /**
@@ -42,7 +42,7 @@ namespace boosting {
      *                                  scores
      * @tparam WeightVector             The type of the vector that provides access to the weights of individual
      *                                  statistics
-     * @tparam IndexVector              The type of the vector that provides access to the indices of the labels that
+     * @tparam IndexVector              The type of the vector that provides access to the indices of the outputs that
      *                                  are included in the subset
      */
     template<typename StatisticVector, typename StatisticView, typename RuleEvaluationFactory, typename WeightVector,
@@ -68,10 +68,10 @@ namespace boosting {
             const WeightVector& weights_;
 
             /**
-             * A reference to an object of template type `IndexVector` that provides access to the indices of the labels
-             * that are included in the subset.
+             * A reference to an object of template type `IndexVector` that provides access to the indices of the
+             * outputs that are included in the subset.
              */
-            const IndexVector& labelIndices_;
+            const IndexVector& outputIndices_;
 
             /**
              * An unique pointer to an object of type `IRuleEvaluation` that is used to calculate the predictions of
@@ -89,15 +89,15 @@ namespace boosting {
              *                              predictions of rules, as well as their overall quality
              * @param weights               A reference to an object of template type `WeightVector` that provides
              *                              access to the weights of individual statistics
-             * @param labelIndices          A reference to an object of template type `IndexVector` that provides access
-             *                              to the indices of the labels that are included in the subset
+             * @param outputIndices         A reference to an object of template type `IndexVector` that provides access
+             *                              to the indices of the outputs that are included in the subset
              */
             DecomposableStatisticsSubset(const StatisticView& statisticView,
                                          const RuleEvaluationFactory& ruleEvaluationFactory,
-                                         const WeightVector& weights, const IndexVector& labelIndices)
-                : sumVector_(labelIndices.getNumElements(), true), statisticView_(statisticView), weights_(weights),
-                  labelIndices_(labelIndices),
-                  ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, labelIndices)) {}
+                                         const WeightVector& weights, const IndexVector& outputIndices)
+                : sumVector_(outputIndices.getNumElements(), true), statisticView_(statisticView), weights_(weights),
+                  outputIndices_(outputIndices),
+                  ruleEvaluationPtr_(ruleEvaluationFactory.create(sumVector_, outputIndices)) {}
 
             /**
              * @see `IStatisticsSubset::hasNonZeroWeight`
@@ -110,7 +110,7 @@ namespace boosting {
              * @see `IStatisticsSubset::addToSubset`
              */
             void addToSubset(uint32 statisticIndex) override final {
-                addDecomposableStatisticToSubset(weights_, statisticView_, sumVector_, labelIndices_, statisticIndex);
+                addDecomposableStatisticToSubset(weights_, statisticView_, sumVector_, outputIndices_, statisticIndex);
             }
 
             /**
@@ -141,7 +141,7 @@ namespace boosting {
              * An abstract base class for all subsets of the gradients and Hessians that are stored by an instance of
              * the class `AbstractDecomposableImmutableWeightedStatistics`.
              *
-             * @tparam IndexVector The type of the vector that provides access to the indices of the labels that are
+             * @tparam IndexVector The type of the vector that provides access to the indices of the outputs that are
              *                     included in the subset
              */
             template<typename IndexVector>
@@ -171,17 +171,17 @@ namespace boosting {
                      *                          gradients and Hessians
                      * @param totalSumVector    A reference to an object of template type `StatisticVector` that stores
                      *                          the total sums of gradients and Hessians
-                     * @param labelIndices      A reference to an object of template type `IndexVector` that provides
-                     *                          access to the indices of the labels that are included in the subset
+                     * @param outputIndices     A reference to an object of template type `IndexVector` that provides
+                     *                          access to the indices of the outputs that are included in the subset
                      */
                     AbstractWeightedStatisticsSubset(const AbstractDecomposableImmutableWeightedStatistics& statistics,
                                                      const StatisticVector& totalSumVector,
-                                                     const IndexVector& labelIndices)
+                                                     const IndexVector& outputIndices)
                         : DecomposableStatisticsSubset<StatisticVector, StatisticView, RuleEvaluationFactory,
                                                        WeightVector, IndexVector>(statistics.statisticView_,
                                                                                   statistics.ruleEvaluationFactory_,
-                                                                                  statistics.weights_, labelIndices),
-                          tmpVector_(labelIndices.getNumElements()), totalSumVector_(&totalSumVector) {}
+                                                                                  statistics.weights_, outputIndices),
+                          tmpVector_(outputIndices.getNumElements()), totalSumVector_(&totalSumVector) {}
 
                     /**
                      * @see `IWeightedStatisticsSubset::resetSubset`
@@ -212,7 +212,7 @@ namespace boosting {
                      * @see `IWeightedStatisticsSubset::calculateScoresUncovered`
                      */
                     const IScoreVector& calculateScoresUncovered() override final {
-                        tmpVector_.difference(*totalSumVector_, this->labelIndices_, this->sumVector_);
+                        tmpVector_.difference(*totalSumVector_, this->outputIndices_, this->sumVector_);
                         return this->ruleEvaluationPtr_->calculateScores(tmpVector_);
                     }
 
@@ -220,7 +220,7 @@ namespace boosting {
                      * @see `IWeightedStatisticsSubset::calculateScoresUncoveredAccumulated`
                      */
                     const IScoreVector& calculateScoresUncoveredAccumulated() override final {
-                        tmpVector_.difference(*totalSumVector_, this->labelIndices_, *accumulatedSumVectorPtr_);
+                        tmpVector_.difference(*totalSumVector_, this->outputIndices_, *accumulatedSumVectorPtr_);
                         return this->ruleEvaluationPtr_->calculateScores(tmpVector_);
                     }
             };
@@ -324,7 +324,7 @@ namespace boosting {
              * Provides access to a subset of the gradients and Hessians that are stored by an instance of the class
              * `DecomposableWeightedStatistics`.
              *
-             * @tparam IndexVector The type of the vector that provides access to the indices of the labels that are
+             * @tparam IndexVector The type of the vector that provides access to the indices of the outputs that are
              *                     included in the subset
              */
             template<typename IndexVector>
@@ -343,16 +343,16 @@ namespace boosting {
                      *                          stores the gradients and Hessians
                      * @param totalSumVector    A reference to an object of template type `StatisticVector` that stores
                      *                          the total sums of gradients and Hessians
-                     * @param labelIndices      A reference to an object of template type `IndexVector` that provides
-                     *                          access to the indices of the labels that are included in the subset
+                     * @param outputIndices     A reference to an object of template type `IndexVector` that provides
+                     *                          access to the indices of the outputs that are included in the subset
                      */
                     WeightedStatisticsSubset(const DecomposableWeightedStatistics& statistics,
-                                             const StatisticVector& totalSumVector, const IndexVector& labelIndices)
+                                             const StatisticVector& totalSumVector, const IndexVector& outputIndices)
                         : AbstractDecomposableImmutableWeightedStatistics<
                             StatisticVector, StatisticView, RuleEvaluationFactory,
                             WeightVector>::template AbstractWeightedStatisticsSubset<IndexVector>(statistics,
                                                                                                   totalSumVector,
-                                                                                                  labelIndices) {}
+                                                                                                  outputIndices) {}
 
                     /**
                      * @see `IWeightedStatisticsSubset::addToMissing`
@@ -441,18 +441,18 @@ namespace boosting {
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-              const CompleteIndexVector& labelIndices) const override {
+              const CompleteIndexVector& outputIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<CompleteIndexVector>>(*this, *totalSumVectorPtr_,
-                                                                                       labelIndices);
+                                                                                       outputIndices);
             }
 
             /**
              * @see `IImmutableWeightedStatistics::createSubset`
              */
             std::unique_ptr<IWeightedStatisticsSubset> createSubset(
-              const PartialIndexVector& labelIndices) const override {
+              const PartialIndexVector& outputIndices) const override {
                 return std::make_unique<WeightedStatisticsSubset<PartialIndexVector>>(*this, *totalSumVectorPtr_,
-                                                                                      labelIndices);
+                                                                                      outputIndices);
             }
     };
 
@@ -618,139 +618,139 @@ namespace boosting {
             /**
              * @see `IStatistics::createSubset`
              */
-            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
+            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const EqualWeightVector& weights) const override final {
                 return std::make_unique<
                   DecomposableStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
                                                RuleEvaluationFactory, EqualWeightVector, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
-            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
+            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const EqualWeightVector& weights) const override final {
                 return std::make_unique<
                   DecomposableStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
                                                RuleEvaluationFactory, EqualWeightVector, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
-            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& labelIndices,
+            std::unique_ptr<IStatisticsSubset> createSubset(const CompleteIndexVector& outputIndices,
                                                             const BitWeightVector& weights) const override final {
                 return std::make_unique<
                   DecomposableStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
                                                RuleEvaluationFactory, BitWeightVector, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
-            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& labelIndices,
+            std::unique_ptr<IStatisticsSubset> createSubset(const PartialIndexVector& outputIndices,
                                                             const BitWeightVector& weights) const override final {
                 return std::make_unique<
                   DecomposableStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
                                                RuleEvaluationFactory, BitWeightVector, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-              const CompleteIndexVector& labelIndices, const DenseWeightVector<uint32>& weights) const override final {
+              const CompleteIndexVector& outputIndices, const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<
                   DecomposableStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
                                                RuleEvaluationFactory, DenseWeightVector<uint32>, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-              const PartialIndexVector& labelIndices, const DenseWeightVector<uint32>& weights) const override final {
+              const PartialIndexVector& outputIndices, const DenseWeightVector<uint32>& weights) const override final {
                 return std::make_unique<
                   DecomposableStatisticsSubset<StatisticVector, typename StatisticMatrix::view_type,
                                                RuleEvaluationFactory, DenseWeightVector<uint32>, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-              const CompleteIndexVector& labelIndices,
+              const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
                 return std::make_unique<DecomposableStatisticsSubset<
                   StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
                   OutOfSampleWeightVector<EqualWeightVector>, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-              const PartialIndexVector& labelIndices,
+              const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<EqualWeightVector>& weights) const override final {
                 return std::make_unique<DecomposableStatisticsSubset<
                   StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
                   OutOfSampleWeightVector<EqualWeightVector>, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-              const CompleteIndexVector& labelIndices,
+              const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
                 return std::make_unique<DecomposableStatisticsSubset<
                   StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
                   OutOfSampleWeightVector<BitWeightVector>, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-              const PartialIndexVector& labelIndices,
+              const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<BitWeightVector>& weights) const override final {
                 return std::make_unique<DecomposableStatisticsSubset<
                   StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
                   OutOfSampleWeightVector<BitWeightVector>, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-              const CompleteIndexVector& labelIndices,
+              const CompleteIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
                 return std::make_unique<DecomposableStatisticsSubset<
                   StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
                   OutOfSampleWeightVector<DenseWeightVector<uint32>>, CompleteIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
              * @see `IStatistics::createSubset`
              */
             std::unique_ptr<IStatisticsSubset> createSubset(
-              const PartialIndexVector& labelIndices,
+              const PartialIndexVector& outputIndices,
               const OutOfSampleWeightVector<DenseWeightVector<uint32>>& weights) const override final {
                 return std::make_unique<DecomposableStatisticsSubset<
                   StatisticVector, typename StatisticMatrix::view_type, RuleEvaluationFactory,
                   OutOfSampleWeightVector<DenseWeightVector<uint32>>, PartialIndexVector>>(
-                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, labelIndices);
+                  statisticMatrixPtr_->getView(), *ruleEvaluationFactory_, weights, outputIndices);
             }
 
             /**
