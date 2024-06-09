@@ -18,7 +18,11 @@ BOOMER is an algorithm for learning ensembles of gradient boosted multi-label cl
 
 To provide a versatile tool for different use cases, great emphasis is put on the *efficiency* of the implementation. Moreover, to ensure its *flexibility*, it is designed in a modular fashion and can therefore easily be adjusted to different requirements. This modular approach enables implementing different kind of rule learning algorithms. For example, this project does also provide a Separate-and-Conquer (SeCo) algorithm based on traditional rule learning techniques that are particularly well-suited for learning interpretable models.
 
-This document is intended for users and developers who are interested in the algorithm's implementation. For a detailed description of the used methodology, please refer to the publications that are listed under {ref}`references`.
+This document is intended for end users of our algorithms and developers who are interested in their implementation. In addition, the following links might be of interest:
+
+- For a detailed description of the methodology used by the algorithms, please refer to the publications listed under {ref}`references`.
+- The source code maintained by this project can be found in the [Github repository](https://github.com/mrapp-ke/MLRL-Boomer).
+- Issues with the software, feature requests, or questions to the developers should be posted via the project's [issue tracker](https://github.com/mrapp-ke/MLRL-Boomer/issues).
 
 ```{toctree}
 ---
