@@ -10,14 +10,14 @@ namespace boosting {
      * gradients and Hessians that are stored by a vector using L1 and L2 regularization.
      *
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
-     * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should
-     *                          be calculated
+     * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which
+     *                          predictions should be calculated
      */
     template<typename StatisticVector, typename IndexVector>
     class DecomposableSingleOutputRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
-            const IndexVector& labelIndices_;
+            const IndexVector& outputIndices_;
 
             PartialIndexVector indexVector_;
 
@@ -30,16 +30,16 @@ namespace boosting {
         public:
 
             /**
-             * @param labelIndices              A reference to an object of template type `IndexVector` that provides
-             *                                  access to the indices of the labels for which the rules may predict
+             * @param outputIndices             A reference to an object of template type `IndexVector` that provides
+             *                                  access to the indices of the outputs for which the rules may predict
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            DecomposableSingleOutputRuleEvaluation(const IndexVector& labelIndices, float64 l1RegularizationWeight,
+            DecomposableSingleOutputRuleEvaluation(const IndexVector& outputIndices, float64 l1RegularizationWeight,
                                                    float64 l2RegularizationWeight)
-                : labelIndices_(labelIndices), indexVector_(1), scoreVector_(indexVector_, true),
+                : outputIndices_(outputIndices), indexVector_(1), scoreVector_(indexVector_, true),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
@@ -63,7 +63,7 @@ namespace boosting {
 
                 DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
                 valueIterator[0] = bestScore;
-                indexVector_.begin()[0] = labelIndices_.cbegin()[bestIndex];
+                indexVector_.begin()[0] = outputIndices_.cbegin()[bestIndex];
                 scoreVector_.quality = calculateOutputWiseQuality(bestScore, statisticIterator[bestIndex].first,
                                                                   statisticIterator[bestIndex].second,
                                                                   l1RegularizationWeight_, l2RegularizationWeight_);

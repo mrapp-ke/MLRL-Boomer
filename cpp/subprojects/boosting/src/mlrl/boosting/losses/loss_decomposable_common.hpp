@@ -47,8 +47,8 @@ namespace boosting {
 
             void updateDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                                               const CContiguousView<float64>& scoreMatrix,
-                                              CompleteIndexVector::const_iterator labelIndicesBegin,
-                                              CompleteIndexVector::const_iterator labelIndicesEnd,
+                                              CompleteIndexVector::const_iterator indicesBegin,
+                                              CompleteIndexVector::const_iterator indicesEnd,
                                               CContiguousView<Tuple<float64>>& statisticView) const override final {
                 CContiguousView<Tuple<float64>>::value_iterator statisticIterator =
                   statisticView.values_begin(exampleIndex);
@@ -67,29 +67,29 @@ namespace boosting {
 
             void updateDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                                               const CContiguousView<float64>& scoreMatrix,
-                                              PartialIndexVector::const_iterator labelIndicesBegin,
-                                              PartialIndexVector::const_iterator labelIndicesEnd,
+                                              PartialIndexVector::const_iterator indicesBegin,
+                                              PartialIndexVector::const_iterator indicesEnd,
                                               CContiguousView<Tuple<float64>>& statisticView) const override final {
                 CContiguousView<Tuple<float64>>::value_iterator statisticIterator =
                   statisticView.values_begin(exampleIndex);
                 CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
                 CContiguousView<const uint8>::value_const_iterator labelIterator =
                   labelMatrix.values_cbegin(exampleIndex);
-                uint32 numLabels = labelIndicesEnd - labelIndicesBegin;
+                uint32 numLabels = indicesEnd - indicesBegin;
 
                 for (uint32 i = 0; i < numLabels; i++) {
-                    uint32 labelIndex = labelIndicesBegin[i];
-                    bool trueLabel = labelIterator[labelIndex];
-                    float64 predictedScore = scoreIterator[labelIndex];
-                    Tuple<float64>& tuple = statisticIterator[labelIndex];
+                    uint32 index = indicesBegin[i];
+                    bool trueLabel = labelIterator[index];
+                    float64 predictedScore = scoreIterator[index];
+                    Tuple<float64>& tuple = statisticIterator[index];
                     (*updateFunction_)(trueLabel, predictedScore, tuple.first, tuple.second);
                 }
             }
 
             void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                               const CContiguousView<float64>& scoreMatrix,
-                                              CompleteIndexVector::const_iterator labelIndicesBegin,
-                                              CompleteIndexVector::const_iterator labelIndicesEnd,
+                                              CompleteIndexVector::const_iterator indicesBegin,
+                                              CompleteIndexVector::const_iterator indicesEnd,
                                               CContiguousView<Tuple<float64>>& statisticView) const override final {
                 CContiguousView<Tuple<float64>>::value_iterator statisticIterator =
                   statisticView.values_begin(exampleIndex);
@@ -109,22 +109,22 @@ namespace boosting {
 
             void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                               const CContiguousView<float64>& scoreMatrix,
-                                              PartialIndexVector::const_iterator labelIndicesBegin,
-                                              PartialIndexVector::const_iterator labelIndicesEnd,
+                                              PartialIndexVector::const_iterator indicesBegin,
+                                              PartialIndexVector::const_iterator indicesEnd,
                                               CContiguousView<Tuple<float64>>& statisticView) const override final {
                 CContiguousView<Tuple<float64>>::value_iterator statisticIterator =
                   statisticView.values_begin(exampleIndex);
                 CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
-                BinaryCsrView::index_const_iterator indexIterator = labelMatrix.indices_cbegin(exampleIndex);
-                BinaryCsrView::index_const_iterator indicesEnd = labelMatrix.indices_cend(exampleIndex);
-                uint32 numLabels = labelIndicesEnd - labelIndicesBegin;
+                BinaryCsrView::index_const_iterator labelIndicesBegin = labelMatrix.indices_cbegin(exampleIndex);
+                BinaryCsrView::index_const_iterator labelIndicesEnd = labelMatrix.indices_cend(exampleIndex);
+                uint32 numLabels = indicesEnd - indicesBegin;
 
                 for (uint32 i = 0; i < numLabels; i++) {
-                    uint32 labelIndex = labelIndicesBegin[i];
-                    indexIterator = std::lower_bound(indexIterator, indicesEnd, labelIndex);
-                    bool trueLabel = indexIterator != indicesEnd && *indexIterator == labelIndex;
-                    float64 predictedScore = scoreIterator[labelIndex];
-                    Tuple<float64>& tuple = statisticIterator[labelIndex];
+                    uint32 index = indicesBegin[i];
+                    labelIndicesBegin = std::lower_bound(labelIndicesBegin, labelIndicesEnd, index);
+                    bool trueLabel = labelIndicesBegin != labelIndicesEnd && *labelIndicesBegin == index;
+                    float64 predictedScore = scoreIterator[index];
+                    Tuple<float64>& tuple = statisticIterator[index];
                     (*updateFunction_)(trueLabel, predictedScore, tuple.first, tuple.second);
                 }
             }

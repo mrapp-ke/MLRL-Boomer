@@ -132,8 +132,8 @@ namespace boosting {
      * Allows to calculate the predictions of complete rules, as well as their overall quality, based on the gradients
      * and Hessians that are stored by a `DenseNonDecomposableStatisticVector` using L1 and L2 regularization.
      *
-     * @tparam IndexVector The type of the vector that provides access to the labels for which predictions should be
-     *                     calculated
+     * @tparam IndexVector The type of the vector that provides access to the indices of the outputs for which
+     *                     predictions should be calculated
      */
     template<typename IndexVector>
     class DenseNonDecomposableCompleteRuleEvaluation final
@@ -153,8 +153,8 @@ namespace boosting {
         public:
 
             /**
-             * @param labelIndices              A reference to an object of template type `IndexVector` that provides
-             *                                  access to the indices of the labels for which the rules may predict
+             * @param outputIndices             A reference to an object of template type `IndexVector` that provides
+             *                                  access to the indices of the outputs for which the rules may predict
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
@@ -164,12 +164,12 @@ namespace boosting {
              * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
              *                                  routines
              */
-            DenseNonDecomposableCompleteRuleEvaluation(const IndexVector& labelIndices, float64 l1RegularizationWeight,
+            DenseNonDecomposableCompleteRuleEvaluation(const IndexVector& outputIndices, float64 l1RegularizationWeight,
                                                        float64 l2RegularizationWeight, const Blas& blas,
                                                        const Lapack& lapack)
                 : AbstractNonDecomposableRuleEvaluation<DenseNonDecomposableStatisticVector, IndexVector>(
-                    labelIndices.getNumElements(), lapack),
-                  scoreVector_(labelIndices, true), l1RegularizationWeight_(l1RegularizationWeight),
+                    outputIndices.getNumElements(), lapack),
+                  scoreVector_(outputIndices, true), l1RegularizationWeight_(l1RegularizationWeight),
                   l2RegularizationWeight_(l2RegularizationWeight), blas_(blas), lapack_(lapack) {}
 
             /**

@@ -36,8 +36,8 @@ class IRuleInduction {
          *
          * @param featureSpace      A reference to an object of type `IFeatureSpace` that provides access to the feature
          *                          space
-         * @param labelIndices      A reference to an object of type `IIndexVector` that provides access to the indices
-         *                          of the labels for which the rule may predict
+         * @param outputIndices     A reference to an object of type `IIndexVector` that provides access to the indices
+         *                          of the outputs for which the rule may predict
          * @param weights           A reference to an object of type `IWeightVector` that provides access to the weights
          *                          of individual training examples
          * @param partition         A reference to an object of type `IPartition` that provides access to the indices of
@@ -54,7 +54,7 @@ class IRuleInduction {
          * @param modelBuilder      A reference to an object of type `IModelBuilder`, the rule should be added to
          * @return                  True, if a rule has been induced, false otherwise
          */
-        virtual bool induceRule(IFeatureSpace& featureSpace, const IIndexVector& labelIndices,
+        virtual bool induceRule(IFeatureSpace& featureSpace, const IIndexVector& outputIndices,
                                 const IWeightVector& weights, IPartition& partition, IFeatureSampling& featureSampling,
                                 const IRulePruning& rulePruning, const IPostProcessor& postProcessor, RNG& rng,
                                 IModelBuilder& modelBuilder) const = 0;

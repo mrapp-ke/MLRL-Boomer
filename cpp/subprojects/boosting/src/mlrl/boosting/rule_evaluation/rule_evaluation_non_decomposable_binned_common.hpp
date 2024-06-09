@@ -168,8 +168,8 @@ namespace boosting {
      * function and using gradient-based label binning.
      *
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
-     * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should
-     *                          be calculated
+     * @tparam IndexVector      The type of the vector that provides access to the indices of the labels for which
+     *                          predictions should be calculated
      */
     template<typename StatisticVector, typename IndexVector>
     class AbstractNonDecomposableBinnedRuleEvaluation

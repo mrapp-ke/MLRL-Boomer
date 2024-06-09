@@ -23,78 +23,78 @@ namespace boosting {
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
              * provided by a `CompleteIndexVector`.
              *
-             * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
-             * @param labelMatrix       A reference to an object of type `CContiguousView` that provides random access
-             *                          to the labels of the training examples
-             * @param scoreMatrix       A reference to an object of type `CContiguousView` that stores the currently
-             *                          predicted scores
-             * @param labelIndicesBegin A `CompleteIndexVector::const_iterator` to the beginning of the label indices
-             * @param labelIndicesEnd   A `CompleteIndexVector::const_iterator` to the end of the label indices
-             * @param statisticView     A reference to an object of type `CContiguousView` to be updated
+             * @param exampleIndex  The index of the example for which the gradients and Hessians should be updated
+             * @param labelMatrix   A reference to an object of type `CContiguousView` that provides random access to
+             *                      the labels of the training examples
+             * @param scoreMatrix   A reference to an object of type `CContiguousView` that stores the currently
+             *                      predicted scores
+             * @param indicesBegin  A `CompleteIndexVector::const_iterator` to the beginning of the label indices
+             * @param indicesEnd    A `CompleteIndexVector::const_iterator` to the end of the label indices
+             * @param statisticView A reference to an object of type `CContiguousView` to be updated
              */
             virtual void updateDecomposableStatistics(uint32 exampleIndex,
                                                       const CContiguousView<const uint8>& labelMatrix,
                                                       const CContiguousView<float64>& scoreMatrix,
-                                                      CompleteIndexVector::const_iterator labelIndicesBegin,
-                                                      CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                      CompleteIndexVector::const_iterator indicesBegin,
+                                                      CompleteIndexVector::const_iterator indicesEnd,
                                                       CContiguousView<Tuple<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
              * provided by a `PartialIndexVector`.
              *
-             * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
-             * @param labelMatrix       A reference to an object of type `CContiguousView` that provides random access
-             *                          to the labels of the training examples
-             * @param scoreMatrix       A reference to an object of type `CContiguousView` that stores the currently
-             *                          predicted scores
-             * @param labelIndicesBegin A `PartialIndexVector::const_iterator` to the beginning of the label indices
-             * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
-             * @param statisticView     A reference to an object of type `CContiguousView` to be updated
+             * @param exampleIndex  The index of the example for which the gradients and Hessians should be updated
+             * @param labelMatrix   A reference to an object of type `CContiguousView` that provides random access to
+             *                      the labels of the training examples
+             * @param scoreMatrix   A reference to an object of type `CContiguousView` that stores the currently
+             *                      predicted scores
+             * @param indicesBegin  A `PartialIndexVector::const_iterator` to the beginning of the label indices
+             * @param indicesEnd    A `PartialIndexVector::const_iterator` to the end of the label indices
+             * @param statisticView A reference to an object of type `CContiguousView` to be updated
              */
             virtual void updateDecomposableStatistics(uint32 exampleIndex,
                                                       const CContiguousView<const uint8>& labelMatrix,
                                                       const CContiguousView<float64>& scoreMatrix,
-                                                      PartialIndexVector::const_iterator labelIndicesBegin,
-                                                      PartialIndexVector::const_iterator labelIndicesEnd,
+                                                      PartialIndexVector::const_iterator indicesBegin,
+                                                      PartialIndexVector::const_iterator indicesEnd,
                                                       CContiguousView<Tuple<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
              * provided by a `CompleteIndexVector`.
              *
-             * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
-             * @param labelMatrix       A reference to an object of type `BinaryCsrView` that provides row-wise access
-             *                          to the labels of the training examples
-             * @param scoreMatrix       A reference to an object of type `CContiguousView` that stores the currently
-             *                          predicted scores
-             * @param labelIndicesBegin A `CompleteIndexVector::const_iterator` to the beginning of the label indices
-             * @param labelIndicesEnd   A `CompleteIndexVector::const_iterator` to the end of the label indices
-             * @param statisticView     A reference to an object of type `CContiguousView` to be updated
+             * @param exampleIndex  The index of the example for which the gradients and Hessians should be updated
+             * @param labelMatrix   A reference to an object of type `BinaryCsrView` that provides row-wise access to
+             *                      the labels of the training examples
+             * @param scoreMatrix   A reference to an object of type `CContiguousView` that stores the currently
+             *                      predicted scores
+             * @param indicesBegin  A `CompleteIndexVector::const_iterator` to the beginning of the label indices
+             * @param indicesEnd    A `CompleteIndexVector::const_iterator` to the end of the label indices
+             * @param statisticView A reference to an object of type `CContiguousView` to be updated
              */
             virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                                       const CContiguousView<float64>& scoreMatrix,
-                                                      CompleteIndexVector::const_iterator labelIndicesBegin,
-                                                      CompleteIndexVector::const_iterator labelIndicesEnd,
+                                                      CompleteIndexVector::const_iterator indicesBegin,
+                                                      CompleteIndexVector::const_iterator indicesEnd,
                                                       CContiguousView<Tuple<float64>>& statisticView) const = 0;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
              * provided by a `PartialIndexVector`.
              *
-             * @param exampleIndex      The index of the example for which the gradients and Hessians should be updated
-             * @param labelMatrix       A reference to an object of type `BinaryCsrView` that provides row-wise access
-             *                          to the labels of the training examples
-             * @param scoreMatrix       A reference to an object of type `CContiguousView` that stores the currently
-             *                          predicted scores
-             * @param labelIndicesBegin A `PartialIndexVector::const_iterator` to the beginning of the label indices
-             * @param labelIndicesEnd   A `PartialIndexVector::const_iterator` to the end of the label indices
-             * @param statisticView     A reference to an object of type `CContiguousView` to be updated
+             * @param exampleIndex  The index of the example for which the gradients and Hessians should be updated
+             * @param labelMatrix   A reference to an object of type `BinaryCsrView` that provides row-wise access to
+             *                      the labels of the training examples
+             * @param scoreMatrix   A reference to an object of type `CContiguousView` that stores the currently
+             *                      predicted scores
+             * @param indicesBegin  A `PartialIndexVector::const_iterator` to the beginning of the label indices
+             * @param indicesEnd    A `PartialIndexVector::const_iterator` to the end of the label indices
+             * @param statisticView A reference to an object of type `CContiguousView` to be updated
              */
             virtual void updateDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                                       const CContiguousView<float64>& scoreMatrix,
-                                                      PartialIndexVector::const_iterator labelIndicesBegin,
-                                                      PartialIndexVector::const_iterator labelIndicesEnd,
+                                                      PartialIndexVector::const_iterator indicesBegin,
+                                                      PartialIndexVector::const_iterator indicesEnd,
                                                       CContiguousView<Tuple<float64>>& statisticView) const = 0;
     };
 

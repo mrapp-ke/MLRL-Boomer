@@ -11,8 +11,8 @@ namespace boosting {
      * a vector using L1 and L2 regularization. The labels are assigned to bins based on the gradients and Hessians.
      *
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
-     * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should
-     *                          be calculated
+     * @tparam IndexVector      The type of the vector that provides access to the indices of the labels for which
+     *                          predictions should be calculated
      */
     template<typename StatisticVector, typename IndexVector>
     class DecomposableDynamicPartialBinnedRuleEvaluation final

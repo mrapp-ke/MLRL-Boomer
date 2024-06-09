@@ -48,8 +48,8 @@ namespace boosting {
      * and using gradient-based label binning.
      *
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
-     * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should
-     *                          be calculated
+     * @tparam IndexVector      The type of the vector that provides access to the indices of the labels for which
+     *                          predictions should be calculated
      */
     template<typename StatisticVector, typename IndexVector>
     class AbstractDecomposableBinnedRuleEvaluation : public IRuleEvaluation<StatisticVector> {
@@ -165,8 +165,8 @@ namespace boosting {
      * gradients and Hessians.
      *
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
-     * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should
-     *                          be calculated
+     * @tparam IndexVector      The type of the vector that provides access to the indices of the labels for which
+     *                          predictions should be calculated
      */
     template<typename StatisticVector, typename IndexVector>
     class DecomposableCompleteBinnedRuleEvaluation final

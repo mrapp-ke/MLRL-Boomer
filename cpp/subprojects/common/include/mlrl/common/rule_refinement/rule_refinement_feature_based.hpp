@@ -18,7 +18,7 @@ template<typename IndexVector>
 class FeatureBasedRuleRefinement final : public IRuleRefinement {
     private:
 
-        const IndexVector& labelIndices_;
+        const IndexVector& outputIndices_;
 
         const uint32 featureIndex_;
 
@@ -29,8 +29,8 @@ class FeatureBasedRuleRefinement final : public IRuleRefinement {
     public:
 
         /**
-         * @param labelIndices                  A reference to an object of template type `IndexVector` that provides
-         *                                      access to the indices of the labels for which the refined rule is
+         * @param outputIndices                 A reference to an object of template type `IndexVector` that provides
+         *                                      access to the indices of the outputs for which the refined rule is
          *                                      allowed to predict
          * @param featureIndex                  The index of the feature, the new condition corresponds to
          * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
@@ -39,7 +39,7 @@ class FeatureBasedRuleRefinement final : public IRuleRefinement {
          *                                      allows to retrieve the information that is required to search for
          *                                      potential refinements
          */
-        FeatureBasedRuleRefinement(const IndexVector& labelIndices, uint32 featureIndex,
+        FeatureBasedRuleRefinement(const IndexVector& outputIndices, uint32 featureIndex,
                                    uint32 numExamplesWithNonZeroWeights,
                                    std::unique_ptr<IRuleRefinement::ICallback> callbackPtr);
 

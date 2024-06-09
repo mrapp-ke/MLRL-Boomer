@@ -11,14 +11,14 @@ namespace boosting {
      * a vector using L1 and L2 regularization.
      *
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
-     * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should
-     *                          be calculated
+     * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which
+     *                          predictions should be calculated
      */
     template<typename StatisticVector, typename IndexVector>
     class DecomposableDynamicPartialRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
         private:
 
-            const IndexVector& labelIndices_;
+            const IndexVector& outputIndices_;
 
             PartialIndexVector indexVector_;
 
@@ -35,8 +35,8 @@ namespace boosting {
         public:
 
             /**
-             * @param labelIndices              A reference to an object of template type `IndexVector` that provides
-             *                                  access to the indices of the labels for which the rules may predict
+             * @param outputIndices             A reference to an object of template type `IndexVector` that provides
+             *                                  access to the indices of the outputs for which the rules may predict
              * @param threshold                 A threshold that affects for how many outputs the rule heads should
              *                                  predict
              * @param exponent                  An exponent that is used to weigh that estimated predictive quality for
@@ -46,10 +46,10 @@ namespace boosting {
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            DecomposableDynamicPartialRuleEvaluation(const IndexVector& labelIndices, float32 threshold,
+            DecomposableDynamicPartialRuleEvaluation(const IndexVector& outputIndices, float32 threshold,
                                                      float32 exponent, float64 l1RegularizationWeight,
                                                      float64 l2RegularizationWeight)
-                : labelIndices_(labelIndices), indexVector_(labelIndices.getNumElements()),
+                : outputIndices_(outputIndices), indexVector_(outputIndices.getNumElements()),
                   scoreVector_(indexVector_, true), threshold_(1.0 - threshold), exponent_(exponent),
                   l1RegularizationWeight_(l1RegularizationWeight), l2RegularizationWeight_(l2RegularizationWeight) {}
 
@@ -62,7 +62,7 @@ namespace boosting {
                 float64 threshold = calculateThreshold(minAbsScore, pair.second, threshold_, exponent_);
                 PartialIndexVector::iterator indexIterator = indexVector_.begin();
                 DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
-                typename IndexVector::const_iterator labelIndexIterator = labelIndices_.cbegin();
+                typename IndexVector::const_iterator outputIndexIterator = outputIndices_.cbegin();
                 float64 quality = 0;
                 uint32 n = 0;
 
@@ -72,7 +72,7 @@ namespace boosting {
                                                              l2RegularizationWeight_);
 
                     if (calculateWeightedScore(score, minAbsScore, exponent_) > threshold) {
-                        indexIterator[n] = labelIndexIterator[i];
+                        indexIterator[n] = outputIndexIterator[i];
                         valueIterator[n] = score;
                         quality += calculateOutputWiseQuality(score, tuple.first, tuple.second, l1RegularizationWeight_,
                                                               l2RegularizationWeight_);

@@ -13,8 +13,8 @@ namespace boosting {
      * and Hessians that are stored by a vector using L1 and L2 regularization.
      *
      * @tparam StatisticVector  The type of the vector that provides access to the gradients and Hessians
-     * @tparam IndexVector      The type of the vector that provides access to the labels for which predictions should
-     *                          be calculated
+     * @tparam IndexVector      The type of the vector that provides access to the indices of the outputs for which
+     *                          predictions should be calculated
      */
     template<typename StatisticVector, typename IndexVector>
     class DecomposableCompleteRuleEvaluation final : public IRuleEvaluation<StatisticVector> {
@@ -29,16 +29,16 @@ namespace boosting {
         public:
 
             /**
-             * @param labelIndices              A reference to an object of template type `IndexVector` that provides
-             *                                  access to the indices of the labels for which the rules may predict
+             * @param outputIndices             A reference to an object of template type `IndexVector` that provides
+             *                                  access to the indices of the outputs for which the rules may predict
              * @param l1RegularizationWeight    The weight of the L1 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              * @param l2RegularizationWeight    The weight of the L2 regularization that is applied for calculating the
              *                                  scores to be predicted by rules
              */
-            DecomposableCompleteRuleEvaluation(const IndexVector& labelIndices, float64 l1RegularizationWeight,
+            DecomposableCompleteRuleEvaluation(const IndexVector& outputIndices, float64 l1RegularizationWeight,
                                                float64 l2RegularizationWeight)
-                : scoreVector_(labelIndices, true), l1RegularizationWeight_(l1RegularizationWeight),
+                : scoreVector_(outputIndices, true), l1RegularizationWeight_(l1RegularizationWeight),
                   l2RegularizationWeight_(l2RegularizationWeight) {}
 
             const IScoreVector& calculateScores(StatisticVector& statisticVector) override {
