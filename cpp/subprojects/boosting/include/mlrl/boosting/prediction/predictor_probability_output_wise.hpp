@@ -75,7 +75,7 @@ namespace boosting {
              * @see `IProbabilityPredictorConfig::createPredictorFactory`
              */
             std::unique_ptr<IProbabilityPredictorFactory> createPredictorFactory(
-              const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+              const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const override;
 
             /**
              * @see `IPredictorConfig::isLabelVectorSetNeeded`

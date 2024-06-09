@@ -196,12 +196,12 @@ namespace boosting {
     }
 
     std::unique_ptr<IBinaryPredictorFactory> OutputWiseBinaryPredictorConfig::createPredictorFactory(
-      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
         std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr =
           createDiscretizationFunctionFactory(basedOnProbabilities_, *lossConfigPtr_);
 
         if (discretizationFunctionFactoryPtr) {
-            uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+            uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numOutputs);
             return std::make_unique<OutputWiseBinaryPredictorFactory>(
               std::move(discretizationFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(), numThreads);
         }

@@ -32,7 +32,7 @@ namespace seco {
              * @see `IPredictorConfig::createPredictorFactory`
              */
             std::unique_ptr<IBinaryPredictorFactory> createPredictorFactory(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                            uint32 numLabels) const override;
+                                                                            uint32 numOutputs) const override;
 
             /**
              * @see `IBinaryPredictorConfig::createSparsePredictorFactory`

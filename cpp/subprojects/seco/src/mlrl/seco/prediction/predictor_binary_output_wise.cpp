@@ -462,8 +462,8 @@ namespace seco {
         : multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IBinaryPredictorFactory> OutputWiseBinaryPredictorConfig::createPredictorFactory(
-      const IRowWiseFeatureMatrix& featureMatrix, const uint32 numLabels) const {
-        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+      const IRowWiseFeatureMatrix& featureMatrix, const uint32 numOutputs) const {
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numOutputs);
         return std::make_unique<OutputWiseBinaryPredictorFactory>(numThreads);
     }
 
