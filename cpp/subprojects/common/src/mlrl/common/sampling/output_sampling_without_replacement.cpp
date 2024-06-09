@@ -68,6 +68,6 @@ IOutputSamplingWithoutReplacementConfig& OutputSamplingWithoutReplacementConfig:
 }
 
 std::unique_ptr<IOutputSamplingFactory> OutputSamplingWithoutReplacementConfig::createOutputSamplingFactory(
-  const ILabelMatrix& labelMatrix) const {
-    return std::make_unique<OutputSamplingWithoutReplacementFactory>(labelMatrix.getNumLabels(), numSamples_);
+  const IOutputMatrix& outputMatrix) const {
+    return std::make_unique<OutputSamplingWithoutReplacementFactory>(outputMatrix.getNumOutputs(), numSamples_);
 }

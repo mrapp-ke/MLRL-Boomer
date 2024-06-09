@@ -1814,12 +1814,12 @@ class AbstractRuleLearner : virtual public IRuleLearner {
           const IRowWiseLabelMatrix& labelMatrix) const;
 
         std::unique_ptr<IFeatureSpaceFactory> createFeatureSpaceFactory(const IFeatureMatrix& featureMatrix,
-                                                                        const ILabelMatrix& labelMatrix) const;
+                                                                        const IOutputMatrix& outputMatrix) const;
 
         std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory(const IFeatureMatrix& featureMatrix,
-                                                                          const ILabelMatrix& labelMatrix) const;
+                                                                          const IOutputMatrix& outputMatrix) const;
 
-        std::unique_ptr<IOutputSamplingFactory> createOutputSamplingFactory(const ILabelMatrix& labelMatrix) const;
+        std::unique_ptr<IOutputSamplingFactory> createOutputSamplingFactory(const IOutputMatrix& outputMatrix) const;
 
         std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const;
 

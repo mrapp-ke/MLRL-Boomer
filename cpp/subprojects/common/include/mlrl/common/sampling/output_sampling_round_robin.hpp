@@ -12,5 +12,5 @@ class RoundRobinOutputSamplingConfig final : public IOutputSamplingConfig {
     public:
 
         std::unique_ptr<IOutputSamplingFactory> createOutputSamplingFactory(
-          const ILabelMatrix& labelMatrix) const override;
+          const IOutputMatrix& outputMatrix) const override;
 };

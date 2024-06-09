@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/indices/index_vector.hpp"
-#include "mlrl/common/input/label_matrix.hpp"
+#include "mlrl/common/input/output_matrix.hpp"
 #include "mlrl/common/sampling/random.hpp"
 
 #include <memory>
@@ -54,10 +54,10 @@ class IOutputSamplingConfig {
         /**
          * Creates and returns a new object of type `IOutputSamplingFactory` according to the specified configuration.
          *
-         * @param labelMatrix   A reference to an object of type `ILabelMatrix` that provides access to the labels of
-         *                      the training examples
+         * @param outputMatrix  A reference to an object of type `IOutputMatrix` that provides access to the ground
+         *                      truth of the training examples
          * @return              An unique pointer to an object of type `IOutputSamplingFactory` that has been created
          */
         virtual std::unique_ptr<IOutputSamplingFactory> createOutputSamplingFactory(
-          const ILabelMatrix& labelMatrix) const = 0;
+          const IOutputMatrix& outputMatrix) const = 0;
 };

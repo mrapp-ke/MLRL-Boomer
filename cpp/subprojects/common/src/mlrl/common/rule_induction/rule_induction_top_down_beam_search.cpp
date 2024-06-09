@@ -498,7 +498,7 @@ IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::set
 }
 
 std::unique_ptr<IRuleInductionFactory> BeamSearchTopDownRuleInductionConfig::createRuleInductionFactory(
-  const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+  const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
     uint32 numExamples = featureMatrix.getNumExamples();
     uint32 minCoverage;
 
@@ -508,7 +508,7 @@ std::unique_ptr<IRuleInductionFactory> BeamSearchTopDownRuleInductionConfig::cre
         minCoverage = std::min(numExamples, minCoverage_);
     }
 
-    uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
+    uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, outputMatrix.getNumOutputs());
     return std::make_unique<BeamSearchTopDownRuleInductionFactory>(ruleCompareFunction_, beamWidth_, resampleFeatures_,
                                                                    minCoverage, maxConditions_, maxHeadRefinements_,
                                                                    recalculatePredictions_, numThreads);

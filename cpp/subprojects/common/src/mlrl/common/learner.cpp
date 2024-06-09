@@ -210,22 +210,22 @@ std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleMode
 }
 
 std::unique_ptr<IFeatureSpaceFactory> AbstractRuleLearner::createFeatureSpaceFactory(
-  const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+  const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
     std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr =
-      config_.getFeatureBinningConfigPtr()->createFeatureBinningFactory(featureMatrix, labelMatrix);
+      config_.getFeatureBinningConfigPtr()->createFeatureBinningFactory(featureMatrix, outputMatrix);
     uint32 numThreads =
-      config_.getParallelStatisticUpdateConfigPtr()->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
+      config_.getParallelStatisticUpdateConfigPtr()->getNumThreads(featureMatrix, outputMatrix.getNumOutputs());
     return std::make_unique<TabularFeatureSpaceFactory>(std::move(featureBinningFactoryPtr), numThreads);
 }
 
 std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory(
-  const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
-    return config_.getRuleInductionConfigPtr()->createRuleInductionFactory(featureMatrix, labelMatrix);
+  const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
+    return config_.getRuleInductionConfigPtr()->createRuleInductionFactory(featureMatrix, outputMatrix);
 }
 
 std::unique_ptr<IOutputSamplingFactory> AbstractRuleLearner::createOutputSamplingFactory(
-  const ILabelMatrix& labelMatrix) const {
-    return config_.getOutputSamplingConfigPtr()->createOutputSamplingFactory(labelMatrix);
+  const IOutputMatrix& outputMatrix) const {
+    return config_.getOutputSamplingConfigPtr()->createOutputSamplingFactory(outputMatrix);
 }
 
 std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSamplingFactory() const {
@@ -472,7 +472,7 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
                                                     statisticsProviderPtr->get());
 
     return std::make_unique<TrainingResult>(
-      labelMatrix.getNumLabels(), modelBuilder.buildModel(), std::move(outputSpaceInfoPtr),
+      labelMatrix.getNumOutputs(), modelBuilder.buildModel(), std::move(outputSpaceInfoPtr),
       std::move(marginalProbabilityCalibrationModelPtr), std::move(jointProbabilityCalibrationModelPtr));
 }
 
