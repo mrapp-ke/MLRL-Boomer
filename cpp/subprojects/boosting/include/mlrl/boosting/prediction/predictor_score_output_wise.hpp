@@ -30,7 +30,7 @@ namespace boosting {
              * @see `IPredictorConfig::createPredictorFactory`
              */
             std::unique_ptr<IScorePredictorFactory> createPredictorFactory(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                           uint32 numLabels) const override;
+                                                                           uint32 numOutputs) const override;
 
             /**
              * @see `IPredictorConfig::isLabelVectorSetNeeded`

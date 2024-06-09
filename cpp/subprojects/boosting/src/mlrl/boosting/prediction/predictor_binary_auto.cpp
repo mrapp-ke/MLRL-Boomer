@@ -11,13 +11,13 @@ namespace boosting {
         : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IBinaryPredictorFactory> AutomaticBinaryPredictorConfig::createPredictorFactory(
-      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
         if (lossConfigPtr_->isDecomposable()) {
             return OutputWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
-              .createPredictorFactory(featureMatrix, numLabels);
+              .createPredictorFactory(featureMatrix, numOutputs);
         } else {
             return ExampleWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
-              .createPredictorFactory(featureMatrix, numLabels);
+              .createPredictorFactory(featureMatrix, numOutputs);
         }
     }
 
