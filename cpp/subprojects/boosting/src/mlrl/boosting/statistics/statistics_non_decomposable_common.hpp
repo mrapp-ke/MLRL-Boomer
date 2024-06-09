@@ -283,9 +283,9 @@ namespace boosting {
             }
 
             /**
-             * @see `IImmutableWeightedStatistics::getNumLabels`
+             * @see `IImmutableWeightedStatistics::getNumOutputs`
              */
-            uint32 getNumLabels() const override final {
+            uint32 getNumOutputs() const override final {
                 return statisticView_.numCols;
             }
     };
@@ -594,9 +594,9 @@ namespace boosting {
             }
 
             /**
-             * @see `IStatistics::getNumLabels`
+             * @see `IStatistics::getNumOutputs`
              */
-            uint32 getNumLabels() const override final {
+            uint32 getNumOutputs() const override final {
                 return statisticMatrixPtr_->getNumCols();
             }
 

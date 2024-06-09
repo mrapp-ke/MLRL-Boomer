@@ -59,8 +59,8 @@ class AbstractRuleInduction : public IRuleInduction {
 
         void induceDefaultRule(IStatistics& statistics, IModelBuilder& modelBuilder) const override final {
             uint32 numStatistics = statistics.getNumStatistics();
-            uint32 numLabels = statistics.getNumLabels();
-            CompleteIndexVector labelIndices(numLabels);
+            uint32 numOutputs = statistics.getNumOutputs();
+            CompleteIndexVector labelIndices(numOutputs);
             EqualWeightVector weights(numStatistics);
             std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(labelIndices, weights);
 
