@@ -11,7 +11,7 @@ namespace boosting {
           featureSamplingConfigPtr_(featureSamplingConfigPtr) {}
 
     uint32 AutoParallelRuleRefinementConfig::getNumThreads(const IFeatureMatrix& featureMatrix,
-                                                           uint32 numLabels) const {
+                                                           uint32 numOutputs) const {
         if (!lossConfigPtr_->isDecomposable() && !headConfigPtr_->isSingleOutput()) {
             return 1;
         } else if (featureMatrix.isSparse() && !featureSamplingConfigPtr_->isSamplingUsed()) {
