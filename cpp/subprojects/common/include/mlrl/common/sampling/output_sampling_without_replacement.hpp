@@ -48,5 +48,5 @@ class OutputSamplingWithoutReplacementConfig final : public IOutputSamplingConfi
         IOutputSamplingWithoutReplacementConfig& setNumSamples(uint32 numSamples) override;
 
         std::unique_ptr<IOutputSamplingFactory> createOutputSamplingFactory(
-          const ILabelMatrix& labelMatrix) const override;
+          const IOutputMatrix& outputMatrix) const override;
 };

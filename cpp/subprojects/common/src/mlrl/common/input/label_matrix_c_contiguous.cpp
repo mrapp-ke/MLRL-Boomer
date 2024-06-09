@@ -33,7 +33,7 @@ class CContiguousLabelMatrix final : public DenseMatrixDecorator<CContiguousView
             return this->getNumRows();
         }
 
-        uint32 getNumLabels() const override {
+        uint32 getNumOutputs() const override {
             return this->getNumCols();
         }
 

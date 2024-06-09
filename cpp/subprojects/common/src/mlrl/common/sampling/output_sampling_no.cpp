@@ -43,6 +43,6 @@ class NoOutputSamplingFactory final : public IOutputSamplingFactory {
 };
 
 std::unique_ptr<IOutputSamplingFactory> NoOutputSamplingConfig::createOutputSamplingFactory(
-  const ILabelMatrix& labelMatrix) const {
-    return std::make_unique<NoOutputSamplingFactory>(labelMatrix.getNumLabels());
+  const IOutputMatrix& outputMatrix) const {
+    return std::make_unique<NoOutputSamplingFactory>(outputMatrix.getNumOutputs());
 }

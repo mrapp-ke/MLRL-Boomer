@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/common/input/label_matrix.hpp"
 #include "mlrl/common/input/label_vector.hpp"
+#include "mlrl/common/input/output_matrix.hpp"
 
 #include <memory>
 
@@ -26,7 +26,7 @@ class IJointProbabilityCalibrationModel;
 /**
  * Defines an interface for all label matrices that provide access to the labels of the training examples.
  */
-class MLRLCOMMON_API IRowWiseLabelMatrix : public ILabelMatrix {
+class MLRLCOMMON_API IRowWiseLabelMatrix : public IOutputMatrix {
     public:
 
         virtual ~IRowWiseLabelMatrix() override {}

@@ -36,7 +36,7 @@ class CsrLabelMatrix final : public IterableBinarySparseMatrixDecorator<MatrixDe
             return this->getNumRows();
         }
 
-        uint32 getNumLabels() const override {
+        uint32 getNumOutputs() const override {
             return this->getNumCols();
         }
 

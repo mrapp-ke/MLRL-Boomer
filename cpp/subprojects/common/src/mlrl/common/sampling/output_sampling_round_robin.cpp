@@ -54,6 +54,6 @@ class RoundRobinOutputSamplingFactory final : public IOutputSamplingFactory {
 };
 
 std::unique_ptr<IOutputSamplingFactory> RoundRobinOutputSamplingConfig::createOutputSamplingFactory(
-  const ILabelMatrix& labelMatrix) const {
-    return std::make_unique<RoundRobinOutputSamplingFactory>(labelMatrix.getNumLabels());
+  const IOutputMatrix& outputMatrix) const {
+    return std::make_unique<RoundRobinOutputSamplingFactory>(outputMatrix.getNumOutputs());
 }

@@ -11,7 +11,7 @@ namespace boosting {
         if (outputRatio > 0) {
             return outputRatio;
         } else {
-            return labelMatrix.calculateLabelCardinality() / labelMatrix.getNumLabels();
+            return labelMatrix.calculateLabelCardinality() / labelMatrix.getNumOutputs();
         }
     }
 
@@ -58,7 +58,7 @@ namespace boosting {
     std::unique_ptr<IStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
       const IDecomposableLossConfig& lossConfig) const {
-        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
         float32 outputRatio = calculateOutputRatio(outputRatio_, labelMatrix);
         std::unique_ptr<IDecomposableLossFactory> lossFactoryPtr = lossConfig.createDecomposableLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
@@ -79,7 +79,7 @@ namespace boosting {
     std::unique_ptr<IStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
       const ISparseDecomposableLossConfig& lossConfig) const {
-        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
         float32 outputRatio = calculateOutputRatio(outputRatio_, labelMatrix);
         std::unique_ptr<ISparseDecomposableLossFactory> lossFactoryPtr =
           lossConfig.createSparseDecomposableLossFactory();
@@ -99,7 +99,7 @@ namespace boosting {
     std::unique_ptr<IStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
       const INonDecomposableLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
-        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
         float32 outputRatio = calculateOutputRatio(outputRatio_, labelMatrix);
         std::unique_ptr<INonDecomposableLossFactory> lossFactoryPtr = lossConfig.createNonDecomposableLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
