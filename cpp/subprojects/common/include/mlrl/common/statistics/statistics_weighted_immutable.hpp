@@ -26,11 +26,11 @@ class IImmutableWeightedStatistics {
         virtual uint32 getNumStatistics() const = 0;
 
         /**
-         * Returns the number of available labels.
+         * Returns the number of available outputs.
          *
-         * @return The number of labels
+         * @return The number of outputs
          */
-        virtual uint32 getNumLabels() const = 0;
+        virtual uint32 getNumOutputs() const = 0;
 
         /**
          * Creates and returns a new object of type `IWeightedStatisticsSubset` that includes only those labels, whose

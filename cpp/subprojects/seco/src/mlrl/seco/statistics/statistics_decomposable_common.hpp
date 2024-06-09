@@ -478,9 +478,9 @@ namespace seco {
             }
 
             /**
-             * @see `IImmutableWeightedStatistics::getNumLabels`
+             * @see `IImmutableWeightedStatistics::getNumOutputs`
              */
-            uint32 getNumLabels() const override {
+            uint32 getNumOutputs() const override {
                 return labelMatrix_.numCols;
             }
 
@@ -636,9 +636,9 @@ namespace seco {
             }
 
             /**
-             * @see `IStatistics::getNumLabels`
+             * @see `IStatistics::getNumOutputs`
              */
-            uint32 getNumLabels() const override final {
+            uint32 getNumOutputs() const override final {
                 return labelMatrix_.numCols;
             }
 
