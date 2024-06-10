@@ -11,35 +11,35 @@
 
 namespace boosting {
 
-    template<typename LabelMatrix>
+    template<typename OutputMatrix>
     static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
       const IDecomposableLossFactory& lossFactory, const IEvaluationMeasureFactory& evaluationMeasureFactory,
       const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
-      const LabelMatrix& labelMatrix) {
-        uint32 numExamples = labelMatrix.numRows;
-        uint32 numLabels = labelMatrix.numCols;
+      const OutputMatrix& outputMatrix) {
+        uint32 numExamples = outputMatrix.numRows;
+        uint32 numOutputs = outputMatrix.numCols;
         std::unique_ptr<IDecomposableLoss> lossPtr = lossFactory.createDecomposableLoss();
         std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr = evaluationMeasureFactory.createEvaluationMeasure();
         std::unique_ptr<DenseDecomposableStatisticMatrix> statisticMatrixPtr =
-          std::make_unique<DenseDecomposableStatisticMatrix>(numExamples, numLabels);
+          std::make_unique<DenseDecomposableStatisticMatrix>(numExamples, numOutputs);
         std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr =
-          std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numLabels, true);
+          std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numOutputs, true);
         const IDecomposableLoss* lossRawPtr = lossPtr.get();
-        const LabelMatrix* labelMatrixPtr = &labelMatrix;
+        const OutputMatrix* outputMatrixPtr = &outputMatrix;
         const CContiguousView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
         CContiguousView<Tuple<float64>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
-    #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(labelMatrixPtr) \
+    #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(outputMatrixPtr) \
       firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
 #endif
         for (int64 i = 0; i < numExamples; i++) {
-            lossRawPtr->updateDecomposableStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr, IndexIterator(),
-                                                     IndexIterator(labelMatrixPtr->numCols), *statisticMatrixRawPtr);
+            lossRawPtr->updateDecomposableStatistics(i, *outputMatrixPtr, *scoreMatrixRawPtr, IndexIterator(),
+                                                     IndexIterator(outputMatrixPtr->numCols), *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<DenseDecomposableStatistics<LabelMatrix>>(
-          std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
+        return std::make_unique<DenseDecomposableStatistics<OutputMatrix>>(
+          std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
           std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
     }
 

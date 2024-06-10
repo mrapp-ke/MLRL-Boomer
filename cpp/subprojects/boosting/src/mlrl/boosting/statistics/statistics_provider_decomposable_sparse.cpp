@@ -32,11 +32,11 @@ namespace boosting {
      * Provides access to gradients and Hessians that have been calculated according to a decomposable loss function
      * and are stored using sparse data structures.
      *
-     * @tparam LabelMatrix The type of the matrix that provides access to the labels of the training examples
+     * @tparam OutputMatrix The type of the matrix that provides access to the ground truth of the training examples
      */
-    template<typename LabelMatrix>
+    template<typename OutputMatrix>
     class SparseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<LabelMatrix, SparseDecomposableStatisticVector,
+        : public AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticVector,
                                                 SparseDecomposableStatisticMatrix, NumericSparseSetMatrix<float64>,
                                                 ISparseDecomposableLoss, ISparseEvaluationMeasure,
                                                 ISparseDecomposableRuleEvaluationFactory> {
@@ -52,8 +52,8 @@ namespace boosting {
              * @param ruleEvaluationFactory A reference to an object of type `ISparseDecomposableRuleEvaluationFactory`,
              *                              that allows to create instances of the class that is used for calculating
              *                              the predictions of rules, as well as their overall quality
-             * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
-             *                              to the labels of the training examples
+             * @param outputMatrix          A reference to an object of template type `OutputMatrix` that provides
+             *                              access to the outputs of the training examples
              * @param statisticViewPtr      An unique pointer to an object of type `SparseDecomposableStatisticMatrix`
              *                              that provides access to the gradients and Hessians
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericSparseSetMatrix` that stores
@@ -62,14 +62,14 @@ namespace boosting {
             SparseDecomposableStatistics(std::unique_ptr<ISparseDecomposableLoss> lossPtr,
                                          std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr,
                                          const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
-                                         const LabelMatrix& labelMatrix,
+                                         const OutputMatrix& outputMatrix,
                                          std::unique_ptr<SparseDecomposableStatisticMatrix> statisticViewPtr,
                                          std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr)
-                : AbstractDecomposableStatistics<LabelMatrix, SparseDecomposableStatisticVector,
+                : AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticVector,
                                                  SparseDecomposableStatisticMatrix, NumericSparseSetMatrix<float64>,
                                                  ISparseDecomposableLoss, ISparseEvaluationMeasure,
                                                  ISparseDecomposableRuleEvaluationFactory>(
-                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
+                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
                     std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
 
             /**
@@ -81,37 +81,37 @@ namespace boosting {
             }
     };
 
-    template<typename LabelMatrix>
+    template<typename OutputMatrix>
     static inline std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> createStatistics(
       const ISparseDecomposableLossFactory& lossFactory,
       const ISparseEvaluationMeasureFactory& evaluationMeasureFactory,
       const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
-      const LabelMatrix& labelMatrix) {
-        uint32 numExamples = labelMatrix.numRows;
-        uint32 numLabels = labelMatrix.numCols;
+      const OutputMatrix& outputMatrix) {
+        uint32 numExamples = outputMatrix.numRows;
+        uint32 numOutputs = outputMatrix.numCols;
         std::unique_ptr<ISparseDecomposableLoss> lossPtr = lossFactory.createSparseDecomposableLoss();
         std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr =
           evaluationMeasureFactory.createSparseEvaluationMeasure();
         std::unique_ptr<SparseDecomposableStatisticMatrix> statisticMatrixPtr =
-          std::make_unique<SparseDecomposableStatisticMatrix>(numExamples, numLabels);
+          std::make_unique<SparseDecomposableStatisticMatrix>(numExamples, numOutputs);
         std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr =
-          std::make_unique<NumericSparseSetMatrix<float64>>(numExamples, numLabels);
+          std::make_unique<NumericSparseSetMatrix<float64>>(numExamples, numOutputs);
         const ISparseDecomposableLoss* lossRawPtr = lossPtr.get();
-        const LabelMatrix* labelMatrixPtr = &labelMatrix;
+        const OutputMatrix* outputMatrixPtr = &outputMatrix;
         const SparseSetView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
         SparseSetView<Tuple<float64>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
-    #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(labelMatrixPtr) \
+    #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(outputMatrixPtr) \
       firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
 #endif
         for (int64 i = 0; i < numExamples; i++) {
-            lossRawPtr->updateDecomposableStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr, IndexIterator(),
-                                                     IndexIterator(labelMatrixPtr->numCols), *statisticMatrixRawPtr);
+            lossRawPtr->updateDecomposableStatistics(i, *outputMatrixPtr, *scoreMatrixRawPtr, IndexIterator(),
+                                                     IndexIterator(outputMatrixPtr->numCols), *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<SparseDecomposableStatistics<LabelMatrix>>(
-          std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
+        return std::make_unique<SparseDecomposableStatistics<OutputMatrix>>(
+          std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
           std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
     }
 

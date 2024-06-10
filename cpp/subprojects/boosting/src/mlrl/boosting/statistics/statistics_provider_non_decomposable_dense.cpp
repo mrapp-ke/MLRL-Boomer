@@ -55,12 +55,12 @@ namespace boosting {
      * Provides access to gradients and Hessians that have been calculated according to a non-decomposable loss function
      * and are stored using dense data structures.
      *
-     * @tparam LabelMatrix The type of the matrix that provides access to the labels of the training examples
+     * @tparam OutputMatrix The type of the matrix that provides access to the ground truth of the training examples
      */
-    template<typename LabelMatrix>
+    template<typename OutputMatrix>
     class DenseNonDecomposableStatistics final
         : public AbstractNonDecomposableStatistics<
-            LabelMatrix, DenseNonDecomposableStatisticVector, DenseNonDecomposableStatisticMatrix,
+            OutputMatrix, DenseNonDecomposableStatisticVector, DenseNonDecomposableStatisticMatrix,
             NumericCContiguousMatrix<float64>, INonDecomposableLoss, IEvaluationMeasure,
             INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory> {
         public:
@@ -75,8 +75,8 @@ namespace boosting {
              * @param ruleEvaluationFactory A reference to an object of type `INonDecomposableRuleEvaluationFactory`, to
              *                              be used for calculating the predictions of rules, as well as their overall
              *                              quality
-             * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
-             *                              to the labels of the training examples
+             * @param outputMatrix          A reference to an object of template type `OutputMatrix` that provides
+             *                              access to the ground truth of the training examples
              * @param statisticMatrixPtr    An unique pointer to an object of type `DenseNonDecomposableStatisticMatrix`
              *                              that stores to the gradients and Hessians
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericCContiguousMatrix` that
@@ -85,14 +85,14 @@ namespace boosting {
             DenseNonDecomposableStatistics(std::unique_ptr<INonDecomposableLoss> lossPtr,
                                            std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr,
                                            const INonDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
-                                           const LabelMatrix& labelMatrix,
+                                           const OutputMatrix& outputMatrix,
                                            std::unique_ptr<DenseNonDecomposableStatisticMatrix> statisticMatrixPtr,
                                            std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
                 : AbstractNonDecomposableStatistics<
-                    LabelMatrix, DenseNonDecomposableStatisticVector, DenseNonDecomposableStatisticMatrix,
+                    OutputMatrix, DenseNonDecomposableStatisticVector, DenseNonDecomposableStatisticMatrix,
                     NumericCContiguousMatrix<float64>, INonDecomposableLoss, IEvaluationMeasure,
                     INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>(
-                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
+                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
                     std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 
             /**
@@ -137,42 +137,43 @@ namespace boosting {
                     }
                 }
 
-                return std::make_unique<DenseDecomposableStatistics<LabelMatrix>>(
+                return std::make_unique<DenseDecomposableStatistics<OutputMatrix>>(
                   std::move(this->lossPtr_), std::move(this->evaluationMeasurePtr_), ruleEvaluationFactory,
-                  this->labelMatrix_, std::move(decomposableStatisticMatrixPtr), std::move(this->scoreMatrixPtr_));
+                  this->outputMatrix_, std::move(decomposableStatisticMatrixPtr), std::move(this->scoreMatrixPtr_));
             }
     };
 
-    template<typename LabelMatrix>
+    template<typename OutputMatrix>
     static inline std::unique_ptr<
       INonDecomposableStatistics<INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>>
       createStatistics(const INonDecomposableLossFactory& lossFactory,
                        const IEvaluationMeasureFactory& evaluationMeasureFactory,
                        const INonDecomposableRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
-                       const LabelMatrix& labelMatrix) {
-        uint32 numExamples = labelMatrix.numRows;
-        uint32 numLabels = labelMatrix.numCols;
+                       const OutputMatrix& outputMatrix) {
+        uint32 numExamples = outputMatrix.numRows;
+        uint32 numOutputs = outputMatrix.numCols;
         std::unique_ptr<INonDecomposableLoss> lossPtr = lossFactory.createNonDecomposableLoss();
         std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr = evaluationMeasureFactory.createEvaluationMeasure();
         std::unique_ptr<DenseNonDecomposableStatisticMatrix> statisticMatrixPtr =
-          std::make_unique<DenseNonDecomposableStatisticMatrix>(numExamples, numLabels);
+          std::make_unique<DenseNonDecomposableStatisticMatrix>(numExamples, numOutputs);
         std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr =
-          std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numLabels, true);
+          std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numOutputs, true);
         const INonDecomposableLoss* lossRawPtr = lossPtr.get();
-        const LabelMatrix* labelMatrixPtr = &labelMatrix;
+        const OutputMatrix* outputMatrixPtr = &outputMatrix;
         const CContiguousView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
         DenseNonDecomposableStatisticView* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
 
 #if MULTI_THREADING_SUPPORT_ENABLED
-    #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(labelMatrixPtr) \
+    #pragma omp parallel for firstprivate(numExamples) firstprivate(lossRawPtr) firstprivate(outputMatrixPtr) \
       firstprivate(scoreMatrixRawPtr) firstprivate(statisticMatrixRawPtr) schedule(dynamic) num_threads(numThreads)
 #endif
         for (int64 i = 0; i < numExamples; i++) {
-            lossRawPtr->updateNonDecomposableStatistics(i, *labelMatrixPtr, *scoreMatrixRawPtr, *statisticMatrixRawPtr);
+            lossRawPtr->updateNonDecomposableStatistics(i, *outputMatrixPtr, *scoreMatrixRawPtr,
+                                                        *statisticMatrixRawPtr);
         }
 
-        return std::make_unique<DenseNonDecomposableStatistics<LabelMatrix>>(
-          std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
+        return std::make_unique<DenseNonDecomposableStatistics<OutputMatrix>>(
+          std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
           std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
     }
 
