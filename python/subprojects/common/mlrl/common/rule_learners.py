@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides base classes for implementing single- or multi-label rule learning algorithms.
+Provides base classes for implementing rule learning algorithms.
 """
 import logging as log
 
@@ -190,7 +190,7 @@ def convert_into_sklearn_compatible_probabilities(probabilities: np.ndarray) -> 
 
 class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, IncrementalLearner, ABC):
     """
-    A scikit-learn implementation of a rule learning algorithm for multi-label classification or ranking.
+    A scikit-learn implementation of a rule learning algorithm.
     """
 
     class NativeIncrementalPredictor(IncrementalLearner.IncrementalPredictor):

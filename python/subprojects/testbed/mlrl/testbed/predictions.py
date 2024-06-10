@@ -22,18 +22,18 @@ from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 
 class PredictionWriter(OutputWriter):
     """
-    Allows to write predictions and corresponding ground truth labels to one or several sinks.
+    Allows to write predictions and the corresponding ground truth to one or several sinks.
     """
 
     class Predictions(Formattable):
         """
-        Stores predictions and corresponding ground truth labels.
+        Stores predictions and the corresponding ground truth.
         """
 
         def __init__(self, predictions, ground_truth):
             """
             :param predictions:     The predictions
-            :param ground_truth:    The ground truth labels
+            :param ground_truth:    The ground truth
             """
             self.predictions = predictions
             self.ground_truth = ground_truth
@@ -52,7 +52,7 @@ class PredictionWriter(OutputWriter):
 
     class LogSink(OutputWriter.LogSink):
         """
-        Allows to write predictions and corresponding ground truth labels to the console.
+        Allows to write predictions and the corresponding ground truth to the console.
         """
 
         def __init__(self, options: Options = Options()):
@@ -60,7 +60,7 @@ class PredictionWriter(OutputWriter):
 
     class ArffSink(OutputWriter.Sink):
         """
-        Allows to write predictions and corresponding ground truth labels to ARFF files.
+        Allows to write predictions and the corresponding ground truth to ARFF files.
         """
 
         def __init__(self, output_dir: str, options: Options = Options()):

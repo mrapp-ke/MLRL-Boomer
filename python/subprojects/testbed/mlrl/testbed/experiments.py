@@ -84,10 +84,9 @@ class Evaluation(ABC):
         model.
 
         :param meta_data:           The meta-data of the data set
-        :param data_split:          The split of the available data, the predictions and ground truth labels correspond
-                                    to
-        :param data_type:           Specifies whether the predictions and ground truth labels correspond to the training
-                                    or test data
+        :param data_split:          The split of the available data, the predictions and ground truth correspond to
+        :param data_type:           Specifies whether the predictions and ground truth correspond to the training or
+                                    test data
         :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
                                     incrementally
         :param train_time:          The time needed to train the model
@@ -95,10 +94,9 @@ class Evaluation(ABC):
         :param x:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                                     `(num_examples, num_features)`, that stores the feature values of the query examples
         :param y:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                    `(num_examples, num_labels)`, that stores the ground truth labels of the query
-                                    examples
+                                    `(num_examples, num_outputs)`, that stores the ground truth of the query examples
         :param predictions:         A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` matrix, shape
-                                    `(num_examples, num_labels)`, that stores the predictions for the query examples
+                                    `(num_examples, num_outputs)`, that stores the predictions for the query examples
         :param learner:             The learner, the predictions have been obtained from
         """
         for output_writer in self.output_writers:
@@ -113,15 +111,14 @@ class Evaluation(ABC):
         previously trained model.
 
         :param meta_data:   The meta-data of the data set
-        :param data_split:  The split of the available data, the predictions and ground truth labels correspond to
-        :param data_type:   Specifies whether the predictions and ground truth labels correspond to the training or test
-                            data
+        :param data_split:  The split of the available data, the predictions and ground truth correspond to
+        :param data_type:   Specifies whether the predictions and ground truth correspond to the training or test data
         :param train_time:  The time needed to train the model
         :param learner:     The learner, the predictions should be obtained from
         :param x:           A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                             `(num_examples, num_features)`, that stores the feature values of the query examples
         :param y:           A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                            `(num_examples, num_labels)`, that stores the ground truth labels of the query examples
+                            `(num_examples, num_outputs)`, that stores the ground truth of the query examples
         :param kwargs:      Optional keyword arguments to be passed to the model when obtaining predictions
         """
 
@@ -220,8 +217,8 @@ class IncrementalEvaluation(Evaluation):
 
 class Experiment(DataSplitter.Callback):
     """
-    An experiment that trains and evaluates a single multi-label classifier or ranker on a specific data set using cross
-    validation or separate training and test sets.
+    An experiment that trains and evaluates a machine learning model on a specific data set using cross validation or
+    separate training and test sets.
     """
 
     class ExecutionHook(ABC):
@@ -249,8 +246,8 @@ class Experiment(DataSplitter.Callback):
                  fit_kwargs: Optional[Dict[str, Any]] = None,
                  predict_kwargs: Optional[Dict[str, Any]] = None):
         """
-        :param base_learner:                    The classifier or ranker to be trained
-        :param learner_name:                    The name of the classifier or ranker
+        :param base_learner:                    The machine learning algorithm to be used
+        :param learner_name:                    The name of the machine learning algorithm
         :param data_splitter:                   The method to be used for splitting the available data into training and
                                                 test sets
         :param pre_training_output_writers:     A list that contains all output writers to be invoked before training
@@ -300,9 +297,9 @@ class Experiment(DataSplitter.Callback):
         :param data_split:  Information about the split of the available data that should be used for training and
                             evaluating the model
         :param train_x:     The feature matrix of the training examples
-        :param train_y:     The label matrix of the training examples
+        :param train_y:     The output matrix of the training examples
         :param test_x:      The feature matrix of the test examples
-        :param test_y:      The label matrix of the test examples
+        :param test_y:      The output matrix of the test examples
         """
         base_learner = self.base_learner
         current_learner = clone(base_learner)
@@ -376,8 +373,7 @@ class Experiment(DataSplitter.Callback):
         :param x:       A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                         `(num_examples, num_features)`, that stores the feature values of the training examples
         :param y:       A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                        `(num_examples, num_labels)`, that stores the labels of the training examples according to the
-                        ground truth
+                        `(num_examples, num_outputs)`, that stores the ground truth of the training examples
         :param kwargs:  Optional keyword arguments to be passed to the learner when fitting model
         :return:        The time needed for training
         """

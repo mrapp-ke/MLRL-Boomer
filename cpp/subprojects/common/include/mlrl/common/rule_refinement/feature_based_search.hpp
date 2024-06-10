@@ -29,9 +29,9 @@ class FeatureBasedSearch final {
          * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
          *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
-         *                                      provides access to weighted statistics about the labels of the training
-         *                                      examples, which should serve as the basis for evaluating the quality of
-         *                                      potential refinements
+         *                                      provides access to weighted statistics about the quality of predictions
+         *                                      for training examples, which should serve as the basis for evaluating
+         *                                      the quality of potential refinements
          * @param comparator                    A reference to an object of type `SingleRefinementComparator` that
          *                                      should be used for comparing potential refinements
          * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
@@ -55,9 +55,9 @@ class FeatureBasedSearch final {
          * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
          *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
-         *                                      provides access to weighted statistics about the labels of the training
-         *                                      examples, which should serve as the basis for evaluating the quality of
-         *                                      potential refinements
+         *                                      provides access to weighted statistics about the quality of predictions
+         *                                      for training examples, which should serve as the basis for evaluating
+         *                                      the quality of potential refinements
          * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should
          *                                      be used for comparing potential refinements
          * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
@@ -81,9 +81,9 @@ class FeatureBasedSearch final {
          * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
          *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
-         *                                      provides access to weighted statistics about the labels of the training
-         *                                      examples, which should serve as the basis for evaluating the quality of
-         *                                      potential refinements
+         *                                      provides access to weighted statistics about the quality of predictions
+         *                                      for training examples, which should serve as the basis for evaluating
+         *                                      the quality of potential refinements
          * @param comparator                    A reference to an object of type `SingleRefinementComparator` that
          *                                      should be used for comparing potential refinements
          * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
@@ -107,9 +107,9 @@ class FeatureBasedSearch final {
          * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
          *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
-         *                                      provides access to weighted statistics about the labels of the training
-         *                                      examples, which should serve as the basis for evaluating the quality of
-         *                                      potential refinements
+         *                                      provides access to weighted statistics about the quality of predictions
+         *                                      for training examples, which should serve as the basis for evaluating
+         *                                      the quality of potential refinements
          * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should
          *                                      be used for comparing potential refinements
          * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
@@ -133,9 +133,9 @@ class FeatureBasedSearch final {
          * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
          *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
-         *                                      provides access to weighted statistics about the labels of the training
-         *                                      examples, which should serve as the basis for evaluating the quality of
-         *                                      potential refinements
+         *                                      provides access to weighted statistics about the quality of predictions
+         *                                      for training examples, which should serve as the basis for evaluating
+         *                                      the quality of potential refinements
          * @param comparator                    A reference to an object of type `SingleRefinementComparator` that
          *                                      should be used for comparing potential refinements
          * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
@@ -159,9 +159,9 @@ class FeatureBasedSearch final {
          * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
          *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
-         *                                      provides access to weighted statistics about the labels of the training
-         *                                      examples, which should serve as the basis for evaluating the quality of
-         *                                      potential refinements
+         *                                      provides access to weighted statistics about the quality of predictions
+         *                                      for training examples, which should serve as the basis for evaluating
+         *                                      the quality of potential refinements
          * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should
          *                                      be used for comparing potential refinements
          * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
@@ -185,9 +185,9 @@ class FeatureBasedSearch final {
          * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
          *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
-         *                                      provides access to weighted statistics about the labels of the training
-         *                                      examples, which should serve as the basis for evaluating the quality of
-         *                                      potential refinements
+         *                                      provides access to weighted statistics about the quality of predictions
+         *                                      for training examples, which should serve as the basis for evaluating
+         *                                      the quality of potential refinements
          * @param comparator                    A reference to an object of type `SingleRefinementComparator` that
          *                                      should be used for comparing potential refinements
          * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
@@ -211,9 +211,9 @@ class FeatureBasedSearch final {
          * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
          *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
-         *                                      provides access to weighted statistics about the labels of the training
-         *                                      examples, which should serve as the basis for evaluating the quality of
-         *                                      potential refinements
+         *                                      provides access to weighted statistics about the quality of predictions
+         *                                      for training examples, which should serve as the basis for evaluating
+         *                                      the quality of potential refinements
          * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should
          *                                      be used for comparing potential refinements
          * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
@@ -237,9 +237,9 @@ class FeatureBasedSearch final {
          * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
          *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
-         *                                      provides access to weighted statistics about the labels of the training
-         *                                      examples, which should serve as the basis for evaluating the quality of
-         *                                      potential refinements
+         *                                      provides access to weighted statistics about the quality of predictions
+         *                                      for training examples, which should serve as the basis for evaluating
+         *                                      the quality of potential refinements
          * @param comparator                    A reference to an object of type `SingleRefinementComparator` that
          *                                      should be used for comparing potential refinements
          * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
@@ -263,9 +263,9 @@ class FeatureBasedSearch final {
          * @param missingFeatureVector          A reference to an object of type `MissingFeatureVector` that provides
          *                                      access to the indices of training examples with missing feature values
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
-         *                                      provides access to weighted statistics about the labels of the training
-         *                                      examples, which should serve as the basis for evaluating the quality of
-         *                                      potential refinements
+         *                                      provides access to weighted statistics about the quality of predictions
+         *                                      for training examples, which should serve as the basis for evaluating
+         *                                      the quality of potential refinements
          * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should
          *                                      be used for comparing potential refinements
          * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered

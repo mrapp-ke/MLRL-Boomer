@@ -172,13 +172,13 @@ class AutomaticDefaultRuleMixin(ABC):
              
 class CompleteHeadMixin(ABC):
     """
-    Allows to configure a rule learner to induce rules with complete heads that predict for all available labels.
+    Allows to configure a rule learner to induce rules with complete heads that predict for all available outputs.
     """
 
     @abstractmethod
     def use_complete_heads(self):
         """
-        Configures the rule learner to induce rules with complete heads that predict for all available labels.
+        Configures the rule learner to induce rules with complete heads that predict for all available outputs.
         """
         pass
             
@@ -186,13 +186,13 @@ class CompleteHeadMixin(ABC):
 class FixedPartialHeadMixin(ABC):
     """
     Allows to configure a rule learner to induce rules with partial heads that predict for a predefined number of
-    labels.
+    outputs.
     """
 
     @abstractmethod
     def use_fixed_partial_heads(self) -> FixedPartialHeadConfig:
         """
-        Configures the rule learner to induce rules with partial heads that predict for a predefined number of labels.
+        Configures the rule learner to induce rules with partial heads that predict for a predefined number of outputs.
 
         :return: A `FixedPartialHeadConfig` that allows further configuration of the rule heads
         """
@@ -202,15 +202,15 @@ class FixedPartialHeadMixin(ABC):
 class DynamicPartialHeadMixin(ABC):
     """
     Allows to configure a rule learner to induce rules with partial heads that predict for a subset of the available
-    labels that is determined dynamically.
+    outputs that is determined dynamically.
     """
 
     @abstractmethod
     def use_dynamic_partial_heads(self) -> DynamicPartialHeadConfig:
         """
-        Configures the rule learner to induce rules with partial heads that predict for a subset of the available labels
-        that is determined dynamically. Only those labels for which the square of the predictive quality exceeds a
-        certain threshold are included in a rule head.
+        Configures the rule learner to induce rules with partial heads that predict for a subset of the available
+        outputs that is determined dynamically. Only those outputs for which the square of the predictive quality
+        exceeds a certain threshold are included in a rule head.
 
         :return: A `DynamicPartialHeadConfig` that allows further configuration of the rule heads
         """

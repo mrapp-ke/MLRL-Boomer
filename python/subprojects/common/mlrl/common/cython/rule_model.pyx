@@ -85,7 +85,7 @@ cdef class ConjunctiveBody:
 
 cdef class CompleteHead:
     """
-    A head of a rule that predicts for all available labels.
+    A head of a rule that predicts for all available outputs.
     """
 
     def __cinit__(self, const float64[::1] scores not None):
@@ -97,12 +97,12 @@ cdef class CompleteHead:
 
 cdef class PartialHead:
     """
-    A head of a rule that predicts for a subset of the available labels.
+    A head of a rule that predicts for a subset of the available outputs.
     """
 
     def __cinit__(self, const uint32[::1] indices not None, const float64[::1] scores not None):
         """
-        :param indices: A contiguous array of type `uint32`, shape `(num_predictions)` that stores the label indices
+        :param indices: A contiguous array of type `uint32`, shape `(num_predictions)` that stores the output indices
         :param scores:  A contiguous array of type `float64`, shape `(num_predictions)` that stores the predicted scores
         """
         self.indices = np.asarray(indices)
@@ -137,7 +137,7 @@ class RuleModelVisitor:
     @abstractmethod
     def visit_complete_head(self, head: CompleteHead):
         """
-        Must be implemented by subclasses in order to visit the heads of rules that predict for all available labels.
+        Must be implemented by subclasses in order to visit the heads of rules that predict for all available outputs.
 
         :param head: A `CompleteHead` to be visited
         """
@@ -147,7 +147,7 @@ class RuleModelVisitor:
     def visit_partial_head(self, head: PartialHead):
         """
         Must be implemented by subclasses in order to visit the heads of rules that predict for a subset of the
-        available labels.
+        available outputs.
 
         :param head: A `PartialHead` to be visited
         """

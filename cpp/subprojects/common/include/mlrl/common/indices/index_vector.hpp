@@ -44,7 +44,7 @@ class IIndexVector {
 
         /**
          * Creates and return a new instance of type `IRuleRefinement` that allows to search for the best refinement of
-         * an existing rule that predicts only for the labels whose indices are stored in this vector.
+         * an existing rule that predicts only for the outputs whose indices are stored in this vector.
          *
          * @param featureSubspace   A reference to an object of type `IFeatureSubspace` that should be to search for the
          *                          refinement

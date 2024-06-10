@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides base classes for implementing single- or multi-label classifiers or rankers.
+Provides base classes for implementing machine learning algorithms.
 """
 from abc import ABC, abstractmethod
 from typing import List, Optional
@@ -14,7 +14,7 @@ KWARG_PREDICT_SCORES = 'predict_scores'
 
 class OrdinalAttributeLearner(ABC):
     """
-    A base class for all single- or multi-label classifiers or rankers that natively support ordinal attributes.
+    A base class for all machine learning algorithms that natively support ordinal attributes.
     """
 
     ordinal_attribute_indices: Optional[List[int]] = None
@@ -30,7 +30,7 @@ class OrdinalAttributeLearner(ABC):
 
 class NominalAttributeLearner(ABC):
     """
-    A base class for all single- or multi-label classifiers or rankers that natively support nominal attributes.
+    A base class for all machine learning algorithms that natively support nominal attributes.
     """
 
     nominal_attribute_indices: Optional[List[int]] = None
@@ -46,9 +46,9 @@ class NominalAttributeLearner(ABC):
 
 class IncrementalLearner(ABC):
     """
-    A base class for all single- or multi-label classifiers or rankers that support incremental prediction. For example,
-    when dealing with ensemble models that consist of several ensemble members, it is possible to consider only a subset
-    of the ensemble members for prediction.
+    A base class for all machine learning algorithms that support incremental prediction. For example, when dealing with
+    ensemble models that consist of several ensemble members, it is possible to consider only a subset of the ensemble
+    members for prediction.
     """
 
     class IncrementalPredictor(ABC):
@@ -80,8 +80,8 @@ class IncrementalLearner(ABC):
 
             :param step_size:   The number of additional ensemble members to be considered for prediction
             :return:            A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` of shape
-                                `(num_examples, num_labels)`, that stores the updated prediction for individual examples
-                                and labels
+                                `(num_examples, num_outputs)`, that stores the updated prediction for individual
+                                examples and outputs
             """
 
     def predict_incrementally(self, x, **kwargs) -> IncrementalPredictor:
@@ -147,7 +147,7 @@ class IncrementalLearner(ABC):
 
 class Learner(BaseEstimator, ABC):
     """
-    A base class for all single- or multi-label classifiers or rankers.
+    A base class for all machine learning algorithms.
     """
 
     # pylint: disable=attribute-defined-outside-init

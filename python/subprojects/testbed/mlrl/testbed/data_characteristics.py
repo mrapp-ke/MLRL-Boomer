@@ -1,8 +1,8 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for printing certain characteristics of multi-label data sets. The characteristics can be written to
-one or several outputs, e.g., to the console or to a file.
+Provides classes for printing certain characteristics of data sets. The characteristics can be written to one or several
+outputs, e.g., to the console or to a file.
 """
 from functools import cached_property
 from typing import Any, Dict, List, Optional
