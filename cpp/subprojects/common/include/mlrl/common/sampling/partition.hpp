@@ -93,7 +93,7 @@ class IPartition {
          * @param labelMatrix           A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise
          *                              access to the labels of the training examples
          * @param statistics            A reference to an object of type `IStatistics` that provides access to
-         *                              statistics about the labels of the training examples
+         *                              statistics about the quality of predictions for training examples
          * @return                      An unique pointer to an object of type `IMarginalProbabilityCalibrationModel`
          *                              that has been fit
          */
@@ -109,7 +109,7 @@ class IPartition {
          * @param labelMatrix           A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise
          *                              access to the labels of the training examples
          * @param statistics            A reference to an object of type `IStatistics` that provides access to
-         *                              statistics about the labels of the training examples
+         *                              statistics about the quality of predictions for training examples
          * @return                      An unique pointer to an object of type `IJointProbabilityCalibrationModel` that
          *                              has been fit
          */

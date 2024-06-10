@@ -11,7 +11,7 @@
  * certain feature. The thresholds that may be used by the new condition result from the feature values of all training
  * examples for the respective feature.
  *
- * @tparam IndexVector The type of the vector that provides access to the indices of the labels for which the refined
+ * @tparam IndexVector The type of the vector that provides access to the indices of the outputs for which the refined
  *                     rule is allowed to predict
  */
 template<typename IndexVector>

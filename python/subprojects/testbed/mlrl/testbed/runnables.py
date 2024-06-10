@@ -677,8 +677,8 @@ class LearnerRunnable(Runnable, ABC):
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 
         :param args:                            The command line arguments
-        :param base_learner:                    The classifier or ranker to be trained
-        :param learner_name:                    The name of the classifier or ranker
+        :param base_learner:                    The machine learning algorithm to be used
+        :param learner_name:                    The name of machine learning algorithm
         :param data_splitter:                   The method to be used for splitting the available data into training and
                                                 test sets
         :param pre_training_output_writers:     A list that contains all output writers to be invoked before training

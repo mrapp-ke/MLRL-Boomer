@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides functions to determine certain characteristics of feature or label matrices.
+Provides functions to determine certain characteristics of feature or output matrices.
 """
 from functools import cached_property
 from typing import Dict, List, Optional
@@ -29,10 +29,10 @@ OPTION_DISTINCT_LABEL_VECTORS = 'distinct_label_vectors'
 
 def density(matrix) -> float:
     """
-    Calculates and returns the density of a given feature or label matrix.
+    Calculates and returns the density of a given feature or output matrix.
 
     :param matrix:  A `numpy.ndarray` or `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                    `(num_rows, num_cols)`, that stores the feature values of training examples or their labels
+                    `(num_rows, num_cols)`, that stores the feature values of training examples or their ground truth
     :return:        The fraction of dense elements explicitly stored in the given matrix among all elements
     """
     num_elements = matrix.shape[0] * matrix.shape[1]
