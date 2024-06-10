@@ -46,11 +46,11 @@ namespace boosting {
      * Provides access to gradients and Hessians that have been calculated according to a decomposable loss function and
      * are stored using dense data structures.
      *
-     * @tparam LabelMatrix The type of the matrix that provides access to the labels of the training examples
+     * @tparam OutputMatrix The type of the matrix that provides access to the ground truth of the training examples
      */
-    template<typename LabelMatrix>
+    template<typename OutputMatrix>
     class DenseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<LabelMatrix, DenseDecomposableStatisticVector,
+        : public AbstractDecomposableStatistics<OutputMatrix, DenseDecomposableStatisticVector,
                                                 DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
                                                 IDecomposableLoss, IEvaluationMeasure,
                                                 IDecomposableRuleEvaluationFactory> {
@@ -65,8 +65,8 @@ namespace boosting {
              * @param ruleEvaluationFactory A reference to an object of type `IDecomposableRuleEvaluationFactory`, that
              *                              allows to create instances of the class that is used for calculating the
              *                              predictions of rules, as well as their overall quality
-             * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
-             *                              to the labels of the training examples
+             * @param outputMatrix          A reference to an object of template type `OutputMatrix` that provides
+             *                              access to the ground truth of the training examples
              * @param statisticMatrixPtr    An unique pointer to an object of type `DenseDecomposableStatisticMatrix`
              *                              that provides access to the gradients and Hessians
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericCContiguousMatrix` that
@@ -75,14 +75,14 @@ namespace boosting {
             DenseDecomposableStatistics(std::unique_ptr<IDecomposableLoss> lossPtr,
                                         std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr,
                                         const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
-                                        const LabelMatrix& labelMatrix,
+                                        const OutputMatrix& outputMatrix,
                                         std::unique_ptr<DenseDecomposableStatisticMatrix> statisticMatrixPtr,
                                         std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
-                : AbstractDecomposableStatistics<LabelMatrix, DenseDecomposableStatisticVector,
+                : AbstractDecomposableStatistics<OutputMatrix, DenseDecomposableStatisticVector,
                                                  DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
                                                  IDecomposableLoss, IEvaluationMeasure,
                                                  IDecomposableRuleEvaluationFactory>(
-                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, labelMatrix,
+                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
                     std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 
             /**

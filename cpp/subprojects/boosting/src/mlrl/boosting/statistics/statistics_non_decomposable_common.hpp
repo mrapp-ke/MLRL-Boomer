@@ -480,19 +480,21 @@ namespace boosting {
             }
     };
 
-    template<typename LabelMatrix, typename StatisticView, typename ScoreMatrix, typename LossFunction>
-    static inline void updateNonDecomposableStatisticsInternally(uint32 statisticIndex, const LabelMatrix& labelMatrix,
+    template<typename OutputMatrix, typename StatisticView, typename ScoreMatrix, typename LossFunction>
+    static inline void updateNonDecomposableStatisticsInternally(uint32 statisticIndex,
+                                                                 const OutputMatrix& outputMatrix,
                                                                  StatisticView& statisticView, ScoreMatrix& scoreMatrix,
                                                                  const LossFunction& lossFunction) {
-        lossFunction.updateNonDecomposableStatistics(statisticIndex, labelMatrix, scoreMatrix.getView(), statisticView);
+        lossFunction.updateNonDecomposableStatistics(statisticIndex, outputMatrix, scoreMatrix.getView(),
+                                                     statisticView);
     }
 
     /**
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated
      * according to a non-decomposable loss function.
      *
-     * @tparam LabelMatrix                          The type of the matrix that provides access to the labels of the
-     *                                              training examples
+     * @tparam OutputMatrix                         The type of the matrix that provides access to the ground truth of
+     *                                              the training examples
      * @tparam StatisticVector                      The type of the vectors that are used to store gradients and
      *                                              Hessians
      * @tparam StatisticMatrix                      The type of the matrix that stores the gradients and Hessians
@@ -510,7 +512,7 @@ namespace boosting {
      *                                              their overall quality, based on gradients and Hessians that have
      *                                              been calculated according to a decomposable loss function
      */
-    template<typename LabelMatrix, typename StatisticVector, typename StatisticMatrix, typename ScoreMatrix,
+    template<typename OutputMatrix, typename StatisticVector, typename StatisticMatrix, typename ScoreMatrix,
              typename LossFunction, typename EvaluationMeasure, typename NonDecomposableRuleEvaluationFactory,
              typename DecomposableRuleEvaluationFactory>
     class AbstractNonDecomposableStatistics
@@ -534,9 +536,9 @@ namespace boosting {
             std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr_;
 
             /**
-             * The label matrix that provides access to the labels of the training examples.
+             * The output matrix that provides access to the ground truth of the training examples.
              */
-            const LabelMatrix& labelMatrix_;
+            const OutputMatrix& outputMatrix_;
 
             /**
              * An unique pointer to an object of template type `StatisticMatrix` that stores the gradients and Hessians.
@@ -561,8 +563,8 @@ namespace boosting {
              *                              `NonDecomposableRuleEvaluationFactory` that allows to create instances of
              *                              the class that should be used for calculating the predictions of rules, as
              *                              well as their overall quality
-             * @param labelMatrix           A reference to an object of template type `LabelMatrix` that provides access
-             *                              to the labels of the training examples
+             * @param outputMatrix          A reference to an object of template type `OutputMatrix` that provides
+             *                              access to the ground truth of the training examples
              * @param statisticMatrixPtr    An unique pointer to an object of template type `StatisticView` that stores
              *                              the gradients and Hessians
              * @param scoreMatrixPtr        An unique pointer to an object of template type `ScoreMatrix` that stores
@@ -571,11 +573,11 @@ namespace boosting {
             AbstractNonDecomposableStatistics(std::unique_ptr<LossFunction> lossPtr,
                                               std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
                                               const NonDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
-                                              const LabelMatrix& labelMatrix,
+                                              const OutputMatrix& outputMatrix,
                                               std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                                               std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
                 : ruleEvaluationFactory_(&ruleEvaluationFactory), lossPtr_(std::move(lossPtr)),
-                  evaluationMeasurePtr_(std::move(evaluationMeasurePtr)), labelMatrix_(labelMatrix),
+                  evaluationMeasurePtr_(std::move(evaluationMeasurePtr)), outputMatrix_(outputMatrix),
                   statisticMatrixPtr_(std::move(statisticMatrixPtr)), scoreMatrixPtr_(std::move(scoreMatrixPtr)) {}
 
             /**
@@ -605,7 +607,7 @@ namespace boosting {
              */
             void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
                 applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                updateNonDecomposableStatisticsInternally(statisticIndex, labelMatrix_, statisticMatrixPtr_->getView(),
+                updateNonDecomposableStatisticsInternally(statisticIndex, outputMatrix_, statisticMatrixPtr_->getView(),
                                                           *scoreMatrixPtr_, *lossPtr_);
             }
 
@@ -614,7 +616,7 @@ namespace boosting {
              */
             void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
                 applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                updateNonDecomposableStatisticsInternally(statisticIndex, labelMatrix_, statisticMatrixPtr_->getView(),
+                updateNonDecomposableStatisticsInternally(statisticIndex, outputMatrix_, statisticMatrixPtr_->getView(),
                                                           *scoreMatrixPtr_, *lossPtr_);
             }
 
@@ -623,7 +625,7 @@ namespace boosting {
              */
             void revertPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
                 revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                updateNonDecomposableStatisticsInternally(statisticIndex, labelMatrix_, statisticMatrixPtr_->getView(),
+                updateNonDecomposableStatisticsInternally(statisticIndex, outputMatrix_, statisticMatrixPtr_->getView(),
                                                           *scoreMatrixPtr_, *lossPtr_);
             }
 
@@ -632,7 +634,7 @@ namespace boosting {
              */
             void revertPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
                 revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                updateNonDecomposableStatisticsInternally(statisticIndex, labelMatrix_, statisticMatrixPtr_->getView(),
+                updateNonDecomposableStatisticsInternally(statisticIndex, outputMatrix_, statisticMatrixPtr_->getView(),
                                                           *scoreMatrixPtr_, *lossPtr_);
             }
 
@@ -640,7 +642,7 @@ namespace boosting {
              * @see `IStatistics::evaluatePrediction`
              */
             float64 evaluatePrediction(uint32 statisticIndex) const override final {
-                return evaluationMeasurePtr_->evaluate(statisticIndex, labelMatrix_, scoreMatrixPtr_->getView());
+                return evaluationMeasurePtr_->evaluate(statisticIndex, outputMatrix_, scoreMatrixPtr_->getView());
             }
 
             /**
