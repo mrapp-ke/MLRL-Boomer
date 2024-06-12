@@ -7,14 +7,14 @@ namespace boosting {
       const std::unique_ptr<IHeadConfig>& headConfigPtr)
         : statisticsConfigPtr_(statisticsConfigPtr), lossConfigPtr_(lossConfigPtr), headConfigPtr_(headConfigPtr) {}
 
-    bool AutomaticDefaultRuleConfig::isDefaultRuleUsed(const IRowWiseLabelMatrix& labelMatrix) const {
+    bool AutomaticDefaultRuleConfig::isDefaultRuleUsed(const IOutputMatrix& outputMatrix) const {
         if (statisticsConfigPtr_->isDense()) {
             return true;
         } else if (statisticsConfigPtr_->isSparse()) {
             return !lossConfigPtr_->isSparse();
         } else {
             return !lossConfigPtr_->isSparse()
-                   || !shouldSparseStatisticsBePreferred(labelMatrix, false, headConfigPtr_->isPartial());
+                   || !shouldSparseStatisticsBePreferred(outputMatrix, false, headConfigPtr_->isPartial());
         }
     }
 
