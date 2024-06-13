@@ -616,31 +616,31 @@ class BoostingIntegrationTests(CommonIntegrationTests):
             .print_model_characteristics()
         self.run_cmd(builder, 'no-default-rule')
 
-    def test_statistics_sparse_label_format_dense(self):
+    def test_statistics_sparse_output_format_dense(self):
         """
-        Tests the BOOMER algorithm when using sparse data structures for storing the statistics and a dense label
-        representation.
+        Tests the BOOMER algorithm when using sparse data structures for storing the statistics and a dense output
+        matrix.
         """
         builder = BoostingCmdBuilder(dataset=self.dataset_numerical_sparse) \
             .sparse_statistic_format() \
-            .sparse_label_format(False) \
+            .sparse_output_format(False) \
             .default_rule(False) \
             .loss(LOSS_SQUARED_HINGE_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_SINGLE)
-        self.run_cmd(builder, 'statistics-sparse_label-format-dense')
+        self.run_cmd(builder, 'statistics-sparse_output-format-dense')
 
-    def test_statistics_sparse_label_format_sparse(self):
+    def test_statistics_sparse_output_format_sparse(self):
         """
-        Tests the BOOMER algorithm when using sparse data structures for storing the statistics and a sparse label
-        representation.
+        Tests the BOOMER algorithm when using sparse data structures for storing the statistics and a sparse output
+        matrix.
         """
         builder = BoostingCmdBuilder(dataset=self.dataset_numerical_sparse) \
             .sparse_statistic_format() \
-            .sparse_label_format() \
+            .sparse_output_format() \
             .default_rule(False) \
             .loss(LOSS_SQUARED_HINGE_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_SINGLE)
-        self.run_cmd(builder, 'statistics-sparse_label-format-sparse')
+        self.run_cmd(builder, 'statistics-sparse_output-format-sparse')
 
     def test_decomposable_single_output_heads(self):
         """

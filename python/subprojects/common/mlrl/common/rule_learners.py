@@ -278,21 +278,21 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         def apply_next(self, step_size: int):
             return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
 
-    def __init__(self, random_state: Optional[int], feature_format: Optional[str], label_format: Optional[str],
+    def __init__(self, random_state: Optional[int], feature_format: Optional[str], output_format: Optional[str],
                  prediction_format: Optional[str]):
         """
         :param random_state:        The seed to be used by RNGs. Must be at least 1
         :param feature_format:      The format to be used for the representation of the feature matrix. Must be
                                     `sparse`, `dense` or `auto`
-        :param label_format:        The format to be used for the representation of the label matrix. Must be `sparse`,
+        :param output_format:       The format to be used for the representation of the output matrix. Must be `sparse`,
                                     `dense` or 'auto'
-        :param prediction_format:   The format to be used for representation of predicted labels. Must be `sparse`,
+        :param prediction_format:   The format to be used for the representation of predictions. Must be `sparse`,
                                     `dense` or `auto`
         """
         super().__init__()
         self.random_state = random_state
         self.feature_format = feature_format
-        self.label_format = label_format
+        self.output_format = output_format
         self.prediction_format = prediction_format
 
     # pylint: disable=attribute-defined-outside-init
@@ -334,7 +334,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             prediction_sparse_policy == SparsePolicy.FORCE_SPARSE
             or is_sparse_and_memory_efficient(y, sparse_format=y_sparse_format, dtype=Uint8, sparse_values=False))
 
-        y_sparse_policy = parse_sparse_policy('label_format', self.label_format)
+        y_sparse_policy = parse_sparse_policy('output_format', self.output_format)
         y_enforce_sparse = should_enforce_sparse(y,
                                                  sparse_format=y_sparse_format,
                                                  policy=y_sparse_policy,

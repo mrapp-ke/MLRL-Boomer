@@ -16,7 +16,7 @@ The following parameters allow to specify the preferred format for representing 
   - `'dense'` Enforces that the feature matrix is stored using a dense format.
   - `'sparse'` Enforces that the feature matrix is stored using a sparse format, if possible. Using a sparse format may reduce the memory footprint and/or speed up the training process on some data sets.
 
-- `label_format` (Default value = `'auto'`)
+- `output_format` (Default value = `'auto'`)
 
   - `'auto'` The most suitable format for representation of the label matrix is chosen automatically by estimating which representation requires less memory.
   - `'dense'` Enforces that the label matrix is stored using a dense format.
