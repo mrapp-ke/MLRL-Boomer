@@ -35,7 +35,7 @@ This release comes with several API changes. For an updated overview of the avai
 ### Additions to the Command Line API
 
 - **Information about the program can now be printed** via the argument `-v` or `--version`.
-- **Data characteristics do now include the number of ordinal attributes** when printed on the console or written to a file via the command line argument `--print-data-characteristics` or `--store-data-characteristics`.
+- **Data characteristics do now include the number of ordinal features** when printed on the console or written to a file via the command line argument `--print-data-characteristics` or `--store-data-characteristics`.
 
 ### Bugfixes
 

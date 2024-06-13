@@ -30,7 +30,7 @@ class DataSet:
         """
         :param data_dir:                The path of the directory where the data set is located
         :param data_set_name:           The name of the data set
-        :param use_one_hot_encoding:    True, if one-hot-encoding should be used to encode nominal attributes, False
+        :param use_one_hot_encoding:    True, if one-hot-encoding should be used to encode nominal features, False
                                         otherwise
         """
         self.data_dir = data_dir

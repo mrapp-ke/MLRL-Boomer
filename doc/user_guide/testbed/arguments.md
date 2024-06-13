@@ -85,8 +85,8 @@ Depending on the characteristics of a dataset, it might be desirable to apply on
 
 - `--one-hot-encoding` (Default value = `false`)
 
-  - `true` One-hot-encoding is used to encode nominal attributes.
-  - `false` The algorithm's ability to natively handle nominal attributes is used.
+  - `true` One-hot-encoding is used to encode nominal features.
+  - `false` The algorithm's ability to natively handle nominal features is used.
 
 ## Saving and Loading Models
 

@@ -84,9 +84,9 @@ class PredictionWriter(OutputWriter):
 
             file_name = get_file_name_per_fold(prediction_scope.get_file_name(data_type.get_file_name('predictions')),
                                                SUFFIX_ARFF, data_split.get_fold())
-            attributes = [Label('Ground Truth ' + label.attribute_name) for label in meta_data.labels]
-            labels = [Label('Prediction ' + label.attribute_name) for label in meta_data.labels]
-            prediction_meta_data = MetaData(attributes, labels, labels_at_start=False)
+            features = [Label('Ground Truth ' + label.name) for label in meta_data.labels]
+            labels = [Label('Prediction ' + label.name) for label in meta_data.labels]
+            prediction_meta_data = MetaData(features, labels, labels_at_start=False)
             save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
     # pylint: disable=unused-argument

@@ -12,9 +12,9 @@ from typing import Any, Dict, List, Optional
 
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 
-from mlrl.common.learners import IncrementalLearner, Learner, NominalAttributeLearner, OrdinalAttributeLearner
+from mlrl.common.learners import IncrementalLearner, Learner, NominalFeatureLearner, OrdinalFeatureLearner
 
-from mlrl.testbed.data import AttributeType, MetaData
+from mlrl.testbed.data import FeatureType, MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataSplitter, DataType
 from mlrl.testbed.format import format_duration
 from mlrl.testbed.output_writer import OutputWriter
@@ -318,13 +318,13 @@ class Experiment(DataSplitter.Callback):
         for output_writer in self.pre_training_output_writers:
             output_writer.write_output(meta_data, train_x, train_y, data_split, current_learner)
 
-        # Set the indices of ordinal attributes, if supported...
-        if isinstance(current_learner, OrdinalAttributeLearner):
-            current_learner.ordinal_attribute_indices = meta_data.get_attribute_indices({AttributeType.ORDINAL})
+        # Set the indices of ordinal features, if supported...
+        if isinstance(current_learner, OrdinalFeatureLearner):
+            current_learner.ordinal_feature_indices = meta_data.get_feature_indices({FeatureType.ORDINAL})
 
-        # Set the indices of nominal attributes, if supported...
-        if isinstance(current_learner, NominalAttributeLearner):
-            current_learner.nominal_attribute_indices = meta_data.get_attribute_indices({AttributeType.NOMINAL})
+        # Set the indices of nominal features, if supported...
+        if isinstance(current_learner, NominalFeatureLearner):
+            current_learner.nominal_feature_indices = meta_data.get_feature_indices({FeatureType.NOMINAL})
 
         # Load model from disc, if possible, otherwise train a new model...
         loaded_learner = self.__load_model(data_split)
