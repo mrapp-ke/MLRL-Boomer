@@ -357,7 +357,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The induced rules are printed on the console. The following options may be specified using the {ref}`bracket-notation`:
 
     - `print_feature_names` (Default value = `true`) `true`, if the names of features should be printed instead of their indices, `false` otherwise.
-    - `print_label_names` (Default value = `true`) `true`, if the names of labels should be printed instead of their indices, `false` otherwise.
+    - `print_output_names` (Default value = `true`) `true`, if the names of labels should be printed instead of their indices, `false` otherwise.
     - `print_nominal_values` (Default value = `true`) `true`, if the names of nominal values should be printed instead of their numerical representation, `false` otherwise.
     - `print_bodies` (Default value = `true`) `true`, if the bodies of rules should be printed, `false` otherwise.
     - `print_heads` (Default value = `true`) `true`, if the heads of rules should be printed, `false` otherwise.
@@ -371,7 +371,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The induced rules are written into a .txt file. Does only have an effect if the parameter `--output-dir` is specified. The following options may be specified using the {ref}`bracket-notation`:
 
     - `print_feature_names` (Default value = `true`) `true`, if the names of features should be printed instead of their indices, `false` otherwise.
-    - `print_label_names` (Default value = `true`) `true`, if the names of labels should be printed instead of their indices, `false` otherwise.
+    - `print_output_names` (Default value = `true`) `true`, if the names of labels should be printed instead of their indices, `false` otherwise.
     - `print_nominal_values` (Default value = `true`) `true`, if the names of nominal values should be printed instead of their numerical representation, `false` otherwise.
     - `print_bodies` (Default value = `true`) `true`, if the bodies of rules should be printed, `false` otherwise.
     - `print_heads` (Default value = `true`) `true`, if the heads of rules should be printed, `false` otherwise.
