@@ -244,9 +244,9 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
     - `decimals` (Default value = `2`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
-    - `labels` (Default value = `true`) `true`, if the number of labels should be printed, `false` otherwise.
-    - `label_density` (Default value = `true`) `true`, if the label density should be printed, `false` otherwise.
-    - `label_sparsity` (Default value = `true`) `true`, if the label sparsity should be printed, `false` otherwise.
+    - `outputs` (Default value = `true`) `true`, if the number of labels should be printed, `false` otherwise.
+    - `output_density` (Default value = `true`) `true`, if the label density should be printed, `false` otherwise.
+    - `output_sparsity` (Default value = `true`) `true`, if the label sparsity should be printed, `false` otherwise.
     - `label_imbalance_ratio` (Default value = `true`) `true`, if the label imbalance ratio should be printed, `false` otherwise.
     - `label_cardinality` (Default value = `true`) `true`, if the average label cardinality should be printed, `false` otherwise.
     - `distinct_label_vectors` (Default value = `true`) `true`, if the number of distinct label vectors should be printed, `false` otherwise.
@@ -259,9 +259,9 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
     - `decimals` (Default value = `0`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
-    - `labels` (Default value = `true`) `true`, if the number of labels should be stored, `false` otherwise.
-    - `label_density` (Default value = `true`) `true`, if the label density should be stored, `false` otherwise.
-    - `label_sparsity` (Default value = `true`) `true`, if the label sparsity should be stored, `false` otherwise.
+    - `outputs` (Default value = `true`) `true`, if the number of labels should be stored, `false` otherwise.
+    - `output_density` (Default value = `true`) `true`, if the label density should be stored, `false` otherwise.
+    - `output_sparsity` (Default value = `true`) `true`, if the label sparsity should be stored, `false` otherwise.
     - `label_imbalance_ratio` (Default value = `true`) `true`, if the label imbalance ratio should be stored, `false` otherwise.
     - `label_cardinality` (Default value = `true`) `true`, if the average label cardinality should be stored, `false` otherwise.
     - `distinct_label_vectors` (Default value = `true`) `true`, if the number of distinct label vectors should be stored, `false` otherwise.
@@ -278,9 +278,9 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
     - `decimals` (Default value = `2`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
-    - `labels` (Default value = `true`) `true`, if the number of labels should be printed, `false` otherwise.
-    - `label_density` (Default value = `true`) `true`, if the label density should be printed, `false` otherwise.
-    - `label_sparsity` (Default value = `true`) `true`, if the label sparsity should be printed, `false` otherwise.
+    - `outputs` (Default value = `true`) `true`, if the number of labels should be printed, `false` otherwise.
+    - `output_density` (Default value = `true`) `true`, if the label density should be printed, `false` otherwise.
+    - `output_sparsity` (Default value = `true`) `true`, if the label sparsity should be printed, `false` otherwise.
     - `label_imbalance_ratio` (Default value = `true`) `true`, if the label imbalance ratio should be printed, `false` otherwise.
     - `label_cardinality` (Default value = `true`) `true`, if the average label cardinality should be printed, `false` otherwise.
     - `distinct_label_vectors` (Default value = `true`) `true`, if the number of distinct label vectors should be printed, `false` otherwise.
@@ -299,9 +299,9 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
     - `decimals` (Default value = `0`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
-    - `labels` (Default value = `true`) `true`, if the number of labels should be stored, `false` otherwise.
-    - `label_density` (Default value = `true`) `true`, if the label density should be stored, `false` otherwise.
-    - `label_sparsity` (Default value = `true`) `true`, if the label sparsity should be stored, `false` otherwise.
+    - `outputs` (Default value = `true`) `true`, if the number of labels should be stored, `false` otherwise.
+    - `output_density` (Default value = `true`) `true`, if the label density should be stored, `false` otherwise.
+    - `output_sparsity` (Default value = `true`) `true`, if the label sparsity should be stored, `false` otherwise.
     - `label_imbalance_ratio` (Default value = `true`) `true`, if the label imbalance ratio should be stored, `false` otherwise.
     - `label_cardinality` (Default value = `true`) `true`, if the average label cardinality should be stored, `false` otherwise.
     - `distinct_label_vectors` (Default value = `true`) `true`, if the number of distinct label vectors should be stored, `false` otherwise.

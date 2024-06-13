@@ -11,9 +11,9 @@ Ordinal Features          0
 Nominal Features          0
 Feature Density          99.67
 Feature Sparsity          0.33
-Labels                    6
-Label Density            30.77
-Label Sparsity           69.23
+Outputs                   6
+Output Density           30.77
+Output Sparsity          69.23
 Label Imbalance Ratio     1.45
 Label Cardinality         1.85
 Distinct Label Vectors   23
