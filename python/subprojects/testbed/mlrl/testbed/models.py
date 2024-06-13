@@ -26,7 +26,7 @@ from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
 
 OPTION_PRINT_FEATURE_NAMES = 'print_feature_names'
 
-OPTION_PRINT_LABEL_NAMES = 'print_label_names'
+OPTION_PRINT_OUTPUT_NAMES = 'print_output_names'
 
 OPTION_PRINT_NOMINAL_VALUES = 'print_nominal_values'
 
@@ -85,7 +85,7 @@ class RuleModelWriter(ModelWriter):
             self.model = model
             self.text = None
             self.print_feature_names = True
-            self.print_label_names = True
+            self.print_output_names = True
             self.print_nominal_values = True
             self.print_bodies = True
             self.print_heads = True
@@ -168,7 +168,7 @@ class RuleModelWriter(ModelWriter):
             text = self.text
 
             if self.print_heads:
-                print_label_names = self.print_label_names
+                print_output_names = self.print_output_names
                 decimals = self.head_decimals
                 labels = self.labels
                 scores = head.scores
@@ -182,7 +182,7 @@ class RuleModelWriter(ModelWriter):
                     if i > 0:
                         text.write(', ')
 
-                    if print_label_names and len(labels) > i:
+                    if print_output_names and len(outputs) > i:
                         text.write(labels[i].name)
                     else:
                         text.write(str(i))
@@ -201,7 +201,7 @@ class RuleModelWriter(ModelWriter):
             text = self.text
 
             if self.print_heads:
-                print_label_names = self.print_label_names
+                print_output_names = self.print_output_names
                 decimals = self.head_decimals
                 labels = self.labels
                 indices = head.indices
@@ -218,7 +218,7 @@ class RuleModelWriter(ModelWriter):
 
                     label_index = indices[i]
 
-                    if print_label_names and len(labels) > label_index:
+                    if print_output_names and len(labels) > label_index:
                         text.write(labels[label_index].name)
                     else:
                         text.write(str(label_index))
@@ -235,7 +235,7 @@ class RuleModelWriter(ModelWriter):
             See :func:`mlrl.testbed.output_writer.Formattable.format`
             """
             self.print_feature_names = options.get_bool(OPTION_PRINT_FEATURE_NAMES, True)
-            self.print_label_names = options.get_bool(OPTION_PRINT_LABEL_NAMES, True)
+            self.print_output_names = options.get_bool(OPTION_PRINT_OUTPUT_NAMES, True)
             self.print_nominal_values = options.get_bool(OPTION_PRINT_NOMINAL_VALUES, True)
             self.print_bodies = options.get_bool(OPTION_PRINT_BODIES, True)
             self.print_heads = options.get_bool(OPTION_PRINT_HEADS, True)
