@@ -99,32 +99,32 @@ def label_imbalance_ratio(y) -> float:
     return 0.0
 
 
-class LabelCharacteristics(Formattable, Tabularizable):
+class OutputCharacteristics(Formattable, Tabularizable):
     """
-    Stores characteristics of a label matrix.
+    Stores characteristics of an output matrix.
     """
 
     def __init__(self, y):
         """
         :param y: A `numpy.ndarray`, `scipy.sparse.spmatrix`, `scipy.sparse.sparray`, shape
-                  `(num_examples, num_labels)`, that stores the labels
+                  `(num_examples, num_outputs)`, that stores the ground truth
         """
         self._y = y
-        self.num_labels = y.shape[1]
+        self.num_outputs = y.shape[1]
 
     @cached_property
-    def label_density(self):
+    def output_density(self):
         """
-        The density of the label matrix.
+        The density of the output matrix.
         """
         return density(self._y)
 
     @property
-    def label_sparsity(self):
+    def output_sparsity(self):
         """
-        The sparsity of the label matrix.
+        The sparsity of the output matrix.
         """
-        return 1 - self.label_density
+        return 1 - self.output_density
 
     @cached_property
     def avg_label_imbalance_ratio(self):
@@ -155,7 +155,7 @@ class LabelCharacteristics(Formattable, Tabularizable):
         decimals = options.get_int(OPTION_DECIMALS, 2)
         rows = []
 
-        for formatter in filter_formatters(LABEL_CHARACTERISTICS, [options]):
+        for formatter in filter_formatters(OUTPUT_CHARACTERISTICS, [options]):
             rows.append([formatter.name, formatter.format(self, percentage=percentage, decimals=decimals)])
 
         return format_table(rows)
@@ -168,7 +168,7 @@ class LabelCharacteristics(Formattable, Tabularizable):
         decimals = options.get_int(OPTION_DECIMALS, 0)
         columns = {}
 
-        for formatter in filter_formatters(LABEL_CHARACTERISTICS, [options]):
+        for formatter in filter_formatters(OUTPUT_CHARACTERISTICS, [options]):
             columns[formatter] = formatter.format(self, percentage=percentage, decimals=decimals)
 
         return [columns]
@@ -193,7 +193,7 @@ class Characteristic(Formatter):
         return super().format(self.getter_function(value), **kwargs)
 
 
-LABEL_CHARACTERISTICS: List[Characteristic] = [
+OUTPUT_CHARACTERISTICS: List[Characteristic] = [
     Characteristic(OPTION_LABELS, 'Labels', lambda x: x.num_labels),
     Characteristic(OPTION_LABEL_DENSITY, 'Label Density', lambda x: x.label_density, percentage=True),
     Characteristic(OPTION_LABEL_SPARSITY, 'Label Sparsity', lambda x: x.label_sparsity, percentage=True),
