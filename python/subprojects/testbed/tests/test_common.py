@@ -512,7 +512,7 @@ class CmdBuilder:
         self.args.append('sparse' if sparse else 'dense')
         return self
 
-    def sparse_label_format(self, sparse: bool = True):
+    def sparse_output_format(self, sparse: bool = True):
         """
         Configures whether sparse data structures should be used to represent the labels of training examples or not.
 
@@ -520,7 +520,7 @@ class CmdBuilder:
                         False otherwise
         :return:        The builder itself
         """
-        self.args.append('--label-format')
+        self.args.append('--output-format')
         self.args.append('sparse' if sparse else 'dense')
         return self
 
@@ -1462,21 +1462,21 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .sparse_feature_format()
         self.run_cmd(builder, 'ordinal-features-sparse')
 
-    def test_label_format_dense(self):
+    def test_output_format_dense(self):
         """
-        Tests the rule learning algorithm when using a dense label representation.
+        Tests the rule learning algorithm when using a dense output representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .sparse_label_format(False)
-        self.run_cmd(builder, 'label-format-dense')
+            .sparse_output_format(False)
+        self.run_cmd(builder, 'output-format-dense')
 
-    def test_label_format_sparse(self):
+    def test_output_format_sparse(self):
         """
-        Tests the rule learning algorithm when using a sparse label representation.
+        Tests the rule learning algorithm when using a sparse output representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .sparse_label_format()
-        self.run_cmd(builder, 'label-format-sparse')
+            .sparse_output_format()
+        self.run_cmd(builder, 'output-format-sparse')
 
     def test_prediction_format_dense(self):
         """

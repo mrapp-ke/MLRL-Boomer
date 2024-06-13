@@ -24,7 +24,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
     def __init__(self,
                  random_state: Optional[int] = None,
                  feature_format: Optional[str] = None,
-                 label_format: Optional[str] = None,
+                 output_format: Optional[str] = None,
                  prediction_format: Optional[str] = None,
                  statistic_format: Optional[str] = None,
                  default_rule: Optional[str] = None,
@@ -145,7 +145,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                                                     parallel or not. Must be 'true' or 'false'. For additional options
                                                     refer to the documentation
         """
-        super().__init__(random_state, feature_format, label_format, prediction_format)
+        super().__init__(random_state, feature_format, output_format, prediction_format)
         self.statistic_format = statistic_format
         self.default_rule = default_rule
         self.rule_induction = rule_induction

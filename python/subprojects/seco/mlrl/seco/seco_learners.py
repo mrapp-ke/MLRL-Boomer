@@ -25,7 +25,7 @@ class SeCo(RuleLearner, ClassifierMixin, MultiOutputMixin):
     def __init__(self,
                  random_state: Optional[int] = None,
                  feature_format: Optional[str] = None,
-                 label_format: Optional[str] = None,
+                 output_format: Optional[str] = None,
                  prediction_format: Optional[str] = None,
                  rule_induction: Optional[str] = None,
                  max_rules: Optional[int] = None,
@@ -102,7 +102,7 @@ class SeCo(RuleLearner, ClassifierMixin, MultiOutputMixin):
                                                 parallel or not. Must be 'true' or 'false'. For additional options refer
                                                 to the documentation
         """
-        super().__init__(random_state, feature_format, label_format, prediction_format)
+        super().__init__(random_state, feature_format, output_format, prediction_format)
         self.rule_induction = rule_induction
         self.max_rules = max_rules
         self.time_limit = time_limit

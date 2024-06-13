@@ -1125,10 +1125,10 @@ class RuleLearnerRunnable(LearnerRunnable):
                             help='The value that should be used for sparse elements in the feature matrix. Does only '
                             + 'have an effect if a sparse format is used for the representation of the feature matrix, '
                             + 'depending on the parameter ' + self.PARAM_FEATURE_FORMAT + '.')
-        parser.add_argument('--label-format',
+        parser.add_argument('--output-format',
                             type=str,
                             default=None,
-                            help='The format to be used for the representation of the label matrix. Must be one of '
+                            help='The format to be used for the representation of the output matrix. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
         parser.add_argument('--prediction-format',
                             type=str,
@@ -1162,7 +1162,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         kwargs = create_kwargs_from_parameters(args, self.parameters)
         kwargs['random_state'] = args.random_state
         kwargs['feature_format'] = args.feature_format
-        kwargs['label_format'] = args.label_format
+        kwargs['output_format'] = args.output_format
         kwargs['prediction_format'] = args.prediction_format
         return self.learner_type(**kwargs)
 
