@@ -8,7 +8,7 @@ from typing import Any, Optional
 
 from mlrl.common.options import Options
 
-from mlrl.testbed.characteristics import LabelCharacteristics
+from mlrl.testbed.characteristics import OutputCharacteristics
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.output_writer import OutputWriter
@@ -42,4 +42,4 @@ class PredictionCharacteristicsWriter(OutputWriter):
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         # Prediction characteristics can only be determined in the case of binary predictions...
-        return LabelCharacteristics(predictions) if prediction_type == PredictionType.BINARY else None
+        return OutputCharacteristics(predictions) if prediction_type == PredictionType.BINARY else None
