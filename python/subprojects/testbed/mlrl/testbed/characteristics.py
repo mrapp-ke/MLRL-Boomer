@@ -14,11 +14,11 @@ from mlrl.common.options import Options
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
 from mlrl.testbed.output_writer import Formattable, Tabularizable
 
-OPTION_LABELS = 'labels'
+OPTION_OUTPUTS = 'outputs'
 
-OPTION_LABEL_DENSITY = 'label_density'
+OPTION_OUTPUT_DENSITY = 'output_density'
 
-OPTION_LABEL_SPARSITY = 'label_sparsity'
+OPTION_OUTPUT_SPARSITY = 'output_sparsity'
 
 OPTION_LABEL_IMBALANCE_RATIO = 'label_imbalance_ratio'
 
@@ -194,9 +194,9 @@ class Characteristic(Formatter):
 
 
 OUTPUT_CHARACTERISTICS: List[Characteristic] = [
-    Characteristic(OPTION_LABELS, 'Labels', lambda x: x.num_labels),
-    Characteristic(OPTION_LABEL_DENSITY, 'Label Density', lambda x: x.label_density, percentage=True),
-    Characteristic(OPTION_LABEL_SPARSITY, 'Label Sparsity', lambda x: x.label_sparsity, percentage=True),
+    Characteristic(OPTION_OUTPUTS, 'Outputs', lambda x: x.num_outputs),
+    Characteristic(OPTION_OUTPUT_DENSITY, 'Output Density', lambda x: x.output_density, percentage=True),
+    Characteristic(OPTION_OUTPUT_SPARSITY, 'Output Sparsity', lambda x: x.output_sparsity, percentage=True),
     Characteristic(OPTION_LABEL_IMBALANCE_RATIO, 'Label Imbalance Ratio', lambda x: x.avg_label_imbalance_ratio),
     Characteristic(OPTION_LABEL_CARDINALITY, 'Label Cardinality', lambda x: x.avg_label_cardinality),
     Characteristic(OPTION_DISTINCT_LABEL_VECTORS, 'Distinct Label Vectors', lambda x: x.num_distinct_label_vectors)
