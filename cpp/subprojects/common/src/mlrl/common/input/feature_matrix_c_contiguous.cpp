@@ -56,8 +56,8 @@ class CContiguousFeatureMatrix final : public MatrixDecorator<CContiguousView<co
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const IRuleModel& ruleModel,
                                                               const IOutputSpaceInfo& outputSpaceInfo,
-                                                              uint32 numLabels) const override {
-            return ruleModel.createScorePredictor(factory, this->getView(), outputSpaceInfo, numLabels);
+                                                              uint32 numOutputs) const override {
+            return ruleModel.createScorePredictor(factory, this->getView(), outputSpaceInfo, numOutputs);
         }
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(

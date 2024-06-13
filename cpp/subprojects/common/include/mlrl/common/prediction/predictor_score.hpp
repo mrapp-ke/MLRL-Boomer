@@ -36,12 +36,12 @@ class IScorePredictorFactory {
          *                          predictions
          * @param labelVectorSet    A pointer to an object of type `LabelVectorSet` that stores all known label vectors
          *                          or a null pointer, if no such set is available
-         * @param numLabels         The number of labels to predict for
+         * @param numOutputs        The number of outputs to predict for
          * @return                  An unique pointer to an object of type `IScorePredictor` that has been created
          */
         virtual std::unique_ptr<IScorePredictor> create(const CContiguousView<const float32>& featureMatrix,
                                                         const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                        uint32 numLabels) const = 0;
+                                                        uint32 numOutputs) const = 0;
 
         /**
          * Creates and returns a new object of the type `IScorePredictor`.
@@ -52,12 +52,12 @@ class IScorePredictorFactory {
          *                          predictions
          * @param labelVectorSet    A pointer to an object of type `LabelVectorSet` that stores all known label vectors
          *                          or a null pointer, if no such set is available
-         * @param numLabels         The number of labels to predict for
+         * @param numOutputs        The number of outputs to predict for
          * @return                  An unique pointer to an object of type `IScorePredictor` that has been created
          */
         virtual std::unique_ptr<IScorePredictor> create(const CsrView<const float32>& featureMatrix,
                                                         const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                        uint32 numLabels) const = 0;
+                                                        uint32 numOutputs) const = 0;
 };
 
 /**

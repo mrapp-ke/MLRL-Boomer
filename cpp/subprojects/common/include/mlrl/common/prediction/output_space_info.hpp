@@ -157,12 +157,12 @@ class MLRLCOMMON_API IOutputSpaceInfo {
          * @param featureMatrix A reference to an object of type `CContiguousView` that provides row-wise access to the
          *                      features of the query examples
          * @param model         A reference to an object of type `RuleList` that should be used to obtain predictions
-         * @param numLabels     The number of labels to predict for
+         * @param numOutputs    The number of outputs to predict for
          * @return              An unique pointer to an object of type `IScorePredictor` that has been created
          */
         virtual std::unique_ptr<IScorePredictor> createScorePredictor(
           const IScorePredictorFactory& factory, const CContiguousView<const float32>& featureMatrix,
-          const RuleList& model, uint32 numLabels) const = 0;
+          const RuleList& model, uint32 numOutputs) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IScorePredictor`, based on the type of this information
@@ -173,13 +173,13 @@ class MLRLCOMMON_API IOutputSpaceInfo {
          * @param featureMatrix A reference to an object of type `CsrView` that provides row-wise access to the features
          *                      of the query examples
          * @param model         A reference to an object of type `RuleList` that should be used to obtain predictions
-         * @param numLabels     The number of labels to predict for
+         * @param numOutputs    The number of outputs to predict for
          * @return              An unique pointer to an object of type `IScorePredictor` that has been created
          */
         virtual std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                                       const CsrView<const float32>& featureMatrix,
                                                                       const RuleList& model,
-                                                                      uint32 numLabels) const = 0;
+                                                                      uint32 numOutputs) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IProbabilityPredictor`, based on the type of this
