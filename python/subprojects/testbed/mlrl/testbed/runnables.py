@@ -601,7 +601,7 @@ class LearnerRunnable(Runnable, ABC):
         parser.add_argument('--one-hot-encoding',
                             type=BooleanOption.parse,
                             default=False,
-                            help='Whether one-hot-encoding should be used to encode nominal attributes or not. Must be '
+                            help='Whether one-hot-encoding should be used to encode nominal features or not. Must be '
                             + 'one of ' + format_enum_values(BooleanOption) + '.')
         parser.add_argument('--model-dir', type=str, help='The path of the directory where models should be stored.')
         parser.add_argument('--parameter-dir',

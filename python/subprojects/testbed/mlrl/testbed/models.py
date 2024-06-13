@@ -18,7 +18,7 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
 from mlrl.common.learners import Learner
 from mlrl.common.options import Options
 
-from mlrl.testbed.data import Attribute, MetaData
+from mlrl.testbed.data import Feature, MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.format import format_float
 from mlrl.testbed.output_writer import Formattable, OutputWriter
@@ -80,7 +80,7 @@ class RuleModelWriter(ModelWriter):
             :param meta_data:   The meta-data of the training data set
             :param model:       The `RuleModel`
             """
-            self.attributes = meta_data.attributes
+            self.features = meta_data.features
             self.labels = meta_data.labels
             self.model = model
             self.text = None
@@ -105,7 +105,7 @@ class RuleModelWriter(ModelWriter):
 
             if indices is not None and thresholds is not None:
                 text = self.text
-                attributes = self.attributes
+                features = self.features
                 print_feature_names = self.print_feature_names
                 print_nominal_values = self.print_nominal_values
                 decimals = self.body_decimals
@@ -116,11 +116,10 @@ class RuleModelWriter(ModelWriter):
 
                     feature_index = indices[i]
                     threshold = thresholds[i]
-                    attribute: Optional[Attribute] = attributes[feature_index] if len(
-                        attributes) > feature_index else None
+                    feature = features[feature_index] if len(features) > feature_index else None
 
-                    if print_feature_names and attribute is not None:
-                        text.write(attribute.attribute_name)
+                    if print_feature_names and feature is not None:
+                        text.write(feature.name)
                     else:
                         text.write(str(feature_index))
 
@@ -128,11 +127,11 @@ class RuleModelWriter(ModelWriter):
                     text.write(operator)
                     text.write(' ')
 
-                    if attribute is not None and attribute.nominal_values is not None:
+                    if feature is not None and feature.nominal_values is not None:
                         nominal_value = int(threshold)
 
-                        if print_nominal_values and len(attribute.nominal_values) > nominal_value:
-                            text.write('"' + attribute.nominal_values[nominal_value] + '"')
+                        if print_nominal_values and len(features.nominal_values) > nominal_value:
+                            text.write('"' + features.nominal_values[nominal_value] + '"')
                         else:
                             text.write(str(nominal_value))
                     else:
@@ -184,7 +183,7 @@ class RuleModelWriter(ModelWriter):
                         text.write(', ')
 
                     if print_label_names and len(labels) > i:
-                        text.write(labels[i].attribute_name)
+                        text.write(labels[i].name)
                     else:
                         text.write(str(i))
 
@@ -220,7 +219,7 @@ class RuleModelWriter(ModelWriter):
                     label_index = indices[i]
 
                     if print_label_names and len(labels) > label_index:
-                        text.write(labels[label_index].attribute_name)
+                        text.write(labels[label_index].name)
                     else:
                         text.write(str(label_index))
 

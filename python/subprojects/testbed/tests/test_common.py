@@ -1393,7 +1393,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_numeric_features_dense(self):
         """
-        Tests the rule learning algorithm on a dataset with numerical attributes when using a dense feature
+        Tests the rule learning algorithm on a dataset with numerical features when using a dense feature
         representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_numerical_sparse) \
@@ -1402,7 +1402,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_numeric_features_sparse(self):
         """
-        Tests the rule learning algorithm on a dataset with numerical attributes when using a sparse feature
+        Tests the rule learning algorithm on a dataset with numerical features when using a sparse feature
         representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_numerical_sparse) \
@@ -1411,7 +1411,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_binary_features_dense(self):
         """
-        Tests the rule learning algorithm on a dataset with binary attributes when using a dense feature representation.
+        Tests the rule learning algorithm on a dataset with binary features when using a dense feature representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_binary) \
             .sparse_feature_format(False)
@@ -1419,8 +1419,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_binary_features_sparse(self):
         """
-        Tests the rule learning algorithm on a dataset with binary attributes when using a sparse feature
-        representation.
+        Tests the rule learning algorithm on a dataset with binary features when using a sparse feature representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_binary) \
             .sparse_feature_format()
@@ -1428,8 +1427,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_nominal_features_dense(self):
         """
-        Tests the rule learning algorithm on a dataset with nominal attributes when using a dense feature
-        representation.
+        Tests the rule learning algorithm on a dataset with nominal features when using a dense feature representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_nominal) \
             .sparse_feature_format(False)
@@ -1437,8 +1435,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_nominal_features_sparse(self):
         """
-        Tests the rule learning algorithm on a dataset with nominal attributes when using a sparse feature
-        representation.
+        Tests the rule learning algorithm on a dataset with nominal features when using a sparse feature representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_nominal) \
             .sparse_feature_format()
@@ -1446,8 +1443,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_ordinal_features_dense(self):
         """
-        Tests the rule learning algorithm on a dataset with ordinal attributes when using a dense feature
-        representation.
+        Tests the rule learning algorithm on a dataset with ordinal features when using a dense feature representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_ordinal) \
             .sparse_feature_format(False)
@@ -1455,8 +1451,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_ordinal_features_sparse(self):
         """
-        Tests the rule learning algorithm on a dataset with ordinal attributes when using a sparse feature
-        representation.
+        Tests the rule learning algorithm on a dataset with ordinal features when using a sparse feature representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_ordinal) \
             .sparse_feature_format()

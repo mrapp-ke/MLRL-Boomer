@@ -12,36 +12,36 @@ from sklearn.utils.validation import check_is_fitted
 KWARG_PREDICT_SCORES = 'predict_scores'
 
 
-class OrdinalAttributeLearner(ABC):
+class OrdinalFeatureLearner(ABC):
     """
-    A base class for all machine learning algorithms that natively support ordinal attributes.
+    A base class for all machine learning algorithms that natively support ordinal features.
     """
 
-    ordinal_attribute_indices: Optional[List[int]] = None
+    ordinal_feature_indices: Optional[List[int]] = None
 
-    def set_ordinal_attribute_indices(self, indices):
+    def set_ordinal_feature_indices(self, indices):
         """
-        Sets the indices of all ordinal attributes.
+        Sets the indices of all ordinal features.
 
         :param indices: A `np.ndarray` or `Iterable` that stores the indices to be set
         """
-        self.ordinal_attribute_indices = None if indices is None else list(indices)
+        self.ordinal_feature_indices = None if indices is None else list(indices)
 
 
-class NominalAttributeLearner(ABC):
+class NominalFeatureLearner(ABC):
     """
-    A base class for all machine learning algorithms that natively support nominal attributes.
+    A base class for all machine learning algorithms that natively support nominal features.
     """
 
-    nominal_attribute_indices: Optional[List[int]] = None
+    nominal_feature_indices: Optional[List[int]] = None
 
-    def set_nominal_attribute_indices(self, indices):
+    def set_nominal_feature_indices(self, indices):
         """
-        Sets the indices of all nominal attributes.
+        Sets the indices of all nominal features.
         
         :param indices: A `np.ndarray` or `Iterable` that stores the indices to be set
         """
-        self.nominal_attribute_indices = None if indices is None else list(indices)
+        self.nominal_feature_indices = None if indices is None else list(indices)
 
 
 class IncrementalLearner(ABC):

@@ -36,7 +36,7 @@ The program expects the data set files to be provided in the [Mulan format](http
 
 The Mulan dataset format is commonly used for benchmark datasets that allow to compare the performance of different machine learning approaches in empirical studies. A collection of publicly available benchmark datasets is available [here](https://github.com/mrapp-ke/Boomer-Datasets).
 
-If an .xml file is not provided, the program tries to retrieve the number of labels from the `@relation` declaration that is contained in the .arff file, as it is intended by the [MEKA project's dataset format](https://waikato.github.io/meka/datasets/). According to the MEKA format, the number of labels may be specified by including the substring "-C L" in the `@relation` name, where "L" is the number of leading attributes in the dataset that should be treated as labels.
+If an .xml file is not provided, the program tries to retrieve the number of labels from the `@relation` declaration that is contained in the .arff file, as it is intended by the [MEKA project's dataset format](https://waikato.github.io/meka/datasets/). According to the MEKA format, the number of labels may be specified by including the substring "-C L" in the `@relation` name, where "L" is the number of leading features in the dataset that should be treated as labels.
 
 ## Optional Arguments
 
