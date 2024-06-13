@@ -1930,12 +1930,12 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          *
          * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
          *                      to the feature values of the query examples
-         * @param numLabels     The number of labels to predict for
+         * @param numOutputs    The number of outputs to predict for
          * @return              An unique pointer to an object of type `IScorePredictorFactory` that has been created or
          *                      a null pointer, if the rule learner does not support to predict scores
          */
         virtual std::unique_ptr<IScorePredictorFactory> createScorePredictorFactory(
-          const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const;
+          const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const;
 
         /**
          * May be overridden by subclasses in order to create the `IProbabilityPredictorFactory` to be used by the rule

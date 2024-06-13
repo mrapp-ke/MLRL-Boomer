@@ -90,13 +90,13 @@ class MLRLCOMMON_API IRowWiseFeatureMatrix : public IFeatureMatrix {
          *                        predictions
          * @param outputSpaceInfo A reference to an object of type `IOutputSpaceInfo` that provides information about
          *                        the output space that may be used as a basis for making predictions
-         * @param numLabels       The number of labels to predict for
+         * @param numOutputs      The number of outputs to predict for
          * @return                An unique pointer to an object of type `IScorePredictor` that has been created
          */
         virtual std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                                       const IRuleModel& ruleModel,
                                                                       const IOutputSpaceInfo& outputSpaceInfo,
-                                                                      uint32 numLabels) const = 0;
+                                                                      uint32 numOutputs) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IProbabilityPredictor`, based on the type of this feature

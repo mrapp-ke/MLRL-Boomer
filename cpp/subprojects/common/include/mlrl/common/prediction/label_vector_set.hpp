@@ -136,12 +136,12 @@ class LabelVectorSet final : public ILabelVectorSet {
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const CContiguousView<const float32>& featureMatrix,
                                                               const RuleList& ruleList,
-                                                              uint32 numLabels) const override;
+                                                              uint32 numOutputs) const override;
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const CsrView<const float32>& featureMatrix,
                                                               const RuleList& ruleList,
-                                                              uint32 numLabels) const override;
+                                                              uint32 numOutputs) const override;
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IProbabilityPredictorFactory& factory, const CContiguousView<const float32>& featureMatrix,

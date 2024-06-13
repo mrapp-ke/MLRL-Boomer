@@ -137,18 +137,18 @@ def create_binary_predictor(learner: RuleLearnerWrapper, model: RuleModel, outpu
 
 
 def create_score_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
-                           num_labels: int, feature_matrix: RowWiseFeatureMatrix):
+                           num_outputs: int, feature_matrix: RowWiseFeatureMatrix):
     """
     Creates and returns a predictor for predicting scores.
 
     :param learner:             The learner for which the predictor should be created
     :param model:               The model to be used for prediction
     :param output_space_info:   Information about the output space that may be used for prediction
-    :param num_labels:          The total number of labels to predict for
+    :param num_outputs:         The total number of outputs to predict for
     :param feature_matrix:      A feature matrix that provides row-wise access to the features of the query examples
     :return:                    The predictor that has been created
     """
-    return learner.create_score_predictor(feature_matrix, model, output_space_info, num_labels)
+    return learner.create_score_predictor(feature_matrix, model, output_space_info, num_outputs)
 
 
 def create_probability_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,

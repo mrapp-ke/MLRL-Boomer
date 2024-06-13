@@ -26,9 +26,9 @@ namespace boosting {
              */
             std::unique_ptr<IScorePredictor> create(const CContiguousView<const float32>& featureMatrix,
                                                     const RuleList& model, const LabelVectorSet* labelVectorSet,
-                                                    uint32 numLabels) const override {
+                                                    uint32 numOutputs) const override {
                 return std::make_unique<ScorePredictor<CContiguousView<const float32>, RuleList>>(
-                  featureMatrix, model, numLabels, numThreads_);
+                  featureMatrix, model, numOutputs, numThreads_);
             }
 
             /**
@@ -36,9 +36,9 @@ namespace boosting {
              */
             std::unique_ptr<IScorePredictor> create(const CsrView<const float32>& featureMatrix, const RuleList& model,
                                                     const LabelVectorSet* labelVectorSet,
-                                                    uint32 numLabels) const override {
+                                                    uint32 numOutputs) const override {
                 return std::make_unique<ScorePredictor<CsrView<const float32>, RuleList>>(featureMatrix, model,
-                                                                                          numLabels, numThreads_);
+                                                                                          numOutputs, numThreads_);
             }
     };
 

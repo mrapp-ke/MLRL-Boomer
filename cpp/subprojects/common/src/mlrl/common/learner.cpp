@@ -356,9 +356,9 @@ std::unique_ptr<ISparseBinaryPredictorFactory> AbstractRuleLearner::createSparse
 }
 
 std::unique_ptr<IScorePredictorFactory> AbstractRuleLearner::createScorePredictorFactory(
-  const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+  const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
     const IScorePredictorConfig* config = config_.getScorePredictorConfigPtr().get();
-    return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
+    return config ? config->createPredictorFactory(featureMatrix, numOutputs) : nullptr;
 }
 
 std::unique_ptr<IProbabilityPredictorFactory> AbstractRuleLearner::createProbabilityPredictorFactory(
@@ -551,12 +551,12 @@ std::unique_ptr<IScorePredictor> AbstractRuleLearner::createScorePredictor(
 std::unique_ptr<IScorePredictor> AbstractRuleLearner::createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                                            const IRuleModel& ruleModel,
                                                                            const IOutputSpaceInfo& outputSpaceInfo,
-                                                                           uint32 numLabels) const {
+                                                                           uint32 numOutputs) const {
     std::unique_ptr<IScorePredictorFactory> predictorFactoryPtr =
-      this->createScorePredictorFactory(featureMatrix, numLabels);
+      this->createScorePredictorFactory(featureMatrix, numOutputs);
 
     if (predictorFactoryPtr) {
-        return featureMatrix.createScorePredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo, numLabels);
+        return featureMatrix.createScorePredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo, numOutputs);
     }
 
     throw std::runtime_error("The rule learner does not support to predict scores");

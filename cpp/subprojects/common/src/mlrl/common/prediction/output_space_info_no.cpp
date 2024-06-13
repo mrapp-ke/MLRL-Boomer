@@ -52,14 +52,14 @@ class NoOutputSpaceInfo final : public INoOutputSpaceInfo {
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const CContiguousView<const float32>& featureMatrix,
-                                                              const RuleList& model, uint32 numLabels) const override {
-            return factory.create(featureMatrix, model, nullptr, numLabels);
+                                                              const RuleList& model, uint32 numOutputs) const override {
+            return factory.create(featureMatrix, model, nullptr, numOutputs);
         }
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const CsrView<const float32>& featureMatrix,
-                                                              const RuleList& model, uint32 numLabels) const override {
-            return factory.create(featureMatrix, model, nullptr, numLabels);
+                                                              const RuleList& model, uint32 numOutputs) const override {
+            return factory.create(featureMatrix, model, nullptr, numOutputs);
         }
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(

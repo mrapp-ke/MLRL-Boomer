@@ -188,15 +188,15 @@ std::unique_ptr<ISparseBinaryPredictor> RuleList::createSparseBinaryPredictor(
 std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(const IScorePredictorFactory& factory,
                                                                 const CContiguousView<const float32>& featureMatrix,
                                                                 const IOutputSpaceInfo& outputSpaceInfo,
-                                                                uint32 numLabels) const {
-    return outputSpaceInfo.createScorePredictor(factory, featureMatrix, *this, numLabels);
+                                                                uint32 numOutputs) const {
+    return outputSpaceInfo.createScorePredictor(factory, featureMatrix, *this, numOutputs);
 }
 
 std::unique_ptr<IScorePredictor> RuleList::createScorePredictor(const IScorePredictorFactory& factory,
                                                                 const CsrView<const float32>& featureMatrix,
                                                                 const IOutputSpaceInfo& outputSpaceInfo,
-                                                                uint32 numLabels) const {
-    return outputSpaceInfo.createScorePredictor(factory, featureMatrix, *this, numLabels);
+                                                                uint32 numOutputs) const {
+    return outputSpaceInfo.createScorePredictor(factory, featureMatrix, *this, numOutputs);
 }
 
 std::unique_ptr<IProbabilityPredictor> RuleList::createProbabilityPredictor(
