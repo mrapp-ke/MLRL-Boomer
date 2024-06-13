@@ -625,16 +625,16 @@ class LearnerRunnable(Runnable, ABC):
         parser.add_argument(self.PARAM_PRINT_PREDICTIONS,
                             type=str,
                             default=BooleanOption.FALSE.value,
-                            help='Whether the predictions for individual examples and labels should be printed on the '
-                            + 'console or not. Must be one of ' + format_dict_keys(self.PRINT_PREDICTIONS_VALUES) + '. '
-                            + 'For additional options refer to the documentation.')
+                            help='Whether predictions should be printed on the console or not. Must be one of '
+                            + format_dict_keys(self.PRINT_PREDICTIONS_VALUES) + '. For additional options refer to the '
+                            + 'documentation.')
         parser.add_argument(self.PARAM_STORE_PREDICTIONS,
                             type=str,
                             default=BooleanOption.FALSE.value,
-                            help='Whether the predictions for individual examples and labels should be written into '
-                            + 'output files or not. Must be one of ' + format_dict_keys(self.STORE_PREDICTIONS_VALUES)
-                            + '. Does only have an effect, if the parameter ' + self.PARAM_OUTPUT_DIR + ' is '
-                            + 'specified. For additional options refer to the documentation.')
+                            help='Whether predictions should be written into output files or not. Must be one of '
+                            + format_dict_keys(self.STORE_PREDICTIONS_VALUES) + '. Does only have an effect, if the '
+                            + 'parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to '
+                            + 'the documentation.')
         parser.add_argument(self.PARAM_PREDICTION_TYPE,
                             type=str,
                             default=PredictionType.BINARY.value,
