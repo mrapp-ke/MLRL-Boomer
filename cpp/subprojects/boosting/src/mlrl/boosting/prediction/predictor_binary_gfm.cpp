@@ -47,8 +47,8 @@ namespace boosting {
 
     /**
      * Allows to create instances of the type `IBinaryPredictor` that allow to predict whether individual labels of
-     * given query examples are relevant or irrelevant by discretizing the regression scores or probability estimates
-     * that are predicted for each label according to the general F-measure maximizer (GFM).
+     * given query examples are relevant or irrelevant by discretizing the scores or probability estimates that are
+     * predicted for each label according to the general F-measure maximizer (GFM).
      */
     class GfmBinaryPredictorFactory final : public IBinaryPredictorFactory {
         private:
@@ -67,8 +67,8 @@ namespace boosting {
              * @param jointProbabilityFunctionFactoryPtr    An unique pointer to an object of type
              *                                              `IJointProbabilityFunctionFactory` that allows to create
              *                                              implementations of the transformation function to be used to
-             *                                              transform regression scores that are predicted for an
-             *                                              example into a joint probability
+             *                                              transform scores that are predicted for an example into a
+             *                                              joint probability
              * @param marginalProbabilityCalibrationModel   A pointer to an object of type
              *                                              `IMarginalProbabilityCalibrationModel` to be used for the
              *                                              calibration of marginal probabilities or a null pointer, if
@@ -138,8 +138,8 @@ namespace boosting {
 
     /**
      * Allows to create instances of the type `ISparseBinaryPredictor` that allow to predict whether individual labels
-     * of given query examples are relevant or irrelevant by discretizing the regression scores or probability estimates
-     * that are predicted for each label according to the general F-measure maximizer (GFM).
+     * of given query examples are relevant or irrelevant by discretizing the scores or probability estimates that are
+     * predicted for each label according to the general F-measure maximizer (GFM).
      */
     class GfmSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
         private:
@@ -158,8 +158,8 @@ namespace boosting {
              * @param jointProbabilityFunctionFactoryPtr    An unique pointer to an object of type
              *                                              `IJointProbabilityFunctionFactory` that allows to create
              *                                              implementations of the function to be used to transform
-             *                                              regression scores that are predicted for an example into
-             *                                              a joint probability
+             *                                              scores that are predicted for an example into a joint
+             *                                              probability
              * @param marginalProbabilityCalibrationModel   A pointer to an object of type
              *                                              `IMarginalProbabilityCalibrationModel` to be used for the
              *                                              calibration of marginal probabilities or a null pointer, if
@@ -234,12 +234,12 @@ namespace boosting {
     }
 
     std::unique_ptr<IBinaryPredictorFactory> GfmBinaryPredictorConfig::createPredictorFactory(
-      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
         std::unique_ptr<IJointProbabilityFunctionFactory> jointProbabilityFunctionFactoryPtr =
           lossConfigPtr_->createJointProbabilityFunctionFactory();
 
         if (jointProbabilityFunctionFactoryPtr) {
-            uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+            uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numOutputs);
             return std::make_unique<GfmBinaryPredictorFactory>(
               std::move(jointProbabilityFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
               noJointProbabilityCalibrationModelPtr_.get(), numThreads);

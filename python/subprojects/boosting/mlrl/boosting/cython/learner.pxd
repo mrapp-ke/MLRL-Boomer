@@ -2,7 +2,7 @@ from mlrl.boosting.cython.head_type cimport IDynamicPartialHeadConfig, IFixedPar
 from mlrl.boosting.cython.label_binning cimport IEqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport IConstantShrinkageConfig
 from mlrl.boosting.cython.prediction cimport IExampleWiseBinaryPredictorConfig, IGfmBinaryPredictorConfig, \
-    ILabelWiseBinaryPredictorConfig, ILabelWiseProbabilityPredictorConfig, IMarginalizedProbabilityPredictorConfig
+    IMarginalizedProbabilityPredictorConfig, IOutputWiseBinaryPredictorConfig, IOutputWiseProbabilityPredictorConfig
 from mlrl.boosting.cython.probability_calibration cimport IIsotonicJointProbabilityCalibratorConfig, \
     IIsotonicMarginalProbabilityCalibratorConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig
@@ -118,11 +118,11 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
         IDynamicPartialHeadConfig& useDynamicPartialHeads()
 
 
-    cdef cppclass ISingleLabelHeadMixin"boosting::IBoostingRuleLearner::ISingleLabelHeadMixin":
+    cdef cppclass ISingleOutputHeadMixin"boosting::IBoostingRuleLearner::ISingleOutputHeadMixin":
 
         # Functions:
         
-        void useSingleLabelHeads()
+        void useSingleOutputHeads()
 
 
     cdef cppclass IAutomaticHeadMixin"boosting::IBoostingRuleLearner::IAutomaticHeadMixin":
@@ -153,46 +153,46 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
         void useAutomaticStatistics()
 
 
-    cdef cppclass IExampleWiseLogisticLossMixin"boosting::IBoostingRuleLearner::IExampleWiseLogisticLossMixin":
+    cdef cppclass INonDecomposableLogisticLossMixin"boosting::IBoostingRuleLearner::INonDecomposableLogisticLossMixin":
 
         # Functions:
 
-        void useExampleWiseLogisticLoss()
+        void useNonDecomposableLogisticLoss()
 
 
-    cdef cppclass IExampleWiseSquaredErrorLossMixin"boosting::IBoostingRuleLearner::IExampleWiseSquaredErrorLossMixin":
-
-        # Functions:
-
-        void useExampleWiseSquaredErrorLoss()
-
-
-    cdef cppclass IExampleWiseSquaredHingeLossMixin"boosting::IBoostingRuleLearner::IExampleWiseSquaredHingeLossMixin":
+    cdef cppclass INonDecomposableSquaredErrorLossMixin"boosting::IBoostingRuleLearner::INonDecomposableSquaredErrorLossMixin":
 
         # Functions:
 
-        void useExampleWiseSquaredHingeLoss()
+        void useNonDecomposableSquaredErrorLoss()
 
 
-    cdef cppclass ILabelWiseLogisticLossMixin"boosting::IBoostingRuleLearner::ILabelWiseLogisticLossMixin":
+    cdef cppclass INonDecomposableSquaredHingeLossMixin"boosting::IBoostingRuleLearner::INonDecomposableSquaredHingeLossMixin":
 
         # Functions:
 
-        void useLabelWiseLogisticLoss()
+        void useNonDecomposableSquaredHingeLoss()
+
+
+    cdef cppclass IDecomposableLogisticLossMixin"boosting::IBoostingRuleLearner::IDecomposableLogisticLossMixin":
+
+        # Functions:
+
+        void useDecomposableLogisticLoss()
 
         
-    cdef cppclass ILabelWiseSquaredErrorLossMixin"boosting::IBoostingRuleLearner::ILabelWiseSquaredErrorLossMixin":
+    cdef cppclass IDecomposableSquaredErrorLossMixin"boosting::IBoostingRuleLearner::IDecomposableSquaredErrorLossMixin":
 
         # Functions:
 
-        void useLabelWiseSquaredErrorLoss()
+        void useDecomposableSquaredErrorLoss()
 
 
-    cdef cppclass ILabelWiseSquaredHingeLossMixin"boosting::IBoostingRuleLearner::ILabelWiseSquaredHingeLossMixin":
+    cdef cppclass IDecomposableSquaredHingeLossMixin"boosting::IBoostingRuleLearner::IDecomposableSquaredHingeLossMixin":
 
         # Functions:
 
-        void useLabelWiseSquaredHingeLoss()
+        void useDecomposableSquaredHingeLoss()
 
 
     cdef cppclass INoLabelBinningMixin"boosting::IBoostingRuleLearner::INoLabelBinningMixin":
@@ -230,11 +230,11 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
         void useAutomaticLabelBinning()
 
 
-    cdef cppclass ILabelWiseBinaryPredictorMixin"boosting::IBoostingRuleLearner::ILabelWiseBinaryPredictorMixin":
+    cdef cppclass IOutputWiseBinaryPredictorMixin"boosting::IBoostingRuleLearner::IOutputWiseBinaryPredictorMixin":
 
         # Functions:
 
-        ILabelWiseBinaryPredictorConfig& useLabelWiseBinaryPredictor()
+        IOutputWiseBinaryPredictorConfig& useOutputWiseBinaryPredictor()
 
 
     cdef cppclass IExampleWiseBinaryPredictorMixin"boosting::IBoostingRuleLearner::IExampleWiseBinaryPredictorMixin":
@@ -258,19 +258,19 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
         void useAutomaticBinaryPredictor()
 
 
-    cdef cppclass ILabelWiseScorePredictorMixin"boosting::IBoostingRuleLearner::ILabelWiseScorePredictorMixin":
+    cdef cppclass IOutputWiseScorePredictorMixin"boosting::IBoostingRuleLearner::IOutputWiseScorePredictorMixin":
 
         # Functions:
 
-        void useLabelWiseScorePredictor()
+        void useOutputWiseScorePredictor()
 
 
-    cdef cppclass ILabelWiseProbabilityPredictorMixin \
-        "boosting::IBoostingRuleLearner::ILabelWiseProbabilityPredictorMixin":
+    cdef cppclass IOutputWiseProbabilityPredictorMixin \
+        "boosting::IBoostingRuleLearner::IOutputWiseProbabilityPredictorMixin":
 
         # Functions:
 
-        ILabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor()
+        IOutputWiseProbabilityPredictorConfig& useOutputWiseProbabilityPredictor()
 
 
     cdef cppclass IMarginalizedProbabilityPredictorMixin\

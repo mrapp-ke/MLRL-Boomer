@@ -25,7 +25,7 @@ class SeCo(RuleLearner, ClassifierMixin, MultiOutputMixin):
     def __init__(self,
                  random_state: Optional[int] = None,
                  feature_format: Optional[str] = None,
-                 label_format: Optional[str] = None,
+                 output_format: Optional[str] = None,
                  prediction_format: Optional[str] = None,
                  rule_induction: Optional[str] = None,
                  max_rules: Optional[int] = None,
@@ -35,7 +35,7 @@ class SeCo(RuleLearner, ClassifierMixin, MultiOutputMixin):
                  lift_function: Optional[str] = None,
                  heuristic: Optional[str] = None,
                  pruning_heuristic: Optional[str] = None,
-                 label_sampling: Optional[str] = None,
+                 output_sampling: Optional[str] = None,
                  instance_sampling: Optional[str] = None,
                  feature_sampling: Optional[str] = None,
                  holdout: Optional[str] = None,
@@ -55,8 +55,8 @@ class SeCo(RuleLearner, ClassifierMixin, MultiOutputMixin):
         :param sequential_post_optimization:    Whether each rule in a previously learned model should be optimized by
                                                 being relearned in the context of the other rules or not. Must be 'true'
                                                 or 'false'. For additional options refer to the documentation
-        :param head_type:                       The type of the rule heads that should be used. Must be 'single-label'
-                                                or 'partial'
+        :param head_type:                       The type of the rule heads that should be used. Must be 'single' or
+                                                'partial'
         :param lift_function:                   The lift function that should be used for the induction of partial rule
                                                 heads. Must be 'peak', 'kln' or 'none'. For additional options refer to
                                                 the documentation
@@ -67,21 +67,21 @@ class SeCo(RuleLearner, ClassifierMixin, MultiOutputMixin):
                                                 'precision', 'recall', 'weighted-relative-accuracy', 'f-measure',
                                                 'm-estimate' or 'laplace'. For additional options refer to the
                                                 documentation
-        :param label_sampling:                  The strategy that should be used to sample from the available labels
-                                                whenever a new rule is learned. Must be 'without-replacement' or 'none',
-                                                if no sampling should be used. For additional options refer to the
-                                                documentation
+        :param output_sampling:                 The strategy that should be used to sample from the available outputs
+                                                whenever a new rule is learned. Must be 'round-robin',
+                                                'without-replacement' or 'none', if no sampling should be used. For
+                                                additional options refer to the documentation
         :param instance_sampling:               The strategy that should be used to sample from the available the
                                                 training examples whenever a new rule is learned. Must be
-                                                'with-replacement', 'without-replacement', 'stratified_label_wise',
-                                                'stratified_example_wise' or 'none', if no sampling should be used. For
+                                                'with-replacement', 'without-replacement', 'stratified-output-wise',
+                                                'stratified-example-wise' or 'none', if no sampling should be used. For
                                                 additional options refer to the documentation
         :param feature_sampling:                The strategy that is used to sample from the available features whenever
                                                 a rule is refined. Must be 'without-replacement' or 'none', if no
                                                 sampling should be used. For additional options refer to the
                                                 documentation
         :param holdout:                         The name of the strategy that should be used to creating a holdout set.
-                                                Must be 'random', 'stratified-label-wise', 'stratified-example-wise' or
+                                                Must be 'random', 'stratified-output-wise', 'stratified-example-wise' or
                                                 'none', if no holdout set should be used. For additional options refer
                                                 to the documentation
         :param feature_binning:                 The strategy that should be used to assign examples to bins based on
@@ -102,7 +102,7 @@ class SeCo(RuleLearner, ClassifierMixin, MultiOutputMixin):
                                                 parallel or not. Must be 'true' or 'false'. For additional options refer
                                                 to the documentation
         """
-        super().__init__(random_state, feature_format, label_format, prediction_format)
+        super().__init__(random_state, feature_format, output_format, prediction_format)
         self.rule_induction = rule_induction
         self.max_rules = max_rules
         self.time_limit = time_limit
@@ -111,7 +111,7 @@ class SeCo(RuleLearner, ClassifierMixin, MultiOutputMixin):
         self.lift_function = lift_function
         self.heuristic = heuristic
         self.pruning_heuristic = pruning_heuristic
-        self.label_sampling = label_sampling
+        self.output_sampling = output_sampling
         self.instance_sampling = instance_sampling
         self.feature_sampling = feature_sampling
         self.holdout = holdout

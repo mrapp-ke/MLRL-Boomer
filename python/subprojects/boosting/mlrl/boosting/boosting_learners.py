@@ -24,7 +24,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
     def __init__(self,
                  random_state: Optional[int] = None,
                  feature_format: Optional[str] = None,
-                 label_format: Optional[str] = None,
+                 output_format: Optional[str] = None,
                  prediction_format: Optional[str] = None,
                  statistic_format: Optional[str] = None,
                  default_rule: Optional[str] = None,
@@ -39,7 +39,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                  joint_probability_calibration: Optional[str] = None,
                  binary_predictor: Optional[str] = None,
                  probability_predictor: Optional[str] = None,
-                 label_sampling: Optional[str] = None,
+                 output_sampling: Optional[str] = None,
                  instance_sampling: Optional[str] = None,
                  feature_sampling: Optional[str] = None,
                  holdout: Optional[str] = None,
@@ -73,14 +73,14 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         :param sequential_post_optimization:        Whether each rule in a previously learned model should be optimized
                                                     by being relearned in the context of the other rules or not. Must be
                                                     'true' or 'false'. For additional options refer to the documentation
-        :param head_type:                           The type of the rule heads that should be used. Must be
-                                                    'single-label', 'complete', 'partial-fixed', 'partial-dynamic' or
-                                                    'auto', if the type of the heads should be chosen automatically. For
-                                                    additional options refer to the documentation
+        :param head_type:                           The type of the rule heads that should be used. Must be 'single',
+                                                    'complete', 'partial-fixed', 'partial-dynamic' or 'auto', if the
+                                                    type of the heads should be chosen automatically. For additional
+                                                    options refer to the documentation
         :param loss:                                The loss function to be minimized. Must be
-                                                    'squared-error-label-wise', 'squared-error-example-wise',
-                                                    'squared-hinge-label-wise', 'squared-hinge-example-wise',
-                                                    'logistic-label-wise' or 'logistic-example-wise'
+                                                    'squared-error-decomposable', 'squared-error-non-decomposable',
+                                                    'squared-hinge-decomposable', 'squared-hinge-non-decomposable',
+                                                    'logistic-decomposable' or 'logistic-non-decomposable'
         :param marginal_probability_calibration:    The method that should be used for the calibration of marginal
                                                     probabilities. Must be 'isotonic' or 'none', if no probability
                                                     calibration should be used.
@@ -88,28 +88,28 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                                                     probabilities. Must be 'isotonic' or 'none', if no probability
                                                     calibration should be used
         :param binary_predictor:                    The strategy that should be used for predicting binary labels. Must
-                                                    be 'label-wise', 'example-wise', 'gfm' or 'auto', if the most
+                                                    be 'output-wise', 'example-wise', 'gfm' or 'auto', if the most
                                                     suitable strategy should be chosen automatically, depending on the
                                                     loss function
         :param probability_predictor:               The strategy that should be used for predicting probabilities. Must
-                                                    be 'label-wise', 'marginalized' or 'auto', if the most suitable
+                                                    be 'output-wise', 'marginalized' or 'auto', if the most suitable
                                                     strategy should be chosen automatically, depending on the loss
                                                     function
-        :param label_sampling:                      The strategy that should be used to sample from the available labels
-                                                    whenever a new rule is learned. Must be 'without-replacement' or
-                                                    'none', if no sampling should be used. For additional options refer
-                                                    to the documentation
+        :param output_sampling:                     The strategy that should be used to sample from the available
+                                                    outputs whenever a new rule is learned. Must be 'round-robin',
+                                                    'without-replacement' or 'none', if no sampling should be used. For
+                                                    additional options refer to the documentation
         :param instance_sampling:                   The strategy that should be used to sample from the available the
                                                     training examples whenever a new rule is learned. Must be
-                                                    'with-replacement', 'without-replacement', 'stratified_label_wise',
-                                                    'stratified_example_wise' or 'none', if no sampling should be used.
+                                                    'with-replacement', 'without-replacement', 'stratified-output-wise',
+                                                    'stratified-example-wise' or 'none', if no sampling should be used.
                                                     For additional options refer to the documentation
         :param feature_sampling:                    The strategy that is used to sample from the available features
                                                     whenever a rule is refined. Must be 'without-replacement' or 'none',
                                                     if no sampling should be used. For additional options refer to the
                                                     documentation
         :param holdout:                             The name of the strategy that should be used to create a holdout
-                                                    set. Must be 'random', 'stratified-label-wise',
+                                                    set. Must be 'random', 'stratified-output-wise',
                                                     'stratified-example-wise' or 'none', if no holdout set should be
                                                     used. If set to 'auto', the most suitable strategy is chosen
                                                     automatically depending on whether a holdout set is needed and
@@ -145,7 +145,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
                                                     parallel or not. Must be 'true' or 'false'. For additional options
                                                     refer to the documentation
         """
-        super().__init__(random_state, feature_format, label_format, prediction_format)
+        super().__init__(random_state, feature_format, output_format, prediction_format)
         self.statistic_format = statistic_format
         self.default_rule = default_rule
         self.rule_induction = rule_induction
@@ -159,7 +159,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         self.joint_probability_calibration = joint_probability_calibration
         self.binary_predictor = binary_predictor
         self.probability_predictor = probability_predictor
-        self.label_sampling = label_sampling
+        self.output_sampling = output_sampling
         self.instance_sampling = instance_sampling
         self.feature_sampling = feature_sampling
         self.holdout = holdout

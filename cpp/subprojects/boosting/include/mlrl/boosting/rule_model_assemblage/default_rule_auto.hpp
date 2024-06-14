@@ -40,7 +40,7 @@ namespace boosting {
             /**
              * @see `IDefaultRuleConfig::isDefaultRuleUsed`
              */
-            bool isDefaultRuleUsed(const IRowWiseLabelMatrix& labelMatrix) const override;
+            bool isDefaultRuleUsed(const IOutputMatrix& outputMatrix) const override;
     };
 
 }

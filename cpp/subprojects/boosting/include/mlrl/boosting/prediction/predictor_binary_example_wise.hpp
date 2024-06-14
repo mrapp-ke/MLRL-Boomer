@@ -12,8 +12,8 @@ namespace boosting {
 
     /**
      * Defines an interface for all classes that allow to configure a predictor that predicts known label vectors for
-     * given query examples by comparing the predicted regression scores or probability estimates to the label vectors
-     * encountered in the training data.
+     * given query examples by comparing the predicted scores or probability estimates to the label vectors encountered
+     * in the training data.
      */
     class MLRLBOOSTING_API IExampleWiseBinaryPredictorConfig {
         public:
@@ -21,20 +21,18 @@ namespace boosting {
             virtual ~IExampleWiseBinaryPredictorConfig() {}
 
             /**
-             * Returns whether binary predictions are derived from probability estimates rather than regression scores
-             * or not.
+             * Returns whether binary predictions are derived from probability estimates rather than scores or not.
              *
-             * @return True, if binary predictions are derived from probability estimates rather than regression scores,
-             *         false otherwise
+             * @return True, if binary predictions are derived from probability estimates rather than scores, false
+             *         otherwise
              */
             virtual bool isBasedOnProbabilities() const = 0;
 
             /**
-             * Sets whether binary predictions should be derived from probability estimates rather than regression
-             * scores or not.
+             * Sets whether binary predictions should be derived from probability estimates rather than scores or not.
              *
              * @param basedOnProbabilities  True, if binary predictions should be derived from probability estimates
-             *                              rather than regression scores, false otherwise
+             *                              rather than scores, false otherwise
              * @return                      A reference to an object of type `IExampleWiseBinaryPredictorConfig` that
              *                              allows further configuration of the predictor
              */
@@ -62,7 +60,7 @@ namespace boosting {
 
     /**
      * Allows to configure a predictor that predicts known label vectors for given query examples by comparing the
-     * predicted regression scores or probability estimates to the label vectors encountered in the training data.
+     * predicted scores or probability estimates to the label vectors encountered in the training data.
      */
     class ExampleWiseBinaryPredictorConfig final : public IExampleWiseBinaryPredictorConfig,
                                                    public IBinaryPredictorConfig {
@@ -103,7 +101,7 @@ namespace boosting {
              * @see `IPredictorConfig::createPredictorFactory`
              */
             std::unique_ptr<IBinaryPredictorFactory> createPredictorFactory(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                            uint32 numLabels) const override;
+                                                                            uint32 numOutputs) const override;
 
             /**
              * @see `IBinaryPredictorConfig::createSparsePredictorFactory`

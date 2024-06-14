@@ -40,15 +40,15 @@ class CoverageStoppingCriterionMixin(ABC):
         pass
     
 
-class SingleLabelHeadMixin(ABC):
+class SingleOutputHeadMixin(ABC):
     """
-    Allows to configure a rule learner to induce rules with single-label heads that predict for a single label.
+    Allows to configure a rule learner to induce rules with single-output heads that predict for a single output.
     """
 
     @abstractmethod
-    def use_single_label_heads(self):
+    def use_single_output_heads(self):
         """
-        Configures the rule learner to induce rules with single-label heads that predict for a single label.
+        Configures the rule learner to induce rules with single-output heads that predict for a single output.
         """
         pass
 
@@ -304,7 +304,7 @@ class WraPruningHeuristicMixin(ABC):
         pass
 
 
-class LabelWiseBinaryPredictionMixin(ABC):
+class OutputWiseBinaryPredictionMixin(ABC):
     """
     Allows to configure a rule learner to use a predictor for predicting whether individual labels of given query
     examples are relevant or irrelevant by processing rules of an existing rule-based model in the order they have been
@@ -312,7 +312,7 @@ class LabelWiseBinaryPredictionMixin(ABC):
     """
 
     @abstractmethod
-    def use_label_wise_binary_predictor(self):
+    def use_output_wise_binary_predictor(self):
         """
         Configures the rule learner to use predictor for predicting whether individual labels of given query examples
         are relevant or irrelevant by processing rules of an existing rule-based model in the order they have been

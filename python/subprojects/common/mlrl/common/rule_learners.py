@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides base classes for implementing single- or multi-label rule learning algorithms.
+Provides base classes for implementing rule learning algorithms.
 """
 import logging as log
 
@@ -18,15 +18,15 @@ from mlrl.common.cython.feature_info import EqualFeatureInfo, FeatureInfo, Mixed
 from mlrl.common.cython.feature_matrix import CContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
     FortranContiguousFeatureMatrix, RowWiseFeatureMatrix
 from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
-from mlrl.common.cython.label_space_info import LabelSpaceInfo
 from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
+from mlrl.common.cython.output_space_info import OutputSpaceInfo
 from mlrl.common.cython.probability_calibration import JointProbabilityCalibrationModel, \
     MarginalProbabilityCalibrationModel
 from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.cython.validation import assert_greater_or_equal
 from mlrl.common.data_types import Float32, Uint8, Uint32
 from mlrl.common.format import format_enum_values
-from mlrl.common.learners import IncrementalLearner, Learner, NominalAttributeLearner, OrdinalAttributeLearner
+from mlrl.common.learners import IncrementalLearner, Learner, NominalFeatureLearner, OrdinalFeatureLearner
 
 KWARG_SPARSE_FEATURE_VALUE = 'sparse_feature_value'
 
@@ -108,7 +108,7 @@ def should_enforce_sparse(matrix,
                      + '"')
 
 
-def create_binary_predictor(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
+def create_binary_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
                             marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
                             joint_probability_calibration_model: JointProbabilityCalibrationModel, num_labels: int,
                             feature_matrix: RowWiseFeatureMatrix, sparse: bool):
@@ -117,7 +117,7 @@ def create_binary_predictor(learner: RuleLearnerWrapper, model: RuleModel, label
 
     :param learner:                                 The learner for which the predictor should be created
     :param model:                                   The model to be used for prediction
-    :param label_space_info:                        Information about the label space that may be used for prediction
+    :param output_space_info:                       Information about the output space that may be used for prediction
     :param marginal_probability_calibration_model:  A model for the calibration of marginal probabilities
     :param joint_probability_calibration_model:     A model for the calibration of joint probabilities
     :param num_labels:                              The total number of labels to predict for
@@ -128,30 +128,30 @@ def create_binary_predictor(learner: RuleLearnerWrapper, model: RuleModel, label
     :return:                                        The predictor that has been created
     """
     if sparse:
-        return learner.create_sparse_binary_predictor(feature_matrix, model, label_space_info,
+        return learner.create_sparse_binary_predictor(feature_matrix, model, output_space_info,
                                                       marginal_probability_calibration_model,
                                                       joint_probability_calibration_model, num_labels)
-    return learner.create_binary_predictor(feature_matrix, model, label_space_info,
+    return learner.create_binary_predictor(feature_matrix, model, output_space_info,
                                            marginal_probability_calibration_model, joint_probability_calibration_model,
                                            num_labels)
 
 
-def create_score_predictor(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
-                           num_labels: int, feature_matrix: RowWiseFeatureMatrix):
+def create_score_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
+                           num_outputs: int, feature_matrix: RowWiseFeatureMatrix):
     """
-    Creates and returns a predictor for predicting regression scores.
+    Creates and returns a predictor for predicting scores.
 
     :param learner:             The learner for which the predictor should be created
     :param model:               The model to be used for prediction
-    :param label_space_info:    Information about the label space that may be used for prediction
-    :param num_labels:          The total number of labels to predict for
+    :param output_space_info:   Information about the output space that may be used for prediction
+    :param num_outputs:         The total number of outputs to predict for
     :param feature_matrix:      A feature matrix that provides row-wise access to the features of the query examples
     :return:                    The predictor that has been created
     """
-    return learner.create_score_predictor(feature_matrix, model, label_space_info, num_labels)
+    return learner.create_score_predictor(feature_matrix, model, output_space_info, num_outputs)
 
 
-def create_probability_predictor(learner: RuleLearnerWrapper, model: RuleModel, label_space_info: LabelSpaceInfo,
+def create_probability_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
                                  marginal_probability_calibration_model: MarginalProbabilityCalibrationModel,
                                  joint_probability_calibration_model: JointProbabilityCalibrationModel, num_labels: int,
                                  feature_matrix: RowWiseFeatureMatrix):
@@ -160,7 +160,7 @@ def create_probability_predictor(learner: RuleLearnerWrapper, model: RuleModel, 
 
     :param learner:                                 The learner for which the predictor should be created
     :param model:                                   The model to be used for prediction
-    :param label_space_info:                        Information about the label space that may be used for prediction
+    :param output_space_info:                       Information about the output space that may be used for prediction
     :param marginal_probability_calibration_model:  A model for the calibration of marginal probabilities
     :param joint_probability_calibration_model:     A model for the calibration of joint probabilities
     :param num_labels:                              The total number of labels to predict for
@@ -168,7 +168,7 @@ def create_probability_predictor(learner: RuleLearnerWrapper, model: RuleModel, 
                                                     the query examples
     :return:                                        The predictor that has been created
     """
-    return learner.create_probability_predictor(feature_matrix, model, label_space_info,
+    return learner.create_probability_predictor(feature_matrix, model, output_space_info,
                                                 marginal_probability_calibration_model,
                                                 joint_probability_calibration_model, num_labels)
 
@@ -188,9 +188,9 @@ def convert_into_sklearn_compatible_probabilities(probabilities: np.ndarray) -> 
     return probabilities
 
 
-class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, IncrementalLearner, ABC):
+class RuleLearner(Learner, NominalFeatureLearner, OrdinalFeatureLearner, IncrementalLearner, ABC):
     """
-    A scikit-learn implementation of a rule learning algorithm for multi-label classification or ranking.
+    A scikit-learn implementation of a rule learning algorithm.
     """
 
     class NativeIncrementalPredictor(IncrementalLearner.IncrementalPredictor):
@@ -278,21 +278,21 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         def apply_next(self, step_size: int):
             return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
 
-    def __init__(self, random_state: Optional[int], feature_format: Optional[str], label_format: Optional[str],
+    def __init__(self, random_state: Optional[int], feature_format: Optional[str], output_format: Optional[str],
                  prediction_format: Optional[str]):
         """
         :param random_state:        The seed to be used by RNGs. Must be at least 1
         :param feature_format:      The format to be used for the representation of the feature matrix. Must be
                                     `sparse`, `dense` or `auto`
-        :param label_format:        The format to be used for the representation of the label matrix. Must be `sparse`,
+        :param output_format:       The format to be used for the representation of the output matrix. Must be `sparse`,
                                     `dense` or 'auto'
-        :param prediction_format:   The format to be used for representation of predicted labels. Must be `sparse`,
+        :param prediction_format:   The format to be used for the representation of predictions. Must be `sparse`,
                                     `dense` or `auto`
         """
         super().__init__()
         self.random_state = random_state
         self.feature_format = feature_format
-        self.label_format = label_format
+        self.output_format = output_format
         self.prediction_format = prediction_format
 
     # pylint: disable=attribute-defined-outside-init
@@ -334,7 +334,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             prediction_sparse_policy == SparsePolicy.FORCE_SPARSE
             or is_sparse_and_memory_efficient(y, sparse_format=y_sparse_format, dtype=Uint8, sparse_values=False))
 
-        y_sparse_policy = parse_sparse_policy('label_format', self.label_format)
+        y_sparse_policy = parse_sparse_policy('output_format', self.output_format)
         y_enforce_sparse = should_enforce_sparse(y,
                                                  sparse_format=y_sparse_format,
                                                  policy=y_sparse_policy,
@@ -360,8 +360,8 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         learner = self._create_learner()
         random_state = int(self.random_state) if self.random_state else 1
         training_result = learner.fit(feature_info, feature_matrix, label_matrix, random_state)
-        self.num_labels_ = training_result.num_labels
-        self.label_space_info_ = training_result.label_space_info
+        self.num_outputs_ = training_result.num_outputs
+        self.output_space_info_ = training_result.output_space_info
         self.marginal_probability_calibration_model_ = training_result.marginal_probability_calibration_model
         self.joint_probability_calibration_model_ = training_result.joint_probability_calibration_model
         return training_result.rule_model
@@ -373,10 +373,10 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         :param num_features:    The total number of available features
         :return:                The `FeatureInfo` that has been created
         """
-        ordinal_attribute_indices = self.ordinal_attribute_indices
-        nominal_attribute_indices = self.nominal_attribute_indices
-        num_ordinal_features = 0 if ordinal_attribute_indices is None else len(ordinal_attribute_indices)
-        num_nominal_features = 0 if nominal_attribute_indices is None else len(nominal_attribute_indices)
+        ordinal_feature_indices = self.ordinal_feature_indices
+        nominal_feature_indices = self.nominal_feature_indices
+        num_ordinal_features = 0 if ordinal_feature_indices is None else len(ordinal_feature_indices)
+        num_nominal_features = 0 if nominal_feature_indices is None else len(nominal_feature_indices)
 
         if num_ordinal_features == 0 and num_nominal_features == 0:
             return EqualFeatureInfo.create_numerical()
@@ -384,7 +384,7 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
             return EqualFeatureInfo.create_ordinal()
         if num_nominal_features == num_features:
             return EqualFeatureInfo.create_nominal()
-        return MixedFeatureInfo(num_features, ordinal_attribute_indices, nominal_attribute_indices)
+        return MixedFeatureInfo(num_features, ordinal_feature_indices, nominal_feature_indices)
 
     def _predict_binary(self, x, **kwargs):
         """
@@ -393,15 +393,15 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
-        num_labels = self.num_labels_
+        num_outputs = self.num_outputs_
 
-        if learner.can_predict_binary(feature_matrix, num_labels):
+        if learner.can_predict_binary(feature_matrix, num_outputs):
             sparse_predictions = self.sparse_predictions_
             log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
-            return create_binary_predictor(learner, self.model_, self.label_space_info_,
+            return create_binary_predictor(learner, self.model_, self.output_space_info_,
                                            self.marginal_probability_calibration_model_,
-                                           self.joint_probability_calibration_model_, num_labels, feature_matrix,
+                                           self.joint_probability_calibration_model_, num_outputs, feature_matrix,
                                            sparse_predictions).predict(max_rules)
 
         return super()._predict_binary(x, **kwargs)
@@ -416,15 +416,15 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
-        num_labels = self.num_labels_
+        num_outputs = self.num_outputs_
 
-        if learner.can_predict_binary(feature_matrix, num_labels):
+        if learner.can_predict_binary(feature_matrix, num_outputs):
             sparse_predictions = self.sparse_predictions_
             log.debug('A %s matrix is used to store the predicted labels', 'sparse' if sparse_predictions else 'dense')
             model = self.model_
-            predictor = create_binary_predictor(learner, model, self.label_space_info_,
+            predictor = create_binary_predictor(learner, model, self.output_space_info_,
                                                 self.marginal_probability_calibration_model_,
-                                                self.joint_probability_calibration_model_, num_labels, feature_matrix,
+                                                self.joint_probability_calibration_model_, num_outputs, feature_matrix,
                                                 sparse_predictions)
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 
@@ -442,12 +442,12 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
-        num_labels = self.num_labels_
+        num_outputs = self.num_outputs_
 
-        if learner.can_predict_scores(feature_matrix, num_labels):
-            log.debug('A dense matrix is used to store the predicted regression scores')
+        if learner.can_predict_scores(feature_matrix, num_outputs):
+            log.debug('A dense matrix is used to store the predicted scores')
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
-            return create_score_predictor(learner, self.model_, self.label_space_info_, num_labels,
+            return create_score_predictor(learner, self.model_, self.output_space_info_, num_outputs,
                                           feature_matrix).predict(max_rules)
 
         return super()._predict_scores(x, **kwargs)
@@ -462,12 +462,12 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
-        num_labels = self.num_labels_
+        num_outputs = self.num_outputs_
 
-        if learner.can_predict_scores(feature_matrix, num_labels):
-            log.debug('A dense matrix is used to store the predicted regression scores')
+        if learner.can_predict_scores(feature_matrix, num_outputs):
+            log.debug('A dense matrix is used to store the predicted scores')
             model = self.model_
-            predictor = create_score_predictor(learner, model, self.label_space_info_, num_labels, feature_matrix)
+            predictor = create_score_predictor(learner, model, self.output_space_info_, num_outputs, feature_matrix)
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
@@ -484,15 +484,15 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
-        num_labels = self.num_labels_
+        num_outputs = self.num_outputs_
 
-        if learner.can_predict_probabilities(feature_matrix, num_labels):
+        if learner.can_predict_probabilities(feature_matrix, num_outputs):
             log.debug('A dense matrix is used to store the predicted probability estimates')
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
             return convert_into_sklearn_compatible_probabilities(
-                create_probability_predictor(learner, self.model_, self.label_space_info_,
+                create_probability_predictor(learner, self.model_, self.output_space_info_,
                                              self.marginal_probability_calibration_model_,
-                                             self.joint_probability_calibration_model_, num_labels,
+                                             self.joint_probability_calibration_model_, num_outputs,
                                              feature_matrix).predict(max_rules))
 
         return super()._predict_proba(x, **kwargs)
@@ -507,14 +507,14 @@ class RuleLearner(Learner, NominalAttributeLearner, OrdinalAttributeLearner, Inc
         """
         learner = self._create_learner()
         feature_matrix = self.__create_row_wise_feature_matrix(x, **kwargs)
-        num_labels = self.num_labels_
+        num_outputs = self.num_outputs_
 
-        if learner.can_predict_probabilities(feature_matrix, num_labels):
+        if learner.can_predict_probabilities(feature_matrix, num_outputs):
             log.debug('A dense matrix is used to store the predicted probability estimates')
             model = self.model_
-            predictor = create_probability_predictor(learner, model, self.label_space_info_,
+            predictor = create_probability_predictor(learner, model, self.output_space_info_,
                                                      self.marginal_probability_calibration_model_,
-                                                     self.joint_probability_calibration_model_, num_labels,
+                                                     self.joint_probability_calibration_model_, num_outputs,
                                                      feature_matrix)
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 

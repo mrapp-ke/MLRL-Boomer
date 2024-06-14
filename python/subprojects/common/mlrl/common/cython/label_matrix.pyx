@@ -3,40 +3,7 @@
 """
 
 
-cdef class LabelMatrix:
-    """
-    A label matrix.
-    """
-
-    cdef ILabelMatrix* get_label_matrix_ptr(self):
-        pass
-
-    def get_num_rows(self) -> int:
-        """
-        Returns the number of examples in the label matrix.
-
-        :return The number of examples
-        """
-        return self.get_label_matrix_ptr().getNumExamples()
-
-    def get_num_cols(self) -> int:
-        """
-        Returns the number of labels in the label matrix.
-
-        :return The number of labels
-        """
-        return self.get_label_matrix_ptr().getNumLabels()
-
-    def is_sparse(self) -> bool:
-        """
-        Returns whether the label matrix is sparse or not.
-
-        :return: True, if the label matrix is sparse, False otherwise
-        """
-        return self.get_label_matrix_ptr().isSparse()
-
-
-cdef class RowWiseLabelMatrix(LabelMatrix):
+cdef class RowWiseLabelMatrix(OutputMatrix):
     """
     A label matrix that provides row-wise access to the labels of examples.
     """
@@ -63,7 +30,7 @@ cdef class CContiguousLabelMatrix(RowWiseLabelMatrix):
         cdef uint32 num_labels = array.shape[1]
         self.label_matrix_ptr = createCContiguousLabelMatrix(&array[0, 0], num_examples, num_labels)
 
-    cdef ILabelMatrix* get_label_matrix_ptr(self):
+    cdef IOutputMatrix* get_output_matrix_ptr(self):
         return self.label_matrix_ptr.get()
 
     cdef IRowWiseLabelMatrix* get_row_wise_label_matrix_ptr(self):
@@ -91,7 +58,7 @@ cdef class CsrLabelMatrix(RowWiseLabelMatrix):
         self.indptr = indptr
         self.label_matrix_ptr = createCsrLabelMatrix(&indices[0], &indptr[0], num_examples, num_labels)
 
-    cdef ILabelMatrix* get_label_matrix_ptr(self):
+    cdef IOutputMatrix* get_output_matrix_ptr(self):
         return self.label_matrix_ptr.get()
 
     cdef IRowWiseLabelMatrix* get_row_wise_label_matrix_ptr(self):

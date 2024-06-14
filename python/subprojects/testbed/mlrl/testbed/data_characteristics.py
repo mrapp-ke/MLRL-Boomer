@@ -1,16 +1,16 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for printing certain characteristics of multi-label data sets. The characteristics can be written to
-one or several outputs, e.g., to the console or to a file.
+Provides classes for printing certain characteristics of data sets. The characteristics can be written to one or several
+outputs, e.g., to the console or to a file.
 """
 from functools import cached_property
 from typing import Any, Dict, List, Optional
 
 from mlrl.common.options import Options
 
-from mlrl.testbed.characteristics import LABEL_CHARACTERISTICS, Characteristic, LabelCharacteristics, density
-from mlrl.testbed.data import AttributeType, MetaData
+from mlrl.testbed.characteristics import OUTPUT_CHARACTERISTICS, Characteristic, OutputCharacteristics, density
+from mlrl.testbed.data import FeatureType, MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, filter_formatters, format_table
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
@@ -51,28 +51,28 @@ class FeatureCharacteristics:
         """
         The total number of features.
         """
-        return self._meta_data.get_num_attributes()
+        return self._meta_data.get_num_features()
 
     @cached_property
     def num_nominal_features(self):
         """
         The total number of nominal features.
         """
-        return self._meta_data.get_num_attributes({AttributeType.NOMINAL})
+        return self._meta_data.get_num_features({FeatureType.NOMINAL})
 
     @cached_property
     def num_ordinal_features(self):
         """
         The total number of ordinal features.
         """
-        return self._meta_data.get_num_attributes({AttributeType.ORDINAL})
+        return self._meta_data.get_num_features({FeatureType.ORDINAL})
 
     @cached_property
     def num_numerical_features(self):
         """
         The total number of numerical features.
         """
-        return self._meta_data.get_num_attributes({AttributeType.NUMERICAL})
+        return self._meta_data.get_num_features({FeatureType.NUMERICAL})
 
     @cached_property
     def feature_density(self):
@@ -102,22 +102,22 @@ FEATURE_CHARACTERISTICS: List[Characteristic] = [
 
 class DataCharacteristicsWriter(OutputWriter):
     """
-    Allows to write the characteristics of a data set to one or severals sinks.
+    Allows to write the characteristics of a data set to one or several sinks.
     """
 
     class DataCharacteristics(Formattable, Tabularizable):
         """
-        Stores characteristics of a feature matrix and a label matrix.
+        Stores characteristics of a feature matrix and an output matrix.
         """
 
         def __init__(self, feature_characteristics: FeatureCharacteristics,
-                     label_characteristics: LabelCharacteristics):
+                     output_characteristics: OutputCharacteristics):
             """
             :param feature_characteristics: The characteristics of the feature matrix
-            :param label_characteristics:   The characteristics of the label matrix
+            :param output_characteristics:  The characteristics of the output matrix
             """
             self.feature_characteristics = feature_characteristics
-            self.label_characteristics = label_characteristics
+            self.output_characteristics = output_characteristics
 
         def format(self, options: Options, **_) -> str:
             """
@@ -133,10 +133,10 @@ class DataCharacteristicsWriter(OutputWriter):
                     formatter.format(self.feature_characteristics, percentage=percentage, decimals=decimals)
                 ])
 
-            for formatter in filter_formatters(LABEL_CHARACTERISTICS, [options]):
+            for formatter in filter_formatters(OUTPUT_CHARACTERISTICS, [options]):
                 rows.append([
                     formatter.name,
-                    formatter.format(self.label_characteristics, percentage=percentage, decimals=decimals)
+                    formatter.format(self.output_characteristics, percentage=percentage, decimals=decimals)
                 ])
 
             return format_table(rows)
@@ -154,8 +154,8 @@ class DataCharacteristicsWriter(OutputWriter):
                                                       percentage=percentage,
                                                       decimals=decimals)
 
-            for formatter in filter_formatters(LABEL_CHARACTERISTICS, [options]):
-                columns[formatter] = formatter.format(self.label_characteristics,
+            for formatter in filter_formatters(OUTPUT_CHARACTERISTICS, [options]):
+                columns[formatter] = formatter.format(self.output_characteristics,
                                                       percentage=percentage,
                                                       decimals=decimals)
 
@@ -183,6 +183,6 @@ class DataCharacteristicsWriter(OutputWriter):
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         feature_characteristics = FeatureCharacteristics(meta_data, x)
-        label_characteristics = LabelCharacteristics(y)
+        output_characteristics = OutputCharacteristics(y)
         return DataCharacteristicsWriter.DataCharacteristics(feature_characteristics=feature_characteristics,
-                                                             label_characteristics=label_characteristics)
+                                                             output_characteristics=output_characteristics)

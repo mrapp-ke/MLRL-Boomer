@@ -6,11 +6,11 @@
 namespace boosting {
 
     std::unique_ptr<IFeatureBinningFactory> AutomaticFeatureBinningConfig::createFeatureBinningFactory(
-      const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+      const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
         if (!featureMatrix.isSparse() && featureMatrix.getNumExamples() > 200000) {
-            return EqualWidthFeatureBinningConfig().createFeatureBinningFactory(featureMatrix, labelMatrix);
+            return EqualWidthFeatureBinningConfig().createFeatureBinningFactory(featureMatrix, outputMatrix);
         } else {
-            return NoFeatureBinningConfig().createFeatureBinningFactory(featureMatrix, labelMatrix);
+            return NoFeatureBinningConfig().createFeatureBinningFactory(featureMatrix, outputMatrix);
         }
     }
 

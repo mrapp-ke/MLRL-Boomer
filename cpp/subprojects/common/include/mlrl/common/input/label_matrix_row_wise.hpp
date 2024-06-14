@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/common/input/label_matrix.hpp"
 #include "mlrl/common/input/label_vector.hpp"
+#include "mlrl/common/input/output_matrix.hpp"
 
 #include <memory>
 
@@ -26,7 +26,7 @@ class IJointProbabilityCalibrationModel;
 /**
  * Defines an interface for all label matrices that provide access to the labels of the training examples.
  */
-class MLRLCOMMON_API IRowWiseLabelMatrix : public ILabelMatrix {
+class MLRLCOMMON_API IRowWiseLabelMatrix : public IOutputMatrix {
     public:
 
         virtual ~IRowWiseLabelMatrix() override {}
@@ -74,8 +74,8 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : public ILabelMatrix {
          *                      create the instance
          * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
          *                      of the training examples that are included in the training set
-         * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics
-         *                      which serve as a basis for learning rules
+         * @param statistics    A reference to an object of type `IStatistics` that provides access to statistics about
+         *                      the quality of predictions for training examples
          * @return              An unique pointer to an object of type `IInstanceSampling` that has been created
          */
         virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
@@ -90,8 +90,8 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : public ILabelMatrix {
          * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
          *                      the training examples that are included in the training set and the holdout set,
          *                      respectively
-         * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics
-         *                      which serve as a basis for learning rules
+         * @param statistics    A reference to an object of type `IStatistics` that provides access to statistics about
+         *                      the quality of predictions for training examples
          * @return              An unique pointer to an object of type `IInstanceSampling` that has been created
          */
         virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
@@ -107,7 +107,7 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : public ILabelMatrix {
          * @param partition             A reference to an object of type `SinglePartition` that provides access to the
          *                              indices of the training examples that are included in the training set
          * @param statistics            A reference to an object of type `IStatistics` that provides access to
-         *                              statistics about the labels of the training examples
+         *                              statistics about the quality of predictions for training examples
          * @return                      An unique pointer to an object of type `IMarginalProbabilityCalibrationModel`
          *                              that has been fit
          */
@@ -125,7 +125,7 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : public ILabelMatrix {
          *                              indices of the training examples that are included in the training set and the
          *                              holdout set, respectively
          * @param statistics            A reference to an object of type `IStatistics` that provides access to
-         *                              statistics about the labels of the training examples
+         *                              statistics about the quality of predictions for training examples
          * @return                      An unique pointer to an object of type `IMarginalProbabilityCalibrationModel`
          *                              that has been fit
          */
@@ -141,7 +141,7 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : public ILabelMatrix {
          * @param partition             A reference to an object of type `SinglePartition` that provides access to the
          *                              indices of the training examples that are included in the training set
          * @param statistics            A reference to an object of type `IStatistics` that provides access to
-         *                              statistics about the labels of the training examples
+         *                              statistics about the quality of predictions for training examples
          * @return                      An unique pointer to an object of type `IJointProbabilityCalibrationModel` that
          *                              has been fit
          */
@@ -158,7 +158,7 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : public ILabelMatrix {
          *                              indices of the training examples that are included in the training set and the
          *                              holdout set, respectively
          * @param statistics            A reference to an object of type `IStatistics` that provides access to
-         *                              statistics about the labels of the training examples
+         *                              statistics about the quality of predictions for training examples
          * @return                      An unique pointer to an object of type `IJointProbabilityCalibrationModel` that
          *                              has been fit
          */

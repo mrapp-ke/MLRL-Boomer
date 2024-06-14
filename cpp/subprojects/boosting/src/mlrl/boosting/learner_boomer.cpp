@@ -6,7 +6,7 @@ namespace boosting {
         this->useSequentialRuleModelAssemblage();
         this->useGreedyTopDownRuleInduction();
         this->useDefaultRule();
-        this->useNoLabelSampling();
+        this->useNoOutputSampling();
         this->useNoInstanceSampling();
         this->useFeatureSamplingWithoutReplacement();
         this->useParallelPrediction();
@@ -23,12 +23,12 @@ namespace boosting {
         this->useAutomaticParallelStatisticUpdate();
         this->useAutomaticHeads();
         this->useAutomaticStatistics();
-        this->useLabelWiseLogisticLoss();
+        this->useDecomposableLogisticLoss();
         this->useNoL1Regularization();
         this->useL2Regularization();
         this->useAutomaticLabelBinning();
         this->useAutomaticBinaryPredictor();
-        this->useLabelWiseScorePredictor();
+        this->useOutputWiseScorePredictor();
         this->useAutomaticProbabilityPredictor();
     }
 

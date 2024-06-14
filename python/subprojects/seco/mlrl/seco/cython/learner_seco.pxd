@@ -5,22 +5,22 @@ from mlrl.common.cython.learner cimport IBeamSearchTopDownRuleInductionMixin, ID
     IExampleWiseStratifiedBiPartitionSamplingMixin, IExampleWiseStratifiedInstanceSamplingMixin, \
     IFeatureSamplingWithoutReplacementMixin, IGreedyTopDownRuleInductionMixin, \
     IInstanceSamplingWithoutReplacementMixin, IInstanceSamplingWithReplacementMixin, IIrepRulePruningMixin, \
-    ILabelSamplingWithoutReplacementMixin, ILabelWiseStratifiedBiPartitionSamplingMixin, \
-    ILabelWiseStratifiedInstanceSamplingMixin, INoFeatureBinningMixin, INoFeatureSamplingMixin, \
-    INoInstanceSamplingMixin, INoLabelSamplingMixin, INoParallelPredictionMixin, INoParallelRuleRefinementMixin, \
-    INoParallelStatisticUpdateMixin, INoPartitionSamplingMixin, INoRulePruningMixin, \
-    INoSequentialPostOptimizationMixin, INoSizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
+    INoFeatureBinningMixin, INoFeatureSamplingMixin, INoInstanceSamplingMixin, INoOutputSamplingMixin, \
+    INoParallelPredictionMixin, INoParallelRuleRefinementMixin, INoParallelStatisticUpdateMixin, \
+    INoPartitionSamplingMixin, INoRulePruningMixin, INoSequentialPostOptimizationMixin, INoSizeStoppingCriterionMixin, \
+    INoTimeStoppingCriterionMixin, IOutputSamplingWithoutReplacementMixin, \
+    IOutputWiseStratifiedBiPartitionSamplingMixin, IOutputWiseStratifiedInstanceSamplingMixin, \
     IParallelPredictionMixin, IParallelRuleRefinementMixin, IParallelStatisticUpdateMixin, \
-    IRandomBiPartitionSamplingMixin, IRoundRobinLabelSamplingMixin, IRuleLearner, ISequentialPostOptimizationMixin, \
+    IRandomBiPartitionSamplingMixin, IRoundRobinOutputSamplingMixin, IRuleLearner, ISequentialPostOptimizationMixin, \
     ISequentialRuleModelAssemblageMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, RuleLearner, \
     RuleLearnerConfig
 
 from mlrl.seco.cython.learner cimport IAccuracyHeuristicMixin, IAccuracyPruningHeuristicMixin, \
     ICoverageStoppingCriterionMixin, IFMeasureHeuristicMixin, IFMeasurePruningHeuristicMixin, IKlnLiftFunctionMixin, \
-    ILabelWiseBinaryPredictorMixin, ILaplaceHeuristicMixin, ILaplacePruningHeuristicMixin, IMEstimateHeuristicMixin, \
-    IMEstimatePruningHeuristicMixin, INoCoverageStoppingCriterionMixin, INoLiftFunctionMixin, IPartialHeadMixin, \
+    ILaplaceHeuristicMixin, ILaplacePruningHeuristicMixin, IMEstimateHeuristicMixin, IMEstimatePruningHeuristicMixin, \
+    INoCoverageStoppingCriterionMixin, INoLiftFunctionMixin, IOutputWiseBinaryPredictorMixin, IPartialHeadMixin, \
     IPeakLiftFunctionMixin, IPrecisionHeuristicMixin, IPrecisionPruningHeuristicMixin, IRecallHeuristicMixin, \
-    IRecallPruningHeuristicMixin, ISingleLabelHeadMixin, IWraHeuristicMixin, IWraPruningHeuristicMixin
+    IRecallPruningHeuristicMixin, ISingleOutputHeadMixin, IWraHeuristicMixin, IWraPruningHeuristicMixin
 
 
 cdef extern from "mlrl/seco/learner_seco.hpp" namespace "seco" nogil:
@@ -28,7 +28,7 @@ cdef extern from "mlrl/seco/learner_seco.hpp" namespace "seco" nogil:
     cdef cppclass IMultiLabelSeCoRuleLearnerConfig"seco::IMultiLabelSeCoRuleLearner::IConfig"(
             INoCoverageStoppingCriterionMixin,
             ICoverageStoppingCriterionMixin,
-            ISingleLabelHeadMixin,
+            ISingleOutputHeadMixin,
             IPartialHeadMixin,
             INoLiftFunctionMixin,
             IPeakLiftFunctionMixin,
@@ -47,7 +47,7 @@ cdef extern from "mlrl/seco/learner_seco.hpp" namespace "seco" nogil:
             IRecallPruningHeuristicMixin,
             IWraHeuristicMixin,
             IWraPruningHeuristicMixin,
-            ILabelWiseBinaryPredictorMixin,
+            IOutputWiseBinaryPredictorMixin,
             ISequentialRuleModelAssemblageMixin,
             IDefaultRuleMixin,
             IGreedyTopDownRuleInductionMixin,
@@ -55,19 +55,19 @@ cdef extern from "mlrl/seco/learner_seco.hpp" namespace "seco" nogil:
             INoFeatureBinningMixin,
             IEqualWidthFeatureBinningMixin,
             IEqualFrequencyFeatureBinningMixin,
-            INoLabelSamplingMixin,
-            IRoundRobinLabelSamplingMixin,
-            ILabelSamplingWithoutReplacementMixin,
+            INoOutputSamplingMixin,
+            IRoundRobinOutputSamplingMixin,
+            IOutputSamplingWithoutReplacementMixin,
             INoInstanceSamplingMixin,
             IInstanceSamplingWithReplacementMixin,
             IInstanceSamplingWithoutReplacementMixin,
-            ILabelWiseStratifiedInstanceSamplingMixin,
+            IOutputWiseStratifiedInstanceSamplingMixin,
             IExampleWiseStratifiedInstanceSamplingMixin,
             INoFeatureSamplingMixin,
             IFeatureSamplingWithoutReplacementMixin,
             INoPartitionSamplingMixin,
             IRandomBiPartitionSamplingMixin,
-            ILabelWiseStratifiedBiPartitionSamplingMixin,
+            IOutputWiseStratifiedBiPartitionSamplingMixin,
             IExampleWiseStratifiedBiPartitionSamplingMixin,
             INoRulePruningMixin,
             IIrepRulePruningMixin,

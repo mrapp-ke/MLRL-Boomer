@@ -7,7 +7,7 @@
 #include "mlrl/common/model/head.hpp"
 
 /**
- * A head that contains a numerical score for a subset of the available labels.
+ * A head that contains a numerical score for a subset of the available outputs.
  */
 class MLRLCOMMON_API PartialHead final
     : public IterableIndexedVectorDecorator<IndexedVectorDecorator<AllocatedVector<uint32>, AllocatedVector<float64>>>,

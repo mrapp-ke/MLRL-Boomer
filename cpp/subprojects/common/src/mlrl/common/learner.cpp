@@ -1,6 +1,6 @@
 #include "mlrl/common/learner.hpp"
 
-#include "mlrl/common/prediction/label_space_info_no.hpp"
+#include "mlrl/common/prediction/output_space_info_no.hpp"
 #include "mlrl/common/rule_refinement/feature_space_tabular.hpp"
 #include "mlrl/common/stopping/stopping_criterion_size.hpp"
 #include "mlrl/common/util/validation.hpp"
@@ -12,11 +12,11 @@
 class TrainingResult final : public ITrainingResult {
     private:
 
-        const uint32 numLabels_;
+        const uint32 numOutputs_;
 
         std::unique_ptr<IRuleModel> ruleModelPtr_;
 
-        std::unique_ptr<ILabelSpaceInfo> labelSpaceInfoPtr_;
+        std::unique_ptr<IOutputSpaceInfo> outputSpaceInfoPtr_;
 
         std::unique_ptr<IMarginalProbabilityCalibrationModel> marginalProbabilityCalibrationModelPtr_;
 
@@ -25,10 +25,10 @@ class TrainingResult final : public ITrainingResult {
     public:
 
         /**
-         * @param numLabels                                 The number of labels for which a model has been trained
+         * @param numOutputs                                The number of outputs for which a model has been trained
          * @param ruleModelPtr                              An unique pointer to an object of type `IRuleModel` that has
          *                                                  been trained
-         * @param labelSpaceInfoPtr                         An unique pointer to an object of type `ILabelSpaceInfo`
+         * @param outputSpaceInfoPtr                        An unique pointer to an object of type `IOutputSpaceInfo`
          *                                                  that may be used as a basis for making predictions
          * @param marginalProbabilityCalibrationModelPtr    An unique pointer to an object of type
          *                                                  `IMarginalProbabilityCalibrationModel` that may be used for
@@ -37,17 +37,17 @@ class TrainingResult final : public ITrainingResult {
          *                                                  `IJointProbabilityCalibrationModel` that may be used for the
          *                                                  calibration of joint probabilities
          */
-        TrainingResult(uint32 numLabels, std::unique_ptr<IRuleModel> ruleModelPtr,
-                       std::unique_ptr<ILabelSpaceInfo> labelSpaceInfoPtr,
+        TrainingResult(uint32 numOutputs, std::unique_ptr<IRuleModel> ruleModelPtr,
+                       std::unique_ptr<IOutputSpaceInfo> outputSpaceInfoPtr,
                        std::unique_ptr<IMarginalProbabilityCalibrationModel> marginalProbabilityCalibrationModelPtr,
                        std::unique_ptr<IJointProbabilityCalibrationModel> jointProbabilityCalibrationModelPtr)
-            : numLabels_(numLabels), ruleModelPtr_(std::move(ruleModelPtr)),
-              labelSpaceInfoPtr_(std::move(labelSpaceInfoPtr)),
+            : numOutputs_(numOutputs), ruleModelPtr_(std::move(ruleModelPtr)),
+              outputSpaceInfoPtr_(std::move(outputSpaceInfoPtr)),
               marginalProbabilityCalibrationModelPtr_(std::move(marginalProbabilityCalibrationModelPtr)),
               jointProbabilityCalibrationModelPtr_(std::move(jointProbabilityCalibrationModelPtr)) {}
 
-        uint32 getNumLabels() const override {
-            return numLabels_;
+        uint32 getNumOutputs() const override {
+            return numOutputs_;
         }
 
         std::unique_ptr<IRuleModel>& getRuleModel() override {
@@ -58,12 +58,12 @@ class TrainingResult final : public ITrainingResult {
             return ruleModelPtr_;
         }
 
-        std::unique_ptr<ILabelSpaceInfo>& getLabelSpaceInfo() override {
-            return labelSpaceInfoPtr_;
+        std::unique_ptr<IOutputSpaceInfo>& getOutputSpaceInfo() override {
+            return outputSpaceInfoPtr_;
         }
 
-        const std::unique_ptr<ILabelSpaceInfo>& getLabelSpaceInfo() const override {
-            return labelSpaceInfoPtr_;
+        const std::unique_ptr<IOutputSpaceInfo>& getOutputSpaceInfo() const override {
+            return outputSpaceInfoPtr_;
         }
 
         std::unique_ptr<IMarginalProbabilityCalibrationModel>& getMarginalProbabilityCalibrationModel() override {
@@ -90,7 +90,7 @@ AbstractRuleLearner::Config::Config(RuleCompareFunction ruleCompareFunction)
       ruleInductionConfigPtr_(
         std::make_unique<GreedyTopDownRuleInductionConfig>(ruleCompareFunction_, parallelRuleRefinementConfigPtr_)),
       featureBinningConfigPtr_(std::make_unique<NoFeatureBinningConfig>()),
-      labelSamplingConfigPtr_(std::make_unique<NoLabelSamplingConfig>()),
+      outputSamplingConfigPtr_(std::make_unique<NoOutputSamplingConfig>()),
       instanceSamplingConfigPtr_(std::make_unique<NoInstanceSamplingConfig>()),
       featureSamplingConfigPtr_(std::make_unique<NoFeatureSamplingConfig>()),
       partitionSamplingConfigPtr_(std::make_unique<NoPartitionSamplingConfig>()),
@@ -123,8 +123,8 @@ std::unique_ptr<IFeatureBinningConfig>& AbstractRuleLearner::Config::getFeatureB
     return featureBinningConfigPtr_;
 }
 
-std::unique_ptr<ILabelSamplingConfig>& AbstractRuleLearner::Config::getLabelSamplingConfigPtr() {
-    return labelSamplingConfigPtr_;
+std::unique_ptr<IOutputSamplingConfig>& AbstractRuleLearner::Config::getOutputSamplingConfigPtr() {
+    return outputSamplingConfigPtr_;
 }
 
 std::unique_ptr<IInstanceSamplingConfig>& AbstractRuleLearner::Config::getInstanceSamplingConfigPtr() {
@@ -210,22 +210,22 @@ std::unique_ptr<IRuleModelAssemblageFactory> AbstractRuleLearner::createRuleMode
 }
 
 std::unique_ptr<IFeatureSpaceFactory> AbstractRuleLearner::createFeatureSpaceFactory(
-  const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+  const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
     std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr =
-      config_.getFeatureBinningConfigPtr()->createFeatureBinningFactory(featureMatrix, labelMatrix);
+      config_.getFeatureBinningConfigPtr()->createFeatureBinningFactory(featureMatrix, outputMatrix);
     uint32 numThreads =
-      config_.getParallelStatisticUpdateConfigPtr()->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
+      config_.getParallelStatisticUpdateConfigPtr()->getNumThreads(featureMatrix, outputMatrix.getNumOutputs());
     return std::make_unique<TabularFeatureSpaceFactory>(std::move(featureBinningFactoryPtr), numThreads);
 }
 
 std::unique_ptr<IRuleInductionFactory> AbstractRuleLearner::createRuleInductionFactory(
-  const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
-    return config_.getRuleInductionConfigPtr()->createRuleInductionFactory(featureMatrix, labelMatrix);
+  const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
+    return config_.getRuleInductionConfigPtr()->createRuleInductionFactory(featureMatrix, outputMatrix);
 }
 
-std::unique_ptr<ILabelSamplingFactory> AbstractRuleLearner::createLabelSamplingFactory(
-  const ILabelMatrix& labelMatrix) const {
-    return config_.getLabelSamplingConfigPtr()->createLabelSamplingFactory(labelMatrix);
+std::unique_ptr<IOutputSamplingFactory> AbstractRuleLearner::createOutputSamplingFactory(
+  const IOutputMatrix& outputMatrix) const {
+    return config_.getOutputSamplingConfigPtr()->createOutputSamplingFactory(outputMatrix);
 }
 
 std::unique_ptr<IInstanceSamplingFactory> AbstractRuleLearner::createInstanceSamplingFactory() const {
@@ -325,7 +325,7 @@ void AbstractRuleLearner::createPostOptimizationPhaseFactories(PostOptimizationP
     }
 }
 
-std::unique_ptr<ILabelSpaceInfo> AbstractRuleLearner::createLabelSpaceInfo(
+std::unique_ptr<IOutputSpaceInfo> AbstractRuleLearner::createOutputSpaceInfo(
   const IRowWiseLabelMatrix& labelMatrix) const {
     const IBinaryPredictorConfig* binaryPredictorConfig = config_.getBinaryPredictorConfigPtr().get();
     const IScorePredictorConfig* scorePredictorConfig = config_.getScorePredictorConfigPtr().get();
@@ -339,7 +339,7 @@ std::unique_ptr<ILabelSpaceInfo> AbstractRuleLearner::createLabelSpaceInfo(
         || (jointProbabilityCalibratorConfig.isLabelVectorSetNeeded())) {
         return std::make_unique<LabelVectorSet>(labelMatrix);
     } else {
-        return createNoLabelSpaceInfo();
+        return createNoOutputSpaceInfo();
     }
 }
 
@@ -356,9 +356,9 @@ std::unique_ptr<ISparseBinaryPredictorFactory> AbstractRuleLearner::createSparse
 }
 
 std::unique_ptr<IScorePredictorFactory> AbstractRuleLearner::createScorePredictorFactory(
-  const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+  const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
     const IScorePredictorConfig* config = config_.getScorePredictorConfigPtr().get();
-    return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
+    return config ? config->createPredictorFactory(featureMatrix, numOutputs) : nullptr;
 }
 
 std::unique_ptr<IProbabilityPredictorFactory> AbstractRuleLearner::createProbabilityPredictorFactory(
@@ -384,8 +384,8 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
       std::make_unique<PostOptimizationPhaseListFactory>();
     this->createPostOptimizationPhaseFactories(*postOptimizationFactoryPtr);
 
-    // Create label space info...
-    std::unique_ptr<ILabelSpaceInfo> labelSpaceInfoPtr = this->createLabelSpaceInfo(labelMatrix);
+    // Create output space info...
+    std::unique_ptr<IOutputSpaceInfo> outputSpaceInfoPtr = this->createOutputSpaceInfo(labelMatrix);
 
     // Partition training data...
     std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr = this->createPartitionSamplingFactory();
@@ -416,9 +416,9 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
       this->createRuleInductionFactory(featureMatrix, labelMatrix);
     std::unique_ptr<IRuleInduction> ruleInductionPtr = ruleInductionFactoryPtr->create();
 
-    // Create label sampling...
-    std::unique_ptr<ILabelSamplingFactory> labelSamplingFactoryPtr = this->createLabelSamplingFactory(labelMatrix);
-    std::unique_ptr<ILabelSampling> labelSamplingPtr = labelSamplingFactoryPtr->create();
+    // Create output sampling...
+    std::unique_ptr<IOutputSamplingFactory> outputSamplingFactoryPtr = this->createOutputSamplingFactory(labelMatrix);
+    std::unique_ptr<IOutputSampling> outputSamplingPtr = outputSamplingFactoryPtr->create();
 
     // Create instance sampling...
     std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr = this->createInstanceSamplingFactory();
@@ -444,11 +444,11 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
     std::unique_ptr<IRuleModelAssemblage> ruleModelAssemblagePtr =
       ruleModelAssemblageFactoryPtr->create(std::move(stoppingCriterionFactoryPtr));
     ruleModelAssemblagePtr->induceRules(*ruleInductionPtr, *rulePruningPtr, *postProcessorPtr, partition,
-                                        *labelSamplingPtr, *instanceSamplingPtr, *featureSamplingPtr,
+                                        *outputSamplingPtr, *instanceSamplingPtr, *featureSamplingPtr,
                                         *statisticsProviderPtr, *featureSpacePtr, modelBuilder, rng);
 
     // Post-optimize the model...
-    postOptimizationPtr->optimizeModel(*featureSpacePtr, *ruleInductionPtr, partition, *labelSamplingPtr,
+    postOptimizationPtr->optimizeModel(*featureSpacePtr, *ruleInductionPtr, partition, *outputSamplingPtr,
                                        *instanceSamplingPtr, *featureSamplingPtr, *rulePruningPtr, *postProcessorPtr,
                                        rng);
 
@@ -465,20 +465,20 @@ std::unique_ptr<ITrainingResult> AbstractRuleLearner::fit(const IFeatureInfo& fe
     std::unique_ptr<IJointProbabilityCalibratorFactory> jointProbabilityCalibratorFactoryPtr =
       this->createJointProbabilityCalibratorFactory();
     std::unique_ptr<IJointProbabilityCalibrator> jointProbabilityCalibratorPtr =
-      labelSpaceInfoPtr->createJointProbabilityCalibrator(*jointProbabilityCalibratorFactoryPtr,
-                                                          *marginalProbabilityCalibrationModelPtr);
+      outputSpaceInfoPtr->createJointProbabilityCalibrator(*jointProbabilityCalibratorFactoryPtr,
+                                                           *marginalProbabilityCalibrationModelPtr);
     std::unique_ptr<IJointProbabilityCalibrationModel> jointProbabilityCalibrationModelPtr =
       partition.fitJointProbabilityCalibrationModel(*jointProbabilityCalibratorPtr, labelMatrix,
                                                     statisticsProviderPtr->get());
 
     return std::make_unique<TrainingResult>(
-      labelMatrix.getNumLabels(), modelBuilder.buildModel(), std::move(labelSpaceInfoPtr),
+      labelMatrix.getNumOutputs(), modelBuilder.buildModel(), std::move(outputSpaceInfoPtr),
       std::move(marginalProbabilityCalibrationModelPtr), std::move(jointProbabilityCalibrationModelPtr));
 }
 
 bool AbstractRuleLearner::canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix,
                                            const ITrainingResult& trainingResult) const {
-    return this->canPredictBinary(featureMatrix, trainingResult.getNumLabels());
+    return this->canPredictBinary(featureMatrix, trainingResult.getNumOutputs());
 }
 
 bool AbstractRuleLearner::canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
@@ -488,20 +488,20 @@ bool AbstractRuleLearner::canPredictBinary(const IRowWiseFeatureMatrix& featureM
 std::unique_ptr<IBinaryPredictor> AbstractRuleLearner::createBinaryPredictor(
   const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
     return this->createBinaryPredictor(
-      featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getLabelSpaceInfo(),
+      featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getOutputSpaceInfo(),
       *trainingResult.getMarginalProbabilityCalibrationModel(), *trainingResult.getJointProbabilityCalibrationModel(),
-      trainingResult.getNumLabels());
+      trainingResult.getNumOutputs());
 }
 
 std::unique_ptr<IBinaryPredictor> AbstractRuleLearner::createBinaryPredictor(
-  const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+  const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const IOutputSpaceInfo& outputSpaceInfo,
   const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
   const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
     std::unique_ptr<IBinaryPredictorFactory> predictorFactoryPtr =
       this->createBinaryPredictorFactory(featureMatrix, numLabels);
 
     if (predictorFactoryPtr) {
-        return featureMatrix.createBinaryPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo,
+        return featureMatrix.createBinaryPredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo,
                                                    marginalProbabilityCalibrationModel,
                                                    jointProbabilityCalibrationModel, numLabels);
     }
@@ -512,20 +512,20 @@ std::unique_ptr<IBinaryPredictor> AbstractRuleLearner::createBinaryPredictor(
 std::unique_ptr<ISparseBinaryPredictor> AbstractRuleLearner::createSparseBinaryPredictor(
   const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
     return this->createSparseBinaryPredictor(
-      featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getLabelSpaceInfo(),
+      featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getOutputSpaceInfo(),
       *trainingResult.getMarginalProbabilityCalibrationModel(), *trainingResult.getJointProbabilityCalibrationModel(),
-      trainingResult.getNumLabels());
+      trainingResult.getNumOutputs());
 }
 
 std::unique_ptr<ISparseBinaryPredictor> AbstractRuleLearner::createSparseBinaryPredictor(
-  const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+  const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const IOutputSpaceInfo& outputSpaceInfo,
   const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
   const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
     std::unique_ptr<ISparseBinaryPredictorFactory> predictorFactoryPtr =
       this->createSparseBinaryPredictorFactory(featureMatrix, numLabels);
 
     if (predictorFactoryPtr) {
-        return featureMatrix.createSparseBinaryPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo,
+        return featureMatrix.createSparseBinaryPredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo,
                                                          marginalProbabilityCalibrationModel,
                                                          jointProbabilityCalibrationModel, numLabels);
     }
@@ -535,7 +535,7 @@ std::unique_ptr<ISparseBinaryPredictor> AbstractRuleLearner::createSparseBinaryP
 
 bool AbstractRuleLearner::canPredictScores(const IRowWiseFeatureMatrix& featureMatrix,
                                            const ITrainingResult& trainingResult) const {
-    return this->canPredictScores(featureMatrix, trainingResult.getNumLabels());
+    return this->canPredictScores(featureMatrix, trainingResult.getNumOutputs());
 }
 
 bool AbstractRuleLearner::canPredictScores(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
@@ -545,26 +545,26 @@ bool AbstractRuleLearner::canPredictScores(const IRowWiseFeatureMatrix& featureM
 std::unique_ptr<IScorePredictor> AbstractRuleLearner::createScorePredictor(
   const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
     return this->createScorePredictor(featureMatrix, *trainingResult.getRuleModel(),
-                                      *trainingResult.getLabelSpaceInfo(), trainingResult.getNumLabels());
+                                      *trainingResult.getOutputSpaceInfo(), trainingResult.getNumOutputs());
 }
 
 std::unique_ptr<IScorePredictor> AbstractRuleLearner::createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                                            const IRuleModel& ruleModel,
-                                                                           const ILabelSpaceInfo& labelSpaceInfo,
-                                                                           uint32 numLabels) const {
+                                                                           const IOutputSpaceInfo& outputSpaceInfo,
+                                                                           uint32 numOutputs) const {
     std::unique_ptr<IScorePredictorFactory> predictorFactoryPtr =
-      this->createScorePredictorFactory(featureMatrix, numLabels);
+      this->createScorePredictorFactory(featureMatrix, numOutputs);
 
     if (predictorFactoryPtr) {
-        return featureMatrix.createScorePredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo, numLabels);
+        return featureMatrix.createScorePredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo, numOutputs);
     }
 
-    throw std::runtime_error("The rule learner does not support to predict regression scores");
+    throw std::runtime_error("The rule learner does not support to predict scores");
 }
 
 bool AbstractRuleLearner::canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix,
                                                   const ITrainingResult& trainingResult) const {
-    return this->canPredictProbabilities(featureMatrix, trainingResult.getNumLabels());
+    return this->canPredictProbabilities(featureMatrix, trainingResult.getNumOutputs());
 }
 
 bool AbstractRuleLearner::canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
@@ -574,20 +574,20 @@ bool AbstractRuleLearner::canPredictProbabilities(const IRowWiseFeatureMatrix& f
 std::unique_ptr<IProbabilityPredictor> AbstractRuleLearner::createProbabilityPredictor(
   const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
     return this->createProbabilityPredictor(
-      featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getLabelSpaceInfo(),
+      featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getOutputSpaceInfo(),
       *trainingResult.getMarginalProbabilityCalibrationModel(), *trainingResult.getJointProbabilityCalibrationModel(),
-      trainingResult.getNumLabels());
+      trainingResult.getNumOutputs());
 }
 
 std::unique_ptr<IProbabilityPredictor> AbstractRuleLearner::createProbabilityPredictor(
-  const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+  const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel, const IOutputSpaceInfo& outputSpaceInfo,
   const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
   const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const {
     std::unique_ptr<IProbabilityPredictorFactory> predictorFactoryPtr =
       this->createProbabilityPredictorFactory(featureMatrix, numLabels);
 
     if (predictorFactoryPtr) {
-        return featureMatrix.createProbabilityPredictor(*predictorFactoryPtr, ruleModel, labelSpaceInfo,
+        return featureMatrix.createProbabilityPredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo,
                                                         marginalProbabilityCalibrationModel,
                                                         jointProbabilityCalibrationModel, numLabels);
     }

@@ -11,7 +11,7 @@ namespace boosting {
 
     /**
      * Allows to configure a predictor that automatically decides for a method that is used to predict whether
-     * individual labels of given query examples are relevant or not
+     * individual labels of given query examples are relevant or not.
      */
     class AutomaticBinaryPredictorConfig : public IBinaryPredictorConfig {
         private:
@@ -36,7 +36,7 @@ namespace boosting {
              * @see `IPredictorConfig::createPredictorFactory`
              */
             std::unique_ptr<IBinaryPredictorFactory> createPredictorFactory(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                            uint32 numLabels) const override;
+                                                                            uint32 numOutputs) const override;
 
             /**
              * @see `IBinaryPredictorConfig::createSparsePredictorFactory`

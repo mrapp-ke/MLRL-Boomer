@@ -8,13 +8,13 @@ from mlrl.common.cython.feature_matrix cimport IColumnWiseFeatureMatrix, IRowWis
 from mlrl.common.cython.feature_sampling cimport IFeatureSamplingWithoutReplacementConfig
 from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstanceSamplingConfig, \
     IInstanceSamplingWithoutReplacementConfig, IInstanceSamplingWithReplacementConfig, \
-    ILabelWiseStratifiedInstanceSamplingConfig
+    IOutputWiseStratifiedInstanceSamplingConfig
 from mlrl.common.cython.label_matrix cimport IRowWiseLabelMatrix
-from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig
-from mlrl.common.cython.label_space_info cimport ILabelSpaceInfo, LabelSpaceInfo
 from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
+from mlrl.common.cython.output_sampling cimport IOutputSamplingWithoutReplacementConfig
+from mlrl.common.cython.output_space_info cimport IOutputSpaceInfo, OutputSpaceInfo
 from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
-    ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
+    IOutputWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig
 from mlrl.common.cython.prediction cimport IBinaryPredictor, IProbabilityPredictor, IScorePredictor, \
     ISparseBinaryPredictor
@@ -32,11 +32,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         # Functions:
 
-        uint32 getNumLabels() const
+        uint32 getNumOutputs() const
 
         unique_ptr[IRuleModel]& getRuleModel()
 
-        unique_ptr[ILabelSpaceInfo]& getLabelSpaceInfo()
+        unique_ptr[IOutputSpaceInfo]& getOutputSpaceInfo()
 
         unique_ptr[IMarginalProbabilityCalibrationModel]& getMarginalProbabilityCalibrationModel()
 
@@ -99,25 +99,25 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
         IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning()
 
 
-    cdef cppclass INoLabelSamplingMixin"IRuleLearner::INoLabelSamplingMixin":
+    cdef cppclass INoOutputSamplingMixin"IRuleLearner::INoOutputSamplingMixin":
 
         # Functions:
 
-        void useNoLabelSampling()
+        void useNoOutputSampling()
 
 
-    cdef cppclass IRoundRobinLabelSamplingMixin"IRuleLearner::IRoundRobinLabelSamplingMixin":
+    cdef cppclass IRoundRobinOutputSamplingMixin"IRuleLearner::IRoundRobinOutputSamplingMixin":
 
         # Functions:
 
-        void useRoundRobinLabelSampling()
+        void useRoundRobinOutputSampling()
     
     
-    cdef cppclass ILabelSamplingWithoutReplacementMixin"IRuleLearner::ILabelSamplingWithoutReplacementMixin":
+    cdef cppclass IOutputSamplingWithoutReplacementMixin"IRuleLearner::IOutputSamplingWithoutReplacementMixin":
 
         # Functions:
 
-        ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement()
+        IOutputSamplingWithoutReplacementConfig& useOutputSamplingWithoutReplacement()
 
 
     cdef cppclass INoInstanceSamplingMixin"IRuleLearner::INoInstanceSamplingMixin":
@@ -141,11 +141,11 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
         IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement()
 
 
-    cdef cppclass ILabelWiseStratifiedInstanceSamplingMixin"IRuleLearner::ILabelWiseStratifiedInstanceSamplingMixin":
+    cdef cppclass IOutputWiseStratifiedInstanceSamplingMixin"IRuleLearner::IOutputWiseStratifiedInstanceSamplingMixin":
 
         # Functions:
 
-        ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling()
+        IOutputWiseStratifiedInstanceSamplingConfig& useOutputWiseStratifiedInstanceSampling()
 
 
     cdef cppclass IExampleWiseStratifiedInstanceSamplingMixin \
@@ -184,12 +184,12 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
         IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling()
 
 
-    cdef cppclass ILabelWiseStratifiedBiPartitionSamplingMixin\
-        "IRuleLearner::ILabelWiseStratifiedBiPartitionSamplingMixin":
+    cdef cppclass IOutputWiseStratifiedBiPartitionSamplingMixin\
+        "IRuleLearner::IOutputWiseStratifiedBiPartitionSamplingMixin":
 
         # Functions:
 
-        ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling()
+        IOutputWiseStratifiedBiPartitionSamplingConfig& useOutputWiseStratifiedBiPartitionSampling()
 
 
     cdef cppclass IExampleWiseStratifiedBiPartitionSamplingMixin\
@@ -344,13 +344,13 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         unique_ptr[IBinaryPredictor] createBinaryPredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo,
+            const IOutputSpaceInfo& outputSpaceInfo,
             const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
             const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
 
         unique_ptr[ISparseBinaryPredictor] createSparseBinaryPredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo,
+            const IOutputSpaceInfo& outputSpaceInfo,
             const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
             const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
 
@@ -358,13 +358,13 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         unique_ptr[IScorePredictor] createScorePredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) except +
+            const IOutputSpaceInfo& outputSpaceInfo, uint32 numLabels) except +
 
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
 
         unique_ptr[IProbabilityPredictor] createProbabilityPredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo,
+            const IOutputSpaceInfo& outputSpaceInfo,
             const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
             const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
 
@@ -373,11 +373,11 @@ cdef class TrainingResult:
 
     # Attributes:
 
-    cdef readonly uint32 num_labels
+    cdef readonly uint32 num_outputs
 
     cdef readonly RuleModel rule_model
 
-    cdef readonly LabelSpaceInfo label_space_info
+    cdef readonly OutputSpaceInfo output_space_info
 
     cdef readonly MarginalProbabilityCalibrationModel marginal_probability_calibration_model
     

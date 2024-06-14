@@ -108,14 +108,14 @@ std::unique_ptr<ISparseBinaryPredictor> LabelVectorSet::createSparseBinaryPredic
 
 std::unique_ptr<IScorePredictor> LabelVectorSet::createScorePredictor(
   const IScorePredictorFactory& factory, const CContiguousView<const float32>& featureMatrix, const RuleList& model,
-  uint32 numLabels) const {
-    return factory.create(featureMatrix, model, this, numLabels);
+  uint32 numOutputs) const {
+    return factory.create(featureMatrix, model, this, numOutputs);
 }
 
 std::unique_ptr<IScorePredictor> LabelVectorSet::createScorePredictor(const IScorePredictorFactory& factory,
                                                                       const CsrView<const float32>& featureMatrix,
-                                                                      const RuleList& model, uint32 numLabels) const {
-    return factory.create(featureMatrix, model, this, numLabels);
+                                                                      const RuleList& model, uint32 numOutputs) const {
+    return factory.create(featureMatrix, model, this, numOutputs);
 }
 
 std::unique_ptr<IProbabilityPredictor> LabelVectorSet::createProbabilityPredictor(

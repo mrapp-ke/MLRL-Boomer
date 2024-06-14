@@ -33,7 +33,7 @@ cdef class ExampleWiseStratifiedInstanceSamplingConfig:
         return self
 
 
-cdef class LabelWiseStratifiedInstanceSamplingConfig:
+cdef class OutputWiseStratifiedInstanceSamplingConfig:
     """
     Allows to configure a method for selecting a subset of the available training examples using stratification, such
     that for each label the proportion of relevant and irrelevant examples is maintained.
@@ -47,13 +47,13 @@ cdef class LabelWiseStratifiedInstanceSamplingConfig:
         """
         return self.config_ptr.getSampleSize()
 
-    def set_sample_size(self, sample_size: float) -> LabelWiseStratifiedInstanceSamplingConfig:
+    def set_sample_size(self, sample_size: float) -> OutputWiseStratifiedInstanceSamplingConfig:
         """
         Sets the fraction of examples that should be included in a sample.
 
         :param sample_size: The fraction of examples that should be included in a sample, e.g., a value of 0.6
                             corresponds to 60 % of the available training examples. Must be in (0, 1)
-        :return:            A `LabelWiseStratifiedInstanceSamplingConfig` that allows further configuration of the
+        :return:            An `OutputWiseStratifiedInstanceSamplingConfig` that allows further configuration of the
                             method for sampling instances
         """
         assert_greater('sample_size', sample_size, 0)
