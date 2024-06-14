@@ -76,8 +76,8 @@ class OutputWriter(ABC):
             :param meta_data:           The meta data of the data set
             :param data_split:          Information about the split of the available data, the output data corresponds
                                         to
-            :param data_type:           Specifies whether the predictions and ground truth labels correspond to the
-                                        training or test data or None, if no predictions have been obtained
+            :param data_type:           Specifies whether the predictions and ground truth correspond to the training or
+                                        test data or None, if no predictions have been obtained
             :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
                                         incrementally or None, if no predictions have been obtained
             :param output_data:         The output data that should be written to the sink
@@ -193,16 +193,16 @@ class OutputWriter(ABC):
         :param x:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                                     `(num_examples, num_features)`, that stores the feature values
         :param y:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                    `(num_examples, num_labels)`, that stores the ground truth labels
+                                    `(num_examples, num_outputs)`, that stores the ground truth
         :param data_split:          Information about the split of the available data, the output data corresponds to
         :param learner:             The learner that has been trained
-        :param data_type:           Specifies whether the predictions and ground truth labels correspond to the training
-                                    or test data or None, if no predictions have been obtained
+        :param data_type:           Specifies whether the predictions and ground truth correspond to the training or
+                                    test data or None, if no predictions have been obtained
         :param prediction_type:     The type of the predictions or None, if no predictions have been obtained
         :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
                                     incrementally or None, if no predictions have been obtained
         :param predictions:         A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                    `(num_examples, num_labels)`, that stores the predictions for the query examples or
+                                    `(num_examples, num_outputs)`, that stores the predictions for the query examples or
                                     None, if no predictions have been obtained
         :param train_time:          The time needed for training or 0, if no model has been trained
         :param predict_time:        The time needed for prediction or 0, if no predictions have been obtained
@@ -228,16 +228,16 @@ class OutputWriter(ABC):
         :param x:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                                     `(num_examples, num_features)`, that stores the feature values
         :param y:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                    `(num_examples, num_labels)`, that stores the ground truth labels
+                                    `(num_examples, num_outputs)`, that stores the ground truth
         :param data_split:          Information about the split of the available data, the output data corresponds to
         :param learner:             The learner that has been trained
-        :param data_type:           Specifies whether the predictions and ground truth labels correspond to the training
-                                    or test data or None, if no predictions have been obtained
+        :param data_type:           Specifies whether the predictions and ground truth correspond to the training or
+                                    test data or None, if no predictions have been obtained
         :param prediction_type:     The type of the predictions or None, if no predictions have been obtained
         :param prediction_scope:    Specifies whether the predictions have been obtained from a global model or
                                     incrementally or None, if no predictions have been obtained
         :param predictions:         A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                                    `(num_examples, num_labels)`, that stores the predictions for the query examples or
+                                    `(num_examples, num_outputs)`, that stores the predictions for the query examples or
                                     None, if no predictions have been obtained
         :param train_time:          The time needed for training or 0, if no model has been trained
         :param predict_time:        The time needed for prediction or 0, if no predictions have been obtained

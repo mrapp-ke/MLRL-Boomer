@@ -21,8 +21,8 @@ class IMultiThreadingConfig {
          *
          * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
          *                      values of the training examples
-         * @param numLabels     The total number of available labels
+         * @param numOutputs    The total number of available outputs
          * @return              The number of threads that can actually be used
          */
-        virtual uint32 getNumThreads(const IFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
+        virtual uint32 getNumThreads(const IFeatureMatrix& featureMatrix, uint32 numOutputs) const = 0;
 };

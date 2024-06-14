@@ -12,9 +12,9 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Prediction characteristics for training data:
 
-Labels                   6
-Label Density           30.77
-Label Sparsity          69.23
+Outputs                  6
+Output Density          30.77
+Output Sparsity         69.23
 Label Imbalance Ratio    1.45
 Label Cardinality        1.85
 Distinct Label Vectors  23
@@ -25,9 +25,9 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data:
 
-Labels                   6
-Label Density           25.17
-Label Sparsity          74.83
+Outputs                  6
+Output Density          25.17
+Output Sparsity         74.83
 Label Imbalance Ratio    2.29
 Label Cardinality        1.51
 Distinct Label Vectors  18

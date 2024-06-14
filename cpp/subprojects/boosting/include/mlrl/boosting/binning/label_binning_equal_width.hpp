@@ -111,24 +111,28 @@ namespace boosting {
 
             IEqualWidthLabelBinningConfig& setMaxBins(uint32 maxBins) override;
 
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseCompleteRuleEvaluationFactory()
+            std::unique_ptr<IDecomposableRuleEvaluationFactory> createDecomposableCompleteRuleEvaluationFactory()
               const override;
 
-            std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> createLabelWiseFixedPartialRuleEvaluationFactory(
-              float32 labelRatio, uint32 minLabels, uint32 maxLabels) const override;
+            std::unique_ptr<ISparseDecomposableRuleEvaluationFactory>
+              createDecomposableFixedPartialRuleEvaluationFactory(float32 outputRatio, uint32 minOutputs,
+                                                                  uint32 maxOutputs) const override;
 
-            std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> createLabelWiseDynamicPartialRuleEvaluationFactory(
-              float32 threshold, float32 exponent) const override;
+            std::unique_ptr<ISparseDecomposableRuleEvaluationFactory>
+              createDecomposableDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent) const override;
 
-            std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseCompleteRuleEvaluationFactory(
+            std::unique_ptr<INonDecomposableRuleEvaluationFactory> createNonDecomposableCompleteRuleEvaluationFactory(
               const Blas& blas, const Lapack& lapack) const override;
 
-            std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseFixedPartialRuleEvaluationFactory(
-              float32 labelRatio, uint32 minLabels, uint32 maxLabels, const Blas& blas,
-              const Lapack& lapack) const override;
+            std::unique_ptr<INonDecomposableRuleEvaluationFactory>
+              createNonDecomposableFixedPartialRuleEvaluationFactory(float32 outputRatio, uint32 minOutputs,
+                                                                     uint32 maxOutputs, const Blas& blas,
+                                                                     const Lapack& lapack) const override;
 
-            std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseDynamicPartialRuleEvaluationFactory(
-              float32 threshold, float32 exponent, const Blas& blas, const Lapack& lapack) const override;
+            std::unique_ptr<INonDecomposableRuleEvaluationFactory>
+              createNonDecomposableDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent,
+                                                                       const Blas& blas,
+                                                                       const Lapack& lapack) const override;
     };
 
 }

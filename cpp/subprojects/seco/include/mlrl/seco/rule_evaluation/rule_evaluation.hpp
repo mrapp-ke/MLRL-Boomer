@@ -19,8 +19,8 @@ namespace seco {
             virtual ~IRuleEvaluation() {}
 
             /**
-             * Calculates the scores to be predicted by a rule, as well as their overall quality, based on label-wise
-             * confusion matrices.
+             * Calculates the scores to be predicted by a rule, as well as their overall quality, based on confusion
+             * matrices.
              *
              * @param majorityLabelIndicesBegin An iterator to the beginning of the indices of the labels that are
              *                                  relevant to the majority of the training examples

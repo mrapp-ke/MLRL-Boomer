@@ -68,7 +68,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
               resampleFeatures_(resampleFeatures) {}
 
         void optimizeModel(IFeatureSpace& featureSpace, const IRuleInduction& ruleInduction, IPartition& partition,
-                           ILabelSampling& labelSampling, IInstanceSampling& instanceSampling,
+                           IOutputSampling& outputSampling, IInstanceSampling& instanceSampling,
                            IFeatureSampling& featureSampling, const IRulePruning& rulePruning,
                            const IPostProcessor& postProcessor, RNG& rng) const override {
             for (uint32 i = 0; i < numIterations_; i++) {
@@ -91,11 +91,11 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                     featureSubspacePtr->revertPrediction(prediction);
 
                     // Learn a new rule...
-                    const IIndexVector& labelIndices = refineHeads_ ? labelSampling.sample(rng) : prediction;
+                    const IIndexVector& outputIndices = refineHeads_ ? outputSampling.sample(rng) : prediction;
                     RuleReplacementBuilder ruleReplacementBuilder(intermediateRule);
 
                     if (resampleFeatures_) {
-                        ruleInduction.induceRule(featureSpace, labelIndices, weights, partition, featureSampling,
+                        ruleInduction.induceRule(featureSpace, outputIndices, weights, partition, featureSampling,
                                                  rulePruning, postProcessor, rng, ruleReplacementBuilder);
                     } else {
                         std::unordered_set<uint32> uniqueFeatureIndices;
@@ -114,7 +114,7 @@ class SequentialPostOptimization final : public IPostOptimizationPhase {
                         }
 
                         PredefinedFeatureSampling predefinedFeatureSampling(indexVector);
-                        ruleInduction.induceRule(featureSpace, labelIndices, weights, partition,
+                        ruleInduction.induceRule(featureSpace, outputIndices, weights, partition,
                                                  predefinedFeatureSampling, rulePruning, postProcessor, rng,
                                                  ruleReplacementBuilder);
                     }

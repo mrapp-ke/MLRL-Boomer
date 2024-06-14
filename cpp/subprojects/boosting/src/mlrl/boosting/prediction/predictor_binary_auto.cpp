@@ -1,7 +1,7 @@
 #include "mlrl/boosting/prediction/predictor_binary_auto.hpp"
 
 #include "mlrl/boosting/prediction/predictor_binary_example_wise.hpp"
-#include "mlrl/boosting/prediction/predictor_binary_label_wise.hpp"
+#include "mlrl/boosting/prediction/predictor_binary_output_wise.hpp"
 
 namespace boosting {
 
@@ -11,20 +11,20 @@ namespace boosting {
         : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
 
     std::unique_ptr<IBinaryPredictorFactory> AutomaticBinaryPredictorConfig::createPredictorFactory(
-      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
         if (lossConfigPtr_->isDecomposable()) {
-            return LabelWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
-              .createPredictorFactory(featureMatrix, numLabels);
+            return OutputWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+              .createPredictorFactory(featureMatrix, numOutputs);
         } else {
             return ExampleWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
-              .createPredictorFactory(featureMatrix, numLabels);
+              .createPredictorFactory(featureMatrix, numOutputs);
         }
     }
 
     std::unique_ptr<ISparseBinaryPredictorFactory> AutomaticBinaryPredictorConfig::createSparsePredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         if (lossConfigPtr_->isDecomposable()) {
-            return LabelWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+            return OutputWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
               .createSparsePredictorFactory(featureMatrix, numLabels);
         } else {
             return ExampleWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
@@ -34,7 +34,7 @@ namespace boosting {
 
     bool AutomaticBinaryPredictorConfig::isLabelVectorSetNeeded() const {
         if (lossConfigPtr_->isDecomposable()) {
-            return LabelWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_).isLabelVectorSetNeeded();
+            return OutputWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_).isLabelVectorSetNeeded();
         } else {
             return ExampleWiseBinaryPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_).isLabelVectorSetNeeded();
         }

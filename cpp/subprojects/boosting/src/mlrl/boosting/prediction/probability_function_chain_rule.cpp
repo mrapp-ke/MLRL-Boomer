@@ -5,9 +5,9 @@
 namespace boosting {
 
     /**
-     * An implementation of the class `IJointProbabilityFunction` that transforms regression scores that are
-     * predicted for an example into joint probabilities by applying an `IMarginalProbabilityFunction` to each one and
-     * calculating the product of the resulting marginal probabilities according to the probabilistic chain rule.
+     * An implementation of the class `IJointProbabilityFunction` that transforms scores that are predicted for an
+     * example into joint probabilities by applying an `IMarginalProbabilityFunction` to each one and calculating the
+     * product of the resulting marginal probabilities according to the probabilistic chain rule.
      */
     class ChainRule final : public IJointProbabilityFunction {
         private:
@@ -20,8 +20,8 @@ namespace boosting {
 
             /**
              * @param marginalProbabilityFunctionPtr    An unique pointer to an object of type
-             *                                          `IMarginalProbabilityFunction` to be used to transform
-             *                                          regression scores into marginal probabilities
+             *                                          `IMarginalProbabilityFunction` to be used to transform scores
+             *                                          into marginal probabilities
              * @param jointProbabilityCalibrationModel  A reference to an object of type
              *                                          `IJointProbabilityCalibrationModel` that should be used for the
              *                                          calibration of marginal probabilities

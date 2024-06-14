@@ -1,6 +1,6 @@
 #include "mlrl/boosting/sampling/partition_sampling_auto.hpp"
 
-#include "mlrl/common/sampling/partition_sampling_bi_stratified_label_wise.hpp"
+#include "mlrl/common/sampling/partition_sampling_bi_stratified_output_wise.hpp"
 #include "mlrl/common/sampling/partition_sampling_no.hpp"
 
 namespace boosting {
@@ -18,7 +18,7 @@ namespace boosting {
         if ((globalPruningConfigPtr_.get() && globalPruningConfigPtr_->shouldUseHoldoutSet())
             || marginalProbabilityCalibratorConfigPtr_->shouldUseHoldoutSet()
             || jointProbabilityCalibratorConfigPtr_->shouldUseHoldoutSet()) {
-            return LabelWiseStratifiedBiPartitionSamplingConfig().createPartitionSamplingFactory();
+            return OutputWiseStratifiedBiPartitionSamplingConfig().createPartitionSamplingFactory();
         }
 
         return NoPartitionSamplingConfig().createPartitionSamplingFactory();

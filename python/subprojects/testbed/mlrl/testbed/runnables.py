@@ -22,7 +22,7 @@ from mlrl.common.options import BooleanOption, parse_param_and_options
 from mlrl.common.rule_learners import KWARG_SPARSE_FEATURE_VALUE, SparsePolicy
 
 from mlrl.testbed.characteristics import OPTION_DISTINCT_LABEL_VECTORS, OPTION_LABEL_CARDINALITY, \
-    OPTION_LABEL_DENSITY, OPTION_LABEL_IMBALANCE_RATIO, OPTION_LABEL_SPARSITY, OPTION_LABELS
+    OPTION_LABEL_IMBALANCE_RATIO, OPTION_OUTPUT_DENSITY, OPTION_OUTPUT_SPARSITY, OPTION_OUTPUTS
 from mlrl.testbed.data_characteristics import OPTION_EXAMPLES, OPTION_FEATURE_DENSITY, OPTION_FEATURE_SPARSITY, \
     OPTION_FEATURES, OPTION_NOMINAL_FEATURES, OPTION_NUMERICAL_FEATURES, DataCharacteristicsWriter
 from mlrl.testbed.data_splitting import CrossValidationSplitter, DataSet, DataSplitter, NoSplitter, TrainTestSplitter
@@ -42,7 +42,7 @@ from mlrl.testbed.io import clear_directory
 from mlrl.testbed.label_vectors import OPTION_SPARSE, LabelVectorSetWriter, LabelVectorWriter
 from mlrl.testbed.model_characteristics import ModelCharacteristicsWriter, RuleModelCharacteristicsWriter
 from mlrl.testbed.models import OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD, OPTION_PRINT_BODIES, \
-    OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, OPTION_PRINT_LABEL_NAMES, OPTION_PRINT_NOMINAL_VALUES, \
+    OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_HEADS, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_OUTPUT_NAMES, \
     ModelWriter, RuleModelWriter
 from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.parameters import ParameterCsvInput, ParameterInput, ParameterWriter
@@ -427,7 +427,7 @@ class LearnerRunnable(Runnable, ABC):
 
     PRINT_PREDICTION_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
         BooleanOption.TRUE.value: {
-            OPTION_LABELS, OPTION_LABEL_DENSITY, OPTION_LABEL_SPARSITY, OPTION_LABEL_IMBALANCE_RATIO,
+            OPTION_OUTPUTS, OPTION_OUTPUT_DENSITY, OPTION_OUTPUT_SPARSITY, OPTION_LABEL_IMBALANCE_RATIO,
             OPTION_LABEL_CARDINALITY, OPTION_DISTINCT_LABEL_VECTORS, OPTION_DECIMALS, OPTION_PERCENTAGE
         },
         BooleanOption.FALSE.value: {}
@@ -442,9 +442,9 @@ class LearnerRunnable(Runnable, ABC):
     PRINT_DATA_CHARACTERISTICS_VALUES: Dict[str, Set[str]] = {
         BooleanOption.TRUE.value: {
             OPTION_EXAMPLES, OPTION_FEATURES, OPTION_NUMERICAL_FEATURES, OPTION_NOMINAL_FEATURES,
-            OPTION_FEATURE_DENSITY, OPTION_FEATURE_SPARSITY, OPTION_LABELS, OPTION_LABEL_DENSITY, OPTION_LABEL_SPARSITY,
-            OPTION_LABEL_IMBALANCE_RATIO, OPTION_LABEL_CARDINALITY, OPTION_DISTINCT_LABEL_VECTORS, OPTION_DECIMALS,
-            OPTION_PERCENTAGE
+            OPTION_FEATURE_DENSITY, OPTION_FEATURE_SPARSITY, OPTION_OUTPUTS, OPTION_OUTPUT_DENSITY,
+            OPTION_OUTPUT_SPARSITY, OPTION_LABEL_IMBALANCE_RATIO, OPTION_LABEL_CARDINALITY,
+            OPTION_DISTINCT_LABEL_VECTORS, OPTION_DECIMALS, OPTION_PERCENTAGE
         },
         BooleanOption.FALSE.value: {}
     }
@@ -601,7 +601,7 @@ class LearnerRunnable(Runnable, ABC):
         parser.add_argument('--one-hot-encoding',
                             type=BooleanOption.parse,
                             default=False,
-                            help='Whether one-hot-encoding should be used to encode nominal attributes or not. Must be '
+                            help='Whether one-hot-encoding should be used to encode nominal features or not. Must be '
                             + 'one of ' + format_enum_values(BooleanOption) + '.')
         parser.add_argument('--model-dir', type=str, help='The path of the directory where models should be stored.')
         parser.add_argument('--parameter-dir',
@@ -625,16 +625,16 @@ class LearnerRunnable(Runnable, ABC):
         parser.add_argument(self.PARAM_PRINT_PREDICTIONS,
                             type=str,
                             default=BooleanOption.FALSE.value,
-                            help='Whether the predictions for individual examples and labels should be printed on the '
-                            + 'console or not. Must be one of ' + format_dict_keys(self.PRINT_PREDICTIONS_VALUES) + '. '
-                            + 'For additional options refer to the documentation.')
+                            help='Whether predictions should be printed on the console or not. Must be one of '
+                            + format_dict_keys(self.PRINT_PREDICTIONS_VALUES) + '. For additional options refer to the '
+                            + 'documentation.')
         parser.add_argument(self.PARAM_STORE_PREDICTIONS,
                             type=str,
                             default=BooleanOption.FALSE.value,
-                            help='Whether the predictions for individual examples and labels should be written into '
-                            + 'output files or not. Must be one of ' + format_dict_keys(self.STORE_PREDICTIONS_VALUES)
-                            + '. Does only have an effect, if the parameter ' + self.PARAM_OUTPUT_DIR + ' is '
-                            + 'specified. For additional options refer to the documentation.')
+                            help='Whether predictions should be written into output files or not. Must be one of '
+                            + format_dict_keys(self.STORE_PREDICTIONS_VALUES) + '. Does only have an effect, if the '
+                            + 'parameter ' + self.PARAM_OUTPUT_DIR + ' is specified. For additional options refer to '
+                            + 'the documentation.')
         parser.add_argument(self.PARAM_PREDICTION_TYPE,
                             type=str,
                             default=PredictionType.BINARY.value,
@@ -677,8 +677,8 @@ class LearnerRunnable(Runnable, ABC):
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 
         :param args:                            The command line arguments
-        :param base_learner:                    The classifier or ranker to be trained
-        :param learner_name:                    The name of the classifier or ranker
+        :param base_learner:                    The machine learning algorithm to be used
+        :param learner_name:                    The name of machine learning algorithm
         :param data_splitter:                   The method to be used for splitting the available data into training and
                                                 test sets
         :param pre_training_output_writers:     A list that contains all output writers to be invoked before training
@@ -1003,7 +1003,7 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     PRINT_RULES_VALUES: Dict[str, Set[str]] = {
         BooleanOption.TRUE.value: {
-            OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_LABEL_NAMES, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_BODIES,
+            OPTION_PRINT_FEATURE_NAMES, OPTION_PRINT_OUTPUT_NAMES, OPTION_PRINT_NOMINAL_VALUES, OPTION_PRINT_BODIES,
             OPTION_PRINT_HEADS, OPTION_DECIMALS_BODY, OPTION_DECIMALS_HEAD
         },
         BooleanOption.FALSE.value: {}
@@ -1125,10 +1125,10 @@ class RuleLearnerRunnable(LearnerRunnable):
                             help='The value that should be used for sparse elements in the feature matrix. Does only '
                             + 'have an effect if a sparse format is used for the representation of the feature matrix, '
                             + 'depending on the parameter ' + self.PARAM_FEATURE_FORMAT + '.')
-        parser.add_argument('--label-format',
+        parser.add_argument('--output-format',
                             type=str,
                             default=None,
-                            help='The format to be used for the representation of the label matrix. Must be one of '
+                            help='The format to be used for the representation of the output matrix. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
         parser.add_argument('--prediction-format',
                             type=str,
@@ -1162,7 +1162,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         kwargs = create_kwargs_from_parameters(args, self.parameters)
         kwargs['random_state'] = args.random_state
         kwargs['feature_format'] = args.feature_format
-        kwargs['label_format'] = args.label_format
+        kwargs['output_format'] = args.output_format
         kwargs['prediction_format'] = args.prediction_format
         return self.learner_type(**kwargs)
 

@@ -12,9 +12,9 @@ Ordinal Features          0
 Nominal Features          0
 Feature Density          99.67
 Feature Sparsity          0.33
-Labels                    6
-Label Density            30.99
-Label Sparsity           69.01
+Outputs                   6
+Output Density           30.99
+Output Sparsity          69.01
 Label Imbalance Ratio     1.48
 Label Cardinality         1.86
 Distinct Label Vectors   26
@@ -33,9 +33,9 @@ Ordinal Features          0
 Nominal Features          0
 Feature Density          99.67
 Feature Sparsity          0.33
-Labels                    6
-Label Density            30.89
-Label Sparsity           69.11
+Outputs                   6
+Output Density           30.89
+Output Sparsity          69.11
 Label Imbalance Ratio     1.45
 Label Cardinality         1.85
 Distinct Label Vectors   26
@@ -54,9 +54,9 @@ Ordinal Features          0
 Nominal Features          0
 Feature Density          99.68
 Feature Sparsity          0.32
-Labels                    6
-Label Density            31.08
-Label Sparsity           68.92
+Outputs                   6
+Output Density           31.08
+Output Sparsity          68.92
 Label Imbalance Ratio     1.48
 Label Cardinality         1.86
 Distinct Label Vectors   26
@@ -75,9 +75,9 @@ Ordinal Features          0
 Nominal Features          0
 Feature Density          99.67
 Feature Sparsity          0.33
-Labels                    6
-Label Density            31.4
-Label Sparsity           68.6
+Outputs                   6
+Output Density           31.4
+Output Sparsity          68.6
 Label Imbalance Ratio     1.49
 Label Cardinality         1.88
 Distinct Label Vectors   27
@@ -96,9 +96,9 @@ Ordinal Features          0
 Nominal Features          0
 Feature Density          99.67
 Feature Sparsity          0.33
-Labels                    6
-Label Density            30.99
-Label Sparsity           69.01
+Outputs                   6
+Output Density           30.99
+Output Sparsity          69.01
 Label Imbalance Ratio     1.5
 Label Cardinality         1.86
 Distinct Label Vectors   27
@@ -117,9 +117,9 @@ Ordinal Features          0
 Nominal Features          0
 Feature Density          99.68
 Feature Sparsity          0.32
-Labels                    6
-Label Density            31.34
-Label Sparsity           68.66
+Outputs                   6
+Output Density           31.34
+Output Sparsity          68.66
 Label Imbalance Ratio     1.5
 Label Cardinality         1.88
 Distinct Label Vectors   27
@@ -138,9 +138,9 @@ Ordinal Features          0
 Nominal Features          0
 Feature Density          99.66
 Feature Sparsity          0.34
-Labels                    6
-Label Density            31.27
-Label Sparsity           68.73
+Outputs                   6
+Output Density           31.27
+Output Sparsity          68.73
 Label Imbalance Ratio     1.45
 Label Cardinality         1.88
 Distinct Label Vectors   27
@@ -159,9 +159,9 @@ Ordinal Features          0
 Nominal Features          0
 Feature Density          99.67
 Feature Sparsity          0.33
-Labels                    6
-Label Density            31.24
-Label Sparsity           68.76
+Outputs                   6
+Output Density           31.24
+Output Sparsity          68.76
 Label Imbalance Ratio     1.5
 Label Cardinality         1.87
 Distinct Label Vectors   27
@@ -180,9 +180,9 @@ Ordinal Features          0
 Nominal Features          0
 Feature Density          99.67
 Feature Sparsity          0.33
-Labels                    6
-Label Density            31.05
-Label Sparsity           68.95
+Outputs                   6
+Output Density           31.05
+Output Sparsity          68.95
 Label Imbalance Ratio     1.45
 Label Cardinality         1.86
 Distinct Label Vectors   26
@@ -201,9 +201,9 @@ Ordinal Features          0
 Nominal Features          0
 Feature Density          99.67
 Feature Sparsity          0.33
-Labels                    6
-Label Density            31.15
-Label Sparsity           68.85
+Outputs                   6
+Output Density           31.15
+Output Sparsity          68.85
 Label Imbalance Ratio     1.49
 Label Cardinality         1.87
 Distinct Label Vectors   27

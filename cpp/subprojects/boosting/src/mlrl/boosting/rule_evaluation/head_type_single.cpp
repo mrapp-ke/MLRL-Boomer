@@ -1,13 +1,13 @@
 #include "mlrl/boosting/rule_evaluation/head_type_single.hpp"
 
-#include "mlrl/boosting/rule_evaluation/rule_evaluation_label_wise_single.hpp"
-#include "mlrl/boosting/statistics/statistics_provider_example_wise_dense.hpp"
-#include "mlrl/boosting/statistics/statistics_provider_label_wise_dense.hpp"
-#include "mlrl/boosting/statistics/statistics_provider_label_wise_sparse.hpp"
+#include "mlrl/boosting/rule_evaluation/rule_evaluation_decomposable_single.hpp"
+#include "mlrl/boosting/statistics/statistics_provider_decomposable_dense.hpp"
+#include "mlrl/boosting/statistics/statistics_provider_decomposable_sparse.hpp"
+#include "mlrl/boosting/statistics/statistics_provider_non_decomposable_dense.hpp"
 
 namespace boosting {
 
-    SingleLabelHeadConfig::SingleLabelHeadConfig(
+    SingleOutputHeadConfig::SingleOutputHeadConfig(
       const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
       const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
       const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
@@ -17,69 +17,76 @@ namespace boosting {
 
     }
 
-    std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::createStatisticsProviderFactory(
+    std::unique_ptr<IStatisticsProviderFactory> SingleOutputHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const ILabelWiseLossConfig& lossConfig) const {
+      const IDecomposableLossConfig& lossConfig) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
-        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
-        std::unique_ptr<ILabelWiseLossFactory> lossFactoryPtr = lossConfig.createLabelWiseLossFactory();
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
+        std::unique_ptr<IDecomposableLossFactory> lossFactoryPtr = lossConfig.createDecomposableLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createEvaluationMeasureFactory();
-        std::unique_ptr<ILabelWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-          labelBinningConfigPtr_->createLabelWiseCompleteRuleEvaluationFactory();
-        std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-          std::make_unique<LabelWiseSingleLabelRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
-        std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-          std::make_unique<LabelWiseSingleLabelRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
-        return std::make_unique<DenseLabelWiseStatisticsProviderFactory>(
+        std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
+          labelBinningConfigPtr_->createDecomposableCompleteRuleEvaluationFactory();
+        std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+          std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
+                                                                          l2RegularizationWeight);
+        std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+          std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
+                                                                          l2RegularizationWeight);
+        return std::make_unique<DenseDecomposableStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
 
-    std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::createStatisticsProviderFactory(
+    std::unique_ptr<IStatisticsProviderFactory> SingleOutputHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const ISparseLabelWiseLossConfig& lossConfig) const {
+      const ISparseDecomposableLossConfig& lossConfig) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
-        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
-        std::unique_ptr<ISparseLabelWiseLossFactory> lossFactoryPtr = lossConfig.createSparseLabelWiseLossFactory();
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
+        std::unique_ptr<ISparseDecomposableLossFactory> lossFactoryPtr =
+          lossConfig.createSparseDecomposableLossFactory();
         std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createSparseEvaluationMeasureFactory();
-        std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-          std::make_unique<LabelWiseSingleLabelRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
-        std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-          std::make_unique<LabelWiseSingleLabelRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
-        return std::make_unique<SparseLabelWiseStatisticsProviderFactory>(
+        std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+          std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
+                                                                          l2RegularizationWeight);
+        std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+          std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
+                                                                          l2RegularizationWeight);
+        return std::make_unique<SparseDecomposableStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
           std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
 
-    std::unique_ptr<IStatisticsProviderFactory> SingleLabelHeadConfig::createStatisticsProviderFactory(
+    std::unique_ptr<IStatisticsProviderFactory> SingleOutputHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+      const INonDecomposableLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
         float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
-        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
-        std::unique_ptr<IExampleWiseLossFactory> lossFactoryPtr = lossConfig.createExampleWiseLossFactory();
+        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
+        std::unique_ptr<INonDecomposableLossFactory> lossFactoryPtr = lossConfig.createNonDecomposableLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
-          lossConfig.createExampleWiseLossFactory();
-        std::unique_ptr<IExampleWiseRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-          labelBinningConfigPtr_->createExampleWiseCompleteRuleEvaluationFactory(blas, lapack);
-        std::unique_ptr<ILabelWiseRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-          std::make_unique<LabelWiseSingleLabelRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
-        std::unique_ptr<ILabelWiseRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-          std::make_unique<LabelWiseSingleLabelRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
-        return std::make_unique<DenseConvertibleExampleWiseStatisticsProviderFactory>(
+          lossConfig.createNonDecomposableLossFactory();
+        std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
+          labelBinningConfigPtr_->createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
+        std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+          std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
+                                                                          l2RegularizationWeight);
+        std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+          std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
+                                                                          l2RegularizationWeight);
+        return std::make_unique<DenseConvertibleNonDecomposableStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
 
-    bool SingleLabelHeadConfig::isPartial() const {
+    bool SingleOutputHeadConfig::isPartial() const {
         return true;
     }
 
-    bool SingleLabelHeadConfig::isSingleLabel() const {
+    bool SingleOutputHeadConfig::isSingleOutput() const {
         return true;
     }
 
