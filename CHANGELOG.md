@@ -10,9 +10,17 @@ tocdepth: 2
 
 A major update to the BOOMER algorithm that introduces the following changes.
 
+```{warning}
+This release comes with several API changes. For an updated overview of the available parameters and command line arguments, please refer to the [documentation](https://mlrl-boomer.readthedocs.io/en/0.11.0/).
+```
+
 ### Additions to the Command Line API
 
 - **The value to be used for sparse elements in the feature matrix can be specified** via the argument `--sparse-feature-value`.
+
+### API Changes
+
+- Several parameters and their values have been renamed to better reflect the scope of the project, which now includes multi-output regression problems. For an up-to-date list of parameters, please refer to the [documentation](https://mlrl-boomer.readthedocs.io/en/0.11.0/).
 
 ## Version 0.10.0 (May 5th, 2024)
 
