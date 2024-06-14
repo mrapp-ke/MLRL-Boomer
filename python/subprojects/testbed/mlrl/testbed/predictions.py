@@ -12,7 +12,7 @@ import numpy as np
 
 from mlrl.common.options import Options
 
-from mlrl.testbed.data import Label, MetaData, save_arff_file
+from mlrl.testbed.data import MetaData, Output, save_arff_file
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.format import OPTION_DECIMALS
 from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
@@ -84,9 +84,9 @@ class PredictionWriter(OutputWriter):
 
             file_name = get_file_name_per_fold(prediction_scope.get_file_name(data_type.get_file_name('predictions')),
                                                SUFFIX_ARFF, data_split.get_fold())
-            features = [Label('Ground Truth ' + label.name) for label in meta_data.labels]
-            labels = [Label('Prediction ' + label.name) for label in meta_data.labels]
-            prediction_meta_data = MetaData(features, labels, labels_at_start=False)
+            features = [Output('Ground Truth ' + output.name) for output in meta_data.outputs]
+            outputs = [Output('Prediction ' + output.name) for output in meta_data.outputs]
+            prediction_meta_data = MetaData(features, outputs, outputs_at_start=False)
             save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
     # pylint: disable=unused-argument
