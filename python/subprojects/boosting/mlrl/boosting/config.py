@@ -15,15 +15,14 @@ from mlrl.common.options import BooleanOption, Options
 from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
     AutomaticFeatureBinningMixin, AutomaticLabelBinningMixin, AutomaticParallelRuleRefinementMixin, \
     AutomaticParallelStatisticUpdateMixin, AutomaticPartitionSamplingMixin, AutomaticProbabilityPredictorMixin, \
-    AutomaticStatisticsMixin, CompleteHeadMixin, ConstantShrinkageMixin, DenseStatisticsMixin, \
-    DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, \
-    ExampleWiseLogisticLossMixin, ExampleWiseSquaredErrorLossMixin, ExampleWiseSquaredHingeLossMixin, \
-    FixedPartialHeadMixin, GfmBinaryPredictorMixin, IsotonicJointProbabilityCalibrationMixin, \
-    IsotonicMarginalProbabilityCalibrationMixin, L1RegularizationMixin, L2RegularizationMixin, \
-    LabelWiseBinaryPredictorMixin, LabelWiseLogisticLossMixin, LabelWiseProbabilityPredictorMixin, \
-    LabelWiseSquaredErrorLossMixin, LabelWiseSquaredHingeLossMixin, MarginalizedProbabilityPredictorMixin, \
-    NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, NoLabelBinningMixin, SingleLabelHeadMixin, \
-    SparseStatisticsMixin
+    AutomaticStatisticsMixin, CompleteHeadMixin, ConstantShrinkageMixin, DecomposableLogisticLossMixin, \
+    DecomposableSquaredErrorLossMixin, DecomposableSquaredHingeLossMixin, DenseStatisticsMixin, \
+    DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, FixedPartialHeadMixin, \
+    GfmBinaryPredictorMixin, IsotonicJointProbabilityCalibrationMixin, IsotonicMarginalProbabilityCalibrationMixin, \
+    L1RegularizationMixin, L2RegularizationMixin, MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, \
+    NoL1RegularizationMixin, NoL2RegularizationMixin, NoLabelBinningMixin, NonDecomposableLogisticLossMixin, \
+    NonDecomposableSquaredErrorLossMixin, NonDecomposableSquaredHingeLossMixin, OutputWiseBinaryPredictorMixin, \
+    OutputWiseProbabilityPredictorMixin, SingleOutputHeadMixin, SparseStatisticsMixin
 
 PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
 
@@ -245,40 +244,40 @@ class LossParameter(NominalParameter):
     A parameter that allows to configure the loss function to be minimized during training.
     """
 
-    LOSS_LOGISTIC_LABEL_WISE = 'logistic-label-wise'
+    LOSS_LOGISTIC_DECOMPOSABLE = 'logistic-decomposable'
 
-    LOSS_LOGISTIC_EXAMPLE_WISE = 'logistic-example-wise'
+    LOSS_LOGISTIC_NON_DECOMPOSABLE = 'logistic-non-decomposable'
 
-    LOSS_SQUARED_ERROR_LABEL_WISE = 'squared-error-label-wise'
+    LOSS_SQUARED_ERROR_DECOMPOSABLE = 'squared-error-decomposable'
 
-    LOSS_SQUARED_ERROR_EXAMPLE_WISE = 'squared-error-example-wise'
+    LOSS_SQUARED_ERROR_NON_DECOMPOSABLE = 'squared-error-non-decomposable'
 
-    LOSS_SQUARED_HINGE_LABEL_WISE = 'squared-hinge-label-wise'
+    LOSS_SQUARED_HINGE_DECOMPOSABLE = 'squared-hinge-decomposable'
 
-    LOSS_SQUARED_HINGE_EXAMPLE_WISE = 'squared-hinge-example-wise'
+    LOSS_SQUARED_HINGE_NON_DECOMPOSABLE = 'squared-hinge-non-decomposable'
 
     def __init__(self):
         super().__init__(name='loss', description='The name of the loss function to be minimized during training')
-        self.add_value(name=self.LOSS_LOGISTIC_LABEL_WISE, mixin=LabelWiseLogisticLossMixin)
-        self.add_value(name=self.LOSS_LOGISTIC_EXAMPLE_WISE, mixin=ExampleWiseLogisticLossMixin)
-        self.add_value(name=self.LOSS_SQUARED_ERROR_LABEL_WISE, mixin=LabelWiseSquaredErrorLossMixin)
-        self.add_value(name=self.LOSS_SQUARED_ERROR_EXAMPLE_WISE, mixin=ExampleWiseSquaredErrorLossMixin)
-        self.add_value(name=self.LOSS_SQUARED_HINGE_LABEL_WISE, mixin=LabelWiseSquaredHingeLossMixin)
-        self.add_value(name=self.LOSS_SQUARED_HINGE_EXAMPLE_WISE, mixin=ExampleWiseSquaredHingeLossMixin)
+        self.add_value(name=self.LOSS_LOGISTIC_DECOMPOSABLE, mixin=DecomposableLogisticLossMixin)
+        self.add_value(name=self.LOSS_LOGISTIC_NON_DECOMPOSABLE, mixin=NonDecomposableLogisticLossMixin)
+        self.add_value(name=self.LOSS_SQUARED_ERROR_DECOMPOSABLE, mixin=DecomposableSquaredErrorLossMixin)
+        self.add_value(name=self.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE, mixin=NonDecomposableSquaredErrorLossMixin)
+        self.add_value(name=self.LOSS_SQUARED_HINGE_DECOMPOSABLE, mixin=DecomposableSquaredHingeLossMixin)
+        self.add_value(name=self.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE, mixin=NonDecomposableSquaredHingeLossMixin)
 
     def _configure(self, config, value: str, _: Optional[Options]):
-        if value == self.LOSS_LOGISTIC_LABEL_WISE:
-            config.use_label_wise_logistic_loss()
-        elif value == self.LOSS_LOGISTIC_EXAMPLE_WISE:
-            config.use_example_wise_logistic_loss()
-        elif value == self.LOSS_SQUARED_ERROR_LABEL_WISE:
-            config.use_label_wise_squared_error_loss()
-        elif value == self.LOSS_SQUARED_ERROR_EXAMPLE_WISE:
-            config.use_example_wise_squared_error_loss()
-        elif value == self.LOSS_SQUARED_HINGE_LABEL_WISE:
-            config.use_label_wise_squared_hinge_loss()
-        elif value == self.LOSS_SQUARED_HINGE_EXAMPLE_WISE:
-            config.use_example_wise_squared_hinge_loss()
+        if value == self.LOSS_LOGISTIC_DECOMPOSABLE:
+            config.use_decomposable_logistic_loss()
+        elif value == self.LOSS_LOGISTIC_NON_DECOMPOSABLE:
+            config.use_non_decomposable_logistic_loss()
+        elif value == self.LOSS_SQUARED_ERROR_DECOMPOSABLE:
+            config.use_decomposable_squared_error_loss()
+        elif value == self.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE:
+            config.use_non_decomposable_squared_error_loss()
+        elif value == self.LOSS_SQUARED_HINGE_DECOMPOSABLE:
+            config.use_decomposable_squared_hinge_loss()
+        elif value == self.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE:
+            config.use_non_decomposable_squared_hinge_loss()
 
 
 class HeadTypeParameter(NominalParameter):
@@ -286,15 +285,15 @@ class HeadTypeParameter(NominalParameter):
     A parameter that allows to configure the type of the rule heads that should be used.
     """
 
-    HEAD_TYPE_SINGLE = 'single-label'
+    HEAD_TYPE_SINGLE = 'single'
 
     HEAD_TYPE_PARTIAL_FIXED = 'partial-fixed'
 
-    OPTION_LABEL_RATIO = 'label_ratio'
+    OPTION_OUTPUT_RATIO = 'output_ratio'
 
-    OPTION_MIN_LABELS = 'min_labels'
+    OPTION_MIN_OUTPUTS = 'min_outputs'
 
-    OPTION_MAX_LABELS = 'max_labels'
+    OPTION_MAX_OUTPUTS = 'max_outputs'
 
     HEAD_TYPE_PARTIAL_DYNAMIC = 'partial-dynamic'
 
@@ -306,10 +305,10 @@ class HeadTypeParameter(NominalParameter):
 
     def __init__(self):
         super().__init__(name='head_type', description='The type of the rule heads that should be used')
-        self.add_value(name=self.HEAD_TYPE_SINGLE, mixin=SingleLabelHeadMixin)
+        self.add_value(name=self.HEAD_TYPE_SINGLE, mixin=SingleOutputHeadMixin)
         self.add_value(name=self.HEAD_TYPE_PARTIAL_FIXED,
                        mixin=FixedPartialHeadMixin,
-                       options={self.OPTION_LABEL_RATIO, self.OPTION_MIN_LABELS, self.OPTION_MAX_LABELS})
+                       options={self.OPTION_OUTPUT_RATIO, self.OPTION_MIN_OUTPUTS, self.OPTION_MAX_OUTPUTS})
         self.add_value(name=self.HEAD_TYPE_PARTIAL_DYNAMIC,
                        mixin=DynamicPartialHeadMixin,
                        options={self.OPTION_THRESHOLD, self.OPTION_EXPONENT})
@@ -317,12 +316,12 @@ class HeadTypeParameter(NominalParameter):
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == self.HEAD_TYPE_SINGLE:
-            config.use_single_label_heads()
+            config.use_single_output_heads()
         elif value == self.HEAD_TYPE_PARTIAL_FIXED:
             conf = config.use_fixed_partial_heads()
-            conf.set_label_ratio(options.get_float(self.OPTION_LABEL_RATIO, conf.get_label_ratio()))
-            conf.set_min_labels(options.get_int(self.OPTION_MIN_LABELS, conf.get_min_labels()))
-            conf.set_max_labels(options.get_int(self.OPTION_MAX_LABELS, conf.get_max_labels()))
+            conf.set_output_ratio(options.get_float(self.OPTION_OUTPUT_RATIO, conf.get_output_ratio()))
+            conf.set_min_outputs(options.get_int(self.OPTION_MIN_OUTPUTS, conf.get_min_outputs()))
+            conf.set_max_outputs(options.get_int(self.OPTION_MAX_OUTPUTS, conf.get_max_outputs()))
         elif value == self.HEAD_TYPE_PARTIAL_DYNAMIC:
             conf = config.use_dynamic_partial_heads()
             conf.set_threshold(options.get_float(self.OPTION_THRESHOLD, conf.get_threshold()))
@@ -380,7 +379,7 @@ class BinaryPredictorParameter(NominalParameter):
     A parameter that allows to configure the strategy to be used for predicting binary labels.
     """
 
-    BINARY_PREDICTOR_LABEL_WISE = 'label-wise'
+    BINARY_PREDICTOR_OUTPUT_WISE = 'output-wise'
 
     BINARY_PREDICTOR_EXAMPLE_WISE = 'example-wise'
 
@@ -389,8 +388,8 @@ class BinaryPredictorParameter(NominalParameter):
     def __init__(self):
         super().__init__(name='binary_predictor',
                          description='The name of the strategy to be used for predicting binary labels')
-        self.add_value(name=self.BINARY_PREDICTOR_LABEL_WISE,
-                       mixin=LabelWiseBinaryPredictorMixin,
+        self.add_value(name=self.BINARY_PREDICTOR_OUTPUT_WISE,
+                       mixin=OutputWiseBinaryPredictorMixin,
                        options={OPTION_BASED_ON_PROBABILITIES, OPTION_USE_PROBABILITY_CALIBRATION_MODEL})
         self.add_value(name=self.BINARY_PREDICTOR_EXAMPLE_WISE,
                        mixin=ExampleWiseBinaryPredictorMixin,
@@ -404,8 +403,8 @@ class BinaryPredictorParameter(NominalParameter):
                        + 'based on the parameter ' + LossParameter().argument_name)
 
     def _configure(self, config, value: str, options: Optional[Options]):
-        if value == self.BINARY_PREDICTOR_LABEL_WISE:
-            conf = config.use_label_wise_binary_predictor()
+        if value == self.BINARY_PREDICTOR_OUTPUT_WISE:
+            conf = config.use_output_wise_binary_predictor()
             conf.set_based_on_probabilities(
                 options.get_bool(OPTION_BASED_ON_PROBABILITIES, conf.is_based_on_probabilities()))
             conf.set_use_probability_calibration_model(
@@ -432,15 +431,15 @@ class ProbabilityPredictorParameter(NominalParameter):
     A parameter that allows to configure the strategy to be used for predicting probabilities.
     """
 
-    PROBABILITY_PREDICTOR_LABEL_WISE = 'label-wise'
+    PROBABILITY_PREDICTOR_OUTPUT_WISE = 'output-wise'
 
     PROBABILITY_PREDICTOR_MARGINALIZED = 'marginalized'
 
     def __init__(self):
         super().__init__(name='probability_predictor',
                          description='The name of the strategy to be used for predicting probabilities')
-        self.add_value(name=self.PROBABILITY_PREDICTOR_LABEL_WISE,
-                       mixin=LabelWiseProbabilityPredictorMixin,
+        self.add_value(name=self.PROBABILITY_PREDICTOR_OUTPUT_WISE,
+                       mixin=OutputWiseProbabilityPredictorMixin,
                        options={OPTION_USE_PROBABILITY_CALIBRATION_MODEL})
         self.add_value(name=self.PROBABILITY_PREDICTOR_MARGINALIZED,
                        mixin=MarginalizedProbabilityPredictorMixin,
@@ -451,8 +450,8 @@ class ProbabilityPredictorParameter(NominalParameter):
                        + 'based on the parameter ' + LossParameter().argument_name)
 
     def _configure(self, config, value: str, options: Optional[Options]):
-        if value == self.PROBABILITY_PREDICTOR_LABEL_WISE:
-            conf = config.use_label_wise_probability_predictor()
+        if value == self.PROBABILITY_PREDICTOR_OUTPUT_WISE:
+            conf = config.use_output_wise_probability_predictor()
             conf.set_use_probability_calibration_model(
                 options.get_bool(OPTION_USE_PROBABILITY_CALIBRATION_MODEL,
                                  conf.is_probability_calibration_model_used()))

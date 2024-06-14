@@ -43,8 +43,8 @@ namespace boosting {
 
     /**
      * Allows to create instances of the type `IBinaryPredictor` that allow to predict known label vectors for given
-     * query examples by comparing the predicted regression scores or probability estimates to the label vectors
-     * encountered in the training data.
+     * query examples by comparing the predicted scores or probability estimates to the label vectors encountered in the
+     * training data.
      */
     class ExampleWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
         private:
@@ -133,8 +133,8 @@ namespace boosting {
 
     /**
      * Allows to create instances of the type `ISparseBinaryPredictor` that allow to predict known label vectors for
-     * given query examples by comparing the predicted regression scores or probability estimates to the label vectors
-     * encountered in the training data.
+     * given query examples by comparing the predicted scores or probability estimates to the label vectors encountered
+     * in the training data.
      */
     class ExampleWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
         private:
@@ -247,12 +247,12 @@ namespace boosting {
     }
 
     std::unique_ptr<IBinaryPredictorFactory> ExampleWiseBinaryPredictorConfig::createPredictorFactory(
-      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
         std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr =
           createDistanceMeasureFactory(basedOnProbabilities_, *lossConfigPtr_);
 
         if (distanceMeasureFactoryPtr) {
-            uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+            uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numOutputs);
             return std::make_unique<ExampleWiseBinaryPredictorFactory>(
               std::move(distanceMeasureFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
               noJointProbabilityCalibrationModelPtr_.get(), numThreads);

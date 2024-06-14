@@ -34,7 +34,7 @@ cdef class ExampleWiseStratifiedBiPartitionSamplingConfig:
         return self
 
 
-cdef class LabelWiseStratifiedBiPartitionSamplingConfig:
+cdef class OutputWiseStratifiedBiPartitionSamplingConfig:
     """
     Allows to configure a method for partitioning the available training examples into a training set and a holdout set
     using stratification, such that for each label the proportion of relevant and irrelevant examples is maintained.
@@ -48,13 +48,13 @@ cdef class LabelWiseStratifiedBiPartitionSamplingConfig:
         """
         return self.config_ptr.getHoldoutSetSize()
 
-    def set_holdout_set_size(self, holdout_set_size: float) -> LabelWiseStratifiedBiPartitionSamplingConfig:
+    def set_holdout_set_size(self, holdout_set_size: float) -> OutputWiseStratifiedBiPartitionSamplingConfig:
         """
         Sets the fraction of examples that should be included in the holdout set.
 
         :param holdout_set_size:    The fraction of examples that should be included in the holdout set, e.g., a value
                                     of 0.6 corresponds to 60 % of the available examples. Must be in (0, 1)
-        :return:                    An `LabelWiseStratifiedBiPartitionSamplingConfig` that allows further configuration
+        :return:                    An `OutputWiseStratifiedBiPartitionSamplingConfig` that allows further configuration
                                     of the method for partitioning the available training examples into a training set
                                     and a holdout set
         """

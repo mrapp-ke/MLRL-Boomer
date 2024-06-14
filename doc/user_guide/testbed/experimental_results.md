@@ -97,7 +97,7 @@ Alternatively, the argument ``--store-predictions`` can be used to save the pred
 ````
 
 ```{tip}
-Depending on the {ref}`prediction-types`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if regression scores or proability estimates are provided). When working with real-valued predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions`` and ``--store-predictions`` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
+Depending on the {ref}`prediction-types`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if scores or proability estimates are provided). When working with real-valued predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions`` and ``--store-predictions`` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
 ```
 
 When using {ref}`train-test-split`, a single model is trained and queried for predictions for the test set. These predictions are written into a single output file. When using an {ref}`evaluating-training-data`, predictions are also obtained for the training set and written into an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:

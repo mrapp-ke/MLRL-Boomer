@@ -16,7 +16,7 @@ The following parameters allow to specify the preferred format for representing 
   - `'dense'` Enforces that the feature matrix is stored using a dense format.
   - `'sparse'` Enforces that the feature matrix is stored using a sparse format, if possible. Using a sparse format may reduce the memory footprint and/or speed up the training process on some data sets.
 
-- `label_format` (Default value = `'auto'`)
+- `output_format` (Default value = `'auto'`)
 
   - `'auto'` The most suitable format for representation of the label matrix is chosen automatically by estimating which representation requires less memory.
   - `'dense'` Enforces that the label matrix is stored using a dense format.
@@ -34,14 +34,14 @@ The following parameters may be used to control the behavior of the algorithm. T
 
 ### Heuristics
 
-- `loss` (Default value = `'logistic-label-wise'`)
+- `loss` (Default value = `'logistic-decomposable'`)
 
-  - `'logistic-label-wise'` A variant of the logistic loss function that is applied to each label individually.
-  - `'logistic-example-wise'` A variant of the logistic loss function that takes all labels into account at the same time.
-  - `'squared-error-label-wise'` A variant of the squared error loss that is applied to each label individually.
-  - `'squared-error-example-wise'` A variant of the squared error loss that takes all labels into account at the same time.
-  - `'squared-hinge-label-wise'` A variant of the squared hinge loss that is applied to each label individually.
-  - `'squared-hinge-example-wise'` A variant of the squared hinge loss that takes all labels into account at the same time.
+  - `'logistic-decomposable'` A variant of the logistic loss function that is applied to each label individually.
+  - `'logistic-non-decomposable'` A variant of the logistic loss function that takes all labels into account at the same time.
+  - `'squared-error-decomposable'` A variant of the squared error loss that is applied to each label individually.
+  - `'squared-error-non-decomposable'` A variant of the squared error loss that takes all labels into account at the same time.
+  - `'squared-hinge-decomposable'` A variant of the squared hinge loss that is applied to each label individually.
+  - `'squared-hinge-non-decomposable'` A variant of the squared hinge loss that takes all labels into account at the same time.
 
 - `shrinkage` (Default value = `0.3`)
 
@@ -87,13 +87,13 @@ The following parameters may be used to control the behavior of the algorithm. T
 
   - `'auto'` The most suitable type of rule heads is chosen automatically, depending on the loss function.
 
-  - `'single-label'` If all rules should predict for a single label.
+  - `'single'` If all rules should predict for a single output.
 
   - `'partial-fixed'` If all rules should predict for a predefined number of labels. The following options may be provided using the {ref}`bracket-notation`:
 
-    - `label_ratio` (Default value = `0.0`) A percentage that specifies for how many labels the rules should predict or 0, if the percentage should be calculated based on the average label cardinality. For example, a value of 0.05 means that the rules should predict for 5% of the available labels.
-    - `min_labels` (Default value = `2`) The minimum number of labels for which the rules should predict. Must be at least 2.
-    - `max_labels` (Default value = `0`) The maximum number of labels for which the rules should predict or 0, if the number of predictions should not be restricted.
+    - `output_ratio` (Default value = `0.0`) A percentage that specifies for how many labels the rules should predict or 0, if the percentage should be calculated based on the average label cardinality. For example, a value of 0.05 means that the rules should predict for 5% of the available labels.
+    - `min_outputs` (Default value = `2`) The minimum number of labels for which the rules should predict. Must be at least 2.
+    - `max_outputs` (Default value = `0`) The maximum number of labels for which the rules should predict or 0, if the number of predictions should not be restricted.
 
   - `'partial-dynamic'` If all rules should predict for a subset of the available labels that is determined dynamically. The following options may be provided using the {ref}`bracket-notation`:
 
@@ -124,7 +124,7 @@ The following parameters may be used to control the behavior of the algorithm. T
 
     - `holdout_set_size` (Default value = `0.33`) The percentage of examples to be included in the holdout set. For example, a value of 0.3 corresponds to 30% of the available examples. Must be in (0, 1).
 
-  - `'stratified-label-wise'` The available examples are split into a training set and a holdout set according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. The following options may be provided using the {ref}`bracket-notation`:
+  - `'stratified-output-wise'` The available examples are split into a training set and a holdout set according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. The following options may be provided using the {ref}`bracket-notation`:
 
     - `holdout_set_size` (Default value = `0.33`) The percentage of examples to be included in the holdout set. For example, a value of 0.3 corresponds to 30% of the available examples. Must be in (0, 1).
 
@@ -176,15 +176,15 @@ The following parameters may be used to control the behavior of the algorithm. T
 
   - The seed to be used by random number generators. Must be at least 1.
 
-- `label_sampling` (Default value = `'none'`)
+- `output_sampling` (Default value = `'none'`)
 
-  - `'none'` All labels are considered for learning a new rule.
+  - `'none'` All outputs are considered for learning a new rule.
 
-  - `'round-robin'` A single label to be considered when learning a new rule is chosen in a round-robin fashion, i.e., the first rule is concerned with the first label, the second one with the second label, and so on. When the last label was reached, the procedure restarts at the first label.
+  - `'round-robin'` A single output to be considered when learning a new rule is chosen in a round-robin fashion, i.e., the first rule is concerned with the first output, the second one with the second output, and so on. When the last output is reached, the procedure restarts at the first output.
 
-  - `'without-replacement'` The labels to be considered when learning a new rule are chosen randomly. The following options may be provided using the {ref}`bracket-notation`:
+  - `'without-replacement'` The output to be considered when learning a new rule are chosen randomly. The following options may be provided using the {ref}`bracket-notation`:
 
-    - `num_samples` (Default value = `1`) The number of labels the be included in a sample. Must be at least 1.
+    - `num_samples` (Default value = `1`) The number of outputs to be included in a sample. Must be at least 1.
 
 - `feature_sampling` (Default value = `'without-replacement'`)
 
@@ -207,7 +207,7 @@ The following parameters may be used to control the behavior of the algorithm. T
 
     - `sample_size` (Default value = `0.66`) The percentage of examples to be included in a sample. For example, a value of 0.6 corresponds to 60% of the available examples. Must be in (0, 1).
 
-  - `'stratified-label-wise'` The training examples to be considered for learning a new rule are selected according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. The following options may be provided using the {ref}`bracket-notation`:
+  - `'stratified-output-wise'` The training examples to be considered for learning a new rule are selected according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. The following options may be provided using the {ref}`bracket-notation`:
 
     - `sample_size` (Default value = `0.66`) The percentage of examples to be included in a sample. For example, a value of 0.6 corresponds to 60% of the available examples. Must be in (0, 1).
 
@@ -275,14 +275,14 @@ The following parameters may be used to control the behavior of the algorithm. T
 
   - `'auto'` The most suitable strategy for predicting binary labels is chosen automatically, depending on the loss function.
 
-  - `'label-wise'` The prediction for an example is determined for each label independently. The following options may be provided using the {ref}`bracket-notation`:
+  - `'output-wise'` The prediction for an example is determined for each label independently. The following options may be provided using the {ref}`bracket-notation`:
 
-    - `based_on_probabilities` (Default value = `'false'`) `'true'`, if binary predictions should be derived from probability estimates rather than regression scores if supported by the loss function, `'false'` otherwise.
+    - `based_on_probabilities` (Default value = `'false'`) `'true'`, if binary predictions should be derived from probability estimates rather than scores if supported by the loss function, `'false'` otherwise.
     - `use_probability_calibration` (Default value = `'true'`) `'true'`, if a model for the calibration of probabilities should be used, if available, `'false'` otherwise. Does only have an effect if the option `based_on_probabilities` is set to `'true'`.
 
   - `'example-wise'` The label vector that is predicted for an example is chosen from the set of label vectors encountered in the training data. The following options may be provided using the {ref}`bracket-notation`:
 
-    - `based_on_probabilities` (Default value = `'false'`) `'true'`, if binary predictions should be derived from probability estimates rather than regression scores if supported by the loss function, `'false'` otherwise.
+    - `based_on_probabilities` (Default value = `'false'`) `'true'`, if binary predictions should be derived from probability estimates rather than scores if supported by the loss function, `'false'` otherwise.
     - `use_probability_calibration` (Default value = `'true'`) `'true'`, if a model for the calibration of probabilities should be used, if available, `'false'` otherwise. Does only have an effect if the option `based_on_probabilities` is set to `'true'`.
 
   - `'gfm'` The label vector that is predicted for an example is chosen according to the general F-measure maximizer (GFM).
@@ -293,7 +293,7 @@ The following parameters may be used to control the behavior of the algorithm. T
 
   - `'auto'` The most suitable strategy for predicting probability estimates is chosen automatically, depending on the loss function.
 
-  - `'label-wise'` The prediction for an example is determined for each label independently
+  - `'output-wise'` The prediction for an example is determined for each label independently
 
     - `use_probability_calibration` (Default value = `'true'`) `'true'`, if a model for the calibration of probabilities should be used, if available, `'false'` otherwise.
 

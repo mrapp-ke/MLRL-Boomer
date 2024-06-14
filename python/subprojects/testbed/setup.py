@@ -32,7 +32,7 @@ def find_dependencies(requirements_file, dependency_names):
 
 setup(name='mlrl-testbed',
       version=VERSION,
-      description='Provides utilities for the training and evaluation of multi-label rule learning algorithms',
+      description='Provides utilities for the training and evaluation of machine learning algorithms',
       long_description=(Path(__file__).resolve().parent / 'README.md').read_text(),
       long_description_content_type='text/markdown',
       author='Michael Rapp',

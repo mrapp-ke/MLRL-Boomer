@@ -210,5 +210,5 @@ class BeamSearchTopDownRuleInductionConfig final : public IRuleInductionConfig,
         IBeamSearchTopDownRuleInductionConfig& setRecalculatePredictions(bool recalculatePredictions) override;
 
         std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory(
-          const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const override;
+          const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const override;
 };

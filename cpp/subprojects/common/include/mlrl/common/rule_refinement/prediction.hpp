@@ -25,7 +25,7 @@ class IPrediction : public IIndexVector {
         virtual ~IPrediction() override {}
 
         /**
-         * Sorts the scores that are stored by this prediction in increasing order by the indices of the labels they
+         * Sorts the scores that are stored by this prediction in increasing order by the indices of the outputs they
          * correspond to.
          */
         virtual void sort() = 0;
@@ -70,7 +70,7 @@ class IPrediction : public IIndexVector {
         virtual void revert(IStatistics& statistics, uint32 statisticIndex) const = 0;
 
         /**
-         * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
+         * Creates and returns a new subset of the given statistics that only contains the outputs whose indices are
          * stored in this vector.
          *
          * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
@@ -82,7 +82,7 @@ class IPrediction : public IIndexVector {
                                                                           const EqualWeightVector& weights) const = 0;
 
         /**
-         * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
+         * Creates and returns a new subset of the given statistics that only contains the outputs whose indices are
          * stored in this vector.
          *
          * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
@@ -94,7 +94,7 @@ class IPrediction : public IIndexVector {
                                                                           const BitWeightVector& weights) const = 0;
 
         /**
-         * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
+         * Creates and returns a new subset of the given statistics that only contains the outputs whose indices are
          * stored in this vector.
          *
          * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
@@ -106,7 +106,7 @@ class IPrediction : public IIndexVector {
           const IStatistics& statistics, const DenseWeightVector<uint32>& weights) const = 0;
 
         /**
-         * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
+         * Creates and returns a new subset of the given statistics that only contains the outputs whose indices are
          * stored in this vector.
          *
          * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
@@ -118,7 +118,7 @@ class IPrediction : public IIndexVector {
           const IStatistics& statistics, const OutOfSampleWeightVector<EqualWeightVector>& weights) const = 0;
 
         /**
-         * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
+         * Creates and returns a new subset of the given statistics that only contains the outputs whose indices are
          * stored in this vector.
          *
          * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset
@@ -130,7 +130,7 @@ class IPrediction : public IIndexVector {
           const IStatistics& statistics, const OutOfSampleWeightVector<BitWeightVector>& weights) const = 0;
 
         /**
-         * Creates and returns a new subset of the given statistics that only contains the labels whose indices are
+         * Creates and returns a new subset of the given statistics that only contains the outputs whose indices are
          * stored in this vector.
          *
          * @param statistics    A reference to an object of type `IStatistics` that should be used to create the subset

@@ -19,7 +19,7 @@
 #include "mlrl/seco/lift_functions/lift_function_kln.hpp"
 #include "mlrl/seco/lift_functions/lift_function_no.hpp"
 #include "mlrl/seco/lift_functions/lift_function_peak.hpp"
-#include "mlrl/seco/prediction/predictor_binary_label_wise.hpp"
+#include "mlrl/seco/prediction/predictor_binary_output_wise.hpp"
 #include "mlrl/seco/rule_evaluation/head_type_partial.hpp"
 #include "mlrl/seco/rule_evaluation/head_type_single.hpp"
 #include "mlrl/seco/stopping/stopping_criterion_coverage.hpp"
@@ -148,21 +148,21 @@ namespace seco {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to induce rules with
-             * single-label heads that predict for a single label.
+             * single-output heads that predict for a single output.
              */
-            class ISingleLabelHeadMixin : virtual public ISeCoRuleLearner::IConfig {
+            class ISingleOutputHeadMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~ISingleLabelHeadMixin() override {}
+                    virtual ~ISingleOutputHeadMixin() override {}
 
                     /**
-                     * Configures the rule learner to induce rules with single-label heads that predict for a single
-                     * label.
+                     * Configures the rule learner to induce rules with single-output heads that predict for a single
+                     * output.
                      */
-                    virtual void useSingleLabelHeads() {
+                    virtual void useSingleOutputHeads() {
                         std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
-                        headConfigPtr = std::make_unique<SingleLabelHeadConfig>(this->getHeuristicConfigPtr(),
-                                                                                this->getPruningHeuristicConfigPtr());
+                        headConfigPtr = std::make_unique<SingleOutputHeadConfig>(this->getHeuristicConfigPtr(),
+                                                                                 this->getPruningHeuristicConfigPtr());
                     }
             };
 
@@ -547,10 +547,10 @@ namespace seco {
              * rules of an existing rule-based model in the order they have been learned. If a rule covers an example,
              * its prediction is applied to each label individually.
              */
-            class ILabelWiseBinaryPredictionMixin : virtual public ISeCoRuleLearner::IConfig {
+            class IOutputWiseBinaryPredictionMixin : virtual public ISeCoRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseBinaryPredictionMixin() override {}
+                    virtual ~IOutputWiseBinaryPredictionMixin() override {}
 
                     /**
                      * Configures the rule learner to use a predictor for predicting whether individual labels of given
@@ -558,11 +558,11 @@ namespace seco {
                      * the order they have been learned. If a rule covers an example, its prediction is applied to each
                      * label individually.
                      */
-                    virtual void useLabelWiseBinaryPredictor() {
+                    virtual void useOutputWiseBinaryPredictor() {
                         std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
                           this->getBinaryPredictorConfigPtr();
                         binaryPredictorConfigPtr =
-                          std::make_unique<LabelWiseBinaryPredictorConfig>(this->getParallelPredictionConfigPtr());
+                          std::make_unique<OutputWiseBinaryPredictorConfig>(this->getParallelPredictionConfigPtr());
                     }
             };
     };

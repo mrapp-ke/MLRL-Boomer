@@ -16,7 +16,7 @@
 #include "mlrl/common/post_optimization/post_optimization_sequential.hpp"
 #include "mlrl/common/post_optimization/post_optimization_unused_rule_removal.hpp"
 #include "mlrl/common/post_processing/post_processor_no.hpp"
-#include "mlrl/common/prediction/label_space_info.hpp"
+#include "mlrl/common/prediction/output_space_info.hpp"
 #include "mlrl/common/prediction/prediction_matrix_dense.hpp"
 #include "mlrl/common/prediction/prediction_matrix_sparse_binary.hpp"
 #include "mlrl/common/prediction/predictor_binary.hpp"
@@ -35,15 +35,15 @@
 #include "mlrl/common/sampling/feature_sampling_without_replacement.hpp"
 #include "mlrl/common/sampling/instance_sampling_no.hpp"
 #include "mlrl/common/sampling/instance_sampling_stratified_example_wise.hpp"
-#include "mlrl/common/sampling/instance_sampling_stratified_label_wise.hpp"
+#include "mlrl/common/sampling/instance_sampling_stratified_output_wise.hpp"
 #include "mlrl/common/sampling/instance_sampling_with_replacement.hpp"
 #include "mlrl/common/sampling/instance_sampling_without_replacement.hpp"
-#include "mlrl/common/sampling/label_sampling_no.hpp"
-#include "mlrl/common/sampling/label_sampling_round_robin.hpp"
-#include "mlrl/common/sampling/label_sampling_without_replacement.hpp"
+#include "mlrl/common/sampling/output_sampling_no.hpp"
+#include "mlrl/common/sampling/output_sampling_round_robin.hpp"
+#include "mlrl/common/sampling/output_sampling_without_replacement.hpp"
 #include "mlrl/common/sampling/partition_sampling_bi_random.hpp"
 #include "mlrl/common/sampling/partition_sampling_bi_stratified_example_wise.hpp"
-#include "mlrl/common/sampling/partition_sampling_bi_stratified_label_wise.hpp"
+#include "mlrl/common/sampling/partition_sampling_bi_stratified_output_wise.hpp"
 #include "mlrl/common/sampling/partition_sampling_no.hpp"
 #include "mlrl/common/stopping/global_pruning_post.hpp"
 #include "mlrl/common/stopping/global_pruning_pre.hpp"
@@ -62,11 +62,11 @@ class MLRLCOMMON_API ITrainingResult {
         virtual ~ITrainingResult() {}
 
         /**
-         * Returns the number of labels for which a model has been trained.
+         * Returns the number of outputs for which a model has been trained.
          *
-         * @return The number of labels
+         * @return The number of outputs
          */
-        virtual uint32 getNumLabels() const = 0;
+        virtual uint32 getNumOutputs() const = 0;
 
         /**
          * Returns the model that has been trained.
@@ -83,20 +83,20 @@ class MLRLCOMMON_API ITrainingResult {
         virtual const std::unique_ptr<IRuleModel>& getRuleModel() const = 0;
 
         /**
-         * Returns information about the label space that may be used as a basis for making predictions.
+         * Returns information about the output space that may be used as a basis for making predictions.
          *
-         * @return An unique pointer to an object of type `ILabelSpaceInfo` that may be used as a basis for making
+         * @return An unique pointer to an object of type `IOutputSpaceInfo` that may be used as a basis for making
          *         predictions
          */
-        virtual std::unique_ptr<ILabelSpaceInfo>& getLabelSpaceInfo() = 0;
+        virtual std::unique_ptr<IOutputSpaceInfo>& getOutputSpaceInfo() = 0;
 
         /**
-         * Returns information about the label space that may be used as a basis for making predictions.
+         * Returns information about the output space that may be used as a basis for making predictions.
          *
-         * @return An unique pointer to an object of type `ILabelSpaceInfo` that may be used as a basis for making
+         * @return An unique pointer to an object of type `IOutputSpaceInfo` that may be used as a basis for making
          *         predictions
          */
-        virtual const std::unique_ptr<ILabelSpaceInfo>& getLabelSpaceInfo() const = 0;
+        virtual const std::unique_ptr<IOutputSpaceInfo>& getOutputSpaceInfo() const = 0;
 
         /**
          * Returns a model that may be used for the calibration of marginal probabilities.
@@ -193,12 +193,12 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual std::unique_ptr<IFeatureBinningConfig>& getFeatureBinningConfigPtr() = 0;
 
                 /**
-                 * Returns an unique pointer to the configuration of the method for sampling labels.
+                 * Returns an unique pointer to the configuration of the method for sampling outputs.
                  *
-                 * @return A reference to an unique pointer of type `ILabelSamplingConfig` that stores the configuration
-                 *         of the method for sampling labels
+                 * @return A reference to an unique pointer of type `IOutputSamplingConfig` that stores the
+                 *         configuration of the method for sampling outputs
                  */
-                virtual std::unique_ptr<ILabelSamplingConfig>& getLabelSamplingConfigPtr() = 0;
+                virtual std::unique_ptr<IOutputSamplingConfig>& getOutputSamplingConfigPtr() = 0;
 
                 /**
                  * Returns an unique pointer to the configuration of the method for sampling instances.
@@ -357,12 +357,11 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual std::unique_ptr<IBinaryPredictorConfig>& getBinaryPredictorConfigPtr() = 0;
 
                 /**
-                 * Returns an unique pointer to the configuration of the predictor that allows to predict regression
-                 * scores.
+                 * Returns an unique pointer to the configuration of the predictor that allows to predict scores.
                  *
                  * @return A reference to an unique pointer of type `IScorePredictorConfig` that stores the
-                 *         configuration of the predictor that allows to predict regression scores or a null pointer, if
-                 *         the prediction of regression scores is not supported
+                 *         configuration of the predictor that allows to predict scores or a null pointer, if the
+                 *         prediction of scores is not supported
                  */
                 virtual std::unique_ptr<IScorePredictorConfig>& getScorePredictorConfigPtr() = 0;
 
@@ -562,65 +561,68 @@ class MLRLCOMMON_API IRuleLearner {
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to not use label sampling.
+         * Defines an interface for all classes that allow to configure a rule learner to not use output sampling.
          */
-        class INoLabelSamplingMixin : virtual public IRuleLearner::IConfig {
+        class INoOutputSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~INoLabelSamplingMixin() override {}
+                virtual ~INoOutputSamplingMixin() override {}
 
                 /**
-                 * Configures the rule learner to not sample from the available labels whenever a new rule should be
+                 * Configures the rule learner to not sample from the available outputs whenever a new rule should be
                  * learned.
                  */
-                virtual void useNoLabelSampling() {
-                    std::unique_ptr<ILabelSamplingConfig>& labelSamplingConfigPtr = this->getLabelSamplingConfigPtr();
-                    labelSamplingConfigPtr = std::make_unique<NoLabelSamplingConfig>();
+                virtual void useNoOutputSampling() {
+                    std::unique_ptr<IOutputSamplingConfig>& outputSamplingConfigPtr =
+                      this->getOutputSamplingConfigPtr();
+                    outputSamplingConfigPtr = std::make_unique<NoOutputSamplingConfig>();
                 }
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to use label sampling without
+         * Defines an interface for all classes that allow to configure a rule learner to use output sampling without
          * replacement.
          */
-        class ILabelSamplingWithoutReplacementMixin : virtual public IRuleLearner::IConfig {
+        class IOutputSamplingWithoutReplacementMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~ILabelSamplingWithoutReplacementMixin() override {}
+                virtual ~IOutputSamplingWithoutReplacementMixin() override {}
 
                 /**
-                 * Configures the rule learner to sample from the available labels with replacement whenever a new rule
+                 * Configures the rule learner to sample from the available outputs with replacement whenever a new rule
                  * should be learned.
                  *
-                 * @return A reference to an object of type `ILabelSamplingWithoutReplacementConfig` that allows further
-                 *         configuration of the method for sampling labels
+                 * @return A reference to an object of type `IOutputSamplingWithoutReplacementConfig` that allows
+                 *         further configuration of the sampling method
                  */
-                virtual ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement() {
-                    std::unique_ptr<ILabelSamplingConfig>& labelSamplingConfigPtr = this->getLabelSamplingConfigPtr();
-                    std::unique_ptr<LabelSamplingWithoutReplacementConfig> ptr =
-                      std::make_unique<LabelSamplingWithoutReplacementConfig>();
-                    ILabelSamplingWithoutReplacementConfig& ref = *ptr;
-                    labelSamplingConfigPtr = std::move(ptr);
+                virtual IOutputSamplingWithoutReplacementConfig& useOutputSamplingWithoutReplacement() {
+                    std::unique_ptr<IOutputSamplingConfig>& outputSamplingConfigPtr =
+                      this->getOutputSamplingConfigPtr();
+                    std::unique_ptr<OutputSamplingWithoutReplacementConfig> ptr =
+                      std::make_unique<OutputSamplingWithoutReplacementConfig>();
+                    IOutputSamplingWithoutReplacementConfig& ref = *ptr;
+                    outputSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
         };
 
         /**
-         * Defines an interface for all classes that allow to configure a rule learner to sample single labels in a
-         * round-robin fashion.
+         * Defines an interface for all classes that allow to configure a rule learner to sample one output at a time in
+         * a round-robin fashion.
          */
-        class IRoundRobinLabelSamplingMixin : virtual public IRuleLearner::IConfig {
+        class IRoundRobinOutputSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~IRoundRobinLabelSamplingMixin() override {}
+                virtual ~IRoundRobinOutputSamplingMixin() override {}
 
                 /**
-                 * Configures the rule learner to sample a single labels in a round-robin fashion whenever a new rule
-                 * should be learned.
+                 * Configures the rule learner to sample one output at a time in a round-robin fashion whenever a new
+                 * rule should be learned.
                  */
-                virtual void useRoundRobinLabelSampling() {
-                    std::unique_ptr<ILabelSamplingConfig>& labelSamplingConfigPtr = this->getLabelSamplingConfigPtr();
-                    labelSamplingConfigPtr = std::make_unique<RoundRobinLabelSamplingConfig>();
+                virtual void useRoundRobinOutputSampling() {
+                    std::unique_ptr<IOutputSamplingConfig>& outputSamplingConfigPtr =
+                      this->getOutputSamplingConfigPtr();
+                    outputSamplingConfigPtr = std::make_unique<RoundRobinOutputSamplingConfig>();
                 }
         };
 
@@ -701,25 +703,25 @@ class MLRLCOMMON_API IRuleLearner {
          * Defines an interface for all classes that allow to configure a rule learner to use label-wise stratified
          * instance sampling.
          */
-        class ILabelWiseStratifiedInstanceSamplingMixin : virtual public IRuleLearner::IConfig {
+        class IOutputWiseStratifiedInstanceSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~ILabelWiseStratifiedInstanceSamplingMixin() override {}
+                virtual ~IOutputWiseStratifiedInstanceSamplingMixin() override {}
 
                 /**
                  * Configures the rule learner to sample from the available training examples using stratification, such
                  * that for each label the proportion of relevant and irrelevant examples is maintained, whenever a new
                  * rule should be learned.
                  *
-                 * @return A reference to an object of type `ILabelWiseStratifiedInstanceSamplingConfig` that allows
+                 * @return A reference to an object of type `IOutputWiseStratifiedInstanceSamplingConfig` that allows
                  *         further configuration of the method for sampling instances
                  */
-                virtual ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling() {
+                virtual IOutputWiseStratifiedInstanceSamplingConfig& useOutputWiseStratifiedInstanceSampling() {
                     std::unique_ptr<IInstanceSamplingConfig>& instanceSamplingConfigPtr =
                       this->getInstanceSamplingConfigPtr();
-                    std::unique_ptr<LabelWiseStratifiedInstanceSamplingConfig> ptr =
-                      std::make_unique<LabelWiseStratifiedInstanceSamplingConfig>();
-                    ILabelWiseStratifiedInstanceSamplingConfig& ref = *ptr;
+                    std::unique_ptr<OutputWiseStratifiedInstanceSamplingConfig> ptr =
+                      std::make_unique<OutputWiseStratifiedInstanceSamplingConfig>();
+                    IOutputWiseStratifiedInstanceSamplingConfig& ref = *ptr;
                     instanceSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
@@ -853,26 +855,26 @@ class MLRLCOMMON_API IRuleLearner {
          * training examples into a training set and a holdout set using stratification, such that for each label the
          * proportion of relevant and irrelevant examples is maintained.
          */
-        class ILabelWiseStratifiedBiPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
+        class IOutputWiseStratifiedBiPartitionSamplingMixin : virtual public IRuleLearner::IConfig {
             public:
 
-                virtual ~ILabelWiseStratifiedBiPartitionSamplingMixin() override {}
+                virtual ~IOutputWiseStratifiedBiPartitionSamplingMixin() override {}
 
                 /**
                  * Configures the rule learner to partition the available training examples into a training set and a
                  * holdout set using stratification, such that for each label the proportion of relevant and irrelevant
                  * examples is maintained.
                  *
-                 * @return A reference to an object of type `ILabelWiseStratifiedBiPartitionSamplingConfig` that allows
+                 * @return A reference to an object of type `IOutputWiseStratifiedBiPartitionSamplingConfig` that allows
                  *         further configuration of the method for partitioning the available training examples into a
                  *         training and a holdout set
                  */
-                virtual ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling() {
+                virtual IOutputWiseStratifiedBiPartitionSamplingConfig& useOutputWiseStratifiedBiPartitionSampling() {
                     std::unique_ptr<IPartitionSamplingConfig>& partitionSamplingConfigPtr =
                       this->getPartitionSamplingConfigPtr();
-                    std::unique_ptr<LabelWiseStratifiedBiPartitionSamplingConfig> ptr =
-                      std::make_unique<LabelWiseStratifiedBiPartitionSamplingConfig>();
-                    ILabelWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
+                    std::unique_ptr<OutputWiseStratifiedBiPartitionSamplingConfig> ptr =
+                      std::make_unique<OutputWiseStratifiedBiPartitionSamplingConfig>();
+                    IOutputWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
                     partitionSamplingConfigPtr = std::move(ptr);
                     return ref;
                 }
@@ -1391,8 +1393,8 @@ class MLRLCOMMON_API IRuleLearner {
          *                                            examples
          * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
          *                                            to obtain predictions
-         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                            information about the label space that may be used as a basis for
+         * @param outputSpaceInfo                     A reference to an object of type `IOutputSpaceInfo` that provides
+         *                                            information about the output space that may be used as a basis for
          *                                            obtaining predictions
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
@@ -1406,7 +1408,7 @@ class MLRLCOMMON_API IRuleLearner {
          */
         virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
@@ -1440,8 +1442,8 @@ class MLRLCOMMON_API IRuleLearner {
          *                                            examples
          * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
          *                                            to obtain predictions
-         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                            information about the label space that may be used as a basis for
+         * @param outputSpaceInfo                     A reference to an object of type `IOutputSpaceInfo` that provides
+         *                                            information about the output space that may be used as a basis for
          *                                            obtaining predictions
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
@@ -1456,68 +1458,68 @@ class MLRLCOMMON_API IRuleLearner {
          */
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
         /**
-         * Returns whether the rule learner is able to predict regression scores or not.
+         * Returns whether the rule learner is able to predict scores or not.
          *
          * @param featureMatrix     A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise
          *                          access to the feature values of the query examples
          * @param trainingResult    A reference to an object of type `ITrainingResult` that provides access to the model
          *                          and additional information that should be used to obtain predictions
-         * @return                  True, if the rule learner is able to predict regression scores, false otherwise
+         * @return                  True, if the rule learner is able to predict scores, false otherwise
          */
         virtual bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix,
                                       const ITrainingResult& trainingResult) const = 0;
 
         /**
-         * Returns whether the rule learner is able to predict regression scores or not.
+         * Returns whether the rule learner is able to predict scores or not.
          *
          * @param featureMatrix     A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise
          *                          access to the feature values of the query examples
          * @param numLabels         The number of labels to predict for
-         * @return                  True, if the rule learner is able to predict regression scores, false otherwise
+         * @return                  True, if the rule learner is able to predict scores, false otherwise
          */
         virtual bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const = 0;
 
         /**
-         * Creates and returns a predictor that may be used to predict regression scores for given query examples. If
-         * the prediction of regression scores is not supported by the rule learner, a `std::runtime_error` is thrown.
+         * Creates and returns a predictor that may be used to predict scores for given query examples. If the
+         * prediction of scores is not supported by the rule learner, a `std::runtime_error` is thrown.
          *
-         * @throws std::runtime_exception   The exception that is thrown if the prediction of regression scores is not
-         *                                  supported by the rule learner
+         * @throws std::runtime_exception   The exception that is thrown if the prediction of scores is not supported by
+         *                                  the rule learner
          * @param featureMatrix             A reference to an object of type `IRowWiseFeatureMatrix` that provides
          *                                  row-wise access to the feature values of the query examples
          * @param trainingResult            A reference to an object of type `ITrainingResult` that provides access to
          *                                  the model and additional information that should be used to obtain
          *                                  predictions
          * @return                          An unique pointer to an object of type `IScorePredictor` that may be used to
-         *                                  predict regression scores for the given query examples
+         *                                  predict scores for the given query examples
          */
         virtual std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                                       const ITrainingResult& trainingResult) const = 0;
 
         /**
-         * Creates and returns a predictor that may be used to predict regression scores for given query examples. If
-         * the prediction of regression scores is not supported by the rule learner, a `std::runtime_error` is thrown.
+         * Creates and returns a predictor that may be used to predict scores for given query examples. If the
+         * prediction of scores is not supported by the rule learner, a `std::runtime_error` is thrown.
          *
-         * @throws std::runtime_exception The exception that is thrown if the prediction of regression scores is not
-         *                                supported by the rule learner
+         * @throws std::runtime_exception The exception that is thrown if the prediction of scores is not supported by
+         *                                the rule learner
          * @param featureMatrix           A reference to an object of type `IRowWiseFeatureMatrix` that provides
          *                                row-wise access to the feature values of the query examples
          * @param ruleModel               A reference to an object of type `IRuleModel` that should be used to obtain
          *                                predictions
-         * @param labelSpaceInfo          A reference to an object of type `ILabelSpaceInfo` that provides information
-         *                                about the label space that may be used as a basis for obtaining predictions
+         * @param outputSpaceInfo         A reference to an object of type `IOutputSpaceInfo` that provides information
+         *                                about the output space that may be used as a basis for obtaining predictions
          * @param numLabels               The number of labels to predict for
          * @return                        An unique pointer to an object of type `IScorePredictor` that may be used to
-         *                                predict regression scores for the given query examples
+         *                                predict scores for the given query examples
          */
         virtual std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                                       const IRuleModel& ruleModel,
-                                                                      const ILabelSpaceInfo& labelSpaceInfo,
+                                                                      const IOutputSpaceInfo& outputSpaceInfo,
                                                                       uint32 numLabels) const = 0;
 
         /**
@@ -1572,8 +1574,8 @@ class MLRLCOMMON_API IRuleLearner {
          *                                            examples
          * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
          *                                            to obtain predictions
-         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                            information about the label space that may be used as a basis for
+         * @param outputSpaceInfo                     A reference to an object of type `IOutputSpaceInfo` that provides
+         *                                            information about the output space that may be used as a basis for
          *                                            obtaining predictions
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
@@ -1588,7 +1590,7 @@ class MLRLCOMMON_API IRuleLearner {
          */
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 };
@@ -1634,9 +1636,9 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<IFeatureBinningConfig> featureBinningConfigPtr_;
 
                 /**
-                 * An unique pointer that stores the configuration of the method for sampling labels.
+                 * An unique pointer that stores the configuration of the method for sampling outputs.
                  */
-                std::unique_ptr<ILabelSamplingConfig> labelSamplingConfigPtr_;
+                std::unique_ptr<IOutputSamplingConfig> outputSamplingConfigPtr_;
 
                 /**
                  * An unique pointer that stores the configuration of the method for sampling instances.
@@ -1732,8 +1734,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                 std::unique_ptr<IBinaryPredictorConfig> binaryPredictorConfigPtr_;
 
                 /**
-                 * An unique pointer that stores the configuration of the predictor that allows to predict regression
-                 * scores.
+                 * An unique pointer that stores the configuration of the predictor that allows to predict scores.
                  */
                 std::unique_ptr<IScorePredictorConfig> scorePredictorConfigPtr_;
 
@@ -1755,7 +1756,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
                 std::unique_ptr<IFeatureBinningConfig>& getFeatureBinningConfigPtr() override final;
 
-                std::unique_ptr<ILabelSamplingConfig>& getLabelSamplingConfigPtr() override final;
+                std::unique_ptr<IOutputSamplingConfig>& getOutputSamplingConfigPtr() override final;
 
                 std::unique_ptr<IInstanceSamplingConfig>& getInstanceSamplingConfigPtr() override final;
 
@@ -1813,12 +1814,12 @@ class AbstractRuleLearner : virtual public IRuleLearner {
           const IRowWiseLabelMatrix& labelMatrix) const;
 
         std::unique_ptr<IFeatureSpaceFactory> createFeatureSpaceFactory(const IFeatureMatrix& featureMatrix,
-                                                                        const ILabelMatrix& labelMatrix) const;
+                                                                        const IOutputMatrix& outputMatrix) const;
 
         std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory(const IFeatureMatrix& featureMatrix,
-                                                                          const ILabelMatrix& labelMatrix) const;
+                                                                          const IOutputMatrix& outputMatrix) const;
 
-        std::unique_ptr<ILabelSamplingFactory> createLabelSamplingFactory(const ILabelMatrix& labelMatrix) const;
+        std::unique_ptr<IOutputSamplingFactory> createOutputSamplingFactory(const IOutputMatrix& outputMatrix) const;
 
         std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const;
 
@@ -1887,14 +1888,14 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         virtual std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const = 0;
 
         /**
-         * May be overridden by subclasses in order to create the `ILabelSpaceInfo` to be used by the rule learner as a
+         * May be overridden by subclasses in order to create the `IOutputSpaceInfo` to be used by the rule learner as a
          * basis for for making predictions.
          *
          * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
          *                      the labels of the training examples
-         * @return              An unique pointer to an object of type `ILabelSpaceInfo` that has been created
+         * @return              An unique pointer to an object of type `IOutputSpaceInfo` that has been created
          */
-        virtual std::unique_ptr<ILabelSpaceInfo> createLabelSpaceInfo(const IRowWiseLabelMatrix& labelMatrix) const;
+        virtual std::unique_ptr<IOutputSpaceInfo> createOutputSpaceInfo(const IRowWiseLabelMatrix& labelMatrix) const;
 
         /**
          * May be overridden by subclasses in order to create the `IBinaryPredictorFactory` to be used by the rule
@@ -1925,16 +1926,16 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         /**
          * May be overridden by subclasses in order to create the `IScorePredictorFactory` to be used by the rule
-         * learner for predicting regression scores.
+         * learner for predicting scores.
          *
          * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
          *                      to the feature values of the query examples
-         * @param numLabels     The number of labels to predict for
+         * @param numOutputs    The number of outputs to predict for
          * @return              An unique pointer to an object of type `IScorePredictorFactory` that has been created or
-         *                      a null pointer, if the rule learner does not support to predict regression scores
+         *                      a null pointer, if the rule learner does not support to predict scores
          */
         virtual std::unique_ptr<IScorePredictorFactory> createScorePredictorFactory(
-          const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const;
+          const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const;
 
         /**
          * May be overridden by subclasses in order to create the `IProbabilityPredictorFactory` to be used by the rule
@@ -1972,7 +1973,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
@@ -1981,7 +1982,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
@@ -1995,7 +1996,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
                                                               const IRuleModel& ruleModel,
-                                                              const ILabelSpaceInfo& labelSpaceInfo,
+                                                              const IOutputSpaceInfo& outputSpaceInfo,
                                                               uint32 numLabels) const override;
 
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix,
@@ -2008,7 +2009,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 };

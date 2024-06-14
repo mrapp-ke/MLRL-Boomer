@@ -59,7 +59,7 @@ One of the most important capabilities of the command line API is to train machi
 
 - `--prediction-type` (Default value = `binary`)
 
-  - `scores` The learner is instructed to predict regression scores. In this case, ranking measures are used for evaluation.
+  - `scores` The learner is instructed to predict scores. In this case, ranking measures are used for evaluation.
   - `probabilities` The learner is instructed to predict probability estimates. In this case, ranking measures are used for evaluation.
   - `binary` The learner is instructed to predict binary labels. In this case, bipartition evaluation measures are used for evaluation.
 
@@ -85,8 +85,8 @@ Depending on the characteristics of a dataset, it might be desirable to apply on
 
 - `--one-hot-encoding` (Default value = `false`)
 
-  - `true` One-hot-encoding is used to encode nominal attributes.
-  - `false` The algorithm's ability to natively handle nominal attributes is used.
+  - `true` One-hot-encoding is used to encode nominal features.
+  - `false` The algorithm's ability to natively handle nominal features is used.
 
 ## Saving and Loading Models
 
@@ -244,9 +244,9 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
     - `decimals` (Default value = `2`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
-    - `labels` (Default value = `true`) `true`, if the number of labels should be printed, `false` otherwise.
-    - `label_density` (Default value = `true`) `true`, if the label density should be printed, `false` otherwise.
-    - `label_sparsity` (Default value = `true`) `true`, if the label sparsity should be printed, `false` otherwise.
+    - `outputs` (Default value = `true`) `true`, if the number of labels should be printed, `false` otherwise.
+    - `output_density` (Default value = `true`) `true`, if the label density should be printed, `false` otherwise.
+    - `output_sparsity` (Default value = `true`) `true`, if the label sparsity should be printed, `false` otherwise.
     - `label_imbalance_ratio` (Default value = `true`) `true`, if the label imbalance ratio should be printed, `false` otherwise.
     - `label_cardinality` (Default value = `true`) `true`, if the average label cardinality should be printed, `false` otherwise.
     - `distinct_label_vectors` (Default value = `true`) `true`, if the number of distinct label vectors should be printed, `false` otherwise.
@@ -259,9 +259,9 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
     - `decimals` (Default value = `0`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
-    - `labels` (Default value = `true`) `true`, if the number of labels should be stored, `false` otherwise.
-    - `label_density` (Default value = `true`) `true`, if the label density should be stored, `false` otherwise.
-    - `label_sparsity` (Default value = `true`) `true`, if the label sparsity should be stored, `false` otherwise.
+    - `outputs` (Default value = `true`) `true`, if the number of labels should be stored, `false` otherwise.
+    - `output_density` (Default value = `true`) `true`, if the label density should be stored, `false` otherwise.
+    - `output_sparsity` (Default value = `true`) `true`, if the label sparsity should be stored, `false` otherwise.
     - `label_imbalance_ratio` (Default value = `true`) `true`, if the label imbalance ratio should be stored, `false` otherwise.
     - `label_cardinality` (Default value = `true`) `true`, if the average label cardinality should be stored, `false` otherwise.
     - `distinct_label_vectors` (Default value = `true`) `true`, if the number of distinct label vectors should be stored, `false` otherwise.
@@ -278,9 +278,9 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
     - `decimals` (Default value = `2`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
-    - `labels` (Default value = `true`) `true`, if the number of labels should be printed, `false` otherwise.
-    - `label_density` (Default value = `true`) `true`, if the label density should be printed, `false` otherwise.
-    - `label_sparsity` (Default value = `true`) `true`, if the label sparsity should be printed, `false` otherwise.
+    - `outputs` (Default value = `true`) `true`, if the number of labels should be printed, `false` otherwise.
+    - `output_density` (Default value = `true`) `true`, if the label density should be printed, `false` otherwise.
+    - `output_sparsity` (Default value = `true`) `true`, if the label sparsity should be printed, `false` otherwise.
     - `label_imbalance_ratio` (Default value = `true`) `true`, if the label imbalance ratio should be printed, `false` otherwise.
     - `label_cardinality` (Default value = `true`) `true`, if the average label cardinality should be printed, `false` otherwise.
     - `distinct_label_vectors` (Default value = `true`) `true`, if the number of distinct label vectors should be printed, `false` otherwise.
@@ -299,9 +299,9 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
     - `decimals` (Default value = `0`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
-    - `labels` (Default value = `true`) `true`, if the number of labels should be stored, `false` otherwise.
-    - `label_density` (Default value = `true`) `true`, if the label density should be stored, `false` otherwise.
-    - `label_sparsity` (Default value = `true`) `true`, if the label sparsity should be stored, `false` otherwise.
+    - `outputs` (Default value = `true`) `true`, if the number of labels should be stored, `false` otherwise.
+    - `output_density` (Default value = `true`) `true`, if the label density should be stored, `false` otherwise.
+    - `output_sparsity` (Default value = `true`) `true`, if the label sparsity should be stored, `false` otherwise.
     - `label_imbalance_ratio` (Default value = `true`) `true`, if the label imbalance ratio should be stored, `false` otherwise.
     - `label_cardinality` (Default value = `true`) `true`, if the average label cardinality should be stored, `false` otherwise.
     - `distinct_label_vectors` (Default value = `true`) `true`, if the number of distinct label vectors should be stored, `false` otherwise.
@@ -357,7 +357,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The induced rules are printed on the console. The following options may be specified using the {ref}`bracket-notation`:
 
     - `print_feature_names` (Default value = `true`) `true`, if the names of features should be printed instead of their indices, `false` otherwise.
-    - `print_label_names` (Default value = `true`) `true`, if the names of labels should be printed instead of their indices, `false` otherwise.
+    - `print_output_names` (Default value = `true`) `true`, if the names of labels should be printed instead of their indices, `false` otherwise.
     - `print_nominal_values` (Default value = `true`) `true`, if the names of nominal values should be printed instead of their numerical representation, `false` otherwise.
     - `print_bodies` (Default value = `true`) `true`, if the bodies of rules should be printed, `false` otherwise.
     - `print_heads` (Default value = `true`) `true`, if the heads of rules should be printed, `false` otherwise.
@@ -371,7 +371,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The induced rules are written into a .txt file. Does only have an effect if the parameter `--output-dir` is specified. The following options may be specified using the {ref}`bracket-notation`:
 
     - `print_feature_names` (Default value = `true`) `true`, if the names of features should be printed instead of their indices, `false` otherwise.
-    - `print_label_names` (Default value = `true`) `true`, if the names of labels should be printed instead of their indices, `false` otherwise.
+    - `print_output_names` (Default value = `true`) `true`, if the names of labels should be printed instead of their indices, `false` otherwise.
     - `print_nominal_values` (Default value = `true`) `true`, if the names of nominal values should be printed instead of their numerical representation, `false` otherwise.
     - `print_bodies` (Default value = `true`) `true`, if the bodies of rules should be printed, `false` otherwise.
     - `print_heads` (Default value = `true`) `true`, if the heads of rules should be printed, `false` otherwise.

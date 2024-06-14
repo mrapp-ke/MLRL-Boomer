@@ -21,7 +21,7 @@ HEURISTIC_F_MEASURE = 'f-measure'
 
 HEURISTIC_M_ESTIMATE = 'm-estimate'
 
-HEAD_TYPE_SINGLE_LABEL = 'single-label'
+HEAD_TYPE_SINGLE = 'single'
 
 HEAD_TYPE_PARTIAL = 'partial'
 
@@ -62,7 +62,7 @@ class SeCoCmdBuilder(CmdBuilder):
         self.args.append(heuristic)
         return self
 
-    def head_type(self, head_type: str = HEAD_TYPE_SINGLE_LABEL):
+    def head_type(self, head_type: str = HEAD_TYPE_SINGLE):
         """
         Configures the algorithm to use a specific type of rule heads.
 
@@ -216,14 +216,14 @@ class SeCoIntegrationTests(CommonIntegrationTests):
             .pruning_heuristic(HEURISTIC_M_ESTIMATE)
         self.run_cmd(builder, 'pruning-heuristic_m-estimate')
 
-    def test_single_label_heads(self):
+    def test_single_output_heads(self):
         """
-        Tests the SeCo algorithm when inducing rules with single-label heads.
+        Tests the SeCo algorithm when inducing rules with single-output heads.
         """
         builder = SeCoCmdBuilder() \
-            .head_type(HEAD_TYPE_SINGLE_LABEL) \
+            .head_type(HEAD_TYPE_SINGLE) \
             .print_model_characteristics()
-        self.run_cmd(builder, 'single-label-heads')
+        self.run_cmd(builder, 'single-output-heads')
 
     def test_partial_heads_no_lift_function(self):
         """

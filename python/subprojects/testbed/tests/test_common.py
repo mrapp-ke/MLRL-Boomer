@@ -61,7 +61,7 @@ INSTANCE_SAMPLING_WITH_REPLACEMENT = 'with-replacement'
 
 INSTANCE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
 
-INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
+INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE = 'stratified-output-wise'
 
 INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
@@ -69,17 +69,17 @@ FEATURE_SAMPLING_NO = 'none'
 
 FEATURE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
 
-LABEL_SAMPLING_NO = 'none'
+OUTPUT_SAMPLING_NO = 'none'
 
-LABEL_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
+OUTPUT_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
 
-LABEL_SAMPLING_ROUND_ROBIN = 'round-robin'
+OUTPUT_SAMPLING_ROUND_ROBIN = 'round-robin'
 
 HOLDOUT_NO = 'none'
 
 HOLDOUT_RANDOM = 'random'
 
-HOLDOUT_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
+HOLDOUT_STRATIFIED_OUTPUT_WISE = 'stratified-output-wise'
 
 HOLDOUT_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
@@ -512,7 +512,7 @@ class CmdBuilder:
         self.args.append('sparse' if sparse else 'dense')
         return self
 
-    def sparse_label_format(self, sparse: bool = True):
+    def sparse_output_format(self, sparse: bool = True):
         """
         Configures whether sparse data structures should be used to represent the labels of training examples or not.
 
@@ -520,7 +520,7 @@ class CmdBuilder:
                         False otherwise
         :return:        The builder itself
         """
-        self.args.append('--label-format')
+        self.args.append('--output-format')
         self.args.append('sparse' if sparse else 'dense')
         return self
 
@@ -557,15 +557,15 @@ class CmdBuilder:
         self.args.append(feature_sampling)
         return self
 
-    def label_sampling(self, label_sampling: str = LABEL_SAMPLING_WITHOUT_REPLACEMENT):
+    def output_sampling(self, output_sampling: str = OUTPUT_SAMPLING_WITHOUT_REPLACEMENT):
         """
-        Configures the rule learner to sample from the available labels.
+        Configures the rule learner to sample from the available outputs.
 
-        :param label_sampling:  The name of the sampling method that should be used
+        :param output_sampling: The name of the sampling method that should be used
         :return:                The builder itself
         """
-        self.args.append('--label-sampling')
-        self.args.append(label_sampling)
+        self.args.append('--output-sampling')
+        self.args.append(output_sampling)
         return self
 
     def rule_pruning(self, rule_pruning: str = RULE_PRUNING_IREP):
@@ -1393,7 +1393,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_numeric_features_dense(self):
         """
-        Tests the rule learning algorithm on a dataset with numerical attributes when using a dense feature
+        Tests the rule learning algorithm on a dataset with numerical features when using a dense feature
         representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_numerical_sparse) \
@@ -1402,7 +1402,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_numeric_features_sparse(self):
         """
-        Tests the rule learning algorithm on a dataset with numerical attributes when using a sparse feature
+        Tests the rule learning algorithm on a dataset with numerical features when using a sparse feature
         representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_numerical_sparse) \
@@ -1411,7 +1411,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_binary_features_dense(self):
         """
-        Tests the rule learning algorithm on a dataset with binary attributes when using a dense feature representation.
+        Tests the rule learning algorithm on a dataset with binary features when using a dense feature representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_binary) \
             .sparse_feature_format(False)
@@ -1419,8 +1419,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_binary_features_sparse(self):
         """
-        Tests the rule learning algorithm on a dataset with binary attributes when using a sparse feature
-        representation.
+        Tests the rule learning algorithm on a dataset with binary features when using a sparse feature representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_binary) \
             .sparse_feature_format()
@@ -1428,8 +1427,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_nominal_features_dense(self):
         """
-        Tests the rule learning algorithm on a dataset with nominal attributes when using a dense feature
-        representation.
+        Tests the rule learning algorithm on a dataset with nominal features when using a dense feature representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_nominal) \
             .sparse_feature_format(False)
@@ -1437,8 +1435,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_nominal_features_sparse(self):
         """
-        Tests the rule learning algorithm on a dataset with nominal attributes when using a sparse feature
-        representation.
+        Tests the rule learning algorithm on a dataset with nominal features when using a sparse feature representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_nominal) \
             .sparse_feature_format()
@@ -1446,8 +1443,7 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_ordinal_features_dense(self):
         """
-        Tests the rule learning algorithm on a dataset with ordinal attributes when using a dense feature
-        representation.
+        Tests the rule learning algorithm on a dataset with ordinal features when using a dense feature representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_ordinal) \
             .sparse_feature_format(False)
@@ -1455,28 +1451,27 @@ class CommonIntegrationTests(IntegrationTests, ABC):
 
     def test_ordinal_features_sparse(self):
         """
-        Tests the rule learning algorithm on a dataset with ordinal attributes when using a sparse feature
-        representation.
+        Tests the rule learning algorithm on a dataset with ordinal features when using a sparse feature representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_ordinal) \
             .sparse_feature_format()
         self.run_cmd(builder, 'ordinal-features-sparse')
 
-    def test_label_format_dense(self):
+    def test_output_format_dense(self):
         """
-        Tests the rule learning algorithm when using a dense label representation.
+        Tests the rule learning algorithm when using a dense output representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .sparse_label_format(False)
-        self.run_cmd(builder, 'label-format-dense')
+            .sparse_output_format(False)
+        self.run_cmd(builder, 'output-format-dense')
 
-    def test_label_format_sparse(self):
+    def test_output_format_sparse(self):
         """
-        Tests the rule learning algorithm when using a sparse label representation.
+        Tests the rule learning algorithm when using a sparse output representation.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .sparse_label_format()
-        self.run_cmd(builder, 'label-format-sparse')
+            .sparse_output_format()
+        self.run_cmd(builder, 'output-format-sparse')
 
     def test_prediction_format_dense(self):
         """
@@ -1569,14 +1564,14 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .instance_sampling(INSTANCE_SAMPLING_WITHOUT_REPLACEMENT)
         self.run_cmd(builder, 'instance-sampling-without-replacement')
 
-    def test_instance_sampling_stratified_label_wise(self):
+    def test_instance_sampling_stratified_output_wise(self):
         """
         Tests the rule learning algorithm when using a method to sample from the available training examples using
         label-wise stratification.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_LABEL_WISE)
-        self.run_cmd(builder, 'instance-sampling-stratified-label-wise')
+            .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE)
+        self.run_cmd(builder, 'instance-sampling-stratified-output-wise')
 
     def test_instance_sampling_stratified_example_wise(self):
         """
@@ -1603,29 +1598,29 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .feature_sampling(FEATURE_SAMPLING_WITHOUT_REPLACEMENT)
         self.run_cmd(builder, 'feature-sampling-without-replacement')
 
-    def test_label_sampling_no(self):
+    def test_output_sampling_no(self):
         """
-        Tests the rule learning algorithm when not using a method to sample from the available labels.
+        Tests the rule learning algorithm when not using a method to sample from the available outputs.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .label_sampling(LABEL_SAMPLING_NO)
-        self.run_cmd(builder, 'label-sampling-no')
+            .output_sampling(OUTPUT_SAMPLING_NO)
+        self.run_cmd(builder, 'output-sampling-no')
 
-    def test_label_sampling_round_robin(self):
+    def test_output_sampling_round_robin(self):
         """
-        Tests the rule learning algorithm when using a method that samples single labels in a round-robin fashion.
+        Tests the rule learning algorithm when using a method that samples single outputs in a round-robin fashion.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .label_sampling(LABEL_SAMPLING_ROUND_ROBIN)
-        self.run_cmd(builder, 'label-sampling-round-robin')
+            .output_sampling(OUTPUT_SAMPLING_ROUND_ROBIN)
+        self.run_cmd(builder, 'output-sampling-round-robin')
 
-    def test_label_sampling_without_replacement(self):
+    def test_output_sampling_without_replacement(self):
         """
-        Tests the rule learning algorithm when using a method to sample from the available labels without replacement.
+        Tests the rule learning algorithm when using a method to sample from the available outputs without replacement.
         """
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .label_sampling(LABEL_SAMPLING_WITHOUT_REPLACEMENT)
-        self.run_cmd(builder, 'label-sampling-without-replacement')
+            .output_sampling(OUTPUT_SAMPLING_WITHOUT_REPLACEMENT)
+        self.run_cmd(builder, 'output-sampling-without-replacement')
 
     def test_pruning_no(self):
         """

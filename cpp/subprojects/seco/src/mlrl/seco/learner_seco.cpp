@@ -6,7 +6,7 @@ namespace seco {
         this->useSequentialRuleModelAssemblage();
         this->useGreedyTopDownRuleInduction();
         this->useDefaultRule();
-        this->useNoLabelSampling();
+        this->useNoOutputSampling();
         this->useNoInstanceSampling();
         this->useNoFeatureSampling();
         this->useNoPartitionSampling();
@@ -14,8 +14,8 @@ namespace seco {
         this->useCoverageStoppingCriterion();
         this->useSizeStoppingCriterion();
         this->useNoTimeStoppingCriterion();
-        this->useLabelWiseStratifiedInstanceSampling();
-        this->useSingleLabelHeads();
+        this->useOutputWiseStratifiedInstanceSampling();
+        this->useSingleOutputHeads();
         this->useIrepRulePruning();
         this->useNoSequentialPostOptimization();
         this->useFMeasureHeuristic();
@@ -24,7 +24,7 @@ namespace seco {
         this->useParallelRuleRefinement();
         this->useNoParallelStatisticUpdate();
         this->useParallelPrediction();
-        this->useLabelWiseBinaryPredictor();
+        this->useOutputWiseBinaryPredictor();
     }
 
     IGreedyTopDownRuleInductionConfig& MultiLabelSeCoRuleLearner::Config::useGreedyTopDownRuleInduction() {

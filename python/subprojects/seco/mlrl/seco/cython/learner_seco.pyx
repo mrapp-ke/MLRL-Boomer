@@ -9,15 +9,15 @@ from mlrl.common.cython.feature_sampling cimport FeatureSamplingWithoutReplaceme
     IFeatureSamplingWithoutReplacementConfig
 from mlrl.common.cython.instance_sampling cimport ExampleWiseStratifiedInstanceSamplingConfig, \
     IExampleWiseStratifiedInstanceSamplingConfig, IInstanceSamplingWithoutReplacementConfig, \
-    IInstanceSamplingWithReplacementConfig, ILabelWiseStratifiedInstanceSamplingConfig, \
-    InstanceSamplingWithoutReplacementConfig, InstanceSamplingWithReplacementConfig, \
-    LabelWiseStratifiedInstanceSamplingConfig
-from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig, \
-    LabelSamplingWithoutReplacementConfig
+    IInstanceSamplingWithReplacementConfig, InstanceSamplingWithoutReplacementConfig, \
+    InstanceSamplingWithReplacementConfig, IOutputWiseStratifiedInstanceSamplingConfig, \
+    OutputWiseStratifiedInstanceSamplingConfig
 from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig, ManualMultiThreadingConfig
+from mlrl.common.cython.output_sampling cimport IOutputSamplingWithoutReplacementConfig, \
+    OutputSamplingWithoutReplacementConfig
 from mlrl.common.cython.partition_sampling cimport ExampleWiseStratifiedBiPartitionSamplingConfig, \
-    IExampleWiseStratifiedBiPartitionSamplingConfig, ILabelWiseStratifiedBiPartitionSamplingConfig, \
-    IRandomBiPartitionSamplingConfig, LabelWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
+    IExampleWiseStratifiedBiPartitionSamplingConfig, IOutputWiseStratifiedBiPartitionSamplingConfig, \
+    IRandomBiPartitionSamplingConfig, OutputWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig, SequentialPostOptimizationConfig
 from mlrl.common.cython.rule_induction cimport BeamSearchTopDownRuleInductionConfig, GreedyTopDownRuleInductionConfig, \
     IBeamSearchTopDownRuleInductionConfig, IGreedyTopDownRuleInductionConfig
@@ -33,27 +33,27 @@ from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, Defa
     EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, ExampleWiseStratifiedBiPartitionSamplingMixin, \
     ExampleWiseStratifiedInstanceSamplingMixin, FeatureSamplingWithoutReplacementMixin, \
     GreedyTopDownRuleInductionMixin, InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, \
-    IrepRulePruningMixin, LabelSamplingWithoutReplacementMixin, LabelWiseStratifiedBiPartitionSamplingMixin, \
-    LabelWiseStratifiedInstanceSamplingMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, \
-    NoInstanceSamplingMixin, NoLabelSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, \
+    IrepRulePruningMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, \
+    NoInstanceSamplingMixin, NoOutputSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, \
     NoParallelStatisticUpdateMixin, NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, \
-    NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, ParallelPredictionMixin, ParallelRuleRefinementMixin, \
-    ParallelStatisticUpdateMixin, PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, \
-    RoundRobinLabelSamplingMixin, SequentialPostOptimizationMixin, SequentialRuleModelAssemblageMixin, \
-    SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
+    NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, OutputSamplingWithoutReplacementMixin, \
+    OutputWiseStratifiedBiPartitionSamplingMixin, OutputWiseStratifiedInstanceSamplingMixin, ParallelPredictionMixin, \
+    ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, PrePruningMixin, \
+    RandomBiPartitionSamplingMixin, RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, \
+    SequentialRuleModelAssemblageMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
 
 from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, \
     CoverageStoppingCriterionMixin, FMeasureHeuristicMixin, FMeasurePruningHeuristicMixin, KlnLiftFunctionMixin, \
-    LabelWiseBinaryPredictionMixin, LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, MEstimateHeuristicMixin, \
-    MEstimatePruningHeuristicMixin, NoCoverageStoppingCriterionMixin, NoLiftFunctionMixin, PartialHeadMixin, \
+    LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, MEstimateHeuristicMixin, MEstimatePruningHeuristicMixin, \
+    NoCoverageStoppingCriterionMixin, NoLiftFunctionMixin, OutputWiseBinaryPredictionMixin, PartialHeadMixin, \
     PeakLiftFunctionMixin, PrecisionHeuristicMixin, PrecisionPruningHeuristicMixin, RecallHeuristicMixin, \
-    RecallPruningHeuristicMixin, SingleLabelHeadMixin, WraHeuristicMixin, WraPruningHeuristicMixin
+    RecallPruningHeuristicMixin, SingleOutputHeadMixin, WraHeuristicMixin, WraPruningHeuristicMixin
 
 
 cdef class SeCoConfig(RuleLearnerConfig,
                       NoCoverageStoppingCriterionMixin,
                       CoverageStoppingCriterionMixin,
-                      SingleLabelHeadMixin,
+                      SingleOutputHeadMixin,
                       PartialHeadMixin,
                       NoLiftFunctionMixin,
                       PeakLiftFunctionMixin,
@@ -72,7 +72,7 @@ cdef class SeCoConfig(RuleLearnerConfig,
                       RecallPruningHeuristicMixin,
                       WraHeuristicMixin,
                       WraPruningHeuristicMixin,
-                      LabelWiseBinaryPredictionMixin,
+                      OutputWiseBinaryPredictionMixin,
                       SequentialRuleModelAssemblageMixin,
                       DefaultRuleMixin,
                       GreedyTopDownRuleInductionMixin,
@@ -80,19 +80,19 @@ cdef class SeCoConfig(RuleLearnerConfig,
                       NoFeatureBinningMixin,
                       EqualWidthFeatureBinningMixin,
                       EqualFrequencyFeatureBinningMixin,
-                      NoLabelSamplingMixin,
-                      RoundRobinLabelSamplingMixin,
-                      LabelSamplingWithoutReplacementMixin,
+                      NoOutputSamplingMixin,
+                      RoundRobinOutputSamplingMixin,
+                      OutputSamplingWithoutReplacementMixin,
                       NoInstanceSamplingMixin,
                       InstanceSamplingWithReplacementMixin,
                       InstanceSamplingWithoutReplacementMixin,
-                      LabelWiseStratifiedInstanceSamplingMixin,
+                      OutputWiseStratifiedInstanceSamplingMixin,
                       ExampleWiseStratifiedInstanceSamplingMixin,
                       NoFeatureSamplingMixin,
                       FeatureSamplingWithoutReplacementMixin,
                       NoPartitionSamplingMixin,
                       RandomBiPartitionSamplingMixin,
-                      LabelWiseStratifiedBiPartitionSamplingMixin,
+                      OutputWiseStratifiedBiPartitionSamplingMixin,
                       ExampleWiseStratifiedBiPartitionSamplingMixin,
                       NoRulePruningMixin,
                       IrepRulePruningMixin,
@@ -132,8 +132,8 @@ cdef class SeCoConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_single_label_heads(self):
-        self.config_ptr.get().useSingleLabelHeads()
+    def use_single_output_heads(self):
+        self.config_ptr.get().useSingleOutputHeads()
 
     def use_partial_heads(self):
         self.config_ptr.get().usePartialHeads()
@@ -242,17 +242,17 @@ cdef class SeCoConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_no_label_sampling(self):
-        self.config_ptr.get().useNoLabelSampling()
+    def use_no_output_sampling(self):
+        self.config_ptr.get().useNoOutputSampling()
 
-    def use_round_robin_label_sampling(self):
-        self.config_ptr.get().useRoundRobinLabelSampling()
+    def use_round_robin_output_sampling(self):
+        self.config_ptr.get().useRoundRobinOutputSampling()
     
-    def use_label_sampling_without_replacement(self) -> LabelSamplingWithoutReplacementConfig:
-        cdef ILabelSamplingWithoutReplacementConfig* config_ptr = \
-            &self.config_ptr.get().useLabelSamplingWithoutReplacement()
-        cdef LabelSamplingWithoutReplacementConfig config = \
-            LabelSamplingWithoutReplacementConfig.__new__(LabelSamplingWithoutReplacementConfig)
+    def use_output_sampling_without_replacement(self) -> OutputSamplingWithoutReplacementConfig:
+        cdef IOutputSamplingWithoutReplacementConfig* config_ptr = \
+            &self.config_ptr.get().useOutputSamplingWithoutReplacement()
+        cdef OutputSamplingWithoutReplacementConfig config = \
+            OutputSamplingWithoutReplacementConfig.__new__(OutputSamplingWithoutReplacementConfig)
         config.config_ptr = config_ptr
         return config
 
@@ -275,11 +275,11 @@ cdef class SeCoConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_label_wise_stratified_instance_sampling(self) -> LabelWiseStratifiedInstanceSamplingConfig:
-        cdef ILabelWiseStratifiedInstanceSamplingConfig* config_ptr = \
-            &self.config_ptr.get().useLabelWiseStratifiedInstanceSampling()
-        cdef LabelWiseStratifiedInstanceSamplingConfig config = \
-            LabelWiseStratifiedInstanceSamplingConfig.__new__(LabelWiseStratifiedInstanceSamplingConfig)
+    def use_output_wise_stratified_instance_sampling(self) -> OutputWiseStratifiedInstanceSamplingConfig:
+        cdef IOutputWiseStratifiedInstanceSamplingConfig* config_ptr = \
+            &self.config_ptr.get().useOutputWiseStratifiedInstanceSampling()
+        cdef OutputWiseStratifiedInstanceSamplingConfig config = \
+            OutputWiseStratifiedInstanceSamplingConfig.__new__(OutputWiseStratifiedInstanceSamplingConfig)
         config.config_ptr = config_ptr
         return config
 
@@ -313,11 +313,11 @@ cdef class SeCoConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_label_wise_stratified_bi_partition_sampling(self) -> LabelWiseStratifiedBiPartitionSamplingConfig:
-        cdef ILabelWiseStratifiedBiPartitionSamplingConfig* config_ptr = \
-            &self.config_ptr.get().useLabelWiseStratifiedBiPartitionSampling()
-        cdef LabelWiseStratifiedBiPartitionSamplingConfig config = \
-            LabelWiseStratifiedBiPartitionSamplingConfig.__new__(LabelWiseStratifiedBiPartitionSamplingConfig)
+    def use_output_wise_stratified_bi_partition_sampling(self) -> OutputWiseStratifiedBiPartitionSamplingConfig:
+        cdef IOutputWiseStratifiedBiPartitionSamplingConfig* config_ptr = \
+            &self.config_ptr.get().useOutputWiseStratifiedBiPartitionSampling()
+        cdef OutputWiseStratifiedBiPartitionSamplingConfig config = \
+            OutputWiseStratifiedBiPartitionSamplingConfig.__new__(OutputWiseStratifiedBiPartitionSamplingConfig)
         config.config_ptr = config_ptr
         return config
 
@@ -390,8 +390,8 @@ cdef class SeCoConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_label_wise_binary_predictor(self):
-        self.config_ptr.get().useLabelWiseBinaryPredictor()
+    def use_output_wise_binary_predictor(self):
+        self.config_ptr.get().useOutputWiseBinaryPredictor()
 
 
 cdef class SeCo(RuleLearner):

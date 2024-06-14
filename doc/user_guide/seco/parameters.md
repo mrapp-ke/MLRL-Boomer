@@ -16,7 +16,7 @@ The following parameters allow to specify the preferred format for representing 
   - `'dense'` Enforces that the feature matrix is stored using a dense format.
   - `'sparse'` Enforces that the feature matrix is stored using a sparse format, if possible. Using a sparse format may reduce the memory footprint and/or speed up the training process on some data sets.
 
-- `label_format` (Default value = `'auto'`)
+- `output_format` (Default value = `'auto'`)
 
   - `'auto'` The most suitable format for representation of the label matrix is chosen automatically by estimating which representation requires less memory.
   - `'dense'` Enforces that the label matrix is stored using a dense format.
@@ -94,9 +94,9 @@ The following parameters may be used to control the behavior of the algorithm. T
     - `max_head_refinements` (Default value = `1`) The maximum number of times the head of a rule may be refined. Must be at least 1 or 0, if the number of refinements should not be restricted.
     - `recalculate_predictions` (Default value = `'true'`) `'true'`, if the predictions of rules should be recalculated on the entire training data if the parameter `instance_sampling` is not set to `'none'`, `'false'`, if the predictions of rules should not be recalculated.
 
-- `head_type` (Default value = `'single-label'`)
+- `head_type` (Default value = `'single'`)
 
-  - `'single-label'` If all rules should predict for a single label.
+  - `'single'` If all rules should predict for a single output.
 
   - `'partial'` If all rules should predict for a subset of the available labels.
 
@@ -122,7 +122,7 @@ The following parameters may be used to control the behavior of the algorithm. T
 
     - `holdout_set_size` (Default value = `0.33`) The percentage of examples to be included in the holdout set. For example, a value of 0.3 corresponds to 30% of the available examples. Must be in (0, 1).
 
-  - `'stratified-label-wise'` The available examples are split into a training set and a holdout set according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. The following options may be provided using the {ref}`bracket-notation`:
+  - `'stratified-output-wise'` The available examples are split into a training set and a holdout set according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. The following options may be provided using the {ref}`bracket-notation`:
 
     - `holdout_set_size` (Default value = `0.33`) The percentage of examples to be included in the holdout set. For example, a value of 0.3 corresponds to 30% of the available examples. Must be in (0, 1).
 
@@ -151,15 +151,15 @@ The following parameters may be used to control the behavior of the algorithm. T
 
   - The seed to be used by random number generators. Must be at least 1.
 
-- `label_sampling` (Default value = `'none'`)
+- `output_sampling` (Default value = `'none'`)
 
-  - `'none'` All labels are considered for learning a new rule.
+  - `'none'` All outputs are considered for learning a new rule.
 
-  - `'round-robin'` A single label to be considered when learning a new rule is chosen in a round-robin fashion, i.e., the first rule is concerned with the first label, the second one with the second label, and so on. When the last label was reached, the procedure restarts at the first label.
+  - `'round-robin'` A single output to be considered when learning a new rule is chosen in a round-robin fashion, i.e., the first rule is concerned with the first output, the second one with the second output, and so on. When the last output is reached, the procedure restarts at the first output.
 
-  - `'without-replacement'` The labels to be considered when learning a new rule are chosen randomly. The following options may be provided using the {ref}`bracket-notation`:
+  - `'without-replacement'` The outputs to be considered when learning a new rule are chosen randomly. The following options may be provided using the {ref}`bracket-notation`:
 
-    - `num_samples` (Default value = `1`) The number of labels the be included in a sample. Must be at least 1.
+    - `num_samples` (Default value = `1`) The number of outputs to be included in a sample. Must be at least 1.
 
 - `feature_sampling` (Default value = `'without-replacement'`)
 
@@ -182,7 +182,7 @@ The following parameters may be used to control the behavior of the algorithm. T
 
     - `sample_size` (Default value = `0.66`) The percentage of examples to be included in a sample. For example, a value of 0.6 corresponds to 60% of the available examples. Must be in (0, 1).
 
-  - `'stratified-label-wise'` The training examples to be considered for learning a new rule are selected according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. The following options may be provided using the {ref}`bracket-notation`:
+  - `'stratified-output-wise'` The training examples to be considered for learning a new rule are selected according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. The following options may be provided using the {ref}`bracket-notation`:
 
     - `sample_size` (Default value = `0.66`) The percentage of examples to be included in a sample. For example, a value of 0.6 corresponds to 60% of the available examples. Must be in (0, 1).
 

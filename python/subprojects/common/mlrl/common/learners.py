@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides base classes for implementing single- or multi-label classifiers or rankers.
+Provides base classes for implementing machine learning algorithms.
 """
 from abc import ABC, abstractmethod
 from typing import List, Optional
@@ -12,43 +12,43 @@ from sklearn.utils.validation import check_is_fitted
 KWARG_PREDICT_SCORES = 'predict_scores'
 
 
-class OrdinalAttributeLearner(ABC):
+class OrdinalFeatureLearner(ABC):
     """
-    A base class for all single- or multi-label classifiers or rankers that natively support ordinal attributes.
+    A base class for all machine learning algorithms that natively support ordinal features.
     """
 
-    ordinal_attribute_indices: Optional[List[int]] = None
+    ordinal_feature_indices: Optional[List[int]] = None
 
-    def set_ordinal_attribute_indices(self, indices):
+    def set_ordinal_feature_indices(self, indices):
         """
-        Sets the indices of all ordinal attributes.
+        Sets the indices of all ordinal features.
 
         :param indices: A `np.ndarray` or `Iterable` that stores the indices to be set
         """
-        self.ordinal_attribute_indices = None if indices is None else list(indices)
+        self.ordinal_feature_indices = None if indices is None else list(indices)
 
 
-class NominalAttributeLearner(ABC):
+class NominalFeatureLearner(ABC):
     """
-    A base class for all single- or multi-label classifiers or rankers that natively support nominal attributes.
+    A base class for all machine learning algorithms that natively support nominal features.
     """
 
-    nominal_attribute_indices: Optional[List[int]] = None
+    nominal_feature_indices: Optional[List[int]] = None
 
-    def set_nominal_attribute_indices(self, indices):
+    def set_nominal_feature_indices(self, indices):
         """
-        Sets the indices of all nominal attributes.
+        Sets the indices of all nominal features.
         
         :param indices: A `np.ndarray` or `Iterable` that stores the indices to be set
         """
-        self.nominal_attribute_indices = None if indices is None else list(indices)
+        self.nominal_feature_indices = None if indices is None else list(indices)
 
 
 class IncrementalLearner(ABC):
     """
-    A base class for all single- or multi-label classifiers or rankers that support incremental prediction. For example,
-    when dealing with ensemble models that consist of several ensemble members, it is possible to consider only a subset
-    of the ensemble members for prediction.
+    A base class for all machine learning algorithms that support incremental prediction. For example, when dealing with
+    ensemble models that consist of several ensemble members, it is possible to consider only a subset of the ensemble
+    members for prediction.
     """
 
     class IncrementalPredictor(ABC):
@@ -80,8 +80,8 @@ class IncrementalLearner(ABC):
 
             :param step_size:   The number of additional ensemble members to be considered for prediction
             :return:            A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` of shape
-                                `(num_examples, num_labels)`, that stores the updated prediction for individual examples
-                                and labels
+                                `(num_examples, num_outputs)`, that stores the updated prediction for individual
+                                examples and outputs
             """
 
     def predict_incrementally(self, x, **kwargs) -> IncrementalPredictor:
@@ -90,8 +90,7 @@ class IncrementalLearner(ABC):
 
         :param x:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                                     `(num_examples, num_features)`, that stores the feature values of the query examples
-        :keyword predict_scores:    True, if regression scores should be obtained, False, if binary predictions should
-                                    be obtained
+        :keyword predict_scores:    True, if scores should be obtained, False, if binary predictions should be obtained
         :return:                    The `IncrementalPredictor` that has been created
         """
         check_is_fitted(self)
@@ -125,14 +124,14 @@ class IncrementalLearner(ABC):
 
     def _predict_scores_incrementally(self, x, **kwargs) -> IncrementalPredictor:
         """
-        May be overridden by subclasses in order to create an `IncrementalPredictor` that allows to obtain regression
-        scores for given query examples incrementally.
+        May be overridden by subclasses in order to create an `IncrementalPredictor` that allows to obtain scores for
+        given query examples incrementally.
 
         :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                     `(num_examples, num_features)`, that stores the feature values of the query examples
         :return:    The `IncrementalPredictor` that has been created
         """
-        raise RuntimeError('Incremental prediction of regression scores not supported using the current configuration')
+        raise RuntimeError('Incremental prediction of scores not supported using the current configuration')
 
     def _predict_proba_incrementally(self, x, **kwargs) -> IncrementalPredictor:
         """
@@ -148,7 +147,7 @@ class IncrementalLearner(ABC):
 
 class Learner(BaseEstimator, ABC):
     """
-    A base class for all single- or multi-label classifiers or rankers.
+    A base class for all machine learning algorithms.
     """
 
     # pylint: disable=attribute-defined-outside-init
@@ -169,7 +168,7 @@ class Learner(BaseEstimator, ABC):
     def predict(self, x, **kwargs):
         """
         Obtains and returns predictions for given query examples. If the optional keyword argument `predict_scores` is
-        set to `True`, regression scores are obtained instead of binary predictions.
+        set to `True`, scores are obtained instead of binary predictions.
 
         :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                     `(num_examples, num_features)`, that stores the feature values of the query examples
@@ -221,14 +220,14 @@ class Learner(BaseEstimator, ABC):
 
     def _predict_scores(self, x, **kwargs):
         """
-        May be overridden by subclasses in order to obtain regression scores for given query examples.
+        May be overridden by subclasses in order to obtain scores for given query examples.
 
         :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                     `(num_examples, num_features)`, that stores the feature values of the query examples
         :return:    A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                    `(num_examples, num_labels)`, that stores the regression scores for individual examples and labels
+                    `(num_examples, num_labels)`, that stores the scores for individual examples and labels
         """
-        raise RuntimeError('Prediction of regression scores not supported using the current configuration')
+        raise RuntimeError('Prediction of scores not supported using the current configuration')
 
     def _predict_proba(self, x, **kwargs):
         """
