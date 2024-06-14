@@ -3,7 +3,7 @@
 """
 
 
-cdef class LabelWiseProbabilityPredictorConfig:
+cdef class OutputWiseProbabilityPredictorConfig:
     """
     Allows to configure a predictor that predicts label-wise probabilities for given query examples, which estimate the
     chance of individual labels to be relevant, by summing up the scores that are provided by individual rules of an
@@ -20,13 +20,13 @@ cdef class LabelWiseProbabilityPredictorConfig:
         return self.config_ptr.isProbabilityCalibrationModelUsed()
 
     def set_use_probability_calibration_model(
-        self, use_probability_calibration_model: bool) -> LabelWiseProbabilityPredictorConfig:
+        self, use_probability_calibration_model: bool) -> OutputWiseProbabilityPredictorConfig:
         """
         Sets whether a model for the calibration of probabilities should be used, if available, or not.
 
         :param use_probability_calibration_model:   True, if a model for the calibration of probabilities should be
                                                     used, if available, false otherwise
-        :return:                                    A `LabelWiseProbabilityPredictorConfig` that allows further
+        :return:                                    A `OutputWiseProbabilityPredictorConfig` that allows further
                                                     configuration of the predictor
         """
         self.config_ptr.setUseProbabilityCalibrationModel(use_probability_calibration_model)
@@ -68,25 +68,23 @@ cdef class MarginalizedProbabilityPredictorConfig:
 cdef class ExampleWiseBinaryPredictorConfig:
     """
     Allows to configure a predictor that predicts known label vectors for given query examples by comparing the
-    predicted regression scores or probability estimates to the label vectors encountered in the training data.
+    predicted scores or probability estimates to the label vectors encountered in the training data.
     """
 
     def is_based_on_probabilities(self) -> bool:
         """
-        Returns whether binary predictions are derived from probability estimates rather than regression scores or not.
+        Returns whether binary predictions are derived from probability estimates rather than scores or not.
 
-        :return: True, if binary predictions are derived from probability estimates rather than regression scores, False
-                 otherwise
+        :return: True, if binary predictions are derived from probability estimates rather than scores, False otherwise
         """
         return self.config_ptr.isBasedOnProbabilities()
 
     def set_based_on_probabilities(self, based_on_probabilities: bool) -> ExampleWiseBinaryPredictorConfig:
         """
-        Sets whether binary predictions should be derived from probability estimates rather than regression scores or
-        not.
+        Sets whether binary predictions should be derived from probability estimates rather than scores or not.
 
         :param based_on_probabilities:  True, if binary predictions should be derived from probability estimates rather
-                                        than regression scores, False otherwise
+                                        than scores, False otherwise
         :return:                        An `ExampleWiseBinaryPredictorConfig` that allows further configuration of the
                                         predictor
         """
@@ -115,30 +113,27 @@ cdef class ExampleWiseBinaryPredictorConfig:
         return self
 
 
-cdef class LabelWiseBinaryPredictorConfig:
+cdef class OutputWiseBinaryPredictorConfig:
     """
     Allows to configure a predictor that predicts whether individual labels of given query examples are relevant or
-    irrelevant by discretizing the regression scores or probability estimates that are predicted for each label
-    individually.
+    irrelevant by discretizing the scores or probability estimates that are predicted for each label individually.
     """
 
     def is_based_on_probabilities(self) -> bool:
         """
-        Returns whether binary predictions are derived from probability estimates rather than regression scores or not.
+        Returns whether binary predictions are derived from probability estimates rather than scores or not.
 
-        :return: True, if binary predictions are derived from probability estimates rather than regression scores, False
-                 otherwise
+        :return: True, if binary predictions are derived from probability estimates rather than scores, False otherwise
         """
         return self.config_ptr.isBasedOnProbabilities()
 
-    def set_based_on_probabilities(self, based_on_probabilities: bool) -> LabelWiseBinaryPredictorConfig:
+    def set_based_on_probabilities(self, based_on_probabilities: bool) -> OutputWiseBinaryPredictorConfig:
         """
-        Sets whether binary predictions should be derived from probability estimates rather than regression scores or
-        not.
+        Sets whether binary predictions should be derived from probability estimates rather than scores or not.
 
         :param based_on_probabilities:  True, if binary predictions should be derived from probability estimates rather
-                                        than regression scores, False otherwise
-        :return:                        A `LabelWiseBinaryPredictorConfig` that allows further configuration of the
+                                        than scores, False otherwise
+        :return:                        A `OutputWiseBinaryPredictorConfig` that allows further configuration of the
                                         predictor
         """
         self.config_ptr.setBasedOnProbabilities(based_on_probabilities)
@@ -153,14 +148,14 @@ cdef class LabelWiseBinaryPredictorConfig:
         return self.config_ptr.isProbabilityCalibrationModelUsed()
 
     def set_use_probability_calibration_model(
-        self, use_probability_calibration_model: bool) -> LabelWiseBinaryPredictorConfig:
+        self, use_probability_calibration_model: bool) -> OutputWiseBinaryPredictorConfig:
         """
         Sets whether a model for the calibration of probabilities should be used, if available, or not.
 
         :param use_probability_calibration_model:   True, if a model for the calibration of probabilities should be
                                                     used, if available, false otherwise
-        :return:                                    A `LabelWiseBinaryPredictorConfig` that allows further configuration
-                                                    of the predictor
+        :return:                                    A `OutputWiseBinaryPredictorConfig` that allows further
+                                                    configuration of the predictor
         """
         self.config_ptr.setUseProbabilityCalibrationModel(use_probability_calibration_model)
         return self
@@ -169,8 +164,8 @@ cdef class LabelWiseBinaryPredictorConfig:
 cdef class GfmBinaryPredictorConfig:
     """
     Allows to configure a predictor that predicts whether individual labels of given query examples are relevant or
-    irrelevant by discretizing the regression scores or probability estimates that are predicted for each label
-    according to the general F-measure maximizer (GFM).
+    irrelevant by discretizing the scores or probability estimates that are predicted for each label according to the
+    general F-measure maximizer (GFM).
     """
 
     def is_probability_calibration_model_used(self) -> bool:

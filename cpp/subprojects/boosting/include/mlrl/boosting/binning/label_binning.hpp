@@ -3,8 +3,8 @@
  */
 #pragma once
 
-#include "mlrl/boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
-#include "mlrl/boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp"
+#include "mlrl/boosting/rule_evaluation/rule_evaluation_decomposable_sparse.hpp"
+#include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable.hpp"
 #include "mlrl/boosting/util/blas.hpp"
 #include "mlrl/boosting/util/lapack.hpp"
 
@@ -137,86 +137,89 @@ namespace boosting {
             virtual ~ILabelBinningConfig() {}
 
             /**
-             * Creates and returns a new object of type `ILabelWiseRuleEvaluationFactory` that allows to calculate the
-             * predictions of complete rules according to the specified configuration.
+             * Creates and returns a new object of type `IDecomposableRuleEvaluationFactory` that allows to calculate
+             * the predictions of complete rules according to the specified configuration.
              *
-             * @return An unique pointer to an object of type `ILabelWiseRuleEvaluationFactory` that has been created
+             * @return An unique pointer to an object of type `IDecomposableRuleEvaluationFactory` that has been created
              */
-            virtual std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseCompleteRuleEvaluationFactory()
-              const = 0;
+            virtual std::unique_ptr<IDecomposableRuleEvaluationFactory>
+              createDecomposableCompleteRuleEvaluationFactory() const = 0;
 
             /**
-             * Creates and returns a new object of type `ISparseLabelWiseRuleEvaluationFactory` that allows to calculate
-             * the prediction of partial rules, which predict for a predefined number of labels, according to the
-             * specified configuration.
+             * Creates and returns a new object of type `ISparseDecomposableRuleEvaluationFactory` that allows to
+             * calculate the prediction of partial rules, which predict for a predefined number of outputs, according to
+             * the specified configuration.
              *
-             * @param labelRatio    A percentage that specifies for how many labels the rule heads should predict
-             * @param minLabels     The minimum number of labels for which the rule heads should predict
-             * @param maxLabels     The maximum number of labels for which the rule heads should predict
-             * @return              An unique pointer to an object of type `ISparseLabelWiseRuleEvaluationFactory` that
-             *                      has been created
+             * @param outputRatio   A percentage that specifies for how many outputs the rule heads should predict
+             * @param minOutputs    The minimum number of outputs for which the rule heads should predict
+             * @param maxOutputs    The maximum number of outputs for which the rule heads should predict
+             * @return              An unique pointer to an object of type `ISparseDecomposableRuleEvaluationFactory`
+             *                      that has been created
              */
-            virtual std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory>
-              createLabelWiseFixedPartialRuleEvaluationFactory(float32 labelRatio, uint32 minLabels,
-                                                               uint32 maxLabels) const = 0;
+            virtual std::unique_ptr<ISparseDecomposableRuleEvaluationFactory>
+              createDecomposableFixedPartialRuleEvaluationFactory(float32 outputRatio, uint32 minOutputs,
+                                                                  uint32 maxOutputs) const = 0;
 
             /**
-             * Creates and returns a new object of type `ISparseLabelWiseRuleEvaluationFactory` that allows to calculate
-             * the prediction of partial rules, which predict for a subset of the available labels that is determined
-             * dynamically, according to the specified configuration.
+             * Creates and returns a new object of type `ISparseDecomposableRuleEvaluationFactory` that allows to
+             * calculate the prediction of partial rules, which predict for a subset of the available outputs that is
+             * determined dynamically, according to the specified configuration.
              *
-             * @param threshold A threshold that affects for how many labels the rule heads should predict
-             * @param exponent  An exponent that is used to weigh the estimated predictive quality for individual labels
-             * @return          An unique pointer to an object of type `ISparseLabelWiseRuleEvaluationFactory` that has
+             * @param threshold A threshold that affects for how many outputs the rule heads should predict
+             * @param exponent  An exponent that is used to weigh the estimated predictive quality for individual
+             *                  outputs
+             * @return          An unique pointer to an object of type `ISparseDecomposableRuleEvaluationFactory` that
+             *                  has been created
+             */
+            virtual std::unique_ptr<ISparseDecomposableRuleEvaluationFactory>
+              createDecomposableDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent) const = 0;
+
+            /**
+             * Creates and returns a new object of type `INonDecomposableRuleEvaluationFactory` that allows to calculate
+             * the predictions of complete rules according to the specified configuration.
+             *
+             * @param blas      A reference to an object of type `Blas` that allows to execute BLAS routines
+             * @param lapack    A reference to an object of type `Lapack` that allows to execute LAPACK routines
+             * @return          An unique pointer to an object of type `INonDecomposableRuleEvaluationFactory` that has
              *                  been created
              */
-            virtual std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory>
-              createLabelWiseDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent) const = 0;
+            virtual std::unique_ptr<INonDecomposableRuleEvaluationFactory>
+              createNonDecomposableCompleteRuleEvaluationFactory(const Blas& blas, const Lapack& lapack) const = 0;
 
             /**
-             * Creates and returns a new object of type `IExampleWiseRuleEvaluationFactory` that allows to calculate the
-             * predictions of complete rules according to the specified configuration.
+             * Creates and returns a new object of type `INonDecomposableRuleEvaluationFactory` that allows to calculate
+             * the predictions of partial rules, which predict for a predefined number of outputs, according to the
+             * specified configuration.
              *
-             * @param blas      A reference to an object of type `Blas` that allows to execute BLAS routines
-             * @param lapack    A reference to an object of type `Lapack` that allows to execute LAPACK routines
-             * @return          An unique pointer to an object of type `IExampleWiseRuleEvaluationFactory` that has been
-             *                  created
+             * @param outputRatio A percentage that specifies for how many outputs the rule heads should predict
+             * @param minOutputs  The minimum number of outputs for which the rule heads should predict
+             * @param maxOutputs  The maximum number of outputs for which the rule heads should predict
+             * @param blas        A reference to an object of type `Blas` that allows to execute BLAS routines
+             * @param lapack      A reference to an object of type `Lapack` that allows to execute LAPACK routines
+             * @return            An unique pointer to an object of type `INonDecomposableRuleEvaluationFactory` that
+             *                    has been created
              */
-            virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseCompleteRuleEvaluationFactory(
-              const Blas& blas, const Lapack& lapack) const = 0;
+            virtual std::unique_ptr<INonDecomposableRuleEvaluationFactory>
+              createNonDecomposableFixedPartialRuleEvaluationFactory(float32 outputRatio, uint32 minOutputs,
+                                                                     uint32 maxOutputs, const Blas& blas,
+                                                                     const Lapack& lapack) const = 0;
 
             /**
-             * Creates and returns a new object of type `IExampleWiseRuleEvaluationFactory` that allows to calculate the
-             * predictions of partial rules, which predict for a predefined number of labels, according to the specified
-             * configuration.
-             *
-             * @param labelRatio    A percentage that specifies for how many labels the rule heads should predict
-             * @param minLabels     The minimum number of labels for which the rule heads should predict
-             * @param maxLabels     The maximum number of labels for which the rule heads should predict
-             * @param blas          A reference to an object of type `Blas` that allows to execute BLAS routines
-             * @param lapack        A reference to an object of type `Lapack` that allows to execute LAPACK routines
-             * @return              An unique pointer to an object of type `IExampleWiseRuleEvaluationFactory` that has
-             *                      been created
-             */
-            virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory>
-              createExampleWiseFixedPartialRuleEvaluationFactory(float32 labelRatio, uint32 minLabels, uint32 maxLabels,
-                                                                 const Blas& blas, const Lapack& lapack) const = 0;
-
-            /**
-             * Creates and returns a new object of type `IExampleWiseRuleEvaluationFactory` that allows to calculate the
-             * predictions of partial rules, which predict for a subset of the available labels that is determined
+             * Creates and returns a new object of type `INonDecomposableRuleEvaluationFactory` that allows to calculate
+             * the predictions of partial rules, which predict for a subset of the available labels that is determined
              * dynamically, according to the specified configuration.
              *
              * @param threshold A threshold that affects for how many labels the rule heads should predict
              * @param exponent  An exponent that is used to weigh the estimated predictive quality for individual labels
              * @param blas      A reference to an object of type `Blas` that allows to execute BLAS routines
              * @param lapack    A reference to an object of type `Lapack` that allows to execute LAPACK routines
-             * @return          An unique pointer to an object of type `IExampleWiseRuleEvaluationFactory` that has been
-             *                  created
+             * @return          An unique pointer to an object of type `INonDecomposableRuleEvaluationFactory` that has
+             *                  been created
              */
-            virtual std::unique_ptr<IExampleWiseRuleEvaluationFactory>
-              createExampleWiseDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent,
-                                                                   const Blas& blas, const Lapack& lapack) const = 0;
+            virtual std::unique_ptr<INonDecomposableRuleEvaluationFactory>
+              createNonDecomposableDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent,
+                                                                       const Blas& blas,
+                                                                       const Lapack& lapack) const = 0;
     };
 
 }

@@ -17,7 +17,7 @@ Most notably, the package includes command line APIs that allow configuring the 
 * **Sinle- and multi-label datasets in the [Mulan](http://mulan.sourceforge.net/format.html) and [Meka format](https://waikato.github.io/meka/datasets/)** are supported.
 * **Datasets can automatically be split into training and test data, including the possibility to use cross validation.** Alternatively, predefined splits can be used by supplying the data as separate files.
 * **One-hot-encoding** can be applied to nominal or binary features.
-* **Binary predictions, regression scores, or probability estimates** can be obtained from a model. Evaluation measures that are suited for the respective type of predictions are picked automatically.
+* **Binary predictions, scores, or probability estimates** can be obtained from a model. Evaluation measures that are suited for the respective type of predictions are picked automatically.
 * **Evaluation scores can be saved** to output files and printed on the console.
 * **Rule models can be evaluated incrementally**, i.e., they can be evaluated repeatedly using a subset of the rules with increasing size.
 * **Textual representations of rule models can be saved** to output files and printed on the console. In addition, the **characteristics of models can also be saved** and printed.

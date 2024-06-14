@@ -12,23 +12,23 @@
 #include "mlrl/boosting/binning/label_binning_equal_width.hpp"
 #include "mlrl/boosting/binning/label_binning_no.hpp"
 #include "mlrl/boosting/input/feature_binning_auto.hpp"
-#include "mlrl/boosting/losses/loss_example_wise_logistic.hpp"
-#include "mlrl/boosting/losses/loss_example_wise_squared_error.hpp"
-#include "mlrl/boosting/losses/loss_example_wise_squared_hinge.hpp"
-#include "mlrl/boosting/losses/loss_label_wise_logistic.hpp"
-#include "mlrl/boosting/losses/loss_label_wise_squared_error.hpp"
-#include "mlrl/boosting/losses/loss_label_wise_squared_hinge.hpp"
+#include "mlrl/boosting/losses/loss_decomposable_logistic.hpp"
+#include "mlrl/boosting/losses/loss_decomposable_squared_error.hpp"
+#include "mlrl/boosting/losses/loss_decomposable_squared_hinge.hpp"
+#include "mlrl/boosting/losses/loss_non_decomposable_logistic.hpp"
+#include "mlrl/boosting/losses/loss_non_decomposable_squared_error.hpp"
+#include "mlrl/boosting/losses/loss_non_decomposable_squared_hinge.hpp"
 #include "mlrl/boosting/multi_threading/parallel_rule_refinement_auto.hpp"
 #include "mlrl/boosting/multi_threading/parallel_statistic_update_auto.hpp"
 #include "mlrl/boosting/post_processing/shrinkage_constant.hpp"
 #include "mlrl/boosting/prediction/predictor_binary_auto.hpp"
 #include "mlrl/boosting/prediction/predictor_binary_example_wise.hpp"
 #include "mlrl/boosting/prediction/predictor_binary_gfm.hpp"
-#include "mlrl/boosting/prediction/predictor_binary_label_wise.hpp"
+#include "mlrl/boosting/prediction/predictor_binary_output_wise.hpp"
 #include "mlrl/boosting/prediction/predictor_probability_auto.hpp"
-#include "mlrl/boosting/prediction/predictor_probability_label_wise.hpp"
 #include "mlrl/boosting/prediction/predictor_probability_marginalized.hpp"
-#include "mlrl/boosting/prediction/predictor_score_label_wise.hpp"
+#include "mlrl/boosting/prediction/predictor_probability_output_wise.hpp"
+#include "mlrl/boosting/prediction/predictor_score_output_wise.hpp"
 #include "mlrl/boosting/prediction/probability_calibration_isotonic.hpp"
 #include "mlrl/boosting/rule_evaluation/head_type_auto.hpp"
 #include "mlrl/boosting/rule_evaluation/head_type_complete.hpp"
@@ -354,7 +354,7 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to induce rules with complete
-             * heads that predict for all available labels.
+             * heads that predict for all available outputs.
              */
             class ICompleteHeadMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
@@ -363,7 +363,7 @@ namespace boosting {
 
                     /**
                      * Configures the rule learner to induce rules with complete heads that predict for all available
-                     * labels.
+                     * outputs.
                      */
                     virtual void useCompleteHeads() {
                         std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
@@ -375,7 +375,7 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to induce rules with partial
-             * heads that predict for a predefined number of labels.
+             * heads that predict for a predefined number of outputs.
              */
             class IFixedPartialHeadMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
@@ -384,7 +384,7 @@ namespace boosting {
 
                     /**
                      * Configures the rule learner to induce rules with partial heads that predict for a predefined
-                     * number of labels.
+                     * number of outputs.
                      *
                      * @return A reference to an object of type `IFixedPartialHeadConfig` that allows further
                      *         configuration of the rule heads
@@ -401,7 +401,7 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to induce rules with partial
-             * heads that predict for a subset of the available labels that is determined dynamically.
+             * heads that predict for a subset of the available outputs that is determined dynamically.
              */
             class IDynamicPartialHeadMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
@@ -410,7 +410,7 @@ namespace boosting {
 
                     /**
                      * Configures the rule learner to induce rules with partial heads that predict for a subset of the
-                     * available labels that is determined dynamically. Only those labels for which the square of the
+                     * available outputs that is determined dynamically. Only those outputs for which the square of the
                      * predictive quality exceeds a certain threshold are included in a rule head.
                      *
                      * @return A reference to an object of type `IDynamicPartialHeadConfig` that allows further
@@ -428,20 +428,20 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to induce rules with
-             * single-label heads that predict for a single label.
+             * single-output heads that predict for a single output.
              */
-            class ISingleLabelHeadMixin : public virtual IBoostingRuleLearner::IConfig {
+            class ISingleOutputHeadMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ISingleLabelHeadMixin() override {}
+                    virtual ~ISingleOutputHeadMixin() override {}
 
                     /**
-                     * Configures the rule learner to induce rules with single-label heads that predict for a single
-                     * label.
+                     * Configures the rule learner to induce rules with single-output heads that predict for a single
+                     * output.
                      */
-                    virtual void useSingleLabelHeads() {
+                    virtual void useSingleOutputHeads() {
                         std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
-                        headConfigPtr = std::make_unique<SingleLabelHeadConfig>(
+                        headConfigPtr = std::make_unique<SingleOutputHeadConfig>(
                           this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr(),
                           this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
                     }
@@ -528,115 +528,117 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
-             * implements a multi-label variant of the logistic loss that is applied example-wise.
+             * implements a multivariate variant of the logistic loss that is non-decomposable.
              */
-            class IExampleWiseLogisticLossMixin : virtual public IBoostingRuleLearner::IConfig {
+            class INonDecomposableLogisticLossMixin : virtual public IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IExampleWiseLogisticLossMixin() override {}
+                    virtual ~INonDecomposableLogisticLossMixin() override {}
 
                     /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * logistic loss that is applied example-wise.
+                     * Configures the rule learner to use a loss function that implements a multivariate variant of the
+                     * logistic loss that is non-decomposable.
                      */
-                    virtual void useExampleWiseLogisticLoss() {
+                    virtual void useNonDecomposableLogisticLoss() {
                         std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
-                        lossConfigPtr = std::make_unique<ExampleWiseLogisticLossConfig>(this->getHeadConfigPtr());
+                        lossConfigPtr = std::make_unique<NonDecomposableLogisticLossConfig>(this->getHeadConfigPtr());
                     }
             };
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
-             * implements a multi-label variant of the squared error loss that is applied example-wise.
+             * implements a multivariate variant of the squared error loss that is non-decomposable.
              */
-            class IExampleWiseSquaredErrorLossMixin : virtual public IBoostingRuleLearner::IConfig {
+            class INonDecomposableSquaredErrorLossMixin : virtual public IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IExampleWiseSquaredErrorLossMixin() override {}
+                    virtual ~INonDecomposableSquaredErrorLossMixin() override {}
 
                     /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * squared error loss that is applied example-wise.
+                     * Configures the rule learner to use a loss function that implements a multivariate variant of the
+                     * squared error loss that is non-decomposable.
                      */
-                    virtual void useExampleWiseSquaredErrorLoss() {
+                    virtual void useNonDecomposableSquaredErrorLoss() {
                         std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
-                        lossConfigPtr = std::make_unique<ExampleWiseSquaredErrorLossConfig>(this->getHeadConfigPtr());
+                        lossConfigPtr =
+                          std::make_unique<NonDecomposableSquaredErrorLossConfig>(this->getHeadConfigPtr());
                     }
             };
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
-             * implements a multi-label variant of the squared hinge loss that is applied example-wise.
+             * implements a multivariate variant of the squared hinge loss that is non-decomposable.
              */
-            class IExampleWiseSquaredHingeLossMixin : virtual public IBoostingRuleLearner::IConfig {
+            class INonDecomposableSquaredHingeLossMixin : virtual public IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~IExampleWiseSquaredHingeLossMixin() override {}
+                    virtual ~INonDecomposableSquaredHingeLossMixin() override {}
 
                     /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * squared hinge loss that is applied example-wise.
+                     * Configures the rule learner to use a loss function that implements a multivariate variant of the
+                     * squared hinge loss that is non-decomposable.
                      */
-                    virtual void useExampleWiseSquaredHingeLoss() {
+                    virtual void useNonDecomposableSquaredHingeLoss() {
                         std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
-                        lossConfigPtr = std::make_unique<ExampleWiseSquaredHingeLossConfig>(this->getHeadConfigPtr());
+                        lossConfigPtr =
+                          std::make_unique<NonDecomposableSquaredHingeLossConfig>(this->getHeadConfigPtr());
                     }
             };
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
-             * implements a multi-label variant of the logistic loss that is applied label-wise.
+             * implements a multivariate variant of the logistic loss that is decomposable.
              */
-            class ILabelWiseLogisticLossMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IDecomposableLogisticLossMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseLogisticLossMixin() override {}
+                    virtual ~IDecomposableLogisticLossMixin() override {}
 
                     /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * logistic loss that is applied label-wise.
+                     * Configures the rule learner to use a loss function that implements a multivariate variant of the
+                     * logistic loss that is applied decomposable.
                      */
-                    virtual void useLabelWiseLogisticLoss() {
+                    virtual void useDecomposableLogisticLoss() {
                         std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
-                        lossConfigPtr = std::make_unique<LabelWiseLogisticLossConfig>(this->getHeadConfigPtr());
+                        lossConfigPtr = std::make_unique<DecomposableLogisticLossConfig>(this->getHeadConfigPtr());
                     }
             };
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
-             * implements a multi-label variant of the squared error loss that is applied label-wise.
+             * implements a multivariate variant of the squared error loss that is decomposable.
              */
-            class ILabelWiseSquaredErrorLossMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IDecomposableSquaredErrorLossMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseSquaredErrorLossMixin() override {}
+                    virtual ~IDecomposableSquaredErrorLossMixin() override {}
 
                     /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * squared error loss that is applied label-wise.
+                     * Configures the rule learner to use a loss function that implements a multivariate variant of the
+                     * squared error loss that is decomposable.
                      */
-                    virtual void useLabelWiseSquaredErrorLoss() {
+                    virtual void useDecomposableSquaredErrorLoss() {
                         std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
-                        lossConfigPtr = std::make_unique<LabelWiseSquaredErrorLossConfig>(this->getHeadConfigPtr());
+                        lossConfigPtr = std::make_unique<DecomposableSquaredErrorLossConfig>(this->getHeadConfigPtr());
                     }
             };
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
-             * implements a multi-label variant of the squared hinge loss that is applied label-wise.
+             * implements a multivariate variant of the squared hinge loss that is decomposable.
              */
-            class ILabelWiseSquaredHingeLossMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IDecomposableSquaredHingeLossMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseSquaredHingeLossMixin() override {}
+                    virtual ~IDecomposableSquaredHingeLossMixin() override {}
 
                     /**
-                     * Configures the rule learner to use a loss function that implements a multi-label variant of the
-                     * squared hinge loss that is applied label-wise.
+                     * Configures the rule learner to use a loss function that implements a multivariate variant of the
+                     * squared hinge loss that is decomposable.
                      */
-                    virtual void useLabelWiseSquaredHingeLoss() {
+                    virtual void useDecomposableSquaredHingeLoss() {
                         std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
-                        lossConfigPtr = std::make_unique<LabelWiseSquaredHingeLossConfig>(this->getHeadConfigPtr());
+                        lossConfigPtr = std::make_unique<DecomposableSquaredHingeLossConfig>(this->getHeadConfigPtr());
                     }
             };
 
@@ -763,28 +765,28 @@ namespace boosting {
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a predictor that
              * predicts whether individual labels of given query examples are relevant or irrelevant by discretizing the
-             * regression scores or probability estimates that are predicted for each label individually.
+             * individual scores or probability estimates that are predicted for each label.
              */
-            class ILabelWiseBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IOutputWiseBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseBinaryPredictorMixin() override {}
+                    virtual ~IOutputWiseBinaryPredictorMixin() override {}
 
                     /**
                      * Configures the rule learner to use a predictor that predicts whether individual labels of given
-                     * query examples are relevant or irrelevant by discretizing the regression scores or probability
-                     * estimates that are predicted for each label individually.
+                     * query examples are relevant or irrelevant by discretizing the individual scores or probability
+                     * estimates that are predicted for each label.
                      *
-                     * @return A reference to an object of type `ILabelWiseBinaryPredictorConfig` that allows further
+                     * @return A reference to an object of type `IOutputWiseBinaryPredictorConfig` that allows further
                      *         configuration of the predictor
                      */
-                    virtual ILabelWiseBinaryPredictorConfig& useLabelWiseBinaryPredictor() {
+                    virtual IOutputWiseBinaryPredictorConfig& useOutputWiseBinaryPredictor() {
                         std::unique_ptr<IBinaryPredictorConfig>& binaryPredictorConfigPtr =
                           this->getBinaryPredictorConfigPtr();
-                        std::unique_ptr<LabelWiseBinaryPredictorConfig> ptr =
-                          std::make_unique<LabelWiseBinaryPredictorConfig>(this->getLossConfigPtr(),
-                                                                           this->getParallelPredictionConfigPtr());
-                        ILabelWiseBinaryPredictorConfig& ref = *ptr;
+                        std::unique_ptr<OutputWiseBinaryPredictorConfig> ptr =
+                          std::make_unique<OutputWiseBinaryPredictorConfig>(this->getLossConfigPtr(),
+                                                                            this->getParallelPredictionConfigPtr());
+                        IOutputWiseBinaryPredictorConfig& ref = *ptr;
                         binaryPredictorConfigPtr = std::move(ptr);
                         return ref;
                     }
@@ -792,8 +794,8 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a predictor that
-             * predicts known label vectors for given query examples by comparing the predicted regression scores or
-             * probability estimates to the label vectors encountered in the training data.
+             * predicts known label vectors for given query examples by comparing the predicted scores or probability
+             * estimates to the label vectors encountered in the training data.
              */
             class IExampleWiseBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
@@ -802,8 +804,8 @@ namespace boosting {
 
                     /**
                      * Configures the rule learner to use a predictor that predicts known label vectors for given query
-                     * examples by comparing the predicted regression scores or probability estimates to the label
-                     * vectors encountered in the training data.
+                     * examples by comparing the predicted scores or probability estimates to the label vectors
+                     * encountered in the training data.
                      *
                      * @return A reference to an object of type `IExampleWiseBinaryPredictorConfig` that allows further
                      *         configuration of the predictor
@@ -823,8 +825,8 @@ namespace boosting {
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a predictor that
              * predicts whether individual labels of given query examples are relevant or irrelevant by discretizing the
-             * regression scores or probability estimates that are predicted for each label according to the general
-             * F-measure maximizer (GFM).
+             * scores or probability estimates that are predicted for each label according to the general F-measure
+             * maximizer (GFM).
              */
             class IGfmBinaryPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
@@ -833,8 +835,8 @@ namespace boosting {
 
                     /**
                      * Configures the rule learner to use a predictor that predicts whether individual labels of given
-                     * query examples are relevant or irrelevant by discretizing the regression scores or probability
-                     * estimates that are predicted for each label according to the general F-measure maximizer (GFM).
+                     * query examples are relevant or irrelevant by discretizing the scores or probability estimates
+                     * that are predicted for each label according to the general F-measure maximizer (GFM).
                      *
                      * @return A reference to an object of type `IGfmBinaryPredictorConfig` that allows further
                      *         configuration of the predictor
@@ -873,52 +875,52 @@ namespace boosting {
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a predictor that
-             * predicts label-wise regression scores for given query examples by summing up the scores that are provided
-             * by individual rules for each label individually.
+             * predicts output-wise scores for given query examples by summing up the scores that are provided by
+             * individual rules for each output individually.
              */
-            class ILabelWiseScorePredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IOutputWiseScorePredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseScorePredictorMixin() override {}
+                    virtual ~IOutputWiseScorePredictorMixin() override {}
 
                     /**
-                     * Configures the rule learner to use a predictor that predicts label-wise regression scores for
-                     * given query examples by summing up the scores that are provided by individual rules for each
-                     * label individually.
+                     * Configures the rule learner to use a predictor that predicts output-wise scores for given query
+                     * examples by summing up the scores that are provided by individual rules for each output
+                     * individually.
                      */
-                    virtual void useLabelWiseScorePredictor() {
+                    virtual void useOutputWiseScorePredictor() {
                         std::unique_ptr<IScorePredictorConfig>& scorePredictorConfigPtr =
                           this->getScorePredictorConfigPtr();
                         scorePredictorConfigPtr =
-                          std::make_unique<LabelWiseScorePredictorConfig>(this->getParallelPredictionConfigPtr());
+                          std::make_unique<OutputWiseScorePredictorConfig>(this->getParallelPredictionConfigPtr());
                     }
             };
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner to use a predictor that
-             * predicts label-wise probabilities for given query examples by transforming the regression scores that are
-             * predicted for each label individually into probabilities.
+             * predicts label-wise probabilities for given query examples by transforming the individual scores that are
+             * predicted for each label into probabilities.
              */
-            class ILabelWiseProbabilityPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
+            class IOutputWiseProbabilityPredictorMixin : public virtual IBoostingRuleLearner::IConfig {
                 public:
 
-                    virtual ~ILabelWiseProbabilityPredictorMixin() override {}
+                    virtual ~IOutputWiseProbabilityPredictorMixin() override {}
 
                     /**
                      * Configures the rule learner to use a predictor that predicts label-wise probabilities for given
-                     * query examples by transforming the regression scores that are predicted for each label
-                     * individually into probabilities.
+                     * query examples by transforming the individual scores that are predicted for each label into
+                     * probabilities.
                      *
-                     * @return A reference to an object of type `ILabelWiseProbabilityPredictorConfig` that allows
+                     * @return A reference to an object of type `IOutputWiseProbabilityPredictorConfig` that allows
                      *         further configuration of the predictor
                      */
-                    virtual ILabelWiseProbabilityPredictorConfig& useLabelWiseProbabilityPredictor() {
+                    virtual IOutputWiseProbabilityPredictorConfig& useOutputWiseProbabilityPredictor() {
                         std::unique_ptr<IProbabilityPredictorConfig>& probabilityPredictorConfigPtr =
                           this->getProbabilityPredictorConfigPtr();
-                        std::unique_ptr<LabelWiseProbabilityPredictorConfig> ptr =
-                          std::make_unique<LabelWiseProbabilityPredictorConfig>(this->getLossConfigPtr(),
-                                                                                this->getParallelPredictionConfigPtr());
-                        ILabelWiseProbabilityPredictorConfig& ref = *ptr;
+                        std::unique_ptr<OutputWiseProbabilityPredictorConfig> ptr =
+                          std::make_unique<OutputWiseProbabilityPredictorConfig>(
+                            this->getLossConfigPtr(), this->getParallelPredictionConfigPtr());
+                        IOutputWiseProbabilityPredictorConfig& ref = *ptr;
                         probabilityPredictorConfigPtr = std::move(ptr);
                         return ref;
                     }

@@ -9,9 +9,9 @@
 namespace seco {
 
     /**
-     * Allows to configure single-label rule heads that predict for a single label.
+     * Allows to configure single-output heads that predict for a single output.
      */
-    class SingleLabelHeadConfig final : public IHeadConfig {
+    class SingleOutputHeadConfig final : public IHeadConfig {
         private:
 
             const std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr_;
@@ -26,8 +26,8 @@ namespace seco {
              * @param pruningHeuristicConfigPtr A reference to an unique pointer that stores the configuration of the
              *                                  heuristic for pruning rules
              */
-            SingleLabelHeadConfig(const std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr,
-                                  const std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr);
+            SingleOutputHeadConfig(const std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr,
+                                   const std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IRowWiseLabelMatrix& labelMatrix) const override;

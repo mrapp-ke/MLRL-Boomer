@@ -9,8 +9,8 @@ namespace boosting {
         : lossConfigPtr_(lossConfigPtr) {}
 
     uint32 AutoParallelStatisticUpdateConfig::getNumThreads(const IFeatureMatrix& featureMatrix,
-                                                            uint32 numLabels) const {
-        if (!lossConfigPtr_->isDecomposable() && numLabels >= 20) {
+                                                            uint32 numOutputs) const {
+        if (!lossConfigPtr_->isDecomposable() && numOutputs >= 20) {
             return getNumAvailableThreads(0);
         } else {
             return 1;

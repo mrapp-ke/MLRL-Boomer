@@ -12,48 +12,46 @@ namespace boosting {
 
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluationFactory>
-      AutomaticLabelBinningConfig::createLabelWiseCompleteRuleEvaluationFactory() const {
+    std::unique_ptr<IDecomposableRuleEvaluationFactory>
+      AutomaticLabelBinningConfig::createDecomposableCompleteRuleEvaluationFactory() const {
         return NoLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
-          .createLabelWiseCompleteRuleEvaluationFactory();
+          .createDecomposableCompleteRuleEvaluationFactory();
     }
 
-    std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory>
-      AutomaticLabelBinningConfig::createLabelWiseFixedPartialRuleEvaluationFactory(float32 labelRatio,
-                                                                                    uint32 minLabels,
-                                                                                    uint32 maxLabels) const {
+    std::unique_ptr<ISparseDecomposableRuleEvaluationFactory>
+      AutomaticLabelBinningConfig::createDecomposableFixedPartialRuleEvaluationFactory(float32 outputRatio,
+                                                                                       uint32 minOutputs,
+                                                                                       uint32 maxOutputs) const {
         return NoLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
-          .createLabelWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels, maxLabels);
+          .createDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs, maxOutputs);
     }
 
-    std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory>
-      AutomaticLabelBinningConfig::createLabelWiseDynamicPartialRuleEvaluationFactory(float32 threshold,
-                                                                                      float32 exponent) const {
+    std::unique_ptr<ISparseDecomposableRuleEvaluationFactory>
+      AutomaticLabelBinningConfig::createDecomposableDynamicPartialRuleEvaluationFactory(float32 threshold,
+                                                                                         float32 exponent) const {
         return NoLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
-          .createLabelWiseDynamicPartialRuleEvaluationFactory(threshold, exponent);
+          .createDecomposableDynamicPartialRuleEvaluationFactory(threshold, exponent);
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluationFactory>
-      AutomaticLabelBinningConfig::createExampleWiseCompleteRuleEvaluationFactory(const Blas& blas,
-                                                                                  const Lapack& lapack) const {
+    std::unique_ptr<INonDecomposableRuleEvaluationFactory>
+      AutomaticLabelBinningConfig::createNonDecomposableCompleteRuleEvaluationFactory(const Blas& blas,
+                                                                                      const Lapack& lapack) const {
         return EqualWidthLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
-          .createExampleWiseCompleteRuleEvaluationFactory(blas, lapack);
+          .createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluationFactory>
-      AutomaticLabelBinningConfig::createExampleWiseFixedPartialRuleEvaluationFactory(
-        float32 labelRatio, uint32 minLabels, uint32 maxLabels, const Blas& blas, const Lapack& lapack) const {
+    std::unique_ptr<INonDecomposableRuleEvaluationFactory>
+      AutomaticLabelBinningConfig::createNonDecomposableFixedPartialRuleEvaluationFactory(
+        float32 outputRatio, uint32 minOutputs, uint32 maxOutputs, const Blas& blas, const Lapack& lapack) const {
         return EqualWidthLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
-          .createExampleWiseFixedPartialRuleEvaluationFactory(labelRatio, minLabels, maxLabels, blas, lapack);
+          .createNonDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs, maxOutputs, blas, lapack);
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluationFactory>
-      AutomaticLabelBinningConfig::createExampleWiseDynamicPartialRuleEvaluationFactory(float32 threshold,
-                                                                                        float32 exponent,
-                                                                                        const Blas& blas,
-                                                                                        const Lapack& lapack) const {
+    std::unique_ptr<INonDecomposableRuleEvaluationFactory>
+      AutomaticLabelBinningConfig::createNonDecomposableDynamicPartialRuleEvaluationFactory(
+        float32 threshold, float32 exponent, const Blas& blas, const Lapack& lapack) const {
         return EqualWidthLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
-          .createExampleWiseDynamicPartialRuleEvaluationFactory(threshold, exponent, blas, lapack);
+          .createNonDecomposableDynamicPartialRuleEvaluationFactory(threshold, exponent, blas, lapack);
     }
 
 }

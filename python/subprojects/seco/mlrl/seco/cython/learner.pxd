@@ -19,11 +19,11 @@ cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
         ICoverageStoppingCriterionConfig& useCoverageStoppingCriterion()
 
 
-    cdef cppclass ISingleLabelHeadMixin"seco::ISeCoRuleLearner::ISingleLabelHeadMixin":
+    cdef cppclass ISingleOutputHeadMixin"seco::ISeCoRuleLearner::ISingleOutputHeadMixin":
 
         # Functions:
 
-        void useSingleLabelHeads()
+        void useSingleOutputHeads()
 
 
     cdef cppclass IPartialHeadMixin"seco::ISeCoRuleLearner::IPartialHeadMixin":
@@ -152,8 +152,8 @@ cdef extern from "mlrl/seco/learner.hpp" namespace "seco" nogil:
         void useWraPruningHeuristic()
 
 
-    cdef cppclass ILabelWiseBinaryPredictorMixin"seco::ISeCoRuleLearner::ILabelWiseBinaryPredictorMixin":
+    cdef cppclass IOutputWiseBinaryPredictorMixin"seco::ISeCoRuleLearner::IOutputWiseBinaryPredictorMixin":
 
         # Functions:
 
-        void useLabelWiseBinaryPredictor()
+        void useOutputWiseBinaryPredictor()

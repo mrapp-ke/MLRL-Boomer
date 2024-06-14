@@ -1,25 +1,12 @@
-from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
 
 from mlrl.common.cython._types cimport float32, uint8, uint32
-
-
-cdef extern from "mlrl/common/input/label_matrix.hpp" nogil:
-
-    cdef cppclass ILabelMatrix:
-
-        # Functions:
-
-        uint32 getNumExamples() const
-
-        uint32 getNumLabels() const
-
-        bool isSparse() const
+from mlrl.common.cython.output_matrix cimport IOutputMatrix, OutputMatrix
 
 
 cdef extern from "mlrl/common/input/label_matrix_row_wise.hpp" nogil:
 
-    cdef cppclass IRowWiseLabelMatrix(ILabelMatrix):
+    cdef cppclass IRowWiseLabelMatrix(IOutputMatrix):
 
         # Functions:
 
@@ -44,14 +31,7 @@ cdef extern from "mlrl/common/input/label_matrix_csr.hpp" nogil:
     unique_ptr[ICsrLabelMatrix] createCsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
 
 
-cdef class LabelMatrix:
-
-    # Functions:
-
-    cdef ILabelMatrix* get_label_matrix_ptr(self)
-
-
-cdef class RowWiseLabelMatrix(LabelMatrix):
+cdef class RowWiseLabelMatrix(OutputMatrix):
 
     # Functions:
 

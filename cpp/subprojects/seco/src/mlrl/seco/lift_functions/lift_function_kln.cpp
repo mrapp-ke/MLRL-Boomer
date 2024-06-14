@@ -77,7 +77,7 @@ namespace seco {
 
     std::unique_ptr<ILiftFunctionFactory> KlnLiftFunctionConfig::createLiftFunctionFactory(
       const IRowWiseLabelMatrix& labelMatrix) const {
-        uint32 numLabels = labelMatrix.getNumLabels();
+        uint32 numLabels = labelMatrix.getNumOutputs();
         return std::make_unique<KlnLiftFunctionFactory>(numLabels, k_);
     }
 

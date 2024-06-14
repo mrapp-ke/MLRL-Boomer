@@ -103,11 +103,11 @@ class IPredictorConfig {
          *
          * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
          *                      to the feature values of the query examples to predict for
-         * @param numLabels     The number of labels to predict for
+         * @param numOutputs    The number of outputs to predict for
          * @return              An unique pointer to an object of template type `PredictorFactory` that has been created
          */
         virtual std::unique_ptr<PredictorFactory> createPredictorFactory(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                         uint32 numLabels) const = 0;
+                                                                         uint32 numOutputs) const = 0;
 
         /**
          * Returns whether the predictor needs access to the label vectors that are encountered in the training data or

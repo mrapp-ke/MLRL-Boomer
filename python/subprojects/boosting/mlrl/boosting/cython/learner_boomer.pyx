@@ -11,15 +11,15 @@ from mlrl.common.cython.feature_sampling cimport FeatureSamplingWithoutReplaceme
     IFeatureSamplingWithoutReplacementConfig
 from mlrl.common.cython.instance_sampling cimport ExampleWiseStratifiedInstanceSamplingConfig, \
     IExampleWiseStratifiedInstanceSamplingConfig, IInstanceSamplingWithoutReplacementConfig, \
-    IInstanceSamplingWithReplacementConfig, ILabelWiseStratifiedInstanceSamplingConfig, \
-    InstanceSamplingWithoutReplacementConfig, InstanceSamplingWithReplacementConfig, \
-    LabelWiseStratifiedInstanceSamplingConfig
-from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig, \
-    LabelSamplingWithoutReplacementConfig
+    IInstanceSamplingWithReplacementConfig, InstanceSamplingWithoutReplacementConfig, \
+    InstanceSamplingWithReplacementConfig, IOutputWiseStratifiedInstanceSamplingConfig, \
+    OutputWiseStratifiedInstanceSamplingConfig
 from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig, ManualMultiThreadingConfig
+from mlrl.common.cython.output_sampling cimport IOutputSamplingWithoutReplacementConfig, \
+    OutputSamplingWithoutReplacementConfig
 from mlrl.common.cython.partition_sampling cimport ExampleWiseStratifiedBiPartitionSamplingConfig, \
-    IExampleWiseStratifiedBiPartitionSamplingConfig, ILabelWiseStratifiedBiPartitionSamplingConfig, \
-    IRandomBiPartitionSamplingConfig, LabelWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
+    IExampleWiseStratifiedBiPartitionSamplingConfig, IOutputWiseStratifiedBiPartitionSamplingConfig, \
+    IRandomBiPartitionSamplingConfig, OutputWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig, SequentialPostOptimizationConfig
 from mlrl.common.cython.rule_induction cimport BeamSearchTopDownRuleInductionConfig, GreedyTopDownRuleInductionConfig, \
     IBeamSearchTopDownRuleInductionConfig, IGreedyTopDownRuleInductionConfig
@@ -32,9 +32,9 @@ from mlrl.boosting.cython.head_type cimport DynamicPartialHeadConfig, FixedParti
 from mlrl.boosting.cython.label_binning cimport EqualWidthLabelBinningConfig, IEqualWidthLabelBinningConfig
 from mlrl.boosting.cython.post_processor cimport ConstantShrinkageConfig, IConstantShrinkageConfig
 from mlrl.boosting.cython.prediction cimport ExampleWiseBinaryPredictorConfig, GfmBinaryPredictorConfig, \
-    IExampleWiseBinaryPredictorConfig, IGfmBinaryPredictorConfig, ILabelWiseBinaryPredictorConfig, \
-    ILabelWiseProbabilityPredictorConfig, IMarginalizedProbabilityPredictorConfig, LabelWiseBinaryPredictorConfig, \
-    LabelWiseProbabilityPredictorConfig, MarginalizedProbabilityPredictorConfig
+    IExampleWiseBinaryPredictorConfig, IGfmBinaryPredictorConfig, IMarginalizedProbabilityPredictorConfig, \
+    IOutputWiseBinaryPredictorConfig, IOutputWiseProbabilityPredictorConfig, MarginalizedProbabilityPredictorConfig, \
+    OutputWiseBinaryPredictorConfig, OutputWiseProbabilityPredictorConfig
 from mlrl.boosting.cython.probability_calibration cimport IIsotonicJointProbabilityCalibratorConfig, \
     IIsotonicMarginalProbabilityCalibratorConfig, IsotonicJointProbabilityCalibratorConfig, \
     IsotonicMarginalProbabilityCalibratorConfig
@@ -44,28 +44,28 @@ from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, Defa
     EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, ExampleWiseStratifiedBiPartitionSamplingMixin, \
     ExampleWiseStratifiedInstanceSamplingMixin, FeatureSamplingWithoutReplacementMixin, \
     GreedyTopDownRuleInductionMixin, InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, \
-    IrepRulePruningMixin, LabelSamplingWithoutReplacementMixin, LabelWiseStratifiedBiPartitionSamplingMixin, \
-    LabelWiseStratifiedInstanceSamplingMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, \
-    NoInstanceSamplingMixin, NoJointProbabilityCalibrationMixin, NoLabelSamplingMixin, \
-    NoMarginalProbabilityCalibrationMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, \
-    NoParallelStatisticUpdateMixin, NoPartitionSamplingMixin, NoPostProcessorMixin, NoRulePruningMixin, \
-    NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, \
-    ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, \
-    PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinLabelSamplingMixin, SequentialPostOptimizationMixin, \
+    IrepRulePruningMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, \
+    NoInstanceSamplingMixin, NoJointProbabilityCalibrationMixin, NoMarginalProbabilityCalibrationMixin, \
+    NoOutputSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
+    NoPartitionSamplingMixin, NoPostProcessorMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, \
+    NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, OutputSamplingWithoutReplacementMixin, \
+    OutputWiseStratifiedBiPartitionSamplingMixin, OutputWiseStratifiedInstanceSamplingMixin, ParallelPredictionMixin, \
+    ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, PrePruningMixin, \
+    RandomBiPartitionSamplingMixin, RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, \
     SequentialRuleModelAssemblageMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
 
 from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
     AutomaticFeatureBinningMixin, AutomaticHeadMixin, AutomaticLabelBinningMixin, \
     AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, AutomaticPartitionSamplingMixin, \
     AutomaticProbabilityPredictorMixin, AutomaticStatisticsMixin, CompleteHeadMixin, ConstantShrinkageMixin, \
+    DecomposableLogisticLossMixin, DecomposableSquaredErrorLossMixin, DecomposableSquaredHingeLossMixin, \
     DenseStatisticsMixin, DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, \
-    ExampleWiseLogisticLossMixin, ExampleWiseSquaredErrorLossMixin, ExampleWiseSquaredHingeLossMixin, \
     FixedPartialHeadMixin, GfmBinaryPredictorMixin, IsotonicJointProbabilityCalibrationMixin, \
     IsotonicMarginalProbabilityCalibrationMixin, L1RegularizationMixin, L2RegularizationMixin, \
-    LabelWiseBinaryPredictorMixin, LabelWiseLogisticLossMixin, LabelWiseProbabilityPredictorMixin, \
-    LabelWiseScorePredictorMixin, LabelWiseSquaredErrorLossMixin, LabelWiseSquaredHingeLossMixin, \
     MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
-    NoLabelBinningMixin, SingleLabelHeadMixin, SparseStatisticsMixin
+    NoLabelBinningMixin, NonDecomposableLogisticLossMixin, NonDecomposableSquaredErrorLossMixin, \
+    NonDecomposableSquaredHingeLossMixin, OutputWiseBinaryPredictorMixin, OutputWiseProbabilityPredictorMixin, \
+    OutputWiseScorePredictorMixin, SingleOutputHeadMixin, SparseStatisticsMixin
 
 
 cdef class BoomerConfig(RuleLearnerConfig,
@@ -83,28 +83,28 @@ cdef class BoomerConfig(RuleLearnerConfig,
                         CompleteHeadMixin,
                         FixedPartialHeadMixin,
                         DynamicPartialHeadMixin,
-                        SingleLabelHeadMixin,
+                        SingleOutputHeadMixin,
                         AutomaticHeadMixin,
                         DenseStatisticsMixin,
                         SparseStatisticsMixin,
                         AutomaticStatisticsMixin,
-                        ExampleWiseLogisticLossMixin,
-                        ExampleWiseSquaredErrorLossMixin,
-                        ExampleWiseSquaredHingeLossMixin,
-                        LabelWiseLogisticLossMixin,
-                        LabelWiseSquaredErrorLossMixin,
-                        LabelWiseSquaredHingeLossMixin,
+                        DecomposableLogisticLossMixin,
+                        DecomposableSquaredErrorLossMixin,
+                        DecomposableSquaredHingeLossMixin,
+                        NonDecomposableLogisticLossMixin,
+                        NonDecomposableSquaredHingeLossMixin,
+                        NonDecomposableSquaredErrorLossMixin,
                         NoLabelBinningMixin,
                         EqualWidthLabelBinningMixin,
                         AutomaticLabelBinningMixin,
                         IsotonicMarginalProbabilityCalibrationMixin,
                         IsotonicJointProbabilityCalibrationMixin,
-                        LabelWiseBinaryPredictorMixin,
+                        OutputWiseBinaryPredictorMixin,
                         ExampleWiseBinaryPredictorMixin,
                         GfmBinaryPredictorMixin,
                         AutomaticBinaryPredictorMixin,
-                        LabelWiseScorePredictorMixin,
-                        LabelWiseProbabilityPredictorMixin,
+                        OutputWiseScorePredictorMixin,
+                        OutputWiseProbabilityPredictorMixin,
                         MarginalizedProbabilityPredictorMixin,
                         AutomaticProbabilityPredictorMixin,
                         SequentialRuleModelAssemblageMixin,
@@ -115,19 +115,19 @@ cdef class BoomerConfig(RuleLearnerConfig,
                         NoFeatureBinningMixin,
                         EqualWidthFeatureBinningMixin,
                         EqualFrequencyFeatureBinningMixin,
-                        NoLabelSamplingMixin,
-                        RoundRobinLabelSamplingMixin,
-                        LabelSamplingWithoutReplacementMixin,
+                        NoOutputSamplingMixin,
+                        RoundRobinOutputSamplingMixin,
+                        OutputSamplingWithoutReplacementMixin,
                         NoInstanceSamplingMixin,
                         InstanceSamplingWithReplacementMixin,
                         InstanceSamplingWithoutReplacementMixin,
-                        LabelWiseStratifiedInstanceSamplingMixin,
+                        OutputWiseStratifiedInstanceSamplingMixin,
                         ExampleWiseStratifiedInstanceSamplingMixin,
                         NoFeatureSamplingMixin,
                         FeatureSamplingWithoutReplacementMixin,
                         NoPartitionSamplingMixin,
                         RandomBiPartitionSamplingMixin,
-                        LabelWiseStratifiedBiPartitionSamplingMixin,
+                        OutputWiseStratifiedBiPartitionSamplingMixin,
                         ExampleWiseStratifiedBiPartitionSamplingMixin,
                         NoRulePruningMixin,
                         IrepRulePruningMixin,
@@ -198,17 +198,17 @@ cdef class BoomerConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_no_label_sampling(self):
-        self.config_ptr.get().useNoLabelSampling()
+    def use_no_output_sampling(self):
+        self.config_ptr.get().useNoOutputSampling()
 
-    def use_round_robin_label_sampling(self):
-        self.config_ptr.get().useRoundRobinLabelSampling()
+    def use_round_robin_output_sampling(self):
+        self.config_ptr.get().useRoundRobinOutputSampling()
 
-    def use_label_sampling_without_replacement(self) -> LabelSamplingWithoutReplacementConfig:
-        cdef ILabelSamplingWithoutReplacementConfig* config_ptr = \
-            &self.config_ptr.get().useLabelSamplingWithoutReplacement()
-        cdef LabelSamplingWithoutReplacementConfig config = \
-            LabelSamplingWithoutReplacementConfig.__new__(LabelSamplingWithoutReplacementConfig)
+    def use_output_sampling_without_replacement(self) -> OutputSamplingWithoutReplacementConfig:
+        cdef IOutputSamplingWithoutReplacementConfig* config_ptr = \
+            &self.config_ptr.get().useOutputSamplingWithoutReplacement()
+        cdef OutputSamplingWithoutReplacementConfig config = \
+            OutputSamplingWithoutReplacementConfig.__new__(OutputSamplingWithoutReplacementConfig)
         config.config_ptr = config_ptr
         return config
 
@@ -231,11 +231,11 @@ cdef class BoomerConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_label_wise_stratified_instance_sampling(self) -> LabelWiseStratifiedInstanceSamplingConfig:
-        cdef ILabelWiseStratifiedInstanceSamplingConfig* config_ptr = \
-            &self.config_ptr.get().useLabelWiseStratifiedInstanceSampling()
-        cdef LabelWiseStratifiedInstanceSamplingConfig config = \
-            LabelWiseStratifiedInstanceSamplingConfig.__new__(LabelWiseStratifiedInstanceSamplingConfig)
+    def use_output_wise_stratified_instance_sampling(self) -> OutputWiseStratifiedInstanceSamplingConfig:
+        cdef IOutputWiseStratifiedInstanceSamplingConfig* config_ptr = \
+            &self.config_ptr.get().useOutputWiseStratifiedInstanceSampling()
+        cdef OutputWiseStratifiedInstanceSamplingConfig config = \
+            OutputWiseStratifiedInstanceSamplingConfig.__new__(OutputWiseStratifiedInstanceSamplingConfig)
         config.config_ptr = config_ptr
         return config
 
@@ -269,11 +269,11 @@ cdef class BoomerConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_label_wise_stratified_bi_partition_sampling(self) -> LabelWiseStratifiedBiPartitionSamplingConfig:
-        cdef ILabelWiseStratifiedBiPartitionSamplingConfig* config_ptr = \
-            &self.config_ptr.get().useLabelWiseStratifiedBiPartitionSampling()
-        cdef LabelWiseStratifiedBiPartitionSamplingConfig config = \
-            LabelWiseStratifiedBiPartitionSamplingConfig.__new__(LabelWiseStratifiedBiPartitionSamplingConfig)
+    def use_output_wise_stratified_bi_partition_sampling(self) -> OutputWiseStratifiedBiPartitionSamplingConfig:
+        cdef IOutputWiseStratifiedBiPartitionSamplingConfig* config_ptr = \
+            &self.config_ptr.get().useOutputWiseStratifiedBiPartitionSampling()
+        cdef OutputWiseStratifiedBiPartitionSamplingConfig config = \
+            OutputWiseStratifiedBiPartitionSamplingConfig.__new__(OutputWiseStratifiedBiPartitionSamplingConfig)
         config.config_ptr = config_ptr
         return config
 
@@ -403,8 +403,8 @@ cdef class BoomerConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_single_label_heads(self):
-        self.config_ptr.get().useSingleLabelHeads()
+    def use_single_output_heads(self):
+        self.config_ptr.get().useSingleOutputHeads()
 
     def use_automatic_statistics(self):
         self.config_ptr.get().useAutomaticStatistics()
@@ -433,23 +433,23 @@ cdef class BoomerConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_example_wise_logistic_loss(self):
-        self.config_ptr.get().useExampleWiseLogisticLoss()
+    def use_non_decomposable_logistic_loss(self):
+        self.config_ptr.get().useNonDecomposableLogisticLoss()
 
-    def use_example_wise_squared_error_loss(self):
-        self.config_ptr.get().useExampleWiseSquaredErrorLoss()
+    def use_non_decomposable_squared_error_loss(self):
+        self.config_ptr.get().useNonDecomposableSquaredErrorLoss()
 
-    def use_example_wise_squared_hinge_loss(self):
-        self.config_ptr.get().useExampleWiseSquaredHingeLoss()
+    def use_non_decomposable_squared_hinge_loss(self):
+        self.config_ptr.get().useNonDecomposableSquaredHingeLoss()
 
-    def use_label_wise_logistic_loss(self):
-        self.config_ptr.get().useLabelWiseLogisticLoss()
+    def use_decomposable_logistic_loss(self):
+        self.config_ptr.get().useDecomposableLogisticLoss()
 
-    def use_label_wise_squared_error_loss(self):
-        self.config_ptr.get().useLabelWiseSquaredErrorLoss()
+    def use_decomposable_squared_error_loss(self):
+        self.config_ptr.get().useDecomposableSquaredErrorLoss()
 
-    def use_label_wise_squared_hinge_loss(self):
-        self.config_ptr.get().useLabelWiseSquaredHingeLoss()
+    def use_decomposable_squared_hinge_loss(self):
+        self.config_ptr.get().useDecomposableSquaredHingeLoss()
 
     def use_no_label_binning(self):
         self.config_ptr.get().useNoLabelBinning()
@@ -485,10 +485,10 @@ cdef class BoomerConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_label_wise_binary_predictor(self) -> LabelWiseBinaryPredictorConfig:
-        cdef ILabelWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useLabelWiseBinaryPredictor()
-        cdef LabelWiseBinaryPredictorConfig config = \
-            LabelWiseBinaryPredictorConfig.__new__(LabelWiseBinaryPredictorConfig)
+    def use_output_wise_binary_predictor(self) -> OutputWiseBinaryPredictorConfig:
+        cdef IOutputWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useOutputWiseBinaryPredictor()
+        cdef OutputWiseBinaryPredictorConfig config = \
+            OutputWiseBinaryPredictorConfig.__new__(OutputWiseBinaryPredictorConfig)
         config.config_ptr = config_ptr
         return config
 
@@ -506,16 +506,16 @@ cdef class BoomerConfig(RuleLearnerConfig,
         return config
 
     def use_automatic_binary_predictor(self):
-        self.config_ptr.get().useLabelWiseBinaryPredictor()
+        self.config_ptr.get().useOutputWiseBinaryPredictor()
 
-    def use_label_wise_score_predictor(self):
-        self.config_ptr.get().useLabelWiseScorePredictor()
+    def use_output_wise_score_predictor(self):
+        self.config_ptr.get().useOutputWiseScorePredictor()
 
-    def use_label_wise_probability_predictor(self) -> LabelWiseProbabilityPredictorConfig:
-        cdef ILabelWiseProbabilityPredictorConfig* config_ptr = \
-            &self.config_ptr.get().useLabelWiseProbabilityPredictor()
-        cdef LabelWiseProbabilityPredictorConfig config = \
-            LabelWiseProbabilityPredictorConfig.__new__(LabelWiseProbabilityPredictorConfig)
+    def use_output_wise_probability_predictor(self) -> OutputWiseProbabilityPredictorConfig:
+        cdef IOutputWiseProbabilityPredictorConfig* config_ptr = \
+            &self.config_ptr.get().useOutputWiseProbabilityPredictor()
+        cdef OutputWiseProbabilityPredictorConfig config = \
+            OutputWiseProbabilityPredictorConfig.__new__(OutputWiseProbabilityPredictorConfig)
         config.config_ptr = config_ptr
         return config
 

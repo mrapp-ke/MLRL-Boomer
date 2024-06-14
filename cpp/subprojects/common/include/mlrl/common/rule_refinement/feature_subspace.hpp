@@ -32,26 +32,26 @@ class IFeatureSubspace {
 
         /**
          * Creates and returns a new instance of the type `IRuleRefinement` that allows to find the best refinement of
-         * a rule that covers all examples included in this subspace and predicts for all available labels.
+         * a rule that covers all examples included in this subspace and predicts for all available outputs.
          *
-         * @param labelIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
-         *                      indices of the labels for which the existing rule predicts
+         * @param outputIndices A reference to an object of type `CompleteIndexVector` that provides access to the
+         *                      indices of the outputs for which the existing rule predicts
          * @param featureIndex  The index of the feature that should be considered when searching for refinements
          * @return              An unique pointer to an object of type `IRuleRefinement` that has been created
          */
-        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const CompleteIndexVector& labelIndices,
+        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const CompleteIndexVector& outputIndices,
                                                                       uint32 featureIndex) = 0;
 
         /**
          * Creates and returns a new instance of the type `IRuleRefinement` that allows to find the best refinement of
-         * a rule that covers all examples included in this subspace and predicts for a subset of the available labels.
+         * a rule that covers all examples included in this subspace and predicts for a subset of the available outputs.
          *
-         * @param labelIndices  A reference to an object of type `PartialIndexVector` that provides access to the
-         *                      indices of the labels for which the existing rule predicts
+         * @param outputIndices A reference to an object of type `PartialIndexVector` that provides access to the
+         *                      indices of the outputs for which the existing rule predicts
          * @param featureIndex  The index of the feature that should be considered when searching for refinements
          * @return              An unique pointer to an object of type `IRuleRefinement` that has been created
          */
-        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& labelIndices,
+        virtual std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& outputIndices,
                                                                       uint32 featureIndex) = 0;
 
         /**
