@@ -18,7 +18,7 @@ from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBo
 from mlrl.common.learners import Learner
 from mlrl.common.options import Options
 
-from mlrl.testbed.data import Feature, MetaData
+from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.format import format_float
 from mlrl.testbed.output_writer import Formattable, OutputWriter
@@ -81,7 +81,7 @@ class RuleModelWriter(ModelWriter):
             :param model:       The `RuleModel`
             """
             self.features = meta_data.features
-            self.labels = meta_data.labels
+            self.outputs = meta_data.outputs
             self.model = model
             self.text = None
             self.print_feature_names = True
@@ -170,7 +170,7 @@ class RuleModelWriter(ModelWriter):
             if self.print_heads:
                 print_output_names = self.print_output_names
                 decimals = self.head_decimals
-                labels = self.labels
+                outputs = self.outputs
                 scores = head.scores
 
                 if self.print_bodies:
@@ -183,7 +183,7 @@ class RuleModelWriter(ModelWriter):
                         text.write(', ')
 
                     if print_output_names and len(outputs) > i:
-                        text.write(labels[i].name)
+                        text.write(outputs[i].name)
                     else:
                         text.write(str(i))
 
@@ -203,7 +203,7 @@ class RuleModelWriter(ModelWriter):
             if self.print_heads:
                 print_output_names = self.print_output_names
                 decimals = self.head_decimals
-                labels = self.labels
+                outputs = self.outputs
                 indices = head.indices
                 scores = head.scores
 
@@ -216,12 +216,12 @@ class RuleModelWriter(ModelWriter):
                     if i > 0:
                         text.write(', ')
 
-                    label_index = indices[i]
+                    output_index = indices[i]
 
-                    if print_output_names and len(labels) > label_index:
-                        text.write(labels[label_index].name)
+                    if print_output_names and len(outputs) > output_index:
+                        text.write(outputs[output_index].name)
                     else:
-                        text.write(str(label_index))
+                        text.write(str(output_index))
 
                     text.write(' = ')
                     text.write(format_float(scores[i], decimals=decimals))

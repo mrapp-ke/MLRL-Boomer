@@ -50,9 +50,9 @@ class Feature:
         self.nominal_values = nominal_values
 
 
-class Label(Feature):
+class Output(Feature):
     """
-    Represents a label that is contained by a data set.
+    Represents an output that is contained by a data set.
     """
 
     def __init__(self, name: str):
@@ -64,15 +64,15 @@ class MetaData:
     Stores the meta-data of a data set.
     """
 
-    def __init__(self, features: List[Feature], labels: List[Feature], labels_at_start: bool):
+    def __init__(self, features: List[Feature], outputs: List[Output], outputs_at_start: bool):
         """
-        :param feature:         A list that contains all feature in the data set
-        :param labels:          A list that contains all labels in the data set
-        :param labels_at_start: True, if the labels are located at the start, False, if they are located at the end
+        :param features:            A list that contains all features in the data set
+        :param outputs:             A list that contains all outputs in the data set
+        :param outputs_at_start:    True, if the outputs are located at the start, False, if they are located at the end
         """
         self.features = features
-        self.labels = labels
-        self.labels_at_start = labels_at_start
+        self.outputs = outputs
+        self.outputs_at_start = outputs_at_start
 
     def get_num_features(self, feature_types: Optional[Set[FeatureType]] = None) -> int:
         """
@@ -80,7 +80,7 @@ class MetaData:
 
         :param feature_types:   A set that contains the types of the features to be counted or None, if all features
                                 should be counted
-        :return:                The number of features of the given types    
+        :return:                The number of features of the given types
         """
         if feature_types is None:
             return len(self.features)
@@ -107,7 +107,7 @@ def load_data_set_and_meta_data(data_dir: str,
                                 arff_file_name: str,
                                 xml_file_name: str,
                                 feature_dtype=Float32,
-                                label_dtype=Uint8) -> Tuple[lil_array, lil_array, MetaData]:
+                                output_dtype=Uint8) -> Tuple[lil_array, lil_array, MetaData]:
     """
     Loads a data set from an ARFF file and the corresponding Mulan XML file.
 
@@ -115,32 +115,32 @@ def load_data_set_and_meta_data(data_dir: str,
     :param arff_file_name:  The name of the ARFF file (including the suffix)
     :param xml_file_name:   The name of the XML file (including the suffix)
     :param feature_dtype:   The requested type of the feature matrix
-    :param label_dtype:     The requested type of the label matrix
+    :param output_dtype:    The requested type of the output matrix
     :return:                A `scipy.sparse.lil_array` of type `feature_dtype`, shape `(num_examples, num_features)`,
                             representing the feature values of the examples, a `scipy.sparse.lil_array` of type
-                            `label_dtype`, shape `(num_examples, num_labels)`, representing the corresponding label
-                            vectors, as well as the data set's meta-data
+                            `output_dtype`, shape `(num_examples, num_outputs)`, representing the corresponding ground
+                            truth, as well as the data set's meta-data
     """
     xml_file = path.join(data_dir, xml_file_name)
-    labels = None
+    outputs = None
 
     if path.isfile(xml_file):
         log.debug('Parsing meta data from file \"%s\"...', xml_file)
-        labels = __parse_labels_from_xml_file(xml_file)
+        outputs = __parse_outputs_from_xml_file(xml_file)
     else:
         log.debug(
-            'Mulan XML file \"%s\" does not exist. If possible, information about the class labels is parsed from the '
-            + 'ARFF file\'s @relation declaration as intended by the MEKA data set format...', xml_file)
+            'Mulan XML file \"%s\" does not exist. If possible, information about the data set\'s outputs is parsed '
+            + 'from the ARFF file\'s @relation declaration as intended by the MEKA data set format...', xml_file)
 
     arff_file = path.join(data_dir, arff_file_name)
     log.debug('Loading data set from file \"%s\"...', arff_file)
     matrix, features, relation = __load_arff(arff_file, feature_dtype=feature_dtype)
 
-    if labels is None:
-        labels = __parse_labels_from_relation(relation, features)
+    if outputs is None:
+        outputs = __parse_outputs_from_relation(relation, features)
 
-    meta_data = __create_meta_data(features, labels)
-    x, y = __create_feature_and_label_matrix(matrix, meta_data, label_dtype)
+    meta_data = __create_meta_data(features, outputs)
+    x, y = __create_feature_and_output_matrix(matrix, meta_data, output_dtype)
     return x, y, meta_data
 
 
@@ -148,7 +148,7 @@ def load_data_set(data_dir: str,
                   arff_file_name: str,
                   meta_data: MetaData,
                   feature_dtype=Float32,
-                  label_dtype=Uint8) -> Tuple[lil_array, lil_array]:
+                  output_dtype=Uint8) -> Tuple[lil_array, lil_array]:
     """
     Loads a data set from an ARFF file given its meta-data.
 
@@ -156,16 +156,16 @@ def load_data_set(data_dir: str,
     :param arff_file_name:  The name of the ARFF file (including the suffix)
     :param meta_data:       The meta-data
     :param feature_dtype:   The requested data type of the feature matrix
-    :param label_dtype:     The requested data type of the label matrix
+    :param output_dtype:    The requested data type of the output matrix
     :return:                A `scipy.sparse.lil_array` of type `feature_dtype`, shape `(num_examples, num_features)`,
                             representing the feature values of the examples, as well as a `scipy.sparse.lil_array` of
-                            type `label_dtype`, shape `(num_examples, num_labels)`, representing the corresponding
-                            label vectors
+                            type `output_dtype`, shape `(num_examples, num_outputs)`, representing the corresponding
+                            ground truth
     """
     arff_file = path.join(data_dir, arff_file_name)
     log.debug('Loading data set from file \"%s\"...', arff_file)
     matrix, _, _ = __load_arff(arff_file, feature_dtype=feature_dtype)
-    x, y = __create_feature_and_label_matrix(matrix, meta_data, label_dtype)
+    x, y = __create_feature_and_output_matrix(matrix, meta_data, output_dtype)
     return x, y
 
 
@@ -180,7 +180,7 @@ def save_data_set_and_meta_data(output_dir: str, arff_file_name: str, xml_file_n
     :param xml_file_name:   The name of the XML file (including the suffix)
     :param x:               An array of type `float`, shape `(num_examples, num_features)`, representing the features of
                             the examples that are contained in the data set
-    :param y:               An array of type `float`, shape `(num_examples, num_labels)`, representing the label vectors
+    :param y:               An array of type `float`, shape `(num_examples, num_outputs)`, representing the ground truth
                             of the examples that are contained in the data set
     :return:                The meta-data of the data set that has been saved
     """
@@ -199,16 +199,16 @@ def save_data_set(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nda
                             `(num_examples, num_features)`, that stores the features of the examples that are contained
                             in the data set
     :param y:               A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                            `(num_examples, num_labels)`, that stores the labels of the examples that are contained in
+                            `(num_examples, num_outputs)`, that stores the outputs of the examples that are contained in
                             the data set
     :return:                The meta-data of the data set that has been saved
     """
 
     num_features = x.shape[1]
     features = [Feature('X' + str(i), FeatureType.NUMERICAL) for i in range(num_features)]
-    num_labels = y.shape[1]
-    labels = [Label('y' + str(i)) for i in range(num_labels)]
-    meta_data = MetaData(features, labels, labels_at_start=False)
+    num_outputs = y.shape[1]
+    outputs = [Output('y' + str(i)) for i in range(num_outputs)]
+    meta_data = MetaData(features, outputs, outputs_at_start=False)
     save_arff_file(output_dir, arff_file_name, x, y, meta_data)
     return meta_data
 
@@ -223,7 +223,7 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
                             `(num_examples, num_features)`, that stores the features of the examples that are contained
                             in the data set
     :param y:               A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                            `(num_examples, num_labels)`, that stores the labels of the examples that are contained in
+                            `(num_examples, num_outputs)`, that stores the outputs of the examples that are contained in
                             the data set
     :param meta_data:       The meta-data of the data set that should be saved
     """
@@ -241,13 +241,13 @@ def save_arff_file(output_dir: str, arff_file_name: str, x: np.ndarray, y: np.nd
                    or features[i].feature_type == FeatureType.NUMERICAL else features[i].nominal_values)
                   for i in range(x.shape[1])]
 
-    labels = meta_data.labels
-    y_features = [(labels[i].name if len(labels) > i else 'y' + str(i),
-                   'NUMERIC' if len(labels) <= i or labels[i].nominal_values is None
-                   or labels[i].feature_type == FeatureType.NUMERICAL else labels[i].nominal_values)
+    outputs = meta_data.outputs
+    y_features = [(outputs[i].name if len(outputs) > i else 'y' + str(i),
+                   'NUMERIC' if len(outputs) <= i or outputs[i].nominal_values is None
+                   or outputs[i].feature_type == FeatureType.NUMERICAL else outputs[i].nominal_values)
                   for i in range(y.shape[1])]
 
-    if meta_data.labels_at_start:
+    if meta_data.outputs_at_start:
         x_prefix = y.shape[1]
         relation_sign = 1
         features = y_features + x_features
@@ -303,7 +303,7 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
     :param x:           A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                         `(num_examples, num_features)`, representing the features of the examples in the data set
     :param y:           A `np.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                        `(num_examples, num_labels)`, representing the labels of the examples in the data set
+                        `(num_examples, num_outputs)`, representing the outputs of the examples in the data set
     :param meta_data:   The meta-data of the data set
     :param encoder:     The 'ColumnTransformer' to be used or None, if a new encoder should be created
     :return:            A `np.ndarray`, shape `(num_examples, num_encoded_features)`, representing the encoded features
@@ -329,7 +329,7 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
 
         x = encoder.transform(x)
         new_shape = x.shape
-        updated_meta_data = MetaData([], meta_data.labels, meta_data.labels_at_start)
+        updated_meta_data = MetaData([], meta_data.outputs, meta_data.outputs_at_start)
         log.info('Original data set contained %s features, one-hot encoded data set contains %s features', old_shape[1],
                  new_shape[1])
         return x, encoder, updated_meta_data
@@ -338,30 +338,30 @@ def one_hot_encode(x, y, meta_data: MetaData, encoder=None):
     return x, None, meta_data
 
 
-def __create_feature_and_label_matrix(matrix: csc_array, meta_data: MetaData,
-                                      label_dtype) -> Tuple[lil_array, lil_array]:
+def __create_feature_and_output_matrix(matrix: csc_array, meta_data: MetaData,
+                                       output_dtype) -> Tuple[lil_array, lil_array]:
     """
-    Creates and returns the feature and label matrix from a single matrix, representing the values in an ARFF file.
+    Creates and returns the feature and output matrix from a single matrix, representing the values in an ARFF file.
 
-    :param matrix:      A `scipy.sparse.csc_array` of type `feature_dtype`, shape
-                        `(num_examples, num_features + num_labels)`, representing the values in an ARFF file
-    :param meta_data:   The meta-data of the data set
-    :param label_dtype: The requested type of the label matrix
-    :return:            A `scipy.sparse.lil_array` of type `feature_dtype`, shape `(num_examples, num_features)`,
-                        representing the feature matrix, as well as `scipy.sparse.lil_array` of type `label_dtype`,
-                        shape `(num_examples, num_labels)`, representing the label matrix
+    :param matrix:          A `scipy.sparse.csc_array` of type `feature_dtype`, shape
+                            `(num_examples, num_features + num_outputs)`, representing the values in an ARFF file
+    :param meta_data:       The meta-data of the data set
+    :param output_dtype:    The requested type of the output matrix
+    :return:                A `scipy.sparse.lil_array` of type `feature_dtype`, shape `(num_examples, num_features)`,
+                            representing the feature matrix, as well as `scipy.sparse.lil_array` of type `output_dtype`,
+                            shape `(num_examples, num_outputs)`, representing the output matrix
     """
-    num_labels = len(meta_data.labels)
+    num_outputs = len(meta_data.outputs)
 
-    if meta_data.labels_at_start:
-        x = matrix[:, num_labels:]
-        y = matrix[:, :num_labels]
+    if meta_data.outputs_at_start:
+        x = matrix[:, num_outputs:]
+        y = matrix[:, :num_outputs]
     else:
-        x = matrix[:, :-num_labels]
-        y = matrix[:, -num_labels:]
+        x = matrix[:, :-num_outputs]
+        y = matrix[:, -num_outputs:]
 
     x = x.tolil()
-    y = y.astype(label_dtype).tolil()
+    y = y.astype(output_dtype).tolil()
     return x, y
 
 
@@ -408,25 +408,25 @@ def __load_arff_as_dict(arff_file: str, sparse: bool) -> dict:
         return arff.load(file, encode_nominal=True, return_type=sparse_format)
 
 
-def __parse_labels_from_xml_file(xml_file) -> List[Feature]:
+def __parse_outputs_from_xml_file(xml_file) -> List[Output]:
     """
-    Parses a Mulan XML file to retrieve information about the labels contained in a data set.
+    Parses a Mulan XML file to retrieve information about the outputs contained in a data set.
 
     :param xml_file:    The path of the XML file (including the suffix)
-    :return:            A list containing the labels
+    :return:            A list containing the outputs
     """
 
     xml_doc = minidom.parse(xml_file)
     tags = xml_doc.getElementsByTagName('label')
-    return [Label(__parse_feature_or_label_name(tag.getAttribute('name'))) for tag in tags]
+    return [Output(__parse_feature_or_output_name(tag.getAttribute('name'))) for tag in tags]
 
 
-def __parse_labels_from_relation(relation: str, features: list) -> List[Feature]:
+def __parse_outputs_from_relation(relation: str, features: list) -> List[Output]:
     """
-    Parses the @relation declaration of an ARFF file to retrieve information about the labels contained in a data set.
+    Parses the @relation declaration of an ARFF file to retrieve information about the outputs contained in a data set.
 
     :param relation:    The @relation declaration to be parsed
-    :return:            A list containing the labels
+    :return:            A list containing the outputs
     """
     parameter_name = '-C '
     index = relation.index(parameter_name)
@@ -436,27 +436,27 @@ def __parse_labels_from_relation(relation: str, features: list) -> List[Feature]
     if index >= 0:
         parameter_value = parameter_value[:index]
 
-    num_labels = int(parameter_value)
-    return [Label(__parse_feature_or_label_name(features[i][0])) for i in range(num_labels)]
+    num_outputs = int(parameter_value)
+    return [Output(__parse_feature_or_output_name(features[i][0])) for i in range(num_outputs)]
 
 
-def __create_meta_data(features: list, labels: List[Feature]) -> MetaData:
+def __create_meta_data(features: List[Feature], outputs: List[Output]) -> MetaData:
     """
     Creates and returns the `MetaData` of a data set by parsing the features in an ARFF file to retrieve information
-    about the features and labels contained in a data set.
+    about the features and outputs contained in a data set.
 
-    :param features:    A list that contains a description of each feature in an ARFF file (including the labels)
-    :param labels:      A list that contains the all labels
+    :param features:    A list that contains a description of each feature in an ARFF file (including the outputs)
+    :param outputs:     A list that contains the all outputs
     :return:            The `MetaData` that has been created
     """
-    label_names = {label.name for label in labels}
+    output_names = {output.name for output in outputs}
+    outputs_at_start = False
     feature_list = []
-    labels_at_start = False
 
     for feature in features:
-        feature_name = __parse_feature_or_label_name(feature[0])
+        feature_name = __parse_feature_or_output_name(feature[0])
 
-        if feature_name not in label_names:
+        if feature_name not in output_names:
             type_definition = feature[1]
 
             if isinstance(type_definition, list):
@@ -475,17 +475,17 @@ def __create_meta_data(features: list, labels: List[Feature]) -> MetaData:
 
             feature_list.append(Feature(feature_name, feature_type, nominal_values))
         elif len(feature_list) == 0:
-            labels_at_start = True
+            outputs_at_start = True
 
-    meta_data = MetaData(feature_list, labels, labels_at_start)
+    meta_data = MetaData(feature_list, outputs, outputs_at_start)
     return meta_data
 
 
-def __parse_feature_or_label_name(name: str) -> str:
+def __parse_feature_or_output_name(name: str) -> str:
     """
-    Parses the name of an feature or label and removes forbidden characters.
+    Parses the name of an feature or output and removes forbidden characters.
 
-    :param name:    The name of the feature or label
+    :param name:    The name of the feature or output
     :return:        The parsed name
     """
     name = name.strip()
@@ -506,8 +506,8 @@ def __write_meta_data(xml_file, meta_data: MetaData):
     root_element = XmlTree.Element('labels')
     root_element.set('xmlns', 'http://mulan.sourceforge.net/labels')
 
-    for label in meta_data.labels:
+    for output in meta_data.outputs:
         label_element = XmlTree.SubElement(root_element, 'label')
-        label_element.set('name', label.name)
+        label_element.set('name', output.name)
 
     write_xml_file(xml_file, root_element)
