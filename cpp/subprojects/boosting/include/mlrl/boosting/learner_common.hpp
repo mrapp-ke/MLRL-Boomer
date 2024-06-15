@@ -11,6 +11,50 @@
 namespace boosting {
 
     /**
+     * Allows to configure the individual modules of a rule learner that makes use of gradient boosting, depending on an
+     * `IBoostedRuleLearner::IConfig`.
+     */
+    class BoostedRuleLearnerConfigurator final : public RuleLearnerConfigurator {
+        private:
+
+            const std::unique_ptr<IBoostedRuleLearner::IConfig> configPtr_;
+
+            const Blas blas_;
+
+            const Lapack lapack_;
+
+        public:
+
+            /**
+             * @param configPtr     An unique pointer to an object of type `IBoostedRuleLearner::IConfig`
+             * @param ddotFunction  A function pointer to BLAS' DDOT routine
+             * @param dspmvFunction A function pointer to BLAS' DSPMV routine
+             * @param dsysvFunction A function pointer to LAPACK'S DSYSV routine
+             */
+            BoostedRuleLearnerConfigurator(std::unique_ptr<IBoostedRuleLearner::IConfig> configPtr,
+                                           Blas::DdotFunction ddotFunction, Blas::DspmvFunction dspmvFunction,
+                                           Lapack::DsysvFunction dsysvFunction)
+                : RuleLearnerConfigurator(*configPtr), configPtr_(std::move(configPtr)),
+                  blas_(ddotFunction, dspmvFunction), lapack_(dsysvFunction) {}
+
+            /**
+             * @see `RuleLearnerConfigurator::createStatisticsProviderFactory`
+             */
+            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override {
+                return configPtr_->getStatisticsConfigPtr()->createStatisticsProviderFactory(featureMatrix, labelMatrix,
+                                                                                             blas_, lapack_);
+            }
+
+            /**
+             * @see `RuleLearnerConfigurator::createModelBuilderFactory`
+             */
+            std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const override {
+                return std::make_unique<RuleListBuilderFactory>();
+            }
+    };
+
+    /**
      * An abstract base class for all rule learners that makes use of gradient boosting.
      */
     class AbstractBoostedRuleLearner : public AbstractRuleLearner,
@@ -94,45 +138,12 @@ namespace boosting {
                     }
             };
 
-        private:
-
-            IBoostedRuleLearner::IConfig& config_;
-
-            const Blas blas_;
-
-            const Lapack lapack_;
-
-        protected:
-
             /**
-             * @see `AbstractRuleLearner::createStatisticsProviderFactory`
+             * @param configurator A reference to an object of type `BoostedRuleLearnerConfigurator` that allows to
+             *                     configure the individual modules to be used by the rule learner
              */
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override {
-                return config_.getStatisticsConfigPtr()->createStatisticsProviderFactory(featureMatrix, labelMatrix,
-                                                                                         blas_, lapack_);
-            }
-
-            /**
-             * @see `AbstractRuleLearner::createModelBuilderFactory`
-             */
-            std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const override {
-                return std::make_unique<RuleListBuilderFactory>();
-            }
-
-        public:
-
-            /**
-             * @param config        A reference to an object of type `IBoostedRuleLearner::IConfig` that specifies the
-             *                      configuration that should be used by the rule learner
-             * @param ddotFunction  A function pointer to BLAS' DDOT routine
-             * @param dspmvFunction A function pointer to BLAS' DSPMV routine
-             * @param dsysvFunction A function pointer to LAPACK'S DSYSV routine
-             */
-            AbstractBoostedRuleLearner(IBoostedRuleLearner::IConfig& config, Blas::DdotFunction ddotFunction,
-                                       Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction)
-                : AbstractRuleLearner(config), config_(config), blas_(ddotFunction, dspmvFunction),
-                  lapack_(dsysvFunction) {}
+            AbstractBoostedRuleLearner(const BoostedRuleLearnerConfigurator& configurator)
+                : AbstractRuleLearner(configurator) {}
     };
 
 }

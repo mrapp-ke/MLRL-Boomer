@@ -10,6 +10,67 @@
 namespace seco {
 
     /**
+     * Allows to configure the individual modules of a rule learner that makes use of the separate-and-conquer (SeCo)
+     * paradigm, depending on an `ISeCoRuleLearner::IConfig`.
+     */
+    class SeCoRuleLearnerConfigurator final : public RuleLearnerConfigurator {
+        private:
+
+            std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr_;
+
+            std::unique_ptr<IStoppingCriterionFactory> createCoverageStoppingCriterionFactory() const {
+                std::unique_ptr<CoverageStoppingCriterionConfig>& configPtr =
+                  configPtr_->getCoverageStoppingCriterionConfigPtr();
+                return configPtr ? configPtr->createStoppingCriterionFactory() : nullptr;
+            }
+
+        public:
+
+            /**
+             * @param configPtr An unique pointer to an object of type `ISeCoRuleLearner::IConfig`
+             */
+            SeCoRuleLearnerConfigurator(std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr)
+                : RuleLearnerConfigurator(*configPtr), configPtr_(std::move(configPtr)) {}
+
+            /**
+             * @see `RuleLearnerConfigurator::createStoppingCriterionFactories`
+             */
+            void createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const override {
+                RuleLearnerConfigurator::createStoppingCriterionFactories(factory);
+                std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactory =
+                  this->createCoverageStoppingCriterionFactory();
+
+                if (stoppingCriterionFactory) {
+                    factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));
+                }
+            }
+
+            /**
+             * @see `RuleLearnerConfigurator::createStatisticsProviderFactory`
+             */
+            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override {
+                return configPtr_->getHeadConfigPtr()->createStatisticsProviderFactory(labelMatrix);
+            }
+
+            /**
+             * @see `RuleLearnerConfigurator::createModelBuilderFactory`
+             */
+            std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const override {
+                return std::make_unique<DecisionListBuilderFactory>();
+            }
+
+            /**
+             * @see `RuleLearnerConfigurator::createSparseBinaryPredictorFactory`
+             */
+            std::unique_ptr<ISparseBinaryPredictorFactory> createSparseBinaryPredictorFactory(
+              const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override {
+                return configPtr_->getBinaryPredictorConfigPtr()->createSparsePredictorFactory(featureMatrix,
+                                                                                               numLabels);
+            }
+    };
+
+    /**
      * An abstract base class for all rule learners that make use of the separate-and-conquer (SeCo) paradigm.
      */
     class AbstractSeCoRuleLearner : public AbstractRuleLearner,
@@ -83,61 +144,13 @@ namespace seco {
                     }
             };
 
-        private:
-
-            ISeCoRuleLearner::IConfig& config_;
-
-            std::unique_ptr<IStoppingCriterionFactory> createCoverageStoppingCriterionFactory() const {
-                std::unique_ptr<CoverageStoppingCriterionConfig>& configPtr =
-                  config_.getCoverageStoppingCriterionConfigPtr();
-                return configPtr ? configPtr->createStoppingCriterionFactory() : nullptr;
-            }
-
-        protected:
-
-            /**
-             * @see `AbstractRuleLearner::createStoppingCriterionFactories`
-             */
-            void createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const override {
-                AbstractRuleLearner::createStoppingCriterionFactories(factory);
-                std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactory =
-                  this->createCoverageStoppingCriterionFactory();
-
-                if (stoppingCriterionFactory) {
-                    factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));
-                }
-            }
-
-            /**
-             * @see `AbstractRuleLearner::createStatisticsProviderFactory`
-             */
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override {
-                return config_.getHeadConfigPtr()->createStatisticsProviderFactory(labelMatrix);
-            }
-
-            /**
-             * @see `AbstractRuleLearner::createModelBuilderFactory`
-             */
-            std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const override {
-                return std::make_unique<DecisionListBuilderFactory>();
-            }
-
-            /**
-             * @see `AbstractRuleLearner::createSparseBinaryPredictorFactory`
-             */
-            std::unique_ptr<ISparseBinaryPredictorFactory> createSparseBinaryPredictorFactory(
-              const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override {
-                return config_.getBinaryPredictorConfigPtr()->createSparsePredictorFactory(featureMatrix, numLabels);
-            }
-
         public:
 
             /**
-             * @param config A reference to an object of type `ISeCoRuleLearner::IConfig` that specifies the
-             *               configuration that should be used by the rule learner
+             * @param configurator A reference to an object of type `SeCoRuleLearnerConfigurator` that allows to
+             *                     configure the individual modules to be used by the rule learner
              */
-            AbstractSeCoRuleLearner(ISeCoRuleLearner::IConfig& config) : AbstractRuleLearner(config), config_(config) {}
+            AbstractSeCoRuleLearner(SeCoRuleLearnerConfigurator& configurator) : AbstractRuleLearner(configurator) {}
     };
 
 }

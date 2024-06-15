@@ -75,16 +75,16 @@ namespace seco {
 
         private:
 
-            const std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr_;
+            const std::unique_ptr<SeCoRuleLearnerConfigurator> configuratorPtr_;
 
         public:
 
             /**
-             * @param configPtr An unique pointer to an object of type `IMultiLabelSeCoRuleLearner::IConfig` that
-             *                  specifies the configuration that should be used by the rule learner
+             * @param configuratorPtr An unique pointer to an object of type `SeCoRuleLearnerConfigurator` that allows
+             *                        to configure the individual modules to be used by the rule learner
              */
-            MultiLabelSeCoRuleLearner(std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr)
-                : AbstractSeCoRuleLearner(*configPtr), configPtr_(std::move(configPtr)) {}
+            MultiLabelSeCoRuleLearner(std::unique_ptr<SeCoRuleLearnerConfigurator> configuratorPtr)
+                : AbstractSeCoRuleLearner(*configuratorPtr), configuratorPtr_(std::move(configuratorPtr)) {}
     };
 
     std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> createMultiLabelSeCoRuleLearnerConfig() {
@@ -93,7 +93,9 @@ namespace seco {
 
     std::unique_ptr<IMultiLabelSeCoRuleLearner> createMultiLabelSeCoRuleLearner(
       std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr) {
-        return std::make_unique<MultiLabelSeCoRuleLearner>(std::move(configPtr));
+        std::unique_ptr<SeCoRuleLearnerConfigurator> configuratorPtr =
+          std::make_unique<SeCoRuleLearnerConfigurator>(std::move(configPtr));
+        return std::make_unique<MultiLabelSeCoRuleLearner>(std::move(configuratorPtr));
     }
 
 }

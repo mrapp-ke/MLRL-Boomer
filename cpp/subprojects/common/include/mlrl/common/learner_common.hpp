@@ -89,6 +89,387 @@ class TrainingResult final : public ITrainingResult {
 };
 
 /**
+ * An abstract base class for all classes that allow to configure the individual modules of a rule learner, depending on
+ * an `IRuleLearner::IConfig`.
+ */
+class RuleLearnerConfigurator {
+    private:
+
+        IRuleLearner::IConfig& config_;
+
+    public:
+
+        /**
+         * @param config A reference to an object of type `IRuleLearner::IConfig`
+         */
+        RuleLearnerConfigurator(IRuleLearner::IConfig& config) : config_(config) {}
+
+        virtual ~RuleLearnerConfigurator() {}
+
+        /**
+         * May be overridden by subclasses in order to create the `IRuleModelAssemblageFactory` to be used by the rule
+         * learner for the assemblage of a rule model.
+         *
+         * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
+         *                      the labels of the training examples
+         * @return              An unique pointer to an object of type `IRuleModelAssemblageFactory` that has been
+         *                      created
+         */
+        virtual std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
+          const IRowWiseLabelMatrix& labelMatrix) const {
+            return config_.getRuleModelAssemblageConfigPtr()->createRuleModelAssemblageFactory(labelMatrix);
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IFeatureSpaceFactory` to be used by the rule learner
+         * for the assemblage of a rule model.
+         *
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
+         * @param outputMatrix  A reference to an object of type `IOutputMatrix` that provides access to the ground
+         *                      truth of the training examples
+         * @return              An unique pointer to an object of type `IFeatureSpaceFactory` that has been created
+         */
+        virtual std::unique_ptr<IFeatureSpaceFactory> createFeatureSpaceFactory(
+          const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
+            std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr =
+              config_.getFeatureBinningConfigPtr()->createFeatureBinningFactory(featureMatrix, outputMatrix);
+            uint32 numThreads =
+              config_.getParallelStatisticUpdateConfigPtr()->getNumThreads(featureMatrix, outputMatrix.getNumOutputs());
+            return std::make_unique<TabularFeatureSpaceFactory>(std::move(featureBinningFactoryPtr), numThreads);
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IRuleInductionFactory` to be used by the rule learner
+         * for the induction of individual rules.
+         *
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
+         * @param outputMatrix  A reference to an object of type `IOutputMatrix` that provides access to the ground
+         *                      truth of the training examples
+         * @return              An unique pointer to an object of type `IRuleInductionFactory` that has been created
+         */
+        virtual std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory(
+          const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
+            return config_.getRuleInductionConfigPtr()->createRuleInductionFactory(featureMatrix, outputMatrix);
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IOutputSamplingFactory` to be used by the rule
+         * learner for sampling from the available outputs.
+         *
+         * @param outputMatrix  A reference to an object of type `IOutputMatrix` that provides access to the ground
+         *                      truth of the training examples
+         * @return              An unique pointer to an object of type `IOutputSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<IOutputSamplingFactory> createOutputSamplingFactory(
+          const IOutputMatrix& outputMatrix) const {
+            return config_.getOutputSamplingConfigPtr()->createOutputSamplingFactory(outputMatrix);
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IInstanceSamplingFactory` to be used by the rule
+         * learner for sampling from the available training examples.
+         *
+         * @return An unique pointer to an object of type `IInstanceSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const {
+            return config_.getInstanceSamplingConfigPtr()->createInstanceSamplingFactory();
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IFeatureSamplingFactory` to be used by the rule
+         * learner for sampling from the available features.
+         *
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
+         * @return              An unique pointer to an object of type `IFeatureSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<IFeatureSamplingFactory> createFeatureSamplingFactory(
+          const IFeatureMatrix& featureMatrix) const {
+            return config_.getFeatureSamplingConfigPtr()->createFeatureSamplingFactory(featureMatrix);
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IPartitionSamplingFactory` to be used by the rule
+         * learner for partitioning the available examples into training and test sets.
+         *
+         * @return An unique pointer to an object of type `IPartitionSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const {
+            return config_.getPartitionSamplingConfigPtr()->createPartitionSamplingFactory();
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IRulePruningFactory` to be used by the rule learner
+         * for pruning individual rules.
+         *
+         * @return An unique pointer to an object of type `IRulePruningFactory` that has been created
+         */
+        virtual std::unique_ptr<IRulePruningFactory> createRulePruningFactory() const {
+            return config_.getRulePruningConfigPtr()->createRulePruningFactory();
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IPostProcessorFactory` to be used by the rule learner
+         * for post-processing the predictions of individual rules.
+         *
+         * @return An unique pointer to an object of type `IPostProcessorFactory` that has been created
+         */
+        virtual std::unique_ptr<IPostProcessorFactory> createPostProcessorFactory() const {
+            return config_.getPostProcessorConfigPtr()->createPostProcessorFactory();
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IStoppingCriterionFactory` to be used by the rule
+         * learner for stopping the induction of new rules, depending on the number of rules learned so far.
+         *
+         * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created
+         */
+        virtual std::unique_ptr<IStoppingCriterionFactory> createSizeStoppingCriterionFactory() const {
+            std::unique_ptr<SizeStoppingCriterionConfig>& configPtr = config_.getSizeStoppingCriterionConfigPtr();
+            return configPtr ? configPtr->createStoppingCriterionFactory() : nullptr;
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IStoppingCriterionFactory` to be used by the rule
+         * learner for stopping the induction of new rules, depending on the time that has passed.
+         *
+         * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created
+         */
+        virtual std::unique_ptr<IStoppingCriterionFactory> createTimeStoppingCriterionFactory() const {
+            std::unique_ptr<TimeStoppingCriterionConfig>& configPtr = config_.getTimeStoppingCriterionConfigPtr();
+            return configPtr ? configPtr->createStoppingCriterionFactory() : nullptr;
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IStoppingCriterionFactory` to be used by the rule
+         * learner for stopping the induction of new rules, as soon as the quality of predictions does not improve
+         * anymore.
+         *
+         * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created
+         */
+        virtual std::unique_ptr<IStoppingCriterionFactory> createGlobalPruningFactory() const {
+            std::unique_ptr<IGlobalPruningConfig>& configPtr = config_.getGlobalPruningConfigPtr();
+            return configPtr ? configPtr->createStoppingCriterionFactory() : nullptr;
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IPostOptimizationPhaseFactory` to be used by the rule
+         * learner for post-optimizing the rules in a model by relearning each one of them in the context of the other
+         * rules.
+         *
+         * @return An unique pointer to an object of type `IPostOptimizationPhaseFactory` that has been created
+         */
+        virtual std::unique_ptr<IPostOptimizationPhaseFactory> createSequentialPostOptimizationFactory() const {
+            std::unique_ptr<SequentialPostOptimizationConfig>& configPtr =
+              config_.getSequentialPostOptimizationConfigPtr();
+            return configPtr ? configPtr->createPostOptimizationPhaseFactory() : nullptr;
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IPostOptimizationPhaseFactory` to be used by the rule
+         * learner for removing unused rules from a model.
+         *
+         * @return An unique pointer to an object of type `IPostOptimizationPhaseFactory` that has been created
+         */
+        virtual std::unique_ptr<IPostOptimizationPhaseFactory> createUnusedRuleRemovalFactory() const {
+            std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr = config_.getGlobalPruningConfigPtr();
+
+            if (globalPruningConfigPtr && globalPruningConfigPtr->shouldRemoveUnusedRules()) {
+                std::unique_ptr<UnusedRuleRemovalConfig>& configPtr = config_.getUnusedRuleRemovalConfigPtr();
+                return configPtr->createPostOptimizationPhaseFactory();
+            }
+
+            return nullptr;
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IMarginalProbabilityCalibratorFactory` to be used by
+         * the rule learner for fitting a model for the calibration of marginal probabilities.
+         *
+         * @return An unique pointer to an object of type `IMarginalProbabilityCalibratorFactory` that has been created
+         */
+        virtual std::unique_ptr<IMarginalProbabilityCalibratorFactory> createMarginalProbabilityCalibratorFactory()
+          const {
+            return config_.getMarginalProbabilityCalibratorConfigPtr()->createMarginalProbabilityCalibratorFactory();
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IJointProbabilityCalibratorFactory` to be used by
+         * the rule learner for fitting a model for the calibration of joint probabilities.
+         *
+         * @return An unique pointer to an object of type `IJointProbabilityCalibratorFactory` that has been created
+         */
+        virtual std::unique_ptr<IJointProbabilityCalibratorFactory> createJointProbabilityCalibratorFactory() const {
+            return config_.getJointProbabilityCalibratorConfigPtr()->createJointProbabilityCalibratorFactory();
+        }
+
+        /**
+         * May be overridden by subclasses in order create objects of the type `IStoppingCriterionFactory` to be used by
+         * the rule learner.
+         *
+         * @param factory A reference to an object of type `StoppingCriterionListFactory` the objects may be added to
+         */
+        virtual void createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const {
+            std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactory =
+              this->createSizeStoppingCriterionFactory();
+
+            if (stoppingCriterionFactory) {
+                factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));
+            }
+
+            stoppingCriterionFactory = this->createTimeStoppingCriterionFactory();
+
+            if (stoppingCriterionFactory) {
+                factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));
+            }
+
+            stoppingCriterionFactory = this->createGlobalPruningFactory();
+
+            if (stoppingCriterionFactory) {
+                factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));
+            }
+        }
+
+        /**
+         * May be overridden by subclasses in order to create objects of the type `IPostOptimizationPhaseFactory` to be
+         * used by the rule learner.
+         *
+         * @param factory A reference to an object of type `PostOptimizationPhaseListFactory` the objects may be added
+         *                to
+         */
+        virtual void createPostOptimizationPhaseFactories(PostOptimizationPhaseListFactory& factory) const {
+            std::unique_ptr<IPostOptimizationPhaseFactory> postOptimizationPhaseFactory =
+              this->createUnusedRuleRemovalFactory();
+
+            if (postOptimizationPhaseFactory) {
+                factory.addPostOptimizationPhaseFactory(std::move(postOptimizationPhaseFactory));
+            }
+
+            postOptimizationPhaseFactory = this->createSequentialPostOptimizationFactory();
+
+            if (postOptimizationPhaseFactory) {
+                factory.addPostOptimizationPhaseFactory(std::move(postOptimizationPhaseFactory));
+            }
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IOutputSpaceInfo` to be used by the rule learner as a
+         * basis for for making predictions.
+         *
+         * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
+         *                      the labels of the training examples
+         * @return              An unique pointer to an object of type `IOutputSpaceInfo` that has been created
+         */
+        virtual std::unique_ptr<IOutputSpaceInfo> createOutputSpaceInfo(const IRowWiseLabelMatrix& labelMatrix) const {
+            const IBinaryPredictorConfig* binaryPredictorConfig = config_.getBinaryPredictorConfigPtr().get();
+            const IScorePredictorConfig* scorePredictorConfig = config_.getScorePredictorConfigPtr().get();
+            const IProbabilityPredictorConfig* probabilityPredictorConfig =
+              config_.getProbabilityPredictorConfigPtr().get();
+            const IJointProbabilityCalibratorConfig& jointProbabilityCalibratorConfig =
+              *config_.getJointProbabilityCalibratorConfigPtr();
+
+            if ((binaryPredictorConfig && binaryPredictorConfig->isLabelVectorSetNeeded())
+                || (scorePredictorConfig && scorePredictorConfig->isLabelVectorSetNeeded())
+                || (probabilityPredictorConfig && probabilityPredictorConfig->isLabelVectorSetNeeded())
+                || (jointProbabilityCalibratorConfig.isLabelVectorSetNeeded())) {
+                return std::make_unique<LabelVectorSet>(labelMatrix);
+            } else {
+                return createNoOutputSpaceInfo();
+            }
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IScorePredictorFactory` to be used by the rule
+         * learner for predicting scores.
+         *
+         * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
+         *                      to the feature values of the query examples
+         * @param numOutputs    The number of outputs to predict for
+         * @return              An unique pointer to an object of type `IScorePredictorFactory` that has been created or
+         *                      a null pointer, if the rule learner does not support to predict scores
+         */
+        virtual std::unique_ptr<IScorePredictorFactory> createScorePredictorFactory(
+          const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
+            const IScorePredictorConfig* config = config_.getScorePredictorConfigPtr().get();
+            return config ? config->createPredictorFactory(featureMatrix, numOutputs) : nullptr;
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IProbabilityPredictorFactory` to be used by the rule
+         * learner for predicting probability estimates.
+         *
+         * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
+         *                      to the feature values of the query examples
+         * @param numLabels     The number of labels to predict for
+         * @return              An unique pointer to an object of type `IProbabilityPredictorFactory` that has been
+         *                      created or a null pointer, if the rule learner does not support to predict probability
+         *                      estimates
+         */
+        virtual std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory(
+          const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+            const IProbabilityPredictorConfig* config = config_.getProbabilityPredictorConfigPtr().get();
+            return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IBinaryPredictorFactory` to be used by the rule
+         * learner for predicting binary labels.
+         *
+         * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
+         *                      to the feature values of the query examples
+         * @param numLabels     The number of labels to predict for
+         * @return              An unique pointer to an object of type `IBinaryPredictorFactory` that has been created
+         *                      or a null pointer, if the rule learner does not support to predict binary labels
+         */
+        virtual std::unique_ptr<IBinaryPredictorFactory> createBinaryPredictorFactory(
+          const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+            const IBinaryPredictorConfig* config = config_.getBinaryPredictorConfigPtr().get();
+            return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `ISparseBinaryPredictorFactory` to be used by the rule
+         * learner for predicting sparse binary labels.
+         *
+         * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
+         *                      to the feature values of the query examples
+         * @param numLabels     The number of labels to predict for
+         * @return              An unique pointer to an object of type `ISparseBinaryPredictorFactory` that has been
+         *                      created or a null pointer, if the rule learner does not support to predict sparse binary
+         *                      labels
+         */
+        virtual std::unique_ptr<ISparseBinaryPredictorFactory> createSparseBinaryPredictorFactory(
+          const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+            const IBinaryPredictorConfig* config = config_.getBinaryPredictorConfigPtr().get();
+            return config ? config->createSparsePredictorFactory(featureMatrix, numLabels) : nullptr;
+        }
+
+        /**
+         * Must be implemented by subclasses in order to create the `IStatisticsProviderFactory` to be used by the rule
+         * learner.
+         *
+         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
+         *                      values of the training examples
+         * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
+         *                      the labels of the training examples
+         * @return              An unique pointer to an object of type `IStatisticsProviderFactory` that has been
+         *                      created
+         */
+        virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+          const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const = 0;
+
+        /**
+         * Must be implemented by subclasses in order to create the `IModelBuilderFactory` to be used by the rule
+         * learner.
+         *
+         * @return An unique pointer to an object of type `IModelBuilderFactory` that has been created
+         */
+        virtual std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const = 0;
+};
+
+/**
  * An abstract base class for all rule learners.
  */
 class AbstractRuleLearner : virtual public IRuleLearner {
@@ -367,264 +748,15 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
     private:
 
-        IRuleLearner::IConfig& config_;
-
-        std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
-          const IRowWiseLabelMatrix& labelMatrix) const {
-            return config_.getRuleModelAssemblageConfigPtr()->createRuleModelAssemblageFactory(labelMatrix);
-        }
-
-        std::unique_ptr<IFeatureSpaceFactory> createFeatureSpaceFactory(const IFeatureMatrix& featureMatrix,
-                                                                        const IOutputMatrix& outputMatrix) const {
-            std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr =
-              config_.getFeatureBinningConfigPtr()->createFeatureBinningFactory(featureMatrix, outputMatrix);
-            uint32 numThreads =
-              config_.getParallelStatisticUpdateConfigPtr()->getNumThreads(featureMatrix, outputMatrix.getNumOutputs());
-            return std::make_unique<TabularFeatureSpaceFactory>(std::move(featureBinningFactoryPtr), numThreads);
-        }
-
-        std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory(const IFeatureMatrix& featureMatrix,
-                                                                          const IOutputMatrix& outputMatrix) const {
-            return config_.getRuleInductionConfigPtr()->createRuleInductionFactory(featureMatrix, outputMatrix);
-        }
-
-        std::unique_ptr<IOutputSamplingFactory> createOutputSamplingFactory(const IOutputMatrix& outputMatrix) const {
-            return config_.getOutputSamplingConfigPtr()->createOutputSamplingFactory(outputMatrix);
-        }
-
-        std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const {
-            return config_.getInstanceSamplingConfigPtr()->createInstanceSamplingFactory();
-        }
-
-        std::unique_ptr<IFeatureSamplingFactory> createFeatureSamplingFactory(
-          const IFeatureMatrix& featureMatrix) const {
-            return config_.getFeatureSamplingConfigPtr()->createFeatureSamplingFactory(featureMatrix);
-        }
-
-        std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const {
-            return config_.getPartitionSamplingConfigPtr()->createPartitionSamplingFactory();
-        }
-
-        std::unique_ptr<IRulePruningFactory> createRulePruningFactory() const {
-            return config_.getRulePruningConfigPtr()->createRulePruningFactory();
-        }
-
-        std::unique_ptr<IPostProcessorFactory> createPostProcessorFactory() const {
-            return config_.getPostProcessorConfigPtr()->createPostProcessorFactory();
-        }
-
-        std::unique_ptr<IStoppingCriterionFactory> createSizeStoppingCriterionFactory() const {
-            std::unique_ptr<SizeStoppingCriterionConfig>& configPtr = config_.getSizeStoppingCriterionConfigPtr();
-            return configPtr ? configPtr->createStoppingCriterionFactory() : nullptr;
-        }
-
-        std::unique_ptr<IStoppingCriterionFactory> createTimeStoppingCriterionFactory() const {
-            std::unique_ptr<TimeStoppingCriterionConfig>& configPtr = config_.getTimeStoppingCriterionConfigPtr();
-            return configPtr ? configPtr->createStoppingCriterionFactory() : nullptr;
-        }
-
-        std::unique_ptr<IStoppingCriterionFactory> createGlobalPruningFactory() const {
-            std::unique_ptr<IGlobalPruningConfig>& configPtr = config_.getGlobalPruningConfigPtr();
-            return configPtr ? configPtr->createStoppingCriterionFactory() : nullptr;
-        }
-
-        std::unique_ptr<IPostOptimizationPhaseFactory> createSequentialPostOptimizationFactory() const {
-            std::unique_ptr<SequentialPostOptimizationConfig>& configPtr =
-              config_.getSequentialPostOptimizationConfigPtr();
-            return configPtr ? configPtr->createPostOptimizationPhaseFactory() : nullptr;
-        }
-
-        std::unique_ptr<IPostOptimizationPhaseFactory> createUnusedRuleRemovalFactory() const {
-            std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr = config_.getGlobalPruningConfigPtr();
-
-            if (globalPruningConfigPtr && globalPruningConfigPtr->shouldRemoveUnusedRules()) {
-                std::unique_ptr<UnusedRuleRemovalConfig>& configPtr = config_.getUnusedRuleRemovalConfigPtr();
-                return configPtr->createPostOptimizationPhaseFactory();
-            }
-
-            return nullptr;
-        }
-
-        std::unique_ptr<IMarginalProbabilityCalibratorFactory> createMarginalProbabilityCalibratorFactory() const {
-            return config_.getMarginalProbabilityCalibratorConfigPtr()->createMarginalProbabilityCalibratorFactory();
-        }
-
-        std::unique_ptr<IJointProbabilityCalibratorFactory> createJointProbabilityCalibratorFactory() const {
-            return config_.getJointProbabilityCalibratorConfigPtr()->createJointProbabilityCalibratorFactory();
-        }
-
-    protected:
-
-        /**
-         * May be overridden by subclasses in order create objects of the type `IStoppingCriterionFactory` to be used by
-         * the rule learner.
-         *
-         * @param factory A reference to an object of type `StoppingCriterionListFactory` the objects may be added to
-         */
-        virtual void createStoppingCriterionFactories(StoppingCriterionListFactory& factory) const {
-            std::unique_ptr<IStoppingCriterionFactory> stoppingCriterionFactory =
-              this->createSizeStoppingCriterionFactory();
-
-            if (stoppingCriterionFactory) {
-                factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));
-            }
-
-            stoppingCriterionFactory = this->createTimeStoppingCriterionFactory();
-
-            if (stoppingCriterionFactory) {
-                factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));
-            }
-
-            stoppingCriterionFactory = this->createGlobalPruningFactory();
-
-            if (stoppingCriterionFactory) {
-                factory.addStoppingCriterionFactory(std::move(stoppingCriterionFactory));
-            }
-        }
-
-        /**
-         * May be overridden by subclasses in order to create objects of the type `IPostOptimizationPhaseFactory` to be
-         * used by the rule learner.
-         *
-         * @param factory A reference to an object of type `PostOptimizationPhaseListFactory` the objects may be added
-         *                to
-         */
-        virtual void createPostOptimizationPhaseFactories(PostOptimizationPhaseListFactory& factory) const {
-            std::unique_ptr<IPostOptimizationPhaseFactory> postOptimizationPhaseFactory =
-              this->createUnusedRuleRemovalFactory();
-
-            if (postOptimizationPhaseFactory) {
-                factory.addPostOptimizationPhaseFactory(std::move(postOptimizationPhaseFactory));
-            }
-
-            postOptimizationPhaseFactory = this->createSequentialPostOptimizationFactory();
-
-            if (postOptimizationPhaseFactory) {
-                factory.addPostOptimizationPhaseFactory(std::move(postOptimizationPhaseFactory));
-            }
-        }
-
-        /**
-         * Must be implemented by subclasses in order to create the `IStatisticsProviderFactory` to be used by the rule
-         * learner.
-         *
-         * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
-         *                      values of the training examples
-         * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
-         *                      the labels of the training examples
-         * @return              An unique pointer to an object of type `IStatisticsProviderFactory` that has been
-         *                      created
-         */
-        virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-          const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const = 0;
-
-        /**
-         * Must be implemented by subclasses in order to create the `IModelBuilderFactory` to be used by the rule
-         * learner.
-         *
-         * @return An unique pointer to an object of type `IModelBuilderFactory` that has been created
-         */
-        virtual std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const = 0;
-
-        /**
-         * May be overridden by subclasses in order to create the `IOutputSpaceInfo` to be used by the rule learner as a
-         * basis for for making predictions.
-         *
-         * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
-         *                      the labels of the training examples
-         * @return              An unique pointer to an object of type `IOutputSpaceInfo` that has been created
-         */
-        virtual std::unique_ptr<IOutputSpaceInfo> createOutputSpaceInfo(const IRowWiseLabelMatrix& labelMatrix) const {
-            const IBinaryPredictorConfig* binaryPredictorConfig = config_.getBinaryPredictorConfigPtr().get();
-            const IScorePredictorConfig* scorePredictorConfig = config_.getScorePredictorConfigPtr().get();
-            const IProbabilityPredictorConfig* probabilityPredictorConfig =
-              config_.getProbabilityPredictorConfigPtr().get();
-            const IJointProbabilityCalibratorConfig& jointProbabilityCalibratorConfig =
-              *config_.getJointProbabilityCalibratorConfigPtr();
-
-            if ((binaryPredictorConfig && binaryPredictorConfig->isLabelVectorSetNeeded())
-                || (scorePredictorConfig && scorePredictorConfig->isLabelVectorSetNeeded())
-                || (probabilityPredictorConfig && probabilityPredictorConfig->isLabelVectorSetNeeded())
-                || (jointProbabilityCalibratorConfig.isLabelVectorSetNeeded())) {
-                return std::make_unique<LabelVectorSet>(labelMatrix);
-            } else {
-                return createNoOutputSpaceInfo();
-            }
-        }
-
-        /**
-         * May be overridden by subclasses in order to create the `IBinaryPredictorFactory` to be used by the rule
-         * learner for predicting binary labels.
-         *
-         * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
-         *                      to the feature values of the query examples
-         * @param numLabels     The number of labels to predict for
-         * @return              An unique pointer to an object of type `IBinaryPredictorFactory` that has been created
-         *                      or a null pointer, if the rule learner does not support to predict binary labels
-         */
-        virtual std::unique_ptr<IBinaryPredictorFactory> createBinaryPredictorFactory(
-          const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-            const IBinaryPredictorConfig* config = config_.getBinaryPredictorConfigPtr().get();
-            return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
-        }
-
-        /**
-         * May be overridden by subclasses in order to create the `ISparseBinaryPredictorFactory` to be used by the rule
-         * learner for predicting sparse binary labels.
-         *
-         * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
-         *                      to the feature values of the query examples
-         * @param numLabels     The number of labels to predict for
-         * @return              An unique pointer to an object of type `ISparseBinaryPredictorFactory` that has been
-         *                      created or a null pointer, if the rule learner does not support to predict sparse binary
-         *                      labels
-         */
-        virtual std::unique_ptr<ISparseBinaryPredictorFactory> createSparseBinaryPredictorFactory(
-          const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-            const IBinaryPredictorConfig* config = config_.getBinaryPredictorConfigPtr().get();
-            return config ? config->createSparsePredictorFactory(featureMatrix, numLabels) : nullptr;
-        }
-
-        /**
-         * May be overridden by subclasses in order to create the `IScorePredictorFactory` to be used by the rule
-         * learner for predicting scores.
-         *
-         * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
-         *                      to the feature values of the query examples
-         * @param numOutputs    The number of outputs to predict for
-         * @return              An unique pointer to an object of type `IScorePredictorFactory` that has been created or
-         *                      a null pointer, if the rule learner does not support to predict scores
-         */
-        virtual std::unique_ptr<IScorePredictorFactory> createScorePredictorFactory(
-          const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
-            const IScorePredictorConfig* config = config_.getScorePredictorConfigPtr().get();
-            return config ? config->createPredictorFactory(featureMatrix, numOutputs) : nullptr;
-        }
-
-        /**
-         * May be overridden by subclasses in order to create the `IProbabilityPredictorFactory` to be used by the rule
-         * learner for predicting probability estimates.
-         *
-         * @param featureMatrix A reference to an object of type `IRowWiseFeatureMatrix` that provides row-wise access
-         *                      to the feature values of the query examples
-         * @param numLabels     The number of labels to predict for
-         * @return              An unique pointer to an object of type `IProbabilityPredictorFactory` that has been
-         *                      created or a null pointer, if the rule learner does not support to predict probability
-         *                      estimates
-         */
-        virtual std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory(
-          const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-            const IProbabilityPredictorConfig* config = config_.getProbabilityPredictorConfigPtr().get();
-            return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
-        }
+        const RuleLearnerConfigurator& configurator_;
 
     public:
 
         /**
-         * @param config A reference to an object of type `IRuleLearner::IConfig` that specifies the configuration that
-         *               should be used by the rule learner
+         * @param configurator A reference to an object of type `RuleLearnerConfigurator` that allows to configure the
+         *                     individual modules to be used by the rule learner
          */
-        AbstractRuleLearner(IRuleLearner::IConfig& config) : config_(config) {}
+        AbstractRuleLearner(const RuleLearnerConfigurator& configurator) : configurator_(configurator) {}
 
         std::unique_ptr<ITrainingResult> fit(const IFeatureInfo& featureInfo,
                                              const IColumnWiseFeatureMatrix& featureMatrix,
@@ -636,73 +768,73 @@ class AbstractRuleLearner : virtual public IRuleLearner {
             // Create stopping criteria...
             std::unique_ptr<StoppingCriterionListFactory> stoppingCriterionFactoryPtr =
               std::make_unique<StoppingCriterionListFactory>();
-            this->createStoppingCriterionFactories(*stoppingCriterionFactoryPtr);
+            configurator_.createStoppingCriterionFactories(*stoppingCriterionFactoryPtr);
 
             // Create post-optimization phases...
             std::unique_ptr<PostOptimizationPhaseListFactory> postOptimizationFactoryPtr =
               std::make_unique<PostOptimizationPhaseListFactory>();
-            this->createPostOptimizationPhaseFactories(*postOptimizationFactoryPtr);
+            configurator_.createPostOptimizationPhaseFactories(*postOptimizationFactoryPtr);
 
             // Create output space info...
-            std::unique_ptr<IOutputSpaceInfo> outputSpaceInfoPtr = this->createOutputSpaceInfo(labelMatrix);
+            std::unique_ptr<IOutputSpaceInfo> outputSpaceInfoPtr = configurator_.createOutputSpaceInfo(labelMatrix);
 
             // Partition training data...
             std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr =
-              this->createPartitionSamplingFactory();
+              configurator_.createPartitionSamplingFactory();
             std::unique_ptr<IPartitionSampling> partitionSamplingPtr =
               labelMatrix.createPartitionSampling(*partitionSamplingFactoryPtr);
             IPartition& partition = partitionSamplingPtr->partition(rng);
 
             // Create post-optimization and model builder...
-            std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr = this->createModelBuilderFactory();
+            std::unique_ptr<IModelBuilderFactory> modelBuilderFactoryPtr = configurator_.createModelBuilderFactory();
             std::unique_ptr<IPostOptimization> postOptimizationPtr =
               postOptimizationFactoryPtr->create(*modelBuilderFactoryPtr);
             IModelBuilder& modelBuilder = postOptimizationPtr->getModelBuilder();
 
             // Create statistics provider...
             std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr =
-              this->createStatisticsProviderFactory(featureMatrix, labelMatrix);
+              configurator_.createStatisticsProviderFactory(featureMatrix, labelMatrix);
             std::unique_ptr<IStatisticsProvider> statisticsProviderPtr =
               labelMatrix.createStatisticsProvider(*statisticsProviderFactoryPtr);
 
             // Create feature space...
             std::unique_ptr<IFeatureSpaceFactory> featureSpaceFactoryPtr =
-              this->createFeatureSpaceFactory(featureMatrix, labelMatrix);
+              configurator_.createFeatureSpaceFactory(featureMatrix, labelMatrix);
             std::unique_ptr<IFeatureSpace> featureSpacePtr =
               featureSpaceFactoryPtr->create(featureMatrix, featureInfo, *statisticsProviderPtr);
 
             // Create rule induction...
             std::unique_ptr<IRuleInductionFactory> ruleInductionFactoryPtr =
-              this->createRuleInductionFactory(featureMatrix, labelMatrix);
+              configurator_.createRuleInductionFactory(featureMatrix, labelMatrix);
             std::unique_ptr<IRuleInduction> ruleInductionPtr = ruleInductionFactoryPtr->create();
 
             // Create output sampling...
             std::unique_ptr<IOutputSamplingFactory> outputSamplingFactoryPtr =
-              this->createOutputSamplingFactory(labelMatrix);
+              configurator_.createOutputSamplingFactory(labelMatrix);
             std::unique_ptr<IOutputSampling> outputSamplingPtr = outputSamplingFactoryPtr->create();
 
             // Create instance sampling...
             std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr =
-              this->createInstanceSamplingFactory();
+              configurator_.createInstanceSamplingFactory();
             std::unique_ptr<IInstanceSampling> instanceSamplingPtr =
               partition.createInstanceSampling(*instanceSamplingFactoryPtr, labelMatrix, statisticsProviderPtr->get());
 
             // Create feature sampling...
             std::unique_ptr<IFeatureSamplingFactory> featureSamplingFactoryPtr =
-              this->createFeatureSamplingFactory(featureMatrix);
+              configurator_.createFeatureSamplingFactory(featureMatrix);
             std::unique_ptr<IFeatureSampling> featureSamplingPtr = featureSamplingFactoryPtr->create();
 
             // Create rule pruning...
-            std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr = this->createRulePruningFactory();
+            std::unique_ptr<IRulePruningFactory> rulePruningFactoryPtr = configurator_.createRulePruningFactory();
             std::unique_ptr<IRulePruning> rulePruningPtr = rulePruningFactoryPtr->create();
 
             // Create post-processor...
-            std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr = this->createPostProcessorFactory();
+            std::unique_ptr<IPostProcessorFactory> postProcessorFactoryPtr = configurator_.createPostProcessorFactory();
             std::unique_ptr<IPostProcessor> postProcessorPtr = postProcessorFactoryPtr->create();
 
             // Assemble rule model...
             std::unique_ptr<IRuleModelAssemblageFactory> ruleModelAssemblageFactoryPtr =
-              this->createRuleModelAssemblageFactory(labelMatrix);
+              configurator_.createRuleModelAssemblageFactory(labelMatrix);
             std::unique_ptr<IRuleModelAssemblage> ruleModelAssemblagePtr =
               ruleModelAssemblageFactoryPtr->create(std::move(stoppingCriterionFactoryPtr));
             ruleModelAssemblagePtr->induceRules(*ruleInductionPtr, *rulePruningPtr, *postProcessorPtr, partition,
@@ -716,7 +848,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
             // Fit model for the calibration of marginal probabilities...
             std::unique_ptr<IMarginalProbabilityCalibratorFactory> marginalProbabilityCalibratorFactoryPtr =
-              this->createMarginalProbabilityCalibratorFactory();
+              configurator_.createMarginalProbabilityCalibratorFactory();
             std::unique_ptr<IMarginalProbabilityCalibrator> marginalProbabilityCalibratorPtr =
               marginalProbabilityCalibratorFactoryPtr->create();
             std::unique_ptr<IMarginalProbabilityCalibrationModel> marginalProbabilityCalibrationModelPtr =
@@ -725,7 +857,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
 
             // Fit model for the calibration of joint probabilities...
             std::unique_ptr<IJointProbabilityCalibratorFactory> jointProbabilityCalibratorFactoryPtr =
-              this->createJointProbabilityCalibratorFactory();
+              configurator_.createJointProbabilityCalibratorFactory();
             std::unique_ptr<IJointProbabilityCalibrator> jointProbabilityCalibratorPtr =
               outputSpaceInfoPtr->createJointProbabilityCalibrator(*jointProbabilityCalibratorFactoryPtr,
                                                                    *marginalProbabilityCalibrationModelPtr);
@@ -744,7 +876,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         }
 
         bool canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override {
-            return this->createBinaryPredictorFactory(featureMatrix, numLabels) != nullptr;
+            return configurator_.createBinaryPredictorFactory(featureMatrix, numLabels) != nullptr;
         }
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
@@ -761,7 +893,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override {
             std::unique_ptr<IBinaryPredictorFactory> predictorFactoryPtr =
-              this->createBinaryPredictorFactory(featureMatrix, numLabels);
+              configurator_.createBinaryPredictorFactory(featureMatrix, numLabels);
 
             if (predictorFactoryPtr) {
                 return featureMatrix.createBinaryPredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo,
@@ -786,7 +918,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override {
             std::unique_ptr<ISparseBinaryPredictorFactory> predictorFactoryPtr =
-              this->createSparseBinaryPredictorFactory(featureMatrix, numLabels);
+              configurator_.createSparseBinaryPredictorFactory(featureMatrix, numLabels);
 
             if (predictorFactoryPtr) {
                 return featureMatrix.createSparseBinaryPredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo,
@@ -803,7 +935,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         }
 
         bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override {
-            return this->createScorePredictorFactory(featureMatrix, numLabels) != nullptr;
+            return configurator_.createScorePredictorFactory(featureMatrix, numLabels) != nullptr;
         }
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
@@ -817,7 +949,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                                                               const IOutputSpaceInfo& outputSpaceInfo,
                                                               uint32 numOutputs) const override {
             std::unique_ptr<IScorePredictorFactory> predictorFactoryPtr =
-              this->createScorePredictorFactory(featureMatrix, numOutputs);
+              configurator_.createScorePredictorFactory(featureMatrix, numOutputs);
 
             if (predictorFactoryPtr) {
                 return featureMatrix.createScorePredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo, numOutputs);
@@ -832,7 +964,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
         }
 
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override {
-            return this->createProbabilityPredictorFactory(featureMatrix, numLabels) != nullptr;
+            return configurator_.createProbabilityPredictorFactory(featureMatrix, numLabels) != nullptr;
         }
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
@@ -849,7 +981,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override {
             std::unique_ptr<IProbabilityPredictorFactory> predictorFactoryPtr =
-              this->createProbabilityPredictorFactory(featureMatrix, numLabels);
+              configurator_.createProbabilityPredictorFactory(featureMatrix, numLabels);
 
             if (predictorFactoryPtr) {
                 return featureMatrix.createProbabilityPredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo,
