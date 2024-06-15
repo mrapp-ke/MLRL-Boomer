@@ -3,11 +3,6 @@
  */
 #pragma once
 
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
 #include "mlrl/boosting/binning/label_binning_auto.hpp"
 #include "mlrl/boosting/binning/label_binning_equal_width.hpp"
 #include "mlrl/boosting/binning/label_binning_no.hpp"
@@ -974,107 +969,4 @@ namespace boosting {
 
             virtual ~IBoostedRuleLearner() override {}
     };
-
-    /**
-     * An abstract base class for all rule learners that makes use of gradient boosting.
-     */
-    class AbstractBoostedRuleLearner : public AbstractRuleLearner,
-                                       virtual public IBoostedRuleLearner {
-        public:
-
-            /**
-             * Allows to configure a rule learner that makes use of gradient boosting.
-             */
-            class Config : public AbstractRuleLearner::Config,
-                           virtual public IBoostedRuleLearner::IConfig {
-                protected:
-
-                    /**
-                     * An unique pointer that stores the configuration of the rule heads.
-                     */
-                    std::unique_ptr<IHeadConfig> headConfigPtr_;
-
-                    /**
-                     * An unique pointer that stores the configuration of the statistics.
-                     */
-                    std::unique_ptr<IStatisticsConfig> statisticsConfigPtr_;
-
-                    /**
-                     * An unique pointer that stores the configuration of the loss function.
-                     */
-                    std::unique_ptr<ILossConfig> lossConfigPtr_;
-
-                    /**
-                     * An unique pointer that stores the configuration of the L1 regularization term.
-                     */
-                    std::unique_ptr<IRegularizationConfig> l1RegularizationConfigPtr_;
-
-                    /**
-                     * An unique pointer that stores the configuration of the L2 regularization term.
-                     */
-                    std::unique_ptr<IRegularizationConfig> l2RegularizationConfigPtr_;
-
-                    /**
-                     * An unique pointer that stores the configuration of the method that is used to assign labels to
-                     * bins.
-                     */
-                    std::unique_ptr<ILabelBinningConfig> labelBinningConfigPtr_;
-
-                private:
-
-                    std::unique_ptr<IHeadConfig>& getHeadConfigPtr() override final;
-
-                    std::unique_ptr<IStatisticsConfig>& getStatisticsConfigPtr() override final;
-
-                    std::unique_ptr<IRegularizationConfig>& getL1RegularizationConfigPtr() override final;
-
-                    std::unique_ptr<IRegularizationConfig>& getL2RegularizationConfigPtr() override final;
-
-                    std::unique_ptr<ILossConfig>& getLossConfigPtr() override final;
-
-                    std::unique_ptr<ILabelBinningConfig>& getLabelBinningConfigPtr() override final;
-
-                public:
-
-                    Config();
-            };
-
-        private:
-
-            IBoostedRuleLearner::IConfig& config_;
-
-            const Blas blas_;
-
-            const Lapack lapack_;
-
-        protected:
-
-            /**
-             * @see `AbstractRuleLearner::createStatisticsProviderFactory`
-             */
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override;
-
-            /**
-             * @see `AbstractRuleLearner::createModelBuilderFactory`
-             */
-            std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const override;
-
-        public:
-
-            /**
-             * @param config        A reference to an object of type `IBoostedRuleLearner::IConfig` that specifies the
-             *                      configuration that should be used by the rule learner
-             * @param ddotFunction  A function pointer to BLAS' DDOT routine
-             * @param dspmvFunction A function pointer to BLAS' DSPMV routine
-             * @param dsysvFunction A function pointer to LAPACK'S DSYSV routine
-             */
-            AbstractBoostedRuleLearner(IBoostedRuleLearner::IConfig& config, Blas::DdotFunction ddotFunction,
-                                       Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction);
-    };
-
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif
