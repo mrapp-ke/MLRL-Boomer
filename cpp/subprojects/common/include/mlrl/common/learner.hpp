@@ -143,9 +143,9 @@ class MLRLCOMMON_API IRuleLearner {
          * Defines an interface for all classes that allow to configure a rule learner.
          */
         class IConfig {
-                friend class AbstractRuleLearner;
+            public:
 
-            protected:
+                virtual ~IConfig() {}
 
                 /**
                  * Returns the definition of the function that should be used for comparing the quality of different
@@ -374,10 +374,6 @@ class MLRLCOMMON_API IRuleLearner {
                  *         pointer, if the prediction of probability estimates is not supported
                  */
                 virtual std::unique_ptr<IProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() = 0;
-
-            public:
-
-                virtual ~IConfig() {}
         };
 
         /**
