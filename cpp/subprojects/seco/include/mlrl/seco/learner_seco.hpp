@@ -10,7 +10,7 @@
 
 #include "mlrl/seco/heuristics/heuristic_f_measure.hpp"
 #include "mlrl/seco/heuristics/heuristic_m_estimate.hpp"
-#include "mlrl/seco/learner.hpp"
+#include "mlrl/seco/learner_common.hpp"
 #include "mlrl/seco/lift_functions/lift_function_kln.hpp"
 #include "mlrl/seco/lift_functions/lift_function_peak.hpp"
 #include "mlrl/seco/rule_evaluation/head_type.hpp"
