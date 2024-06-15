@@ -40,7 +40,7 @@ namespace boosting {
         return labelBinningConfigPtr_;
     }
 
-    AbstractBoostingRuleLearner::AbstractBoostingRuleLearner(IBoostingRuleLearner::IConfig& config,
+    AbstractBoostingRuleLearner::AbstractBoostingRuleLearner(IBoostedRuleLearner::IConfig& config,
                                                              Blas::DdotFunction ddotFunction,
                                                              Blas::DspmvFunction dspmvFunction,
                                                              Lapack::DsysvFunction dsysvFunction)
