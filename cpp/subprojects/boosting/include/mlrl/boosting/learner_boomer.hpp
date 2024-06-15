@@ -3,12 +3,7 @@
  */
 #pragma once
 
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
-#include "mlrl/boosting/learner.hpp"
+#include "mlrl/boosting/learner_common.hpp"
 
 namespace boosting {
 
@@ -171,7 +166,3 @@ namespace boosting {
                                                            Lapack::DsysvFunction dsysvFunction);
 
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif
