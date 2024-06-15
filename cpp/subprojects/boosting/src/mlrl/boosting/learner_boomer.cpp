@@ -40,7 +40,7 @@ namespace boosting {
 
     Boomer::Boomer(std::unique_ptr<IBoomer::IConfig> configPtr, Blas::DdotFunction ddotFunction,
                    Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction)
-        : AbstractBoostingRuleLearner(*configPtr, ddotFunction, dspmvFunction, dsysvFunction),
+        : AbstractBoostedRuleLearner(*configPtr, ddotFunction, dspmvFunction, dsysvFunction),
           configPtr_(std::move(configPtr)) {}
 
     std::unique_ptr<IBoomer::IConfig> createBoomerConfig() {
