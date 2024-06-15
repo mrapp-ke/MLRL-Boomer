@@ -112,14 +112,14 @@ namespace boosting {
     /**
      * The BOOMER algorithm.
      */
-    class Boomer final : public AbstractBoostingRuleLearner,
+    class Boomer final : public AbstractBoostedRuleLearner,
                          virtual public IBoomer {
         public:
 
             /**
              * Allows to configure the BOOMER algorithm.
              */
-            class Config final : public AbstractBoostingRuleLearner::Config,
+            class Config final : public AbstractBoostedRuleLearner::Config,
                                  virtual public IBoomer::IConfig {
                 public:
 

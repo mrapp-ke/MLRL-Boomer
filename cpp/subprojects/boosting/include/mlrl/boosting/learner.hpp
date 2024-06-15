@@ -60,7 +60,7 @@ namespace boosting {
              * boosting.
              */
             class IConfig : virtual public IRuleLearner::IConfig {
-                    friend class AbstractBoostingRuleLearner;
+                    friend class AbstractBoostedRuleLearner;
 
                 protected:
 
@@ -982,8 +982,8 @@ namespace boosting {
     /**
      * An abstract base class for all rule learners that makes use of gradient boosting.
      */
-    class AbstractBoostingRuleLearner : public AbstractRuleLearner,
-                                        virtual public IBoostedRuleLearner {
+    class AbstractBoostedRuleLearner : public AbstractRuleLearner,
+                                       virtual public IBoostedRuleLearner {
         public:
 
             /**
@@ -1073,8 +1073,8 @@ namespace boosting {
              * @param dspmvFunction A function pointer to BLAS' DSPMV routine
              * @param dsysvFunction A function pointer to LAPACK'S DSYSV routine
              */
-            AbstractBoostingRuleLearner(IBoostedRuleLearner::IConfig& config, Blas::DdotFunction ddotFunction,
-                                        Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction);
+            AbstractBoostedRuleLearner(IBoostedRuleLearner::IConfig& config, Blas::DdotFunction ddotFunction,
+                                       Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction);
     };
 
 }

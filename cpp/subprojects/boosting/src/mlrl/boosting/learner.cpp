@@ -5,7 +5,7 @@
 
 namespace boosting {
 
-    AbstractBoostingRuleLearner::Config::Config()
+    AbstractBoostedRuleLearner::Config::Config()
         : AbstractRuleLearner::Config(BOOSTED_RULE_COMPARE_FUNCTION),
           headConfigPtr_(std::make_unique<CompleteHeadConfig>(labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_,
                                                               l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)),
@@ -16,43 +16,43 @@ namespace boosting {
           labelBinningConfigPtr_(
             std::make_unique<NoLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)) {}
 
-    std::unique_ptr<IHeadConfig>& AbstractBoostingRuleLearner::Config::getHeadConfigPtr() {
+    std::unique_ptr<IHeadConfig>& AbstractBoostedRuleLearner::Config::getHeadConfigPtr() {
         return headConfigPtr_;
     }
 
-    std::unique_ptr<IStatisticsConfig>& AbstractBoostingRuleLearner::Config::getStatisticsConfigPtr() {
+    std::unique_ptr<IStatisticsConfig>& AbstractBoostedRuleLearner::Config::getStatisticsConfigPtr() {
         return statisticsConfigPtr_;
     }
 
-    std::unique_ptr<IRegularizationConfig>& AbstractBoostingRuleLearner::Config::getL1RegularizationConfigPtr() {
+    std::unique_ptr<IRegularizationConfig>& AbstractBoostedRuleLearner::Config::getL1RegularizationConfigPtr() {
         return l1RegularizationConfigPtr_;
     }
 
-    std::unique_ptr<IRegularizationConfig>& AbstractBoostingRuleLearner::Config::getL2RegularizationConfigPtr() {
+    std::unique_ptr<IRegularizationConfig>& AbstractBoostedRuleLearner::Config::getL2RegularizationConfigPtr() {
         return l2RegularizationConfigPtr_;
     }
 
-    std::unique_ptr<ILossConfig>& AbstractBoostingRuleLearner::Config::getLossConfigPtr() {
+    std::unique_ptr<ILossConfig>& AbstractBoostedRuleLearner::Config::getLossConfigPtr() {
         return lossConfigPtr_;
     }
 
-    std::unique_ptr<ILabelBinningConfig>& AbstractBoostingRuleLearner::Config::getLabelBinningConfigPtr() {
+    std::unique_ptr<ILabelBinningConfig>& AbstractBoostedRuleLearner::Config::getLabelBinningConfigPtr() {
         return labelBinningConfigPtr_;
     }
 
-    AbstractBoostingRuleLearner::AbstractBoostingRuleLearner(IBoostedRuleLearner::IConfig& config,
-                                                             Blas::DdotFunction ddotFunction,
-                                                             Blas::DspmvFunction dspmvFunction,
-                                                             Lapack::DsysvFunction dsysvFunction)
+    AbstractBoostedRuleLearner::AbstractBoostedRuleLearner(IBoostedRuleLearner::IConfig& config,
+                                                           Blas::DdotFunction ddotFunction,
+                                                           Blas::DspmvFunction dspmvFunction,
+                                                           Lapack::DsysvFunction dsysvFunction)
         : AbstractRuleLearner(config), config_(config), blas_(ddotFunction, dspmvFunction), lapack_(dsysvFunction) {}
 
-    std::unique_ptr<IStatisticsProviderFactory> AbstractBoostingRuleLearner::createStatisticsProviderFactory(
+    std::unique_ptr<IStatisticsProviderFactory> AbstractBoostedRuleLearner::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const {
         return config_.getStatisticsConfigPtr()->createStatisticsProviderFactory(featureMatrix, labelMatrix, blas_,
                                                                                  lapack_);
     }
 
-    std::unique_ptr<IModelBuilderFactory> AbstractBoostingRuleLearner::createModelBuilderFactory() const {
+    std::unique_ptr<IModelBuilderFactory> AbstractBoostedRuleLearner::createModelBuilderFactory() const {
         return std::make_unique<RuleListBuilderFactory>();
     }
 
