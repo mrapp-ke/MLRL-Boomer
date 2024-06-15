@@ -37,9 +37,9 @@ namespace seco {
              * separate-and-conquer (SeCo) paradigm.
              */
             class IConfig : virtual public IRuleLearner::IConfig {
-                    friend class AbstractSeCoRuleLearner;
+                public:
 
-                protected:
+                    virtual ~IConfig() override {}
 
                     /**
                      * Returns an unique pointer to the configuration of the stopping criterion that stops the induction
@@ -88,10 +88,6 @@ namespace seco {
                      *         number of labels for which they predict
                      */
                     virtual std::unique_ptr<ILiftFunctionConfig>& getLiftFunctionConfigPtr() = 0;
-
-                public:
-
-                    virtual ~IConfig() override {}
             };
 
             virtual ~ISeCoRuleLearner() override {}

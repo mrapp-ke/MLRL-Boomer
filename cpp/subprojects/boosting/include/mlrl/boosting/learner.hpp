@@ -60,9 +60,9 @@ namespace boosting {
              * boosting.
              */
             class IConfig : virtual public IRuleLearner::IConfig {
-                    friend class AbstractBoostedRuleLearner;
+                public:
 
-                protected:
+                    virtual ~IConfig() override {}
 
                     /**
                      * Returns an unique pointer to the configuration of the rule heads that should be induced by the
@@ -114,10 +114,6 @@ namespace boosting {
                      *         configuration of the method for the assignment of labels to bins
                      */
                     virtual std::unique_ptr<ILabelBinningConfig>& getLabelBinningConfigPtr() = 0;
-
-                public:
-
-                    virtual ~IConfig() override {}
             };
 
             /**
