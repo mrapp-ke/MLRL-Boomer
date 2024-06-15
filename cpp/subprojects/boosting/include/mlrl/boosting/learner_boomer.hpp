@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/learner_common.hpp"
+#include "mlrl/boosting/learner.hpp"
 
 namespace boosting {
 
@@ -102,45 +102,6 @@ namespace boosting {
             };
 
             virtual ~IBoomer() override {}
-    };
-
-    /**
-     * The BOOMER algorithm.
-     */
-    class Boomer final : public AbstractBoostedRuleLearner,
-                         virtual public IBoomer {
-        public:
-
-            /**
-             * Allows to configure the BOOMER algorithm.
-             */
-            class Config final : public AbstractBoostedRuleLearner::Config,
-                                 virtual public IBoomer::IConfig {
-                public:
-
-                    Config();
-
-                    /**
-                     * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
-                     */
-                    ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-            };
-
-        private:
-
-            const std::unique_ptr<IBoomer::IConfig> configPtr_;
-
-        public:
-
-            /**
-             * @param configPtr     An unique pointer to an object of type `IBoomer::IConfig` that specifies the
-             *                      configuration that should be used by the rule learner
-             * @param ddotFunction  A function pointer to BLAS' DDOT routine
-             * @param dspmvFunction A function pointer to BLAS' DSPMV routine
-             * @param dsysvFunction A function pointer to LAPACK'S DSYSV routine
-             */
-            Boomer(std::unique_ptr<IBoomer::IConfig> configPtr, Blas::DdotFunction ddotFunction,
-                   Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction);
     };
 
     /**
