@@ -8,7 +8,7 @@
     #pragma warning(disable : 4250)
 #endif
 
-#include "mlrl/common/learner.hpp"
+#include "mlrl/common/learner_common.hpp"
 #include "mlrl/seco/heuristics/heuristic_accuracy.hpp"
 #include "mlrl/seco/heuristics/heuristic_f_measure.hpp"
 #include "mlrl/seco/heuristics/heuristic_laplace.hpp"

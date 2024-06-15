@@ -45,7 +45,7 @@
 #include "mlrl/boosting/statistics/statistic_format_sparse.hpp"
 #include "mlrl/boosting/util/blas.hpp"
 #include "mlrl/boosting/util/lapack.hpp"
-#include "mlrl/common/learner.hpp"
+#include "mlrl/common/learner_common.hpp"
 
 namespace boosting {
 
