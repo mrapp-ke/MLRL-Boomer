@@ -3,11 +3,6 @@
  */
 #pragma once
 
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
 #include "mlrl/boosting/learner.hpp"
 
 namespace boosting {
@@ -15,51 +10,51 @@ namespace boosting {
     /**
      * Defines the interface of the BOOMER algorithm.
      */
-    class MLRLBOOSTING_API IBoomer : virtual public IBoostingRuleLearner {
+    class MLRLBOOSTING_API IBoomer : virtual public IBoostedRuleLearner {
         public:
 
             /**
              * Defines the interface for configuring the BOOMER algorithm.
              */
-            class IConfig : virtual public IBoostingRuleLearner::IConfig,
-                            virtual public IBoostingRuleLearner::IAutomaticPartitionSamplingMixin,
-                            virtual public IBoostingRuleLearner::IAutomaticFeatureBinningMixin,
-                            virtual public IBoostingRuleLearner::IAutomaticParallelRuleRefinementMixin,
-                            virtual public IBoostingRuleLearner::IAutomaticParallelStatisticUpdateMixin,
-                            virtual public IBoostingRuleLearner::IConstantShrinkageMixin,
-                            virtual public IBoostingRuleLearner::INoL1RegularizationMixin,
-                            virtual public IBoostingRuleLearner::IL1RegularizationMixin,
-                            virtual public IBoostingRuleLearner::INoL2RegularizationMixin,
-                            virtual public IBoostingRuleLearner::IL2RegularizationMixin,
-                            virtual public IBoostingRuleLearner::INoDefaultRuleMixin,
-                            virtual public IBoostingRuleLearner::IAutomaticDefaultRuleMixin,
-                            virtual public IBoostingRuleLearner::ICompleteHeadMixin,
-                            virtual public IBoostingRuleLearner::IDynamicPartialHeadMixin,
-                            virtual public IBoostingRuleLearner::IFixedPartialHeadMixin,
-                            virtual public IBoostingRuleLearner::ISingleOutputHeadMixin,
-                            virtual public IBoostingRuleLearner::IAutomaticHeadMixin,
-                            virtual public IBoostingRuleLearner::IDenseStatisticsMixin,
-                            virtual public IBoostingRuleLearner::ISparseStatisticsMixin,
-                            virtual public IBoostingRuleLearner::IAutomaticStatisticsMixin,
-                            virtual public IBoostingRuleLearner::IDecomposableLogisticLossMixin,
-                            virtual public IBoostingRuleLearner::IDecomposableSquaredErrorLossMixin,
-                            virtual public IBoostingRuleLearner::IDecomposableSquaredHingeLossMixin,
-                            virtual public IBoostingRuleLearner::INonDecomposableLogisticLossMixin,
-                            virtual public IBoostingRuleLearner::INonDecomposableSquaredErrorLossMixin,
-                            virtual public IBoostingRuleLearner::INonDecomposableSquaredHingeLossMixin,
-                            virtual public IBoostingRuleLearner::INoLabelBinningMixin,
-                            virtual public IBoostingRuleLearner::IEqualWidthLabelBinningMixin,
-                            virtual public IBoostingRuleLearner::IAutomaticLabelBinningMixin,
-                            virtual public IBoostingRuleLearner::IIsotonicMarginalProbabilityCalibrationMixin,
-                            virtual public IBoostingRuleLearner::IIsotonicJointProbabilityCalibrationMixin,
-                            virtual public IBoostingRuleLearner::IOutputWiseBinaryPredictorMixin,
-                            virtual public IBoostingRuleLearner::IExampleWiseBinaryPredictorMixin,
-                            virtual public IBoostingRuleLearner::IGfmBinaryPredictorMixin,
-                            virtual public IBoostingRuleLearner::IAutomaticBinaryPredictorMixin,
-                            virtual public IBoostingRuleLearner::IOutputWiseScorePredictorMixin,
-                            virtual public IBoostingRuleLearner::IOutputWiseProbabilityPredictorMixin,
-                            virtual public IBoostingRuleLearner::IMarginalizedProbabilityPredictorMixin,
-                            virtual public IBoostingRuleLearner::IAutomaticProbabilityPredictorMixin,
+            class IConfig : virtual public IBoostedRuleLearner::IConfig,
+                            virtual public IBoostedRuleLearner::IAutomaticPartitionSamplingMixin,
+                            virtual public IBoostedRuleLearner::IAutomaticFeatureBinningMixin,
+                            virtual public IBoostedRuleLearner::IAutomaticParallelRuleRefinementMixin,
+                            virtual public IBoostedRuleLearner::IAutomaticParallelStatisticUpdateMixin,
+                            virtual public IBoostedRuleLearner::IConstantShrinkageMixin,
+                            virtual public IBoostedRuleLearner::INoL1RegularizationMixin,
+                            virtual public IBoostedRuleLearner::IL1RegularizationMixin,
+                            virtual public IBoostedRuleLearner::INoL2RegularizationMixin,
+                            virtual public IBoostedRuleLearner::IL2RegularizationMixin,
+                            virtual public IBoostedRuleLearner::INoDefaultRuleMixin,
+                            virtual public IBoostedRuleLearner::IAutomaticDefaultRuleMixin,
+                            virtual public IBoostedRuleLearner::ICompleteHeadMixin,
+                            virtual public IBoostedRuleLearner::IDynamicPartialHeadMixin,
+                            virtual public IBoostedRuleLearner::IFixedPartialHeadMixin,
+                            virtual public IBoostedRuleLearner::ISingleOutputHeadMixin,
+                            virtual public IBoostedRuleLearner::IAutomaticHeadMixin,
+                            virtual public IBoostedRuleLearner::IDenseStatisticsMixin,
+                            virtual public IBoostedRuleLearner::ISparseStatisticsMixin,
+                            virtual public IBoostedRuleLearner::IAutomaticStatisticsMixin,
+                            virtual public IBoostedRuleLearner::IDecomposableLogisticLossMixin,
+                            virtual public IBoostedRuleLearner::IDecomposableSquaredErrorLossMixin,
+                            virtual public IBoostedRuleLearner::IDecomposableSquaredHingeLossMixin,
+                            virtual public IBoostedRuleLearner::INonDecomposableLogisticLossMixin,
+                            virtual public IBoostedRuleLearner::INonDecomposableSquaredErrorLossMixin,
+                            virtual public IBoostedRuleLearner::INonDecomposableSquaredHingeLossMixin,
+                            virtual public IBoostedRuleLearner::INoLabelBinningMixin,
+                            virtual public IBoostedRuleLearner::IEqualWidthLabelBinningMixin,
+                            virtual public IBoostedRuleLearner::IAutomaticLabelBinningMixin,
+                            virtual public IBoostedRuleLearner::IIsotonicMarginalProbabilityCalibrationMixin,
+                            virtual public IBoostedRuleLearner::IIsotonicJointProbabilityCalibrationMixin,
+                            virtual public IBoostedRuleLearner::IOutputWiseBinaryPredictorMixin,
+                            virtual public IBoostedRuleLearner::IExampleWiseBinaryPredictorMixin,
+                            virtual public IBoostedRuleLearner::IGfmBinaryPredictorMixin,
+                            virtual public IBoostedRuleLearner::IAutomaticBinaryPredictorMixin,
+                            virtual public IBoostedRuleLearner::IOutputWiseScorePredictorMixin,
+                            virtual public IBoostedRuleLearner::IOutputWiseProbabilityPredictorMixin,
+                            virtual public IBoostedRuleLearner::IMarginalizedProbabilityPredictorMixin,
+                            virtual public IBoostedRuleLearner::IAutomaticProbabilityPredictorMixin,
                             virtual public IRuleLearner::ISequentialRuleModelAssemblageMixin,
                             virtual public IRuleLearner::IDefaultRuleMixin,
                             virtual public IRuleLearner::IGreedyTopDownRuleInductionMixin,
@@ -110,45 +105,6 @@ namespace boosting {
     };
 
     /**
-     * The BOOMER algorithm.
-     */
-    class Boomer final : public AbstractBoostingRuleLearner,
-                         virtual public IBoomer {
-        public:
-
-            /**
-             * Allows to configure the BOOMER algorithm.
-             */
-            class Config final : public AbstractBoostingRuleLearner::Config,
-                                 virtual public IBoomer::IConfig {
-                public:
-
-                    Config();
-
-                    /**
-                     * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
-                     */
-                    ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-            };
-
-        private:
-
-            const std::unique_ptr<IBoomer::IConfig> configPtr_;
-
-        public:
-
-            /**
-             * @param configPtr     An unique pointer to an object of type `IBoomer::IConfig` that specifies the
-             *                      configuration that should be used by the rule learner
-             * @param ddotFunction  A function pointer to BLAS' DDOT routine
-             * @param dspmvFunction A function pointer to BLAS' DSPMV routine
-             * @param dsysvFunction A function pointer to LAPACK'S DSYSV routine
-             */
-            Boomer(std::unique_ptr<IBoomer::IConfig> configPtr, Blas::DdotFunction ddotFunction,
-                   Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction);
-    };
-
-    /**
      * Creates and returns a new object of type `IBoomer::IConfig`.
      *
      * @return An unique pointer to an object of type `IBoomer::IConfig` that has been created
@@ -171,7 +127,3 @@ namespace boosting {
                                                            Lapack::DsysvFunction dsysvFunction);
 
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif

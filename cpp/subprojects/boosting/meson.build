@@ -71,7 +71,6 @@ source_files = [
     'src/mlrl/boosting/util/blas.cpp',
     'src/mlrl/boosting/util/lapack.cpp',
     'src/mlrl/boosting/info.cpp',
-    'src/mlrl/boosting/learner.cpp',
     'src/mlrl/boosting/learner_boomer.cpp'
 ]
 

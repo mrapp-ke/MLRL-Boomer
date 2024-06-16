@@ -89,8 +89,7 @@ source_files = [
     'src/mlrl/common/stopping/stopping_criterion_list.cpp',
     'src/mlrl/common/stopping/stopping_criterion_size.cpp',
     'src/mlrl/common/stopping/stopping_criterion_time.cpp',
-    'src/mlrl/common/info.cpp',
-    'src/mlrl/common/learner.cpp'
+    'src/mlrl/common/info.cpp'
 ]
 
 # Test files
