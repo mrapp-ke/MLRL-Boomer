@@ -3,11 +3,6 @@
  */
 #pragma once
 
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
 #include "mlrl/seco/heuristics/heuristic_f_measure.hpp"
 #include "mlrl/seco/heuristics/heuristic_m_estimate.hpp"
 #include "mlrl/seco/learner.hpp"
@@ -94,51 +89,6 @@ namespace seco {
     };
 
     /**
-     * The multi-label SeCo algorithm.
-     */
-    class MultiLabelSeCoRuleLearner final : public AbstractSeCoRuleLearner,
-                                            virtual public IMultiLabelSeCoRuleLearner {
-        public:
-
-            /**
-             * Allows to configure the multi-label SeCo algorithm.
-             */
-            class Config final : public AbstractSeCoRuleLearner::Config,
-                                 virtual public IMultiLabelSeCoRuleLearner::IConfig {
-                public:
-
-                    Config();
-
-                    /**
-                     * @see `IRuleLearner::IGreedyTopDownRuleInductionMixin::useGreedyTopDownRuleInduction`
-                     */
-                    IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override;
-
-                    /**
-                     * @see `IRuleLearner::IBeamSearchTopDownRuleInductionMixin::useBeamSearchTopDownRuleInduction`
-                     */
-                    IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() override;
-
-                    /**
-                     * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
-                     */
-                    ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override;
-            };
-
-        private:
-
-            const std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr_;
-
-        public:
-
-            /**
-             * @param configPtr An unique pointer to an object of type `IMultiLabelSeCoRuleLearner::IConfig` that
-             *                  specifies the configuration that should be used by the rule learner
-             */
-            MultiLabelSeCoRuleLearner(std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr);
-    };
-
-    /**
      * Creates and returns a new object of type `IMultiLabelSeCoRuleLearner::IConfig`.
      *
      * @return An unique pointer to an object of type `IMultiLabelSeCoRuleLearner::IConfig` that has been created
@@ -156,7 +106,3 @@ namespace seco {
       std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr);
 
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif
