@@ -23,7 +23,6 @@ source_files = [
     'src/mlrl/seco/statistics/statistics_provider_decomposable_dense.cpp',
     'src/mlrl/seco/stopping/stopping_criterion_coverage.cpp',
     'src/mlrl/seco/info.cpp',
-    'src/mlrl/seco/learner.cpp',
     'src/mlrl/seco/learner_seco.cpp'
 ]
 
