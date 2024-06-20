@@ -41,18 +41,19 @@ from mlrl.boosting.cython.probability_calibration cimport IIsotonicJointProbabil
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig, ManualRegularizationConfig
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, DefaultRuleMixin, \
-    EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, ExampleWiseStratifiedBiPartitionSamplingMixin, \
-    ExampleWiseStratifiedInstanceSamplingMixin, FeatureSamplingWithoutReplacementMixin, \
+    EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, \
     GreedyTopDownRuleInductionMixin, InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, \
     IrepRulePruningMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, \
     NoInstanceSamplingMixin, NoJointProbabilityCalibrationMixin, NoMarginalProbabilityCalibrationMixin, \
     NoOutputSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
     NoPartitionSamplingMixin, NoPostProcessorMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, \
     NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, OutputSamplingWithoutReplacementMixin, \
-    OutputWiseStratifiedBiPartitionSamplingMixin, OutputWiseStratifiedInstanceSamplingMixin, ParallelPredictionMixin, \
-    ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, PrePruningMixin, \
-    RandomBiPartitionSamplingMixin, RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, \
+    ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, \
+    PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, \
     SequentialRuleModelAssemblageMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
+from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPartitionSamplingMixin, \
+    ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
+    OutputWiseStratifiedInstanceSamplingMixin
 
 from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
     AutomaticFeatureBinningMixin, AutomaticHeadMixin, AutomaticLabelBinningMixin, \

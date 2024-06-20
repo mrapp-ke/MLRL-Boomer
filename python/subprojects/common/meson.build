@@ -11,6 +11,7 @@ cython_module_names = [
     'instance_sampling',
     'label_matrix',
     'learner',
+    'learner_classification',
     'multi_threading',
     'output_matrix',
     'output_sampling',

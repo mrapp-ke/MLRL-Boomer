@@ -30,17 +30,18 @@ from mlrl.seco.cython.lift_function cimport IKlnLiftFunctionConfig, IPeakLiftFun
 from mlrl.seco.cython.stopping_criterion cimport CoverageStoppingCriterionConfig, ICoverageStoppingCriterionConfig
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, DefaultRuleMixin, \
-    EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, ExampleWiseStratifiedBiPartitionSamplingMixin, \
-    ExampleWiseStratifiedInstanceSamplingMixin, FeatureSamplingWithoutReplacementMixin, \
+    EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, \
     GreedyTopDownRuleInductionMixin, InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, \
     IrepRulePruningMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, \
     NoInstanceSamplingMixin, NoOutputSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, \
     NoParallelStatisticUpdateMixin, NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, \
     NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, OutputSamplingWithoutReplacementMixin, \
-    OutputWiseStratifiedBiPartitionSamplingMixin, OutputWiseStratifiedInstanceSamplingMixin, ParallelPredictionMixin, \
-    ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, PrePruningMixin, \
-    RandomBiPartitionSamplingMixin, RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, \
+    ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, \
+    PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, \
     SequentialRuleModelAssemblageMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
+from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPartitionSamplingMixin, \
+    ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
+    OutputWiseStratifiedInstanceSamplingMixin
 
 from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, \
     CoverageStoppingCriterionMixin, FMeasureHeuristicMixin, FMeasurePruningHeuristicMixin, KlnLiftFunctionMixin, \
