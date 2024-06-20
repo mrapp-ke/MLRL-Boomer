@@ -130,6 +130,8 @@ namespace seco {
                           pruningHeuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
                           liftFunctionConfigPtr_(std::make_unique<NoLiftFunctionConfig>()) {}
 
+                    virtual ~Config() override {}
+
                     std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr()
                       override final {
                         return coverageStoppingCriterionConfigPtr_;
@@ -160,6 +162,8 @@ namespace seco {
              */
             explicit AbstractSeCoRuleLearner(SeCoRuleLearnerConfigurator& configurator)
                 : AbstractRuleLearner(configurator) {}
+
+            virtual ~AbstractSeCoRuleLearner() override {}
     };
 
 }
