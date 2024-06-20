@@ -121,6 +121,8 @@ namespace boosting {
                           labelBinningConfigPtr_(std::make_unique<NoLabelBinningConfig>(l1RegularizationConfigPtr_,
                                                                                         l2RegularizationConfigPtr_)) {}
 
+                    virtual ~Config() override {}
+
                     std::unique_ptr<IHeadConfig>& getHeadConfigPtr() override final {
                         return headConfigPtr_;
                     }
@@ -152,6 +154,8 @@ namespace boosting {
              */
             explicit AbstractBoostedRuleLearner(const BoostedRuleLearnerConfigurator& configurator)
                 : AbstractRuleLearner(configurator) {}
+
+            virtual ~AbstractBoostedRuleLearner() override {}
     };
 
 }

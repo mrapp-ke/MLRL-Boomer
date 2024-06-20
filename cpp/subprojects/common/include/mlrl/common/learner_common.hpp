@@ -649,6 +649,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                         std::make_unique<NoMarginalProbabilityCalibratorConfig>()),
                       jointProbabilityCalibratorConfigPtr_(std::make_unique<NoJointProbabilityCalibratorConfig>()) {}
 
+                virtual ~Config() override {}
+
                 RuleCompareFunction getRuleCompareFunction() const override final {
                     return ruleCompareFunction_;
                 }
@@ -760,6 +762,8 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          *                     individual modules to be used by the rule learner
          */
         explicit AbstractRuleLearner(const RuleLearnerConfigurator& configurator) : configurator_(configurator) {}
+
+        virtual ~AbstractRuleLearner() override {}
 
         std::unique_ptr<ITrainingResult> fit(const IFeatureInfo& featureInfo,
                                              const IColumnWiseFeatureMatrix& featureMatrix,
