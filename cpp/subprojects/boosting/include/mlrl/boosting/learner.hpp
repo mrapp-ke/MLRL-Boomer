@@ -40,7 +40,7 @@
 #include "mlrl/boosting/statistics/statistic_format_sparse.hpp"
 #include "mlrl/boosting/util/blas.hpp"
 #include "mlrl/boosting/util/lapack.hpp"
-#include "mlrl/common/learner_classification.hpp"
+#include "mlrl/common/learner.hpp"
 
 #include <memory>
 #include <utility>
@@ -50,14 +50,14 @@ namespace boosting {
     /**
      * Defines an interface for all rule learners that make use of gradient boosting.
      */
-    class MLRLBOOSTING_API IBoostedRuleLearner : virtual public IClassificationRuleLearner {
+    class MLRLBOOSTING_API IBoostedRuleLearner : virtual public IRuleLearner {
         public:
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner that makes use of gradient
              * boosting.
              */
-            class IConfig : virtual public IClassificationRuleLearner::IConfig {
+            class IConfig : virtual public IRuleLearner::IConfig {
                 public:
 
                     virtual ~IConfig() override {}

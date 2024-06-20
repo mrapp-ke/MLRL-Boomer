@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/boosting/learner.hpp"
+#include "mlrl/boosting/learner_classification.hpp"
 
 #include <memory>
 
@@ -12,13 +12,13 @@ namespace boosting {
     /**
      * Defines the interface of the BOOMER algorithm.
      */
-    class MLRLBOOSTING_API IBoomer : virtual public IBoostedRuleLearner {
+    class MLRLBOOSTING_API IBoomer : virtual public IBoostedClassificationRuleLearner {
         public:
 
             /**
              * Defines the interface for configuring the BOOMER algorithm.
              */
-            class IConfig : virtual public IBoostedRuleLearner::IConfig,
+            class IConfig : virtual public IBoostedClassificationRuleLearner::IConfig,
                             virtual public IBoostedRuleLearner::IAutomaticPartitionSamplingMixin,
                             virtual public IBoostedRuleLearner::IAutomaticFeatureBinningMixin,
                             virtual public IBoostedRuleLearner::IAutomaticParallelRuleRefinementMixin,
