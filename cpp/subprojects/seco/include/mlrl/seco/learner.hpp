@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/learner_common.hpp"
+#include "mlrl/common/learner_classification.hpp"
 #include "mlrl/seco/heuristics/heuristic_accuracy.hpp"
 #include "mlrl/seco/heuristics/heuristic_f_measure.hpp"
 #include "mlrl/seco/heuristics/heuristic_laplace.hpp"
@@ -27,14 +27,14 @@ namespace seco {
     /**
      * Defines an interface for all rule learners that make use of the separate-and-conquer (SeCo) paradigm.
      */
-    class MLRLSECO_API ISeCoRuleLearner : virtual public IRuleLearner {
+    class MLRLSECO_API ISeCoRuleLearner : virtual public IClassificationRuleLearner {
         public:
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner that makes use of the
              * separate-and-conquer (SeCo) paradigm.
              */
-            class IConfig : virtual public IRuleLearner::IConfig {
+            class IConfig : virtual public IClassificationRuleLearner::IConfig {
                 public:
 
                     virtual ~IConfig() override {}

@@ -8,6 +8,7 @@
     #pragma warning(disable : 4250)
 #endif
 
+#include "mlrl/common/learner_common.hpp"
 #include "mlrl/seco/learner.hpp"
 #include "mlrl/seco/model/decision_list_builder.hpp"
 #include "mlrl/seco/rule_evaluation/rule_compare_function.hpp"
