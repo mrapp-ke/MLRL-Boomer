@@ -1,7 +1,9 @@
+---
 name: Merge into upstream branches
 on:
   release:
-    types: [ published ]
+    types:
+      - published
 jobs:
   merge_release:
     name: Merge into upstream branches
@@ -73,7 +75,7 @@ jobs:
           git push origin bugfix
       - name: Update patch version
         if: ${{ github.event.release.target_commitish == 'bugfix' }}
-        run: |
+        run: |-
           git checkout bugfix
           ./build increment_patch_version
           git add VERSION

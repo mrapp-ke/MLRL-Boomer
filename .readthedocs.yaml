@@ -1,8 +1,9 @@
+---
 version: 2
 build:
-  os: "ubuntu-lts-latest"
+  os: ubuntu-lts-latest
   tools:
-    python: "latest"
+    python: latest
   apt_packages:
     - doxygen
   commands:
