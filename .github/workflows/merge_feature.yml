@@ -1,8 +1,9 @@
+---
 name: Merge feature into main branch
 on:
   push:
     branches:
-      - 'feature'
+      - feature
 jobs:
   merge_feature:
     name: Merge feature into main branch
@@ -30,11 +31,11 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ steps.app-token.outputs.token }}
-          commit-message: "[Bot] Merge feature into main branch."
+          commit-message: '[Bot] Merge feature into main branch.'
           branch: merge-feature
-          title: "Merge feature into main branch"
+          title: Merge feature into main branch
           labels: bot
-          body: "Merge branch \"feature\" into \"main\"."
+          body: Merge branch "feature" into "main".
       - name: Enable auto-merge
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
