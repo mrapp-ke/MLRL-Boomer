@@ -8,6 +8,9 @@
 #include <memory>
 #include <utility>
 
+#include <memory>
+#include <utility>
+
 namespace boosting {
 
     static inline bool hasNonZeroWeightNonDecomposable(const EqualWeightVector& weights, uint32 statisticIndex) {
