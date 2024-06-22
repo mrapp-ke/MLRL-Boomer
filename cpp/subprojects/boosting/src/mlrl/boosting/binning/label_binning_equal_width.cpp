@@ -108,7 +108,8 @@ namespace boosting {
                     float64 criterion = criteria[i];
 
                     if (criterion < 0) {
-                        uint32 binIndex = (uint32) std::floor((criterion - minNegative) / spanPerNegativeBin);
+                        uint32 binIndex =
+                          static_cast<uint32>(std::floor((criterion - minNegative) / spanPerNegativeBin));
 
                         if (binIndex >= numNegativeBins) {
                             binIndex = numNegativeBins - 1;
@@ -116,7 +117,8 @@ namespace boosting {
 
                         callback(binIndex, i);
                     } else if (criterion > 0) {
-                        uint32 binIndex = (uint32) std::floor((criterion - minPositive) / spanPerPositiveBin);
+                        uint32 binIndex =
+                          static_cast<uint32>(std::floor((criterion - minPositive) / spanPerPositiveBin));
 
                         if (binIndex >= numPositiveBins) {
                             binIndex = numPositiveBins - 1;

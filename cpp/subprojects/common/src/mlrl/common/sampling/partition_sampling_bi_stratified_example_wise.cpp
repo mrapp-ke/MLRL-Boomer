@@ -57,7 +57,7 @@ class ExampleWiseStratifiedBiPartitionSamplingFactory final : public IPartitionS
 
         std::unique_ptr<IPartitionSampling> create(const CContiguousView<const uint8>& labelMatrix) const override {
             uint32 numExamples = labelMatrix.numRows;
-            uint32 numHoldout = (uint32) (holdoutSetSize_ * numExamples);
+            uint32 numHoldout = static_cast<uint32>(holdoutSetSize_ * numExamples);
             uint32 numTraining = numExamples - numHoldout;
             return std::make_unique<ExampleWiseStratifiedBiPartitionSampling<CContiguousView<const uint8>>>(
               labelMatrix, numTraining, numHoldout);
@@ -65,7 +65,7 @@ class ExampleWiseStratifiedBiPartitionSamplingFactory final : public IPartitionS
 
         std::unique_ptr<IPartitionSampling> create(const BinaryCsrView& labelMatrix) const override {
             uint32 numExamples = labelMatrix.numRows;
-            uint32 numHoldout = (uint32) (holdoutSetSize_ * numExamples);
+            uint32 numHoldout = static_cast<uint32>(holdoutSetSize_ * numExamples);
             uint32 numTraining = numExamples - numHoldout;
             return std::make_unique<ExampleWiseStratifiedBiPartitionSampling<BinaryCsrView>>(labelMatrix, numTraining,
                                                                                              numHoldout);

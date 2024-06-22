@@ -76,7 +76,7 @@ class PredictionDispatcher final {
 #endif
             for (int64 i = 0; i < numExamples; i++) {
 #if MULTI_THREADING_SUPPORT_ENABLED
-                uint32 threadIndex = (uint32) omp_get_thread_num();
+                uint32 threadIndex = static_cast<uint32>(omp_get_thread_num());
 #else
                 uint32 threadIndex = 1;
 #endif
@@ -158,7 +158,7 @@ class BinarySparsePredictionDispatcher final {
 #endif
             for (int64 i = 0; i < numExamples; i++) {
 #if MULTI_THREADING_SUPPORT_ENABLED
-                uint32 threadIndex = (uint32) omp_get_thread_num();
+                uint32 threadIndex = static_cast<uint32>(omp_get_thread_num());
 #else
                 uint32 threadIndex = 1;
 #endif
@@ -228,7 +228,7 @@ class AbstractIncrementalPredictor : public IIncrementalPredictor<PredictionMatr
         virtual ~AbstractIncrementalPredictor() override {}
 
         uint32 getNumNext() const override final {
-            return (uint32) (end_ - current_);
+            return static_cast<uint32>(end_ - current_);
         }
 
         PredictionMatrix& applyNext(uint32 stepSize) override final {

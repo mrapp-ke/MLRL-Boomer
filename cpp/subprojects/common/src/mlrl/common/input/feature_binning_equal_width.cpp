@@ -36,7 +36,7 @@ static inline Tuple<float32> getMinAndMaxFeatureValue(const NumericalFeatureVect
 }
 
 static inline uint32 getBinIndex(float32 value, float32 min, float32 width, uint32 numBins) {
-    uint32 binIndex = (uint32) std::floor((value - min) / width);
+    uint32 binIndex = static_cast<uint32>(std::floor((value - min) / width));
     return binIndex >= numBins ? numBins - 1 : binIndex;
 }
 

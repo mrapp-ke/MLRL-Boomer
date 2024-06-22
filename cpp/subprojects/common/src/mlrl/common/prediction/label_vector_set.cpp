@@ -24,7 +24,7 @@ LabelVectorSet::LabelVectorSet(const IRowWiseLabelMatrix& labelMatrix) {
 
         if (it == map.end()) {
             labelVectors_.push_back(std::move(labelVectorPtr));
-            map.emplace(labelVectors_.back()->getView(), (uint32) frequencies_.size());
+            map.emplace(labelVectors_.back()->getView(), static_cast<uint32>(frequencies_.size()));
             frequencies_.emplace_back(1);
         } else {
             uint32 index = (*it).second;
@@ -50,7 +50,7 @@ LabelVectorSet::frequency_const_iterator LabelVectorSet::frequencies_cend() cons
 }
 
 uint32 LabelVectorSet::getNumLabelVectors() const {
-    return (uint32) labelVectors_.size();
+    return static_cast<uint32>(labelVectors_.size());
 }
 
 void LabelVectorSet::addLabelVector(std::unique_ptr<LabelVector> labelVectorPtr, uint32 frequency) {
