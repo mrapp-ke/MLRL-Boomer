@@ -4,8 +4,6 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides classes for printing the predictions of a model. The predictions can be written to one or several outputs,
 e.g., to the console or to a file.
 """
-import sys
-
 from typing import Any, Optional
 
 import numpy as np
@@ -14,7 +12,7 @@ from mlrl.common.options import Options
 
 from mlrl.testbed.data import Label, MetaData, save_arff_file
 from mlrl.testbed.data_splitting import DataSplit, DataType
-from mlrl.testbed.format import OPTION_DECIMALS
+from mlrl.testbed.format import OPTION_DECIMALS, format_array
 from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
 from mlrl.testbed.output_writer import Formattable, OutputWriter
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
@@ -43,11 +41,10 @@ class PredictionWriter(OutputWriter):
             See :func:`mlrl.testbed.output_writer.Formattable.format`
             """
             decimals = options.get_int(OPTION_DECIMALS, 2)
-            precision = decimals if decimals > 0 else None
             text = 'Ground truth:\n\n'
-            text += np.array2string(self.ground_truth, threshold=sys.maxsize)
+            text += format_array(self.ground_truth, decimals=decimals)
             text += '\n\nPredictions:\n\n'
-            text += np.array2string(self.predictions, threshold=sys.maxsize, precision=precision, suppress_small=True)
+            text += format_array(self.predictions, decimals=decimals)
             return text
 
     class LogSink(OutputWriter.LogSink):
