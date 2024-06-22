@@ -663,7 +663,7 @@ namespace seco {
              * @param config A reference to an object of type `ISeCoRuleLearner::IConfig` that specifies the
              *               configuration that should be used by the rule learner
              */
-            AbstractSeCoRuleLearner(ISeCoRuleLearner::IConfig& config);
+            explicit AbstractSeCoRuleLearner(ISeCoRuleLearner::IConfig& config);
     };
 
 }
