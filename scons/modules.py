@@ -234,6 +234,27 @@ class CppModule(SourceModule):
         C++ code.
         """
 
+        @property
+        def include_dir(self) -> str:
+            """
+            The directory that contains the header files.
+            """
+            return path.join(self.root_dir, 'include')
+
+        @property
+        def src_dir(self) -> str:
+            """
+            The directory that contains the source files.
+            """
+            return path.join(self.root_dir, 'src')
+
+        @property
+        def test_dir(self) -> str:
+            """
+            The directory that contains the source code for automated tests.
+            """
+            return path.join(self.root_dir, 'test')
+
         def find_source_files(self) -> List[str]:
             """
             Finds and returns all source files that are contained by the subproject.
