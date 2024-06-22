@@ -22,7 +22,7 @@ FixedRefinementComparator::~FixedRefinementComparator() {
 }
 
 uint32 FixedRefinementComparator::getNumElements() const {
-    return (uint32) order_.size();
+    return static_cast<uint32>(order_.size());
 }
 
 FixedRefinementComparator::iterator FixedRefinementComparator::begin() {

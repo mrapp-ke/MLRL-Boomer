@@ -98,7 +98,7 @@ RuleList::const_iterator RuleList::used_cend(uint32 maxRules) const {
 }
 
 uint32 RuleList::getNumRules() const {
-    uint32 numRules = (uint32) ruleList_.size();
+    uint32 numRules = static_cast<uint32>(ruleList_.size());
 
     if (this->containsDefaultRule()) {
         numRules++;

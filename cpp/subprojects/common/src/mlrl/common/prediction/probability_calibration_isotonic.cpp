@@ -10,7 +10,7 @@ static inline void sortByThresholdsAndEliminateDuplicates(ListOfLists<Tuple<floa
     });
 
     // Aggregate adjacent bins with identical thresholds by averaging their probabilities...
-    uint32 numBins = (uint32) bins.size();
+    uint32 numBins = static_cast<uint32>(bins.size());
     uint32 previousIndex = 0;
     Tuple<float64> previousBin = bins[previousIndex];
     uint32 n = 0;
@@ -39,7 +39,7 @@ static inline void aggregateNonIncreasingBins(ListOfLists<Tuple<float64>>::row b
     // probabilities. A temporary array `pools` is used to mark the beginning and end of subsequences with
     // non-increasing probabilities. If such a subsequence was found in range [i, j] then `pools[i] = j` and
     // `pools[j] = i`...
-    uint32 numBins = (uint32) bins.size();
+    uint32 numBins = static_cast<uint32>(bins.size());
     Array<uint32> pools(numBins);
     setViewToIncreasingValues(pools.begin(), numBins, 0, 1);
     uint32 i = 0;
