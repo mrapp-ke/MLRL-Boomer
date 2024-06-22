@@ -44,13 +44,24 @@ def __clang_format(directory: str, enforce_changes: bool = False):
 
 
 def __mdformat(directory: str, recursive: bool = False, enforce_changes: bool = False):
-    md_files = glob(path.join(directory, '**', '*.md') if recursive else path.join(directory, '*.md'))
+    suffix_md = '*.md'
+    md_files = glob(path.join(directory, '**', suffix_md) if recursive else path.join(directory, suffix_md))
     args = ['--number', '--wrap', 'no', '--end-of-line', 'lf']
 
     if not enforce_changes:
         args.append('--check')
 
     run_program('mdformat', *args, *md_files, additional_dependencies=['mdformat-myst'])
+
+
+def __yamlfix(directory: str, recursive: bool = False):
+    suffix_yaml = '*.y*ml'
+    glob_path = path.join(directory, '**', suffix_yaml) if recursive else path.join(directory, suffix_yaml)
+    yaml_files = [
+        file for file in glob(glob_path, include_hidden=True)
+        if path.basename(file).endswith('.yml') or path.basename(file).endswith('.yaml')
+    ]
+    run_program('yamlfix', '--config-file', '.yamlfix.toml', *yaml_files, print_args=True)
 
 
 def check_python_code_style(**_):
@@ -110,3 +121,12 @@ def enforce_md_code_style(**_):
     for directory, recursive in [('.', False), (DOC_MODULE.root_dir, True), (PYTHON_MODULE.root_dir, True)]:
         print('Formatting Markdown files in the directory "' + directory + '"...')
         __mdformat(directory, recursive=recursive, enforce_changes=True)
+
+
+def enforce_yaml_code_style(**_):
+    """
+    Enforces YAML files to adhere to the code style definitions.
+    """
+    for directory, recursive in [('.', False), ('.github', True)]:
+        print('Formatting YAML files in the directory "' + directory + '"...')
+        __yamlfix(directory, recursive=recursive)
