@@ -416,7 +416,7 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useDefaultRule() {
                     std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr = this->getDefaultRuleConfigPtr();
                     defaultRuleConfigPtr = std::make_unique<DefaultRuleConfig>(true);
-                };
+                }
         };
 
         /**
@@ -640,7 +640,7 @@ class MLRLCOMMON_API IRuleLearner {
                     std::unique_ptr<IInstanceSamplingConfig>& instanceSamplingConfigPtr =
                       this->getInstanceSamplingConfigPtr();
                     instanceSamplingConfigPtr = std::make_unique<NoInstanceSamplingConfig>();
-                };
+                }
         };
 
         /**

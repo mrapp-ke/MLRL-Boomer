@@ -30,7 +30,7 @@ void ConditionList::removeLastCondition() {
     const Condition& condition = vector_.back();
     numConditionsPerComparator_[condition.comparator] -= 1;
     vector_.pop_back();
-};
+}
 
 std::unique_ptr<ConjunctiveBody> ConditionList::createConjunctiveBody() const {
     std::unique_ptr<ConjunctiveBody> bodyPtr = std::make_unique<ConjunctiveBody>(
