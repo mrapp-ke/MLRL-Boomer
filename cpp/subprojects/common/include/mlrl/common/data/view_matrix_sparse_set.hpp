@@ -376,7 +376,7 @@ class MLRLCOMMON_API IterableSparseSetViewDecorator : public Matrix {
         /**
          * @param view The view, the matrix should be backed by
          */
-        IterableSparseSetViewDecorator(typename Matrix::view_type&& view) : Matrix(std::move(view)) {}
+        explicit IterableSparseSetViewDecorator(typename Matrix::view_type&& view) : Matrix(std::move(view)) {}
 
         virtual ~IterableSparseSetViewDecorator() override {}
 

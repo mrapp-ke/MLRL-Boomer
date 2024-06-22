@@ -35,7 +35,7 @@ class MLRLCOMMON_API View {
          * @param array A pointer to an array of template type `T` that stores the values, the view should provide
          *              access to
          */
-        View(T* array) : array(array) {}
+        explicit View(T* array) : array(array) {}
 
         /**
          * @param other A const reference to an object of type `View` that should be copied
@@ -129,7 +129,7 @@ class MLRLCOMMON_API Allocator : public View {
          * @param numElements   The number of elements in the view
          * @param init          True, if all elements in the view should be value-initialized, false otherwise
          */
-        Allocator(uint32 numElements, bool init = false)
+        explicit Allocator(uint32 numElements, bool init = false)
             : View(allocateMemory<typename View::value_type>(numElements, init), {numElements}) {}
 
         /**
@@ -177,7 +177,7 @@ class MLRLCOMMON_API ResizableAllocator : public Allocator<View> {
          * @param numElements   The number of elements in the view
          * @param init          True, if all elements in the view should be value-initialized, false otherwise
          */
-        ResizableAllocator(uint32 numElements, bool init = false)
+        explicit ResizableAllocator(uint32 numElements, bool init = false)
             : Allocator<View>(numElements, init), maxCapacity(numElements) {}
 
         /**
@@ -236,7 +236,7 @@ class MLRLCOMMON_API ViewDecorator {
         /**
          * @param view The view, the data structure should be backed by
          */
-        ViewDecorator(View&& view) : view(std::move(view)) {}
+        explicit ViewDecorator(View&& view) : view(std::move(view)) {}
 
         virtual ~ViewDecorator() {}
 
@@ -276,7 +276,7 @@ class MLRLCOMMON_API IndexableViewDecorator : public View {
         /**
          * @param view The view, the view should be backed by
          */
-        IndexableViewDecorator(typename View::view_type&& view) : View(std::move(view)) {}
+        explicit IndexableViewDecorator(typename View::view_type&& view) : View(std::move(view)) {}
 
         virtual ~IndexableViewDecorator() override {}
 
@@ -341,7 +341,7 @@ class MLRLCOMMON_API ClearableViewDecorator : public View {
         /**
          * @param view The view, the view should be backed by
          */
-        ClearableViewDecorator(typename View::view_type&& view) : View(std::move(view)) {}
+        explicit ClearableViewDecorator(typename View::view_type&& view) : View(std::move(view)) {}
 
         virtual ~ClearableViewDecorator() override {}
 

@@ -1802,7 +1802,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                  * @param ruleCompareFunction An object of type `RuleCompareFunction` that defines the function that
                  *                            should be used for comparing the quality of different rules
                  */
-                Config(RuleCompareFunction ruleCompareFunction);
+                explicit Config(RuleCompareFunction ruleCompareFunction);
         };
 
     private:
@@ -1956,7 +1956,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          * @param config A reference to an object of type `IRuleLearner::IConfig` that specifies the configuration that
          *               should be used by the rule learner
          */
-        AbstractRuleLearner(IRuleLearner::IConfig& config);
+        explicit AbstractRuleLearner(IRuleLearner::IConfig& config);
 
         std::unique_ptr<ITrainingResult> fit(const IFeatureInfo& featureInfo,
                                              const IColumnWiseFeatureMatrix& featureMatrix,
