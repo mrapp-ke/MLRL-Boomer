@@ -66,9 +66,10 @@ The unit and integration tests are run automatically via {ref}`ci` whenever rele
 
 We aim to enforce a consistent code style across the entire project. For this purpose, we employ the following tools:
 
-- For formatting the C++ code, we use [clang-format](https://clang.llvm.org/docs/ClangFormat.html). The desired C++ code style is defined in the file [.clang-format](https://github.com/mrapp-ke/MLRL-Boomer/blob/fece21c929043d8009aab9d52f3ed2fd03d1a191/.clang-format) in the project's root directory.
-- We use [YAPF](https://github.com/google/yapf) to enforce the Python code style defined in the file [.style.yapf](https://github.com/mrapp-ke/MLRL-Boomer/blob/fece21c929043d8009aab9d52f3ed2fd03d1a191/.style.yapf). In addition, [isort](https://github.com/PyCQA/isort) is used to keep the ordering of imports in Python and Cython source files consistent according to the configuration file [.isort.cfg](https://github.com/mrapp-ke/MLRL-Boomer/blob/fece21c929043d8009aab9d52f3ed2fd03d1a191/.isort.cfg) and [pylint](https://pylint.org/) is used to check for common issues in the Python code according to the configuration file [.pylintrc](https://github.com/mrapp-ke/MLRL-Boomer/blob/fece21c929043d8009aab9d52f3ed2fd03d1a191/.pylintrc).
+- For formatting the C++ code, we use [clang-format](https://clang.llvm.org/docs/ClangFormat.html). The desired C++ code style is defined in the file `.clang-format` in the project's root directory.
+- We use [YAPF](https://github.com/google/yapf) to enforce the Python code style defined in the file `.style.yapf`. In addition, [isort](https://github.com/PyCQA/isort) is used to keep the ordering of imports in Python and Cython source files consistent according to the configuration file `.isort.cfg` and [pylint](https://pylint.org/) is used to check for common issues in the Python code according to the configuration file `.pylintrc`.
 - For applying a consistent style to Markdown files, including those used for writing the documentation, we use [mdformat](https://github.com/executablebooks/mdformat).
+- We apply [yamlfix](https://github.com/lyz-code/yamlfix) to YAML files to enforce the code style defined in the file `.yamlfix.toml`.
 
 If you have modified the project's source code, you can check whether it adheres to our coding standards via the following command:
 
@@ -91,7 +92,7 @@ If you have modified the project's source code, you can check whether it adheres
 ````
 
 ```{note}
-If you want to check for compliance with the C++ or Python code style independently, you can use the build target `test_format_cpp` or `test_format_python` instead of `test_format`. Using the build target `test_fomat_md`, results in the style of Markdown files to be checked.
+If you want to check for compliance with the C++ or Python code style independently, you can use the build target `test_format_cpp` or `test_format_python` instead of `test_format`. Using the build target `test_format_md` or `test_format_yaml` results in the style of Markdown or YAML files to be checked, respectively.
 ```
 
 In order to automatically format the project's source files according to our style guidelines, the following command can be used:
@@ -115,7 +116,7 @@ In order to automatically format the project's source files according to our sty
 ````
 
 ```{note}
-If you want to format only the C++ source files, you can specify the build target `format_cpp` instead of `format`. Accordingly, the target `format_python` may be used to format only the Python source files. If you want to format Markdown files, you should use the target `format_md`.
+If you want to format only the C++ source files, you can specify the build target `format_cpp` instead of `format`. Accordingly, the target `format_python` may be used to format only the Python source files. If you want to format Markdown or YAML files, you should use the target `format_md` or `format_yaml`, respectively.
 ```
 
 Whenever any source files have been modified, a {ref}`ci` job is run automatically to verify if they adhere to our code style guidelines.
