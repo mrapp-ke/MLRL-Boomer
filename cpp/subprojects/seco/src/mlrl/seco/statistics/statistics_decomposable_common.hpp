@@ -9,6 +9,9 @@
 #include <memory>
 #include <utility>
 
+#include <memory>
+#include <utility>
+
 namespace seco {
 
     static inline bool hasNonZeroWeightDecomposable(const EqualWeightVector& weights, uint32 statisticIndex) {
