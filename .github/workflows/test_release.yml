@@ -1,7 +1,11 @@
+---
 name: Test publishing packages
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types:
+      - opened
+      - reopened
+      - synchronize
 jobs:
   changes:
     name: Detect changes
