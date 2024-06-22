@@ -18,7 +18,7 @@ ConditionList::const_iterator ConditionList::cend() const {
 }
 
 uint32 ConditionList::getNumConditions() const {
-    return (uint32) vector_.size();
+    return static_cast<uint32>(vector_.size());
 }
 
 void ConditionList::addCondition(const Condition& condition) {

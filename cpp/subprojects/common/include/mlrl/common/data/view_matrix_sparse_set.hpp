@@ -189,7 +189,7 @@ class MLRLCOMMON_API SparseSetView
                     uint32 i = this->indexIterator_[index];
 
                     if (i == MAX_INDEX) {
-                        this->indexIterator_[index] = (uint32) this->row_.size();
+                        this->indexIterator_[index] = static_cast<uint32>(this->row_.size());
                         this->row_.emplace_back(index);
                         return this->row_.back();
                     }
@@ -209,7 +209,7 @@ class MLRLCOMMON_API SparseSetView
                     uint32 i = this->indexIterator_[index];
 
                     if (i == MAX_INDEX) {
-                        this->indexIterator_[index] = (uint32) this->row_.size();
+                        this->indexIterator_[index] = static_cast<uint32>(this->row_.size());
                         this->row_.emplace_back(index, defaultValue);
                         return this->row_.back();
                     }

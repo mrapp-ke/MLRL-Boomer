@@ -113,7 +113,7 @@ std::unique_ptr<IFeatureSamplingFactory> FeatureSamplingWithoutReplacementConfig
     uint32 numRetained = std::min(numRetained_, numFeatures);
     uint32 numRemainingFeatures = numFeatures - numRetained;
     uint32 numSamples =
-      (uint32) (sampleSize_ > 0 ? sampleSize_ * numRemainingFeatures : log2(numRemainingFeatures - 1) + 1);
+      static_cast<uint32>(sampleSize_ > 0 ? sampleSize_ * numRemainingFeatures : log2(numRemainingFeatures - 1) + 1);
     return std::make_unique<FeatureSamplingWithoutReplacementFactory>(numFeatures, numSamples, numRetained);
 }
 
