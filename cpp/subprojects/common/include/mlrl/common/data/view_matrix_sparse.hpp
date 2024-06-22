@@ -96,7 +96,7 @@ class MLRLCOMMON_API IterableSparseMatrixDecorator : public IterableBinarySparse
         /**
          * @param view The view, the matrix should be backed by
          */
-        IterableSparseMatrixDecorator(typename Matrix::view_type&& view)
+        explicit IterableSparseMatrixDecorator(typename Matrix::view_type&& view)
             : IterableBinarySparseMatrixDecorator<Matrix>(std::move(view)) {}
 
         virtual ~IterableSparseMatrixDecorator() override {}

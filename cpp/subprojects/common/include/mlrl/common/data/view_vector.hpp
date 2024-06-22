@@ -136,7 +136,7 @@ class MLRLCOMMON_API VectorDecorator : public ViewDecorator<View> {
         /**
          * @param view The view, the vector should be backed by
          */
-        VectorDecorator(View&& view) : ViewDecorator<View>(std::move(view)) {}
+        explicit VectorDecorator(View&& view) : ViewDecorator<View>(std::move(view)) {}
 
         virtual ~VectorDecorator() override {}
 
@@ -162,7 +162,8 @@ class MLRLCOMMON_API IterableVectorDecorator : public IndexableViewDecorator<Vec
         /**
          * @param view The view, the vector should be backed by
          */
-        IterableVectorDecorator(typename Vector::view_type&& view) : IndexableViewDecorator<Vector>(std::move(view)) {}
+        explicit IterableVectorDecorator(typename Vector::view_type&& view)
+            : IndexableViewDecorator<Vector>(std::move(view)) {}
 
         virtual ~IterableVectorDecorator() override {}
 
@@ -197,7 +198,7 @@ class MLRLCOMMON_API ResizableVectorDecorator : public Vector {
         /**
          * @param view The view, the vector should be backed by
          */
-        ResizableVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
+        explicit ResizableVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
 
         virtual ~ResizableVectorDecorator() override {}
 

@@ -52,7 +52,7 @@ class MLRLCOMMON_API MatrixDecorator : public ViewDecorator<View> {
         /**
          * @param view The view, the matrix should be backed by
          */
-        MatrixDecorator(View&& view) : ViewDecorator<View>(std::move(view)) {}
+        explicit MatrixDecorator(View&& view) : ViewDecorator<View>(std::move(view)) {}
 
         virtual ~MatrixDecorator() override {}
 

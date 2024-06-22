@@ -26,6 +26,6 @@ class Array : public ArrayDecorator<AllocatedView<T>> {
          * @param numElements   The number of elements in the array
          * @param init          True, if all elements in the array should be value-initialized, false otherwise
          */
-        Array(uint32 numElements, bool init = false)
+        explicit Array(uint32 numElements, bool init = false)
             : ArrayDecorator<AllocatedView<T>>(AllocatedView<T>(numElements, init)) {}
 };

@@ -17,7 +17,7 @@ class MLRLCOMMON_API BinnedVectorDecorator : public Vector {
         /**
          * @param view The view, the vector should be backed by
          */
-        BinnedVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
+        explicit BinnedVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
 
         virtual ~BinnedVectorDecorator() override {}
 

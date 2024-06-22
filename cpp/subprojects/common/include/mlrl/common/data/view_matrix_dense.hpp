@@ -124,7 +124,7 @@ class MLRLCOMMON_API IterableDenseMatrixDecorator : public Matrix {
         /**
          * @param view The view, the matrix should be backed by
          */
-        IterableDenseMatrixDecorator(typename Matrix::view_type&& view) : Matrix(std::move(view)) {}
+        explicit IterableDenseMatrixDecorator(typename Matrix::view_type&& view) : Matrix(std::move(view)) {}
 
         virtual ~IterableDenseMatrixDecorator() override {}
 

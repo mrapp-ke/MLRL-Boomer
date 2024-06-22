@@ -201,7 +201,7 @@ class MLRLCOMMON_API IterableListOfListsDecorator : public Matrix {
         /**
          * @param view The view, the matrix should be backed by
          */
-        IterableListOfListsDecorator(typename Matrix::view_type&& view) : Matrix(std::move(view)) {}
+        explicit IterableListOfListsDecorator(typename Matrix::view_type&& view) : Matrix(std::move(view)) {}
 
         virtual ~IterableListOfListsDecorator() override {}
 
