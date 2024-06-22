@@ -5,6 +5,8 @@
 
 #include "mlrl/common/prediction/probability_calibration_marginal.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

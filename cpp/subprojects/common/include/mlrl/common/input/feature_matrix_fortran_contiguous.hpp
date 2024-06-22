@@ -5,6 +5,8 @@
 
 #include "mlrl/common/input/feature_matrix_column_wise.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all feature matrices that provide column-wise access to the feature values of examples that
  * are stored in a Fortran-contiguous array.

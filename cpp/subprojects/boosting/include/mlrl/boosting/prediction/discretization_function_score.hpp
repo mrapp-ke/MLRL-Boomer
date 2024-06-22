@@ -5,6 +5,8 @@
 
 #include "mlrl/boosting/prediction/discretization_function.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

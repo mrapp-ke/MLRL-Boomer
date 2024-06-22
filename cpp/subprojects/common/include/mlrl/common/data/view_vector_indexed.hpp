@@ -5,6 +5,8 @@
 
 #include "mlrl/common/data/view_vector_composite.hpp"
 
+#include <utility>
+
 /**
  * A vector that is backed by two one-dimensional views of a specific size, storing indices and corresponding values.
  *

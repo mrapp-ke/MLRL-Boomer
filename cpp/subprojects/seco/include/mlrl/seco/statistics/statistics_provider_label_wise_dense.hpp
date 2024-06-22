@@ -7,6 +7,8 @@
 #include "mlrl/common/statistics/statistics_provider.hpp"
 #include "mlrl/seco/statistics/statistics_label_wise.hpp"
 
+#include <memory>
+
 namespace seco {
 
     /**

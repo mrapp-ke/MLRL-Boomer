@@ -9,6 +9,8 @@
 #include "mlrl/common/input/label_matrix_row_wise.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

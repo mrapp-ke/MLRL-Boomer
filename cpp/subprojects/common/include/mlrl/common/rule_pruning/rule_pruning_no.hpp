@@ -5,6 +5,8 @@
 
 #include "mlrl/common/rule_pruning/rule_pruning.hpp"
 
+#include <memory>
+
 /**
  * Allows to configure a method for pruning individual rules that does not actually perform any pruning.
  */

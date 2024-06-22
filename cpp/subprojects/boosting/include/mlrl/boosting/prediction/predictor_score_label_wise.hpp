@@ -6,6 +6,8 @@
 #include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/prediction/predictor_score.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

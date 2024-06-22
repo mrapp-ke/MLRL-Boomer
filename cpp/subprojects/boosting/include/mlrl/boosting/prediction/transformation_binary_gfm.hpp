@@ -7,6 +7,8 @@
 #include "mlrl/boosting/prediction/transformation_binary.hpp"
 #include "mlrl/common/prediction/label_vector_set.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

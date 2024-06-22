@@ -8,6 +8,8 @@
 #include "mlrl/seco/lift_functions/lift_function.hpp"
 #include "mlrl/seco/rule_evaluation/rule_evaluation_label_wise.hpp"
 
+#include <memory>
+
 namespace seco {
 
     /**

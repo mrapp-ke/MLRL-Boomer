@@ -6,6 +6,8 @@
 #include "mlrl/common/rule_refinement/feature_subspace.hpp"
 #include "mlrl/common/util/openmp.hpp"
 
+#include <memory>
+
 /**
  * Stores an unique pointer to an object of type `IRuleRefinement` that may be used to search for potential refinements
  * of a rule, as well as to an object of template type `RefinementComparator` that allows comparing different

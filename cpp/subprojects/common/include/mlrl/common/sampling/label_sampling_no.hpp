@@ -5,6 +5,8 @@
 
 #include "mlrl/common/sampling/label_sampling.hpp"
 
+#include <memory>
+
 /**
  * Allows to configure a method for sampling labels that does not perform any sampling, but includes all labels.
  */

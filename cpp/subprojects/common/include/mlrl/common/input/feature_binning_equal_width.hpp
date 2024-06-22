@@ -6,6 +6,8 @@
 
 #include "mlrl/common/input/feature_binning.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that allow to configure a method that assigns numerical feature values to bins,
  * such that each bin contains values from equally sized value ranges.

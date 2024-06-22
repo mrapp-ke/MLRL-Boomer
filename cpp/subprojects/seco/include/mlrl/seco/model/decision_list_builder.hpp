@@ -5,6 +5,8 @@
 
 #include "mlrl/common/model/model_builder.hpp"
 
+#include <memory>
+
 namespace seco {
 
     /**

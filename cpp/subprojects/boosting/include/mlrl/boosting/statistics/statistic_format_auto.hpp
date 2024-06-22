@@ -8,6 +8,8 @@
 #include "mlrl/boosting/statistics/statistic_format.hpp"
 #include "mlrl/common/rule_model_assemblage/default_rule.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

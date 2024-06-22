@@ -5,6 +5,8 @@
 
 #include "mlrl/common/data/view_vector_indexed.hpp"
 
+#include <utility>
+
 /**
  * A vector that is backed by two one-dimensional views, storing bin indices and the values of the corresponding bins.
  *

@@ -5,6 +5,8 @@
 
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_label_wise.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**
