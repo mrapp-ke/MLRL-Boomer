@@ -9,7 +9,7 @@ from functools import reduce
 from os import path
 
 from code_style import check_cpp_code_style, check_md_code_style, check_python_code_style, enforce_cpp_code_style, \
-    enforce_md_code_style, enforce_python_code_style
+    enforce_md_code_style, enforce_python_code_style, enforce_yaml_code_style
 from compilation import compile_cpp, compile_cython, install_cpp, install_cython, setup_cpp, setup_cython
 from dependencies import check_dependency_versions, install_runtime_dependencies
 from documentation import apidoc_cpp, apidoc_cpp_tocfile, apidoc_python, apidoc_python_tocfile, doc
@@ -47,6 +47,7 @@ TARGET_NAME_FORMAT = 'format'
 TARGET_NAME_FORMAT_PYTHON = TARGET_NAME_FORMAT + '_python'
 TARGET_NAME_FORMAT_CPP = TARGET_NAME_FORMAT + '_cpp'
 TARGET_NAME_FORMAT_MD = TARGET_NAME_FORMAT + '_md'
+TARGET_NAME_FORMAT_YAML = TARGET_NAME_FORMAT + '_yaml'
 TARGET_NAME_CHECK_DEPENDENCIES = 'check_dependencies'
 TARGET_NAME_VENV = 'venv'
 TARGET_NAME_COMPILE = 'compile'
@@ -70,8 +71,8 @@ VALID_TARGETS = {
     TARGET_NAME_APPLY_DEVELOPMENT_VERSION, TARGET_NAME_INCREMENT_PATCH_VERSION, TARGET_NAME_INCREMENT_MINOR_VERSION,
     TARGET_NAME_INCREMENT_MAJOR_VERSION, TARGET_NAME_TEST_FORMAT, TARGET_NAME_TEST_FORMAT_PYTHON,
     TARGET_NAME_TEST_FORMAT_CPP, TARGET_NAME_TEST_FORMAT_MD, TARGET_NAME_FORMAT, TARGET_NAME_FORMAT_PYTHON,
-    TARGET_NAME_FORMAT_CPP, TARGET_NAME_FORMAT_MD, TARGET_NAME_CHECK_DEPENDENCIES, TARGET_NAME_VENV,
-    TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP, TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL,
+    TARGET_NAME_FORMAT_CPP, TARGET_NAME_FORMAT_MD, TARGET_NAME_FORMAT_YAML, TARGET_NAME_CHECK_DEPENDENCIES,
+    TARGET_NAME_VENV, TARGET_NAME_COMPILE, TARGET_NAME_COMPILE_CPP, TARGET_NAME_COMPILE_CYTHON, TARGET_NAME_INSTALL,
     TARGET_NAME_INSTALL_CPP, TARGET_NAME_INSTALL_CYTHON, TARGET_NAME_BUILD_WHEELS, TARGET_NAME_INSTALL_WHEELS,
     TARGET_NAME_TESTS, TARGET_NAME_TESTS_CPP, TARGET_NAME_TESTS_PYTHON, TARGET_NAME_APIDOC, TARGET_NAME_APIDOC_CPP,
     TARGET_NAME_APIDOC_PYTHON, TARGET_NAME_DOC
@@ -110,8 +111,9 @@ env.Depends(target_test_format, [target_test_format_python, target_test_format_c
 target_format_python = __create_phony_target(env, TARGET_NAME_FORMAT_PYTHON, action=enforce_python_code_style)
 target_format_cpp = __create_phony_target(env, TARGET_NAME_FORMAT_CPP, action=enforce_cpp_code_style)
 target_format_md = __create_phony_target(env, TARGET_NAME_FORMAT_MD, action=enforce_md_code_style)
+target_format_yaml = __create_phony_target(env, TARGET_NAME_FORMAT_YAML, action=enforce_yaml_code_style)
 target_format = __create_phony_target(env, TARGET_NAME_FORMAT)
-env.Depends(target_format, [target_format_python, target_format_cpp, target_format_md])
+env.Depends(target_format, [target_format_python, target_format_cpp, target_format_md, target_format_yaml])
 
 # Define target for checking dependency versions...
 target_check_dependencies = __create_phony_target(env, TARGET_NAME_CHECK_DEPENDENCIES, action=check_dependency_versions)
