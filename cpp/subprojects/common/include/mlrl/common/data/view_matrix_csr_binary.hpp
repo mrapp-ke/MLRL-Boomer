@@ -6,6 +6,8 @@
 #include "mlrl/common/data/view_matrix_sparse_binary.hpp"
 #include "mlrl/common/data/view_vector.hpp"
 
+#include <utility>
+
 /**
  * A two-dimensional view that provides row-wise access to binary values stored in a matrix in the compressed sparse row
  * (CSR) format.

@@ -9,6 +9,8 @@
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 #include "mlrl/common/rule_refinement/prediction_evaluated.hpp"
 
+#include <memory>
+
 /**
  * Allows to process the scores that are stored by an `IScoreVector` in order to convert them into the head of a rule,
  * represented by an `IEvaluatedPrediction`.
@@ -24,7 +26,7 @@ class ScoreProcessor {
          * @param headPtr   A reference to an unique pointer of type `IEvaluatedPrediction` that should be used to store
          *                  the rule head that is created by the processor
          */
-        ScoreProcessor(std::unique_ptr<IEvaluatedPrediction>& headPtr);
+        explicit ScoreProcessor(std::unique_ptr<IEvaluatedPrediction>& headPtr);
 
         /**
          * Processes the scores that are stored by a `DenseScoreVector<CompleteIndexVector>` in order to convert them

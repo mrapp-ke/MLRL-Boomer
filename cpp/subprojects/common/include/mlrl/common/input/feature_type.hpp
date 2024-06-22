@@ -7,6 +7,8 @@
 #include "mlrl/common/data/view_matrix_fortran_contiguous.hpp"
 #include "mlrl/common/input/feature_vector.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that represent the type of a feature.
  */

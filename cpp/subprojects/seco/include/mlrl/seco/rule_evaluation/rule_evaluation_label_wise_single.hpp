@@ -7,6 +7,8 @@
 #include "mlrl/seco/heuristics/heuristic.hpp"
 #include "mlrl/seco/rule_evaluation/rule_evaluation_label_wise.hpp"
 
+#include <memory>
+
 namespace seco {
 
     /**

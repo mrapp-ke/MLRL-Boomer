@@ -5,6 +5,8 @@
 
 #include "mlrl/common/input/feature_vector.hpp"
 
+#include <memory>
+
 /**
  * A feature vector that does not actually store any values. It is used in cases where all training examples have the
  * same value for a certain feature.

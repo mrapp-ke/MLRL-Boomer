@@ -6,6 +6,8 @@
 #include "mlrl/boosting/losses/loss_label_wise_sparse.hpp"
 #include "mlrl/boosting/rule_evaluation/head_type.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

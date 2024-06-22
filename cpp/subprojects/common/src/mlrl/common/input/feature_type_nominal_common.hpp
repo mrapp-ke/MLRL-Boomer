@@ -6,7 +6,9 @@
 #include "feature_vector_decorator_binary.hpp"
 #include "mlrl/common/data/tuple.hpp"
 
+#include <memory>
 #include <unordered_map>
+#include <utility>
 
 template<typename ValueIterator>
 static inline uint32 createMapping(ValueIterator valueIterator, uint32 numElements,
@@ -18,7 +20,7 @@ static inline uint32 createMapping(ValueIterator valueIterator, uint32 numElemen
         float32 value = valueIterator[i];
 
         if (!std::isnan(value)) {
-            int32 nominalValue = (int32) value;
+            int32 nominalValue = static_cast<int32>(value);
             auto it = mapping.emplace(nominalValue, Tuple<uint32> {numValues, 1});
 
             if (it.second) {
@@ -95,7 +97,7 @@ static inline std::unique_ptr<BinaryFeatureVectorDecorator> createBinaryFeatureV
         if (std::isnan(value)) {
             missingFeatureVector.set(index, true);
         } else {
-            int32 nominalValue = (int32) value;
+            int32 nominalValue = static_cast<int32>(value);
 
             if (nominalValue == minorityValue) {
                 vectorIndexIterator[n] = index;

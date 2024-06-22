@@ -47,6 +47,9 @@
 #include "mlrl/boosting/util/lapack.hpp"
 #include "mlrl/common/learner.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace boosting {
 
     /**

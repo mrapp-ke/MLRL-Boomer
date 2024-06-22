@@ -2,6 +2,7 @@
 
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 
+#include <memory>
 #include <unordered_set>
 
 /**

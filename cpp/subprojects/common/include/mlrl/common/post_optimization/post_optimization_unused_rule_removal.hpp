@@ -5,6 +5,8 @@
 
 #include "mlrl/common/post_optimization/post_optimization.hpp"
 
+#include <memory>
+
 /**
  * Allows to configure a method that removes unused rules from a model.
  */

@@ -6,6 +6,8 @@
 #include "mlrl/boosting/prediction/probability_function_joint.hpp"
 #include "mlrl/boosting/prediction/probability_function_marginal.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

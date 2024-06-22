@@ -6,6 +6,8 @@
 #include "mlrl/common/data/view_composite.hpp"
 #include "mlrl/common/data/view_vector.hpp"
 
+#include <utility>
+
 /**
  * A vector that is backed two one-dimensional views.
  *

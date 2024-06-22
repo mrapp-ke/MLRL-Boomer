@@ -6,6 +6,8 @@
 #include "mlrl/common/indices/index_vector.hpp"
 #include "mlrl/common/iterator/index_iterator.hpp"
 
+#include <memory>
+
 /**
  * Provides random access to all indices within a continuous range [0, numIndices).
  */

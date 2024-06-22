@@ -10,6 +10,8 @@
 #include "mlrl/common/prediction/predictor_score.hpp"
 #include "mlrl/common/util/validation.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     static inline void applyHead(const CompleteHead& head, View<float64>::iterator iterator) {

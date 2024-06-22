@@ -11,7 +11,7 @@ static inline void processCompleteScores(std::unique_ptr<IEvaluatedPrediction>& 
     if (!existingHead) {
         // Create a new head, if necessary...
         existingHeadPtr = std::make_unique<CompletePrediction>(numElements);
-        existingHead = (CompletePrediction*) existingHeadPtr.get();
+        existingHead = static_cast<CompletePrediction*>(existingHeadPtr.get());
     }
 
     copyView(scoreVector.values_cbegin(), existingHead->values_begin(), numElements);
@@ -26,7 +26,7 @@ static inline void processPartialScores(std::unique_ptr<IEvaluatedPrediction>& e
     if (!existingHead) {
         // Create a new head, if necessary...
         existingHeadPtr = std::make_unique<PartialPrediction>(numElements, scoreVector.isSorted());
-        existingHead = (PartialPrediction*) existingHeadPtr.get();
+        existingHead = static_cast<PartialPrediction*>(existingHeadPtr.get());
     } else {
         // Adjust the size of the existing head, if necessary...
         if (existingHead->getNumElements() != numElements) {

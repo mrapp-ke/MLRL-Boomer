@@ -18,9 +18,9 @@
 template<typename T>
 static inline constexpr T* allocateMemory(uint32 numElements, bool init = false) {
     if (init) {
-        return (T*) calloc(numElements, sizeof(T));
+        return reinterpret_cast<T*>(calloc(numElements, sizeof(T)));
     } else {
-        return (T*) malloc(numElements * sizeof(T));
+        return reinterpret_cast<T*>(malloc(numElements * sizeof(T)));
     }
 }
 
@@ -34,7 +34,7 @@ static inline constexpr T* allocateMemory(uint32 numElements, bool init = false)
  */
 template<typename T>
 static inline constexpr T* reallocateMemory(T* array, uint32 numElements) {
-    return (T*) realloc(array, numElements * sizeof(T));
+    return reinterpret_cast<T*>(realloc(array, numElements * sizeof(T)));
 }
 
 /**

@@ -7,6 +7,8 @@
 #include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/prediction/predictor_binary.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

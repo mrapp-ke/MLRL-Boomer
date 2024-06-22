@@ -14,6 +14,8 @@
 #include "mlrl/common/sampling/weight_vector.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that implement an algorithm for the induction of individual rules.
  */

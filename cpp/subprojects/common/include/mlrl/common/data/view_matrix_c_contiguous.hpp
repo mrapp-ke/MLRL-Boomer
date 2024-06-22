@@ -6,6 +6,8 @@
 #include "mlrl/common/data/view_matrix_dense.hpp"
 #include "mlrl/common/data/view_vector.hpp"
 
+#include <utility>
+
 /**
  * A two-dimensional view that provides row-wise access to values stored in a pre-allocated array of a specific size.
  *

@@ -24,6 +24,9 @@
 #include "mlrl/seco/rule_evaluation/head_type_single.hpp"
 #include "mlrl/seco/stopping/stopping_criterion_coverage.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace seco {
 
     /**
@@ -663,7 +666,7 @@ namespace seco {
              * @param config A reference to an object of type `ISeCoRuleLearner::IConfig` that specifies the
              *               configuration that should be used by the rule learner
              */
-            AbstractSeCoRuleLearner(ISeCoRuleLearner::IConfig& config);
+            explicit AbstractSeCoRuleLearner(ISeCoRuleLearner::IConfig& config);
     };
 
 }

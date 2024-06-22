@@ -6,6 +6,8 @@
 #include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/info.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

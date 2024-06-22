@@ -8,6 +8,8 @@
 #include "mlrl/common/data/view_matrix_sparse_set.hpp"
 #include "mlrl/common/measures/measure_evaluation_sparse.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

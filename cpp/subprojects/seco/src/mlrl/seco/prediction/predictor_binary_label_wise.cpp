@@ -363,7 +363,7 @@ namespace seco {
                         BinaryLilMatrix::row predictionRow = predictionMatrix_[predictionIndex];
                         predictForExampleInternally(featureMatrix, rulesBegin, rulesEnd, predictionRow, numLabels_,
                                                     exampleIndex);
-                        return (uint32) predictionRow.size();
+                        return static_cast<uint32>(predictionRow.size());
                     }
             };
 

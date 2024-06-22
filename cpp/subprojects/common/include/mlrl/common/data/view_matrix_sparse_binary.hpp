@@ -5,6 +5,8 @@
 
 #include "mlrl/common/data/view_matrix.hpp"
 
+#include <utility>
+
 /**
  * A two-dimensional view that provides row- or column wise access to binary values stored in a sparse matrix.
  */
@@ -105,7 +107,7 @@ class MLRLCOMMON_API IterableBinarySparseMatrixDecorator : public Matrix {
         /**
          * @param view The view, the matrix should be backed by
          */
-        IterableBinarySparseMatrixDecorator(typename Matrix::view_type&& view) : Matrix(std::move(view)) {}
+        explicit IterableBinarySparseMatrixDecorator(typename Matrix::view_type&& view) : Matrix(std::move(view)) {}
 
         virtual ~IterableBinarySparseMatrixDecorator() override {}
 

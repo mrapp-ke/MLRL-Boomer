@@ -153,7 +153,7 @@ namespace seco {
         if (peakLabel > 0) {
             peakLabel = std::min(numLabels, peakLabel);
         } else {
-            uint32 labelCardinality = (uint32) std::round(labelMatrix.calculateLabelCardinality());
+            uint32 labelCardinality = static_cast<uint32>(std::round(labelMatrix.calculateLabelCardinality()));
             peakLabel = std::max<uint32>(labelCardinality, 1);
         }
 

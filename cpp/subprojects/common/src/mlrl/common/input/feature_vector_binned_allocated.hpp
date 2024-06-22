@@ -5,6 +5,8 @@
 
 #include "mlrl/common/input/feature_vector_binned.hpp"
 
+#include <utility>
+
 /**
  * Allocates the memory, a `BinnedFeatureVector` provides access to.
  */

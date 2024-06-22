@@ -9,6 +9,8 @@
 #include "mlrl/common/measures/measure_distance.hpp"
 #include "mlrl/common/util/math.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

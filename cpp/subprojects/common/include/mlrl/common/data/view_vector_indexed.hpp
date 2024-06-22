@@ -5,6 +5,8 @@
 
 #include "mlrl/common/data/view_vector_composite.hpp"
 
+#include <utility>
+
 /**
  * A vector that is backed by two one-dimensional views of a specific size, storing indices and corresponding values.
  *
@@ -18,7 +20,7 @@ class MLRLCOMMON_API IndexedVectorDecorator : public ViewDecorator<CompositeVect
         /**
          * @param view The view, the vector should be backed by
          */
-        IndexedVectorDecorator(CompositeVector<IndexView, ValueView>&& view)
+        explicit IndexedVectorDecorator(CompositeVector<IndexView, ValueView>&& view)
             : ViewDecorator<CompositeVector<IndexView, ValueView>>(std::move(view)) {}
 
         virtual ~IndexedVectorDecorator() override {}
@@ -55,7 +57,7 @@ class MLRLCOMMON_API IterableIndexedVectorDecorator : public Vector {
         /**
          * @param view The view, the vector should be backed by
          */
-        IterableIndexedVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
+        explicit IterableIndexedVectorDecorator(typename Vector::view_type&& view) : Vector(std::move(view)) {}
 
         virtual ~IterableIndexedVectorDecorator() override {}
 
