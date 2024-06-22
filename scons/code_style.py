@@ -9,6 +9,10 @@ from os import path
 from modules import BUILD_MODULE, CPP_MODULE, DOC_MODULE, PYTHON_MODULE
 from run import run_program
 
+MD_DIRS = [('.', False), (DOC_MODULE.root_dir, True), (PYTHON_MODULE.root_dir, True)]
+
+YAML_DIRS = [('.', False), ('.github', True)]
+
 
 def __isort(directory: str, enforce_changes: bool = False):
     args = ['--settings-path', '.', '--virtual-env', 'venv', '--skip-gitignore']
@@ -54,14 +58,19 @@ def __mdformat(directory: str, recursive: bool = False, enforce_changes: bool = 
     run_program('mdformat', *args, *md_files, additional_dependencies=['mdformat-myst'])
 
 
-def __yamlfix(directory: str, recursive: bool = False):
+def __yamlfix(directory: str, recursive: bool = False, enforce_changes: bool = False):
     suffix_yaml = '*.y*ml'
     glob_path = path.join(directory, '**', suffix_yaml) if recursive else path.join(directory, suffix_yaml)
     yaml_files = [
         file for file in glob(glob_path, include_hidden=True)
         if path.basename(file).endswith('.yml') or path.basename(file).endswith('.yaml')
     ]
-    run_program('yamlfix', '--config-file', '.yamlfix.toml', *yaml_files, print_args=True)
+    args = ['--config-file', '.yamlfix.toml']
+
+    if not enforce_changes:
+        args.append('--check')
+
+    run_program('yamlfix', *args, *yaml_files, print_args=True)
 
 
 def check_python_code_style(**_):
@@ -107,9 +116,9 @@ def enforce_cpp_code_style(**_):
 
 def check_md_code_style(**_):
     """
-    Check if the Markdown files adhere to the code style definitions. If this is not the case, an error is raised.
+    Checks if the Markdown files adhere to the code style definitions. If this is not the case, an error is raised.
     """
-    for directory, recursive in [('.', False), (DOC_MODULE.root_dir, True), (PYTHON_MODULE.root_dir, True)]:
+    for directory, recursive in MD_DIRS:
         print('Checking Markdown code style in the directory "' + directory + '"...')
         __mdformat(directory, recursive=recursive)
 
@@ -118,15 +127,24 @@ def enforce_md_code_style(**_):
     """
     Enforces the Markdown files to adhere to the code style definitions.
     """
-    for directory, recursive in [('.', False), (DOC_MODULE.root_dir, True), (PYTHON_MODULE.root_dir, True)]:
+    for directory, recursive in MD_DIRS:
         print('Formatting Markdown files in the directory "' + directory + '"...')
         __mdformat(directory, recursive=recursive, enforce_changes=True)
 
 
+def check_yaml_code_style(**_):
+    """
+    Checks if the YAML files adhere to the code style definitions. If this is not the case, an error is raised.
+    """
+    for directory, recursive in YAML_DIRS:
+        print('Checking YAML files in the directory "' + directory + '"...')
+        __yamlfix(directory, recursive=recursive)
+
+
 def enforce_yaml_code_style(**_):
     """
-    Enforces YAML files to adhere to the code style definitions.
+    Enforces the YAML files to adhere to the code style definitions.
     """
-    for directory, recursive in [('.', False), ('.github', True)]:
+    for directory, recursive in YAML_DIRS:
         print('Formatting YAML files in the directory "' + directory + '"...')
-        __yamlfix(directory, recursive=recursive)
+        __yamlfix(directory, recursive=recursive, enforce_changes=True)
