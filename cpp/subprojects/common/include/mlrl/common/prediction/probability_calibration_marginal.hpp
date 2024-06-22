@@ -5,6 +5,8 @@
 
 #include "mlrl/common/prediction/probability_calibration.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that implement a model for the calibration of marginal probabilities.
  */

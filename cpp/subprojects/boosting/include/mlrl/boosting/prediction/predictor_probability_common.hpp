@@ -7,6 +7,9 @@
 #include "mlrl/boosting/prediction/transformation_probability.hpp"
 #include "mlrl/common/prediction/predictor_probability.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace boosting {
 
     /**

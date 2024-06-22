@@ -7,6 +7,9 @@
 #include "mlrl/common/rule_evaluation/score_vector_binned_dense.hpp"
 #include "rule_evaluation_example_wise_complete_common.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace boosting {
 
     /**

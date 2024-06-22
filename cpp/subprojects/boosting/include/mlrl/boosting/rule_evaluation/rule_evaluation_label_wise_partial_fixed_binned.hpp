@@ -6,6 +6,8 @@
 #include "mlrl/boosting/binning/label_binning.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_label_wise_sparse.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

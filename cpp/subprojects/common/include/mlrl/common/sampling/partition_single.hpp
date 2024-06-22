@@ -6,6 +6,8 @@
 #include "mlrl/common/iterator/index_iterator.hpp"
 #include "mlrl/common/sampling/partition.hpp"
 
+#include <memory>
+
 /**
  * An implementation of the class `IPartition` that provides random access to the indices of elements that are included
  * in a single set.

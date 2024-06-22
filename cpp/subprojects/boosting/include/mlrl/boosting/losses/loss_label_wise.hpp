@@ -9,6 +9,8 @@
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

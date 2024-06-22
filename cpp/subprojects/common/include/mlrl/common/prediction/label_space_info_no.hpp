@@ -5,6 +5,8 @@
 
 #include "mlrl/common/prediction/label_space_info.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that do not provide any information about the label space.
  */

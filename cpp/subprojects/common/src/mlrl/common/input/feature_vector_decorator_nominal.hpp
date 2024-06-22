@@ -6,6 +6,9 @@
 #include "feature_vector_decorator_binned_common.hpp"
 #include "feature_vector_decorator_nominal_common.hpp"
 
+#include <memory>
+#include <utility>
+
 template<typename View, typename Decorator>
 static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVectorDecorator(
   const View& view, std::unique_ptr<IFeatureVector>& existing, const Interval& interval) {

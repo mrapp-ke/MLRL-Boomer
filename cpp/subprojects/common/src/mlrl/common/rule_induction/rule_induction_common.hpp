@@ -7,6 +7,8 @@
 #include "mlrl/common/rule_induction/rule_induction.hpp"
 #include "mlrl/common/rule_refinement/score_processor.hpp"
 
+#include <memory>
+
 /**
  * An abstract base class for all classes that implement an algorithm for the induction of individual rules.
  */

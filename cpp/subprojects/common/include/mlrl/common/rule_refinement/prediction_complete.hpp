@@ -7,6 +7,8 @@
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/rule_refinement/prediction_evaluated.hpp"
 
+#include <memory>
+
 /**
  * Stores the scores that are predicted by a rule that predicts for all available labels.
  */

@@ -6,6 +6,8 @@
 #include "mlrl/boosting/prediction/discretization_function.hpp"
 #include "mlrl/boosting/prediction/transformation_binary.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

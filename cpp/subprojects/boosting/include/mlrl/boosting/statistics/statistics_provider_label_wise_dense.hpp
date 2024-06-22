@@ -8,6 +8,8 @@
 #include "mlrl/boosting/statistics/statistics_label_wise.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

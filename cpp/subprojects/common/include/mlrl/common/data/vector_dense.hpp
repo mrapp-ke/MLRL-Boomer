@@ -5,6 +5,8 @@
 
 #include "mlrl/common/data/view_vector.hpp"
 
+#include <utility>
+
 /**
  * Provides random read and write access, as well as read and write access via iterators, to the values stored in
  * vector.

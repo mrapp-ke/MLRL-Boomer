@@ -6,6 +6,8 @@
 #include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/indices/index_vector.hpp"
 
+#include <memory>
+
 /**
  * Provides random access to a fixed number of indices stored in a C-contiguous array.
  */

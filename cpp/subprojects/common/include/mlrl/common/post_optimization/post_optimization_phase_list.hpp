@@ -5,6 +5,7 @@
 
 #include "mlrl/common/post_optimization/post_optimization.hpp"
 
+#include <memory>
 #include <vector>
 
 /**

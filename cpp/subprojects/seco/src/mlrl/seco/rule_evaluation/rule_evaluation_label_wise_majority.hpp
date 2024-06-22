@@ -8,6 +8,8 @@
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 #include "mlrl/seco/rule_evaluation/rule_evaluation_label_wise.hpp"
 
+#include <memory>
+
 namespace seco {
 
     /**

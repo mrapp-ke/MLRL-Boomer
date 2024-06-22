@@ -5,6 +5,7 @@
 
 #include "mlrl/common/stopping/stopping_criterion.hpp"
 
+#include <memory>
 #include <vector>
 
 /**

@@ -6,6 +6,8 @@
 #include "mlrl/common/data/view.hpp"
 #include "mlrl/common/util/view_functions.hpp"
 
+#include <utility>
+
 /**
  * A one-dimensional view that provides access to values stored in a pre-allocated array of a specific size.
  *

@@ -9,6 +9,8 @@
 #include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/multi_threading/multi_threading.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

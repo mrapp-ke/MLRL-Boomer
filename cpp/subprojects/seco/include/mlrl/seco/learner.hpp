@@ -24,6 +24,9 @@
 #include "mlrl/seco/rule_evaluation/head_type_single.hpp"
 #include "mlrl/seco/stopping/stopping_criterion_coverage.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace seco {
 
     /**

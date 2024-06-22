@@ -6,6 +6,7 @@
 #include "mlrl/common/data/view.hpp"
 
 #include <unordered_set>
+#include <utility>
 
 /**
  * A view that provides access to binary values stored in a sparse vector in the dictionary of keys (DOK) format.

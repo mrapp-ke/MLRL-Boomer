@@ -6,6 +6,8 @@
 
 #include "mlrl/seco/heuristics/heuristic.hpp"
 
+#include <memory>
+
 namespace seco {
 
     /**

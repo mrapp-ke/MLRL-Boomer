@@ -6,6 +6,8 @@
 #include "mlrl/boosting/data/view_statistic_example_wise_dense.hpp"
 #include "mlrl/boosting/losses/loss_label_wise.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**
