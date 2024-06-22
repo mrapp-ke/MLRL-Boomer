@@ -6,6 +6,8 @@
 #include "mlrl/common/model/condition.hpp"
 #include "mlrl/common/rule_refinement/prediction_evaluated.hpp"
 
+#include <memory>
+
 /**
  * Stores the properties of a potential refinement of a rule.
  */

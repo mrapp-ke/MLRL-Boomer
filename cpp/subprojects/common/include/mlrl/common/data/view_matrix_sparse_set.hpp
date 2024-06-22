@@ -8,6 +8,9 @@
 #include "mlrl/common/data/view_matrix_composite.hpp"
 #include "mlrl/common/data/view_matrix_lil.hpp"
 
+#include <limits>
+#include <utility>
+
 /**
  * A two-dimensional view that provides random read and write access, as well as row-wise read and write access via
  * iterators, to values stored in a sparse matrix in the list of lists (LIL) format. Compared to the view

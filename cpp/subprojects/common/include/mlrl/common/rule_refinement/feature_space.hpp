@@ -11,6 +11,8 @@
 #include "mlrl/common/sampling/weight_vector_equal.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that provide access to the feature space.
  */

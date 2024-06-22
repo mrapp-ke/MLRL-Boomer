@@ -8,6 +8,9 @@
 #include "mlrl/common/data/matrix_c_contiguous.hpp"
 #include "mlrl/common/prediction/predictor_binary.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace boosting {
 
     /**

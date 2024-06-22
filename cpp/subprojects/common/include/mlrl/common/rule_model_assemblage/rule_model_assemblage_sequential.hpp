@@ -6,6 +6,8 @@
 #include "mlrl/common/rule_model_assemblage/default_rule.hpp"
 #include "mlrl/common/rule_model_assemblage/rule_model_assemblage.hpp"
 
+#include <memory>
+
 /**
  * Allows to configure an algorithm that sequentially induces several rules, optionally starting with a default rule,
  * that are added to a rule-based model.

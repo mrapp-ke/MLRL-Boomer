@@ -5,6 +5,9 @@
 
 #include "mlrl/boosting/statistics/statistics_non_decomposable.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace boosting {
 
     static inline bool hasNonZeroWeightNonDecomposable(const EqualWeightVector& weights, uint32 statisticIndex) {

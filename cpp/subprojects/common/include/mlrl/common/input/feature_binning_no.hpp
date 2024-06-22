@@ -5,6 +5,8 @@
 
 #include "mlrl/common/input/feature_binning.hpp"
 
+#include <memory>
+
 /**
  * Allows to configure a method that does not actually perform any feature binning.
  */

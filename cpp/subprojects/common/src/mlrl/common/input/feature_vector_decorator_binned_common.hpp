@@ -7,6 +7,8 @@
 #include "feature_vector_nominal_allocated.hpp"
 #include "mlrl/common/input/feature_vector_equal.hpp"
 
+#include <utility>
+
 template<typename View, typename FeatureVector>
 static inline void updateCoverageMaskAndStatisticsBasedOnBinnedFeatureVector(const View& view, const Interval& interval,
                                                                              CoverageMask& coverageMask,

@@ -9,6 +9,8 @@
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 #include "mlrl/common/rule_refinement/prediction_evaluated.hpp"
 
+#include <memory>
+
 /**
  * Allows to process the scores that are stored by an `IScoreVector` in order to convert them into the head of a rule,
  * represented by an `IEvaluatedPrediction`.

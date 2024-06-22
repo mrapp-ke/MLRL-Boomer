@@ -5,6 +5,8 @@
 
 #include "mlrl/common/sampling/partition_sampling.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that allow to configure a method for partitioning the available training
  * examples into a training set and a holdout set that randomly splits the training examples into two mutually exclusive

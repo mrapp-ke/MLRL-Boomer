@@ -6,7 +6,9 @@
 #include "feature_vector_decorator_binary.hpp"
 #include "mlrl/common/data/tuple.hpp"
 
+#include <memory>
 #include <unordered_map>
+#include <utility>
 
 template<typename ValueIterator>
 static inline uint32 createMapping(ValueIterator valueIterator, uint32 numElements,

@@ -5,6 +5,8 @@
 
 #include "mlrl/common/input/feature_vector_numerical.hpp"
 
+#include <utility>
+
 /**
  * Allocates the memory, a `NumericalFeatureVector` provides access to.
  */

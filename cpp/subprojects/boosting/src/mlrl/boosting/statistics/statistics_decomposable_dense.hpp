@@ -9,6 +9,9 @@
 #include "mlrl/common/measures/measure_evaluation.hpp"
 #include "statistics_decomposable_common.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace boosting {
 
     /**

@@ -6,6 +6,9 @@
 #include "mlrl/common/statistics/statistics_provider.hpp"
 #include "mlrl/seco/statistics/statistics_decomposable.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace seco {
 
     /**

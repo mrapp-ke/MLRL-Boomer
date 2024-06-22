@@ -5,6 +5,8 @@
 
 #include "mlrl/common/post_processing/post_processor.hpp"
 
+#include <memory>
+
 /**
  * Allows to configure a post-processor that does not perform any post-processing, but retains the original predictions
  * of rules.

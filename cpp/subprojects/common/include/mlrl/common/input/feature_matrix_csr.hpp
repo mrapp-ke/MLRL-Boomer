@@ -10,6 +10,8 @@
 
 #include "mlrl/common/input/feature_matrix_row_wise.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all feature matrices that provide row-wise access to the feature values of examples that are
  * stored in a sparse matrix in the compressed sparse row (CSR) format.
