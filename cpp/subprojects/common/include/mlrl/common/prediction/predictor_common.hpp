@@ -6,6 +6,8 @@
 #include "mlrl/common/prediction/predictor.hpp"
 #include "mlrl/common/util/openmp.hpp"
 
+#include <algorithm>
+
 /**
  * Allows to obtain predictions for multiple query examples by delegating the prediction for individual examples to
  * another class.

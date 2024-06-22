@@ -5,6 +5,8 @@
 
 #include "mlrl/common/data/view_matrix.hpp"
 
+#include <utility>
+
 /**
  * A two-dimensional view that provides row- or column wise access to binary values stored in a sparse matrix.
  */

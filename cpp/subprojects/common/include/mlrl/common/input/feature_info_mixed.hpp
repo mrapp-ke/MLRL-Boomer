@@ -5,6 +5,8 @@
 
 #include "mlrl/common/input/feature_info.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that provide information about the types of individual features in cases where
  * different types of features, i.e., ordinal, nominal and numerical ones, are available.

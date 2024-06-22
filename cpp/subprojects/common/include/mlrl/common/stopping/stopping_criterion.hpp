@@ -7,6 +7,8 @@
 #include "mlrl/common/sampling/partition_single.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all stopping criteria that allow to decide whether additional rules should be induced or
  * not.

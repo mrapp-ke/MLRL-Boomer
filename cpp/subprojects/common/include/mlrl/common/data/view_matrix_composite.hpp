@@ -6,6 +6,8 @@
 #include "mlrl/common/data/view_composite.hpp"
 #include "mlrl/common/data/view_matrix.hpp"
 
+#include <utility>
+
 /**
  * A matrix that is backed two two-dimensional views.
  *

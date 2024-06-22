@@ -14,6 +14,8 @@
 #include "mlrl/common/statistics/statistics_provider.hpp"
 #include "mlrl/common/stopping/stopping_criterion.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that implement an algorithm for the induction of several rules that will be
  * added to a rule-based model.

@@ -6,6 +6,7 @@
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/weight_vector_bit.hpp"
 
+#include <memory>
 #include <vector>
 
 /**

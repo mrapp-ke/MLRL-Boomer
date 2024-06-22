@@ -10,6 +10,8 @@
 #include "mlrl/common/sampling/weight_vector_equal.hpp"
 #include "mlrl/common/sampling/weight_vector_out_of_sample.hpp"
 
+#include <memory>
+
 // Forward declarations
 class IPostProcessor;
 class IStatistics;

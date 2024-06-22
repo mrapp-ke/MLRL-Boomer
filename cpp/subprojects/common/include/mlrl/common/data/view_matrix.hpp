@@ -5,6 +5,8 @@
 
 #include "mlrl/common/data/view.hpp"
 
+#include <utility>
+
 /**
  * A two-dimensional view that provides access to values stored in a matrix of a specific size.
  */

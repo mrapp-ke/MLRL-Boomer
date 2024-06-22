@@ -6,6 +6,8 @@
 #include "mlrl/boosting/data/view_statistic_non_decomposable_dense.hpp"
 #include "mlrl/boosting/losses/loss_decomposable.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

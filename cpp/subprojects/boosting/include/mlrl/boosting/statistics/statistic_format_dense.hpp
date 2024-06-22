@@ -6,6 +6,8 @@
 #include "mlrl/boosting/losses/loss.hpp"
 #include "mlrl/boosting/statistics/statistic_format.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

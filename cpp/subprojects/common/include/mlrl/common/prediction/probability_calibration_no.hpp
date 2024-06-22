@@ -5,6 +5,8 @@
 
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all models for the calibration of marginal or joint probabilities that do make any
  * adjustments.
