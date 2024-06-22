@@ -59,10 +59,10 @@ def __mdformat(directory: str, recursive: bool = False, enforce_changes: bool = 
 
 
 def __yamlfix(directory: str, recursive: bool = False, enforce_changes: bool = False):
-    suffix_yaml = '*.y*ml'
-    glob_path = path.join(directory, '**', suffix_yaml) if recursive else path.join(directory, suffix_yaml)
+    glob_path = path.join(directory, '**', '*') if recursive else path.join(directory, '*')
+    glob_path_hidden = path.join(directory, '**', '.*') if recursive else path.join(directory, '.*')
     yaml_files = [
-        file for file in glob(glob_path, include_hidden=True)
+        file for file in glob(glob_path) + glob(glob_path_hidden)
         if path.basename(file).endswith('.yml') or path.basename(file).endswith('.yaml')
     ]
     args = ['--config-file', '.yamlfix.toml']
