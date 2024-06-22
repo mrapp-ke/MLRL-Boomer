@@ -5,6 +5,8 @@
 
 #include "mlrl/common/sampling/instance_sampling.hpp"
 
+#include <memory>
+
 /**
  * Allows to configure a method for sampling training examples that does not perform any sampling, but assigns equal
  * weights to all examples.

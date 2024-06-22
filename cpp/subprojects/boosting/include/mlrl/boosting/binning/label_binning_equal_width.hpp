@@ -7,6 +7,8 @@
 #include "mlrl/boosting/rule_evaluation/regularization.hpp"
 #include "mlrl/boosting/util/dll_exports.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

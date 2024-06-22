@@ -6,6 +6,7 @@
 #include "config.hpp"
 #include "mlrl/common/util/strings.hpp"
 
+#include <string>
 #include <vector>
 
 #if GPU_SUPPORT_ENABLED

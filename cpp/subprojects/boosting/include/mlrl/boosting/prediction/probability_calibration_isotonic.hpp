@@ -7,6 +7,8 @@
 #include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/prediction/probability_calibration_isotonic.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

@@ -234,6 +234,27 @@ class CppModule(SourceModule):
         C++ code.
         """
 
+        @property
+        def include_dir(self) -> str:
+            """
+            The directory that contains the header files.
+            """
+            return path.join(self.root_dir, 'include')
+
+        @property
+        def src_dir(self) -> str:
+            """
+            The directory that contains the source files.
+            """
+            return path.join(self.root_dir, 'src')
+
+        @property
+        def test_dir(self) -> str:
+            """
+            The directory that contains the source code for automated tests.
+            """
+            return path.join(self.root_dir, 'test')
+
         def find_source_files(self) -> List[str]:
             """
             Finds and returns all source files that are contained by the subproject.
@@ -256,7 +277,7 @@ class CppModule(SourceModule):
 
         
         :param return_all:  True, if all subprojects should be returned, even if they are disabled, False otherwise
-        :return:            A list that contains all subrojects that have been found
+        :return:            A list that contains all subprojects that have been found
         """
         subprojects = [
             CppModule.Subproject(self, file) for file in glob(path.join(self.root_dir, 'subprojects', '*'))

@@ -25,7 +25,7 @@ void IntermediateModelBuilder::removeLastRule() {
 }
 
 uint32 IntermediateModelBuilder::getNumRules() const {
-    uint32 numRules = (uint32) intermediateRuleList_.size();
+    uint32 numRules = static_cast<uint32>(intermediateRuleList_.size());
 
     if (defaultPredictionPtr_) {
         numRules++;

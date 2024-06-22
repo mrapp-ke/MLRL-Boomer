@@ -6,6 +6,8 @@
 
 #include "mlrl/common/sampling/instance_sampling.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that allow to configure a method for selecting a subset of the available
  * training examples using stratification, such that for each label the proportion of relevant and irrelevant examples

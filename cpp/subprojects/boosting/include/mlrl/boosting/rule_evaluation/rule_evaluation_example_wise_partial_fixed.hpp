@@ -7,6 +7,8 @@
 #include "mlrl/boosting/util/blas.hpp"
 #include "mlrl/boosting/util/lapack.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

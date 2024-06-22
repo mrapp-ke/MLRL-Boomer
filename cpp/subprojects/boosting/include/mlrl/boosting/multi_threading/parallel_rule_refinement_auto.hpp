@@ -8,6 +8,8 @@
 #include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/sampling/feature_sampling.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

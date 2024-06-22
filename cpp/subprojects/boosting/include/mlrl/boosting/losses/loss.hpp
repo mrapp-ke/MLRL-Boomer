@@ -13,6 +13,8 @@
 #include "mlrl/common/measures/measure_evaluation.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

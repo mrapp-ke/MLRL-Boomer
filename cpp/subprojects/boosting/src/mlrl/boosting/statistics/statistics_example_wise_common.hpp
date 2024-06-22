@@ -5,6 +5,9 @@
 
 #include "mlrl/boosting/statistics/statistics_example_wise.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace boosting {
 
     static inline bool hasNonZeroWeightExampleWise(const EqualWeightVector& weights, uint32 statisticIndex) {

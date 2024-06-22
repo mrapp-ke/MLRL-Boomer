@@ -5,6 +5,8 @@
 
 #include "mlrl/common/stopping/stopping_criterion.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that allow to configure a stopping criterion that ensures that a certain time
  * limit is not exceeded.

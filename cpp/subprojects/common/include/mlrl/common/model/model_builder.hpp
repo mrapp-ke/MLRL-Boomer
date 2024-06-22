@@ -7,6 +7,8 @@
 #include "mlrl/common/model/rule_model.hpp"
 #include "mlrl/common/rule_refinement/prediction_evaluated.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that allow to incrementally build rule-based models.
  */

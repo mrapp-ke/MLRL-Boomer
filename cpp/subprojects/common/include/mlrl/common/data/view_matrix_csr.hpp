@@ -5,6 +5,8 @@
 
 #include "mlrl/common/data/view_matrix_sparse.hpp"
 
+#include <utility>
+
 /**
  * A two-dimensional view that provides row-wise access to values stored in a matrix in the compressed sparse row (CSR)
  * format.

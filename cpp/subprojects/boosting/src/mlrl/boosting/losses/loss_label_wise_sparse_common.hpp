@@ -13,6 +13,7 @@
 #include "mlrl/common/iterator/non_zero_index_forward_iterator.hpp"
 
 #include <algorithm>
+#include <limits>
 
 namespace boosting {
 

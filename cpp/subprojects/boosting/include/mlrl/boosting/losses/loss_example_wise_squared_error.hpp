@@ -6,6 +6,8 @@
 #include "mlrl/boosting/losses/loss_example_wise.hpp"
 #include "mlrl/boosting/rule_evaluation/head_type.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

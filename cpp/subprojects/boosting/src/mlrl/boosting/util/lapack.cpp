@@ -20,7 +20,7 @@ namespace boosting {
         int info;
 
         // Query the optimal value for the "lwork" parameter...
-        dsysvFunction_(uplo, &n, &nrhs, tmpArray1, &n, (int*) 0, output, &n, &worksize, &lwork, &info);
+        dsysvFunction_(uplo, &n, &nrhs, tmpArray1, &n, reinterpret_cast<int*>(0), output, &n, &worksize, &lwork, &info);
 
         if (info != 0) {
             throw std::runtime_error(
@@ -28,7 +28,7 @@ namespace boosting {
               + std::to_string(info));
         }
 
-        return (int) worksize;
+        return static_cast<int>(worksize);
     }
 
     void Lapack::dsysv(float64* tmpArray1, int* tmpArray2, double* tmpArray3, float64* output, int n, int lwork) const {

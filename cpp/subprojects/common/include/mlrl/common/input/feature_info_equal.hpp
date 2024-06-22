@@ -5,6 +5,8 @@
 
 #include "mlrl/common/input/feature_info.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that provide information about the types of individual features in cases where
  * all features are of the same type, i.e., where all features are either binary, nominal or numerical/ordinal.

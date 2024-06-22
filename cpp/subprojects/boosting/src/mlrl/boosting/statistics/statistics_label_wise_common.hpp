@@ -5,6 +5,9 @@
 
 #include "mlrl/boosting/statistics/statistics_label_wise.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace boosting {
 
     static inline bool hasNonZeroWeightLabelWise(const EqualWeightVector& weights, uint32 statisticIndex) {

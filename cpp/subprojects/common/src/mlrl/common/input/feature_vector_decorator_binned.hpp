@@ -6,7 +6,9 @@
 #include "feature_vector_binned_allocated.hpp"
 #include "feature_vector_decorator_binned_common.hpp"
 
+#include <memory>
 #include <optional>
+#include <utility>
 
 template<typename Decorator>
 static inline std::optional<BinnedFeatureVector> createFilteredBinnedFeatureVectorView(

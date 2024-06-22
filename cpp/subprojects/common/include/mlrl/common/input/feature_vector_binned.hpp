@@ -64,7 +64,7 @@ class MLRLCOMMON_API BinnedFeatureVector {
          */
         BinnedFeatureVector(BinnedFeatureVector&& other);
 
-        virtual ~BinnedFeatureVector() {};
+        virtual ~BinnedFeatureVector() {}
 
         /**
          * The type of the indices, the view provides access to.

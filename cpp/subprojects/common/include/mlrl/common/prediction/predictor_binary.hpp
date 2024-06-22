@@ -12,6 +12,8 @@
 #include "mlrl/common/prediction/predictor.hpp"
 #include "mlrl/common/prediction/probability_calibration_marginal.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that allow to predict binary labels for given query examples.
  */

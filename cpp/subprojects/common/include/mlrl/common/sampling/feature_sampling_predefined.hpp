@@ -5,6 +5,8 @@
 
 #include "mlrl/common/sampling/feature_sampling.hpp"
 
+#include <memory>
+
 /**
  * An implementation of the class `IFeatureSampling` that does not perform any sampling, but always returns a predefined
  * set of features.

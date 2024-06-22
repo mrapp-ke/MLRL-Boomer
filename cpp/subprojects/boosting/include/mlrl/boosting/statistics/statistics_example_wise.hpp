@@ -6,6 +6,8 @@
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_example_wise.hpp"
 #include "mlrl/boosting/statistics/statistics_label_wise.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**
