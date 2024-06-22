@@ -12,6 +12,9 @@
 #include "mlrl/seco/model/decision_list_builder.hpp"
 #include "mlrl/seco/rule_evaluation/rule_compare_function.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace seco {
 
     /**
@@ -155,7 +158,8 @@ namespace seco {
              * @param configurator A reference to an object of type `SeCoRuleLearnerConfigurator` that allows to
              *                     configure the individual modules to be used by the rule learner
              */
-            AbstractSeCoRuleLearner(SeCoRuleLearnerConfigurator& configurator) : AbstractRuleLearner(configurator) {}
+            explicit AbstractSeCoRuleLearner(SeCoRuleLearnerConfigurator& configurator)
+                : AbstractRuleLearner(configurator) {}
     };
 
 }
