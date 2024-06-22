@@ -1,3 +1,4 @@
+---
 name: Publish pure wheels
 on:
   workflow_call:
@@ -19,7 +20,8 @@ on:
 jobs:
   publish_pure_wheels:
     name: Publish pure wheels
-    runs-on: [ubuntu-latest]
+    runs-on:
+      - ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,7 +37,7 @@ jobs:
         if: ${{ inputs.pypi_repository }}
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: 3.x
       - name: Upload wheels to PyPI
         if: ${{ inputs.pypi_repository }}
         env:
@@ -50,5 +52,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: wheels-${{ inputs.subproject }}-any
-          path: 'wheelhouse/*.whl'
+          path: wheelhouse/*.whl
           if-no-files-found: error
