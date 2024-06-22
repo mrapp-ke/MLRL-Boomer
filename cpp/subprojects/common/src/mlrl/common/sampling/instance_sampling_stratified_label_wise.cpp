@@ -39,7 +39,7 @@ class LabelWiseStratifiedSampling final : public IInstanceSampling {
         LabelWiseStratifiedSampling(const LabelMatrix& labelMatrix, IndexIterator indicesBegin,
                                     IndexIterator indicesEnd, float32 sampleSize)
             : sampleSize_(sampleSize),
-              weightVector_(labelMatrix.numRows, (uint32) (indicesEnd - indicesBegin) < labelMatrix.numRows),
+              weightVector_(labelMatrix.numRows, static_cast<uint32>(indicesEnd - indicesBegin) < labelMatrix.numRows),
               stratification_(labelMatrix, indicesBegin, indicesEnd) {}
 
         const IWeightVector& sample(RNG& rng) override {

@@ -46,7 +46,7 @@ ExampleWiseStratification<LabelMatrix, IndexIterator>::ExampleWiseStratification
 template<typename LabelMatrix, typename IndexIterator>
 void ExampleWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWeightVector& weightVector,
                                                                           float32 sampleSize, RNG& rng) const {
-    uint32 numTotalSamples = (uint32) std::round(sampleSize * numTotal_);
+    uint32 numTotalSamples = static_cast<uint32>(std::round(sampleSize * numTotal_));
     uint32 numTotalOutOfSamples = numTotal_ - numTotalSamples;
     uint32 numNonZeroWeights = 0;
     uint32 numZeroWeights = 0;
@@ -59,8 +59,8 @@ void ExampleWiseStratification<LabelMatrix, IndexIterator>::sampleWeights(BitWei
         uint32 numDesiredSamples = numTotalSamples - numNonZeroWeights;
         uint32 numDesiredOutOfSamples = numTotalOutOfSamples - numZeroWeights;
         uint32 numSamples =
-          (uint32) (tiebreak(numDesiredSamples, numDesiredOutOfSamples, rng) ? std::ceil(numSamplesDecimal)
-                                                                             : std::floor(numSamplesDecimal));
+          static_cast<uint32>(tiebreak(numDesiredSamples, numDesiredOutOfSamples, rng) ? std::ceil(numSamplesDecimal)
+                                                                                       : std::floor(numSamplesDecimal));
         numNonZeroWeights += numSamples;
         numZeroWeights += (numExamples - numSamples);
 
@@ -98,8 +98,8 @@ void ExampleWiseStratification<LabelMatrix, IndexIterator>::sampleBiPartition(Bi
         uint32 numExamples = exampleIndicesPtr->size();
         float32 sampleSize = (float32) numFirst / (float32) (numFirst + numSecond);
         float32 numSamplesDecimal = sampleSize * numExamples;
-        uint32 numSamples =
-          (uint32) (tiebreak(numFirst, numSecond, rng) ? std::ceil(numSamplesDecimal) : std::floor(numSamplesDecimal));
+        uint32 numSamples = static_cast<uint32>(tiebreak(numFirst, numSecond, rng) ? std::ceil(numSamplesDecimal)
+                                                                                   : std::floor(numSamplesDecimal));
 
         // Ensure that we do not add too many examples to the first or second partition...
         if (numSamples > numFirst) {

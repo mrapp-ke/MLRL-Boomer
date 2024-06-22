@@ -236,7 +236,7 @@ namespace boosting {
                                 predictionRow.clear();
                                 binaryTransformation_.apply(realMatrix_.values_cbegin(predictionIndex),
                                                             realMatrix_.values_cend(predictionIndex), predictionRow);
-                                return (uint32) predictionRow.size();
+                                return static_cast<uint32>(predictionRow.size());
                             }
                     };
 
@@ -309,7 +309,7 @@ namespace boosting {
                                              threadIndex);
                         BinaryLilMatrix::row predictionRow = predictionMatrix_[predictionIndex];
                         binaryTransformation_.apply(realIterator, realMatrix_.values_end(threadIndex), predictionRow);
-                        return (uint32) predictionRow.size();
+                        return static_cast<uint32>(predictionRow.size());
                     }
             };
 

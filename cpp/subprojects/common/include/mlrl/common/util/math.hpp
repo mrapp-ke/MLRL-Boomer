@@ -62,7 +62,7 @@ static inline constexpr T iterativeArithmeticMean(uint32 n, T x, T mean) {
  */
 static inline uint32 calculateBoundedFraction(uint32 n, float32 fraction, uint32 minimum, uint32 maximum) {
     // Calculate the fraction...
-    uint32 result = (uint32) std::ceil(fraction * n);
+    uint32 result = static_cast<uint32>(std::ceil(fraction * n));
 
     // Prevent the minimum to exceed the original value...
     uint32 min = minimum > n ? n : minimum;
