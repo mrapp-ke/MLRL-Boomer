@@ -24,13 +24,12 @@ def __isort(directory: str, enforce_changes: bool = False):
 
 
 def __yapf(directory: str, enforce_changes: bool = False):
-    args = ['-r', '-p', '--style=.style.yapf', '--exclude', '**/build/*.py', '-i' if enforce_changes else '--diff']
-    run_program('yapf', *args, directory)
+    run_program('yapf', '-r', '-p', '--style=.style.yapf', '--exclude', '**/build/*.py',
+                '-i' if enforce_changes else '--diff', directory)
 
 
 def __pylint(directory: str):
-    args = ['--jobs=0', '--recursive=y', '--ignore=build', '--rcfile=.pylintrc', '--score=n']
-    run_program('pylint', *args, directory)
+    run_program('pylint', '--jobs=0', '--recursive=y', '--ignore=build', '--rcfile=.pylintrc', '--score=n', directory)
 
 
 def __clang_format(directory: str, enforce_changes: bool = False):
@@ -45,6 +44,10 @@ def __clang_format(directory: str, enforce_changes: bool = False):
         args.append('--Werror')
 
     run_program('clang-format', *args, *cpp_header_files, *cpp_source_files)
+
+
+def __cpplint(directory: str):
+    run_program('cpplint', '--quiet', '--recursive', directory)
 
 
 def __mdformat(directory: str, recursive: bool = False, enforce_changes: bool = False):
@@ -100,18 +103,22 @@ def check_cpp_code_style(**_):
     """
     Checks if the C++ source files adhere to the code style definitions. If this is not the case, an error is raised.
     """
-    directory = CPP_MODULE.root_dir
-    print('Checking C++ code style in directory "' + directory + '"...')
-    __clang_format(directory)
+    root_dir = CPP_MODULE.root_dir
+    print('Checking C++ code style in directory "' + root_dir + '"...')
+    __clang_format(root_dir)
+
+    for subproject in CPP_MODULE.find_subprojects():
+        for directory in [subproject.include_dir, subproject.src_dir]:
+            __cpplint(directory)
 
 
 def enforce_cpp_code_style(**_):
     """
     Enforces the C++ source files to adhere to the code style definitions.
     """
-    directory = CPP_MODULE.root_dir
-    print('Formatting C++ code in directory "' + directory + '"...')
-    __clang_format(directory, enforce_changes=True)
+    root_dir = CPP_MODULE.root_dir
+    print('Formatting C++ code in directory "' + root_dir + '"...')
+    __clang_format(root_dir, enforce_changes=True)
 
 
 def check_md_code_style(**_):
