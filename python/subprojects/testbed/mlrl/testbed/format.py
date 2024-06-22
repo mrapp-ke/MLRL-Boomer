@@ -3,8 +3,12 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides utility functions for creating textual representations.
 """
+import sys
+
 from functools import reduce
 from typing import List
+
+import numpy as np
 
 from tabulate import tabulate
 
@@ -51,6 +55,21 @@ def format_duration(duration: float) -> str:
     return reduce(
         lambda txt, x: txt + ((' and ' if x[0] == len(substrings) - 1 else ', ') if len(txt) > 0 else '') + x[1],
         enumerate(substrings), '')
+
+
+def format_array(array: np.ndarray, decimals: int = 2) -> str:
+    """
+    Creates and returns a textual representation of an array.
+
+    :param array:       The array
+    :param decimals:    The number of decimals to be used or 0, if the number of decimals should not be restricted
+    :return:            The textual representation that has been created
+    """
+    if array.dtype.kind == 'f':
+        precision = decimals if decimals > 0 else None
+        return np.array2string(array, threshold=sys.maxsize, precision=precision, suppress_small=True)
+    # pylint: disable=unnecessary-lambda
+    return np.array2string(array, threshold=sys.maxsize, formatter={'all': lambda x: str(x)})
 
 
 def format_float(value: float, decimals: int = 2) -> str:
