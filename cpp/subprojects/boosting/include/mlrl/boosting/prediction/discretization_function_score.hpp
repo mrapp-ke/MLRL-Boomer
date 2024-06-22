@@ -21,7 +21,7 @@ namespace boosting {
             /**
              * @param threshold The threshold that should be used for discretization
              */
-            ScoreDiscretizationFunctionFactory(float64 threshold);
+            explicit ScoreDiscretizationFunctionFactory(float64 threshold);
 
             std::unique_ptr<IDiscretizationFunction> create(
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel) const override;

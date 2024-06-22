@@ -53,7 +53,7 @@ class AbstractRuleInduction : public IRuleInduction {
          * @param recalculatePredictions True, if the predictions of rules should be recalculated on all training
          *                               examples, if some of the examples have zero weights, false otherwise
          */
-        AbstractRuleInduction(bool recalculatePredictions) : recalculatePredictions_(recalculatePredictions) {}
+        explicit AbstractRuleInduction(bool recalculatePredictions) : recalculatePredictions_(recalculatePredictions) {}
 
         virtual ~AbstractRuleInduction() override {}
 
