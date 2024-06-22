@@ -50,6 +50,9 @@
 #include <memory>
 #include <utility>
 
+#include <memory>
+#include <utility>
+
 /**
  * Defines an interface for all classes that provide access to the results of fitting a rule learner to training data.
  * It incorporates the model that has been trained, as well as additional information that is necessary for obtaining

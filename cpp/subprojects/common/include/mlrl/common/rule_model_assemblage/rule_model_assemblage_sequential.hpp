@@ -9,6 +9,8 @@
 
 #include <memory>
 
+#include <memory>
+
 /**
  * Allows to configure an algorithm that sequentially induces several rules, optionally starting with a default rule,
  * that are added to a rule-based model.
