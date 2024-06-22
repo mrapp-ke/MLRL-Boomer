@@ -44,6 +44,9 @@ jobs:
             md:
               - *build_files
               - '**/*.md'
+            yaml:
+              - *build_files
+              - '**/*.y*ml'
       - name: Check C++ code style
         if: steps.filter.outputs.cpp == 'true'
         run: ./build test_format_cpp
@@ -53,6 +56,9 @@ jobs:
       - name: Check Markdown code style
         if: steps.filter.outputs.md == 'true'
         run: ./build test_format_md
+      - name: Check YAML code style
+        if: steps.filter.outputs.yaml == 'true'
+        run: ./build test_format_yaml
       - name: Save Git repository to cache
         uses: actions/cache/save@v4
         if: success() || failure()
