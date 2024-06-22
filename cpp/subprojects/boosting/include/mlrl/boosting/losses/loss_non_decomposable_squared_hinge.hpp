@@ -6,6 +6,8 @@
 #include "mlrl/boosting/losses/loss_non_decomposable.hpp"
 #include "mlrl/boosting/rule_evaluation/head_type.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

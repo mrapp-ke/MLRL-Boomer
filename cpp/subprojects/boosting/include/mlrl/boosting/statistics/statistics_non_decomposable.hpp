@@ -6,6 +6,8 @@
 #include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable.hpp"
 #include "mlrl/boosting/statistics/statistics_decomposable.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

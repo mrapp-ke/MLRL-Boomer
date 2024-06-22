@@ -13,6 +13,9 @@
 #include "mlrl/boosting/rule_evaluation/rule_compare_function.hpp"
 #include "mlrl/common/learner_common.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace boosting {
 
     /**
@@ -147,7 +150,7 @@ namespace boosting {
              * @param configurator A reference to an object of type `BoostedRuleLearnerConfigurator` that allows to
              *                     configure the individual modules to be used by the rule learner
              */
-            AbstractBoostedRuleLearner(const BoostedRuleLearnerConfigurator& configurator)
+            explicit AbstractBoostedRuleLearner(const BoostedRuleLearnerConfigurator& configurator)
                 : AbstractRuleLearner(configurator) {}
     };
 
