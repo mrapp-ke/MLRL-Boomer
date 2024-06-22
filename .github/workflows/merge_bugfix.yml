@@ -1,8 +1,9 @@
+---
 name: Merge bugfix into feature branch
 on:
   push:
     branches:
-      - 'bugfix'
+      - bugfix
 jobs:
   merge_bugfix:
     name: Merge bugfix into feature branch
@@ -30,11 +31,11 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ steps.app-token.outputs.token }}
-          commit-message: "[Bot] Merge bugfix into feature branch."
+          commit-message: '[Bot] Merge bugfix into feature branch.'
           branch: merge-bugfix
-          title: "Merge bugfix into feature branch"
+          title: Merge bugfix into feature branch
           labels: bot
-          body: "Merge branch \"bugfix\" into \"feature\"."
+          body: Merge branch "bugfix" into "feature".
       - name: Enable auto-merge
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
