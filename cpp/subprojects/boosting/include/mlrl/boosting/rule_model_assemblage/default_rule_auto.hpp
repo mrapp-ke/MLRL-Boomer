@@ -11,6 +11,8 @@
 
 #include <memory>
 
+#include <memory>
+
 namespace boosting {
 
     /**
