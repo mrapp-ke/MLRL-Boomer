@@ -1,3 +1,4 @@
+---
 name: Publish platform wheels
 on:
   workflow_call:
@@ -22,7 +23,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -41,19 +45,23 @@ jobs:
       - name: Build package
         uses: pypa/cibuildwheel@v2.17
         env:
-          CIBW_BEFORE_BUILD_LINUX: ./build --clean && SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=disabled GPU_SUPPORT=disabled ./build install
-          CIBW_BEFORE_BUILD_MACOS: rm -rf venv && ./build --clean && SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=disabled GPU_SUPPORT=disabled CPLUS_INCLUDE_PATH=/opt/homebrew/opt/libomp/include/ LIBRARY_PATH=/opt/homebrew/opt/libomp/lib/ ./build install
-          CIBW_BEFORE_BUILD_WINDOWS: .\build.bat --clean && set SUBPROJECTS=${{ inputs.subproject }} && set TEST_SUPPORT=disabled && set GPU_SUPPORT=disabled && .\build.bat install
+          CIBW_BEFORE_BUILD_LINUX: ./build --clean && SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=disabled GPU_SUPPORT=disabled
+            ./build install
+          CIBW_BEFORE_BUILD_MACOS: rm -rf venv && ./build --clean && SUBPROJECTS=${{ inputs.subproject }} TEST_SUPPORT=disabled
+            GPU_SUPPORT=disabled CPLUS_INCLUDE_PATH=/opt/homebrew/opt/libomp/include/ LIBRARY_PATH=/opt/homebrew/opt/libomp/lib/
+            ./build install
+          CIBW_BEFORE_BUILD_WINDOWS: .\build.bat --clean && set SUBPROJECTS=${{ inputs.subproject }} && set TEST_SUPPORT=disabled
+            && set GPU_SUPPORT=disabled && .\build.bat install
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS: auto64
-          CIBW_SKIP: 'pp* *musllinux*'
+          CIBW_SKIP: pp* *musllinux*
         with:
           package-dir: python/subprojects/${{ inputs.subproject }}/
       - name: Setup Python
         if: ${{ inputs.pypi_repository }}
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: 3.x
       - name: Upload wheels to PyPI
         if: ${{ inputs.pypi_repository }}
         env:
@@ -68,5 +76,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: wheels-${{ inputs.subproject }}-${{ runner.os }}-x86_64
-          path: 'wheelhouse/*.whl'
+          path: wheelhouse/*.whl
           if-no-files-found: error

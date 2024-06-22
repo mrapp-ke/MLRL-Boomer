@@ -1,3 +1,4 @@
+---
 name: Publish wheel packages
 on:
   workflow_call:
