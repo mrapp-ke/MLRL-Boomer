@@ -7,6 +7,8 @@
 #include "mlrl/seco/lift_functions/lift_function.hpp"
 #include "mlrl/seco/rule_evaluation/head_type.hpp"
 
+#include <memory>
+
 namespace seco {
 
     /**

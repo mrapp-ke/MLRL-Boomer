@@ -5,6 +5,8 @@
 
 #include "mlrl/common/rule_pruning/rule_pruning.hpp"
 
+#include <memory>
+
 /**
  * Allows to configure a strategy for pruning individual rules that prunes rules by following the principles of
  * "incremental reduced error pruning" (IREP).

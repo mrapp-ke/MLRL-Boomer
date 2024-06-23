@@ -6,6 +6,9 @@
 #include "feature_vector_decorator_binned_common.hpp"
 #include "feature_vector_decorator_nominal_common.hpp"
 
+#include <memory>
+#include <utility>
+
 /**
  * Provides random read and write access, as well as read and write access via iterators, to the values and indicies of
  * training examples stored in an `BinaryFeatureVector`.

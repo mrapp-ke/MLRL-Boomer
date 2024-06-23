@@ -5,6 +5,8 @@
 
 #include "mlrl/common/model/model_builder.hpp"
 
+#include <memory>
+#include <utility>
 #include <vector>
 
 /**

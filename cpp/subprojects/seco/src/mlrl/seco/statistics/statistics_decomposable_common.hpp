@@ -6,6 +6,9 @@
 #include "mlrl/common/data/vector_sparse_array_binary.hpp"
 #include "mlrl/seco/statistics/statistics_decomposable.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace seco {
 
     static inline bool hasNonZeroWeightDecomposable(const EqualWeightVector& weights, uint32 statisticIndex) {

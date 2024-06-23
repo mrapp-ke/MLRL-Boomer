@@ -1,8 +1,13 @@
 /*
  * @author Michael Rapp (michael.rapp.ml@gmail.com)
  */
+#pragma once
+
 #include "mlrl/common/statistics/statistics_provider.hpp"
 #include "mlrl/seco/statistics/statistics_decomposable.hpp"
+
+#include <memory>
+#include <utility>
 
 namespace seco {
 

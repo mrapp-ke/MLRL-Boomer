@@ -5,6 +5,8 @@
 
 #include "mlrl/common/sampling/output_sampling.hpp"
 
+#include <memory>
+
 /**
  * Allows to configure a method for sampling outputs that does not perform any sampling, but includes all outputs.
  */

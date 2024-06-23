@@ -6,6 +6,8 @@
 #include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/rule_induction/rule_induction.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that allow to configure an algorithm for the induction of individual rules that
  * uses a top-down beam search.

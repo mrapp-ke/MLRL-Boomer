@@ -9,6 +9,8 @@
 #include "mlrl/common/sampling/partition_sampling.hpp"
 #include "mlrl/common/stopping/global_pruning.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

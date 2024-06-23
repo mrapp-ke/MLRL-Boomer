@@ -6,6 +6,8 @@
 #include "mlrl/common/prediction/label_vector_set.hpp"
 #include "mlrl/common/prediction/probability_calibration_marginal.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that implement a model for the calibration of joint probabilities.
  */

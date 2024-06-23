@@ -16,7 +16,7 @@ struct Quality {
         /**
          * @param quality A numerical score that represents the quality
          */
-        Quality(float64 quality) : quality(quality) {}
+        explicit Quality(float64 quality) : quality(quality) {}
 
         /**
          * @param other A reference to an object of type `Quality` to be copied

@@ -12,6 +12,8 @@
 #include "mlrl/common/sampling/weight_vector_out_of_sample.hpp"
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that provide access to statistics about the quality of predictions for training
  * examples, which serve as the basis for learning a new rule or refining an existing one.

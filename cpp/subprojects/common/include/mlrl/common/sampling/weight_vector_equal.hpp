@@ -5,6 +5,8 @@
 
 #include "mlrl/common/sampling/weight_vector.hpp"
 
+#include <memory>
+
 /**
  * An one-dimensional vector that provides random access to a fixed number of equal weights.
  */

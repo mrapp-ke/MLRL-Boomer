@@ -7,6 +7,8 @@
 #include "mlrl/common/rule_refinement/feature_subspace.hpp"
 #include "mlrl/common/sampling/partition.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that implement a strategy for pruning individual rules based on a "prune set",
  * i.e., based on the examples that are not contained in the sub-sample of the training data that has been used to learn
