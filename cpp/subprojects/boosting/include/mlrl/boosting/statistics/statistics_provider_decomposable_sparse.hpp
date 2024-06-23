@@ -8,6 +8,8 @@
 #include "mlrl/boosting/statistics/statistics_decomposable.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

@@ -6,6 +6,8 @@
 #include "mlrl/common/stopping/aggregation_function.hpp"
 #include "mlrl/common/stopping/global_pruning.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that allow to configure a stopping criterion that stops the induction of rules
  * as soon as the quality of a model's predictions for the examples in the training or holdout set do not improve

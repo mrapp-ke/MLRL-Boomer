@@ -8,6 +8,9 @@
 #include "mlrl/common/data/view_matrix_composite.hpp"
 #include "mlrl/common/data/view_matrix_lil.hpp"
 
+#include <limits>
+#include <utility>
+
 /**
  * A two-dimensional view that provides random read and write access, as well as row-wise read and write access via
  * iterators, to values stored in a sparse matrix in the list of lists (LIL) format. Compared to the view
@@ -189,7 +192,7 @@ class MLRLCOMMON_API SparseSetView
                     uint32 i = this->indexIterator_[index];
 
                     if (i == MAX_INDEX) {
-                        this->indexIterator_[index] = (uint32) this->row_.size();
+                        this->indexIterator_[index] = static_cast<uint32>(this->row_.size());
                         this->row_.emplace_back(index);
                         return this->row_.back();
                     }
@@ -209,7 +212,7 @@ class MLRLCOMMON_API SparseSetView
                     uint32 i = this->indexIterator_[index];
 
                     if (i == MAX_INDEX) {
-                        this->indexIterator_[index] = (uint32) this->row_.size();
+                        this->indexIterator_[index] = static_cast<uint32>(this->row_.size());
                         this->row_.emplace_back(index, defaultValue);
                         return this->row_.back();
                     }
@@ -377,7 +380,7 @@ class MLRLCOMMON_API IterableSparseSetViewDecorator : public Matrix {
         /**
          * @param view The view, the matrix should be backed by
          */
-        IterableSparseSetViewDecorator(typename Matrix::view_type&& view) : Matrix(std::move(view)) {}
+        explicit IterableSparseSetViewDecorator(typename Matrix::view_type&& view) : Matrix(std::move(view)) {}
 
         virtual ~IterableSparseSetViewDecorator() override {}
 

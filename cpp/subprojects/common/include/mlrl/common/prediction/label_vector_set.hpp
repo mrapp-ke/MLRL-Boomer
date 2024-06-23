@@ -7,6 +7,7 @@
 #include "mlrl/common/prediction/output_space_info.hpp"
 
 #include <functional>
+#include <memory>
 #include <vector>
 
 /**

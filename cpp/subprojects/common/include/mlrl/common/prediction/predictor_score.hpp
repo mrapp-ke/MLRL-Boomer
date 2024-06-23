@@ -10,6 +10,8 @@
 #include "mlrl/common/prediction/prediction_matrix_dense.hpp"
 #include "mlrl/common/prediction/predictor.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that allow to predict scores for given query examples.
  */

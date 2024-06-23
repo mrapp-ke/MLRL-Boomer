@@ -5,6 +5,8 @@
 
 #include "mlrl/common/statistics/statistics_weighted_immutable.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that inherit from `IImmutableWeightedStatistics`, but do also provide functions
  * that allow to only use a sub-sample of the available statistics.

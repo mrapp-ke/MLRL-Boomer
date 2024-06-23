@@ -64,7 +64,7 @@ class MLRLCOMMON_API NominalFeatureVector {
          */
         NominalFeatureVector(NominalFeatureVector&& other);
 
-        virtual ~NominalFeatureVector() {};
+        virtual ~NominalFeatureVector() {}
 
         /**
          * The type of the indices, the view provides access to.

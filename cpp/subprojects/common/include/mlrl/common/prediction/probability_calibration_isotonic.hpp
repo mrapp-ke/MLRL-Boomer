@@ -8,6 +8,7 @@
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
 
 #include <functional>
+#include <memory>
 
 /**
  * Defines an interface for all models for the calibration of marginal or joint probabilities via isotonic regression.

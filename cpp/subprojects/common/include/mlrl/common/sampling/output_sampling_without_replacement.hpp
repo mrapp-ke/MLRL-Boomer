@@ -5,6 +5,8 @@
 
 #include "mlrl/common/sampling/output_sampling.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that allow to configure a method for sampling outputs without replacement.
  */

@@ -6,6 +6,8 @@
 #include "mlrl/common/data/vector_dense.hpp"
 #include "mlrl/common/sampling/weight_vector.hpp"
 
+#include <memory>
+
 /**
  * An one-dimensional vector that provides random access to a fixed number of weights stored in a C-contiguous array.
  *

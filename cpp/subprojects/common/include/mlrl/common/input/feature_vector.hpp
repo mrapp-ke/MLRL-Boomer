@@ -8,6 +8,8 @@
 #include "mlrl/common/rule_refinement/feature_based_search.hpp"
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all one-dimensional vectors that store the values of training examples for a certain
  * feature.

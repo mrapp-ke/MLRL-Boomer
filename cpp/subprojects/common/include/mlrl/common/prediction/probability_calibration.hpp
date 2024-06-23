@@ -9,6 +9,8 @@
 #include "mlrl/common/sampling/partition_single.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that implement a method for fitting models for the calibration of probabilities.
  *

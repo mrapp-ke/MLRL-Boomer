@@ -10,6 +10,8 @@
 #include "mlrl/common/input/feature_matrix.hpp"
 #include "mlrl/common/input/label_matrix_row_wise.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

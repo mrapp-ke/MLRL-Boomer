@@ -5,6 +5,8 @@
 
 #include "mlrl/common/input/feature_vector_numerical.hpp"
 
+#include <utility>
+
 /**
  * Allocates the memory, a `NumericalFeatureVector` provides access to.
  */
@@ -17,7 +19,7 @@ class MLRLCOMMON_API AllocatedNumericalFeatureVector : public ResizableAllocator
          * @param sparse        True, if there are any sparse elements not explicitly stored in the vector, false
          *                      otherwise
          */
-        AllocatedNumericalFeatureVector(uint32 numElements, float32 sparseValue = 0, bool sparse = false)
+        explicit AllocatedNumericalFeatureVector(uint32 numElements, float32 sparseValue = 0, bool sparse = false)
             : ResizableAllocator<NumericalFeatureVector>(numElements) {
             NumericalFeatureVector::sparseValue = sparseValue;
             NumericalFeatureVector::sparse = sparse;
