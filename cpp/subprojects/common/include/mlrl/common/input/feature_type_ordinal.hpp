@@ -5,6 +5,8 @@
 
 #include "mlrl/common/input/feature_type.hpp"
 
+#include <memory>
+
 /**
  * Represents an ordinal feature.
  */

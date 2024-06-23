@@ -9,7 +9,7 @@
 static inline void sampleInternally(const SinglePartition& partition, float32 sampleSize, BitWeightVector& weightVector,
                                     RNG& rng) {
     uint32 numExamples = partition.getNumElements();
-    uint32 numSamples = (uint32) (sampleSize * numExamples);
+    uint32 numSamples = static_cast<uint32>(sampleSize * numExamples);
     sampleWeightsWithoutReplacement<SinglePartition::const_iterator>(weightVector, partition.cbegin(), numExamples,
                                                                      numSamples, rng);
 }
@@ -17,7 +17,7 @@ static inline void sampleInternally(const SinglePartition& partition, float32 sa
 static inline void sampleInternally(BiPartition& partition, float32 sampleSize, BitWeightVector& weightVector,
                                     RNG& rng) {
     uint32 numTrainingExamples = partition.getNumFirst();
-    uint32 numSamples = (uint32) (sampleSize * numTrainingExamples);
+    uint32 numSamples = static_cast<uint32>(sampleSize * numTrainingExamples);
     sampleWeightsWithoutReplacement<BiPartition::const_iterator>(weightVector, partition.first_cbegin(),
                                                                  numTrainingExamples, numSamples, rng);
 }

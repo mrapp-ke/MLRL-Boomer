@@ -6,6 +6,8 @@
 #include "mlrl/common/rule_refinement/rule_refinement.hpp"
 #include "mlrl/common/statistics/statistics_weighted.hpp"
 
+#include <memory>
+
 /**
  * Allows to find the best refinements of existing rules, which result from adding a new condition that correspond to a
  * certain feature. The thresholds that may be used by the new condition result from the feature values of all training

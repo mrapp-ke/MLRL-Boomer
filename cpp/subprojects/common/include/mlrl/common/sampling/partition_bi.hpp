@@ -7,6 +7,8 @@
 #include "mlrl/common/sampling/instance_sampling.hpp"
 #include "mlrl/common/sampling/partition.hpp"
 
+#include <memory>
+
 /**
  * An implementation of the class `IPartition` that provides random access to the indices of elements that are included
  * two, mutually exclusive, sets.

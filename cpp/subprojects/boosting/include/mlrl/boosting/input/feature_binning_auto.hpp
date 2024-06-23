@@ -5,6 +5,8 @@
 
 #include "mlrl/common/input/feature_binning.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

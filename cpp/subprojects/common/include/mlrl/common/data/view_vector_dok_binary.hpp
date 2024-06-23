@@ -6,6 +6,7 @@
 #include "mlrl/common/data/view.hpp"
 
 #include <unordered_set>
+#include <utility>
 
 /**
  * A view that provides access to binary values stored in a sparse vector in the dictionary of keys (DOK) format.
@@ -25,7 +26,7 @@ class MLRLCOMMON_API BinaryDokVector {
          * @param indices A pointer to an object of type `std::unordered_set` that stores the indices of all dense
          *                elements explicitly stored in the view
          */
-        BinaryDokVector(std::unordered_set<uint32>* indices) : indices_(indices) {}
+        explicit BinaryDokVector(std::unordered_set<uint32>* indices) : indices_(indices) {}
 
         /**
          * @param other A reference to an object of type `BinaryDokVector` that should be copied

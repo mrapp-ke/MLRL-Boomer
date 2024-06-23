@@ -7,6 +7,8 @@
 #include "mlrl/common/stopping/stopping_criterion.hpp"
 #include "mlrl/seco/util/dll_exports.hpp"
 
+#include <memory>
+
 namespace seco {
 
     /**

@@ -9,6 +9,9 @@
 #include "mlrl/common/stopping/stopping_criterion_size.hpp"
 #include "mlrl/common/util/validation.hpp"
 
+#include <memory>
+#include <utility>
+
 /**
  * An implementation of the type `ITrainingResult` that provides access to the result of training an
  * `AbstractRuleLearner`.
@@ -102,7 +105,7 @@ class RuleLearnerConfigurator {
         /**
          * @param config A reference to an object of type `IRuleLearner::IConfig`
          */
-        RuleLearnerConfigurator(IRuleLearner::IConfig& config) : config_(config) {}
+        explicit RuleLearnerConfigurator(IRuleLearner::IConfig& config) : config_(config) {}
 
         virtual ~RuleLearnerConfigurator() {}
 
@@ -624,7 +627,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
                  * @param ruleCompareFunction An object of type `RuleCompareFunction` that defines the function that
                  *                            should be used for comparing the quality of different rules
                  */
-                Config(RuleCompareFunction ruleCompareFunction)
+                explicit Config(RuleCompareFunction ruleCompareFunction)
                     : ruleCompareFunction_(ruleCompareFunction),
                       defaultRuleConfigPtr_(std::make_unique<DefaultRuleConfig>(true)),
                       ruleModelAssemblageConfigPtr_(
@@ -756,7 +759,7 @@ class AbstractRuleLearner : virtual public IRuleLearner {
          * @param configurator A reference to an object of type `RuleLearnerConfigurator` that allows to configure the
          *                     individual modules to be used by the rule learner
          */
-        AbstractRuleLearner(const RuleLearnerConfigurator& configurator) : configurator_(configurator) {}
+        explicit AbstractRuleLearner(const RuleLearnerConfigurator& configurator) : configurator_(configurator) {}
 
         std::unique_ptr<ITrainingResult> fit(const IFeatureInfo& featureInfo,
                                              const IColumnWiseFeatureMatrix& featureMatrix,

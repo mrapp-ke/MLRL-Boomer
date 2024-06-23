@@ -5,6 +5,8 @@
 
 #include "mlrl/common/input/feature_vector_nominal.hpp"
 
+#include <utility>
+
 /**
  * Allocates the memory, a `NominalFeatureVector` provides access to.
  */

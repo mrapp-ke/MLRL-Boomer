@@ -7,7 +7,9 @@
 #include "feature_vector_numerical_allocated.hpp"
 #include "mlrl/common/input/feature_vector_equal.hpp"
 
+#include <memory>
 #include <optional>
+#include <utility>
 
 template<typename Decorator>
 static inline std::optional<NumericalFeatureVector> createFilteredNumericalFeatureVectorView(

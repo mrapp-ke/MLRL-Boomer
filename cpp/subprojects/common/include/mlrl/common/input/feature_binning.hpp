@@ -8,6 +8,8 @@
 #include "mlrl/common/input/feature_type.hpp"
 #include "mlrl/common/input/output_matrix.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for methods that assign feature values to bins.
  */

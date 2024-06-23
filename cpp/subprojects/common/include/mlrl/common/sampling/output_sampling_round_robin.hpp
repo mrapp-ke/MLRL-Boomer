@@ -5,6 +5,8 @@
 
 #include "mlrl/common/sampling/output_sampling.hpp"
 
+#include <memory>
+
 /**
  * Allows to configure a method for sampling outputs in a round-robin fashion.
  */

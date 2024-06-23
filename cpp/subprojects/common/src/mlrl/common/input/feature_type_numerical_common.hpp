@@ -9,6 +9,8 @@
 #include "mlrl/common/iterator/index_iterator.hpp"
 
 #include <algorithm>
+#include <memory>
+#include <utility>
 
 template<typename IndexIterator, typename ValueIterator>
 static inline std::unique_ptr<NumericalFeatureVectorDecorator> createNumericalFeatureVector(IndexIterator indexIterator,

@@ -7,6 +7,8 @@
 #include "mlrl/common/rule_induction/rule_induction.hpp"
 #include "mlrl/common/rule_refinement/score_processor.hpp"
 
+#include <memory>
+
 /**
  * An abstract base class for all classes that implement an algorithm for the induction of individual rules.
  */
@@ -53,7 +55,7 @@ class AbstractRuleInduction : public IRuleInduction {
          * @param recalculatePredictions True, if the predictions of rules should be recalculated on all training
          *                               examples, if some of the examples have zero weights, false otherwise
          */
-        AbstractRuleInduction(bool recalculatePredictions) : recalculatePredictions_(recalculatePredictions) {}
+        explicit AbstractRuleInduction(bool recalculatePredictions) : recalculatePredictions_(recalculatePredictions) {}
 
         virtual ~AbstractRuleInduction() override {}
 

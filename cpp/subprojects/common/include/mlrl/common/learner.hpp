@@ -51,6 +51,9 @@
 #include "mlrl/common/stopping/stopping_criterion_size.hpp"
 #include "mlrl/common/stopping/stopping_criterion_time.hpp"
 
+#include <memory>
+#include <utility>
+
 /**
  * Defines an interface for all classes that provide access to the results of fitting a rule learner to training data.
  * It incorporates the model that has been trained, as well as additional information that is necessary for obtaining
@@ -411,7 +414,7 @@ class MLRLCOMMON_API IRuleLearner {
                 virtual void useDefaultRule() {
                     std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr = this->getDefaultRuleConfigPtr();
                     defaultRuleConfigPtr = std::make_unique<DefaultRuleConfig>(true);
-                };
+                }
         };
 
         /**
@@ -638,7 +641,7 @@ class MLRLCOMMON_API IRuleLearner {
                     std::unique_ptr<IInstanceSamplingConfig>& instanceSamplingConfigPtr =
                       this->getInstanceSamplingConfigPtr();
                     instanceSamplingConfigPtr = std::make_unique<NoInstanceSamplingConfig>();
-                };
+                }
         };
 
         /**

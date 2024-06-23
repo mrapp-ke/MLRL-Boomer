@@ -5,6 +5,8 @@
 
 #include "mlrl/boosting/learner.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

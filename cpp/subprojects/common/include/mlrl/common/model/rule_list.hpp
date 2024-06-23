@@ -7,6 +7,7 @@
 #include "mlrl/common/model/head.hpp"
 #include "mlrl/common/model/rule_model.hpp"
 
+#include <memory>
 #include <vector>
 
 /**

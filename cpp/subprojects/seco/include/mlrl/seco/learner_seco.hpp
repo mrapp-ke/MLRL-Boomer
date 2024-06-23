@@ -11,6 +11,8 @@
 #include "mlrl/seco/rule_evaluation/head_type.hpp"
 #include "mlrl/seco/stopping/stopping_criterion_coverage.hpp"
 
+#include <memory>
+
 namespace seco {
 
     /**

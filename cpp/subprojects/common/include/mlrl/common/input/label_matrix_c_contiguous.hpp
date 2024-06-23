@@ -5,6 +5,8 @@
 
 #include "mlrl/common/input/label_matrix_row_wise.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all label matrices that provide row-wise access to the labels of individual examples that
  * are stored in a C-contiguous array.

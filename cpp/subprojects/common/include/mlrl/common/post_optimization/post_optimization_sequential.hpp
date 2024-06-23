@@ -5,6 +5,8 @@
 
 #include "mlrl/common/post_optimization/post_optimization.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that allow to configure a method that optimizes each rule in a model by
  * relearning it in the context of the other rules. Multiple iterations, where the rules in a model are relearned in the

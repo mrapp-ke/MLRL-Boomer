@@ -12,7 +12,7 @@ FixedRefinementComparator::FixedRefinementComparator(RuleCompareFunction ruleCom
 }
 
 FixedRefinementComparator::FixedRefinementComparator(RuleCompareFunction ruleCompareFunction, uint32 maxRefinements)
-    : FixedRefinementComparator(ruleCompareFunction, maxRefinements, ruleCompareFunction.minQuality) {}
+    : FixedRefinementComparator(ruleCompareFunction, maxRefinements, Quality(ruleCompareFunction.minQuality)) {}
 
 FixedRefinementComparator::FixedRefinementComparator(const FixedRefinementComparator& comparator)
     : FixedRefinementComparator(comparator.ruleCompareFunction_, comparator.maxRefinements_, comparator.minQuality_) {}
@@ -22,7 +22,7 @@ FixedRefinementComparator::~FixedRefinementComparator() {
 }
 
 uint32 FixedRefinementComparator::getNumElements() const {
-    return (uint32) order_.size();
+    return static_cast<uint32>(order_.size());
 }
 
 FixedRefinementComparator::iterator FixedRefinementComparator::begin() {

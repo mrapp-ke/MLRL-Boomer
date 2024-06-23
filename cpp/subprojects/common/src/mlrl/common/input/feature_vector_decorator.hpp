@@ -7,6 +7,9 @@
 #include "mlrl/common/input/feature_vector.hpp"
 #include "mlrl/common/input/feature_vector_missing.hpp"
 
+#include <memory>
+#include <utility>
+
 template<typename View>
 static inline void updateCoverageMaskAndStatisticsBasedOnMissingFeatureVector(
   const View& view, CoverageMask::iterator coverageMaskIterator, uint32 indicatorValue,
