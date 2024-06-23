@@ -5,6 +5,8 @@
 
 #include "mlrl/common/data/view.hpp"
 
+#include <utility>
+
 /**
  * A two-dimensional view that provides access to values stored in a matrix of a specific size.
  */
@@ -52,7 +54,7 @@ class MLRLCOMMON_API MatrixDecorator : public ViewDecorator<View> {
         /**
          * @param view The view, the matrix should be backed by
          */
-        MatrixDecorator(View&& view) : ViewDecorator<View>(std::move(view)) {}
+        explicit MatrixDecorator(View&& view) : ViewDecorator<View>(std::move(view)) {}
 
         virtual ~MatrixDecorator() override {}
 

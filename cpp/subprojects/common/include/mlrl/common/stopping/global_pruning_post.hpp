@@ -5,6 +5,8 @@
 
 #include "mlrl/common/stopping/global_pruning.hpp"
 
+#include <memory>
+
 /**
  * Defines an interface for all classes that allow to configure a stopping criterion that keeps track of the number of
  * rules in a model that perform best with respect to the examples in the training or holdout set according to a certain

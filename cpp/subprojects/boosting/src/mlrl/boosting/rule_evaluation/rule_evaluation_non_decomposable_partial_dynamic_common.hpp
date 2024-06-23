@@ -6,6 +6,8 @@
 #include "mlrl/boosting/data/vector_statistic_non_decomposable_dense.hpp"
 #include "rule_evaluation_decomposable_partial_dynamic_common.hpp"
 
+#include <utility>
+
 namespace boosting {
 
     /**

@@ -49,7 +49,7 @@ static inline std::unique_ptr<OrdinalFeatureVectorDecorator> createOrdinalFeatur
         if (std::isnan(value)) {
             missingFeatureVector.set(index, true);
         } else {
-            int32 nominalValue = (int32) value;
+            int32 nominalValue = static_cast<int32>(value);
 
             if (nominalValue != majorityValue) {
                 Tuple<uint32>& tuple = mapping.at(nominalValue);
@@ -108,7 +108,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
     uint32 numElements = featureMatrix.numRows;
     std::unordered_map<int32, Tuple<uint32>> mapping;
     uint32 numExamples = createMapping(valueIterator, numElements, mapping);
-    uint32 numValues = (uint32) mapping.size();
+    uint32 numValues = static_cast<uint32>(mapping.size());
     return createFeatureVectorInternally(IndexIterator(), valueIterator, numElements, mapping, numValues, numExamples,
                                          false, 0);
 }
@@ -121,7 +121,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
     uint32 numElements = valuesEnd - valuesBegin;
     std::unordered_map<int32, Tuple<uint32>> mapping;
     uint32 numExamples = createMapping(valuesBegin, numElements, mapping);
-    uint32 numValues = (uint32) mapping.size();
+    uint32 numValues = static_cast<uint32>(mapping.size());
     bool sparse = numElements < featureMatrix.numRows;
 
     if (sparse) {
@@ -129,7 +129,7 @@ static inline std::unique_ptr<IFeatureVector> createFeatureVectorInternally(
     }
 
     return createFeatureVectorInternally(indexIterator, valuesBegin, numElements, mapping, numValues, numExamples,
-                                         sparse, (int32) featureMatrix.sparseValue);
+                                         sparse, static_cast<int32>(featureMatrix.sparseValue));
 }
 
 std::unique_ptr<IFeatureVector> OrdinalFeatureType::createFeatureVector(

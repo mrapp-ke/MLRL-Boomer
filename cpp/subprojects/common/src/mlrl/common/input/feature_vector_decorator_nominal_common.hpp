@@ -6,6 +6,8 @@
 #include "feature_vector_nominal_allocated.hpp"
 #include "mlrl/common/input/feature_vector_equal.hpp"
 
+#include <memory>
+
 template<typename View, typename Decorator>
 static inline std::unique_ptr<IFeatureVector> createFilteredNominalFeatureVectorDecorator(
   const View& view, std::unique_ptr<IFeatureVector>& existing, const CoverageMask& coverageMask) {

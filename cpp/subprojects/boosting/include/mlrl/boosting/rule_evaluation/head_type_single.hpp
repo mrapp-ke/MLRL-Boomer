@@ -8,6 +8,8 @@
 #include "mlrl/boosting/rule_evaluation/regularization.hpp"
 #include "mlrl/common/multi_threading/multi_threading.hpp"
 
+#include <memory>
+
 namespace boosting {
 
     /**

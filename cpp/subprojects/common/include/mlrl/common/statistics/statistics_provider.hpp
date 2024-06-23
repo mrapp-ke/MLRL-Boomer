@@ -7,6 +7,8 @@
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 
+#include <memory>
+
 /**
  * Provides access to an object of type `IStatistics`.
  */

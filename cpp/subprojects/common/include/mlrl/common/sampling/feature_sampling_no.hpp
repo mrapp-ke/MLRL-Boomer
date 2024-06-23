@@ -5,6 +5,8 @@
 
 #include "mlrl/common/sampling/feature_sampling.hpp"
 
+#include <memory>
+
 /**
  * Allows to configure a method for sampling features that does not perform any sampling, but includes all features.
  */

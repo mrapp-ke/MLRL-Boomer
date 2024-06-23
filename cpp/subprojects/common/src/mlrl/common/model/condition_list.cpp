@@ -18,7 +18,7 @@ ConditionList::const_iterator ConditionList::cend() const {
 }
 
 uint32 ConditionList::getNumConditions() const {
-    return (uint32) vector_.size();
+    return static_cast<uint32>(vector_.size());
 }
 
 void ConditionList::addCondition(const Condition& condition) {
@@ -30,7 +30,7 @@ void ConditionList::removeLastCondition() {
     const Condition& condition = vector_.back();
     numConditionsPerComparator_[condition.comparator] -= 1;
     vector_.pop_back();
-};
+}
 
 std::unique_ptr<ConjunctiveBody> ConditionList::createConjunctiveBody() const {
     std::unique_ptr<ConjunctiveBody> bodyPtr = std::make_unique<ConjunctiveBody>(

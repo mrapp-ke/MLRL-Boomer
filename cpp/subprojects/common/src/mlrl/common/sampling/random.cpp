@@ -11,9 +11,9 @@ uint32 RNG::random(uint32 min, uint32 max) {
         randomState[0] = 1;
     }
 
-    randomState[0] ^= (uint32) (randomState[0] << 13);
-    randomState[0] ^= (uint32) (randomState[0] >> 17);
-    randomState[0] ^= (uint32) (randomState[0] << 5);
+    randomState[0] ^= static_cast<uint32>(randomState[0] << 13);
+    randomState[0] ^= static_cast<uint32>(randomState[0] >> 17);
+    randomState[0] ^= static_cast<uint32>(randomState[0] << 5);
 
     uint32 randomNumber = randomState[0] % (MAX_RANDOM + 1);
     return min + (randomNumber % (max - min));

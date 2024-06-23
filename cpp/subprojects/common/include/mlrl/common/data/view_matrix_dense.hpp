@@ -6,6 +6,8 @@
 #include "mlrl/common/data/view_matrix.hpp"
 #include "mlrl/common/util/view_functions.hpp"
 
+#include <utility>
+
 /**
  * A two-dimensional view that provides access to values stored in a dense matrix of a specific size.
  *
@@ -124,7 +126,7 @@ class MLRLCOMMON_API IterableDenseMatrixDecorator : public Matrix {
         /**
          * @param view The view, the matrix should be backed by
          */
-        IterableDenseMatrixDecorator(typename Matrix::view_type&& view) : Matrix(std::move(view)) {}
+        explicit IterableDenseMatrixDecorator(typename Matrix::view_type&& view) : Matrix(std::move(view)) {}
 
         virtual ~IterableDenseMatrixDecorator() override {}
 

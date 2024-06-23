@@ -6,6 +6,8 @@
 #include "mlrl/seco/heuristics/heuristic.hpp"
 #include "mlrl/seco/rule_evaluation/head_type.hpp"
 
+#include <memory>
+
 namespace seco {
 
     /**
