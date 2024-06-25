@@ -18,18 +18,20 @@ from mlrl.common.cython.learner_classification cimport IExampleWiseStratifiedBiP
     IExampleWiseStratifiedInstanceSamplingMixin, IOutputWiseStratifiedBiPartitionSamplingMixin, \
     IOutputWiseStratifiedInstanceSamplingMixin
 
-from mlrl.boosting.cython.learner cimport DdotFunction, DspmvFunction, DsysvFunction, IAutomaticBinaryPredictorMixin, \
-    IAutomaticDefaultRuleMixin, IAutomaticFeatureBinningMixin, IAutomaticHeadMixin, IAutomaticLabelBinningMixin, \
-    IAutomaticParallelRuleRefinementMixin, IAutomaticParallelStatisticUpdateMixin, IAutomaticPartitionSamplingMixin, \
-    IAutomaticProbabilityPredictorMixin, IAutomaticStatisticsMixin, ICompleteHeadMixin, IConstantShrinkageMixin, \
-    IDecomposableLogisticLossMixin, IDecomposableSquaredErrorLossMixin, IDecomposableSquaredHingeLossMixin, \
-    IDenseStatisticsMixin, IDynamicPartialHeadMixin, IEqualWidthLabelBinningMixin, IExampleWiseBinaryPredictorMixin, \
-    IFixedPartialHeadMixin, IGfmBinaryPredictorMixin, IIsotonicJointProbabilityCalibrationMixin, \
-    IIsotonicMarginalProbabilityCalibrationMixin, IL1RegularizationMixin, IL2RegularizationMixin, \
-    IMarginalizedProbabilityPredictorMixin, INoDefaultRuleMixin, INoL1RegularizationMixin, INoL2RegularizationMixin, \
-    INoLabelBinningMixin, INonDecomposableLogisticLossMixin, INonDecomposableSquaredErrorLossMixin, \
-    INonDecomposableSquaredHingeLossMixin, IOutputWiseBinaryPredictorMixin, IOutputWiseProbabilityPredictorMixin, \
-    IOutputWiseScorePredictorMixin, ISingleOutputHeadMixin, ISparseStatisticsMixin
+from mlrl.boosting.cython.learner cimport DdotFunction, DspmvFunction, DsysvFunction, IAutomaticFeatureBinningMixin, \
+    IAutomaticHeadMixin, IAutomaticParallelRuleRefinementMixin, IAutomaticParallelStatisticUpdateMixin, \
+    ICompleteHeadMixin, IConstantShrinkageMixin, IDecomposableSquaredErrorLossMixin, IDynamicPartialHeadMixin, \
+    IFixedPartialHeadMixin, IL1RegularizationMixin, IL2RegularizationMixin, INoL1RegularizationMixin, \
+    INoL2RegularizationMixin, INonDecomposableSquaredErrorLossMixin, IOutputWiseScorePredictorMixin, \
+    ISingleOutputHeadMixin
+from mlrl.boosting.cython.learner_classification cimport IAutomaticBinaryPredictorMixin, IAutomaticDefaultRuleMixin, \
+    IAutomaticLabelBinningMixin, IAutomaticPartitionSamplingMixin, IAutomaticProbabilityPredictorMixin, \
+    IAutomaticStatisticsMixin, IDecomposableLogisticLossMixin, IDecomposableSquaredHingeLossMixin, \
+    IDenseStatisticsMixin, IEqualWidthLabelBinningMixin, IExampleWiseBinaryPredictorMixin, IGfmBinaryPredictorMixin, \
+    IIsotonicJointProbabilityCalibrationMixin, IIsotonicMarginalProbabilityCalibrationMixin, \
+    IMarginalizedProbabilityPredictorMixin, INoDefaultRuleMixin, INoLabelBinningMixin, \
+    INonDecomposableLogisticLossMixin, INonDecomposableSquaredHingeLossMixin, IOutputWiseBinaryPredictorMixin, \
+    IOutputWiseProbabilityPredictorMixin, ISparseStatisticsMixin
 
 
 cdef extern from "mlrl/boosting/learner_boomer.hpp" namespace "boosting" nogil:

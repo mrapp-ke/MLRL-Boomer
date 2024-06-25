@@ -55,18 +55,19 @@ from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPar
     ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
     OutputWiseStratifiedInstanceSamplingMixin
 
-from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
-    AutomaticFeatureBinningMixin, AutomaticHeadMixin, AutomaticLabelBinningMixin, \
-    AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, AutomaticPartitionSamplingMixin, \
-    AutomaticProbabilityPredictorMixin, AutomaticStatisticsMixin, CompleteHeadMixin, ConstantShrinkageMixin, \
-    DecomposableLogisticLossMixin, DecomposableSquaredErrorLossMixin, DecomposableSquaredHingeLossMixin, \
-    DenseStatisticsMixin, DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, \
-    FixedPartialHeadMixin, GfmBinaryPredictorMixin, IsotonicJointProbabilityCalibrationMixin, \
-    IsotonicMarginalProbabilityCalibrationMixin, L1RegularizationMixin, L2RegularizationMixin, \
-    MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
-    NoLabelBinningMixin, NonDecomposableLogisticLossMixin, NonDecomposableSquaredErrorLossMixin, \
+from mlrl.boosting.cython.learner import AutomaticFeatureBinningMixin, AutomaticHeadMixin, \
+    AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, CompleteHeadMixin, \
+    ConstantShrinkageMixin, DecomposableSquaredErrorLossMixin, DynamicPartialHeadMixin, FixedPartialHeadMixin, \
+    L1RegularizationMixin, L2RegularizationMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
+    NonDecomposableSquaredErrorLossMixin, OutputWiseScorePredictorMixin, SingleOutputHeadMixin
+from mlrl.boosting.cython.learner_classification import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
+    AutomaticLabelBinningMixin, AutomaticPartitionSamplingMixin, AutomaticProbabilityPredictorMixin, \
+    AutomaticStatisticsMixin, DecomposableLogisticLossMixin, DecomposableSquaredHingeLossMixin, DenseStatisticsMixin, \
+    EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, GfmBinaryPredictorMixin, \
+    IsotonicJointProbabilityCalibrationMixin, IsotonicMarginalProbabilityCalibrationMixin, \
+    MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoLabelBinningMixin, NonDecomposableLogisticLossMixin, \
     NonDecomposableSquaredHingeLossMixin, OutputWiseBinaryPredictorMixin, OutputWiseProbabilityPredictorMixin, \
-    OutputWiseScorePredictorMixin, SingleOutputHeadMixin, SparseStatisticsMixin
+    SparseStatisticsMixin
 
 
 cdef class BoomerConfig(RuleLearnerConfig,
@@ -232,6 +233,30 @@ cdef class BoomerConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    def use_automatic_binary_predictor(self):
+        self.config_ptr.get().useOutputWiseBinaryPredictor()
+
+    def use_output_wise_score_predictor(self):
+        self.config_ptr.get().useOutputWiseScorePredictor()
+
+    def use_output_wise_probability_predictor(self) -> OutputWiseProbabilityPredictorConfig:
+        cdef IOutputWiseProbabilityPredictorConfig* config_ptr = \
+            &self.config_ptr.get().useOutputWiseProbabilityPredictor()
+        cdef OutputWiseProbabilityPredictorConfig config = \
+            OutputWiseProbabilityPredictorConfig.__new__(OutputWiseProbabilityPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_marginalized_probability_predictor(self) -> MarginalizedProbabilityPredictorConfig:
+        cdef IMarginalizedProbabilityPredictorConfig* config_ptr = \
+            &self.config_ptr.get().useMarginalizedProbabilityPredictor()
+        cdef MarginalizedProbabilityPredictorConfig config = \
+            MarginalizedProbabilityPredictorConfig.__new__(MarginalizedProbabilityPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_automatic_probability_predictor(self):
+        self.config_ptr.get().useAutomaticProbabilityPredictor()
     def use_output_wise_stratified_instance_sampling(self) -> OutputWiseStratifiedInstanceSamplingConfig:
         cdef IOutputWiseStratifiedInstanceSamplingConfig* config_ptr = \
             &self.config_ptr.get().useOutputWiseStratifiedInstanceSampling()
@@ -486,26 +511,6 @@ cdef class BoomerConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_output_wise_binary_predictor(self) -> OutputWiseBinaryPredictorConfig:
-        cdef IOutputWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useOutputWiseBinaryPredictor()
-        cdef OutputWiseBinaryPredictorConfig config = \
-            OutputWiseBinaryPredictorConfig.__new__(OutputWiseBinaryPredictorConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_example_wise_binary_predictor(self) -> ExampleWiseBinaryPredictorConfig:
-        cdef IExampleWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useExampleWiseBinaryPredictor()
-        cdef ExampleWiseBinaryPredictorConfig config = \
-            ExampleWiseBinaryPredictorConfig.__new__(ExampleWiseBinaryPredictorConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_gfm_binary_predictor(self) -> GfmBinaryPredictorConfig:
-        cdef IGfmBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useGfmBinaryPredictor()
-        cdef GfmBinaryPredictorConfig config = GfmBinaryPredictorConfig.__new__(GfmBinaryPredictorConfig)
-        config.config_ptr = config_ptr
-        return config
-
     def use_automatic_binary_predictor(self):
         self.config_ptr.get().useOutputWiseBinaryPredictor()
 
@@ -530,6 +535,26 @@ cdef class BoomerConfig(RuleLearnerConfig,
 
     def use_automatic_probability_predictor(self):
         self.config_ptr.get().useAutomaticProbabilityPredictor()
+
+    def use_output_wise_binary_predictor(self) -> OutputWiseBinaryPredictorConfig:
+        cdef IOutputWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useOutputWiseBinaryPredictor()
+        cdef OutputWiseBinaryPredictorConfig config = \
+            OutputWiseBinaryPredictorConfig.__new__(OutputWiseBinaryPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_example_wise_binary_predictor(self) -> ExampleWiseBinaryPredictorConfig:
+        cdef IExampleWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useExampleWiseBinaryPredictor()
+        cdef ExampleWiseBinaryPredictorConfig config = \
+            ExampleWiseBinaryPredictorConfig.__new__(ExampleWiseBinaryPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_gfm_binary_predictor(self) -> GfmBinaryPredictorConfig:
+        cdef IGfmBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useGfmBinaryPredictor()
+        cdef GfmBinaryPredictorConfig config = GfmBinaryPredictorConfig.__new__(GfmBinaryPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
 
 
 cdef class Boomer(RuleLearner):
