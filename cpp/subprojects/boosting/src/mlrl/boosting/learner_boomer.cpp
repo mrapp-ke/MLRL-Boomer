@@ -6,20 +6,21 @@
 #include "mlrl/boosting/learner_boomer.hpp"
 
 #include "mlrl/boosting/learner_common.hpp"
+#include "mlrl/common/learner_classification_common.hpp"
 
 namespace boosting {
 
     /**
      * The BOOMER algorithm.
      */
-    class Boomer final : public AbstractBoostedRuleLearner,
+    class Boomer final : public AbstractClassificationRuleLearner,
                          virtual public IBoomer {
         public:
 
             /**
              * Allows to configure the BOOMER algorithm.
              */
-            class Config final : public AbstractBoostedRuleLearner::Config,
+            class Config final : public BoostedRuleLearnerConfig,
                                  virtual public IBoomer::IConfig {
                 public:
 
@@ -74,7 +75,7 @@ namespace boosting {
              *                        allows to configure the individual modules to be used by the rule learner
              */
             Boomer(std::unique_ptr<BoostedRuleLearnerConfigurator> configuratorPtr)
-                : AbstractBoostedRuleLearner(*configuratorPtr), configuratorPtr_(std::move(configuratorPtr)) {}
+                : AbstractClassificationRuleLearner(*configuratorPtr), configuratorPtr_(std::move(configuratorPtr)) {}
     };
 
     std::unique_ptr<IBoomer::IConfig> createBoomerConfig() {

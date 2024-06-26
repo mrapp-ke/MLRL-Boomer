@@ -24,6 +24,9 @@
 #include "mlrl/boosting/statistics/statistic_format_sparse.hpp"
 #include "mlrl/common/learner_classification.hpp"
 
+#include <memory>
+#include <utility>
+
 namespace boosting {
 
     /**

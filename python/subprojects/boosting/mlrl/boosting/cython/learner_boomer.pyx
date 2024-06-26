@@ -557,7 +557,7 @@ cdef class BoomerConfig(RuleLearnerConfig,
         return config
 
 
-cdef class Boomer(RuleLearner):
+cdef class Boomer(ClassificationRuleLearner):
     """
     The BOOMER rule learning algorithm.
     """
@@ -568,5 +568,5 @@ cdef class Boomer(RuleLearner):
         """
         self.rule_learner_ptr = createBoomer(move(config.config_ptr), ddot, dspmv, dsysv)
 
-    cdef IRuleLearner* get_rule_learner_ptr(self):
+    cdef IClassificationRuleLearner* get_classification_rule_learner_ptr(self):
         return self.rule_learner_ptr.get()

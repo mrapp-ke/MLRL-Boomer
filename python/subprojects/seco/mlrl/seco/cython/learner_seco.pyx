@@ -32,13 +32,13 @@ from mlrl.seco.cython.stopping_criterion cimport CoverageStoppingCriterionConfig
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, DefaultRuleMixin, \
     EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, \
     GreedyTopDownRuleInductionMixin, InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, \
-    IrepRulePruningMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, \
-    NoInstanceSamplingMixin, NoOutputSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, \
-    NoParallelStatisticUpdateMixin, NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, \
-    NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, OutputSamplingWithoutReplacementMixin, \
-    ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, \
-    PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, \
-    SequentialRuleModelAssemblageMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
+    IrepRulePruningMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoInstanceSamplingMixin, \
+    NoOutputSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
+    NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, \
+    NoTimeStoppingCriterionMixin, OutputSamplingWithoutReplacementMixin, ParallelPredictionMixin, \
+    ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, RandomBiPartitionSamplingMixin, \
+    RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, SequentialRuleModelAssemblageMixin, \
+    SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
 from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPartitionSamplingMixin, \
     ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
     OutputWiseStratifiedInstanceSamplingMixin
@@ -395,7 +395,7 @@ cdef class SeCoConfig(RuleLearnerConfig,
         self.config_ptr.get().useOutputWiseBinaryPredictor()
 
 
-cdef class SeCo(RuleLearner):
+cdef class SeCo(ClassificationRuleLearner):
     """
     The multi-label SeCo algorithm.
     """
@@ -406,5 +406,5 @@ cdef class SeCo(RuleLearner):
         """
         self.rule_learner_ptr = createMultiLabelSeCoRuleLearner(move(config.config_ptr))
 
-    cdef IRuleLearner* get_rule_learner_ptr(self):
+    cdef IClassificationRuleLearner* get_classification_rule_learner_ptr(self):
         return self.rule_learner_ptr.get()
