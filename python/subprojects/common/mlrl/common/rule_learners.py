@@ -18,7 +18,7 @@ from mlrl.common.cython.feature_info import EqualFeatureInfo, FeatureInfo, Mixed
 from mlrl.common.cython.feature_matrix import CContiguousFeatureMatrix, CscFeatureMatrix, CsrFeatureMatrix, \
     FortranContiguousFeatureMatrix, RowWiseFeatureMatrix
 from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
-from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
+from mlrl.common.cython.learner_classification import ClassificationRuleLearner as RuleLearnerWrapper
 from mlrl.common.cython.output_space_info import OutputSpaceInfo
 from mlrl.common.cython.probability_calibration import JointProbabilityCalibrationModel, \
     MarginalProbabilityCalibrationModel

@@ -11,12 +11,11 @@ from mlrl.common.cython.learner cimport IBeamSearchTopDownRuleInductionMixin, ID
     INoSequentialPostOptimizationMixin, INoSizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
     IOutputSamplingWithoutReplacementMixin, IParallelPredictionMixin, IParallelRuleRefinementMixin, \
     IParallelStatisticUpdateMixin, IPostPruningMixin, IPrePruningMixin, IRandomBiPartitionSamplingMixin, \
-    IRoundRobinOutputSamplingMixin, IRuleLearner, ISequentialPostOptimizationMixin, \
-    ISequentialRuleModelAssemblageMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, RuleLearner, \
-    RuleLearnerConfig
-from mlrl.common.cython.learner_classification cimport IExampleWiseStratifiedBiPartitionSamplingMixin, \
-    IExampleWiseStratifiedInstanceSamplingMixin, IOutputWiseStratifiedBiPartitionSamplingMixin, \
-    IOutputWiseStratifiedInstanceSamplingMixin
+    IRoundRobinOutputSamplingMixin, ISequentialPostOptimizationMixin, ISequentialRuleModelAssemblageMixin, \
+    ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, RuleLearnerConfig
+from mlrl.common.cython.learner_classification cimport ClassificationRuleLearner, IClassificationRuleLearner, \
+    IExampleWiseStratifiedBiPartitionSamplingMixin, IExampleWiseStratifiedInstanceSamplingMixin, \
+    IOutputWiseStratifiedBiPartitionSamplingMixin, IOutputWiseStratifiedInstanceSamplingMixin
 
 from mlrl.boosting.cython.learner cimport DdotFunction, DspmvFunction, DsysvFunction, IAutomaticFeatureBinningMixin, \
     IAutomaticHeadMixin, IAutomaticParallelRuleRefinementMixin, IAutomaticParallelStatisticUpdateMixin, \
@@ -117,7 +116,7 @@ cdef extern from "mlrl/boosting/learner_boomer.hpp" namespace "boosting" nogil:
                                                             INoJointProbabilityCalibrationMixin):
         pass
 
-    cdef cppclass IBoomer(IRuleLearner):
+    cdef cppclass IBoomer(IClassificationRuleLearner):
         pass
 
 
@@ -135,7 +134,7 @@ cdef class BoomerConfig(RuleLearnerConfig):
     cdef unique_ptr[IBoomerConfig] config_ptr
 
 
-cdef class Boomer(RuleLearner):
+cdef class Boomer(ClassificationRuleLearner):
 
     # Attributes:
 

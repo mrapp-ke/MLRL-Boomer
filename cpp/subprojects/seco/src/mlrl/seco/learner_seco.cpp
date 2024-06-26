@@ -5,6 +5,7 @@
 
 #include "mlrl/seco/learner_seco.hpp"
 
+#include "mlrl/common/learner_classification_common.hpp"
 #include "mlrl/seco/learner_common.hpp"
 
 namespace seco {
@@ -12,14 +13,14 @@ namespace seco {
     /**
      * The multi-label SeCo algorithm.
      */
-    class MultiLabelSeCoRuleLearner final : public AbstractSeCoRuleLearner,
+    class MultiLabelSeCoRuleLearner final : public AbstractClassificationRuleLearner,
                                             virtual public IMultiLabelSeCoRuleLearner {
         public:
 
             /**
              * Allows to configure the multi-label SeCo algorithm.
              */
-            class Config final : public AbstractSeCoRuleLearner::Config,
+            class Config final : public SeCoRuleLearnerConfig,
                                  virtual public IMultiLabelSeCoRuleLearner::IConfig {
                 public:
 
@@ -89,7 +90,7 @@ namespace seco {
              *                        to configure the individual modules to be used by the rule learner
              */
             MultiLabelSeCoRuleLearner(std::unique_ptr<SeCoRuleLearnerConfigurator> configuratorPtr)
-                : AbstractSeCoRuleLearner(*configuratorPtr), configuratorPtr_(std::move(configuratorPtr)) {}
+                : AbstractClassificationRuleLearner(*configuratorPtr), configuratorPtr_(std::move(configuratorPtr)) {}
     };
 
     std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> createMultiLabelSeCoRuleLearnerConfig() {

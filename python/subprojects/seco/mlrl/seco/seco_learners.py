@@ -9,7 +9,7 @@ from typing import Optional
 from sklearn.base import ClassifierMixin, MultiOutputMixin
 
 from mlrl.common.config import configure_rule_learner
-from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
+from mlrl.common.cython.learner_classification import ClassificationRuleLearner as RuleLearnerWrapper
 from mlrl.common.rule_learners import RuleLearner
 
 from mlrl.seco.config import SECO_RULE_LEARNER_PARAMETERS

@@ -63,101 +63,83 @@ namespace boosting {
     };
 
     /**
-     * An abstract base class for all rule learners that makes use of gradient boosting.
+     * Allows to configure a rule learner that makes use of gradient boosting.
      */
-    class AbstractBoostedRuleLearner : public AbstractRuleLearner,
-                                       virtual public IBoostedRuleLearner {
+    class BoostedRuleLearnerConfig : public RuleLearnerConfig,
+                                     virtual public IBoostedRuleLearner::IConfig {
+        protected:
+
+            /**
+             * An unique pointer that stores the configuration of the rule heads.
+             */
+            std::unique_ptr<IHeadConfig> headConfigPtr_;
+
+            /**
+             * An unique pointer that stores the configuration of the statistics.
+             */
+            std::unique_ptr<IStatisticsConfig> statisticsConfigPtr_;
+
+            /**
+             * An unique pointer that stores the configuration of the loss function.
+             */
+            std::unique_ptr<ILossConfig> lossConfigPtr_;
+
+            /**
+             * An unique pointer that stores the configuration of the L1 regularization term.
+             */
+            std::unique_ptr<IRegularizationConfig> l1RegularizationConfigPtr_;
+
+            /**
+             * An unique pointer that stores the configuration of the L2 regularization term.
+             */
+            std::unique_ptr<IRegularizationConfig> l2RegularizationConfigPtr_;
+
+            /**
+             * An unique pointer that stores the configuration of the method that is used to assign labels to
+             * bins.
+             */
+            std::unique_ptr<ILabelBinningConfig> labelBinningConfigPtr_;
+
         public:
 
-            /**
-             * Allows to configure a rule learner that makes use of gradient boosting.
-             */
-            class Config : public AbstractRuleLearner::Config,
-                           virtual public IBoostedRuleLearner::IConfig {
-                protected:
+            BoostedRuleLearnerConfig()
+                : RuleLearnerConfig(BOOSTED_RULE_COMPARE_FUNCTION),
+                  headConfigPtr_(
+                    std::make_unique<CompleteHeadConfig>(labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_,
+                                                         l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)),
+                  statisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(lossConfigPtr_)),
+                  lossConfigPtr_(std::make_unique<DecomposableLogisticLossConfig>(headConfigPtr_)),
+                  l1RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
+                  l2RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
+                  labelBinningConfigPtr_(
+                    std::make_unique<NoLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)) {}
 
-                    /**
-                     * An unique pointer that stores the configuration of the rule heads.
-                     */
-                    std::unique_ptr<IHeadConfig> headConfigPtr_;
+            virtual ~BoostedRuleLearnerConfig() override {}
 
-                    /**
-                     * An unique pointer that stores the configuration of the statistics.
-                     */
-                    std::unique_ptr<IStatisticsConfig> statisticsConfigPtr_;
+            std::unique_ptr<IHeadConfig>& getHeadConfigPtr() override final {
+                return headConfigPtr_;
+            }
 
-                    /**
-                     * An unique pointer that stores the configuration of the loss function.
-                     */
-                    std::unique_ptr<ILossConfig> lossConfigPtr_;
+            std::unique_ptr<IStatisticsConfig>& getStatisticsConfigPtr() override final {
+                return statisticsConfigPtr_;
+            }
 
-                    /**
-                     * An unique pointer that stores the configuration of the L1 regularization term.
-                     */
-                    std::unique_ptr<IRegularizationConfig> l1RegularizationConfigPtr_;
+            std::unique_ptr<IRegularizationConfig>& getL1RegularizationConfigPtr() override final {
+                return l1RegularizationConfigPtr_;
+            }
 
-                    /**
-                     * An unique pointer that stores the configuration of the L2 regularization term.
-                     */
-                    std::unique_ptr<IRegularizationConfig> l2RegularizationConfigPtr_;
+            std::unique_ptr<IRegularizationConfig>& getL2RegularizationConfigPtr() override final {
+                return l2RegularizationConfigPtr_;
+            }
 
-                    /**
-                     * An unique pointer that stores the configuration of the method that is used to assign labels to
-                     * bins.
-                     */
-                    std::unique_ptr<ILabelBinningConfig> labelBinningConfigPtr_;
+            std::unique_ptr<ILossConfig>& getLossConfigPtr() override final {
+                return lossConfigPtr_;
+            }
 
-                public:
-
-                    Config()
-                        : AbstractRuleLearner::Config(BOOSTED_RULE_COMPARE_FUNCTION),
-                          headConfigPtr_(std::make_unique<CompleteHeadConfig>(
-                            labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_, l1RegularizationConfigPtr_,
-                            l2RegularizationConfigPtr_)),
-                          statisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(lossConfigPtr_)),
-                          lossConfigPtr_(std::make_unique<DecomposableLogisticLossConfig>(headConfigPtr_)),
-                          l1RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
-                          l2RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
-                          labelBinningConfigPtr_(std::make_unique<NoLabelBinningConfig>(l1RegularizationConfigPtr_,
-                                                                                        l2RegularizationConfigPtr_)) {}
-
-                    virtual ~Config() override {}
-
-                    std::unique_ptr<IHeadConfig>& getHeadConfigPtr() override final {
-                        return headConfigPtr_;
-                    }
-
-                    std::unique_ptr<IStatisticsConfig>& getStatisticsConfigPtr() override final {
-                        return statisticsConfigPtr_;
-                    }
-
-                    std::unique_ptr<IRegularizationConfig>& getL1RegularizationConfigPtr() override final {
-                        return l1RegularizationConfigPtr_;
-                    }
-
-                    std::unique_ptr<IRegularizationConfig>& getL2RegularizationConfigPtr() override final {
-                        return l2RegularizationConfigPtr_;
-                    }
-
-                    std::unique_ptr<ILossConfig>& getLossConfigPtr() override final {
-                        return lossConfigPtr_;
-                    }
-
-                    std::unique_ptr<ILabelBinningConfig>& getLabelBinningConfigPtr() override final {
-                        return labelBinningConfigPtr_;
-                    }
-            };
-
-            /**
-             * @param configurator A reference to an object of type `BoostedRuleLearnerConfigurator` that allows to
-             *                     configure the individual modules to be used by the rule learner
-             */
-            explicit AbstractBoostedRuleLearner(const BoostedRuleLearnerConfigurator& configurator)
-                : AbstractRuleLearner(configurator) {}
-
-            virtual ~AbstractBoostedRuleLearner() override {}
+            std::unique_ptr<ILabelBinningConfig>& getLabelBinningConfigPtr() override final {
+                return labelBinningConfigPtr_;
+            }
     };
-
 }
 
 #ifdef _WIN32

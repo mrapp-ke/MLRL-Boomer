@@ -1,21 +1,15 @@
-from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
 
 from mlrl.common.cython._types cimport uint32
 from mlrl.common.cython.feature_binning cimport IEqualFrequencyFeatureBinningConfig, IEqualWidthFeatureBinningConfig
-from mlrl.common.cython.feature_info cimport IFeatureInfo
-from mlrl.common.cython.feature_matrix cimport IColumnWiseFeatureMatrix, IRowWiseFeatureMatrix
 from mlrl.common.cython.feature_sampling cimport IFeatureSamplingWithoutReplacementConfig
 from mlrl.common.cython.instance_sampling cimport IInstanceSamplingWithoutReplacementConfig, \
     IInstanceSamplingWithReplacementConfig
-from mlrl.common.cython.label_matrix cimport IRowWiseLabelMatrix
 from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
 from mlrl.common.cython.output_sampling cimport IOutputSamplingWithoutReplacementConfig
 from mlrl.common.cython.output_space_info cimport IOutputSpaceInfo, OutputSpaceInfo
 from mlrl.common.cython.partition_sampling cimport IRandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig
-from mlrl.common.cython.prediction cimport IBinaryPredictor, IProbabilityPredictor, IScorePredictor, \
-    ISparseBinaryPredictor
 from mlrl.common.cython.probability_calibration cimport IJointProbabilityCalibrationModel, \
     IMarginalProbabilityCalibrationModel, JointProbabilityCalibrationModel, MarginalProbabilityCalibrationModel
 from mlrl.common.cython.rule_induction cimport IBeamSearchTopDownRuleInductionConfig, IGreedyTopDownRuleInductionConfig
@@ -300,42 +294,6 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
         void useNoJointProbabilityCalibration()
 
 
-    cdef cppclass IRuleLearner:
-
-        # Functions:
-
-        unique_ptr[ITrainingResult] fit(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
-                                        const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const
-
-        bool canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
-
-        unique_ptr[IBinaryPredictor] createBinaryPredictor(
-            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const IOutputSpaceInfo& outputSpaceInfo,
-            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
-
-        unique_ptr[ISparseBinaryPredictor] createSparseBinaryPredictor(
-            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const IOutputSpaceInfo& outputSpaceInfo,
-            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
-
-        bool canPredictScores(const IRowWiseFeatureMatrix&  featureMatrix, uint32 numLabels) const
-
-        unique_ptr[IScorePredictor] createScorePredictor(
-            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const IOutputSpaceInfo& outputSpaceInfo, uint32 numLabels) except +
-
-        bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
-
-        unique_ptr[IProbabilityPredictor] createProbabilityPredictor(
-            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const IOutputSpaceInfo& outputSpaceInfo,
-            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
-
-
 cdef class TrainingResult:
 
     # Attributes:
@@ -356,10 +314,3 @@ cdef class RuleLearnerConfig:
     # Attributes:
 
     cdef dict __dict__
-
-
-cdef class RuleLearner:
-
-    # Functions:
-
-    cdef IRuleLearner* get_rule_learner_ptr(self)

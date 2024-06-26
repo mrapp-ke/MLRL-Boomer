@@ -8,12 +8,12 @@ from mlrl.common.cython.learner cimport IBeamSearchTopDownRuleInductionMixin, ID
     INoParallelStatisticUpdateMixin, INoPartitionSamplingMixin, INoRulePruningMixin, \
     INoSequentialPostOptimizationMixin, INoSizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
     IOutputSamplingWithoutReplacementMixin, IParallelPredictionMixin, IParallelRuleRefinementMixin, \
-    IParallelStatisticUpdateMixin, IRandomBiPartitionSamplingMixin, IRoundRobinOutputSamplingMixin, IRuleLearner, \
+    IParallelStatisticUpdateMixin, IRandomBiPartitionSamplingMixin, IRoundRobinOutputSamplingMixin, \
     ISequentialPostOptimizationMixin, ISequentialRuleModelAssemblageMixin, ISizeStoppingCriterionMixin, \
-    ITimeStoppingCriterionMixin, RuleLearner, RuleLearnerConfig
-from mlrl.common.cython.learner_classification cimport IExampleWiseStratifiedBiPartitionSamplingMixin, \
-    IExampleWiseStratifiedInstanceSamplingMixin, IOutputWiseStratifiedBiPartitionSamplingMixin, \
-    IOutputWiseStratifiedInstanceSamplingMixin
+    ITimeStoppingCriterionMixin, RuleLearnerConfig
+from mlrl.common.cython.learner_classification cimport ClassificationRuleLearner, IClassificationRuleLearner, \
+    IExampleWiseStratifiedBiPartitionSamplingMixin, IExampleWiseStratifiedInstanceSamplingMixin, \
+    IOutputWiseStratifiedBiPartitionSamplingMixin, IOutputWiseStratifiedInstanceSamplingMixin
 
 from mlrl.seco.cython.learner cimport IAccuracyHeuristicMixin, IAccuracyPruningHeuristicMixin, \
     ICoverageStoppingCriterionMixin, IFMeasureHeuristicMixin, IFMeasurePruningHeuristicMixin, IKlnLiftFunctionMixin, \
@@ -86,7 +86,7 @@ cdef extern from "mlrl/seco/learner_seco.hpp" namespace "seco" nogil:
         pass
 
 
-    cdef cppclass IMultiLabelSeCoRuleLearner(IRuleLearner):
+    cdef cppclass IMultiLabelSeCoRuleLearner(IClassificationRuleLearner):
         pass
 
 
@@ -104,7 +104,7 @@ cdef class SeCoConfig(RuleLearnerConfig):
     cdef unique_ptr[IMultiLabelSeCoRuleLearnerConfig] config_ptr
 
 
-cdef class SeCo(RuleLearner):
+cdef class SeCo(ClassificationRuleLearner):
 
     # Attributes:
 

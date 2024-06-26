@@ -80,93 +80,72 @@ namespace seco {
     };
 
     /**
-     * An abstract base class for all rule learners that make use of the separate-and-conquer (SeCo) paradigm.
+     * Allows to configure a rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
      */
-    class AbstractSeCoRuleLearner : public AbstractRuleLearner,
-                                    virtual public ISeCoRuleLearner {
-        public:
+    class SeCoRuleLearnerConfig : public RuleLearnerConfig,
+                                  virtual public ISeCoRuleLearner::IConfig {
+        protected:
 
             /**
-             * Allows to configure a rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
+             * An unique pointer that stores the configuration of the stopping criterion that stops the induction of
+             * rules as soon as the sum of the weights of the uncovered labels is smaller or equal to a certain
+             * threshold.
              */
-            class Config : public AbstractRuleLearner::Config,
-                           virtual public ISeCoRuleLearner::IConfig {
-                protected:
+            std::unique_ptr<CoverageStoppingCriterionConfig> coverageStoppingCriterionConfigPtr_;
 
-                    /**
-                     * An unique pointer that stores the configuration of the stopping criterion that stops the
-                     * induction of rules as soon as the sum of the weights of the uncovered labels is smaller or equal
-                     * to a certain threshold.
-                     */
-                    std::unique_ptr<CoverageStoppingCriterionConfig> coverageStoppingCriterionConfigPtr_;
+            /**
+             * An unique pointer that stores the configuration of the rule heads.
+             */
+            std::unique_ptr<IHeadConfig> headConfigPtr_;
 
-                    /**
-                     * An unique pointer that stores the configuration of the rule heads.
-                     */
-                    std::unique_ptr<IHeadConfig> headConfigPtr_;
+            /**
+             * An unique pointer that stores the configuration of the heuristic that is used for learning rules.
+             */
+            std::unique_ptr<IHeuristicConfig> heuristicConfigPtr_;
 
-                    /**
-                     * An unique pointer that stores the configuration of the heuristic that is used for learning rules.
-                     */
-                    std::unique_ptr<IHeuristicConfig> heuristicConfigPtr_;
+            /**
+             * An unique pointer that stores the configuration of the heuristic that is used for pruning rules.
+             */
+            std::unique_ptr<IHeuristicConfig> pruningHeuristicConfigPtr_;
 
-                    /**
-                     * An unique pointer that stores the configuration of the heuristic that is used for pruning rules.
-                     */
-                    std::unique_ptr<IHeuristicConfig> pruningHeuristicConfigPtr_;
-
-                    /**
-                     * An unique pointer that stores the configuration of the lift function that affects the quality of
-                     * rules, depending on the number of labels for which they predict.
-                     */
-                    std::unique_ptr<ILiftFunctionConfig> liftFunctionConfigPtr_;
-
-                public:
-
-                    Config()
-                        : AbstractRuleLearner::Config(SECO_RULE_COMPARE_FUNCTION),
-                          headConfigPtr_(
-                            std::make_unique<SingleOutputHeadConfig>(heuristicConfigPtr_, pruningHeuristicConfigPtr_)),
-                          heuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
-                          pruningHeuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
-                          liftFunctionConfigPtr_(std::make_unique<NoLiftFunctionConfig>()) {}
-
-                    virtual ~Config() override {}
-
-                    std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr()
-                      override final {
-                        return coverageStoppingCriterionConfigPtr_;
-                    }
-
-                    std::unique_ptr<IHeadConfig>& getHeadConfigPtr() override final {
-                        return headConfigPtr_;
-                    }
-
-                    std::unique_ptr<IHeuristicConfig>& getHeuristicConfigPtr() override final {
-                        return heuristicConfigPtr_;
-                    }
-
-                    std::unique_ptr<IHeuristicConfig>& getPruningHeuristicConfigPtr() override final {
-                        return pruningHeuristicConfigPtr_;
-                    }
-
-                    std::unique_ptr<ILiftFunctionConfig>& getLiftFunctionConfigPtr() override final {
-                        return liftFunctionConfigPtr_;
-                    }
-            };
+            /**
+             * An unique pointer that stores the configuration of the lift function that affects the quality of rules,
+             * depending on the number of labels for which they predict.
+             */
+            std::unique_ptr<ILiftFunctionConfig> liftFunctionConfigPtr_;
 
         public:
 
-            /**
-             * @param configurator A reference to an object of type `SeCoRuleLearnerConfigurator` that allows to
-             *                     configure the individual modules to be used by the rule learner
-             */
-            explicit AbstractSeCoRuleLearner(SeCoRuleLearnerConfigurator& configurator)
-                : AbstractRuleLearner(configurator) {}
+            SeCoRuleLearnerConfig()
+                : RuleLearnerConfig(SECO_RULE_COMPARE_FUNCTION),
+                  headConfigPtr_(
+                    std::make_unique<SingleOutputHeadConfig>(heuristicConfigPtr_, pruningHeuristicConfigPtr_)),
+                  heuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
+                  pruningHeuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
+                  liftFunctionConfigPtr_(std::make_unique<NoLiftFunctionConfig>()) {}
 
-            virtual ~AbstractSeCoRuleLearner() override {}
+            virtual ~SeCoRuleLearnerConfig() override {}
+
+            std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr() override final {
+                return coverageStoppingCriterionConfigPtr_;
+            }
+
+            std::unique_ptr<IHeadConfig>& getHeadConfigPtr() override final {
+                return headConfigPtr_;
+            }
+
+            std::unique_ptr<IHeuristicConfig>& getHeuristicConfigPtr() override final {
+                return heuristicConfigPtr_;
+            }
+
+            std::unique_ptr<IHeuristicConfig>& getPruningHeuristicConfigPtr() override final {
+                return pruningHeuristicConfigPtr_;
+            }
+
+            std::unique_ptr<ILiftFunctionConfig>& getLiftFunctionConfigPtr() override final {
+                return liftFunctionConfigPtr_;
+            }
     };
-
 }
 
 #ifdef _WIN32
