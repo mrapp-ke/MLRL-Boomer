@@ -12,22 +12,6 @@ from sklearn.utils.validation import check_is_fitted
 KWARG_PREDICT_SCORES = 'predict_scores'
 
 
-class OrdinalFeatureLearner(ABC):
-    """
-    A base class for all machine learning algorithms that natively support ordinal features.
-    """
-
-    ordinal_feature_indices: Optional[List[int]] = None
-
-    def set_ordinal_feature_indices(self, indices):
-        """
-        Sets the indices of all ordinal features.
-
-        :param indices: A `np.ndarray` or `Iterable` that stores the indices to be set
-        """
-        self.ordinal_feature_indices = None if indices is None else list(indices)
-
-
 class NominalFeatureLearner(ABC):
     """
     A base class for all machine learning algorithms that natively support nominal features.
