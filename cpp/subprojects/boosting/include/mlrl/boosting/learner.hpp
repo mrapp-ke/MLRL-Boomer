@@ -30,462 +30,440 @@
 namespace boosting {
 
     /**
-     * Defines an interface for all rule learners that make use of gradient boosting.
+     * Defines an interface for all classes that allow to configure a rule learner that makes use of gradient boosting.
      */
-    class MLRLBOOSTING_API IBoostedRuleLearner {
+    class MLRLBOOSTING_API IBoostedRuleLearnerConfig : virtual public IRuleLearnerConfig {
         public:
 
-            /**
-             * Defines an interface for all classes that allow to configure a rule learner that makes use of gradient
-             * boosting.
-             */
-            class IConfig : virtual public IRuleLearnerConfig {
-                public:
-
-                    virtual ~IConfig() override {}
-
-                    /**
-                     * Returns an unique pointer to the configuration of the rule heads that should be induced by the
-                     * rule learner.
-                     *
-                     * @return A reference to an unique pointer of type `IHeadConfig` that stores the configuration of
-                     *         the rule heads
-                     */
-                    virtual std::unique_ptr<IHeadConfig>& getHeadConfigPtr() = 0;
-
-                    /**
-                     * Returns an unique pointer to the configuration of the statistics that should be used by the rule
-                     * learner.
-                     *
-                     * @return A reference to an unique pointer of type `IStatisticsConfig` that stores the
-                     *         configuration of the statistics
-                     */
-                    virtual std::unique_ptr<IStatisticsConfig>& getStatisticsConfigPtr() = 0;
-
-                    /**
-                     * Returns an unique pointer to the configuration of the L1 regularization term.
-                     *
-                     * @return A reference to an unique pointer of type `IRegularizationConfig` that stores the
-                     *         configuration of the L1 regularization term
-                     */
-                    virtual std::unique_ptr<IRegularizationConfig>& getL1RegularizationConfigPtr() = 0;
-
-                    /**
-                     * Returns an unique pointer to the configuration of the L2 regularization term.
-                     *
-                     * @return A reference to an unique pointer of type `IRegularizationConfig` that stores the
-                     *         configuration of the L2 regularization term
-                     */
-                    virtual std::unique_ptr<IRegularizationConfig>& getL2RegularizationConfigPtr() = 0;
-
-                    /**
-                     * Returns an unique pointer to the configuration of the loss function.
-                     *
-                     * @return A reference to an unique pointer of type `ILossConfig` that stores the configuration of
-                     *         the loss function
-                     */
-                    virtual std::unique_ptr<ILossConfig>& getLossConfigPtr() = 0;
-
-                    /**
-                     * Returns an unique pointer to the configuration of the method for the assignment of labels to
-                     * bins.
-                     *
-                     * @return A reference to an unique pointer of type `ILabelBinningConfig` that stores the
-                     *         configuration of the method for the assignment of labels to bins
-                     */
-                    virtual std::unique_ptr<ILabelBinningConfig>& getLabelBinningConfigPtr() = 0;
-            };
+            virtual ~IBoostedRuleLearnerConfig() override {}
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to automatically decide
-             * whether a method for the assignment of numerical feature values to bins should be used or not.
+             * Returns an unique pointer to the configuration of the rule heads that should be induced by the rule
+             * learner.
+             *
+             * @return A reference to an unique pointer of type `IHeadConfig` that stores the configuration of the rule
+             *         heads
              */
-            class IAutomaticFeatureBinningMixin : public virtual IBoostedRuleLearner::IConfig {
-                public:
-
-                    virtual ~IAutomaticFeatureBinningMixin() override {}
-
-                    /**
-                     * Configures the rule learner to automatically decide whether a method for the assignment of
-                     * numerical feature values to bins should be used or not.
-                     */
-                    virtual void useAutomaticFeatureBinning() {
-                        std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr =
-                          this->getFeatureBinningConfigPtr();
-                        featureBinningConfigPtr = std::make_unique<AutomaticFeatureBinningConfig>();
-                    }
-            };
+            virtual std::unique_ptr<IHeadConfig>& getHeadConfigPtr() = 0;
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to automatically decide
-             * whether multi-threading should be used for the parallel refinement of rules or not.
+             * Returns an unique pointer to the configuration of the statistics that should be used by the rule learner.
+             *
+             * @return A reference to an unique pointer of type `IStatisticsConfig` that stores the configuration of the
+             *         statistics
              */
-            class IAutomaticParallelRuleRefinementMixin : public virtual IBoostedRuleLearner::IConfig {
-                public:
-
-                    virtual ~IAutomaticParallelRuleRefinementMixin() override {}
-
-                    /**
-                     * Configures the rule learner to automatically decide whether multi-threading should be used for
-                     * the parallel refinement of rules or not.
-                     */
-                    virtual void useAutomaticParallelRuleRefinement() {
-                        std::unique_ptr<IMultiThreadingConfig>& parallelRuleRefinementConfigPtr =
-                          this->getParallelRuleRefinementConfigPtr();
-                        parallelRuleRefinementConfigPtr = std::make_unique<AutoParallelRuleRefinementConfig>(
-                          this->getLossConfigPtr(), this->getHeadConfigPtr(), this->getFeatureSamplingConfigPtr());
-                    }
-            };
+            virtual std::unique_ptr<IStatisticsConfig>& getStatisticsConfigPtr() = 0;
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to automatically decide
-             * whether multi-threading should be used for the parallel update of statistics or not.
+             * Returns an unique pointer to the configuration of the L1 regularization term.
+             *
+             * @return A reference to an unique pointer of type `IRegularizationConfig` that stores the configuration of
+             *         the L1 regularization term
              */
-            class IAutomaticParallelStatisticUpdateMixin : public virtual IBoostedRuleLearner::IConfig {
-                public:
-
-                    virtual ~IAutomaticParallelStatisticUpdateMixin() override {}
-
-                    /**
-                     * Configures the rule learner to automatically decide whether multi-threading should be used for
-                     * the parallel update of statistics or not.
-                     */
-                    virtual void useAutomaticParallelStatisticUpdate() {
-                        std::unique_ptr<IMultiThreadingConfig>& parallelStatisticUpdateConfigPtr =
-                          this->getParallelStatisticUpdateConfigPtr();
-                        parallelStatisticUpdateConfigPtr =
-                          std::make_unique<AutoParallelStatisticUpdateConfig>(this->getLossConfigPtr());
-                    }
-            };
+            virtual std::unique_ptr<IRegularizationConfig>& getL1RegularizationConfigPtr() = 0;
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to use a post processor that
-             * shrinks the weights fo rules by a constant "shrinkage" parameter.
+             * Returns an unique pointer to the configuration of the L2 regularization term.
+             *
+             * @return A reference to an unique pointer of type `IRegularizationConfig` that stores the configuration of
+             *         the L2 regularization term
              */
-            class IConstantShrinkageMixin : public virtual IBoostedRuleLearner::IConfig {
-                public:
-
-                    virtual ~IConstantShrinkageMixin() override {}
-
-                    /**
-                     * Configures the rule learner to use a post processor that shrinks the weights of rules by a
-                     * constant "shrinkage" parameter.
-                     *
-                     * @return A reference to an object of type `IConstantShrinkageConfig` that allows further
-                     *         configuration of the loss function
-                     */
-                    virtual IConstantShrinkageConfig& useConstantShrinkagePostProcessor() {
-                        std::unique_ptr<IPostProcessorConfig>& postProcessorConfigPtr =
-                          this->getPostProcessorConfigPtr();
-                        std::unique_ptr<ConstantShrinkageConfig> ptr = std::make_unique<ConstantShrinkageConfig>();
-                        IConstantShrinkageConfig& ref = *ptr;
-                        postProcessorConfigPtr = std::move(ptr);
-                        return ref;
-                    }
-            };
+            virtual std::unique_ptr<IRegularizationConfig>& getL2RegularizationConfigPtr() = 0;
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to use a dense representation
-             * of gradients and Hessians.
+             * Returns an unique pointer to the configuration of the loss function.
+             *
+             * @return A reference to an unique pointer of type `ILossConfig` that stores the configuration of the loss
+             *         function
              */
-            class IDenseStatisticsMixin : public virtual IBoostedRuleLearner::IConfig {
-                public:
-
-                    virtual ~IDenseStatisticsMixin() override {}
-
-                    /**
-                     * Configures the rule learner to use a dense representation of gradients and Hessians.
-                     */
-                    virtual void useDenseStatistics() {
-                        std::unique_ptr<IStatisticsConfig>& statisticsConfigPtr = this->getStatisticsConfigPtr();
-                        statisticsConfigPtr = std::make_unique<DenseStatisticsConfig>(this->getLossConfigPtr());
-                    }
-            };
+            virtual std::unique_ptr<ILossConfig>& getLossConfigPtr() = 0;
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to not use L1 regularization.
+             * Returns an unique pointer to the configuration of the method for the assignment of labels to bins.
+             *
+             * @return A reference to an unique pointer of type `ILabelBinningConfig` that stores the configuration of
+             *         the method for the assignment of labels to bins
              */
-            class INoL1RegularizationMixin : public virtual IBoostedRuleLearner::IConfig {
-                public:
+            virtual std::unique_ptr<ILabelBinningConfig>& getLabelBinningConfigPtr() = 0;
+    };
 
-                    virtual ~INoL1RegularizationMixin() override {}
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to automatically decide whether a
+     * method for the assignment of numerical feature values to bins should be used or not.
+     */
+    class MLRLBOOSTING_API IAutomaticFeatureBinningMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
 
-                    /**
-                     * Configures the rule learner to not use L1 regularization.
-                     */
-                    virtual void useNoL1Regularization() {
-                        std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr =
-                          this->getL1RegularizationConfigPtr();
-                        l1RegularizationConfigPtr = std::make_unique<NoRegularizationConfig>();
-                    }
-            };
+            virtual ~IAutomaticFeatureBinningMixin() override {}
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to use L1 regularization.
+             * Configures the rule learner to automatically decide whether a method for the assignment of numerical
+             * feature values to bins should be used or not.
              */
-            class IL1RegularizationMixin : public virtual IBoostedRuleLearner::IConfig {
-                public:
+            virtual void useAutomaticFeatureBinning() {
+                std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr = this->getFeatureBinningConfigPtr();
+                featureBinningConfigPtr = std::make_unique<AutomaticFeatureBinningConfig>();
+            }
+    };
 
-                    virtual ~IL1RegularizationMixin() override {}
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to automatically decide whether
+     * multi-threading should be used for the parallel refinement of rules or not.
+     */
+    class MLRLBOOSTING_API IAutomaticParallelRuleRefinementMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
 
-                    /**
-                     * Configures the rule learner to use L1 regularization.
-                     *
-                     * @return A reference to an object of type `IManualRegularizationConfig` that allows further
-                     *         configuration of the regularization term
-                     */
-                    virtual IManualRegularizationConfig& useL1Regularization() {
-                        std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr =
-                          this->getL1RegularizationConfigPtr();
-                        std::unique_ptr<ManualRegularizationConfig> ptr =
-                          std::make_unique<ManualRegularizationConfig>();
-                        IManualRegularizationConfig& ref = *ptr;
-                        l1RegularizationConfigPtr = std::move(ptr);
-                        return ref;
-                    }
-            };
+            virtual ~IAutomaticParallelRuleRefinementMixin() override {}
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to not use L2 regularization.
+             * Configures the rule learner to automatically decide whether multi-threading should be used for the
+             * parallel refinement of rules or not.
              */
-            class INoL2RegularizationMixin : public virtual IBoostedRuleLearner::IConfig {
-                public:
+            virtual void useAutomaticParallelRuleRefinement() {
+                std::unique_ptr<IMultiThreadingConfig>& parallelRuleRefinementConfigPtr =
+                  this->getParallelRuleRefinementConfigPtr();
+                parallelRuleRefinementConfigPtr = std::make_unique<AutoParallelRuleRefinementConfig>(
+                  this->getLossConfigPtr(), this->getHeadConfigPtr(), this->getFeatureSamplingConfigPtr());
+            }
+    };
 
-                    virtual ~INoL2RegularizationMixin() override {}
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to automatically decide whether
+     * multi-threading should be used for the parallel update of statistics or not.
+     */
+    class MLRLBOOSTING_API IAutomaticParallelStatisticUpdateMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
 
-                    /**
-                     * Configures the rule learner to not use L2 regularization.
-                     */
-                    virtual void useNoL2Regularization() {
-                        std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr =
-                          this->getL2RegularizationConfigPtr();
-                        l2RegularizationConfigPtr = std::make_unique<NoRegularizationConfig>();
-                    }
-            };
+            virtual ~IAutomaticParallelStatisticUpdateMixin() override {}
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to use L2 regularization.
+             * Configures the rule learner to automatically decide whether multi-threading should be used for the
+             * parallel update of statistics or not.
              */
-            class IL2RegularizationMixin : public virtual IBoostedRuleLearner::IConfig {
-                public:
+            virtual void useAutomaticParallelStatisticUpdate() {
+                std::unique_ptr<IMultiThreadingConfig>& parallelStatisticUpdateConfigPtr =
+                  this->getParallelStatisticUpdateConfigPtr();
+                parallelStatisticUpdateConfigPtr =
+                  std::make_unique<AutoParallelStatisticUpdateConfig>(this->getLossConfigPtr());
+            }
+    };
 
-                    virtual ~IL2RegularizationMixin() override {}
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to use a post processor that shrinks
+     * the weights fo rules by a constant "shrinkage" parameter.
+     */
+    class MLRLBOOSTING_API IConstantShrinkageMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
 
-                    /**
-                     * Configures the rule learner to use L2 regularization.
-                     *
-                     * @return A reference to an object of type `IManualRegularizationConfig` that allows further
-                     *         configuration of the regularization term
-                     */
-                    virtual IManualRegularizationConfig& useL2Regularization() {
-                        std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr =
-                          this->getL2RegularizationConfigPtr();
-                        std::unique_ptr<ManualRegularizationConfig> ptr =
-                          std::make_unique<ManualRegularizationConfig>();
-                        IManualRegularizationConfig& ref = *ptr;
-                        l2RegularizationConfigPtr = std::move(ptr);
-                        return ref;
-                    }
-            };
+            virtual ~IConstantShrinkageMixin() override {}
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to induce rules with complete
-             * heads that predict for all available outputs.
+             * Configures the rule learner to use a post processor that shrinks the weights of rules by a constant
+             * "shrinkage" parameter.
+             *
+             * @return A reference to an object of type `IConstantShrinkageConfig` that allows further configuration of
+             *         the loss function
              */
-            class ICompleteHeadMixin : public virtual IBoostedRuleLearner::IConfig {
-                public:
+            virtual IConstantShrinkageConfig& useConstantShrinkagePostProcessor() {
+                std::unique_ptr<IPostProcessorConfig>& postProcessorConfigPtr = this->getPostProcessorConfigPtr();
+                std::unique_ptr<ConstantShrinkageConfig> ptr = std::make_unique<ConstantShrinkageConfig>();
+                IConstantShrinkageConfig& ref = *ptr;
+                postProcessorConfigPtr = std::move(ptr);
+                return ref;
+            }
+    };
 
-                    virtual ~ICompleteHeadMixin() override {}
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to use a dense representation of
+     * gradients and Hessians.
+     */
+    class MLRLBOOSTING_API IDenseStatisticsMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
 
-                    /**
-                     * Configures the rule learner to induce rules with complete heads that predict for all available
-                     * outputs.
-                     */
-                    virtual void useCompleteHeads() {
-                        std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
-                        headConfigPtr = std::make_unique<CompleteHeadConfig>(
-                          this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr(),
-                          this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
-                    }
-            };
+            virtual ~IDenseStatisticsMixin() override {}
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to induce rules with partial
-             * heads that predict for a predefined number of outputs.
+             * Configures the rule learner to use a dense representation of gradients and Hessians.
              */
-            class IFixedPartialHeadMixin : public virtual IBoostedRuleLearner::IConfig {
-                public:
+            virtual void useDenseStatistics() {
+                std::unique_ptr<IStatisticsConfig>& statisticsConfigPtr = this->getStatisticsConfigPtr();
+                statisticsConfigPtr = std::make_unique<DenseStatisticsConfig>(this->getLossConfigPtr());
+            }
+    };
 
-                    virtual ~IFixedPartialHeadMixin() override {}
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to not use L1 regularization.
+     */
+    class MLRLBOOSTING_API INoL1RegularizationMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
 
-                    /**
-                     * Configures the rule learner to induce rules with partial heads that predict for a predefined
-                     * number of outputs.
-                     *
-                     * @return A reference to an object of type `IFixedPartialHeadConfig` that allows further
-                     *         configuration of the rule heads
-                     */
-                    virtual IFixedPartialHeadConfig& useFixedPartialHeads() {
-                        std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
-                        std::unique_ptr<FixedPartialHeadConfig> ptr = std::make_unique<FixedPartialHeadConfig>(
-                          this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr());
-                        IFixedPartialHeadConfig& ref = *ptr;
-                        headConfigPtr = std::move(ptr);
-                        return ref;
-                    }
-            };
+            virtual ~INoL1RegularizationMixin() override {}
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to induce rules with partial
-             * heads that predict for a subset of the available outputs that is determined dynamically.
+             * Configures the rule learner to not use L1 regularization.
              */
-            class IDynamicPartialHeadMixin : public virtual IBoostedRuleLearner::IConfig {
-                public:
+            virtual void useNoL1Regularization() {
+                std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr =
+                  this->getL1RegularizationConfigPtr();
+                l1RegularizationConfigPtr = std::make_unique<NoRegularizationConfig>();
+            }
+    };
 
-                    virtual ~IDynamicPartialHeadMixin() override {}
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to use L1 regularization.
+     */
+    class MLRLBOOSTING_API IL1RegularizationMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
 
-                    /**
-                     * Configures the rule learner to induce rules with partial heads that predict for a subset of the
-                     * available outputs that is determined dynamically. Only those outputs for which the square of the
-                     * predictive quality exceeds a certain threshold are included in a rule head.
-                     *
-                     * @return A reference to an object of type `IDynamicPartialHeadConfig` that allows further
-                     *         configuration of the rule heads
-                     */
-                    virtual IDynamicPartialHeadConfig& useDynamicPartialHeads() {
-                        std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
-                        std::unique_ptr<DynamicPartialHeadConfig> ptr = std::make_unique<DynamicPartialHeadConfig>(
-                          this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr());
-                        IDynamicPartialHeadConfig& ref = *ptr;
-                        headConfigPtr = std::move(ptr);
-                        return ref;
-                    }
-            };
+            virtual ~IL1RegularizationMixin() override {}
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to induce rules with
-             * single-output heads that predict for a single output.
+             * Configures the rule learner to use L1 regularization.
+             *
+             * @return A reference to an object of type `IManualRegularizationConfig` that allows further configuration
+             *         of the regularization term
              */
-            class ISingleOutputHeadMixin : public virtual IBoostedRuleLearner::IConfig {
-                public:
+            virtual IManualRegularizationConfig& useL1Regularization() {
+                std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr =
+                  this->getL1RegularizationConfigPtr();
+                std::unique_ptr<ManualRegularizationConfig> ptr = std::make_unique<ManualRegularizationConfig>();
+                IManualRegularizationConfig& ref = *ptr;
+                l1RegularizationConfigPtr = std::move(ptr);
+                return ref;
+            }
+    };
 
-                    virtual ~ISingleOutputHeadMixin() override {}
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to not use L2 regularization.
+     */
+    class MLRLBOOSTING_API INoL2RegularizationMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
 
-                    /**
-                     * Configures the rule learner to induce rules with single-output heads that predict for a single
-                     * output.
-                     */
-                    virtual void useSingleOutputHeads() {
-                        std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
-                        headConfigPtr = std::make_unique<SingleOutputHeadConfig>(
-                          this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr(),
-                          this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
-                    }
-            };
+            virtual ~INoL2RegularizationMixin() override {}
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to automatically decide for
-             * the type of rule heads that should be used.
+             * Configures the rule learner to not use L2 regularization.
              */
-            class IAutomaticHeadMixin : public virtual IBoostedRuleLearner::IConfig {
-                public:
+            virtual void useNoL2Regularization() {
+                std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr =
+                  this->getL2RegularizationConfigPtr();
+                l2RegularizationConfigPtr = std::make_unique<NoRegularizationConfig>();
+            }
+    };
 
-                    virtual ~IAutomaticHeadMixin() override {}
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to use L2 regularization.
+     */
+    class MLRLBOOSTING_API IL2RegularizationMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
 
-                    /**
-                     * Configures the rule learner to automatically decide for the type of rule heads that should be
-                     * used.
-                     */
-                    virtual void useAutomaticHeads() {
-                        std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
-                        headConfigPtr = std::make_unique<AutomaticHeadConfig>(
-                          this->getLossConfigPtr(), this->getLabelBinningConfigPtr(),
-                          this->getParallelStatisticUpdateConfigPtr(), this->getL1RegularizationConfigPtr(),
-                          this->getL2RegularizationConfigPtr());
-                    }
-            };
+            virtual ~IL2RegularizationMixin() override {}
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
-             * implements a multivariate variant of the squared error loss that is non-decomposable.
+             * Configures the rule learner to use L2 regularization.
+             *
+             * @return A reference to an object of type `IManualRegularizationConfig` that allows further configuration
+             *         of the regularization term
              */
-            class INonDecomposableSquaredErrorLossMixin : virtual public IBoostedRuleLearner::IConfig {
-                public:
+            virtual IManualRegularizationConfig& useL2Regularization() {
+                std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr =
+                  this->getL2RegularizationConfigPtr();
+                std::unique_ptr<ManualRegularizationConfig> ptr = std::make_unique<ManualRegularizationConfig>();
+                IManualRegularizationConfig& ref = *ptr;
+                l2RegularizationConfigPtr = std::move(ptr);
+                return ref;
+            }
+    };
 
-                    virtual ~INonDecomposableSquaredErrorLossMixin() override {}
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to induce rules with complete heads
+     * that predict for all available outputs.
+     */
+    class MLRLBOOSTING_API ICompleteHeadMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
 
-                    /**
-                     * Configures the rule learner to use a loss function that implements a multivariate variant of the
-                     * squared error loss that is non-decomposable.
-                     */
-                    virtual void useNonDecomposableSquaredErrorLoss() {
-                        std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
-                        lossConfigPtr =
-                          std::make_unique<NonDecomposableSquaredErrorLossConfig>(this->getHeadConfigPtr());
-                    }
-            };
+            virtual ~ICompleteHeadMixin() override {}
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
-             * implements a multivariate variant of the squared error loss that is decomposable.
+             * Configures the rule learner to induce rules with complete heads that predict for all available outputs.
              */
-            class IDecomposableSquaredErrorLossMixin : public virtual IBoostedRuleLearner::IConfig {
-                public:
+            virtual void useCompleteHeads() {
+                std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
+                headConfigPtr = std::make_unique<CompleteHeadConfig>(
+                  this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr(),
+                  this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
+            }
+    };
 
-                    virtual ~IDecomposableSquaredErrorLossMixin() override {}
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to induce rules with partial heads
+     * that predict for a predefined number of outputs.
+     */
+    class MLRLBOOSTING_API IFixedPartialHeadMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
 
-                    /**
-                     * Configures the rule learner to use a loss function that implements a multivariate variant of the
-                     * squared error loss that is decomposable.
-                     */
-                    virtual void useDecomposableSquaredErrorLoss() {
-                        std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
-                        lossConfigPtr = std::make_unique<DecomposableSquaredErrorLossConfig>(this->getHeadConfigPtr());
-                    }
-            };
+            virtual ~IFixedPartialHeadMixin() override {}
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to not use any method for the
-             * assignment of labels to bins.
+             * Configures the rule learner to induce rules with partial heads that predict for a predefined number of
+             * outputs.
+             *
+             * @return A reference to an object of type `IFixedPartialHeadConfig` that allows further configuration of
+             *         the rule heads
              */
-            class INoLabelBinningMixin : public virtual IBoostedRuleLearner::IConfig {
-                public:
+            virtual IFixedPartialHeadConfig& useFixedPartialHeads() {
+                std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
+                std::unique_ptr<FixedPartialHeadConfig> ptr = std::make_unique<FixedPartialHeadConfig>(
+                  this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr());
+                IFixedPartialHeadConfig& ref = *ptr;
+                headConfigPtr = std::move(ptr);
+                return ref;
+            }
+    };
 
-                    virtual ~INoLabelBinningMixin() override {}
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to induce rules with partial heads
+     * that predict for a subset of the available outputs that is determined dynamically.
+     */
+    class MLRLBOOSTING_API IDynamicPartialHeadMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
 
-                    /**
-                     * Configures the rule learner to not use any method for the assignment of labels to bins.
-                     */
-                    virtual void useNoLabelBinning() {
-                        std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr = this->getLabelBinningConfigPtr();
-                        labelBinningConfigPtr = std::make_unique<NoLabelBinningConfig>(
-                          this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
-                    }
-            };
+            virtual ~IDynamicPartialHeadMixin() override {}
 
             /**
-             * Defines an interface for all classes that allow to configure a rule learner to use a predictor that
-             * predicts output-wise scores for given query examples by summing up the scores that are provided by
-             * individual rules for each output individually.
+             * Configures the rule learner to induce rules with partial heads that predict for a subset of the available
+             * outputs that is determined dynamically. Only those outputs for which the square of the predictive quality
+             * exceeds a certain threshold are included in a rule head.
+             *
+             * @return A reference to an object of type `IDynamicPartialHeadConfig` that allows further configuration of
+             *         the rule heads
              */
-            class IOutputWiseScorePredictorMixin : public virtual IBoostedRuleLearner::IConfig {
-                public:
+            virtual IDynamicPartialHeadConfig& useDynamicPartialHeads() {
+                std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
+                std::unique_ptr<DynamicPartialHeadConfig> ptr = std::make_unique<DynamicPartialHeadConfig>(
+                  this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr());
+                IDynamicPartialHeadConfig& ref = *ptr;
+                headConfigPtr = std::move(ptr);
+                return ref;
+            }
+    };
 
-                    virtual ~IOutputWiseScorePredictorMixin() override {}
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to induce rules with single-output
+     * heads that predict for a single output.
+     */
+    class MLRLBOOSTING_API ISingleOutputHeadMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
 
-                    /**
-                     * Configures the rule learner to use a predictor that predicts output-wise scores for given query
-                     * examples by summing up the scores that are provided by individual rules for each output
-                     * individually.
-                     */
-                    virtual void useOutputWiseScorePredictor() {
-                        std::unique_ptr<IScorePredictorConfig>& scorePredictorConfigPtr =
-                          this->getScorePredictorConfigPtr();
-                        scorePredictorConfigPtr =
-                          std::make_unique<OutputWiseScorePredictorConfig>(this->getParallelPredictionConfigPtr());
-                    }
-            };
+            virtual ~ISingleOutputHeadMixin() override {}
 
-            virtual ~IBoostedRuleLearner() {}
+            /**
+             * Configures the rule learner to induce rules with single-output heads that predict for a single output.
+             */
+            virtual void useSingleOutputHeads() {
+                std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
+                headConfigPtr = std::make_unique<SingleOutputHeadConfig>(
+                  this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr(),
+                  this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
+            }
+    };
+
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to automatically decide for the type
+     * of rule heads that should be used.
+     */
+    class MLRLBOOSTING_API IAutomaticHeadMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
+
+            virtual ~IAutomaticHeadMixin() override {}
+
+            /**
+             * Configures the rule learner to automatically decide for the type of rule heads that should be used.
+             */
+            virtual void useAutomaticHeads() {
+                std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
+                headConfigPtr = std::make_unique<AutomaticHeadConfig>(
+                  this->getLossConfigPtr(), this->getLabelBinningConfigPtr(),
+                  this->getParallelStatisticUpdateConfigPtr(), this->getL1RegularizationConfigPtr(),
+                  this->getL2RegularizationConfigPtr());
+            }
+    };
+
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
+     * implements a multivariate variant of the squared error loss that is non-decomposable.
+     */
+    class MLRLBOOSTING_API INonDecomposableSquaredErrorLossMixin : virtual public IBoostedRuleLearnerConfig {
+        public:
+
+            virtual ~INonDecomposableSquaredErrorLossMixin() override {}
+
+            /**
+             * Configures the rule learner to use a loss function that implements a multivariate variant of the squared
+             * error loss that is non-decomposable.
+             */
+            virtual void useNonDecomposableSquaredErrorLoss() {
+                std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
+                lossConfigPtr = std::make_unique<NonDecomposableSquaredErrorLossConfig>(this->getHeadConfigPtr());
+            }
+    };
+
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
+     * implements a multivariate variant of the squared error loss that is decomposable.
+     */
+    class MLRLBOOSTING_API IDecomposableSquaredErrorLossMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
+
+            virtual ~IDecomposableSquaredErrorLossMixin() override {}
+
+            /**
+             * Configures the rule learner to use a loss function that implements a multivariate variant of the squared
+             * error loss that is decomposable.
+             */
+            virtual void useDecomposableSquaredErrorLoss() {
+                std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
+                lossConfigPtr = std::make_unique<DecomposableSquaredErrorLossConfig>(this->getHeadConfigPtr());
+            }
+    };
+
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to not use any method for the
+     * assignment of labels to bins.
+     */
+    class MLRLBOOSTING_API INoLabelBinningMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
+
+            virtual ~INoLabelBinningMixin() override {}
+
+            /**
+             * Configures the rule learner to not use any method for the assignment of labels to bins.
+             */
+            virtual void useNoLabelBinning() {
+                std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr = this->getLabelBinningConfigPtr();
+                labelBinningConfigPtr = std::make_unique<NoLabelBinningConfig>(this->getL1RegularizationConfigPtr(),
+                                                                               this->getL2RegularizationConfigPtr());
+            }
+    };
+
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to use a predictor that predicts
+     * output-wise scores for given query examples by summing up the scores that are provided by individual rules for
+     * each output individually.
+     */
+    class MLRLBOOSTING_API IOutputWiseScorePredictorMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
+
+            virtual ~IOutputWiseScorePredictorMixin() override {}
+
+            /**
+             * Configures the rule learner to use a predictor that predicts output-wise scores for given query examples
+             * by summing up the scores that are provided by individual rules for each output individually.
+             */
+            virtual void useOutputWiseScorePredictor() {
+                std::unique_ptr<IScorePredictorConfig>& scorePredictorConfigPtr = this->getScorePredictorConfigPtr();
+                scorePredictorConfigPtr =
+                  std::make_unique<OutputWiseScorePredictorConfig>(this->getParallelPredictionConfigPtr());
+            }
     };
 }

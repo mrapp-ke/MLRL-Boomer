@@ -13,115 +13,112 @@ ctypedef void (*DsysvFunction)(char* uplo, int* n, int* nrhs, double* a, int* ld
 
 cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
 
-    cdef cppclass IAutomaticFeatureBinningMixin"boosting::IBoostedRuleLearner::IAutomaticFeatureBinningMixin":
+    cdef cppclass IAutomaticFeatureBinningMixin:
 
         # Functions
 
         void useAutomaticFeatureBinning()
 
 
-    cdef cppclass IAutomaticParallelRuleRefinementMixin\
-        "boosting::IBoostedRuleLearner::IAutomaticParallelRuleRefinementMixin":
+    cdef cppclass IAutomaticParallelRuleRefinementMixin:
 
         # Functions:
 
         void useAutomaticParallelRuleRefinement()
 
 
-    cdef cppclass IAutomaticParallelStatisticUpdateMixin\
-        "boosting::IBoostedRuleLearner::IAutomaticParallelStatisticUpdateMixin":
+    cdef cppclass IAutomaticParallelStatisticUpdateMixin:
 
         # Functions:
 
         void useAutomaticParallelStatisticUpdate()
 
 
-    cdef cppclass IConstantShrinkageMixin"boosting::IBoostedRuleLearner::IConstantShrinkageMixin":
+    cdef cppclass IConstantShrinkageMixin:
 
         # Functions:
 
         IConstantShrinkageConfig& useConstantShrinkagePostProcessor()
 
 
-    cdef cppclass INoL1RegularizationMixin"boosting::IBoostedRuleLearner::INoL1RegularizationMixin":
+    cdef cppclass INoL1RegularizationMixin:
 
         # Functions:
 
         void useNoL1Regularization()
 
 
-    cdef cppclass IL1RegularizationMixin"boosting::IBoostedRuleLearner::IL1RegularizationMixin":
+    cdef cppclass IL1RegularizationMixin:
 
         # Functions:
 
         IManualRegularizationConfig& useL1Regularization()
 
 
-    cdef cppclass INoL2RegularizationMixin"boosting::IBoostedRuleLearner::INoL2RegularizationMixin":
+    cdef cppclass INoL2RegularizationMixin:
 
         # Functions:
 
         void useNoL2Regularization()
 
 
-    cdef cppclass IL2RegularizationMixin"boosting::IBoostedRuleLearner::IL2RegularizationMixin":
+    cdef cppclass IL2RegularizationMixin:
 
         # Functions:
 
         IManualRegularizationConfig& useL2Regularization()
 
 
-    cdef cppclass ICompleteHeadMixin"boosting::IBoostedRuleLearner::ICompleteHeadMixin":
+    cdef cppclass ICompleteHeadMixin:
 
         # Functions:
 
         void useCompleteHeads()
 
 
-    cdef cppclass IFixedPartialHeadMixin"boosting::IBoostedRuleLearner::IFixedPartialHeadMixin":
+    cdef cppclass IFixedPartialHeadMixin:
 
         # Functions:
 
         IFixedPartialHeadConfig& useFixedPartialHeads()
 
 
-    cdef cppclass IDynamicPartialHeadMixin"boosting::IBoostedRuleLearner::IDynamicPartialHeadMixin":
+    cdef cppclass IDynamicPartialHeadMixin:
 
         # Functions:
 
         IDynamicPartialHeadConfig& useDynamicPartialHeads()
 
 
-    cdef cppclass ISingleOutputHeadMixin"boosting::IBoostedRuleLearner::ISingleOutputHeadMixin":
+    cdef cppclass ISingleOutputHeadMixin:
 
         # Functions:
         
         void useSingleOutputHeads()
 
 
-    cdef cppclass IAutomaticHeadMixin"boosting::IBoostedRuleLearner::IAutomaticHeadMixin":
+    cdef cppclass IAutomaticHeadMixin:
 
         # Functions:
 
         void useAutomaticHeads()
 
 
-    cdef cppclass INonDecomposableSquaredErrorLossMixin\
-        "boosting::IBoostedRuleLearner::INonDecomposableSquaredErrorLossMixin":
+    cdef cppclass INonDecomposableSquaredErrorLossMixin:
 
         # Functions:
 
         void useNonDecomposableSquaredErrorLoss()
 
 
-    cdef cppclass IDecomposableSquaredErrorLossMixin"boosting::IBoostedRuleLearner::IDecomposableSquaredErrorLossMixin":
+    cdef cppclass IDecomposableSquaredErrorLossMixin:
 
         # Functions:
 
         void useDecomposableSquaredErrorLoss()
 
 
-    cdef cppclass IOutputWiseScorePredictorMixin"boosting::IBoostedRuleLearner::IOutputWiseScorePredictorMixin":
+    cdef cppclass IOutputWiseScorePredictorMixin:
 
         # Functions:
 
