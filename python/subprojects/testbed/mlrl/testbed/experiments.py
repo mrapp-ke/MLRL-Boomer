@@ -12,7 +12,8 @@ from typing import Any, Dict, List, Optional
 
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 
-from mlrl.common.learners import ClassificationLearner, IncrementalLearner, NominalFeatureLearner, OrdinalFeatureLearner
+from mlrl.common.learners import ClassificationLearner, IncrementalLearner, NominalFeatureLearner
+from mlrl.common.mixins import OrdinalFeatureSupportMixin
 
 from mlrl.testbed.data import FeatureType, MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataSplitter, DataType
@@ -319,7 +320,7 @@ class Experiment(DataSplitter.Callback):
             output_writer.write_output(meta_data, train_x, train_y, data_split, current_learner)
 
         # Set the indices of ordinal features, if supported...
-        if isinstance(current_learner, OrdinalFeatureLearner):
+        if isinstance(current_learner, OrdinalFeatureSupportMixin):
             current_learner.ordinal_feature_indices = meta_data.get_feature_indices({FeatureType.ORDINAL})
 
         # Set the indices of nominal features, if supported...
