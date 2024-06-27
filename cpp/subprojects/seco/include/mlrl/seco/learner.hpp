@@ -34,7 +34,7 @@ namespace seco {
              * Defines an interface for all classes that allow to configure a rule learner that makes use of the
              * separate-and-conquer (SeCo) paradigm.
              */
-            class IConfig : virtual public IClassificationRuleLearner::IConfig {
+            class IConfig : virtual public IRuleLearnerConfig {
                 public:
 
                     virtual ~IConfig() override {}

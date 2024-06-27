@@ -56,31 +56,28 @@ cdef extern from "mlrl/common/learner_classification.hpp" nogil:
             const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
 
 
-    cdef cppclass IOutputWiseStratifiedInstanceSamplingMixin"IRuleLearner::IOutputWiseStratifiedInstanceSamplingMixin":
+    cdef cppclass IOutputWiseStratifiedInstanceSamplingMixin:
 
         # Functions:
 
         IOutputWiseStratifiedInstanceSamplingConfig& useOutputWiseStratifiedInstanceSampling()
 
 
-    cdef cppclass IExampleWiseStratifiedInstanceSamplingMixin \
-        "IRuleLearner::IExampleWiseStratifiedInstanceSamplingMixin":
+    cdef cppclass IExampleWiseStratifiedInstanceSamplingMixin:
 
         # Functions:
 
         IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling()
 
 
-    cdef cppclass IOutputWiseStratifiedBiPartitionSamplingMixin\
-        "IRuleLearner::IOutputWiseStratifiedBiPartitionSamplingMixin":
+    cdef cppclass IOutputWiseStratifiedBiPartitionSamplingMixin:
 
         # Functions:
 
         IOutputWiseStratifiedBiPartitionSamplingConfig& useOutputWiseStratifiedBiPartitionSampling()
 
 
-    cdef cppclass IExampleWiseStratifiedBiPartitionSamplingMixin\
-        "IRuleLearner::IExampleWiseStratifiedBiPartitionSamplingMixin":
+    cdef cppclass IExampleWiseStratifiedBiPartitionSamplingMixin:
 
         # Functions:
 

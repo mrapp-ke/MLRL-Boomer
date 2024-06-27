@@ -32,14 +32,14 @@ namespace boosting {
     /**
      * Defines an interface for all rule learners that make use of gradient boosting.
      */
-    class MLRLBOOSTING_API IBoostedRuleLearner : virtual public IRuleLearner {
+    class MLRLBOOSTING_API IBoostedRuleLearner {
         public:
 
             /**
              * Defines an interface for all classes that allow to configure a rule learner that makes use of gradient
              * boosting.
              */
-            class IConfig : virtual public IRuleLearner::IConfig {
+            class IConfig : virtual public IRuleLearnerConfig {
                 public:
 
                     virtual ~IConfig() override {}
@@ -486,6 +486,6 @@ namespace boosting {
                     }
             };
 
-            virtual ~IBoostedRuleLearner() override {}
+            virtual ~IBoostedRuleLearner() {}
     };
 }

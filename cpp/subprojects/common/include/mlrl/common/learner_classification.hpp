@@ -19,14 +19,14 @@
 /**
  * Defines an interface for all rule learners that can be applied to classification problems.
  */
-class MLRLCOMMON_API IClassificationRuleLearner : virtual public IRuleLearner {
+class MLRLCOMMON_API IClassificationRuleLearner {
     public:
 
         /**
          * Defines an interface for all classes that allow to configure a rule learner to use label-wise stratified
          * instance sampling.
          */
-        class IOutputWiseStratifiedInstanceSamplingMixin : virtual public IClassificationRuleLearner::IConfig {
+        class IOutputWiseStratifiedInstanceSamplingMixin : virtual public IRuleLearnerConfig {
             public:
 
                 virtual ~IOutputWiseStratifiedInstanceSamplingMixin() override {}
@@ -54,7 +54,7 @@ class MLRLCOMMON_API IClassificationRuleLearner : virtual public IRuleLearner {
          * Defines an interface for all classes that allow to configure a rule learner to use example-wise stratified
          * instance sampling.
          */
-        class IExampleWiseStratifiedInstanceSamplingMixin : virtual public IClassificationRuleLearner::IConfig {
+        class IExampleWiseStratifiedInstanceSamplingMixin : virtual public IRuleLearnerConfig {
             public:
 
                 virtual ~IExampleWiseStratifiedInstanceSamplingMixin() override {}
@@ -83,7 +83,7 @@ class MLRLCOMMON_API IClassificationRuleLearner : virtual public IRuleLearner {
          * training examples into a training set and a holdout set using stratification, such that for each label the
          * proportion of relevant and irrelevant examples is maintained.
          */
-        class IOutputWiseStratifiedBiPartitionSamplingMixin : virtual public IClassificationRuleLearner::IConfig {
+        class IOutputWiseStratifiedBiPartitionSamplingMixin : virtual public IRuleLearnerConfig {
             public:
 
                 virtual ~IOutputWiseStratifiedBiPartitionSamplingMixin() override {}
@@ -113,7 +113,7 @@ class MLRLCOMMON_API IClassificationRuleLearner : virtual public IRuleLearner {
          * training examples into a training set and a holdout set using stratification, where distinct label vectors
          * are treated as individual classes.
          */
-        class IExampleWiseStratifiedBiPartitionSamplingMixin : virtual public IClassificationRuleLearner::IConfig {
+        class IExampleWiseStratifiedBiPartitionSamplingMixin : virtual public IRuleLearnerConfig {
             public:
 
                 virtual ~IExampleWiseStratifiedBiPartitionSamplingMixin() override {}
@@ -137,7 +137,7 @@ class MLRLCOMMON_API IClassificationRuleLearner : virtual public IRuleLearner {
                 }
         };
 
-        virtual ~IClassificationRuleLearner() override {}
+        virtual ~IClassificationRuleLearner() {}
 
         /**
          * Applies the rule learner to given training examples and corresponding ground truth labels.

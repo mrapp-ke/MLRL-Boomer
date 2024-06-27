@@ -93,19 +93,19 @@ class TrainingResult final : public ITrainingResult {
 
 /**
  * An abstract base class for all classes that allow to configure the individual modules of a rule learner, depending on
- * an `IRuleLearner::IConfig`.
+ * an `IRuleLearnerConfig`.
  */
 class RuleLearnerConfigurator {
     private:
 
-        IRuleLearner::IConfig& config_;
+        IRuleLearnerConfig& config_;
 
     public:
 
         /**
-         * @param config A reference to an object of type `IRuleLearner::IConfig`
+         * @param config A reference to an object of type `IRuleLearnerConfig`
          */
-        explicit RuleLearnerConfigurator(IRuleLearner::IConfig& config) : config_(config) {}
+        explicit RuleLearnerConfigurator(IRuleLearnerConfig& config) : config_(config) {}
 
         virtual ~RuleLearnerConfigurator() {}
 
@@ -475,7 +475,7 @@ class RuleLearnerConfigurator {
 /**
  * Allows to configure a rule learner.
  */
-class RuleLearnerConfig : virtual public IRuleLearner::IConfig {
+class RuleLearnerConfig : virtual public IRuleLearnerConfig {
     private:
 
         const RuleCompareFunction ruleCompareFunction_;

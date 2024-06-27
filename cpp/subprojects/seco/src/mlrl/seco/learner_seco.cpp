@@ -50,7 +50,7 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IRuleLearner::IGreedyTopDownRuleInductionMixin::useGreedyTopDownRuleInduction`
+                     * @see `IGreedyTopDownRuleInductionMixin::useGreedyTopDownRuleInduction`
                      */
                     IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() override {
                         IGreedyTopDownRuleInductionConfig& ref =
@@ -60,7 +60,7 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IRuleLearner::IBeamSearchTopDownRuleInductionMixin::useBeamSearchTopDownRuleInduction`
+                     * @see `IBeamSearchTopDownRuleInductionMixin::useBeamSearchTopDownRuleInduction`
                      */
                     IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() override {
                         IBeamSearchTopDownRuleInductionConfig& ref =
@@ -70,7 +70,7 @@ namespace seco {
                     }
 
                     /**
-                     * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
+                     * @see `ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override {
                         ISizeStoppingCriterionConfig& ref = ISizeStoppingCriterionMixin::useSizeStoppingCriterion();
