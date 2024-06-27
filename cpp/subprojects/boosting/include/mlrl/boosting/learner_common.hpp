@@ -20,12 +20,12 @@ namespace boosting {
 
     /**
      * Allows to configure the individual modules of a rule learner that makes use of gradient boosting, depending on an
-     * `IBoostedRuleLearner::IConfig`.
+     * `IBoostedRuleLearnerConfig`.
      */
     class BoostedRuleLearnerConfigurator final : public RuleLearnerConfigurator {
         private:
 
-            const std::unique_ptr<IBoostedRuleLearner::IConfig> configPtr_;
+            const std::unique_ptr<IBoostedRuleLearnerConfig> configPtr_;
 
             const Blas blas_;
 
@@ -34,12 +34,12 @@ namespace boosting {
         public:
 
             /**
-             * @param configPtr     An unique pointer to an object of type `IBoostedRuleLearner::IConfig`
+             * @param configPtr     An unique pointer to an object of type `IBoostedRuleLearnerConfig`
              * @param ddotFunction  A function pointer to BLAS' DDOT routine
              * @param dspmvFunction A function pointer to BLAS' DSPMV routine
              * @param dsysvFunction A function pointer to LAPACK'S DSYSV routine
              */
-            BoostedRuleLearnerConfigurator(std::unique_ptr<IBoostedRuleLearner::IConfig> configPtr,
+            BoostedRuleLearnerConfigurator(std::unique_ptr<IBoostedRuleLearnerConfig> configPtr,
                                            Blas::DdotFunction ddotFunction, Blas::DspmvFunction dspmvFunction,
                                            Lapack::DsysvFunction dsysvFunction)
                 : RuleLearnerConfigurator(*configPtr), configPtr_(std::move(configPtr)),
@@ -66,7 +66,7 @@ namespace boosting {
      * Allows to configure a rule learner that makes use of gradient boosting.
      */
     class BoostedRuleLearnerConfig : public RuleLearnerConfig,
-                                     virtual public IBoostedRuleLearner::IConfig {
+                                     virtual public IBoostedRuleLearnerConfig {
         protected:
 
             /**
