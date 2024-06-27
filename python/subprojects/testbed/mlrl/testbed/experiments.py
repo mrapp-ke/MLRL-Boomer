@@ -12,8 +12,8 @@ from typing import Any, Dict, List, Optional
 
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 
-from mlrl.common.learners import ClassificationLearner, IncrementalLearner
-from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
+from mlrl.common.learners import ClassificationLearner
+from mlrl.common.mixins import IncrementalPredictionMixin, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
 from mlrl.testbed.data import FeatureType, MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataSplitter, DataType
@@ -173,7 +173,7 @@ class IncrementalEvaluation(Evaluation):
 
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
                              learner, x, y, **kwargs):
-        if not isinstance(learner, IncrementalLearner):
+        if not isinstance(learner, IncrementalPredictionMixin):
             raise ValueError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
 
         incremental_predictor = self._invoke_prediction_function(learner, learner.predict_incrementally,
