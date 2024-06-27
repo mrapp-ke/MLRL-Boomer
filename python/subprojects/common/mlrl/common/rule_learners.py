@@ -26,8 +26,8 @@ from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.cython.validation import assert_greater_or_equal
 from mlrl.common.data_types import Float32, Uint8, Uint32
 from mlrl.common.format import format_enum_values
-from mlrl.common.learners import ClassificationLearner, IncrementalLearner
-from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
+from mlrl.common.learners import ClassificationLearner
+from mlrl.common.mixins import IncrementalPredictionMixin, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
 KWARG_SPARSE_FEATURE_VALUE = 'sparse_feature_value'
 
@@ -190,12 +190,12 @@ def convert_into_sklearn_compatible_probabilities(probabilities: np.ndarray) -> 
 
 
 class ClassificationRuleLearner(ClassificationLearner, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin,
-                                IncrementalLearner, ABC):
+                                IncrementalPredictionMixin, ABC):
     """
     A scikit-learn implementation of a rule learning algorithm that can be applied to classification problems.
     """
 
-    class NativeIncrementalPredictor(IncrementalLearner.IncrementalPredictor):
+    class NativeIncrementalPredictor(IncrementalPredictionMixin.IncrementalPredictor):
         """
         Allows to obtain predictions from a `ClassificationRuleLearner` incrementally by using its native support of
         this functionality.
@@ -212,19 +212,19 @@ class ClassificationRuleLearner(ClassificationLearner, NominalFeatureSupportMixi
 
         def has_next(self) -> bool:
             """
-            See :func:`mlrl.common.learners.IncrementalLearner.IncrementalPredictor.has_next`
+            See :func:`mlrl.common.mixins.IncrementalPredictionMixin.IncrementalPredictor.has_next`
             """
             return self.incremental_predictor.has_next()
 
         def get_num_next(self) -> int:
             """
-            See :func:`mlrl.common.learners.IncrementalLearner.IncrementalPredictor.get_num_next`
+            See :func:`mlrl.common.mixins.IncrementalPredictionMixin.IncrementalPredictor.get_num_next`
             """
             return self.incremental_predictor.get_num_next()
 
         def apply_next(self, step_size: int):
             """
-            See :func:`mlrl.common.learners.IncrementalLearner.IncrementalPredictor.apply_next`
+            See :func:`mlrl.common.mixins.IncrementalPredictionMixin.IncrementalPredictor.apply_next`
             """
             return self.incremental_predictor.apply_next(step_size)
 
@@ -237,7 +237,7 @@ class ClassificationRuleLearner(ClassificationLearner, NominalFeatureSupportMixi
         def apply_next(self, step_size: int):
             return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
 
-    class IncrementalPredictor(IncrementalLearner.IncrementalPredictor):
+    class IncrementalPredictor(IncrementalPredictionMixin.IncrementalPredictor):
         """
         Allows to obtain predictions from a `ClassificationRuleLearner` incrementally.
         """
@@ -260,13 +260,13 @@ class ClassificationRuleLearner(ClassificationLearner, NominalFeatureSupportMixi
 
         def get_num_next(self) -> int:
             """
-            See :func:`mlrl.common.learners.IncrementalLearner.IncrementalPredictor.get_num_next`
+            See :func:`mlrl.common.mixins.IncrementalPredictionMixin.IncrementalPredictor.get_num_next`
             """
             return self.num_total_rules - self.num_considered_rules
 
         def apply_next(self, step_size: int):
             """
-            See :func:`mlrl.common.learners.IncrementalLearner.IncrementalPredictor.apply_next`
+            See :func:`mlrl.common.mixins.IncrementalPredictionMixin.IncrementalPredictor.apply_next`
             """
             assert_greater_or_equal('step_size', step_size, 1)
             self.num_considered_rules = min(self.num_total_rules, self.num_considered_rules + step_size)
