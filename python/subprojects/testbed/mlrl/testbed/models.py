@@ -15,7 +15,7 @@ from _io import StringIO
 
 from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBody, PartialHead, RuleModel, \
     RuleModelVisitor
-from mlrl.common.learners import Learner
+from mlrl.common.learners import ClassificationLearner
 from mlrl.common.options import Options
 
 from mlrl.testbed.data import MetaData
@@ -252,7 +252,7 @@ class RuleModelWriter(ModelWriter):
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
-        if isinstance(learner, Learner):
+        if isinstance(learner, ClassificationLearner):
             model = learner.model_
 
             if isinstance(model, RuleModel):

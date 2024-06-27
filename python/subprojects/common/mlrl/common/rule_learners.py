@@ -26,7 +26,7 @@ from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.cython.validation import assert_greater_or_equal
 from mlrl.common.data_types import Float32, Uint8, Uint32
 from mlrl.common.format import format_enum_values
-from mlrl.common.learners import IncrementalLearner, Learner, NominalFeatureLearner, OrdinalFeatureLearner
+from mlrl.common.learners import ClassificationLearner, IncrementalLearner, NominalFeatureLearner, OrdinalFeatureLearner
 
 KWARG_SPARSE_FEATURE_VALUE = 'sparse_feature_value'
 
@@ -188,7 +188,7 @@ def convert_into_sklearn_compatible_probabilities(probabilities: np.ndarray) -> 
     return probabilities
 
 
-class RuleLearner(Learner, NominalFeatureLearner, OrdinalFeatureLearner, IncrementalLearner, ABC):
+class RuleLearner(ClassificationLearner, NominalFeatureLearner, OrdinalFeatureLearner, IncrementalLearner, ABC):
     """
     A scikit-learn implementation of a rule learning algorithm.
     """
