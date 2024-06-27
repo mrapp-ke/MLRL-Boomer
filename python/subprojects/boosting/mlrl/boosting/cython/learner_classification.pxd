@@ -7,168 +7,154 @@ from mlrl.boosting.cython.probability_calibration cimport IIsotonicJointProbabil
 
 cdef extern from "mlrl/boosting/learner_classification.hpp" namespace "boosting" nogil:
 
-    cdef cppclass IAutomaticPartitionSamplingMixin\
-        "boosting::IBoostedClassificationRuleLearner::IAutomaticPartitionSamplingMixin":
+    cdef cppclass IAutomaticPartitionSamplingMixin:
 
         # Functions:
 
         void useAutomaticPartitionSampling()
 
 
-    cdef cppclass INoDefaultRuleMixin"boosting::IBoostedClassificationRuleLearner::INoDefaultRuleMixin":
+    cdef cppclass INoDefaultRuleMixin:
 
         # Functions:
 
         void useNoDefaultRule()
 
 
-    cdef cppclass IAutomaticDefaultRuleMixin"boosting::IBoostedClassificationRuleLearner::IAutomaticDefaultRuleMixin":
+    cdef cppclass IAutomaticDefaultRuleMixin:
 
         # Functions:
 
         void useAutomaticDefaultRule()
 
 
-    cdef cppclass IDenseStatisticsMixin"boosting::IBoostedClassificationRuleLearner::IDenseStatisticsMixin":
+    cdef cppclass IDenseStatisticsMixin:
 
         # Functions:
 
         void useDenseStatistics()
 
 
-    cdef cppclass ISparseStatisticsMixin"boosting::IBoostedClassificationRuleLearner::ISparseStatisticsMixin":
+    cdef cppclass ISparseStatisticsMixin:
 
         # Functions:
 
         void useSparseStatistics()
 
 
-    cdef cppclass IAutomaticStatisticsMixin"boosting::IBoostedClassificationRuleLearner::IAutomaticStatisticsMixin":
+    cdef cppclass IAutomaticStatisticsMixin:
 
         # Functions:
 
         void useAutomaticStatistics()
 
 
-    cdef cppclass INonDecomposableLogisticLossMixin\
-        "boosting::IBoostedClassificationRuleLearner::INonDecomposableLogisticLossMixin":
+    cdef cppclass INonDecomposableLogisticLossMixin:
 
         # Functions:
 
         void useNonDecomposableLogisticLoss()
 
 
-    cdef cppclass INonDecomposableSquaredHingeLossMixin\
-        "boosting::IBoostedClassificationRuleLearner::INonDecomposableSquaredHingeLossMixin":
+    cdef cppclass INonDecomposableSquaredHingeLossMixin:
 
         # Functions:
 
         void useNonDecomposableSquaredHingeLoss()
 
 
-    cdef cppclass IDecomposableLogisticLossMixin\
-        "boosting::IBoostedClassificationRuleLearner::IDecomposableLogisticLossMixin":
+    cdef cppclass IDecomposableLogisticLossMixin:
 
         # Functions:
 
         void useDecomposableLogisticLoss()
 
         
-    cdef cppclass IDecomposableSquaredHingeLossMixin\
-        "boosting::IBoostedClassificationRuleLearner::IDecomposableSquaredHingeLossMixin":
+    cdef cppclass IDecomposableSquaredHingeLossMixin:
 
         # Functions:
 
         void useDecomposableSquaredHingeLoss()
 
 
-    cdef cppclass INoLabelBinningMixin"boosting::IBoostedClassificationRuleLearner::INoLabelBinningMixin":
+    cdef cppclass INoLabelBinningMixin:
 
         # Functions:
 
         void useNoLabelBinning()
 
 
-    cdef cppclass IEqualWidthLabelBinningMixin\
-        "boosting::IBoostedClassificationRuleLearner::IEqualWidthLabelBinningMixin":
+    cdef cppclass IEqualWidthLabelBinningMixin:
 
         # Functions:
 
         IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning()
 
 
-    cdef cppclass IAutomaticLabelBinningMixin"boosting::IBoostedClassificationRuleLearner::IAutomaticLabelBinningMixin":
+    cdef cppclass IAutomaticLabelBinningMixin:
 
         # Functions:
 
         void useAutomaticLabelBinning()
 
 
-    cdef cppclass IIsotonicMarginalProbabilityCalibrationMixin\
-        "boosting::IBoostedClassificationRuleLearner::IIsotonicMarginalProbabilityCalibrationMixin":
+    cdef cppclass IIsotonicMarginalProbabilityCalibrationMixin:
 
         # Functions:
 
         IIsotonicMarginalProbabilityCalibratorConfig& useIsotonicMarginalProbabilityCalibration()
 
 
-    cdef cppclass IIsotonicJointProbabilityCalibrationMixin\
-        "boosting::IBoostedClassificationRuleLearner::IIsotonicJointProbabilityCalibrationMixin":
+    cdef cppclass IIsotonicJointProbabilityCalibrationMixin:
 
         # Functions:
 
         IIsotonicJointProbabilityCalibratorConfig& useIsotonicJointProbabilityCalibration()
         
 
-    cdef cppclass IOutputWiseProbabilityPredictorMixin \
-        "boosting::IBoostedClassificationRuleLearner::IOutputWiseProbabilityPredictorMixin":
+    cdef cppclass IOutputWiseProbabilityPredictorMixin:
 
         # Functions:
 
         IOutputWiseProbabilityPredictorConfig& useOutputWiseProbabilityPredictor()
 
 
-    cdef cppclass IMarginalizedProbabilityPredictorMixin\
-        "boosting::IBoostedClassificationRuleLearner::IMarginalizedProbabilityPredictorMixin":
+    cdef cppclass IMarginalizedProbabilityPredictorMixin:
 
         # Functions:
 
         IMarginalizedProbabilityPredictorConfig& useMarginalizedProbabilityPredictor()
 
 
-    cdef cppclass IAutomaticProbabilityPredictorMixin\
-        "boosting::IBoostedClassificationRuleLearner::IAutomaticProbabilityPredictorMixin":
+    cdef cppclass IAutomaticProbabilityPredictorMixin:
         
         # Functions:
 
         void useAutomaticProbabilityPredictor()
 
 
-    cdef cppclass IOutputWiseBinaryPredictorMixin\
-        "boosting::IBoostedClassificationRuleLearner::IOutputWiseBinaryPredictorMixin":
+    cdef cppclass IOutputWiseBinaryPredictorMixin:
 
         # Functions:
 
         IOutputWiseBinaryPredictorConfig& useOutputWiseBinaryPredictor()
 
 
-    cdef cppclass IExampleWiseBinaryPredictorMixin\
-        "boosting::IBoostedClassificationRuleLearner::IExampleWiseBinaryPredictorMixin":
+    cdef cppclass IExampleWiseBinaryPredictorMixin:
 
         # Functions:
 
         IExampleWiseBinaryPredictorConfig& useExampleWiseBinaryPredictor()
 
 
-    cdef cppclass IGfmBinaryPredictorMixin"boosting::IBoostedClassificationRuleLearner::IGfmBinaryPredictorMixin":
+    cdef cppclass IGfmBinaryPredictorMixin:
 
         # Functions:
 
         IGfmBinaryPredictorConfig& useGfmBinaryPredictor()
 
 
-    cdef cppclass IAutomaticBinaryPredictorMixin\
-        "boosting::IBoostedClassificationRuleLearner::IAutomaticBinaryPredictorMixin":
+    cdef cppclass IAutomaticBinaryPredictorMixin:
 
         # Functions:
 
