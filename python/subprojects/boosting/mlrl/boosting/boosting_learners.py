@@ -9,13 +9,13 @@ from sklearn.base import ClassifierMixin, MultiOutputMixin, RegressorMixin
 
 from mlrl.common.config import configure_rule_learner
 from mlrl.common.cython.learner_classification import ClassificationRuleLearner as RuleLearnerWrapper
-from mlrl.common.rule_learners import RuleLearner
+from mlrl.common.rule_learners import ClassificationRuleLearner
 
 from mlrl.boosting.config import BOOSTING_RULE_LEARNER_PARAMETERS
 from mlrl.boosting.cython.learner_boomer import BoomerClassifier as BoomerWrapper, BoomerClassifierConfig
 
 
-class BoomerClassifier(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
+class BoomerClassifier(ClassificationRuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
     """
     A scikit-learn implementation of "BOOMER", an algorithm for learning gradient boosted multi-label classification
     rules.

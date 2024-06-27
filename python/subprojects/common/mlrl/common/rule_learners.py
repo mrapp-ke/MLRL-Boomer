@@ -188,15 +188,16 @@ def convert_into_sklearn_compatible_probabilities(probabilities: np.ndarray) -> 
     return probabilities
 
 
-class RuleLearner(ClassificationLearner, NominalFeatureLearner, OrdinalFeatureLearner, IncrementalLearner, ABC):
+class ClassificationRuleLearner(ClassificationLearner, NominalFeatureLearner, OrdinalFeatureLearner, IncrementalLearner,
+                                ABC):
     """
-    A scikit-learn implementation of a rule learning algorithm.
+    A scikit-learn implementation of a rule learning algorithm that can be applied to classification problems.
     """
 
     class NativeIncrementalPredictor(IncrementalLearner.IncrementalPredictor):
         """
-        Allows to obtain predictions from a `RuleLearner` incrementally by using its native support of this
-        functionality.
+        Allows to obtain predictions from a `ClassificationRuleLearner` incrementally by using its native support of
+        this functionality.
         """
 
         def __init__(self, feature_matrix: RowWiseFeatureMatrix, incremental_predictor):
@@ -228,8 +229,8 @@ class RuleLearner(ClassificationLearner, NominalFeatureLearner, OrdinalFeatureLe
 
     class NativeIncrementalProbabilityPredictor(NativeIncrementalPredictor):
         """
-        Allows to obtain probability estimates from a `RuleLearner` incrementally by using its native support of this
-        functionality.
+        Allows to obtain probability estimates from a `ClassificationRuleLearner` incrementally by using its native
+        support of this functionality.
         """
 
         def apply_next(self, step_size: int):
@@ -237,7 +238,7 @@ class RuleLearner(ClassificationLearner, NominalFeatureLearner, OrdinalFeatureLe
 
     class IncrementalPredictor(IncrementalLearner.IncrementalPredictor):
         """
-        Allows to obtain predictions from a `RuleLearner` incrementally.
+        Allows to obtain predictions from a `ClassificationRuleLearner` incrementally.
         """
 
         def __init__(self, feature_matrix: RowWiseFeatureMatrix, model: RuleModel, max_rules: int, predictor):
@@ -272,7 +273,7 @@ class RuleLearner(ClassificationLearner, NominalFeatureLearner, OrdinalFeatureLe
 
     class IncrementalProbabilityPredictor(IncrementalPredictor):
         """
-        Allows to obtain probability estimates from a `RuleLearner` incrementally.
+        Allows to obtain probability estimates from a `ClassificationRuleLearner` incrementally.
         """
 
         def apply_next(self, step_size: int):
@@ -429,9 +430,9 @@ class RuleLearner(ClassificationLearner, NominalFeatureLearner, OrdinalFeatureLe
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
-                return RuleLearner.NativeIncrementalPredictor(feature_matrix,
-                                                              predictor.create_incremental_predictor(max_rules))
-            return RuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
+                return ClassificationRuleLearner.NativeIncrementalPredictor(
+                    feature_matrix, predictor.create_incremental_predictor(max_rules))
+            return ClassificationRuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
 
         return super()._predict_binary_incrementally(x, **kwargs)
 
@@ -471,9 +472,9 @@ class RuleLearner(ClassificationLearner, NominalFeatureLearner, OrdinalFeatureLe
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
-                return RuleLearner.NativeIncrementalPredictor(feature_matrix,
-                                                              predictor.create_incremental_predictor(max_rules))
-            return RuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
+                return ClassificationRuleLearner.NativeIncrementalPredictor(
+                    feature_matrix, predictor.create_incremental_predictor(max_rules))
+            return ClassificationRuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
 
         return super()._predict_scores_incrementally(x, **kwargs)
 
@@ -519,9 +520,10 @@ class RuleLearner(ClassificationLearner, NominalFeatureLearner, OrdinalFeatureLe
             max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
 
             if predictor.can_predict_incrementally():
-                return RuleLearner.NativeIncrementalProbabilityPredictor(
+                return ClassificationRuleLearner.NativeIncrementalProbabilityPredictor(
                     feature_matrix, predictor.create_incremental_predictor(max_rules))
-            return RuleLearner.IncrementalProbabilityPredictor(feature_matrix, model, max_rules, predictor)
+            return ClassificationRuleLearner.IncrementalProbabilityPredictor(feature_matrix, model, max_rules,
+                                                                             predictor)
 
         return super().predict_proba_incrementally(x, **kwargs)
 
