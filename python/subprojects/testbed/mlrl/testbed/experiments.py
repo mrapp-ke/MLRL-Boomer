@@ -12,8 +12,8 @@ from typing import Any, Dict, List, Optional
 
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 
-from mlrl.common.learners import ClassificationLearner, IncrementalLearner, NominalFeatureLearner
-from mlrl.common.mixins import OrdinalFeatureSupportMixin
+from mlrl.common.learners import ClassificationLearner, IncrementalLearner
+from mlrl.common.mixins import NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
 from mlrl.testbed.data import FeatureType, MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataSplitter, DataType
@@ -324,7 +324,7 @@ class Experiment(DataSplitter.Callback):
             current_learner.ordinal_feature_indices = meta_data.get_feature_indices({FeatureType.ORDINAL})
 
         # Set the indices of nominal features, if supported...
-        if isinstance(current_learner, NominalFeatureLearner):
+        if isinstance(current_learner, NominalFeatureSupportMixin):
             current_learner.nominal_feature_indices = meta_data.get_feature_indices({FeatureType.NOMINAL})
 
         # Load model from disc, if possible, otherwise train a new model...

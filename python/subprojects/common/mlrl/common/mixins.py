@@ -21,3 +21,19 @@ class OrdinalFeatureSupportMixin(ABC):
         :param indices: A `np.ndarray` or `Iterable` that stores the indices to be set
         """
         self.ordinal_feature_indices = None if indices is None else list(indices)
+
+
+class NominalFeatureSupportMixin(ABC):
+    """
+    A mixin for all machine learning algorithms that natively support nominal features.
+    """
+
+    nominal_feature_indices: Optional[List[int]] = None
+
+    def set_nominal_feature_indices(self, indices):
+        """
+        Sets the indices of all nominal features.
+        
+        :param indices: A `np.ndarray` or `Iterable` that stores the indices to be set
+        """
+        self.nominal_feature_indices = None if indices is None else list(indices)
