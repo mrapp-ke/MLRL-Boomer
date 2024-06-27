@@ -13,7 +13,7 @@ from scipy.sparse import lil_array
 from mlrl.common.cython.output_space_info import LabelVectorSet, LabelVectorSetVisitor
 from mlrl.common.data_types import Uint8
 from mlrl.common.options import Options
-from mlrl.common.rule_learners import RuleLearner
+from mlrl.common.rule_learners import ClassificationRuleLearner
 
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
@@ -158,7 +158,7 @@ class LabelVectorSetWriter(LabelVectorWriter):
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
-        if isinstance(learner, RuleLearner):
+        if isinstance(learner, ClassificationRuleLearner):
             output_space_info = learner.output_space_info_
 
             if isinstance(output_space_info, LabelVectorSet):
