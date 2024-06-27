@@ -10,8 +10,6 @@
 
 #include <memory>
 
-#include <memory>
-
 /**
  * Defines an interface for methods that assign feature values to bins.
  */
