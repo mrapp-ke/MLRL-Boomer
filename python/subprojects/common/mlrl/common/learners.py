@@ -145,9 +145,9 @@ class IncrementalLearner(ABC):
         raise RuntimeError('Incremental prediction of probabilities not supported using the current configuration')
 
 
-class Learner(BaseEstimator, ABC):
+class ClassificationLearner(BaseEstimator, ABC):
     """
-    A base class for all machine learning algorithms.
+    An abstract base class for all machine learning algorithms that can be applied to classification problems.
     """
 
     # pylint: disable=attribute-defined-outside-init
@@ -207,17 +207,6 @@ class Learner(BaseEstimator, ABC):
         :return:    The model that has been trained
         """
 
-    def _predict_binary(self, x, **kwargs):
-        """
-        May be overridden by subclasses in order to obtain binary predictions for given query examples.
-
-        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                    `(num_examples, num_features)`, that stores the feature values of the query examples
-        :return:    A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` of shape
-                    `(num_examples, num_labels)`, that stores the prediction for individual examples and labels
-        """
-        raise RuntimeError('Prediction of binary labels not supported using the current configuration')
-
     def _predict_scores(self, x, **kwargs):
         """
         May be overridden by subclasses in order to obtain scores for given query examples.
@@ -239,3 +228,14 @@ class Learner(BaseEstimator, ABC):
                     probabilities for individual examples and labels
         """
         raise RuntimeError('Prediction of probabilities not supported using the current configuration')
+
+    def _predict_binary(self, x, **kwargs):
+        """
+        May be overridden by subclasses in order to obtain binary predictions for given query examples.
+
+        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_features)`, that stores the feature values of the query examples
+        :return:    A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` of shape
+                    `(num_examples, num_labels)`, that stores the prediction for individual examples and labels
+        """
+        raise RuntimeError('Prediction of binary labels not supported using the current configuration')

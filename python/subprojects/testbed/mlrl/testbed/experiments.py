@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Optional
 
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 
-from mlrl.common.learners import IncrementalLearner, Learner, NominalFeatureLearner, OrdinalFeatureLearner
+from mlrl.common.learners import ClassificationLearner, IncrementalLearner, NominalFeatureLearner, OrdinalFeatureLearner
 
 from mlrl.testbed.data import FeatureType, MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataSplitter, DataType
@@ -56,7 +56,7 @@ class Evaluation(ABC):
 
         if prediction_type == PredictionType.SCORES:
             try:
-                if isinstance(learner, Learner):
+                if isinstance(learner, ClassificationLearner):
                     result = predict_function(x, predict_scores=True, **kwargs)
                 elif isinstance(learner, RegressorMixin):
                     result = predict_function(x, **kwargs)
