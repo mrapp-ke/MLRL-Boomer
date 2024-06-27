@@ -2,7 +2,7 @@
 
 # Using the Python API
 
-The BOOMER algorithm and the SeCo algorithm provided by this project are published as the packages [mlrl-boomer](https://pypi.org/project/mlrl-boomer/) and [mlrl-seco](https://pypi.org/project/mlrl-seco/), respectively (see {ref}`installation`). The former is implemented by the class `mlrl.boosting.Boomer` and the latter by the class `mlrl.seco.SeCo`. Both classes follow the conventions of a scikit-learn [estimator](https://scikit-learn.org/stable/glossary.html#term-estimators). Therefore, they can be used similarly to other classification methods that are included in this popular machine learning framework. The [getting started guide](https://scikit-learn.org/stable/getting_started.html) that is provided by the scikit-learn developers is a good starting point for learning about the framework's functionalities and how to use them.
+The BOOMER algorithm and the SeCo algorithm provided by this project are published as the packages [mlrl-boomer](https://pypi.org/project/mlrl-boomer/) and [mlrl-seco](https://pypi.org/project/mlrl-seco/), respectively (see {ref}`installation`). The former is implemented by the class `mlrl.boosting.BoomerClassifier` and the latter by the class `mlrl.seco.SeCo`. Both classes follow the conventions of a scikit-learn [estimator](https://scikit-learn.org/stable/glossary.html#term-estimators). Therefore, they can be used similarly to other classification methods that are included in this popular machine learning framework. The [getting started guide](https://scikit-learn.org/stable/getting_started.html) that is provided by the scikit-learn developers is a good starting point for learning about the framework's functionalities and how to use them.
 
 ## Fitting an Estimator
 
@@ -10,9 +10,9 @@ An illustration of how the algorithms can be fit to exemplary training data is s
 
 ````{tab} BOOMER
    ```python
-   from mlrl.boosting import Boomer
+   from mlrl.boosting import BoomerClassifier
 
-   clf = Boomer()  # Create a new estimator
+   clf = BoomerClassifier()  # Create a new estimator
    x = [[  1,  2,  3],  # Two training examples with three features
         [ 11, 12, 13]]
    y = [[1, 0],  # Ground truth labels of each training example
@@ -55,7 +55,7 @@ In the previous example the algorithms' default configurations are used. However
 
 ````{tab} BOOMER
    ```python
-   clf = Boomer(max_rules=100, loss='logistic_example_wise')
+   clf = BoomerClassifier(max_rules=100, loss='logistic_example_wise')
    ```
 ````
 

@@ -11,17 +11,17 @@
 namespace boosting {
 
     /**
-     * The BOOMER algorithm.
+     * The BOOMER algorithm for classification problems.
      */
-    class Boomer final : public AbstractClassificationRuleLearner,
-                         virtual public IBoomer {
+    class BoomerClassifier final : public AbstractClassificationRuleLearner,
+                                   virtual public IBoomerClassifier {
         public:
 
             /**
-             * Allows to configure the BOOMER algorithm.
+             * Allows to configure the BOOMER algorithm for classification problems.
              */
             class Config final : public BoostedRuleLearnerConfig,
-                                 virtual public IBoomer::IConfig {
+                                 virtual public IBoomerClassifier::IConfig {
                 public:
 
                     Config() {
@@ -74,20 +74,22 @@ namespace boosting {
              * @param configuratorPtr An unique pointer to an object of type `BoostedRuleLearnerConfigurator` that
              *                        allows to configure the individual modules to be used by the rule learner
              */
-            Boomer(std::unique_ptr<BoostedRuleLearnerConfigurator> configuratorPtr)
+            BoomerClassifier(std::unique_ptr<BoostedRuleLearnerConfigurator> configuratorPtr)
                 : AbstractClassificationRuleLearner(*configuratorPtr), configuratorPtr_(std::move(configuratorPtr)) {}
     };
 
-    std::unique_ptr<IBoomer::IConfig> createBoomerConfig() {
-        return std::make_unique<Boomer::Config>();
+    std::unique_ptr<IBoomerClassifier::IConfig> createBoomerClassifierConfig() {
+        return std::make_unique<BoomerClassifier::Config>();
     }
 
-    std::unique_ptr<IBoomer> createBoomer(std::unique_ptr<IBoomer::IConfig> configPtr, Blas::DdotFunction ddotFunction,
-                                          Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction) {
+    std::unique_ptr<IBoomerClassifier> createBoomerClassifier(std::unique_ptr<IBoomerClassifier::IConfig> configPtr,
+                                                              Blas::DdotFunction ddotFunction,
+                                                              Blas::DspmvFunction dspmvFunction,
+                                                              Lapack::DsysvFunction dsysvFunction) {
         std::unique_ptr<BoostedRuleLearnerConfigurator> configuratorPtr =
           std::make_unique<BoostedRuleLearnerConfigurator>(std::move(configPtr), ddotFunction, dspmvFunction,
                                                            dsysvFunction);
-        return std::make_unique<Boomer>(std::move(configuratorPtr));
+        return std::make_unique<BoomerClassifier>(std::move(configuratorPtr));
     }
 
 }
