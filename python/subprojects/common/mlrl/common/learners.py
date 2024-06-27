@@ -4,28 +4,11 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides base classes for implementing machine learning algorithms.
 """
 from abc import ABC, abstractmethod
-from typing import List, Optional
 
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_is_fitted
 
 KWARG_PREDICT_SCORES = 'predict_scores'
-
-
-class NominalFeatureLearner(ABC):
-    """
-    A base class for all machine learning algorithms that natively support nominal features.
-    """
-
-    nominal_feature_indices: Optional[List[int]] = None
-
-    def set_nominal_feature_indices(self, indices):
-        """
-        Sets the indices of all nominal features.
-        
-        :param indices: A `np.ndarray` or `Iterable` that stores the indices to be set
-        """
-        self.nominal_feature_indices = None if indices is None else list(indices)
 
 
 class IncrementalLearner(ABC):
