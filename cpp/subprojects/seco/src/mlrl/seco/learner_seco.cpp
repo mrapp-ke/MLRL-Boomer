@@ -13,15 +13,15 @@ namespace seco {
     /**
      * The multi-label SeCo algorithm.
      */
-    class MultiLabelSeCoRuleLearner final : public AbstractClassificationRuleLearner,
-                                            virtual public IMultiLabelSeCoRuleLearner {
+    class SeCoClassifier final : public AbstractClassificationRuleLearner,
+                                 virtual public ISeCoClassifier {
         public:
 
             /**
              * Allows to configure the multi-label SeCo algorithm.
              */
             class Config final : public SeCoRuleLearnerConfig,
-                                 virtual public IMultiLabelSeCoRuleLearner::IConfig {
+                                 virtual public ISeCoClassifier::IConfig {
                 public:
 
                     Config() {
@@ -89,19 +89,18 @@ namespace seco {
              * @param configuratorPtr An unique pointer to an object of type `SeCoRuleLearnerConfigurator` that allows
              *                        to configure the individual modules to be used by the rule learner
              */
-            MultiLabelSeCoRuleLearner(std::unique_ptr<SeCoRuleLearnerConfigurator> configuratorPtr)
+            SeCoClassifier(std::unique_ptr<SeCoRuleLearnerConfigurator> configuratorPtr)
                 : AbstractClassificationRuleLearner(*configuratorPtr), configuratorPtr_(std::move(configuratorPtr)) {}
     };
 
-    std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> createMultiLabelSeCoRuleLearnerConfig() {
-        return std::make_unique<MultiLabelSeCoRuleLearner::Config>();
+    std::unique_ptr<ISeCoClassifier::IConfig> createSeCoClassifierConfig() {
+        return std::make_unique<SeCoClassifier::Config>();
     }
 
-    std::unique_ptr<IMultiLabelSeCoRuleLearner> createMultiLabelSeCoRuleLearner(
-      std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr) {
+    std::unique_ptr<ISeCoClassifier> createSeCoClassifier(std::unique_ptr<ISeCoClassifier::IConfig> configPtr) {
         std::unique_ptr<SeCoRuleLearnerConfigurator> configuratorPtr =
           std::make_unique<SeCoRuleLearnerConfigurator>(std::move(configPtr));
-        return std::make_unique<MultiLabelSeCoRuleLearner>(std::move(configuratorPtr));
+        return std::make_unique<SeCoClassifier>(std::move(configuratorPtr));
     }
 
 }
