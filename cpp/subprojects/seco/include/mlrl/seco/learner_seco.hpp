@@ -18,7 +18,7 @@ namespace seco {
     /**
      * Defines the interface of the multi-label SeCo algorithm.
      */
-    class MLRLSECO_API IMultiLabelSeCoRuleLearner : virtual public IClassificationRuleLearner {
+    class MLRLSECO_API ISeCoClassifier : virtual public IClassificationRuleLearner {
         public:
 
             /**
@@ -87,24 +87,24 @@ namespace seco {
                     virtual ~IConfig() override {}
             };
 
-            virtual ~IMultiLabelSeCoRuleLearner() override {}
+            virtual ~ISeCoClassifier() override {}
     };
 
     /**
-     * Creates and returns a new object of type `IMultiLabelSeCoRuleLearner::IConfig`.
+     * Creates and returns a new object of type `ISeCoClassifier::IConfig`.
      *
-     * @return An unique pointer to an object of type `IMultiLabelSeCoRuleLearner::IConfig` that has been created
+     * @return An unique pointer to an object of type `ISeCoClassifier::IConfig` that has been created
      */
-    MLRLSECO_API std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> createMultiLabelSeCoRuleLearnerConfig();
+    MLRLSECO_API std::unique_ptr<ISeCoClassifier::IConfig> createSeCoClassifierConfig();
 
     /**
-     * Creates and returns a new object of type `IMultiLabelSeCoRuleLearner`.
+     * Creates and returns a new object of type `ISeCoClassifier`.
      *
-     * @param configPtr An unique pointer to an object of type `IMultiLabelSeCoRuleLearner::IConfig` that specifies the
+     * @param configPtr An unique pointer to an object of type `ISeCoClassifier::IConfig` that specifies the
      *                  configuration that should be used by the rule learner.
-     * @return          An unique pointer to an object of type `IMultiLabelSeCoRuleLearner` that has been created
+     * @return          An unique pointer to an object of type `ISeCoClassifier` that has been created
      */
-    MLRLSECO_API std::unique_ptr<IMultiLabelSeCoRuleLearner> createMultiLabelSeCoRuleLearner(
-      std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr);
+    MLRLSECO_API std::unique_ptr<ISeCoClassifier> createSeCoClassifier(
+      std::unique_ptr<ISeCoClassifier::IConfig> configPtr);
 
 }
