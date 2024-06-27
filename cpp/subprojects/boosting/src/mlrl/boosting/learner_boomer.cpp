@@ -55,7 +55,7 @@ namespace boosting {
                     }
 
                     /**
-                     * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
+                     * @see `ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override {
                         ISizeStoppingCriterionConfig& ref = ISizeStoppingCriterionMixin::useSizeStoppingCriterion();
