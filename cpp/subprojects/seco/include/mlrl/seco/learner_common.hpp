@@ -20,12 +20,12 @@ namespace seco {
 
     /**
      * Allows to configure the individual modules of a rule learner that makes use of the separate-and-conquer (SeCo)
-     * paradigm, depending on an `ISeCoRuleLearner::IConfig`.
+     * paradigm, depending on an `ISeCoRuleLearnerConfig`.
      */
     class SeCoRuleLearnerConfigurator final : public RuleLearnerConfigurator {
         private:
 
-            std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr_;
+            std::unique_ptr<ISeCoRuleLearnerConfig> configPtr_;
 
             std::unique_ptr<IStoppingCriterionFactory> createCoverageStoppingCriterionFactory() const {
                 std::unique_ptr<CoverageStoppingCriterionConfig>& configPtr =
@@ -36,9 +36,9 @@ namespace seco {
         public:
 
             /**
-             * @param configPtr An unique pointer to an object of type `ISeCoRuleLearner::IConfig`
+             * @param configPtr An unique pointer to an object of type `ISeCoRuleLearnerConfig`
              */
-            SeCoRuleLearnerConfigurator(std::unique_ptr<ISeCoRuleLearner::IConfig> configPtr)
+            SeCoRuleLearnerConfigurator(std::unique_ptr<ISeCoRuleLearnerConfig> configPtr)
                 : RuleLearnerConfigurator(*configPtr), configPtr_(std::move(configPtr)) {}
 
             /**
@@ -83,7 +83,7 @@ namespace seco {
      * Allows to configure a rule learner that makes use of the separate-and-conquer (SeCo) paradigm.
      */
     class SeCoRuleLearnerConfig : public RuleLearnerConfig,
-                                  virtual public ISeCoRuleLearner::IConfig {
+                                  virtual public ISeCoRuleLearnerConfig {
         protected:
 
             /**
