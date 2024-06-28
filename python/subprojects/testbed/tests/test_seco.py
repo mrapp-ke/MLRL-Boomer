@@ -3,7 +3,8 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from os import path
 
-from test_common import DIR_OUT, RULE_PRUNING_IREP, CmdBuilder, CommonIntegrationTests
+from test_common import DIR_OUT, RULE_PRUNING_IREP
+from test_common_classification import ClassificationCmdBuilder, ClassificationIntegrationTests
 
 CMD_SECO = 'seco'
 
@@ -32,7 +33,7 @@ LIFT_FUNCTION_PEAK = 'peak'
 LIFT_FUNCTION_KLN = 'kln'
 
 
-class SeCoCmdBuilder(CmdBuilder):
+class SeCoClassifierCmdBuilder(ClassificationCmdBuilder):
     """
     A builder that allows to configure a command for running the separate-and-conquer (SeCo) algorithm.
     """
@@ -86,9 +87,9 @@ class SeCoCmdBuilder(CmdBuilder):
         return self
 
 
-class SeCoIntegrationTests(CommonIntegrationTests):
+class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
     """
-    Defines a series of integration tests for the separate-and-conquer (SeCo) algorithm.
+    Defines a series of integration tests for the separate-and-conquer (SeCo) algorithm for classification problems.
     """
 
     def __init__(self, methodName='runTest'):
@@ -101,7 +102,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when using the accuracy heuristic for learning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .heuristic(HEURISTIC_ACCURACY)
         self.run_cmd(builder, 'heuristic_accuracy')
 
@@ -109,7 +110,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when using the precision heuristic for learning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .heuristic(HEURISTIC_PRECISION)
         self.run_cmd(builder, 'heuristic_precision')
 
@@ -117,7 +118,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when using the recall heuristic for learning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .heuristic(HEURISTIC_RECALL)
         self.run_cmd(builder, 'heuristic_recall')
 
@@ -125,7 +126,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when using the Laplace heuristic for learning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .heuristic(HEURISTIC_LAPLACE)
         self.run_cmd(builder, 'heuristic_laplace')
 
@@ -133,7 +134,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when using the WRA heuristic for learning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .heuristic(HEURISTIC_WRA)
         self.run_cmd(builder, 'heuristic_wra')
 
@@ -141,7 +142,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when using the F-measure heuristic for learning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .heuristic(HEURISTIC_F_MEASURE)
         self.run_cmd(builder, 'heuristic_f-measure')
 
@@ -149,7 +150,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when using the m-estimate heuristic for learning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .heuristic(HEURISTIC_M_ESTIMATE)
         self.run_cmd(builder, 'heuristic_m-estimate')
 
@@ -157,7 +158,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when using the accuracy heuristic for pruning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_ACCURACY)
         self.run_cmd(builder, 'pruning-heuristic_accuracy')
@@ -166,7 +167,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when using the precision heuristic for pruning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_PRECISION)
         self.run_cmd(builder, 'pruning-heuristic_precision')
@@ -175,7 +176,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when using the recall heuristic for pruning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_RECALL)
         self.run_cmd(builder, 'pruning-heuristic_recall')
@@ -184,7 +185,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when using the Laplace heuristic for pruning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_LAPLACE)
         self.run_cmd(builder, 'pruning-heuristic_laplace')
@@ -193,7 +194,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when using the WRA heuristic for pruning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_WRA)
         self.run_cmd(builder, 'pruning-heuristic_wra')
@@ -202,7 +203,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when using the F-measure heuristic for pruning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_F_MEASURE)
         self.run_cmd(builder, 'pruning-heuristic_f-measure')
@@ -211,7 +212,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when using the m-estimate heuristic for pruning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_M_ESTIMATE)
         self.run_cmd(builder, 'pruning-heuristic_m-estimate')
@@ -220,7 +221,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when inducing rules with single-output heads.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .head_type(HEAD_TYPE_SINGLE) \
             .print_model_characteristics()
         self.run_cmd(builder, 'single-output-heads')
@@ -229,7 +230,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when inducing partial rules using no lift function.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .head_type(HEAD_TYPE_PARTIAL) \
             .lift_function(LIFT_FUNCTION_NO) \
             .print_model_characteristics()
@@ -239,7 +240,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when inducing partial rules using the peak lift function.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .head_type(HEAD_TYPE_PARTIAL) \
             .lift_function(LIFT_FUNCTION_PEAK) \
             .print_model_characteristics()
@@ -249,7 +250,7 @@ class SeCoIntegrationTests(CommonIntegrationTests):
         """
         Tests the SeCo algorithm when inducing partial rules using the KLN lift function.
         """
-        builder = SeCoCmdBuilder() \
+        builder = SeCoClassifierCmdBuilder() \
             .head_type(HEAD_TYPE_PARTIAL) \
             .lift_function(LIFT_FUNCTION_KLN) \
             .print_model_characteristics()
