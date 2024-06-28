@@ -3,9 +3,9 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from os import path
 
-from test_common import DATASET_EMOTIONS, DIR_OUT, HOLDOUT_NO, HOLDOUT_RANDOM, HOLDOUT_STRATIFIED_EXAMPLE_WISE, \
-    HOLDOUT_STRATIFIED_OUTPUT_WISE, PREDICTION_TYPE_PROBABILITIES, PREDICTION_TYPE_SCORES, CmdBuilder, \
-    CommonIntegrationTests, skip_test_on_ci
+from test_common import DATASET_EMOTIONS, DIR_OUT, HOLDOUT_NO, HOLDOUT_RANDOM, skip_test_on_ci
+from test_common_classification import HOLDOUT_STRATIFIED_EXAMPLE_WISE, HOLDOUT_STRATIFIED_OUTPUT_WISE, \
+    PREDICTION_TYPE_PROBABILITIES, PREDICTION_TYPE_SCORES, ClassificationCmdBuilder, ClassificationIntegrationTests
 
 CMD_BOOMER = 'boomer'
 
@@ -58,9 +58,9 @@ GLOBAL_PRUNING_PRE = 'pre-pruning'
 GLOBAL_PRUNING_POST = 'post-pruning'
 
 
-class BoostingCmdBuilder(CmdBuilder):
+class BoomerClassifierCmdBuilder(ClassificationCmdBuilder):
     """
-    A builder that allows to configure a command for running the BOOMER algorithm.
+    A builder that allows to configure a command for running the BOOMER algorithm for classification problems.
     """
 
     def __init__(self, dataset: str = DATASET_EMOTIONS):
@@ -177,9 +177,9 @@ class BoostingCmdBuilder(CmdBuilder):
         return self
 
 
-class BoostingIntegrationTests(CommonIntegrationTests):
+class BoomerClassifierIntegrationTests(ClassificationIntegrationTests):
     """
-    Defines a series of integration tests for the BOOMER algorithm.
+    Defines a series of integration tests for the BOOMER algorithm for classification problems.
     """
 
     def __init__(self, methodName='runTest'):
@@ -192,7 +192,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         Tests the evaluation of the rule learning algorithm when predicting scores for a single-label problem.
         """
-        builder = BoostingCmdBuilder(dataset=self.dataset_single_label) \
+        builder = BoomerClassifierCmdBuilder(dataset=self.dataset_single_label) \
             .prediction_type(PREDICTION_TYPE_SCORES) \
             .print_evaluation()
         self.run_cmd(builder, 'single-label-scores')
@@ -201,7 +201,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         Tests the evaluation of the rule learning algorithm when predicting probabilities for a single-label problem.
         """
-        builder = BoostingCmdBuilder(dataset=self.dataset_single_label) \
+        builder = BoomerClassifierCmdBuilder(dataset=self.dataset_single_label) \
             .prediction_type(PREDICTION_TYPE_PROBABILITIES) \
             .print_evaluation()
         self.run_cmd(builder, 'single-label-probabilities')
@@ -210,7 +210,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         Tests the BOOMER algorithm when using the decomposable logistic loss function.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_LOGISTIC_DECOMPOSABLE)
         self.run_cmd(builder, 'loss-logistic-decomposable')
 
@@ -219,7 +219,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         Tests the BOOMER algorithm when using the non-decomposable logistic loss function.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_LOGISTIC_NON_DECOMPOSABLE)
         self.run_cmd(builder, 'loss-logistic-non-decomposable')
 
@@ -227,7 +227,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         Tests the BOOMER algorithm when using the decomposable squared hinge loss function.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_SQUARED_HINGE_DECOMPOSABLE)
         self.run_cmd(builder, 'loss-squared-hinge-decomposable')
 
@@ -236,7 +236,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         Tests the BOOMER algorithm when using the non-decomposable squared hinge loss function.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_SQUARED_HINGE_NON_DECOMPOSABLE)
         self.run_cmd(builder, 'loss-squared-hinge-non-decomposable')
 
@@ -244,7 +244,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         Tests the BOOMER algorithm when using the decomposable squared error loss function.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_SQUARED_ERROR_DECOMPOSABLE)
         self.run_cmd(builder, 'loss-squared-error-decomposable')
 
@@ -253,7 +253,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         Tests the BOOMER algorithm when using the non-decomposable squared error loss function.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_SQUARED_ERROR_NON_DECOMPOSABLE)
         self.run_cmd(builder, 'loss-squared-error-non-decomposable')
 
@@ -261,7 +261,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         Tests the BOOMER algorithm when predicting binary labels that are obtained for each label individually.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .binary_predictor(BINARY_PREDICTOR_OUTPUT_WISE) \
             .print_predictions()
         self.run_cmd(builder, 'predictor-binary-output-wise')
@@ -271,7 +271,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when predicting binary labels that are obtained for each label individually based on
         probability estimates.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .marginal_probability_calibration() \
             .print_marginal_probability_calibration_model() \
             .store_marginal_probability_calibration_model() \
@@ -287,7 +287,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting binary labels
         that are obtained for each label individually.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .binary_predictor(BINARY_PREDICTOR_OUTPUT_WISE) \
             .incremental_evaluation() \
             .set_output_dir() \
@@ -300,7 +300,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting binary labels
         that are obtained for each label individually based on probability estimates.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .marginal_probability_calibration() \
             .print_marginal_probability_calibration_model() \
             .store_marginal_probability_calibration_model() \
@@ -316,7 +316,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         Tests the BOOMER algorithm when predicting sparse binary labels that are obtained for each label individually.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .binary_predictor(BINARY_PREDICTOR_OUTPUT_WISE) \
             .print_predictions() \
             .sparse_prediction_format()
@@ -327,7 +327,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting sparse binary
         labels that are obtained for each label individually.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .binary_predictor(BINARY_PREDICTOR_OUTPUT_WISE) \
             .sparse_prediction_format() \
             .incremental_evaluation() \
@@ -341,7 +341,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when predicting binary labels that are obtained by predicting one of the known label
         vectors.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .binary_predictor(BINARY_PREDICTOR_EXAMPLE_WISE) \
             .print_predictions() \
             .print_label_vectors()
@@ -352,7 +352,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when predicting binary labels that are obtained by predicting one of the known label
         vectors based on probability estimates.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .marginal_probability_calibration() \
             .print_marginal_probability_calibration_model() \
             .store_marginal_probability_calibration_model() \
@@ -372,7 +372,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting one of the
         known label vectors.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .binary_predictor(BINARY_PREDICTOR_EXAMPLE_WISE) \
             .incremental_evaluation() \
             .set_output_dir() \
@@ -385,7 +385,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting one of the
         known label vectors based on probability estimates.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .marginal_probability_calibration() \
             .print_marginal_probability_calibration_model() \
             .store_marginal_probability_calibration_model() \
@@ -405,7 +405,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when predicting sparse binary labels that are obtained by predicting one of the known
         label vectors.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .binary_predictor(BINARY_PREDICTOR_EXAMPLE_WISE) \
             .print_predictions() \
             .print_label_vectors() \
@@ -417,7 +417,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting one of the
         known label vectors.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .binary_predictor(BINARY_PREDICTOR_EXAMPLE_WISE) \
             .sparse_prediction_format() \
             .incremental_evaluation() \
@@ -431,7 +431,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when predicting binary labels that are obtained via the general F-measure maximizer
         (GFM).
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .marginal_probability_calibration() \
             .print_marginal_probability_calibration_model() \
             .store_marginal_probability_calibration_model() \
@@ -451,7 +451,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting binary labels
         that are obtained via the general F-measure maximizer (GFM).
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .marginal_probability_calibration() \
             .print_marginal_probability_calibration_model() \
             .store_marginal_probability_calibration_model() \
@@ -471,7 +471,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when predicting sparse binary labels that are obtained via the general F-measure
         maximizer (GFM).
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .marginal_probability_calibration() \
             .print_marginal_probability_calibration_model() \
             .store_marginal_probability_calibration_model() \
@@ -492,7 +492,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting sparse binary
         labels that are obtained via the general F-measure maximizer (GFM).
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .marginal_probability_calibration() \
             .print_marginal_probability_calibration_model() \
             .store_marginal_probability_calibration_model() \
@@ -512,7 +512,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         Tests the BOOMER algorithm when predicting scores that are obtained in an output-wise manner.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .prediction_type(PREDICTION_TYPE_SCORES) \
             .print_predictions()
         self.run_cmd(builder, 'predictor-score-output-wise')
@@ -522,7 +522,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting scores that are
         obtained in an output-wise manner.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .prediction_type(PREDICTION_TYPE_SCORES) \
             .incremental_evaluation() \
             .set_output_dir() \
@@ -535,7 +535,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when predicting probabilities that are obtained by applying a transformation function
         to each output.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .marginal_probability_calibration() \
             .print_marginal_probability_calibration_model() \
             .store_marginal_probability_calibration_model() \
@@ -552,7 +552,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting probabilities
         that are obtained by applying a transformation function to each output.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .marginal_probability_calibration() \
             .print_marginal_probability_calibration_model() \
             .store_marginal_probability_calibration_model() \
@@ -570,7 +570,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when predicting probabilities that are obtained via marginalization over the known
         label vectors.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .marginal_probability_calibration() \
             .print_marginal_probability_calibration_model() \
             .store_marginal_probability_calibration_model() \
@@ -591,7 +591,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the repeated evaluation of a model that is learned by the BOOMER algorithm when predicting probabilities
         that are obtained via marginalization over the known label vectors.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .marginal_probability_calibration() \
             .print_marginal_probability_calibration_model() \
             .store_marginal_probability_calibration_model() \
@@ -611,7 +611,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         Tests the BOOMER algorithm when not inducing a default rule.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .default_rule(False) \
             .print_model_characteristics()
         self.run_cmd(builder, 'no-default-rule')
@@ -621,7 +621,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using sparse data structures for storing the statistics and a dense output
         matrix.
         """
-        builder = BoostingCmdBuilder(dataset=self.dataset_numerical_sparse) \
+        builder = BoomerClassifierCmdBuilder(dataset=self.dataset_numerical_sparse) \
             .sparse_statistic_format() \
             .sparse_output_format(False) \
             .default_rule(False) \
@@ -634,7 +634,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using sparse data structures for storing the statistics and a sparse output
         matrix.
         """
-        builder = BoostingCmdBuilder(dataset=self.dataset_numerical_sparse) \
+        builder = BoomerClassifierCmdBuilder(dataset=self.dataset_numerical_sparse) \
             .sparse_statistic_format() \
             .sparse_output_format() \
             .default_rule(False) \
@@ -647,7 +647,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a decomposable loss function for the induction of rules with single-output
         heads.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_LOGISTIC_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_SINGLE) \
             .print_model_characteristics()
@@ -658,7 +658,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a decomposable loss function for the induction of rules with complete
         heads.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_LOGISTIC_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_COMPLETE) \
             .print_model_characteristics()
@@ -669,7 +669,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a decomposable loss function and equal-width label binning for the
         induction of rules with complete heads.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_LOGISTIC_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_COMPLETE) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
@@ -681,7 +681,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a decomposable loss function for the induction of rules that predict for a
         number of labels
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_LOGISTIC_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_PARTIAL_FIXED) \
             .print_model_characteristics()
@@ -692,7 +692,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a decomposable loss function and equal-width label binning for the
         induction of rules that predict for a number of labels
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_LOGISTIC_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_PARTIAL_FIXED) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
@@ -704,7 +704,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a decomposable loss function for the induction of rules that predict for a
         dynamically determined subset of the available labels.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_LOGISTIC_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_PARTIAL_DYNAMIC) \
             .print_model_characteristics()
@@ -715,7 +715,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a decomposable loss function and equal-width label binning for the
         induction of rules that predict for a dynamically determined subset of the available labels.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_LOGISTIC_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_PARTIAL_DYNAMIC) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
@@ -727,7 +727,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules with
         single-output heads.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_LOGISTIC_NON_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_SINGLE) \
             .print_model_characteristics()
@@ -739,7 +739,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules with complete
         heads.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_LOGISTIC_NON_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_COMPLETE) \
             .label_binning(LABEL_BINNING_NO) \
@@ -752,7 +752,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a non-decomposable loss function and equal-width label binning for the
         induction of rules with complete heads.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_LOGISTIC_NON_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_COMPLETE) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
@@ -765,7 +765,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules that predict
         for a number of labels
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_LOGISTIC_NON_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_PARTIAL_FIXED) \
             .label_binning(LABEL_BINNING_NO) \
@@ -778,7 +778,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a non-decomposable loss function and equal-width label binning for the
         induction of rules that predict for a number of labels
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_LOGISTIC_NON_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_PARTIAL_FIXED) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
@@ -791,7 +791,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a non-decomposable loss function for the induction of rules that predict
         for a dynamically determined subset of the available labels.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_LOGISTIC_NON_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_PARTIAL_DYNAMIC) \
             .label_binning(LABEL_BINNING_NO) \
@@ -804,7 +804,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a non-decomposable loss function and equal-width label binning for the
         induction of rules that predict for a dynamically determined subset of the available labels.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .loss(LOSS_LOGISTIC_NON_DECOMPOSABLE) \
             .head_type(HEAD_TYPE_PARTIAL_DYNAMIC) \
             .label_binning(LABEL_BINNING_EQUAL_WIDTH) \
@@ -815,7 +815,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         Tests the BOOMER algorithm when using no holdout set for global post-pruning.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .global_pruning(GLOBAL_PRUNING_POST) \
             .holdout(HOLDOUT_NO) \
             .print_model_characteristics()
@@ -825,7 +825,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         Tests the BOOMER algorithm when using a holdout set that is created via random sampling for global post-pruning.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .global_pruning(GLOBAL_PRUNING_POST) \
             .holdout(HOLDOUT_RANDOM) \
             .print_model_characteristics()
@@ -836,7 +836,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a holdout set that is created via label-wise stratified sampling for
         global post-pruning.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .global_pruning(GLOBAL_PRUNING_POST) \
             .holdout(HOLDOUT_STRATIFIED_OUTPUT_WISE) \
             .print_model_characteristics()
@@ -847,7 +847,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a holdout set that is created via example-wise stratified sampling for
         global post-pruning.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .global_pruning(GLOBAL_PRUNING_POST) \
             .holdout(HOLDOUT_STRATIFIED_EXAMPLE_WISE) \
             .print_model_characteristics()
@@ -857,7 +857,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         Tests the BOOMER algorithm when using no holdout set for global pre-pruning.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .global_pruning(GLOBAL_PRUNING_PRE) \
             .holdout(HOLDOUT_NO) \
             .print_model_characteristics()
@@ -867,7 +867,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         """
         Tests the BOOMER algorithm when using a holdout set that is created via random sampling for global pre-pruning.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .global_pruning(GLOBAL_PRUNING_PRE) \
             .holdout(HOLDOUT_RANDOM) \
             .print_model_characteristics()
@@ -878,7 +878,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a holdout set that is created via label-wise stratified sampling for
         global pre-pruning.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .global_pruning(GLOBAL_PRUNING_PRE) \
             .holdout(HOLDOUT_STRATIFIED_OUTPUT_WISE) \
             .print_model_characteristics()
@@ -889,7 +889,7 @@ class BoostingIntegrationTests(CommonIntegrationTests):
         Tests the BOOMER algorithm when using a holdout set that is created via example-wise stratified sampling for
         global pre-pruning.
         """
-        builder = BoostingCmdBuilder() \
+        builder = BoomerClassifierCmdBuilder() \
             .global_pruning(GLOBAL_PRUNING_PRE) \
             .holdout(HOLDOUT_STRATIFIED_EXAMPLE_WISE) \
             .print_model_characteristics()

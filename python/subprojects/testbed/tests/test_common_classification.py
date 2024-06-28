@@ -1,0 +1,278 @@
+"""
+Author: Michael Rapp (michael.rapp.ml@gmail.com)
+"""
+from abc import ABC
+from unittest import SkipTest
+
+from test_common import DATASET_BREAST_CANCER, DATASET_EMOTIONS, DATASET_EMOTIONS_NOMINAL, DATASET_EMOTIONS_ORDINAL, \
+    DATASET_ENRON, DATASET_LANGLOG, DIR_DATA, DIR_OUT, CmdBuilder, CommonIntegrationTests
+
+PREDICTION_TYPE_BINARY = 'binary'
+
+PREDICTION_TYPE_SCORES = 'scores'
+
+PREDICTION_TYPE_PROBABILITIES = 'probabilities'
+
+INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE = 'stratified-output-wise'
+
+INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
+
+HOLDOUT_STRATIFIED_OUTPUT_WISE = 'stratified-output-wise'
+
+HOLDOUT_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
+
+
+class ClassificationCmdBuilder(CmdBuilder):
+    """
+    A builder that allows to configure a command for running a rule learner.
+    """
+
+    def __init__(self, cmd: str, data_dir: str = DIR_DATA, dataset: str = DATASET_EMOTIONS):
+        super().__init__(cmd, data_dir, dataset)
+        self.label_vectors_stored = False
+        self.marginal_probability_calibration_model_stored = False
+        self.joint_probability_calibration_model_stored = False
+
+    def print_label_vectors(self, print_label_vectors: bool = True):
+        """
+        Configures whether the unique label vectors contained in the training data should be printed on the console or
+        not.
+
+        :param print_label_vectors: True, if the unique label vectors contained in the training data should be printed,
+                                    False otherwise
+        :return:                    The builder itself    
+        """
+        self.args.append('--print-label-vectors')
+        self.args.append(str(print_label_vectors).lower())
+        return self
+
+    def store_label_vectors(self, store_label_vectors: bool = True):
+        """
+        Configures whether the unique label vectors contained in the training data should be written into output files
+        or not.
+
+        :param store_label_vectors: True, if the unique label vectors contained in the training data should be written
+                                    into output files, False otherwise
+        :return:                    The builder itself
+        """
+        self.label_vectors_stored = store_label_vectors
+        self.args.append('--store-label-vectors')
+        self.args.append(str(store_label_vectors).lower())
+        return self
+
+    def print_marginal_probability_calibration_model(self, print_marginal_probability_calibration_model: bool = True):
+        """
+        Configures whether textual representations of models for the calibration of marginal probabilities should be
+        printed on the console or not.
+
+        :param print_marginal_probability_calibration_model:    True, if textual representations of models for the
+                                                                calibration of marginal probabilities should be printed,
+                                                                False otherwise
+        :return:                                                The builder itself    
+        """
+        self.args.append('--print-marginal-probability-calibration-model')
+        self.args.append(str(print_marginal_probability_calibration_model).lower())
+        return self
+
+    def store_marginal_probability_calibration_model(self, store_marginal_probability_calibration_model: bool = True):
+        """
+        Configures whether textual representations of models for the calibration of marginal probabilities should be
+        written into output files or not.
+
+        :param store_marginal_probability_calibration_model:    True, if textual representations of models for the
+                                                                calibration of marginal probabilities should be written
+                                                                into output files, False otherwise
+        :return:                                                The builder itself    
+        """
+        self.marginal_probability_calibration_model_stored = store_marginal_probability_calibration_model
+        self.args.append('--store-marginal-probability-calibration-model')
+        self.args.append(str(store_marginal_probability_calibration_model).lower())
+        return self
+
+    def print_joint_probability_calibration_model(self, print_joint_probability_calibration_model: bool = True):
+        """
+        Configures whether textual representations of models for the calibration of joint probabilities should be
+        printed on the console or not.
+
+        :param print_joint_probability_calibration_model:   True, if textual representations of models for the
+                                                            calibration of joint probabilities should be printed, False
+                                                            otherwise
+        :return:                                            The builder itself    
+        """
+        self.args.append('--print-joint-probability-calibration-model')
+        self.args.append(str(print_joint_probability_calibration_model).lower())
+        return self
+
+    def store_joint_probability_calibration_model(self, store_joint_probability_calibration_model: bool = True):
+        """
+        Configures whether textual representations of models for the calibration of joint probabilities should be
+        written into output files or not.
+
+        :param store_joint_probability_calibration_model:   True, if textual representations of models for the
+                                                            calibration of joint probabilities should be written into
+                                                            output files, False otherwise
+        :return:                                            The builder itself    
+        """
+        self.joint_probability_calibration_model_stored = store_joint_probability_calibration_model
+        self.args.append('--store-joint-probability-calibration-model')
+        self.args.append(str(store_joint_probability_calibration_model).lower())
+        return self
+
+    def prediction_type(self, prediction_type: str = PREDICTION_TYPE_BINARY):
+        """
+        Configures the type of predictions that should be obtained from the algorithm.
+
+        :param prediction_type: The type of the predictions
+        :return:                The builder itself
+        """
+        self.args.append('--prediction-type')
+        self.args.append(prediction_type)
+        return self
+
+
+class ClassificationIntegrationTests(CommonIntegrationTests, ABC):
+    """
+    Defines a series of integration tests for any type of rule learning algorithm that can be applied to classification
+    problems.
+    """
+
+    def __init__(self,
+                 cmd: str,
+                 dataset_default: str = DATASET_EMOTIONS,
+                 dataset_numerical_sparse: str = DATASET_LANGLOG,
+                 dataset_binary: str = DATASET_ENRON,
+                 dataset_nominal: str = DATASET_EMOTIONS_NOMINAL,
+                 dataset_ordinal: str = DATASET_EMOTIONS_ORDINAL,
+                 dataset_single_label: str = DATASET_BREAST_CANCER,
+                 expected_output_dir=DIR_OUT,
+                 methodName='runTest'):
+        """
+        :param cmd:                         The command to be run by the integration tests
+        :param dataset_default:             The name of the dataset that should be used by default
+        :param dataset_numerical_sparse:    The name of a dataset with sparse numerical features
+        :param dataset_binary:              The name of a dataset with binary features
+        :param dataset_nominal:             The name of a dataset with nominal features
+        :param dataset_ordinal:             The name of a dataset with ordinal features
+        :param dataset_single_label:        The name of the dataset that comes with a single label
+        :param expected_output_dir:         The path of the directory that contains the file with the expected output
+        :param methodName:                  The name of the test method to be executed
+        """
+        super().__init__(cmd=cmd,
+                         dataset_default=dataset_default,
+                         dataset_numerical_sparse=dataset_numerical_sparse,
+                         dataset_binary=dataset_binary,
+                         dataset_nominal=dataset_nominal,
+                         dataset_ordinal=dataset_ordinal,
+                         expected_output_dir=expected_output_dir,
+                         methodName=methodName)
+        self.dataset_single_label = dataset_single_label
+
+    def __assert_label_vector_files_exist(self, builder: ClassificationCmdBuilder):
+        """
+        Asserts that the label vector files, which should be created by a command, exist.
+
+        :param builder: The builder
+        """
+        if builder.label_vectors_stored:
+            self._assert_output_files_exist(builder, 'label_vectors', 'csv')
+
+    def __assert_marginal_probability_calibration_model_files_exist(self, builder: ClassificationCmdBuilder):
+        """
+        Asserts that the marginal probability calibration model files, which should be created by a command, exist.
+
+        :param builder: The builder
+        """
+        if builder.marginal_probability_calibration_model_stored:
+            self._assert_output_files_exist(builder, 'marginal_probability_calibration_model', 'csv')
+
+    def __assert_joint_probability_calibration_model_files_exist(self, builder: ClassificationCmdBuilder):
+        """
+        Asserts that the joint probability calibration model files, which should be created by a command, exist.
+
+        :param builder: The builder
+        """
+        if builder.joint_probability_calibration_model_stored:
+            self._assert_output_files_exist(builder, 'joint_probability_calibration_model', 'csv')
+
+    def _check_output_files(self, builder):
+        super()._check_output_files(builder)
+
+        if builder is ClassificationCmdBuilder:
+            self.__assert_label_vector_files_exist(builder)
+            self.__assert_marginal_probability_calibration_model_files_exist(builder)
+            self.__assert_joint_probability_calibration_model_files_exist(builder)
+
+    @classmethod
+    def setUpClass(cls):
+        if cls is ClassificationIntegrationTests:
+            raise SkipTest(cls.__name__ + ' is an abstract base class')
+
+        super().setUpClass()
+
+    def test_single_label_classification(self):
+        """
+        Tests the evaluation of the rule learning algorithm when predicting binary labels for a single-label problem.
+        """
+        builder = ClassificationCmdBuilder(self.cmd, dataset=self.dataset_single_label) \
+            .prediction_type(PREDICTION_TYPE_BINARY) \
+            .print_evaluation()
+        self.run_cmd(builder, 'single-label-classification')
+
+    def test_label_vectors_train_test(self):
+        """
+        Tests the functionality to store the unique label vectors contained in the data used for training by the rule
+        learning algorithm when using a split of the dataset into training and test data.
+        """
+        builder = ClassificationCmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .print_evaluation(False) \
+            .store_evaluation(False) \
+            .set_output_dir() \
+            .print_label_vectors() \
+            .store_label_vectors()
+        self.run_cmd(builder, 'label-vectors_train-test')
+
+    def test_label_vectors_cross_validation(self):
+        """
+        Tests the functionality to store the unique label vectors contained in the data used for training by the rule
+        learning algorithm when using a cross validation.
+        """
+        builder = ClassificationCmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .cross_validation() \
+            .print_evaluation(False) \
+            .store_evaluation(False) \
+            .set_output_dir() \
+            .print_label_vectors() \
+            .store_label_vectors()
+        self.run_cmd(builder, 'label-vectors_cross-validation')
+
+    def test_label_vectors_single_fold(self):
+        """
+        Tests the functionality to store the unique label vectors contained in the data used for training by the rule
+        learning algorithm when using a single fold of a cross validation.
+        """
+        builder = ClassificationCmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .cross_validation(current_fold=1) \
+            .print_evaluation(False) \
+            .store_evaluation(False) \
+            .set_output_dir() \
+            .print_label_vectors() \
+            .store_label_vectors()
+        self.run_cmd(builder, 'label-vectors_single-fold')
+
+    def test_instance_sampling_stratified_output_wise(self):
+        """
+        Tests the rule learning algorithm when using a method to sample from the available training examples using
+        label-wise stratification.
+        """
+        builder = ClassificationCmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE)
+        self.run_cmd(builder, 'instance-sampling-stratified-output-wise')
+
+    def test_instance_sampling_stratified_example_wise(self):
+        """
+        Tests the rule learning algorithm when using a method to sample from the available training examples using
+        example-wise stratification.
+        """
+        builder = ClassificationCmdBuilder(self.cmd, dataset=self.dataset_default) \
+            .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE)
+        self.run_cmd(builder, 'instance-sampling-stratified-example-wise')

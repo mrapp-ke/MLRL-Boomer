@@ -45,12 +45,6 @@ RULE_PRUNING_NO = 'none'
 
 RULE_PRUNING_IREP = 'irep'
 
-PREDICTION_TYPE_BINARY = 'binary'
-
-PREDICTION_TYPE_SCORES = 'scores'
-
-PREDICTION_TYPE_PROBABILITIES = 'probabilities'
-
 RULE_INDUCTION_TOP_DOWN_GREEDY = 'top-down-greedy'
 
 RULE_INDUCTION_TOP_DOWN_BEAM_SEARCH = 'top-down-beam-search'
@@ -60,10 +54,6 @@ INSTANCE_SAMPLING_NO = 'none'
 INSTANCE_SAMPLING_WITH_REPLACEMENT = 'with-replacement'
 
 INSTANCE_SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
-
-INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE = 'stratified-output-wise'
-
-INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
 FEATURE_SAMPLING_NO = 'none'
 
@@ -78,10 +68,6 @@ OUTPUT_SAMPLING_ROUND_ROBIN = 'round-robin'
 HOLDOUT_NO = 'none'
 
 HOLDOUT_RANDOM = 'random'
-
-HOLDOUT_STRATIFIED_OUTPUT_WISE = 'stratified-output-wise'
-
-HOLDOUT_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
 FEATURE_BINNING_EQUAL_WIDTH = 'equal-width'
 
@@ -126,11 +112,8 @@ class CmdBuilder:
         self.predictions_stored = False
         self.prediction_characteristics_stored = False
         self.data_characteristics_stored = False
-        self.label_vectors_stored = False
         self.model_characteristics_stored = False
         self.rules_stored = False
-        self.marginal_probability_calibration_model_stored = False
-        self.joint_probability_calibration_model_stored = False
         self.args = [cmd, '--log-level', 'DEBUG', '--data-dir', data_dir, '--dataset', dataset]
         self.tmp_dirs = []
 
@@ -366,33 +349,6 @@ class CmdBuilder:
         self.args.append(str(store_data_characteristics).lower())
         return self
 
-    def print_label_vectors(self, print_label_vectors: bool = True):
-        """
-        Configures whether the unique label vectors contained in the training data should be printed on the console or
-        not.
-
-        :param print_label_vectors: True, if the unique label vectors contained in the training data should be printed,
-                                    False otherwise
-        :return:                    The builder itself    
-        """
-        self.args.append('--print-label-vectors')
-        self.args.append(str(print_label_vectors).lower())
-        return self
-
-    def store_label_vectors(self, store_label_vectors: bool = True):
-        """
-        Configures whether the unique label vectors contained in the training data should be written into output files
-        or not.
-
-        :param store_label_vectors: True, if the unique label vectors contained in the training data should be written
-                                    into output files, False otherwise
-        :return:                    The builder itself
-        """
-        self.label_vectors_stored = store_label_vectors
-        self.args.append('--store-label-vectors')
-        self.args.append(str(store_label_vectors).lower())
-        return self
-
     def print_model_characteristics(self, print_model_characteristics: bool = True):
         """
         Configures whether the characteristics of models should be printed on the console or not.
@@ -439,64 +395,6 @@ class CmdBuilder:
         self.rules_stored = store_rules
         self.args.append('--store-rules')
         self.args.append(str(store_rules).lower())
-        return self
-
-    def print_marginal_probability_calibration_model(self, print_marginal_probability_calibration_model: bool = True):
-        """
-        Configures whether textual representations of models for the calibration of marginal probabilities should be
-        printed on the console or not.
-
-        :param print_marginal_probability_calibration_model:    True, if textual representations of models for the
-                                                                calibration of marginal probabilities should be printed,
-                                                                False otherwise
-        :return:                                                The builder itself    
-        """
-        self.args.append('--print-marginal-probability-calibration-model')
-        self.args.append(str(print_marginal_probability_calibration_model).lower())
-        return self
-
-    def store_marginal_probability_calibration_model(self, store_marginal_probability_calibration_model: bool = True):
-        """
-        Configures whether textual representations of models for the calibration of marginal probabilities should be
-        written into output files or not.
-
-        :param store_marginal_probability_calibration_model:    True, if textual representations of models for the
-                                                                calibration of marginal probabilities should be written
-                                                                into output files, False otherwise
-        :return:                                                The builder itself    
-        """
-        self.marginal_probability_calibration_model_stored = store_marginal_probability_calibration_model
-        self.args.append('--store-marginal-probability-calibration-model')
-        self.args.append(str(store_marginal_probability_calibration_model).lower())
-        return self
-
-    def print_joint_probability_calibration_model(self, print_joint_probability_calibration_model: bool = True):
-        """
-        Configures whether textual representations of models for the calibration of joint probabilities should be
-        printed on the console or not.
-
-        :param print_joint_probability_calibration_model:   True, if textual representations of models for the
-                                                            calibration of joint probabilities should be printed, False
-                                                            otherwise
-        :return:                                            The builder itself    
-        """
-        self.args.append('--print-joint-probability-calibration-model')
-        self.args.append(str(print_joint_probability_calibration_model).lower())
-        return self
-
-    def store_joint_probability_calibration_model(self, store_joint_probability_calibration_model: bool = True):
-        """
-        Configures whether textual representations of models for the calibration of joint probabilities should be
-        written into output files or not.
-
-        :param store_joint_probability_calibration_model:   True, if textual representations of models for the
-                                                            calibration of joint probabilities should be written into
-                                                            output files, False otherwise
-        :return:                                            The builder itself    
-        """
-        self.joint_probability_calibration_model_stored = store_joint_probability_calibration_model
-        self.args.append('--store-joint-probability-calibration-model')
-        self.args.append(str(store_joint_probability_calibration_model).lower())
         return self
 
     def sparse_feature_format(self, sparse: bool = True):
@@ -590,17 +488,6 @@ class CmdBuilder:
         self.args.append(rule_induction)
         return self
 
-    def prediction_type(self, prediction_type: str = PREDICTION_TYPE_BINARY):
-        """
-        Configures the type of predictions that should be obtained from the algorithm.
-
-        :param prediction_type: The type of the predictions
-        :return:                The builder itself
-        """
-        self.args.append('--prediction-type')
-        self.args.append(prediction_type)
-        return self
-
     def sequential_post_optimization(self, sequential_post_optimization: bool = True):
         """
         Configures whether the algorithm should use sequential post-optimization or not.
@@ -644,7 +531,7 @@ class CmdBuilder:
         return self.args
 
 
-class IntegrationTests(ABC, TestCase):
+class IntegrationTests(TestCase, ABC):
     """
     An abstract base class for all integration tests.
     """
@@ -714,7 +601,7 @@ class IntegrationTests(ABC, TestCase):
         """
         self.__assert_files_exist(builder, builder.model_dir, builder.cmd, 'model')
 
-    def __assert_output_files_exist(self, builder: CmdBuilder, file_name: str, suffix: str):
+    def _assert_output_files_exist(self, builder: CmdBuilder, file_name: str, suffix: str):
         """
         Asserts that output files, which should be created by a command, exist.
 
@@ -743,11 +630,11 @@ class IntegrationTests(ABC, TestCase):
             prefix = 'evaluation'
             suffix = 'csv'
             training_data = not builder.separate_train_test_sets
-            self.__assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=training_data),
-                                             suffix)
+            self._assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=training_data),
+                                            suffix)
 
             if builder.training_data_evaluated:
-                self.__assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=True), suffix)
+                self._assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=True), suffix)
 
     def __assert_parameter_files_exist(self, builder: CmdBuilder):
         """
@@ -768,11 +655,11 @@ class IntegrationTests(ABC, TestCase):
             prefix = 'predictions'
             suffix = 'arff'
             training_data = not builder.separate_train_test_sets
-            self.__assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=training_data),
-                                             suffix)
+            self._assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=training_data),
+                                            suffix)
 
             if builder.training_data_evaluated:
-                self.__assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=True), suffix)
+                self._assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=True), suffix)
 
     def __assert_prediction_characteristic_files_exist(self, builder: CmdBuilder):
         """
@@ -784,11 +671,11 @@ class IntegrationTests(ABC, TestCase):
             prefix = 'prediction_characteristics'
             suffix = 'csv'
             training_data = not builder.separate_train_test_sets
-            self.__assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=training_data),
-                                             suffix)
+            self._assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=training_data),
+                                            suffix)
 
             if builder.training_data_evaluated:
-                self.__assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=True), suffix)
+                self._assert_output_files_exist(builder, self.__get_output_name(prefix, training_data=True), suffix)
 
     def __assert_data_characteristic_files_exist(self, builder: CmdBuilder):
         """
@@ -797,16 +684,7 @@ class IntegrationTests(ABC, TestCase):
         :param builder: The builder
         """
         if builder.data_characteristics_stored:
-            self.__assert_output_files_exist(builder, 'data_characteristics', 'csv')
-
-    def __assert_label_vector_files_exist(self, builder: CmdBuilder):
-        """
-        Asserts that the label vector files, which should be created by a command, exist.
-
-        :param builder: The builder
-        """
-        if builder.label_vectors_stored:
-            self.__assert_output_files_exist(builder, 'label_vectors', 'csv')
+            self._assert_output_files_exist(builder, 'data_characteristics', 'csv')
 
     def __assert_model_characteristic_files_exist(self, builder: CmdBuilder):
         """
@@ -815,7 +693,7 @@ class IntegrationTests(ABC, TestCase):
         :param builder: The builder
         """
         if builder.model_characteristics_stored:
-            self.__assert_output_files_exist(builder, 'model_characteristics', 'csv')
+            self._assert_output_files_exist(builder, 'model_characteristics', 'csv')
 
     def __assert_rule_files_exist(self, builder: CmdBuilder):
         """
@@ -824,25 +702,7 @@ class IntegrationTests(ABC, TestCase):
         :param builder: The builder
         """
         if builder.rules_stored:
-            self.__assert_output_files_exist(builder, 'rules', 'txt')
-
-    def __assert_marginal_probability_calibration_model_files_exist(self, builder: CmdBuilder):
-        """
-        Asserts that the marginal probability calibration model files, which should be created by a command, exist.
-
-        :param builder: The builder
-        """
-        if builder.marginal_probability_calibration_model_stored:
-            self.__assert_output_files_exist(builder, 'marginal_probability_calibration_model', 'csv')
-
-    def __assert_joint_probability_calibration_model_files_exist(self, builder: CmdBuilder):
-        """
-        Asserts that the joint probability calibration model files, which should be created by a command, exist.
-
-        :param builder: The builder
-        """
-        if builder.joint_probability_calibration_model_stored:
-            self.__assert_output_files_exist(builder, 'joint_probability_calibration_model', 'csv')
+            self._assert_output_files_exist(builder, 'rules', 'txt')
 
     @staticmethod
     def __remove_tmp_dirs(builder: CmdBuilder):
@@ -871,7 +731,8 @@ class IntegrationTests(ABC, TestCase):
             'Command "' + self.__format_cmd(args) + '" terminated with non-zero exit code\n\n' + str(out.stderr))
         return out
 
-    def __replace_durations_with_placeholders(self, line: str) -> str:
+    @staticmethod
+    def __replace_durations_with_placeholders(line: str) -> str:
         regex_duration = '(\\d+ (day(s)*|hour(s)*|minute(s)*|second(s)*|millisecond(s)*))'
         return re.sub(regex_duration + '((, )' + regex_duration + ')*' + '(( and )' + regex_duration + ')?',
                       '<duration>', line)
@@ -919,19 +780,24 @@ class IntegrationTests(ABC, TestCase):
                 self.__assert_output_files_are_equal(stdout, args, expected_output_file)
 
         if not OVERWRITE_EXPECTED_OUTPUT_FILES:
-            self.__assert_model_files_exist(builder)
-            self.__assert_evaluation_files_exist(builder)
-            self.__assert_parameter_files_exist(builder)
-            self.__assert_prediction_files_exist(builder)
-            self.__assert_prediction_characteristic_files_exist(builder)
-            self.__assert_data_characteristic_files_exist(builder)
-            self.__assert_label_vector_files_exist(builder)
-            self.__assert_model_characteristic_files_exist(builder)
-            self.__assert_rule_files_exist(builder)
-            self.__assert_marginal_probability_calibration_model_files_exist(builder)
-            self.__assert_joint_probability_calibration_model_files_exist(builder)
+            self._check_output_files(builder)
 
         self.__remove_tmp_dirs(builder)
+
+    def _check_output_files(self, builder):
+        """
+        May be overridden by subclasses in order to check if certain output files have been created.
+
+        :param builder: The builder
+        """
+        self.__assert_model_files_exist(builder)
+        self.__assert_evaluation_files_exist(builder)
+        self.__assert_parameter_files_exist(builder)
+        self.__assert_prediction_files_exist(builder)
+        self.__assert_prediction_characteristic_files_exist(builder)
+        self.__assert_data_characteristic_files_exist(builder)
+        self.__assert_model_characteristic_files_exist(builder)
+        self.__assert_rule_files_exist(builder)
 
 
 class CommonIntegrationTests(IntegrationTests, ABC):
@@ -946,7 +812,6 @@ class CommonIntegrationTests(IntegrationTests, ABC):
                  dataset_binary: str = DATASET_ENRON,
                  dataset_nominal: str = DATASET_EMOTIONS_NOMINAL,
                  dataset_ordinal: str = DATASET_EMOTIONS_ORDINAL,
-                 dataset_single_label: str = DATASET_BREAST_CANCER,
                  expected_output_dir=DIR_OUT,
                  methodName='runTest'):
         """
@@ -956,7 +821,6 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         :param dataset_binary:              The name of a dataset with binary features
         :param dataset_nominal:             The name of a dataset with nominal features
         :param dataset_ordinal:             The name of a dataset with ordinal features
-        :param dataset_single_label:        The name of the dataset that comes with a single label
         :param expected_output_dir:         The path of the directory that contains the file with the expected output
         :param methodName:                  The name of the test method to be executed
         """
@@ -967,7 +831,6 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         self.dataset_binary = dataset_binary
         self.dataset_nominal = dataset_nominal
         self.dataset_ordinal = dataset_ordinal
-        self.dataset_single_label = dataset_single_label
 
     @classmethod
     def setUpClass(cls):
@@ -994,15 +857,6 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset='meka') \
             .print_evaluation(False)
         self.run_cmd(builder, 'meka-format')
-
-    def test_single_label_classification(self):
-        """
-        Tests the evaluation of the rule learning algorithm when predicting binary labels for a single-label problem.
-        """
-        builder = CmdBuilder(self.cmd, dataset=self.dataset_single_label) \
-            .prediction_type(PREDICTION_TYPE_BINARY) \
-            .print_evaluation()
-        self.run_cmd(builder, 'single-label-classification')
 
     def test_evaluation_no_data_split(self):
         """
@@ -1271,47 +1125,6 @@ class CommonIntegrationTests(IntegrationTests, ABC):
             .store_data_characteristics()
         self.run_cmd(builder, 'data-characteristics_single-fold')
 
-    def test_label_vectors_train_test(self):
-        """
-        Tests the functionality to store the unique label vectors contained in the data used for training by the rule
-        learning algorithm when using a split of the dataset into training and test data.
-        """
-        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .set_output_dir() \
-            .print_label_vectors() \
-            .store_label_vectors()
-        self.run_cmd(builder, 'label-vectors_train-test')
-
-    def test_label_vectors_cross_validation(self):
-        """
-        Tests the functionality to store the unique label vectors contained in the data used for training by the rule
-        learning algorithm when using a cross validation.
-        """
-        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .cross_validation() \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .set_output_dir() \
-            .print_label_vectors() \
-            .store_label_vectors()
-        self.run_cmd(builder, 'label-vectors_cross-validation')
-
-    def test_label_vectors_single_fold(self):
-        """
-        Tests the functionality to store the unique label vectors contained in the data used for training by the rule
-        learning algorithm when using a single fold of a cross validation.
-        """
-        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .cross_validation(current_fold=1) \
-            .print_evaluation(False) \
-            .store_evaluation(False) \
-            .set_output_dir() \
-            .print_label_vectors() \
-            .store_label_vectors()
-        self.run_cmd(builder, 'label-vectors_single-fold')
-
     def test_model_characteristics_train_test(self):
         """
         Tests the functionality to store the characteristics of models when using a split of the dataset into training
@@ -1563,24 +1376,6 @@ class CommonIntegrationTests(IntegrationTests, ABC):
         builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
             .instance_sampling(INSTANCE_SAMPLING_WITHOUT_REPLACEMENT)
         self.run_cmd(builder, 'instance-sampling-without-replacement')
-
-    def test_instance_sampling_stratified_output_wise(self):
-        """
-        Tests the rule learning algorithm when using a method to sample from the available training examples using
-        label-wise stratification.
-        """
-        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_OUTPUT_WISE)
-        self.run_cmd(builder, 'instance-sampling-stratified-output-wise')
-
-    def test_instance_sampling_stratified_example_wise(self):
-        """
-        Tests the rule learning algorithm when using a method to sample from the available training examples using
-        example-wise stratification.
-        """
-        builder = CmdBuilder(self.cmd, dataset=self.dataset_default) \
-            .instance_sampling(INSTANCE_SAMPLING_STRATIFIED_EXAMPLE_WISE)
-        self.run_cmd(builder, 'instance-sampling-stratified-example-wise')
 
     def test_feature_sampling_no(self):
         """
