@@ -343,7 +343,8 @@ class Runnable(ABC):
 
 class LearnerRunnable(Runnable, ABC):
     """
-    A base class for all programs that perform an experiment that involves training and evaluation of a learner.
+    A base class for all programs that perform an experiment that involves training and evaluation of a machine learning
+    algorithm.
     """
 
     class ClearOutputDirHook(Experiment.ExecutionHook):
@@ -653,7 +654,7 @@ class LearnerRunnable(Runnable, ABC):
         test_evaluation = self._create_test_evaluation(args, prediction_type)
         data_splitter = self.__create_data_splitter(args)
         pre_execution_hook = self.__create_pre_execution_hook(args, data_splitter)
-        base_learner = self._create_learner(args)
+        base_learner = self.create_classifier(args)
         pre_training_output_writers = self._create_pre_training_output_writers(args)
         post_training_output_writers = self._create_post_training_output_writers(args)
         parameter_input = self._create_parameter_input(args)
@@ -978,9 +979,10 @@ class LearnerRunnable(Runnable, ABC):
         return LabelVectorWriter(sinks) if len(sinks) > 0 else None
 
     @abstractmethod
-    def _create_learner(self, args):
+    def create_classifier(self, args):
         """
-        Must be implemented by subclasses in order to create the learner.
+        Must be implemented by subclasses in order to create a machine learning algorithm that can be applied to
+        classification problems.
 
         :param args:    The command line arguments
         :return:        The learner that has been created
@@ -1162,7 +1164,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                           fit_kwargs=kwargs,
                           predict_kwargs=kwargs)
 
-    def _create_learner(self, args):
+    def create_classifier(self, args):
         kwargs = create_kwargs_from_parameters(args, self.parameters)
         kwargs['random_state'] = args.random_state
         kwargs['feature_format'] = args.feature_format
