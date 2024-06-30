@@ -283,12 +283,8 @@ class Runnable(ABC):
 
         raise RuntimeError('No information about the program version is available')
 
-    def __init__(self, description: Optional[str] = None):
-        """
-        :param description: An optional description of the program to be printed via the comman line argument '-h' or
-                            '--help'
-        """
-        self.parser = ArgumentParser(description=description, formatter_class=RawDescriptionHelpFormatter)
+    def __init__(self):
+        self.parser = ArgumentParser(formatter_class=RawDescriptionHelpFormatter)
 
     def run(self):
         """
@@ -478,11 +474,11 @@ class LearnerRunnable(Runnable, ABC):
 
     PARAM_PREDICTION_TYPE = '--prediction-type'
 
-    def __init__(self, learner_name: str, description: Optional[str] = None):
+    def __init__(self, learner_name: str):
         """
         :param learner_name: The name of the learner
         """
-        super().__init__(description=description)
+        super().__init__()
         self.learner_name = learner_name
 
     def __create_prediction_type(self, args) -> PredictionType:
@@ -1053,14 +1049,13 @@ class RuleLearnerRunnable(LearnerRunnable):
                  learner_name: str,
                  learner_type: type,
                  config_type: type,
-                 parameters: Set[Parameter],
-                 description: Optional[str] = None):
+                 parameters: Set[Parameter]):
         """
         :param learner_type:    The type of the rule learner
         :param config_type:     The type of the rule learner's configuration
         :param parameters:      A set that contains the parameters that may be supported by the rule learner
         """
-        super().__init__(learner_name=learner_name, description=description)
+        super().__init__(learner_name=learner_name)
         self.learner_type = learner_type
         self.config_type = config_type
         self.parameters = parameters
