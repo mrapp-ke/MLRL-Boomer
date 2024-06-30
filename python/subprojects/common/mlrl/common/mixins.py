@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides base classes for implementing machine learning algorithms.
+Provides mixins that additional functionality to machine learning algorithms.
 """
 from abc import ABC, abstractmethod
 from typing import List, Optional
@@ -12,9 +12,9 @@ from sklearn.utils.validation import check_is_fitted
 KWARG_PREDICT_SCORES = 'predict_scores'
 
 
-class OrdinalFeatureLearner(ABC):
+class OrdinalFeatureSupportMixin(ABC):
     """
-    A base class for all machine learning algorithms that natively support ordinal features.
+    A mixin for all machine learning algorithms that natively support ordinal features.
     """
 
     ordinal_feature_indices: Optional[List[int]] = None
@@ -28,9 +28,9 @@ class OrdinalFeatureLearner(ABC):
         self.ordinal_feature_indices = None if indices is None else list(indices)
 
 
-class NominalFeatureLearner(ABC):
+class NominalFeatureSupportMixin(ABC):
     """
-    A base class for all machine learning algorithms that natively support nominal features.
+    A mixin for all machine learning algorithms that natively support nominal features.
     """
 
     nominal_feature_indices: Optional[List[int]] = None
@@ -44,16 +44,16 @@ class NominalFeatureLearner(ABC):
         self.nominal_feature_indices = None if indices is None else list(indices)
 
 
-class IncrementalLearner(ABC):
+class IncrementalPredictionMixin(ABC):
     """
-    A base class for all machine learning algorithms that support incremental prediction. For example, when dealing with
+    A mixin for all machine learning algorithms that support incremental prediction. For example, when dealing with
     ensemble models that consist of several ensemble members, it is possible to consider only a subset of the ensemble
     members for prediction.
     """
 
     class IncrementalPredictor(ABC):
         """
-        A base class for all classes that allow to obtain incremental predictions from a `IncrementalLearner`.
+        A base class for all classes that allow to obtain incremental predictions from a machine learning algorithm.
         """
 
         def has_next(self) -> bool:
@@ -145,9 +145,9 @@ class IncrementalLearner(ABC):
         raise RuntimeError('Incremental prediction of probabilities not supported using the current configuration')
 
 
-class Learner(BaseEstimator, ABC):
+class ClassifierMixin(BaseEstimator, ABC):
     """
-    A base class for all machine learning algorithms.
+    A mixin for all machine learning algorithms that can be applied to classification problems.
     """
 
     # pylint: disable=attribute-defined-outside-init
@@ -207,17 +207,6 @@ class Learner(BaseEstimator, ABC):
         :return:    The model that has been trained
         """
 
-    def _predict_binary(self, x, **kwargs):
-        """
-        May be overridden by subclasses in order to obtain binary predictions for given query examples.
-
-        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
-                    `(num_examples, num_features)`, that stores the feature values of the query examples
-        :return:    A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` of shape
-                    `(num_examples, num_labels)`, that stores the prediction for individual examples and labels
-        """
-        raise RuntimeError('Prediction of binary labels not supported using the current configuration')
-
     def _predict_scores(self, x, **kwargs):
         """
         May be overridden by subclasses in order to obtain scores for given query examples.
@@ -239,3 +228,14 @@ class Learner(BaseEstimator, ABC):
                     probabilities for individual examples and labels
         """
         raise RuntimeError('Prediction of probabilities not supported using the current configuration')
+
+    def _predict_binary(self, x, **kwargs):
+        """
+        May be overridden by subclasses in order to obtain binary predictions for given query examples.
+
+        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_features)`, that stores the feature values of the query examples
+        :return:    A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` of shape
+                    `(num_examples, num_labels)`, that stores the prediction for individual examples and labels
+        """
+        raise RuntimeError('Prediction of binary labels not supported using the current configuration')

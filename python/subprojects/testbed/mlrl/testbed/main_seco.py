@@ -2,9 +2,9 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from mlrl.seco.config import SECO_RULE_LEARNER_PARAMETERS
-from mlrl.seco.cython.learner_seco import SeCoConfig
+from mlrl.seco.cython.learner_seco import SeCoClassifierConfig
 from mlrl.seco.info import get_package_info
-from mlrl.seco.seco_learners import SeCo
+from mlrl.seco.seco_learners import SeCoClassifier
 
 from mlrl.testbed.runnables import RuleLearnerRunnable
 
@@ -30,8 +30,8 @@ def main():
     RuleLearnerRunnable(description='Allows to run experiments using the Separate-and-Conquer algorithm',
                         learner_name='seco',
                         program_info=create_program_info(),
-                        learner_type=SeCo,
-                        config_type=SeCoConfig,
+                        learner_type=SeCoClassifier,
+                        config_type=SeCoClassifierConfig,
                         parameters=SECO_RULE_LEARNER_PARAMETERS).run()
 
 

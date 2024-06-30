@@ -3,19 +3,18 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
 Provides scikit-learn implementations of boosting algorithms.
 """
-from typing import Optional
+from typing import Any, Optional
 
 from sklearn.base import ClassifierMixin, MultiOutputMixin, RegressorMixin
 
 from mlrl.common.config import configure_rule_learner
-from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
-from mlrl.common.rule_learners import RuleLearner
+from mlrl.common.rule_learners import ClassificationRuleLearner
 
 from mlrl.boosting.config import BOOSTING_RULE_LEARNER_PARAMETERS
-from mlrl.boosting.cython.learner_boomer import Boomer as BoomerWrapper, BoomerConfig
+from mlrl.boosting.cython.learner_boomer import BoomerClassifier as BoomerWrapper, BoomerClassifierConfig
 
 
-class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
+class BoomerClassifier(ClassificationRuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
     """
     A scikit-learn implementation of "BOOMER", an algorithm for learning gradient boosted multi-label classification
     rules.
@@ -173,7 +172,7 @@ class Boomer(RuleLearner, ClassifierMixin, RegressorMixin, MultiOutputMixin):
         self.parallel_statistic_update = parallel_statistic_update
         self.parallel_prediction = parallel_prediction
 
-    def _create_learner(self) -> RuleLearnerWrapper:
-        config = BoomerConfig()
+    def _create_learner(self) -> Any:
+        config = BoomerClassifierConfig()
         configure_rule_learner(self, config, BOOSTING_RULE_LEARNER_PARAMETERS)
         return BoomerWrapper(config)
