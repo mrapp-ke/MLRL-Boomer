@@ -270,13 +270,25 @@ class Runnable(ABC):
 
             return result
 
-    def __init__(self, description: str, program_info: Optional[ProgramInfo] = None):
+    def __get_version(self) -> str:
         """
-        :param description:     A description of the program
-        :param program_info:    Optional information about the program
+        May be overridden by subclasses in order to provide information about the program's version.
+
+        :return: A string that provides information about the program's version
+        """
+        program_info = self.get_program_info()
+
+        if program_info is not None:
+            return str(program_info)
+
+        raise RuntimeError('No information about the program version is available')
+
+    def __init__(self, description: Optional[str] = None):
+        """
+        :param description: An optional description of the program to be printed via the comman line argument '-h' or
+                            '--help'
         """
         self.parser = ArgumentParser(description=description, formatter_class=RawDescriptionHelpFormatter)
-        self.program_info = program_info
 
     def run(self):
         """
@@ -297,34 +309,32 @@ class Runnable(ABC):
 
         self._run(args)
 
+    def get_program_info(self) -> Optional['Runnable.ProgramInfo']:
+        """
+        May be overridden by subclasses in order to provide information about the program to be printed via the commmand
+        line argument '-v' or '--version'. 
+
+        :return: The `Runnable.ProgramInfo` that has been provided
+        """
+        return None
+
     def _configure_arguments(self, parser: ArgumentParser):
         """
         May be overridden by subclasses in order to configure the command line arguments of the program.
 
         :param parser:  An `ArgumentParser` that is used for parsing command line arguments
         """
-        if self.program_info is not None:
+        if self.get_program_info() is not None:
             parser.add_argument('-v',
                                 '--version',
                                 action='version',
-                                version=self._get_version(),
+                                version=self.__get_version(),
                                 help='Display information about the program\'s version.')
 
         parser.add_argument('--log-level',
                             type=LogLevel.parse,
                             default=LogLevel.INFO.value,
                             help='The log level to be used. Must be one of ' + format_enum_values(LogLevel) + '.')
-
-    def _get_version(self) -> str:
-        """
-        May be overridden by subclasses in order to provide information about the program's version.
-
-        :return: A string that provides information about the program's version
-        """
-        if self.program_info is not None:
-            return str(self.program_info)
-
-        raise RuntimeError('No information about the program version is available')
 
     @abstractmethod
     def _run(self, args):
@@ -468,11 +478,11 @@ class LearnerRunnable(Runnable, ABC):
 
     PARAM_PREDICTION_TYPE = '--prediction-type'
 
-    def __init__(self, description: str, learner_name: str, program_info: Optional[Runnable.ProgramInfo] = None):
+    def __init__(self, learner_name: str, description: Optional[str] = None):
         """
         :param learner_name: The name of the learner
         """
-        super().__init__(description=description, program_info=program_info)
+        super().__init__(description=description)
         self.learner_name = learner_name
 
     def __create_prediction_type(self, args) -> PredictionType:
@@ -1040,18 +1050,17 @@ class RuleLearnerRunnable(LearnerRunnable):
     PARAM_SPARSE_FEATURE_VALUE = '--sparse-feature-value'
 
     def __init__(self,
-                 description: str,
                  learner_name: str,
                  learner_type: type,
                  config_type: type,
                  parameters: Set[Parameter],
-                 program_info: Optional[Runnable.ProgramInfo] = None):
+                 description: Optional[str] = None):
         """
         :param learner_type:    The type of the rule learner
         :param config_type:     The type of the rule learner's configuration
         :param parameters:      A set that contains the parameters that may be supported by the rule learner
         """
-        super().__init__(description=description, learner_name=learner_name, program_info=program_info)
+        super().__init__(learner_name=learner_name, description=description)
         self.learner_type = learner_type
         self.config_type = config_type
         self.parameters = parameters
