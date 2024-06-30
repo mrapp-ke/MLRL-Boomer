@@ -30,17 +30,18 @@ from mlrl.seco.cython.lift_function cimport IKlnLiftFunctionConfig, IPeakLiftFun
 from mlrl.seco.cython.stopping_criterion cimport CoverageStoppingCriterionConfig, ICoverageStoppingCriterionConfig
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, DefaultRuleMixin, \
-    EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, ExampleWiseStratifiedBiPartitionSamplingMixin, \
-    ExampleWiseStratifiedInstanceSamplingMixin, FeatureSamplingWithoutReplacementMixin, \
+    EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, \
     GreedyTopDownRuleInductionMixin, InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, \
-    IrepRulePruningMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, \
-    NoInstanceSamplingMixin, NoOutputSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, \
-    NoParallelStatisticUpdateMixin, NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, \
-    NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, OutputSamplingWithoutReplacementMixin, \
-    OutputWiseStratifiedBiPartitionSamplingMixin, OutputWiseStratifiedInstanceSamplingMixin, ParallelPredictionMixin, \
-    ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, PrePruningMixin, \
-    RandomBiPartitionSamplingMixin, RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, \
-    SequentialRuleModelAssemblageMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
+    IrepRulePruningMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoInstanceSamplingMixin, \
+    NoOutputSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
+    NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, \
+    NoTimeStoppingCriterionMixin, OutputSamplingWithoutReplacementMixin, ParallelPredictionMixin, \
+    ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, RandomBiPartitionSamplingMixin, \
+    RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, SequentialRuleModelAssemblageMixin, \
+    SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
+from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPartitionSamplingMixin, \
+    ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
+    OutputWiseStratifiedInstanceSamplingMixin
 
 from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeuristicMixin, \
     CoverageStoppingCriterionMixin, FMeasureHeuristicMixin, FMeasurePruningHeuristicMixin, KlnLiftFunctionMixin, \
@@ -50,70 +51,70 @@ from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeur
     RecallPruningHeuristicMixin, SingleOutputHeadMixin, WraHeuristicMixin, WraPruningHeuristicMixin
 
 
-cdef class SeCoConfig(RuleLearnerConfig,
-                      NoCoverageStoppingCriterionMixin,
-                      CoverageStoppingCriterionMixin,
-                      SingleOutputHeadMixin,
-                      PartialHeadMixin,
-                      NoLiftFunctionMixin,
-                      PeakLiftFunctionMixin,
-                      KlnLiftFunctionMixin,
-                      AccuracyHeuristicMixin,
-                      AccuracyPruningHeuristicMixin,
-                      FMeasureHeuristicMixin,
-                      FMeasurePruningHeuristicMixin,
-                      MEstimateHeuristicMixin,
-                      MEstimatePruningHeuristicMixin,
-                      LaplaceHeuristicMixin,
-                      LaplacePruningHeuristicMixin,
-                      PrecisionHeuristicMixin,
-                      PrecisionPruningHeuristicMixin,
-                      RecallHeuristicMixin,
-                      RecallPruningHeuristicMixin,
-                      WraHeuristicMixin,
-                      WraPruningHeuristicMixin,
-                      OutputWiseBinaryPredictionMixin,
-                      SequentialRuleModelAssemblageMixin,
-                      DefaultRuleMixin,
-                      GreedyTopDownRuleInductionMixin,
-                      BeamSearchTopDownRuleInductionMixin,
-                      NoFeatureBinningMixin,
-                      EqualWidthFeatureBinningMixin,
-                      EqualFrequencyFeatureBinningMixin,
-                      NoOutputSamplingMixin,
-                      RoundRobinOutputSamplingMixin,
-                      OutputSamplingWithoutReplacementMixin,
-                      NoInstanceSamplingMixin,
-                      InstanceSamplingWithReplacementMixin,
-                      InstanceSamplingWithoutReplacementMixin,
-                      OutputWiseStratifiedInstanceSamplingMixin,
-                      ExampleWiseStratifiedInstanceSamplingMixin,
-                      NoFeatureSamplingMixin,
-                      FeatureSamplingWithoutReplacementMixin,
-                      NoPartitionSamplingMixin,
-                      RandomBiPartitionSamplingMixin,
-                      OutputWiseStratifiedBiPartitionSamplingMixin,
-                      ExampleWiseStratifiedBiPartitionSamplingMixin,
-                      NoRulePruningMixin,
-                      IrepRulePruningMixin,
-                      NoParallelRuleRefinementMixin,
-                      ParallelRuleRefinementMixin,
-                      NoParallelStatisticUpdateMixin,
-                      ParallelStatisticUpdateMixin,
-                      NoParallelPredictionMixin,
-                      ParallelPredictionMixin,
-                      NoSizeStoppingCriterionMixin,
-                      SizeStoppingCriterionMixin,
-                      NoTimeStoppingCriterionMixin,
-                      TimeStoppingCriterionMixin,
-                      NoSequentialPostOptimizationMixin,
-                      SequentialPostOptimizationMixin):
+cdef class SeCoClassifierConfig(RuleLearnerConfig,
+                                NoCoverageStoppingCriterionMixin,
+                                CoverageStoppingCriterionMixin,
+                                SingleOutputHeadMixin,
+                                PartialHeadMixin,
+                                NoLiftFunctionMixin,
+                                PeakLiftFunctionMixin,
+                                KlnLiftFunctionMixin,
+                                AccuracyHeuristicMixin,
+                                AccuracyPruningHeuristicMixin,
+                                FMeasureHeuristicMixin,
+                                FMeasurePruningHeuristicMixin,
+                                MEstimateHeuristicMixin,
+                                MEstimatePruningHeuristicMixin,
+                                LaplaceHeuristicMixin,
+                                LaplacePruningHeuristicMixin,
+                                PrecisionHeuristicMixin,
+                                PrecisionPruningHeuristicMixin,
+                                RecallHeuristicMixin,
+                                RecallPruningHeuristicMixin,
+                                WraHeuristicMixin,
+                                WraPruningHeuristicMixin,
+                                OutputWiseBinaryPredictionMixin,
+                                SequentialRuleModelAssemblageMixin,
+                                DefaultRuleMixin,
+                                GreedyTopDownRuleInductionMixin,
+                                BeamSearchTopDownRuleInductionMixin,
+                                NoFeatureBinningMixin,
+                                EqualWidthFeatureBinningMixin,
+                                EqualFrequencyFeatureBinningMixin,
+                                NoOutputSamplingMixin,
+                                RoundRobinOutputSamplingMixin,
+                                OutputSamplingWithoutReplacementMixin,
+                                NoInstanceSamplingMixin,
+                                InstanceSamplingWithReplacementMixin,
+                                InstanceSamplingWithoutReplacementMixin,
+                                OutputWiseStratifiedInstanceSamplingMixin,
+                                ExampleWiseStratifiedInstanceSamplingMixin,
+                                NoFeatureSamplingMixin,
+                                FeatureSamplingWithoutReplacementMixin,
+                                NoPartitionSamplingMixin,
+                                RandomBiPartitionSamplingMixin,
+                                OutputWiseStratifiedBiPartitionSamplingMixin,
+                                ExampleWiseStratifiedBiPartitionSamplingMixin,
+                                NoRulePruningMixin,
+                                IrepRulePruningMixin,
+                                NoParallelRuleRefinementMixin,
+                                ParallelRuleRefinementMixin,
+                                NoParallelStatisticUpdateMixin,
+                                ParallelStatisticUpdateMixin,
+                                NoParallelPredictionMixin,
+                                ParallelPredictionMixin,
+                                NoSizeStoppingCriterionMixin,
+                                SizeStoppingCriterionMixin,
+                                NoTimeStoppingCriterionMixin,
+                                TimeStoppingCriterionMixin,
+                                NoSequentialPostOptimizationMixin,
+                                SequentialPostOptimizationMixin):
     """
     Allows to configure the multi-label SeCo algorithm.
     """
 
     def __cinit__(self):
-        self.config_ptr = createMultiLabelSeCoRuleLearnerConfig()
+        self.config_ptr = createSeCoClassifierConfig()
 
     def use_sequential_rule_model_assemblage(self):
         self.config_ptr.get().useSequentialRuleModelAssemblage()
@@ -394,16 +395,16 @@ cdef class SeCoConfig(RuleLearnerConfig,
         self.config_ptr.get().useOutputWiseBinaryPredictor()
 
 
-cdef class SeCo(RuleLearner):
+cdef class SeCoClassifier(ClassificationRuleLearner):
     """
-    The multi-label SeCo algorithm.
+    The multi-label SeCo algorithm for classification problems.
     """
 
-    def __cinit__(self, SeCoConfig config not None):
+    def __cinit__(self, SeCoClassifierConfig config not None):
         """
         :param config: The configuration that should be used by the rule learner
         """
-        self.rule_learner_ptr = createMultiLabelSeCoRuleLearner(move(config.config_ptr))
+        self.rule_learner_ptr = createSeCoClassifier(move(config.config_ptr))
 
-    cdef IRuleLearner* get_rule_learner_ptr(self):
+    cdef IClassificationRuleLearner* get_classification_rule_learner_ptr(self):
         return self.rule_learner_ptr.get()

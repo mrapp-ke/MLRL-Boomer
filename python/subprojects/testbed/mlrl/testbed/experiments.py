@@ -12,7 +12,8 @@ from typing import Any, Dict, List, Optional
 
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 
-from mlrl.common.learners import IncrementalLearner, Learner, NominalFeatureLearner, OrdinalFeatureLearner
+from mlrl.common.mixins import ClassifierMixin, IncrementalPredictionMixin, NominalFeatureSupportMixin, \
+    OrdinalFeatureSupportMixin
 
 from mlrl.testbed.data import FeatureType, MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataSplitter, DataType
@@ -56,7 +57,7 @@ class Evaluation(ABC):
 
         if prediction_type == PredictionType.SCORES:
             try:
-                if isinstance(learner, Learner):
+                if isinstance(learner, ClassifierMixin):
                     result = predict_function(x, predict_scores=True, **kwargs)
                 elif isinstance(learner, RegressorMixin):
                     result = predict_function(x, **kwargs)
@@ -172,7 +173,7 @@ class IncrementalEvaluation(Evaluation):
 
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
                              learner, x, y, **kwargs):
-        if not isinstance(learner, IncrementalLearner):
+        if not isinstance(learner, IncrementalPredictionMixin):
             raise ValueError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
 
         incremental_predictor = self._invoke_prediction_function(learner, learner.predict_incrementally,
@@ -319,11 +320,11 @@ class Experiment(DataSplitter.Callback):
             output_writer.write_output(meta_data, train_x, train_y, data_split, current_learner)
 
         # Set the indices of ordinal features, if supported...
-        if isinstance(current_learner, OrdinalFeatureLearner):
+        if isinstance(current_learner, OrdinalFeatureSupportMixin):
             current_learner.ordinal_feature_indices = meta_data.get_feature_indices({FeatureType.ORDINAL})
 
         # Set the indices of nominal features, if supported...
-        if isinstance(current_learner, NominalFeatureLearner):
+        if isinstance(current_learner, NominalFeatureSupportMixin):
             current_learner.nominal_feature_indices = meta_data.get_feature_indices({FeatureType.NOMINAL})
 
         # Load model from disc, if possible, otherwise train a new model...

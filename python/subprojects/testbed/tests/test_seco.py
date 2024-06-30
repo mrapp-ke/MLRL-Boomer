@@ -2,8 +2,10 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from os import path
+from typing import Any
 
-from test_common import DIR_OUT, RULE_PRUNING_IREP, CmdBuilder, CommonIntegrationTests
+from test_common import DATASET_EMOTIONS, DIR_OUT, RULE_PRUNING_IREP, CmdBuilder
+from test_common_classification import ClassificationCmdBuilder, ClassificationIntegrationTests
 
 CMD_SECO = 'seco'
 
@@ -32,13 +34,13 @@ LIFT_FUNCTION_PEAK = 'peak'
 LIFT_FUNCTION_KLN = 'kln'
 
 
-class SeCoCmdBuilder(CmdBuilder):
+class SeCoClassifierCmdBuilder(ClassificationCmdBuilder):
     """
     A builder that allows to configure a command for running the separate-and-conquer (SeCo) algorithm.
     """
 
-    def __init__(self):
-        super().__init__(cmd=CMD_SECO)
+    def __init__(self, callback: CmdBuilder.AssertionCallback, dataset: str = DATASET_EMOTIONS):
+        super().__init__(callback, cmd=CMD_SECO, expected_output_dir=path.join(DIR_OUT, CMD_SECO), dataset=dataset)
 
     def heuristic(self, heuristic: str = HEURISTIC_F_MEASURE):
         """
@@ -86,171 +88,171 @@ class SeCoCmdBuilder(CmdBuilder):
         return self
 
 
-class SeCoIntegrationTests(CommonIntegrationTests):
+class SeCoClassifierIntegrationTests(ClassificationIntegrationTests):
     """
-    Defines a series of integration tests for the separate-and-conquer (SeCo) algorithm.
+    Defines a series of integration tests for the separate-and-conquer (SeCo) algorithm for classification problems.
     """
 
     def __init__(self, methodName='runTest'):
-        """
-        :param methodName: The name of the test method to be executed
-        """
-        super().__init__(cmd=CMD_SECO, expected_output_dir=path.join(DIR_OUT, CMD_SECO), methodName=methodName)
+        super().__init__(methodName=methodName)
+
+    def _create_cmd_builder(self, dataset: str = DATASET_EMOTIONS) -> Any:
+        return SeCoClassifierCmdBuilder(self, dataset=dataset)
 
     def test_heuristic_accuracy(self):
         """
         Tests the SeCo algorithm when using the accuracy heuristic for learning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .heuristic(HEURISTIC_ACCURACY)
-        self.run_cmd(builder, 'heuristic_accuracy')
+        builder.run_cmd('heuristic_accuracy')
 
     def test_heuristic_precision(self):
         """
         Tests the SeCo algorithm when using the precision heuristic for learning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .heuristic(HEURISTIC_PRECISION)
-        self.run_cmd(builder, 'heuristic_precision')
+        builder.run_cmd('heuristic_precision')
 
     def test_heuristic_recall(self):
         """
         Tests the SeCo algorithm when using the recall heuristic for learning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .heuristic(HEURISTIC_RECALL)
-        self.run_cmd(builder, 'heuristic_recall')
+        builder.run_cmd('heuristic_recall')
 
     def test_heuristic_laplace(self):
         """
         Tests the SeCo algorithm when using the Laplace heuristic for learning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .heuristic(HEURISTIC_LAPLACE)
-        self.run_cmd(builder, 'heuristic_laplace')
+        builder.run_cmd('heuristic_laplace')
 
     def test_heuristic_wra(self):
         """
         Tests the SeCo algorithm when using the WRA heuristic for learning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .heuristic(HEURISTIC_WRA)
-        self.run_cmd(builder, 'heuristic_wra')
+        builder.run_cmd('heuristic_wra')
 
     def test_heuristic_f_measure(self):
         """
         Tests the SeCo algorithm when using the F-measure heuristic for learning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .heuristic(HEURISTIC_F_MEASURE)
-        self.run_cmd(builder, 'heuristic_f-measure')
+        builder.run_cmd('heuristic_f-measure')
 
     def test_heuristic_m_estimate(self):
         """
         Tests the SeCo algorithm when using the m-estimate heuristic for learning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .heuristic(HEURISTIC_M_ESTIMATE)
-        self.run_cmd(builder, 'heuristic_m-estimate')
+        builder.run_cmd('heuristic_m-estimate')
 
     def test_pruning_heuristic_accuracy(self):
         """
         Tests the SeCo algorithm when using the accuracy heuristic for pruning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_ACCURACY)
-        self.run_cmd(builder, 'pruning-heuristic_accuracy')
+        builder.run_cmd('pruning-heuristic_accuracy')
 
     def test_pruning_heuristic_precision(self):
         """
         Tests the SeCo algorithm when using the precision heuristic for pruning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_PRECISION)
-        self.run_cmd(builder, 'pruning-heuristic_precision')
+        builder.run_cmd('pruning-heuristic_precision')
 
     def test_pruning_heuristic_recall(self):
         """
         Tests the SeCo algorithm when using the recall heuristic for pruning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_RECALL)
-        self.run_cmd(builder, 'pruning-heuristic_recall')
+        builder.run_cmd('pruning-heuristic_recall')
 
     def test_pruning_heuristic_laplace(self):
         """
         Tests the SeCo algorithm when using the Laplace heuristic for pruning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_LAPLACE)
-        self.run_cmd(builder, 'pruning-heuristic_laplace')
+        builder.run_cmd('pruning-heuristic_laplace')
 
     def test_pruning_heuristic_wra(self):
         """
         Tests the SeCo algorithm when using the WRA heuristic for pruning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_WRA)
-        self.run_cmd(builder, 'pruning-heuristic_wra')
+        builder.run_cmd('pruning-heuristic_wra')
 
     def test_pruning_heuristic_f_measure(self):
         """
         Tests the SeCo algorithm when using the F-measure heuristic for pruning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_F_MEASURE)
-        self.run_cmd(builder, 'pruning-heuristic_f-measure')
+        builder.run_cmd('pruning-heuristic_f-measure')
 
     def test_pruning_heuristic_m_estimate(self):
         """
         Tests the SeCo algorithm when using the m-estimate heuristic for pruning rules.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .rule_pruning(RULE_PRUNING_IREP) \
             .pruning_heuristic(HEURISTIC_M_ESTIMATE)
-        self.run_cmd(builder, 'pruning-heuristic_m-estimate')
+        builder.run_cmd('pruning-heuristic_m-estimate')
 
     def test_single_output_heads(self):
         """
         Tests the SeCo algorithm when inducing rules with single-output heads.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .head_type(HEAD_TYPE_SINGLE) \
             .print_model_characteristics()
-        self.run_cmd(builder, 'single-output-heads')
+        builder.run_cmd('single-output-heads')
 
     def test_partial_heads_no_lift_function(self):
         """
         Tests the SeCo algorithm when inducing partial rules using no lift function.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .head_type(HEAD_TYPE_PARTIAL) \
             .lift_function(LIFT_FUNCTION_NO) \
             .print_model_characteristics()
-        self.run_cmd(builder, 'partial-heads_no-lift-function')
+        builder.run_cmd('partial-heads_no-lift-function')
 
     def test_partial_heads_peak_lift_function(self):
         """
         Tests the SeCo algorithm when inducing partial rules using the peak lift function.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .head_type(HEAD_TYPE_PARTIAL) \
             .lift_function(LIFT_FUNCTION_PEAK) \
             .print_model_characteristics()
-        self.run_cmd(builder, 'partial-heads_peak-lift-function')
+        builder.run_cmd('partial-heads_peak-lift-function')
 
     def test_partial_heads_kln_lift_function(self):
         """
         Tests the SeCo algorithm when inducing partial rules using the KLN lift function.
         """
-        builder = SeCoCmdBuilder() \
+        builder = self._create_cmd_builder() \
             .head_type(HEAD_TYPE_PARTIAL) \
             .lift_function(LIFT_FUNCTION_KLN) \
             .print_model_characteristics()
-        self.run_cmd(builder, 'partial-heads_kln-lift-function')
+        builder.run_cmd('partial-heads_kln-lift-function')

@@ -6,21 +6,22 @@
 #include "mlrl/boosting/learner_boomer.hpp"
 
 #include "mlrl/boosting/learner_common.hpp"
+#include "mlrl/common/learner_classification_common.hpp"
 
 namespace boosting {
 
     /**
-     * The BOOMER algorithm.
+     * The BOOMER algorithm for classification problems.
      */
-    class Boomer final : public AbstractBoostedRuleLearner,
-                         virtual public IBoomer {
+    class BoomerClassifier final : public AbstractClassificationRuleLearner,
+                                   virtual public IBoomerClassifier {
         public:
 
             /**
-             * Allows to configure the BOOMER algorithm.
+             * Allows to configure the BOOMER algorithm for classification problems.
              */
-            class Config final : public AbstractBoostedRuleLearner::Config,
-                                 virtual public IBoomer::IConfig {
+            class Config final : public BoostedRuleLearnerConfig,
+                                 virtual public IBoomerClassifier::IConfig {
                 public:
 
                     Config() {
@@ -54,7 +55,7 @@ namespace boosting {
                     }
 
                     /**
-                     * @see `IRuleLearner::ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
+                     * @see `ISizeStoppingCriterionMixin::useSizeStoppingCriterion`
                      */
                     ISizeStoppingCriterionConfig& useSizeStoppingCriterion() override {
                         ISizeStoppingCriterionConfig& ref = ISizeStoppingCriterionMixin::useSizeStoppingCriterion();
@@ -73,20 +74,22 @@ namespace boosting {
              * @param configuratorPtr An unique pointer to an object of type `BoostedRuleLearnerConfigurator` that
              *                        allows to configure the individual modules to be used by the rule learner
              */
-            Boomer(std::unique_ptr<BoostedRuleLearnerConfigurator> configuratorPtr)
-                : AbstractBoostedRuleLearner(*configuratorPtr), configuratorPtr_(std::move(configuratorPtr)) {}
+            BoomerClassifier(std::unique_ptr<BoostedRuleLearnerConfigurator> configuratorPtr)
+                : AbstractClassificationRuleLearner(*configuratorPtr), configuratorPtr_(std::move(configuratorPtr)) {}
     };
 
-    std::unique_ptr<IBoomer::IConfig> createBoomerConfig() {
-        return std::make_unique<Boomer::Config>();
+    std::unique_ptr<IBoomerClassifier::IConfig> createBoomerClassifierConfig() {
+        return std::make_unique<BoomerClassifier::Config>();
     }
 
-    std::unique_ptr<IBoomer> createBoomer(std::unique_ptr<IBoomer::IConfig> configPtr, Blas::DdotFunction ddotFunction,
-                                          Blas::DspmvFunction dspmvFunction, Lapack::DsysvFunction dsysvFunction) {
+    std::unique_ptr<IBoomerClassifier> createBoomerClassifier(std::unique_ptr<IBoomerClassifier::IConfig> configPtr,
+                                                              Blas::DdotFunction ddotFunction,
+                                                              Blas::DspmvFunction dspmvFunction,
+                                                              Lapack::DsysvFunction dsysvFunction) {
         std::unique_ptr<BoostedRuleLearnerConfigurator> configuratorPtr =
           std::make_unique<BoostedRuleLearnerConfigurator>(std::move(configPtr), ddotFunction, dspmvFunction,
                                                            dsysvFunction);
-        return std::make_unique<Boomer>(std::move(configuratorPtr));
+        return std::make_unique<BoomerClassifier>(std::move(configuratorPtr));
     }
 
 }

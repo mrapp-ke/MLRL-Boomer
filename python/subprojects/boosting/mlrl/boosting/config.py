@@ -12,17 +12,19 @@ from mlrl.common.cython.learner import DefaultRuleMixin, NoJointProbabilityCalib
     NoMarginalProbabilityCalibrationMixin, NoPostProcessorMixin
 from mlrl.common.options import BooleanOption, Options
 
-from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
-    AutomaticFeatureBinningMixin, AutomaticLabelBinningMixin, AutomaticParallelRuleRefinementMixin, \
-    AutomaticParallelStatisticUpdateMixin, AutomaticPartitionSamplingMixin, AutomaticProbabilityPredictorMixin, \
-    AutomaticStatisticsMixin, CompleteHeadMixin, ConstantShrinkageMixin, DecomposableLogisticLossMixin, \
-    DecomposableSquaredErrorLossMixin, DecomposableSquaredHingeLossMixin, DenseStatisticsMixin, \
-    DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, FixedPartialHeadMixin, \
-    GfmBinaryPredictorMixin, IsotonicJointProbabilityCalibrationMixin, IsotonicMarginalProbabilityCalibrationMixin, \
-    L1RegularizationMixin, L2RegularizationMixin, MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, \
-    NoL1RegularizationMixin, NoL2RegularizationMixin, NoLabelBinningMixin, NonDecomposableLogisticLossMixin, \
-    NonDecomposableSquaredErrorLossMixin, NonDecomposableSquaredHingeLossMixin, OutputWiseBinaryPredictorMixin, \
-    OutputWiseProbabilityPredictorMixin, SingleOutputHeadMixin, SparseStatisticsMixin
+from mlrl.boosting.cython.learner import AutomaticFeatureBinningMixin, AutomaticParallelRuleRefinementMixin, \
+    AutomaticParallelStatisticUpdateMixin, CompleteHeadMixin, ConstantShrinkageMixin, \
+    DecomposableSquaredErrorLossMixin, DynamicPartialHeadMixin, FixedPartialHeadMixin, L1RegularizationMixin, \
+    L2RegularizationMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, NonDecomposableSquaredErrorLossMixin, \
+    SingleOutputHeadMixin
+from mlrl.boosting.cython.learner_classification import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
+    AutomaticLabelBinningMixin, AutomaticPartitionSamplingMixin, AutomaticProbabilityPredictorMixin, \
+    AutomaticStatisticsMixin, DecomposableLogisticLossMixin, DecomposableSquaredHingeLossMixin, DenseStatisticsMixin, \
+    EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, GfmBinaryPredictorMixin, \
+    IsotonicJointProbabilityCalibrationMixin, IsotonicMarginalProbabilityCalibrationMixin, \
+    MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoLabelBinningMixin, NonDecomposableLogisticLossMixin, \
+    NonDecomposableSquaredHingeLossMixin, OutputWiseBinaryPredictorMixin, OutputWiseProbabilityPredictorMixin, \
+    SparseStatisticsMixin
 
 PROBABILITY_CALIBRATION_ISOTONIC = 'isotonic'
 
