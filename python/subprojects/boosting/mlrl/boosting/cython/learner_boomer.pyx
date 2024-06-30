@@ -41,119 +41,121 @@ from mlrl.boosting.cython.probability_calibration cimport IIsotonicJointProbabil
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig, ManualRegularizationConfig
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, DefaultRuleMixin, \
-    EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, ExampleWiseStratifiedBiPartitionSamplingMixin, \
-    ExampleWiseStratifiedInstanceSamplingMixin, FeatureSamplingWithoutReplacementMixin, \
+    EqualFrequencyFeatureBinningMixin, EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, \
     GreedyTopDownRuleInductionMixin, InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, \
     IrepRulePruningMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, \
     NoInstanceSamplingMixin, NoJointProbabilityCalibrationMixin, NoMarginalProbabilityCalibrationMixin, \
     NoOutputSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
     NoPartitionSamplingMixin, NoPostProcessorMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, \
     NoSizeStoppingCriterionMixin, NoTimeStoppingCriterionMixin, OutputSamplingWithoutReplacementMixin, \
-    OutputWiseStratifiedBiPartitionSamplingMixin, OutputWiseStratifiedInstanceSamplingMixin, ParallelPredictionMixin, \
-    ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, PrePruningMixin, \
-    RandomBiPartitionSamplingMixin, RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, \
+    ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, PostPruningMixin, \
+    PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, \
     SequentialRuleModelAssemblageMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
+from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPartitionSamplingMixin, \
+    ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
+    OutputWiseStratifiedInstanceSamplingMixin
 
-from mlrl.boosting.cython.learner import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
-    AutomaticFeatureBinningMixin, AutomaticHeadMixin, AutomaticLabelBinningMixin, \
-    AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, AutomaticPartitionSamplingMixin, \
-    AutomaticProbabilityPredictorMixin, AutomaticStatisticsMixin, CompleteHeadMixin, ConstantShrinkageMixin, \
-    DecomposableLogisticLossMixin, DecomposableSquaredErrorLossMixin, DecomposableSquaredHingeLossMixin, \
-    DenseStatisticsMixin, DynamicPartialHeadMixin, EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, \
-    FixedPartialHeadMixin, GfmBinaryPredictorMixin, IsotonicJointProbabilityCalibrationMixin, \
-    IsotonicMarginalProbabilityCalibrationMixin, L1RegularizationMixin, L2RegularizationMixin, \
-    MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
-    NoLabelBinningMixin, NonDecomposableLogisticLossMixin, NonDecomposableSquaredErrorLossMixin, \
+from mlrl.boosting.cython.learner import AutomaticFeatureBinningMixin, AutomaticHeadMixin, \
+    AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, CompleteHeadMixin, \
+    ConstantShrinkageMixin, DecomposableSquaredErrorLossMixin, DynamicPartialHeadMixin, FixedPartialHeadMixin, \
+    L1RegularizationMixin, L2RegularizationMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
+    NonDecomposableSquaredErrorLossMixin, OutputWiseScorePredictorMixin, SingleOutputHeadMixin
+from mlrl.boosting.cython.learner_classification import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
+    AutomaticLabelBinningMixin, AutomaticPartitionSamplingMixin, AutomaticProbabilityPredictorMixin, \
+    AutomaticStatisticsMixin, DecomposableLogisticLossMixin, DecomposableSquaredHingeLossMixin, DenseStatisticsMixin, \
+    EqualWidthLabelBinningMixin, ExampleWiseBinaryPredictorMixin, GfmBinaryPredictorMixin, \
+    IsotonicJointProbabilityCalibrationMixin, IsotonicMarginalProbabilityCalibrationMixin, \
+    MarginalizedProbabilityPredictorMixin, NoDefaultRuleMixin, NoLabelBinningMixin, NonDecomposableLogisticLossMixin, \
     NonDecomposableSquaredHingeLossMixin, OutputWiseBinaryPredictorMixin, OutputWiseProbabilityPredictorMixin, \
-    OutputWiseScorePredictorMixin, SingleOutputHeadMixin, SparseStatisticsMixin
+    SparseStatisticsMixin
 
 
-cdef class BoomerConfig(RuleLearnerConfig,
-                        AutomaticPartitionSamplingMixin,
-                        AutomaticFeatureBinningMixin,
-                        AutomaticParallelRuleRefinementMixin,
-                        AutomaticParallelStatisticUpdateMixin,
-                        ConstantShrinkageMixin,
-                        NoL1RegularizationMixin,
-                        L1RegularizationMixin,
-                        NoL2RegularizationMixin,
-                        L2RegularizationMixin,
-                        NoDefaultRuleMixin,
-                        AutomaticDefaultRuleMixin,
-                        CompleteHeadMixin,
-                        FixedPartialHeadMixin,
-                        DynamicPartialHeadMixin,
-                        SingleOutputHeadMixin,
-                        AutomaticHeadMixin,
-                        DenseStatisticsMixin,
-                        SparseStatisticsMixin,
-                        AutomaticStatisticsMixin,
-                        DecomposableLogisticLossMixin,
-                        DecomposableSquaredErrorLossMixin,
-                        DecomposableSquaredHingeLossMixin,
-                        NonDecomposableLogisticLossMixin,
-                        NonDecomposableSquaredHingeLossMixin,
-                        NonDecomposableSquaredErrorLossMixin,
-                        NoLabelBinningMixin,
-                        EqualWidthLabelBinningMixin,
-                        AutomaticLabelBinningMixin,
-                        IsotonicMarginalProbabilityCalibrationMixin,
-                        IsotonicJointProbabilityCalibrationMixin,
-                        OutputWiseBinaryPredictorMixin,
-                        ExampleWiseBinaryPredictorMixin,
-                        GfmBinaryPredictorMixin,
-                        AutomaticBinaryPredictorMixin,
-                        OutputWiseScorePredictorMixin,
-                        OutputWiseProbabilityPredictorMixin,
-                        MarginalizedProbabilityPredictorMixin,
-                        AutomaticProbabilityPredictorMixin,
-                        SequentialRuleModelAssemblageMixin,
-                        DefaultRuleMixin,
-                        GreedyTopDownRuleInductionMixin,
-                        BeamSearchTopDownRuleInductionMixin,
-                        NoPostProcessorMixin,
-                        NoFeatureBinningMixin,
-                        EqualWidthFeatureBinningMixin,
-                        EqualFrequencyFeatureBinningMixin,
-                        NoOutputSamplingMixin,
-                        RoundRobinOutputSamplingMixin,
-                        OutputSamplingWithoutReplacementMixin,
-                        NoInstanceSamplingMixin,
-                        InstanceSamplingWithReplacementMixin,
-                        InstanceSamplingWithoutReplacementMixin,
-                        OutputWiseStratifiedInstanceSamplingMixin,
-                        ExampleWiseStratifiedInstanceSamplingMixin,
-                        NoFeatureSamplingMixin,
-                        FeatureSamplingWithoutReplacementMixin,
-                        NoPartitionSamplingMixin,
-                        RandomBiPartitionSamplingMixin,
-                        OutputWiseStratifiedBiPartitionSamplingMixin,
-                        ExampleWiseStratifiedBiPartitionSamplingMixin,
-                        NoRulePruningMixin,
-                        IrepRulePruningMixin,
-                        NoParallelRuleRefinementMixin,
-                        ParallelRuleRefinementMixin,
-                        NoParallelStatisticUpdateMixin,
-                        ParallelStatisticUpdateMixin,
-                        NoParallelPredictionMixin,
-                        ParallelPredictionMixin,
-                        NoSizeStoppingCriterionMixin,
-                        SizeStoppingCriterionMixin,
-                        NoTimeStoppingCriterionMixin,
-                        TimeStoppingCriterionMixin,
-                        PrePruningMixin,
-                        NoGlobalPruningMixin,
-                        PostPruningMixin,
-                        NoSequentialPostOptimizationMixin,
-                        SequentialPostOptimizationMixin,
-                        NoMarginalProbabilityCalibrationMixin,
-                        NoJointProbabilityCalibrationMixin):
+cdef class BoomerClassifierConfig(RuleLearnerConfig,
+                                  AutomaticPartitionSamplingMixin,
+                                  AutomaticFeatureBinningMixin,
+                                  AutomaticParallelRuleRefinementMixin,
+                                  AutomaticParallelStatisticUpdateMixin,
+                                  ConstantShrinkageMixin,
+                                  NoL1RegularizationMixin,
+                                  L1RegularizationMixin,
+                                  NoL2RegularizationMixin,
+                                  L2RegularizationMixin,
+                                  NoDefaultRuleMixin,
+                                  AutomaticDefaultRuleMixin,
+                                  CompleteHeadMixin,
+                                  FixedPartialHeadMixin,
+                                  DynamicPartialHeadMixin,
+                                  SingleOutputHeadMixin,
+                                  AutomaticHeadMixin,
+                                  DenseStatisticsMixin,
+                                  SparseStatisticsMixin,
+                                  AutomaticStatisticsMixin,
+                                  DecomposableLogisticLossMixin,
+                                  DecomposableSquaredErrorLossMixin,
+                                  DecomposableSquaredHingeLossMixin,
+                                  NonDecomposableLogisticLossMixin,
+                                  NonDecomposableSquaredHingeLossMixin,
+                                  NonDecomposableSquaredErrorLossMixin,
+                                  NoLabelBinningMixin,
+                                  EqualWidthLabelBinningMixin,
+                                  AutomaticLabelBinningMixin,
+                                  IsotonicMarginalProbabilityCalibrationMixin,
+                                  IsotonicJointProbabilityCalibrationMixin,
+                                  OutputWiseBinaryPredictorMixin,
+                                  ExampleWiseBinaryPredictorMixin,
+                                  GfmBinaryPredictorMixin,
+                                  AutomaticBinaryPredictorMixin,
+                                  OutputWiseScorePredictorMixin,
+                                  OutputWiseProbabilityPredictorMixin,
+                                  MarginalizedProbabilityPredictorMixin,
+                                  AutomaticProbabilityPredictorMixin,
+                                  SequentialRuleModelAssemblageMixin,
+                                  DefaultRuleMixin,
+                                  GreedyTopDownRuleInductionMixin,
+                                  BeamSearchTopDownRuleInductionMixin,
+                                  NoPostProcessorMixin,
+                                  NoFeatureBinningMixin,
+                                  EqualWidthFeatureBinningMixin,
+                                  EqualFrequencyFeatureBinningMixin,
+                                  NoOutputSamplingMixin,
+                                  RoundRobinOutputSamplingMixin,
+                                  OutputSamplingWithoutReplacementMixin,
+                                  NoInstanceSamplingMixin,
+                                  InstanceSamplingWithReplacementMixin,
+                                  InstanceSamplingWithoutReplacementMixin,
+                                  OutputWiseStratifiedInstanceSamplingMixin,
+                                  ExampleWiseStratifiedInstanceSamplingMixin,
+                                  NoFeatureSamplingMixin,
+                                  FeatureSamplingWithoutReplacementMixin,
+                                  NoPartitionSamplingMixin,
+                                  RandomBiPartitionSamplingMixin,
+                                  OutputWiseStratifiedBiPartitionSamplingMixin,
+                                  ExampleWiseStratifiedBiPartitionSamplingMixin,
+                                  NoRulePruningMixin,
+                                  IrepRulePruningMixin,
+                                  NoParallelRuleRefinementMixin,
+                                  ParallelRuleRefinementMixin,
+                                  NoParallelStatisticUpdateMixin,
+                                  ParallelStatisticUpdateMixin,
+                                  NoParallelPredictionMixin,
+                                  ParallelPredictionMixin,
+                                  NoSizeStoppingCriterionMixin,
+                                  SizeStoppingCriterionMixin,
+                                  NoTimeStoppingCriterionMixin,
+                                  TimeStoppingCriterionMixin,
+                                  PrePruningMixin,
+                                  NoGlobalPruningMixin,
+                                  PostPruningMixin,
+                                  NoSequentialPostOptimizationMixin,
+                                  SequentialPostOptimizationMixin,
+                                  NoMarginalProbabilityCalibrationMixin,
+                                  NoJointProbabilityCalibrationMixin):
     """
-    Allows to configure the BOOMER algorithm.
+    Allows to configure the BOOMER algorithm for classification problems.
     """
 
     def __cinit__(self):
-        self.config_ptr = createBoomerConfig()
+        self.config_ptr = createBoomerClassifierConfig()
 
     def use_sequential_rule_model_assemblage(self):
         self.config_ptr.get().useSequentialRuleModelAssemblage()
@@ -231,6 +233,30 @@ cdef class BoomerConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
+    def use_automatic_binary_predictor(self):
+        self.config_ptr.get().useOutputWiseBinaryPredictor()
+
+    def use_output_wise_score_predictor(self):
+        self.config_ptr.get().useOutputWiseScorePredictor()
+
+    def use_output_wise_probability_predictor(self) -> OutputWiseProbabilityPredictorConfig:
+        cdef IOutputWiseProbabilityPredictorConfig* config_ptr = \
+            &self.config_ptr.get().useOutputWiseProbabilityPredictor()
+        cdef OutputWiseProbabilityPredictorConfig config = \
+            OutputWiseProbabilityPredictorConfig.__new__(OutputWiseProbabilityPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_marginalized_probability_predictor(self) -> MarginalizedProbabilityPredictorConfig:
+        cdef IMarginalizedProbabilityPredictorConfig* config_ptr = \
+            &self.config_ptr.get().useMarginalizedProbabilityPredictor()
+        cdef MarginalizedProbabilityPredictorConfig config = \
+            MarginalizedProbabilityPredictorConfig.__new__(MarginalizedProbabilityPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_automatic_probability_predictor(self):
+        self.config_ptr.get().useAutomaticProbabilityPredictor()
     def use_output_wise_stratified_instance_sampling(self) -> OutputWiseStratifiedInstanceSamplingConfig:
         cdef IOutputWiseStratifiedInstanceSamplingConfig* config_ptr = \
             &self.config_ptr.get().useOutputWiseStratifiedInstanceSampling()
@@ -485,26 +511,6 @@ cdef class BoomerConfig(RuleLearnerConfig,
         config.config_ptr = config_ptr
         return config
 
-    def use_output_wise_binary_predictor(self) -> OutputWiseBinaryPredictorConfig:
-        cdef IOutputWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useOutputWiseBinaryPredictor()
-        cdef OutputWiseBinaryPredictorConfig config = \
-            OutputWiseBinaryPredictorConfig.__new__(OutputWiseBinaryPredictorConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_example_wise_binary_predictor(self) -> ExampleWiseBinaryPredictorConfig:
-        cdef IExampleWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useExampleWiseBinaryPredictor()
-        cdef ExampleWiseBinaryPredictorConfig config = \
-            ExampleWiseBinaryPredictorConfig.__new__(ExampleWiseBinaryPredictorConfig)
-        config.config_ptr = config_ptr
-        return config
-
-    def use_gfm_binary_predictor(self) -> GfmBinaryPredictorConfig:
-        cdef IGfmBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useGfmBinaryPredictor()
-        cdef GfmBinaryPredictorConfig config = GfmBinaryPredictorConfig.__new__(GfmBinaryPredictorConfig)
-        config.config_ptr = config_ptr
-        return config
-
     def use_automatic_binary_predictor(self):
         self.config_ptr.get().useOutputWiseBinaryPredictor()
 
@@ -530,17 +536,37 @@ cdef class BoomerConfig(RuleLearnerConfig,
     def use_automatic_probability_predictor(self):
         self.config_ptr.get().useAutomaticProbabilityPredictor()
 
+    def use_output_wise_binary_predictor(self) -> OutputWiseBinaryPredictorConfig:
+        cdef IOutputWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useOutputWiseBinaryPredictor()
+        cdef OutputWiseBinaryPredictorConfig config = \
+            OutputWiseBinaryPredictorConfig.__new__(OutputWiseBinaryPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
 
-cdef class Boomer(RuleLearner):
+    def use_example_wise_binary_predictor(self) -> ExampleWiseBinaryPredictorConfig:
+        cdef IExampleWiseBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useExampleWiseBinaryPredictor()
+        cdef ExampleWiseBinaryPredictorConfig config = \
+            ExampleWiseBinaryPredictorConfig.__new__(ExampleWiseBinaryPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
+
+    def use_gfm_binary_predictor(self) -> GfmBinaryPredictorConfig:
+        cdef IGfmBinaryPredictorConfig* config_ptr = &self.config_ptr.get().useGfmBinaryPredictor()
+        cdef GfmBinaryPredictorConfig config = GfmBinaryPredictorConfig.__new__(GfmBinaryPredictorConfig)
+        config.config_ptr = config_ptr
+        return config
+
+
+cdef class BoomerClassifier(ClassificationRuleLearner):
     """
-    The BOOMER rule learning algorithm.
+    The BOOMER algorithm for classification problems.
     """
 
-    def __cinit__(self, BoomerConfig config not None):
+    def __cinit__(self, BoomerClassifierConfig config not None):
         """
         :param config: The configuration that should be used by the rule learner
         """
-        self.rule_learner_ptr = createBoomer(move(config.config_ptr), ddot, dspmv, dsysv)
+        self.rule_learner_ptr = createBoomerClassifier(move(config.config_ptr), ddot, dspmv, dsysv)
 
-    cdef IRuleLearner* get_rule_learner_ptr(self):
+    cdef IClassificationRuleLearner* get_classification_rule_learner_ptr(self):
         return self.rule_learner_ptr.get()

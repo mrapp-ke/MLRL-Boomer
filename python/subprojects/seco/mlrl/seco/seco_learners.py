@@ -4,19 +4,18 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides a scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label
 classification rules.
 """
-from typing import Optional
+from typing import Any, Optional
 
 from sklearn.base import ClassifierMixin, MultiOutputMixin
 
 from mlrl.common.config import configure_rule_learner
-from mlrl.common.cython.learner import RuleLearner as RuleLearnerWrapper
-from mlrl.common.rule_learners import RuleLearner
+from mlrl.common.rule_learners import ClassificationRuleLearner
 
 from mlrl.seco.config import SECO_RULE_LEARNER_PARAMETERS
-from mlrl.seco.cython.learner_seco import SeCo as SeCoWrapper, SeCoConfig
+from mlrl.seco.cython.learner_seco import SeCoClassifier as SeCoWrapper, SeCoClassifierConfig
 
 
-class SeCo(RuleLearner, ClassifierMixin, MultiOutputMixin):
+class SeCoClassifier(ClassificationRuleLearner, ClassifierMixin, MultiOutputMixin):
     """
     A scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label classification
     rules.
@@ -121,7 +120,7 @@ class SeCo(RuleLearner, ClassifierMixin, MultiOutputMixin):
         self.parallel_statistic_update = parallel_statistic_update
         self.parallel_prediction = parallel_prediction
 
-    def _create_learner(self) -> RuleLearnerWrapper:
-        config = SeCoConfig()
+    def _create_learner(self) -> Any:
+        config = SeCoClassifierConfig()
         configure_rule_learner(self, config, SECO_RULE_LEARNER_PARAMETERS)
         return SeCoWrapper(config)
