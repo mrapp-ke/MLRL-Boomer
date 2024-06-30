@@ -18,93 +18,93 @@ namespace seco {
     /**
      * Defines the interface of the multi-label SeCo algorithm.
      */
-    class MLRLSECO_API IMultiLabelSeCoRuleLearner : virtual public ISeCoRuleLearner {
+    class MLRLSECO_API ISeCoClassifier : virtual public IClassificationRuleLearner {
         public:
 
             /**
              * Defines an interface for all classes that allow to configure the multi-label SeCo algorithm.
              */
-            class IConfig : virtual public ISeCoRuleLearner::IConfig,
-                            virtual public ISeCoRuleLearner::INoCoverageStoppingCriterionMixin,
-                            virtual public ISeCoRuleLearner::ICoverageStoppingCriterionMixin,
-                            virtual public ISeCoRuleLearner::ISingleOutputHeadMixin,
-                            virtual public ISeCoRuleLearner::IPartialHeadMixin,
-                            virtual public ISeCoRuleLearner::INoLiftFunctionMixin,
-                            virtual public ISeCoRuleLearner::IPeakLiftFunctionMixin,
-                            virtual public ISeCoRuleLearner::IKlnLiftFunctionMixin,
-                            virtual public ISeCoRuleLearner::IAccuracyHeuristicMixin,
-                            virtual public ISeCoRuleLearner::IAccuracyPruningHeuristicMixin,
-                            virtual public ISeCoRuleLearner::IFMeasureHeuristicMixin,
-                            virtual public ISeCoRuleLearner::IFMeasurePruningHeuristicMixin,
-                            virtual public ISeCoRuleLearner::IMEstimateHeuristicMixin,
-                            virtual public ISeCoRuleLearner::IMEstimatePruningHeuristicMixin,
-                            virtual public ISeCoRuleLearner::ILaplaceHeuristicMixin,
-                            virtual public ISeCoRuleLearner::ILaplacePruningHeuristicMixin,
-                            virtual public ISeCoRuleLearner::IPrecisionHeuristicMixin,
-                            virtual public ISeCoRuleLearner::IPrecisionPruningHeuristicMixin,
-                            virtual public ISeCoRuleLearner::IRecallHeuristicMixin,
-                            virtual public ISeCoRuleLearner::IRecallPruningHeuristicMixin,
-                            virtual public ISeCoRuleLearner::IWraHeuristicMixin,
-                            virtual public ISeCoRuleLearner::IWraPruningHeuristicMixin,
-                            virtual public ISeCoRuleLearner::IOutputWiseBinaryPredictionMixin,
-                            virtual public IRuleLearner::ISequentialRuleModelAssemblageMixin,
-                            virtual public IRuleLearner::IDefaultRuleMixin,
-                            virtual public IRuleLearner::IGreedyTopDownRuleInductionMixin,
-                            virtual public IRuleLearner::IBeamSearchTopDownRuleInductionMixin,
-                            virtual public IRuleLearner::INoFeatureBinningMixin,
-                            virtual public IRuleLearner::IEqualWidthFeatureBinningMixin,
-                            virtual public IRuleLearner::IEqualFrequencyFeatureBinningMixin,
-                            virtual public IRuleLearner::INoOutputSamplingMixin,
-                            virtual public IRuleLearner::IRoundRobinOutputSamplingMixin,
-                            virtual public IRuleLearner::IOutputSamplingWithoutReplacementMixin,
-                            virtual public IRuleLearner::INoInstanceSamplingMixin,
-                            virtual public IRuleLearner::IInstanceSamplingWithoutReplacementMixin,
-                            virtual public IRuleLearner::IInstanceSamplingWithReplacementMixin,
-                            virtual public IRuleLearner::IOutputWiseStratifiedInstanceSamplingMixin,
-                            virtual public IRuleLearner::IExampleWiseStratifiedInstanceSamplingMixin,
-                            virtual public IRuleLearner::INoFeatureSamplingMixin,
-                            virtual public IRuleLearner::IFeatureSamplingWithoutReplacementMixin,
-                            virtual public IRuleLearner::IRandomBiPartitionSamplingMixin,
-                            virtual public IRuleLearner::INoPartitionSamplingMixin,
-                            virtual public IRuleLearner::IOutputWiseStratifiedBiPartitionSamplingMixin,
-                            virtual public IRuleLearner::IExampleWiseStratifiedBiPartitionSamplingMixin,
-                            virtual public IRuleLearner::INoRulePruningMixin,
-                            virtual public IRuleLearner::IIrepRulePruningMixin,
-                            virtual public IRuleLearner::INoParallelRuleRefinementMixin,
-                            virtual public IRuleLearner::IParallelRuleRefinementMixin,
-                            virtual public IRuleLearner::INoParallelStatisticUpdateMixin,
-                            virtual public IRuleLearner::IParallelStatisticUpdateMixin,
-                            virtual public IRuleLearner::INoParallelPredictionMixin,
-                            virtual public IRuleLearner::IParallelPredictionMixin,
-                            virtual public IRuleLearner::INoSizeStoppingCriterionMixin,
-                            virtual public IRuleLearner::ISizeStoppingCriterionMixin,
-                            virtual public IRuleLearner::INoTimeStoppingCriterionMixin,
-                            virtual public IRuleLearner::ITimeStoppingCriterionMixin,
-                            virtual public IRuleLearner::INoSequentialPostOptimizationMixin,
-                            virtual public IRuleLearner::ISequentialPostOptimizationMixin {
+            class IConfig : virtual public ISeCoRuleLearnerConfig,
+                            virtual public INoCoverageStoppingCriterionMixin,
+                            virtual public ICoverageStoppingCriterionMixin,
+                            virtual public ISingleOutputHeadMixin,
+                            virtual public IPartialHeadMixin,
+                            virtual public INoLiftFunctionMixin,
+                            virtual public IPeakLiftFunctionMixin,
+                            virtual public IKlnLiftFunctionMixin,
+                            virtual public IAccuracyHeuristicMixin,
+                            virtual public IAccuracyPruningHeuristicMixin,
+                            virtual public IFMeasureHeuristicMixin,
+                            virtual public IFMeasurePruningHeuristicMixin,
+                            virtual public IMEstimateHeuristicMixin,
+                            virtual public IMEstimatePruningHeuristicMixin,
+                            virtual public ILaplaceHeuristicMixin,
+                            virtual public ILaplacePruningHeuristicMixin,
+                            virtual public IPrecisionHeuristicMixin,
+                            virtual public IPrecisionPruningHeuristicMixin,
+                            virtual public IRecallHeuristicMixin,
+                            virtual public IRecallPruningHeuristicMixin,
+                            virtual public IWraHeuristicMixin,
+                            virtual public IWraPruningHeuristicMixin,
+                            virtual public IOutputWiseBinaryPredictionMixin,
+                            virtual public ISequentialRuleModelAssemblageMixin,
+                            virtual public IDefaultRuleMixin,
+                            virtual public IGreedyTopDownRuleInductionMixin,
+                            virtual public IBeamSearchTopDownRuleInductionMixin,
+                            virtual public INoFeatureBinningMixin,
+                            virtual public IEqualWidthFeatureBinningMixin,
+                            virtual public IEqualFrequencyFeatureBinningMixin,
+                            virtual public INoOutputSamplingMixin,
+                            virtual public IRoundRobinOutputSamplingMixin,
+                            virtual public IOutputSamplingWithoutReplacementMixin,
+                            virtual public INoInstanceSamplingMixin,
+                            virtual public IInstanceSamplingWithoutReplacementMixin,
+                            virtual public IInstanceSamplingWithReplacementMixin,
+                            virtual public IOutputWiseStratifiedInstanceSamplingMixin,
+                            virtual public IExampleWiseStratifiedInstanceSamplingMixin,
+                            virtual public INoFeatureSamplingMixin,
+                            virtual public IFeatureSamplingWithoutReplacementMixin,
+                            virtual public IRandomBiPartitionSamplingMixin,
+                            virtual public INoPartitionSamplingMixin,
+                            virtual public IOutputWiseStratifiedBiPartitionSamplingMixin,
+                            virtual public IExampleWiseStratifiedBiPartitionSamplingMixin,
+                            virtual public INoRulePruningMixin,
+                            virtual public IIrepRulePruningMixin,
+                            virtual public INoParallelRuleRefinementMixin,
+                            virtual public IParallelRuleRefinementMixin,
+                            virtual public INoParallelStatisticUpdateMixin,
+                            virtual public IParallelStatisticUpdateMixin,
+                            virtual public INoParallelPredictionMixin,
+                            virtual public IParallelPredictionMixin,
+                            virtual public INoSizeStoppingCriterionMixin,
+                            virtual public ISizeStoppingCriterionMixin,
+                            virtual public INoTimeStoppingCriterionMixin,
+                            virtual public ITimeStoppingCriterionMixin,
+                            virtual public INoSequentialPostOptimizationMixin,
+                            virtual public ISequentialPostOptimizationMixin {
                 public:
 
                     virtual ~IConfig() override {}
             };
 
-            virtual ~IMultiLabelSeCoRuleLearner() override {}
+            virtual ~ISeCoClassifier() override {}
     };
 
     /**
-     * Creates and returns a new object of type `IMultiLabelSeCoRuleLearner::IConfig`.
+     * Creates and returns a new object of type `ISeCoClassifier::IConfig`.
      *
-     * @return An unique pointer to an object of type `IMultiLabelSeCoRuleLearner::IConfig` that has been created
+     * @return An unique pointer to an object of type `ISeCoClassifier::IConfig` that has been created
      */
-    MLRLSECO_API std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> createMultiLabelSeCoRuleLearnerConfig();
+    MLRLSECO_API std::unique_ptr<ISeCoClassifier::IConfig> createSeCoClassifierConfig();
 
     /**
-     * Creates and returns a new object of type `IMultiLabelSeCoRuleLearner`.
+     * Creates and returns a new object of type `ISeCoClassifier`.
      *
-     * @param configPtr An unique pointer to an object of type `IMultiLabelSeCoRuleLearner::IConfig` that specifies the
+     * @param configPtr An unique pointer to an object of type `ISeCoClassifier::IConfig` that specifies the
      *                  configuration that should be used by the rule learner.
-     * @return          An unique pointer to an object of type `IMultiLabelSeCoRuleLearner` that has been created
+     * @return          An unique pointer to an object of type `ISeCoClassifier` that has been created
      */
-    MLRLSECO_API std::unique_ptr<IMultiLabelSeCoRuleLearner> createMultiLabelSeCoRuleLearner(
-      std::unique_ptr<IMultiLabelSeCoRuleLearner::IConfig> configPtr);
+    MLRLSECO_API std::unique_ptr<ISeCoClassifier> createSeCoClassifier(
+      std::unique_ptr<ISeCoClassifier::IConfig> configPtr);
 
 }

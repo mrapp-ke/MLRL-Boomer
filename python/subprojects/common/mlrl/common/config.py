@@ -11,17 +11,17 @@ from typing import Optional, Set
 
 from mlrl.common.cython.info import get_num_cpu_cores, is_multi_threading_support_enabled
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, EqualFrequencyFeatureBinningMixin, \
-    EqualWidthFeatureBinningMixin, ExampleWiseStratifiedBiPartitionSamplingMixin, \
-    ExampleWiseStratifiedInstanceSamplingMixin, FeatureSamplingWithoutReplacementMixin, \
-    GreedyTopDownRuleInductionMixin, InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, \
-    IrepRulePruningMixin, NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, \
-    NoInstanceSamplingMixin, NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
+    EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, GreedyTopDownRuleInductionMixin, \
+    InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, IrepRulePruningMixin, \
+    NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, NoInstanceSamplingMixin, \
+    NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
     NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, \
-    NoTimeStoppingCriterionMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
-    OutputWiseStratifiedInstanceSamplingMixin, ParallelPredictionMixin, ParallelRuleRefinementMixin, \
-    ParallelStatisticUpdateMixin, PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, \
-    RoundRobinOutputSamplingMixin, SequentialPostOptimizationMixin, SizeStoppingCriterionMixin, \
-    TimeStoppingCriterionMixin
+    NoTimeStoppingCriterionMixin, ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, \
+    PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinOutputSamplingMixin, \
+    SequentialPostOptimizationMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
+from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPartitionSamplingMixin, \
+    ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
+    OutputWiseStratifiedInstanceSamplingMixin
 from mlrl.common.cython.stopping_criterion import AggregationFunction
 from mlrl.common.format import format_dict_keys, format_set
 from mlrl.common.options import BooleanOption, Options, parse_param, parse_param_and_options
