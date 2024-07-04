@@ -327,7 +327,7 @@ class Experiment(DataSplitter.Callback):
         if isinstance(current_learner, NominalFeatureSupportMixin):
             current_learner.nominal_feature_indices = meta_data.get_feature_indices({FeatureType.NOMINAL})
 
-        # Load model from disc, if possible, otherwise train a new model...
+        # Load model from disk, if possible, otherwise train a new model...
         loaded_learner = self.__load_model(data_split)
 
         if isinstance(loaded_learner, type(current_learner)):
