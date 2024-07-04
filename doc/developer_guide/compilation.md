@@ -348,7 +348,7 @@ This project comes with unit tests for the C++ code it contains (see {ref}`testi
 
 By default, the project is built with multi-threading support enabled. This requires [OpenMP](https://www.openmp.org/) to be available on the host system. In order to compile the project without multi-threading support, e.g., because OpenMP is not available, the build option `multi_threading_support` can be set to `disabled` instead of `enabled`. Alternatively, the desired value can be specified via the environment variable `MULTI_THREADING_SUPPORT`.
 
-When using the {ref}`testbed`, the command `boomer --version` or `boomer -v` can be executed to check whether the program was built with multi-threading support enabled or not. It prints the build options used for compilation, as well as information about the CPU cores available on the system for multi-threading.
+When using the {ref}`testbed`, the command `testbed mlrl.boosting --version` or `testbed mlrl.boosting -v` can be executed to check whether the program was built with multi-threading support enabled or not. It prints the build options used for compilation, as well as information about the CPU cores available on the system for multi-threading.
 
 If you need to access this information programmatically in your own Python or C++ code, the following code snippets can be used (see {ref}`python-apidoc` and {ref}`cpp-apidoc`):
 
@@ -380,7 +380,7 @@ So far, GPU support is still at an early stage of development. No algorithm prov
 
 GPU support via [OpenCL](https://www.khronos.org/opencl/) is enabled by default when building the project. However, it can be disabled at compile-time by setting the build option `gpu_support` to `disabled` instead of `enabled`. Alternatively, the desired value can be specified via the environment variable `GPU_SUPPORT`.
 
-An easy way to check whether the program was built with GPU support enabled or not, is to run the `boomer --version` or `boomer -v` command that is provided by the {ref}`testbed`. It prints the build options used for compiling the program, together with a list of supported GPUs available on your machine.
+An easy way to check whether the program was built with GPU support enabled or not, is to run the `testbed mlrl.boosting --version` or `testbed mlrl.boosting -v` command that is provided by the {ref}`testbed`. It prints the build options used for compiling the program, together with a list of supported GPUs available on your machine.
 
 Alternatively, this information can be retrieved programmatically via the Python or C++ API as shown below (see {ref}`python-apidoc` and {ref}`cpp-apidoc`):
 

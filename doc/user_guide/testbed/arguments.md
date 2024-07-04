@@ -431,13 +431,19 @@ For example, the value of the parameter `feature_binning` may be set as follows:
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset name --feature-binning equal-width
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --feature-binning equal-width
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset name --feature-binning equal-width
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --feature-binning equal-width
    ```
 ````
 
@@ -445,12 +451,18 @@ Some algorithmic parameters, including the parameter `feature_binning`, allow to
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset name --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
+   testbed mlrl.boosting\
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset name --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'seco --data-dir /path/to/datasets/ --dataset name --feature-binning equal-width
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
    ```
 ````

@@ -14,13 +14,17 @@ In the following, a minimal working example of how to use the command line API f
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name
    ```
 ````
 
@@ -44,13 +48,19 @@ In addition to the mandatory arguments that must be provided to the command line
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/output/
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --output-dir /path/to/output/
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/output/
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --output-dir /path/to/output/
    ```
 ````
 
@@ -58,13 +68,19 @@ Moreover, algorithmic parameters that control the behavior of the machine learni
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --feature-binning equal-width
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --feature-binning equal-width
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --feature-binning equal-width
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --feature-binning equal-width
    ```
 ````
 
@@ -72,13 +88,19 @@ Some algorithmic parameters, including the parameter `feature_binning`, come wit
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --feature-binning equal-width'{bin_ratio=0.33,min_bins=2,max_bins=64}'
    ```
 ````
 
