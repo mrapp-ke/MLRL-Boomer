@@ -7,7 +7,7 @@ import logging as log
 import sys
 
 from abc import ABC, abstractmethod
-from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from argparse import ArgumentParser
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, Iterable, List, Optional, Set
@@ -270,30 +270,24 @@ class Runnable(ABC):
 
             return result
 
-    def __get_version(self) -> str:
+    @staticmethod
+    def __get_version(program_info: Optional[ProgramInfo]) -> str:
         """
         May be overridden by subclasses in order to provide information about the program's version.
 
         :return: A string that provides information about the program's version
         """
-        program_info = self.get_program_info()
-
         if program_info is not None:
             return str(program_info)
 
         raise RuntimeError('No information about the program version is available')
 
-    def __init__(self):
-        self.parser = ArgumentParser(formatter_class=RawDescriptionHelpFormatter)
-
-    def run(self):
+    def run(self, args):
         """
         Executes the runnable.
-        """
-        parser = self.parser
-        self._configure_arguments(parser)
-        args = parser.parse_args()
 
+        :param args: The command line arguments
+        """
         # Configure the logger...
         log_level = args.log_level
         root = log.getLogger()
@@ -305,26 +299,29 @@ class Runnable(ABC):
 
         self._run(args)
 
-    def get_program_info(self) -> Optional['Runnable.ProgramInfo']:
+    def get_program_info(self) -> Optional[ProgramInfo]:
         """
-        May be overridden by subclasses in order to provide information about the program to be printed via the commmand
+        May be overridden by subclasses in order to provide information about the program to be printed via the command
         line argument '-v' or '--version'. 
 
         :return: The `Runnable.ProgramInfo` that has been provided
         """
         return None
 
-    def _configure_arguments(self, parser: ArgumentParser):
+    def configure_arguments(self, parser: ArgumentParser):
         """
         May be overridden by subclasses in order to configure the command line arguments of the program.
 
         :param parser:  An `ArgumentParser` that is used for parsing command line arguments
         """
-        if self.get_program_info() is not None:
+        # pylint: disable=assignment-from-none
+        program_info = self.get_program_info()
+
+        if program_info is not None:
             parser.add_argument('-v',
                                 '--version',
                                 action='version',
-                                version=self.__get_version(),
+                                version=self.__get_version(program_info),
                                 help='Display information about the program\'s version.')
 
         parser.add_argument('--log-level',
@@ -527,8 +524,8 @@ class LearnerRunnable(Runnable, ABC):
         return None if args.output_dir is None or current_fold >= 0 else LearnerRunnable.ClearOutputDirHook(
             output_dir=args.output_dir)
 
-    def _configure_arguments(self, parser: ArgumentParser):
-        super()._configure_arguments(parser)
+    def configure_arguments(self, parser: ArgumentParser):
+        super().configure_arguments(parser)
         parser.add_argument(self.PARAM_RANDOM_STATE,
                             type=int,
                             default=None,
@@ -1047,11 +1044,7 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     PARAM_SPARSE_FEATURE_VALUE = '--sparse-feature-value'
 
-    def __init__(self,
-                 learner_name: str,
-                 learner_type: type,
-                 config_type: type,
-                 parameters: Set[Parameter]):
+    def __init__(self, learner_name: str, learner_type: type, config_type: type, parameters: Set[Parameter]):
         """
         :param learner_type:    The type of the rule learner
         :param config_type:     The type of the rule learner's configuration
@@ -1062,8 +1055,8 @@ class RuleLearnerRunnable(LearnerRunnable):
         self.config_type = config_type
         self.parameters = parameters
 
-    def _configure_arguments(self, parser: ArgumentParser):
-        super()._configure_arguments(parser)
+    def configure_arguments(self, parser: ArgumentParser):
+        super().configure_arguments(parser)
         parser.add_argument(self.PARAM_INCREMENTAL_EVALUATION,
                             type=str,
                             default=BooleanOption.FALSE.value,
