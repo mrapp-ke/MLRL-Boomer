@@ -108,20 +108,24 @@ class CmdBuilder:
 
     def __init__(self,
                  callback: AssertionCallback,
-                 cmd: str,
                  expected_output_dir: str,
+                 model_file_name: str,
+                 runnable_module_name: str,
+                 runnable_class_name: Optional[str] = None,
                  data_dir: str = DIR_DATA,
                  dataset: str = DATASET_EMOTIONS):
         """
-        :param callback:            The callback that should be notified about test failures
-        :param cmd:                 The command to be run
-        :param expected_output_dir: The path of the directory that contains the file with the expected output
-        :param data_dir:            The path of the directory that stores the dataset files
-        :param dataset:             The name of the dataset
+        :param callback:                The callback that should be notified about test failures
+        :param expected_output_dir:     The path of the directory that contains the file with the expected output
+        :param model_file_name:         The name of files storing models that have been saved to disk (without suffix)
+        :param runnable_module_name:    The fully qualified name of the runnable to be invoked by the 'testbed' program
+        :param runnable_class_name:     The class name of the runnable to be invoked by the 'testbed' program
+        :param data_dir:                The path of the directory that stores the dataset files
+        :param dataset:                 The name of the dataset
         """
         self.callback = callback
-        self.cmd = cmd
         self.expected_output_dir = expected_output_dir
+        self.model_file_name = model_file_name
         self.output_dir = None
         self.parameter_dir = None
         self.model_dir = None
@@ -136,8 +140,21 @@ class CmdBuilder:
         self.data_characteristics_stored = False
         self.model_characteristics_stored = False
         self.rules_stored = False
-        self.args = [cmd, '--log-level', 'DEBUG', '--data-dir', data_dir, '--dataset', dataset]
         self.tmp_dirs = []
+        self.args = self.__create_args(runnable_module_name=runnable_module_name,
+                                       runnable_class_name=runnable_class_name,
+                                       data_dir=data_dir,
+                                       dataset=dataset)
+
+    @staticmethod
+    def __create_args(runnable_module_name: str, runnable_class_name: Optional[str], data_dir: str, dataset: str):
+        args = ['testbed', runnable_module_name]
+
+        if runnable_class_name:
+            args.extend(['-r', runnable_class_name])
+
+        args.extend(['--log-level', 'DEBUG', '--data-dir', data_dir, '--dataset', dataset])
+        return args
 
     @staticmethod
     def __format_cmd(args: List[str]):
@@ -194,7 +211,7 @@ class CmdBuilder:
         """
         Asserts that the model files, which should be created by a command, exist.
         """
-        self._assert_files_exist(self.model_dir, self.cmd, 'model')
+        self._assert_files_exist(self.model_dir, self.model_file_name, 'model')
 
     def __assert_evaluation_files_exist(self):
         """
