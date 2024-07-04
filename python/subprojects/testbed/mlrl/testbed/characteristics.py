@@ -54,8 +54,8 @@ def label_cardinality(y) -> float:
     :return:    The average number of relevant labels per training example
     """
     if is_sparse(y):
-        y = y.tolil()
-        num_relevant_per_example = y.getnnz(axis=1)
+        y = y.tocsr()
+        num_relevant_per_example = y.indptr[1:] - y.indptr[:-1]
     else:
         num_relevant_per_example = np.count_nonzero(y, axis=1)
 
@@ -87,7 +87,7 @@ def label_imbalance_ratio(y) -> float:
     """
     if is_sparse(y):
         y = y.tocsc()
-        num_relevant_per_label = y.getnnz(axis=0)
+        num_relevant_per_label = y.indptr[1:] - y.indptr[:-1]
     else:
         num_relevant_per_label = np.count_nonzero(y, axis=0)
 
