@@ -16,9 +16,27 @@ When running the program with the argument `-v` or `--version`, the version of t
 The argument `--log-level` controls the level of detail used for log messages (Default value = `info`). It can be set to the values `debug`, `info`, `warn`, `warning`, `error`, `critical`, `fatal` or `notset`, where the first one provides the greatest level of detail and the last one disables logging entirely.
 ```
 
-## Dataset
+## Basic Usage
 
 > A more detailed description of the following arguments can be found {ref}`here<testbed>`.
+
+The most basic command for running the program, only including mandatory arguments, is as follows:
+
+```text
+testbed <module_name> --data-dir /path/to/dataset/ --dataset dataset-name
+```
+
+### Module
+
+The program dynamically loads a module that provides an integration with a specific machine learning algorithm. To specify the module to be used, the following mandatory arguments must be provided:
+
+- `<module_name>` The fully quality name of a Python module providing a Python class that extends from `mlrl.testbed.Runnable`. The name of the class must be `Runnable`, unless an alternative name is specified via the optional command line argument `-r` or `--runnable`.
+
+The following optional arguments allow additional control over the loading mechanism:
+
+- `-r` or `--runnable` (Default value = `Runnable`) The name of the class extending `mlrl.testbed.Runnable` that resides within the module specified via the argument `<module_name>`.
+
+### Dataset
 
 The following mandatory arguments must always be given to specify the dataset that should be used, as well as the location where it should be loaded from.
 
