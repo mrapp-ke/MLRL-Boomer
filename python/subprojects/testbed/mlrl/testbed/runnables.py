@@ -288,15 +288,7 @@ class Runnable(ABC):
 
         :param args: The command line arguments
         """
-        # Configure the logger...
-        log_level = args.log_level
-        root = log.getLogger()
-        root.setLevel(log_level)
-        out_handler = log.StreamHandler(sys.stdout)
-        out_handler.setLevel(log_level)
-        out_handler.setFormatter(log.Formatter(LOG_FORMAT))
-        root.addHandler(out_handler)
-
+        self.configure_logger(args)
         self._run(args)
 
     def get_program_info(self) -> Optional[ProgramInfo]:
@@ -328,6 +320,20 @@ class Runnable(ABC):
                             type=LogLevel.parse,
                             default=LogLevel.INFO.value,
                             help='The log level to be used. Must be one of ' + format_enum_values(LogLevel) + '.')
+
+    def configure_logger(self, args):
+        """
+        May be overridden by subclasses in order to configure the logger to be used by the program.
+
+        :param args: The command line arguments
+        """
+        log_level = args.log_level
+        root = log.getLogger()
+        root.setLevel(log_level)
+        out_handler = log.StreamHandler(sys.stdout)
+        out_handler.setLevel(log_level)
+        out_handler.setFormatter(log.Formatter(LOG_FORMAT))
+        root.addHandler(out_handler)
 
     @abstractmethod
     def _run(self, args):
