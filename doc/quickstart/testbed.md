@@ -10,6 +10,10 @@ As an alternative to using algorithms provided by this project in your own Pytho
 
 ## Running Experiments
 
+```{tip}
+The command line API can also be used to conduct experiments with any machine learning algorithm of your choice. All that is needed for this are few lines of Python code as described {ref}`here<runnables>`.
+```
+
 In the following, a minimal working example of how to use the command line API for applying the BOOMER algorithm, or the SeCO algorithm, to a particular dataset is shown:
 
 ````{tab} BOOMER

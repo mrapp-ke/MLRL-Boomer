@@ -16,6 +16,8 @@ When running the program with the argument `-v` or `--version`, the version of t
 The argument `--log-level` controls the level of detail used for log messages (Default value = `info`). It can be set to the values `debug`, `info`, `warn`, `warning`, `error`, `critical`, `fatal` or `notset`, where the first one provides the greatest level of detail and the last one disables logging entirely.
 ```
 
+(arguments-basic-usage)=
+
 ## Basic Usage
 
 > A more detailed description of the following arguments can be found {ref}`here<testbed>`.
@@ -35,6 +37,8 @@ The program dynamically loads a Python module or source file that provides an in
 The following optional arguments allow additional control over the loading mechanism:
 
 - `-r` or `--runnable` (Default value = `Runnable`) The name of the class extending `mlrl.testbed.Runnable` that resides within the module or source file specified via the argument `<module_or_source_file>`.
+
+The arguments given above can be used to integrate any scikit-learn compatible machine learning algorithm with the comman line API. You can learn about this {ref}`here<runnables>`.
 
 ### Dataset
 
