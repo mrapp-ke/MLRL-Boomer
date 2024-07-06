@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Optional
 
 from sklearn.base import BaseEstimator, RegressorMixin, clone
 
+from mlrl.common.arrays import is_sparse
 from mlrl.common.mixins import ClassifierMixin, IncrementalPredictionMixin, NominalFeatureSupportMixin, \
     OrdinalFeatureSupportMixin
 
@@ -352,8 +353,8 @@ class Experiment(DataSplitter.Callback):
         if evaluation is not None and data_split.is_train_test_separated():
             data_type = DataType.TRAINING
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            evaluation.predict_and_evaluate(meta_data, data_split, data_type, train_time, current_learner, train_x,
-                                            train_y, **predict_kwargs)
+            self.__predict_and_evaluate(evaluation, meta_data, data_split, data_type, train_time, current_learner,
+                                        train_x, train_y, **predict_kwargs)
 
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
@@ -361,12 +362,39 @@ class Experiment(DataSplitter.Callback):
         if evaluation is not None:
             data_type = DataType.TEST if data_split.is_train_test_separated() else DataType.TRAINING
             predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
-            evaluation.predict_and_evaluate(meta_data, data_split, data_type, train_time, current_learner, test_x,
-                                            test_y, **predict_kwargs)
+            self.__predict_and_evaluate(evaluation, meta_data, data_split, data_type, train_time, current_learner,
+                                        test_x, test_y, **predict_kwargs)
 
         # Write output data after model was trained...
         for output_writer in self.post_training_output_writers:
             output_writer.write_output(meta_data, train_x, train_y, data_split, current_learner, train_time=train_time)
+
+    @staticmethod
+    def __predict_and_evaluate(evaluation: Evaluation, meta_data: MetaData, data_split: DataSplit, data_type: DataType,
+                               train_time: float, learner, x, y, **kwargs):
+        """
+        Obtains and evaluates predictions for given query examples from a previously trained model.
+
+        :param evaluation:  The `Evaluation` to be used
+        :param meta_data:   The meta-data of the data set
+        :param data_split:  The split of the available data, the predictions and ground truth correspond to
+        :param data_type:   Specifies whether the predictions and ground truth correspond to the training or test data
+        :param train_time:  The time needed to train the model
+        :param learner:     The learner, the predictions should be obtained from
+        :param x:           A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                            `(num_examples, num_features)`, that stores the feature values of the query examples
+        :param y:           A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                            `(num_examples, num_outputs)`, that stores the ground truth of the query examples
+        :param kwargs:      Optional keyword arguments to be passed to the model when obtaining predictions
+        """
+        try:
+            return evaluation.predict_and_evaluate(meta_data, data_split, data_type, train_time, learner, x, y,
+                                                   **kwargs)
+        except ValueError as error:
+            if is_sparse(x):
+                return Experiment.__predict_and_evaluate(evaluation, meta_data, data_split, data_type, train_time,
+                                                         learner, x.toarray(), y, **kwargs)
+            raise error
 
     @staticmethod
     def __train(learner, x, y, **kwargs):
@@ -381,10 +409,17 @@ class Experiment(DataSplitter.Callback):
         :param kwargs:  Optional keyword arguments to be passed to the learner when fitting model
         :return:        The time needed for training
         """
-        start_time = timer()
-        learner.fit(x, y, **kwargs)
-        end_time = timer()
-        return end_time - start_time
+        try:
+            start_time = timer()
+            learner.fit(x, y, **kwargs)
+            end_time = timer()
+            return end_time - start_time
+        except ValueError as error:
+            if is_sparse(y):
+                return Experiment.__train(learner, x, y.toarray(), **kwargs)
+            if is_sparse(x):
+                return Experiment.__train(learner, x.toarray(), y, **kwargs)
+            raise error
 
     def __load_model(self, data_split: DataSplit):
         """
