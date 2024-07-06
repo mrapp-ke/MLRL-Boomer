@@ -15,7 +15,8 @@ from mlrl.testbed.runnables import Runnable
 def __create_argument_parser() -> ArgumentParser:
     parser = ArgumentParser(
         formatter_class=RawDescriptionHelpFormatter,
-        description='A command line utility for training and evaluating machine learning algorithms')
+        description='A command line utility for training and evaluating machine learning algorithms',
+        add_help=False)
     parser.add_argument('runnable_module_or_source_file',
                         type=str,
                         help='The Python module or source file of the program that should be run')
@@ -73,6 +74,11 @@ def __instantiate_via_default_constructor(module_or_source_file: str, class_name
         raise TypeError('Class "' + class_name + '" must provide a default constructor') from error
 
 
+def __configure_arguments(runnable: Runnable, parser: ArgumentParser):
+    runnable.configure_arguments(parser)
+    parser.add_argument('-h', '--help', action='help', default='==SUPPRESS==', help='Show this help message and exit')
+
+
 def main():
     """
     The main function to be executed when the program starts.
@@ -88,7 +94,7 @@ def main():
     if not isinstance(runnable, Runnable):
         raise TypeError('Class "' + runnable_class_name + '" must extend from "' + Runnable.__qualname__ + '"')
 
-    runnable.configure_arguments(parser)
+    __configure_arguments(runnable, parser)
     runnable.run(parser.parse_args())
 
 
