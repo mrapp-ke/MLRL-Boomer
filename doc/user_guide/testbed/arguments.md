@@ -23,18 +23,18 @@ The argument `--log-level` controls the level of detail used for log messages (D
 The most basic command for running the program, only including mandatory arguments, is as follows:
 
 ```text
-testbed <module_name> --data-dir /path/to/dataset/ --dataset dataset-name
+testbed <module_or_source_file> --data-dir /path/to/dataset/ --dataset dataset-name
 ```
 
 ### Module
 
-The program dynamically loads a module that provides an integration with a specific machine learning algorithm. To specify the module to be used, the following mandatory arguments must be provided:
+The program dynamically loads a Python module or source file that provides an integration with a specific machine learning algorithm. To specify the module or source file to be used, the following mandatory arguments must be provided:
 
-- `<module_name>` The fully quality name of a Python module providing a Python class that extends from `mlrl.testbed.Runnable`. The name of the class must be `Runnable`, unless an alternative name is specified via the optional command line argument `-r` or `--runnable`.
+- `<module_or_source_file>` The fully qualified name of a Python module, or an absolute or relative path to a Python source file, providing a Python class that extends from `mlrl.testbed.Runnable`. The name of the class must be `Runnable`, unless an alternative name is specified via the optional command line argument `-r` or `--runnable`.
 
 The following optional arguments allow additional control over the loading mechanism:
 
-- `-r` or `--runnable` (Default value = `Runnable`) The name of the class extending `mlrl.testbed.Runnable` that resides within the module specified via the argument `<module_name>`.
+- `-r` or `--runnable` (Default value = `Runnable`) The name of the class extending `mlrl.testbed.Runnable` that resides within the module or source file specified via the argument `<module_or_source_file>`.
 
 ### Dataset
 
