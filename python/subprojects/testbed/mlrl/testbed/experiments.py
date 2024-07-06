@@ -339,7 +339,8 @@ class Experiment(DataSplitter.Callback):
             train_time = 0
         else:
             log.info('Fitting model to %s training examples...', train_x.shape[0])
-            train_time = self.__train(current_learner, train_x, train_y, **self.fit_kwargs)
+            fit_kwargs = self.fit_kwargs if self.fit_kwargs else {}
+            train_time = self.__train(current_learner, train_x, train_y, **fit_kwargs)
             log.info('Successfully fit model in %s', format_duration(train_time))
 
             # Save model to disk...
@@ -350,16 +351,18 @@ class Experiment(DataSplitter.Callback):
 
         if evaluation is not None and data_split.is_train_test_separated():
             data_type = DataType.TRAINING
+            predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
             evaluation.predict_and_evaluate(meta_data, data_split, data_type, train_time, current_learner, train_x,
-                                            train_y, **self.predict_kwargs)
+                                            train_y, **predict_kwargs)
 
         # Obtain and evaluate predictions for test data, if necessary...
         evaluation = self.test_evaluation
 
         if evaluation is not None:
             data_type = DataType.TEST if data_split.is_train_test_separated() else DataType.TRAINING
+            predict_kwargs = self.predict_kwargs if self.predict_kwargs else {}
             evaluation.predict_and_evaluate(meta_data, data_split, data_type, train_time, current_learner, test_x,
-                                            test_y, **self.predict_kwargs)
+                                            test_y, **predict_kwargs)
 
         # Write output data after model was trained...
         for output_writer in self.post_training_output_writers:
