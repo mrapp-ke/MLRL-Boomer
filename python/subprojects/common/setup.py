@@ -13,6 +13,8 @@ VERSION = (Path(__file__).resolve().parent.parent.parent.parent / '.version').re
 
 PYTHON_VERSION = (Path(__file__).resolve().parent.parent.parent.parent / '.version-python').read_text()
 
+PYTHON_VERSION = (Path(__file__).resolve().parent.parent.parent.parent / '.version-python').read_text()
+
 
 class PrecompiledExtension(Extension):
     """
