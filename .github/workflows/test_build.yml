@@ -78,6 +78,10 @@ jobs:
             test-build-cache-git
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '>=3.10'
       - name: Install OpenCL
         run: |
           sudo apt update
@@ -126,6 +130,10 @@ jobs:
             test-build-cache-git
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '>=3.10'
       - name: Install OpenMP
         run: brew install libomp
       - name: Install OpenCL
@@ -155,6 +163,10 @@ jobs:
             test-build-cache-git
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '>=3.10'
       - name: Prepare MSVC
         uses: ilammy/msvc-dev-cmd@v1
       - name: Install OpenCL
