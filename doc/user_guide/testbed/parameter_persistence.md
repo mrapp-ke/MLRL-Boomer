@@ -8,13 +8,23 @@ On the one hand, this requires to specify a directory where parameter settings s
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --parameter-dir /path/to/parameters --store-parameters true --shrinkage 0.5
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --parameter-dir /path/to/parameters \
+       --store-parameters true \
+       --shrinkage 0.5
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --parameter-dir /path/to/parameters --store-parameters true --heuristic precision
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --parameter-dir /path/to/parameters \
+       --store-parameters true \
+       --heuristic precision
    ```
 ````
 
@@ -44,12 +54,20 @@ If you want to print all custom parameters that are used by a learning algorithm
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-parameters true --shrinkage 0.5
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-parameters true \
+       --shrinkage 0.5
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --print-parameters true --heuristic precision
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-parameters true \
+       --heuristic precision
    ```
 ````

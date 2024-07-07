@@ -7,8 +7,6 @@ from typing import Any
 from test_common import DATASET_EMOTIONS, DIR_OUT, RULE_PRUNING_IREP, CmdBuilder
 from test_common_classification import ClassificationCmdBuilder, ClassificationIntegrationTests
 
-CMD_SECO = 'seco'
-
 HEURISTIC_ACCURACY = 'accuracy'
 
 HEURISTIC_PRECISION = 'precision'
@@ -40,7 +38,11 @@ class SeCoClassifierCmdBuilder(ClassificationCmdBuilder):
     """
 
     def __init__(self, callback: CmdBuilder.AssertionCallback, dataset: str = DATASET_EMOTIONS):
-        super().__init__(callback, cmd=CMD_SECO, expected_output_dir=path.join(DIR_OUT, CMD_SECO), dataset=dataset)
+        super().__init__(callback,
+                         expected_output_dir=path.join(DIR_OUT, 'seco'),
+                         model_file_name='seco',
+                         runnable_module_name='mlrl.seco',
+                         dataset=dataset)
 
     def heuristic(self, heuristic: str = HEURISTIC_F_MEASURE):
         """
