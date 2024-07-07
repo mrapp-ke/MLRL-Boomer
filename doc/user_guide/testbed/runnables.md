@@ -6,7 +6,7 @@ When using the command line API, as described {ref}`here<arguments-basic-usage>`
 
 ## Integrating an Algorithm
 
-The module or source file, which is given to the `testbed` command, must contain a class named `Runnable` that extends from `mlrl.testbed.BaseRunnable`. If you want to use a different class name, you can specify a different one via the command line arguments `-r` or `--runnable` as described {ref}`here<arguments-basic-usage>`. Besides the name of the machine learning algorithm to be integrated, the class must override the method `create_classifier`. It must return a scikit-learn compatible [estimator](https://scikit-learn.org/stable/glossary.html#term-estimators) to be used in experiments.
+The module or source file, which is given to the command line API, must contain a class named `Runnable` that extends from {py:class}`mlrl.testbed.BaseRunnable <mlrl.testbed.runnables.LearnerRunnable>`. If you want to use a different class name, you can specify a different one via the command line arguments `-r` or `--runnable` as described {ref}`here<arguments-basic-usage>`. Besides the name of the machine learning algorithm to be integrated, the class must override the method {py:meth}`create_classifier <mlrl.testbed.runnables.LearnerRunnable.create_classifier>`. It must return a scikit-learn compatible [estimator](https://scikit-learn.org/stable/glossary.html#term-estimators) to be used in experiments.
 
 In the following, we provide an exemplary implementation of such a class using scikit-learn's {py:class}`sklearn.ensemble.RandomForestClassifier`:
 
@@ -33,7 +33,7 @@ testbed custom_runnable.py --data-dir path/to/datasets/ --dataset dataset-name
 
 ## Defining Command Line Arguments
 
-To ease the configuration of a machine learning algorithm, for which you created a custom integration, the base class `mlrl.testbed.BaseRunnable` provides a simple mechanism for defining custom command line arguments by overriding the method `configure_arguments`. As illustrated below, the user-specified  values for these arguments can then be retrieved in the method `create_classifier`: 
+To ease the configuration of a machine learning algorithm, for which you created a custom integration, the base class {py:class}`mlrl.testbed.BaseRunnable <mlrl.testbed.runnables.LearnerRunnable>` provides a simple mechanism for defining custom command line arguments by overriding the method {py:meth}`configure_arguments <mlrl.testbed.runnables.Runnable.configure_arguments>`. As illustrated below, the user-specified  values for these arguments can then be retrieved in the method {py:meth}`create_classifier <mlrl.testbed.runnables.LearnerRunnable.create_classifier>`:
 
 ```python
 from argparse import ArgumentParser
@@ -53,11 +53,11 @@ class Runnable(BaseRunnable):
 
 ```
 
-The method `configure_arguments` receives an {py:class}`argparse.ArgumentParser`, which can be used to define any command line arguments you might need, as described in the [official Python documentation](https://docs.python.org/3/library/argparse.html).
+The method {py:meth}`configure_arguments <mlrl.testbed.runnables.Runnable.configure_arguments>` receives an {py:class}`argparse.ArgumentParser`, which can be used to define any command line arguments you might need, as described in the [official Python documentation](https://docs.python.org/3/library/argparse.html).
 
 ## Providing Version Information
 
-Optionally, you can provide information about the version and authors of your custom program by overriding the method `get_program_info` of the parent class `mlrl.testbed.BaseRunnable`:
+Optionally, you can provide information about the version and authors of your custom program by overriding the method {py:meth}`get_program_info <mlrl.testbed.runnables.Runnable.get_program_info>` of the parent class {py:class}`mlrl.testbed.BaseRunnable <mlrl.testbed.runnables.LearnerRunnable>`:
 
 ```python
 from typing import Optional
