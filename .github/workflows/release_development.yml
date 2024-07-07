@@ -31,8 +31,8 @@ jobs:
       - name: Update development version
         run: |
           ./build increment_development_version
-          git add VERSION.dev
-          git commit -m "[Bot] Update development version to $(cat VERSION.dev)."
+          git add .version-dev
+          git commit -m "[Bot] Update development version to $(cat .version-dev)."
           git push
   read_python_version:
     name: Read Python version
