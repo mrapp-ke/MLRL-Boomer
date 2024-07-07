@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       build_files: ${{ steps.filter.outputs.build_files }}
+      python_version: ${{ steps.python_version.outputs.content }}
     steps:
       - name: Look up Git repository in cache
         uses: actions/cache/restore@v4
@@ -36,6 +37,11 @@ jobs:
               - 'build'
               - 'build.bat'
               - 'scons/**'
+      - name: Read Python version
+        uses: juliangruber/read-file-action@v1
+        id: python_version
+        with:
+          path: .version-python
       - name: Save Git repository to cache
         uses: actions/cache/save@v4
         if: success() || failure()
@@ -47,3 +53,5 @@ jobs:
     if: ${{ needs.changes.outputs.build_files == 'true' }}
     name: Test publishing wheel packages
     uses: ./.github/workflows/template_publish.yml
+    with:
+      python_version: ${{ needs.changes.outputs.python_version }}

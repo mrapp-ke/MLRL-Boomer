@@ -122,7 +122,7 @@ install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name(
 # Obtain information about the library
 lib_name = 'mlrl' + meson.project_name()
 fs = import('fs')
-version = fs.read('../../../VERSION')
+version = fs.read('../../../.version')
 target_architecture = host_machine.cpu_family() + '-' + host_machine.system()
 
 # Check build options
