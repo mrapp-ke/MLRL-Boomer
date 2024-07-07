@@ -9,7 +9,7 @@ from typing import Optional, Tuple
 
 VERSION_FILE = 'VERSION'
 
-DEV_VERSION_FILE = VERSION_FILE + '.dev'
+DEV_VERSION_FILE = '.version-dev'
 
 VERSION_FILE_ENCODING = 'utf-8'
 
