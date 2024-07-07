@@ -4,24 +4,41 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for dealing with dependencies.
 """
 
+from dataclasses import dataclass
 from functools import reduce
 from os import path
-from typing import List
+from typing import List, Optional
 
 from command_line import run_command
 from modules import ALL_MODULES, BUILD_MODULE, CPP_MODULE, PYTHON_MODULE, Module
+
+
+@dataclass
+class Requirement:
+    """
+    Specifies the supported version(s) of a specific dependency.
+
+    Attributes:
+        dependency: The name of the dependency
+        version:    The supported version(s) of the dependency or None, if there are no restrictions
+    """
+    dependency: str
+    version: Optional[str] = None
+
+    def __str__(self):
+        return self.dependency + (self.version if self.version else '')
 
 
 def __run_pip_command(*args, **kwargs):
     return run_command('python', '-m', 'pip', *args, **kwargs)
 
 
-def __run_pip_install_command(requirement: str, *args, **kwargs):
-    return __run_pip_command('install', requirement, '--upgrade', '--upgrade-strategy', 'eager', '--prefer-binary',
+def __run_pip_install_command(requirement: Requirement, *args, **kwargs):
+    return __run_pip_command('install', str(requirement), '--upgrade', '--upgrade-strategy', 'eager', '--prefer-binary',
                              '--disable-pip-version-check', *args, **kwargs)
 
 
-def __pip_install(requirement: str, dry_run: bool = False):
+def __pip_install(requirement: Requirement, dry_run: bool = False):
     try:
         args = ['--dry-run'] if dry_run else []
         out = __run_pip_install_command(requirement,
@@ -31,10 +48,10 @@ def __pip_install(requirement: str, dry_run: bool = False):
                                         exit_on_error=not dry_run)
         stdout = str(out.stdout).strip()
         stdout_lines = stdout.split('\n')
-        dependency = requirement.split(' ')[0]
 
-        if not reduce(lambda aggr, line: aggr | line.startswith('Requirement already satisfied: ' + dependency),
-                      stdout_lines, False):
+        if reduce(
+                lambda aggr, line: aggr | line.startswith('Would install') and __normalize_dependency(line).find(
+                    requirement.dependency) >= 0, stdout_lines, False):
             if dry_run:
                 __run_pip_install_command(requirement, print_args=True)
             else:
@@ -43,19 +60,24 @@ def __pip_install(requirement: str, dry_run: bool = False):
         __pip_install(requirement)
 
 
-def __normalize_requirement(requirement: str):
-    return requirement.replace('_', '-').lower()
+def __normalize_dependency(dependency: str):
+    return dependency.replace('_', '-').lower()
 
 
-def __find_requirements(requirements_file: str, *dependencies: str, raise_error: bool = True) -> List[str]:
+def __find_requirements(requirements_file: str, *dependencies: str, raise_error: bool = True) -> List[Requirement]:
     with open(requirements_file, mode='r', encoding='utf-8') as file:
-        requirements = {__normalize_requirement(line.split(' ')[0].strip()): line.strip() for line in file.readlines()}
+        lines = [line.split(' ') for line in file.readlines()]
+        requirements = [
+            Requirement(dependency=__normalize_dependency(parts[0].strip()),
+                        version=' '.join(parts[1:]).strip() if len(parts) > 1 else None) for parts in lines
+        ]
+        requirements = {requirement.dependency: requirement for requirement in requirements}
 
     if dependencies:
         found_requirements = []
 
         for dependency in dependencies:
-            if __normalize_requirement(dependency) in requirements:
+            if __normalize_dependency(dependency) in requirements:
                 found_requirements.append(requirements[dependency])
             elif raise_error:
                 raise RuntimeError('Dependency "' + dependency + '" not found in requirements file "'
@@ -130,7 +152,9 @@ def check_dependency_versions(**_):
             requirements_file = module.requirements_file
 
             if path.isfile(requirements_file):
-                if __find_requirements(requirements_file, dependency, raise_error=False):
+                requirements = __find_requirements(requirements_file, dependency, raise_error=False)
+
+                if requirements and requirements[0].version:
                     outdated_dependencies.append(line)
                     break
 
