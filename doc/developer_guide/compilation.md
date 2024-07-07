@@ -2,7 +2,7 @@
 
 # Building from Source
 
-As discussed in the previous section {ref}`project-structure`, the algorithms that are provided by this project are implemented in [C++](https://en.wikipedia.org/wiki/C%2B%2B) to ensure maximum efficiency (requires C++ 17 or newer). In addition, a [Python](<https://en.wikipedia.org/wiki/Python_(programming_language)>) wrapper that integrates with the [scikit-learn](https://scikit-learn.org) framework is provided (requires Python 3.9 or newer). To make the underlying C++ implementation accessible from within the Python code, [Cython](https://en.wikipedia.org/wiki/Cython) is used (requires Cython 3.0 or newer).
+As discussed in the previous section {ref}`project-structure`, the algorithms that are provided by this project are implemented in [C++](https://en.wikipedia.org/wiki/C%2B%2B) to ensure maximum efficiency (requires C++ 17 or newer). In addition, a [Python](<https://en.wikipedia.org/wiki/Python_(programming_language)>) wrapper that integrates with the [scikit-learn](https://scikit-learn.org) framework is provided (requires Python 3.10 or newer). To make the underlying C++ implementation accessible from within the Python code, [Cython](https://en.wikipedia.org/wiki/Cython) is used (requires Cython 3.0 or newer).
 
 Unlike pure Python programs, the C++ and Cython source files must be compiled for a particular target platform. To ease the process of compiling the source code, the project comes with a [SCons](https://scons.org/) build that automates the necessary steps. In the following, we discuss the individual steps that are necessary for building the project from scratch. This is necessary if you intend to modify the library's source code. If you want to use the algorithm without any custom modifications, the {ref}`installation` of pre-built packages is usually a better choice.
 
@@ -286,7 +286,7 @@ The wheel packages that have previously been created can finally be installed in
    ```
 ````
 
-After this final step has completed, the Python packages can be used from within the virtual environment once it has been [activated](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#activating-a-virtual-environment). To ensure that the installation of the wheel packages was successful, check if a `mlrl/` directory has been created in the `lib/` directory of the virtual environment (depending on the Python version, it should be located at `venv/lib/python3.9/site-packages/mlrl/` or similar). If this is the case, the algorithm can be used from within your own Python code. Alternatively, the command line API can be used to start an experiment (see {ref}`testbed`).
+After this final step has completed, the Python packages can be used from within the virtual environment once it has been [activated](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#activating-a-virtual-environment). To ensure that the installation of the wheel packages was successful, check if a `mlrl/` directory has been created in the `lib/` directory of the virtual environment (depending on the Python version, it should be located at `venv/lib/python3.10/site-packages/mlrl/` or similar). If this is the case, the algorithm can be used from within your own Python code. Alternatively, the command line API can be used to start an experiment (see {ref}`testbed`).
 
 ## Cleaning up Build Files
 
