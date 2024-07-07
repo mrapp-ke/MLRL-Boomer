@@ -8,7 +8,7 @@ When using the command line API, as described {ref}`here<arguments-basic-usage>`
 
 The module or source file, which is given to the `testbed` command, must contain a class named `Runnable` that extends from `mlrl.testbed.BaseRunnable`. If you want to use a different class name, you can specify a different one via the command line arguments `-r` or `--runnable` as described {ref}`here<arguments-basic-usage>`. Besides the name of the machine learning algorithm to be integrated, the class must override the method `create_classifier`. It must return a scikit-learn compatible [estimator](https://scikit-learn.org/stable/glossary.html#term-estimators) to be used in experiments.
 
-In the following, we provide an examplary implementation of such a class using scikit-learn's [RandomForestClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier):
+In the following, we provide an exemplary implementation of such a class using scikit-learn's {py:class}`sklearn.ensemble.RandomForestClassifier`:
 
 ```python
 from mlrl.testbed import BaseRunnable
@@ -53,7 +53,7 @@ class Runnable(BaseRunnable):
 
 ```
 
-The method `configure_arguments` receives an `argparse.ArgumentParser`, which can be used to define any command line arguments you might need, as described in the [official documentation](https://docs.python.org/3/library/argparse.html).
+The method `configure_arguments` receives an {py:class}`argparse.ArgumentParser`, which can be used to define any command line arguments you might need, as described in the [official Python documentation](https://docs.python.org/3/library/argparse.html).
 
 ## Providing Version Information
 
