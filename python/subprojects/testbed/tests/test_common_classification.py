@@ -2,6 +2,7 @@
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
 from abc import ABC
+from typing import Optional
 from unittest import SkipTest
 
 from test_common import DATASET_BREAST_CANCER, DATASET_EMOTIONS, DATASET_EMOTIONS_NOMINAL, DATASET_EMOTIONS_ORDINAL, \
@@ -29,13 +30,17 @@ class ClassificationCmdBuilder(CmdBuilder):
 
     def __init__(self,
                  callback: CmdBuilder.AssertionCallback,
-                 cmd: str,
                  expected_output_dir: str,
+                 model_file_name: str,
+                 runnable_module_name: str,
+                 runnable_class_name: Optional[str] = None,
                  data_dir: str = DIR_DATA,
                  dataset: str = DATASET_EMOTIONS):
         super().__init__(callback=callback,
-                         cmd=cmd,
                          expected_output_dir=expected_output_dir,
+                         model_file_name=model_file_name,
+                         runnable_module_name=runnable_module_name,
+                         runnable_class_name=runnable_class_name,
                          data_dir=data_dir,
                          dataset=dataset)
         self.label_vectors_stored = False

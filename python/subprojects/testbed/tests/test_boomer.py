@@ -8,8 +8,6 @@ from test_common import DATASET_EMOTIONS, DIR_OUT, HOLDOUT_NO, HOLDOUT_RANDOM, C
 from test_common_classification import HOLDOUT_STRATIFIED_EXAMPLE_WISE, HOLDOUT_STRATIFIED_OUTPUT_WISE, \
     PREDICTION_TYPE_PROBABILITIES, PREDICTION_TYPE_SCORES, ClassificationCmdBuilder, ClassificationIntegrationTests
 
-CMD_BOOMER = 'boomer'
-
 LOSS_LOGISTIC_DECOMPOSABLE = 'logistic-decomposable'
 
 LOSS_LOGISTIC_NON_DECOMPOSABLE = 'logistic-non-decomposable'
@@ -65,7 +63,11 @@ class BoomerClassifierCmdBuilder(ClassificationCmdBuilder):
     """
 
     def __init__(self, callback: CmdBuilder.AssertionCallback, dataset: str = DATASET_EMOTIONS):
-        super().__init__(callback, cmd=CMD_BOOMER, expected_output_dir=path.join(DIR_OUT, CMD_BOOMER), dataset=dataset)
+        super().__init__(callback,
+                         expected_output_dir=path.join(DIR_OUT, 'boomer'),
+                         model_file_name='boomer',
+                         runnable_module_name='mlrl.boosting',
+                         dataset=dataset)
 
     def loss(self, loss: str = LOSS_LOGISTIC_DECOMPOSABLE):
         """
