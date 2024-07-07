@@ -32,11 +32,11 @@ testbed <module_or_source_file> --data-dir /path/to/dataset/ --dataset dataset-n
 
 The program dynamically loads a Python module or source file that provides an integration with a specific machine learning algorithm. To specify the module or source file to be used, the following mandatory arguments must be provided:
 
-- `<module_or_source_file>` The fully qualified name of a Python module, or an absolute or relative path to a Python source file, providing a Python class that extends from `mlrl.testbed.Runnable`. The name of the class must be `Runnable`, unless an alternative name is specified via the optional command line argument `-r` or `--runnable`.
+- `<module_or_source_file>` The fully qualified name of a Python module, or an absolute or relative path to a Python source file, providing a Python class that extends from {py:class}`mlrl.testbed.runnables.Runnable`. The name of the class must be `Runnable`, unless an alternative name is specified via the optional command line argument `-r` or `--runnable`.
 
 The following optional arguments allow additional control over the loading mechanism:
 
-- `-r` or `--runnable` (Default value = `Runnable`) The name of the class extending `mlrl.testbed.Runnable` that resides within the module or source file specified via the argument `<module_or_source_file>`.
+- `-r` or `--runnable` (Default value = `Runnable`) The name of the class extending {py:class}`mlrl.testbed.runnables.Runnable` that resides within the module or source file specified via the argument `<module_or_source_file>`.
 
 The arguments given above can be used to integrate any scikit-learn compatible machine learning algorithm with the comman line API. You can learn about this {ref}`here<runnables>`.
 
