@@ -5,7 +5,7 @@ from pathlib import Path
 
 from setuptools import find_packages, setup
 
-VERSION = (Path(__file__).resolve().parent.parent.parent.parent / 'VERSION').read_text()
+VERSION = (Path(__file__).resolve().parent.parent.parent.parent / '.version').read_text()
 
 PYTHON_VERSION = (Path(__file__).resolve().parent.parent.parent.parent / '.version-python').read_text()
 

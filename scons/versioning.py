@@ -7,7 +7,7 @@ import sys
 
 from typing import Optional, Tuple
 
-VERSION_FILE = 'VERSION'
+VERSION_FILE = '.version'
 
 DEV_VERSION_FILE = '.version-dev'
 
