@@ -16,13 +16,19 @@ The simplest and computationally least demanding strategy for obtaining training
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split train-test
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split train-test
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --data-split train-test
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split train-test
    ```
 ````
 
@@ -32,13 +38,19 @@ When it is the responsibility of the command line API to split a given dataset i
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split 'train-test{test_size=0.25}'
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split 'train-test{test_size=0.25}'
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --data-split 'train-test{test_size=0.25}'
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split 'train-test{test_size=0.25}'
    ```
 ````
 
@@ -52,13 +64,19 @@ A more elaborate strategy for splitting data into training and test sets, which 
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split cv
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split cv
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --data-split cv
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split cv
    ```
 ````
 
@@ -66,13 +84,19 @@ By default, a 10-fold cross validation, where ten models are trained and evaluat
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split 'cv{num_folds=5}'
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split 'cv{num_folds=5}'
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --data-split 'cv{num_folds=5}'
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split 'cv{num_folds=5}'
    ```
 ````
 
@@ -81,13 +105,19 @@ When providing the option `current_fold`, only a single fold, instead of the ent
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split 'cv{num_folds=5,current_fold=2}'
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split 'cv{num_folds=5,current_fold=2}'
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --data-split 'cv{num_folds=5,current_fold=2}'
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split 'cv{num_folds=5,current_fold=2}'
    ```
 ````
 `````
@@ -104,13 +134,19 @@ Sometimes, evaluating the performance of a model on the data it has been trained
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split none
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split none
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --data-split none
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split none
    ```
 ````
 
@@ -119,13 +155,21 @@ If you are interested in obtaining evaluation results for the training data in a
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split cv --evaluate-training-data true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split cv \
+       --evaluate-training-data true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --data-split cv --evaluate-training-data true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split cv \
+       --evaluate-training-data true
    ```
 ````    
 `````
@@ -144,13 +188,19 @@ We refer to real-valued predictions, which may be positive or negative, as *scor
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --prediction-type scores
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --prediction-type scores
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --prediction-type scores
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --prediction-type scores
    ```
 ````
 
@@ -164,13 +214,19 @@ Probability estimates are given as real values between zero and one. In the cont
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --prediction-type probabilities
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --prediction-type probabilities
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --prediction-type probabilities
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --prediction-type probabilities
    ```
 ````
 
@@ -182,13 +238,19 @@ The most common type of prediction used for multi-label classification are binar
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --prediction-type binary
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --prediction-type binary
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --prediction-type binary
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --prediction-type binary
    ```
 ````
 
@@ -200,13 +262,19 @@ When evaluating the predictive performance of an [ensemble method](https://en.wi
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --incremental-evaluation true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --incremental-evaluation true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --incremental-evaluation true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --incremental-evaluation true
    ```
 ````
 
@@ -220,12 +288,18 @@ For example, the following command may be used for the incremental evaluation of
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --incremental-evaluation 'true{min_size=200,max_size=1000,step_size=200}'
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --incremental-evaluation 'true{min_size=200,max_size=1000,step_size=200}'
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --incremental-evaluation 'true{min_size=200,max_size=1000,step_size=200}'
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --incremental-evaluation 'true{min_size=200,max_size=1000,step_size=200}'
    ```
 ````

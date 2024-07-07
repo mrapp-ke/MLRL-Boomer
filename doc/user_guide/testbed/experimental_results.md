@@ -18,13 +18,19 @@ By default, the predictive performance of all models trained during an experimen
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-evaluation true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-evaluation true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --print-evaluation true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-evaluation true
    ```
 ````
 
@@ -32,13 +38,21 @@ Accordingly, the argument `--store-evaluation` allows to enable or disable savin
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-evaluation true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --output-dir /path/to/results/ \
+       --store-evaluation true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-evaluation true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --output-dir /path/to/results/ \
+       --store-evaluation true
    ```
 ````
 
@@ -72,13 +86,19 @@ In cases where the {ref}`output-evaluation-results` obtained via the arguments `
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-predictions true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-predictions true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --print-predictions true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-predictions true
    ```
 ````
 
@@ -86,13 +106,20 @@ Alternatively, the argument ``--store-predictions`` can be used to save the pred
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-predictions true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --output-dir /path/to/results/ \
+       --store-predictions true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --print-prediction-characteristics true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-prediction-characteristics true
    ```
 ````
 
@@ -126,13 +153,20 @@ By using the command line argument ``--print-prediction-characteristics``, chara
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-prediction-characteristics true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-prediction-characteristics true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-predictions true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --output-dir /path/to/results/ \
+       --store-predictions true
    ```
 ````
 
@@ -140,13 +174,21 @@ Alternatively, they statistics can be written into a [.csv](https://en.wikipedia
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-prediction-characteristics true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --output-dir /path/to/results/ \
+       --store-prediction-characteristics true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-prediction-characteristics true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --output-dir /path/to/results/ \
+       --store-prediction-characteristics true
    ```
 ````
 
@@ -183,13 +225,19 @@ To obtain insightful statistics regarding the characteristics of a data set, the
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-data-characteristics true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-data-characteristics true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --print-data-characteristics true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-data-characteristics true
    ```
 ````
 
@@ -197,13 +245,20 @@ If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wik
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-data-characteristics true
+   testbed mlrl.boosting --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --output-dir /path/to/results/ \
+       --store-data-characteristics true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-data-characteristics true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --output-dir /path/to/results/ \
+       --store-data-characteristics true
    ```
 ````
 
@@ -244,13 +299,18 @@ We refer to the unique labels combinations present for different examples in a d
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-label-vectors true
+   testbed mlrl.boosting --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-label-vectors true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --print-label-vectors true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-label-vectors true
    ```
 ````
 
@@ -258,13 +318,19 @@ If you prefer writing the label vectors into an output file, the argument ``--st
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --store-label-vectors true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --store-label-vectors true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --store-label-vectors true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --store-label-vectors true
    ```
 ````
 
@@ -300,13 +366,19 @@ To obtain a quick overview of some statistics that characterize a rule-based mod
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-model-characteristics true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-model-characteristics true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --print-model-characteristics true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-model-characteristics true
    ```
 ````
 
@@ -314,13 +386,21 @@ The above command results in a tabular representation of the characteristics bei
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-model-characteristics true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --output-dir /path/to/results/ \
+       --store-model-characteristics true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-model-characteristics true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --output-dir /path/to/results/ \
+       --store-model-characteristics true
    ```
 ````
 
@@ -350,13 +430,19 @@ It is considered one of the advantages of rule-based machine learning models tha
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-rules true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-rules true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --print-rules true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-rules true
    ```
 ````
 
@@ -364,13 +450,21 @@ Alternatively, by using the argument ``--store-rules``, a textual representation
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-rules true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --output-dir /path/to/results/ \
+       --store-rules true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --output-dir /path/to/results/ --store-rules true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --output-dir /path/to/results/ \
+       --store-rules true
    ```
 ````
 
@@ -416,13 +510,21 @@ Some machine learning algorithms provided by this project allow to obtain probab
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --print-marginal-probability-calibration-model true --print-joint-probabiliy-calibration-model true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-marginal-probability-calibration-model true \
+       --print-joint-probabiliy-calibration-model true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --print-marginal-probability-calibration-model true --print-joint-probabiliy-calibration-model true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --print-marginal-probability-calibration-model true \
+       --print-joint-probabiliy-calibration-model true
    ```
 ````
 
@@ -430,13 +532,21 @@ Alternatively, a representations of the calibration models can be written into [
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --store-marginal-probability-calibration-model true --store-joint-probabiliy-calibration-model true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --store-marginal-probability-calibration-model true \
+       --store-joint-probabiliy-calibration-model true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --store-marginal-probability-calibration-model true --store-joint-probabiliy-calibration-model true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --store-marginal-probability-calibration-model true \
+       --store-joint-probabiliy-calibration-model true
    ```
 ````
 

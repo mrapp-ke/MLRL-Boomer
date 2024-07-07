@@ -6,13 +6,19 @@ Because the training of machine learning models can be time-consuming, they are 
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --model-dir /path/to/models
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --model-dir /path/to/models
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --model-dir /path/to/models
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --model-dir /path/to/models
    ```
 ````
 

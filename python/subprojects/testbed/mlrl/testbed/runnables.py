@@ -7,7 +7,7 @@ import logging as log
 import sys
 
 from abc import ABC, abstractmethod
-from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from argparse import ArgumentParser
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, Iterable, List, Optional, Set
@@ -270,44 +270,50 @@ class Runnable(ABC):
 
             return result
 
-    def __init__(self, description: str, program_info: Optional[ProgramInfo] = None):
+    @staticmethod
+    def __get_version(program_info: Optional[ProgramInfo]) -> str:
         """
-        :param description:     A description of the program
-        :param program_info:    Optional information about the program
-        """
-        self.parser = ArgumentParser(description=description, formatter_class=RawDescriptionHelpFormatter)
-        self.program_info = program_info
+        May be overridden by subclasses in order to provide information about the program's version.
 
-    def run(self):
+        :return: A string that provides information about the program's version
+        """
+        if program_info is not None:
+            return str(program_info)
+
+        raise RuntimeError('No information about the program version is available')
+
+    def run(self, args):
         """
         Executes the runnable.
+
+        :param args: The command line arguments
         """
-        parser = self.parser
-        self._configure_arguments(parser)
-        args = parser.parse_args()
-
-        # Configure the logger...
-        log_level = args.log_level
-        root = log.getLogger()
-        root.setLevel(log_level)
-        out_handler = log.StreamHandler(sys.stdout)
-        out_handler.setLevel(log_level)
-        out_handler.setFormatter(log.Formatter(LOG_FORMAT))
-        root.addHandler(out_handler)
-
+        self.configure_logger(args)
         self._run(args)
 
-    def _configure_arguments(self, parser: ArgumentParser):
+    def get_program_info(self) -> Optional[ProgramInfo]:
+        """
+        May be overridden by subclasses in order to provide information about the program to be printed via the command
+        line argument '-v' or '--version'. 
+
+        :return: The `Runnable.ProgramInfo` that has been provided
+        """
+        return None
+
+    def configure_arguments(self, parser: ArgumentParser):
         """
         May be overridden by subclasses in order to configure the command line arguments of the program.
 
         :param parser:  An `ArgumentParser` that is used for parsing command line arguments
         """
-        if self.program_info is not None:
+        # pylint: disable=assignment-from-none
+        program_info = self.get_program_info()
+
+        if program_info is not None:
             parser.add_argument('-v',
                                 '--version',
                                 action='version',
-                                version=self._get_version(),
+                                version=self.__get_version(program_info),
                                 help='Display information about the program\'s version.')
 
         parser.add_argument('--log-level',
@@ -315,16 +321,19 @@ class Runnable(ABC):
                             default=LogLevel.INFO.value,
                             help='The log level to be used. Must be one of ' + format_enum_values(LogLevel) + '.')
 
-    def _get_version(self) -> str:
+    def configure_logger(self, args):
         """
-        May be overridden by subclasses in order to provide information about the program's version.
+        May be overridden by subclasses in order to configure the logger to be used by the program.
 
-        :return: A string that provides information about the program's version
+        :param args: The command line arguments
         """
-        if self.program_info is not None:
-            return str(self.program_info)
-
-        raise RuntimeError('No information about the program version is available')
+        log_level = args.log_level
+        root = log.getLogger()
+        root.setLevel(log_level)
+        out_handler = log.StreamHandler(sys.stdout)
+        out_handler.setLevel(log_level)
+        out_handler.setFormatter(log.Formatter(LOG_FORMAT))
+        root.addHandler(out_handler)
 
     @abstractmethod
     def _run(self, args):
@@ -337,7 +346,8 @@ class Runnable(ABC):
 
 class LearnerRunnable(Runnable, ABC):
     """
-    A base class for all programs that perform an experiment that involves training and evaluation of a learner.
+    A base class for all programs that perform an experiment that involves training and evaluation of a machine learning
+    algorithm.
     """
 
     class ClearOutputDirHook(Experiment.ExecutionHook):
@@ -468,11 +478,11 @@ class LearnerRunnable(Runnable, ABC):
 
     PARAM_PREDICTION_TYPE = '--prediction-type'
 
-    def __init__(self, description: str, learner_name: str, program_info: Optional[Runnable.ProgramInfo] = None):
+    def __init__(self, learner_name: str):
         """
         :param learner_name: The name of the learner
         """
-        super().__init__(description=description, program_info=program_info)
+        super().__init__()
         self.learner_name = learner_name
 
     def __create_prediction_type(self, args) -> PredictionType:
@@ -520,8 +530,8 @@ class LearnerRunnable(Runnable, ABC):
         return None if args.output_dir is None or current_fold >= 0 else LearnerRunnable.ClearOutputDirHook(
             output_dir=args.output_dir)
 
-    def _configure_arguments(self, parser: ArgumentParser):
-        super()._configure_arguments(parser)
+    def configure_arguments(self, parser: ArgumentParser):
+        super().configure_arguments(parser)
         parser.add_argument(self.PARAM_RANDOM_STATE,
                             type=int,
                             default=None,
@@ -647,7 +657,7 @@ class LearnerRunnable(Runnable, ABC):
         test_evaluation = self._create_test_evaluation(args, prediction_type)
         data_splitter = self.__create_data_splitter(args)
         pre_execution_hook = self.__create_pre_execution_hook(args, data_splitter)
-        base_learner = self._create_learner(args)
+        base_learner = self.create_classifier(args)
         pre_training_output_writers = self._create_pre_training_output_writers(args)
         post_training_output_writers = self._create_post_training_output_writers(args)
         parameter_input = self._create_parameter_input(args)
@@ -972,9 +982,10 @@ class LearnerRunnable(Runnable, ABC):
         return LabelVectorWriter(sinks) if len(sinks) > 0 else None
 
     @abstractmethod
-    def _create_learner(self, args):
+    def create_classifier(self, args):
         """
-        Must be implemented by subclasses in order to create the learner.
+        Must be implemented by subclasses in order to create a machine learning algorithm that can be applied to
+        classification problems.
 
         :param args:    The command line arguments
         :return:        The learner that has been created
@@ -1039,25 +1050,19 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     PARAM_SPARSE_FEATURE_VALUE = '--sparse-feature-value'
 
-    def __init__(self,
-                 description: str,
-                 learner_name: str,
-                 learner_type: type,
-                 config_type: type,
-                 parameters: Set[Parameter],
-                 program_info: Optional[Runnable.ProgramInfo] = None):
+    def __init__(self, learner_name: str, learner_type: type, config_type: type, parameters: Set[Parameter]):
         """
         :param learner_type:    The type of the rule learner
         :param config_type:     The type of the rule learner's configuration
         :param parameters:      A set that contains the parameters that may be supported by the rule learner
         """
-        super().__init__(description=description, learner_name=learner_name, program_info=program_info)
+        super().__init__(learner_name=learner_name)
         self.learner_type = learner_type
         self.config_type = config_type
         self.parameters = parameters
 
-    def _configure_arguments(self, parser: ArgumentParser):
-        super()._configure_arguments(parser)
+    def configure_arguments(self, parser: ArgumentParser):
+        super().configure_arguments(parser)
         parser.add_argument(self.PARAM_INCREMENTAL_EVALUATION,
                             type=str,
                             default=BooleanOption.FALSE.value,
@@ -1158,7 +1163,7 @@ class RuleLearnerRunnable(LearnerRunnable):
                           fit_kwargs=kwargs,
                           predict_kwargs=kwargs)
 
-    def _create_learner(self, args):
+    def create_classifier(self, args):
         kwargs = create_kwargs_from_parameters(args, self.parameters)
         kwargs['random_state'] = args.random_state
         kwargs['feature_format'] = args.feature_format
