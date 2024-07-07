@@ -72,10 +72,5 @@ setup(name='mlrl-testbed',
           'SECO': ['mlrl-seco==' + VERSION],
       },
       packages=find_packages(),
-      entry_points={
-          'console_scripts': [
-              'boomer=mlrl.testbed.main_boomer:main [BOOMER]',
-              'seco=mlrl.testbed.main_seco:main [SECO]',
-          ]
-      },
+      entry_points={'console_scripts': ['testbed=mlrl.testbed.main:main', ]},
       zip_safe=True)
