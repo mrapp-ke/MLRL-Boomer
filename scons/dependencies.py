@@ -48,10 +48,10 @@ def __pip_install(requirement: Requirement, dry_run: bool = False):
                                         exit_on_error=not dry_run)
         stdout = str(out.stdout).strip()
         stdout_lines = stdout.split('\n')
-        dependency = requirement.dependency
 
-        if not reduce(lambda aggr, line: aggr | line.startswith('Requirement already satisfied: ' + dependency),
-                      stdout_lines, False):
+        if reduce(
+                lambda aggr, line: aggr | line.startswith('Would install') and __normalize_dependency(line).find(
+                    requirement.dependency) >= 0, stdout_lines, False):
             if dry_run:
                 __run_pip_install_command(requirement, print_args=True)
             else:
