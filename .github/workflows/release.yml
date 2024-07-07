@@ -5,10 +5,25 @@ on:
     types:
       - published
 jobs:
+  read_python_version:
+    name: Read Python version
+    runs-on: ubuntu-latest
+    outputs:
+      python_version: ${{ steps.python_version.outputs.content }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Read Python version
+        uses: juliangruber/read-file-action@v1
+        id: python_version
+        with:
+          path: .version-python
   publish_packages:
+    needs: read_python_version
     name: Publish wheel packages
     uses: ./.github/workflows/template_publish.yml
     with:
+      python_version: ${{ needs.read_python_version.outputs.python_version }}
       pypi_repository: pypi
     secrets:
       pypi_username: ${{ secrets.PYPI_USERNAME }}
