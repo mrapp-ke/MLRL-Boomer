@@ -11,6 +11,8 @@ from setuptools.command.build_ext import build_ext
 
 VERSION = (Path(__file__).resolve().parent.parent.parent.parent / 'VERSION').read_text()
 
+PYTHON_VERSION = (Path(__file__).resolve().parent.parent.parent.parent / '.version-python').read_text()
+
 
 class PrecompiledExtension(Extension):
     """
@@ -104,7 +106,7 @@ setup(name='mlrl-boomer',
           'MacOS',
           'Windows',
       ],
-      python_requires='>=3.10',
+      python_requires=PYTHON_VERSION,
       install_requires=[
           'mlrl-common==' + VERSION,
       ],

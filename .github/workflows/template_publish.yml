@@ -3,6 +3,9 @@ name: Publish wheel packages
 on:
   workflow_call:
     inputs:
+      python_version:
+        required: true
+        type: string
       dev_release:
         required: false
         type: boolean
@@ -30,6 +33,7 @@ jobs:
     uses: ./.github/workflows/template_publish_platform.yml
     with:
       subproject: common
+      python_version: ${{ inputs.python_version }}
       dev_release: ${{ inputs.dev_release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets:
@@ -40,6 +44,7 @@ jobs:
     uses: ./.github/workflows/template_publish_platform.yml
     with:
       subproject: boosting
+      python_version: ${{ inputs.python_version }}
       dev_release: ${{ inputs.dev_release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets:
@@ -50,6 +55,7 @@ jobs:
     uses: ./.github/workflows/template_publish_platform.yml
     with:
       subproject: seco
+      python_version: ${{ inputs.python_version }}
       dev_release: ${{ inputs.dev_release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets:
@@ -60,6 +66,7 @@ jobs:
     uses: ./.github/workflows/template_publish_non_native.yml
     with:
       subproject: common
+      python_version: ${{ inputs.python_version }}
       dev_release: ${{ inputs.dev_release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets:
@@ -70,6 +77,7 @@ jobs:
     uses: ./.github/workflows/template_publish_non_native.yml
     with:
       subproject: boosting
+      python_version: ${{ inputs.python_version }}
       dev_release: ${{ inputs.dev_release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets:
@@ -80,6 +88,7 @@ jobs:
     uses: ./.github/workflows/template_publish_non_native.yml
     with:
       subproject: seco
+      python_version: ${{ inputs.python_version }}
       dev_release: ${{ inputs.dev_release }}
       pypi_repository: ${{ inputs.pypi_repository }}
     secrets:
