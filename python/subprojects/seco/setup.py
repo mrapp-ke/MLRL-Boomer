@@ -103,7 +103,7 @@ setup(name='mlrl-seco',
           'MacOS',
           'Windows',
       ],
-      python_requires='>=3.9',
+      python_requires='>=3.10',
       install_requires=[
           'mlrl-common==' + VERSION,
       ],
