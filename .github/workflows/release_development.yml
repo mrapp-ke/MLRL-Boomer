@@ -34,11 +34,27 @@ jobs:
           git add VERSION.dev
           git commit -m "[Bot] Update development version to $(cat VERSION.dev)."
           git push
+  read_python_version:
+    name: Read Python version
+    runs-on: ubuntu-latest
+    outputs:
+      python_version: ${{ steps.python_version.outputs.content }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Read Python version
+        uses: juliangruber/read-file-action@v1
+        id: python_version
+        with:
+          path: .version-python
   publish_packages:
     name: Publish wheel packages
-    needs: update_development_version
+    needs:
+      - update_development_version
+      - read_python_version
     uses: ./.github/workflows/template_publish.yml
     with:
+      python_version: ${{ needs.read_python_version.outputs.python_version }}
       pypi_repository: testpypi
       dev_release: true
     secrets:
