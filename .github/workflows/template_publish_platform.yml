@@ -6,6 +6,9 @@ on:
       subproject:
         required: true
         type: string
+      python_version:
+        required: true
+        type: string
       dev_release:
         required: false
         type: boolean
@@ -55,6 +58,7 @@ jobs:
           CIBW_BUILD_FRONTEND: build
           CIBW_ARCHS: auto64
           CIBW_SKIP: pp* *musllinux*
+          CIBW_PROJECT_REQUIRES_PYTHON: ${{ inputs.python_version }}
         with:
           package-dir: python/subprojects/${{ inputs.subproject }}/
       - name: Setup Python
