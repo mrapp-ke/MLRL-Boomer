@@ -60,12 +60,12 @@ Accordingly, the argument `--store-evaluation` allows to enable or disable savin
 The command line arguments ``--print-evaluation`` and ``--store-evaluation`` come with several options for customization described {ref}`here<arguments-evaluation-results>`. It is possible to specify the performance metrics that should be used for evaluation by providing a black- or whitelist. Moreover, one can specify whether performance scores should be given as percentages and the number of decimals used for these scores can be chosen freely.
 ```
 
-The number of models evaluated during an experiment varies depending on the strategy used for splitting the available data into training and test sets. When using {ref}`train-test-split`, only a single model is evaluated. The performance scores according to different metrics that assess the quality of the model's predictions are saved to a single output file. In addition, if an {ref}`evaluating-training-data` is used, the performance scores for the model's predictions on the training set are also evaluated and written to a file. As shown below, the names of the output files specify whether predictions for the training or test set have been evaluated:
+The number of models evaluated during an experiment varies depending on the strategy used for splitting the available data into training and test sets. When using {ref}`train-test splits<train-test-split>`, only a single model is evaluated. The performance scores according to different metrics that assess the quality of the model's predictions are saved to a single output file. In addition, when {ref}`evaluating on the training data<evaluating-training-data>`, the performance scores for the model's predictions on the training set are also evaluated and written to a file. As shown below, the names of the output files specify whether predictions for the training or test set have been evaluated:
 
 - `evaluation_train_overall.csv`
 - `evaluation_test_overall.csv`
 
-When using a {ref}`cross-validation`, a model is trained and evaluated for each fold. Again, the names of the output files specify whether predictions for the training or test data have been evaluated:
+When using a {ref}`cross validation<cross-validation>`, a model is trained and evaluated for each fold. Again, the names of the output files specify whether predictions for the training or test data have been evaluated:
 
 - `evaluation_train_fold-1.csv`
 - `evaluation_test_fold-1.csv`
@@ -82,7 +82,7 @@ When using a {ref}`cross-validation`, a model is trained and evaluated for each 
 
 ## Predictions
 
-In cases where the {ref}`output-evaluation-results` obtained via the arguments ``--print-evaluation`` or ``--store-evaluation`` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console, together with the ground truth labels, by proving the argument ``--print-predictions``:
+In cases where the {ref}`evaluation results<output-evaluation-results>` obtained via the arguments ``--print-evaluation`` or ``--store-evaluation`` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console, together with the ground truth labels, by proving the argument ``--print-predictions``:
 
 ````{tab} BOOMER
    ```text
@@ -124,15 +124,15 @@ Alternatively, the argument ``--store-predictions`` can be used to save the pred
 ````
 
 ```{tip}
-Depending on the {ref}`prediction-types`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if scores or proability estimates are provided). When working with real-valued predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions`` and ``--store-predictions`` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
+Depending on the {ref}`type of predictions<prediction-types>`, the machine learning models used in an experiment are supposed to provide, the predictions stored in the resulting output files are either binary values (if binary predictions are provided), or real values (if scores or proability estimates are provided). When working with real-valued predictions, the option ``decimals`` may be supplied to the arguments ``--print-predictions`` and ``--store-predictions`` to specify the number of decimals that should be included in the output (see {ref}`here<arguments-predictions>` for more information).
 ```
 
-When using {ref}`train-test-split`, a single model is trained and queried for predictions for the test set. These predictions are written into a single output file. When using an {ref}`evaluating-training-data`, predictions are also obtained for the training set and written into an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:
+When using {ref}`train-test splits<train-test-split>`, a single model is trained and queried for predictions for the test set. These predictions are written into a single output file. When {ref}`evaluating on the training data<evaluating-training-data>`, predictions are also obtained for the training set and written into an additional output file. The names of the output files indicate whether the predictions have been obtained for the training or test set, respectively:
 
 - `predictions_train_overall.arff`
 - `predictions_test_overall.arff`
 
-When using a {ref}`cross-validation` for performance evaluation, a model is trained for each fold. Similar to before, the names of the output files indicate whether the predictions correspond to the training or test data:
+When using a {ref}`cross validation<cross-validation>` for performance evaluation, a model is trained for each fold. Similar to before, the names of the output files indicate whether the predictions correspond to the training or test data:
 
 - `predictions_train_fold-1.arff`
 - `predictions_test_fold-1.arff`
@@ -196,12 +196,12 @@ Alternatively, they statistics can be written into a [.csv](https://en.wikipedia
 The output produced by the arguments ``--print-data-characteristics`` and ``--store-data-characteristics`` can be customized via several options described {ref}`here<arguments-prediction-characteristics>`. It is possible to exclude certain statistics from the output, to specify whether they should be given as percentages, and how many decimal places should be used.
 ```
 
-The statistics obtained via the arguments given above correspond to the test data for which predictions are obtained from the model. Consequently, they depend on the strategy used for splitting a dataset into training and test sets. When using {ref}`train-test-split`, predictions for a single test set are obtained and their characteristics are written into a file. In addition, statistics for the training data are written into an additional output file when using an {ref}`evaluating-training-data`:
+The statistics obtained via the arguments given above correspond to the test data for which predictions are obtained from the model. Consequently, they depend on the strategy used for splitting a dataset into training and test sets. When using {ref}`train-test splits<train-test-split>`, predictions for a single test set are obtained and their characteristics are written into a file. In addition, statistics for the training data are written into an additional output file when {ref}`evaluating on the training data<evaluating-training-data>`:
 
 - `prediction_characteristics_train_overall.arff`
 - `prediction_characteristics_test_overall.arff`
 
-When using a {ref}`cross-validation`, the data is split into several parts of which each one is used once for prediction. Multiple output files are needed to save the statistics for different cross validation folds. For example, a 5-fold cross validation results in the following files:
+When using a {ref}`cross validation<cross-validation>`, the data is split into several parts of which each one is used once for prediction. Multiple output files are needed to save the statistics for different cross validation folds. For example, a 5-fold cross validation results in the following files:
 
 - `prediction_characteristics_fold-1.csv`
 - `prediction_characteristics_fold-2.csv`
@@ -266,11 +266,11 @@ If you prefer to write the statistics into a [.csv](https://en.wikipedia.org/wik
 As shown {ref}`here<arguments-data-characteristics>`, the arguments ``--print-data-characteristics`` and ``--store-data-characteristics`` come with several options that allow to exclude specific statistics from the respective output. It is also possible to specify whether percentages should be prefered for presenting the statistics. Additionally, the number of decimals to be included in the output can be limited.
 ```
 
-The statistics provided by the previous commands are obtained on the training data and therefore depend on the strategy used for splitting a dataset into training and test sets. If {ref}`train-test-split` are used, a single training set is used and its characteristics are saved to a file:
+The statistics provided by the previous commands are obtained on the training data and therefore depend on the strategy used for splitting a dataset into training and test sets. If {ref}`train-test splits<train-test-split>` are used, a single training set is used and its characteristics are saved to a file:
 
 - `data_characteristics_overall.csv`
 
-In contrast, when using a {ref}`cross-validation`, the data is split into several parts of which each one is used once for training. As a result, multiple output files are created in a such a scenario. For example, a 5-fold cross validation results in the following files:
+In contrast, when using a {ref}`cross validation<cross-validation>`, the data is split into several parts of which each one is used once for training. As a result, multiple output files are created in a such a scenario. For example, a 5-fold cross validation results in the following files:
 
 - `data_characteristics_fold-1.csv`
 - `data_characteristics_fold-2.csv`
@@ -334,11 +334,11 @@ If you prefer writing the label vectors into an output file, the argument ``--st
    ```
 ````
 
-When using {ref}`train-test-split` for splitting the available data into distinct training and test sets, a single output file is created. It stores the label vectors present in the training data:
+When using {ref}`train-test splits<train-test-split>` for splitting the available data into distinct training and test sets, a single output file is created. It stores the label vectors present in the training data:
 
 - `label_vectors_overall.csv`
 
-When using a {ref}`cross-validation`, several models are trained on different parts of the dataset. The label vectors present in each of these training sets are written into separate output files. For example, the following files result from a 5-fold cross validation:
+When using a {ref}`cross validation<cross-validation>`, several models are trained on different parts of the dataset. The label vectors present in each of these training sets are written into separate output files. For example, the following files result from a 5-fold cross validation:
 
 - `label_vectors_fold-1.csv`
 - `label_vectors_fold-2.csv`
@@ -404,11 +404,11 @@ The above command results in a tabular representation of the characteristics bei
    ```
 ````
 
-Model characteristics are obtained for each model training during an experiment. This means that a single output file is created when using on {ref}`train-test-split`:
+Model characteristics are obtained for each model training during an experiment. This means that a single output file is created when using on {ref}`train-test splits<train-test-split>`:
 
 - `model_characteristics_overall.csv`
 
-When using a {ref}`cross-validation`, several models are trained on different parts of the available data, resulting in multiple output files being saved to the output directory. For example, the following files are created when conducting a 5-fold cross validation:
+When using a {ref}`cross validation<cross-validation>`, several models are trained on different parts of the available data, resulting in multiple output files being saved to the output directory. For example, the following files are created when conducting a 5-fold cross validation:
 
 - `model_characteristics_fold-1.csv`
 - `model_characteristics_fold-2.csv`
@@ -472,11 +472,11 @@ Alternatively, by using the argument ``--store-rules``, a textual representation
 Both, the ``--print-rules`` and ``--store-rules`` arguments, come with several options that allow to customize the textual representation of models. An overview of these options is provided {ref}`here<arguments-output-rules>`.
 ```
 
-When using {ref}`train-test-split`, only a single model is trained. Consequently, the above command results in a single output file being created:
+When using {ref}`train-test splits<train-test-split>`, only a single model is trained. Consequently, the above command results in a single output file being created:
 
 - `rules_overall.csv`
 
-A {ref}`cross-validation` results in multiple output files, each one corresponding to one of the models trained for an individual fold, being written. For example, a 5-fold cross validation produces the following files:
+A {ref}`cross validation<cross-validation>` results in multiple output files, each one corresponding to one of the models trained for an individual fold, being written. For example, a 5-fold cross validation produces the following files:
 
 - `rules_fold-1.csv`
 - `rules_fold-2.csv`
@@ -554,12 +554,12 @@ Alternatively, a representations of the calibration models can be written into [
 All of the above commands come with options for customizing the textual representation of models. A more detailed description of these options is available {ref}`here<arguments-probability-calibration-models>`.
 ```
 
-Calibration models are learned during training and depend on the training data. {ref}`train-test-split`, where only a single model is trained, result in a single file being created for each type of calibration model:
+Calibration models are learned during training and depend on the training data. {ref}`train-test splits<train-test-split>`, where only a single model is trained, result in a single file being created for each type of calibration model:
 
 - `marginal_probability_calibration_model_overall.csv`
 - `joint_probability_calibration_model_overall.csv`
 
-In contrast, a {ref}`cross-validation` produces multiple output files. Each one corresponds to a calibration model learned on the training data for an individual fold. For example, the following files are created when using a 5-fold cross validation:
+In contrast, a {ref}`cross validation<cross-validation>` produces multiple output files. Each one corresponds to a calibration model learned on the training data for an individual fold. For example, the following files are created when using a 5-fold cross validation:
 
 - `marginal_probability_calibration_model_fold-1.csv`
 - `marginal_probability_calibration_model_fold-2.csv`
