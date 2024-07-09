@@ -17,7 +17,7 @@ namespace seco {
      *                               as well as their overall quality
      */
     template<typename RuleEvaluationFactory>
-    class IDecomposableStatistics : public ICoverageStatistics {
+    class IDecomposableStatistics : virtual public ICoverageStatistics {
         public:
 
             virtual ~IDecomposableStatistics() override {}
