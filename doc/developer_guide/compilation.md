@@ -4,7 +4,7 @@
 
 As discussed in the previous section {ref}`project-structure`, the algorithms that are provided by this project are implemented in [C++](https://en.wikipedia.org/wiki/C%2B%2B) to ensure maximum efficiency (requires C++ 17 or newer). In addition, a [Python](<https://en.wikipedia.org/wiki/Python_(programming_language)>) wrapper that integrates with the [scikit-learn](https://scikit-learn.org) framework is provided (requires Python 3.10 or newer). To make the underlying C++ implementation accessible from within the Python code, [Cython](https://en.wikipedia.org/wiki/Cython) is used (requires Cython 3.0 or newer).
 
-Unlike pure Python programs, the C++ and Cython source files must be compiled for a particular target platform. To ease the process of compiling the source code, the project comes with a [SCons](https://scons.org/) build that automates the necessary steps. In the following, we discuss the individual steps that are necessary for building the project from scratch. This is necessary if you intend to modify the library's source code. If you want to use the algorithm without any custom modifications, the {ref}`installation` of pre-built packages is usually a better choice.
+Unlike pure Python programs, the C++ and Cython source files must be compiled for a particular target platform. To ease the process of compiling the source code, the project comes with a [SCons](https://scons.org/) build that automates the necessary steps. In the following, we discuss the individual steps that are necessary for building the project from scratch. This is necessary if you intend to modify the library's source code. If you want to use the algorithm without any custom modifications, the {ref}`installation <installation>` of pre-built packages is usually a better choice.
 
 ## Prerequisites
 
@@ -21,11 +21,11 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **C++ compiler**
      - Most Linux distributions provide the [GNU Compiler Collection](https://gcc.gnu.org/) (GCC), which includes a C++ compiler, as part of their software repositories. If this is the case, it can be installed via the distribution's package manager.
    * - **GoogleTest**
-     - The [GoogleTest](https://github.com/google/googletest) framework must optionally be available in order to compile the project with {ref}`testing-support` enabled. It should be possible to install it via the package manager of your Linux distribution.
+     - The [GoogleTest](https://github.com/google/googletest) framework must optionally be available in order to compile the project with {ref}`testing support <testing-support>` enabled. It should be possible to install it via the package manager of your Linux distribution.
    * - **OpenMP**
-     - [OpenMP](https://en.wikipedia.org/wiki/OpenMP), which is optionally required for {ref}`multi-threading-support`, should be installable via your Linux distribution's package manager.         
+     - [OpenMP](https://en.wikipedia.org/wiki/OpenMP), which is optionally required for {ref}`multi-threading support <multi-threading-support>`, should be installable via your Linux distribution's package manager.         
    * - **OpenCL**
-     - If the project should be compiled with {ref}`gpu-support`, [OpenCL](https://www.khronos.org/opencl/) must be available. On Linux, it should be installable via your distribution's package manager.
+     - If the project should be compiled with {ref}`GPU support <gpu-support>`, [OpenCL](https://www.khronos.org/opencl/) must be available. On Linux, it should be installable via your distribution's package manager.
    ```
 ````
 
@@ -36,11 +36,11 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **C++ compiler**
      - MacOS relies on the [Clang](https://en.wikipedia.org/wiki/Clang) compiler for building C++ code. It is part of the [Xcode](https://developer.apple.com/support/xcode/) developer toolset.
    * - **GoogleTest**
-     - The [GoogleTest](https://github.com/google/googletest) framework must optionally be installed in order to compile the project with {ref}`testing-support` enabled. It can easily be installed via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by runnig the command `brew install googletest`.
+     - The [GoogleTest](https://github.com/google/googletest) framework must optionally be installed in order to compile the project with {ref}`testing support <testing-support>` enabled. It can easily be installed via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by runnig the command `brew install googletest`.
    * - **OpenMP**
-     - If the project should be compiled with {ref}`multi-threading-support` enabled, the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library must be installed. We recommend to install it via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by running the command `brew install libomp`.
+     - If the project should be compiled with {ref}`multi-threading support <multi-threading-support>` enabled, the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library must be installed. We recommend to install it via [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) by running the command `brew install libomp`.
    * - **OpenCL**
-     - The [Xcode](https://developer.apple.com/support/xcode/) developer toolset should include [OpenCL](https://www.khronos.org/opencl/), which are needed for {ref}`gpu-support`. However, the [OpenCL C++ headers](https://github.com/KhronosGroup/OpenCL-Headers) must be installed manually. The easiest way to do so is via the [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) command `brew install opencl-clhpp-headers`.
+     - The [Xcode](https://developer.apple.com/support/xcode/) developer toolset should include [OpenCL](https://www.khronos.org/opencl/), which are needed for {ref}`GPU support <gpu-support>`. However, the [OpenCL C++ headers](https://github.com/KhronosGroup/OpenCL-Headers) must be installed manually. The easiest way to do so is via the [Homebrew](<https://en.wikipedia.org/wiki/Homebrew_(package_manager)>) command `brew install opencl-clhpp-headers`.
    ```
 ````
 
@@ -51,11 +51,11 @@ This project uses [Meson](https://mesonbuild.com/) as a build system for compili
    * - **C++ compiler**
      - For the compilation of the project's source code, the MSVC compiler must be used. It is included in [Visual Studio](https://visualstudio.microsoft.com/downloads/).
    * - **GoogleTest**
-     - The [GoogleTest](https://github.com/google/googletest) framework must optionally be available on your system to compile the project with {ref}`testing-support` enabled. It should already be included in recent versions of [Visual Studio](https://learn.microsoft.com/en-us/visualstudio/test/how-to-use-google-test-for-cpp?view=vs-2022).
+     - The [GoogleTest](https://github.com/google/googletest) framework must optionally be available on your system to compile the project with {ref}`testing support <testing-support>` enabled. It should already be included in recent versions of [Visual Studio](https://learn.microsoft.com/en-us/visualstudio/test/how-to-use-google-test-for-cpp?view=vs-2022).
    * - **OpenMP**
-     - The [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/) also include the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library, which is utilized by the project for {ref}`multi-threading-support`.
+     - The [Build Tools for Visual Studio](https://visualstudio.microsoft.com/downloads/) also include the [OpenMP](https://en.wikipedia.org/wiki/OpenMP) library, which is utilized by the project for {ref}`multi-threading support <multi-threading-support>`.
    * - **OpenCL**
-     - If you intend to compile the project with {ref}`gpu-support` enabled, [OpenCL](https://www.khronos.org/opencl/) must be installed manually. In order to do so, we recommend to install the package `opencl` via the package manager [vcpkg](https://github.com/microsoft/vcpkg).
+     - If you intend to compile the project with {ref}`GPU support <gpu-support>` enabled, [OpenCL](https://www.khronos.org/opencl/) must be installed manually. In order to do so, we recommend to install the package `opencl` via the package manager [vcpkg](https://github.com/microsoft/vcpkg).
    ```
 ````
 
@@ -86,7 +86,7 @@ Whenever any C++, Cython or Python source files have been modified, the above co
 `````
 
 `````{note}
-As shown in {ref}`project-structure`, this project is organized in terms of several subprojects. By default, all of these subprojects are built when following the instructions below. However, the environment variable `SUBPROJECTS` may be used to restrict individual steps of the build process, such as the compilation of C++ and Cython code, the assemblage of Python packages, and the generation of apidocs, to a subset of the available subprojects. As shown below, multiple subprojects can be specified as a comma-separated list:
+As shown in the section {ref}`project-structure`, this project is organized in terms of several subprojects. By default, all of these subprojects are built when following the instructions below. However, the environment variable `SUBPROJECTS` may be used to restrict individual steps of the build process, such as the compilation of C++ and Cython code, the assemblage of Python packages, and the generation of apidocs, to a subset of the available subprojects. As shown below, multiple subprojects can be specified as a comma-separated list:
 
 ````{tab} Linux
    ```text
@@ -209,7 +209,7 @@ The shared libraries that have been created in the previous steps from the C++ s
 This should result in the compilation files, which were previously located in the `cpp/build/` directory, to be copied into the `cython/` subdirectories that are contained by each Python module (e.g., into the directory `python/subprojects/common/mlrl/common/cython/`).
 
 ```{tip}
-When shared libaries are built via {ref}`ci` jobs, the resulting files for different platform are saved as [artifacts](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts) and can be downloaded as zip archives.
+When shared libaries are built via {ref}`Continuous Integration <ci>` jobs, the resulting files for different platform are saved as [artifacts](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts) and can be downloaded as zip archives.
 ```
 
 ## Installing Extension Modules
@@ -348,7 +348,7 @@ This project comes with unit tests for the C++ code it contains (see {ref}`testi
 
 By default, the project is built with multi-threading support enabled. This requires [OpenMP](https://www.openmp.org/) to be available on the host system. In order to compile the project without multi-threading support, e.g., because OpenMP is not available, the build option `multi_threading_support` can be set to `disabled` instead of `enabled`. Alternatively, the desired value can be specified via the environment variable `MULTI_THREADING_SUPPORT`.
 
-When using the {ref}`testbed`, the command `testbed mlrl.boosting --version` or `testbed mlrl.boosting -v` can be executed to check whether the program was built with multi-threading support enabled or not. It prints the build options used for compilation, as well as information about the CPU cores available on the system for multi-threading.
+When using the {ref}`command line API <testbed>`, the command `testbed mlrl.boosting --version` or `testbed mlrl.boosting -v` can be executed to check whether the program was built with multi-threading support enabled or not. It prints the build options used for compilation, as well as information about the CPU cores available on the system for multi-threading.
 
 If you need to access this information programmatically in your own Python or C++ code, the following code snippets can be used (see {ref}`python-apidoc` and {ref}`cpp-apidoc`):
 
@@ -380,7 +380,7 @@ So far, GPU support is still at an early stage of development. No algorithm prov
 
 GPU support via [OpenCL](https://www.khronos.org/opencl/) is enabled by default when building the project. However, it can be disabled at compile-time by setting the build option `gpu_support` to `disabled` instead of `enabled`. Alternatively, the desired value can be specified via the environment variable `GPU_SUPPORT`.
 
-An easy way to check whether the program was built with GPU support enabled or not, is to run the `testbed mlrl.boosting --version` or `testbed mlrl.boosting -v` command that is provided by the {ref}`testbed`. It prints the build options used for compiling the program, together with a list of supported GPUs available on your machine.
+An easy way to check whether the program was built with GPU support enabled or not, is to run the `testbed mlrl.boosting --version` or `testbed mlrl.boosting -v` command that is provided by the {ref}`command line API <testbed>`. It prints the build options used for compiling the program, together with a list of supported GPUs available on your machine.
 
 Alternatively, this information can be retrieved programmatically via the Python or C++ API as shown below (see {ref}`python-apidoc` and {ref}`cpp-apidoc`):
 
