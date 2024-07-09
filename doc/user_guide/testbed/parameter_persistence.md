@@ -2,7 +2,7 @@
 
 # Saving and Loading Parameters
 
-To remember the parameters that have been used for training a model, it might be useful to save them to disk. Similar to {ref}`model-persistence`, keeping the resulting files allows to load a previously used configuration and reuse it at a later point in time.
+To remember the parameters that have been used for training a model, it might be useful to save them to disk. Similar to {ref}`saving models<model-persistence>`, keeping the resulting files allows to load a previously used configuration and reuse it at a later point in time.
 
 On the one hand, this requires to specify a directory where parameter settings should be saved via the command line argument `--parameter-dir`. On the other hand, the argument `--store-parameters true` instructs the program to save custom parameters that are set via command line argments (see {ref}`setting-algorithmic-parameters`). For example, the following command sets a custom value for a parameter, which is stored in an output file:
 
@@ -32,11 +32,11 @@ On the one hand, this requires to specify a directory where parameter settings s
 The path of the directory, where parameter settings should be saved, can be either absolute or relative to the working directory.
 ```
 
-If {ref}`train-test-split` are used for splitting the available data into training and test sets, a single model is trained and its configuration is saved to a file:
+If {ref}`train-test splits<train-test-split>` are used for splitting the available data into training and test sets, a single model is trained and its configuration is saved to a file:
 
 - `parameters_overall.csv`
 
-If a {ref}`cross-validation` is performed instead, one model is trained per cross validation fold and the configurations of all of these models are stored in the specified directory. For example, a 5-fold cross validation results in the following files:
+If a {ref}`cross validation<cross-validation>` is performed instead, one model is trained per cross validation fold and the configurations of all of these models are stored in the specified directory. For example, a 5-fold cross validation results in the following files:
 
 - `parameters_fold-1.csv`
 - `parameters_fold-2.csv`

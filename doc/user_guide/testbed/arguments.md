@@ -9,7 +9,7 @@ The arguments `-h` or `--help` result in a description of all available command 
 ```
 
 ```{note}
-When running the program with the argument `-v` or `--version`, the version of the software package is printed. The output also includes information about third-party dependencies it uses, the {ref}`build-options` that have been used for building the package, as well as information about hardware resources it may utilize.
+When running the program with the argument `-v` or `--version`, the version of the software package is printed. The output also includes information about third-party dependencies it uses, the {ref}`build options<build-options>` that have been used for building the package, as well as information about hardware resources it may utilize.
 ```
 
 ```{note}
@@ -61,11 +61,11 @@ One of the most important capabilities of the command line API is to train machi
 
 - `--data-split` (Default value = `train-test`)
 
-  - `train-test` The available data is split into a single training and test set. Given that `dataset-name` is provided as the value of the argument `--dataset`, the training data must be stored in a file named `dataset-name_training.arff`, whereas the test data must be stored in a file named `dataset-name_test.arff`. If no such files are available, the program searches for a file with the name `dataset-name.arff` and splits it into training and test data automatically. The following options may be specified using the {ref}`bracket-notation`:
+  - `train-test` The available data is split into a single training and test set. Given that `dataset-name` is provided as the value of the argument `--dataset`, the training data must be stored in a file named `dataset-name_training.arff`, whereas the test data must be stored in a file named `dataset-name_test.arff`. If no such files are available, the program searches for a file with the name `dataset-name.arff` and splits it into training and test data automatically. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `test_size` (Default value = `0.33`) The fraction of the available data to be included in the test set, if the training and test set are not provided as separate files. Must be in (0, 1).
 
-  - `cross-validation` A cross validation is performed. Given that `dataset-name` is provided as the value of the argument `--dataset`, the data for individual folds must be stored in files named `dataset-name_fold-1`, `dataset-name_fold-2`, etc.. If no such files are available, the program searches for a file with the name `dataset-name.arff` and splits it into training and test data for the individual folds automatically. The following options may be specified using the {ref}`bracket-notation`:
+  - `cross-validation` A cross validation is performed. Given that `dataset-name` is provided as the value of the argument `--dataset`, the data for individual folds must be stored in files named `dataset-name_fold-1`, `dataset-name_fold-2`, etc.. If no such files are available, the program searches for a file with the name `dataset-name.arff` and splits it into training and test data for the individual folds automatically. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `num_folds` (Default value = `10`) The total number of cross validation folds to be performed. Must be at least 2.
     - `current_fold` (Default value = `0`) The cross validation fold to be performed. Must be in \[1, `num_folds`\] or 0, if all folds should be performed.
@@ -154,7 +154,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--print-evaluation` (Default value = `true`)
 
-  - `true` The evaluation results in terms of common metrics are printed on the console. The following options may be specified using the {ref}`bracket-notation`:
+  - `true` The evaluation results in terms of common metrics are printed on the console. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `decimals` (Default value = `2`) The number of decimals to be used for evaluation scores or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if evaluation scores should be given as a percentage, if possible, `false` otherwise.
@@ -342,7 +342,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--print-label-vectors` (Default value = `false`)
 
-  - `true` The unique label vectors contained in the training data are printed on the console. The following options may be specified using the {ref}`bracket-notation`:
+  - `true` The unique label vectors contained in the training data are printed on the console. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `sparse` (Default value = `false`) `true`, if a sparse representation of label vectors should be used, `false` otherwise.
 
@@ -350,7 +350,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-label-vectors` (Default value = `false`)
 
-  - `true` The unique label vectors contained in the training data are written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. Does only have an effect if the parameter `` `--output-dir `` is specified. The following options may be specified using the {ref}`bracket-notation`:
+  - `true` The unique label vectors contained in the training data are written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. Does only have an effect if the parameter `` `--output-dir `` is specified. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `sparse` (Default value = `false`) `true`, if a sparse representation of label vectors should be used, `false` otherwise.
 
@@ -376,7 +376,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--print-rules` (Default value = `false`)
 
-  - `true` The induced rules are printed on the console. The following options may be specified using the {ref}`bracket-notation`:
+  - `true` The induced rules are printed on the console. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `print_feature_names` (Default value = `true`) `true`, if the names of features should be printed instead of their indices, `false` otherwise.
     - `print_output_names` (Default value = `true`) `true`, if the names of labels should be printed instead of their indices, `false` otherwise.
@@ -390,7 +390,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-rules` (Default value = `false`)
 
-  - `true` The induced rules are written into a .txt file. Does only have an effect if the parameter `--output-dir` is specified. The following options may be specified using the {ref}`bracket-notation`:
+  - `true` The induced rules are written into a .txt file. Does only have an effect if the parameter `--output-dir` is specified. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `print_feature_names` (Default value = `true`) `true`, if the names of features should be printed instead of their indices, `false` otherwise.
     - `print_output_names` (Default value = `true`) `true`, if the names of labels should be printed instead of their indices, `false` otherwise.
@@ -408,7 +408,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--print-marginal-probability-calibration-model` (Default value = `false`)
 
-  - `true` The model for the calibration of marginal probabilities is printed on the console. The following options may be specified using the {ref}`bracket-notation`:
+  - `true` The model for the calibration of marginal probabilities is printed on the console. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `decimals` (Default value = `2`) The number of decimals to be used for thresholds and probabilities or 0, if the number of decimals should not be restricted.
 
@@ -416,7 +416,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-marginal-probability-calibration-model` (Default value = `false`)
 
-  - `true` The model for the calibration of marginal probabilities is written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. Does only have an effect if the parameter `--output-dir` is specified. The following options may be specified using the {ref}`bracket-notation`:
+  - `true` The model for the calibration of marginal probabilities is written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. Does only have an effect if the parameter `--output-dir` is specified. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `decimals` (Default value = `0`) The number of decimals to be used for thresholds and probabilities or 0, if the number of decimals should not be restricted.
 
@@ -424,7 +424,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--print-joint-probability-calibration-model` (Default value = `false`)
 
-  - `true` The model for the calibration of joint probabilities is printed on the console. The following options may be specified using the {ref}`bracket-notation`:
+  - `true` The model for the calibration of joint probabilities is printed on the console. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `decimals` (Default value = `2`) The number of decimals to be used for thresholds and probabilities or 0, if the number of decimals should not be restricted.
 
@@ -432,7 +432,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-joint-probability-calibration-model` (Default value = `false`)
 
-  - `true` The model for the calibration of joint probabilities is written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. Does only have an effect if the parameter `--output-dir` is specified. The following options may be specified using the {ref}`bracket-notation`:
+  - `true` The model for the calibration of joint probabilities is written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. Does only have an effect if the parameter `--output-dir` is specified. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `decimals` (Default value = `2`) The number of decimals to be used for thresholds and probabilities or 0, if the number of decimals should not be restricted.
 
@@ -469,7 +469,7 @@ For example, the value of the parameter `feature_binning` may be set as follows:
    ```
 ````
 
-Some algorithmic parameters, including the parameter `feature_binning`, allow to specify additional options as key-value pairs by using a {ref}`bracket-notation`. This is also supported by the command line API, where the options may not contain any spaces and special characters like `{` or `}` must be escaped by using single-quotes (`'`):
+Some algorithmic parameters, including the parameter `feature_binning`, allow to specify additional options as key-value pairs by using a {ref}`bracket notation<bracket-notation>`. This is also supported by the command line API, where the options may not contain any spaces and special characters like `{` or `}` must be escaped by using single-quotes (`'`):
 
 ````{tab} BOOMER
    ```text
