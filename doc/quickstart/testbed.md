@@ -88,7 +88,7 @@ Moreover, algorithmic parameters that control the behavior of the machine learni
    ```
 ````
 
-Some algorithmic parameters, including the parameter `feature_binning`, come with additional options in the form of key-value pairs. They can be specified by using a {ref}`bracket-notation` as shown below:
+Some algorithmic parameters, including the parameter `feature_binning`, come with additional options in the form of key-value pairs. They can be specified by using a {ref}`bracket notation<bracket-notation>` as shown below:
 
 ````{tab} BOOMER
    ```text
