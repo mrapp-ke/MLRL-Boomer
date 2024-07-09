@@ -11,7 +11,10 @@ from mlrl.boosting.config import BOOSTING_RULE_LEARNER_PARAMETERS
 from mlrl.boosting.cython.learner_boomer import BoomerClassifierConfig
 from mlrl.boosting.info import get_package_info
 
-from mlrl.testbed.runnables import RuleLearnerRunnable, Runnable
+try:
+    from mlrl.testbed.runnables import RuleLearnerRunnable, Runnable
+except ImportError as error:
+    raise ImportError('Optional dependency "mlrl-testbed" is not installed') from error
 
 
 class BoomerRunnable(RuleLearnerRunnable):
