@@ -184,7 +184,7 @@ The metrics for evaluating the quality of predictions that have been obtained fo
 
 ### Scores
 
-We refer to real-valued predictions, which may be positive or negative, as *scores*. In the context of multi-label classification, positive scores indicate a preference towards predicting a label as relevant, whereas negative scores are predicted for labels that are more likely to be irrelevant. The absolute size of the scores corresponds to the confidence of the predictions, i.e., if a large value is predicted for a label, the model is more certain about the correctness of the predicted outcome. Unlike {ref}`probability-estimates`, scores are not bound to a certain interval and can be arbitrary positive or negative values. The BOOMER algorithm uses scores as a basis for predicting probabilities or binary labels. If you want to evaluate the quality of the scores directly, instead of transforming them into probabilities or binary predictions, the argument `--prediction-type scores` may be passed to the command line API:
+We refer to real-valued predictions, which may be positive or negative, as *scores*. In the context of multi-label classification, positive scores indicate a preference towards predicting a label as relevant, whereas negative scores are predicted for labels that are more likely to be irrelevant. The absolute size of the scores corresponds to the confidence of the predictions, i.e., if a large value is predicted for a label, the model is more certain about the correctness of the predicted outcome. Unlike {ref}`probability estimates<probability-estimates>`, scores are not bound to a certain interval and can be arbitrary positive or negative values. The BOOMER algorithm uses scores as a basis for predicting probabilities or binary labels. If you want to evaluate the quality of the scores directly, instead of transforming them into probabilities or binary predictions, the argument `--prediction-type scores` may be passed to the command line API:
 
 ````{tab} BOOMER
    ```text
@@ -230,7 +230,7 @@ Probability estimates are given as real values between zero and one. In the cont
    ```
 ````
 
-Similar to {ref}`scores`, the command line API relies on [multi-label ranking measures](https://scikit-learn.org/stable/modules/model_evaluation.html#multilabel-ranking-metrics), as implemented by the [scikit-learn](https://scikit-learn.org) framework, for evaluating probability estimates.
+Similar to the evaluation of {ref}`scores<scores>`, the command line API relies on [multi-label ranking measures](https://scikit-learn.org/stable/modules/model_evaluation.html#multilabel-ranking-metrics), as implemented by the [scikit-learn](https://scikit-learn.org) framework, for evaluating probability estimates.
 
 ### Binary Labels
 

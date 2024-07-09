@@ -58,7 +58,7 @@ If you want to execute the tests for the C++ or Python code independently, you c
 Tests for the C++ code are only executed if the project has been compiled with testing support enabled. As described in the section {ref}`build-options`, testing support is enabled by default if the [GoogleTest](https://github.com/google/googletest) framework is available on the system.
 ```
 
-The unit and integration tests are run automatically via {ref}`ci` whenever relevant parts of the source code have been modified.
+The unit and integration tests are run automatically via {ref}`Continuous Integration <ci>` whenever relevant parts of the source code have been modified.
 
 (code-style)=
 
@@ -119,7 +119,7 @@ In order to automatically format the project's source files according to our sty
 If you want to format only the C++ source files, you can specify the build target `format_cpp` instead of `format`. Accordingly, the target `format_python` may be used to format only the Python source files. If you want to format Markdown or YAML files, you should use the target `format_md` or `format_yaml`, respectively.
 ```
 
-Whenever any source files have been modified, a {ref}`ci` job is run automatically to verify if they adhere to our code style guidelines.
+Whenever any source files have been modified, a {ref}`Continuous Integration <ci>` job is run automatically to verify if they adhere to our code style guidelines.
 
 (versioning-scheme)=
 
@@ -128,7 +128,7 @@ Whenever any source files have been modified, a {ref}`ci` job is run automatical
 We use [Semantic Versioning](https://semver.org/) to assign unique version numbers in the form `MAJOR.MINOR.PATCH` to the individual releases of our software packages. We refer to releases that come with an incremented major version, as *major releases*. When the minor version is increased by a release, we refer to it as a *feature release*. Updates that include bugfixes or minor improvements come with an increased patch version and are referred to as *bugfix releases*.
 
 ```{tip}
-An overview of past releases, together with a description of the changes they introduced compared to the previous version, can be found in the {ref}`release-notes`.
+An overview of past releases, together with a description of the changes they introduced compared to the previous version, can be found in the {ref}`release notes <release-notes>`.
 ```
 
 ### Bugfix Releases
@@ -157,7 +157,7 @@ To enable releasing new major, feature, or bugfix releases at any time, we maint
 
 We do not allow directly pushing to the above branches. Instead, all changes must be submitted via pull requests and require certain checks to pass.
 
-Once modifications to one of the branches have been merged, {ref}`ci` jobs are used to automatically update downstream branches via pull requests. If all checks for such pull requests are successful, they are merged automatically. If there are any merge conflicts, they must be resolved manually. Following this procedure, changes to the feature brach are merged into the main branch (see `merge_feature.yml`), whereas changes to the bugfix branch are first merged into the feature branch and then into the main branch (see `merge_bugfix.yml`).
+Once modifications to one of the branches have been merged, {ref}`Continuous Integration <ci>` jobs are used to automatically update downstream branches via pull requests. If all checks for such pull requests are successful, they are merged automatically. If there are any merge conflicts, they must be resolved manually. Following this procedure, changes to the feature brach are merged into the main branch (see `merge_feature.yml`), whereas changes to the bugfix branch are first merged into the feature branch and then into the main branch (see `merge_bugfix.yml`).
 
 Whenever a new release has been published, the release branch is merged into the upstream branches (see `merge_release.yml`), i.e., major releases result in the feature and bugfix branches being updated, whereas minor releases result in the bugfix branch being updated. The version of the release branch and the affected branches are updated accordingly. The version of a branch is specified in the file `.version` in the project's root directory. Similarly, the file `.version-dev` is used to keep track of the version number used for development releases (see `release_development.yml`).
 
@@ -167,7 +167,7 @@ Whenever a new release has been published, the release branch is merged into the
 
 Adding dependencies to a software project always comes at a cost. Maintainers need to continuously test their software as new versions of dependencies are released and major changes in their APIs may break existing functionality. For this reason, we try to keep the number of dependencies at a minimum.
 
-That being said, we still rely on several dependencies for compiling our source code, generating the documentation, or running the algorithms provided by this project. When using pre-built packages from [PyPI](https://pypi.org/project/mlrl-boomer/), there is no need to care about these dependencies, as they are already included in the packages. When {ref}`compilation`, dependencies are automatically installed by the build system once they are needed, unless explicitly stated in the documentation.
+That being said, we still rely on several dependencies for compiling our source code, generating the documentation, or running the algorithms provided by this project. When using pre-built packages from [PyPI](https://pypi.org/project/mlrl-boomer/), there is no need to care about these dependencies, as they are already included in the packages. When {ref}`building from source <compilation>`, dependencies are automatically installed by the build system once they are needed, unless explicitly stated in the documentation.
 
 The dependencies that are required by different aspects of the project, such as the build system, the Python code, or the C++ code, are defined in separate `requirements.txt` files. For dependencies that use [Semantic Versioning](https://semver.org/), we specify the earliest and latest version we support. For other dependencies, we demand for a specific version number. This strives to achieve a balance between flexibility for users and comfort for developers. On the one hand, supporting a range of versions provides more freedom to users, as our packages can more flexibly be used together with other ones, relying on the same dependencies. On the other hand, the project's maintainers must not manually update dependencies that have a minor release, while still requiring manual intervention for major updates.
 
