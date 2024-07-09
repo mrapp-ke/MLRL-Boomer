@@ -32,4 +32,4 @@ Even though nominal and binary features are natively supported in an efficient w
    ```
 ````
 
-Under the hood, the program makes use of scikit-learn's [OneHotEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html) for pre-processing the data.
+Under the hood, the program makes use of scikit-learn's {py:class}`sklearn.preprocessing.OneHotEncoder` for pre-processing the data.
