@@ -517,7 +517,7 @@ namespace boosting {
             /**
              * An unique pointer to an object of template type `ScoreMatrix` that stores the currently predicted scores.
              */
-            const std::unique_ptr<ScoreMatrix> scoreMatrixPtr_;
+            std::unique_ptr<ScoreMatrix> scoreMatrixPtr_;
 
             /**
              * Must be implemented by subclasses in order to update the statistics for all available outputs at a
