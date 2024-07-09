@@ -71,54 +71,44 @@ namespace boosting {
         return this->view.secondView.numElements;
     }
 
-    void DenseNonDecomposableStatisticVector::add(View<float64>::const_iterator gradientsBegin,
-                                                  View<float64>::const_iterator gradientsEnd,
-                                                  View<float64>::const_iterator hessiansBegin,
-                                                  View<float64>::const_iterator hessiansEnd) {
-        addToView(this->gradients_begin(), gradientsBegin, this->getNumGradients());
-        addToView(this->hessians_begin(), hessiansBegin, this->getNumHessians());
+    void DenseNonDecomposableStatisticVector::add(const DenseNonDecomposableStatisticVector& view) {
+        addToView(this->gradients_begin(), view.gradients_cbegin(), this->getNumGradients());
+        addToView(this->hessians_begin(), view.hessians_cbegin(), this->getNumHessians());
     }
 
-    void DenseNonDecomposableStatisticVector::add(View<float64>::const_iterator gradientsBegin,
-                                                  View<float64>::const_iterator gradientsEnd,
-                                                  View<float64>::const_iterator hessiansBegin,
-                                                  View<float64>::const_iterator hessiansEnd, float64 weight) {
-        addToView(this->gradients_begin(), gradientsBegin, this->getNumGradients(), weight);
-        addToView(this->hessians_begin(), hessiansBegin, this->getNumHessians(), weight);
+    void DenseNonDecomposableStatisticVector::add(const DenseNonDecomposableStatisticView& view, uint32 row) {
+        addToView(this->gradients_begin(), view.gradients_cbegin(row), this->getNumGradients());
+        addToView(this->hessians_begin(), view.hessians_cbegin(row), this->getNumHessians());
     }
 
-    void DenseNonDecomposableStatisticVector::remove(View<float64>::const_iterator gradientsBegin,
-                                                     View<float64>::const_iterator gradientsEnd,
-                                                     View<float64>::const_iterator hessiansBegin,
-                                                     View<float64>::const_iterator hessiansEnd) {
-        removeFromView(this->gradients_begin(), gradientsBegin, this->getNumGradients());
-        removeFromView(this->hessians_begin(), hessiansBegin, this->getNumHessians());
+    void DenseNonDecomposableStatisticVector::add(const DenseNonDecomposableStatisticView& view, uint32 row,
+                                                  float64 weight) {
+        addToView(this->gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(), weight);
+        addToView(this->hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(), weight);
     }
 
-    void DenseNonDecomposableStatisticVector::remove(View<float64>::const_iterator gradientsBegin,
-                                                     View<float64>::const_iterator gradientsEnd,
-                                                     View<float64>::const_iterator hessiansBegin,
-                                                     View<float64>::const_iterator hessiansEnd, float64 weight) {
-        removeFromView(this->gradients_begin(), gradientsBegin, this->getNumGradients(), weight);
-        removeFromView(this->hessians_begin(), hessiansBegin, this->getNumHessians(), weight);
+    void DenseNonDecomposableStatisticVector::remove(const DenseNonDecomposableStatisticView& view, uint32 row) {
+        removeFromView(this->gradients_begin(), view.gradients_cbegin(row), this->getNumGradients());
+        removeFromView(this->hessians_begin(), view.hessians_cbegin(row), this->getNumHessians());
     }
 
-    void DenseNonDecomposableStatisticVector::addToSubset(View<float64>::const_iterator gradientsBegin,
-                                                          View<float64>::const_iterator gradientsEnd,
-                                                          View<float64>::const_iterator hessiansBegin,
-                                                          View<float64>::const_iterator hessiansEnd,
+    void DenseNonDecomposableStatisticVector::remove(const DenseNonDecomposableStatisticView& view, uint32 row,
+                                                     float64 weight) {
+        removeFromView(this->gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(), weight);
+        removeFromView(this->hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(), weight);
+    }
+
+    void DenseNonDecomposableStatisticVector::addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
                                                           const CompleteIndexVector& indices) {
-        addToView(this->gradients_begin(), gradientsBegin, this->getNumGradients());
-        addToView(this->hessians_begin(), hessiansBegin, this->getNumHessians());
+        addToView(this->gradients_begin(), view.gradients_cbegin(row), this->getNumGradients());
+        addToView(this->hessians_begin(), view.hessians_cbegin(row), this->getNumHessians());
     }
 
-    void DenseNonDecomposableStatisticVector::addToSubset(View<float64>::const_iterator gradientsBegin,
-                                                          View<float64>::const_iterator gradientsEnd,
-                                                          View<float64>::const_iterator hessiansBegin,
-                                                          View<float64>::const_iterator hessiansEnd,
+    void DenseNonDecomposableStatisticVector::addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
                                                           const PartialIndexVector& indices) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        addToView(this->gradients_begin(), gradientsBegin, indexIterator, this->getNumGradients());
+        addToView(this->gradients_begin(), view.gradients_cbegin(row), indexIterator, this->getNumGradients());
+        DenseNonDecomposableStatisticView::hessian_const_iterator hessiansBegin = view.hessians_cbegin(row);
 
         for (uint32 i = 0; i < this->getNumGradients(); i++) {
             uint32 index = indexIterator[i];
@@ -127,22 +117,17 @@ namespace boosting {
         }
     }
 
-    void DenseNonDecomposableStatisticVector::addToSubset(View<float64>::const_iterator gradientsBegin,
-                                                          View<float64>::const_iterator gradientsEnd,
-                                                          View<float64>::const_iterator hessiansBegin,
-                                                          View<float64>::const_iterator hessiansEnd,
+    void DenseNonDecomposableStatisticVector::addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
                                                           const CompleteIndexVector& indices, float64 weight) {
-        addToView(this->gradients_begin(), gradientsBegin, this->getNumGradients(), weight);
-        addToView(this->hessians_begin(), hessiansBegin, this->getNumHessians(), weight);
+        addToView(this->gradients_begin(), view.gradients_cbegin(row), this->getNumGradients(), weight);
+        addToView(this->hessians_begin(), view.hessians_cbegin(row), this->getNumHessians(), weight);
     }
 
-    void DenseNonDecomposableStatisticVector::addToSubset(View<float64>::const_iterator gradientsBegin,
-                                                          View<float64>::const_iterator gradientsEnd,
-                                                          View<float64>::const_iterator hessiansBegin,
-                                                          View<float64>::const_iterator hessiansEnd,
+    void DenseNonDecomposableStatisticVector::addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
                                                           const PartialIndexVector& indices, float64 weight) {
         PartialIndexVector::const_iterator indexIterator = indices.cbegin();
-        addToView(this->gradients_begin(), gradientsBegin, indexIterator, this->getNumGradients(), weight);
+        addToView(this->gradients_begin(), view.gradients_cbegin(row), indexIterator, this->getNumGradients(), weight);
+        DenseNonDecomposableStatisticView::hessian_const_iterator hessiansBegin = view.hessians_cbegin(row);
 
         for (uint32 i = 0; i < this->getNumGradients(); i++) {
             uint32 index = indexIterator[i];
@@ -151,26 +136,23 @@ namespace boosting {
         }
     }
 
-    void DenseNonDecomposableStatisticVector::difference(
-      View<float64>::const_iterator firstGradientsBegin, View<float64>::const_iterator firstGradientsEnd,
-      View<float64>::const_iterator firstHessiansBegin, View<float64>::const_iterator firstHessiansEnd,
-      const CompleteIndexVector& firstIndices, View<float64>::const_iterator secondGradientsBegin,
-      View<float64>::const_iterator secondGradientsEnd, View<float64>::const_iterator secondHessiansBegin,
-      View<float64>::const_iterator secondHessiansEnd) {
-        setViewToDifference(this->gradients_begin(), firstGradientsBegin, secondGradientsBegin,
+    void DenseNonDecomposableStatisticVector::difference(const DenseNonDecomposableStatisticVector& first,
+                                                         const CompleteIndexVector& firstIndices,
+                                                         const DenseNonDecomposableStatisticVector& second) {
+        setViewToDifference(this->gradients_begin(), first.gradients_cbegin(), second.gradients_cbegin(),
                             this->getNumGradients());
-        setViewToDifference(this->hessians_begin(), firstHessiansBegin, secondHessiansBegin, this->getNumHessians());
+        setViewToDifference(this->hessians_begin(), first.hessians_cbegin(), second.hessians_cbegin(),
+                            this->getNumHessians());
     }
 
-    void DenseNonDecomposableStatisticVector::difference(
-      View<float64>::const_iterator firstGradientsBegin, View<float64>::const_iterator firstGradientsEnd,
-      View<float64>::const_iterator firstHessiansBegin, View<float64>::const_iterator firstHessiansEnd,
-      const PartialIndexVector& firstIndices, View<float64>::const_iterator secondGradientsBegin,
-      View<float64>::const_iterator secondGradientsEnd, View<float64>::const_iterator secondHessiansBegin,
-      View<float64>::const_iterator secondHessiansEnd) {
+    void DenseNonDecomposableStatisticVector::difference(const DenseNonDecomposableStatisticVector& first,
+                                                         const PartialIndexVector& firstIndices,
+                                                         const DenseNonDecomposableStatisticVector& second) {
         PartialIndexVector::const_iterator indexIterator = firstIndices.cbegin();
-        setViewToDifference(this->gradients_begin(), firstGradientsBegin, secondGradientsBegin, indexIterator,
+        setViewToDifference(this->gradients_begin(), first.gradients_cbegin(), second.gradients_cbegin(), indexIterator,
                             this->getNumGradients());
+        DenseNonDecomposableStatisticVector::hessian_const_iterator firstHessiansBegin = first.hessians_cbegin();
+        DenseNonDecomposableStatisticVector::hessian_const_iterator secondHessiansBegin = second.hessians_cbegin();
 
         for (uint32 i = 0; i < this->getNumGradients(); i++) {
             uint32 offset = triangularNumber(i);
