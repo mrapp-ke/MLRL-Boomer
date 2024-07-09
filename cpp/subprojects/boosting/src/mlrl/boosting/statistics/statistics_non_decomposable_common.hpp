@@ -23,9 +23,7 @@ namespace boosting {
     static inline void addNonDecomposableStatisticToSubset(const EqualWeightVector& weights,
                                                            const StatisticView& statisticView, StatisticVector& vector,
                                                            const IndexVector& outputIndices, uint32 statisticIndex) {
-        vector.addToSubset(statisticView.gradients_cbegin(statisticIndex), statisticView.gradients_cend(statisticIndex),
-                           statisticView.hessians_cbegin(statisticIndex), statisticView.hessians_cend(statisticIndex),
-                           outputIndices);
+        vector.addToSubset(statisticView, statisticIndex, outputIndices);
     }
 
     template<typename WeightVector, typename StatisticView, typename StatisticVector, typename IndexVector>
@@ -33,9 +31,7 @@ namespace boosting {
                                                            const StatisticView& statisticView, StatisticVector& vector,
                                                            const IndexVector& outputIndices, uint32 statisticIndex) {
         float64 weight = weights[statisticIndex];
-        vector.addToSubset(statisticView.gradients_cbegin(statisticIndex), statisticView.gradients_cend(statisticIndex),
-                           statisticView.hessians_cbegin(statisticIndex), statisticView.hessians_cend(statisticIndex),
-                           outputIndices, weight);
+        vector.addToSubset(statisticView, statisticIndex, outputIndices, weight);
     }
 
     /**
@@ -202,9 +198,7 @@ namespace boosting {
                         } else {
                             // Add the sums of gradients and Hessians to the accumulated sums of gradients and
                             // Hessians...
-                            accumulatedSumVectorPtr_->add(
-                              this->sumVector_.gradients_cbegin(), this->sumVector_.gradients_cend(),
-                              this->sumVector_.hessians_cbegin(), this->sumVector_.hessians_cend());
+                            accumulatedSumVectorPtr_->add(this->sumVector_);
                         }
 
                         // Reset the sums of gradients and Hessians to zero...
@@ -222,11 +216,7 @@ namespace boosting {
                      * @see `IWeightedStatisticsSubset::calculateScoresUncovered`
                      */
                     const IScoreVector& calculateScoresUncovered() override final {
-                        tmpVector_.difference(totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
-                                              totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(),
-                                              this->outputIndices_, this->sumVector_.gradients_cbegin(),
-                                              this->sumVector_.gradients_cend(), this->sumVector_.hessians_cbegin(),
-                                              this->sumVector_.hessians_cend());
+                        tmpVector_.difference(*totalSumVector_, this->outputIndices_, this->sumVector_);
                         return this->ruleEvaluationPtr_->calculateScores(tmpVector_);
                     }
 
@@ -234,11 +224,7 @@ namespace boosting {
                      * @see `IWeightedStatisticsSubset::calculateScoresUncoveredAccumulated`
                      */
                     const IScoreVector& calculateScoresUncoveredAccumulated() override final {
-                        tmpVector_.difference(
-                          totalSumVector_->gradients_cbegin(), totalSumVector_->gradients_cend(),
-                          totalSumVector_->hessians_cbegin(), totalSumVector_->hessians_cend(), this->outputIndices_,
-                          accumulatedSumVectorPtr_->gradients_cbegin(), accumulatedSumVectorPtr_->gradients_cend(),
-                          accumulatedSumVectorPtr_->hessians_cbegin(), accumulatedSumVectorPtr_->hessians_cend());
+                        tmpVector_.difference(*totalSumVector_, this->outputIndices_, *accumulatedSumVectorPtr_);
                         return this->ruleEvaluationPtr_->calculateScores(tmpVector_);
                     }
             };
@@ -297,35 +283,27 @@ namespace boosting {
     static inline void addNonDecomposableStatistic(const WeightVector& weights, const StatisticView& statisticView,
                                                    StatisticVector& statisticVector, uint32 statisticIndex) {
         float64 weight = weights[statisticIndex];
-        statisticVector.add(statisticView.gradients_cbegin(statisticIndex),
-                            statisticView.gradients_cend(statisticIndex), statisticView.hessians_cbegin(statisticIndex),
-                            statisticView.hessians_cend(statisticIndex), weight);
+        statisticVector.add(statisticView, statisticIndex, weight);
     }
 
     template<typename StatisticView, typename StatisticVector>
     static inline void addNonDecomposableStatistic(const EqualWeightVector& weights, const StatisticView& statisticView,
                                                    StatisticVector& statisticVector, uint32 statisticIndex) {
-        statisticVector.add(statisticView.gradients_cbegin(statisticIndex),
-                            statisticView.gradients_cend(statisticIndex), statisticView.hessians_cbegin(statisticIndex),
-                            statisticView.hessians_cend(statisticIndex));
+        statisticVector.add(statisticView, statisticIndex);
     }
 
     template<typename WeightVector, typename StatisticView, typename StatisticVector>
     static inline void removeNonDecomposableStatistic(const WeightVector& weights, const StatisticView& statisticView,
                                                       StatisticVector& statisticVector, uint32 statisticIndex) {
         float64 weight = weights[statisticIndex];
-        statisticVector.remove(
-          statisticView.gradients_cbegin(statisticIndex), statisticView.gradients_cend(statisticIndex),
-          statisticView.hessians_cbegin(statisticIndex), statisticView.hessians_cend(statisticIndex), weight);
+        statisticVector.remove(statisticView, statisticIndex, weight);
     }
 
     template<typename StatisticView, typename StatisticVector>
     static inline void removeNonDecomposableStatistic(const EqualWeightVector& weights,
                                                       const StatisticView& statisticView,
                                                       StatisticVector& statisticVector, uint32 statisticIndex) {
-        statisticVector.remove(
-          statisticView.gradients_cbegin(statisticIndex), statisticView.gradients_cend(statisticIndex),
-          statisticView.hessians_cbegin(statisticIndex), statisticView.hessians_cend(statisticIndex));
+        statisticVector.remove(statisticView, statisticIndex);
     }
 
     /**
