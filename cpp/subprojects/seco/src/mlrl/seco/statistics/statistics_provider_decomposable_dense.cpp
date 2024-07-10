@@ -147,6 +147,18 @@ namespace seco {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
+    std::unique_ptr<IStatisticsProvider> DenseDecomposableStatisticsProviderFactory::create(
+      const CContiguousView<const float32>& regressionMatrix) const {
+        // TODO
+        return nullptr;
+    }
+
+    std::unique_ptr<IStatisticsProvider> DenseDecomposableStatisticsProviderFactory::create(
+      const CsrView<const float32>& regressionMatrix) const {
+        // TODO
+        return nullptr;
+    }
+
 }
 
 #ifdef _WIN32
