@@ -24,7 +24,7 @@ namespace seco {
 
             Result test(const IStatistics& statistics, uint32 numRules) override {
                 Result result;
-                const ICoverageStatistics& coverageStatistics = static_cast<const ICoverageStatistics&>(statistics);
+                const ICoverageStatistics& coverageStatistics = dynamic_cast<const ICoverageStatistics&>(statistics);
 
                 if (!(coverageStatistics.getSumOfUncoveredWeights() > threshold_)) {
                     result.stop = true;

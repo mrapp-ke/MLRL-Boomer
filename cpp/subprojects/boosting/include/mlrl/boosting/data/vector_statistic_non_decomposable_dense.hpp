@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/boosting/data/view_statistic_non_decomposable_dense.hpp"
 #include "mlrl/boosting/iterator/diagonal_iterator.hpp"
 #include "mlrl/common/data/view_vector_composite.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
@@ -148,79 +149,74 @@ namespace boosting {
             /**
              * Adds all gradients and Hessians in another vector to this vector.
              *
-             * @param gradientsBegin    An iterator to the beginning of the gradients
-             * @param gradientsEnd      An iterator to the end of the gradients
-             * @param hessiansBegin     An iterator to the beginning of the Hessians
-             * @param hessiansEnd       An iterator to the end of the Hessians
+             * @param view A reference to an object of type `DenseNonDecomposableStatisticVector` that stores the
+             *             gradients and Hessians to be added to this vector
              */
-            void add(View<float64>::const_iterator gradientsBegin, View<float64>::const_iterator gradientsEnd,
-                     View<float64>::const_iterator hessiansBegin, View<float64>::const_iterator hessiansEnd);
+            void add(const DenseNonDecomposableStatisticVector& view);
 
             /**
-             * Adds all gradients and Hessians in another vector to this vector. The gradients and Hessians to be added
-             * are multiplied by a specific weight.
+             * Adds all gradients and Hessians in a single row of a `DenseNonDecomposableStatisticView` to this vector.
              *
-             * @param gradientsBegin    An iterator to the beginning of the gradients
-             * @param gradientsEnd      An iterator to the end of the gradients
-             * @param hessiansBegin     An iterator to the beginning of the Hessians
-             * @param hessiansEnd       An iterator to the end of the Hessians
-             * @param weight            The weight, the gradients and Hessians should be multiplied by
+             * @param view  A reference to an object of type `DenseNonDecomposableStatisticView` that stores the
+             *              gradients and Hessians to be added to this vector
+             * @param row   The index of the row to be added to this vector
              */
-            void add(View<float64>::const_iterator gradientsBegin, View<float64>::const_iterator gradientsEnd,
-                     View<float64>::const_iterator hessiansBegin, View<float64>::const_iterator hessiansEnd,
-                     float64 weight);
+            void add(const DenseNonDecomposableStatisticView& view, uint32 row);
 
             /**
-             * Removes all gradients and Hessians in another vector from this vector.
+             * Adds all gradients and Hessians in a single row of a `DenseNonDecomposableStatisticView` to this vector.
+             * The gradients and Hessians to be added are multiplied by a specific weight.
              *
-             * @param gradientsBegin    An iterator to the beginning of the gradients
-             * @param gradientsEnd      An iterator to the end of the gradients
-             * @param hessiansBegin     An iterator to the beginning of the Hessians
-             * @param hessiansEnd       An iterator to the end of the Hessians
+             * @param view      A reference to an object of type `DenseNonDecomposableStatisticView` that stores the
+             *                  gradients and Hessians to be added to this vector
+             * @param row       The index of the row to be added to this vector
+             * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void remove(View<float64>::const_iterator gradientsBegin, View<float64>::const_iterator gradientsEnd,
-                        View<float64>::const_iterator hessiansBegin, View<float64>::const_iterator hessiansEnd);
+            void add(const DenseNonDecomposableStatisticView& view, uint32 row, float64 weight);
 
             /**
-             * Removes all gradients and Hessians in another vector from this vector. The gradients and Hessians to be
-             * removed are multiplied by a specific weight.
+             * Removes all gradients and Hessians in a single row of a `DenseNonDecomposableStatisticView` from this
+             * vector.
              *
-             * @param gradientsBegin    An iterator to the beginning of the gradients
-             * @param gradientsEnd      An iterator to the end of the gradients
-             * @param hessiansBegin     An iterator to the beginning of the Hessians
-             * @param hessiansEnd       An iterator to the end of the Hessians
-             * @param weight            The weight, the gradients and Hessians should be multiplied by
+             * @param view  A reference to an object of type `DenseNonDecomposableStatisticView` that stores the
+             *              gradients and Hessians to be removed from this vector
+             * @param row   The index of the row to be removed from this vector
              */
-            void remove(View<float64>::const_iterator gradientsBegin, View<float64>::const_iterator gradientsEnd,
-                        View<float64>::const_iterator hessiansBegin, View<float64>::const_iterator hessiansEnd,
-                        float64 weight);
+            void remove(const DenseNonDecomposableStatisticView& view, uint32 row);
+
+            /**
+             * Removes all gradients and Hessians in a single row of a `DenseNonDecomposableStatisticView` from this
+             * vector. The gradients and Hessians to be removed are multiplied by a specific weight.
+             *
+             * @param view      A reference to an object of type `DenseNonDecomposableStatisticView` that stores the
+             *                  gradients and Hessians to be removed from this vector
+             * @param row       The index of the row to be removed from this vector
+             * @param weight    The weight, the gradients and Hessians should be multiplied by
+             */
+            void remove(const DenseNonDecomposableStatisticView& view, uint32 row, float64 weight);
 
             /**
              * Adds certain gradients and Hessians in another vector, whose positions are given as a
              * `CompleteIndexVector`, to this vector.
              *
-             * @param gradientsBegin    An iterator to the beginning of the gradients
-             * @param gradientsEnd      An iterator to the end of the gradients
-             * @param hessiansBegin     An iterator to the beginning of the Hessians
-             * @param hessiansEnd       An iterator to the end of the Hessians
-             * @param indices           A reference to a `CompleteIndexVector` that provides access to the indices
+             * @param view      A reference to an object of type `DenseNonDecomposableStatisticView` that stores the
+             *                  gradients and Hessians to be added to this vector
+             * @param row       The index of the row to be added to this vector
+             * @param indices   A reference to a `CompleteIndexVector` that provides access to the indices
              */
-            void addToSubset(View<float64>::const_iterator gradientsBegin, View<float64>::const_iterator gradientsEnd,
-                             View<float64>::const_iterator hessiansBegin, View<float64>::const_iterator hessiansEnd,
+            void addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
                              const CompleteIndexVector& indices);
 
             /**
              * Adds certain gradients and Hessians in another vector, whose positions are given as a
              * `PartialIndexVector`, to this vector.
              *
-             * @param gradientsBegin    An iterator to the beginning of the gradients
-             * @param gradientsEnd      An iterator to the end of the gradients
-             * @param hessiansBegin     An iterator to the beginning of the Hessians
-             * @param hessiansEnd       An iterator to the end of the Hessians
-             * @param indices           A reference to a `PartialIndexVector` that provides access to the indices
+             * @param view      A reference to an object of type `DenseNonDecomposableStatisticView` that stores the
+             *                  gradients and Hessians to be added to this vector
+             * @param row       The index of the row to be added to this vector
+             * @param indices   A reference to a `PartialIndexVector` that provides access to the indices
              */
-            void addToSubset(View<float64>::const_iterator gradientsBegin, View<float64>::const_iterator gradientsEnd,
-                             View<float64>::const_iterator hessiansBegin, View<float64>::const_iterator hessiansEnd,
+            void addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
                              const PartialIndexVector& indices);
 
             /**
@@ -228,15 +224,13 @@ namespace boosting {
              * `CompleteIndexVector`, to this vector. The gradients and Hessians to be added are multiplied by a
              * specific weight.
              *
-             * @param gradientsBegin    An iterator to the beginning of the gradients
-             * @param gradientsEnd      An iterator to the end of the gradients
-             * @param hessiansBegin     An iterator to the beginning of the Hessians
-             * @param hessiansEnd       An iterator to the end of the Hessians
-             * @param indices           A reference to a `CompleteIndexVector` that provides access to the indices
-             * @param weight            The weight, the gradients and Hessians should be multiplied by
+             * @param view      A reference to an object of type `DenseNonDecomposableStatisticView` that stores the
+             *                  gradients and Hessians to be added to this vector
+             * @param row       The index of the row to be added to this vector
+             * @param indices   A reference to a `CompleteIndexVector` that provides access to the indices
+             * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(View<float64>::const_iterator gradientsBegin, View<float64>::const_iterator gradientsEnd,
-                             View<float64>::const_iterator hessiansBegin, View<float64>::const_iterator hessiansEnd,
+            void addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
                              const CompleteIndexVector& indices, float64 weight);
 
             /**
@@ -244,15 +238,13 @@ namespace boosting {
              * `PartialIndexVector`, to this vector. The gradients and Hessians to be added are multiplied by a specific
              * weight.
              *
-             * @param gradientsBegin    An iterator to the beginning of the gradients
-             * @param gradientsEnd      An iterator to the end of the gradients
-             * @param hessiansBegin     An iterator to the beginning of the Hessians
-             * @param hessiansEnd       An iterator to the end of the Hessians
-             * @param indices           A reference to a `PartialIndexVector` that provides access to the indices
-             * @param weight            The weight, the gradients and Hessians should be multiplied by
+             * @param view      A reference to an object of type `DenseNonDecomposableStatisticView` that stores the
+             *                  gradients and Hessians to be added to this vector
+             * @param row       The index of the row to be added to this vector
+             * @param indices   A reference to a `PartialIndexVector` that provides access to the indices
+             * @param weight    The weight, the gradients and Hessians should be multiplied by
              */
-            void addToSubset(View<float64>::const_iterator gradientsBegin, View<float64>::const_iterator gradientsEnd,
-                             View<float64>::const_iterator hessiansBegin, View<float64>::const_iterator hessiansEnd,
+            void addToSubset(const DenseNonDecomposableStatisticView& view, uint32 row,
                              const PartialIndexVector& indices, float64 weight);
 
             /**
@@ -260,50 +252,30 @@ namespace boosting {
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `CompleteIndexVector`.
              *
-             * @param firstGradientsBegin   An iterator to the beginning of the first gradients
-             * @param firstGradientsEnd     An iterator to the end of the first gradients
-             * @param firstHessiansBegin    An iterator to the beginning of the first Hessians
-             * @param firstHessiansEnd      An iterator to the end of the first Hessians
-             * @param firstIndices          A reference to an object of type `CompleteIndexVector` that provides access
-             *                              to the indices
-             * @param secondGradientsBegin  An iterator to the beginning of the second gradients
-             * @param secondGradientsEnd    An iterator to the end of the second gradients
-             * @param secondHessiansBegin   An iterator to the beginning of the second Hessians
-             * @param secondHessiansEnd     An iterator to the end of the second Hessians
+             * @param first         A reference to an object of type `DenseNonDecomposableStatisticVector` that stores
+             *                      the gradients and Hessians in the first vector
+             * @param firstIndices  A reference to an object of type `CompleteIndexVector` that provides access to the
+             *                      indices
+             * @param second        A reference to an object of type `DenseNonDecomposableStatisticVector` that stores
+             *                      the gradients and Hessians in the second vector
              */
-            void difference(View<float64>::const_iterator firstGradientsBegin,
-                            View<float64>::const_iterator firstGradientsEnd,
-                            View<float64>::const_iterator firstHessiansBegin,
-                            View<float64>::const_iterator firstHessiansEnd, const CompleteIndexVector& firstIndices,
-                            View<float64>::const_iterator secondGradientsBegin,
-                            View<float64>::const_iterator secondGradientsEnd,
-                            View<float64>::const_iterator secondHessiansBegin,
-                            View<float64>::const_iterator secondHessiansEnd);
+            void difference(const DenseNonDecomposableStatisticVector& first, const CompleteIndexVector& firstIndices,
+                            const DenseNonDecomposableStatisticVector& second);
 
             /**
              * Sets the gradients and Hessians in this vector to the difference `first - second` between the gradients
              * and Hessians in two other vectors, considering only the gradients and Hessians in the first vector that
              * correspond to the positions provided by a `PartialIndexVector`.
              *
-             * @param firstGradientsBegin   A iterator to the beginning of the first gradients
-             * @param firstGradientsEnd     A iterator to the end of the first gradients
-             * @param firstHessiansBegin    A iterator to the beginning of the first Hessians
-             * @param firstHessiansEnd      A iterator to the end of the first Hessians
-             * @param firstIndices          A reference to an object of type `PartialIndexVector` that provides access
-             *                              to the indices
-             * @param secondGradientsBegin  An iterator to the beginning of the second gradients
-             * @param secondGradientsEnd    An iterator to the end of the second gradients
-             * @param secondHessiansBegin   An iterator to the beginning of the second Hessians
-             * @param secondHessiansEnd     An iterator to the end of the second Hessians
+             * @param first         A reference to an object of type `DenseNonDecomposableStatisticVector` that stores
+             *                      the gradients and Hessians in the first vector
+             * @param firstIndices  A reference to an object of type `PartialIndexVector` that provides access to the
+             *                      indices
+             * @param second        A reference to an object of type `DenseNonDecomposableStatisticVector` that stores
+             *                      the gradients and Hessians in the second vector
              */
-            void difference(View<float64>::const_iterator firstGradientsBegin,
-                            View<float64>::const_iterator firstGradientsEnd,
-                            View<float64>::const_iterator firstHessiansBegin,
-                            View<float64>::const_iterator firstHessiansEnd, const PartialIndexVector& firstIndices,
-                            View<float64>::const_iterator secondGradientsBegin,
-                            View<float64>::const_iterator secondGradientsEnd,
-                            View<float64>::const_iterator secondHessiansBegin,
-                            View<float64>::const_iterator secondHessiansEnd);
+            void difference(const DenseNonDecomposableStatisticVector& first, const PartialIndexVector& firstIndices,
+                            const DenseNonDecomposableStatisticVector& second);
     };
 
 }

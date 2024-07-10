@@ -11,7 +11,10 @@ from mlrl.seco.cython.learner_seco import SeCoClassifierConfig
 from mlrl.seco.info import get_package_info
 from mlrl.seco.seco_learners import SeCoClassifier
 
-from mlrl.testbed.runnables import RuleLearnerRunnable, Runnable
+try:
+    from mlrl.testbed.runnables import RuleLearnerRunnable, Runnable
+except ImportError as error:
+    raise ImportError('Optional dependency "mlrl-testbed" is not installed') from error
 
 
 class SeCoRunnable(RuleLearnerRunnable):
