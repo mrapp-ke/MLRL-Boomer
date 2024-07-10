@@ -211,6 +211,18 @@ namespace boosting {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
+    std::unique_ptr<IStatisticsProvider> DenseNonDecomposableStatisticsProviderFactory::create(
+      const CContiguousView<const float32>& regressionMatrix) const {
+        // TODO
+        return nullptr;
+    }
+
+    std::unique_ptr<IStatisticsProvider> DenseNonDecomposableStatisticsProviderFactory::create(
+      const CsrView<const float32>& regressionMatrix) const {
+        // TODO
+        return nullptr;
+    }
+
     DenseConvertibleNonDecomposableStatisticsProviderFactory::DenseConvertibleNonDecomposableStatisticsProviderFactory(
       std::unique_ptr<INonDecomposableLossFactory> lossFactoryPtr,
       std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
@@ -243,6 +255,18 @@ namespace boosting {
         return std::make_unique<ConvertibleNonDecomposableStatisticsProvider<INonDecomposableRuleEvaluationFactory,
                                                                              IDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr), numThreads_);
+    }
+
+    std::unique_ptr<IStatisticsProvider> DenseConvertibleNonDecomposableStatisticsProviderFactory::create(
+      const CContiguousView<const float32>& regressionMatrix) const {
+        // TODO
+        return nullptr;
+    }
+
+    std::unique_ptr<IStatisticsProvider> DenseConvertibleNonDecomposableStatisticsProviderFactory::create(
+      const CsrView<const float32>& regressionMatrix) const {
+        // TODO
+        return nullptr;
     }
 
 }

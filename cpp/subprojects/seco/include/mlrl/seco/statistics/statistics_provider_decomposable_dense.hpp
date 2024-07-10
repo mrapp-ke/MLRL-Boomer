@@ -54,6 +54,17 @@ namespace seco {
              * @see `IStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const BinaryCsrView& labelMatrix) const override;
+
+            /**
+             * @see `IStatisticsProviderFactory::create`
+             */
+            std::unique_ptr<IStatisticsProvider> create(
+              const CContiguousView<const float32>& regressionMatrix) const override;
+
+            /**
+             * @see `IStatisticsProviderFactory::create`
+             */
+            std::unique_ptr<IStatisticsProvider> create(const CsrView<const float32>& regressionMatrix) const override;
     };
 
 }
