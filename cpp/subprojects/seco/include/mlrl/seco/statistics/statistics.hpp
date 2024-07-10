@@ -12,7 +12,7 @@ namespace seco {
      * Defines an interface for all classes that allow to store the elements of confusion matrices that have been
      * computed based on a weight matrix and the ground truth of the training examples.
      */
-    class ICoverageStatistics : public IStatistics {
+    class ICoverageStatistics : virtual public IStatistics {
         public:
 
             virtual ~ICoverageStatistics() override {}
