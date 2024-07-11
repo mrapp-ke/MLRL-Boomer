@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_csr.hpp"
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
 #include "mlrl/common/sampling/partition.hpp"
 #include "mlrl/common/sampling/random.hpp"
@@ -54,6 +55,25 @@ class IPartitionSamplingFactory {
          * @return              An unique pointer to an object of type `IPartitionSampling` that has been created
          */
         virtual std::unique_ptr<IPartitionSampling> create(const BinaryCsrView& labelMatrix) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IPartitionSampling`.
+         *
+         * @param regressionMatrix  A reference to an object of type `CContiguousView` that provides random access to
+         *                          the regression scores of the training examples
+         * @return                  An unique pointer to an object of type `IPartitionSampling` that has been created
+         */
+        virtual std::unique_ptr<IPartitionSampling> create(
+          const CContiguousView<const float32>& regressionMatrix) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IPartitionSampling`.
+         *
+         * @param regressionMatrix  A reference to an object of type `CsrView` that provides row-wise access to the
+         *                          regression scores of the training examples
+         * @return                  An unique pointer to an object of type `IPartitionSampling` that has been created
+         */
+        virtual std::unique_ptr<IPartitionSampling> create(const CsrView<const float32>& regressionMatrix) const = 0;
 };
 
 /**
