@@ -124,7 +124,7 @@ class BiPartition final : public VectorDecorator<AllocatedVector<uint32>>,
 
         std::unique_ptr<IStoppingCriterion> createStoppingCriterion(const IStoppingCriterionFactory& factory) override;
 
-        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
+        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IClassificationInstanceSamplingFactory& factory,
                                                                   const IRowWiseLabelMatrix& labelMatrix,
                                                                   IStatistics& statistics) override;
 

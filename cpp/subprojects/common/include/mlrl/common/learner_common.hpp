@@ -174,13 +174,13 @@ class RuleLearnerConfigurator {
         }
 
         /**
-         * May be overridden by subclasses in order to create the `IInstanceSamplingFactory` to be used by the rule
-         * learner for sampling from the available training examples.
+         * May be overridden by subclasses in order to create the `IClassificationInstanceSamplingFactory` to be used by
+         * the rule learner for sampling from the available training examples.
          *
-         * @return An unique pointer to an object of type `IInstanceSamplingFactory` that has been created
+         * @return An unique pointer to an object of type `IClassificationInstanceSamplingFactory` that has been created
          */
-        virtual std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const {
-            return config_.getInstanceSamplingConfig().get().createInstanceSamplingFactory();
+        virtual std::unique_ptr<IClassificationInstanceSamplingFactory> createInstanceSamplingFactory() const {
+            return config_.getInstanceSamplingConfig().get().createClassificationInstanceSamplingFactory();
         }
 
         /**
@@ -501,7 +501,7 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
         /**
          * An unique pointer that stores the configuration of the method for sampling instances.
          */
-        std::unique_ptr<IInstanceSamplingConfig> instanceSamplingConfigPtr_;
+        std::unique_ptr<IClassificationInstanceSamplingConfig> instanceSamplingConfigPtr_;
 
         /**
          * An unique pointer that stores the configuration of the method for sampling features.
@@ -661,7 +661,7 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
             return property(outputSamplingConfigPtr_);
         }
 
-        Property<IInstanceSamplingConfig> getInstanceSamplingConfig() override final {
+        Property<IClassificationInstanceSamplingConfig> getInstanceSamplingConfig() override final {
             return property(instanceSamplingConfigPtr_);
         }
 

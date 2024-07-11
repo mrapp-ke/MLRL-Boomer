@@ -37,7 +37,8 @@ class MLRLCOMMON_API IInstanceSamplingWithReplacementConfig {
 /**
  * Allows to configure a method for selecting a subset of the available training examples with replacement.
  */
-class InstanceSamplingWithReplacementConfig final : public IInstanceSamplingConfig,
+class InstanceSamplingWithReplacementConfig final : public IClassificationInstanceSamplingConfig,
+                                                    public IRegressionInstanceSamplingConfig,
                                                     public IInstanceSamplingWithReplacementConfig {
     private:
 
@@ -51,5 +52,8 @@ class InstanceSamplingWithReplacementConfig final : public IInstanceSamplingConf
 
         IInstanceSamplingWithReplacementConfig& setSampleSize(float32 sampleSize) override;
 
-        std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const override;
+        std::unique_ptr<IClassificationInstanceSamplingFactory> createClassificationInstanceSamplingFactory()
+          const override;
+
+        std::unique_ptr<IRegressionInstanceSamplingFactory> createRegressionInstanceSamplingFactory() const override;
 };

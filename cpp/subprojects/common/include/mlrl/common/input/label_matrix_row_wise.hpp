@@ -9,6 +9,11 @@
 #include <memory>
 
 // Forward declarations
+class IInstanceSampling;
+class IClassificationInstanceSamplingFactory;
+class IStatistics;
+class SinglePartition;
+class BiPartition;
 class IMarginalProbabilityCalibrator;
 class IMarginalProbabilityCalibrationModel;
 class IJointProbabilityCalibrator;
@@ -36,6 +41,37 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : public IRowWiseOutputMatrix {
          * @return      An unique pointer to an object of type `LabelVector` that has been created
          */
         virtual std::unique_ptr<LabelVector> createLabelVector(uint32 row) const = 0;
+
+        /**
+         * Creates and returns a new instance of the class `IInstanceSampling`, based on the type of this label matrix.
+         *
+         * @param factory       A reference to an object of type `IClassificationInstanceSamplingFactory` that should be
+         *                       used to create the instance
+         * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
+         *                      of the training examples that are included in the training set
+         * @param statistics    A reference to an object of type `IStatistics` that provides access to statistics about
+         *                      the quality of predictions for training examples
+         * @return              An unique pointer to an object of type `IInstanceSampling` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(
+          const IClassificationInstanceSamplingFactory& factory, const SinglePartition& partition,
+          IStatistics& statistics) const = 0;
+
+        /**
+         * Creates and returns a new instance of the class `IInstanceSampling`, based on the type of this label matrix.
+         *
+         * @param factory       A reference to an object of type `IClassificationInstanceSamplingFactory` that should be
+         *                      used to create the instance
+         * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
+         *                      the training examples that are included in the training set and the holdout set,
+         *                      respectively
+         * @param statistics    A reference to an object of type `IStatistics` that provides access to statistics about
+         *                      the quality of predictions for training examples
+         * @return              An unique pointer to an object of type `IInstanceSampling` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(
+          const IClassificationInstanceSamplingFactory& factory, BiPartition& partition,
+          IStatistics& statistics) const = 0;
 
         /**
          * Fits and returns a model for the calibration of marginal probabilities, based on the type of this label

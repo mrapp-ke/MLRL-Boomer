@@ -61,7 +61,8 @@ static inline std::unique_ptr<IInstanceSampling> createNoInstanceSampling(Partit
  * Allows to create instances of the type `IInstanceSampling` that do not perform any sampling, but assign equal weights
  * to all examples.
  */
-class NoInstanceSamplingFactory final : public IInstanceSamplingFactory {
+class NoInstanceSamplingFactory final : public IClassificationInstanceSamplingFactory,
+                                        public IRegressionInstanceSamplingFactory {
     public:
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
@@ -108,6 +109,12 @@ class NoInstanceSamplingFactory final : public IInstanceSamplingFactory {
         }
 };
 
-std::unique_ptr<IInstanceSamplingFactory> NoInstanceSamplingConfig::createInstanceSamplingFactory() const {
+std::unique_ptr<IClassificationInstanceSamplingFactory>
+  NoInstanceSamplingConfig::createClassificationInstanceSamplingFactory() const {
+    return std::make_unique<NoInstanceSamplingFactory>();
+}
+
+std::unique_ptr<IRegressionInstanceSamplingFactory> NoInstanceSamplingConfig::createRegressionInstanceSamplingFactory()
+  const {
     return std::make_unique<NoInstanceSamplingFactory>();
 }

@@ -84,7 +84,7 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
             std::unique_ptr<IOutputSampling> outputSamplingPtr = outputSamplingFactoryPtr->create();
 
             // Create instance sampling...
-            std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr =
+            std::unique_ptr<IClassificationInstanceSamplingFactory> instanceSamplingFactoryPtr =
               configurator_.createInstanceSamplingFactory();
             std::unique_ptr<IInstanceSampling> instanceSamplingPtr =
               partition.createInstanceSampling(*instanceSamplingFactoryPtr, labelMatrix, statisticsProviderPtr->get());
