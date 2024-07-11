@@ -212,13 +212,15 @@ class MLRLCOMMON_API IRuleLearnerConfig {
         virtual Property<IFeatureSamplingConfig> getFeatureSamplingConfig() = 0;
 
         /**
-         * Returns a `Property` that allows to access the `IPartitionSamplingConfig` that stores the configuration of
-         * the method for partitioning the available training examples into a training set and a holdout set.
+         * Returns a `Property` that allows to access the `IClassificationPartitionSamplingConfig` that stores the
+         * configuration of the method for partitioning the available training examples into a training set and a
+         * holdout set.
          *
-         * @return A `Property` that allows to access the `IPartitionSamplingConfig` that stores the configuration of
-         *         the method for partitioning the available training examples into a training set and a holdout set
+         * @return A `Property` that allows to access the `IClassificationPartitionSamplingConfig` that stores the
+         *         configuration of the method for partitioning the available training examples into a training set and
+         *         a holdout set
          */
-        virtual Property<IPartitionSamplingConfig> getPartitionSamplingConfig() = 0;
+        virtual Property<IClassificationPartitionSamplingConfig> getPartitionSamplingConfig() = 0;
 
         /**
          * Returns a `Property` that allows to access the `IRulePruningConfig` that stores the configuration of the
@@ -719,7 +721,7 @@ class MLRLCOMMON_API INoPartitionSamplingMixin : virtual public IRuleLearnerConf
          * holdout set.
          */
         virtual void useNoPartitionSampling() {
-            Property<IPartitionSamplingConfig> property = this->getPartitionSamplingConfig();
+            Property<IClassificationPartitionSamplingConfig> property = this->getPartitionSamplingConfig();
             property.set(std::make_unique<NoPartitionSamplingConfig>());
         }
 };
@@ -742,7 +744,7 @@ class MLRLCOMMON_API IRandomBiPartitionSamplingMixin : virtual public IRuleLearn
          *         of the method for partitioning the available training examples into a training set and a holdout set
          */
         virtual IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() {
-            Property<IPartitionSamplingConfig> property = this->getPartitionSamplingConfig();
+            Property<IClassificationPartitionSamplingConfig> property = this->getPartitionSamplingConfig();
             std::unique_ptr<RandomBiPartitionSamplingConfig> ptr = std::make_unique<RandomBiPartitionSamplingConfig>();
             IRandomBiPartitionSamplingConfig& ref = *ptr;
             property.set(std::move(ptr));

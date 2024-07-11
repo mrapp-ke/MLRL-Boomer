@@ -42,7 +42,7 @@ namespace boosting {
              * Configures the rule learner to automatically decide whether a holdout set should be used or not.
              */
             virtual void useAutomaticPartitionSampling() {
-                Property<IPartitionSamplingConfig> property = this->getPartitionSamplingConfig();
+                Property<IClassificationPartitionSamplingConfig> property = this->getPartitionSamplingConfig();
                 property.set(std::make_unique<AutomaticPartitionSamplingConfig>(
                   this->getGlobalPruningConfig(), this->getMarginalProbabilityCalibratorConfig(),
                   this->getJointProbabilityCalibratorConfig()));
