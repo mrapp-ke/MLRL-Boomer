@@ -46,7 +46,7 @@ class CsrRegressionMatrix final : public IterableBinarySparseMatrixDecorator<Mat
         }
 
         std::unique_ptr<IPartitionSampling> createPartitionSampling(
-          const IPartitionSamplingFactory& factory) const override {
+          const IRegressionPartitionSamplingFactory& factory) const override {
             return factory.create(this->getView());
         }
 

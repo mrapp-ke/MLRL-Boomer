@@ -197,13 +197,14 @@ class RuleLearnerConfigurator {
         }
 
         /**
-         * May be overridden by subclasses in order to create the `IPartitionSamplingFactory` to be used by the rule
-         * learner for partitioning the available examples into training and test sets.
+         * May be overridden by subclasses in order to create the `IClassificationPartitionSamplingFactory` to be used
+         * by the rule learner for partitioning the available examples into training and test sets.
          *
-         * @return An unique pointer to an object of type `IPartitionSamplingFactory` that has been created
+         * @return An unique pointer to an object of type `IClassificationPartitionSamplingFactory` that has been
+         *         created
          */
-        virtual std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const {
-            return config_.getPartitionSamplingConfig().get().createPartitionSamplingFactory();
+        virtual std::unique_ptr<IClassificationPartitionSamplingFactory> createPartitionSamplingFactory() const {
+            return config_.getPartitionSamplingConfig().get().createClassificationPartitionSamplingFactory();
         }
 
         /**
@@ -512,7 +513,7 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
          * An unique pointer that stores the configuration of the method for partitioning the available training
          * examples into a training set and a holdout set.
          */
-        std::unique_ptr<IPartitionSamplingConfig> partitionSamplingConfigPtr_;
+        std::unique_ptr<IClassificationPartitionSamplingConfig> partitionSamplingConfigPtr_;
 
         /**
          * An unique pointer that stores the configuration of the method for pruning individual rules.
@@ -669,7 +670,7 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
             return property(featureSamplingConfigPtr_);
         }
 
-        Property<IPartitionSamplingConfig> getPartitionSamplingConfig() override final {
+        Property<IClassificationPartitionSamplingConfig> getPartitionSamplingConfig() override final {
             return property(partitionSamplingConfigPtr_);
         }
 

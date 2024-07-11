@@ -41,7 +41,7 @@ class CContiguousRegressionMatrix final : public DenseMatrixDecorator<CContiguou
         }
 
         std::unique_ptr<IPartitionSampling> createPartitionSampling(
-          const IPartitionSamplingFactory& factory) const override {
+          const IRegressionPartitionSamplingFactory& factory) const override {
             return factory.create(this->getView());
         }
 

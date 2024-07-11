@@ -19,7 +19,7 @@ namespace boosting {
      * examples into a training set and a holdout set, depending on whether a holdout set is needed and depending on the
      * loss function.
      */
-    class AutomaticPartitionSamplingConfig final : public IPartitionSamplingConfig {
+    class AutomaticPartitionSamplingConfig final : public IClassificationPartitionSamplingConfig {
         private:
 
             const ReadableProperty<IGlobalPruningConfig> globalPruningConfig_;
@@ -49,9 +49,10 @@ namespace boosting {
               ReadableProperty<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfigGetter);
 
             /**
-             * @see `IPartitionSamplingConfig::createPartitionSamplingFactory`
+             * @see `IClassificationPartitionSamplingConfig::createClassificationPartitionSamplingFactory`
              */
-            std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const override;
+            std::unique_ptr<IClassificationPartitionSamplingFactory> createClassificationPartitionSamplingFactory()
+              const override;
     };
 
 }

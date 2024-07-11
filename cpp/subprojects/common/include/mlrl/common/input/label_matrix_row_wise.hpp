@@ -14,6 +14,8 @@ class IClassificationInstanceSamplingFactory;
 class IStatistics;
 class SinglePartition;
 class BiPartition;
+class IPartitionSampling;
+class IClassificationPartitionSamplingFactory;
 class IMarginalProbabilityCalibrator;
 class IMarginalProbabilityCalibrationModel;
 class IJointProbabilityCalibrator;
@@ -72,6 +74,16 @@ class MLRLCOMMON_API IRowWiseLabelMatrix : public IRowWiseOutputMatrix {
         virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(
           const IClassificationInstanceSamplingFactory& factory, BiPartition& partition,
           IStatistics& statistics) const = 0;
+
+        /**
+         * Creates and returns a new instance of the class `IPartitionSampling`, based on the type of this label matrix.
+         *
+         * @param factory   A reference to an object of type `IClassificationPartitionSamplingFactory` that should be
+         *                  used to create the instance
+         * @return          An unique pointer to an object of type `IPartitionSampling` that has been created
+         */
+        virtual std::unique_ptr<IPartitionSampling> createPartitionSampling(
+          const IClassificationPartitionSamplingFactory& factory) const = 0;
 
         /**
          * Fits and returns a model for the calibration of marginal probabilities, based on the type of this label

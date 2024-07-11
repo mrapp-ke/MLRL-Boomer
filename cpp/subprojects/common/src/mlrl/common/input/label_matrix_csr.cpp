@@ -70,7 +70,7 @@ class CsrLabelMatrix final : public IterableBinarySparseMatrixDecorator<MatrixDe
         }
 
         std::unique_ptr<IPartitionSampling> createPartitionSampling(
-          const IPartitionSamplingFactory& factory) const override {
+          const IClassificationPartitionSamplingFactory& factory) const override {
             return factory.create(this->getView());
         }
 
