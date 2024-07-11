@@ -36,7 +36,7 @@ class CContiguousRegressionMatrix final : public DenseMatrixDecorator<CContiguou
         }
 
         std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
-          const IStatisticsProviderFactory& factory) const override {
+          const IRegressionStatisticsProviderFactory& factory) const override {
             return factory.create(this->getView());
         }
 

@@ -28,7 +28,7 @@ namespace boosting {
              */
             NonDecomposableSquaredHingeLossConfig(ReadableProperty<IHeadConfig> headConfigGetter);
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
               const Lapack& lapack, bool preferSparseStatistics) const override;
 

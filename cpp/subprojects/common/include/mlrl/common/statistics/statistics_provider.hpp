@@ -39,12 +39,13 @@ class IStatisticsProvider {
 };
 
 /**
- * Defines an interface for all classes that allow to create instances of the class `IStatisticsProvider`.
+ * Defines an interface for all classes that allow to create instances of the class `IStatisticsProvider` that can be
+ * used in classification problems.
  */
-class IStatisticsProviderFactory {
+class IClassificationStatisticsProviderFactory {
     public:
 
-        virtual ~IStatisticsProviderFactory() {}
+        virtual ~IClassificationStatisticsProviderFactory() {}
 
         /**
          * Creates and returns a new instance of the class `IStatisticsProvider`, based on a label matrix that provides
@@ -65,6 +66,16 @@ class IStatisticsProviderFactory {
          * @return              An unique pointer to an object of type `IStatisticsProvider` that has been created
          */
         virtual std::unique_ptr<IStatisticsProvider> create(const BinaryCsrView& labelMatrix) const = 0;
+};
+
+/**
+ * Defines an interface for all classes that allow to create instances of the class `IStatisticsProvider` that can be
+ * used in regression problems.
+ */
+class IRegressionStatisticsProviderFactory {
+    public:
+
+        virtual ~IRegressionStatisticsProviderFactory() {}
 
         /**
          * Creates and returns a new instance of the class `IStatisticsProvider`, based on a regression matrix that

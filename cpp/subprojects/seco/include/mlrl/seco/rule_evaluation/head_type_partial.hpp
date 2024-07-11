@@ -40,7 +40,7 @@ namespace seco {
                               ReadableProperty<IHeuristicConfig> pruningHeuristicConfigGetter,
                               ReadableProperty<ILiftFunctionConfig> liftFunctionConfigGetter);
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IRowWiseLabelMatrix& labelMatrix) const override;
     };
 

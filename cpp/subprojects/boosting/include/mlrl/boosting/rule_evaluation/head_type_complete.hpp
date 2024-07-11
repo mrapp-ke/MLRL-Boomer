@@ -49,15 +49,15 @@ namespace boosting {
                                ReadableProperty<IRegularizationConfig> l1RegularizationConfigGetter,
                                ReadableProperty<IRegularizationConfig> l2RegularizationConfigGetter);
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
               const IDecomposableLossConfig& lossConfig) const override;
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
               const ISparseDecomposableLossConfig& lossConfig) const override;
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
               const INonDecomposableLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const override;
 

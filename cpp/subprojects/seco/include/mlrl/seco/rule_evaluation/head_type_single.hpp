@@ -32,7 +32,7 @@ namespace seco {
             SingleOutputHeadConfig(ReadableProperty<IHeuristicConfig> heuristicConfigGetter,
                                    ReadableProperty<IHeuristicConfig> pruningHeuristicConfigGetter);
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IRowWiseLabelMatrix& labelMatrix) const override;
     };
 
