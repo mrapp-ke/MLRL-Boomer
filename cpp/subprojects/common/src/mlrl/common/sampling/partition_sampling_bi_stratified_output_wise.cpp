@@ -71,6 +71,17 @@ class OutputWiseStratifiedBiPartitionSamplingFactory final : public IPartitionSa
             return std::make_unique<OutputWiseStratifiedBiPartitionSampling<BinaryCsrView>>(labelMatrix, numTraining,
                                                                                             numHoldout);
         }
+
+        std::unique_ptr<IPartitionSampling> create(
+          const CContiguousView<const float32>& regressionMatrix) const override {
+            // TODO
+            return nullptr;
+        }
+
+        std::unique_ptr<IPartitionSampling> create(const CsrView<const float32>& regressionMatrix) const override {
+            // TODO
+            return nullptr;
+        }
 };
 
 OutputWiseStratifiedBiPartitionSamplingConfig::OutputWiseStratifiedBiPartitionSamplingConfig()

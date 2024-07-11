@@ -70,6 +70,17 @@ class ExampleWiseStratifiedBiPartitionSamplingFactory final : public IPartitionS
             return std::make_unique<ExampleWiseStratifiedBiPartitionSampling<BinaryCsrView>>(labelMatrix, numTraining,
                                                                                              numHoldout);
         }
+
+        std::unique_ptr<IPartitionSampling> create(
+          const CContiguousView<const float32>& regressionMatrix) const override {
+            // TODO
+            return nullptr;
+        }
+
+        std::unique_ptr<IPartitionSampling> create(const CsrView<const float32>& regressionMatrix) const override {
+            // TODO
+            return nullptr;
+        }
 };
 
 ExampleWiseStratifiedBiPartitionSamplingConfig::ExampleWiseStratifiedBiPartitionSamplingConfig()
