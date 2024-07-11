@@ -65,7 +65,8 @@ static inline std::unique_ptr<IInstanceSampling> createInstanceSamplingWithoutRe
  * Allows to create instances of the type `IInstanceSampling` that allow to select a subset of the available training
  * examples without replacement.
  */
-class InstanceSamplingWithoutReplacementFactory final : public IInstanceSamplingFactory {
+class InstanceSamplingWithoutReplacementFactory final : public IClassificationInstanceSamplingFactory,
+                                                        public IRegressionInstanceSamplingFactory {
     private:
 
         const float32 sampleSize_;
@@ -135,7 +136,12 @@ IInstanceSamplingWithoutReplacementConfig& InstanceSamplingWithoutReplacementCon
     return *this;
 }
 
-std::unique_ptr<IInstanceSamplingFactory> InstanceSamplingWithoutReplacementConfig::createInstanceSamplingFactory()
-  const {
+std::unique_ptr<IClassificationInstanceSamplingFactory>
+  InstanceSamplingWithoutReplacementConfig::createClassificationInstanceSamplingFactory() const {
+    return std::make_unique<InstanceSamplingWithoutReplacementFactory>(sampleSize_);
+}
+
+std::unique_ptr<IRegressionInstanceSamplingFactory>
+  InstanceSamplingWithoutReplacementConfig::createRegressionInstanceSamplingFactory() const {
     return std::make_unique<InstanceSamplingWithoutReplacementFactory>(sampleSize_);
 }

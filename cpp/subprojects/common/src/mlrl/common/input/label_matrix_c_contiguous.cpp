@@ -87,13 +87,13 @@ class CContiguousLabelMatrix final : public DenseMatrixDecorator<CContiguousView
             return factory.create(this->getView());
         }
 
-        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
+        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IClassificationInstanceSamplingFactory& factory,
                                                                   const SinglePartition& partition,
                                                                   IStatistics& statistics) const override {
             return factory.create(this->getView(), partition, statistics);
         }
 
-        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
+        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IClassificationInstanceSamplingFactory& factory,
                                                                   BiPartition& partition,
                                                                   IStatistics& statistics) const override {
             return factory.create(this->getView(), partition, statistics);

@@ -70,9 +70,9 @@ std::unique_ptr<IStoppingCriterion> BiPartition::createStoppingCriterion(const I
     return factory.create(*this);
 }
 
-std::unique_ptr<IInstanceSampling> BiPartition::createInstanceSampling(const IInstanceSamplingFactory& factory,
-                                                                       const IRowWiseLabelMatrix& labelMatrix,
-                                                                       IStatistics& statistics) {
+std::unique_ptr<IInstanceSampling> BiPartition::createInstanceSampling(
+  const IClassificationInstanceSamplingFactory& factory, const IRowWiseLabelMatrix& labelMatrix,
+  IStatistics& statistics) {
     return labelMatrix.createInstanceSampling(factory, *this, statistics);
 }
 

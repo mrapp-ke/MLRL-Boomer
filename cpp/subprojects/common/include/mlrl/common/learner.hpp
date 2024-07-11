@@ -194,13 +194,13 @@ class MLRLCOMMON_API IRuleLearnerConfig {
         virtual Property<IOutputSamplingConfig> getOutputSamplingConfig() = 0;
 
         /**
-         * Returns a `Property` that allows to access the `IInstanceSamplingConfig` that stores the configuration of the
-         * method for sampling instances.
+         * Returns a `Property` that allows to access the `IClassificationInstanceSamplingConfig` that stores the
+         * configuration of the method for sampling instances.
          *
-         * @return A `Property` that allows to access the `IInstanceSamplingConfig` that stores the configuration of the
-         *         method for sampling instances
+         * @return A `Property` that allows to access the `IClassificationInstanceSamplingConfig` that stores the
+         * configuration of the method for sampling instances
          */
-        virtual Property<IInstanceSamplingConfig> getInstanceSamplingConfig() = 0;
+        virtual Property<IClassificationInstanceSamplingConfig> getInstanceSamplingConfig() = 0;
 
         /**
          * Returns a `Property` that allows to access the `IFeatureSamplingConfig` that stores the configuration of the
@@ -605,7 +605,7 @@ class MLRLCOMMON_API INoInstanceSamplingMixin : virtual public IRuleLearnerConfi
          * learned.
          */
         virtual void useNoInstanceSampling() {
-            Property<IInstanceSamplingConfig> property = this->getInstanceSamplingConfig();
+            Property<IClassificationInstanceSamplingConfig> property = this->getInstanceSamplingConfig();
             property.set(std::make_unique<NoInstanceSamplingConfig>());
         }
 };
@@ -627,7 +627,7 @@ class MLRLCOMMON_API IInstanceSamplingWithReplacementMixin : virtual public IRul
          *         configuration of the method for sampling instances
          */
         virtual IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() {
-            Property<IInstanceSamplingConfig> property = this->getInstanceSamplingConfig();
+            Property<IClassificationInstanceSamplingConfig> property = this->getInstanceSamplingConfig();
             std::unique_ptr<InstanceSamplingWithReplacementConfig> ptr =
               std::make_unique<InstanceSamplingWithReplacementConfig>();
             IInstanceSamplingWithReplacementConfig& ref = *ptr;
@@ -653,7 +653,7 @@ class MLRLCOMMON_API IInstanceSamplingWithoutReplacementMixin : virtual public I
          *         configuration of the method for sampling instances
          */
         virtual IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement() {
-            Property<IInstanceSamplingConfig> property = this->getInstanceSamplingConfig();
+            Property<IClassificationInstanceSamplingConfig> property = this->getInstanceSamplingConfig();
             std::unique_ptr<InstanceSamplingWithoutReplacementConfig> ptr =
               std::make_unique<InstanceSamplingWithoutReplacementConfig>();
             IInstanceSamplingWithoutReplacementConfig& ref = *ptr;

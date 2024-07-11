@@ -24,9 +24,9 @@ std::unique_ptr<IStoppingCriterion> SinglePartition::createStoppingCriterion(con
     return factory.create(*this);
 }
 
-std::unique_ptr<IInstanceSampling> SinglePartition::createInstanceSampling(const IInstanceSamplingFactory& factory,
-                                                                           const IRowWiseLabelMatrix& labelMatrix,
-                                                                           IStatistics& statistics) {
+std::unique_ptr<IInstanceSampling> SinglePartition::createInstanceSampling(
+  const IClassificationInstanceSamplingFactory& factory, const IRowWiseLabelMatrix& labelMatrix,
+  IStatistics& statistics) {
     return labelMatrix.createInstanceSampling(factory, *this, statistics);
 }
 
