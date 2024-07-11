@@ -13,6 +13,8 @@ class IRegressionInstanceSamplingFactory;
 class IStatistics;
 class SinglePartition;
 class BiPartition;
+class IPartitionSampling;
+class IRegressionPartitionSamplingFactory;
 
 /**
  * Defines an interface for all regression matrices that provide access to the ground truth regression scores of
@@ -54,4 +56,15 @@ class MLRLCOMMON_API IRowWiseRegressionMatrix : public IRowWiseOutputMatrix {
          */
         virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(
           const IRegressionInstanceSamplingFactory& factory, BiPartition& partition, IStatistics& statistics) const = 0;
+
+        /**
+         * Creates and returns a new instance of the class `IPartitionSampling`, based on the type of this regression
+         * matrix.
+         *
+         * @param factory   A reference to an object of type `IRegressionPartitionSamplingFactory` that should be used
+         *                  to create the instance
+         * @return          An unique pointer to an object of type `IPartitionSampling` that has been created
+         */
+        virtual std::unique_ptr<IPartitionSampling> createPartitionSampling(
+          const IRegressionPartitionSamplingFactory& factory) const = 0;
 };

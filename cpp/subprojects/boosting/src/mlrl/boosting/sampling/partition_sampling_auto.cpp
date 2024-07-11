@@ -13,15 +13,15 @@ namespace boosting {
           marginalProbabilityCalibratorConfig_(marginalProbabilityCalibratorConfigGetter),
           jointProbabilityCalibratorConfig_(jointProbabilityCalibratorConfigGetter) {}
 
-    std::unique_ptr<IPartitionSamplingFactory> AutomaticPartitionSamplingConfig::createPartitionSamplingFactory()
-      const {
+    std::unique_ptr<IClassificationPartitionSamplingFactory>
+      AutomaticPartitionSamplingConfig::createClassificationPartitionSamplingFactory() const {
         if ((globalPruningConfig_.get().shouldUseHoldoutSet())
             || marginalProbabilityCalibratorConfig_.get().shouldUseHoldoutSet()
             || jointProbabilityCalibratorConfig_.get().shouldUseHoldoutSet()) {
-            return OutputWiseStratifiedBiPartitionSamplingConfig().createPartitionSamplingFactory();
+            return OutputWiseStratifiedBiPartitionSamplingConfig().createClassificationPartitionSamplingFactory();
         }
 
-        return NoPartitionSamplingConfig().createPartitionSamplingFactory();
+        return NoPartitionSamplingConfig().createClassificationPartitionSamplingFactory();
     }
 
 }

@@ -31,12 +31,13 @@ class IPartitionSampling {
 };
 
 /**
- * Defines an interface for all factories that allow to create objects of type `IPartitionSampling`.
+ * Defines an interface for all factories that allow to create objects of type `IPartitionSampling` that can be used in
+ * classification problems.
  */
-class IPartitionSamplingFactory {
+class IClassificationPartitionSamplingFactory {
     public:
 
-        virtual ~IPartitionSamplingFactory() {}
+        virtual ~IClassificationPartitionSamplingFactory() {}
 
         /**
          * Creates and returns a new object of type `IPartitionSampling`.
@@ -55,6 +56,16 @@ class IPartitionSamplingFactory {
          * @return              An unique pointer to an object of type `IPartitionSampling` that has been created
          */
         virtual std::unique_ptr<IPartitionSampling> create(const BinaryCsrView& labelMatrix) const = 0;
+};
+
+/**
+ * Defines an interface for all factories that allow to create objects of type `IPartitionSampling` that can be used in
+ * regression problems.
+ */
+class IRegressionPartitionSamplingFactory {
+    public:
+
+        virtual ~IRegressionPartitionSamplingFactory() {}
 
         /**
          * Creates and returns a new object of type `IPartitionSampling`.
@@ -78,18 +89,40 @@ class IPartitionSamplingFactory {
 
 /**
  * Defines an interface for all classes that allow to configure a method for partitioning the available training
- * examples into a training set and a holdout set.
+ * examples into a training set and a holdout set that can be used in classification problems.
  */
-class IPartitionSamplingConfig {
+class IClassificationPartitionSamplingConfig {
     public:
 
-        virtual ~IPartitionSamplingConfig() {}
+        virtual ~IClassificationPartitionSamplingConfig() {}
 
         /**
-         * Creates and returns a new object of type `IPartitionSamplingFactory` according to the specified
+         * Creates and returns a new object of type `IClassificationPartitionSamplingFactory` according to the specified
          * configuration.
          *
-         * @return An unique pointer to an object of type `IPartitionSamplingFactory` that has been created
+         * @return An unique pointer to an object of type `IClassificationPartitionSamplingFactory` that has been
+         * created
          */
-        virtual std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const = 0;
+        virtual std::unique_ptr<IClassificationPartitionSamplingFactory> createClassificationPartitionSamplingFactory()
+          const = 0;
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a method for partitioning the available training
+ * examples into a training set and a holdout set that can be used in regression problems.
+ */
+class IRegressionPartitionSamplingConfig {
+    public:
+
+        virtual ~IRegressionPartitionSamplingConfig() {}
+
+        /**
+         * Creates and returns a new object of type `IRegressionPartitionSamplingFactory` according to the specified
+         * configuration.
+         *
+         * @return An unique pointer to an object of type `IRegressionPartitionSamplingFactory` that has been
+         * created
+         */
+        virtual std::unique_ptr<IRegressionPartitionSamplingFactory> createRegressionPartitionSamplingFactory()
+          const = 0;
 };

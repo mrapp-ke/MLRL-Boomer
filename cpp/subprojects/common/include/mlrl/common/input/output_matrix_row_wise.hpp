@@ -10,8 +10,6 @@
 // Forward declarations
 class IStatisticsProvider;
 class IStatisticsProviderFactory;
-class IPartitionSampling;
-class IPartitionSamplingFactory;
 
 /**
  * Defines an interface for all output matrices that provide access to the ground truth of training examples.
@@ -31,15 +29,4 @@ class MLRLCOMMON_API IRowWiseOutputMatrix : public IOutputMatrix {
          */
         virtual std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
           const IStatisticsProviderFactory& factory) const = 0;
-
-        /**
-         * Creates and returns a new instance of the class `IPartitionSampling`, based on the type of this output
-         * matrix.
-         *
-         * @param factory   A reference to an object of type `IPartitionSamplingFactory` that should be used to create
-         *                  the instance
-         * @return          An unique pointer to an object of type `IPartitionSampling` that has been created
-         */
-        virtual std::unique_ptr<IPartitionSampling> createPartitionSampling(
-          const IPartitionSamplingFactory& factory) const = 0;
 };

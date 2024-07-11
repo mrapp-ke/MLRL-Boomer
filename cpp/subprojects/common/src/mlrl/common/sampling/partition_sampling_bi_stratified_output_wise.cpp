@@ -43,7 +43,7 @@ class OutputWiseStratifiedBiPartitionSampling final : public IPartitionSampling 
  * into two mutually exclusive sets that may be used as a training set and a holdout set, such that for each label the
  * proportion of relevant and irrelevant examples is maintained.
  */
-class OutputWiseStratifiedBiPartitionSamplingFactory final : public IPartitionSamplingFactory {
+class OutputWiseStratifiedBiPartitionSamplingFactory final : public IClassificationPartitionSamplingFactory {
     private:
 
         const float32 holdoutSetSize_;
@@ -71,17 +71,6 @@ class OutputWiseStratifiedBiPartitionSamplingFactory final : public IPartitionSa
             return std::make_unique<OutputWiseStratifiedBiPartitionSampling<BinaryCsrView>>(labelMatrix, numTraining,
                                                                                             numHoldout);
         }
-
-        std::unique_ptr<IPartitionSampling> create(
-          const CContiguousView<const float32>& regressionMatrix) const override {
-            // TODO
-            return nullptr;
-        }
-
-        std::unique_ptr<IPartitionSampling> create(const CsrView<const float32>& regressionMatrix) const override {
-            // TODO
-            return nullptr;
-        }
 };
 
 OutputWiseStratifiedBiPartitionSamplingConfig::OutputWiseStratifiedBiPartitionSamplingConfig()
@@ -99,7 +88,7 @@ IOutputWiseStratifiedBiPartitionSamplingConfig& OutputWiseStratifiedBiPartitionS
     return *this;
 }
 
-std::unique_ptr<IPartitionSamplingFactory>
-  OutputWiseStratifiedBiPartitionSamplingConfig::createPartitionSamplingFactory() const {
+std::unique_ptr<IClassificationPartitionSamplingFactory>
+  OutputWiseStratifiedBiPartitionSamplingConfig::createClassificationPartitionSamplingFactory() const {
     return std::make_unique<OutputWiseStratifiedBiPartitionSamplingFactory>(holdoutSetSize_);
 }

@@ -49,7 +49,7 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
             std::unique_ptr<IOutputSpaceInfo> outputSpaceInfoPtr = configurator_.createOutputSpaceInfo(labelMatrix);
 
             // Partition training data...
-            std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr =
+            std::unique_ptr<IClassificationPartitionSamplingFactory> partitionSamplingFactoryPtr =
               configurator_.createPartitionSamplingFactory();
             std::unique_ptr<IPartitionSampling> partitionSamplingPtr =
               labelMatrix.createPartitionSampling(*partitionSamplingFactoryPtr);

@@ -32,7 +32,8 @@ static inline std::unique_ptr<IPartitionSampling> createNoPartitionSampling(cons
  * Allows to create objects of the type `IPartitionSampling` that do not split the training examples, but include all of
  * them in the training set.
  */
-class NoPartitionSamplingFactory final : public IPartitionSamplingFactory {
+class NoPartitionSamplingFactory final : public IClassificationPartitionSamplingFactory,
+                                         public IRegressionPartitionSamplingFactory {
     public:
 
         std::unique_ptr<IPartitionSampling> create(const CContiguousView<const uint8>& labelMatrix) const override {
@@ -53,6 +54,12 @@ class NoPartitionSamplingFactory final : public IPartitionSamplingFactory {
         }
 };
 
-std::unique_ptr<IPartitionSamplingFactory> NoPartitionSamplingConfig::createPartitionSamplingFactory() const {
+std::unique_ptr<IClassificationPartitionSamplingFactory>
+  NoPartitionSamplingConfig::createClassificationPartitionSamplingFactory() const {
+    return std::make_unique<NoPartitionSamplingFactory>();
+}
+
+std::unique_ptr<IRegressionPartitionSamplingFactory>
+  NoPartitionSamplingConfig::createRegressionPartitionSamplingFactory() const {
     return std::make_unique<NoPartitionSamplingFactory>();
 }

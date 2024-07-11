@@ -52,7 +52,8 @@ static inline std::unique_ptr<IPartitionSampling> createRandomBiPartitionSamplin
  * Allows to create objects of the type `IPartitionSampling` that randomly split the training examples into two mutually
  * exclusive sets that may be used as a training set and a holdout set.
  */
-class RandomBiPartitionSamplingFactory final : public IPartitionSamplingFactory {
+class RandomBiPartitionSamplingFactory final : public IClassificationPartitionSamplingFactory,
+                                               public IRegressionPartitionSamplingFactory {
     private:
 
         const float32 holdoutSetSize_;
@@ -96,6 +97,12 @@ IRandomBiPartitionSamplingConfig& RandomBiPartitionSamplingConfig::setHoldoutSet
     return *this;
 }
 
-std::unique_ptr<IPartitionSamplingFactory> RandomBiPartitionSamplingConfig::createPartitionSamplingFactory() const {
+std::unique_ptr<IClassificationPartitionSamplingFactory>
+  RandomBiPartitionSamplingConfig::createClassificationPartitionSamplingFactory() const {
+    return std::make_unique<RandomBiPartitionSamplingFactory>(holdoutSetSize_);
+}
+
+std::unique_ptr<IRegressionPartitionSamplingFactory>
+  RandomBiPartitionSamplingConfig::createRegressionPartitionSamplingFactory() const {
     return std::make_unique<RandomBiPartitionSamplingFactory>(holdoutSetSize_);
 }
