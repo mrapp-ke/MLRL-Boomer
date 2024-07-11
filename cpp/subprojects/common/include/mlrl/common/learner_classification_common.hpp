@@ -62,7 +62,7 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
             IModelBuilder& modelBuilder = postOptimizationPtr->getModelBuilder();
 
             // Create statistics provider...
-            std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr =
+            std::unique_ptr<IClassificationStatisticsProviderFactory> statisticsProviderFactoryPtr =
               configurator_.createStatisticsProviderFactory(featureMatrix, labelMatrix);
             std::unique_ptr<IStatisticsProvider> statisticsProviderPtr =
               labelMatrix.createStatisticsProvider(*statisticsProviderFactoryPtr);

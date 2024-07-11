@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/input/output_matrix_row_wise.hpp"
+#include "mlrl/common/input/output_matrix.hpp"
 
 #include <memory>
 
@@ -15,12 +15,14 @@ class SinglePartition;
 class BiPartition;
 class IPartitionSampling;
 class IRegressionPartitionSamplingFactory;
+class IStatisticsProvider;
+class IRegressionStatisticsProviderFactory;
 
 /**
  * Defines an interface for all regression matrices that provide access to the ground truth regression scores of
  * training examples.
  */
-class MLRLCOMMON_API IRowWiseRegressionMatrix : public IRowWiseOutputMatrix {
+class MLRLCOMMON_API IRowWiseRegressionMatrix : public IOutputMatrix {
     public:
 
         virtual ~IRowWiseRegressionMatrix() override {}
@@ -67,4 +69,15 @@ class MLRLCOMMON_API IRowWiseRegressionMatrix : public IRowWiseOutputMatrix {
          */
         virtual std::unique_ptr<IPartitionSampling> createPartitionSampling(
           const IRegressionPartitionSamplingFactory& factory) const = 0;
+
+        /**
+         * Creates and returns a new instance of the class `IStatisticsProvider`, based on the type of this output
+         * matrix.
+         *
+         * @param factory   A reference to an object of type `IRegressionStatisticsProviderFactory` that should be used
+         *                  to create the instance
+         * @return          An unique pointer to an object of type `IStatisticsProvider` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
+          const IRegressionStatisticsProviderFactory& factory) const = 0;
 };

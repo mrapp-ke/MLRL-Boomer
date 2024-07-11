@@ -5,7 +5,7 @@ namespace boosting {
     SparseStatisticsConfig::SparseStatisticsConfig(ReadableProperty<ILossConfig> lossConfigGetter)
         : lossConfig_(lossConfigGetter) {}
 
-    std::unique_ptr<IStatisticsProviderFactory> SparseStatisticsConfig::createStatisticsProviderFactory(
+    std::unique_ptr<IClassificationStatisticsProviderFactory> SparseStatisticsConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
       const Lapack& lapack) const {
         return lossConfig_.get().createStatisticsProviderFactory(featureMatrix, labelMatrix, blas, lapack, true);

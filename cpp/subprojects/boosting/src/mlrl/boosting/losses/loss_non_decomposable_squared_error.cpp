@@ -248,9 +248,11 @@ namespace boosting {
       ReadableProperty<IHeadConfig> headConfigGetter)
         : headConfig_(headConfigGetter) {}
 
-    std::unique_ptr<IStatisticsProviderFactory> NonDecomposableSquaredErrorLossConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-      const Lapack& lapack, bool preferSparseStatistics) const {
+    std::unique_ptr<IClassificationStatisticsProviderFactory>
+      NonDecomposableSquaredErrorLossConfig::createStatisticsProviderFactory(const IFeatureMatrix& featureMatrix,
+                                                                             const IRowWiseLabelMatrix& labelMatrix,
+                                                                             const Blas& blas, const Lapack& lapack,
+                                                                             bool preferSparseStatistics) const {
         return headConfig_.get().createStatisticsProviderFactory(featureMatrix, labelMatrix, *this, blas, lapack);
     }
 

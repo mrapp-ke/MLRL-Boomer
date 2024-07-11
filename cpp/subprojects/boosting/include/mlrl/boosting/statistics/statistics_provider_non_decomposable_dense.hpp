@@ -16,7 +16,8 @@ namespace boosting {
      * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
      * `INonDecomposableStatistics`, which uses dense data structures to store the statistics.
      */
-    class DenseNonDecomposableStatisticsProviderFactory final : public IStatisticsProviderFactory {
+    class DenseNonDecomposableStatisticsProviderFactory final : public IClassificationStatisticsProviderFactory,
+                                                                public IRegressionStatisticsProviderFactory {
         private:
 
             const std::unique_ptr<INonDecomposableLossFactory> lossFactoryPtr_;
@@ -66,23 +67,23 @@ namespace boosting {
               uint32 numThreads);
 
             /**
-             * @see `IStatisticsProviderFactory::create`
+             * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const CContiguousView<const uint8>& labelMatrix) const override;
 
             /**
-             * @see `IStatisticsProviderFactory::create`
+             * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const BinaryCsrView& labelMatrix) const override;
 
             /**
-             * @see `IStatisticsProviderFactory::create`
+             * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(
               const CContiguousView<const float32>& regressionMatrix) const override;
 
             /**
-             * @see `IStatisticsProviderFactory::create`
+             * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const CsrView<const float32>& regressionMatrix) const override;
     };
@@ -92,7 +93,9 @@ namespace boosting {
      * `INonDecomposableStatistics`, which uses dense data structures to store the statistics and can be converted into
      * an object of type `IDecomposableStatistics`.
      */
-    class DenseConvertibleNonDecomposableStatisticsProviderFactory final : public IStatisticsProviderFactory {
+    class DenseConvertibleNonDecomposableStatisticsProviderFactory final
+        : public IClassificationStatisticsProviderFactory,
+          public IRegressionStatisticsProviderFactory {
         private:
 
             const std::unique_ptr<INonDecomposableLossFactory> lossFactoryPtr_;
@@ -141,23 +144,23 @@ namespace boosting {
               std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads);
 
             /**
-             * @see `IStatisticsProviderFactory::create`
+             * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const CContiguousView<const uint8>& labelMatrix) const override;
 
             /**
-             * @see `IStatisticsProviderFactory::create`
+             * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const BinaryCsrView& labelMatrix) const override;
 
             /**
-             * @see `IStatisticsProviderFactory::create`
+             * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(
               const CContiguousView<const float32>& regressionMatrix) const override;
 
             /**
-             * @see `IStatisticsProviderFactory::create`
+             * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const CsrView<const float32>& regressionMatrix) const override;
     };

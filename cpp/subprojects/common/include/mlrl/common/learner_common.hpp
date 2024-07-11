@@ -440,17 +440,17 @@ class RuleLearnerConfigurator {
         }
 
         /**
-         * Must be implemented by subclasses in order to create the `IStatisticsProviderFactory` to be used by the rule
-         * learner.
+         * Must be implemented by subclasses in order to create the `IClassificationStatisticsProviderFactory` to be
+         * used by the rule learner.
          *
          * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
          *                      values of the training examples
          * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
          *                      the labels of the training examples
-         * @return              An unique pointer to an object of type `IStatisticsProviderFactory` that has been
-         *                      created
+         * @return              An unique pointer to an object of type `IClassificationStatisticsProviderFactory` that
+         *                      has been created
          */
-        virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+        virtual std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
           const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const = 0;
 
         /**

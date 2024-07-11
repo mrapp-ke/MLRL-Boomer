@@ -41,7 +41,7 @@ class CsrRegressionMatrix final : public IterableBinarySparseMatrixDecorator<Mat
         }
 
         std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
-          const IStatisticsProviderFactory& factory) const override {
+          const IRegressionStatisticsProviderFactory& factory) const override {
             return factory.create(this->getView());
         }
 

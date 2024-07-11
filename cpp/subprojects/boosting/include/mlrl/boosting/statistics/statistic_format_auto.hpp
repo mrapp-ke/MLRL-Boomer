@@ -40,7 +40,7 @@ namespace boosting {
                                       ReadableProperty<IHeadConfig> headConfigGetter,
                                       ReadableProperty<IDefaultRuleConfig> defaultRuleConfigGetter);
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
               const Lapack& lapack) const override;
 
