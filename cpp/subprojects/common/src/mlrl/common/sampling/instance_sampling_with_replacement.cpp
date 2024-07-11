@@ -89,6 +89,12 @@ class InstanceSamplingWithReplacement final : public IInstanceSampling {
         }
 };
 
+template<typename Partition>
+static inline std::unique_ptr<IInstanceSampling> createInstanceSamplingWithReplacement(Partition& partition,
+                                                                                       float32 sampleSize) {
+    return std::make_unique<InstanceSamplingWithReplacement<Partition>>(partition, sampleSize);
+}
+
 /**
  * Allows to create instances of the type `IInstanceSampling` that allow to select a subset of the available training
  * examples with replacement.
@@ -109,22 +115,44 @@ class InstanceSamplingWithReplacementFactory final : public IInstanceSamplingFac
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
                                                   const SinglePartition& partition,
                                                   IStatistics& statistics) const override {
-            return std::make_unique<InstanceSamplingWithReplacement<const SinglePartition>>(partition, sampleSize_);
+            return createInstanceSamplingWithReplacement(partition, sampleSize_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
                                                   BiPartition& partition, IStatistics& statistics) const override {
-            return std::make_unique<InstanceSamplingWithReplacement<BiPartition>>(partition, sampleSize_);
+            return createInstanceSamplingWithReplacement(partition, sampleSize_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, const SinglePartition& partition,
                                                   IStatistics& statistics) const override {
-            return std::make_unique<InstanceSamplingWithReplacement<const SinglePartition>>(partition, sampleSize_);
+            return createInstanceSamplingWithReplacement(partition, sampleSize_);
         }
 
         std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, BiPartition& partition,
                                                   IStatistics& statistics) const override {
-            return std::make_unique<InstanceSamplingWithReplacement<BiPartition>>(partition, sampleSize_);
+            return createInstanceSamplingWithReplacement(partition, sampleSize_);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
+                                                  const SinglePartition& partition,
+                                                  IStatistics& statistics) const override {
+            return createInstanceSamplingWithReplacement(partition, sampleSize_);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
+                                                  BiPartition& partition, IStatistics& statistics) const override {
+            return createInstanceSamplingWithReplacement(partition, sampleSize_);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
+                                                  const SinglePartition& partition,
+                                                  IStatistics& statistics) const override {
+            return createInstanceSamplingWithReplacement(partition, sampleSize_);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
+                                                  BiPartition& partition, IStatistics& statistics) const override {
+            return createInstanceSamplingWithReplacement(partition, sampleSize_);
         }
 };
 

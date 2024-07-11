@@ -92,6 +92,32 @@ class OutputWiseStratifiedInstanceSamplingFactory final : public IInstanceSampli
             return std::make_unique<OutputWiseStratifiedSampling<BinaryCsrView, BiPartition::const_iterator>>(
               labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_);
         }
+
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
+                                                  const SinglePartition& partition,
+                                                  IStatistics& statistics) const override {
+            // TODO
+            return nullptr;
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
+                                                  BiPartition& partition, IStatistics& statistics) const override {
+            // TODO
+            return nullptr;
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
+                                                  const SinglePartition& partition,
+                                                  IStatistics& statistics) const override {
+            // TODO
+            return nullptr;
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
+                                                  BiPartition& partition, IStatistics& statistics) const override {
+            // TODO
+            return nullptr;
+        }
 };
 
 OutputWiseStratifiedInstanceSamplingConfig::OutputWiseStratifiedInstanceSamplingConfig() : sampleSize_(0.66f) {}
