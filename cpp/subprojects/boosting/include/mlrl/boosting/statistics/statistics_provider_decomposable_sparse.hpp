@@ -16,7 +16,8 @@ namespace boosting {
      * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
      * `IDecomposableStatistics`, which uses sparse data structures to store the statistics.
      */
-    class SparseDecomposableStatisticsProviderFactory final : public IStatisticsProviderFactory {
+    class SparseDecomposableStatisticsProviderFactory final : public IClassificationStatisticsProviderFactory,
+                                                              public IRegressionStatisticsProviderFactory {
         private:
 
             const std::unique_ptr<ISparseDecomposableLossFactory> lossFactoryPtr_;
@@ -59,23 +60,23 @@ namespace boosting {
               uint32 numThreads);
 
             /**
-             * @see `IStatisticsProviderFactory::create`
+             * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const CContiguousView<const uint8>& labelMatrix) const override;
 
             /**
-             * @see `IStatisticsProviderFactory::create`
+             * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const BinaryCsrView& labelMatrix) const override;
 
             /**
-             * @see `IStatisticsProviderFactory::create`
+             * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(
               const CContiguousView<const float32>& regressionMatrix) const override;
 
             /**
-             * @see `IStatisticsProviderFactory::create`
+             * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const CsrView<const float32>& regressionMatrix) const override;
     };

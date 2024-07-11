@@ -24,8 +24,8 @@ namespace boosting {
             virtual ~IHeadConfig() {}
 
             /**
-             * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
-             * configuration.
+             * Creates and returns a new object of type `IClassificationStatisticsProviderFactory` according to the
+             * specified configuration.
              *
              * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the
              *                      feature values of the training examples
@@ -33,16 +33,16 @@ namespace boosting {
              *                      labels of the training examples
              * @param lossConfig    A reference to an object of type `IDecomposableLossConfig` that specifies the
              *                      configuration of the loss function
-             * @return              An unique pointer to an object of type `IStatisticsProviderFactory` that has been
-             *                      created
+             * @return              An unique pointer to an object of type `IClassificationStatisticsProviderFactory`
+             *                      that has been created
              */
-            virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            virtual std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
               const IDecomposableLossConfig& lossConfig) const = 0;
 
             /**
-             * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
-             * configuration.
+             * Creates and returns a new object of type `IClassificationStatisticsProviderFactory` according to the
+             * specified configuration.
              *
              * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the
              *                      feature values of the training examples
@@ -50,16 +50,16 @@ namespace boosting {
              *                      labels of the training examples
              * @param lossConfig    A reference to an object of type `ISparseDecomposableLossConfig` that specifies the
              *                      configuration of the loss function
-             * @return              An unique pointer to an object of type `IStatisticsProviderFactory` that has been
-             *                      created
+             * @return              An unique pointer to an object of type `IClassificationStatisticsProviderFactory`
+             *                      that has been created
              */
-            virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            virtual std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
               const ISparseDecomposableLossConfig& lossConfig) const = 0;
 
             /**
-             * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
-             * configuration.
+             * Creates and returns a new object of type `IClassificationStatisticsProviderFactory` according to the
+             * specified configuration.
              *
              * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the
              *                      feature values of the training examples
@@ -69,10 +69,10 @@ namespace boosting {
              *                      configuration of the loss function
              * @param blas          A reference to an object of type `Blas` that allows to execute BLAS routines
              * @param lapack        A reference to an object of type `Lapack` that allows to execute LAPACK routines
-             * @return              An unique pointer to an object of type `IStatisticsProviderFactory` that has been
-             *                      created
+             * @return              An unique pointer to an object of type `IClassificationStatisticsProviderFactory`
+             *                      that has been created
              */
-            virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            virtual std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
               const INonDecomposableLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const = 0;
 

@@ -36,8 +36,8 @@ namespace boosting {
             virtual ~ILossConfig() {}
 
             /**
-             * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
-             * configuration.
+             * Creates and returns a new object of type `IClassificationStatisticsProviderFactory` according to the
+             * specified configuration.
              *
              * @param featureMatrix             A reference to an object of type `IFeatureMatrix` that provides access
              *                                  to the feature values of the training examples
@@ -49,10 +49,10 @@ namespace boosting {
              *                                  routines
              * @param preferSparseStatistics    True, if a sparse representation of statistics should be preferred, if
              *                                  possible, false otherwise
-             * @return                          An unique pointer to an object of type `IStatisticsProviderFactory` that
-             *                                  has been created
+             * @return                          An unique pointer to an object of type
+             *                                  `IClassificationStatisticsProviderFactory` that has been created
              */
-            virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            virtual std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
               const Lapack& lapack, bool preferSparseStatistics) const = 0;
 

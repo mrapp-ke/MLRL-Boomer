@@ -7,9 +7,10 @@ namespace boosting {
                                                          ReadableProperty<IDefaultRuleConfig> defaultRuleConfigGetter)
         : lossConfig_(lossConfigGetter), headConfig_(headConfigGetter), defaultRuleConfig_(defaultRuleConfigGetter) {}
 
-    std::unique_ptr<IStatisticsProviderFactory> AutomaticStatisticsConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-      const Lapack& lapack) const {
+    std::unique_ptr<IClassificationStatisticsProviderFactory>
+      AutomaticStatisticsConfig::createStatisticsProviderFactory(const IFeatureMatrix& featureMatrix,
+                                                                 const IRowWiseLabelMatrix& labelMatrix,
+                                                                 const Blas& blas, const Lapack& lapack) const {
         bool defaultRuleUsed = defaultRuleConfig_.get().isDefaultRuleUsed(labelMatrix);
         bool partialHeadsUsed = headConfig_.get().isPartial();
         bool preferSparseStatistics = shouldSparseStatisticsBePreferred(labelMatrix, defaultRuleUsed, partialHeadsUsed);
