@@ -35,12 +35,13 @@ class IInstanceSampling {
 };
 
 /**
- * Defines an interface for all factories that allow to create instances of the type `IInstanceSampling`.
+ * Defines an interface for all factories that allow to create instances of the type `IInstanceSampling` that can be
+ * used in classification problems.
  */
-class IInstanceSamplingFactory {
+class IClassificationInstanceSamplingFactory {
     public:
 
-        virtual ~IInstanceSamplingFactory() {}
+        virtual ~IClassificationInstanceSamplingFactory() {}
 
         /**
          * Creates and returns a new object of type `IInstanceSampling`.
@@ -101,6 +102,16 @@ class IInstanceSamplingFactory {
          */
         virtual std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, BiPartition& partition,
                                                           IStatistics& statistics) const = 0;
+};
+
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IInstanceSampling` that can be
+ * used in regression problems.
+ */
+class IRegressionInstanceSamplingFactory {
+    public:
+
+        virtual ~IRegressionInstanceSamplingFactory() {}
 
         /**
          * Creates and returns a new object of type `IInstanceSampling`.
@@ -164,17 +175,38 @@ class IInstanceSamplingFactory {
 };
 
 /**
- * Defines an interface for all classes that allow to configure a method for sampling instances.
+ * Defines an interface for all classes that allow to configure a method for sampling instances that can be used in
+ * classification problems.
  */
-class IInstanceSamplingConfig {
+class IClassificationInstanceSamplingConfig {
     public:
 
-        virtual ~IInstanceSamplingConfig() {}
+        virtual ~IClassificationInstanceSamplingConfig() {}
 
         /**
-         * Creates and returns a new object of type `IInstanceSamplingFactory` according to the specified configuration.
+         * Creates and returns a new object of type `IClassificationInstanceSamplingFactory` according to the specified
+         * configuration.
          *
-         * @return An unique pointer to an object of type `IInstanceSamplingFactory` that has been created
+         * @return An unique pointer to an object of type `IClassificationInstanceSamplingFactory` that has been created
          */
-        virtual std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const = 0;
+        virtual std::unique_ptr<IClassificationInstanceSamplingFactory> createClassificationInstanceSamplingFactory()
+          const = 0;
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a method for sampling instances that can be used in
+ * regression problems.
+ */
+class IRegressionInstanceSamplingConfig {
+    public:
+
+        virtual ~IRegressionInstanceSamplingConfig() {}
+
+        /**
+         * Creates and returns a new object of type `IRegressionInstanceSamplingFactory` according to the specified
+         * configuration.
+         *
+         * @return An unique pointer to an object of type `IRegressionInstanceSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<IRegressionInstanceSamplingFactory> createRegressionInstanceSamplingFactory() const = 0;
 };

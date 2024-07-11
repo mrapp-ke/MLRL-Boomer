@@ -12,7 +12,7 @@
 class IStoppingCriterion;
 class IStoppingCriterionFactory;
 class IInstanceSampling;
-class IInstanceSamplingFactory;
+class IClassificationInstanceSamplingFactory;
 class IRowWiseLabelMatrix;
 class IStatistics;
 class IFeatureSubspace;
@@ -42,19 +42,20 @@ class IPartition {
           const IStoppingCriterionFactory& factory) = 0;
 
         /**
-         * Creates and returns a new instance of the class `IInstanceSampling`, based on the type of this partition.
+         * Creates and returns a new instance of the class `IInstanceSampling` that can be used for classification
+         * problems, based on the type of this partition.
          *
-         * @param factory       A reference to an object of type `IInstanceSamplingFactory` that should be used to
-         *                      create the instance
+         * @param factory       A reference to an object of type `IClassificationInstanceSamplingFactory` that should be
+         *                       used to create the instance
          * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
          *                      the labels of individual training examples
          * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics
          *                      which serve as a basis for learning rules
          * @return              An unique pointer to an object of type `IInstanceSampling` that has been created
          */
-        virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
-                                                                          const IRowWiseLabelMatrix& labelMatrix,
-                                                                          IStatistics& statistics) = 0;
+        virtual std::unique_ptr<IInstanceSampling> createInstanceSampling(
+          const IClassificationInstanceSamplingFactory& factory, const IRowWiseLabelMatrix& labelMatrix,
+          IStatistics& statistics) = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of a rule's prediction for all examples

@@ -312,7 +312,7 @@ class MLRLCOMMON_API IOutputWiseStratifiedInstanceSamplingMixin : virtual public
          *         configuration of the method for sampling instances
          */
         virtual IOutputWiseStratifiedInstanceSamplingConfig& useOutputWiseStratifiedInstanceSampling() {
-            Property<IInstanceSamplingConfig> property = this->getInstanceSamplingConfig();
+            Property<IClassificationInstanceSamplingConfig> property = this->getInstanceSamplingConfig();
             std::unique_ptr<OutputWiseStratifiedInstanceSamplingConfig> ptr =
               std::make_unique<OutputWiseStratifiedInstanceSamplingConfig>();
             IOutputWiseStratifiedInstanceSamplingConfig& ref = *ptr;
@@ -338,7 +338,7 @@ class MLRLCOMMON_API IExampleWiseStratifiedInstanceSamplingMixin : virtual publi
          *         configuration of the method for sampling instances
          */
         virtual IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() {
-            Property<IInstanceSamplingConfig> property = this->getInstanceSamplingConfig();
+            Property<IClassificationInstanceSamplingConfig> property = this->getInstanceSamplingConfig();
             std::unique_ptr<ExampleWiseStratifiedInstanceSamplingConfig> ptr =
               std::make_unique<ExampleWiseStratifiedInstanceSamplingConfig>();
             IExampleWiseStratifiedInstanceSamplingConfig& ref = *ptr;

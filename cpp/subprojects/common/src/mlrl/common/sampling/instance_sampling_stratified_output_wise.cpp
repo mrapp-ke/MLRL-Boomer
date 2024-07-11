@@ -53,7 +53,7 @@ class OutputWiseStratifiedSampling final : public IInstanceSampling {
  * of the available training examples, such that for each label the proportion of relevant and irrelevant examples is
  * maintained.
  */
-class OutputWiseStratifiedInstanceSamplingFactory final : public IInstanceSamplingFactory {
+class OutputWiseStratifiedInstanceSamplingFactory final : public IClassificationInstanceSamplingFactory {
     private:
 
         const float32 sampleSize_;
@@ -92,32 +92,6 @@ class OutputWiseStratifiedInstanceSamplingFactory final : public IInstanceSampli
             return std::make_unique<OutputWiseStratifiedSampling<BinaryCsrView, BiPartition::const_iterator>>(
               labelMatrix, partition.first_cbegin(), partition.first_cend(), sampleSize_);
         }
-
-        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
-                                                  const SinglePartition& partition,
-                                                  IStatistics& statistics) const override {
-            // TODO
-            return nullptr;
-        }
-
-        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
-                                                  BiPartition& partition, IStatistics& statistics) const override {
-            // TODO
-            return nullptr;
-        }
-
-        std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
-                                                  const SinglePartition& partition,
-                                                  IStatistics& statistics) const override {
-            // TODO
-            return nullptr;
-        }
-
-        std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
-                                                  BiPartition& partition, IStatistics& statistics) const override {
-            // TODO
-            return nullptr;
-        }
 };
 
 OutputWiseStratifiedInstanceSamplingConfig::OutputWiseStratifiedInstanceSamplingConfig() : sampleSize_(0.66f) {}
@@ -134,7 +108,7 @@ IOutputWiseStratifiedInstanceSamplingConfig& OutputWiseStratifiedInstanceSamplin
     return *this;
 }
 
-std::unique_ptr<IInstanceSamplingFactory> OutputWiseStratifiedInstanceSamplingConfig::createInstanceSamplingFactory()
-  const {
+std::unique_ptr<IClassificationInstanceSamplingFactory>
+  OutputWiseStratifiedInstanceSamplingConfig::createClassificationInstanceSamplingFactory() const {
     return std::make_unique<OutputWiseStratifiedInstanceSamplingFactory>(sampleSize_);
 }
