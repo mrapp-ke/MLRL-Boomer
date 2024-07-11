@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_csr.hpp"
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
 #include "mlrl/common/sampling/random.hpp"
 #include "mlrl/common/sampling/weight_vector.hpp"
@@ -100,6 +101,66 @@ class IInstanceSamplingFactory {
          */
         virtual std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, BiPartition& partition,
                                                           IStatistics& statistics) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IInstanceSampling`.
+         *
+         * @param regressionMatrix  A reference to an object of type `CContiguousView` that provides access to the
+         *                          regression scores of the training examples
+         * @param partition         A reference to an object of type `SinglePartition` that provides access to the
+         *                          indices of the training examples that are included in the training set
+         * @param statistics        A reference to an object of type `IStatistics` that provides access to the
+         *                          statistics which serve as a basis for learning rules
+         * @return                  An unique pointer to an object of type `IInstanceSampling` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
+                                                          const SinglePartition& partition,
+                                                          IStatistics& statistics) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IInstanceSampling`.
+         *
+         * @param regressionMatrix  A reference to an object of type `CContiguousView` that provides access to the
+         *                          regression scores of the training examples
+         * @param partition         A reference to an object of type `BiPartition` that provides access to the indices
+         *                          of the training examples that are included in the training set and the holdout set,
+         *                          respectively
+         * @param statistics        A reference to an object of type `IStatistics` that provides access to the
+         *                          statistics which serve as a basis for learning rules
+         * @return                  An unique pointer to an object of type `IInstanceSampling` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
+                                                          BiPartition& partition, IStatistics& statistics) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IInstanceSampling`.
+         *
+         * @param regressionMatrix  A reference to an object of type `CsrView` that provides access to the regression
+         *                          scores of the training examples
+         * @param partition         A reference to an object of type `SinglePartition` that provides access to the
+         *                          indices of the training examples that are included in the training set
+         * @param statistics        A reference to an object of type `IStatistics` that provides access to the
+         *                          statistics which serve as a basis for learning rules
+         * @return                  An unique pointer to an object of type `IInstanceSampling` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
+                                                          const SinglePartition& partition,
+                                                          IStatistics& statistics) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IInstanceSampling`.
+         *
+         * @param regressionMatrix  A reference to an object of type `CsrView` that provides access to the regression
+         *                          scores of the training examples
+         * @param partition         A reference to an object of type `BiPartition` that provides access to the indices
+         *                          of the training examples that are included in the training set and the holdout set,
+         *                          respectively
+         * @param statistics        A reference to an object of type `IStatistics` that provides access to the
+         *                          statistics which serve as a basis for learning rules
+         * @return                  An unique pointer to an object of type `IInstanceSampling` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
+                                                          BiPartition& partition, IStatistics& statistics) const = 0;
 };
 
 /**
