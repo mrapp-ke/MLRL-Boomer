@@ -39,6 +39,15 @@ class RandomBiPartitionSampling final : public IPartitionSampling {
         }
 };
 
+template<typename OutputMatrix>
+static inline std::unique_ptr<IPartitionSampling> createRandomBiPartitionSampling(const OutputMatrix& outputMatrix,
+                                                                                  float32 holdoutSetSize) {
+    uint32 numExamples = outputMatrix.numRows;
+    uint32 numHoldout = static_cast<uint32>(holdoutSetSize * numExamples);
+    uint32 numTraining = numExamples - numHoldout;
+    return std::make_unique<RandomBiPartitionSampling>(numTraining, numHoldout);
+}
+
 /**
  * Allows to create objects of the type `IPartitionSampling` that randomly split the training examples into two mutually
  * exclusive sets that may be used as a training set and a holdout set.
@@ -57,17 +66,20 @@ class RandomBiPartitionSamplingFactory final : public IPartitionSamplingFactory 
         RandomBiPartitionSamplingFactory(float32 holdoutSetSize) : holdoutSetSize_(holdoutSetSize) {}
 
         std::unique_ptr<IPartitionSampling> create(const CContiguousView<const uint8>& labelMatrix) const override {
-            uint32 numExamples = labelMatrix.numRows;
-            uint32 numHoldout = static_cast<uint32>(holdoutSetSize_ * numExamples);
-            uint32 numTraining = numExamples - numHoldout;
-            return std::make_unique<RandomBiPartitionSampling>(numTraining, numHoldout);
+            return createRandomBiPartitionSampling(labelMatrix, holdoutSetSize_);
         }
 
         std::unique_ptr<IPartitionSampling> create(const BinaryCsrView& labelMatrix) const override {
-            uint32 numExamples = labelMatrix.numRows;
-            uint32 numHoldout = static_cast<uint32>(holdoutSetSize_ * numExamples);
-            uint32 numTraining = numExamples - numHoldout;
-            return std::make_unique<RandomBiPartitionSampling>(numTraining, numHoldout);
+            return createRandomBiPartitionSampling(labelMatrix, holdoutSetSize_);
+        }
+
+        std::unique_ptr<IPartitionSampling> create(
+          const CContiguousView<const float32>& regressionMatrix) const override {
+            return createRandomBiPartitionSampling(regressionMatrix, holdoutSetSize_);
+        }
+
+        std::unique_ptr<IPartitionSampling> create(const CsrView<const float32>& regressionMatrix) const override {
+            return createRandomBiPartitionSampling(regressionMatrix, holdoutSetSize_);
         }
 };
 
