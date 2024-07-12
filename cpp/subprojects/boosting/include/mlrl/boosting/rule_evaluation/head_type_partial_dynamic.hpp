@@ -8,6 +8,7 @@
 #include "mlrl/boosting/rule_evaluation/regularization.hpp"
 #include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/multi_threading/multi_threading.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -76,21 +77,22 @@ namespace boosting {
 
             float32 exponent_;
 
-            const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr_;
+            const GetterFunction<ILabelBinningConfig> labelBinningConfigGetter_;
 
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
+            const GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter_;
 
         public:
 
             /**
-             * @param labelBinningConfigPtr     A reference to an unique pointer that stores the configuration of the
-             *                                  method for assigning labels to bins
-             * @param multiThreadingConfigPtr   A reference to an unique pointer that stores the configuration of the
-             *                                  multi-threading behavior that should be used for the parallel update of
-             *                                  statistics
+             * @param labelBinningConfigGetter    A `GetterFunction` that allows to access the `ILabelBinningConfig`
+             *                                    that stores the configuration of the method for assigning labels to
+             *                                    bins
+             * @param multiThreadingConfigGetter  A `GetterFunction` that allows to access the `IMultiThreadingConfig`
+             *                                    that stores the configuration of the multi-threading behavior that
+             *                                    should be used for the parallel update of statistics
              */
-            DynamicPartialHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
-                                     const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+            DynamicPartialHeadConfig(GetterFunction<ILabelBinningConfig> labelBinningConfigGetter,
+                                     GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter);
 
             float32 getThreshold() const override;
 

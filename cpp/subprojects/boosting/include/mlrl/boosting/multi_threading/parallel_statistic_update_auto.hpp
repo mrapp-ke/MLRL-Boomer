@@ -5,6 +5,7 @@
 
 #include "mlrl/boosting/losses/loss.hpp"
 #include "mlrl/common/multi_threading/multi_threading.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -17,14 +18,15 @@ namespace boosting {
     class AutoParallelStatisticUpdateConfig final : public IMultiThreadingConfig {
         private:
 
-            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+            const GetterFunction<ILossConfig> lossConfigGetter_;
 
         public:
 
             /**
-             * @param lossConfigPtr A reference to an unique pointer that stores the configuration of the loss function
+             * @param lossConfigGetter A `GetterFunction` that allows to access the `ILossConfig` that stores the
+             *                         configuration of the loss function
              */
-            AutoParallelStatisticUpdateConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr);
+            AutoParallelStatisticUpdateConfig(const GetterFunction<ILossConfig> lossConfigGetter);
 
             /**
              * @see `IMultiThreadingConfig::getNumThreads`
