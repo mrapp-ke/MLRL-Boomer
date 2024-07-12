@@ -95,11 +95,11 @@ class SequentialRuleModelAssemblageFactory final : public IRuleModelAssemblageFa
 };
 
 SequentialRuleModelAssemblageConfig::SequentialRuleModelAssemblageConfig(
-  const std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr)
-    : defaultRuleConfigPtr_(defaultRuleConfigPtr) {}
+  GetterFunction<IDefaultRuleConfig> defaultRuleConfigGetter)
+    : defaultRuleConfigGetter_(defaultRuleConfigGetter) {}
 
 std::unique_ptr<IRuleModelAssemblageFactory> SequentialRuleModelAssemblageConfig::createRuleModelAssemblageFactory(
   const IRowWiseLabelMatrix& labelMatrix) const {
-    bool useDefaultRule = defaultRuleConfigPtr_->isDefaultRuleUsed(labelMatrix);
+    bool useDefaultRule = defaultRuleConfigGetter_().isDefaultRuleUsed(labelMatrix);
     return std::make_unique<SequentialRuleModelAssemblageFactory>(useDefaultRule);
 }

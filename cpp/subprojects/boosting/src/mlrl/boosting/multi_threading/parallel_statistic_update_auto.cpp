@@ -4,13 +4,12 @@
 
 namespace boosting {
 
-    AutoParallelStatisticUpdateConfig::AutoParallelStatisticUpdateConfig(
-      const std::unique_ptr<ILossConfig>& lossConfigPtr)
-        : lossConfigPtr_(lossConfigPtr) {}
+    AutoParallelStatisticUpdateConfig::AutoParallelStatisticUpdateConfig(GetterFunction<ILossConfig> lossConfigGetter)
+        : lossConfigGetter_(lossConfigGetter) {}
 
     uint32 AutoParallelStatisticUpdateConfig::getNumThreads(const IFeatureMatrix& featureMatrix,
                                                             uint32 numOutputs) const {
-        if (!lossConfigPtr_->isDecomposable() && numOutputs >= 20) {
+        if (!lossConfigGetter_().isDecomposable() && numOutputs >= 20) {
             return getNumAvailableThreads(0);
         } else {
             return 1;

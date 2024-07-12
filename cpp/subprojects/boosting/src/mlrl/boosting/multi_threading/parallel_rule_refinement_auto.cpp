@@ -5,16 +5,16 @@
 namespace boosting {
 
     AutoParallelRuleRefinementConfig::AutoParallelRuleRefinementConfig(
-      const std::unique_ptr<ILossConfig>& lossConfigPtr, const std::unique_ptr<IHeadConfig>& headConfigPtr,
-      const std::unique_ptr<IFeatureSamplingConfig>& featureSamplingConfigPtr)
-        : lossConfigPtr_(lossConfigPtr), headConfigPtr_(headConfigPtr),
-          featureSamplingConfigPtr_(featureSamplingConfigPtr) {}
+      GetterFunction<ILossConfig> lossConfigGetter, GetterFunction<IHeadConfig> headConfigGetter,
+      GetterFunction<IFeatureSamplingConfig> featureSamplingConfigGetter)
+        : lossConfigGetter_(lossConfigGetter), headConfigGetter_(headConfigGetter),
+          featureSamplingConfigGetter_(featureSamplingConfigGetter) {}
 
     uint32 AutoParallelRuleRefinementConfig::getNumThreads(const IFeatureMatrix& featureMatrix,
                                                            uint32 numOutputs) const {
-        if (!lossConfigPtr_->isDecomposable() && !headConfigPtr_->isSingleOutput()) {
+        if (!lossConfigGetter_().isDecomposable() && !headConfigGetter_().isSingleOutput()) {
             return 1;
-        } else if (featureMatrix.isSparse() && !featureSamplingConfigPtr_->isSamplingUsed()) {
+        } else if (featureMatrix.isSparse() && !featureSamplingConfigGetter_().isSamplingUsed()) {
             return 1;
         } else {
             return getNumAvailableThreads(0);

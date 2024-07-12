@@ -7,6 +7,7 @@
 #include "mlrl/boosting/rule_evaluation/head_type.hpp"
 #include "mlrl/boosting/rule_evaluation/regularization.hpp"
 #include "mlrl/common/multi_threading/multi_threading.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -18,31 +19,32 @@ namespace boosting {
     class SingleOutputHeadConfig final : public IHeadConfig {
         private:
 
-            const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr_;
+            const GetterFunction<ILabelBinningConfig> labelBinningConfigGetter_;
 
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
+            const GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter_;
 
-            const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr_;
+            const GetterFunction<IRegularizationConfig> l1RegularizationConfigGetter_;
 
-            const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr_;
+            const GetterFunction<IRegularizationConfig> l2RegularizationConfigGetter_;
 
         public:
 
             /**
-             * @param labelBinningConfigPtr     A reference to an unique pointer that stores the configuration of the
-             *                                  method for assigning labels to bins
-             * @param multiThreadingConfigPtr   A reference to an unique pointer that stores the configuration of the
-             *                                  multi-threading behavior that should be used for the parallel update of
-             *                                  statistics
-             * @param l1RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L1
-             *                                  regularization
-             * @param l2RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L2
-             *                                  regularization
+             * @param labelBinningConfigGetter      A `GetterFunction` that allows to access the `ILabelBinningConfig`
+             *                                      that stores the configuration of the method for assigning labels to
+             *                                      bins
+             * @param multiThreadingConfigGetter    A `GetterFunction` that allows to access the `IMultiThreadingConfig`
+             *                                      that stores the configuration of the multi-threading behavior that
+             *                                      should be used for the parallel update of statistics
+             * @param l1RegularizationConfigGetter  A `GetterFunction` that allows to access the `IRegularizationConfig`
+             *                                      that stores the configuration of the L1 regularization
+             * @param l2RegularizationConfigGetter  A `GetterFunction` that allows to access the `IRegularizationConfig`
+             *                                      that stores the configuration of the L2 regularization
              */
-            SingleOutputHeadConfig(const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
-                                   const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
-                                   const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
-                                   const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr);
+            SingleOutputHeadConfig(GetterFunction<ILabelBinningConfig> labelBinningConfigGetter,
+                                   GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter,
+                                   GetterFunction<IRegularizationConfig> l1RegularizationConfigGetter,
+                                   GetterFunction<IRegularizationConfig> l2RegularizationConfigGetter);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
