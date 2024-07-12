@@ -5,6 +5,7 @@
 
 #include "mlrl/boosting/losses/loss.hpp"
 #include "mlrl/boosting/statistics/statistic_format.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -16,14 +17,15 @@ namespace boosting {
     class DenseStatisticsConfig final : public IStatisticsConfig {
         private:
 
-            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+            const GetterFunction<ILossConfig> lossConfigGetter_;
 
         public:
 
             /**
-             * @param lossConfigPtr A reference to an unique pointer that stores the configuration of the loss function
+             * @param lossConfigGetter A `GetterFunction` that allows to access the `ILossConfig` that stores the
+             *                         configuration of the loss function
              */
-            DenseStatisticsConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr);
+            DenseStatisticsConfig(GetterFunction<ILossConfig> lossConfigGetter);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,

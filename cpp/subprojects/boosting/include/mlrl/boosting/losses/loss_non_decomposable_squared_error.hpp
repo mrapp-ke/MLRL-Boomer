@@ -5,6 +5,7 @@
 
 #include "mlrl/boosting/losses/loss_non_decomposable.hpp"
 #include "mlrl/boosting/rule_evaluation/head_type.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -17,14 +18,15 @@ namespace boosting {
     class NonDecomposableSquaredErrorLossConfig final : public INonDecomposableLossConfig {
         private:
 
-            const std::unique_ptr<IHeadConfig>& headConfigPtr_;
+            const GetterFunction<IHeadConfig> headConfigGetter_;
 
         public:
 
             /**
-             * @param headConfigPtr A reference to an unique pointer that stores the configuration of rule heads
+             * @param headConfigGetter A `GetterFunction` that allows to access the `IHeadConfig` that stores the
+             *                         configuration of rule heads
              */
-            NonDecomposableSquaredErrorLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr);
+            NonDecomposableSquaredErrorLossConfig(GetterFunction<IHeadConfig> headConfigGetter);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,

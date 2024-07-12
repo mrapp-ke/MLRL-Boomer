@@ -5,6 +5,7 @@
 
 #include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/rule_induction/rule_induction.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -130,19 +131,19 @@ class GreedyTopDownRuleInductionConfig final : public IRuleInductionConfig,
 
         bool recalculatePredictions_;
 
-        const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
+        const GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter_;
 
     public:
 
         /**
-         * @param ruleCompareFunction       An object of type `RuleCompareFunction` that defines the function that
-         *                                  should be used for comparing the quality of different rules
-         * @param multiThreadingConfigPtr   A reference to an unique pointer that stores the configuration of the
-         *                                  multi-threading behavior that should be used for the parallel refinement of
-         *                                  rules
+         * @param ruleCompareFunction           An object of type `RuleCompareFunction` that defines the function that
+         *                                      should be used for comparing the quality of different rules
+         * @param multiThreadingConfigGetter    A `GetterFunction` that allows to access the `IMultiThreadingConfig`
+         *                                      that stores the configuration of the multi-threading behavior that
+         *                                      should be used for the parallel refinement of rules
          */
         GreedyTopDownRuleInductionConfig(RuleCompareFunction ruleCompareFunction,
-                                         const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+                                         GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter);
 
         uint32 getMinCoverage() const override;
 
