@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/util/properties.hpp"
 #include "mlrl/seco/heuristics/heuristic.hpp"
 #include "mlrl/seco/lift_functions/lift_function.hpp"
 #include "mlrl/seco/rule_evaluation/head_type.hpp"
@@ -17,26 +18,27 @@ namespace seco {
     class PartialHeadConfig final : public IHeadConfig {
         private:
 
-            const std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr_;
+            const GetterFunction<IHeuristicConfig> heuristicConfigGetter_;
 
-            const std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr_;
+            const GetterFunction<IHeuristicConfig> pruningHeuristicConfigGetter_;
 
-            const std::unique_ptr<ILiftFunctionConfig>& liftFunctionConfigPtr_;
+            const GetterFunction<ILiftFunctionConfig> liftFunctionConfigGetter_;
 
         public:
 
             /**
-             * @param heuristicConfigPtr        A reference to an unique pointer that stores the configuration of the
-             *                                  heuristic for learning rules
-             * @param pruningHeuristicConfigPtr A reference to an unique pointer that stores the configuration of the
-             *                                  heuristic for pruning rules
-             * @param liftFunctionConfigPtr     A reference to an unique pointer that stores the configuration of the
-             *                                  lift function that should affect the quality of rules, depending on the
-             *                                  number of labels for which they predict
+             * @param heuristicConfigGetter         A `GetterFunction` that allows to access the `IHeuristicConfig` that
+             *                                      stores the configuration of the heuristic for learning rules
+             * @param pruningHeuristicConfigGetter  A `GetterFunction` that allows to access the `IHeuristicConfig` that
+             *                                      stores the configuration of the heuristic for pruning rules
+             * @param liftFunctionConfigGetter      A `GetterFunction` that allows to access the `ILiftFunctionConfig`
+             *                                      that stores the configuration of the lift function that should
+             *                                      affect the quality of rules, depending on the number of labels for
+             *                                      which they predict
              */
-            PartialHeadConfig(const std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr,
-                              const std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr,
-                              const std::unique_ptr<ILiftFunctionConfig>& liftFunctionConfigPtr);
+            PartialHeadConfig(GetterFunction<IHeuristicConfig> heuristicConfigGetter,
+                              GetterFunction<IHeuristicConfig> pruningHeuristicConfigGetter,
+                              GetterFunction<ILiftFunctionConfig> liftFunctionConfigGetter);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IRowWiseLabelMatrix& labelMatrix) const override;

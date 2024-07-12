@@ -5,6 +5,9 @@
 
 #include "mlrl/common/learner.hpp"
 #include "mlrl/common/prediction/output_space_info_no.hpp"
+#include "mlrl/common/prediction/predictor_binary_no.hpp"
+#include "mlrl/common/prediction/predictor_probability_no.hpp"
+#include "mlrl/common/prediction/predictor_score_no.hpp"
 #include "mlrl/common/rule_refinement/feature_space_tabular.hpp"
 #include "mlrl/common/stopping/stopping_criterion_size.hpp"
 #include "mlrl/common/util/validation.hpp"
@@ -120,7 +123,7 @@ class RuleLearnerConfigurator {
          */
         virtual std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
           const IRowWiseLabelMatrix& labelMatrix) const {
-            return config_.getRuleModelAssemblageConfigPtr()->createRuleModelAssemblageFactory(labelMatrix);
+            return config_.getRuleModelAssemblageConfig().get().createRuleModelAssemblageFactory(labelMatrix);
         }
 
         /**
@@ -136,9 +139,9 @@ class RuleLearnerConfigurator {
         virtual std::unique_ptr<IFeatureSpaceFactory> createFeatureSpaceFactory(
           const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
             std::unique_ptr<IFeatureBinningFactory> featureBinningFactoryPtr =
-              config_.getFeatureBinningConfigPtr()->createFeatureBinningFactory(featureMatrix, outputMatrix);
-            uint32 numThreads =
-              config_.getParallelStatisticUpdateConfigPtr()->getNumThreads(featureMatrix, outputMatrix.getNumOutputs());
+              config_.getFeatureBinningConfig().get().createFeatureBinningFactory(featureMatrix, outputMatrix);
+            uint32 numThreads = config_.getParallelStatisticUpdateConfig().get().getNumThreads(
+              featureMatrix, outputMatrix.getNumOutputs());
             return std::make_unique<TabularFeatureSpaceFactory>(std::move(featureBinningFactoryPtr), numThreads);
         }
 
@@ -154,7 +157,7 @@ class RuleLearnerConfigurator {
          */
         virtual std::unique_ptr<IRuleInductionFactory> createRuleInductionFactory(
           const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
-            return config_.getRuleInductionConfigPtr()->createRuleInductionFactory(featureMatrix, outputMatrix);
+            return config_.getRuleInductionConfig().get().createRuleInductionFactory(featureMatrix, outputMatrix);
         }
 
         /**
@@ -167,7 +170,7 @@ class RuleLearnerConfigurator {
          */
         virtual std::unique_ptr<IOutputSamplingFactory> createOutputSamplingFactory(
           const IOutputMatrix& outputMatrix) const {
-            return config_.getOutputSamplingConfigPtr()->createOutputSamplingFactory(outputMatrix);
+            return config_.getOutputSamplingConfig().get().createOutputSamplingFactory(outputMatrix);
         }
 
         /**
@@ -177,7 +180,7 @@ class RuleLearnerConfigurator {
          * @return An unique pointer to an object of type `IInstanceSamplingFactory` that has been created
          */
         virtual std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const {
-            return config_.getInstanceSamplingConfigPtr()->createInstanceSamplingFactory();
+            return config_.getInstanceSamplingConfig().get().createInstanceSamplingFactory();
         }
 
         /**
@@ -190,7 +193,7 @@ class RuleLearnerConfigurator {
          */
         virtual std::unique_ptr<IFeatureSamplingFactory> createFeatureSamplingFactory(
           const IFeatureMatrix& featureMatrix) const {
-            return config_.getFeatureSamplingConfigPtr()->createFeatureSamplingFactory(featureMatrix);
+            return config_.getFeatureSamplingConfig().get().createFeatureSamplingFactory(featureMatrix);
         }
 
         /**
@@ -200,7 +203,7 @@ class RuleLearnerConfigurator {
          * @return An unique pointer to an object of type `IPartitionSamplingFactory` that has been created
          */
         virtual std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const {
-            return config_.getPartitionSamplingConfigPtr()->createPartitionSamplingFactory();
+            return config_.getPartitionSamplingConfig().get().createPartitionSamplingFactory();
         }
 
         /**
@@ -210,7 +213,7 @@ class RuleLearnerConfigurator {
          * @return An unique pointer to an object of type `IRulePruningFactory` that has been created
          */
         virtual std::unique_ptr<IRulePruningFactory> createRulePruningFactory() const {
-            return config_.getRulePruningConfigPtr()->createRulePruningFactory();
+            return config_.getRulePruningConfig().get().createRulePruningFactory();
         }
 
         /**
@@ -220,29 +223,30 @@ class RuleLearnerConfigurator {
          * @return An unique pointer to an object of type `IPostProcessorFactory` that has been created
          */
         virtual std::unique_ptr<IPostProcessorFactory> createPostProcessorFactory() const {
-            return config_.getPostProcessorConfigPtr()->createPostProcessorFactory();
+            return config_.getPostProcessorConfig().get().createPostProcessorFactory();
         }
 
         /**
          * May be overridden by subclasses in order to create the `IStoppingCriterionFactory` to be used by the rule
          * learner for stopping the induction of new rules, depending on the number of rules learned so far.
          *
-         * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created
+         * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created or a null
+         *         pointer, if noch such stopping criterion should be used
          */
         virtual std::unique_ptr<IStoppingCriterionFactory> createSizeStoppingCriterionFactory() const {
-            std::unique_ptr<SizeStoppingCriterionConfig>& configPtr = config_.getSizeStoppingCriterionConfigPtr();
-            return configPtr ? configPtr->createStoppingCriterionFactory() : nullptr;
+            return config_.getSizeStoppingCriterionConfig().get().createStoppingCriterionFactory();
         }
 
         /**
          * May be overridden by subclasses in order to create the `IStoppingCriterionFactory` to be used by the rule
          * learner for stopping the induction of new rules, depending on the time that has passed.
          *
-         * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created
+         * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created or a null
+         *         pointer, if no such stopping criterion should be used
          */
         virtual std::unique_ptr<IStoppingCriterionFactory> createTimeStoppingCriterionFactory() const {
-            std::unique_ptr<TimeStoppingCriterionConfig>& configPtr = config_.getTimeStoppingCriterionConfigPtr();
-            return configPtr ? configPtr->createStoppingCriterionFactory() : nullptr;
+            Property<IStoppingCriterionConfig> property = config_.getTimeStoppingCriterionConfig();
+            return property.get().createStoppingCriterionFactory();
         }
 
         /**
@@ -250,11 +254,12 @@ class RuleLearnerConfigurator {
          * learner for stopping the induction of new rules, as soon as the quality of predictions does not improve
          * anymore.
          *
-         * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created
+         * @return An unique pointer to an object of type `IStoppingCriterionFactory` that has been created or a null
+         *         pointer if no global pruning should be used
          */
         virtual std::unique_ptr<IStoppingCriterionFactory> createGlobalPruningFactory() const {
-            std::unique_ptr<IGlobalPruningConfig>& configPtr = config_.getGlobalPruningConfigPtr();
-            return configPtr ? configPtr->createStoppingCriterionFactory() : nullptr;
+            Property<IGlobalPruningConfig> property = config_.getGlobalPruningConfig();
+            return property.get().createStoppingCriterionFactory();
         }
 
         /**
@@ -265,9 +270,7 @@ class RuleLearnerConfigurator {
          * @return An unique pointer to an object of type `IPostOptimizationPhaseFactory` that has been created
          */
         virtual std::unique_ptr<IPostOptimizationPhaseFactory> createSequentialPostOptimizationFactory() const {
-            std::unique_ptr<SequentialPostOptimizationConfig>& configPtr =
-              config_.getSequentialPostOptimizationConfigPtr();
-            return configPtr ? configPtr->createPostOptimizationPhaseFactory() : nullptr;
+            return config_.getSequentialPostOptimizationConfig().get().createPostOptimizationPhaseFactory();
         }
 
         /**
@@ -277,11 +280,8 @@ class RuleLearnerConfigurator {
          * @return An unique pointer to an object of type `IPostOptimizationPhaseFactory` that has been created
          */
         virtual std::unique_ptr<IPostOptimizationPhaseFactory> createUnusedRuleRemovalFactory() const {
-            std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr = config_.getGlobalPruningConfigPtr();
-
-            if (globalPruningConfigPtr && globalPruningConfigPtr->shouldRemoveUnusedRules()) {
-                std::unique_ptr<UnusedRuleRemovalConfig>& configPtr = config_.getUnusedRuleRemovalConfigPtr();
-                return configPtr->createPostOptimizationPhaseFactory();
+            if (config_.getGlobalPruningConfig().get().shouldRemoveUnusedRules()) {
+                return config_.getUnusedRuleRemovalConfig().get().createPostOptimizationPhaseFactory();
             }
 
             return nullptr;
@@ -295,7 +295,7 @@ class RuleLearnerConfigurator {
          */
         virtual std::unique_ptr<IMarginalProbabilityCalibratorFactory> createMarginalProbabilityCalibratorFactory()
           const {
-            return config_.getMarginalProbabilityCalibratorConfigPtr()->createMarginalProbabilityCalibratorFactory();
+            return config_.getMarginalProbabilityCalibratorConfig().get().createMarginalProbabilityCalibratorFactory();
         }
 
         /**
@@ -305,7 +305,7 @@ class RuleLearnerConfigurator {
          * @return An unique pointer to an object of type `IJointProbabilityCalibratorFactory` that has been created
          */
         virtual std::unique_ptr<IJointProbabilityCalibratorFactory> createJointProbabilityCalibratorFactory() const {
-            return config_.getJointProbabilityCalibratorConfigPtr()->createJointProbabilityCalibratorFactory();
+            return config_.getJointProbabilityCalibratorConfig().get().createJointProbabilityCalibratorFactory();
         }
 
         /**
@@ -366,17 +366,10 @@ class RuleLearnerConfigurator {
          * @return              An unique pointer to an object of type `IOutputSpaceInfo` that has been created
          */
         virtual std::unique_ptr<IOutputSpaceInfo> createOutputSpaceInfo(const IRowWiseLabelMatrix& labelMatrix) const {
-            const IBinaryPredictorConfig* binaryPredictorConfig = config_.getBinaryPredictorConfigPtr().get();
-            const IScorePredictorConfig* scorePredictorConfig = config_.getScorePredictorConfigPtr().get();
-            const IProbabilityPredictorConfig* probabilityPredictorConfig =
-              config_.getProbabilityPredictorConfigPtr().get();
-            const IJointProbabilityCalibratorConfig& jointProbabilityCalibratorConfig =
-              *config_.getJointProbabilityCalibratorConfigPtr();
-
-            if ((binaryPredictorConfig && binaryPredictorConfig->isLabelVectorSetNeeded())
-                || (scorePredictorConfig && scorePredictorConfig->isLabelVectorSetNeeded())
-                || (probabilityPredictorConfig && probabilityPredictorConfig->isLabelVectorSetNeeded())
-                || (jointProbabilityCalibratorConfig.isLabelVectorSetNeeded())) {
+            if (config_.getBinaryPredictorConfig().get().isLabelVectorSetNeeded()
+                || config_.getScorePredictorConfig().get().isLabelVectorSetNeeded()
+                || config_.getProbabilityPredictorConfig().get().isLabelVectorSetNeeded()
+                || config_.getJointProbabilityCalibratorConfig().get().isLabelVectorSetNeeded()) {
                 return std::make_unique<LabelVectorSet>(labelMatrix);
             } else {
                 return createNoOutputSpaceInfo();
@@ -395,8 +388,7 @@ class RuleLearnerConfigurator {
          */
         virtual std::unique_ptr<IScorePredictorFactory> createScorePredictorFactory(
           const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
-            const IScorePredictorConfig* config = config_.getScorePredictorConfigPtr().get();
-            return config ? config->createPredictorFactory(featureMatrix, numOutputs) : nullptr;
+            return config_.getScorePredictorConfig().get().createPredictorFactory(featureMatrix, numOutputs);
         }
 
         /**
@@ -412,8 +404,7 @@ class RuleLearnerConfigurator {
          */
         virtual std::unique_ptr<IProbabilityPredictorFactory> createProbabilityPredictorFactory(
           const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-            const IProbabilityPredictorConfig* config = config_.getProbabilityPredictorConfigPtr().get();
-            return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
+            return config_.getProbabilityPredictorConfig().get().createPredictorFactory(featureMatrix, numLabels);
         }
 
         /**
@@ -428,8 +419,7 @@ class RuleLearnerConfigurator {
          */
         virtual std::unique_ptr<IBinaryPredictorFactory> createBinaryPredictorFactory(
           const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-            const IBinaryPredictorConfig* config = config_.getBinaryPredictorConfigPtr().get();
-            return config ? config->createPredictorFactory(featureMatrix, numLabels) : nullptr;
+            return config_.getBinaryPredictorConfig().get().createPredictorFactory(featureMatrix, numLabels);
         }
 
         /**
@@ -445,8 +435,7 @@ class RuleLearnerConfigurator {
          */
         virtual std::unique_ptr<ISparseBinaryPredictorFactory> createSparseBinaryPredictorFactory(
           const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-            const IBinaryPredictorConfig* config = config_.getBinaryPredictorConfigPtr().get();
-            return config ? config->createSparsePredictorFactory(featureMatrix, numLabels) : nullptr;
+            return config_.getBinaryPredictorConfig().get().createSparsePredictorFactory(featureMatrix, numLabels);
         }
 
         /**
@@ -558,13 +547,13 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
          * An unique pointer that stores the configuration of the stopping criterion that ensures that the number of
          * rules does not exceed a certain maximum.
          */
-        std::unique_ptr<SizeStoppingCriterionConfig> sizeStoppingCriterionConfigPtr_;
+        std::unique_ptr<IStoppingCriterionConfig> sizeStoppingCriterionConfigPtr_;
 
         /**
          * An unique pointer that stores the configuration of the stopping criterion that ensures that a certain time
          * limit is not exceeded.
          */
-        std::unique_ptr<TimeStoppingCriterionConfig> timeStoppingCriterionConfigPtr_;
+        std::unique_ptr<IStoppingCriterionConfig> timeStoppingCriterionConfigPtr_;
 
         /**
          * An unique pointer that stores the configuration of the stopping criterion that allows to decide how many
@@ -576,13 +565,13 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
          * An unique pointer that stores the configuration of the post-optimization method that optimizes each rule in a
          * model by relearning it in the context of the other rules.
          */
-        std::unique_ptr<SequentialPostOptimizationConfig> sequentialPostOptimizationConfigPtr_;
+        std::unique_ptr<IPostOptimizationPhaseConfig> sequentialPostOptimizationConfigPtr_;
 
         /**
          * An unique pointer that stores the configuration of the post-optimization method that removes unused rules
          * from a model.
          */
-        std::unique_ptr<UnusedRuleRemovalConfig> unusedRuleRemovalConfigPtr_;
+        std::unique_ptr<IPostOptimizationPhaseConfig> unusedRuleRemovalConfigPtr_;
 
         /**
          * An unique pointer that stores the configuration of the calibrator that allows to fit a model for the
@@ -597,11 +586,6 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
         std::unique_ptr<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfigPtr_;
 
         /**
-         * An unique pointer that stores the configuration of the predictor that allows to predict binary labels.
-         */
-        std::unique_ptr<IBinaryPredictorConfig> binaryPredictorConfigPtr_;
-
-        /**
          * An unique pointer that stores the configuration of the predictor that allows to predict scores.
          */
         std::unique_ptr<IScorePredictorConfig> scorePredictorConfigPtr_;
@@ -611,6 +595,11 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
          * estimates.
          */
         std::unique_ptr<IProbabilityPredictorConfig> probabilityPredictorConfigPtr_;
+
+        /**
+         * An unique pointer that stores the configuration of the predictor that allows to predict binary labels.
+         */
+        std::unique_ptr<IBinaryPredictorConfig> binaryPredictorConfigPtr_;
 
     public:
 
@@ -622,9 +611,9 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
             : ruleCompareFunction_(ruleCompareFunction),
               defaultRuleConfigPtr_(std::make_unique<DefaultRuleConfig>(true)),
               ruleModelAssemblageConfigPtr_(
-                std::make_unique<SequentialRuleModelAssemblageConfig>(defaultRuleConfigPtr_)),
+                std::make_unique<SequentialRuleModelAssemblageConfig>(getterFunction(defaultRuleConfigPtr_))),
               ruleInductionConfigPtr_(std::make_unique<GreedyTopDownRuleInductionConfig>(
-                ruleCompareFunction_, parallelRuleRefinementConfigPtr_)),
+                ruleCompareFunction_, getterFunction(parallelRuleRefinementConfigPtr_))),
               featureBinningConfigPtr_(std::make_unique<NoFeatureBinningConfig>()),
               outputSamplingConfigPtr_(std::make_unique<NoOutputSamplingConfig>()),
               instanceSamplingConfigPtr_(std::make_unique<NoInstanceSamplingConfig>()),
@@ -635,9 +624,16 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
               parallelRuleRefinementConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
               parallelStatisticUpdateConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
               parallelPredictionConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
+              sizeStoppingCriterionConfigPtr_(std::make_unique<NoStoppingCriterionConfig>()),
+              timeStoppingCriterionConfigPtr_(std::make_unique<NoStoppingCriterionConfig>()),
+              globalPruningConfigPtr_(std::make_unique<NoGlobalPruningConfig>()),
+              sequentialPostOptimizationConfigPtr_(std::make_unique<NoPostOptimizationPhaseConfig>()),
               unusedRuleRemovalConfigPtr_(std::make_unique<UnusedRuleRemovalConfig>()),
               marginalProbabilityCalibratorConfigPtr_(std::make_unique<NoMarginalProbabilityCalibratorConfig>()),
-              jointProbabilityCalibratorConfigPtr_(std::make_unique<NoJointProbabilityCalibratorConfig>()) {}
+              jointProbabilityCalibratorConfigPtr_(std::make_unique<NoJointProbabilityCalibratorConfig>()),
+              scorePredictorConfigPtr_(std::make_unique<NoScorePredictorConfig>()),
+              probabilityPredictorConfigPtr_(std::make_unique<NoProbabilityPredictorConfig>()),
+              binaryPredictorConfigPtr_(std::make_unique<NoBinaryPredictorConfig>()) {}
 
         virtual ~RuleLearnerConfig() override {}
 
@@ -645,96 +641,95 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
             return ruleCompareFunction_;
         }
 
-        std::unique_ptr<IDefaultRuleConfig>& getDefaultRuleConfigPtr() override final {
-            return defaultRuleConfigPtr_;
+        Property<IDefaultRuleConfig> getDefaultRuleConfig() override final {
+            return property(defaultRuleConfigPtr_);
         }
 
-        std::unique_ptr<IRuleModelAssemblageConfig>& getRuleModelAssemblageConfigPtr() override final {
-            return ruleModelAssemblageConfigPtr_;
+        Property<IRuleModelAssemblageConfig> getRuleModelAssemblageConfig() override final {
+            return property(ruleModelAssemblageConfigPtr_);
         }
 
-        std::unique_ptr<IRuleInductionConfig>& getRuleInductionConfigPtr() override final {
-            return ruleInductionConfigPtr_;
+        Property<IRuleInductionConfig> getRuleInductionConfig() override final {
+            return property(ruleInductionConfigPtr_);
         }
 
-        std::unique_ptr<IFeatureBinningConfig>& getFeatureBinningConfigPtr() override final {
-            return featureBinningConfigPtr_;
+        Property<IFeatureBinningConfig> getFeatureBinningConfig() override final {
+            return property(featureBinningConfigPtr_);
         }
 
-        std::unique_ptr<IOutputSamplingConfig>& getOutputSamplingConfigPtr() override final {
-            return outputSamplingConfigPtr_;
+        Property<IOutputSamplingConfig> getOutputSamplingConfig() override final {
+            return property(outputSamplingConfigPtr_);
         }
 
-        std::unique_ptr<IInstanceSamplingConfig>& getInstanceSamplingConfigPtr() override final {
-            return instanceSamplingConfigPtr_;
+        Property<IInstanceSamplingConfig> getInstanceSamplingConfig() override final {
+            return property(instanceSamplingConfigPtr_);
         }
 
-        std::unique_ptr<IFeatureSamplingConfig>& getFeatureSamplingConfigPtr() override final {
-            return featureSamplingConfigPtr_;
+        Property<IFeatureSamplingConfig> getFeatureSamplingConfig() override final {
+            return property(featureSamplingConfigPtr_);
         }
 
-        std::unique_ptr<IPartitionSamplingConfig>& getPartitionSamplingConfigPtr() override final {
-            return partitionSamplingConfigPtr_;
+        Property<IPartitionSamplingConfig> getPartitionSamplingConfig() override final {
+            return property(partitionSamplingConfigPtr_);
         }
 
-        std::unique_ptr<IRulePruningConfig>& getRulePruningConfigPtr() override final {
-            return rulePruningConfigPtr_;
+        Property<IRulePruningConfig> getRulePruningConfig() override final {
+            return property(rulePruningConfigPtr_);
         }
 
-        std::unique_ptr<IPostProcessorConfig>& getPostProcessorConfigPtr() override final {
-            return postProcessorConfigPtr_;
+        Property<IPostProcessorConfig> getPostProcessorConfig() override final {
+            return property(postProcessorConfigPtr_);
         }
 
-        std::unique_ptr<IMultiThreadingConfig>& getParallelRuleRefinementConfigPtr() override final {
-            return parallelRuleRefinementConfigPtr_;
+        Property<IMultiThreadingConfig> getParallelRuleRefinementConfig() override final {
+            return property(parallelRuleRefinementConfigPtr_);
         }
 
-        std::unique_ptr<IMultiThreadingConfig>& getParallelStatisticUpdateConfigPtr() override final {
-            return parallelStatisticUpdateConfigPtr_;
+        Property<IMultiThreadingConfig> getParallelStatisticUpdateConfig() override final {
+            return property(parallelStatisticUpdateConfigPtr_);
         }
 
-        std::unique_ptr<IMultiThreadingConfig>& getParallelPredictionConfigPtr() override final {
-            return parallelPredictionConfigPtr_;
+        Property<IMultiThreadingConfig> getParallelPredictionConfig() override final {
+            return property(parallelPredictionConfigPtr_);
         }
 
-        std::unique_ptr<SizeStoppingCriterionConfig>& getSizeStoppingCriterionConfigPtr() override final {
-            return sizeStoppingCriterionConfigPtr_;
+        Property<IStoppingCriterionConfig> getSizeStoppingCriterionConfig() override final {
+            return property(sizeStoppingCriterionConfigPtr_);
         }
 
-        std::unique_ptr<TimeStoppingCriterionConfig>& getTimeStoppingCriterionConfigPtr() override final {
-            return timeStoppingCriterionConfigPtr_;
+        Property<IStoppingCriterionConfig> getTimeStoppingCriterionConfig() override final {
+            return property(timeStoppingCriterionConfigPtr_);
         }
 
-        std::unique_ptr<IGlobalPruningConfig>& getGlobalPruningConfigPtr() override final {
-            return globalPruningConfigPtr_;
+        Property<IGlobalPruningConfig> getGlobalPruningConfig() override final {
+            return property(globalPruningConfigPtr_);
         }
 
-        std::unique_ptr<SequentialPostOptimizationConfig>& getSequentialPostOptimizationConfigPtr() override final {
-            return sequentialPostOptimizationConfigPtr_;
+        Property<IPostOptimizationPhaseConfig> getSequentialPostOptimizationConfig() override final {
+            return property(sequentialPostOptimizationConfigPtr_);
         }
 
-        std::unique_ptr<UnusedRuleRemovalConfig>& getUnusedRuleRemovalConfigPtr() override final {
-            return unusedRuleRemovalConfigPtr_;
+        Property<IPostOptimizationPhaseConfig> getUnusedRuleRemovalConfig() override final {
+            return property(unusedRuleRemovalConfigPtr_);
         }
 
-        std::unique_ptr<IMarginalProbabilityCalibratorConfig>& getMarginalProbabilityCalibratorConfigPtr()
-          override final {
-            return marginalProbabilityCalibratorConfigPtr_;
+        Property<IMarginalProbabilityCalibratorConfig> getMarginalProbabilityCalibratorConfig() override final {
+            return property(marginalProbabilityCalibratorConfigPtr_);
         }
 
-        std::unique_ptr<IJointProbabilityCalibratorConfig>& getJointProbabilityCalibratorConfigPtr() override final {
-            return jointProbabilityCalibratorConfigPtr_;
+        Property<IJointProbabilityCalibratorConfig> getJointProbabilityCalibratorConfig() override final {
+            return property(jointProbabilityCalibratorConfigPtr_);
         }
 
-        std::unique_ptr<IBinaryPredictorConfig>& getBinaryPredictorConfigPtr() override final {
-            return binaryPredictorConfigPtr_;
+        Property<IScorePredictorConfig> getScorePredictorConfig() override final {
+            return property(scorePredictorConfigPtr_);
         }
 
-        std::unique_ptr<IScorePredictorConfig>& getScorePredictorConfigPtr() override final {
-            return scorePredictorConfigPtr_;
+        Property<IProbabilityPredictorConfig> getProbabilityPredictorConfig() override final {
+            return property(probabilityPredictorConfigPtr_);
         }
 
-        std::unique_ptr<IProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() override final {
-            return probabilityPredictorConfigPtr_;
+        Property<IBinaryPredictorConfig> getBinaryPredictorConfig() override final {
+            return property(binaryPredictorConfigPtr_);
         }
 };

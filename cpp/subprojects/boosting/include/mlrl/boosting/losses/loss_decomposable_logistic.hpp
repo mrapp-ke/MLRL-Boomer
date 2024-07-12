@@ -5,6 +5,7 @@
 
 #include "mlrl/boosting/losses/loss_decomposable.hpp"
 #include "mlrl/boosting/rule_evaluation/head_type.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -17,14 +18,15 @@ namespace boosting {
     class DecomposableLogisticLossConfig final : public IDecomposableLossConfig {
         private:
 
-            const std::unique_ptr<IHeadConfig>& headConfigPtr_;
+            const GetterFunction<IHeadConfig> headConfigGetter_;
 
         public:
 
             /**
-             * @param headConfigPtr A reference to an unique pointer that stores the configuration of rule heads
+             * @param headConfigGetter A `Property` that allows to access the `IHeadConfig` that stores the
+             *                         configuration of rule heads
              */
-            DecomposableLogisticLossConfig(const std::unique_ptr<IHeadConfig>& headConfigPtr);
+            DecomposableLogisticLossConfig(GetterFunction<IHeadConfig> headConfigGetter);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
