@@ -15,7 +15,7 @@ namespace boosting {
      * Allows to configure a loss function that implements a multivariate variant of the squared hinge loss that is
      * decomposable.
      */
-    class DecomposableSquaredHingeLossConfig final : public ISparseDecomposableLossConfig {
+    class DecomposableSquaredHingeLossConfig final : public ISparseDecomposableClassificationLossConfig {
         private:
 
             const ReadableProperty<IHeadConfig> headConfig_;
@@ -39,7 +39,8 @@ namespace boosting {
 
             float64 getDefaultPrediction() const override;
 
-            std::unique_ptr<ISparseDecomposableLossFactory> createSparseDecomposableLossFactory() const override;
+            std::unique_ptr<ISparseDecomposableClassificationLossFactory>
+              createSparseDecomposableClassificationLossFactory() const override;
     };
 
 }

@@ -132,10 +132,10 @@ namespace boosting {
     }
 
     /**
-     * An implementation of the type `INonDecomposableLoss` that implements a multivariate variant of the squared error
-     * loss that is non-decomposable.
+     * An implementation of the type `INonDecomposableClassificationLoss` that implements a multivariate variant of the
+     * squared error loss that is non-decomposable.
      */
-    class NonDecomposableSquaredErrorLoss final : public INonDecomposableLoss {
+    class NonDecomposableSquaredErrorLoss final : public INonDecomposableClassificationLoss {
         public:
 
             virtual void updateDecomposableStatistics(uint32 exampleIndex,
@@ -233,14 +233,25 @@ namespace boosting {
     };
 
     /**
-     * Allows to create instances of the type `INonDecomposableLoss` that implement a multivariate variant of the
-     * squared error loss that is non-decomposable.
+     * Allows to create instances of the type `INonDecomposableClassificationLoss` that implement a multivariate variant
+     * of the squared error loss that is non-decomposable.
      */
-    class NonDecomposableSquaredErrorLossFactory final : public INonDecomposableLossFactory {
+    class NonDecomposableSquaredErrorLossFactory final : public INonDecomposableClassificationLossFactory {
         public:
 
-            std::unique_ptr<INonDecomposableLoss> createNonDecomposableLoss() const override {
+            std::unique_ptr<INonDecomposableClassificationLoss> createNonDecomposableClassificationLoss()
+              const override {
                 return std::make_unique<NonDecomposableSquaredErrorLoss>();
+            }
+
+            std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const {
+                return this->createNonDecomposableClassificationLoss();
+            }
+
+            std::unique_ptr<IEvaluationMeasure> createEvaluationMeasure() const {
+                return this->createNonDecomposableClassificationLoss();
             }
     };
 
@@ -270,8 +281,8 @@ namespace boosting {
         return 0.0;
     }
 
-    std::unique_ptr<INonDecomposableLossFactory>
-      NonDecomposableSquaredErrorLossConfig::createNonDecomposableLossFactory() const {
+    std::unique_ptr<INonDecomposableClassificationLossFactory>
+      NonDecomposableSquaredErrorLossConfig::createNonDecomposableClassificationLossFactory() const {
         return std::make_unique<NonDecomposableSquaredErrorLossFactory>();
     }
 

@@ -20,7 +20,7 @@ namespace boosting {
                                                               public IRegressionStatisticsProviderFactory {
         private:
 
-            const std::unique_ptr<ISparseDecomposableLossFactory> lossFactoryPtr_;
+            const std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr_;
 
             const std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
 
@@ -34,9 +34,9 @@ namespace boosting {
 
             /**
              * @param lossFactoryPtr                    An unique pointer to an object of type
-             *                                          `ISparseDecomposableLossFactory` that allows to create
-             *                                          implementations of the loss function that should be used for
-             *                                          calculating gradients and Hessians
+             *                                          `ISparseDecomposableClassificationLossFactory` that allows to
+             *                                          create implementations of the loss function that should be used
+             *                                          for calculating gradients and Hessians
              * @param evaluationMeasureFactoryPtr       An unique pointer to an object of type
              *                                          `ISparseEvaluationMeasureFactory` that allows to create
              *                                          implementations of the evaluation measure that should be used
@@ -53,7 +53,7 @@ namespace boosting {
              *                                          statistics in parallel. Must be at least 1
              */
             SparseDecomposableStatisticsProviderFactory(
-              std::unique_ptr<ISparseDecomposableLossFactory> lossFactoryPtr,
+              std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr,
               std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
               std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
               std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,

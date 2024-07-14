@@ -36,9 +36,10 @@ namespace boosting {
 
     std::unique_ptr<IClassificationStatisticsProviderFactory> DynamicPartialHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const IDecomposableLossConfig& lossConfig) const {
+      const IDecomposableClassificationLossConfig& lossConfig) const {
         uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
-        std::unique_ptr<IDecomposableLossFactory> lossFactoryPtr = lossConfig.createDecomposableLossFactory();
+        std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr =
+          lossConfig.createDecomposableClassificationLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createEvaluationMeasureFactory();
         std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
@@ -54,10 +55,10 @@ namespace boosting {
 
     std::unique_ptr<IClassificationStatisticsProviderFactory> DynamicPartialHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const ISparseDecomposableLossConfig& lossConfig) const {
+      const ISparseDecomposableClassificationLossConfig& lossConfig) const {
         uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
-        std::unique_ptr<ISparseDecomposableLossFactory> lossFactoryPtr =
-          lossConfig.createSparseDecomposableLossFactory();
+        std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr =
+          lossConfig.createSparseDecomposableClassificationLossFactory();
         std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createSparseEvaluationMeasureFactory();
         std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
@@ -71,11 +72,12 @@ namespace boosting {
 
     std::unique_ptr<IClassificationStatisticsProviderFactory> DynamicPartialHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const INonDecomposableLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+      const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
-        std::unique_ptr<INonDecomposableLossFactory> lossFactoryPtr = lossConfig.createNonDecomposableLossFactory();
+        std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr =
+          lossConfig.createNonDecomposableClassificationLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
-          lossConfig.createNonDecomposableLossFactory();
+          lossConfig.createNonDecomposableClassificationLossFactory();
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
           labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
