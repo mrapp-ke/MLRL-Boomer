@@ -9,6 +9,7 @@
 #include "mlrl/boosting/util/lapack.hpp"
 #include "mlrl/common/input/feature_matrix.hpp"
 #include "mlrl/common/input/label_matrix_row_wise.hpp"
+#include "mlrl/common/input/regression_matrix_row_wise.hpp"
 #include "mlrl/common/measures/measure_distance.hpp"
 #include "mlrl/common/measures/measure_evaluation.hpp"
 #include "mlrl/common/statistics/statistics_provider.hpp"
@@ -123,6 +124,37 @@ namespace boosting {
              *         to a null pointer, if the loss function does not support the prediction of joint probabilities
              */
             virtual std::unique_ptr<IJointProbabilityFunctionFactory> createJointProbabilityFunctionFactory() const = 0;
+    };
+
+    /**
+     * Defines an interface for all classes that allow to configure a loss function that can be used in regression
+     * problems.
+     */
+    class IRegressionLossConfig : public ILossConfig {
+        public:
+
+            virtual ~IRegressionLossConfig() override {}
+
+            /**
+             * Creates and returns a new object of type `IRegressionStatisticsProviderFactory` according to the
+             * specified configuration.
+             *
+             * @param featureMatrix             A reference to an object of type `IFeatureMatrix` that provides access
+             *                                  to the feature values of the training examples
+             * @param labelMatrix               A reference to an object of type `IRowWiseLabelMatrix` that provides
+             *                                  access to the labels of the training examples
+             * @param blas                      A reference to an object of type `Blas` that allows to execute BLAS
+             *                                  routines
+             * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
+             *                                  routines
+             * @param preferSparseStatistics    True, if a sparse representation of statistics should be preferred, if
+             *                                  possible, false otherwise
+             * @return                          An unique pointer to an object of type
+             *                                  `IRegressionStatisticsProviderFactory` that has been created
+             */
+            virtual std::unique_ptr<IRegressionStatisticsProviderFactory> createStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
+              const Lapack& lapack, bool preferSparseStatistics) const = 0;
     };
 
 };
