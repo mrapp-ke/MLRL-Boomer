@@ -208,8 +208,8 @@ namespace boosting {
             }
     };
 
-    static inline std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory(bool basedOnProbabilities,
-                                                                                        const ILossConfig& lossConfig) {
+    static inline std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory(
+      bool basedOnProbabilities, const IClassificationLossConfig& lossConfig) {
         if (basedOnProbabilities) {
             return lossConfig.createJointProbabilityFunctionFactory();
         } else {
@@ -218,7 +218,7 @@ namespace boosting {
     }
 
     ExampleWiseBinaryPredictorConfig::ExampleWiseBinaryPredictorConfig(
-      ReadableProperty<ILossConfig> lossConfigGetter,
+      ReadableProperty<IClassificationLossConfig> lossConfigGetter,
       ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
         : basedOnProbabilities_(false), lossConfig_(lossConfigGetter),
           multiThreadingConfig_(multiThreadingConfigGetter) {}

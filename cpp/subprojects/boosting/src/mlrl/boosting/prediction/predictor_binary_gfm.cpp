@@ -216,7 +216,7 @@ namespace boosting {
     };
 
     GfmBinaryPredictorConfig::GfmBinaryPredictorConfig(
-      ReadableProperty<ILossConfig> lossConfigGetter,
+      ReadableProperty<IClassificationLossConfig> lossConfigGetter,
       ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
         : lossConfig_(std::move(lossConfigGetter)), multiThreadingConfig_(multiThreadingConfigGetter) {}
 

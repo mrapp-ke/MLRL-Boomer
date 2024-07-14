@@ -137,7 +137,7 @@ namespace boosting {
              * loss that is non-decomposable.
              */
             virtual void useNonDecomposableLogisticLoss() {
-                Property<ILossConfig> property = this->getLossConfig();
+                Property<IClassificationLossConfig> property = this->getLossConfig();
                 property.set(std::make_unique<NonDecomposableLogisticLossConfig>(this->getHeadConfig()));
             }
     };
@@ -156,7 +156,7 @@ namespace boosting {
              * hinge loss that is non-decomposable.
              */
             virtual void useNonDecomposableSquaredHingeLoss() {
-                Property<ILossConfig> property = this->getLossConfig();
+                Property<IClassificationLossConfig> property = this->getLossConfig();
                 property.set(std::make_unique<NonDecomposableSquaredHingeLossConfig>(this->getHeadConfig()));
             }
     };
@@ -175,7 +175,7 @@ namespace boosting {
              * loss that is applied decomposable.
              */
             virtual void useDecomposableLogisticLoss() {
-                Property<ILossConfig> property = this->getLossConfig();
+                Property<IClassificationLossConfig> property = this->getLossConfig();
                 property.set(std::make_unique<DecomposableLogisticLossConfig>(this->getHeadConfig()));
             }
     };
@@ -194,7 +194,7 @@ namespace boosting {
              * hinge loss that is decomposable.
              */
             virtual void useDecomposableSquaredHingeLoss() {
-                Property<ILossConfig> property = this->getLossConfig();
+                Property<IClassificationLossConfig> property = this->getLossConfig();
                 property.set(std::make_unique<DecomposableSquaredHingeLossConfig>(this->getHeadConfig()));
             }
     };

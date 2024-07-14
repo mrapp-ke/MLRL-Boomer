@@ -2,7 +2,7 @@
 
 namespace boosting {
 
-    AutomaticStatisticsConfig::AutomaticStatisticsConfig(ReadableProperty<ILossConfig> lossConfigGetter,
+    AutomaticStatisticsConfig::AutomaticStatisticsConfig(ReadableProperty<IClassificationLossConfig> lossConfigGetter,
                                                          ReadableProperty<IHeadConfig> headConfigGetter,
                                                          ReadableProperty<IDefaultRuleConfig> defaultRuleConfigGetter)
         : lossConfig_(lossConfigGetter), headConfig_(headConfigGetter), defaultRuleConfig_(defaultRuleConfigGetter) {}

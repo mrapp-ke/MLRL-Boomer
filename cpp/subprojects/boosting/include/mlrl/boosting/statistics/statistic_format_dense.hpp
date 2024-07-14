@@ -17,15 +17,15 @@ namespace boosting {
     class DenseStatisticsConfig final : public IStatisticsConfig {
         private:
 
-            const ReadableProperty<ILossConfig> lossConfig_;
+            const ReadableProperty<IClassificationLossConfig> lossConfig_;
 
         public:
 
             /**
-             * @param lossConfigGetter A `ReadableProperty` that allows to access the `ILossConfig` that stores the
-             *                         configuration of the loss function
+             * @param lossConfigGetter A `ReadableProperty` that allows to access the `IClassificationLossConfig` that
+             *                         stores the configuration of the loss function
              */
-            DenseStatisticsConfig(ReadableProperty<ILossConfig> lossConfigGetter);
+            DenseStatisticsConfig(ReadableProperty<IClassificationLossConfig> lossConfigGetter);
 
             std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,

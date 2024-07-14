@@ -136,7 +136,7 @@ namespace boosting {
     /**
      * Defines an interface for all classes that allow to configure a decomposable loss function.
      */
-    class IDecomposableLossConfig : public ILossConfig {
+    class IDecomposableLossConfig : public IClassificationLossConfig {
         public:
 
             virtual ~IDecomposableLossConfig() override {}

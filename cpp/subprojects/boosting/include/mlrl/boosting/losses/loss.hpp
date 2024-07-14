@@ -36,27 +36,6 @@ namespace boosting {
             virtual ~ILossConfig() {}
 
             /**
-             * Creates and returns a new object of type `IClassificationStatisticsProviderFactory` according to the
-             * specified configuration.
-             *
-             * @param featureMatrix             A reference to an object of type `IFeatureMatrix` that provides access
-             *                                  to the feature values of the training examples
-             * @param labelMatrix               A reference to an object of type `IRowWiseLabelMatrix` that provides
-             *                                  access to the labels of the training examples
-             * @param blas                      A reference to an object of type `Blas` that allows to execute BLAS
-             *                                  routines
-             * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
-             *                                  routines
-             * @param preferSparseStatistics    True, if a sparse representation of statistics should be preferred, if
-             *                                  possible, false otherwise
-             * @return                          An unique pointer to an object of type
-             *                                  `IClassificationStatisticsProviderFactory` that has been created
-             */
-            virtual std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-              const Lapack& lapack, bool preferSparseStatistics) const = 0;
-
-            /**
              * Creates and returns a new object of type `IEvaluationMeasureFactory` according to the specified
              * configuration.
              *
@@ -71,26 +50,6 @@ namespace boosting {
              * @return An unique pointer to an object of type `IDistanceMeasureFactory` that has been created
              */
             virtual std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const = 0;
-
-            /**
-             * Creates and returns a new object of type `IMarginalProbabilityFunctionFactory` according to the specified
-             * configuration.
-             *
-             * @return An unique pointer to an object of type `IMarginalProbabilityFunctionFactory` that has been
-             *         created or a null pointer, if the loss function does not support the prediction of marginal
-             *         probabilities
-             */
-            virtual std::unique_ptr<IMarginalProbabilityFunctionFactory> createMarginalProbabilityFunctionFactory()
-              const = 0;
-
-            /**
-             * Creates and returns a new object of type `IJointProbabilityFunctionFactory` according to the specified
-             * configuration.
-             *
-             * @return An unique pointer to an object of type `IJointProbabilityFunctionFactory` that has been created
-             *         to a null pointer, if the loss function does not support the prediction of joint probabilities
-             */
-            virtual std::unique_ptr<IJointProbabilityFunctionFactory> createJointProbabilityFunctionFactory() const = 0;
 
             /**
              * Returns whether the loss function is decomposable or not.
@@ -113,6 +72,57 @@ namespace boosting {
              * @return The default prediction
              */
             virtual float64 getDefaultPrediction() const = 0;
+    };
+
+    /**
+     * Defines an interface for all classes that allow to configure a loss function that can be used in classification
+     * problems.
+     */
+    class IClassificationLossConfig : public ILossConfig {
+        public:
+
+            virtual ~IClassificationLossConfig() override {}
+
+            /**
+             * Creates and returns a new object of type `IClassificationStatisticsProviderFactory` according to the
+             * specified configuration.
+             *
+             * @param featureMatrix             A reference to an object of type `IFeatureMatrix` that provides access
+             *                                  to the feature values of the training examples
+             * @param labelMatrix               A reference to an object of type `IRowWiseLabelMatrix` that provides
+             *                                  access to the labels of the training examples
+             * @param blas                      A reference to an object of type `Blas` that allows to execute BLAS
+             *                                  routines
+             * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
+             *                                  routines
+             * @param preferSparseStatistics    True, if a sparse representation of statistics should be preferred, if
+             *                                  possible, false otherwise
+             * @return                          An unique pointer to an object of type
+             *                                  `IClassificationStatisticsProviderFactory` that has been created
+             */
+            virtual std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+              const Lapack& lapack, bool preferSparseStatistics) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IMarginalProbabilityFunctionFactory` according to the specified
+             * configuration.
+             *
+             * @return An unique pointer to an object of type `IMarginalProbabilityFunctionFactory` that has been
+             *         created or a null pointer, if the loss function does not support the prediction of marginal
+             *         probabilities
+             */
+            virtual std::unique_ptr<IMarginalProbabilityFunctionFactory> createMarginalProbabilityFunctionFactory()
+              const = 0;
+
+            /**
+             * Creates and returns a new object of type `IJointProbabilityFunctionFactory` according to the specified
+             * configuration.
+             *
+             * @return An unique pointer to an object of type `IJointProbabilityFunctionFactory` that has been created
+             *         to a null pointer, if the loss function does not support the prediction of joint probabilities
+             */
+            virtual std::unique_ptr<IJointProbabilityFunctionFactory> createJointProbabilityFunctionFactory() const = 0;
     };
 
 };

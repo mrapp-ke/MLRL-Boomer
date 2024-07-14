@@ -6,7 +6,7 @@
 namespace boosting {
 
     AutomaticBinaryPredictorConfig::AutomaticBinaryPredictorConfig(
-      ReadableProperty<ILossConfig> lossConfigGetter,
+      ReadableProperty<IClassificationLossConfig> lossConfigGetter,
       ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
         : lossConfig_(lossConfigGetter), multiThreadingConfig_(multiThreadingConfigGetter) {}
 

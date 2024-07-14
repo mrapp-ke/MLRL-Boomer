@@ -74,13 +74,13 @@ namespace boosting {
             virtual Property<IRegularizationConfig> getL2RegularizationConfig() = 0;
 
             /**
-             * Returns a `Property` that allows to access the `ILossConfig` that stores the configuration of the loss
-             * function.
+             * Returns a `Property` that allows to access the `IClassificationLossConfig` that stores the configuration
+             * of the loss function.
              *
-             * @return A `Property` that allows to access the `ILossConfig` that stores the configuration of the loss
-             *         function
+             * @return A `Property` that allows to access the `IClassificationLossConfig` that stores the configuration
+             *         of the loss function
              */
-            virtual Property<ILossConfig> getLossConfig() = 0;
+            virtual Property<IClassificationLossConfig> getLossConfig() = 0;
 
             /**
              * Returns a `Property` that allows to access the `ILabelBinningConfig` that stores the configuration of the
@@ -400,7 +400,7 @@ namespace boosting {
              * error loss that is non-decomposable.
              */
             virtual void useNonDecomposableSquaredErrorLoss() {
-                Property<ILossConfig> property = this->getLossConfig();
+                Property<IClassificationLossConfig> property = this->getLossConfig();
                 property.set(std::make_unique<NonDecomposableSquaredErrorLossConfig>(this->getHeadConfig()));
             }
     };
@@ -419,7 +419,7 @@ namespace boosting {
              * error loss that is decomposable.
              */
             virtual void useDecomposableSquaredErrorLoss() {
-                Property<ILossConfig> property = this->getLossConfig();
+                Property<IClassificationLossConfig> property = this->getLossConfig();
                 property.set(std::make_unique<DecomposableSquaredErrorLossConfig>(this->getHeadConfig()));
             }
     };
