@@ -7,6 +7,7 @@
 #include "mlrl/boosting/rule_evaluation/head_type.hpp"
 #include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/sampling/feature_sampling.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -19,25 +20,26 @@ namespace boosting {
     class AutoParallelRuleRefinementConfig final : public IMultiThreadingConfig {
         private:
 
-            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+            const GetterFunction<ILossConfig> lossConfigGetter_;
 
-            const std::unique_ptr<IHeadConfig>& headConfigPtr_;
+            const GetterFunction<IHeadConfig> headConfigGetter_;
 
-            const std::unique_ptr<IFeatureSamplingConfig>& featureSamplingConfigPtr_;
+            const GetterFunction<IFeatureSamplingConfig> featureSamplingConfigGetter_;
 
         public:
 
             /**
-             * @param lossConfigPtr             A reference to an unique pointer that stores the configuration of the
-             *                                  loss function
-             * @param headConfigPtr             A reference to an unique pointer that stores the configuration of rule
-             *                                  heads
-             * @param featureSamplingConfigPtr  A reference to an unique pointer that stores the configuration of the
-             *                                  method for sampling features
+             * @param lossConfigGetter              A `GetterFunction` that allows to access the `ILossConfig` that
+             *                                      stores the configuration of the loss function
+             * @param headConfigGetter              A `GetterFunction` that allows to access the `IHeadConfig` that
+             *                                      stores the configuration of the rule heads
+             * @param featureSamplingConfigGetter   A `GetterFunction` that allows to access the
+             *                                      `IFeatureSamplingConfig` that stores the configuration of the method
+             *                                      for sampling features
              */
-            AutoParallelRuleRefinementConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,
-                                             const std::unique_ptr<IHeadConfig>& headConfigPtr,
-                                             const std::unique_ptr<IFeatureSamplingConfig>& featureSamplingConfigPtr);
+            AutoParallelRuleRefinementConfig(GetterFunction<ILossConfig> lossConfigGetter,
+                                             GetterFunction<IHeadConfig> headConfigGetter,
+                                             GetterFunction<IFeatureSamplingConfig> featureSamplingConfigGetter);
 
             /**
              * @see `IMultiThreadingConfig::getNumThreads`

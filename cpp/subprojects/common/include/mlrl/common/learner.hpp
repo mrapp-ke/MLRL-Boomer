@@ -8,6 +8,7 @@
 #include "mlrl/common/input/feature_binning_no.hpp"
 #include "mlrl/common/multi_threading/multi_threading_manual.hpp"
 #include "mlrl/common/multi_threading/multi_threading_no.hpp"
+#include "mlrl/common/post_optimization/post_optimization_no.hpp"
 #include "mlrl/common/post_optimization/post_optimization_phase_list.hpp"
 #include "mlrl/common/post_optimization/post_optimization_sequential.hpp"
 #include "mlrl/common/post_optimization/post_optimization_unused_rule_removal.hpp"
@@ -37,11 +38,14 @@
 #include "mlrl/common/sampling/output_sampling_without_replacement.hpp"
 #include "mlrl/common/sampling/partition_sampling_bi_random.hpp"
 #include "mlrl/common/sampling/partition_sampling_no.hpp"
+#include "mlrl/common/stopping/global_pruning_no.hpp"
 #include "mlrl/common/stopping/global_pruning_post.hpp"
 #include "mlrl/common/stopping/global_pruning_pre.hpp"
 #include "mlrl/common/stopping/stopping_criterion_list.hpp"
+#include "mlrl/common/stopping/stopping_criterion_no.hpp"
 #include "mlrl/common/stopping/stopping_criterion_size.hpp"
 #include "mlrl/common/stopping/stopping_criterion_time.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 #include <utility>
@@ -145,211 +149,215 @@ class MLRLCOMMON_API IRuleLearnerConfig {
         virtual RuleCompareFunction getRuleCompareFunction() const = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the default that is included in a rule-based model.
+         * Returns a `Property` that allows to access the `IDefaultRuleConfig` that stores the configuration of the
+         * default rule.
          *
-         * @return A reference to an unique pointer of type `IDefaultRuleConfig` that stores the configuration of the
-         *         default rule that is included in a rule-based model
+         * @return A `Property` that allows to access the `IDefaultRuleConfig` that stores the configuration of the
+         *         default rule
          */
-        virtual std::unique_ptr<IDefaultRuleConfig>& getDefaultRuleConfigPtr() = 0;
+        virtual Property<IDefaultRuleConfig> getDefaultRuleConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the algorithm for the induction of several rules that are
-         * added to a rule-based model.
+         * Returns a `Property` that allows to access the `IRuleModelAssemblageConfig` that stores the configuration of
+         * the algorithm for the induction of several rules that will be added to a rule-based model.
          *
-         * @return A reference to an unique pointer of type `IRuleModelAssemblageConfig` that stores the configuration
-         *         of the algorithm for the induction of several rules that are added to a rule-based model
+         * @return A `Property` that allows to access the `IRuleModelAssemblageConfig` that stores the configuration of
+         *         the algorithm for the induction of several rules that will be added to a rule-based model
          */
-        virtual std::unique_ptr<IRuleModelAssemblageConfig>& getRuleModelAssemblageConfigPtr() = 0;
+        virtual Property<IRuleModelAssemblageConfig> getRuleModelAssemblageConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the algorithm for the induction of individual rules.
+         * Returns a `Property` that allows to access the `IRuleInductionConfig` that stores the configuration of the
+         * algorithm for the induction of individual rules.
          *
-         * @return A reference to an unique pointer of type `IRuleInductionConfig` that stores the configuration of the
+         * @return A `Property` that allows to access the `IRuleInductionConfig` that stores the configuration of the
          *         algorithm for the induction of individual rules
          */
-        virtual std::unique_ptr<IRuleInductionConfig>& getRuleInductionConfigPtr() = 0;
+        virtual Property<IRuleInductionConfig> getRuleInductionConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the method for the assignment of numerical feature values
-         * to bins.
+         * Returns a `Property` that allows to access the `IFeatureBinningConfig` that stores the configuration of the
+         * method for the assignment of numerical feature values to bins.
          *
-         * @return A reference to an unique pointer of type `IFeatureBinningConfig` that stores the configuration of the
+         * @return A `Property` that allows to access the `IFeatureBinningConfig` that stores the configuration of the
          *         method for the assignment of numerical feature values to bins
          */
-        virtual std::unique_ptr<IFeatureBinningConfig>& getFeatureBinningConfigPtr() = 0;
+        virtual Property<IFeatureBinningConfig> getFeatureBinningConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the method for sampling outputs.
+         * Returns a `Property` that allows to access the `IOutputSamplingConfig` that stores the configuration of the
+         * method for sampling outputs.
          *
-         * @return A reference to an unique pointer of type `IOutputSamplingConfig` that stores the configuration of the
+         * @return A `Property` that allows to access the `IOutputSamplingConfig` that stores the configuration of the
          *         method for sampling outputs
          */
-        virtual std::unique_ptr<IOutputSamplingConfig>& getOutputSamplingConfigPtr() = 0;
+        virtual Property<IOutputSamplingConfig> getOutputSamplingConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the method for sampling instances.
+         * Returns a `Property` that allows to access the `IInstanceSamplingConfig` that stores the configuration of the
+         * method for sampling instances.
          *
-         * @return A reference to an unique pointer of type `IInstanceSamplingConfig` that stores the configuration of
-         *         the method for sampling instances
+         * @return A `Property` that allows to access the `IInstanceSamplingConfig` that stores the configuration of the
+         *         method for sampling instances
          */
-        virtual std::unique_ptr<IInstanceSamplingConfig>& getInstanceSamplingConfigPtr() = 0;
+        virtual Property<IInstanceSamplingConfig> getInstanceSamplingConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the method for sampling features.
+         * Returns a `Property` that allows to access the `IFeatureSamplingConfig` that stores the configuration of the
+         * method for sampling features.
          *
-         * @return A reference to an unique pointer of type `IFeatureSamplingConfig` that specifies the configuration of
-         *         the method for sampling features
+         * @return A `Property` that allows to access the `IFeatureSamplingConfig` that stores the configuration of the
+         *         method for sampling features
          */
-        virtual std::unique_ptr<IFeatureSamplingConfig>& getFeatureSamplingConfigPtr() = 0;
+        virtual Property<IFeatureSamplingConfig> getFeatureSamplingConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the method for partitioning the available training examples
-         * into a training set and a holdout set.
+         * Returns a `Property` that allows to access the `IPartitionSamplingConfig` that stores the configuration of
+         * the method for partitioning the available training examples into a training set and a holdout set.
          *
-         * @return A reference to an unique pointer of type `IPartitionSamplingConfig` that stores the configuration of
+         * @return A `Property` that allows to access the `IPartitionSamplingConfig` that stores the configuration of
          *         the method for partitioning the available training examples into a training set and a holdout set
          */
-        virtual std::unique_ptr<IPartitionSamplingConfig>& getPartitionSamplingConfigPtr() = 0;
+        virtual Property<IPartitionSamplingConfig> getPartitionSamplingConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the method for pruning individual rules.
+         * Returns a `Property` that allows to access the `IRulePruningConfig` that stores the configuration of the
+         * method for pruning individual rules.
          *
-         * @return A reference to an unique pointer of type `IRulePruningConfig` that stores the configuration of the
+         * @return A `Property` that allows to access the `IRulePruningConfig` that stores the configuration of the
          *         method for pruning individual rules
          */
-        virtual std::unique_ptr<IRulePruningConfig>& getRulePruningConfigPtr() = 0;
+        virtual Property<IRulePruningConfig> getRulePruningConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the method for post-processing the predictions of rules
-         * once they have been learned.
+         * Returns a `Property` that allows to access the `IPostProcessorConfig` that stores the configuration of the
+         * method for post-processing the predictions of rules once they have been learned.
          *
-         * @return A reference to an unique pointer of type `IPostProcessorConfig` that stores the configuration of the
+         * @return A `Property` that allows to access the `IPostProcessorConfig` that stores the configuration of the
          *         method that post-processes the predictions of rules once they have been learned
          */
-        virtual std::unique_ptr<IPostProcessorConfig>& getPostProcessorConfigPtr() = 0;
+        virtual Property<IPostProcessorConfig> getPostProcessorConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the multi-threading behavior that is used for the parallel
-         * refinement of rules.
+         * Returns a `Property` that allows to access the `IMultiThreadingConfig` that stores the configuration of the
+         * multi-threading behavior that is used for the parallel refinement of rules.
          *
-         * @return A reference to an unique pointer of type `IMultiThreadingConfig` that stores the configuration of the
+         * @return A `Property` that allows to access the `IMultiThreadingConfig` that stores the configuration of the
          *         multi-threading behavior that is used for the parallel refinement of rules
          */
-        virtual std::unique_ptr<IMultiThreadingConfig>& getParallelRuleRefinementConfigPtr() = 0;
+        virtual Property<IMultiThreadingConfig> getParallelRuleRefinementConfig() = 0;
 
         /**
-         * Returns an unique pointer to the the configuration of the multi-threading behavior that is used for the
-         * parallel update of statistics.
+         * Returns a `Property` that allows to access the `IMultiThreadingConfig` that stores the configuration of the
+         * multi-threading behavior that is used for the parallel update of statistics.
          *
-         * @return A reference to an unique pointer of type `IMultiThreadingConfig` that stores the configuration of the
+         * @return A `Property` that allows to access the `IMultiThreadingConfig` that stores the configuration of the
          *         multi-threading behavior that is used for the parallel update of statistics
          */
-        virtual std::unique_ptr<IMultiThreadingConfig>& getParallelStatisticUpdateConfigPtr() = 0;
+        virtual Property<IMultiThreadingConfig> getParallelStatisticUpdateConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the multi-threading behavior that is used to predict for
-         * several query examples in parallel.
+         * Returns a `Property` that allows to access the `IMultiThreadingConfig` that stores the configuration of the
+         * multi-threading behavior that is used to predict for several query examples in parallel.
          *
-         * @return A reference to an unique pointer of type `IMultiThreadingConfig` that stores the configuration of the
+         * @return A `Property` that allows to access the `IMultiThreadingConfig` that stores the configuration of the
          *         multi-threading behavior that is used to predict for several query examples in parallel
          */
-        virtual std::unique_ptr<IMultiThreadingConfig>& getParallelPredictionConfigPtr() = 0;
+        virtual Property<IMultiThreadingConfig> getParallelPredictionConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the stopping criterion that ensures that the number of
-         * rules does not exceed a certain maximum.
+         * Returns a `Property` that allows to access the `IStoppingCriterionConfig` that stores the configuration of
+         * the stopping criterion that ensures that the number of rules does not exceed a certain maximum.
          *
-         * @return A reference to an unique pointer of type `SizeStoppingCriterionConfig` that stores the configuration
-         *         of the stopping criterion that ensures that the number of rules does not exceed a certain maximum or
-         *         a null pointer, if no such stopping criterion should be used
+         * @return A `Property` that allows to access the `IStoppingCriterionConfig` that stores the configuration of
+         *         the stopping criterion that ensures that the number of rules does not exceed a certain maximum
          */
-        virtual std::unique_ptr<SizeStoppingCriterionConfig>& getSizeStoppingCriterionConfigPtr() = 0;
+        virtual Property<IStoppingCriterionConfig> getSizeStoppingCriterionConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the stopping criterion that ensures that a certain time
-         * limit is not exceeded.
+         * Returns a `Property` that allows to access the `IStoppingCriterionConfig` that stores the configuration of
+         * the stopping criterion that ensures that a certain time limit is not exceeded.
          *
-         * @return A reference to an unique pointer of type `TimeStoppingCriterionConfig` that stores the configuration
-         *         of the stopping criterion that ensures that a certain time limit is not exceeded or a null pointer,
-         *         if no such stopping criterion should be used
+         * @return A `Property` that allows to access the `IStoppingCriterionConfig` that stores the configuration of
+         *         the stopping criterion that ensures that a certain time limit is not exceeded
          */
-        virtual std::unique_ptr<TimeStoppingCriterionConfig>& getTimeStoppingCriterionConfigPtr() = 0;
+        virtual Property<IStoppingCriterionConfig> getTimeStoppingCriterionConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the stopping criterion that allows to decide how many rules
-         * should be included in a model, such that its performance is optimized globally.
+         * Returns a `Property` that allows to access the `IGlobalPruningConfig` that stores the configuration of the
+         * stopping criterion that allows to decide how many rules should be included in a model, such that its
+         * performance is optimized globally.
          *
-         * @return A reference to an unique pointer of type `IGlobalPruningConfig` that stores the configuration of the
-         *         stopping criterion that allows to decide how many rules should be included in a model, such that its
-         *         performance is optimized globally, or a null pointer, if no such stopping criterion should be used
+         * @return A `Property` that allows to access the `IGlobalPruningConfig` that stores the configuration of the
+         *         stopping criterion that allows to decide how many rules should be included in a model
          */
-        virtual std::unique_ptr<IGlobalPruningConfig>& getGlobalPruningConfigPtr() = 0;
+        virtual Property<IGlobalPruningConfig> getGlobalPruningConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the post-optimization method that optimizes each rule in a
-         * model by relearning it in the context of the other rules.
+         * Returns a `Property` that allows to access the `IPostOptimizationPhaseConfig` that stores the configuration
+         * of the post-optimization method that optimizes each rule in a model by relearning it in the context of the
+         * other rules.
          *
-         * @return A reference to an unique pointer of type `SequentialPostOptimizationConfig` that stores the
-         *         configuration of the post-optimization method that optimizes each rule in a model by relearning it in
-         *         the context of the other rules or a null pointer, if no such post-optimization method should be used
+         * @return A `Property` that allows to access the `IPostOptimizationPhaseConfig` that stores the configuration
+         *         of the post-optimization method that optimizes each rule in a model by relearning it in the context
+         *         of the other rules
          */
-        virtual std::unique_ptr<SequentialPostOptimizationConfig>& getSequentialPostOptimizationConfigPtr() = 0;
+        virtual Property<IPostOptimizationPhaseConfig> getSequentialPostOptimizationConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the post-optimization method that removes unused rules from
-         * a model.
+         * Returns a `Property` that allows to access the `IPostOptimizationPhaseConfig` that stores the configuration
+         * of the post-optimization method that removes unused rules from a model.
          *
-         * @return A reference to an unique pointer of type `UnusedRuleRemovalConfig` that stores the configuration of
-         *         the post-optimization method that removes unused rules from a model or a null pointer, if no such
-         *         post-optimization method should be used
+         * @return A `Property` that allows to access the `IPostOptimizationPhaseConfig` that stores the configuration
+         *         of the post-optimization method that removes unused rules from a model
          */
-        virtual std::unique_ptr<UnusedRuleRemovalConfig>& getUnusedRuleRemovalConfigPtr() = 0;
+        virtual Property<IPostOptimizationPhaseConfig> getUnusedRuleRemovalConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the calibrator that allows to fit a model for the
-         * calibration of marginal probabilities.
+         * Returns a `Property` that allows to access the `IMarginalProbabilityCalibratorConfig` that stores the
+         * configuration of the calibrator that allows to fit a model for the calibration of marginal probabilities.
          *
-         * @return A reference to an unique pointer of type `IMarginalProbabilityCalibratorConfig` that stores the
+         * @return A `Property` that allows to access the `IMarginalProbabilityCalibratorConfig` that stores the
          *         configuration of the calibrator that allows to fit a model for the calibration of marginal
          *         probabilities
          */
-        virtual std::unique_ptr<IMarginalProbabilityCalibratorConfig>& getMarginalProbabilityCalibratorConfigPtr() = 0;
+        virtual Property<IMarginalProbabilityCalibratorConfig> getMarginalProbabilityCalibratorConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the calibrator that allows to fit a model for the
-         * calibration of joint probabilities.
+         * Returns a `Property` that allows to access the `IJointProbabilityCalibratorConfig` that stores the
+         * configuration of the calibrator that allows to fit a model for the calibration of joint probabilities.
          *
-         * @return A reference to an unique pointer of type `IJointProbabilityCalibratorConfig` that stores the
+         * @return A `Property` that allows to access the `IJointProbabilityCalibratorConfig` that stores the
          *         configuration of the calibrator that allows to fit a model for the calibration of joint probabilities
          */
-        virtual std::unique_ptr<IJointProbabilityCalibratorConfig>& getJointProbabilityCalibratorConfigPtr() = 0;
+        virtual Property<IJointProbabilityCalibratorConfig> getJointProbabilityCalibratorConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the predictor that allows to predict binary labels.
+         * Returns a `Property` that allows to access the `IScorePredictorConfig` that stores the configuration of the
+         * predictor that allows to predict scores.
          *
-         * @return A reference to an unique pointer of type `IBinaryPredictorConfig` that stores the configuration of
-         *         the predictor that allows to predict binary labels or a null pointer if the prediction of binary
-         *         labels is not supported
+         * @return A `Property` that allows to access the `IScorePredictorConfig` that stores the configuration of the
+         *         predictor that allows to predict scores
          */
-        virtual std::unique_ptr<IBinaryPredictorConfig>& getBinaryPredictorConfigPtr() = 0;
+        virtual Property<IScorePredictorConfig> getScorePredictorConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the predictor that allows to predict scores.
+         * Returns a `Property` that allows to access the `IProbabilityPredictorConfig` that stores the configuration of
+         * the predictor that allows to predict probability estimates.
          *
-         * @return A reference to an unique pointer of type `IScorePredictorConfig` that stores the configuration of the
-         *         predictor that allows to predict scores or a null pointer, if the prediction of scores is not
-         *         supported
+         * @return A `Property` that allows to access the `IProbabilityPredictorConfig` that stores the configuration of
+         *         the predictor that allows to predict probability estimates
          */
-        virtual std::unique_ptr<IScorePredictorConfig>& getScorePredictorConfigPtr() = 0;
+        virtual Property<IProbabilityPredictorConfig> getProbabilityPredictorConfig() = 0;
 
         /**
-         * Returns an unique pointer to the configuration of the predictor that allows to predict probability estimates.
+         * Returns a `Property` that allows to access the `IBinaryPredictorConfig` that stores the configuration of the
+         * predictor that allows to predict binary labels.
          *
-         * @return A reference to an unique pointer of type `IProbabilityPredictorConfig` that stores the configuration
-         *         of the predictor that allows to predict probability estimates or a null pointer, if the prediction of
-         *         probability estimates is not supported
+         * @return A `Property` that allows to access the `IBinaryPredictorConfig` that stores the configuration of the
+         *         predictor that allows to predict binary labels
          */
-        virtual std::unique_ptr<IProbabilityPredictorConfig>& getProbabilityPredictorConfigPtr() = 0;
+        virtual Property<IBinaryPredictorConfig> getBinaryPredictorConfig() = 0;
 };
 
 /**
@@ -366,10 +374,8 @@ class ISequentialRuleModelAssemblageMixin : virtual public IRuleLearnerConfig {
          * with a default rule, that are added to a rule-based model.
          */
         virtual void useSequentialRuleModelAssemblage() {
-            std::unique_ptr<IRuleModelAssemblageConfig>& ruleModelAssemblageConfigPtr =
-              this->getRuleModelAssemblageConfigPtr();
-            ruleModelAssemblageConfigPtr =
-              std::make_unique<SequentialRuleModelAssemblageConfig>(this->getDefaultRuleConfigPtr());
+            Property<IRuleModelAssemblageConfig> property = this->getRuleModelAssemblageConfig();
+            property.set(std::make_unique<SequentialRuleModelAssemblageConfig>(this->getDefaultRuleConfig().get));
         }
 };
 
@@ -385,8 +391,8 @@ class IDefaultRuleMixin : virtual public IRuleLearnerConfig {
          * Configures the rule learner to induce a default rule.
          */
         virtual void useDefaultRule() {
-            std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr = this->getDefaultRuleConfigPtr();
-            defaultRuleConfigPtr = std::make_unique<DefaultRuleConfig>(true);
+            Property<IDefaultRuleConfig> property = this->getDefaultRuleConfig();
+            property.set(std::make_unique<DefaultRuleConfig>(true));
         }
 };
 
@@ -406,11 +412,11 @@ class MLRLCOMMON_API IGreedyTopDownRuleInductionMixin : virtual public IRuleLear
          *         configuration of the algorithm for the induction of individual rules
          */
         virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() {
-            std::unique_ptr<IRuleInductionConfig>& ruleInductionConfigPtr = this->getRuleInductionConfigPtr();
+            Property<IRuleInductionConfig> property = this->getRuleInductionConfig();
             std::unique_ptr<GreedyTopDownRuleInductionConfig> ptr = std::make_unique<GreedyTopDownRuleInductionConfig>(
-              this->getRuleCompareFunction(), this->getParallelRuleRefinementConfigPtr());
+              this->getRuleCompareFunction(), this->getParallelRuleRefinementConfig().get);
             IGreedyTopDownRuleInductionConfig& ref = *ptr;
-            ruleInductionConfigPtr = std::move(ptr);
+            property.set(std::move(ptr));
             return ref;
         }
 };
@@ -430,12 +436,12 @@ class MLRLCOMMON_API IBeamSearchTopDownRuleInductionMixin : virtual public IRule
          *         of the algorithm for the induction of individual rules
          */
         virtual IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() {
-            std::unique_ptr<IRuleInductionConfig>& ruleInductionConfigPtr = this->getRuleInductionConfigPtr();
+            Property<IRuleInductionConfig> property = this->getRuleInductionConfig();
             std::unique_ptr<BeamSearchTopDownRuleInductionConfig> ptr =
               std::make_unique<BeamSearchTopDownRuleInductionConfig>(this->getRuleCompareFunction(),
-                                                                     this->getParallelRuleRefinementConfigPtr());
+                                                                     this->getParallelRuleRefinementConfig().get);
             IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
-            ruleInductionConfigPtr = std::move(ptr);
+            property.set(std::move(ptr));
             return ref;
         }
 };
@@ -452,8 +458,8 @@ class MLRLCOMMON_API INoPostProcessorMixin : virtual public IRuleLearnerConfig {
          * Configures the rule learner to not use any post processor.
          */
         virtual void useNoPostProcessor() {
-            std::unique_ptr<IPostProcessorConfig>& postProcessorConfigPtr = this->getPostProcessorConfigPtr();
-            postProcessorConfigPtr = std::make_unique<NoPostProcessorConfig>();
+            Property<IPostProcessorConfig> property = this->getPostProcessorConfig();
+            property.set(std::make_unique<NoPostProcessorConfig>());
         }
 };
 
@@ -470,8 +476,8 @@ class MLRLCOMMON_API INoFeatureBinningMixin : virtual public IRuleLearnerConfig 
          * Configures the rule learner to not use any method for the assignment of numerical feature values to bins.
          */
         virtual void useNoFeatureBinning() {
-            std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr = this->getFeatureBinningConfigPtr();
-            featureBinningConfigPtr = std::make_unique<NoFeatureBinningConfig>();
+            Property<IFeatureBinningConfig> property = this->getFeatureBinningConfig();
+            property.set(std::make_unique<NoFeatureBinningConfig>());
         }
 };
 
@@ -491,10 +497,10 @@ class MLRLCOMMON_API IEqualWidthFeatureBinningMixin : virtual public IRuleLearne
          *         of the method for the assignment of numerical feature values to bins
          */
         virtual IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() {
-            std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr = this->getFeatureBinningConfigPtr();
+            Property<IFeatureBinningConfig> property = this->getFeatureBinningConfig();
             std::unique_ptr<EqualWidthFeatureBinningConfig> ptr = std::make_unique<EqualWidthFeatureBinningConfig>();
             IEqualWidthFeatureBinningConfig& ref = *ptr;
-            featureBinningConfigPtr = std::move(ptr);
+            property.set(std::move(ptr));
             return ref;
         }
 };
@@ -515,11 +521,11 @@ class MLRLCOMMON_API IEqualFrequencyFeatureBinningMixin : virtual public IRuleLe
          *         configuration of the method for the assignment of numerical feature values to bins
          */
         virtual IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() {
-            std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr = this->getFeatureBinningConfigPtr();
+            Property<IFeatureBinningConfig> property = this->getFeatureBinningConfig();
             std::unique_ptr<EqualFrequencyFeatureBinningConfig> ptr =
               std::make_unique<EqualFrequencyFeatureBinningConfig>();
             IEqualFrequencyFeatureBinningConfig& ref = *ptr;
-            featureBinningConfigPtr = std::move(ptr);
+            property.set(std::move(ptr));
             return ref;
         }
 };
@@ -536,8 +542,8 @@ class MLRLCOMMON_API INoOutputSamplingMixin : virtual public IRuleLearnerConfig 
          * Configures the rule learner to not sample from the available outputs whenever a new rule should be learned.
          */
         virtual void useNoOutputSampling() {
-            std::unique_ptr<IOutputSamplingConfig>& outputSamplingConfigPtr = this->getOutputSamplingConfigPtr();
-            outputSamplingConfigPtr = std::make_unique<NoOutputSamplingConfig>();
+            Property<IOutputSamplingConfig> property = this->getOutputSamplingConfig();
+            property.set(std::make_unique<NoOutputSamplingConfig>());
         }
 };
 
@@ -558,11 +564,11 @@ class MLRLCOMMON_API IOutputSamplingWithoutReplacementMixin : virtual public IRu
          *         configuration of the sampling method
          */
         virtual IOutputSamplingWithoutReplacementConfig& useOutputSamplingWithoutReplacement() {
-            std::unique_ptr<IOutputSamplingConfig>& outputSamplingConfigPtr = this->getOutputSamplingConfigPtr();
+            Property<IOutputSamplingConfig> property = this->getOutputSamplingConfig();
             std::unique_ptr<OutputSamplingWithoutReplacementConfig> ptr =
               std::make_unique<OutputSamplingWithoutReplacementConfig>();
             IOutputSamplingWithoutReplacementConfig& ref = *ptr;
-            outputSamplingConfigPtr = std::move(ptr);
+            property.set(std::move(ptr));
             return ref;
         }
 };
@@ -581,8 +587,8 @@ class MLRLCOMMON_API IRoundRobinOutputSamplingMixin : virtual public IRuleLearne
          * should be learned.
          */
         virtual void useRoundRobinOutputSampling() {
-            std::unique_ptr<IOutputSamplingConfig>& outputSamplingConfigPtr = this->getOutputSamplingConfigPtr();
-            outputSamplingConfigPtr = std::make_unique<RoundRobinOutputSamplingConfig>();
+            Property<IOutputSamplingConfig> property = this->getOutputSamplingConfig();
+            property.set(std::make_unique<RoundRobinOutputSamplingConfig>());
         }
 };
 
@@ -599,8 +605,8 @@ class MLRLCOMMON_API INoInstanceSamplingMixin : virtual public IRuleLearnerConfi
          * learned.
          */
         virtual void useNoInstanceSampling() {
-            std::unique_ptr<IInstanceSamplingConfig>& instanceSamplingConfigPtr = this->getInstanceSamplingConfigPtr();
-            instanceSamplingConfigPtr = std::make_unique<NoInstanceSamplingConfig>();
+            Property<IInstanceSamplingConfig> property = this->getInstanceSamplingConfig();
+            property.set(std::make_unique<NoInstanceSamplingConfig>());
         }
 };
 
@@ -621,11 +627,11 @@ class MLRLCOMMON_API IInstanceSamplingWithReplacementMixin : virtual public IRul
          *         configuration of the method for sampling instances
          */
         virtual IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() {
-            std::unique_ptr<IInstanceSamplingConfig>& instanceSamplingConfigPtr = this->getInstanceSamplingConfigPtr();
+            Property<IInstanceSamplingConfig> property = this->getInstanceSamplingConfig();
             std::unique_ptr<InstanceSamplingWithReplacementConfig> ptr =
               std::make_unique<InstanceSamplingWithReplacementConfig>();
             IInstanceSamplingWithReplacementConfig& ref = *ptr;
-            instanceSamplingConfigPtr = std::move(ptr);
+            property.set(std::move(ptr));
             return ref;
         }
 };
@@ -647,11 +653,11 @@ class MLRLCOMMON_API IInstanceSamplingWithoutReplacementMixin : virtual public I
          *         configuration of the method for sampling instances
          */
         virtual IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement() {
-            std::unique_ptr<IInstanceSamplingConfig>& instanceSamplingConfigPtr = this->getInstanceSamplingConfigPtr();
+            Property<IInstanceSamplingConfig> property = this->getInstanceSamplingConfig();
             std::unique_ptr<InstanceSamplingWithoutReplacementConfig> ptr =
               std::make_unique<InstanceSamplingWithoutReplacementConfig>();
             IInstanceSamplingWithoutReplacementConfig& ref = *ptr;
-            instanceSamplingConfigPtr = std::move(ptr);
+            property.set(std::move(ptr));
             return ref;
         }
 };
@@ -668,8 +674,8 @@ class MLRLCOMMON_API INoFeatureSamplingMixin : virtual public IRuleLearnerConfig
          * Configures the rule learner to not sample from the available features whenever a rule should be refined.
          */
         virtual void useNoFeatureSampling() {
-            std::unique_ptr<IFeatureSamplingConfig>& featureSamplingConfigPtr = this->getFeatureSamplingConfigPtr();
-            featureSamplingConfigPtr = std::make_unique<NoFeatureSamplingConfig>();
+            Property<IFeatureSamplingConfig> property = this->getFeatureSamplingConfig();
+            property.set(std::make_unique<NoFeatureSamplingConfig>());
         }
 };
 
@@ -690,11 +696,11 @@ class MLRLCOMMON_API IFeatureSamplingWithoutReplacementMixin : virtual public IR
          *         configuration of the method for sampling features
          */
         virtual IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() {
-            std::unique_ptr<IFeatureSamplingConfig>& featureSamplingConfigPtr = this->getFeatureSamplingConfigPtr();
+            Property<IFeatureSamplingConfig> property = this->getFeatureSamplingConfig();
             std::unique_ptr<FeatureSamplingWithoutReplacementConfig> ptr =
               std::make_unique<FeatureSamplingWithoutReplacementConfig>();
             IFeatureSamplingWithoutReplacementConfig& ref = *ptr;
-            featureSamplingConfigPtr = std::move(ptr);
+            property.set(std::move(ptr));
             return ref;
         }
 };
@@ -713,9 +719,8 @@ class MLRLCOMMON_API INoPartitionSamplingMixin : virtual public IRuleLearnerConf
          * holdout set.
          */
         virtual void useNoPartitionSampling() {
-            std::unique_ptr<IPartitionSamplingConfig>& partitionSamplingConfigPtr =
-              this->getPartitionSamplingConfigPtr();
-            partitionSamplingConfigPtr = std::make_unique<NoPartitionSamplingConfig>();
+            Property<IPartitionSamplingConfig> property = this->getPartitionSamplingConfig();
+            property.set(std::make_unique<NoPartitionSamplingConfig>());
         }
 };
 
@@ -737,11 +742,10 @@ class MLRLCOMMON_API IRandomBiPartitionSamplingMixin : virtual public IRuleLearn
          *         of the method for partitioning the available training examples into a training set and a holdout set
          */
         virtual IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() {
-            std::unique_ptr<IPartitionSamplingConfig>& partitionSamplingConfigPtr =
-              this->getPartitionSamplingConfigPtr();
+            Property<IPartitionSamplingConfig> property = this->getPartitionSamplingConfig();
             std::unique_ptr<RandomBiPartitionSamplingConfig> ptr = std::make_unique<RandomBiPartitionSamplingConfig>();
             IRandomBiPartitionSamplingConfig& ref = *ptr;
-            partitionSamplingConfigPtr = std::move(ptr);
+            property.set(std::move(ptr));
             return ref;
         }
 };
@@ -758,8 +762,8 @@ class MLRLCOMMON_API INoRulePruningMixin : virtual public IRuleLearnerConfig {
          * Configures the rule learner to not prune individual rules.
          */
         virtual void useNoRulePruning() {
-            std::unique_ptr<IRulePruningConfig>& rulePruningConfigPtr = this->getRulePruningConfigPtr();
-            rulePruningConfigPtr = std::make_unique<NoRulePruningConfig>();
+            Property<IRulePruningConfig> property = this->getRulePruningConfig();
+            property.set(std::make_unique<NoRulePruningConfig>());
         }
 };
 
@@ -777,8 +781,8 @@ class MLRLCOMMON_API IIrepRulePruningMixin : virtual public IRuleLearnerConfig {
          * error pruning" (IREP).
          */
         virtual void useIrepRulePruning() {
-            std::unique_ptr<IRulePruningConfig>& rulePruningConfigPtr = this->getRulePruningConfigPtr();
-            rulePruningConfigPtr = std::make_unique<IrepConfig>(this->getRuleCompareFunction());
+            Property<IRulePruningConfig> property = this->getRulePruningConfig();
+            property.set(std::make_unique<IrepConfig>(this->getRuleCompareFunction()));
         }
 };
 
@@ -795,9 +799,8 @@ class MLRLCOMMON_API INoParallelRuleRefinementMixin : virtual public IRuleLearne
          * Configures the rule learner to not use any multi-threading for the parallel refinement of rules.
          */
         virtual void useNoParallelRuleRefinement() {
-            std::unique_ptr<IMultiThreadingConfig>& parallelRuleRefinementConfigPtr =
-              this->getParallelRuleRefinementConfigPtr();
-            parallelRuleRefinementConfigPtr = std::make_unique<NoMultiThreadingConfig>();
+            Property<IMultiThreadingConfig> property = this->getParallelRuleRefinementConfig();
+            property.set(std::make_unique<NoMultiThreadingConfig>());
         }
 };
 
@@ -817,11 +820,10 @@ class MLRLCOMMON_API IParallelRuleRefinementMixin : virtual public IRuleLearnerC
          *         the multi-threading behavior
          */
         virtual IManualMultiThreadingConfig& useParallelRuleRefinement() {
-            std::unique_ptr<IMultiThreadingConfig>& parallelRuleRefinementConfigPtr =
-              this->getParallelRuleRefinementConfigPtr();
+            Property<IMultiThreadingConfig> property = this->getParallelRuleRefinementConfig();
             std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
             IManualMultiThreadingConfig& ref = *ptr;
-            parallelRuleRefinementConfigPtr = std::move(ptr);
+            property.set(std::move(ptr));
             return ref;
         }
 };
@@ -839,9 +841,8 @@ class MLRLCOMMON_API INoParallelStatisticUpdateMixin : virtual public IRuleLearn
          * Configures the rule learner to not use any multi-threading for the parallel update of statistics.
          */
         virtual void useNoParallelStatisticUpdate() {
-            std::unique_ptr<IMultiThreadingConfig>& parallelStatisticUpdateConfigPtr =
-              this->getParallelStatisticUpdateConfigPtr();
-            parallelStatisticUpdateConfigPtr = std::make_unique<NoMultiThreadingConfig>();
+            Property<IMultiThreadingConfig> property = this->getParallelStatisticUpdateConfig();
+            property.set(std::make_unique<NoMultiThreadingConfig>());
         }
 };
 
@@ -861,11 +862,10 @@ class MLRLCOMMON_API IParallelStatisticUpdateMixin : virtual public IRuleLearner
          *         the multi-threading behavior
          */
         virtual IManualMultiThreadingConfig& useParallelStatisticUpdate() {
-            std::unique_ptr<IMultiThreadingConfig>& parallelStatisticUpdateConfigPtr =
-              this->getParallelStatisticUpdateConfigPtr();
+            Property<IMultiThreadingConfig> property = this->getParallelStatisticUpdateConfig();
             std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
             IManualMultiThreadingConfig& ref = *ptr;
-            parallelStatisticUpdateConfigPtr = std::move(ptr);
+            property.set(std::move(ptr));
             return ref;
         }
 };
@@ -883,9 +883,8 @@ class MLRLCOMMON_API INoParallelPredictionMixin : virtual public IRuleLearnerCon
          * Configures the rule learner to not use any multi-threading to predict for several query examples in parallel.
          */
         virtual void useNoParallelPrediction() {
-            std::unique_ptr<IMultiThreadingConfig>& parallelPredictionConfigPtr =
-              this->getParallelPredictionConfigPtr();
-            parallelPredictionConfigPtr = std::make_unique<NoMultiThreadingConfig>();
+            Property<IMultiThreadingConfig> property = this->getParallelPredictionConfig();
+            property.set(std::make_unique<NoMultiThreadingConfig>());
         }
 };
 
@@ -905,11 +904,10 @@ class MLRLCOMMON_API IParallelPredictionMixin : virtual public IRuleLearnerConfi
          *         the multi-threading behavior
          */
         virtual IManualMultiThreadingConfig& useParallelPrediction() {
-            std::unique_ptr<IMultiThreadingConfig>& parallelPredictionConfigPtr =
-              this->getParallelPredictionConfigPtr();
+            Property<IMultiThreadingConfig> property = this->getParallelPredictionConfig();
             std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
             IManualMultiThreadingConfig& ref = *ptr;
-            parallelPredictionConfigPtr = std::move(ptr);
+            property.set(std::move(ptr));
             return ref;
         }
 };
@@ -928,9 +926,8 @@ class MLRLCOMMON_API INoSizeStoppingCriterionMixin : virtual public IRuleLearner
          * does not exceed a certain maximum.
          */
         virtual void useNoSizeStoppingCriterion() {
-            std::unique_ptr<SizeStoppingCriterionConfig>& sizeStoppingCriterionConfigPtr =
-              this->getSizeStoppingCriterionConfigPtr();
-            sizeStoppingCriterionConfigPtr = nullptr;
+            Property<IStoppingCriterionConfig> property = this->getSizeStoppingCriterionConfig();
+            property.set(std::make_unique<NoStoppingCriterionConfig>());
         }
 };
 
@@ -951,11 +948,10 @@ class MLRLCOMMON_API ISizeStoppingCriterionMixin : virtual public IRuleLearnerCo
          *         the stopping criterion
          */
         virtual ISizeStoppingCriterionConfig& useSizeStoppingCriterion() {
-            std::unique_ptr<SizeStoppingCriterionConfig>& sizeStoppingCriterionConfigPtr =
-              this->getSizeStoppingCriterionConfigPtr();
+            Property<IStoppingCriterionConfig> property = this->getSizeStoppingCriterionConfig();
             std::unique_ptr<SizeStoppingCriterionConfig> ptr = std::make_unique<SizeStoppingCriterionConfig>();
             ISizeStoppingCriterionConfig& ref = *ptr;
-            sizeStoppingCriterionConfigPtr = std::move(ptr);
+            property.set(std::move(ptr));
             return ref;
         }
 };
@@ -974,9 +970,8 @@ class MLRLCOMMON_API INoTimeStoppingCriterionMixin : virtual public IRuleLearner
          * exceeded.
          */
         virtual void useNoTimeStoppingCriterion() {
-            std::unique_ptr<TimeStoppingCriterionConfig>& timeStoppingCriterionConfigPtr =
-              this->getTimeStoppingCriterionConfigPtr();
-            timeStoppingCriterionConfigPtr = nullptr;
+            Property<IStoppingCriterionConfig> property = this->getTimeStoppingCriterionConfig();
+            property.set(std::make_unique<NoStoppingCriterionConfig>());
         }
 };
 
@@ -997,11 +992,10 @@ class MLRLCOMMON_API ITimeStoppingCriterionMixin : virtual public IRuleLearnerCo
          *         the stopping criterion
          */
         virtual ITimeStoppingCriterionConfig& useTimeStoppingCriterion() {
-            std::unique_ptr<TimeStoppingCriterionConfig>& timeStoppingCriterionConfigPtr =
-              this->getTimeStoppingCriterionConfigPtr();
+            Property<IStoppingCriterionConfig> property = this->getTimeStoppingCriterionConfig();
             std::unique_ptr<TimeStoppingCriterionConfig> ptr = std::make_unique<TimeStoppingCriterionConfig>();
             ITimeStoppingCriterionConfig& ref = *ptr;
-            timeStoppingCriterionConfigPtr = std::move(ptr);
+            property.set(std::move(ptr));
             return ref;
         }
 };
@@ -1025,10 +1019,10 @@ class MLRLCOMMON_API IPrePruningMixin : virtual public IRuleLearnerConfig {
          *         stopping criterion
          */
         virtual IPrePruningConfig& useGlobalPrePruning() {
-            std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr = this->getGlobalPruningConfigPtr();
+            Property<IGlobalPruningConfig> property = this->getGlobalPruningConfig();
             std::unique_ptr<PrePruningConfig> ptr = std::make_unique<PrePruningConfig>();
             IPrePruningConfig& ref = *ptr;
-            globalPruningConfigPtr = std::move(ptr);
+            property.set(std::move(ptr));
             return ref;
         }
 };
@@ -1045,8 +1039,8 @@ class MLRLCOMMON_API INoGlobalPruningMixin : virtual public IRuleLearnerConfig {
          * Configures the rule learner to not use global pruning.
          */
         virtual void useNoGlobalPruning() {
-            std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr = this->getGlobalPruningConfigPtr();
-            globalPruningConfigPtr = nullptr;
+            Property<IGlobalPruningConfig> property = this->getGlobalPruningConfig();
+            property.set(std::make_unique<NoGlobalPruningConfig>());
         }
 };
 
@@ -1065,10 +1059,10 @@ class MLRLCOMMON_API IPostPruningMixin : virtual public IRuleLearnerConfig {
          * that perform best with respect to the examples in the training or holdout set according to a certain measure.
          */
         virtual IPostPruningConfig& useGlobalPostPruning() {
-            std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr = this->getGlobalPruningConfigPtr();
+            Property<IGlobalPruningConfig> property = this->getGlobalPruningConfig();
             std::unique_ptr<PostPruningConfig> ptr = std::make_unique<PostPruningConfig>();
             IPostPruningConfig& ref = *ptr;
-            globalPruningConfigPtr = std::move(ptr);
+            property.set(std::move(ptr));
             return ref;
         }
 };
@@ -1087,9 +1081,8 @@ class MLRLCOMMON_API INoSequentialPostOptimizationMixin : virtual public IRuleLe
          * relearning it in the context of the other rules.
          */
         virtual void useNoSequentialPostOptimization() {
-            std::unique_ptr<SequentialPostOptimizationConfig>& sequentialPostOptimizationConfigPtr =
-              this->getSequentialPostOptimizationConfigPtr();
-            sequentialPostOptimizationConfigPtr = nullptr;
+            Property<IPostOptimizationPhaseConfig> property = this->getSequentialPostOptimizationConfig();
+            property.set(std::make_unique<NoPostOptimizationPhaseConfig>());
         }
 };
 
@@ -1110,12 +1103,11 @@ class MLRLCOMMON_API ISequentialPostOptimizationMixin : virtual public IRuleLear
          *         configuration of the post-optimization method
          */
         virtual ISequentialPostOptimizationConfig& useSequentialPostOptimization() {
-            std::unique_ptr<SequentialPostOptimizationConfig>& sequentialPostOptimizationConfigPtr =
-              this->getSequentialPostOptimizationConfigPtr();
+            Property<IPostOptimizationPhaseConfig> property = this->getSequentialPostOptimizationConfig();
             std::unique_ptr<SequentialPostOptimizationConfig> ptr =
               std::make_unique<SequentialPostOptimizationConfig>();
             ISequentialPostOptimizationConfig& ref = *ptr;
-            sequentialPostOptimizationConfigPtr = std::move(ptr);
+            property.set(std::move(ptr));
             return ref;
         }
 };
@@ -1132,9 +1124,8 @@ class MLRLCOMMON_API INoMarginalProbabilityCalibrationMixin : virtual public IRu
          * Configures the rule learner to not calibrate marginal probabilities.
          */
         virtual void useNoMarginalProbabilityCalibration() {
-            std::unique_ptr<IMarginalProbabilityCalibratorConfig>& marginalProbabilityCalibratorConfigPtr =
-              this->getMarginalProbabilityCalibratorConfigPtr();
-            marginalProbabilityCalibratorConfigPtr = std::make_unique<NoMarginalProbabilityCalibratorConfig>();
+            Property<IMarginalProbabilityCalibratorConfig> property = this->getMarginalProbabilityCalibratorConfig();
+            property.set(std::make_unique<NoMarginalProbabilityCalibratorConfig>());
         }
 };
 
@@ -1150,8 +1141,7 @@ class MLRLCOMMON_API INoJointProbabilityCalibrationMixin : virtual public IRuleL
          * Configures the rule learner to not calibrate joint probabilities.
          */
         virtual void useNoJointProbabilityCalibration() {
-            std::unique_ptr<IJointProbabilityCalibratorConfig>& jointProbabilityCalibratorConfigPtr =
-              this->getJointProbabilityCalibratorConfigPtr();
-            jointProbabilityCalibratorConfigPtr = std::make_unique<NoJointProbabilityCalibratorConfig>();
+            Property<IJointProbabilityCalibratorConfig> property = this->getJointProbabilityCalibratorConfig();
+            property.set(std::make_unique<NoJointProbabilityCalibratorConfig>());
         }
 };

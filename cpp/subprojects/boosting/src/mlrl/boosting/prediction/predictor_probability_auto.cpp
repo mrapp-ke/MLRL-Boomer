@@ -6,27 +6,26 @@
 namespace boosting {
 
     AutomaticProbabilityPredictorConfig::AutomaticProbabilityPredictorConfig(
-      const std::unique_ptr<ILossConfig>& lossConfigPtr,
-      const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : lossConfigPtr_(lossConfigPtr), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
+      GetterFunction<ILossConfig> lossConfigGetter, GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter)
+        : lossConfigGetter_(lossConfigGetter), multiThreadingConfigGetter_(multiThreadingConfigGetter) {}
 
     std::unique_ptr<IProbabilityPredictorFactory> AutomaticProbabilityPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
-        if (lossConfigPtr_->isDecomposable()) {
-            return OutputWiseProbabilityPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+        if (lossConfigGetter_().isDecomposable()) {
+            return OutputWiseProbabilityPredictorConfig(lossConfigGetter_, multiThreadingConfigGetter_)
               .createPredictorFactory(featureMatrix, numOutputs);
         } else {
-            return MarginalizedProbabilityPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+            return MarginalizedProbabilityPredictorConfig(lossConfigGetter_, multiThreadingConfigGetter_)
               .createPredictorFactory(featureMatrix, numOutputs);
         }
     }
 
     bool AutomaticProbabilityPredictorConfig::isLabelVectorSetNeeded() const {
-        if (lossConfigPtr_->isDecomposable()) {
-            return OutputWiseProbabilityPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+        if (lossConfigGetter_().isDecomposable()) {
+            return OutputWiseProbabilityPredictorConfig(lossConfigGetter_, multiThreadingConfigGetter_)
               .isLabelVectorSetNeeded();
         } else {
-            return MarginalizedProbabilityPredictorConfig(lossConfigPtr_, multiThreadingConfigPtr_)
+            return MarginalizedProbabilityPredictorConfig(lossConfigGetter_, multiThreadingConfigGetter_)
               .isLabelVectorSetNeeded();
         }
     }
