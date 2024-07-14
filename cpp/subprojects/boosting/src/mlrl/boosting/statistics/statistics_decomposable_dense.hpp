@@ -55,13 +55,14 @@ namespace boosting {
     class DenseDecomposableStatistics final
         : public AbstractDecomposableStatistics<OutputMatrix, DenseDecomposableStatisticVector,
                                                 DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
-                                                IDecomposableLoss, IEvaluationMeasure,
+                                                IDecomposableClassificationLoss, IEvaluationMeasure,
                                                 IDecomposableRuleEvaluationFactory> {
         public:
 
             /**
-             * @param lossPtr               An unique pointer to an object of type `IDecomposableLoss` that implements
-             *                              the loss function that should be used for calculating gradients and Hessians
+             * @param lossPtr               An unique pointer to an object of type `IDecomposableClassificationLoss`
+             *                              that implements the loss function that should be used for calculating
+             *                              gradients and Hessians
              * @param evaluationMeasurePtr  An unique pointer to an object of type `IEvaluationMeasure` that implements
              *                              the evaluation measure that should be used to assess the quality of
              *                              predictions for a specific statistic
@@ -75,7 +76,7 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericCContiguousMatrix` that
              *                              stores the currently predicted scores
              */
-            DenseDecomposableStatistics(std::unique_ptr<IDecomposableLoss> lossPtr,
+            DenseDecomposableStatistics(std::unique_ptr<IDecomposableClassificationLoss> lossPtr,
                                         std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr,
                                         const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                                         const OutputMatrix& outputMatrix,
@@ -83,7 +84,7 @@ namespace boosting {
                                         std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
                 : AbstractDecomposableStatistics<OutputMatrix, DenseDecomposableStatisticVector,
                                                  DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
-                                                 IDecomposableLoss, IEvaluationMeasure,
+                                                 IDecomposableClassificationLoss, IEvaluationMeasure,
                                                  IDecomposableRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
                     std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}

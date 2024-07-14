@@ -31,14 +31,14 @@ namespace boosting {
              *                      feature values of the training examples
              * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides access to the
              *                      labels of the training examples
-             * @param lossConfig    A reference to an object of type `IDecomposableLossConfig` that specifies the
-             *                      configuration of the loss function
+             * @param lossConfig    A reference to an object of type `IDecomposableClassificationLossConfig` that
+             *                      specifies the configuration of the loss function
              * @return              An unique pointer to an object of type `IClassificationStatisticsProviderFactory`
              *                      that has been created
              */
             virtual std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const IDecomposableLossConfig& lossConfig) const = 0;
+              const IDecomposableClassificationLossConfig& lossConfig) const = 0;
 
             /**
              * Creates and returns a new object of type `IClassificationStatisticsProviderFactory` according to the
@@ -48,14 +48,14 @@ namespace boosting {
              *                      feature values of the training examples
              * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides access to the
              *                      labels of the training examples
-             * @param lossConfig    A reference to an object of type `ISparseDecomposableLossConfig` that specifies the
-             *                      configuration of the loss function
+             * @param lossConfig    A reference to an object of type `ISparseDecomposableClassificationLossConfig` that
+             *                      specifies the configuration of the loss function
              * @return              An unique pointer to an object of type `IClassificationStatisticsProviderFactory`
              *                      that has been created
              */
             virtual std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const ISparseDecomposableLossConfig& lossConfig) const = 0;
+              const ISparseDecomposableClassificationLossConfig& lossConfig) const = 0;
 
             /**
              * Creates and returns a new object of type `IClassificationStatisticsProviderFactory` according to the
@@ -65,8 +65,8 @@ namespace boosting {
              *                      feature values of the training examples
              * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides access to the
              *                      labels of the training examples
-             * @param lossConfig    A reference to an object of type `INonDecomposableLossConfig` that specifies the
-             *                      configuration of the loss function
+             * @param lossConfig    A reference to an object of type `INonDecomposableClassificationLossConfig` that
+             *                      specifies the configuration of the loss function
              * @param blas          A reference to an object of type `Blas` that allows to execute BLAS routines
              * @param lapack        A reference to an object of type `Lapack` that allows to execute LAPACK routines
              * @return              An unique pointer to an object of type `IClassificationStatisticsProviderFactory`
@@ -74,7 +74,8 @@ namespace boosting {
              */
             virtual std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const INonDecomposableLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const = 0;
+              const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas,
+              const Lapack& lapack) const = 0;
 
             /**
              * Returns, whether the heads of rules are partial, i.e., they predict for a subset of the available

@@ -15,7 +15,7 @@ namespace boosting {
      * Allows to configure a loss function that implements a multivariate variant of the squared error loss that is
      * non-decomposable.
      */
-    class NonDecomposableSquaredErrorLossConfig final : public INonDecomposableLossConfig {
+    class NonDecomposableSquaredErrorLossConfig final : public INonDecomposableClassificationLossConfig {
         private:
 
             const ReadableProperty<IHeadConfig> headConfig_;
@@ -39,7 +39,8 @@ namespace boosting {
 
             float64 getDefaultPrediction() const override;
 
-            std::unique_ptr<INonDecomposableLossFactory> createNonDecomposableLossFactory() const override;
+            std::unique_ptr<INonDecomposableClassificationLossFactory> createNonDecomposableClassificationLossFactory()
+              const override;
     };
 
 }
