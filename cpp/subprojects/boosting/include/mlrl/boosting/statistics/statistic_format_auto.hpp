@@ -7,6 +7,7 @@
 #include "mlrl/boosting/rule_evaluation/head_type.hpp"
 #include "mlrl/boosting/statistics/statistic_format.hpp"
 #include "mlrl/common/rule_model_assemblage/default_rule.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -19,25 +20,25 @@ namespace boosting {
     class AutomaticStatisticsConfig final : public IStatisticsConfig {
         private:
 
-            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+            const GetterFunction<ILossConfig> lossConfigGetter_;
 
-            const std::unique_ptr<IHeadConfig>& headConfigPtr_;
+            const GetterFunction<IHeadConfig> headConfigGetter_;
 
-            const std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr_;
+            const GetterFunction<IDefaultRuleConfig> defaultRuleConfigGetter_;
 
         public:
 
             /**
-             * @param lossConfigPtr         A reference to an unique pointer that stores the configuration of the loss
-             *                              function
-             * @param headConfigPtr         A reference to an unique pointer that stores the configuration of the rule
-             *                              heads
-             * @param defaultRuleConfigPtr  A reference to an unique pointer that stores the configuration of the
-             *                              default rule
+             * @param lossConfigGetter          A `GetterFunction` that allows to access the `ILossConfig` that stores
+             *                                  the configuration of the loss function
+             * @param headConfigGetter          A `GetterFunction` that allows to access the `IHeadConfig` that stores
+             *                                  the configuration of the rule heads
+             * @param defaultRuleConfigGetter   A `GetterFunction` that allows to access the `IDefaultRuleConfig` that
+             *                                  stores the configuration of the default rule
              */
-            AutomaticStatisticsConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,
-                                      const std::unique_ptr<IHeadConfig>& headConfigPtr,
-                                      const std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr);
+            AutomaticStatisticsConfig(GetterFunction<ILossConfig> lossConfigGetter,
+                                      GetterFunction<IHeadConfig> headConfigGetter,
+                                      GetterFunction<IDefaultRuleConfig> defaultRuleConfigGetter);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,

@@ -458,18 +458,18 @@ namespace seco {
     };
 
     OutputWiseBinaryPredictorConfig::OutputWiseBinaryPredictorConfig(
-      const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
+      GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter)
+        : multiThreadingConfigGetter_(multiThreadingConfigGetter) {}
 
     std::unique_ptr<IBinaryPredictorFactory> OutputWiseBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, const uint32 numOutputs) const {
-        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numOutputs);
+        uint32 numThreads = multiThreadingConfigGetter_().getNumThreads(featureMatrix, numOutputs);
         return std::make_unique<OutputWiseBinaryPredictorFactory>(numThreads);
     }
 
     std::unique_ptr<ISparseBinaryPredictorFactory> OutputWiseBinaryPredictorConfig::createSparsePredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, const uint32 numLabels) const {
-        uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+        uint32 numThreads = multiThreadingConfigGetter_().getNumThreads(featureMatrix, numLabels);
         return std::make_unique<OutputWiseSparseBinaryPredictorFactory>(numThreads);
     }
 

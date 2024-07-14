@@ -6,6 +6,7 @@
 #include "mlrl/boosting/binning/label_binning.hpp"
 #include "mlrl/boosting/rule_evaluation/regularization.hpp"
 #include "mlrl/boosting/util/dll_exports.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -86,20 +87,20 @@ namespace boosting {
 
             uint32 maxBins_;
 
-            const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr_;
+            const GetterFunction<IRegularizationConfig> l1RegularizationConfigGetter_;
 
-            const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr_;
+            const GetterFunction<IRegularizationConfig> l2RegularizationConfigGetter_;
 
         public:
 
             /**
-             * @param l1RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L1
-             *                                  regularization
-             * @param l2RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L2
-             *                                  regularization
+             * @param l1RegularizationConfigGetter  A `GetterFunction` that allows to access the `IRegularizationConfig`
+             *                                      that stores the configuration of the L1 regularization
+             * @param l2RegularizationConfigGetter  A `GetterFunction` that allows to access the `IRegularizationConfig`
+             *                                      that stores the configuration of the L2 regularization
              */
-            EqualWidthLabelBinningConfig(const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
-                                         const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr);
+            EqualWidthLabelBinningConfig(GetterFunction<IRegularizationConfig> l1RegularizationConfigGetter,
+                                         GetterFunction<IRegularizationConfig> l2RegularizationConfigGetter);
 
             float32 getBinRatio() const override;
 

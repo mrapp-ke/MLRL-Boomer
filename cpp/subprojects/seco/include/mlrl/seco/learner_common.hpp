@@ -28,9 +28,7 @@ namespace seco {
             std::unique_ptr<ISeCoRuleLearnerConfig> configPtr_;
 
             std::unique_ptr<IStoppingCriterionFactory> createCoverageStoppingCriterionFactory() const {
-                std::unique_ptr<CoverageStoppingCriterionConfig>& configPtr =
-                  configPtr_->getCoverageStoppingCriterionConfigPtr();
-                return configPtr ? configPtr->createStoppingCriterionFactory() : nullptr;
+                return configPtr_->getCoverageStoppingCriterionConfig().get().createStoppingCriterionFactory();
             }
 
         public:
@@ -59,7 +57,7 @@ namespace seco {
              */
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override {
-                return configPtr_->getHeadConfigPtr()->createStatisticsProviderFactory(labelMatrix);
+                return configPtr_->getHeadConfig().get().createStatisticsProviderFactory(labelMatrix);
             }
 
             /**
@@ -74,8 +72,8 @@ namespace seco {
              */
             std::unique_ptr<ISparseBinaryPredictorFactory> createSparseBinaryPredictorFactory(
               const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override {
-                return configPtr_->getBinaryPredictorConfigPtr()->createSparsePredictorFactory(featureMatrix,
-                                                                                               numLabels);
+                return configPtr_->getBinaryPredictorConfig().get().createSparsePredictorFactory(featureMatrix,
+                                                                                                 numLabels);
             }
     };
 
@@ -91,7 +89,7 @@ namespace seco {
              * rules as soon as the sum of the weights of the uncovered labels is smaller or equal to a certain
              * threshold.
              */
-            std::unique_ptr<CoverageStoppingCriterionConfig> coverageStoppingCriterionConfigPtr_;
+            std::unique_ptr<IStoppingCriterionConfig> coverageStoppingCriterionConfigPtr_;
 
             /**
              * An unique pointer that stores the configuration of the rule heads.
@@ -118,32 +116,33 @@ namespace seco {
 
             SeCoRuleLearnerConfig()
                 : RuleLearnerConfig(SECO_RULE_COMPARE_FUNCTION),
-                  headConfigPtr_(
-                    std::make_unique<SingleOutputHeadConfig>(heuristicConfigPtr_, pruningHeuristicConfigPtr_)),
+                  coverageStoppingCriterionConfigPtr_(std::make_unique<NoStoppingCriterionConfig>()),
+                  headConfigPtr_(std::make_unique<SingleOutputHeadConfig>(getterFunction(heuristicConfigPtr_),
+                                                                          getterFunction(pruningHeuristicConfigPtr_))),
                   heuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
                   pruningHeuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
                   liftFunctionConfigPtr_(std::make_unique<NoLiftFunctionConfig>()) {}
 
             virtual ~SeCoRuleLearnerConfig() override {}
 
-            std::unique_ptr<CoverageStoppingCriterionConfig>& getCoverageStoppingCriterionConfigPtr() override final {
-                return coverageStoppingCriterionConfigPtr_;
+            Property<IStoppingCriterionConfig> getCoverageStoppingCriterionConfig() override final {
+                return property(coverageStoppingCriterionConfigPtr_);
             }
 
-            std::unique_ptr<IHeadConfig>& getHeadConfigPtr() override final {
-                return headConfigPtr_;
+            Property<IHeadConfig> getHeadConfig() override final {
+                return property(headConfigPtr_);
             }
 
-            std::unique_ptr<IHeuristicConfig>& getHeuristicConfigPtr() override final {
-                return heuristicConfigPtr_;
+            Property<IHeuristicConfig> getHeuristicConfig() override final {
+                return property(heuristicConfigPtr_);
             }
 
-            std::unique_ptr<IHeuristicConfig>& getPruningHeuristicConfigPtr() override final {
-                return pruningHeuristicConfigPtr_;
+            Property<IHeuristicConfig> getPruningHeuristicConfig() override final {
+                return property(pruningHeuristicConfigPtr_);
             }
 
-            std::unique_ptr<ILiftFunctionConfig>& getLiftFunctionConfigPtr() override final {
-                return liftFunctionConfigPtr_;
+            Property<ILiftFunctionConfig> getLiftFunctionConfig() override final {
+                return property(liftFunctionConfigPtr_);
             }
     };
 }

@@ -5,6 +5,7 @@
 
 #include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/prediction/predictor_score.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -17,16 +18,16 @@ namespace boosting {
     class OutputWiseScorePredictorConfig final : public IScorePredictorConfig {
         private:
 
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
+            const GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter_;
 
         public:
 
             /**
-             * @param multiThreadingConfigPtr A reference to an unique pointer that stores the configuration of the
-             *                                multi-threading behavior that should be used to predict for several query
-             *                                examples in parallel
+             * @param multiThreadingConfigGetter A `GetterFunction` that allows to access the `IMultiThreadingConfig`
+             *                                   that stores the configuration of the multi-threading behavior that
+             *                                   should be used to predict for several query examples in parallel
              */
-            OutputWiseScorePredictorConfig(const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+            OutputWiseScorePredictorConfig(GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter);
 
             /**
              * @see `IPredictorConfig::createPredictorFactory`
