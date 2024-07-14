@@ -2,7 +2,7 @@
 
 namespace boosting {
 
-    DenseStatisticsConfig::DenseStatisticsConfig(ReadableProperty<ILossConfig> lossConfigGetter)
+    DenseStatisticsConfig::DenseStatisticsConfig(ReadableProperty<IClassificationLossConfig> lossConfigGetter)
         : lossConfig_(lossConfigGetter) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory> DenseStatisticsConfig::createStatisticsProviderFactory(

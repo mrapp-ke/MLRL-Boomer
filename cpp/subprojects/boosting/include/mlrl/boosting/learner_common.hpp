@@ -82,7 +82,7 @@ namespace boosting {
             /**
              * An unique pointer that stores the configuration of the loss function.
              */
-            std::unique_ptr<ILossConfig> lossConfigPtr_;
+            std::unique_ptr<IClassificationLossConfig> lossConfigPtr_;
 
             /**
              * An unique pointer that stores the configuration of the L1 regularization term.
@@ -132,7 +132,7 @@ namespace boosting {
                 return property(l2RegularizationConfigPtr_);
             }
 
-            Property<ILossConfig> getLossConfig() override final {
+            Property<IClassificationLossConfig> getLossConfig() override final {
                 return property(lossConfigPtr_);
             }
 
