@@ -6,15 +6,14 @@
 namespace boosting {
 
     AutomaticLabelBinningConfig::AutomaticLabelBinningConfig(
-      const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
-      const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
-        : l1RegularizationConfigPtr_(l1RegularizationConfigPtr), l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
-
-    }
+      GetterFunction<IRegularizationConfig> l1RegularizationConfigGetter,
+      GetterFunction<IRegularizationConfig> l2RegularizationConfigGetter)
+        : l1RegularizationConfigGetter_(l1RegularizationConfigGetter),
+          l2RegularizationConfigGetter_(l2RegularizationConfigGetter) {}
 
     std::unique_ptr<IDecomposableRuleEvaluationFactory>
       AutomaticLabelBinningConfig::createDecomposableCompleteRuleEvaluationFactory() const {
-        return NoLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
+        return NoLabelBinningConfig(l1RegularizationConfigGetter_, l2RegularizationConfigGetter_)
           .createDecomposableCompleteRuleEvaluationFactory();
     }
 
@@ -22,35 +21,35 @@ namespace boosting {
       AutomaticLabelBinningConfig::createDecomposableFixedPartialRuleEvaluationFactory(float32 outputRatio,
                                                                                        uint32 minOutputs,
                                                                                        uint32 maxOutputs) const {
-        return NoLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
+        return NoLabelBinningConfig(l1RegularizationConfigGetter_, l2RegularizationConfigGetter_)
           .createDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs, maxOutputs);
     }
 
     std::unique_ptr<ISparseDecomposableRuleEvaluationFactory>
       AutomaticLabelBinningConfig::createDecomposableDynamicPartialRuleEvaluationFactory(float32 threshold,
                                                                                          float32 exponent) const {
-        return NoLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
+        return NoLabelBinningConfig(l1RegularizationConfigGetter_, l2RegularizationConfigGetter_)
           .createDecomposableDynamicPartialRuleEvaluationFactory(threshold, exponent);
     }
 
     std::unique_ptr<INonDecomposableRuleEvaluationFactory>
       AutomaticLabelBinningConfig::createNonDecomposableCompleteRuleEvaluationFactory(const Blas& blas,
                                                                                       const Lapack& lapack) const {
-        return EqualWidthLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
+        return EqualWidthLabelBinningConfig(l1RegularizationConfigGetter_, l2RegularizationConfigGetter_)
           .createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
     }
 
     std::unique_ptr<INonDecomposableRuleEvaluationFactory>
       AutomaticLabelBinningConfig::createNonDecomposableFixedPartialRuleEvaluationFactory(
         float32 outputRatio, uint32 minOutputs, uint32 maxOutputs, const Blas& blas, const Lapack& lapack) const {
-        return EqualWidthLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
+        return EqualWidthLabelBinningConfig(l1RegularizationConfigGetter_, l2RegularizationConfigGetter_)
           .createNonDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs, maxOutputs, blas, lapack);
     }
 
     std::unique_ptr<INonDecomposableRuleEvaluationFactory>
       AutomaticLabelBinningConfig::createNonDecomposableDynamicPartialRuleEvaluationFactory(
         float32 threshold, float32 exponent, const Blas& blas, const Lapack& lapack) const {
-        return EqualWidthLabelBinningConfig(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)
+        return EqualWidthLabelBinningConfig(l1RegularizationConfigGetter_, l2RegularizationConfigGetter_)
           .createNonDecomposableDynamicPartialRuleEvaluationFactory(threshold, exponent, blas, lapack);
     }
 

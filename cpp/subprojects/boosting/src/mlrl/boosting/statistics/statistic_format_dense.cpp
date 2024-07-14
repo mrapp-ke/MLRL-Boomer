@@ -2,13 +2,13 @@
 
 namespace boosting {
 
-    DenseStatisticsConfig::DenseStatisticsConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr)
-        : lossConfigPtr_(lossConfigPtr) {}
+    DenseStatisticsConfig::DenseStatisticsConfig(GetterFunction<ILossConfig> lossConfigGetter)
+        : lossConfigGetter_(lossConfigGetter) {}
 
     std::unique_ptr<IStatisticsProviderFactory> DenseStatisticsConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
       const Lapack& lapack) const {
-        return lossConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, blas, lapack, false);
+        return lossConfigGetter_().createStatisticsProviderFactory(featureMatrix, labelMatrix, blas, lapack, false);
     }
 
     bool DenseStatisticsConfig::isDense() const {

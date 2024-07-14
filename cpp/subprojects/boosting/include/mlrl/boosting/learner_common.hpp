@@ -50,8 +50,8 @@ namespace boosting {
              */
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override {
-                return configPtr_->getStatisticsConfigPtr()->createStatisticsProviderFactory(featureMatrix, labelMatrix,
-                                                                                             blas_, lapack_);
+                return configPtr_->getStatisticsConfig().get().createStatisticsProviderFactory(
+                  featureMatrix, labelMatrix, blas_, lapack_);
             }
 
             /**
@@ -104,40 +104,40 @@ namespace boosting {
 
             BoostedRuleLearnerConfig()
                 : RuleLearnerConfig(BOOSTED_RULE_COMPARE_FUNCTION),
-                  headConfigPtr_(
-                    std::make_unique<CompleteHeadConfig>(labelBinningConfigPtr_, parallelStatisticUpdateConfigPtr_,
-                                                         l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)),
-                  statisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(lossConfigPtr_)),
-                  lossConfigPtr_(std::make_unique<DecomposableLogisticLossConfig>(headConfigPtr_)),
+                  headConfigPtr_(std::make_unique<CompleteHeadConfig>(
+                    getterFunction(labelBinningConfigPtr_), getterFunction(parallelStatisticUpdateConfigPtr_),
+                    getterFunction(l1RegularizationConfigPtr_), getterFunction(l2RegularizationConfigPtr_))),
+                  statisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(getterFunction(lossConfigPtr_))),
+                  lossConfigPtr_(std::make_unique<DecomposableLogisticLossConfig>(getterFunction(headConfigPtr_))),
                   l1RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
                   l2RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
-                  labelBinningConfigPtr_(
-                    std::make_unique<NoLabelBinningConfig>(l1RegularizationConfigPtr_, l2RegularizationConfigPtr_)) {}
+                  labelBinningConfigPtr_(std::make_unique<NoLabelBinningConfig>(
+                    getterFunction(l1RegularizationConfigPtr_), getterFunction(l2RegularizationConfigPtr_))) {}
 
             virtual ~BoostedRuleLearnerConfig() override {}
 
-            std::unique_ptr<IHeadConfig>& getHeadConfigPtr() override final {
-                return headConfigPtr_;
+            Property<IHeadConfig> getHeadConfig() override final {
+                return property(headConfigPtr_);
             }
 
-            std::unique_ptr<IStatisticsConfig>& getStatisticsConfigPtr() override final {
-                return statisticsConfigPtr_;
+            Property<IStatisticsConfig> getStatisticsConfig() override final {
+                return property(statisticsConfigPtr_);
             }
 
-            std::unique_ptr<IRegularizationConfig>& getL1RegularizationConfigPtr() override final {
-                return l1RegularizationConfigPtr_;
+            Property<IRegularizationConfig> getL1RegularizationConfig() override final {
+                return property(l1RegularizationConfigPtr_);
             }
 
-            std::unique_ptr<IRegularizationConfig>& getL2RegularizationConfigPtr() override final {
-                return l2RegularizationConfigPtr_;
+            Property<IRegularizationConfig> getL2RegularizationConfig() override final {
+                return property(l2RegularizationConfigPtr_);
             }
 
-            std::unique_ptr<ILossConfig>& getLossConfigPtr() override final {
-                return lossConfigPtr_;
+            Property<ILossConfig> getLossConfig() override final {
+                return property(lossConfigPtr_);
             }
 
-            std::unique_ptr<ILabelBinningConfig>& getLabelBinningConfigPtr() override final {
-                return labelBinningConfigPtr_;
+            Property<ILabelBinningConfig> getLabelBinningConfig() override final {
+                return property(labelBinningConfigPtr_);
             }
     };
 }
