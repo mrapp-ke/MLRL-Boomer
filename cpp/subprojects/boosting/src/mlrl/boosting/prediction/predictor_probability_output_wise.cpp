@@ -75,7 +75,7 @@ namespace boosting {
     };
 
     OutputWiseProbabilityPredictorConfig::OutputWiseProbabilityPredictorConfig(
-      ReadableProperty<ILossConfig> lossConfigGetter,
+      ReadableProperty<IClassificationLossConfig> lossConfigGetter,
       ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
         : lossConfig_(lossConfigGetter), multiThreadingConfig_(multiThreadingConfigGetter) {}
 

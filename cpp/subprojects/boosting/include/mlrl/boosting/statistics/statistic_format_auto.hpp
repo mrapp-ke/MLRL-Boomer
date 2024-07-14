@@ -20,7 +20,7 @@ namespace boosting {
     class AutomaticStatisticsConfig final : public IStatisticsConfig {
         private:
 
-            const ReadableProperty<ILossConfig> lossConfig_;
+            const ReadableProperty<IClassificationLossConfig> lossConfig_;
 
             const ReadableProperty<IHeadConfig> headConfig_;
 
@@ -29,14 +29,15 @@ namespace boosting {
         public:
 
             /**
-             * @param lossConfigGetter          A `ReadableProperty` that allows to access the `ILossConfig` that stores
-             *                                  the configuration of the loss function
+             * @param lossConfigGetter          A `ReadableProperty` that allows to access the
+             *                                  `IClassificationLossConfig` that stores the configuration of the loss
+             *                                  function
              * @param headConfigGetter          A `ReadableProperty` that allows to access the `IHeadConfig` that stores
              *                                  the configuration of the rule heads
              * @param defaultRuleConfigGetter   A `ReadableProperty` that allows to access the `IDefaultRuleConfig` that
              *                                  stores the configuration of the default rule
              */
-            AutomaticStatisticsConfig(ReadableProperty<ILossConfig> lossConfigGetter,
+            AutomaticStatisticsConfig(ReadableProperty<IClassificationLossConfig> lossConfigGetter,
                                       ReadableProperty<IHeadConfig> headConfigGetter,
                                       ReadableProperty<IDefaultRuleConfig> defaultRuleConfigGetter);
 

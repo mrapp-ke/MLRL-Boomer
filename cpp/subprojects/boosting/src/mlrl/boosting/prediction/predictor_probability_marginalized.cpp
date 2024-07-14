@@ -109,7 +109,7 @@ namespace boosting {
     };
 
     MarginalizedProbabilityPredictorConfig::MarginalizedProbabilityPredictorConfig(
-      ReadableProperty<ILossConfig> lossConfigGetter,
+      ReadableProperty<IClassificationLossConfig> lossConfigGetter,
       ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
         : lossConfig_(std::move(lossConfigGetter)), multiThreadingConfig_(std::move(multiThreadingConfigGetter)) {}
 
