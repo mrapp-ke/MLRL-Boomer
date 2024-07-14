@@ -20,7 +20,7 @@ namespace boosting {
                                                              public IRegressionStatisticsProviderFactory {
         private:
 
-            const std::unique_ptr<IDecomposableLossFactory> lossFactoryPtr_;
+            const std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr_;
 
             const std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
 
@@ -36,9 +36,9 @@ namespace boosting {
 
             /**
              * @param lossFactoryPtr                    An unique pointer to an object of type
-             *                                          `IDecomposableLossFactory` that allows to create implementations
-             *                                          of the loss function that should be used for calculating
-             *                                          gradients and Hessians
+             *                                          `IDecomposableClassificationLossFactory` that allows to create
+             *                                          implementations of the loss function that should be used for
+             *                                          calculating gradients and Hessians
              * @param evaluationMeasureFactoryPtr       An unique pointer to an object of type
              *                                          `IEvaluationMeasureFactory` that allows to create
              *                                          implementations of the evaluation measure that should be used
@@ -59,7 +59,7 @@ namespace boosting {
              *                                          statistics in parallel. Must be at least 1
              */
             DenseDecomposableStatisticsProviderFactory(
-              std::unique_ptr<IDecomposableLossFactory> lossFactoryPtr,
+              std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr,
               std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,

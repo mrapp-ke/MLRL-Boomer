@@ -197,10 +197,10 @@ namespace boosting {
     }
 
     /**
-     * An implementation of the type `INonDecomposableLoss` that implements a multivariate variant of the logistic loss
-     * that is non-decomposable.
+     * An implementation of the type `INonDecomposableClassificationLoss` that implements a multivariate variant of the
+     * logistic loss that is non-decomposable.
      */
-    class NonDecomposableLogisticLoss final : public INonDecomposableLoss {
+    class NonDecomposableLogisticLoss final : public INonDecomposableClassificationLoss {
         public:
 
             virtual void updateDecomposableStatistics(uint32 exampleIndex,
@@ -298,14 +298,25 @@ namespace boosting {
     };
 
     /**
-     * Allows to create instances of the type `INonDecomposableLoss` that implement a multivariate variant of the
-     * logistic loss that is non-decomposable.
+     * Allows to create instances of the type `INonDecomposableClassificationLoss` that implement a multivariate variant
+     * of the logistic loss that is non-decomposable.
      */
-    class NonDecomposableLogisticLossFactory final : public INonDecomposableLossFactory {
+    class NonDecomposableLogisticLossFactory final : public INonDecomposableClassificationLossFactory {
         public:
 
-            std::unique_ptr<INonDecomposableLoss> createNonDecomposableLoss() const override {
+            std::unique_ptr<INonDecomposableClassificationLoss> createNonDecomposableClassificationLoss()
+              const override {
                 return std::make_unique<NonDecomposableLogisticLoss>();
+            }
+
+            std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const {
+                return this->createNonDecomposableClassificationLoss();
+            }
+
+            std::unique_ptr<IEvaluationMeasure> createEvaluationMeasure() const {
+                return this->createNonDecomposableClassificationLoss();
             }
     };
 
@@ -334,8 +345,8 @@ namespace boosting {
         return 0;
     }
 
-    std::unique_ptr<INonDecomposableLossFactory> NonDecomposableLogisticLossConfig::createNonDecomposableLossFactory()
-      const {
+    std::unique_ptr<INonDecomposableClassificationLossFactory>
+      NonDecomposableLogisticLossConfig::createNonDecomposableClassificationLossFactory() const {
         return std::make_unique<NonDecomposableLogisticLossFactory>();
     }
 

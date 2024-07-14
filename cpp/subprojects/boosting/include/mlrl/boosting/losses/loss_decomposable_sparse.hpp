@@ -17,14 +17,14 @@ namespace boosting {
      * To meet this requirement, the gradients and Hessians that are computed by the loss function should be zero, if
      * the prediction for a label is correct.
      */
-    class ISparseDecomposableLoss : virtual public IDecomposableLoss,
-                                    public ISparseEvaluationMeasure {
+    class ISparseDecomposableClassificationLoss : virtual public IDecomposableClassificationLoss,
+                                                  public ISparseEvaluationMeasure {
         public:
 
-            virtual ~ISparseDecomposableLoss() override {}
+            virtual ~ISparseDecomposableClassificationLoss() override {}
 
             // Keep functions from the parent class rather than hiding them
-            using IDecomposableLoss::updateDecomposableStatistics;
+            using IDecomposableClassificationLoss::updateDecomposableStatistics;
 
             /**
              * Updates the statistics of the example at a specific index, considering only the labels, whose indices are
@@ -106,33 +106,37 @@ namespace boosting {
     };
 
     /**
-     * Defines an interface for all factories that allow to create instances of the type `ISparseDecomposableLoss`.
+     * Defines an interface for all factories that allow to create instances of the type
+     * `ISparseDecomposableClassificationLoss`.
      */
-    class ISparseDecomposableLossFactory : public IDecomposableLossFactory,
-                                           public ISparseEvaluationMeasureFactory {
+    class ISparseDecomposableClassificationLossFactory : public IDecomposableClassificationLossFactory,
+                                                         public ISparseEvaluationMeasureFactory {
         public:
 
-            virtual ~ISparseDecomposableLossFactory() override {}
+            virtual ~ISparseDecomposableClassificationLossFactory() override {}
 
             /**
-             * Creates and returns a new object of type `ISparseDecomposableLoss`.
+             * Creates and returns a new object of type `ISparseDecomposableClassificationLoss`.
              *
-             * @return An unique pointer to an object of type `ISparseDecomposableLoss` that has been created
+             * @return An unique pointer to an object of type `ISparseDecomposableClassificationLoss` that has been
+             *         created
              */
-            virtual std::unique_ptr<ISparseDecomposableLoss> createSparseDecomposableLoss() const = 0;
+            virtual std::unique_ptr<ISparseDecomposableClassificationLoss> createSparseDecomposableClassificationLoss()
+              const = 0;
 
             /**
-             * @see `IDecomposableLossFactory::createDecomposableLoss`
+             * @see `IDecomposableClassificationLossFactory::createDecomposableClassificationLoss`
              */
-            std::unique_ptr<IDecomposableLoss> createDecomposableLoss() const override final {
-                return this->createSparseDecomposableLoss();
+            std::unique_ptr<IDecomposableClassificationLoss> createDecomposableClassificationLoss()
+              const override final {
+                return this->createSparseDecomposableClassificationLoss();
             }
 
             /**
              * @see `ISparseEvaluationMeasureFactory::createSparseEvaluationMeasure`
              */
             std::unique_ptr<ISparseEvaluationMeasure> createSparseEvaluationMeasure() const override final {
-                return this->createSparseDecomposableLoss();
+                return this->createSparseDecomposableClassificationLoss();
             }
     };
 
@@ -140,18 +144,20 @@ namespace boosting {
      * Defines an interface for all classes that allow to configure a decomposable loss function that is suited for the
      * use of sparse data structures.
      */
-    class ISparseDecomposableLossConfig : public IDecomposableLossConfig {
+    class ISparseDecomposableClassificationLossConfig : public IDecomposableClassificationLossConfig {
         public:
 
-            virtual ~ISparseDecomposableLossConfig() override {}
+            virtual ~ISparseDecomposableClassificationLossConfig() override {}
 
             /**
-             * Creates and returns a new object of type `ISparseDecomposableLossFactory` according to the specified
-             * configuration.
+             * Creates and returns a new object of type `ISparseDecomposableClassificationLossFactory` according to the
+             * specified configuration.
              *
-             * @return An unique pointer to an object of type `ISparseDecomposableLossFactory` that has been created
+             * @return An unique pointer to an object of type `ISparseDecomposableClassificationLossFactory` that has
+             *         been created
              */
-            virtual std::unique_ptr<ISparseDecomposableLossFactory> createSparseDecomposableLossFactory() const = 0;
+            virtual std::unique_ptr<ISparseDecomposableClassificationLossFactory>
+              createSparseDecomposableClassificationLossFactory() const = 0;
 
             /**
              * Creates and returns a new object of type `ISparseEvaluationMeasureFactory` according to the specified
@@ -160,11 +166,12 @@ namespace boosting {
              * @return An unique pointer to an object of type `ISparseEvaluationMeasureFactory` that has been created
              */
             std::unique_ptr<ISparseEvaluationMeasureFactory> createSparseEvaluationMeasureFactory() const {
-                return this->createSparseDecomposableLossFactory();
+                return this->createSparseDecomposableClassificationLossFactory();
             }
 
-            std::unique_ptr<IDecomposableLossFactory> createDecomposableLossFactory() const override final {
-                return this->createSparseDecomposableLossFactory();
+            std::unique_ptr<IDecomposableClassificationLossFactory> createDecomposableClassificationLossFactory()
+              const override final {
+                return this->createSparseDecomposableClassificationLossFactory();
             }
 
             bool isSparse() const override final {

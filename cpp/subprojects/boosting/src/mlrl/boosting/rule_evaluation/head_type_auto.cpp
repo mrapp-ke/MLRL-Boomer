@@ -16,7 +16,7 @@ namespace boosting {
 
     std::unique_ptr<IClassificationStatisticsProviderFactory> AutomaticHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const IDecomposableLossConfig& lossConfig) const {
+      const IDecomposableClassificationLossConfig& lossConfig) const {
         if (labelMatrix.getNumOutputs() > 1) {
             SingleOutputHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
                                               l2RegularizationConfig_);
@@ -30,7 +30,7 @@ namespace boosting {
 
     std::unique_ptr<IClassificationStatisticsProviderFactory> AutomaticHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const ISparseDecomposableLossConfig& lossConfig) const {
+      const ISparseDecomposableClassificationLossConfig& lossConfig) const {
         if (labelMatrix.getNumOutputs() > 1) {
             SingleOutputHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
                                               l2RegularizationConfig_);
@@ -44,7 +44,7 @@ namespace boosting {
 
     std::unique_ptr<IClassificationStatisticsProviderFactory> AutomaticHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const INonDecomposableLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+      const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
                                       l2RegularizationConfig_);
         return headConfig.createStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig, blas, lapack);

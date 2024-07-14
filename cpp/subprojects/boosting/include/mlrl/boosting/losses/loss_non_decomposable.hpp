@@ -13,10 +13,10 @@ namespace boosting {
     /**
      * Defines an interface for all (non-decomposable) loss functions that are applied example-wise.
      */
-    class INonDecomposableLoss : public IDecomposableLoss {
+    class INonDecomposableClassificationLoss : public IDecomposableClassificationLoss {
         public:
 
-            virtual ~INonDecomposableLoss() override {}
+            virtual ~INonDecomposableClassificationLoss() override {}
 
             /**
              * Updates the statistics of the example at a specific index.
@@ -49,22 +49,25 @@ namespace boosting {
     };
 
     /**
-     * Defines an interface for all factories that allow to create instances of the type `INonDecomposableLoss`.
+     * Defines an interface for all factories that allow to create instances of the type
+     * `INonDecomposableClassificationLoss`.
      */
-    class INonDecomposableLossFactory : public IDecomposableLossFactory {
+    class INonDecomposableClassificationLossFactory : public IDecomposableClassificationLossFactory {
         public:
 
-            virtual ~INonDecomposableLossFactory() override {}
+            virtual ~INonDecomposableClassificationLossFactory() override {}
 
             /**
-             * Creates and returns a new object of type `INonDecomposableLoss`.
+             * Creates and returns a new object of type `INonDecomposableClassificationLoss`.
              *
-             * @return An unique pointer to an object of type `INonDecomposableLoss` that has been created
+             * @return An unique pointer to an object of type `INonDecomposableClassificationLoss` that has been created
              */
-            virtual std::unique_ptr<INonDecomposableLoss> createNonDecomposableLoss() const = 0;
+            virtual std::unique_ptr<INonDecomposableClassificationLoss> createNonDecomposableClassificationLoss()
+              const = 0;
 
-            std::unique_ptr<IDecomposableLoss> createDecomposableLoss() const override final {
-                return this->createNonDecomposableLoss();
+            std::unique_ptr<IDecomposableClassificationLoss> createDecomposableClassificationLoss()
+              const override final {
+                return this->createNonDecomposableClassificationLoss();
             }
     };
 
@@ -72,25 +75,27 @@ namespace boosting {
      * Defines an interface for all classes that allow to configure a (non-decomposable) loss function that is applied
      * example-wise.
      */
-    class INonDecomposableLossConfig : public IClassificationLossConfig {
+    class INonDecomposableClassificationLossConfig : public IClassificationLossConfig {
         public:
 
-            virtual ~INonDecomposableLossConfig() override {}
+            virtual ~INonDecomposableClassificationLossConfig() override {}
 
             /**
-             * Creates and returns a new object of type `INonDecomposableLossFactory` according to the specified
-             * configuration.
+             * Creates and returns a new object of type `INonDecomposableClassificationLossFactory` according to the
+             * specified configuration.
              *
-             * @return An unique pointer to an object of type `INonDecomposableLossFactory` that has been created
+             * @return An unique pointer to an object of type `INonDecomposableClassificationLossFactory` that has been
+             *         created
              */
-            virtual std::unique_ptr<INonDecomposableLossFactory> createNonDecomposableLossFactory() const = 0;
+            virtual std::unique_ptr<INonDecomposableClassificationLossFactory>
+              createNonDecomposableClassificationLossFactory() const = 0;
 
             std::unique_ptr<IEvaluationMeasureFactory> createEvaluationMeasureFactory() const override final {
-                return this->createNonDecomposableLossFactory();
+                return this->createNonDecomposableClassificationLossFactory();
             }
 
             std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const override final {
-                return this->createNonDecomposableLossFactory();
+                return this->createNonDecomposableClassificationLossFactory();
             }
 
             bool isDecomposable() const override final {

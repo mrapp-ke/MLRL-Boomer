@@ -15,7 +15,7 @@ namespace boosting {
      * Allows to configure a loss function that implements a multivariate variant of the logistic loss that is
      * decomposable.
      */
-    class DecomposableLogisticLossConfig final : public IDecomposableLossConfig {
+    class DecomposableLogisticLossConfig final : public IDecomposableClassificationLossConfig {
         private:
 
             const ReadableProperty<IHeadConfig> headConfig_;
@@ -39,7 +39,8 @@ namespace boosting {
 
             float64 getDefaultPrediction() const override;
 
-            std::unique_ptr<IDecomposableLossFactory> createDecomposableLossFactory() const override;
+            std::unique_ptr<IDecomposableClassificationLossFactory> createDecomposableClassificationLossFactory()
+              const override;
     };
 
 }

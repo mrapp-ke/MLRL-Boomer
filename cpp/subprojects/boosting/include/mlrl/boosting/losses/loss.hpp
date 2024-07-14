@@ -79,7 +79,7 @@ namespace boosting {
      * Defines an interface for all classes that allow to configure a loss function that can be used in classification
      * problems.
      */
-    class IClassificationLossConfig : public ILossConfig {
+    class IClassificationLossConfig : virtual public ILossConfig {
         public:
 
             virtual ~IClassificationLossConfig() override {}
@@ -130,7 +130,7 @@ namespace boosting {
      * Defines an interface for all classes that allow to configure a loss function that can be used in regression
      * problems.
      */
-    class IRegressionLossConfig : public ILossConfig {
+    class IRegressionLossConfig : virtual public ILossConfig {
         public:
 
             virtual ~IRegressionLossConfig() override {}

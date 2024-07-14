@@ -65,14 +65,24 @@ namespace boosting {
     }
 
     /**
-     * Allows to create instances of the type `IDecomposableLoss` that implement a multivariate variant of the logistic
-     * loss that is decomposable.
+     * Allows to create instances of the type `IDecomposableClassificationLoss` that implement a multivariate variant of
+     * the logistic loss that is decomposable.
      */
-    class DecomposableLogisticLossFactory final : public IDecomposableLossFactory {
+    class DecomposableLogisticLossFactory final : public IDecomposableClassificationLossFactory {
         public:
 
-            std::unique_ptr<IDecomposableLoss> createDecomposableLoss() const override {
-                return std::make_unique<DecomposableLoss>(&updateGradientAndHessian, &evaluatePrediction);
+            std::unique_ptr<IDecomposableClassificationLoss> createDecomposableClassificationLoss() const override {
+                return std::make_unique<DecomposableClassificationLoss>(&updateGradientAndHessian, &evaluatePrediction);
+            }
+
+            std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const {
+                return this->createDecomposableClassificationLoss();
+            }
+
+            std::unique_ptr<IEvaluationMeasure> createEvaluationMeasure() const {
+                return this->createDecomposableClassificationLoss();
             }
     };
 
@@ -101,7 +111,8 @@ namespace boosting {
         return 0;
     }
 
-    std::unique_ptr<IDecomposableLossFactory> DecomposableLogisticLossConfig::createDecomposableLossFactory() const {
+    std::unique_ptr<IDecomposableClassificationLossFactory>
+      DecomposableLogisticLossConfig::createDecomposableClassificationLossFactory() const {
         return std::make_unique<DecomposableLogisticLossFactory>();
     }
 

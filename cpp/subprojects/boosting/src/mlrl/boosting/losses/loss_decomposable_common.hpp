@@ -12,11 +12,11 @@
 namespace boosting {
 
     /**
-     * An implementation of the type `IDecomposableLoss` that relies on an "update function" and an "evaluation
-     * function" for updating the gradients and Hessians and evaluating the predictions for an individual label,
-     * respectively.
+     * An implementation of the type `IDecomposableClassificationLoss` that relies on an "update function" and an
+     * "evaluation function" for updating the gradients and Hessians and evaluating the predictions for an individual
+     * label, respectively.
      */
-    class DecomposableLoss : virtual public IDecomposableLoss {
+    class DecomposableClassificationLoss : virtual public IDecomposableClassificationLoss {
         public:
 
             /**
@@ -47,7 +47,7 @@ namespace boosting {
              * @param updateFunction    The "update function" to be used for updating gradients and Hessians
              * @param evaluateFunction  The "evaluation function" to be used for evaluating predictions
              */
-            DecomposableLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction)
+            DecomposableClassificationLoss(UpdateFunction updateFunction, EvaluateFunction evaluateFunction)
                 : updateFunction_(updateFunction), evaluateFunction_(evaluateFunction) {}
 
             void updateDecomposableStatistics(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,

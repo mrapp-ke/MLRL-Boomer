@@ -13,18 +13,19 @@ namespace boosting {
 
     template<typename OutputMatrix>
     static inline std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> createStatistics(
-      const IDecomposableLossFactory& lossFactory, const IEvaluationMeasureFactory& evaluationMeasureFactory,
+      const IDecomposableClassificationLossFactory& lossFactory,
+      const IEvaluationMeasureFactory& evaluationMeasureFactory,
       const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
       const OutputMatrix& outputMatrix) {
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
-        std::unique_ptr<IDecomposableLoss> lossPtr = lossFactory.createDecomposableLoss();
+        std::unique_ptr<IDecomposableClassificationLoss> lossPtr = lossFactory.createDecomposableClassificationLoss();
         std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr = evaluationMeasureFactory.createEvaluationMeasure();
         std::unique_ptr<DenseDecomposableStatisticMatrix> statisticMatrixPtr =
           std::make_unique<DenseDecomposableStatisticMatrix>(numExamples, numOutputs);
         std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr =
           std::make_unique<NumericCContiguousMatrix<float64>>(numExamples, numOutputs, true);
-        const IDecomposableLoss* lossRawPtr = lossPtr.get();
+        const IDecomposableClassificationLoss* lossRawPtr = lossPtr.get();
         const OutputMatrix* outputMatrixPtr = &outputMatrix;
         const CContiguousView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
         CContiguousView<Tuple<float64>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
@@ -44,7 +45,7 @@ namespace boosting {
     }
 
     DenseDecomposableStatisticsProviderFactory::DenseDecomposableStatisticsProviderFactory(
-      std::unique_ptr<IDecomposableLossFactory> lossFactoryPtr,
+      std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr,
       std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
       std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
       std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
