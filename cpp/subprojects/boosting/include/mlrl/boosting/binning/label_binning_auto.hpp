@@ -5,6 +5,7 @@
 
 #include "mlrl/boosting/binning/label_binning.hpp"
 #include "mlrl/boosting/rule_evaluation/regularization.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -16,20 +17,20 @@ namespace boosting {
     class AutomaticLabelBinningConfig final : public ILabelBinningConfig {
         private:
 
-            const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr_;
+            const GetterFunction<IRegularizationConfig> l1RegularizationConfigGetter_;
 
-            const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr_;
+            const GetterFunction<IRegularizationConfig> l2RegularizationConfigGetter_;
 
         public:
 
             /**
-             * @param l1RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L1
-             *                                  regularization
-             * @param l2RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L2
-             *                                  regularization
+             * @param l1RegularizationConfigGetter  A `GetterFunction` that allows to access the `IRegularizationConfig`
+             *                                      that stores the configuration of the L1 regularization
+             * @param l2RegularizationConfigGetter  A `GetterFunction` that allows to access the `IRegularizationConfig`
+             *                                      that stores the configuration of the L2 regularization
              */
-            AutomaticLabelBinningConfig(const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
-                                        const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr);
+            AutomaticLabelBinningConfig(GetterFunction<IRegularizationConfig> l1RegularizationConfigGetter,
+                                        GetterFunction<IRegularizationConfig> l2RegularizationConfigGetter);
 
             std::unique_ptr<IDecomposableRuleEvaluationFactory> createDecomposableCompleteRuleEvaluationFactory()
               const override;

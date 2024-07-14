@@ -8,6 +8,7 @@
 #include "mlrl/common/prediction/probability_calibration_marginal.hpp"
 #include "mlrl/common/sampling/partition_sampling.hpp"
 #include "mlrl/common/stopping/global_pruning.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -21,29 +22,31 @@ namespace boosting {
     class AutomaticPartitionSamplingConfig final : public IPartitionSamplingConfig {
         private:
 
-            const std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr_;
+            const GetterFunction<IGlobalPruningConfig> globalPruningConfigGetter_;
 
-            const std::unique_ptr<IMarginalProbabilityCalibratorConfig>& marginalProbabilityCalibratorConfigPtr_;
+            const GetterFunction<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfigGetter_;
 
-            const std::unique_ptr<IJointProbabilityCalibratorConfig>& jointProbabilityCalibratorConfigPtr_;
+            const GetterFunction<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfigGetter_;
 
         public:
 
             /**
-             * @param globalPruningConfigPtr                    A reference to an unique pointer that stores the
-             *                                                  configuration of the method that is used for pruning
-             *                                                  entire rules
-             * @param marginalProbabilityCalibratorConfigPtr    A reference to an unique pointer that stores the
+             * @param globalPruningConfigGetter                 A `GetterFunction` that allows to access the
+             *                                                  `IGlobalPruningConfig` that stores the configuration of
+             *                                                  the method that is used for pruning entire rules
+             * @param marginalProbabilityCalibratorConfigGetter A `GetterFunction` that allows to access the
+             *                                                  `IMarginalProbabilityCalibratorConfig` that stores the
              *                                                  configuration of the calibrator that is used to fit a
              *                                                  model for the calibration of marginal probabilities
-             * @param jointProbabilityCalibratorConfigPtr       A reference to an unique pointer that stores the
+             * @param jointProbabilityCalibratorConfigGetter    A `GetterFunction` that allows to access the
+             *                                                  `IJointProbabilityCalibratorConfig` that stores the
              *                                                  configuration of the calibrator that is used to fit a
              *                                                  model for the calibration of joint probabilities
              */
             AutomaticPartitionSamplingConfig(
-              const std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr,
-              const std::unique_ptr<IMarginalProbabilityCalibratorConfig>& marginalProbabilityCalibratorConfigPtr,
-              const std::unique_ptr<IJointProbabilityCalibratorConfig>& jointProbabilityCalibratorConfigPtr);
+              GetterFunction<IGlobalPruningConfig> globalPruningConfigGetter,
+              GetterFunction<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfigGetter,
+              GetterFunction<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfigGetter);
 
             /**
              * @see `IPartitionSamplingConfig::createPartitionSamplingFactory`

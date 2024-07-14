@@ -38,53 +38,58 @@ namespace boosting {
             virtual ~IBoostedRuleLearnerConfig() override {}
 
             /**
-             * Returns an unique pointer to the configuration of the rule heads that should be induced by the rule
-             * learner.
+             * Returns a `Property` that allows to access the `IHeadConfig` that stores configuration of the rule heads
+             * that should be induced by the rule learner.
              *
-             * @return A reference to an unique pointer of type `IHeadConfig` that stores the configuration of the rule
-             *         heads
+             * @return A reference to a `Property` that allows to access the `IHeadConfig` that stores the configuration
+             *         of the rule heads
              */
-            virtual std::unique_ptr<IHeadConfig>& getHeadConfigPtr() = 0;
+            virtual Property<IHeadConfig> getHeadConfig() = 0;
 
             /**
-             * Returns an unique pointer to the configuration of the statistics that should be used by the rule learner.
+             * Returns a `Property` that allows to access the `IStatisticsConfig` that stores the configuration of the
+             * statistics that should be used by the rule learner.
              *
-             * @return A reference to an unique pointer of type `IStatisticsConfig` that stores the configuration of the
+             * @return A `Property` that allows to access the `IStatisticsConfig` that stores the configuration of the
              *         statistics
              */
-            virtual std::unique_ptr<IStatisticsConfig>& getStatisticsConfigPtr() = 0;
+            virtual Property<IStatisticsConfig> getStatisticsConfig() = 0;
 
             /**
-             * Returns an unique pointer to the configuration of the L1 regularization term.
+             * Returns a `Property` that allows to access the `IRegularizationConfig` that stores the configuration of
+             * the L1 regularization term.
              *
              * @return A reference to an unique pointer of type `IRegularizationConfig` that stores the configuration of
              *         the L1 regularization term
              */
-            virtual std::unique_ptr<IRegularizationConfig>& getL1RegularizationConfigPtr() = 0;
+            virtual Property<IRegularizationConfig> getL1RegularizationConfig() = 0;
 
             /**
-             * Returns an unique pointer to the configuration of the L2 regularization term.
+             * Returns a `Property` that allows to access the `IRegularizationConfig` that stores the configuration of
+             * the L2 regularization term.
              *
-             * @return A reference to an unique pointer of type `IRegularizationConfig` that stores the configuration of
+             * @return A `Property` that allows to access the `IRegularizationConfig` that stores the configuration of
              *         the L2 regularization term
              */
-            virtual std::unique_ptr<IRegularizationConfig>& getL2RegularizationConfigPtr() = 0;
+            virtual Property<IRegularizationConfig> getL2RegularizationConfig() = 0;
 
             /**
-             * Returns an unique pointer to the configuration of the loss function.
+             * Returns a `Property` that allows to access the `ILossConfig` that stores the configuration of the loss
+             * function.
              *
-             * @return A reference to an unique pointer of type `ILossConfig` that stores the configuration of the loss
+             * @return A `Property` that allows to access the `ILossConfig` that stores the configuration of the loss
              *         function
              */
-            virtual std::unique_ptr<ILossConfig>& getLossConfigPtr() = 0;
+            virtual Property<ILossConfig> getLossConfig() = 0;
 
             /**
-             * Returns an unique pointer to the configuration of the method for the assignment of labels to bins.
+             * Returns a `Property` that allows to access the `ILabelBinningConfig` that stores the configuration of the
+             * method for the assignment of labels to bins.
              *
-             * @return A reference to an unique pointer of type `ILabelBinningConfig` that stores the configuration of
-             *         the method for the assignment of labels to bins
+             * @return A `Property` that allows to access the `ILabelBinningConfig` that stores the configuration of the
+             *         method for the assignment of labels to bins
              */
-            virtual std::unique_ptr<ILabelBinningConfig>& getLabelBinningConfigPtr() = 0;
+            virtual Property<ILabelBinningConfig> getLabelBinningConfig() = 0;
     };
 
     /**
@@ -101,8 +106,8 @@ namespace boosting {
              * feature values to bins should be used or not.
              */
             virtual void useAutomaticFeatureBinning() {
-                std::unique_ptr<IFeatureBinningConfig>& featureBinningConfigPtr = this->getFeatureBinningConfigPtr();
-                featureBinningConfigPtr = std::make_unique<AutomaticFeatureBinningConfig>();
+                Property<IFeatureBinningConfig> property = this->getFeatureBinningConfig();
+                property.set(std::make_unique<AutomaticFeatureBinningConfig>());
             }
     };
 
@@ -120,10 +125,9 @@ namespace boosting {
              * parallel refinement of rules or not.
              */
             virtual void useAutomaticParallelRuleRefinement() {
-                std::unique_ptr<IMultiThreadingConfig>& parallelRuleRefinementConfigPtr =
-                  this->getParallelRuleRefinementConfigPtr();
-                parallelRuleRefinementConfigPtr = std::make_unique<AutoParallelRuleRefinementConfig>(
-                  this->getLossConfigPtr(), this->getHeadConfigPtr(), this->getFeatureSamplingConfigPtr());
+                Property<IMultiThreadingConfig> property = this->getParallelRuleRefinementConfig();
+                property.set(std::make_unique<AutoParallelRuleRefinementConfig>(
+                  this->getLossConfig().get, this->getHeadConfig().get, this->getFeatureSamplingConfig().get));
             }
     };
 
@@ -141,10 +145,8 @@ namespace boosting {
              * parallel update of statistics or not.
              */
             virtual void useAutomaticParallelStatisticUpdate() {
-                std::unique_ptr<IMultiThreadingConfig>& parallelStatisticUpdateConfigPtr =
-                  this->getParallelStatisticUpdateConfigPtr();
-                parallelStatisticUpdateConfigPtr =
-                  std::make_unique<AutoParallelStatisticUpdateConfig>(this->getLossConfigPtr());
+                Property<IMultiThreadingConfig> property = this->getParallelStatisticUpdateConfig();
+                property.set(std::make_unique<AutoParallelStatisticUpdateConfig>(this->getLossConfig().get));
             }
     };
 
@@ -165,10 +167,10 @@ namespace boosting {
              *         the loss function
              */
             virtual IConstantShrinkageConfig& useConstantShrinkagePostProcessor() {
-                std::unique_ptr<IPostProcessorConfig>& postProcessorConfigPtr = this->getPostProcessorConfigPtr();
+                Property<IPostProcessorConfig> property = this->getPostProcessorConfig();
                 std::unique_ptr<ConstantShrinkageConfig> ptr = std::make_unique<ConstantShrinkageConfig>();
                 IConstantShrinkageConfig& ref = *ptr;
-                postProcessorConfigPtr = std::move(ptr);
+                property.set(std::move(ptr));
                 return ref;
             }
     };
@@ -186,8 +188,8 @@ namespace boosting {
              * Configures the rule learner to use a dense representation of gradients and Hessians.
              */
             virtual void useDenseStatistics() {
-                std::unique_ptr<IStatisticsConfig>& statisticsConfigPtr = this->getStatisticsConfigPtr();
-                statisticsConfigPtr = std::make_unique<DenseStatisticsConfig>(this->getLossConfigPtr());
+                Property<IStatisticsConfig> property = this->getStatisticsConfig();
+                property.set(std::make_unique<DenseStatisticsConfig>(this->getLossConfig().get));
             }
     };
 
@@ -203,9 +205,8 @@ namespace boosting {
              * Configures the rule learner to not use L1 regularization.
              */
             virtual void useNoL1Regularization() {
-                std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr =
-                  this->getL1RegularizationConfigPtr();
-                l1RegularizationConfigPtr = std::make_unique<NoRegularizationConfig>();
+                Property<IRegularizationConfig> property = this->getL1RegularizationConfig();
+                property.set(std::make_unique<NoRegularizationConfig>());
             }
     };
 
@@ -224,11 +225,10 @@ namespace boosting {
              *         of the regularization term
              */
             virtual IManualRegularizationConfig& useL1Regularization() {
-                std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr =
-                  this->getL1RegularizationConfigPtr();
+                Property<IRegularizationConfig> property = this->getL1RegularizationConfig();
                 std::unique_ptr<ManualRegularizationConfig> ptr = std::make_unique<ManualRegularizationConfig>();
                 IManualRegularizationConfig& ref = *ptr;
-                l1RegularizationConfigPtr = std::move(ptr);
+                property.set(std::move(ptr));
                 return ref;
             }
     };
@@ -245,9 +245,8 @@ namespace boosting {
              * Configures the rule learner to not use L2 regularization.
              */
             virtual void useNoL2Regularization() {
-                std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr =
-                  this->getL2RegularizationConfigPtr();
-                l2RegularizationConfigPtr = std::make_unique<NoRegularizationConfig>();
+                Property<IRegularizationConfig> property = this->getL2RegularizationConfig();
+                property.set(std::make_unique<NoRegularizationConfig>());
             }
     };
 
@@ -266,11 +265,10 @@ namespace boosting {
              *         of the regularization term
              */
             virtual IManualRegularizationConfig& useL2Regularization() {
-                std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr =
-                  this->getL2RegularizationConfigPtr();
+                Property<IRegularizationConfig> property = this->getL2RegularizationConfig();
                 std::unique_ptr<ManualRegularizationConfig> ptr = std::make_unique<ManualRegularizationConfig>();
                 IManualRegularizationConfig& ref = *ptr;
-                l2RegularizationConfigPtr = std::move(ptr);
+                property.set(std::move(ptr));
                 return ref;
             }
     };
@@ -288,10 +286,10 @@ namespace boosting {
              * Configures the rule learner to induce rules with complete heads that predict for all available outputs.
              */
             virtual void useCompleteHeads() {
-                std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
-                headConfigPtr = std::make_unique<CompleteHeadConfig>(
-                  this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr(),
-                  this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
+                Property<IHeadConfig> property = this->getHeadConfig();
+                property.set(std::make_unique<CompleteHeadConfig>(
+                  this->getLabelBinningConfig().get, this->getParallelStatisticUpdateConfig().get,
+                  this->getL1RegularizationConfig().get, this->getL2RegularizationConfig().get));
             }
     };
 
@@ -312,11 +310,11 @@ namespace boosting {
              *         the rule heads
              */
             virtual IFixedPartialHeadConfig& useFixedPartialHeads() {
-                std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
+                Property<IHeadConfig> property = this->getHeadConfig();
                 std::unique_ptr<FixedPartialHeadConfig> ptr = std::make_unique<FixedPartialHeadConfig>(
-                  this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr());
+                  this->getLabelBinningConfig().get, this->getParallelStatisticUpdateConfig().get);
                 IFixedPartialHeadConfig& ref = *ptr;
-                headConfigPtr = std::move(ptr);
+                property.set(std::move(ptr));
                 return ref;
             }
     };
@@ -339,11 +337,11 @@ namespace boosting {
              *         the rule heads
              */
             virtual IDynamicPartialHeadConfig& useDynamicPartialHeads() {
-                std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
+                Property<IHeadConfig> property = this->getHeadConfig();
                 std::unique_ptr<DynamicPartialHeadConfig> ptr = std::make_unique<DynamicPartialHeadConfig>(
-                  this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr());
+                  this->getLabelBinningConfig().get, this->getParallelStatisticUpdateConfig().get);
                 IDynamicPartialHeadConfig& ref = *ptr;
-                headConfigPtr = std::move(ptr);
+                property.set(std::move(ptr));
                 return ref;
             }
     };
@@ -361,10 +359,10 @@ namespace boosting {
              * Configures the rule learner to induce rules with single-output heads that predict for a single output.
              */
             virtual void useSingleOutputHeads() {
-                std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
-                headConfigPtr = std::make_unique<SingleOutputHeadConfig>(
-                  this->getLabelBinningConfigPtr(), this->getParallelStatisticUpdateConfigPtr(),
-                  this->getL1RegularizationConfigPtr(), this->getL2RegularizationConfigPtr());
+                Property<IHeadConfig> property = this->getHeadConfig();
+                property.set(std::make_unique<SingleOutputHeadConfig>(
+                  this->getLabelBinningConfig().get, this->getParallelStatisticUpdateConfig().get,
+                  this->getL1RegularizationConfig().get, this->getL2RegularizationConfig().get));
             }
     };
 
@@ -381,11 +379,11 @@ namespace boosting {
              * Configures the rule learner to automatically decide for the type of rule heads that should be used.
              */
             virtual void useAutomaticHeads() {
-                std::unique_ptr<IHeadConfig>& headConfigPtr = this->getHeadConfigPtr();
-                headConfigPtr = std::make_unique<AutomaticHeadConfig>(
-                  this->getLossConfigPtr(), this->getLabelBinningConfigPtr(),
-                  this->getParallelStatisticUpdateConfigPtr(), this->getL1RegularizationConfigPtr(),
-                  this->getL2RegularizationConfigPtr());
+                Property<IHeadConfig> property = this->getHeadConfig();
+                property.set(std::make_unique<AutomaticHeadConfig>(
+                  this->getLossConfig().get, this->getLabelBinningConfig().get,
+                  this->getParallelStatisticUpdateConfig().get, this->getL1RegularizationConfig().get,
+                  this->getL2RegularizationConfig().get));
             }
     };
 
@@ -403,8 +401,8 @@ namespace boosting {
              * error loss that is non-decomposable.
              */
             virtual void useNonDecomposableSquaredErrorLoss() {
-                std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
-                lossConfigPtr = std::make_unique<NonDecomposableSquaredErrorLossConfig>(this->getHeadConfigPtr());
+                Property<ILossConfig> property = this->getLossConfig();
+                property.set(std::make_unique<NonDecomposableSquaredErrorLossConfig>(this->getHeadConfig().get));
             }
     };
 
@@ -422,8 +420,8 @@ namespace boosting {
              * error loss that is decomposable.
              */
             virtual void useDecomposableSquaredErrorLoss() {
-                std::unique_ptr<ILossConfig>& lossConfigPtr = this->getLossConfigPtr();
-                lossConfigPtr = std::make_unique<DecomposableSquaredErrorLossConfig>(this->getHeadConfigPtr());
+                Property<ILossConfig> property = this->getLossConfig();
+                property.set(std::make_unique<DecomposableSquaredErrorLossConfig>(this->getHeadConfig().get));
             }
     };
 
@@ -440,9 +438,9 @@ namespace boosting {
              * Configures the rule learner to not use any method for the assignment of labels to bins.
              */
             virtual void useNoLabelBinning() {
-                std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr = this->getLabelBinningConfigPtr();
-                labelBinningConfigPtr = std::make_unique<NoLabelBinningConfig>(this->getL1RegularizationConfigPtr(),
-                                                                               this->getL2RegularizationConfigPtr());
+                Property<ILabelBinningConfig> property = this->getLabelBinningConfig();
+                property.set(std::make_unique<NoLabelBinningConfig>(this->getL1RegularizationConfig().get,
+                                                                    this->getL2RegularizationConfig().get));
             }
     };
 
@@ -461,9 +459,8 @@ namespace boosting {
              * by summing up the scores that are provided by individual rules for each output individually.
              */
             virtual void useOutputWiseScorePredictor() {
-                std::unique_ptr<IScorePredictorConfig>& scorePredictorConfigPtr = this->getScorePredictorConfigPtr();
-                scorePredictorConfigPtr =
-                  std::make_unique<OutputWiseScorePredictorConfig>(this->getParallelPredictionConfigPtr());
+                Property<IScorePredictorConfig> property = this->getScorePredictorConfig();
+                property.set(std::make_unique<OutputWiseScorePredictorConfig>(this->getParallelPredictionConfig().get));
             }
     };
 }

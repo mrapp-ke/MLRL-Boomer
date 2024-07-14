@@ -2,18 +2,20 @@
 
 namespace boosting {
 
-    AutomaticStatisticsConfig::AutomaticStatisticsConfig(
-      const std::unique_ptr<ILossConfig>& lossConfigPtr, const std::unique_ptr<IHeadConfig>& headConfigPtr,
-      const std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr)
-        : lossConfigPtr_(lossConfigPtr), headConfigPtr_(headConfigPtr), defaultRuleConfigPtr_(defaultRuleConfigPtr) {}
+    AutomaticStatisticsConfig::AutomaticStatisticsConfig(GetterFunction<ILossConfig> lossConfigGetter,
+                                                         GetterFunction<IHeadConfig> headConfigGetter,
+                                                         GetterFunction<IDefaultRuleConfig> defaultRuleConfigGetter)
+        : lossConfigGetter_(lossConfigGetter), headConfigGetter_(headConfigGetter),
+          defaultRuleConfigGetter_(defaultRuleConfigGetter) {}
 
     std::unique_ptr<IStatisticsProviderFactory> AutomaticStatisticsConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
       const Lapack& lapack) const {
-        bool preferSparseStatistics = shouldSparseStatisticsBePreferred(
-          labelMatrix, defaultRuleConfigPtr_->isDefaultRuleUsed(labelMatrix), headConfigPtr_->isPartial());
-        return lossConfigPtr_->createStatisticsProviderFactory(featureMatrix, labelMatrix, blas, lapack,
-                                                               preferSparseStatistics);
+        bool defaultRuleUsed = defaultRuleConfigGetter_().isDefaultRuleUsed(labelMatrix);
+        bool partialHeadsUsed = headConfigGetter_().isPartial();
+        bool preferSparseStatistics = shouldSparseStatisticsBePreferred(labelMatrix, defaultRuleUsed, partialHeadsUsed);
+        return lossConfigGetter_().createStatisticsProviderFactory(featureMatrix, labelMatrix, blas, lapack,
+                                                                   preferSparseStatistics);
     }
 
     bool AutomaticStatisticsConfig::isDense() const {

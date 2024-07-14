@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/util/properties.hpp"
 #include "mlrl/seco/heuristics/heuristic.hpp"
 #include "mlrl/seco/rule_evaluation/head_type.hpp"
 
@@ -16,20 +17,20 @@ namespace seco {
     class SingleOutputHeadConfig final : public IHeadConfig {
         private:
 
-            const std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr_;
+            const GetterFunction<IHeuristicConfig> heuristicConfigGetter_;
 
-            const std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr_;
+            const GetterFunction<IHeuristicConfig> pruningHeuristicConfigGetter_;
 
         public:
 
             /**
-             * @param heuristicConfigPtr        A reference to an unique pointer that stores the configuration of the
-             *                                  heuristic for learning rules
-             * @param pruningHeuristicConfigPtr A reference to an unique pointer that stores the configuration of the
-             *                                  heuristic for pruning rules
+             * @param heuristicConfigGetter         A `GetterFunction` that allows to access the `IHeuristicConfig` that
+             *                                      stores the configuration of the heuristic for learning rules
+             * @param pruningHeuristicConfigGetter  A `GetterFunction` that allows to access the `IHeuristicConfig` that
+             *                                      stores the configuration of the heuristic for pruning rules
              */
-            SingleOutputHeadConfig(const std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr,
-                                   const std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr);
+            SingleOutputHeadConfig(GetterFunction<IHeuristicConfig> heuristicConfigGetter,
+                                   GetterFunction<IHeuristicConfig> pruningHeuristicConfigGetter);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IRowWiseLabelMatrix& labelMatrix) const override;
