@@ -13,7 +13,7 @@ namespace seco {
 
     /**
      * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
-     * `IDecomposableStatistics`, which uses dense data structures to store the statistics.
+     * `IDecomposableStatistics` using dense data structures for storing the statistics.
      */
     class DenseDecomposableStatisticsProviderFactory final : public IClassificationStatisticsProviderFactory {
         private:

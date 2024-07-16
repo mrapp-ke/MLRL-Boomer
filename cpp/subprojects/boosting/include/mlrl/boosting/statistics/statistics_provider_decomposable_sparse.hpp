@@ -13,11 +13,12 @@
 namespace boosting {
 
     /**
-     * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
-     * `IDecomposableStatistics`, which uses sparse data structures to store the statistics.
+     * Allows to create instances of the class `IStatisticsProvider` that can be used in classification problems and
+     * provide access to an object of type `IDecomposableStatistics` using sparse data structures for storing the
+     * statistics.
      */
-    class SparseDecomposableStatisticsProviderFactory final : public IClassificationStatisticsProviderFactory,
-                                                              public IRegressionStatisticsProviderFactory {
+    class SparseDecomposableClassificationStatisticsProviderFactory final
+        : public IClassificationStatisticsProviderFactory {
         private:
 
             const std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr_;
@@ -52,7 +53,7 @@ namespace boosting {
              * @param numThreads                        The number of CPU threads to be used to calculate the initial
              *                                          statistics in parallel. Must be at least 1
              */
-            SparseDecomposableStatisticsProviderFactory(
+            SparseDecomposableClassificationStatisticsProviderFactory(
               std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr,
               std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
               std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
@@ -68,17 +69,6 @@ namespace boosting {
              * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const BinaryCsrView& labelMatrix) const override;
-
-            /**
-             * @see `IClassificationStatisticsProviderFactory::create`
-             */
-            std::unique_ptr<IStatisticsProvider> create(
-              const CContiguousView<const float32>& regressionMatrix) const override;
-
-            /**
-             * @see `IClassificationStatisticsProviderFactory::create`
-             */
-            std::unique_ptr<IStatisticsProvider> create(const CsrView<const float32>& regressionMatrix) const override;
     };
 
 }

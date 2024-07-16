@@ -134,6 +134,15 @@ namespace boosting {
               const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas,
               const Lapack& lapack) const override;
 
+            std::unique_ptr<IRegressionStatisticsProviderFactory> createStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+              const IDecomposableRegressionLossConfig& lossConfig) const override;
+
+            std::unique_ptr<IRegressionStatisticsProviderFactory> createStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+              const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas,
+              const Lapack& lapack) const override;
+
             bool isPartial() const override;
 
             bool isSingleOutput() const override;
