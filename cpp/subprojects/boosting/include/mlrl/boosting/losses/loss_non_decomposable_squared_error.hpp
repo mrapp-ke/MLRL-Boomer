@@ -15,7 +15,8 @@ namespace boosting {
      * Allows to configure a loss function that implements a multivariate variant of the squared error loss that is
      * non-decomposable.
      */
-    class NonDecomposableSquaredErrorLossConfig final : public INonDecomposableClassificationLossConfig {
+    class NonDecomposableSquaredErrorLossConfig final : public INonDecomposableClassificationLossConfig,
+                                                        public INonDecomposableRegressionLossConfig {
         private:
 
             const ReadableProperty<IHeadConfig> headConfig_;
@@ -32,6 +33,10 @@ namespace boosting {
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
               const Lapack& lapack, bool preferSparseStatistics) const override;
 
+            std::unique_ptr<IRegressionStatisticsProviderFactory> createStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
+              const Lapack& lapack, bool preferSparseStatistics) const override;
+
             std::unique_ptr<IMarginalProbabilityFunctionFactory> createMarginalProbabilityFunctionFactory()
               const override;
 
@@ -41,6 +46,17 @@ namespace boosting {
 
             std::unique_ptr<INonDecomposableClassificationLossFactory> createNonDecomposableClassificationLossFactory()
               const override;
+
+            std::unique_ptr<INonDecomposableRegressionLossFactory> createNonDecomposableRegressionLossFactory()
+              const override;
+
+            std::unique_ptr<IEvaluationMeasureFactory> createEvaluationMeasureFactory() const override {
+                return this->createNonDecomposableClassificationLossFactory();
+            }
+
+            std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const override {
+                return this->createNonDecomposableClassificationLossFactory();
+            }
     };
 
 }

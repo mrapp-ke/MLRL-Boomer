@@ -222,7 +222,7 @@ namespace boosting {
              *
              * @return An unique pointer to an object of type `IDecomposableRegressionLoss` that has been created
              */
-            virtual std::unique_ptr<IDecomposableRegressionLoss> createDecomposableClassificationLoss() const = 0;
+            virtual std::unique_ptr<IDecomposableRegressionLoss> createDecomposableRegressionLoss() const = 0;
     };
 
     /**
