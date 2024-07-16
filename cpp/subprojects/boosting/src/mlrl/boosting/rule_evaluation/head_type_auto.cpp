@@ -50,6 +50,22 @@ namespace boosting {
         return headConfig.createStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig, blas, lapack);
     }
 
+    std::unique_ptr<IRegressionStatisticsProviderFactory> AutomaticHeadConfig::createStatisticsProviderFactory(
+      const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+      const IDecomposableRegressionLossConfig& lossConfig) const {
+        CompleteHeadConfig headConfig(labelBinningConfigGetter_, multiThreadingConfigGetter_,
+                                      l1RegularizationConfigGetter_, l2RegularizationConfigGetter_);
+        return headConfig.createStatisticsProviderFactory(featureMatrix, regressionMatrix, lossConfig);
+    }
+
+    std::unique_ptr<IRegressionStatisticsProviderFactory> AutomaticHeadConfig::createStatisticsProviderFactory(
+      const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+      const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+        CompleteHeadConfig headConfig(labelBinningConfigGetter_, multiThreadingConfigGetter_,
+                                      l1RegularizationConfigGetter_, l2RegularizationConfigGetter_);
+        return headConfig.createStatisticsProviderFactory(featureMatrix, regressionMatrix, lossConfig, blas, lapack);
+    }
+
     bool AutomaticHeadConfig::isPartial() const {
         return lossConfig_.get().isDecomposable();
     }

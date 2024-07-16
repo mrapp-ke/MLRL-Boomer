@@ -13,11 +13,12 @@
 namespace boosting {
 
     /**
-     * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
-     * `INonDecomposableStatistics`, which uses dense data structures to store the statistics.
+     * Allows to create instances of the class `IStatisticsProvider` that can be used in classification problems and
+     * provide access to an object of type `INonDecomposableStatistics` using dense data structures for storing the
+     * statistics.
      */
-    class DenseNonDecomposableStatisticsProviderFactory final : public IClassificationStatisticsProviderFactory,
-                                                                public IRegressionStatisticsProviderFactory {
+    class DenseNonDecomposableClassificationStatisticsProviderFactory final
+        : public IClassificationStatisticsProviderFactory {
         private:
 
             const std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr_;
@@ -58,7 +59,7 @@ namespace boosting {
              * @param numThreads                        The number of CPU threads to be used to calculate the initial
              *                                          statistics in parallel. Must be at least 1
              */
-            DenseNonDecomposableStatisticsProviderFactory(
+            DenseNonDecomposableClassificationStatisticsProviderFactory(
               std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr,
               std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
@@ -75,15 +76,69 @@ namespace boosting {
              * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const BinaryCsrView& labelMatrix) const override;
+    };
+
+    /**
+     * Allows to create instances of the class `IStatisticsProvider` that can be used in regression problems and provide
+     * access to an object of type `INonDecomposableStatistics` using dense data structures for storing the statistics.
+     */
+    class DenseNonDecomposableRegressionStatisticsProviderFactory final : public IRegressionStatisticsProviderFactory {
+        private:
+
+            const std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr_;
+
+            const std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
+
+            const std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
+
+            const std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
+
+            const std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
+
+            const uint32 numThreads_;
+
+        public:
 
             /**
-             * @see `IClassificationStatisticsProviderFactory::create`
+             * @param lossFactoryPtr                    An unique pointer to an object of type
+             *                                          `INonDecomposableRegressionLossFactory` that allows to create
+             *                                          implementations of the loss function that should be used for
+             *                                          calculating gradients and Hessians
+             * @param evaluationMeasureFactoryPtr       An unique pointer to an object of type
+             *                                          `IEvaluationMeasureFactory` that allows to create
+             *                                          implementations of the evaluation measure that should be used
+             *                                          for assessing the quality of predictions
+             * @param defaultRuleEvaluationFactoryPtr   An unique pointer to an object of type
+             *                                          `INonDecomposableRuleEvaluationFactory` that should be used for
+             *                                          calculating the predictions, as well as corresponding quality
+             *                                          scores, of the default rule
+             * @param regularRuleEvaluationFactoryPtr   An unique pointer to an object of type
+             *                                          `INonDecomposableRuleEvaluationFactory` that should be used for
+             *                                          calculating the predictions, as well as corresponding quality
+             *                                          scores, of all remaining rules
+             * @param pruningRuleEvaluationFactoryPtr   An unique pointer to an object of type
+             *                                          `INonDecomposableRuleEvaluationFactory` that should be used for
+             *                                          calculating the predictions, as well as corresponding quality
+             *                                          scores, when pruning rules
+             * @param numThreads                        The number of CPU threads to be used to calculate the initial
+             *                                          statistics in parallel. Must be at least 1
+             */
+            DenseNonDecomposableRegressionStatisticsProviderFactory(
+              std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr,
+              std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+              std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
+              std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+              std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
+              uint32 numThreads);
+
+            /**
+             * @see `IRegressionStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(
               const CContiguousView<const float32>& regressionMatrix) const override;
 
             /**
-             * @see `IClassificationStatisticsProviderFactory::create`
+             * @see `IRegressionStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const CsrView<const float32>& regressionMatrix) const override;
     };
@@ -93,9 +148,8 @@ namespace boosting {
      * `INonDecomposableStatistics`, which uses dense data structures to store the statistics and can be converted into
      * an object of type `IDecomposableStatistics`.
      */
-    class DenseConvertibleNonDecomposableStatisticsProviderFactory final
-        : public IClassificationStatisticsProviderFactory,
-          public IRegressionStatisticsProviderFactory {
+    class DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory final
+        : public IClassificationStatisticsProviderFactory {
         private:
 
             const std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr_;
@@ -136,7 +190,7 @@ namespace boosting {
              * @param numThreads                        The number of CPU threads to be used to calculate the initial
              *                                          statistics in parallel. Must be at least 1
              */
-            DenseConvertibleNonDecomposableStatisticsProviderFactory(
+            DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory(
               std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr,
               std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
@@ -152,15 +206,70 @@ namespace boosting {
              * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const BinaryCsrView& labelMatrix) const override;
+    };
+
+    /**
+     * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
+     * `INonDecomposableStatistics`, which uses dense data structures to store the statistics and can be converted into
+     * an object of type `IDecomposableStatistics`.
+     */
+    class DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory final
+        : public IRegressionStatisticsProviderFactory {
+        private:
+
+            const std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr_;
+
+            const std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
+
+            const std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
+
+            const std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr_;
+
+            const std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr_;
+
+            const uint32 numThreads_;
+
+        public:
 
             /**
-             * @see `IClassificationStatisticsProviderFactory::create`
+             * @param lossFactoryPtr                    An unique pointer to an object of type
+             *                                          `INonDecomposableRegressionLossFactory` that allows to create
+             *                                          implementations of the loss function that should be used for
+             *                                          calculating gradients and Hessians
+             * @param evaluationMeasureFactoryPtr       An unique pointer to an object of type
+             *                                          `IEvaluationMeasureFactory` that allows to create
+             *                                          implementations of the evaluation measure that should be used
+             *                                          for assessing the quality of predictions
+             * @param defaultRuleEvaluationFactoryPtr   An unique pointer to an object of type
+             *                                          `INonDecomposableRuleEvaluationFactory` that should be used for
+             *                                          calculating the predictions, as well as corresponding quality
+             *                                          scores, of the default rule
+             * @param regularRuleEvaluationFactoryPtr   An unique pointer to an object of type
+             *                                          `IDecomposableRuleEvaluationFactory` that should be used for
+             *                                          calculating the predictions, as well as corresponding quality
+             *                                          scores, of all remaining rules
+             * @param pruningRuleEvaluationFactoryPtr   An unique pointer to an object of type
+             *                                          `IDecomposableRuleEvaluationFactory` that should be used for
+             *                                          calculating the predictions, as well as corresponding quality
+             *                                          scores, when pruning rules
+             * @param numThreads                        The number of CPU threads to be used to calculate the initial
+             *                                          statistics in parallel. Must be at least 1
+             */
+            DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory(
+              std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr,
+              std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+              std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
+              std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+              std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads);
+
+            /**
+             * @see `IRegressionStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(
               const CContiguousView<const float32>& regressionMatrix) const override;
 
             /**
-             * @see `IClassificationStatisticsProviderFactory::create`
+             * @see `IRegressionStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const CsrView<const float32>& regressionMatrix) const override;
     };

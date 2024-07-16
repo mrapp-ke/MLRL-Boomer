@@ -116,17 +116,18 @@ namespace boosting {
           std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
     }
 
-    SparseDecomposableStatisticsProviderFactory::SparseDecomposableStatisticsProviderFactory(
-      std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr,
-      std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
-      std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
-      std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
+    SparseDecomposableClassificationStatisticsProviderFactory::
+      SparseDecomposableClassificationStatisticsProviderFactory(
+        std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr,
+        std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+        std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+        std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
         : lossFactoryPtr_(std::move(lossFactoryPtr)),
           evaluationMeasureFactoryPtr_(std::move(evaluationMeasureFactoryPtr)),
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {}
 
-    std::unique_ptr<IStatisticsProvider> SparseDecomposableStatisticsProviderFactory::create(
+    std::unique_ptr<IStatisticsProvider> SparseDecomposableClassificationStatisticsProviderFactory::create(
       const CContiguousView<const uint8>& labelMatrix) const {
         std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *regularRuleEvaluationFactoryPtr_,
@@ -135,25 +136,13 @@ namespace boosting {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    std::unique_ptr<IStatisticsProvider> SparseDecomposableStatisticsProviderFactory::create(
+    std::unique_ptr<IStatisticsProvider> SparseDecomposableClassificationStatisticsProviderFactory::create(
       const BinaryCsrView& labelMatrix) const {
         std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *regularRuleEvaluationFactoryPtr_,
                            numThreads_, labelMatrix);
         return std::make_unique<DecomposableStatisticsProvider<ISparseDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
-    }
-
-    std::unique_ptr<IStatisticsProvider> SparseDecomposableStatisticsProviderFactory::create(
-      const CContiguousView<const float32>& regressionMatrix) const {
-        // TODO
-        return nullptr;
-    }
-
-    std::unique_ptr<IStatisticsProvider> SparseDecomposableStatisticsProviderFactory::create(
-      const CsrView<const float32>& regressionMatrix) const {
-        // TODO
-        return nullptr;
     }
 }
 
