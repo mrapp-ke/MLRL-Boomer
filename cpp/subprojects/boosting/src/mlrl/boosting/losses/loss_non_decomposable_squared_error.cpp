@@ -236,12 +236,17 @@ namespace boosting {
      * Allows to create instances of the type `INonDecomposableClassificationLoss` that implement a multivariate variant
      * of the squared error loss that is non-decomposable.
      */
-    class NonDecomposableSquaredErrorLossFactory final : public INonDecomposableClassificationLossFactory {
+    class NonDecomposableSquaredErrorLossFactory final : public INonDecomposableClassificationLossFactory,
+                                                         public INonDecomposableRegressionLossFactory {
         public:
 
             std::unique_ptr<INonDecomposableClassificationLoss> createNonDecomposableClassificationLoss()
               const override {
                 return std::make_unique<NonDecomposableSquaredErrorLoss>();
+            }
+
+            std::unique_ptr<INonDecomposableRegressionLoss> createNonDecomposableRegressionLoss() const override {
+                return nullptr;  // TODO
             }
 
             std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
@@ -267,6 +272,13 @@ namespace boosting {
         return headConfig_.get().createStatisticsProviderFactory(featureMatrix, labelMatrix, *this, blas, lapack);
     }
 
+    std::unique_ptr<IRegressionStatisticsProviderFactory>
+      NonDecomposableSquaredErrorLossConfig::createStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
+        const Lapack& lapack, bool preferSparseStatistics) const {
+        return nullptr;  // TODO
+    }
+
     std::unique_ptr<IMarginalProbabilityFunctionFactory>
       NonDecomposableSquaredErrorLossConfig::createMarginalProbabilityFunctionFactory() const {
         return nullptr;
@@ -283,6 +295,11 @@ namespace boosting {
 
     std::unique_ptr<INonDecomposableClassificationLossFactory>
       NonDecomposableSquaredErrorLossConfig::createNonDecomposableClassificationLossFactory() const {
+        return std::make_unique<NonDecomposableSquaredErrorLossFactory>();
+    }
+
+    std::unique_ptr<INonDecomposableRegressionLossFactory>
+      NonDecomposableSquaredErrorLossConfig::createNonDecomposableRegressionLossFactory() const {
         return std::make_unique<NonDecomposableSquaredErrorLossFactory>();
     }
 
