@@ -19,7 +19,7 @@ class IEvaluationMeasure {
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
-         * specific index by comparing them to the corresponding ground truth labels, based on a label matrix that
+         * specific index by comparing them to the corresponding ground truth according to a regression matrix that
          * provides random access to the labels of the training examples.
          *
          * @param exampleIndex  The index of the example for which the predictions should be evaluated
@@ -34,8 +34,8 @@ class IEvaluationMeasure {
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
-         * specific index by comparing them to the corresponding ground truth labels, based on a label matrix that
-         * provides row-wise access to the labels of the training examples.
+         * specific index by comparing them to the corresponding ground truth according to a label matrix that provides
+         * row-wise access to the labels of the training examples.
          *
          * @param exampleIndex  The index of the example for which the predictions should be evaluated
          * @param labelMatrix   A reference to an object of type `BinaryCsrView` that provides row-wise access to the
@@ -46,6 +46,42 @@ class IEvaluationMeasure {
          */
         virtual float64 evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                  const CContiguousView<float64>& scoreMatrix) const = 0;
+
+        /**
+         * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
+         * specific index by comparing them to the corresponding ground truth according to a regression matrix that
+         * provides random access to the regression scores of the training examples.
+         *
+         * @param exampleIndex      The index of the example for which the predictions should be evaluated
+         * @param regressionMatrix  A reference to an object of type `CContiguousView` that provides random access to
+         *                          the regression scores of the training examples
+         * @param scoreMatrix       A reference to an object of type `CContiguousView` that stores the currently
+         *                          predicted scores
+         * @return                  The numerical score that has been calculated
+         */
+        // TODO Move into new class IRegressionEvaluationMeasure
+        virtual float64 evaluate(uint32 exampleIndex, const CContiguousView<const float32>& labelMatrix,
+                                 const CContiguousView<float64>& scoreMatrix) const {
+            return 0;
+        }
+
+        /**
+         * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
+         * specific index by comparing them to the corresponding ground truth according to a regression matrix that
+         * provides row-wise access to the regression scores of the training examples.
+         *
+         * @param exampleIndex      The index of the example for which the predictions should be evaluated
+         * @param regressionMatrix  A reference to an object of type `CsrView` that provides row-wise access to the
+         *                          regression scores of the training examples
+         * @param scoreMatrix       A reference to an object of type `CContiguousView` that stores the currently
+         *                          predicted scores
+         * @return                  The numerical score that has been calculated
+         */
+        // TODO Move into new class IRegressionEvaluationMeasure
+        virtual float64 evaluate(uint32 exampleIndex, const CsrView<const float32>& labelMatrix,
+                                 const CContiguousView<float64>& scoreMatrix) const {
+            return 0;
+        }
 };
 
 /**

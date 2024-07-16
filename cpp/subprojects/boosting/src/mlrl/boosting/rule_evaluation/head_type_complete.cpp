@@ -30,7 +30,7 @@ namespace boosting {
           std::make_unique<DecomposableCompleteRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
         std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
           std::make_unique<DecomposableCompleteRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
-        return std::make_unique<DenseDecomposableStatisticsProviderFactory>(
+        return std::make_unique<DenseDecomposableClassificationStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
@@ -56,7 +56,49 @@ namespace boosting {
           labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
           labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
-        return std::make_unique<DenseNonDecomposableStatisticsProviderFactory>(
+        return std::make_unique<DenseNonDecomposableClassificationStatisticsProviderFactory>(
+          std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
+          std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
+    }
+
+    std::unique_ptr<IRegressionStatisticsProviderFactory> CompleteHeadConfig::createStatisticsProviderFactory(
+      const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+      const IDecomposableRegressionLossConfig& lossConfig) const {
+        float64 l1RegularizationWeight = l1RegularizationConfigGetter_().getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfigGetter_().getWeight();
+        uint32 numThreads =
+          multiThreadingConfigGetter_().getNumThreads(featureMatrix, regressionMatrix.getNumOutputs());
+        std::unique_ptr<IDecomposableRegressionLossFactory> lossFactoryPtr =
+          lossConfig.createDecomposableRegressionLossFactory();
+        std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
+          lossConfig.createEvaluationMeasureFactory();
+        std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
+          labelBinningConfigGetter_().createDecomposableCompleteRuleEvaluationFactory();
+        std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+          std::make_unique<DecomposableCompleteRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
+        std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+          std::make_unique<DecomposableCompleteRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
+        return std::make_unique<DenseDecomposableRegressionStatisticsProviderFactory>(
+          std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
+          std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
+    }
+
+    std::unique_ptr<IRegressionStatisticsProviderFactory> CompleteHeadConfig::createStatisticsProviderFactory(
+      const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+      const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+        uint32 numThreads =
+          multiThreadingConfigGetter_().getNumThreads(featureMatrix, regressionMatrix.getNumOutputs());
+        std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr =
+          lossConfig.createNonDecomposableRegressionLossFactory();
+        std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
+          lossConfig.createNonDecomposableRegressionLossFactory();
+        std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
+          labelBinningConfigGetter_().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
+        std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+          labelBinningConfigGetter_().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
+        std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+          labelBinningConfigGetter_().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
+        return std::make_unique<DenseNonDecomposableRegressionStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }

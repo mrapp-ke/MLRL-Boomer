@@ -15,10 +15,21 @@ namespace boosting {
         }
     }
 
-    FixedPartialHeadConfig::FixedPartialHeadConfig(ReadableProperty<ILabelBinningConfig> labelBinningConfigGetter,
-                                                   ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : outputRatio_(0.0f), minOutputs_(2), maxOutputs_(0), labelBinningConfig_(labelBinningConfigGetter),
-          multiThreadingConfig_(multiThreadingConfigGetter) {}
+    static inline float32 calculateOutputRatio(float32 outputRatio, const IRowWiseRegressionMatrix& regressionMatrix) {
+        if (outputRatio > 0) {
+            return outputRatio;
+        }
+
+        throw std::invalid_argument(
+          "Invalid value given for parameter \"outputRatio\": Must be greater than 0 when used in regression problems, "
+          "but is "
+          + std::to_string(outputRatio));
+    }
+
+    FixedPartialHeadConfig::FixedPartialHeadConfig(ReadableProperty<ILabelBinningConfig> labelBinningConfig,
+                                                   ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
+        : outputRatio_(0.0f), minOutputs_(2), maxOutputs_(0), labelBinningConfig_(labelBinningConfig),
+          multiThreadingConfig_(multiThreadingConfig) {}
 
     float32 FixedPartialHeadConfig::getOutputRatio() const {
         return outputRatio_;
@@ -70,8 +81,8 @@ namespace boosting {
                                                                                         maxOutputs_);
         std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
           labelBinningConfig_.get().createDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
-                                                                                        maxOutputs_);
-        return std::make_unique<DenseDecomposableStatisticsProviderFactory>(
+                                                                                          maxOutputs_);
+        return std::make_unique<DenseDecomposableClassificationStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
@@ -90,8 +101,8 @@ namespace boosting {
                                                                                         maxOutputs_);
         std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
           labelBinningConfig_.get().createDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
-                                                                                        maxOutputs_);
-        return std::make_unique<SparseDecomposableStatisticsProviderFactory>(
+                                                                                          maxOutputs_);
+        return std::make_unique<SparseDecomposableClassificationStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
           std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
@@ -111,9 +122,55 @@ namespace boosting {
           labelBinningConfig_.get().createNonDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
                                                                                            maxOutputs_, blas, lapack);
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-          labelBinningConfig_.get().createNonDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
-                                                                                           maxOutputs_, blas, lapack);
-        return std::make_unique<DenseNonDecomposableStatisticsProviderFactory>(
+          labelBinningConfigr_.get().createNonDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
+                                                                                             maxOutputs_, blas, lapack);
+        return std::make_unique<DenseNonDecomposableClassificationStatisticsProviderFactory>(
+          std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
+          std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
+    }
+
+    std::unique_ptr<IRegressionStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
+      const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+      const IDecomposableRegressionLossConfig& lossConfig) const {
+        uint32 numThreads =
+          multiThreadingConfigGetter_().getNumThreads(featureMatrix, regressionMatrix.getNumOutputs());
+        float32 outputRatio = calculateOutputRatio(outputRatio_, regressionMatrix);
+        std::unique_ptr<IDecomposableRegressionLossFactory> lossFactoryPtr =
+          lossConfig.createDecomposableRegressionLossFactory();
+        std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
+          lossConfig.createEvaluationMeasureFactory();
+        std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
+          labelBinningConfigGetter_().createDecomposableCompleteRuleEvaluationFactory();
+        std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+          labelBinningConfigGetter_().createDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
+                                                                                          maxOutputs_);
+        std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+          labelBinningConfigGetter_().createDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
+                                                                                          maxOutputs_);
+        return std::make_unique<DenseDecomposableRegressionStatisticsProviderFactory>(
+          std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
+          std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
+    }
+
+    std::unique_ptr<IRegressionStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
+      const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+      const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+        uint32 numThreads =
+          multiThreadingConfigGetter_().getNumThreads(featureMatrix, regressionMatrix.getNumOutputs());
+        float32 outputRatio = calculateOutputRatio(outputRatio_, regressionMatrix);
+        std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr =
+          lossConfig.createNonDecomposableRegressionLossFactory();
+        std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
+          lossConfig.createNonDecomposableRegressionLossFactory();
+        std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
+          labelBinningConfigGetter_().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
+        std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
+          labelBinningConfigGetter_().createNonDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
+                                                                                             maxOutputs_, blas, lapack);
+        std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
+          labelBinningConfigGetter_().createNonDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
+                                                                                             maxOutputs_, blas, lapack);
+        return std::make_unique<DenseNonDecomposableRegressionStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }

@@ -78,6 +78,42 @@ namespace boosting {
               const Lapack& lapack) const = 0;
 
             /**
+             * Creates and returns a new object of type `IRegressionStatisticsProviderFactory` according to the
+             * specified configuration.
+             *
+             * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the
+             *                      feature values of the training examples
+             * @param regressionMatrix  A reference to an object of type `IRowWiseLabelMatrix` that provides access to
+             * the labels of the training examples
+             * @param lossConfig    A reference to an object of type `IDecomposableRegressionLossConfig` that specifies
+             *                      the configuration of the loss function
+             * @return              An unique pointer to an object of type `IRegressionStatisticsProviderFactory` that
+             *                      has been created
+             */
+            virtual std::unique_ptr<IRegressionStatisticsProviderFactory> createStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+              const IDecomposableRegressionLossConfig& lossConfig) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IRegressionStatisticsProviderFactory` according to the
+             * specified configuration.
+             *
+             * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the
+             *                      feature values of the training examples
+             * @param regressionMatrix  A reference to an object of type `IRowWiseLabelMatrix` that provides access to
+             * the labels of the training examples
+             * @param lossConfig    A reference to an object of type `INonDecomposableRegressionLossConfig` that
+             *                      specifies the configuration of the loss function
+             * @param blas          A reference to an object of type `Blas` that allows to execute BLAS routines
+             * @param lapack        A reference to an object of type `Lapack` that allows to execute LAPACK routines
+             * @return              An unique pointer to an object of type `IRegressionStatisticsProviderFactory` that
+             *                      has been created
+             */
+            virtual std::unique_ptr<IRegressionStatisticsProviderFactory> createStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+              const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const = 0;
+
+            /**
              * Returns, whether the heads of rules are partial, i.e., they predict for a subset of the available
              * outputs, or not.
              *
