@@ -41,6 +41,14 @@ namespace boosting {
 
             std::unique_ptr<INonDecomposableClassificationLossFactory> createNonDecomposableClassificationLossFactory()
               const override;
+
+            std::unique_ptr<IEvaluationMeasureFactory> createEvaluationMeasureFactory() const override final {
+                return this->createNonDecomposableClassificationLossFactory();
+            }
+
+            std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const override final {
+                return this->createNonDecomposableClassificationLossFactory();
+            }
     };
 
 }
