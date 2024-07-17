@@ -58,7 +58,7 @@ namespace boosting {
                 return this->createSparseDecomposableClassificationLoss();
             }
 
-            std::unique_ptr<IEvaluationMeasure> createEvaluationMeasure() const {
+            std::unique_ptr<IClassificationEvaluationMeasure> createClassificationEvaluationMeasure() const {
                 return this->createSparseDecomposableClassificationLoss();
             }
     };

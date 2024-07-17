@@ -4,18 +4,19 @@
 #pragma once
 
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_csr.hpp"
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
 
 #include <memory>
 
 /**
- * Defines an interface for all measures that may be used to assess the quality of predictions for certain examples by
- * comparing them to the corresponding ground truth labels.
+ * Defines an interface for all measures that can be used in classification problems to assess the quality of
+ * predictions for certain examples by comparing them to the corresponding ground truth labels.
  */
-class IEvaluationMeasure {
+class IClassificationEvaluationMeasure {
     public:
 
-        virtual ~IEvaluationMeasure() {}
+        virtual ~IClassificationEvaluationMeasure() {}
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
@@ -46,6 +47,16 @@ class IEvaluationMeasure {
          */
         virtual float64 evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                  const CContiguousView<float64>& scoreMatrix) const = 0;
+};
+
+/**
+ * Defines an interface for all measures that can be used in regression problems to assess the quality of predictions
+ * for certain examples by comparing them to the corresponding ground truth regression scores.
+ */
+class IRegressionEvaluationMeasure {
+    public:
+
+        virtual ~IRegressionEvaluationMeasure() {}
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
@@ -59,11 +70,8 @@ class IEvaluationMeasure {
          *                          predicted scores
          * @return                  The numerical score that has been calculated
          */
-        // TODO Move into new class IRegressionEvaluationMeasure
-        virtual float64 evaluate(uint32 exampleIndex, const CContiguousView<const float32>& labelMatrix,
-                                 const CContiguousView<float64>& scoreMatrix) const {
-            return 0;
-        }
+        virtual float64 evaluate(uint32 exampleIndex, const CContiguousView<const float32>& regressionMatrix,
+                                 const CContiguousView<float64>& scoreMatrix) const = 0;
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
@@ -77,25 +85,38 @@ class IEvaluationMeasure {
          *                          predicted scores
          * @return                  The numerical score that has been calculated
          */
-        // TODO Move into new class IRegressionEvaluationMeasure
-        virtual float64 evaluate(uint32 exampleIndex, const CsrView<const float32>& labelMatrix,
-                                 const CContiguousView<float64>& scoreMatrix) const {
-            return 0;
-        }
+        virtual float64 evaluate(uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
+                                 const CContiguousView<float64>& scoreMatrix) const = 0;
 };
 
 /**
- * Defines an interface for all factories that allow to create instances of the type `IEvaluationMeasure`.
+ * Defines an interface for all factories that allow to create instances of the type `IClassificationEvaluationMeasure`.
  */
-class IEvaluationMeasureFactory {
+class IClassificationEvaluationMeasureFactory {
     public:
 
-        virtual ~IEvaluationMeasureFactory() {}
+        virtual ~IClassificationEvaluationMeasureFactory() {}
 
         /**
-         * Creates and returns a new object of type `IEvaluationMeasure`.
+         * Creates and returns a new object of type `IClassificationEvaluationMeasure`.
          *
-         * @return An unique pointer to an object of type `IEvaluationMeasure` that has been created
+         * @return An unique pointer to an object of type `IClassificationEvaluationMeasure` that has been created
          */
-        virtual std::unique_ptr<IEvaluationMeasure> createEvaluationMeasure() const = 0;
+        virtual std::unique_ptr<IClassificationEvaluationMeasure> createClassificationEvaluationMeasure() const = 0;
+};
+
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IRegressionEvaluationMeasure`.
+ */
+class IRegressionEvaluationMeasureFactory {
+    public:
+
+        virtual ~IRegressionEvaluationMeasureFactory() {}
+
+        /**
+         * Creates and returns a new object of type `IRegressionEvaluationMeasure`.
+         *
+         * @return An unique pointer to an object of type `IRegressionEvaluationMeasure` that has been created
+         */
+        virtual std::unique_ptr<IRegressionEvaluationMeasure> createRegressionEvaluationMeasure() const = 0;
 };

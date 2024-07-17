@@ -16,7 +16,8 @@ namespace boosting {
     /**
      * Defines an interface for all decomposable loss functions that can be used in classification problems.
      */
-    class IDecomposableClassificationLoss : virtual public ILoss {
+    class IDecomposableClassificationLoss : virtual public ILoss,
+                                            virtual public IClassificationEvaluationMeasure {
         public:
 
             virtual ~IDecomposableClassificationLoss() override {}
@@ -103,7 +104,8 @@ namespace boosting {
     /**
      * Defines an interface for all decomposable loss functions that can be used in regression problems.
      */
-    class IDecomposableRegressionLoss : virtual public ILoss {
+    class IDecomposableRegressionLoss : virtual public ILoss,
+                                        virtual public IRegressionEvaluationMeasure {
         public:
 
             virtual ~IDecomposableRegressionLoss() override {}
@@ -193,7 +195,7 @@ namespace boosting {
      * Defines an interface for all factories that allow to create instances of the type
      * `IDecomposableClassificationLoss`.
      */
-    class IDecomposableClassificationLossFactory : public IEvaluationMeasureFactory,
+    class IDecomposableClassificationLossFactory : public IClassificationEvaluationMeasureFactory,
                                                    public IDistanceMeasureFactory {
         public:
 
@@ -211,7 +213,7 @@ namespace boosting {
      * Defines an interface for all factories that allow to create instances of the type
      * `IDecomposableClassificationLoss`.
      */
-    class IDecomposableRegressionLossFactory : public IEvaluationMeasureFactory,
+    class IDecomposableRegressionLossFactory : public IRegressionEvaluationMeasureFactory,
                                                public IDistanceMeasureFactory {
         public:
 
@@ -262,11 +264,8 @@ namespace boosting {
             virtual std::unique_ptr<IDecomposableClassificationLossFactory>
               createDecomposableClassificationLossFactory() const = 0;
 
-            std::unique_ptr<IEvaluationMeasureFactory> createEvaluationMeasureFactory() const override final {
-                return this->createDecomposableClassificationLossFactory();
-            }
-
-            std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const override final {
+            std::unique_ptr<IClassificationEvaluationMeasureFactory> createClassificationEvaluationMeasureFactory()
+              const override final {
                 return this->createDecomposableClassificationLossFactory();
             }
     };
@@ -289,6 +288,11 @@ namespace boosting {
              */
             virtual std::unique_ptr<IDecomposableRegressionLossFactory> createDecomposableRegressionLossFactory()
               const = 0;
+
+            std::unique_ptr<IRegressionEvaluationMeasureFactory> createRegressionEvaluationMeasureFactory()
+              const override final {
+                return this->createDecomposableRegressionLossFactory();
+            }
     };
 
 }

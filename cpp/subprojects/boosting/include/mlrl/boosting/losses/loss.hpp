@@ -21,8 +21,7 @@ namespace boosting {
     /**
      * Defines an interface for all loss functions.
      */
-    class ILoss : public IEvaluationMeasure,
-                  public IDistanceMeasure {
+    class ILoss : public IDistanceMeasure {
         public:
 
             virtual ~ILoss() override {}
@@ -35,14 +34,6 @@ namespace boosting {
         public:
 
             virtual ~ILossConfig() {}
-
-            /**
-             * Creates and returns a new object of type `IEvaluationMeasureFactory` according to the specified
-             * configuration.
-             *
-             * @return An unique pointer to an object of type `IEvaluationMeasureFactory` that has been created
-             */
-            virtual std::unique_ptr<IEvaluationMeasureFactory> createEvaluationMeasureFactory() const = 0;
 
             /**
              * Creates and returns a new object of type `IDistanceMeasureFactory` according to the specified
@@ -106,6 +97,16 @@ namespace boosting {
               const Lapack& lapack, bool preferSparseStatistics) const = 0;
 
             /**
+             * Creates and returns a new object of type `IClassificationEvaluationMeasureFactory` according to the
+             * specified configuration.
+             *
+             * @return An unique pointer to an object of type `IClassificationEvaluationMeasureFactory` that has been
+             *         created
+             */
+            virtual std::unique_ptr<IClassificationEvaluationMeasureFactory>
+              createClassificationEvaluationMeasureFactory() const = 0;
+
+            /**
              * Creates and returns a new object of type `IMarginalProbabilityFunctionFactory` according to the specified
              * configuration.
              *
@@ -155,6 +156,16 @@ namespace boosting {
             virtual std::unique_ptr<IRegressionStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
               const Lapack& lapack, bool preferSparseStatistics) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IRegressionEvaluationMeasureFactory` according to the specified
+             * configuration.
+             *
+             * @return An unique pointer to an object of type `IRegressionEvaluationMeasureFactory` that has been
+             *         created
+             */
+            virtual std::unique_ptr<IRegressionEvaluationMeasureFactory> createRegressionEvaluationMeasureFactory()
+              const = 0;
     };
 
 };
