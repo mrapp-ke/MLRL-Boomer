@@ -49,22 +49,24 @@ namespace boosting {
      * Provides access to gradients and Hessians that have been calculated according to a decomposable loss function and
      * are stored using dense data structures.
      *
-     * @tparam Loss         The type of the loss function
-     * @tparam OutputMatrix The type of the matrix that provides access to the ground truth of the training examples
+     * @tparam Loss                 The type of the loss function
+     * @tparam OutputMatrix         The type of the matrix that provides access to the ground truth of the training
+     *                              examples
+     * @tparam EvaluationMeasure    The type of the evaluation that should be used to access the quality of predictions
      */
-    template<typename Loss, typename OutputMatrix>
+    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure>
     class DenseDecomposableStatistics final
         : public AbstractDecomposableStatistics<OutputMatrix, DenseDecomposableStatisticVector,
                                                 DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
-                                                Loss, IEvaluationMeasure, IDecomposableRuleEvaluationFactory> {
+                                                Loss, EvaluationMeasure, IDecomposableRuleEvaluationFactory> {
         public:
 
             /**
              * @param lossPtr               An unique pointer to an object of template type `Loss` that implements the
              *                              loss function that should be used for calculating gradients and Hessians
-             * @param evaluationMeasurePtr  An unique pointer to an object of type `IEvaluationMeasure` that implements
-             *                              the evaluation measure that should be used to assess the quality of
-             *                              predictions for a specific statistic
+             * @param evaluationMeasurePtr  An unique pointer to an object of template type `EvaluationMeasure` that
+             *                              implements the evaluation measure that should be used to assess the quality
+             *                              of predictions for a specific statistic
              * @param ruleEvaluationFactory A reference to an object of type `IDecomposableRuleEvaluationFactory`, that
              *                              allows to create instances of the class that is used for calculating the
              *                              predictions of rules, as well as their overall quality
@@ -76,14 +78,14 @@ namespace boosting {
              *                              stores the currently predicted scores
              */
             DenseDecomposableStatistics(std::unique_ptr<Loss> lossPtr,
-                                        std::unique_ptr<IEvaluationMeasure> evaluationMeasurePtr,
+                                        std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
                                         const IDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                                         const OutputMatrix& outputMatrix,
                                         std::unique_ptr<DenseDecomposableStatisticMatrix> statisticMatrixPtr,
                                         std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
                 : AbstractDecomposableStatistics<OutputMatrix, DenseDecomposableStatisticVector,
                                                  DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
-                                                 Loss, IEvaluationMeasure, IDecomposableRuleEvaluationFactory>(
+                                                 Loss, EvaluationMeasure, IDecomposableRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
                     std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 

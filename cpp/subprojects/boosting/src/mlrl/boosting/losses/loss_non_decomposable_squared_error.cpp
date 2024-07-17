@@ -202,7 +202,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IEvaluationMeasure::evaluate`
+             * @see `IClassificationEvaluationMeasure::evaluate`
              */
             float64 evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                              const CContiguousView<float64>& scoreMatrix) const override {
@@ -211,7 +211,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IEvaluationMeasure::evaluate`
+             * @see `IClassificationEvaluationMeasure::evaluate`
              */
             float64 evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                              const CContiguousView<float64>& scoreMatrix) const override {
@@ -255,8 +255,12 @@ namespace boosting {
                 return this->createNonDecomposableClassificationLoss();
             }
 
-            std::unique_ptr<IEvaluationMeasure> createEvaluationMeasure() const {
+            std::unique_ptr<IClassificationEvaluationMeasure> createClassificationEvaluationMeasure() const {
                 return this->createNonDecomposableClassificationLoss();
+            }
+
+            std::unique_ptr<IRegressionEvaluationMeasure> createRegressionEvaluationMeasure() const {
+                return this->createNonDecomposableRegressionLoss();
             }
     };
 

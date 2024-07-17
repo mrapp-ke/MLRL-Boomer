@@ -174,6 +174,10 @@ namespace boosting {
                 return this->createSparseDecomposableClassificationLossFactory();
             }
 
+            std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const override final {
+                return this->createDecomposableClassificationLossFactory();
+            }
+
             bool isSparse() const override final {
                 return true;
             }

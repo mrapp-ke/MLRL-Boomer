@@ -245,7 +245,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IEvaluationMeasure::evaluate`
+             * @see `IClassificationEvaluationMeasure::evaluate`
              */
             float64 evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                              const SparseSetView<float64>& scoreMatrix) const override {
@@ -259,7 +259,7 @@ namespace boosting {
             }
 
             /**
-             * @see `IEvaluationMeasure::evaluate`
+             * @see `IClassificationEvaluationMeasure::evaluate`
              */
             float64 evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                              const SparseSetView<float64>& scoreMatrix) const override {
