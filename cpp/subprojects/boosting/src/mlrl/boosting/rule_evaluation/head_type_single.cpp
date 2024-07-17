@@ -23,8 +23,8 @@ namespace boosting {
         uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
         std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr =
           lossConfig.createDecomposableClassificationLossFactory();
-        std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
-          lossConfig.createEvaluationMeasureFactory();
+        std::unique_ptr<IClassificationEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
+          lossConfig.createClassificationEvaluationMeasureFactory();
         std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
           labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
         std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
@@ -67,7 +67,7 @@ namespace boosting {
         uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
         std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr =
           lossConfig.createNonDecomposableClassificationLossFactory();
-        std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
+        std::unique_ptr<IClassificationEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createNonDecomposableClassificationLossFactory();
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
           labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
@@ -91,8 +91,8 @@ namespace boosting {
           multiThreadingConfigGetter_().getNumThreads(featureMatrix, regressionMatrix.getNumOutputs());
         std::unique_ptr<IDecomposableRegressionLossFactory> lossFactoryPtr =
           lossConfig.createDecomposableRegressionLossFactory();
-        std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
-          lossConfig.createEvaluationMeasureFactory();
+        std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
+          lossConfig.createRegressionEvaluationMeasureFactory();
         std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
           labelBinningConfigGetter_().createDecomposableCompleteRuleEvaluationFactory();
         std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
@@ -115,7 +115,7 @@ namespace boosting {
           multiThreadingConfigGetter_().getNumThreads(featureMatrix, regressionMatrix.getNumOutputs());
         std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr =
           lossConfig.createNonDecomposableRegressionLossFactory();
-        std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
+        std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createNonDecomposableRegressionLossFactory();
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
           labelBinningConfigGetter_().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);

@@ -171,6 +171,11 @@ namespace boosting {
              */
             virtual std::unique_ptr<INonDecomposableClassificationLossFactory>
               createNonDecomposableClassificationLossFactory() const = 0;
+
+            std::unique_ptr<IClassificationEvaluationMeasureFactory> createClassificationEvaluationMeasureFactory()
+              const override final {
+                return this->createNonDecomposableClassificationLossFactory();
+            }
     };
 
     /**
@@ -192,6 +197,11 @@ namespace boosting {
              */
             virtual std::unique_ptr<INonDecomposableRegressionLossFactory> createNonDecomposableRegressionLossFactory()
               const = 0;
+
+            std::unique_ptr<IRegressionEvaluationMeasureFactory> createRegressionEvaluationMeasureFactory()
+              const override final {
+                return this->createNonDecomposableRegressionLossFactory();
+            }
     };
 
 }

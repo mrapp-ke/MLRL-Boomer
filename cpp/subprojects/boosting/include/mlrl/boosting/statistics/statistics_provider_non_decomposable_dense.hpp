@@ -23,7 +23,7 @@ namespace boosting {
 
             const std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr_;
 
-            const std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
+            const std::unique_ptr<IClassificationEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
 
             const std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
@@ -41,7 +41,7 @@ namespace boosting {
              *                                          create implementations of the loss function that should be used
              *                                          for calculating gradients and Hessians
              * @param evaluationMeasureFactoryPtr       An unique pointer to an object of type
-             *                                          `IEvaluationMeasureFactory` that allows to create
+             *                                          `IClassificationEvaluationMeasureFactory` that allows to create
              *                                          implementations of the evaluation measure that should be used
              *                                          for assessing the quality of predictions
              * @param defaultRuleEvaluationFactoryPtr   An unique pointer to an object of type
@@ -61,7 +61,7 @@ namespace boosting {
              */
             DenseNonDecomposableClassificationStatisticsProviderFactory(
               std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr,
-              std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+              std::unique_ptr<IClassificationEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
@@ -87,7 +87,7 @@ namespace boosting {
 
             const std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr_;
 
-            const std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
+            const std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
 
             const std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
@@ -105,7 +105,7 @@ namespace boosting {
              *                                          implementations of the loss function that should be used for
              *                                          calculating gradients and Hessians
              * @param evaluationMeasureFactoryPtr       An unique pointer to an object of type
-             *                                          `IEvaluationMeasureFactory` that allows to create
+             *                                          `IRegressionEvaluationMeasureFactory` that allows to create
              *                                          implementations of the evaluation measure that should be used
              *                                          for assessing the quality of predictions
              * @param defaultRuleEvaluationFactoryPtr   An unique pointer to an object of type
@@ -125,7 +125,7 @@ namespace boosting {
              */
             DenseNonDecomposableRegressionStatisticsProviderFactory(
               std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr,
-              std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+              std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
@@ -154,7 +154,7 @@ namespace boosting {
 
             const std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr_;
 
-            const std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
+            const std::unique_ptr<IClassificationEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
 
             const std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
@@ -172,7 +172,7 @@ namespace boosting {
              *                                          create implementations of the loss function that should be used
              *                                          for calculating gradients and Hessians
              * @param evaluationMeasureFactoryPtr       An unique pointer to an object of type
-             *                                          `IEvaluationMeasureFactory` that allows to create
+             *                                          `IClassificationEvaluationMeasureFactory` that allows to create
              *                                          implementations of the evaluation measure that should be used
              *                                          for assessing the quality of predictions
              * @param defaultRuleEvaluationFactoryPtr   An unique pointer to an object of type
@@ -192,7 +192,7 @@ namespace boosting {
              */
             DenseConvertibleNonDecomposableClassificationStatisticsProviderFactory(
               std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr,
-              std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+              std::unique_ptr<IClassificationEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads);
@@ -219,7 +219,7 @@ namespace boosting {
 
             const std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr_;
 
-            const std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
+            const std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
 
             const std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
 
@@ -237,7 +237,7 @@ namespace boosting {
              *                                          implementations of the loss function that should be used for
              *                                          calculating gradients and Hessians
              * @param evaluationMeasureFactoryPtr       An unique pointer to an object of type
-             *                                          `IEvaluationMeasureFactory` that allows to create
+             *                                          `IRegressionEvaluationMeasureFactory` that allows to create
              *                                          implementations of the evaluation measure that should be used
              *                                          for assessing the quality of predictions
              * @param defaultRuleEvaluationFactoryPtr   An unique pointer to an object of type
@@ -257,7 +257,7 @@ namespace boosting {
              */
             DenseConvertibleNonDecomposableRegressionStatisticsProviderFactory(
               std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr,
-              std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+              std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
               std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
               std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads);
