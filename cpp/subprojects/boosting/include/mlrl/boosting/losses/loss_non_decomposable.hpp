@@ -13,7 +13,7 @@ namespace boosting {
     /**
      * Defines an interface for all non-decomposable loss functions that can be used in classification problems.
      */
-    class INonDecomposableClassificationLoss : virtual public ILoss,
+    class INonDecomposableClassificationLoss : virtual public IClassificationLoss,
                                                virtual public IDecomposableClassificationLoss {
         public:
 
@@ -52,7 +52,7 @@ namespace boosting {
     /**
      * Defines an interface for all non-decomposable loss functions that can be used in regression problems.
      */
-    class INonDecomposableRegressionLoss : virtual public ILoss,
+    class INonDecomposableRegressionLoss : virtual public IRegressionLoss,
                                            virtual public IDecomposableRegressionLoss {
         public:
 
