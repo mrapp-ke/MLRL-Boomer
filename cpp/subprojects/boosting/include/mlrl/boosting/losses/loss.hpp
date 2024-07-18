@@ -19,12 +19,21 @@
 namespace boosting {
 
     /**
-     * Defines an interface for all loss functions.
+     * Defines an interface for all loss functions that can be used in classification problems.
      */
-    class ILoss : public IDistanceMeasure {
+    class IClassificationLoss : public IDistanceMeasure {
         public:
 
-            virtual ~ILoss() override {}
+            virtual ~IClassificationLoss() override {}
+    };
+
+    /**
+     * Defines an interface for all loss functions that can be used in regression problems.
+     */
+    class IRegressionLoss {
+        public:
+
+            virtual ~IRegressionLoss() {}
     };
 
     /**
