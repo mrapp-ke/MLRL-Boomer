@@ -6,6 +6,8 @@
 #include "mlrl/boosting/losses/loss.hpp"
 #include "mlrl/common/data/tuple.hpp"
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_csr.hpp"
+#include "mlrl/common/data/view_matrix_csr_binary.hpp"
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
