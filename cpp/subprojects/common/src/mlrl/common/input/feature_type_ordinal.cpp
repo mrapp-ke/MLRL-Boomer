@@ -4,7 +4,7 @@
 #include "feature_vector_decorator_ordinal.hpp"
 #include "mlrl/common/data/vector_sparse_array.hpp"
 #include "mlrl/common/input/feature_vector_ordinal.hpp"
-#include "mlrl/common/iterator/index_iterator.hpp"
+#include "mlrl/common/iterator/iterator_index.hpp"
 
 #include <algorithm>
 

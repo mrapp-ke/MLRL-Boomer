@@ -1,6 +1,6 @@
 #include "mlrl/common/sampling/instance_sampling_without_replacement.hpp"
 
-#include "mlrl/common/iterator/index_iterator.hpp"
+#include "mlrl/common/iterator/iterator_index.hpp"
 #include "mlrl/common/sampling/partition_bi.hpp"
 #include "mlrl/common/sampling/partition_single.hpp"
 #include "mlrl/common/sampling/weight_sampling.hpp"

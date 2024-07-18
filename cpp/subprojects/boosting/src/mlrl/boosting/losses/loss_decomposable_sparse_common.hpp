@@ -10,7 +10,7 @@
 
 #include "loss_decomposable_common.hpp"
 #include "mlrl/boosting/losses/loss_decomposable_sparse.hpp"
-#include "mlrl/common/iterator/non_zero_index_forward_iterator.hpp"
+#include "mlrl/common/iterator/iterator_forward_non_zero_index.hpp"
 
 #include <algorithm>
 #include <limits>
@@ -164,10 +164,10 @@ namespace boosting {
                                               CompleteIndexVector::const_iterator indicesBegin,
                                               CompleteIndexVector::const_iterator indicesEnd,
                                               SparseSetView<Tuple<float64>>& statisticView) const override {
-                auto labelIndicesBegin = make_non_zero_index_forward_iterator(labelMatrix.values_cbegin(exampleIndex),
-                                                                              labelMatrix.values_cend(exampleIndex));
-                auto labelIndicesEnd = make_non_zero_index_forward_iterator(labelMatrix.values_cend(exampleIndex),
-                                                                            labelMatrix.values_cend(exampleIndex));
+                auto labelIndicesBegin = createNonZeroIndexForwardIterator(labelMatrix.values_cbegin(exampleIndex),
+                                                                           labelMatrix.values_cend(exampleIndex));
+                auto labelIndicesEnd = createNonZeroIndexForwardIterator(labelMatrix.values_cend(exampleIndex),
+                                                                         labelMatrix.values_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(
                   labelIndicesBegin, labelIndicesEnd, scoreMatrix.values_cbegin(exampleIndex),
                   scoreMatrix.values_cend(exampleIndex), statisticView[exampleIndex],
@@ -249,10 +249,10 @@ namespace boosting {
              */
             float64 evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                              const SparseSetView<float64>& scoreMatrix) const override {
-                auto indicesBegin = make_non_zero_index_forward_iterator(labelMatrix.values_cbegin(exampleIndex),
-                                                                         labelMatrix.values_cend(exampleIndex));
-                auto indicesEnd = make_non_zero_index_forward_iterator(labelMatrix.values_cend(exampleIndex),
-                                                                       labelMatrix.values_cend(exampleIndex));
+                auto indicesBegin = createNonZeroIndexForwardIterator(labelMatrix.values_cbegin(exampleIndex),
+                                                                      labelMatrix.values_cend(exampleIndex));
+                auto indicesEnd = createNonZeroIndexForwardIterator(labelMatrix.values_cend(exampleIndex),
+                                                                    labelMatrix.values_cend(exampleIndex));
                 return evaluateInternally(indicesBegin, indicesEnd, scoreMatrix.values_cbegin(exampleIndex),
                                           scoreMatrix.values_cend(exampleIndex),
                                           DecomposableClassificationLoss::evaluateFunction_, labelMatrix.numCols);

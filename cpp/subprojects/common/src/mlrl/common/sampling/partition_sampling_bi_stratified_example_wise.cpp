@@ -1,6 +1,6 @@
 #include "mlrl/common/sampling/partition_sampling_bi_stratified_example_wise.hpp"
 
-#include "mlrl/common/iterator/index_iterator.hpp"
+#include "mlrl/common/iterator/iterator_index.hpp"
 #include "mlrl/common/sampling/stratified_sampling_example_wise.hpp"
 #include "mlrl/common/util/validation.hpp"
 

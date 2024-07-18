@@ -1,6 +1,6 @@
 #include "mlrl/boosting/prediction/probability_function_chain_rule.hpp"
 
-#include "mlrl/common/iterator/binary_forward_iterator.hpp"
+#include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
 
 namespace boosting {
 
@@ -34,7 +34,7 @@ namespace boosting {
             float64 transformScoresIntoJointProbability(uint32 labelVectorIndex, const LabelVector& labelVector,
                                                         View<float64>::const_iterator scoresBegin,
                                                         View<float64>::const_iterator scoresEnd) const override {
-                auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
+                auto labelIterator = createBinarySparseForwardIterator(labelVector.cbegin(), labelVector.cend());
                 uint32 numLabels = scoresEnd - scoresBegin;
                 float64 jointProbability = 1;
 
@@ -58,7 +58,7 @@ namespace boosting {
             float64 transformScoresIntoJointProbability(uint32 labelVectorIndex, const LabelVector& labelVector,
                                                         SparseSetView<float64>::const_row scores,
                                                         uint32 numLabels) const override {
-                auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
+                auto labelIterator = createBinarySparseForwardIterator(labelVector.cbegin(), labelVector.cend());
                 float64 jointProbability = 1;
 
                 for (uint32 i = 0; i < numLabels; i++) {

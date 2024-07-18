@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/boosting/losses/loss_decomposable.hpp"
-#include "mlrl/common/iterator/binary_forward_iterator.hpp"
+#include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
 #include "mlrl/common/util/math.hpp"
 
 #include <algorithm>
@@ -99,8 +99,8 @@ namespace boosting {
                 CContiguousView<Tuple<float64>>::value_iterator statisticIterator =
                   statisticView.values_begin(exampleIndex);
                 CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
-                auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
-                                                                  labelMatrix.indices_cend(exampleIndex));
+                auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
+                                                                       labelMatrix.indices_cend(exampleIndex));
                 uint32 numLabels = labelMatrix.numCols;
 
                 for (uint32 i = 0; i < numLabels; i++) {
@@ -161,8 +161,8 @@ namespace boosting {
             float64 evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                              const CContiguousView<float64>& scoreMatrix) const override final {
                 CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
-                auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
-                                                                  labelMatrix.indices_cend(exampleIndex));
+                auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
+                                                                       labelMatrix.indices_cend(exampleIndex));
                 uint32 numLabels = labelMatrix.numCols;
                 float64 mean = 0;
 
@@ -184,7 +184,7 @@ namespace boosting {
                                     View<float64>::const_iterator scoresBegin,
                                     View<float64>::const_iterator scoresEnd) const override final {
                 uint32 numLabels = scoresEnd - scoresBegin;
-                auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
+                auto labelIterator = createBinarySparseForwardIterator(labelVector.cbegin(), labelVector.cend());
                 float64 mean = 0;
 
                 for (uint32 i = 0; i < numLabels; i++) {

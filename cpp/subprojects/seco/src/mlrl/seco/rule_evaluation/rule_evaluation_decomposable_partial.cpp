@@ -3,7 +3,7 @@
 #include "mlrl/common/data/tuple.hpp"
 #include "mlrl/common/data/vector_sparse_array.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
-#include "mlrl/common/iterator/binary_forward_iterator.hpp"
+#include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 #include "rule_evaluation_decomposable_common.hpp"
 
@@ -55,7 +55,8 @@ namespace seco {
                   scoreVector_.indices_cbegin();
                 DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
-                auto labelIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
+                auto labelIterator =
+                  createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 DenseScoreVector<PartialIndexVector>::value_iterator valueIterator = scoreVector_.values_begin();
                 float64 sumOfQualities = 0;
                 uint32 previousIndex = 0;
@@ -122,7 +123,8 @@ namespace seco {
                 typename IndexVector::const_iterator indexIterator = labelIndices_.cbegin();
                 DenseConfusionMatrixVector::const_iterator totalIterator = confusionMatricesTotal.cbegin();
                 DenseConfusionMatrixVector::const_iterator coveredIterator = confusionMatricesCovered.cbegin();
-                auto labelIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
+                auto labelIterator =
+                  createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 SparseArrayVector<Tuple<float64>>::iterator sortedIterator = sortedVector_.begin();
                 uint32 previousIndex = 0;
 
