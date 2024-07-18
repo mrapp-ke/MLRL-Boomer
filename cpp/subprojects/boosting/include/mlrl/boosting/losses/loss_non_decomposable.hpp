@@ -176,6 +176,10 @@ namespace boosting {
               const override final {
                 return this->createNonDecomposableClassificationLossFactory();
             }
+
+            std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const override final {
+                return this->createNonDecomposableClassificationLossFactory();
+            }
     };
 
     /**
