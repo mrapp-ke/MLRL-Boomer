@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/indices/index_vector.hpp"
-#include "mlrl/common/iterator/binned_iterator.hpp"
+#include "mlrl/common/iterator/iterator_binned.hpp"
 #include "mlrl/common/sampling/weight_vector_bit.hpp"
 #include "mlrl/common/sampling/weight_vector_dense.hpp"
 #include "mlrl/common/sampling/weight_vector_equal.hpp"

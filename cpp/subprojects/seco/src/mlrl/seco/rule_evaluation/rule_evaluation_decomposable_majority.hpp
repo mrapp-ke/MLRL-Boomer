@@ -4,7 +4,7 @@
  */
 #pragma once
 
-#include "mlrl/common/iterator/binary_forward_iterator.hpp"
+#include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 #include "mlrl/seco/rule_evaluation/rule_evaluation_decomposable.hpp"
 
@@ -40,7 +40,8 @@ namespace seco {
                                                 const DenseConfusionMatrixVector& confusionMatricesCovered) override {
                 typename DenseScoreVector<T>::value_iterator valueIterator = scoreVector_.values_begin();
                 typename DenseScoreVector<T>::index_const_iterator indexIterator = scoreVector_.indices_cbegin();
-                auto labelIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
+                auto labelIterator =
+                  createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 uint32 numElements = scoreVector_.getNumElements();
                 uint32 previousIndex = 0;
 

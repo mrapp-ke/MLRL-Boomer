@@ -150,6 +150,6 @@ class NonZeroIndexForwardIterator {
  * @return          A `NonZeroIndexForwardIterator` that has been created
  */
 template<typename Iterator>
-static inline NonZeroIndexForwardIterator<Iterator> make_non_zero_index_forward_iterator(Iterator begin, Iterator end) {
+static inline NonZeroIndexForwardIterator<Iterator> createNonZeroIndexForwardIterator(Iterator begin, Iterator end) {
     return NonZeroIndexForwardIterator<Iterator>(begin, end);
 }

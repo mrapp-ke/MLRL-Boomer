@@ -2,7 +2,7 @@
 
 #include "mlrl/boosting/prediction/probability_function_chain_rule.hpp"
 #include "mlrl/boosting/prediction/probability_function_logistic.hpp"
-#include "mlrl/common/iterator/binary_forward_iterator.hpp"
+#include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
 #include "mlrl/common/util/math.hpp"
 
 namespace boosting {
@@ -230,8 +230,8 @@ namespace boosting {
                                                       CompleteIndexVector::const_iterator indicesBegin,
                                                       CompleteIndexVector::const_iterator indicesEnd,
                                                       CContiguousView<Tuple<float64>>& statisticView) const override {
-                auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
-                                                                  labelMatrix.indices_cend(exampleIndex));
+                auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
+                                                                       labelMatrix.indices_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
                                                        statisticView.values_begin(exampleIndex), labelMatrix.numCols);
             }
@@ -241,8 +241,8 @@ namespace boosting {
                                                       PartialIndexVector::const_iterator indicesBegin,
                                                       PartialIndexVector::const_iterator indicesEnd,
                                                       CContiguousView<Tuple<float64>>& statisticView) const override {
-                auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
-                                                                  labelMatrix.indices_cend(exampleIndex));
+                auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
+                                                                       labelMatrix.indices_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
                                                        statisticView.values_begin(exampleIndex), labelMatrix.numCols);
             }
@@ -259,8 +259,8 @@ namespace boosting {
             void updateNonDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                                  const CContiguousView<float64>& scoreMatrix,
                                                  DenseNonDecomposableStatisticView& statisticView) const override {
-                auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
-                                                                  labelMatrix.indices_cend(exampleIndex));
+                auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
+                                                                       labelMatrix.indices_cend(exampleIndex));
                 updateNonDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), labelIterator, statisticView.gradients_begin(exampleIndex),
                   statisticView.hessians_begin(exampleIndex), labelMatrix.numCols);
@@ -280,8 +280,8 @@ namespace boosting {
              */
             float64 evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                              const CContiguousView<float64>& scoreMatrix) const override {
-                auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
-                                                                  labelMatrix.indices_cend(exampleIndex));
+                auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
+                                                                       labelMatrix.indices_cend(exampleIndex));
                 return evaluateInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator, labelMatrix.numCols);
             }
 
@@ -291,7 +291,7 @@ namespace boosting {
             float64 measureDistance(uint32 labelVectorIndex, const LabelVector& labelVector,
                                     View<float64>::const_iterator scoresBegin,
                                     View<float64>::const_iterator scoresEnd) const override {
-                auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
+                auto labelIterator = createBinarySparseForwardIterator(labelVector.cbegin(), labelVector.cend());
                 uint32 numLabels = scoresEnd - scoresBegin;
                 return evaluateInternally(scoresBegin, labelIterator, numLabels);
             }

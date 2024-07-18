@@ -2,7 +2,7 @@
 
 #include "feature_type_numerical_common.hpp"
 #include "mlrl/common/input/feature_vector_equal.hpp"
-#include "mlrl/common/iterator/index_iterator.hpp"
+#include "mlrl/common/iterator/iterator_index.hpp"
 
 #include <algorithm>
 
