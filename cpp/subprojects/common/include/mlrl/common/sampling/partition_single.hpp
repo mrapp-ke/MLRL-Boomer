@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/iterator/index_iterator.hpp"
+#include "mlrl/common/iterator/iterator_index.hpp"
 #include "mlrl/common/sampling/partition.hpp"
 
 #include <memory>

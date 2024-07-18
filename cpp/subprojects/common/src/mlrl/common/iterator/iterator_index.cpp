@@ -1,14 +1,14 @@
-#include "mlrl/common/iterator/index_iterator.hpp"
+#include "mlrl/common/iterator/iterator_index.hpp"
 
 IndexIterator::IndexIterator() : IndexIterator(0) {}
 
 IndexIterator::IndexIterator(uint32 index) : index_(index) {}
 
-IndexIterator::reference IndexIterator::operator[](uint32 index) const {
+IndexIterator::value_type IndexIterator::operator[](uint32 index) const {
     return index;
 }
 
-IndexIterator::reference IndexIterator::operator*() const {
+IndexIterator::value_type IndexIterator::operator*() const {
     return index_;
 }
 
