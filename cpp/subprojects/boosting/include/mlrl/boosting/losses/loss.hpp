@@ -36,14 +36,6 @@ namespace boosting {
             virtual ~ILossConfig() {}
 
             /**
-             * Creates and returns a new object of type `IDistanceMeasureFactory` according to the specified
-             * configuration.
-             *
-             * @return An unique pointer to an object of type `IDistanceMeasureFactory` that has been created
-             */
-            virtual std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const = 0;
-
-            /**
              * Returns whether the loss function is decomposable or not.
              *
              * @return True, if the loss function is decomposable, false otherwise
@@ -105,6 +97,14 @@ namespace boosting {
              */
             virtual std::unique_ptr<IClassificationEvaluationMeasureFactory>
               createClassificationEvaluationMeasureFactory() const = 0;
+
+            /**
+             * Creates and returns a new object of type `IDistanceMeasureFactory` according to the specified
+             * configuration.
+             *
+             * @return An unique pointer to an object of type `IDistanceMeasureFactory` that has been created
+             */
+            virtual std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const = 0;
 
             /**
              * Creates and returns a new object of type `IMarginalProbabilityFunctionFactory` according to the specified

@@ -215,8 +215,7 @@ namespace boosting {
      * Defines an interface for all factories that allow to create instances of the type
      * `IDecomposableClassificationLoss`.
      */
-    class IDecomposableRegressionLossFactory : public IRegressionEvaluationMeasureFactory,
-                                               public IDistanceMeasureFactory {
+    class IDecomposableRegressionLossFactory : public IRegressionEvaluationMeasureFactory {
         public:
 
             virtual ~IDecomposableRegressionLossFactory() override {}
@@ -268,6 +267,10 @@ namespace boosting {
 
             std::unique_ptr<IClassificationEvaluationMeasureFactory> createClassificationEvaluationMeasureFactory()
               const override final {
+                return this->createDecomposableClassificationLossFactory();
+            }
+
+            std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory() const override final {
                 return this->createDecomposableClassificationLossFactory();
             }
     };
