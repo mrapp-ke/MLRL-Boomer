@@ -4,17 +4,24 @@
 
 namespace boosting {
 
-    static inline void updateGradientAndHessian(bool trueLabel, float64 predictedScore, float64& gradient,
-                                                float64& hessian) {
-        float64 expectedScore = trueLabel ? 1 : -1;
-        gradient = (predictedScore - expectedScore);
+    static inline void updateGradientAndHessianRegression(float32 expectedScore, float64 predictedScore,
+                                                          float64& gradient, float64& hessian) {
+        gradient = (predictedScore - (float64) expectedScore);
         hessian = 1;
     }
 
-    static inline float64 evaluatePrediction(bool trueLabel, float64 predictedScore) {
-        float64 expectedScore = trueLabel ? 1 : -1;
-        float64 difference = (expectedScore - predictedScore);
+    static inline void updateGradientAndHessianClassification(bool trueLabel, float64 predictedScore, float64& gradient,
+                                                              float64& hessian) {
+        updateGradientAndHessianRegression(trueLabel ? 1 : -1, predictedScore, gradient, hessian);
+    }
+
+    static inline float64 evaluatePredictionRegression(float32 expectedScore, float64 predictedScore) {
+        float64 difference = ((float64) expectedScore - predictedScore);
         return difference * difference;
+    }
+
+    static inline float64 evaluatePredictionClassification(bool trueLabel, float64 predictedScore) {
+        return evaluatePredictionRegression(trueLabel ? 1 : -1, predictedScore);
     }
 
     /**
@@ -26,11 +33,13 @@ namespace boosting {
         public:
 
             std::unique_ptr<IDecomposableClassificationLoss> createDecomposableClassificationLoss() const override {
-                return std::make_unique<DecomposableClassificationLoss>(&updateGradientAndHessian, &evaluatePrediction);
+                return std::make_unique<DecomposableClassificationLoss>(&updateGradientAndHessianClassification,
+                                                                        &evaluatePredictionClassification);
             }
 
             std::unique_ptr<IDecomposableRegressionLoss> createDecomposableRegressionLoss() const override {
-                return nullptr;  // TODO
+                return std::make_unique<DecomposableRegressionLoss>(&updateGradientAndHessianRegression,
+                                                                    &evaluatePredictionRegression);
             }
 
             std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
