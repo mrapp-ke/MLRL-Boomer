@@ -215,9 +215,10 @@ namespace boosting {
             }
     };
 
-    GfmBinaryPredictorConfig::GfmBinaryPredictorConfig(GetterFunction<ILossConfig> lossConfigGetter,
-                                                       GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : lossConfigGetter_(std::move(lossConfigGetter)), multiThreadingConfigGetter_(multiThreadingConfigGetter) {}
+    GfmBinaryPredictorConfig::GfmBinaryPredictorConfig(
+      ReadableProperty<ILossConfig> lossConfigGetter,
+      ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
+        : lossConfig_(std::move(lossConfigGetter)), multiThreadingConfig_(multiThreadingConfigGetter) {}
 
     bool GfmBinaryPredictorConfig::isProbabilityCalibrationModelUsed() const {
         return noMarginalProbabilityCalibrationModelPtr_ == nullptr;
@@ -235,10 +236,10 @@ namespace boosting {
     std::unique_ptr<IBinaryPredictorFactory> GfmBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
         std::unique_ptr<IJointProbabilityFunctionFactory> jointProbabilityFunctionFactoryPtr =
-          lossConfigGetter_().createJointProbabilityFunctionFactory();
+          lossConfig_.get().createJointProbabilityFunctionFactory();
 
         if (jointProbabilityFunctionFactoryPtr) {
-            uint32 numThreads = multiThreadingConfigGetter_().getNumThreads(featureMatrix, numOutputs);
+            uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numOutputs);
             return std::make_unique<GfmBinaryPredictorFactory>(
               std::move(jointProbabilityFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
               noJointProbabilityCalibrationModelPtr_.get(), numThreads);
@@ -250,10 +251,10 @@ namespace boosting {
     std::unique_ptr<ISparseBinaryPredictorFactory> GfmBinaryPredictorConfig::createSparsePredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IJointProbabilityFunctionFactory> jointProbabilityFunctionFactoryPtr =
-          lossConfigGetter_().createJointProbabilityFunctionFactory();
+          lossConfig_.get().createJointProbabilityFunctionFactory();
 
         if (jointProbabilityFunctionFactoryPtr) {
-            uint32 numThreads = multiThreadingConfigGetter_().getNumThreads(featureMatrix, numLabels);
+            uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numLabels);
             return std::make_unique<GfmSparseBinaryPredictorFactory>(
               std::move(jointProbabilityFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
               noJointProbabilityCalibrationModelPtr_.get(), numThreads);

@@ -417,10 +417,10 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
 };
 
 BeamSearchTopDownRuleInductionConfig::BeamSearchTopDownRuleInductionConfig(
-  RuleCompareFunction ruleCompareFunction, GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter)
+  RuleCompareFunction ruleCompareFunction, ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
     : ruleCompareFunction_(ruleCompareFunction), beamWidth_(4), resampleFeatures_(false), minCoverage_(1),
       minSupport_(0.0f), maxConditions_(0), maxHeadRefinements_(1), recalculatePredictions_(true),
-      multiThreadingConfigGetter_(multiThreadingConfigGetter) {}
+      multiThreadingConfig_(multiThreadingConfigGetter) {}
 
 uint32 BeamSearchTopDownRuleInductionConfig::getBeamWidth() const {
     return beamWidth_;
@@ -508,7 +508,7 @@ std::unique_ptr<IRuleInductionFactory> BeamSearchTopDownRuleInductionConfig::cre
         minCoverage = std::min(numExamples, minCoverage_);
     }
 
-    uint32 numThreads = multiThreadingConfigGetter_().getNumThreads(featureMatrix, outputMatrix.getNumOutputs());
+    uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, outputMatrix.getNumOutputs());
     return std::make_unique<BeamSearchTopDownRuleInductionFactory>(ruleCompareFunction_, beamWidth_, resampleFeatures_,
                                                                    minCoverage, maxConditions_, maxHeadRefinements_,
                                                                    recalculatePredictions_, numThreads);

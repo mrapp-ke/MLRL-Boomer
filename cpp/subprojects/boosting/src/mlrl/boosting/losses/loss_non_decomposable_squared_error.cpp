@@ -245,13 +245,13 @@ namespace boosting {
     };
 
     NonDecomposableSquaredErrorLossConfig::NonDecomposableSquaredErrorLossConfig(
-      GetterFunction<IHeadConfig> headConfigGetter)
-        : headConfigGetter_(headConfigGetter) {}
+      ReadableProperty<IHeadConfig> headConfigGetter)
+        : headConfig_(headConfigGetter) {}
 
     std::unique_ptr<IStatisticsProviderFactory> NonDecomposableSquaredErrorLossConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
       const Lapack& lapack, bool preferSparseStatistics) const {
-        return headConfigGetter_().createStatisticsProviderFactory(featureMatrix, labelMatrix, *this, blas, lapack);
+        return headConfig_.get().createStatisticsProviderFactory(featureMatrix, labelMatrix, *this, blas, lapack);
     }
 
     std::unique_ptr<IMarginalProbabilityFunctionFactory>

@@ -611,9 +611,9 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
             : ruleCompareFunction_(ruleCompareFunction),
               defaultRuleConfigPtr_(std::make_unique<DefaultRuleConfig>(true)),
               ruleModelAssemblageConfigPtr_(
-                std::make_unique<SequentialRuleModelAssemblageConfig>(getterFunction(defaultRuleConfigPtr_))),
+                std::make_unique<SequentialRuleModelAssemblageConfig>(readableProperty(defaultRuleConfigPtr_))),
               ruleInductionConfigPtr_(std::make_unique<GreedyTopDownRuleInductionConfig>(
-                ruleCompareFunction_, getterFunction(parallelRuleRefinementConfigPtr_))),
+                ruleCompareFunction_, readableProperty(parallelRuleRefinementConfigPtr_))),
               featureBinningConfigPtr_(std::make_unique<NoFeatureBinningConfig>()),
               outputSamplingConfigPtr_(std::make_unique<NoOutputSamplingConfig>()),
               instanceSamplingConfigPtr_(std::make_unique<NoInstanceSamplingConfig>()),

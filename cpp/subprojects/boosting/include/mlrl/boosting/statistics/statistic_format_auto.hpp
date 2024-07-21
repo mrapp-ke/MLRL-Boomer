@@ -20,25 +20,25 @@ namespace boosting {
     class AutomaticStatisticsConfig final : public IStatisticsConfig {
         private:
 
-            const GetterFunction<ILossConfig> lossConfigGetter_;
+            const ReadableProperty<ILossConfig> lossConfig_;
 
-            const GetterFunction<IHeadConfig> headConfigGetter_;
+            const ReadableProperty<IHeadConfig> headConfig_;
 
-            const GetterFunction<IDefaultRuleConfig> defaultRuleConfigGetter_;
+            const ReadableProperty<IDefaultRuleConfig> defaultRuleConfig_;
 
         public:
 
             /**
-             * @param lossConfigGetter          A `GetterFunction` that allows to access the `ILossConfig` that stores
+             * @param lossConfigGetter          A `ReadableProperty` that allows to access the `ILossConfig` that stores
              *                                  the configuration of the loss function
-             * @param headConfigGetter          A `GetterFunction` that allows to access the `IHeadConfig` that stores
+             * @param headConfigGetter          A `ReadableProperty` that allows to access the `IHeadConfig` that stores
              *                                  the configuration of the rule heads
-             * @param defaultRuleConfigGetter   A `GetterFunction` that allows to access the `IDefaultRuleConfig` that
+             * @param defaultRuleConfigGetter   A `ReadableProperty` that allows to access the `IDefaultRuleConfig` that
              *                                  stores the configuration of the default rule
              */
-            AutomaticStatisticsConfig(GetterFunction<ILossConfig> lossConfigGetter,
-                                      GetterFunction<IHeadConfig> headConfigGetter,
-                                      GetterFunction<IDefaultRuleConfig> defaultRuleConfigGetter);
+            AutomaticStatisticsConfig(ReadableProperty<ILossConfig> lossConfigGetter,
+                                      ReadableProperty<IHeadConfig> headConfigGetter,
+                                      ReadableProperty<IDefaultRuleConfig> defaultRuleConfigGetter);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,

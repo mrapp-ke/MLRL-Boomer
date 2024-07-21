@@ -6,27 +6,26 @@
 namespace boosting {
 
     AutomaticProbabilityPredictorConfig::AutomaticProbabilityPredictorConfig(
-      GetterFunction<ILossConfig> lossConfigGetter, GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : lossConfigGetter_(lossConfigGetter), multiThreadingConfigGetter_(multiThreadingConfigGetter) {}
+      ReadableProperty<ILossConfig> lossConfigGetter,
+      ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
+        : lossConfig_(lossConfigGetter), multiThreadingConfig_(multiThreadingConfigGetter) {}
 
     std::unique_ptr<IProbabilityPredictorFactory> AutomaticProbabilityPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
-        if (lossConfigGetter_().isDecomposable()) {
-            return OutputWiseProbabilityPredictorConfig(lossConfigGetter_, multiThreadingConfigGetter_)
+        if (lossConfig_.get().isDecomposable()) {
+            return OutputWiseProbabilityPredictorConfig(lossConfig_, multiThreadingConfig_)
               .createPredictorFactory(featureMatrix, numOutputs);
         } else {
-            return MarginalizedProbabilityPredictorConfig(lossConfigGetter_, multiThreadingConfigGetter_)
+            return MarginalizedProbabilityPredictorConfig(lossConfig_, multiThreadingConfig_)
               .createPredictorFactory(featureMatrix, numOutputs);
         }
     }
 
     bool AutomaticProbabilityPredictorConfig::isLabelVectorSetNeeded() const {
-        if (lossConfigGetter_().isDecomposable()) {
-            return OutputWiseProbabilityPredictorConfig(lossConfigGetter_, multiThreadingConfigGetter_)
-              .isLabelVectorSetNeeded();
+        if (lossConfig_.get().isDecomposable()) {
+            return OutputWiseProbabilityPredictorConfig(lossConfig_, multiThreadingConfig_).isLabelVectorSetNeeded();
         } else {
-            return MarginalizedProbabilityPredictorConfig(lossConfigGetter_, multiThreadingConfigGetter_)
-              .isLabelVectorSetNeeded();
+            return MarginalizedProbabilityPredictorConfig(lossConfig_, multiThreadingConfig_).isLabelVectorSetNeeded();
         }
     }
 

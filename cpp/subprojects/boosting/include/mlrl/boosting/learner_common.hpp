@@ -105,14 +105,14 @@ namespace boosting {
             BoostedRuleLearnerConfig()
                 : RuleLearnerConfig(BOOSTED_RULE_COMPARE_FUNCTION),
                   headConfigPtr_(std::make_unique<CompleteHeadConfig>(
-                    getterFunction(labelBinningConfigPtr_), getterFunction(parallelStatisticUpdateConfigPtr_),
-                    getterFunction(l1RegularizationConfigPtr_), getterFunction(l2RegularizationConfigPtr_))),
-                  statisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(getterFunction(lossConfigPtr_))),
-                  lossConfigPtr_(std::make_unique<DecomposableLogisticLossConfig>(getterFunction(headConfigPtr_))),
+                    readableProperty(labelBinningConfigPtr_), readableProperty(parallelStatisticUpdateConfigPtr_),
+                    readableProperty(l1RegularizationConfigPtr_), readableProperty(l2RegularizationConfigPtr_))),
+                  statisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(readableProperty(lossConfigPtr_))),
+                  lossConfigPtr_(std::make_unique<DecomposableLogisticLossConfig>(readableProperty(headConfigPtr_))),
                   l1RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
                   l2RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
                   labelBinningConfigPtr_(std::make_unique<NoLabelBinningConfig>(
-                    getterFunction(l1RegularizationConfigPtr_), getterFunction(l2RegularizationConfigPtr_))) {}
+                    readableProperty(l1RegularizationConfigPtr_), readableProperty(l2RegularizationConfigPtr_))) {}
 
             virtual ~BoostedRuleLearnerConfig() override {}
 

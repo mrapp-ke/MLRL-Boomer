@@ -6,38 +6,37 @@
 namespace boosting {
 
     AutomaticBinaryPredictorConfig::AutomaticBinaryPredictorConfig(
-      GetterFunction<ILossConfig> lossConfigGetter, GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : lossConfigGetter_(lossConfigGetter), multiThreadingConfigGetter_(multiThreadingConfigGetter) {}
+      ReadableProperty<ILossConfig> lossConfigGetter,
+      ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
+        : lossConfig_(lossConfigGetter), multiThreadingConfig_(multiThreadingConfigGetter) {}
 
     std::unique_ptr<IBinaryPredictorFactory> AutomaticBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
-        if (lossConfigGetter_().isDecomposable()) {
-            return OutputWiseBinaryPredictorConfig(lossConfigGetter_, multiThreadingConfigGetter_)
+        if (lossConfig_.get().isDecomposable()) {
+            return OutputWiseBinaryPredictorConfig(lossConfig_, multiThreadingConfig_)
               .createPredictorFactory(featureMatrix, numOutputs);
         } else {
-            return ExampleWiseBinaryPredictorConfig(lossConfigGetter_, multiThreadingConfigGetter_)
+            return ExampleWiseBinaryPredictorConfig(lossConfig_, multiThreadingConfig_)
               .createPredictorFactory(featureMatrix, numOutputs);
         }
     }
 
     std::unique_ptr<ISparseBinaryPredictorFactory> AutomaticBinaryPredictorConfig::createSparsePredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
-        if (lossConfigGetter_().isDecomposable()) {
-            return OutputWiseBinaryPredictorConfig(lossConfigGetter_, multiThreadingConfigGetter_)
+        if (lossConfig_.get().isDecomposable()) {
+            return OutputWiseBinaryPredictorConfig(lossConfig_, multiThreadingConfig_)
               .createSparsePredictorFactory(featureMatrix, numLabels);
         } else {
-            return ExampleWiseBinaryPredictorConfig(lossConfigGetter_, multiThreadingConfigGetter_)
+            return ExampleWiseBinaryPredictorConfig(lossConfig_, multiThreadingConfig_)
               .createSparsePredictorFactory(featureMatrix, numLabels);
         }
     }
 
     bool AutomaticBinaryPredictorConfig::isLabelVectorSetNeeded() const {
-        if (lossConfigGetter_().isDecomposable()) {
-            return OutputWiseBinaryPredictorConfig(lossConfigGetter_, multiThreadingConfigGetter_)
-              .isLabelVectorSetNeeded();
+        if (lossConfig_.get().isDecomposable()) {
+            return OutputWiseBinaryPredictorConfig(lossConfig_, multiThreadingConfig_).isLabelVectorSetNeeded();
         } else {
-            return ExampleWiseBinaryPredictorConfig(lossConfigGetter_, multiThreadingConfigGetter_)
-              .isLabelVectorSetNeeded();
+            return ExampleWiseBinaryPredictorConfig(lossConfig_, multiThreadingConfig_).isLabelVectorSetNeeded();
         }
     }
 

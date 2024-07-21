@@ -16,15 +16,15 @@
 class SequentialRuleModelAssemblageConfig final : public IRuleModelAssemblageConfig {
     private:
 
-        const GetterFunction<IDefaultRuleConfig> defaultRuleConfigGetter_;
+        const ReadableProperty<IDefaultRuleConfig> defaultRuleConfig_;
 
     public:
 
         /**
-         * @param defaultRuleConfigGetter A `GetterFunction` that allows to access the `IDefaultRuleConfig` that stores
-         *                                the configuration of the default rule
+         * @param defaultRuleConfigGetter A `ReadableProperty` that allows to access the `IDefaultRuleConfig` that
+         *                                stores the configuration of the default rule
          */
-        SequentialRuleModelAssemblageConfig(GetterFunction<IDefaultRuleConfig> defaultRuleConfigGetter);
+        SequentialRuleModelAssemblageConfig(ReadableProperty<IDefaultRuleConfig> defaultRuleConfigGetter);
 
         std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
           const IRowWiseLabelMatrix& labelMatrix) const override;
