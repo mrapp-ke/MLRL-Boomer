@@ -16,14 +16,6 @@ template<typename T>
 using GetterFunction = std::function<T&()>;
 
 /**
- * A setter function.
- *
- * @tparam T The argument type of the setter function
- */
-template<typename T>
-using SetterFunction = std::function<void(std::unique_ptr<T>&&)>;
-
-/**
  * Provides access to a property via a getter function.
  *
  * @tparam T The type of the property
@@ -53,14 +45,19 @@ struct WritableProperty {
     public:
 
         /**
+         * A setter function.
+         */
+        typedef std::function<void(std::unique_ptr<T>&&)> SetterFunction;
+
+        /**
          * The setter function.
          */
-        const SetterFunction<T> set;
+        const SetterFunction set;
 
         /**
          * @param setterFunction The setter function
          */
-        explicit WritableProperty(SetterFunction<T> setterFunction) : set(setterFunction) {}
+        explicit WritableProperty(SetterFunction setterFunction) : set(setterFunction) {}
 };
 
 /**
@@ -77,7 +74,7 @@ struct Property : public ReadableProperty<T>,
          * @param getterFunction    The getter function
          * @param setterFunction    The setter function
          */
-        Property(GetterFunction<T> getterFunction, SetterFunction<T> setterFunction)
+        Property(GetterFunction<T> getterFunction, typename WritableProperty<T>::SetterFunction setterFunction)
             : ReadableProperty<T>(getterFunction), WritableProperty<T>(setterFunction) {}
 };
 
@@ -103,7 +100,7 @@ static inline GetterFunction<T> getterFunction(const std::unique_ptr<T>& uniqueP
  * @return          The `SetterFunction` that has been created
  */
 template<typename T>
-static inline SetterFunction<T> setterFunction(std::unique_ptr<T>& uniquePtr) {
+static inline typename WritableProperty<T>::SetterFunction setterFunction(std::unique_ptr<T>& uniquePtr) {
     return [&uniquePtr](std::unique_ptr<T>&& ptr) {
         uniquePtr = std::move(ptr);
     };
