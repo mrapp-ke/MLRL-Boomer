@@ -83,6 +83,15 @@ namespace boosting {
             virtual Property<IClassificationLossConfig> getClassificationLossConfig() = 0;
 
             /**
+             * Returns a `Property` that allows to access the `IRegressionLossConfig` that stores the configuration of
+             * the loss function that should be used in regression problems.
+             *
+             * @return A `Property` that allows to access the `IRegressionLossConfig` that stores the configuration of
+             *         the loss function that should be used in regression problems
+             */
+            virtual Property<IRegressionLossConfig> getRegressionLossConfig() = 0;
+
+            /**
              * Returns a `Property` that allows to access the `ILabelBinningConfig` that stores the configuration of the
              * method for the assignment of labels to bins.
              *
@@ -191,7 +200,8 @@ namespace boosting {
              */
             virtual void useDenseStatistics() {
                 Property<IStatisticsConfig> property = this->getStatisticsConfig();
-                property.set(std::make_unique<DenseStatisticsConfig>(this->getClassificationLossConfig()));
+                property.set(std::make_unique<DenseStatisticsConfig>(this->getClassificationLossConfig(),
+                                                                     this->getRegressionLossConfig()));
             }
     };
 

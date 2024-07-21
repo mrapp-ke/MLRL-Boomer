@@ -49,8 +49,26 @@ namespace boosting {
              * @return              An unique pointer to an object of type `IClassificationStatisticsProviderFactory`
              *                      that has been created
              */
-            virtual std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+            virtual std::unique_ptr<IClassificationStatisticsProviderFactory>
+              createClassificationStatisticsProviderFactory(const IFeatureMatrix& featureMatrix,
+                                                            const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+                                                            const Lapack& lapack) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IRegressionStatisticsProviderFactory` according to the
+             * specified configuration.
+             *
+             * @param featureMatrix     A reference to an object of type `IFeatureMatrix` that provides access to the
+             *                          feature values of the training examples
+             * @param regressionMatrix  A reference to an object of type `IRowWiseRegressionMatrix` that provides
+             *                          row-wise access to the regression scores of the training examples
+             * @param blas              A reference to an object of type `Blas` that allows to execute BLAS routines
+             * @param lapack            A reference to an object of type `Lapack` that allows to execute LAPACK routines
+             * @return                  An unique pointer to an object of type `IRegressionStatisticsProviderFactory`
+             *                          that has been created
+             */
+            virtual std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
               const Lapack& lapack) const = 0;
 
             /**
