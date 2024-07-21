@@ -75,8 +75,9 @@ namespace boosting {
     };
 
     OutputWiseProbabilityPredictorConfig::OutputWiseProbabilityPredictorConfig(
-      GetterFunction<ILossConfig> lossConfigGetter, GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : lossConfigGetter_(lossConfigGetter), multiThreadingConfigGetter_(multiThreadingConfigGetter) {}
+      ReadableProperty<ILossConfig> lossConfigGetter,
+      ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
+        : lossConfig_(lossConfigGetter), multiThreadingConfig_(multiThreadingConfigGetter) {}
 
     bool OutputWiseProbabilityPredictorConfig::isProbabilityCalibrationModelUsed() const {
         return noMarginalProbabilityCalibrationModelPtr_ == nullptr;
@@ -92,10 +93,10 @@ namespace boosting {
     std::unique_ptr<IProbabilityPredictorFactory> OutputWiseProbabilityPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
         std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr =
-          lossConfigGetter_().createMarginalProbabilityFunctionFactory();
+          lossConfig_.get().createMarginalProbabilityFunctionFactory();
 
         if (marginalProbabilityFunctionFactoryPtr) {
-            uint32 numThreads = multiThreadingConfigGetter_().getNumThreads(featureMatrix, numOutputs);
+            uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numOutputs);
             return std::make_unique<OutputWiseProbabilityPredictorFactory>(
               std::move(marginalProbabilityFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
               numThreads);

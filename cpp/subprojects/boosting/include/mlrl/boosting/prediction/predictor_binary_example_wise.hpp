@@ -75,21 +75,21 @@ namespace boosting {
 
             std::unique_ptr<IJointProbabilityCalibrationModel> noJointProbabilityCalibrationModelPtr_;
 
-            const GetterFunction<ILossConfig> lossConfigGetter_;
+            const ReadableProperty<ILossConfig> lossConfig_;
 
-            const GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter_;
+            const ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
 
         public:
 
             /**
-             * @param lossConfigGetter            A `GetterFunction` that allows to access the `ILossConfig` that stores
-             *                                    the configuration of the loss function
-             * @param multiThreadingConfigGetter  A `GetterFunction` that allows to access the `IMultiThreadingConfig`
+             * @param lossConfigGetter            A `ReadableProperty` that allows to access the `ILossConfig` that
+             *                                    stores the configuration of the loss function
+             * @param multiThreadingConfigGetter  A `ReadableProperty` that allows to access the `IMultiThreadingConfig`
              *                                    that stores the configuration of the multi-threading behavior that
              *                                    should be used to predict for several query examples in parallel
              */
-            ExampleWiseBinaryPredictorConfig(GetterFunction<ILossConfig> lossConfigGetter,
-                                             GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter);
+            ExampleWiseBinaryPredictorConfig(ReadableProperty<ILossConfig> lossConfigGetter,
+                                             ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter);
 
             bool isBasedOnProbabilities() const override;
 

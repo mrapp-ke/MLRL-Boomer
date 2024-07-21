@@ -375,7 +375,7 @@ class ISequentialRuleModelAssemblageMixin : virtual public IRuleLearnerConfig {
          */
         virtual void useSequentialRuleModelAssemblage() {
             Property<IRuleModelAssemblageConfig> property = this->getRuleModelAssemblageConfig();
-            property.set(std::make_unique<SequentialRuleModelAssemblageConfig>(this->getDefaultRuleConfig().get));
+            property.set(std::make_unique<SequentialRuleModelAssemblageConfig>(this->getDefaultRuleConfig()));
         }
 };
 
@@ -414,7 +414,7 @@ class MLRLCOMMON_API IGreedyTopDownRuleInductionMixin : virtual public IRuleLear
         virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() {
             Property<IRuleInductionConfig> property = this->getRuleInductionConfig();
             std::unique_ptr<GreedyTopDownRuleInductionConfig> ptr = std::make_unique<GreedyTopDownRuleInductionConfig>(
-              this->getRuleCompareFunction(), this->getParallelRuleRefinementConfig().get);
+              this->getRuleCompareFunction(), this->getParallelRuleRefinementConfig());
             IGreedyTopDownRuleInductionConfig& ref = *ptr;
             property.set(std::move(ptr));
             return ref;
@@ -439,7 +439,7 @@ class MLRLCOMMON_API IBeamSearchTopDownRuleInductionMixin : virtual public IRule
             Property<IRuleInductionConfig> property = this->getRuleInductionConfig();
             std::unique_ptr<BeamSearchTopDownRuleInductionConfig> ptr =
               std::make_unique<BeamSearchTopDownRuleInductionConfig>(this->getRuleCompareFunction(),
-                                                                     this->getParallelRuleRefinementConfig().get);
+                                                                     this->getParallelRuleRefinementConfig());
             IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
             property.set(std::move(ptr));
             return ref;

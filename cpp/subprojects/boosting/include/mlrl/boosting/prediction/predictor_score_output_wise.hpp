@@ -18,16 +18,16 @@ namespace boosting {
     class OutputWiseScorePredictorConfig final : public IScorePredictorConfig {
         private:
 
-            const GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter_;
+            const ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
 
         public:
 
             /**
-             * @param multiThreadingConfigGetter A `GetterFunction` that allows to access the `IMultiThreadingConfig`
+             * @param multiThreadingConfigGetter A `ReadableProperty` that allows to access the `IMultiThreadingConfig`
              *                                   that stores the configuration of the multi-threading behavior that
              *                                   should be used to predict for several query examples in parallel
              */
-            OutputWiseScorePredictorConfig(GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter);
+            OutputWiseScorePredictorConfig(ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter);
 
             /**
              * @see `IPredictorConfig::createPredictorFactory`

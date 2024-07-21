@@ -92,22 +92,22 @@ namespace boosting {
 
             uint32 maxOutputs_;
 
-            const GetterFunction<ILabelBinningConfig> labelBinningConfigGetter_;
+            const ReadableProperty<ILabelBinningConfig> labelBinningConfig_;
 
-            const GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter_;
+            const ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
 
         public:
 
             /**
-             * @param labelBinningConfigGetter    A `GetterFunction` that allows to access the `ILabelBinningConfig`
+             * @param labelBinningConfigGetter    A `ReadableProperty` that allows to access the `ILabelBinningConfig`
              *                                    that stores the configuration of the method for assigning labels to
              *                                    bins
-             * @param multiThreadingConfigGetter  A `GetterFunction` that allows to access the `IMultiThreadingConfig`
+             * @param multiThreadingConfigGetter  A `ReadableProperty` that allows to access the `IMultiThreadingConfig`
              *                                    that stores the configuration of the multi-threading behavior that
              *                                    should be used for the parallel update of statistics
              */
-            FixedPartialHeadConfig(GetterFunction<ILabelBinningConfig> labelBinningConfigGetter,
-                                   GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter);
+            FixedPartialHeadConfig(ReadableProperty<ILabelBinningConfig> labelBinningConfigGetter,
+                                   ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter);
 
             float32 getOutputRatio() const override;
 
