@@ -22,42 +22,23 @@ namespace boosting {
      * Allows to configure the individual modules of a rule learner that makes use of gradient boosting, depending on an
      * `IBoostedRuleLearnerConfig`.
      */
-    class BoostedRuleLearnerConfigurator final : public RuleLearnerConfigurator {
+    class BoostedRuleLearnerConfigurator : public RuleLearnerConfigurator {
         private:
 
-            const std::unique_ptr<IBoostedRuleLearnerConfig> configPtr_;
-
-            const Blas blas_;
-
-            const Lapack lapack_;
+            const IBoostedRuleLearnerConfig& config_;
 
         public:
 
             /**
-             * @param configPtr     An unique pointer to an object of type `IBoostedRuleLearnerConfig`
-             * @param ddotFunction  A function pointer to BLAS' DDOT routine
-             * @param dspmvFunction A function pointer to BLAS' DSPMV routine
-             * @param dsysvFunction A function pointer to LAPACK'S DSYSV routine
+             * @param config A reference to an object of type `IBoostedRuleLearnerConfig`
              */
-            BoostedRuleLearnerConfigurator(std::unique_ptr<IBoostedRuleLearnerConfig> configPtr,
-                                           Blas::DdotFunction ddotFunction, Blas::DspmvFunction dspmvFunction,
-                                           Lapack::DsysvFunction dsysvFunction)
-                : RuleLearnerConfigurator(*configPtr), configPtr_(std::move(configPtr)),
-                  blas_(ddotFunction, dspmvFunction), lapack_(dsysvFunction) {}
-
-            /**
-             * @see `RuleLearnerConfigurator::createStatisticsProviderFactory`
-             */
-            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override {
-                return configPtr_->getStatisticsConfig().get().createClassificationStatisticsProviderFactory(
-                  featureMatrix, labelMatrix, blas_, lapack_);
-            }
+            BoostedRuleLearnerConfigurator(IBoostedRuleLearnerConfig& config)
+                : RuleLearnerConfigurator(config), config_(config) {}
 
             /**
              * @see `RuleLearnerConfigurator::createModelBuilderFactory`
              */
-            std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const override {
+            std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const override final {
                 return std::make_unique<RuleListBuilderFactory>();
             }
     };
