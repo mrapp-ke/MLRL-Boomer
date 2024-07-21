@@ -47,13 +47,22 @@ namespace boosting {
             virtual Property<IHeadConfig> getHeadConfig() = 0;
 
             /**
-             * Returns a `Property` that allows to access the `IStatisticsConfig` that stores the configuration of the
-             * statistics that should be used by the rule learner.
+             * Returns a `Property` that allows to access the `IClassificationStatisticsConfig` that stores the
+             * configuration of the statistics that should be used by the rule learner in classification problems.
              *
-             * @return A `Property` that allows to access the `IStatisticsConfig` that stores the configuration of the
-             *         statistics
+             * @return A `Property` that allows to access the `IClassificationStatisticsConfig` that stores the
+             *         configuration of the statistics
              */
-            virtual Property<IStatisticsConfig> getStatisticsConfig() = 0;
+            virtual Property<IClassificationStatisticsConfig> getClassificationStatisticsConfig() = 0;
+
+            /**
+             * Returns a `Property` that allows to access the `IRegressionStatisticsConfig` that stores the
+             * configuration of the statistics that should be used by the rule learner in regression problems.
+             *
+             * @return A `Property` that allows to access the `IRegressionStatisticsConfig` that stores the
+             *         configuration of the statistics
+             */
+            virtual Property<IRegressionStatisticsConfig> getRegressionStatisticsConfig() = 0;
 
             /**
              * Returns a `Property` that allows to access the `IRegularizationConfig` that stores the configuration of
@@ -199,9 +208,9 @@ namespace boosting {
              * Configures the rule learner to use a dense representation of gradients and Hessians.
              */
             virtual void useDenseStatistics() {
-                Property<IStatisticsConfig> property = this->getStatisticsConfig();
-                property.set(std::make_unique<DenseStatisticsConfig>(this->getClassificationLossConfig(),
-                                                                     this->getRegressionLossConfig()));
+                Property<IClassificationStatisticsConfig> property = this->getClassificationStatisticsConfig();
+                property.set(
+                  std::make_unique<DenseClassificationStatisticsConfig>(this->getClassificationLossConfig()));
             }
     };
 

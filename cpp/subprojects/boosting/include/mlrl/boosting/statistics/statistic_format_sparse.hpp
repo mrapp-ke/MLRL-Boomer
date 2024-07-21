@@ -13,31 +13,51 @@ namespace boosting {
 
     /**
      * Allows to configure a sparse format for storing statistics about the quality of predictions for training
-     * examples.
+     * examples in classification problems.
      */
-    class SparseStatisticsConfig final : public IStatisticsConfig {
+    class SparseClassificationStatisticsConfig final : public IClassificationStatisticsConfig {
         private:
 
-            const GetterFunction<IClassificationLossConfig> classificationLossConfigGetter_;
-
-            const GetterFunction<IRegressionLossConfig> regressionLossConfigGetter_;
+            const GetterFunction<IClassificationLossConfig> lossConfigGetter_;
 
         public:
 
             /**
-             * @param classificationLossConfigGetter    A `GetterFunction` that allows to access the
-             *                                          `IClassificationLossConfig` that stores the configuration of the
-             *                                          loss function that should be used in classification problems
-             * @param regressionLossConfigGetter        A `GetterFunction` that allows to access the
-             *                                          `IRegressionLossConfig` that stores the configuration of the
-             *                                          loss function that should be used in regression problems
+             * @param lossConfigGetter  A `GetterFunction` that allows to access the `IClassificationLossConfig` that
+             *                          stores the configuration of the loss function that should be used in
+             *                          classification problems
+             * @param lossConfigGetter  A `GetterFunction` that allows to access the `IRegressionLossConfig` that stores
+             *                          the configuration of the loss function that should be used in regression
+             *                          problems
              */
-            SparseStatisticsConfig(GetterFunction<IClassificationLossConfig> classificationLossConfigGetter,
-                                   GetterFunction<IRegressionLossConfig> regressionLossConfigGetter);
+            SparseClassificationStatisticsConfig(GetterFunction<IClassificationLossConfig> lossConfigGetter);
 
             std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
               const Lapack& lapack) const override;
+
+            bool isDense() const override;
+
+            bool isSparse() const override;
+    };
+
+    /**
+     * Allows to configure a sparse format for storing statistics about the quality of predictions for training
+     * examples in regression problems.
+     */
+    class SparseRegressionStatisticsConfig final : public IRegressionStatisticsConfig {
+        private:
+
+            const GetterFunction<IRegressionLossConfig> lossConfigGetter_;
+
+        public:
+
+            /**
+             * @param lossConfigGetter  A `GetterFunction` that allows to access the `IRegressionLossConfig` that stores
+             *                          the configuration of the loss function that should be used in regression
+             *                          problems
+             */
+            SparseRegressionStatisticsConfig(GetterFunction<IRegressionLossConfig> lossConfigGetter);
 
             std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,

@@ -80,8 +80,9 @@ namespace boosting {
              */
             virtual void useAutomaticDefaultRule() {
                 Property<IDefaultRuleConfig> property = this->getDefaultRuleConfig();
-                property.set(std::make_unique<AutomaticDefaultRuleConfig>(
-                  this->getStatisticsConfig(), this->getClassificationLossConfig(), this->getHeadConfig()));
+                property.set(std::make_unique<AutomaticDefaultRuleConfig>(this->getClassificationStatisticsConfig(),
+                                                                          this->getClassificationLossConfig(),
+                                                                          this->getHeadConfig()));
             }
     };
 
@@ -98,9 +99,9 @@ namespace boosting {
              * Configures the rule learner to use a sparse representation of gradients and Hessians, if possible.
              */
             virtual void useSparseStatistics() {
-                Property<IStatisticsConfig> property = this->getStatisticsConfig();
-                property.set(std::make_unique<SparseStatisticsConfig>(this->getClassificationLossConfig(),
-                                                                      this->getRegressionLossConfig()));
+                Property<IClassificationStatisticsConfig> property = this->getClassificationStatisticsConfig();
+                property.set(
+                  std::make_unique<SparseClassificationStatisticsConfig>(this->getClassificationLossConfig()));
             }
     };
 
@@ -118,10 +119,10 @@ namespace boosting {
              * and Hessians should be used.
              */
             virtual void useAutomaticStatistics() {
-                Property<IStatisticsConfig> property = this->getStatisticsConfig();
-                property.set(std::make_unique<AutomaticStatisticsConfig>(
-                  this->getClassificationLossConfig(), this->getRegressionLossConfig(),
-                  this->getHeadConfig(), this->getDefaultRuleConfig()));
+                Property<IClassificationStatisticsConfig> property = this->getClassificationStatisticsConfig();
+                property.set(std::make_unique<AutomaticClassificationStatisticsConfig>(
+                  this->getClassificationLossConfig(), this->getHeadConfig(),
+                  this->getDefaultRuleConfig()));
             }
     };
 
