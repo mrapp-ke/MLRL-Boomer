@@ -458,7 +458,7 @@ class RuleLearnerConfigurator {
 
         /**
          * Must be implemented by subclasses in order to create the `IClassificationStatisticsProviderFactory` to be
-         * used by the rule learner.
+         * used by the rule learner in classification problems.
          *
          * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
          *                      values of the training examples
@@ -469,6 +469,20 @@ class RuleLearnerConfigurator {
          */
         virtual std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
           const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const = 0;
+
+        /**
+         * Must be implemented by subclasses in order to create the `IRegressionStatisticsProviderFactory` to be used by
+         * the rule learner in regression problems.
+         *
+         * @param featureMatrix     A reference to an object of type `IFeatureMatrix` that provides access to the
+         *                          feature values of the training examples
+         * @param regressionMatrix  A reference to an object of type `IRowWiseRegressionMatrix` that provides row-wise
+         *                          access to the labels of the training examples
+         * @return                  An unique pointer to an object of type `IClassificationStatisticsProviderFactory`
+         *                          that has been created
+         */
+        virtual std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
+          const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix) const = 0;
 
         /**
          * Must be implemented by subclasses in order to create the `IModelBuilderFactory` to be used by the rule
