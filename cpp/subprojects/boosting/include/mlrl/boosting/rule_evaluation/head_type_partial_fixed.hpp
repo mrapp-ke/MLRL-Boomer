@@ -121,24 +121,24 @@ namespace boosting {
 
             IFixedPartialHeadConfig& setMaxOutputs(uint32 maxOutputs) override;
 
-            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
               const IDecomposableClassificationLossConfig& lossConfig) const override;
 
-            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
               const ISparseDecomposableClassificationLossConfig& lossConfig) const override;
 
-            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
               const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas,
               const Lapack& lapack) const override;
 
-            std::unique_ptr<IRegressionStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
               const IDecomposableRegressionLossConfig& lossConfig) const override;
 
-            std::unique_ptr<IRegressionStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
               const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas,
               const Lapack& lapack) const override;

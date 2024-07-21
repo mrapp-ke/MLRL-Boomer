@@ -50,7 +50,7 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
 
             // Partition training data...
             std::unique_ptr<IClassificationPartitionSamplingFactory> partitionSamplingFactoryPtr =
-              configurator_.createPartitionSamplingFactory();
+              configurator_.createClassificationPartitionSamplingFactory();
             std::unique_ptr<IPartitionSampling> partitionSamplingPtr =
               labelMatrix.createPartitionSampling(*partitionSamplingFactoryPtr);
             IPartition& partition = partitionSamplingPtr->partition(rng);
@@ -63,7 +63,7 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
 
             // Create statistics provider...
             std::unique_ptr<IClassificationStatisticsProviderFactory> statisticsProviderFactoryPtr =
-              configurator_.createStatisticsProviderFactory(featureMatrix, labelMatrix);
+              configurator_.createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix);
             std::unique_ptr<IStatisticsProvider> statisticsProviderPtr =
               labelMatrix.createStatisticsProvider(*statisticsProviderFactoryPtr);
 
@@ -85,7 +85,7 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
 
             // Create instance sampling...
             std::unique_ptr<IClassificationInstanceSamplingFactory> instanceSamplingFactoryPtr =
-              configurator_.createInstanceSamplingFactory();
+              configurator_.createClassificationInstanceSamplingFactory();
             std::unique_ptr<IInstanceSampling> instanceSamplingPtr =
               partition.createInstanceSampling(*instanceSamplingFactoryPtr, labelMatrix, statisticsProviderPtr->get());
 

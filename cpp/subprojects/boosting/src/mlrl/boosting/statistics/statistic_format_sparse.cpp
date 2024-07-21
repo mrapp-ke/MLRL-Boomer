@@ -10,7 +10,8 @@ namespace boosting {
       SparseClassificationStatisticsConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
         const Lapack& lapack) const {
-        return lossConfigGetter_().createStatisticsProviderFactory(featureMatrix, labelMatrix, blas, lapack, true);
+        return lossConfigGetter_().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, blas,
+                                                                                 lapack, true);
     }
 
     bool SparseClassificationStatisticsConfig::isDense() const {
@@ -29,7 +30,8 @@ namespace boosting {
       SparseRegressionStatisticsConfig::createRegressionStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
         const Lapack& lapack) const {
-        return lossConfigGetter_().createStatisticsProviderFactory(featureMatrix, regressionMatrix, blas, lapack, true);
+        return lossConfigGetter_().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, blas,
+                                                                             lapack, true);
     }
 
     bool SparseRegressionStatisticsConfig::isDense() const {

@@ -39,9 +39,9 @@ namespace boosting {
                   blas_(ddotFunction, dspmvFunction), lapack_(dsysvFunction) {}
 
             /**
-             * @see `RuleLearnerConfigurator::createStatisticsProviderFactory`
+             * @see `RuleLearnerConfigurator::createClassificationStatisticsProviderFactory`
              */
-            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override {
                 return configPtr_->getClassificationStatisticsConfig()
                   .get()
