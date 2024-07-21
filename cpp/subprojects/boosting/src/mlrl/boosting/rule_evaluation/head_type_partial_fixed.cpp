@@ -65,9 +65,10 @@ namespace boosting {
         return *this;
     }
 
-    std::unique_ptr<IClassificationStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const IDecomposableClassificationLossConfig& lossConfig) const {
+    std::unique_ptr<IClassificationStatisticsProviderFactory>
+      FixedPartialHeadConfig::createClassificationStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const IDecomposableClassificationLossConfig& lossConfig) const {
         uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
         float32 outputRatio = calculateOutputRatio(outputRatio_, labelMatrix);
         std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr =
@@ -87,9 +88,10 @@ namespace boosting {
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
 
-    std::unique_ptr<IClassificationStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const ISparseDecomposableClassificationLossConfig& lossConfig) const {
+    std::unique_ptr<IClassificationStatisticsProviderFactory>
+      FixedPartialHeadConfig::createClassificationStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const ISparseDecomposableClassificationLossConfig& lossConfig) const {
         uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
         float32 outputRatio = calculateOutputRatio(outputRatio_, labelMatrix);
         std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr =
@@ -107,9 +109,10 @@ namespace boosting {
           std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
 
-    std::unique_ptr<IClassificationStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+    std::unique_ptr<IClassificationStatisticsProviderFactory>
+      FixedPartialHeadConfig::createClassificationStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
         float32 outputRatio = calculateOutputRatio(outputRatio_, labelMatrix);
         std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr =
@@ -129,9 +132,10 @@ namespace boosting {
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
 
-    std::unique_ptr<IRegressionStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
-      const IDecomposableRegressionLossConfig& lossConfig) const {
+    std::unique_ptr<IRegressionStatisticsProviderFactory>
+      FixedPartialHeadConfig::createRegressionStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+        const IDecomposableRegressionLossConfig& lossConfig) const {
         uint32 numThreads =
           multiThreadingConfigGetter_().getNumThreads(featureMatrix, regressionMatrix.getNumOutputs());
         float32 outputRatio = calculateOutputRatio(outputRatio_, regressionMatrix);
@@ -152,9 +156,10 @@ namespace boosting {
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
 
-    std::unique_ptr<IRegressionStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
-      const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+    std::unique_ptr<IRegressionStatisticsProviderFactory>
+      FixedPartialHeadConfig::createRegressionStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+        const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         uint32 numThreads =
           multiThreadingConfigGetter_().getNumThreads(featureMatrix, regressionMatrix.getNumOutputs());
         float32 outputRatio = calculateOutputRatio(outputRatio_, regressionMatrix);

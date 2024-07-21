@@ -14,56 +14,63 @@ namespace boosting {
           multiThreadingConfig_(multiThreadingConfigGetter), l1RegularizationConfig_(l1RegularizationConfigGetter),
           l2RegularizationConfig_(l2RegularizationConfigGetter) {}
 
-    std::unique_ptr<IClassificationStatisticsProviderFactory> AutomaticHeadConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const IDecomposableClassificationLossConfig& lossConfig) const {
+    std::unique_ptr<IClassificationStatisticsProviderFactory>
+      AutomaticHeadConfig::createClassificationStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const IDecomposableClassificationLossConfig& lossConfig) const {
         if (labelMatrix.getNumOutputs() > 1) {
-            SingleOutputHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
-                                              l2RegularizationConfig_);
-            return headConfig.createStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
+            SingleOutputHeadConfig headConfig(labelBinningConfigGetter_, multiThreadingConfigGetter_,
+                                              l1RegularizationConfigGetter_, l2RegularizationConfigGetter_);
+            return headConfig.createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
         } else {
-            CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
-                                          l2RegularizationConfig_);
-            return headConfig.createStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
+            CompleteHeadConfig headConfig(labelBinningConfigGetter_, multiThreadingConfigGetter_,
+                                          l1RegularizationConfigGetter_, l2RegularizationConfigGetter_);
+            return headConfig.createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
         }
     }
 
-    std::unique_ptr<IClassificationStatisticsProviderFactory> AutomaticHeadConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const ISparseDecomposableClassificationLossConfig& lossConfig) const {
+    std::unique_ptr<IClassificationStatisticsProviderFactory>
+      AutomaticHeadConfig::createClassificationStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const ISparseDecomposableClassificationLossConfig& lossConfig) const {
         if (labelMatrix.getNumOutputs() > 1) {
-            SingleOutputHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
-                                              l2RegularizationConfig_);
-            return headConfig.createStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
+            SingleOutputHeadConfig headConfig(labelBinningConfigGetter_, multiThreadingConfigGetter_,
+                                              l1RegularizationConfigGetter_, l2RegularizationConfigGetter_);
+            return headConfig.createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
         } else {
-            CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
-                                          l2RegularizationConfig_);
-            return headConfig.createStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
+            CompleteHeadConfig headConfig(labelBinningConfigGetter_, multiThreadingConfigGetter_,
+                                          l1RegularizationConfigGetter_, l2RegularizationConfigGetter_);
+            return headConfig.createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
         }
     }
 
-    std::unique_ptr<IClassificationStatisticsProviderFactory> AutomaticHeadConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
-        CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
-                                      l2RegularizationConfig_);
-        return headConfig.createStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig, blas, lapack);
-    }
-
-    std::unique_ptr<IRegressionStatisticsProviderFactory> AutomaticHeadConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
-      const IDecomposableRegressionLossConfig& lossConfig) const {
+    std::unique_ptr<IClassificationStatisticsProviderFactory>
+      AutomaticHeadConfig::createClassificationStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         CompleteHeadConfig headConfig(labelBinningConfigGetter_, multiThreadingConfigGetter_,
                                       l1RegularizationConfigGetter_, l2RegularizationConfigGetter_);
-        return headConfig.createStatisticsProviderFactory(featureMatrix, regressionMatrix, lossConfig);
+        return headConfig.createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig, blas,
+                                                                        lapack);
     }
 
-    std::unique_ptr<IRegressionStatisticsProviderFactory> AutomaticHeadConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
-      const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+    std::unique_ptr<IRegressionStatisticsProviderFactory>
+      AutomaticHeadConfig::createRegressionStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+        const IDecomposableRegressionLossConfig& lossConfig) const {
         CompleteHeadConfig headConfig(labelBinningConfigGetter_, multiThreadingConfigGetter_,
                                       l1RegularizationConfigGetter_, l2RegularizationConfigGetter_);
-        return headConfig.createStatisticsProviderFactory(featureMatrix, regressionMatrix, lossConfig, blas, lapack);
+        return headConfig.createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, lossConfig);
+    }
+
+    std::unique_ptr<IRegressionStatisticsProviderFactory>
+      AutomaticHeadConfig::createRegressionStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+        const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+        CompleteHeadConfig headConfig(labelBinningConfigGetter_, multiThreadingConfigGetter_,
+                                      l1RegularizationConfigGetter_, l2RegularizationConfigGetter_);
+        return headConfig.createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, lossConfig, blas,
+                                                                    lapack);
     }
 
     bool AutomaticHeadConfig::isPartial() const {

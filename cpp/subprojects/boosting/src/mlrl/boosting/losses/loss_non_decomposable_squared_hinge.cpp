@@ -353,11 +353,11 @@ namespace boosting {
         : headConfig_(headConfigGetter) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
-      NonDecomposableSquaredHingeLossConfig::createStatisticsProviderFactory(const IFeatureMatrix& featureMatrix,
-                                                                             const IRowWiseLabelMatrix& labelMatrix,
-                                                                             const Blas& blas, const Lapack& lapack,
-                                                                             bool preferSparseStatistics) const {
-        return headConfig_.get().createStatisticsProviderFactory(featureMatrix, labelMatrix, *this, blas, lapack);
+      NonDecomposableSquaredHingeLossConfig::createClassificationStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+        const Lapack& lapack, bool preferSparseStatistics) const {
+        return headConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, *this,
+                                                                                 blas, lapack);
     }
 
     std::unique_ptr<IMarginalProbabilityFunctionFactory>
