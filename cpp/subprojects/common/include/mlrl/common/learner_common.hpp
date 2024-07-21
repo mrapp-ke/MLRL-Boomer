@@ -202,7 +202,7 @@ class RuleLearnerConfigurator {
 
         /**
          * May be overridden by subclasses in order to create the `IClassificationPartitionSamplingFactory` to be used
-         * by the rule learner for partitioning the available examples into training and test sets.
+         * by the rule learner for partitioning the available examples in classification problems.
          *
          * @return An unique pointer to an object of type `IClassificationPartitionSamplingFactory` that has been
          *         created
@@ -212,6 +212,16 @@ class RuleLearnerConfigurator {
             return config_.getClassificationPartitionSamplingConfig()
               .get()
               .createClassificationPartitionSamplingFactory();
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IRegressionPartitionSamplingFactory` to be used by
+         * the rule learner for partitioning the available examples in regression problems.
+         *
+         * @return An unique pointer to an object of type `IRegressionPartitionSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<IRegressionPartitionSamplingFactory> createRegressionPartitionSamplingFactory() const {
+            return config_.getRegressionPartitionSamplingConfig().get().createRegressionPartitionSamplingFactory();
         }
 
         /**
