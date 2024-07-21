@@ -327,8 +327,8 @@ namespace boosting {
       NonDecomposableLogisticLossConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
         const Lapack& lapack, bool preferSparseStatistics) const {
-        return headConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, *this,
-                                                                                 blas, lapack);
+        return headConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, *this, blas,
+                                                                               lapack);
     }
 
     std::unique_ptr<IMarginalProbabilityFunctionFactory>

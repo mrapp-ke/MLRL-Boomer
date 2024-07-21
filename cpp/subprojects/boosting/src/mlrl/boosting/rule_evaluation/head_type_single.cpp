@@ -19,8 +19,8 @@ namespace boosting {
       SingleOutputHeadConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
         const IDecomposableClassificationLossConfig& lossConfig) const {
-        float64 l1RegularizationWeight = l1RegularizationConfigGetter_().getWeight();
-        float64 l2RegularizationWeight = l2RegularizationConfigGetter_().getWeight();
+        float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
         uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
         std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr =
           lossConfig.createDecomposableClassificationLossFactory();
@@ -43,8 +43,8 @@ namespace boosting {
       SingleOutputHeadConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
         const ISparseDecomposableClassificationLossConfig& lossConfig) const {
-        float64 l1RegularizationWeight = l1RegularizationConfigGetter_().getWeight();
-        float64 l2RegularizationWeight = l2RegularizationConfigGetter_().getWeight();
+        float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
         uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
         std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr =
           lossConfig.createSparseDecomposableClassificationLossFactory();
@@ -65,8 +65,8 @@ namespace boosting {
       SingleOutputHeadConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
         const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
-        float64 l1RegularizationWeight = l1RegularizationConfigGetter_().getWeight();
-        float64 l2RegularizationWeight = l2RegularizationConfigGetter_().getWeight();
+        float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
         uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
         std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr =
           lossConfig.createNonDecomposableClassificationLossFactory();
@@ -89,16 +89,15 @@ namespace boosting {
       SingleOutputHeadConfig::createRegressionStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
         const IDecomposableRegressionLossConfig& lossConfig) const {
-        float64 l1RegularizationWeight = l1RegularizationConfigGetter_().getWeight();
-        float64 l2RegularizationWeight = l2RegularizationConfigGetter_().getWeight();
-        uint32 numThreads =
-          multiThreadingConfigGetter_().getNumThreads(featureMatrix, regressionMatrix.getNumOutputs());
+        float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
+        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, regressionMatrix.getNumOutputs());
         std::unique_ptr<IDecomposableRegressionLossFactory> lossFactoryPtr =
           lossConfig.createDecomposableRegressionLossFactory();
         std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createRegressionEvaluationMeasureFactory();
         std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-          labelBinningConfigGetter_().createDecomposableCompleteRuleEvaluationFactory();
+          labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
         std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
           std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
                                                                           l2RegularizationWeight);
@@ -114,16 +113,15 @@ namespace boosting {
       SingleOutputHeadConfig::createRegressionStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
         const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
-        float64 l1RegularizationWeight = l1RegularizationConfigGetter_().getWeight();
-        float64 l2RegularizationWeight = l2RegularizationConfigGetter_().getWeight();
-        uint32 numThreads =
-          multiThreadingConfigGetter_().getNumThreads(featureMatrix, regressionMatrix.getNumOutputs());
+        float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
+        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, regressionMatrix.getNumOutputs());
         std::unique_ptr<INonDecomposableRegressionLossFactory> lossFactoryPtr =
           lossConfig.createNonDecomposableRegressionLossFactory();
         std::unique_ptr<IRegressionEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createNonDecomposableRegressionLossFactory();
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-          labelBinningConfigGetter_().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
+          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
         std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
           std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(l1RegularizationWeight,
                                                                           l2RegularizationWeight);
