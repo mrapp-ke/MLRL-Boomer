@@ -144,8 +144,8 @@ namespace seco {
              */
             virtual void useSingleOutputHeads() {
                 Property<IHeadConfig> property = this->getHeadConfig();
-                property.set(std::make_unique<SingleOutputHeadConfig>(this->getHeuristicConfig().get,
-                                                                      this->getPruningHeuristicConfig().get));
+                property.set(std::make_unique<SingleOutputHeadConfig>(this->getHeuristicConfig(),
+                                                                      this->getPruningHeuristicConfig()));
             }
     };
 
@@ -163,9 +163,8 @@ namespace seco {
              */
             virtual void usePartialHeads() {
                 Property<IHeadConfig> property = this->getHeadConfig();
-                property.set(std::make_unique<PartialHeadConfig>(this->getHeuristicConfig().get,
-                                                                 this->getPruningHeuristicConfig().get,
-                                                                 this->getLiftFunctionConfig().get));
+                property.set(std::make_unique<PartialHeadConfig>(
+                  this->getHeuristicConfig(), this->getPruningHeuristicConfig(), this->getLiftFunctionConfig()));
             }
     };
 
@@ -531,8 +530,7 @@ namespace seco {
              */
             virtual void useOutputWiseBinaryPredictor() {
                 Property<IBinaryPredictorConfig> property = this->getBinaryPredictorConfig();
-                property.set(
-                  std::make_unique<OutputWiseBinaryPredictorConfig>(this->getParallelPredictionConfig().get));
+                property.set(std::make_unique<OutputWiseBinaryPredictorConfig>(this->getParallelPredictionConfig()));
             }
     };
 }

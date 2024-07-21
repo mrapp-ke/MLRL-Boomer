@@ -169,9 +169,10 @@ namespace boosting {
     }
 
     OutputWiseBinaryPredictorConfig::OutputWiseBinaryPredictorConfig(
-      GetterFunction<ILossConfig> lossConfigGetter, GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : basedOnProbabilities_(false), lossConfigGetter_(lossConfigGetter),
-          multiThreadingConfigGetter_(multiThreadingConfigGetter) {}
+      ReadableProperty<ILossConfig> lossConfigGetter,
+      ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
+        : basedOnProbabilities_(false), lossConfig_(lossConfigGetter),
+          multiThreadingConfig_(multiThreadingConfigGetter) {}
 
     bool OutputWiseBinaryPredictorConfig::isBasedOnProbabilities() const {
         return basedOnProbabilities_;
@@ -197,10 +198,10 @@ namespace boosting {
     std::unique_ptr<IBinaryPredictorFactory> OutputWiseBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
         std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr =
-          createDiscretizationFunctionFactory(basedOnProbabilities_, lossConfigGetter_());
+          createDiscretizationFunctionFactory(basedOnProbabilities_, lossConfig_.get());
 
         if (discretizationFunctionFactoryPtr) {
-            uint32 numThreads = multiThreadingConfigGetter_().getNumThreads(featureMatrix, numOutputs);
+            uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numOutputs);
             return std::make_unique<OutputWiseBinaryPredictorFactory>(
               std::move(discretizationFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(), numThreads);
         }
@@ -211,10 +212,10 @@ namespace boosting {
     std::unique_ptr<ISparseBinaryPredictorFactory> OutputWiseBinaryPredictorConfig::createSparsePredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IDiscretizationFunctionFactory> discretizationFunctionFactoryPtr =
-          createDiscretizationFunctionFactory(basedOnProbabilities_, lossConfigGetter_());
+          createDiscretizationFunctionFactory(basedOnProbabilities_, lossConfig_.get());
 
         if (discretizationFunctionFactoryPtr) {
-            uint32 numThreads = multiThreadingConfigGetter_().getNumThreads(featureMatrix, numLabels);
+            uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numLabels);
             return std::make_unique<OutputWiseSparseBinaryPredictorFactory>(
               std::move(discretizationFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(), numThreads);
         }

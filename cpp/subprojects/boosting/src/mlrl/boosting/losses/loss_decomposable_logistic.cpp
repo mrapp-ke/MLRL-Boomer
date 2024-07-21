@@ -76,13 +76,13 @@ namespace boosting {
             }
     };
 
-    DecomposableLogisticLossConfig::DecomposableLogisticLossConfig(GetterFunction<IHeadConfig> headConfigGetter)
-        : headConfigGetter_(headConfigGetter) {}
+    DecomposableLogisticLossConfig::DecomposableLogisticLossConfig(ReadableProperty<IHeadConfig> headConfigGetter)
+        : headConfig_(headConfigGetter) {}
 
     std::unique_ptr<IStatisticsProviderFactory> DecomposableLogisticLossConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
       const Lapack& lapack, bool preferSparseStatistics) const {
-        return headConfigGetter_().createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
+        return headConfig_.get().createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
     }
 
     std::unique_ptr<IMarginalProbabilityFunctionFactory>

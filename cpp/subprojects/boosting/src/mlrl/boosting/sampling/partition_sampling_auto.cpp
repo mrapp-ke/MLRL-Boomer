@@ -6,18 +6,18 @@
 namespace boosting {
 
     AutomaticPartitionSamplingConfig::AutomaticPartitionSamplingConfig(
-      GetterFunction<IGlobalPruningConfig> globalPruningConfigGetter,
-      GetterFunction<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfigGetter,
-      GetterFunction<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfigGetter)
-        : globalPruningConfigGetter_(globalPruningConfigGetter),
-          marginalProbabilityCalibratorConfigGetter_(marginalProbabilityCalibratorConfigGetter),
-          jointProbabilityCalibratorConfigGetter_(jointProbabilityCalibratorConfigGetter) {}
+      ReadableProperty<IGlobalPruningConfig> globalPruningConfigGetter,
+      ReadableProperty<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfigGetter,
+      ReadableProperty<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfigGetter)
+        : globalPruningConfig_(globalPruningConfigGetter),
+          marginalProbabilityCalibratorConfig_(marginalProbabilityCalibratorConfigGetter),
+          jointProbabilityCalibratorConfig_(jointProbabilityCalibratorConfigGetter) {}
 
     std::unique_ptr<IPartitionSamplingFactory> AutomaticPartitionSamplingConfig::createPartitionSamplingFactory()
       const {
-        if ((globalPruningConfigGetter_().shouldUseHoldoutSet())
-            || marginalProbabilityCalibratorConfigGetter_().shouldUseHoldoutSet()
-            || jointProbabilityCalibratorConfigGetter_().shouldUseHoldoutSet()) {
+        if ((globalPruningConfig_.get().shouldUseHoldoutSet())
+            || marginalProbabilityCalibratorConfig_.get().shouldUseHoldoutSet()
+            || jointProbabilityCalibratorConfig_.get().shouldUseHoldoutSet()) {
             return OutputWiseStratifiedBiPartitionSamplingConfig().createPartitionSamplingFactory();
         }
 

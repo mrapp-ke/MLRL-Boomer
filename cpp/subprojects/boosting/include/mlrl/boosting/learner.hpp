@@ -127,7 +127,7 @@ namespace boosting {
             virtual void useAutomaticParallelRuleRefinement() {
                 Property<IMultiThreadingConfig> property = this->getParallelRuleRefinementConfig();
                 property.set(std::make_unique<AutoParallelRuleRefinementConfig>(
-                  this->getLossConfig().get, this->getHeadConfig().get, this->getFeatureSamplingConfig().get));
+                  this->getLossConfig(), this->getHeadConfig(), this->getFeatureSamplingConfig()));
             }
     };
 
@@ -146,7 +146,7 @@ namespace boosting {
              */
             virtual void useAutomaticParallelStatisticUpdate() {
                 Property<IMultiThreadingConfig> property = this->getParallelStatisticUpdateConfig();
-                property.set(std::make_unique<AutoParallelStatisticUpdateConfig>(this->getLossConfig().get));
+                property.set(std::make_unique<AutoParallelStatisticUpdateConfig>(this->getLossConfig()));
             }
     };
 
@@ -189,7 +189,7 @@ namespace boosting {
              */
             virtual void useDenseStatistics() {
                 Property<IStatisticsConfig> property = this->getStatisticsConfig();
-                property.set(std::make_unique<DenseStatisticsConfig>(this->getLossConfig().get));
+                property.set(std::make_unique<DenseStatisticsConfig>(this->getLossConfig()));
             }
     };
 
@@ -288,8 +288,8 @@ namespace boosting {
             virtual void useCompleteHeads() {
                 Property<IHeadConfig> property = this->getHeadConfig();
                 property.set(std::make_unique<CompleteHeadConfig>(
-                  this->getLabelBinningConfig().get, this->getParallelStatisticUpdateConfig().get,
-                  this->getL1RegularizationConfig().get, this->getL2RegularizationConfig().get));
+                  this->getLabelBinningConfig(), this->getParallelStatisticUpdateConfig(),
+                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig()));
             }
     };
 
@@ -312,7 +312,7 @@ namespace boosting {
             virtual IFixedPartialHeadConfig& useFixedPartialHeads() {
                 Property<IHeadConfig> property = this->getHeadConfig();
                 std::unique_ptr<FixedPartialHeadConfig> ptr = std::make_unique<FixedPartialHeadConfig>(
-                  this->getLabelBinningConfig().get, this->getParallelStatisticUpdateConfig().get);
+                  this->getLabelBinningConfig(), this->getParallelStatisticUpdateConfig());
                 IFixedPartialHeadConfig& ref = *ptr;
                 property.set(std::move(ptr));
                 return ref;
@@ -339,7 +339,7 @@ namespace boosting {
             virtual IDynamicPartialHeadConfig& useDynamicPartialHeads() {
                 Property<IHeadConfig> property = this->getHeadConfig();
                 std::unique_ptr<DynamicPartialHeadConfig> ptr = std::make_unique<DynamicPartialHeadConfig>(
-                  this->getLabelBinningConfig().get, this->getParallelStatisticUpdateConfig().get);
+                  this->getLabelBinningConfig(), this->getParallelStatisticUpdateConfig());
                 IDynamicPartialHeadConfig& ref = *ptr;
                 property.set(std::move(ptr));
                 return ref;
@@ -361,8 +361,8 @@ namespace boosting {
             virtual void useSingleOutputHeads() {
                 Property<IHeadConfig> property = this->getHeadConfig();
                 property.set(std::make_unique<SingleOutputHeadConfig>(
-                  this->getLabelBinningConfig().get, this->getParallelStatisticUpdateConfig().get,
-                  this->getL1RegularizationConfig().get, this->getL2RegularizationConfig().get));
+                  this->getLabelBinningConfig(), this->getParallelStatisticUpdateConfig(),
+                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig()));
             }
     };
 
@@ -381,9 +381,8 @@ namespace boosting {
             virtual void useAutomaticHeads() {
                 Property<IHeadConfig> property = this->getHeadConfig();
                 property.set(std::make_unique<AutomaticHeadConfig>(
-                  this->getLossConfig().get, this->getLabelBinningConfig().get,
-                  this->getParallelStatisticUpdateConfig().get, this->getL1RegularizationConfig().get,
-                  this->getL2RegularizationConfig().get));
+                  this->getLossConfig(), this->getLabelBinningConfig(), this->getParallelStatisticUpdateConfig(),
+                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig()));
             }
     };
 
@@ -402,7 +401,7 @@ namespace boosting {
              */
             virtual void useNonDecomposableSquaredErrorLoss() {
                 Property<ILossConfig> property = this->getLossConfig();
-                property.set(std::make_unique<NonDecomposableSquaredErrorLossConfig>(this->getHeadConfig().get));
+                property.set(std::make_unique<NonDecomposableSquaredErrorLossConfig>(this->getHeadConfig()));
             }
     };
 
@@ -421,7 +420,7 @@ namespace boosting {
              */
             virtual void useDecomposableSquaredErrorLoss() {
                 Property<ILossConfig> property = this->getLossConfig();
-                property.set(std::make_unique<DecomposableSquaredErrorLossConfig>(this->getHeadConfig().get));
+                property.set(std::make_unique<DecomposableSquaredErrorLossConfig>(this->getHeadConfig()));
             }
     };
 
@@ -439,8 +438,8 @@ namespace boosting {
              */
             virtual void useNoLabelBinning() {
                 Property<ILabelBinningConfig> property = this->getLabelBinningConfig();
-                property.set(std::make_unique<NoLabelBinningConfig>(this->getL1RegularizationConfig().get,
-                                                                    this->getL2RegularizationConfig().get));
+                property.set(std::make_unique<NoLabelBinningConfig>(this->getL1RegularizationConfig(),
+                                                                    this->getL2RegularizationConfig()));
             }
     };
 
@@ -460,7 +459,7 @@ namespace boosting {
              */
             virtual void useOutputWiseScorePredictor() {
                 Property<IScorePredictorConfig> property = this->getScorePredictorConfig();
-                property.set(std::make_unique<OutputWiseScorePredictorConfig>(this->getParallelPredictionConfig().get));
+                property.set(std::make_unique<OutputWiseScorePredictorConfig>(this->getParallelPredictionConfig()));
             }
     };
 }

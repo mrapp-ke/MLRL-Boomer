@@ -170,19 +170,19 @@ class BeamSearchTopDownRuleInductionConfig final : public IRuleInductionConfig,
 
         bool recalculatePredictions_;
 
-        const GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter_;
+        const ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
 
     public:
 
         /**
-         * @param ruleCompareFunction           An object of type `RuleCompareFunction` that defines the function that
-         *                                      should be used for comparing the quality of different rules
-         * @param multiThreadingConfigGetter    A `GetterFunction` that allows to access the `IMultiThreadingConfig`
-         *                                      that stores the configuration of the multi-threading behavior that
-         *                                      should be used for the parallel refinement of rules
+         * @param ruleCompareFunction           An object of type `RuleCompareFunction` that defines the function
+         * that should be used for comparing the quality of different rules
+         * @param multiThreadingConfigGetter    A `ReadableProperty` that allows to access the
+         * `IMultiThreadingConfig` that stores the configuration of the multi-threading behavior that should be used
+         * for the parallel refinement of rules
          */
         BeamSearchTopDownRuleInductionConfig(RuleCompareFunction ruleCompareFunction,
-                                             GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter);
+                                             ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter);
 
         uint32 getBeamWidth() const override;
 

@@ -6,11 +6,11 @@
 
 namespace seco {
 
-    PartialHeadConfig::PartialHeadConfig(GetterFunction<IHeuristicConfig> heuristicConfigGetter,
-                                         GetterFunction<IHeuristicConfig> pruningHeuristicConfigGetter,
-                                         GetterFunction<ILiftFunctionConfig> liftFunctionConfigGetter)
-        : heuristicConfigGetter_(heuristicConfigGetter), pruningHeuristicConfigGetter_(pruningHeuristicConfigGetter),
-          liftFunctionConfigGetter_(liftFunctionConfigGetter) {}
+    PartialHeadConfig::PartialHeadConfig(ReadableProperty<IHeuristicConfig> heuristicConfigGetter,
+                                         ReadableProperty<IHeuristicConfig> pruningHeuristicConfigGetter,
+                                         ReadableProperty<ILiftFunctionConfig> liftFunctionConfigGetter)
+        : heuristicConfig_(heuristicConfigGetter), pruningHeuristicConfig_(pruningHeuristicConfigGetter),
+          liftFunctionConfig_(liftFunctionConfigGetter) {}
 
     std::unique_ptr<IStatisticsProviderFactory> PartialHeadConfig::createStatisticsProviderFactory(
       const IRowWiseLabelMatrix& labelMatrix) const {
@@ -18,12 +18,12 @@ namespace seco {
           std::make_unique<DecomposableMajorityRuleEvaluationFactory>();
         std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
           std::make_unique<DecomposablePartialRuleEvaluationFactory>(
-            heuristicConfigGetter_().createHeuristicFactory(),
-            liftFunctionConfigGetter_().createLiftFunctionFactory(labelMatrix));
+            heuristicConfig_.get().createHeuristicFactory(),
+            liftFunctionConfig_.get().createLiftFunctionFactory(labelMatrix));
         std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
           std::make_unique<DecomposablePartialRuleEvaluationFactory>(
-            pruningHeuristicConfigGetter_().createHeuristicFactory(),
-            liftFunctionConfigGetter_().createLiftFunctionFactory(labelMatrix));
+            pruningHeuristicConfig_.get().createHeuristicFactory(),
+            liftFunctionConfig_.get().createLiftFunctionFactory(labelMatrix));
         return std::make_unique<DenseDecomposableStatisticsProviderFactory>(std::move(defaultRuleEvaluationFactoryPtr),
                                                                             std::move(regularRuleEvaluationFactoryPtr),
                                                                             std::move(pruningRuleEvaluationFactoryPtr));
