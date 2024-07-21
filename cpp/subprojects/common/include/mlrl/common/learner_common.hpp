@@ -117,14 +117,14 @@ class RuleLearnerConfigurator {
          * May be overridden by subclasses in order to create the `IRuleModelAssemblageFactory` to be used by the rule
          * learner for the assemblage of a rule model.
          *
-         * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
-         *                      the labels of the training examples
+         * @param outputMatrix  A reference to an object of type `IOutputMatrix` that provides row-wise access to the
+         *                      ground truth of the training examples
          * @return              An unique pointer to an object of type `IRuleModelAssemblageFactory` that has been
          *                      created
          */
         virtual std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
-          const IRowWiseLabelMatrix& labelMatrix) const {
-            return config_.getRuleModelAssemblageConfig().get().createRuleModelAssemblageFactory(labelMatrix);
+          const IOutputMatrix& outputMatrix) const {
+            return config_.getRuleModelAssemblageConfig().get().createRuleModelAssemblageFactory(outputMatrix);
         }
 
         /**
