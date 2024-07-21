@@ -3,7 +3,7 @@
     #pragma warning(disable : 4250)
 #endif
 
-#include "mlrl/seco/learner_seco.hpp"
+#include "mlrl/seco/learner_seco_classifier.hpp"
 
 #include "mlrl/common/learner_classification_common.hpp"
 #include "mlrl/seco/learner_common.hpp"

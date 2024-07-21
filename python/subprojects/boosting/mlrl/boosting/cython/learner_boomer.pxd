@@ -33,7 +33,7 @@ from mlrl.boosting.cython.learner_classification cimport IAutomaticBinaryPredict
     IOutputWiseProbabilityPredictorMixin, ISparseStatisticsMixin
 
 
-cdef extern from "mlrl/boosting/learner_boomer.hpp" namespace "boosting" nogil:
+cdef extern from "mlrl/boosting/learner_boomer_classifier.hpp" namespace "boosting" nogil:
 
     cdef cppclass IBoomerClassifierConfig"boosting::IBoomerClassifier::IConfig"(
         IAutomaticPartitionSamplingMixin,
