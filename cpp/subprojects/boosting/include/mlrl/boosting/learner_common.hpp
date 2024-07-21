@@ -80,9 +80,10 @@ namespace boosting {
             std::unique_ptr<IStatisticsConfig> statisticsConfigPtr_;
 
             /**
-             * An unique pointer that stores the configuration of the loss function.
+             * An unique pointer that stores the configuration of the loss function that should be used in
+             * classification problems.
              */
-            std::unique_ptr<IClassificationLossConfig> lossConfigPtr_;
+            std::unique_ptr<IClassificationLossConfig> classificationLossConfigPtr_;
 
             /**
              * An unique pointer that stores the configuration of the L1 regularization term.
@@ -107,8 +108,10 @@ namespace boosting {
                   headConfigPtr_(std::make_unique<CompleteHeadConfig>(
                     readableProperty(labelBinningConfigPtr_), readableProperty(parallelStatisticUpdateConfigPtr_),
                     readableProperty(l1RegularizationConfigPtr_), readableProperty(l2RegularizationConfigPtr_))),
-                  statisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(readableProperty(lossConfigPtr_))),
-                  lossConfigPtr_(std::make_unique<DecomposableLogisticLossConfig>(readableProperty(headConfigPtr_))),
+                  statisticsConfigPtr_(
+                    std::make_unique<DenseStatisticsConfig>(readableProperty(classificationLossConfigPtr_))),
+                  classificationLossConfigPtr_(
+                    std::make_unique<DecomposableLogisticLossConfig>(readableProperty(headConfigPtr_))),
                   l1RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
                   l2RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
                   labelBinningConfigPtr_(std::make_unique<NoLabelBinningConfig>(
@@ -132,8 +135,8 @@ namespace boosting {
                 return property(l2RegularizationConfigPtr_);
             }
 
-            Property<IClassificationLossConfig> getLossConfig() override final {
-                return property(lossConfigPtr_);
+            Property<IClassificationLossConfig> getClassificationLossConfig() override final {
+                return property(classificationLossConfigPtr_);
             }
 
             Property<ILabelBinningConfig> getLabelBinningConfig() override final {
