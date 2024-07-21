@@ -17,20 +17,22 @@ namespace boosting {
     class AutomaticLabelBinningConfig final : public ILabelBinningConfig {
         private:
 
-            const GetterFunction<IRegularizationConfig> l1RegularizationConfigGetter_;
+            const ReadableProperty<IRegularizationConfig> l1RegularizationConfig_;
 
-            const GetterFunction<IRegularizationConfig> l2RegularizationConfigGetter_;
+            const ReadableProperty<IRegularizationConfig> l2RegularizationConfig_;
 
         public:
 
             /**
-             * @param l1RegularizationConfigGetter  A `GetterFunction` that allows to access the `IRegularizationConfig`
-             *                                      that stores the configuration of the L1 regularization
-             * @param l2RegularizationConfigGetter  A `GetterFunction` that allows to access the `IRegularizationConfig`
-             *                                      that stores the configuration of the L2 regularization
+             * @param l1RegularizationConfigGetter  A `ReadableProperty` that allows to access the
+             *                                      `IRegularizationConfig` that stores the configuration of the L1
+             *                                      regularization
+             * @param l2RegularizationConfigGetter  A `ReadableProperty` that allows to access the
+             *                                      `IRegularizationConfig` that stores the configuration of the L2
+             *                                      regularization
              */
-            AutomaticLabelBinningConfig(GetterFunction<IRegularizationConfig> l1RegularizationConfigGetter,
-                                        GetterFunction<IRegularizationConfig> l2RegularizationConfigGetter);
+            AutomaticLabelBinningConfig(ReadableProperty<IRegularizationConfig> l1RegularizationConfigGetter,
+                                        ReadableProperty<IRegularizationConfig> l2RegularizationConfigGetter);
 
             std::unique_ptr<IDecomposableRuleEvaluationFactory> createDecomposableCompleteRuleEvaluationFactory()
               const override;

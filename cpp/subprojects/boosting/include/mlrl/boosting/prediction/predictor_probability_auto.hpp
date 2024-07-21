@@ -19,21 +19,22 @@ namespace boosting {
     class AutomaticProbabilityPredictorConfig final : public IProbabilityPredictorConfig {
         private:
 
-            const GetterFunction<ILossConfig> lossConfigGetter_;
+            const ReadableProperty<ILossConfig> lossConfig_;
 
-            const GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter_;
+            const ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
 
         public:
 
             /**
-             * @param lossConfigGetter              A `GetterFunction` that allows to access the `ILossConfig` that
+             * @param lossConfigGetter              A `ReadableProperty` that allows to access the `ILossConfig` that
              *                                      stores the configuration of the loss function
-             * @param multiThreadingConfigGetter    A `GetterFunction` that allows to access the `IMultiThreadingConfig`
-             *                                      that stores the configuration of the multi-threading behavior that
-             *                                      should be used to predict for several query examples in parallel
+             * @param multiThreadingConfigGetter    A `ReadableProperty` that allows to access the
+             *                                      `IMultiThreadingConfig` that stores the configuration of the
+             *                                      multi-threading behavior that should be used to predict for several
+             *                                      query examples in parallel
              */
-            AutomaticProbabilityPredictorConfig(GetterFunction<ILossConfig> lossConfigGetter,
-                                                GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter);
+            AutomaticProbabilityPredictorConfig(ReadableProperty<ILossConfig> lossConfigGetter,
+                                                ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter);
 
             /**
              * @see `IProbabilityPredictorConfig::createPredictorFactory`

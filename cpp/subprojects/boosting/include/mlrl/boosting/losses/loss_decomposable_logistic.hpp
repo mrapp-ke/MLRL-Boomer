@@ -18,15 +18,15 @@ namespace boosting {
     class DecomposableLogisticLossConfig final : public IDecomposableLossConfig {
         private:
 
-            const GetterFunction<IHeadConfig> headConfigGetter_;
+            const ReadableProperty<IHeadConfig> headConfig_;
 
         public:
 
             /**
-             * @param headConfigGetter A `Property` that allows to access the `IHeadConfig` that stores the
+             * @param headConfigGetter A `ReadableProperty` that allows to access the `IHeadConfig` that stores the
              *                         configuration of rule heads
              */
-            DecomposableLogisticLossConfig(GetterFunction<IHeadConfig> headConfigGetter);
+            DecomposableLogisticLossConfig(ReadableProperty<IHeadConfig> headConfigGetter);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
