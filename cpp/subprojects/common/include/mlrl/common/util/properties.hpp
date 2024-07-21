@@ -84,7 +84,8 @@ struct Property : public ReadableProperty<T>,
  * @return          The `GetterFunction` that has been created
  */
 template<typename T>
-static inline typename ReadableProperty<T>::GetterFunction getterFunction(const std::unique_ptr<T>& uniquePtr) {
+static inline constexpr typename ReadableProperty<T>::GetterFunction getterFunction(
+  const std::unique_ptr<T>& uniquePtr) {
     return [&uniquePtr]() -> T& {
         return *uniquePtr;
     };
@@ -98,7 +99,7 @@ static inline typename ReadableProperty<T>::GetterFunction getterFunction(const 
  * @return          The `SetterFunction` that has been created
  */
 template<typename T>
-static inline typename WritableProperty<T>::SetterFunction setterFunction(std::unique_ptr<T>& uniquePtr) {
+static inline constexpr typename WritableProperty<T>::SetterFunction setterFunction(std::unique_ptr<T>& uniquePtr) {
     return [&uniquePtr](std::unique_ptr<T>&& ptr) {
         uniquePtr = std::move(ptr);
     };
@@ -112,7 +113,7 @@ static inline typename WritableProperty<T>::SetterFunction setterFunction(std::u
  * @return          The `ReadableProperty` that has been created
  */
 template<typename T>
-static inline ReadableProperty<T> readableProperty(const std::unique_ptr<T>& uniquePtr) {
+static inline constexpr ReadableProperty<T> readableProperty(const std::unique_ptr<T>& uniquePtr) {
     return ReadableProperty<T>(getterFunction(uniquePtr));
 }
 
@@ -124,6 +125,6 @@ static inline ReadableProperty<T> readableProperty(const std::unique_ptr<T>& uni
  * @return          The `Property` that has been created
  */
 template<typename T>
-static inline Property<T> property(std::unique_ptr<T>& uniquePtr) {
+static inline constexpr Property<T> property(std::unique_ptr<T>& uniquePtr) {
     return Property<T>(getterFunction(uniquePtr), setterFunction(uniquePtr));
 }
