@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/input/regression_matrix_row_wise.hpp"
 #include "mlrl/common/learner.hpp"
 #include "mlrl/common/prediction/output_space_info_no.hpp"
 #include "mlrl/common/prediction/predictor_binary_no.hpp"
@@ -523,6 +524,12 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
         std::unique_ptr<IClassificationPartitionSamplingConfig> classificationPartitionSamplingConfigPtr_;
 
         /**
+         * An unique pointer that stores the configuration of the method that should be used for partitioning the
+         * available training examples in regression problems.
+         */
+        std::unique_ptr<IRegressionPartitionSamplingConfig> regressionPartitionSamplingConfigPtr_;
+
+        /**
          * An unique pointer that stores the configuration of the method for pruning individual rules.
          */
         std::unique_ptr<IRulePruningConfig> rulePruningConfigPtr_;
@@ -679,6 +686,10 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
 
         Property<IClassificationPartitionSamplingConfig> getClassificationPartitionSamplingConfig() override final {
             return property(classificationPartitionSamplingConfigPtr_);
+        }
+
+        Property<IRegressionPartitionSamplingConfig> getRegressionPartitionSamplingConfig() override final {
+            return property(regressionPartitionSamplingConfigPtr_);
         }
 
         Property<IRulePruningConfig> getRulePruningConfig() override final {

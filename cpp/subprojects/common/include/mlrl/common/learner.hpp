@@ -213,14 +213,21 @@ class MLRLCOMMON_API IRuleLearnerConfig {
 
         /**
          * Returns a `Property` that allows to access the `IClassificationPartitionSamplingConfig` that stores the
-         * configuration of the method for partitioning the available training examples into a training set and a
-         * holdout set.
+         * configuration of the method for partitioning the available training examples in classification problems.
          *
          * @return A `Property` that allows to access the `IClassificationPartitionSamplingConfig` that stores the
-         *         configuration of the method for partitioning the available training examples into a training set and
-         *         a holdout set
+         *         configuration of the method for partitioning the available training examples
          */
         virtual Property<IClassificationPartitionSamplingConfig> getClassificationPartitionSamplingConfig() = 0;
+
+        /**
+         * Returns a `Property` that allows to access the `IRegressionPartitionSamplingConfig` that stores the
+         * configuration of the method for partitioning the available training examples in regression problems.
+         *
+         * @return A `Property` that allows to access the `IRegressionPartitionSamplingConfig` that stores the
+         *         configuration of the method for partitioning the available training examples
+         */
+        virtual Property<IRegressionPartitionSamplingConfig> getRegressionPartitionSamplingConfig() = 0;
 
         /**
          * Returns a `Property` that allows to access the `IRulePruningConfig` that stores the configuration of the
