@@ -75,12 +75,12 @@ namespace boosting {
 
             /**
              * Returns a `Property` that allows to access the `IClassificationLossConfig` that stores the configuration
-             * of the loss function.
+             * of the loss function that should be used in classification problems.
              *
              * @return A `Property` that allows to access the `IClassificationLossConfig` that stores the configuration
-             *         of the loss function
+             *         of the loss function that should be used in classification problems
              */
-            virtual Property<IClassificationLossConfig> getLossConfig() = 0;
+            virtual Property<IClassificationLossConfig> getClassificationLossConfig() = 0;
 
             /**
              * Returns a `Property` that allows to access the `ILabelBinningConfig` that stores the configuration of the
@@ -126,8 +126,9 @@ namespace boosting {
              */
             virtual void useAutomaticParallelRuleRefinement() {
                 Property<IMultiThreadingConfig> property = this->getParallelRuleRefinementConfig();
-                property.set(std::make_unique<AutoParallelRuleRefinementConfig>(
-                  this->getLossConfig(), this->getHeadConfig(), this->getFeatureSamplingConfig()));
+                property.set(std::make_unique<AutoParallelRuleRefinementConfig>(this->getClassificationLossConfig(),
+                                                                                this->getHeadConfig(),
+                                                                                this->getFeatureSamplingConfig()));
             }
     };
 
@@ -146,7 +147,8 @@ namespace boosting {
              */
             virtual void useAutomaticParallelStatisticUpdate() {
                 Property<IMultiThreadingConfig> property = this->getParallelStatisticUpdateConfig();
-                property.set(std::make_unique<AutoParallelStatisticUpdateConfig>(this->getLossConfig()));
+                property.set(
+                  std::make_unique<AutoParallelStatisticUpdateConfig>(this->getClassificationLossConfig()));
             }
     };
 
@@ -189,7 +191,7 @@ namespace boosting {
              */
             virtual void useDenseStatistics() {
                 Property<IStatisticsConfig> property = this->getStatisticsConfig();
-                property.set(std::make_unique<DenseStatisticsConfig>(this->getLossConfig()));
+                property.set(std::make_unique<DenseStatisticsConfig>(this->getClassificationLossConfig()));
             }
     };
 
@@ -381,8 +383,9 @@ namespace boosting {
             virtual void useAutomaticHeads() {
                 Property<IHeadConfig> property = this->getHeadConfig();
                 property.set(std::make_unique<AutomaticHeadConfig>(
-                  this->getLossConfig(), this->getLabelBinningConfig(), this->getParallelStatisticUpdateConfig(),
-                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig()));
+                  this->getClassificationLossConfig(), this->getLabelBinningConfig(),
+                  this->getParallelStatisticUpdateConfig(), this->getL1RegularizationConfig(),
+                  this->getL2RegularizationConfig()));
             }
     };
 
@@ -400,7 +403,7 @@ namespace boosting {
              * error loss that is non-decomposable.
              */
             virtual void useNonDecomposableSquaredErrorLoss() {
-                Property<IClassificationLossConfig> property = this->getLossConfig();
+                Property<IClassificationLossConfig> property = this->getClassificationLossConfig();
                 property.set(std::make_unique<NonDecomposableSquaredErrorLossConfig>(this->getHeadConfig()));
             }
     };
@@ -419,7 +422,7 @@ namespace boosting {
              * error loss that is decomposable.
              */
             virtual void useDecomposableSquaredErrorLoss() {
-                Property<IClassificationLossConfig> property = this->getLossConfig();
+                Property<IClassificationLossConfig> property = this->getClassificationLossConfig();
                 property.set(std::make_unique<DecomposableSquaredErrorLossConfig>(this->getHeadConfig()));
             }
     };
