@@ -5,7 +5,7 @@
 
 #include "mlrl/boosting/learner_boomer.hpp"
 
-#include "mlrl/boosting/learner_common.hpp"
+#include "mlrl/boosting/learner_classification_common.hpp"
 #include "mlrl/common/learner_classification_common.hpp"
 
 namespace boosting {
@@ -66,15 +66,16 @@ namespace boosting {
 
         private:
 
-            const std::unique_ptr<BoostedRuleLearnerConfigurator> configuratorPtr_;
+            const std::unique_ptr<BoostedClassificationRuleLearnerConfigurator> configuratorPtr_;
 
         public:
 
             /**
-             * @param configuratorPtr An unique pointer to an object of type `BoostedRuleLearnerConfigurator` that
-             *                        allows to configure the individual modules to be used by the rule learner
+             * @param configuratorPtr An unique pointer to an object of type
+             *                        `BoostedClassificationRuleLearnerConfigurator` that allows to configure the
+             *                        individual modules to be used by the rule learner
              */
-            BoomerClassifier(std::unique_ptr<BoostedRuleLearnerConfigurator> configuratorPtr)
+            BoomerClassifier(std::unique_ptr<BoostedClassificationRuleLearnerConfigurator> configuratorPtr)
                 : AbstractClassificationRuleLearner(*configuratorPtr), configuratorPtr_(std::move(configuratorPtr)) {}
     };
 
@@ -86,9 +87,9 @@ namespace boosting {
                                                               Blas::DdotFunction ddotFunction,
                                                               Blas::DspmvFunction dspmvFunction,
                                                               Lapack::DsysvFunction dsysvFunction) {
-        std::unique_ptr<BoostedRuleLearnerConfigurator> configuratorPtr =
-          std::make_unique<BoostedRuleLearnerConfigurator>(std::move(configPtr), ddotFunction, dspmvFunction,
-                                                           dsysvFunction);
+        std::unique_ptr<BoostedClassificationRuleLearnerConfigurator> configuratorPtr =
+          std::make_unique<BoostedClassificationRuleLearnerConfigurator>(std::move(configPtr), ddotFunction,
+                                                                         dspmvFunction, dsysvFunction);
         return std::make_unique<BoomerClassifier>(std::move(configuratorPtr));
     }
 
