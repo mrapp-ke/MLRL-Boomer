@@ -140,65 +140,6 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
               std::move(marginalProbabilityCalibrationModelPtr), std::move(jointProbabilityCalibrationModelPtr));
         }
 
-        bool canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix,
-                              const ITrainingResult& trainingResult) const override {
-            return this->canPredictBinary(featureMatrix, trainingResult.getNumOutputs());
-        }
-
-        bool canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override {
-            return configurator_.createBinaryPredictorFactory(featureMatrix, numLabels) != nullptr;
-        }
-
-        std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                const ITrainingResult& trainingResult) const override {
-            return this->createBinaryPredictor(
-              featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getOutputSpaceInfo(),
-              *trainingResult.getMarginalProbabilityCalibrationModel(),
-              *trainingResult.getJointProbabilityCalibrationModel(), trainingResult.getNumOutputs());
-        }
-
-        std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
-          const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const IOutputSpaceInfo& outputSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override {
-            std::unique_ptr<IBinaryPredictorFactory> predictorFactoryPtr =
-              configurator_.createBinaryPredictorFactory(featureMatrix, numLabels);
-
-            if (predictorFactoryPtr) {
-                return featureMatrix.createBinaryPredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo,
-                                                           marginalProbabilityCalibrationModel,
-                                                           jointProbabilityCalibrationModel, numLabels);
-            }
-
-            throw std::runtime_error("The rule learner does not support to predict binary labels");
-        }
-
-        std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-          const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override {
-            return this->createSparseBinaryPredictor(
-              featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getOutputSpaceInfo(),
-              *trainingResult.getMarginalProbabilityCalibrationModel(),
-              *trainingResult.getJointProbabilityCalibrationModel(), trainingResult.getNumOutputs());
-        }
-
-        std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-          const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const IOutputSpaceInfo& outputSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override {
-            std::unique_ptr<ISparseBinaryPredictorFactory> predictorFactoryPtr =
-              configurator_.createSparseBinaryPredictorFactory(featureMatrix, numLabels);
-
-            if (predictorFactoryPtr) {
-                return featureMatrix.createSparseBinaryPredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo,
-                                                                 marginalProbabilityCalibrationModel,
-                                                                 jointProbabilityCalibrationModel, numLabels);
-            }
-
-            throw std::runtime_error("The rule learner does not support to predict sparse binary labels");
-        }
-
         bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix,
                               const ITrainingResult& trainingResult) const override {
             return this->canPredictScores(featureMatrix, trainingResult.getNumOutputs());
@@ -260,5 +201,64 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
             }
 
             throw std::runtime_error("The rule learner does not support to predict probability estimates");
+        }
+
+        bool canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix,
+                              const ITrainingResult& trainingResult) const override {
+            return this->canPredictBinary(featureMatrix, trainingResult.getNumOutputs());
+        }
+
+        bool canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override {
+            return configurator_.createBinaryPredictorFactory(featureMatrix, numLabels) != nullptr;
+        }
+
+        std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                const ITrainingResult& trainingResult) const override {
+            return this->createBinaryPredictor(
+              featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getOutputSpaceInfo(),
+              *trainingResult.getMarginalProbabilityCalibrationModel(),
+              *trainingResult.getJointProbabilityCalibrationModel(), trainingResult.getNumOutputs());
+        }
+
+        std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
+          const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
+          const IOutputSpaceInfo& outputSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override {
+            std::unique_ptr<IBinaryPredictorFactory> predictorFactoryPtr =
+              configurator_.createBinaryPredictorFactory(featureMatrix, numLabels);
+
+            if (predictorFactoryPtr) {
+                return featureMatrix.createBinaryPredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo,
+                                                           marginalProbabilityCalibrationModel,
+                                                           jointProbabilityCalibrationModel, numLabels);
+            }
+
+            throw std::runtime_error("The rule learner does not support to predict binary labels");
+        }
+
+        std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
+          const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override {
+            return this->createSparseBinaryPredictor(
+              featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getOutputSpaceInfo(),
+              *trainingResult.getMarginalProbabilityCalibrationModel(),
+              *trainingResult.getJointProbabilityCalibrationModel(), trainingResult.getNumOutputs());
+        }
+
+        std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
+          const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
+          const IOutputSpaceInfo& outputSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override {
+            std::unique_ptr<ISparseBinaryPredictorFactory> predictorFactoryPtr =
+              configurator_.createSparseBinaryPredictorFactory(featureMatrix, numLabels);
+
+            if (predictorFactoryPtr) {
+                return featureMatrix.createSparseBinaryPredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo,
+                                                                 marginalProbabilityCalibrationModel,
+                                                                 jointProbabilityCalibrationModel, numLabels);
+            }
+
+            throw std::runtime_error("The rule learner does not support to predict sparse binary labels");
         }
 };
