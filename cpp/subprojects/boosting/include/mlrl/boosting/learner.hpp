@@ -144,9 +144,8 @@ namespace boosting {
              */
             virtual void useAutomaticParallelRuleRefinement() {
                 Property<IMultiThreadingConfig> property = this->getParallelRuleRefinementConfig();
-                property.set(std::make_unique<AutoParallelRuleRefinementConfig>(this->getClassificationLossConfig(),
-                                                                                this->getHeadConfig(),
-                                                                                this->getFeatureSamplingConfig()));
+                property.set(std::make_unique<AutoParallelRuleRefinementConfig>(
+                  this->getClassificationLossConfig(), this->getHeadConfig(), this->getFeatureSamplingConfig()));
             }
     };
 
@@ -165,8 +164,7 @@ namespace boosting {
              */
             virtual void useAutomaticParallelStatisticUpdate() {
                 Property<IMultiThreadingConfig> property = this->getParallelStatisticUpdateConfig();
-                property.set(
-                  std::make_unique<AutoParallelStatisticUpdateConfig>(this->getClassificationLossConfig()));
+                property.set(std::make_unique<AutoParallelStatisticUpdateConfig>(this->getClassificationLossConfig()));
             }
     };
 
