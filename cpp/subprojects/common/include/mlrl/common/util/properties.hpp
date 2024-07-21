@@ -107,6 +107,18 @@ static inline typename WritableProperty<T>::SetterFunction setterFunction(std::u
 }
 
 /**
+ * Creates and returns a `ReadableProperty` that is backed by an unique pointer.
+ *
+ * @tparam T        The type of the unique pointer
+ * @param uniquePtr A reference to the unique pointer
+ * @return          The `ReadableProperty` that has been created
+ */
+template<typename T>
+static inline ReadableProperty<T> readableProperty(const std::unique_ptr<T>& uniquePtr) {
+    return ReadableProperty<T>(getterFunction(uniquePtr));
+}
+
+/**
  * Creates and returns a `Property` that is backed by an unique pointer.
  *
  * @tparam T        The type of the unique pointer

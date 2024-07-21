@@ -19,37 +19,40 @@ namespace boosting {
     class AutomaticHeadConfig final : public IHeadConfig {
         private:
 
-            const GetterFunction<ILossConfig> lossConfigGetter_;
+            const ReadableProperty<ILossConfig> lossConfig_;
 
-            const GetterFunction<ILabelBinningConfig> labelBinningConfigGetter_;
+            const ReadableProperty<ILabelBinningConfig> labelBinningConfig_;
 
-            const GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter_;
+            const ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
 
-            const GetterFunction<IRegularizationConfig> l1RegularizationConfigGetter_;
+            const ReadableProperty<IRegularizationConfig> l1RegularizationConfig_;
 
-            const GetterFunction<IRegularizationConfig> l2RegularizationConfigGetter_;
+            const ReadableProperty<IRegularizationConfig> l2RegularizationConfig_;
 
         public:
 
             /**
-             * @param lossConfigGetter              A `GetterFunction` that allows to access the `ILossConfig` that
+             * @param lossConfigGetter              A `ReadableProperty` that allows to access the `ILossConfig` that
              *                                      stores the configuration of the loss function
-             * @param labelBinningConfigGetter      A `GetterFunction` that allows to access the `ILabelBinningConfig`
+             * @param labelBinningConfigGetter      A `ReadableProperty` that allows to access the `ILabelBinningConfig`
              *                                      that stores the configuration of the method for assigning labels to
              *                                      bins
-             * @param multiThreadingConfigGetter    A `GetterFunction` that allows to access the `IMultiThreadingConfig`
-             *                                      that stores the configuration of the multi-threading behavior that
-             *                                      should be used for the parallel update of statistics
-             * @param l1RegularizationConfigGetter  A `GetterFunction` that allows to access the `IRegularizationConfig`
-             *                                      that stores the configuration of the L1 regularization
-             * @param l2RegularizationConfigGetter  A `GetterFunction` that allows to access the `IRegularizationConfig`
-             *                                      that stores the configuration of the L2 regularization
+             * @param multiThreadingConfigGetter    A `ReadableProperty` that allows to access the
+             *                                      `IMultiThreadingConfig` that stores the configuration of the
+             *                                      multi-threading behavior that should be used for the parallel update
+             *                                      of statistics
+             * @param l1RegularizationConfigGetter  A `ReadableProperty` that allows to access the
+             *                                      `IRegularizationConfig` that stores the configuration of the L1
+             *                                      regularization
+             * @param l2RegularizationConfigGetter  A `ReadableProperty` that allows to access the
+             *                                      `IRegularizationConfig` that stores the configuration of the L2
+             *                                      regularization
              */
-            AutomaticHeadConfig(GetterFunction<ILossConfig> lossConfigGetter,
-                                GetterFunction<ILabelBinningConfig> labelBinningConfigGetter,
-                                GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter,
-                                GetterFunction<IRegularizationConfig> l1RegularizationConfigGetter,
-                                GetterFunction<IRegularizationConfig> l2RegularizationConfigGetter);
+            AutomaticHeadConfig(ReadableProperty<ILossConfig> lossConfigGetter,
+                                ReadableProperty<ILabelBinningConfig> labelBinningConfigGetter,
+                                ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter,
+                                ReadableProperty<IRegularizationConfig> l1RegularizationConfigGetter,
+                                ReadableProperty<IRegularizationConfig> l2RegularizationConfigGetter);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,

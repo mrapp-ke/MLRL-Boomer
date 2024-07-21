@@ -6,9 +6,9 @@
 
 namespace seco {
 
-    SingleOutputHeadConfig::SingleOutputHeadConfig(GetterFunction<IHeuristicConfig> heuristicConfigGetter,
-                                                   GetterFunction<IHeuristicConfig> pruningHeuristicConfigGetter)
-        : heuristicConfigGetter_(heuristicConfigGetter), pruningHeuristicConfigGetter_(pruningHeuristicConfigGetter) {}
+    SingleOutputHeadConfig::SingleOutputHeadConfig(ReadableProperty<IHeuristicConfig> heuristicConfigGetter,
+                                                   ReadableProperty<IHeuristicConfig> pruningHeuristicConfigGetter)
+        : heuristicConfig_(heuristicConfigGetter), pruningHeuristicConfig_(pruningHeuristicConfigGetter) {}
 
     std::unique_ptr<IStatisticsProviderFactory> SingleOutputHeadConfig::createStatisticsProviderFactory(
       const IRowWiseLabelMatrix& labelMatrix) const {
@@ -16,10 +16,10 @@ namespace seco {
           std::make_unique<DecomposableMajorityRuleEvaluationFactory>();
         std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
           std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(
-            heuristicConfigGetter_().createHeuristicFactory());
+            heuristicConfig_.get().createHeuristicFactory());
         std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
           std::make_unique<DecomposableSingleOutputRuleEvaluationFactory>(
-            pruningHeuristicConfigGetter_().createHeuristicFactory());
+            pruningHeuristicConfig_.get().createHeuristicFactory());
         return std::make_unique<DenseDecomposableStatisticsProviderFactory>(std::move(defaultRuleEvaluationFactoryPtr),
                                                                             std::move(regularRuleEvaluationFactoryPtr),
                                                                             std::move(pruningRuleEvaluationFactoryPtr));

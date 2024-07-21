@@ -22,31 +22,31 @@ namespace boosting {
     class AutomaticPartitionSamplingConfig final : public IPartitionSamplingConfig {
         private:
 
-            const GetterFunction<IGlobalPruningConfig> globalPruningConfigGetter_;
+            const ReadableProperty<IGlobalPruningConfig> globalPruningConfig_;
 
-            const GetterFunction<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfigGetter_;
+            const ReadableProperty<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfig_;
 
-            const GetterFunction<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfigGetter_;
+            const ReadableProperty<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfig_;
 
         public:
 
             /**
-             * @param globalPruningConfigGetter                 A `GetterFunction` that allows to access the
+             * @param globalPruningConfigGetter                 A `ReadableProperty` that allows to access the
              *                                                  `IGlobalPruningConfig` that stores the configuration of
              *                                                  the method that is used for pruning entire rules
-             * @param marginalProbabilityCalibratorConfigGetter A `GetterFunction` that allows to access the
+             * @param marginalProbabilityCalibratorConfigGetter A `ReadableProperty` that allows to access the
              *                                                  `IMarginalProbabilityCalibratorConfig` that stores the
              *                                                  configuration of the calibrator that is used to fit a
              *                                                  model for the calibration of marginal probabilities
-             * @param jointProbabilityCalibratorConfigGetter    A `GetterFunction` that allows to access the
+             * @param jointProbabilityCalibratorConfigGetter    A `ReadableProperty` that allows to access the
              *                                                  `IJointProbabilityCalibratorConfig` that stores the
              *                                                  configuration of the calibrator that is used to fit a
              *                                                  model for the calibration of joint probabilities
              */
             AutomaticPartitionSamplingConfig(
-              GetterFunction<IGlobalPruningConfig> globalPruningConfigGetter,
-              GetterFunction<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfigGetter,
-              GetterFunction<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfigGetter);
+              ReadableProperty<IGlobalPruningConfig> globalPruningConfigGetter,
+              ReadableProperty<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfigGetter,
+              ReadableProperty<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfigGetter);
 
             /**
              * @see `IPartitionSamplingConfig::createPartitionSamplingFactory`

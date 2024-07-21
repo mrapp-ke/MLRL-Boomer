@@ -20,16 +20,16 @@ namespace seco {
     class OutputWiseBinaryPredictorConfig final : public IBinaryPredictorConfig {
         private:
 
-            const GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter_;
+            const ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
 
         public:
 
             /**
-             * @param multiThreadingConfigGetter A `GetterFunction` that allows to access the `IMultiThreadingConfig`
+             * @param multiThreadingConfigGetter A `ReadableProperty` that allows to access the `IMultiThreadingConfig`
              *                                   that stores the configuration of the multi-threading behavior that
              *                                   should be used to predict for several query examples in parallel
              */
-            OutputWiseBinaryPredictorConfig(GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter);
+            OutputWiseBinaryPredictorConfig(ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter);
 
             /**
              * @see `IPredictorConfig::createPredictorFactory`

@@ -18,27 +18,27 @@ namespace seco {
     class PartialHeadConfig final : public IHeadConfig {
         private:
 
-            const GetterFunction<IHeuristicConfig> heuristicConfigGetter_;
+            const ReadableProperty<IHeuristicConfig> heuristicConfig_;
 
-            const GetterFunction<IHeuristicConfig> pruningHeuristicConfigGetter_;
+            const ReadableProperty<IHeuristicConfig> pruningHeuristicConfig_;
 
-            const GetterFunction<ILiftFunctionConfig> liftFunctionConfigGetter_;
+            const ReadableProperty<ILiftFunctionConfig> liftFunctionConfig_;
 
         public:
 
             /**
-             * @param heuristicConfigGetter         A `GetterFunction` that allows to access the `IHeuristicConfig` that
-             *                                      stores the configuration of the heuristic for learning rules
-             * @param pruningHeuristicConfigGetter  A `GetterFunction` that allows to access the `IHeuristicConfig` that
-             *                                      stores the configuration of the heuristic for pruning rules
-             * @param liftFunctionConfigGetter      A `GetterFunction` that allows to access the `ILiftFunctionConfig`
+             * @param heuristicConfigGetter         A `ReadableProperty` that allows to access the `IHeuristicConfig`
+             *                                      that stores the configuration of the heuristic for learning rules
+             * @param pruningHeuristicConfigGetter  A `ReadableProperty` that allows to access the `IHeuristicConfig`
+             *                                      that stores the configuration of the heuristic for pruning rules
+             * @param liftFunctionConfigGetter      A `ReadableProperty` that allows to access the `ILiftFunctionConfig`
              *                                      that stores the configuration of the lift function that should
              *                                      affect the quality of rules, depending on the number of labels for
              *                                      which they predict
              */
-            PartialHeadConfig(GetterFunction<IHeuristicConfig> heuristicConfigGetter,
-                              GetterFunction<IHeuristicConfig> pruningHeuristicConfigGetter,
-                              GetterFunction<ILiftFunctionConfig> liftFunctionConfigGetter);
+            PartialHeadConfig(ReadableProperty<IHeuristicConfig> heuristicConfigGetter,
+                              ReadableProperty<IHeuristicConfig> pruningHeuristicConfigGetter,
+                              ReadableProperty<ILiftFunctionConfig> liftFunctionConfigGetter);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IRowWiseLabelMatrix& labelMatrix) const override;

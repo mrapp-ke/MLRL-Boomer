@@ -20,26 +20,26 @@ namespace boosting {
     class AutoParallelRuleRefinementConfig final : public IMultiThreadingConfig {
         private:
 
-            const GetterFunction<ILossConfig> lossConfigGetter_;
+            const ReadableProperty<ILossConfig> lossConfig_;
 
-            const GetterFunction<IHeadConfig> headConfigGetter_;
+            const ReadableProperty<IHeadConfig> headConfig_;
 
-            const GetterFunction<IFeatureSamplingConfig> featureSamplingConfigGetter_;
+            const ReadableProperty<IFeatureSamplingConfig> featureSamplingConfig_;
 
         public:
 
             /**
-             * @param lossConfigGetter              A `GetterFunction` that allows to access the `ILossConfig` that
+             * @param lossConfigGetter              A `ReadableProperty` that allows to access the `ILossConfig` that
              *                                      stores the configuration of the loss function
-             * @param headConfigGetter              A `GetterFunction` that allows to access the `IHeadConfig` that
+             * @param headConfigGetter              A `ReadableProperty` that allows to access the `IHeadConfig` that
              *                                      stores the configuration of the rule heads
-             * @param featureSamplingConfigGetter   A `GetterFunction` that allows to access the
+             * @param featureSamplingConfigGetter   A `ReadableProperty` that allows to access the
              *                                      `IFeatureSamplingConfig` that stores the configuration of the method
              *                                      for sampling features
              */
-            AutoParallelRuleRefinementConfig(GetterFunction<ILossConfig> lossConfigGetter,
-                                             GetterFunction<IHeadConfig> headConfigGetter,
-                                             GetterFunction<IFeatureSamplingConfig> featureSamplingConfigGetter);
+            AutoParallelRuleRefinementConfig(ReadableProperty<ILossConfig> lossConfigGetter,
+                                             ReadableProperty<IHeadConfig> headConfigGetter,
+                                             ReadableProperty<IFeatureSamplingConfig> featureSamplingConfigGetter);
 
             /**
              * @see `IMultiThreadingConfig::getNumThreads`

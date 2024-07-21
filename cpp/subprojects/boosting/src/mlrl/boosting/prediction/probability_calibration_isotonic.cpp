@@ -302,8 +302,8 @@ namespace boosting {
     };
 
     IsotonicMarginalProbabilityCalibratorConfig::IsotonicMarginalProbabilityCalibratorConfig(
-      GetterFunction<ILossConfig> lossConfigGetter)
-        : useHoldoutSet_(true), lossConfigGetter_(lossConfigGetter) {}
+      ReadableProperty<ILossConfig> lossConfigGetter)
+        : useHoldoutSet_(true), lossConfig_(lossConfigGetter) {}
 
     bool IsotonicMarginalProbabilityCalibratorConfig::isHoldoutSetUsed() const {
         return useHoldoutSet_;
@@ -322,7 +322,7 @@ namespace boosting {
     std::unique_ptr<IMarginalProbabilityCalibratorFactory>
       IsotonicMarginalProbabilityCalibratorConfig::createMarginalProbabilityCalibratorFactory() const {
         std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr =
-          lossConfigGetter_().createMarginalProbabilityFunctionFactory();
+          lossConfig_.get().createMarginalProbabilityFunctionFactory();
 
         if (marginalProbabilityFunctionFactoryPtr) {
             return std::make_unique<IsotonicMarginalProbabilityCalibratorFactory>(
@@ -645,8 +645,8 @@ namespace boosting {
     };
 
     IsotonicJointProbabilityCalibratorConfig::IsotonicJointProbabilityCalibratorConfig(
-      GetterFunction<ILossConfig> lossConfigGetter)
-        : useHoldoutSet_(true), lossConfigGetter_(lossConfigGetter) {}
+      ReadableProperty<ILossConfig> lossConfigGetter)
+        : useHoldoutSet_(true), lossConfig_(lossConfigGetter) {}
 
     bool IsotonicJointProbabilityCalibratorConfig::isHoldoutSetUsed() const {
         return useHoldoutSet_;
@@ -669,7 +669,7 @@ namespace boosting {
     std::unique_ptr<IJointProbabilityCalibratorFactory>
       IsotonicJointProbabilityCalibratorConfig::createJointProbabilityCalibratorFactory() const {
         std::unique_ptr<IJointProbabilityFunctionFactory> jointProbabilityFunctionFactoryPtr =
-          lossConfigGetter_().createJointProbabilityFunctionFactory();
+          lossConfig_.get().createJointProbabilityFunctionFactory();
 
         if (jointProbabilityFunctionFactoryPtr) {
             return std::make_unique<IsotonicJointProbabilityCalibratorFactory>(
