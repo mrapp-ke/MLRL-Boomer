@@ -24,12 +24,12 @@ template<typename T>
 using SetterFunction = std::function<void(std::unique_ptr<T>&&)>;
 
 /**
- * Provides access to a property via a getter and setter function.
+ * Provides access to a property via a getter function.
  *
  * @tparam T The type of the property
  */
 template<typename T>
-struct Property {
+struct ReadableProperty {
     public:
 
         /**
@@ -38,16 +38,47 @@ struct Property {
         const GetterFunction<T> get;
 
         /**
+         * @param getterFunction The getter function
+         */
+        explicit ReadableProperty(GetterFunction<T> getterFunction) : get(getterFunction) {}
+};
+
+/**
+ * Provides access to a property via a setter function.
+ *
+ * @tparam T The type of the property
+ */
+template<typename T>
+struct WritableProperty {
+    public:
+
+        /**
          * The setter function.
          */
         const SetterFunction<T> set;
+
+        /**
+         * @param setterFunction The setter function
+         */
+        explicit WritableProperty(SetterFunction<T> setterFunction) : set(setterFunction) {}
+};
+
+/**
+ * Provides access to a property via a getter and setter function.
+ *
+ * @tparam T The type of the property
+ */
+template<typename T>
+struct Property : public ReadableProperty<T>,
+                  public WritableProperty<T> {
+    public:
 
         /**
          * @param getterFunction    The getter function
          * @param setterFunction    The setter function
          */
         Property(GetterFunction<T> getterFunction, SetterFunction<T> setterFunction)
-            : get(getterFunction), set(setterFunction) {}
+            : ReadableProperty<T>(getterFunction), WritableProperty<T>(setterFunction) {}
 };
 
 /**
