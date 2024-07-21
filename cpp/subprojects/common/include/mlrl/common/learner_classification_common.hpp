@@ -10,7 +10,7 @@
 #include <utility>
 
 /**
- * An abstract base class for all rule learners.
+ * An abstract base class for all rule learners that can be used in classification problems.
  */
 class AbstractClassificationRuleLearner : virtual public IClassificationRuleLearner {
     private:
