@@ -179,8 +179,11 @@ class RuleLearnerConfigurator {
          *
          * @return An unique pointer to an object of type `IClassificationInstanceSamplingFactory` that has been created
          */
-        virtual std::unique_ptr<IClassificationInstanceSamplingFactory> createInstanceSamplingFactory() const {
-            return config_.getInstanceSamplingConfig().get().createClassificationInstanceSamplingFactory();
+        virtual std::unique_ptr<IClassificationInstanceSamplingFactory> createClassificationInstanceSamplingFactory()
+          const {
+            return config_.getClassificationInstanceSamplingConfig()
+              .get()
+              .createClassificationInstanceSamplingFactory();
         }
 
         /**
@@ -203,8 +206,11 @@ class RuleLearnerConfigurator {
          * @return An unique pointer to an object of type `IClassificationPartitionSamplingFactory` that has been
          *         created
          */
-        virtual std::unique_ptr<IClassificationPartitionSamplingFactory> createPartitionSamplingFactory() const {
-            return config_.getPartitionSamplingConfig().get().createClassificationPartitionSamplingFactory();
+        virtual std::unique_ptr<IClassificationPartitionSamplingFactory> createClassificationPartitionSamplingFactory()
+          const {
+            return config_.getClassificationPartitionSamplingConfig()
+              .get()
+              .createClassificationPartitionSamplingFactory();
         }
 
         /**
@@ -450,7 +456,7 @@ class RuleLearnerConfigurator {
          * @return              An unique pointer to an object of type `IClassificationStatisticsProviderFactory` that
          *                      has been created
          */
-        virtual std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
+        virtual std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
           const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const = 0;
 
         /**
@@ -500,9 +506,10 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
         std::unique_ptr<IOutputSamplingConfig> outputSamplingConfigPtr_;
 
         /**
-         * An unique pointer that stores the configuration of the method for sampling instances.
+         * An unique pointer that stores the configuration of the method for that should be used for sampling instances
+         * in classification problems.
          */
-        std::unique_ptr<IClassificationInstanceSamplingConfig> instanceSamplingConfigPtr_;
+        std::unique_ptr<IClassificationInstanceSamplingConfig> classificationInstanceSamplingConfigPtr_;
 
         /**
          * An unique pointer that stores the configuration of the method for sampling features.
@@ -510,10 +517,10 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
         std::unique_ptr<IFeatureSamplingConfig> featureSamplingConfigPtr_;
 
         /**
-         * An unique pointer that stores the configuration of the method for partitioning the available training
-         * examples into a training set and a holdout set.
+         * An unique pointer that stores the configuration of the method that should be used for partitioning the
+         * available training examples in classification problems.
          */
-        std::unique_ptr<IClassificationPartitionSamplingConfig> partitionSamplingConfigPtr_;
+        std::unique_ptr<IClassificationPartitionSamplingConfig> classificationPartitionSamplingConfigPtr_;
 
         /**
          * An unique pointer that stores the configuration of the method for pruning individual rules.
@@ -617,9 +624,9 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
                 ruleCompareFunction_, readableProperty(parallelRuleRefinementConfigPtr_))),
               featureBinningConfigPtr_(std::make_unique<NoFeatureBinningConfig>()),
               outputSamplingConfigPtr_(std::make_unique<NoOutputSamplingConfig>()),
-              instanceSamplingConfigPtr_(std::make_unique<NoInstanceSamplingConfig>()),
+              classificationInstanceSamplingConfigPtr_(std::make_unique<NoInstanceSamplingConfig>()),
               featureSamplingConfigPtr_(std::make_unique<NoFeatureSamplingConfig>()),
-              partitionSamplingConfigPtr_(std::make_unique<NoPartitionSamplingConfig>()),
+              classificationPartitionSamplingConfigPtr_(std::make_unique<NoPartitionSamplingConfig>()),
               rulePruningConfigPtr_(std::make_unique<NoRulePruningConfig>()),
               postProcessorConfigPtr_(std::make_unique<NoPostProcessorConfig>()),
               parallelRuleRefinementConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
@@ -662,16 +669,16 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
             return property(outputSamplingConfigPtr_);
         }
 
-        Property<IClassificationInstanceSamplingConfig> getInstanceSamplingConfig() override final {
-            return property(instanceSamplingConfigPtr_);
+        Property<IClassificationInstanceSamplingConfig> getClassificationInstanceSamplingConfig() override final {
+            return property(classificationInstanceSamplingConfigPtr_);
         }
 
         Property<IFeatureSamplingConfig> getFeatureSamplingConfig() override final {
             return property(featureSamplingConfigPtr_);
         }
 
-        Property<IClassificationPartitionSamplingConfig> getPartitionSamplingConfig() override final {
-            return property(partitionSamplingConfigPtr_);
+        Property<IClassificationPartitionSamplingConfig> getClassificationPartitionSamplingConfig() override final {
+            return property(classificationPartitionSamplingConfigPtr_);
         }
 
         Property<IRulePruningConfig> getRulePruningConfig() override final {

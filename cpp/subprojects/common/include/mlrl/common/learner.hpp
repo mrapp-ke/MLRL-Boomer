@@ -200,7 +200,7 @@ class MLRLCOMMON_API IRuleLearnerConfig {
          * @return A `Property` that allows to access the `IClassificationInstanceSamplingConfig` that stores the
          * configuration of the method for sampling instances
          */
-        virtual Property<IClassificationInstanceSamplingConfig> getInstanceSamplingConfig() = 0;
+        virtual Property<IClassificationInstanceSamplingConfig> getClassificationInstanceSamplingConfig() = 0;
 
         /**
          * Returns a `Property` that allows to access the `IFeatureSamplingConfig` that stores the configuration of the
@@ -220,7 +220,7 @@ class MLRLCOMMON_API IRuleLearnerConfig {
          *         configuration of the method for partitioning the available training examples into a training set and
          *         a holdout set
          */
-        virtual Property<IClassificationPartitionSamplingConfig> getPartitionSamplingConfig() = 0;
+        virtual Property<IClassificationPartitionSamplingConfig> getClassificationPartitionSamplingConfig() = 0;
 
         /**
          * Returns a `Property` that allows to access the `IRulePruningConfig` that stores the configuration of the
@@ -607,7 +607,7 @@ class MLRLCOMMON_API INoInstanceSamplingMixin : virtual public IRuleLearnerConfi
          * learned.
          */
         virtual void useNoInstanceSampling() {
-            Property<IClassificationInstanceSamplingConfig> property = this->getInstanceSamplingConfig();
+            Property<IClassificationInstanceSamplingConfig> property = this->getClassificationInstanceSamplingConfig();
             property.set(std::make_unique<NoInstanceSamplingConfig>());
         }
 };
@@ -629,7 +629,7 @@ class MLRLCOMMON_API IInstanceSamplingWithReplacementMixin : virtual public IRul
          *         configuration of the method for sampling instances
          */
         virtual IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() {
-            Property<IClassificationInstanceSamplingConfig> property = this->getInstanceSamplingConfig();
+            Property<IClassificationInstanceSamplingConfig> property = this->getClassificationInstanceSamplingConfig();
             std::unique_ptr<InstanceSamplingWithReplacementConfig> ptr =
               std::make_unique<InstanceSamplingWithReplacementConfig>();
             IInstanceSamplingWithReplacementConfig& ref = *ptr;
@@ -655,7 +655,7 @@ class MLRLCOMMON_API IInstanceSamplingWithoutReplacementMixin : virtual public I
          *         configuration of the method for sampling instances
          */
         virtual IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement() {
-            Property<IClassificationInstanceSamplingConfig> property = this->getInstanceSamplingConfig();
+            Property<IClassificationInstanceSamplingConfig> property = this->getClassificationInstanceSamplingConfig();
             std::unique_ptr<InstanceSamplingWithoutReplacementConfig> ptr =
               std::make_unique<InstanceSamplingWithoutReplacementConfig>();
             IInstanceSamplingWithoutReplacementConfig& ref = *ptr;
@@ -721,7 +721,8 @@ class MLRLCOMMON_API INoPartitionSamplingMixin : virtual public IRuleLearnerConf
          * holdout set.
          */
         virtual void useNoPartitionSampling() {
-            Property<IClassificationPartitionSamplingConfig> property = this->getPartitionSamplingConfig();
+            Property<IClassificationPartitionSamplingConfig> property =
+              this->getClassificationPartitionSamplingConfig();
             property.set(std::make_unique<NoPartitionSamplingConfig>());
         }
 };
@@ -744,7 +745,8 @@ class MLRLCOMMON_API IRandomBiPartitionSamplingMixin : virtual public IRuleLearn
          *         of the method for partitioning the available training examples into a training set and a holdout set
          */
         virtual IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() {
-            Property<IClassificationPartitionSamplingConfig> property = this->getPartitionSamplingConfig();
+            Property<IClassificationPartitionSamplingConfig> property =
+              this->getClassificationPartitionSamplingConfig();
             std::unique_ptr<RandomBiPartitionSamplingConfig> ptr = std::make_unique<RandomBiPartitionSamplingConfig>();
             IRandomBiPartitionSamplingConfig& ref = *ptr;
             property.set(std::move(ptr));

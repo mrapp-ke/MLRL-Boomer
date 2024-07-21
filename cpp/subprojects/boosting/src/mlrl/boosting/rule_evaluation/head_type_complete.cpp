@@ -14,11 +14,12 @@ namespace boosting {
           l1RegularizationConfig_(l1RegularizationConfigGetter), l2RegularizationConfig_(l2RegularizationConfigGetter) {
     }
 
-    std::unique_ptr<IClassificationStatisticsProviderFactory> CompleteHeadConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const IDecomposableClassificationLossConfig& lossConfig) const {
+    std::unique_ptr<IClassificationStatisticsProviderFactory>
+      CompleteHeadConfig::createClassificationStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const IDecomposableClassificationLossConfig& lossConfig) const {
         float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
-        float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfigr_.get().getWeight();
         uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
         std::unique_ptr<IDecomposableClassificationLossFactory> lossFactoryPtr =
           lossConfig.createDecomposableClassificationLossFactory();
@@ -35,16 +36,18 @@ namespace boosting {
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
 
-    std::unique_ptr<IClassificationStatisticsProviderFactory> CompleteHeadConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const ISparseDecomposableClassificationLossConfig& lossConfig) const {
-        return this->createStatisticsProviderFactory(
+    std::unique_ptr<IClassificationStatisticsProviderFactory>
+      CompleteHeadConfig::createClassificationStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const ISparseDecomposableClassificationLossConfig& lossConfig) const {
+        return this->createClassificationStatisticsProviderFactory(
           featureMatrix, labelMatrix, static_cast<const IDecomposableClassificationLossConfig&>(lossConfig));
     }
 
-    std::unique_ptr<IClassificationStatisticsProviderFactory> CompleteHeadConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-      const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
+    std::unique_ptr<IClassificationStatisticsProviderFactory>
+      CompleteHeadConfig::createClassificationStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
+        const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
         std::unique_ptr<INonDecomposableClassificationLossFactory> lossFactoryPtr =
           lossConfig.createNonDecomposableClassificationLossFactory();
@@ -61,7 +64,7 @@ namespace boosting {
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
 
-    std::unique_ptr<IRegressionStatisticsProviderFactory> CompleteHeadConfig::createStatisticsProviderFactory(
+    std::unique_ptr<IRegressionStatisticsProviderFactory> CompleteHeadConfig::createRegressionStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
       const IDecomposableRegressionLossConfig& lossConfig) const {
         float64 l1RegularizationWeight = l1RegularizationConfigGetter_().getWeight();
@@ -83,7 +86,7 @@ namespace boosting {
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
     }
 
-    std::unique_ptr<IRegressionStatisticsProviderFactory> CompleteHeadConfig::createStatisticsProviderFactory(
+    std::unique_ptr<IRegressionStatisticsProviderFactory> CompleteHeadConfig::createRegressionStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
       const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
         uint32 numThreads =

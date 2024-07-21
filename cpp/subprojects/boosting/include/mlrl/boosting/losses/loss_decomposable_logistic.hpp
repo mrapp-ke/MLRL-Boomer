@@ -28,7 +28,7 @@ namespace boosting {
              */
             DecomposableLogisticLossConfig(ReadableProperty<IHeadConfig> headConfigGetter);
 
-            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
               const Lapack& lapack, bool preferSparseStatistics) const override;
 

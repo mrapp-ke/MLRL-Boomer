@@ -93,9 +93,11 @@ namespace boosting {
              * @return                          An unique pointer to an object of type
              *                                  `IClassificationStatisticsProviderFactory` that has been created
              */
-            virtual std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-              const Lapack& lapack, bool preferSparseStatistics) const = 0;
+            virtual std::unique_ptr<IClassificationStatisticsProviderFactory>
+              createClassificationStatisticsProviderFactory(const IFeatureMatrix& featureMatrix,
+                                                            const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+                                                            const Lapack& lapack,
+                                                            bool preferSparseStatistics) const = 0;
 
             /**
              * Creates and returns a new object of type `IClassificationEvaluationMeasureFactory` according to the
@@ -162,7 +164,7 @@ namespace boosting {
              * @return                          An unique pointer to an object of type
              *                                  `IRegressionStatisticsProviderFactory` that has been created
              */
-            virtual std::unique_ptr<IRegressionStatisticsProviderFactory> createStatisticsProviderFactory(
+            virtual std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
               const Lapack& lapack, bool preferSparseStatistics) const = 0;
 

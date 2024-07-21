@@ -15,8 +15,8 @@ namespace boosting {
         bool defaultRuleUsed = defaultRuleConfigGetter_().isDefaultRuleUsed(labelMatrix);
         bool partialHeadsUsed = headConfigGetter_().isPartial();
         bool preferSparseStatistics = shouldSparseStatisticsBePreferred(labelMatrix, defaultRuleUsed, partialHeadsUsed);
-        return lossConfigGetter_().createStatisticsProviderFactory(featureMatrix, labelMatrix, blas, lapack,
-                                                                   preferSparseStatistics);
+        return lossConfigGetter_().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, blas,
+                                                                                 lapack, preferSparseStatistics);
     }
 
     bool AutomaticClassificationStatisticsConfig::isDense() const {
@@ -35,8 +35,8 @@ namespace boosting {
         bool partialHeadsUsed = headConfigGetter_().isPartial();
         bool preferSparseStatistics =
           shouldSparseStatisticsBePreferred(regressionMatrix, defaultRuleUsed, partialHeadsUsed);
-        return lossConfigGetter_().createStatisticsProviderFactory(featureMatrix, regressionMatrix, blas, lapack,
-                                                                   preferSparseStatistics);
+        return lossConfigGetter_().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, blas,
+                                                                             lapack, preferSparseStatistics);
     }
 
     AutomaticRegressionStatisticsConfig::AutomaticRegressionStatisticsConfig(
