@@ -20,7 +20,7 @@ namespace boosting {
     class AutomaticClassificationStatisticsConfig final : public IClassificationStatisticsConfig {
         private:
 
-            const GetterFunction<IClassificationLossConfig> lossConfigGetter_;
+            const ReadableProperty<IClassificationLossConfig> lossConfigGetter_;
 
             const ReadableProperty<IHeadConfig> headConfig_;
 
@@ -36,9 +36,9 @@ namespace boosting {
              * @param defaultRuleConfigGetter A `GetterFunction` that allows to access the `IDefaultRuleConfig` that
              *                                stores the configuration of the default rule
              */
-            AutomaticClassificationStatisticsConfig(GetterFunction<IClassificationLossConfig> lossConfigGetter,
-                                                    GetterFunction<IHeadConfig> headConfigGetter,
-                                                    GetterFunction<IDefaultRuleConfig> defaultRuleConfigGetter);
+            AutomaticClassificationStatisticsConfig(ReadableProperty<IClassificationLossConfig> lossConfigGetter,
+                                                    ReadableProperty<IHeadConfig> headConfigGetter,
+                                                    ReadableProperty<IDefaultRuleConfig> defaultRuleConfigGetter);
 
             std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
@@ -56,11 +56,11 @@ namespace boosting {
     class AutomaticRegressionStatisticsConfig final : public IRegressionStatisticsConfig {
         private:
 
-            const GetterFunction<IRegressionLossConfig> lossConfigGetter_;
+            const ReadableProperty<IRegressionLossConfig> lossConfigGetter_;
 
-            const GetterFunction<IHeadConfig> headConfigGetter_;
+            const ReadableProperty<IHeadConfig> headConfigGetter_;
 
-            const GetterFunction<IDefaultRuleConfig> defaultRuleConfigGetter_;
+            const ReadableProperty<IDefaultRuleConfig> defaultRuleConfigGetter_;
 
         public:
 
@@ -73,9 +73,9 @@ namespace boosting {
              * @param defaultRuleConfigGetter A `GetterFunction` that allows to access the `IDefaultRuleConfig` that
              *                                stores the configuration of the default rule
              */
-            AutomaticRegressionStatisticsConfig(GetterFunction<IRegressionLossConfig> lossConfigGetter,
-                                                GetterFunction<IHeadConfig> headConfigGetter,
-                                                GetterFunction<IDefaultRuleConfig> defaultRuleConfigGetter);
+            AutomaticRegressionStatisticsConfig(ReadableProperty<IRegressionLossConfig> lossConfigGetter,
+                                                ReadableProperty<IHeadConfig> headConfigGetter,
+                                                ReadableProperty<IDefaultRuleConfig> defaultRuleConfigGetter);
 
             std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,

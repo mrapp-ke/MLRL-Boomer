@@ -122,8 +122,7 @@ namespace boosting {
             virtual void useAutomaticStatistics() {
                 Property<IClassificationStatisticsConfig> property = this->getClassificationStatisticsConfig();
                 property.set(std::make_unique<AutomaticClassificationStatisticsConfig>(
-                  this->getClassificationLossConfig(), this->getHeadConfig(),
-                  this->getDefaultRuleConfig()));
+                  this->getClassificationLossConfig(), this->getHeadConfig(), this->getDefaultRuleConfig()));
             }
     };
 
@@ -269,8 +268,7 @@ namespace boosting {
                 Property<IMarginalProbabilityCalibratorConfig> property =
                   this->getMarginalProbabilityCalibratorConfig();
                 std::unique_ptr<IsotonicMarginalProbabilityCalibratorConfig> ptr =
-                  std::make_unique<IsotonicMarginalProbabilityCalibratorConfig>(
-                    this->getClassificationLossConfig());
+                  std::make_unique<IsotonicMarginalProbabilityCalibratorConfig>(this->getClassificationLossConfig());
                 IIsotonicMarginalProbabilityCalibratorConfig& ref = *ptr;
                 property.set(std::move(ptr));
                 return ref;
@@ -373,7 +371,7 @@ namespace boosting {
             virtual void useAutomaticProbabilityPredictor() {
                 Property<IProbabilityPredictorConfig> property = this->getProbabilityPredictorConfig();
                 property.set(std::make_unique<AutomaticProbabilityPredictorConfig>(
-                  this->getClassificationLossConfig().get, this->getParallelPredictionConfig()));
+                  this->getClassificationLossConfig(), this->getParallelPredictionConfig()));
             }
     };
 
@@ -456,7 +454,7 @@ namespace boosting {
             virtual IGfmBinaryPredictorConfig& useGfmBinaryPredictor() {
                 Property<IBinaryPredictorConfig> property = this->getBinaryPredictorConfig();
                 std::unique_ptr<GfmBinaryPredictorConfig> ptr = std::make_unique<GfmBinaryPredictorConfig>(
-                  this->getClassificationLossConfig().get, this->getParallelPredictionConfig());
+                  this->getClassificationLossConfig(), this->getParallelPredictionConfig());
                 IGfmBinaryPredictorConfig& ref = *ptr;
                 property.set(std::move(ptr));
                 return ref;

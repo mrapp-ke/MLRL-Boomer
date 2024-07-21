@@ -72,7 +72,7 @@ namespace boosting {
       DecomposableSquaredErrorLossConfig::createRegressionStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
         const Lapack& lapack, bool preferSparseStatistics) const {
-        return headConfigGetter_().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, *this);
+        return headConfig_.get().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, *this);
     }
 
     std::unique_ptr<IMarginalProbabilityFunctionFactory>
