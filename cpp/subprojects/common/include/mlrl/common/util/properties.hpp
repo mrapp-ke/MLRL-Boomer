@@ -8,14 +8,6 @@
 #include <utility>
 
 /**
- * A getter function.
- *
- * @tparam T The return type of the getter function
- */
-template<typename T>
-using GetterFunction = std::function<T&()>;
-
-/**
  * Provides access to a property via a getter function.
  *
  * @tparam T The type of the property
@@ -25,14 +17,19 @@ struct ReadableProperty {
     public:
 
         /**
+         * A getter function.
+         */
+        typedef std::function<T&()> GetterFunction;
+
+        /**
          * The getter function.
          */
-        const GetterFunction<T> get;
+        const GetterFunction get;
 
         /**
          * @param getterFunction The getter function
          */
-        explicit ReadableProperty(GetterFunction<T> getterFunction) : get(getterFunction) {}
+        explicit ReadableProperty(GetterFunction getterFunction) : get(getterFunction) {}
 };
 
 /**
@@ -74,7 +71,8 @@ struct Property : public ReadableProperty<T>,
          * @param getterFunction    The getter function
          * @param setterFunction    The setter function
          */
-        Property(GetterFunction<T> getterFunction, typename WritableProperty<T>::SetterFunction setterFunction)
+        Property(typename ReadableProperty<T>::GetterFunction getterFunction,
+                 typename WritableProperty<T>::SetterFunction setterFunction)
             : ReadableProperty<T>(getterFunction), WritableProperty<T>(setterFunction) {}
 };
 
@@ -86,7 +84,7 @@ struct Property : public ReadableProperty<T>,
  * @return          The `GetterFunction` that has been created
  */
 template<typename T>
-static inline GetterFunction<T> getterFunction(const std::unique_ptr<T>& uniquePtr) {
+static inline typename ReadableProperty<T>::GetterFunction getterFunction(const std::unique_ptr<T>& uniquePtr) {
     return [&uniquePtr]() -> T& {
         return *uniquePtr;
     };
