@@ -61,6 +61,15 @@ namespace boosting {
                   .get()
                   .createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, blas_, lapack_);
             }
+
+            /**
+             * @see `RuleLearnerConfigurator::createRegressionStatisticsProviderFactory`
+             */
+            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix) const override {
+                return configPtr_->getRegressionStatisticsConfig().get().createRegressionStatisticsProviderFactory(
+                  featureMatrix, regressionMatrix, blas_, lapack_);
+            }
     };
 
     /**
