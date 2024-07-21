@@ -52,7 +52,9 @@ class MLRLCOMMON_API IClassificationRuleLearner {
          * @return                  True, if the rule learner is able to predict scores, false otherwise
          */
         virtual bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix,
-                                      const ITrainingResult& trainingResult) const = 0;
+                                      const ITrainingResult& trainingResult) const {
+            return this->canPredictScores(featureMatrix, trainingResult.getNumOutputs());
+        }
 
         /**
          * Returns whether the rule learner is able to predict scores or not.
@@ -79,7 +81,10 @@ class MLRLCOMMON_API IClassificationRuleLearner {
          *                                  predict scores for the given query examples
          */
         virtual std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                      const ITrainingResult& trainingResult) const = 0;
+                                                                      const ITrainingResult& trainingResult) const {
+            return this->createScorePredictor(featureMatrix, *trainingResult.getRuleModel(),
+                                              *trainingResult.getOutputSpaceInfo(), trainingResult.getNumOutputs());
+        }
 
         /**
          * Creates and returns a predictor that may be used to predict scores for given query examples. If the
@@ -112,7 +117,9 @@ class MLRLCOMMON_API IClassificationRuleLearner {
          * @return                  True, if the rule learner is able to predict probabilities, false otherwise
          */
         virtual bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix,
-                                             const ITrainingResult& trainingResult) const = 0;
+                                             const ITrainingResult& trainingResult) const {
+            return this->canPredictProbabilities(featureMatrix, trainingResult.getNumOutputs());
+        }
 
         /**
          * Returns whether the rule learner is able to predict probabilities or not.
@@ -140,7 +147,12 @@ class MLRLCOMMON_API IClassificationRuleLearner {
          *                                  used to predict probability estimates for the given query examples
          */
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
-          const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const = 0;
+          const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
+            return this->createProbabilityPredictor(
+              featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getOutputSpaceInfo(),
+              *trainingResult.getMarginalProbabilityCalibrationModel(),
+              *trainingResult.getJointProbabilityCalibrationModel(), trainingResult.getNumOutputs());
+        }
 
         /**
          * Creates and returns a predictor that may be used to predict probability estimates for given query examples.
@@ -184,7 +196,9 @@ class MLRLCOMMON_API IClassificationRuleLearner {
          * @return                  True, if the rule learner is able to predict binary labels, false otherwise
          */
         virtual bool canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix,
-                                      const ITrainingResult& trainingResult) const = 0;
+                                      const ITrainingResult& trainingResult) const {
+            return this->canPredictBinary(featureMatrix, trainingResult.getNumOutputs());
+        }
 
         /**
          * Returns whether the rule learner is able to predict binary labels or not.
@@ -210,8 +224,13 @@ class MLRLCOMMON_API IClassificationRuleLearner {
          * @return                          An unique pointer to an object of type `IBinaryPredictor` that may be used
          *                                  to predict binary labels for the given query examples
          */
-        virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
-          const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const = 0;
+        virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                                        const ITrainingResult& trainingResult) const {
+            return this->createBinaryPredictor(
+              featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getOutputSpaceInfo(),
+              *trainingResult.getMarginalProbabilityCalibrationModel(),
+              *trainingResult.getJointProbabilityCalibrationModel(), trainingResult.getNumOutputs());
+        }
 
         /**
          * Creates and returns a predictor that may be used to predict binary labels for given query examples. If the
@@ -259,7 +278,12 @@ class MLRLCOMMON_API IClassificationRuleLearner {
          *                                  used to predict sparse binary labels for the given query examples
          */
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-          const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const = 0;
+          const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const {
+            return this->createSparseBinaryPredictor(
+              featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getOutputSpaceInfo(),
+              *trainingResult.getMarginalProbabilityCalibrationModel(),
+              *trainingResult.getJointProbabilityCalibrationModel(), trainingResult.getNumOutputs());
+        }
 
         /**
          * Creates and returns a predictor that may be used to predict sparse binary labels for given query examples. If
