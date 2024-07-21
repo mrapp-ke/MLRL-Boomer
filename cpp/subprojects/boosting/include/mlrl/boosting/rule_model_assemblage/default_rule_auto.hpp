@@ -20,25 +20,25 @@ namespace boosting {
     class AutomaticDefaultRuleConfig final : public IDefaultRuleConfig {
         private:
 
-            const GetterFunction<IStatisticsConfig> statisticsConfigGetter_;
+            const ReadableProperty<IStatisticsConfig> statisticsConfig_;
 
-            const GetterFunction<ILossConfig> lossConfigGetter_;
+            const ReadableProperty<ILossConfig> lossConfig_;
 
-            const GetterFunction<IHeadConfig> headConfigGetter_;
+            const ReadableProperty<IHeadConfig> headConfig_;
 
         public:
 
             /**
-             * @param statisticsConfigGetter    A `GetterFunction` that allows to access the `IStatisticsConfig` that
+             * @param statisticsConfigGetter    A `ReadableProperty` that allows to access the `IStatisticsConfig` that
              *                                  stores the configuration of the statistics
-             * @param lossConfigGetter          A `GetterFunction` that allows to access the `ILossConfig` that stores
+             * @param lossConfigGetter          A `ReadableProperty` that allows to access the `ILossConfig` that stores
              *                                  the configuration of the loss function
-             * @param headConfigGetter          A `GetterFunction` that allows to access the `IHeadConfig` that stores
+             * @param headConfigGetter          A `ReadableProperty` that allows to access the `IHeadConfig` that stores
              *                                  the configuration of the rule heads
              */
-            AutomaticDefaultRuleConfig(GetterFunction<IStatisticsConfig> statisticsConfigGetter,
-                                       GetterFunction<ILossConfig> lossConfigGetter,
-                                       GetterFunction<IHeadConfig> headConfigGetter);
+            AutomaticDefaultRuleConfig(ReadableProperty<IStatisticsConfig> statisticsConfigGetter,
+                                       ReadableProperty<ILossConfig> lossConfigGetter,
+                                       ReadableProperty<IHeadConfig> headConfigGetter);
 
             /**
              * @see `IDefaultRuleConfig::isDefaultRuleUsed`

@@ -51,16 +51,17 @@ namespace boosting {
             }
     };
 
-    DecomposableSquaredHingeLossConfig::DecomposableSquaredHingeLossConfig(GetterFunction<IHeadConfig> headConfigGetter)
-        : headConfigGetter_(headConfigGetter) {}
+    DecomposableSquaredHingeLossConfig::DecomposableSquaredHingeLossConfig(
+      ReadableProperty<IHeadConfig> headConfigGetter)
+        : headConfig_(headConfigGetter) {}
 
     std::unique_ptr<IStatisticsProviderFactory> DecomposableSquaredHingeLossConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
       const Lapack& lapack, bool preferSparseStatistics) const {
         if (preferSparseStatistics) {
-            return headConfigGetter_().createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
+            return headConfig_.get().createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
         } else {
-            return headConfigGetter_().createStatisticsProviderFactory(
+            return headConfig_.get().createStatisticsProviderFactory(
               featureMatrix, labelMatrix, static_cast<const IDecomposableLossConfig&>(*this));
         }
     }

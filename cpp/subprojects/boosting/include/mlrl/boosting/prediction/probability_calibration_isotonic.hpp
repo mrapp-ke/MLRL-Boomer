@@ -51,15 +51,15 @@ namespace boosting {
 
             bool useHoldoutSet_;
 
-            const GetterFunction<ILossConfig> lossConfigGetter_;
+            const ReadableProperty<ILossConfig> lossConfig_;
 
         public:
 
             /**
-             * @param lossConfigGetter A `GetterFunction` that allows to access the `ILossConfig` that stores the
+             * @param lossConfigGetter A `ReadableProperty` that allows to access the `ILossConfig` that stores the
              *                         configuration of the loss function
              */
-            IsotonicMarginalProbabilityCalibratorConfig(GetterFunction<ILossConfig> lossConfigGetter);
+            IsotonicMarginalProbabilityCalibratorConfig(ReadableProperty<ILossConfig> lossConfigGetter);
 
             bool isHoldoutSetUsed() const override;
 
@@ -116,15 +116,15 @@ namespace boosting {
 
             bool useHoldoutSet_;
 
-            const GetterFunction<ILossConfig> lossConfigGetter_;
+            const ReadableProperty<ILossConfig> lossConfig_;
 
         public:
 
             /**
-             * @param lossConfigGetter A `GetterFunction` that allows to access the `ILossConfig` that stores the
+             * @param lossConfigGetter A `ReadableProperty` that allows to access the `ILossConfig` that stores the
              *                         configuration of the loss function
              */
-            IsotonicJointProbabilityCalibratorConfig(GetterFunction<ILossConfig> lossConfigGetter);
+            IsotonicJointProbabilityCalibratorConfig(ReadableProperty<ILossConfig> lossConfigGetter);
 
             bool isHoldoutSetUsed() const override;
 
