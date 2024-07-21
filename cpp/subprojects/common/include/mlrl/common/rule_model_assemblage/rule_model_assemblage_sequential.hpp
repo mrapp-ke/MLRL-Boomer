@@ -27,5 +27,5 @@ class SequentialRuleModelAssemblageConfig final : public IRuleModelAssemblageCon
         SequentialRuleModelAssemblageConfig(ReadableProperty<IDefaultRuleConfig> defaultRuleConfig);
 
         std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
-          const IRowWiseLabelMatrix& labelMatrix) const override;
+          const IOutputMatrix& outputMatrix) const override;
 };

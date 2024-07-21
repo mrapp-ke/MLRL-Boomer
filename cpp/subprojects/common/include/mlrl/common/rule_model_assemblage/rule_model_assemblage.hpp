@@ -3,7 +3,6 @@
  */
 #pragma once
 
-#include "mlrl/common/input/label_matrix_row_wise.hpp"
 #include "mlrl/common/model/model_builder.hpp"
 #include "mlrl/common/rule_induction/rule_induction.hpp"
 #include "mlrl/common/rule_refinement/feature_space.hpp"
@@ -88,11 +87,11 @@ class IRuleModelAssemblageConfig {
         /**
          * Creates and returns a new object of type `IRuleModelAssemblageFactory` according to specified configuration.
          *
-         * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
-         *                      the labels of the training examples
+         * @param outputMatrix  A reference to an object of type `IOutputMatrix` that provides row-wise access to the
+         *                      ground truth of the training examples
          * @return              An unique pointer to an object of type `IRuleModelAssemblageFactory` that has been
          *                      created
          */
         virtual std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
-          const IRowWiseLabelMatrix& labelMatrix) const = 0;
+          const IOutputMatrix& outputMatrix) const = 0;
 };
