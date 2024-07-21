@@ -6,13 +6,12 @@
 
 namespace boosting {
 
-    CompleteHeadConfig::CompleteHeadConfig(ReadableProperty<ILabelBinningConfig> labelBinningConfigGetter,
-                                           ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter,
-                                           ReadableProperty<IRegularizationConfig> l1RegularizationConfigGetter,
-                                           ReadableProperty<IRegularizationConfig> l2RegularizationConfigGetter)
-        : labelBinningConfig_(labelBinningConfigGetter), multiThreadingConfig_(multiThreadingConfigGetter),
-          l1RegularizationConfig_(l1RegularizationConfigGetter), l2RegularizationConfig_(l2RegularizationConfigGetter) {
-    }
+    CompleteHeadConfig::CompleteHeadConfig(ReadableProperty<ILabelBinningConfig> labelBinningConfig,
+                                           ReadableProperty<IMultiThreadingConfig> multiThreadingConfig,
+                                           ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
+                                           ReadableProperty<IRegularizationConfig> l2RegularizationConfig)
+        : labelBinningConfig_(labelBinningConfig), multiThreadingConfig_(multiThreadingConfig),
+          l1RegularizationConfig_(l1RegularizationConfig), l2RegularizationConfig_(l2RegularizationConfig) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       CompleteHeadConfig::createClassificationStatisticsProviderFactory(

@@ -63,9 +63,8 @@ namespace boosting {
             }
     };
 
-    DecomposableSquaredHingeLossConfig::DecomposableSquaredHingeLossConfig(
-      ReadableProperty<IHeadConfig> headConfigGetter)
-        : headConfig_(headConfigGetter) {}
+    DecomposableSquaredHingeLossConfig::DecomposableSquaredHingeLossConfig(ReadableProperty<IHeadConfig> headConfig)
+        : headConfig_(headConfig) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       DecomposableSquaredHingeLossConfig::createClassificationStatisticsProviderFactory(

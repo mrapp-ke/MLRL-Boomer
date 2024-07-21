@@ -99,15 +99,14 @@ namespace boosting {
         public:
 
             /**
-             * @param labelBinningConfigGetter    A `ReadableProperty` that allows to access the `ILabelBinningConfig`
-             *                                    that stores the configuration of the method for assigning labels to
-             *                                    bins
-             * @param multiThreadingConfigGetter  A `ReadableProperty` that allows to access the `IMultiThreadingConfig`
-             *                                    that stores the configuration of the multi-threading behavior that
-             *                                    should be used for the parallel update of statistics
+             * @param labelBinningConfig    A `ReadableProperty` that allows to access the `ILabelBinningConfig` that
+             *                              stores the configuration of the method for assigning labels to bins
+             * @param multiThreadingConfig  A `ReadableProperty` that allows to access the `IMultiThreadingConfig` that
+             *                              stores the configuration of the multi-threading behavior that should be used
+             *                              for the parallel update of statistics
              */
-            FixedPartialHeadConfig(ReadableProperty<ILabelBinningConfig> labelBinningConfigGetter,
-                                   ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter);
+            FixedPartialHeadConfig(ReadableProperty<ILabelBinningConfig> labelBinningConfig,
+                                   ReadableProperty<IMultiThreadingConfig> multiThreadingConfig);
 
             float32 getOutputRatio() const override;
 

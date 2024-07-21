@@ -7,11 +7,10 @@
 
 namespace boosting {
 
-    DynamicPartialHeadConfig::DynamicPartialHeadConfig(
-      ReadableProperty<ILabelBinningConfig> labelBinningConfigGetter,
-      ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : threshold_(0.02f), exponent_(2.0f), labelBinningConfig_(labelBinningConfigGetter),
-          multiThreadingConfig_(multiThreadingConfigGetter) {}
+    DynamicPartialHeadConfig::DynamicPartialHeadConfig(ReadableProperty<ILabelBinningConfig> labelBinningConfig,
+                                                       ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
+        : threshold_(0.02f), exponent_(2.0f), labelBinningConfig_(labelBinningConfig),
+          multiThreadingConfig_(multiThreadingConfig) {}
 
     float32 DynamicPartialHeadConfig::getThreshold() const {
         return threshold_;

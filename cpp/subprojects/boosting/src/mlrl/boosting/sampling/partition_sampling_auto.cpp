@@ -6,12 +6,12 @@
 namespace boosting {
 
     AutomaticPartitionSamplingConfig::AutomaticPartitionSamplingConfig(
-      ReadableProperty<IGlobalPruningConfig> globalPruningConfigGetter,
-      ReadableProperty<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfigGetter,
-      ReadableProperty<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfigGetter)
-        : globalPruningConfig_(globalPruningConfigGetter),
-          marginalProbabilityCalibratorConfig_(marginalProbabilityCalibratorConfigGetter),
-          jointProbabilityCalibratorConfig_(jointProbabilityCalibratorConfigGetter) {}
+      ReadableProperty<IGlobalPruningConfig> globalPruningConfig,
+      ReadableProperty<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfig,
+      ReadableProperty<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfig)
+        : globalPruningConfig_(globalPruningConfig),
+          marginalProbabilityCalibratorConfig_(marginalProbabilityCalibratorConfig),
+          jointProbabilityCalibratorConfig_(jointProbabilityCalibratorConfig) {}
 
     std::unique_ptr<IClassificationPartitionSamplingFactory>
       AutomaticPartitionSamplingConfig::createClassificationPartitionSamplingFactory() const {

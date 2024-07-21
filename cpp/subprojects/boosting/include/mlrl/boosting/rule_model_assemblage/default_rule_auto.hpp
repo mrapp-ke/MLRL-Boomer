@@ -29,18 +29,16 @@ namespace boosting {
         public:
 
             /**
-             * @param statisticsConfigGetter    A `ReadableProperty` that allows to access the
-             *                                  `IClassificationStatisticsConfig` that stores the configuration of the
-             *                                  statistics
-             * @param lossConfigGetter          A `ReadableProperty` that allows to access the
-             *                                  `IClassificationLossConfig` that stores the configuration of the loss
-             *                                  function
-             * @param headConfigGetter          A `ReadableProperty` that allows to access the `IHeadConfig` that stores
-             *                                  the configuration of the rule heads
+             * @param statisticsConfig  A `ReadableProperty` that allows to access the `IClassificationStatisticsConfig`
+             *                          that stores the configuration of the statistics
+             * @param lossConfig        A `ReadableProperty` that allows to access the `IClassificationLossConfig` that
+             *                          stores the configuration of the loss function
+             * @param headConfig        A `ReadableProperty` that allows to access the `IHeadConfig` that stores the
+             *                          configuration of the rule heads
              */
-            AutomaticDefaultRuleConfig(ReadableProperty<IClassificationStatisticsConfig> statisticsConfigGetter,
-                                       ReadableProperty<IClassificationLossConfig> lossConfigGetter,
-                                       ReadableProperty<IHeadConfig> headConfigGetter);
+            AutomaticDefaultRuleConfig(ReadableProperty<IClassificationStatisticsConfig> statisticsConfig,
+                                       ReadableProperty<IClassificationLossConfig> lossConfig,
+                                       ReadableProperty<IHeadConfig> headConfig);
 
             /**
              * @see `IDefaultRuleConfig::isDefaultRuleUsed`

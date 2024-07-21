@@ -32,28 +32,23 @@ namespace boosting {
         public:
 
             /**
-             * @param lossConfigGetter              A `ReadableProperty` that allows to access the
-             *                                      `IClassificationLossConfig` that stores the configuration of the
-             *                                      loss function
-             * @param labelBinningConfigGetter      A `ReadableProperty` that allows to access the `ILabelBinningConfig`
-             *                                      that stores the configuration of the method for assigning labels to
-             *                                      bins
-             * @param multiThreadingConfigGetter    A `ReadableProperty` that allows to access the
-             *                                      `IMultiThreadingConfig` that stores the configuration of the
-             *                                      multi-threading behavior that should be used for the parallel update
-             *                                      of statistics
-             * @param l1RegularizationConfigGetter  A `ReadableProperty` that allows to access the
-             *                                      `IRegularizationConfig` that stores the configuration of the L1
-             *                                      regularization
-             * @param l2RegularizationConfigGetter  A `ReadableProperty` that allows to access the
-             *                                      `IRegularizationConfig` that stores the configuration of the L2
-             *                                      regularization
+             * @param lossConfig              A `ReadableProperty` that allows to access the `IClassificationLossConfig`
+             *                                that stores the configuration of the loss function
+             * @param labelBinningConfig      A `ReadableProperty` that allows to access the `ILabelBinningConfig` that
+             *                                stores the configuration of the method for assigning labels to bins
+             * @param multiThreadingConfig    A `ReadableProperty` that allows to access the `IMultiThreadingConfig`
+             *                                that stores the configuration of the multi-threading behavior that should
+             *                                be used for the parallel update of statistics
+             * @param l1RegularizationConfig  A `ReadableProperty` that allows to access the `IRegularizationConfig`
+             *                                that stores the configuration of the L1 regularization
+             * @param l2RegularizationConfig  A `ReadableProperty` that allows to access the `IRegularizationConfig`
+             *                                that stores the configuration of the L2 regularization
              */
-            AutomaticHeadConfig(ReadableProperty<IClassificationLossConfig> lossConfigGetter,
-                                ReadableProperty<ILabelBinningConfig> labelBinningConfigGetter,
-                                ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter,
-                                ReadableProperty<IRegularizationConfig> l1RegularizationConfigGetter,
-                                ReadableProperty<IRegularizationConfig> l2RegularizationConfigGetter);
+            AutomaticHeadConfig(ReadableProperty<IClassificationLossConfig> lossConfig,
+                                ReadableProperty<ILabelBinningConfig> labelBinningConfig,
+                                ReadableProperty<IMultiThreadingConfig> multiThreadingConfig,
+                                ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
+                                ReadableProperty<IRegularizationConfig> l2RegularizationConfig);
 
             std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,

@@ -6,9 +6,9 @@
 namespace boosting {
 
     AutomaticProbabilityPredictorConfig::AutomaticProbabilityPredictorConfig(
-      ReadableProperty<IClassificationLossConfig> lossConfigGetter,
-      ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : lossConfig_(lossConfigGetter), multiThreadingConfig_(multiThreadingConfigGetter) {}
+      ReadableProperty<IClassificationLossConfig> lossConfig,
+      ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
+        : lossConfig_(lossConfig), multiThreadingConfig_(multiThreadingConfig) {}
 
     std::unique_ptr<IProbabilityPredictorFactory> AutomaticProbabilityPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {

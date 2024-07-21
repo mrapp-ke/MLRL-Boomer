@@ -26,16 +26,14 @@ namespace boosting {
         public:
 
             /**
-             * @param lossConfigGetter              A `ReadableProperty` that allows to access the
-             *                                      `IClassificationLossConfig` that stores the configuration of the
-             *                                      loss function
-             * @param multiThreadingConfigGetter    A `ReadableProperty` that allows to access the
-             *                                      `IMultiThreadingConfig` that stores the configuration of the
-             *                                      multi-threading behavior that should be used to predict for several
-             *                                      query examples in parallel
+             * @param lossConfig            A `ReadableProperty` that allows to access the `IClassificationLossConfig`
+             *                              that stores the configuration of the loss function
+             * @param multiThreadingConfig  A `ReadableProperty` that allows to access the `IMultiThreadingConfig` that
+             *                              stores the configuration of the multi-threading behavior that should be used
+             *                              to predict for several query examples in parallel
              */
-            AutomaticBinaryPredictorConfig(ReadableProperty<IClassificationLossConfig> lossConfigGetter,
-                                           ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter);
+            AutomaticBinaryPredictorConfig(ReadableProperty<IClassificationLossConfig> lossConfig,
+                                           ReadableProperty<IMultiThreadingConfig> multiThreadingConfig);
 
             /**
              * @see `IPredictorConfig::createPredictorFactory`

@@ -458,8 +458,8 @@ namespace seco {
     };
 
     OutputWiseBinaryPredictorConfig::OutputWiseBinaryPredictorConfig(
-      ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : multiThreadingConfig_(multiThreadingConfigGetter) {}
+      ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
+        : multiThreadingConfig_(multiThreadingConfig) {}
 
     std::unique_ptr<IBinaryPredictorFactory> OutputWiseBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, const uint32 numOutputs) const {

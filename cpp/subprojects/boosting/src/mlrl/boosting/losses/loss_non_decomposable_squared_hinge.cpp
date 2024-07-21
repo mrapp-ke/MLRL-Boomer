@@ -349,8 +349,8 @@ namespace boosting {
     };
 
     NonDecomposableSquaredHingeLossConfig::NonDecomposableSquaredHingeLossConfig(
-      ReadableProperty<IHeadConfig> headConfigGetter)
-        : headConfig_(headConfigGetter) {}
+      ReadableProperty<IHeadConfig> headConfig)
+        : headConfig_(headConfig) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       NonDecomposableSquaredHingeLossConfig::createClassificationStatisticsProviderFactory(
