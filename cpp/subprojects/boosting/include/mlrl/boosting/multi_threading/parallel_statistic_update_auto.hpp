@@ -23,10 +23,10 @@ namespace boosting {
         public:
 
             /**
-             * @param lossConfigGetter A `ReadableProperty` that allows to access the `IClassificationLossConfig` that
-             *                         stores the configuration of the loss function
+             * @param lossConfig A `ReadableProperty` that allows to access the `IClassificationLossConfig` that stores
+             *                   the configuration of the loss function
              */
-            AutoParallelStatisticUpdateConfig(const ReadableProperty<IClassificationLossConfig> lossConfigGetter);
+            AutoParallelStatisticUpdateConfig(const ReadableProperty<IClassificationLossConfig> lossConfig);
 
             /**
              * @see `IMultiThreadingConfig::getNumThreads`

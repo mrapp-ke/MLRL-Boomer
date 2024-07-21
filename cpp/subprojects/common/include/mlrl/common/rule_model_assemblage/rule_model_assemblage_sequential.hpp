@@ -21,10 +21,10 @@ class SequentialRuleModelAssemblageConfig final : public IRuleModelAssemblageCon
     public:
 
         /**
-         * @param defaultRuleConfigGetter A `ReadableProperty` that allows to access the `IDefaultRuleConfig` that
-         *                                stores the configuration of the default rule
+         * @param defaultRuleConfig A `ReadableProperty` that allows to access the `IDefaultRuleConfig` that stores the
+         *                          configuration of the default rule
          */
-        SequentialRuleModelAssemblageConfig(ReadableProperty<IDefaultRuleConfig> defaultRuleConfigGetter);
+        SequentialRuleModelAssemblageConfig(ReadableProperty<IDefaultRuleConfig> defaultRuleConfig);
 
         std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
           const IRowWiseLabelMatrix& labelMatrix) const override;

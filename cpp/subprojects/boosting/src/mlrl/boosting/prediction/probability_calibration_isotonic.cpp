@@ -302,8 +302,8 @@ namespace boosting {
     };
 
     IsotonicMarginalProbabilityCalibratorConfig::IsotonicMarginalProbabilityCalibratorConfig(
-      ReadableProperty<IClassificationLossConfig> lossConfigGetter)
-        : useHoldoutSet_(true), lossConfig_(lossConfigGetter) {}
+      ReadableProperty<IClassificationLossConfig> lossConfig)
+        : useHoldoutSet_(true), lossConfig_(lossConfig) {}
 
     bool IsotonicMarginalProbabilityCalibratorConfig::isHoldoutSetUsed() const {
         return useHoldoutSet_;
@@ -645,8 +645,8 @@ namespace boosting {
     };
 
     IsotonicJointProbabilityCalibratorConfig::IsotonicJointProbabilityCalibratorConfig(
-      ReadableProperty<IClassificationLossConfig> lossConfigGetter)
-        : useHoldoutSet_(true), lossConfig_(lossConfigGetter) {}
+      ReadableProperty<IClassificationLossConfig> lossConfig)
+        : useHoldoutSet_(true), lossConfig_(lossConfig) {}
 
     bool IsotonicJointProbabilityCalibratorConfig::isHoldoutSetUsed() const {
         return useHoldoutSet_;

@@ -43,8 +43,8 @@ namespace boosting {
     };
 
     OutputWiseScorePredictorConfig::OutputWiseScorePredictorConfig(
-      ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : multiThreadingConfig_(multiThreadingConfigGetter) {}
+      ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
+        : multiThreadingConfig_(multiThreadingConfig) {}
 
     std::unique_ptr<IScorePredictorFactory> OutputWiseScorePredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {

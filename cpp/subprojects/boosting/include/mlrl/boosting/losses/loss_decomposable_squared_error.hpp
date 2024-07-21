@@ -24,10 +24,10 @@ namespace boosting {
         public:
 
             /**
-             * @param headConfigGetter A `ReadableProperty` that allows to access the `IHeadConfig` that stores the
-             *                         configuration of rule heads
+             * @param headConfig A `ReadableProperty` that allows to access the `IHeadConfig` that stores the
+             *                   configuration of rule heads
              */
-            DecomposableSquaredErrorLossConfig(ReadableProperty<IHeadConfig> headConfigGetter);
+            DecomposableSquaredErrorLossConfig(ReadableProperty<IHeadConfig> headConfig);
 
             std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,

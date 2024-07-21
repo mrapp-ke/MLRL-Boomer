@@ -169,10 +169,9 @@ namespace boosting {
     }
 
     OutputWiseBinaryPredictorConfig::OutputWiseBinaryPredictorConfig(
-      ReadableProperty<IClassificationLossConfig> lossConfigGetter,
-      ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : basedOnProbabilities_(false), lossConfig_(lossConfigGetter),
-          multiThreadingConfig_(multiThreadingConfigGetter) {}
+      ReadableProperty<IClassificationLossConfig> lossConfig,
+      ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
+        : basedOnProbabilities_(false), lossConfig_(lossConfig), multiThreadingConfig_(multiThreadingConfig) {}
 
     bool OutputWiseBinaryPredictorConfig::isBasedOnProbabilities() const {
         return basedOnProbabilities_;

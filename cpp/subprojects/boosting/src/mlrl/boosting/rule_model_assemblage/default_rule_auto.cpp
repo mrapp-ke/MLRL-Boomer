@@ -3,9 +3,9 @@
 namespace boosting {
 
     AutomaticDefaultRuleConfig::AutomaticDefaultRuleConfig(
-      ReadableProperty<IClassificationStatisticsConfig> statisticsConfigGetter,
-      ReadableProperty<IClassificationLossConfig> lossConfigGetter, ReadableProperty<IHeadConfig> headConfigGetter)
-        : statisticsConfig_(statisticsConfigGetter), lossConfig_(lossConfigGetter), headConfig_(headConfigGetter) {}
+      ReadableProperty<IClassificationStatisticsConfig> statisticsConfig,
+      ReadableProperty<IClassificationLossConfig> lossConfig, ReadableProperty<IHeadConfig> headConfig)
+        : statisticsConfig_(statisticsConfig), lossConfig_(lossConfig), headConfig_(headConfig) {}
 
     bool AutomaticDefaultRuleConfig::isDefaultRuleUsed(const IOutputMatrix& outputMatrix) const {
         if (statisticsConfig_.get().isDense()) {

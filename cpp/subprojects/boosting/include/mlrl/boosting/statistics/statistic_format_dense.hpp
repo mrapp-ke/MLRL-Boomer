@@ -18,19 +18,18 @@ namespace boosting {
     class DenseClassificationStatisticsConfig final : public IClassificationStatisticsConfig {
         private:
 
-            const ReadableProperty<IClassificationLossConfig> lossConfigGetter_;
+            const ReadableProperty<IClassificationLossConfig> lossConfig_;
 
         public:
 
             /**
-             * @param lossConfigGetter  A `GetterFunction` that allows to access the `IClassificationLossConfig` that
-             *                          stores the configuration of the loss function that should be used in
-             *                          classification problems
-             * @param lossConfigGetter  A `GetterFunction` that allows to access the `IRegressionLossConfig` that stores
-             *                          the configuration of the loss function that should be used in regression
-             *                          problems
+             * @param lossConfig    A `ReadableProperty` that allows to access the `IClassificationLossConfig` that
+             *                      stores the configuration of the loss function that should be used in classification
+             *                      problems
+             * @param lossConfig    A `ReadableProperty` that allows to access the `IRegressionLossConfig` that stores
+             *                      the configuration of the loss function that should be used in regression problems
              */
-            DenseClassificationStatisticsConfig(ReadableProperty<IClassificationLossConfig> lossConfigGetter);
+            DenseClassificationStatisticsConfig(ReadableProperty<IClassificationLossConfig> lossConfig);
 
             std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
@@ -48,16 +47,15 @@ namespace boosting {
     class DenseRegressionStatisticsConfig final : public IRegressionStatisticsConfig {
         private:
 
-            const ReadableProperty<IRegressionLossConfig> lossConfigGetter_;
+            const ReadableProperty<IRegressionLossConfig> lossConfig_;
 
         public:
 
             /**
-             * @param lossConfigGetter  A `GetterFunction` that allows to access the `IRegressionLossConfig` that stores
-             *                          the configuration of the loss function that should be used in regression
-             *                          problems
+             * @param lossConfig    A `ReadableProperty` that allows to access the `IRegressionLossConfig` that stores
+             *                      the configuration of the loss function that should be used in regression problems
              */
-            DenseRegressionStatisticsConfig(ReadableProperty<IRegressionLossConfig> lossConfigGetter);
+            DenseRegressionStatisticsConfig(ReadableProperty<IRegressionLossConfig> lossConfig);
 
             std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,

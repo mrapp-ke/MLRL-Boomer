@@ -320,8 +320,8 @@ namespace boosting {
             }
     };
 
-    NonDecomposableLogisticLossConfig::NonDecomposableLogisticLossConfig(ReadableProperty<IHeadConfig> headConfigGetter)
-        : headConfig_(headConfigGetter) {}
+    NonDecomposableLogisticLossConfig::NonDecomposableLogisticLossConfig(ReadableProperty<IHeadConfig> headConfig)
+        : headConfig_(headConfig) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       NonDecomposableLogisticLossConfig::createClassificationStatisticsProviderFactory(
