@@ -2,34 +2,41 @@
 
 namespace boosting {
 
-    SparseStatisticsConfig::SparseStatisticsConfig(
-      GetterFunction<IClassificationLossConfig> classificationLossConfigGetter,
-      GetterFunction<IRegressionLossConfig> regressionLossConfigGetter)
-        : classificationLossConfigGetter_(classificationLossConfigGetter),
-          regressionLossConfigGetter_(regressionLossConfigGetter) {}
+    SparseClassificationStatisticsConfig::SparseClassificationStatisticsConfig(
+      GetterFunction<IClassificationLossConfig> lossConfigGetter)
+        : lossConfigGetter_(lossConfigGetter) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
-      SparseStatisticsConfig::createClassificationStatisticsProviderFactory(const IFeatureMatrix& featureMatrix,
-                                                                            const IRowWiseLabelMatrix& labelMatrix,
-                                                                            const Blas& blas,
-                                                                            const Lapack& lapack) const {
-        return classificationLossConfigGetter_().createStatisticsProviderFactory(featureMatrix, labelMatrix, blas,
-                                                                                 lapack, true);
-    }
-
-    std::unique_ptr<IRegressionStatisticsProviderFactory>
-      SparseStatisticsConfig::createRegressionStatisticsProviderFactory(
-        const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
+      SparseClassificationStatisticsConfig::createClassificationStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
         const Lapack& lapack) const {
-        return regressionLossConfigGetter_().createStatisticsProviderFactory(featureMatrix, regressionMatrix, blas,
-                                                                             lapack, true);
+        return lossConfigGetter_().createStatisticsProviderFactory(featureMatrix, labelMatrix, blas, lapack, true);
     }
 
-    bool SparseStatisticsConfig::isDense() const {
+    bool SparseClassificationStatisticsConfig::isDense() const {
         return false;
     }
 
-    bool SparseStatisticsConfig::isSparse() const {
+    bool SparseClassificationStatisticsConfig::isSparse() const {
+        return true;
+    }
+
+    SparseRegressionStatisticsConfig::SparseRegressionStatisticsConfig(
+      GetterFunction<IRegressionLossConfig> lossConfigGetter)
+        : lossConfigGetter_(lossConfigGetter) {}
+
+    std::unique_ptr<IRegressionStatisticsProviderFactory>
+      SparseRegressionStatisticsConfig::createRegressionStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
+        const Lapack& lapack) const {
+        return lossConfigGetter_().createStatisticsProviderFactory(featureMatrix, regressionMatrix, blas, lapack, true);
+    }
+
+    bool SparseRegressionStatisticsConfig::isDense() const {
+        return false;
+    }
+
+    bool SparseRegressionStatisticsConfig::isSparse() const {
         return true;
     }
 

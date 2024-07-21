@@ -12,31 +12,52 @@
 namespace boosting {
 
     /**
-     * Allows to configure a dense format for storing statistics about the quality of predictions for training examples.
+     * Allows to configure a dense format for storing statistics about the quality of predictions for training examples
+     * in classification problems.
      */
-    class DenseStatisticsConfig final : public IStatisticsConfig {
+    class DenseClassificationStatisticsConfig final : public IClassificationStatisticsConfig {
         private:
 
-            const GetterFunction<IClassificationLossConfig> classificationLossConfigGetter_;
-
-            const GetterFunction<IRegressionLossConfig> regressionLossConfigGetter_;
+            const GetterFunction<IClassificationLossConfig> lossConfigGetter_;
 
         public:
 
             /**
-             * @param classificationLossConfigGetter    A `GetterFunction` that allows to access the
-             *                                          `IClassificationLossConfig` that stores the configuration of the
-             *                                          loss function that should be used in classification problems
-             * @param regressionLossConfigGetter        A `GetterFunction` that allows to access the
-             *                                          `IRegressionLossConfig` that stores the configuration of the
-             *                                          loss function that should be used in regression problems
+             * @param lossConfigGetter  A `GetterFunction` that allows to access the `IClassificationLossConfig` that
+             *                          stores the configuration of the loss function that should be used in
+             *                          classification problems
+             * @param lossConfigGetter  A `GetterFunction` that allows to access the `IRegressionLossConfig` that stores
+             *                          the configuration of the loss function that should be used in regression
+             *                          problems
              */
-            DenseStatisticsConfig(GetterFunction<IClassificationLossConfig> classificationLossConfigGetter,
-                                  GetterFunction<IRegressionLossConfig> regressionLossConfigGetter);
+            DenseClassificationStatisticsConfig(GetterFunction<IClassificationLossConfig> lossConfigGetter);
 
             std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
               const Lapack& lapack) const override;
+
+            bool isDense() const override;
+
+            bool isSparse() const override;
+    };
+
+    /**
+     * Allows to configure a dense format for storing statistics about the quality of predictions for training examples
+     * in regression problems.
+     */
+    class DenseRegressionStatisticsConfig final : public IRegressionStatisticsConfig {
+        private:
+
+            const GetterFunction<IRegressionLossConfig> lossConfigGetter_;
+
+        public:
+
+            /**
+             * @param lossConfigGetter  A `GetterFunction` that allows to access the `IRegressionLossConfig` that stores
+             *                          the configuration of the loss function that should be used in regression
+             *                          problems
+             */
+            DenseRegressionStatisticsConfig(GetterFunction<IRegressionLossConfig> lossConfigGetter);
 
             std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,

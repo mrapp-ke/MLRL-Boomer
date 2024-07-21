@@ -56,9 +56,16 @@ namespace boosting {
             std::unique_ptr<IHeadConfig> headConfigPtr_;
 
             /**
-             * An unique pointer that stores the configuration of the statistics.
+             * An unique pointer that stores the configuration of the statistics that should be use in classification
+             * problems.
              */
-            std::unique_ptr<IStatisticsConfig> statisticsConfigPtr_;
+            std::unique_ptr<IClassificationStatisticsConfig> classificationStatisticsConfigPtr_;
+
+            /**
+             * An unique pointer that stores the configuration of the statistics that should be use in regression
+             * problems.
+             */
+            std::unique_ptr<IRegressionStatisticsConfig> regressionStatisticsConfigPtr_;
 
             /**
              * An unique pointer that stores the configuration of the loss function that should be used in
@@ -95,8 +102,10 @@ namespace boosting {
                   headConfigPtr_(std::make_unique<CompleteHeadConfig>(
                     readableProperty(labelBinningConfigPtr_), readableProperty(parallelStatisticUpdateConfigPtr_),
                     readableProperty(l1RegularizationConfigPtr_), readableProperty(l2RegularizationConfigPtr_))),
-                  statisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(
-                    readableProperty(classificationLossConfigPtr_), readableProperty(regressionLossConfigPtr_))),
+                  classificationStatisticsConfigPtr_(std::make_unique<DenseClassificationStatisticsConfig>(
+                    readableProperty(classificationLossConfigPtr_))),
+                  regressionStatisticsConfigPtr_(
+                    std::make_unique<DenseRegressionStatisticsConfig>(readableProperty(regressionLossConfigPtr_))),
                   classificationLossConfigPtr_(
                     std::make_unique<DecomposableLogisticLossConfig>(readableProperty(headConfigPtr_))),
                   regressionLossConfigPtr_(
@@ -112,8 +121,12 @@ namespace boosting {
                 return property(headConfigPtr_);
             }
 
-            Property<IStatisticsConfig> getStatisticsConfig() override final {
-                return property(statisticsConfigPtr_);
+            Property<IClassificationStatisticsConfig> getClassificationStatisticsConfig() override final {
+                return property(classificationStatisticsConfigPtr_);
+            }
+
+            Property<IRegressionStatisticsConfig> getRegressionStatisticsConfig() override final {
+                return property(regressionStatisticsConfigPtr_);
             }
 
             Property<IRegularizationConfig> getL1RegularizationConfig() override final {
