@@ -176,7 +176,7 @@ class RuleLearnerConfigurator {
 
         /**
          * May be overridden by subclasses in order to create the `IClassificationInstanceSamplingFactory` to be used by
-         * the rule learner for sampling from the available training examples.
+         * the rule learner for sampling from the available training examples in classification examples.
          *
          * @return An unique pointer to an object of type `IClassificationInstanceSamplingFactory` that has been created
          */
@@ -185,6 +185,16 @@ class RuleLearnerConfigurator {
             return config_.getClassificationInstanceSamplingConfig()
               .get()
               .createClassificationInstanceSamplingFactory();
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IRegressionInstanceSamplingFactory` to be used by the
+         * rule learner for sampling from the available training examples in regression problems.
+         *
+         * @return An unique pointer to an object of type `IRegressionInstanceSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<IRegressionInstanceSamplingFactory> createRegressionInstanceSamplingFactory() const {
+            return config_.getRegressionInstanceSamplingConfig().get().createRegressionInstanceSamplingFactory();
         }
 
         /**
@@ -537,6 +547,12 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
         std::unique_ptr<IClassificationInstanceSamplingConfig> classificationInstanceSamplingConfigPtr_;
 
         /**
+         * An unique pointer that stores the configuration of the method for that should be used for sampling instances
+         * in regression problems.
+         */
+        std::unique_ptr<IRegressionInstanceSamplingConfig> regressionInstanceSamplingConfigPtr_;
+
+        /**
          * An unique pointer that stores the configuration of the method for sampling features.
          */
         std::unique_ptr<IFeatureSamplingConfig> featureSamplingConfigPtr_;
@@ -702,6 +718,10 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
 
         Property<IClassificationInstanceSamplingConfig> getClassificationInstanceSamplingConfig() override final {
             return property(classificationInstanceSamplingConfigPtr_);
+        }
+
+        Property<IRegressionInstanceSamplingConfig> getRegressionInstanceSamplingConfig() override final {
+            return property(regressionInstanceSamplingConfigPtr_);
         }
 
         Property<IFeatureSamplingConfig> getFeatureSamplingConfig() override final {
