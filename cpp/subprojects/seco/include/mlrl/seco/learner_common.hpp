@@ -117,8 +117,8 @@ namespace seco {
             SeCoRuleLearnerConfig()
                 : RuleLearnerConfig(SECO_RULE_COMPARE_FUNCTION),
                   coverageStoppingCriterionConfigPtr_(std::make_unique<NoStoppingCriterionConfig>()),
-                  headConfigPtr_(std::make_unique<SingleOutputHeadConfig>(getterFunction(heuristicConfigPtr_),
-                                                                          getterFunction(pruningHeuristicConfigPtr_))),
+                  headConfigPtr_(std::make_unique<SingleOutputHeadConfig>(
+                    readableProperty(heuristicConfigPtr_), readableProperty(pruningHeuristicConfigPtr_))),
                   heuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
                   pruningHeuristicConfigPtr_(std::make_unique<PrecisionConfig>()),
                   liftFunctionConfigPtr_(std::make_unique<NoLiftFunctionConfig>()) {}

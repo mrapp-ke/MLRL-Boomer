@@ -2,20 +2,19 @@
 
 namespace boosting {
 
-    AutomaticStatisticsConfig::AutomaticStatisticsConfig(GetterFunction<ILossConfig> lossConfigGetter,
-                                                         GetterFunction<IHeadConfig> headConfigGetter,
-                                                         GetterFunction<IDefaultRuleConfig> defaultRuleConfigGetter)
-        : lossConfigGetter_(lossConfigGetter), headConfigGetter_(headConfigGetter),
-          defaultRuleConfigGetter_(defaultRuleConfigGetter) {}
+    AutomaticStatisticsConfig::AutomaticStatisticsConfig(ReadableProperty<ILossConfig> lossConfigGetter,
+                                                         ReadableProperty<IHeadConfig> headConfigGetter,
+                                                         ReadableProperty<IDefaultRuleConfig> defaultRuleConfigGetter)
+        : lossConfig_(lossConfigGetter), headConfig_(headConfigGetter), defaultRuleConfig_(defaultRuleConfigGetter) {}
 
     std::unique_ptr<IStatisticsProviderFactory> AutomaticStatisticsConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
       const Lapack& lapack) const {
-        bool defaultRuleUsed = defaultRuleConfigGetter_().isDefaultRuleUsed(labelMatrix);
-        bool partialHeadsUsed = headConfigGetter_().isPartial();
+        bool defaultRuleUsed = defaultRuleConfig_.get().isDefaultRuleUsed(labelMatrix);
+        bool partialHeadsUsed = headConfig_.get().isPartial();
         bool preferSparseStatistics = shouldSparseStatisticsBePreferred(labelMatrix, defaultRuleUsed, partialHeadsUsed);
-        return lossConfigGetter_().createStatisticsProviderFactory(featureMatrix, labelMatrix, blas, lapack,
-                                                                   preferSparseStatistics);
+        return lossConfig_.get().createStatisticsProviderFactory(featureMatrix, labelMatrix, blas, lapack,
+                                                                 preferSparseStatistics);
     }
 
     bool AutomaticStatisticsConfig::isDense() const {

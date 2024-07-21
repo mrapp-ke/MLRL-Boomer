@@ -2,20 +2,19 @@
 
 namespace boosting {
 
-    AutomaticDefaultRuleConfig::AutomaticDefaultRuleConfig(GetterFunction<IStatisticsConfig> statisticsConfigGetter,
-                                                           GetterFunction<ILossConfig> lossConfigGetter,
-                                                           GetterFunction<IHeadConfig> headConfigGetter)
-        : statisticsConfigGetter_(statisticsConfigGetter), lossConfigGetter_(lossConfigGetter),
-          headConfigGetter_(headConfigGetter) {}
+    AutomaticDefaultRuleConfig::AutomaticDefaultRuleConfig(ReadableProperty<IStatisticsConfig> statisticsConfigGetter,
+                                                           ReadableProperty<ILossConfig> lossConfigGetter,
+                                                           ReadableProperty<IHeadConfig> headConfigGetter)
+        : statisticsConfig_(statisticsConfigGetter), lossConfig_(lossConfigGetter), headConfig_(headConfigGetter) {}
 
     bool AutomaticDefaultRuleConfig::isDefaultRuleUsed(const IOutputMatrix& outputMatrix) const {
-        if (statisticsConfigGetter_().isDense()) {
+        if (statisticsConfig_.get().isDense()) {
             return true;
-        } else if (statisticsConfigGetter_().isSparse()) {
-            return !lossConfigGetter_().isSparse();
+        } else if (statisticsConfig_.get().isSparse()) {
+            return !lossConfig_.get().isSparse();
         } else {
-            return !lossConfigGetter_().isSparse()
-                   || !shouldSparseStatisticsBePreferred(outputMatrix, false, headConfigGetter_().isPartial());
+            return !lossConfig_.get().isSparse()
+                   || !shouldSparseStatisticsBePreferred(outputMatrix, false, headConfig_.get().isPartial());
         }
     }
 

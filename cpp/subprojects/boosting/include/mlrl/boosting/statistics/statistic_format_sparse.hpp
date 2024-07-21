@@ -18,7 +18,7 @@ namespace boosting {
     class SparseStatisticsConfig final : public IStatisticsConfig {
         private:
 
-            const GetterFunction<ILossConfig> lossConfigGetter_;
+            const ReadableProperty<ILossConfig> lossConfig_;
 
         public:
 
@@ -26,7 +26,7 @@ namespace boosting {
              * @param lossConfigGetter A reference to an unique pointer that stores the configuration of the loss
              *                         function
              */
-            SparseStatisticsConfig(GetterFunction<ILossConfig> lossConfigGetter);
+            SparseStatisticsConfig(ReadableProperty<ILossConfig> lossConfigGetter);
 
             std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
