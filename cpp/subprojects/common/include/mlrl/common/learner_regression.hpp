@@ -48,7 +48,9 @@ class MLRLCOMMON_API IRegressionRuleLearner {
          * @return                  True, if the rule learner is able to predict scores, false otherwise
          */
         virtual bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix,
-                                      const ITrainingResult& trainingResult) const = 0;
+                                      const ITrainingResult& trainingResult) const {
+            return this->canPredictScores(featureMatrix, trainingResult.getNumOutputs());
+        }
 
         /**
          * Returns whether the rule learner is able to predict scores or not.
@@ -75,7 +77,10 @@ class MLRLCOMMON_API IRegressionRuleLearner {
          *                                  predict scores for the given query examples
          */
         virtual std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                      const ITrainingResult& trainingResult) const = 0;
+                                                                      const ITrainingResult& trainingResult) const {
+            return this->createScorePredictor(featureMatrix, *trainingResult.getRuleModel(),
+                                              *trainingResult.getOutputSpaceInfo(), trainingResult.getNumOutputs());
+        }
 
         /**
          * Creates and returns a predictor that may be used to predict scores for given query examples. If the
