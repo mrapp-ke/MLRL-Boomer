@@ -18,113 +18,12 @@
 #include "mlrl/boosting/prediction/predictor_probability_marginalized.hpp"
 #include "mlrl/boosting/prediction/predictor_probability_output_wise.hpp"
 #include "mlrl/boosting/prediction/probability_calibration_isotonic.hpp"
-#include "mlrl/boosting/rule_model_assemblage/default_rule_auto.hpp"
-#include "mlrl/boosting/sampling/partition_sampling_auto.hpp"
-#include "mlrl/boosting/statistics/statistic_format_auto.hpp"
-#include "mlrl/boosting/statistics/statistic_format_sparse.hpp"
 #include "mlrl/common/learner_classification.hpp"
 
 #include <memory>
 #include <utility>
 
 namespace boosting {
-
-    /**
-     * Defines an interface for all classes that allow to configure a rule learner to automatically decide whether a
-     * holdout set should be used or not.
-     */
-    class MLRLBOOSTING_API IAutomaticPartitionSamplingMixin : public virtual IBoostedRuleLearnerConfig {
-        public:
-
-            virtual ~IAutomaticPartitionSamplingMixin() override {}
-
-            /**
-             * Configures the rule learner to automatically decide whether a holdout set should be used or not.
-             */
-            virtual void useAutomaticPartitionSampling() {
-                Property<IClassificationPartitionSamplingConfig> property =
-                  this->getClassificationPartitionSamplingConfig();
-                property.set(std::make_unique<AutomaticPartitionSamplingConfig>(
-                  this->getGlobalPruningConfig(), this->getMarginalProbabilityCalibratorConfig(),
-                  this->getJointProbabilityCalibratorConfig()));
-            }
-    };
-
-    /**
-     * Defines an interface for all classes that allow to configure a rule learner to not induce a default rule.
-     */
-    class MLRLBOOSTING_API INoDefaultRuleMixin : public virtual IBoostedRuleLearnerConfig {
-        public:
-
-            virtual ~INoDefaultRuleMixin() override {}
-
-            /**
-             * Configures the rule learner to not induce a default rule.
-             */
-            virtual void useNoDefaultRule() {
-                Property<IDefaultRuleConfig> property = this->getDefaultRuleConfig();
-                property.set(std::make_unique<DefaultRuleConfig>(false));
-            }
-    };
-
-    /**
-     * Defines an interface for all classes that allow to configure a rule learner to automatically decide whether a
-     * default rule should be induced or not.
-     */
-    class MLRLBOOSTING_API IAutomaticDefaultRuleMixin : public virtual IBoostedRuleLearnerConfig {
-        public:
-
-            virtual ~IAutomaticDefaultRuleMixin() override {}
-
-            /**
-             * Configures the rule learner to automatically decide whether a default rule should be induced or not.
-             */
-            virtual void useAutomaticDefaultRule() {
-                Property<IDefaultRuleConfig> property = this->getDefaultRuleConfig();
-                property.set(std::make_unique<AutomaticDefaultRuleConfig>(this->getClassificationStatisticsConfig(),
-                                                                          this->getClassificationLossConfig(),
-                                                                          this->getHeadConfig()));
-            }
-    };
-
-    /**
-     * Defines an interface for all classes that allow to configure a rule learner to use a sparse representation of
-     * gradients and Hessians, if possible.
-     */
-    class MLRLBOOSTING_API ISparseStatisticsMixin : public virtual IBoostedRuleLearnerConfig {
-        public:
-
-            virtual ~ISparseStatisticsMixin() override {}
-
-            /**
-             * Configures the rule learner to use a sparse representation of gradients and Hessians, if possible.
-             */
-            virtual void useSparseStatistics() {
-                Property<IClassificationStatisticsConfig> property = this->getClassificationStatisticsConfig();
-                property.set(
-                  std::make_unique<SparseClassificationStatisticsConfig>(this->getClassificationLossConfig()));
-            }
-    };
-
-    /**
-     * Defines an interface for all classes that allow to configure a rule learner to automatically decide whether a
-     * dense or sparse representation of gradients and Hessians should be used.
-     */
-    class MLRLBOOSTING_API IAutomaticStatisticsMixin : public virtual IBoostedRuleLearnerConfig {
-        public:
-
-            virtual ~IAutomaticStatisticsMixin() override {}
-
-            /**
-             * Configures the rule learner to automatically decide whether a dense or sparse representation of gradients
-             * and Hessians should be used.
-             */
-            virtual void useAutomaticStatistics() {
-                Property<IClassificationStatisticsConfig> property = this->getClassificationStatisticsConfig();
-                property.set(std::make_unique<AutomaticClassificationStatisticsConfig>(
-                  this->getClassificationLossConfig(), this->getHeadConfig(), this->getDefaultRuleConfig()));
-            }
-    };
 
     /**
      * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
