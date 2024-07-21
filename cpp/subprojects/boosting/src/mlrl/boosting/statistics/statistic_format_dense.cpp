@@ -3,15 +3,15 @@
 namespace boosting {
 
     DenseClassificationStatisticsConfig::DenseClassificationStatisticsConfig(
-      ReadableProperty<IClassificationLossConfig> lossConfigGetter)
-        : lossConfigGetter_(lossConfigGetter) {}
+      ReadableProperty<IClassificationLossConfig> lossConfig)
+        : lossConfig_(lossConfig) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       DenseClassificationStatisticsConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
         const Lapack& lapack) const {
-        return lossConfigGetter_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, blas,
-                                                                                     lapack, false);
+        return lossConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, blas, lapack,
+                                                                               false);
     }
 
     bool DenseClassificationStatisticsConfig::isDense() const {
@@ -22,16 +22,15 @@ namespace boosting {
         return false;
     }
 
-    DenseRegressionStatisticsConfig::DenseRegressionStatisticsConfig(
-      ReadableProperty<IRegressionLossConfig> lossConfigGetter)
-        : lossConfigGetter_(lossConfigGetter) {}
+    DenseRegressionStatisticsConfig::DenseRegressionStatisticsConfig(ReadableProperty<IRegressionLossConfig> lossConfig)
+        : lossConfig_(lossConfig) {}
 
     std::unique_ptr<IRegressionStatisticsProviderFactory>
       DenseRegressionStatisticsConfig::createRegressionStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
         const Lapack& lapack) const {
-        return lossConfigGetter_.get().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, blas,
-                                                                                 lapack, false);
+        return lossConfig_.get().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, blas,
+                                                                           lapack, false);
     }
 
     bool DenseRegressionStatisticsConfig::isDense() const {

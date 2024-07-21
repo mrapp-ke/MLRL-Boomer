@@ -86,8 +86,8 @@ namespace boosting {
             }
     };
 
-    DecomposableLogisticLossConfig::DecomposableLogisticLossConfig(ReadableProperty<IHeadConfig> headConfigGetter)
-        : headConfig_(headConfigGetter) {}
+    DecomposableLogisticLossConfig::DecomposableLogisticLossConfig(ReadableProperty<IHeadConfig> headConfig)
+        : headConfig_(headConfig) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       DecomposableLogisticLossConfig::createClassificationStatisticsProviderFactory(

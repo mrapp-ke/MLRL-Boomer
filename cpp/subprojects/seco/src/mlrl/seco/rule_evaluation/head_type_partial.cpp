@@ -6,11 +6,11 @@
 
 namespace seco {
 
-    PartialHeadConfig::PartialHeadConfig(ReadableProperty<IHeuristicConfig> heuristicConfigGetter,
-                                         ReadableProperty<IHeuristicConfig> pruningHeuristicConfigGetter,
-                                         ReadableProperty<ILiftFunctionConfig> liftFunctionConfigGetter)
-        : heuristicConfig_(heuristicConfigGetter), pruningHeuristicConfig_(pruningHeuristicConfigGetter),
-          liftFunctionConfig_(liftFunctionConfigGetter) {}
+    PartialHeadConfig::PartialHeadConfig(ReadableProperty<IHeuristicConfig> heuristicConfig,
+                                         ReadableProperty<IHeuristicConfig> pruningHeuristicConfig,
+                                         ReadableProperty<ILiftFunctionConfig> liftFunctionConfig)
+        : heuristicConfig_(heuristicConfig), pruningHeuristicConfig_(pruningHeuristicConfig),
+          liftFunctionConfig_(liftFunctionConfig) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory> PartialHeadConfig::createStatisticsProviderFactory(
       const IRowWiseLabelMatrix& labelMatrix) const {
