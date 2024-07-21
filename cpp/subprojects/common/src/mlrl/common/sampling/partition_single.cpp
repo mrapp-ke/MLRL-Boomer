@@ -1,5 +1,6 @@
 #include "mlrl/common/sampling/partition_single.hpp"
 
+#include "mlrl/common/input/regression_matrix_row_wise.hpp"
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
 #include "mlrl/common/rule_refinement/feature_subspace.hpp"
 #include "mlrl/common/rule_refinement/prediction.hpp"
@@ -28,6 +29,12 @@ std::unique_ptr<IInstanceSampling> SinglePartition::createInstanceSampling(
   const IClassificationInstanceSamplingFactory& factory, const IRowWiseLabelMatrix& labelMatrix,
   IStatistics& statistics) {
     return labelMatrix.createInstanceSampling(factory, *this, statistics);
+}
+
+std::unique_ptr<IInstanceSampling> SinglePartition::createInstanceSampling(
+  const IRegressionInstanceSamplingFactory& factory, const IRowWiseRegressionMatrix& regressionMatrix,
+  IStatistics& statistics) {
+    return regressionMatrix.createInstanceSampling(factory, *this, statistics);
 }
 
 Quality SinglePartition::evaluateOutOfSample(const IFeatureSubspace& featureSubspace, const CoverageMask& coverageMask,

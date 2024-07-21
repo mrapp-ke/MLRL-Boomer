@@ -128,6 +128,10 @@ class BiPartition final : public VectorDecorator<AllocatedVector<uint32>>,
                                                                   const IRowWiseLabelMatrix& labelMatrix,
                                                                   IStatistics& statistics) override;
 
+        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IRegressionInstanceSamplingFactory& factory,
+                                                                  const IRowWiseRegressionMatrix& regressionMatrix,
+                                                                  IStatistics& statistics) override;
+
         Quality evaluateOutOfSample(const IFeatureSubspace& featureSubspace, const CoverageMask& coverageMask,
                                     const IPrediction& head) override;
 
