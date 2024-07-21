@@ -20,7 +20,9 @@ namespace boosting {
     class AutomaticStatisticsConfig final : public IStatisticsConfig {
         private:
 
-            const ReadableProperty<IClassificationLossConfig> lossConfig_;
+            const GetterFunction<IClassificationLossConfig> classificationLossConfigGetter_;
+
+            const GetterFunction<IRegressionLossConfig> regressionLossConfigGetter_;
 
             const ReadableProperty<IHeadConfig> headConfig_;
 
@@ -29,20 +31,29 @@ namespace boosting {
         public:
 
             /**
-             * @param lossConfigGetter          A `ReadableProperty` that allows to access the
-             *                                  `IClassificationLossConfig` that stores the configuration of the loss
-             *                                  function
-             * @param headConfigGetter          A `ReadableProperty` that allows to access the `IHeadConfig` that stores
-             *                                  the configuration of the rule heads
-             * @param defaultRuleConfigGetter   A `ReadableProperty` that allows to access the `IDefaultRuleConfig` that
-             *                                  stores the configuration of the default rule
+             * @param classificationLossConfigGetter    A `GetterFunction` that allows to access the
+             *                                          `IClassificationLossConfig` that stores the configuration of the
+             *                                          loss function that should be used in classification problems
+             * @param regressionLossConfigGetter        A `GetterFunction` that allows to access the
+             *                                          `IRegressionLossConfig` that stores the configuration of the
+             *                                          loss function that should be used in regression problems
+             * @param headConfigGetter                  A `GetterFunction` that allows to access the `IHeadConfig` that
+             *                                          stores the configuration of the rule heads
+             * @param defaultRuleConfigGetter           A `GetterFunction` that allows to access the
+             *                                          `IDefaultRuleConfig` that stores the configuration of the
+             *                                          default rule
              */
-            AutomaticStatisticsConfig(ReadableProperty<IClassificationLossConfig> lossConfigGetter,
-                                      ReadableProperty<IHeadConfig> headConfigGetter,
-                                      ReadableProperty<IDefaultRuleConfig> defaultRuleConfigGetter);
+            AutomaticStatisticsConfig(GetterFunction<IClassificationLossConfig> classificationLossConfigGetter,
+                                      GetterFunction<IRegressionLossConfig> regressionLossConfigGetter,
+                                      GetterFunction<IHeadConfig> headConfigGetter,
+                                      GetterFunction<IDefaultRuleConfig> defaultRuleConfigGetter);
 
-            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+              const Lapack& lapack) const override;
+
+            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
               const Lapack& lapack) const override;
 
             bool isDense() const override;

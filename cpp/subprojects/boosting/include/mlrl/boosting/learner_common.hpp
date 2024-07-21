@@ -50,7 +50,7 @@ namespace boosting {
              */
             std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override {
-                return configPtr_->getStatisticsConfig().get().createStatisticsProviderFactory(
+                return configPtr_->getStatisticsConfig().get().createClassificationStatisticsProviderFactory(
                   featureMatrix, labelMatrix, blas_, lapack_);
             }
 
@@ -86,6 +86,12 @@ namespace boosting {
             std::unique_ptr<IClassificationLossConfig> classificationLossConfigPtr_;
 
             /**
+             * An unique pointer that stores the configuration of the loss function that should be used in regression
+             * problems.
+             */
+            std::unique_ptr<IRegressionLossConfig> regressionLossConfigPtr_;
+
+            /**
              * An unique pointer that stores the configuration of the L1 regularization term.
              */
             std::unique_ptr<IRegularizationConfig> l1RegularizationConfigPtr_;
@@ -108,10 +114,12 @@ namespace boosting {
                   headConfigPtr_(std::make_unique<CompleteHeadConfig>(
                     readableProperty(labelBinningConfigPtr_), readableProperty(parallelStatisticUpdateConfigPtr_),
                     readableProperty(l1RegularizationConfigPtr_), readableProperty(l2RegularizationConfigPtr_))),
-                  statisticsConfigPtr_(
-                    std::make_unique<DenseStatisticsConfig>(readableProperty(classificationLossConfigPtr_))),
+                  statisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(
+                    readableProperty(classificationLossConfigPtr_), readableProperty(regressionLossConfigPtr_))),
                   classificationLossConfigPtr_(
                     std::make_unique<DecomposableLogisticLossConfig>(readableProperty(headConfigPtr_))),
+                  regressionLossConfigPtr_(
+                    std::make_unique<DecomposableSquaredErrorLossConfig>(readableProperty(headConfigPtr_))),
                   l1RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
                   l2RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
                   labelBinningConfigPtr_(std::make_unique<NoLabelBinningConfig>(
@@ -137,6 +145,10 @@ namespace boosting {
 
             Property<IClassificationLossConfig> getClassificationLossConfig() override final {
                 return property(classificationLossConfigPtr_);
+            }
+
+            Property<IRegressionLossConfig> getRegressionLossConfig() override final {
+                return property(regressionLossConfigPtr_);
             }
 
             Property<ILabelBinningConfig> getLabelBinningConfig() override final {

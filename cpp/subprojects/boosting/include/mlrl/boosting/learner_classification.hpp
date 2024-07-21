@@ -99,7 +99,8 @@ namespace boosting {
              */
             virtual void useSparseStatistics() {
                 Property<IStatisticsConfig> property = this->getStatisticsConfig();
-                property.set(std::make_unique<SparseStatisticsConfig>(this->getClassificationLossConfig()));
+                property.set(std::make_unique<SparseStatisticsConfig>(this->getClassificationLossConfig(),
+                                                                      this->getRegressionLossConfig()));
             }
     };
 
@@ -118,9 +119,9 @@ namespace boosting {
              */
             virtual void useAutomaticStatistics() {
                 Property<IStatisticsConfig> property = this->getStatisticsConfig();
-                property.set(std::make_unique<AutomaticStatisticsConfig>(this->getClassificationLossConfig(),
-                                                                         this->getHeadConfig(),
-                                                                         this->getDefaultRuleConfig()));
+                property.set(std::make_unique<AutomaticStatisticsConfig>(
+                  this->getClassificationLossConfig(), this->getRegressionLossConfig(),
+                  this->getHeadConfig(), this->getDefaultRuleConfig()));
             }
     };
 
