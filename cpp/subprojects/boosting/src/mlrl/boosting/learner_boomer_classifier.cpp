@@ -3,7 +3,7 @@
     #pragma warning(disable : 4250)
 #endif
 
-#include "mlrl/boosting/learner_boomer.hpp"
+#include "mlrl/boosting/learner_boomer_classifier.hpp"
 
 #include "mlrl/boosting/learner_classification_common.hpp"
 #include "mlrl/common/learner_classification_common.hpp"
