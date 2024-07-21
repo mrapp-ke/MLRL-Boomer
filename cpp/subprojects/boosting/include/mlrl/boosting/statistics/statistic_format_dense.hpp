@@ -18,7 +18,7 @@ namespace boosting {
     class DenseClassificationStatisticsConfig final : public IClassificationStatisticsConfig {
         private:
 
-            const GetterFunction<IClassificationLossConfig> lossConfigGetter_;
+            const ReadableProperty<IClassificationLossConfig> lossConfigGetter_;
 
         public:
 
@@ -30,7 +30,7 @@ namespace boosting {
              *                          the configuration of the loss function that should be used in regression
              *                          problems
              */
-            DenseClassificationStatisticsConfig(GetterFunction<IClassificationLossConfig> lossConfigGetter);
+            DenseClassificationStatisticsConfig(ReadableProperty<IClassificationLossConfig> lossConfigGetter);
 
             std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
@@ -48,7 +48,7 @@ namespace boosting {
     class DenseRegressionStatisticsConfig final : public IRegressionStatisticsConfig {
         private:
 
-            const GetterFunction<IRegressionLossConfig> lossConfigGetter_;
+            const ReadableProperty<IRegressionLossConfig> lossConfigGetter_;
 
         public:
 
@@ -57,7 +57,7 @@ namespace boosting {
              *                          the configuration of the loss function that should be used in regression
              *                          problems
              */
-            DenseRegressionStatisticsConfig(GetterFunction<IRegressionLossConfig> lossConfigGetter);
+            DenseRegressionStatisticsConfig(ReadableProperty<IRegressionLossConfig> lossConfigGetter);
 
             std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,

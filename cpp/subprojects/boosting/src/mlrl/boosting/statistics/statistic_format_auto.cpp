@@ -3,20 +3,20 @@
 namespace boosting {
 
     AutomaticClassificationStatisticsConfig::AutomaticClassificationStatisticsConfig(
-      GetterFunction<IClassificationLossConfig> lossConfigGetter, GetterFunction<IHeadConfig> headConfigGetter,
-      GetterFunction<IDefaultRuleConfig> defaultRuleConfigGetter)
-        : lossConfigGetter_(lossConfigGetter), headConfigGetter_(headConfigGetter),
-          defaultRuleConfigGetter_(defaultRuleConfigGetter) {}
+      ReadableProperty<IClassificationLossConfig> lossConfigGetter, ReadableProperty<IHeadConfig> headConfigGetter,
+      ReadableProperty<IDefaultRuleConfig> defaultRuleConfigGetter)
+        : lossConfigGetter_(lossConfigGetter), headConfig_(headConfigGetter),
+          defaultRuleConfig_(defaultRuleConfigGetter) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       AutomaticClassificationStatisticsConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
         const Lapack& lapack) const {
-        bool defaultRuleUsed = defaultRuleConfigGetter_().isDefaultRuleUsed(labelMatrix);
-        bool partialHeadsUsed = headConfigGetter_().isPartial();
+        bool defaultRuleUsed = defaultRuleConfig_.get().isDefaultRuleUsed(labelMatrix);
+        bool partialHeadsUsed = headConfig_.get().isPartial();
         bool preferSparseStatistics = shouldSparseStatisticsBePreferred(labelMatrix, defaultRuleUsed, partialHeadsUsed);
-        return lossConfigGetter_().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, blas,
-                                                                                 lapack, preferSparseStatistics);
+        return lossConfigGetter_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, blas,
+                                                                                     lapack, preferSparseStatistics);
     }
 
     bool AutomaticClassificationStatisticsConfig::isDense() const {
@@ -31,17 +31,17 @@ namespace boosting {
       AutomaticRegressionStatisticsConfig::createRegressionStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
         const Lapack& lapack) const {
-        bool defaultRuleUsed = defaultRuleConfigGetter_().isDefaultRuleUsed(regressionMatrix);
-        bool partialHeadsUsed = headConfigGetter_().isPartial();
+        bool defaultRuleUsed = defaultRuleConfigGetter_.get().isDefaultRuleUsed(regressionMatrix);
+        bool partialHeadsUsed = headConfigGetter_.get().isPartial();
         bool preferSparseStatistics =
           shouldSparseStatisticsBePreferred(regressionMatrix, defaultRuleUsed, partialHeadsUsed);
-        return lossConfigGetter_().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, blas,
-                                                                             lapack, preferSparseStatistics);
+        return lossConfigGetter_.get().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, blas,
+                                                                                 lapack, preferSparseStatistics);
     }
 
     AutomaticRegressionStatisticsConfig::AutomaticRegressionStatisticsConfig(
-      GetterFunction<IRegressionLossConfig> lossConfigGetter, GetterFunction<IHeadConfig> headConfigGetter,
-      GetterFunction<IDefaultRuleConfig> defaultRuleConfigGetter)
+      ReadableProperty<IRegressionLossConfig> lossConfigGetter, ReadableProperty<IHeadConfig> headConfigGetter,
+      ReadableProperty<IDefaultRuleConfig> defaultRuleConfigGetter)
         : lossConfigGetter_(lossConfigGetter), headConfigGetter_(headConfigGetter),
           defaultRuleConfigGetter_(defaultRuleConfigGetter) {}
 

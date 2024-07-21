@@ -3,15 +3,15 @@
 namespace boosting {
 
     SparseClassificationStatisticsConfig::SparseClassificationStatisticsConfig(
-      GetterFunction<IClassificationLossConfig> lossConfigGetter)
+      ReadableProperty<IClassificationLossConfig> lossConfigGetter)
         : lossConfigGetter_(lossConfigGetter) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       SparseClassificationStatisticsConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
         const Lapack& lapack) const {
-        return lossConfigGetter_().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, blas,
-                                                                                 lapack, true);
+        return lossConfigGetter_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, blas,
+                                                                                     lapack, true);
     }
 
     bool SparseClassificationStatisticsConfig::isDense() const {
@@ -23,15 +23,15 @@ namespace boosting {
     }
 
     SparseRegressionStatisticsConfig::SparseRegressionStatisticsConfig(
-      GetterFunction<IRegressionLossConfig> lossConfigGetter)
+      ReadableProperty<IRegressionLossConfig> lossConfigGetter)
         : lossConfigGetter_(lossConfigGetter) {}
 
     std::unique_ptr<IRegressionStatisticsProviderFactory>
       SparseRegressionStatisticsConfig::createRegressionStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
         const Lapack& lapack) const {
-        return lossConfigGetter_().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, blas,
-                                                                             lapack, true);
+        return lossConfigGetter_.get().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, blas,
+                                                                                 lapack, true);
     }
 
     bool SparseRegressionStatisticsConfig::isDense() const {

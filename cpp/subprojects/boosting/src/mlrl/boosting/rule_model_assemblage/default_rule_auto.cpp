@@ -2,9 +2,9 @@
 
 namespace boosting {
 
-    AutomaticDefaultRuleConfig::AutomaticDefaultRuleConfig(ReadableProperty<IStatisticsConfig> statisticsConfigGetter,
-                                                           ReadableProperty<ILossConfig> lossConfigGetter,
-                                                           ReadableProperty<IHeadConfig> headConfigGetter)
+    AutomaticDefaultRuleConfig::AutomaticDefaultRuleConfig(
+      ReadableProperty<IClassificationStatisticsConfig> statisticsConfigGetter,
+      ReadableProperty<IClassificationLossConfig> lossConfigGetter, ReadableProperty<IHeadConfig> headConfigGetter)
         : statisticsConfig_(statisticsConfigGetter), lossConfig_(lossConfigGetter), headConfig_(headConfigGetter) {}
 
     bool AutomaticDefaultRuleConfig::isDefaultRuleUsed(const IOutputMatrix& outputMatrix) const {

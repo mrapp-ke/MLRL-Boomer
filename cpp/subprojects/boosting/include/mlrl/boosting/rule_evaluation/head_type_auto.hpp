@@ -19,7 +19,7 @@ namespace boosting {
     class AutomaticHeadConfig final : public IHeadConfig {
         private:
 
-            const ReadableProperty<ILossConfig> lossConfig_;
+            const ReadableProperty<IClassificationLossConfig> lossConfig_;
 
             const ReadableProperty<ILabelBinningConfig> labelBinningConfig_;
 
@@ -32,8 +32,9 @@ namespace boosting {
         public:
 
             /**
-             * @param lossConfigGetter              A `ReadableProperty` that allows to access the `ILossConfig` that
-             *                                      stores the configuration of the loss function
+             * @param lossConfigGetter              A `ReadableProperty` that allows to access the
+             *                                      `IClassificationLossConfig` that stores the configuration of the
+             *                                      loss function
              * @param labelBinningConfigGetter      A `ReadableProperty` that allows to access the `ILabelBinningConfig`
              *                                      that stores the configuration of the method for assigning labels to
              *                                      bins
@@ -48,7 +49,7 @@ namespace boosting {
              *                                      `IRegularizationConfig` that stores the configuration of the L2
              *                                      regularization
              */
-            AutomaticHeadConfig(ReadableProperty<ILossConfig> lossConfigGetter,
+            AutomaticHeadConfig(ReadableProperty<IClassificationLossConfig> lossConfigGetter,
                                 ReadableProperty<ILabelBinningConfig> labelBinningConfigGetter,
                                 ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter,
                                 ReadableProperty<IRegularizationConfig> l1RegularizationConfigGetter,

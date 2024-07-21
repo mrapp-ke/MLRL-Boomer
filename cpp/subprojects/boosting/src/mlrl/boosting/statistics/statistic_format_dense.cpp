@@ -3,15 +3,15 @@
 namespace boosting {
 
     DenseClassificationStatisticsConfig::DenseClassificationStatisticsConfig(
-      GetterFunction<IClassificationLossConfig> lossConfigGetter)
+      ReadableProperty<IClassificationLossConfig> lossConfigGetter)
         : lossConfigGetter_(lossConfigGetter) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
       DenseClassificationStatisticsConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
         const Lapack& lapack) const {
-        return lossConfigGetter_().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, blas,
-                                                                                 lapack, false);
+        return lossConfigGetter_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, blas,
+                                                                                     lapack, false);
     }
 
     bool DenseClassificationStatisticsConfig::isDense() const {
@@ -23,15 +23,15 @@ namespace boosting {
     }
 
     DenseRegressionStatisticsConfig::DenseRegressionStatisticsConfig(
-      GetterFunction<IRegressionLossConfig> lossConfigGetter)
+      ReadableProperty<IRegressionLossConfig> lossConfigGetter)
         : lossConfigGetter_(lossConfigGetter) {}
 
     std::unique_ptr<IRegressionStatisticsProviderFactory>
       DenseRegressionStatisticsConfig::createRegressionStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
         const Lapack& lapack) const {
-        return lossConfigGetter_().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, blas,
-                                                                             lapack, false);
+        return lossConfigGetter_.get().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, blas,
+                                                                                 lapack, false);
     }
 
     bool DenseRegressionStatisticsConfig::isDense() const {

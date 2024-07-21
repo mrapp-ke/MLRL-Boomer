@@ -20,24 +20,26 @@ namespace boosting {
     class AutomaticDefaultRuleConfig final : public IDefaultRuleConfig {
         private:
 
-            const ReadableProperty<IStatisticsConfig> statisticsConfig_;
+            const ReadableProperty<IClassificationStatisticsConfig> statisticsConfig_;
 
-            const ReadableProperty<ILossConfig> lossConfig_;
+            const ReadableProperty<IClassificationLossConfig> lossConfig_;
 
             const ReadableProperty<IHeadConfig> headConfig_;
 
         public:
 
             /**
-             * @param statisticsConfigGetter    A `ReadableProperty` that allows to access the `IStatisticsConfig` that
-             *                                  stores the configuration of the statistics
-             * @param lossConfigGetter          A `ReadableProperty` that allows to access the `ILossConfig` that stores
-             *                                  the configuration of the loss function
+             * @param statisticsConfigGetter    A `ReadableProperty` that allows to access the
+             *                                  `IClassificationStatisticsConfig` that stores the configuration of the
+             *                                  statistics
+             * @param lossConfigGetter          A `ReadableProperty` that allows to access the
+             *                                  `IClassificationLossConfig` that stores the configuration of the loss
+             *                                  function
              * @param headConfigGetter          A `ReadableProperty` that allows to access the `IHeadConfig` that stores
              *                                  the configuration of the rule heads
              */
-            AutomaticDefaultRuleConfig(ReadableProperty<IStatisticsConfig> statisticsConfigGetter,
-                                       ReadableProperty<ILossConfig> lossConfigGetter,
+            AutomaticDefaultRuleConfig(ReadableProperty<IClassificationStatisticsConfig> statisticsConfigGetter,
+                                       ReadableProperty<IClassificationLossConfig> lossConfigGetter,
                                        ReadableProperty<IHeadConfig> headConfigGetter);
 
             /**

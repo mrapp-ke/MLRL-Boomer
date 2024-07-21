@@ -5,7 +5,7 @@
 
 namespace boosting {
 
-    AutomaticHeadConfig::AutomaticHeadConfig(ReadableProperty<ILossConfig> lossConfigGetter,
+    AutomaticHeadConfig::AutomaticHeadConfig(ReadableProperty<IClassificationLossConfig> lossConfigGetter,
                                              ReadableProperty<ILabelBinningConfig> labelBinningConfigGetter,
                                              ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter,
                                              ReadableProperty<IRegularizationConfig> l1RegularizationConfigGetter,
@@ -19,12 +19,12 @@ namespace boosting {
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
         const IDecomposableClassificationLossConfig& lossConfig) const {
         if (labelMatrix.getNumOutputs() > 1) {
-            SingleOutputHeadConfig headConfig(labelBinningConfigGetter_, multiThreadingConfigGetter_,
-                                              l1RegularizationConfigGetter_, l2RegularizationConfigGetter_);
+            SingleOutputHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
+                                              l2RegularizationConfig_);
             return headConfig.createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
         } else {
-            CompleteHeadConfig headConfig(labelBinningConfigGetter_, multiThreadingConfigGetter_,
-                                          l1RegularizationConfigGetter_, l2RegularizationConfigGetter_);
+            CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
+                                          l2RegularizationConfig_);
             return headConfig.createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
         }
     }
@@ -34,12 +34,12 @@ namespace boosting {
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
         const ISparseDecomposableClassificationLossConfig& lossConfig) const {
         if (labelMatrix.getNumOutputs() > 1) {
-            SingleOutputHeadConfig headConfig(labelBinningConfigGetter_, multiThreadingConfigGetter_,
-                                              l1RegularizationConfigGetter_, l2RegularizationConfigGetter_);
+            SingleOutputHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
+                                              l2RegularizationConfig_);
             return headConfig.createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
         } else {
-            CompleteHeadConfig headConfig(labelBinningConfigGetter_, multiThreadingConfigGetter_,
-                                          l1RegularizationConfigGetter_, l2RegularizationConfigGetter_);
+            CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
+                                          l2RegularizationConfig_);
             return headConfig.createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
         }
     }
@@ -48,8 +48,8 @@ namespace boosting {
       AutomaticHeadConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
         const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
-        CompleteHeadConfig headConfig(labelBinningConfigGetter_, multiThreadingConfigGetter_,
-                                      l1RegularizationConfigGetter_, l2RegularizationConfigGetter_);
+        CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
+                                      l2RegularizationConfig_);
         return headConfig.createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig, blas,
                                                                         lapack);
     }
@@ -58,8 +58,8 @@ namespace boosting {
       AutomaticHeadConfig::createRegressionStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
         const IDecomposableRegressionLossConfig& lossConfig) const {
-        CompleteHeadConfig headConfig(labelBinningConfigGetter_, multiThreadingConfigGetter_,
-                                      l1RegularizationConfigGetter_, l2RegularizationConfigGetter_);
+        CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
+                                      l2RegularizationConfig_);
         return headConfig.createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, lossConfig);
     }
 
@@ -67,8 +67,8 @@ namespace boosting {
       AutomaticHeadConfig::createRegressionStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
         const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
-        CompleteHeadConfig headConfig(labelBinningConfigGetter_, multiThreadingConfigGetter_,
-                                      l1RegularizationConfigGetter_, l2RegularizationConfigGetter_);
+        CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
+                                      l2RegularizationConfig_);
         return headConfig.createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, lossConfig, blas,
                                                                     lapack);
     }

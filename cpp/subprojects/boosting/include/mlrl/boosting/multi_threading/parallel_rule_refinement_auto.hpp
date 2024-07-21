@@ -20,7 +20,7 @@ namespace boosting {
     class AutoParallelRuleRefinementConfig final : public IMultiThreadingConfig {
         private:
 
-            const ReadableProperty<ILossConfig> lossConfig_;
+            const ReadableProperty<IClassificationLossConfig> lossConfig_;
 
             const ReadableProperty<IHeadConfig> headConfig_;
 
@@ -29,15 +29,16 @@ namespace boosting {
         public:
 
             /**
-             * @param lossConfigGetter              A `ReadableProperty` that allows to access the `ILossConfig` that
-             *                                      stores the configuration of the loss function
+             * @param lossConfigGetter              A `ReadableProperty` that allows to access the
+             *                                      `IClassificationLossConfig` that stores the configuration of the
+             *                                      loss function
              * @param headConfigGetter              A `ReadableProperty` that allows to access the `IHeadConfig` that
              *                                      stores the configuration of the rule heads
              * @param featureSamplingConfigGetter   A `ReadableProperty` that allows to access the
              *                                      `IFeatureSamplingConfig` that stores the configuration of the method
              *                                      for sampling features
              */
-            AutoParallelRuleRefinementConfig(ReadableProperty<ILossConfig> lossConfigGetter,
+            AutoParallelRuleRefinementConfig(ReadableProperty<IClassificationLossConfig> lossConfigGetter,
                                              ReadableProperty<IHeadConfig> headConfigGetter,
                                              ReadableProperty<IFeatureSamplingConfig> featureSamplingConfigGetter);
 
