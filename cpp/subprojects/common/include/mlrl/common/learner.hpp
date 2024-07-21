@@ -195,12 +195,21 @@ class MLRLCOMMON_API IRuleLearnerConfig {
 
         /**
          * Returns a `Property` that allows to access the `IClassificationInstanceSamplingConfig` that stores the
-         * configuration of the method for sampling instances.
+         * configuration of the method for sampling instances in classification problems.
          *
          * @return A `Property` that allows to access the `IClassificationInstanceSamplingConfig` that stores the
          * configuration of the method for sampling instances
          */
         virtual Property<IClassificationInstanceSamplingConfig> getClassificationInstanceSamplingConfig() = 0;
+
+        /**
+         * Returns a `Property` that allows to access the `IRegressionInstanceSamplingConfig` that stores the
+         * configuration of the method for sampling instances in regression problems.
+         *
+         * @return A `Property` that allows to access the `IRegressionInstanceSamplingConfig` that stores the
+         * configuration of the method for sampling instances
+         */
+        virtual Property<IRegressionInstanceSamplingConfig> getRegressionInstanceSamplingConfig() = 0;
 
         /**
          * Returns a `Property` that allows to access the `IFeatureSamplingConfig` that stores the configuration of the
