@@ -136,7 +136,7 @@ namespace boosting {
                   regressionStatisticsConfigPtr_(
                     std::make_unique<DenseRegressionStatisticsConfig>(readableProperty(regressionLossConfigPtr_))),
                   classificationLossConfigPtr_(
-                    std::make_unique<DecomposableLogisticLossConfig>(readableProperty(headConfigPtr_))),
+                    std::make_unique<DecomposableSquaredErrorLossConfig>(readableProperty(headConfigPtr_))),
                   regressionLossConfigPtr_(
                     std::make_unique<DecomposableSquaredErrorLossConfig>(readableProperty(headConfigPtr_))),
                   l1RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
