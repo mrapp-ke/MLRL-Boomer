@@ -15,10 +15,10 @@ namespace boosting {
         }
     }
 
-    FixedPartialHeadConfig::FixedPartialHeadConfig(GetterFunction<ILabelBinningConfig> labelBinningConfigGetter,
-                                                   GetterFunction<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : outputRatio_(0.0f), minOutputs_(2), maxOutputs_(0), labelBinningConfigGetter_(labelBinningConfigGetter),
-          multiThreadingConfigGetter_(multiThreadingConfigGetter) {}
+    FixedPartialHeadConfig::FixedPartialHeadConfig(ReadableProperty<ILabelBinningConfig> labelBinningConfigGetter,
+                                                   ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
+        : outputRatio_(0.0f), minOutputs_(2), maxOutputs_(0), labelBinningConfig_(labelBinningConfigGetter),
+          multiThreadingConfig_(multiThreadingConfigGetter) {}
 
     float32 FixedPartialHeadConfig::getOutputRatio() const {
         return outputRatio_;
@@ -57,19 +57,19 @@ namespace boosting {
     std::unique_ptr<IStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
       const IDecomposableLossConfig& lossConfig) const {
-        uint32 numThreads = multiThreadingConfigGetter_().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
+        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
         float32 outputRatio = calculateOutputRatio(outputRatio_, labelMatrix);
         std::unique_ptr<IDecomposableLossFactory> lossFactoryPtr = lossConfig.createDecomposableLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createEvaluationMeasureFactory();
         std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-          labelBinningConfigGetter_().createDecomposableCompleteRuleEvaluationFactory();
+          labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
         std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-          labelBinningConfigGetter_().createDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
-                                                                                          maxOutputs_);
+          labelBinningConfig_.get().createDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
+                                                                                        maxOutputs_);
         std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-          labelBinningConfigGetter_().createDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
-                                                                                          maxOutputs_);
+          labelBinningConfig_.get().createDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
+                                                                                        maxOutputs_);
         return std::make_unique<DenseDecomposableStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
@@ -78,18 +78,18 @@ namespace boosting {
     std::unique_ptr<IStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
       const ISparseDecomposableLossConfig& lossConfig) const {
-        uint32 numThreads = multiThreadingConfigGetter_().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
+        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
         float32 outputRatio = calculateOutputRatio(outputRatio_, labelMatrix);
         std::unique_ptr<ISparseDecomposableLossFactory> lossFactoryPtr =
           lossConfig.createSparseDecomposableLossFactory();
         std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createSparseEvaluationMeasureFactory();
         std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-          labelBinningConfigGetter_().createDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
-                                                                                          maxOutputs_);
+          labelBinningConfig_.get().createDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
+                                                                                        maxOutputs_);
         std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-          labelBinningConfigGetter_().createDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
-                                                                                          maxOutputs_);
+          labelBinningConfig_.get().createDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
+                                                                                        maxOutputs_);
         return std::make_unique<SparseDecomposableStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
           std::move(pruningRuleEvaluationFactoryPtr), numThreads);
@@ -98,19 +98,19 @@ namespace boosting {
     std::unique_ptr<IStatisticsProviderFactory> FixedPartialHeadConfig::createStatisticsProviderFactory(
       const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
       const INonDecomposableLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const {
-        uint32 numThreads = multiThreadingConfigGetter_().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
+        uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, labelMatrix.getNumOutputs());
         float32 outputRatio = calculateOutputRatio(outputRatio_, labelMatrix);
         std::unique_ptr<INonDecomposableLossFactory> lossFactoryPtr = lossConfig.createNonDecomposableLossFactory();
         std::unique_ptr<IEvaluationMeasureFactory> evaluationMeasureFactoryPtr =
           lossConfig.createNonDecomposableLossFactory();
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
-          labelBinningConfigGetter_().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
+          labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blas, lapack);
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
-          labelBinningConfigGetter_().createNonDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
-                                                                                             maxOutputs_, blas, lapack);
+          labelBinningConfig_.get().createNonDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
+                                                                                           maxOutputs_, blas, lapack);
         std::unique_ptr<INonDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr =
-          labelBinningConfigGetter_().createNonDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
-                                                                                             maxOutputs_, blas, lapack);
+          labelBinningConfig_.get().createNonDecomposableFixedPartialRuleEvaluationFactory(outputRatio, minOutputs_,
+                                                                                           maxOutputs_, blas, lapack);
         return std::make_unique<DenseNonDecomposableStatisticsProviderFactory>(
           std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr), std::move(defaultRuleEvaluationFactoryPtr),
           std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr), numThreads);
