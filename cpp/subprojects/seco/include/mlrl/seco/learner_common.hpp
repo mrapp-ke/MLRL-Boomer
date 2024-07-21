@@ -61,6 +61,14 @@ namespace seco {
             }
 
             /**
+             * @see `RuleLearnerConfigurator::createRegressionStatisticsProviderFactory`
+             */
+            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix) const override {
+                throw std::runtime_error("not implemented");
+            }
+
+            /**
              * @see `RuleLearnerConfigurator::createModelBuilderFactory`
              */
             std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const override {
