@@ -27,7 +27,6 @@ namespace boosting {
                     Config() {
                         this->useSequentialRuleModelAssemblage();
                         this->useGreedyTopDownRuleInduction();
-                        this->useDefaultRule();
                         this->useNoOutputSampling();
                         this->useNoInstanceSampling();
                         this->useFeatureSamplingWithoutReplacement();
