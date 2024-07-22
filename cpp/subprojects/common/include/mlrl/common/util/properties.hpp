@@ -35,16 +35,17 @@ struct ReadableProperty {
 /**
  * Provides access to a property via a setter function.
  *
- * @tparam T The type of the property
+ * @tparam T    The type of the property
+ * @tparam Ptr  The type of the pointer that is backing the property
  */
-template<typename T>
+template<typename T, typename Ptr = std::unique_ptr<T>>
 struct WritableProperty {
     public:
 
         /**
          * A setter function.
          */
-        typedef std::function<void(std::unique_ptr<T>&&)> SetterFunction;
+        typedef std::function<void(Ptr&&)> SetterFunction;
 
         /**
          * The setter function.
@@ -60,11 +61,12 @@ struct WritableProperty {
 /**
  * Provides access to a property via a getter and setter function.
  *
- * @tparam T The type of the property
+ * @tparam T    The type of the property
+ * @tparam Ptr  The type of the pointer that is backing the property
  */
-template<typename T>
+template<typename T, typename Ptr = std::unique_ptr<T>>
 struct Property : public ReadableProperty<T>,
-                  public WritableProperty<T> {
+                  public WritableProperty<T, Ptr> {
     public:
 
         /**
@@ -72,9 +74,15 @@ struct Property : public ReadableProperty<T>,
          * @param setterFunction    The setter function
          */
         Property(typename ReadableProperty<T>::GetterFunction getterFunction,
-                 typename WritableProperty<T>::SetterFunction setterFunction)
-            : ReadableProperty<T>(getterFunction), WritableProperty<T>(setterFunction) {}
+                 typename WritableProperty<T, Ptr>::SetterFunction setterFunction)
+            : ReadableProperty<T>(getterFunction), WritableProperty<T, Ptr>(setterFunction) {}
 };
+
+/**
+ * A `Property` that is backed by a shared pointer.
+ */
+template<typename T>
+using SharedProperty = Property<T, std::shared_ptr<T>>;
 
 /**
  * Creates and returns a `GetterFunction` that is backed by an unique pointer.
@@ -92,6 +100,21 @@ static inline constexpr typename ReadableProperty<T>::GetterFunction getterFunct
 }
 
 /**
+ * Creates and returns a `GetterFunction` that is backed by a shared pointer.
+ *
+ * @tparam T        The type of the shared pointer
+ * @param sharedPtr A reference to the shared pointer
+ * @return          The `GetterFunction` that has been created
+ */
+template<typename T>
+static inline constexpr typename ReadableProperty<T>::GetterFunction getterFunction(
+  const std::shared_ptr<T>& sharedPtr) {
+    return [&sharedPtr]() -> T& {
+        return *sharedPtr;
+    };
+}
+
+/**
  * Creates and returns a `SetterFunction` that is backed by an unique pointer.
  *
  * @tparam T        The type of the unique pointer
@@ -102,6 +125,14 @@ template<typename T>
 static inline constexpr typename WritableProperty<T>::SetterFunction setterFunction(std::unique_ptr<T>& uniquePtr) {
     return [&uniquePtr](std::unique_ptr<T>&& ptr) {
         uniquePtr = std::move(ptr);
+    };
+}
+
+template<typename T>
+static inline constexpr typename WritableProperty<T, std::shared_ptr<T>>::SetterFunction sharedSetterFunction(
+  std::shared_ptr<T>& sharedPtr) {
+    return [&sharedPtr](std::shared_ptr<T>&& ptr) {
+        sharedPtr = std::move(ptr);
     };
 }
 
@@ -127,4 +158,16 @@ static inline constexpr ReadableProperty<T> readableProperty(const std::unique_p
 template<typename T>
 static inline constexpr Property<T> property(std::unique_ptr<T>& uniquePtr) {
     return Property<T>(getterFunction(uniquePtr), setterFunction(uniquePtr));
+}
+
+/**
+ * Creates and returns a `Property` that is backed by a shared pointer.
+ *
+ * @tparam T        The type of the shared pointer
+ * @param sharedPtr A reference to the shared pointer
+ * @return          The `Property` that has been created
+ */
+template<typename T>
+static inline constexpr SharedProperty<T> sharedProperty(std::shared_ptr<T>& sharedPtr) {
+    return SharedProperty<T>(getterFunction(sharedPtr), sharedSetterFunction(sharedPtr));
 }
