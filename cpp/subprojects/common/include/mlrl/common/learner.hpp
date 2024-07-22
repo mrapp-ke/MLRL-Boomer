@@ -194,22 +194,22 @@ class MLRLCOMMON_API IRuleLearnerConfig {
         virtual Property<IOutputSamplingConfig> getOutputSamplingConfig() = 0;
 
         /**
-         * Returns a `Property` that allows to access the `IClassificationInstanceSamplingConfig` that stores the
+         * Returns a `SharedProperty` that allows to access the `IClassificationInstanceSamplingConfig` that stores the
          * configuration of the method for sampling instances in classification problems.
          *
-         * @return A `Property` that allows to access the `IClassificationInstanceSamplingConfig` that stores the
+         * @return A `SharedProperty` that allows to access the `IClassificationInstanceSamplingConfig` that stores the
          * configuration of the method for sampling instances
          */
-        virtual Property<IClassificationInstanceSamplingConfig> getClassificationInstanceSamplingConfig() = 0;
+        virtual SharedProperty<IClassificationInstanceSamplingConfig> getClassificationInstanceSamplingConfig() = 0;
 
         /**
-         * Returns a `Property` that allows to access the `IRegressionInstanceSamplingConfig` that stores the
+         * Returns a `SharedProperty` that allows to access the `IRegressionInstanceSamplingConfig` that stores the
          * configuration of the method for sampling instances in regression problems.
          *
-         * @return A `Property` that allows to access the `IRegressionInstanceSamplingConfig` that stores the
+         * @return A `SharedProperty` that allows to access the `IRegressionInstanceSamplingConfig` that stores the
          * configuration of the method for sampling instances
          */
-        virtual Property<IRegressionInstanceSamplingConfig> getRegressionInstanceSamplingConfig() = 0;
+        virtual SharedProperty<IRegressionInstanceSamplingConfig> getRegressionInstanceSamplingConfig() = 0;
 
         /**
          * Returns a `Property` that allows to access the `IFeatureSamplingConfig` that stores the configuration of the
@@ -221,22 +221,22 @@ class MLRLCOMMON_API IRuleLearnerConfig {
         virtual Property<IFeatureSamplingConfig> getFeatureSamplingConfig() = 0;
 
         /**
-         * Returns a `Property` that allows to access the `IClassificationPartitionSamplingConfig` that stores the
+         * Returns a `SharedProperty` that allows to access the `IClassificationPartitionSamplingConfig` that stores the
          * configuration of the method for partitioning the available training examples in classification problems.
          *
-         * @return A `Property` that allows to access the `IClassificationPartitionSamplingConfig` that stores the
+         * @return A `SharedProperty` that allows to access the `IClassificationPartitionSamplingConfig` that stores the
          *         configuration of the method for partitioning the available training examples
          */
-        virtual Property<IClassificationPartitionSamplingConfig> getClassificationPartitionSamplingConfig() = 0;
+        virtual SharedProperty<IClassificationPartitionSamplingConfig> getClassificationPartitionSamplingConfig() = 0;
 
         /**
-         * Returns a `Property` that allows to access the `IRegressionPartitionSamplingConfig` that stores the
+         * Returns a `SharedProperty` that allows to access the `IRegressionPartitionSamplingConfig` that stores the
          * configuration of the method for partitioning the available training examples in regression problems.
          *
-         * @return A `Property` that allows to access the `IRegressionPartitionSamplingConfig` that stores the
+         * @return A `SharedProperty` that allows to access the `IRegressionPartitionSamplingConfig` that stores the
          *         configuration of the method for partitioning the available training examples
          */
-        virtual Property<IRegressionPartitionSamplingConfig> getRegressionPartitionSamplingConfig() = 0;
+        virtual SharedProperty<IRegressionPartitionSamplingConfig> getRegressionPartitionSamplingConfig() = 0;
 
         /**
          * Returns a `Property` that allows to access the `IRulePruningConfig` that stores the configuration of the
@@ -392,8 +392,8 @@ class ISequentialRuleModelAssemblageMixin : virtual public IRuleLearnerConfig {
          * with a default rule, that are added to a rule-based model.
          */
         virtual void useSequentialRuleModelAssemblage() {
-            Property<IRuleModelAssemblageConfig> property = this->getRuleModelAssemblageConfig();
-            property.set(std::make_unique<SequentialRuleModelAssemblageConfig>(this->getDefaultRuleConfig()));
+            this->getRuleModelAssemblageConfig().set(
+              std::make_unique<SequentialRuleModelAssemblageConfig>(this->getDefaultRuleConfig()));
         }
 };
 
@@ -409,8 +409,8 @@ class IDefaultRuleMixin : virtual public IRuleLearnerConfig {
          * Configures the rule learner to induce a default rule.
          */
         virtual void useDefaultRule() {
-            Property<IDefaultRuleConfig> property = this->getDefaultRuleConfig();
-            property.set(std::make_unique<DefaultRuleConfig>(true));
+            auto ptr = std::make_unique<DefaultRuleConfig>(true);
+            this->getDefaultRuleConfig().set(std::move(ptr));
         }
 };
 
@@ -430,11 +430,10 @@ class MLRLCOMMON_API IGreedyTopDownRuleInductionMixin : virtual public IRuleLear
          *         configuration of the algorithm for the induction of individual rules
          */
         virtual IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction() {
-            Property<IRuleInductionConfig> property = this->getRuleInductionConfig();
-            std::unique_ptr<GreedyTopDownRuleInductionConfig> ptr = std::make_unique<GreedyTopDownRuleInductionConfig>(
-              this->getRuleCompareFunction(), this->getParallelRuleRefinementConfig());
+            auto ptr = std::make_unique<GreedyTopDownRuleInductionConfig>(this->getRuleCompareFunction(),
+                                                                          this->getParallelRuleRefinementConfig());
             IGreedyTopDownRuleInductionConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getRuleInductionConfig().set(std::move(ptr));
             return ref;
         }
 };
@@ -454,12 +453,10 @@ class MLRLCOMMON_API IBeamSearchTopDownRuleInductionMixin : virtual public IRule
          *         of the algorithm for the induction of individual rules
          */
         virtual IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction() {
-            Property<IRuleInductionConfig> property = this->getRuleInductionConfig();
-            std::unique_ptr<BeamSearchTopDownRuleInductionConfig> ptr =
-              std::make_unique<BeamSearchTopDownRuleInductionConfig>(this->getRuleCompareFunction(),
-                                                                     this->getParallelRuleRefinementConfig());
+            auto ptr = std::make_unique<BeamSearchTopDownRuleInductionConfig>(this->getRuleCompareFunction(),
+                                                                              this->getParallelRuleRefinementConfig());
             IBeamSearchTopDownRuleInductionConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getRuleInductionConfig().set(std::move(ptr));
             return ref;
         }
 };
@@ -476,8 +473,7 @@ class MLRLCOMMON_API INoPostProcessorMixin : virtual public IRuleLearnerConfig {
          * Configures the rule learner to not use any post processor.
          */
         virtual void useNoPostProcessor() {
-            Property<IPostProcessorConfig> property = this->getPostProcessorConfig();
-            property.set(std::make_unique<NoPostProcessorConfig>());
+            this->getPostProcessorConfig().set(std::make_unique<NoPostProcessorConfig>());
         }
 };
 
@@ -494,8 +490,7 @@ class MLRLCOMMON_API INoFeatureBinningMixin : virtual public IRuleLearnerConfig 
          * Configures the rule learner to not use any method for the assignment of numerical feature values to bins.
          */
         virtual void useNoFeatureBinning() {
-            Property<IFeatureBinningConfig> property = this->getFeatureBinningConfig();
-            property.set(std::make_unique<NoFeatureBinningConfig>());
+            this->getFeatureBinningConfig().set(std::make_unique<NoFeatureBinningConfig>());
         }
 };
 
@@ -515,10 +510,9 @@ class MLRLCOMMON_API IEqualWidthFeatureBinningMixin : virtual public IRuleLearne
          *         of the method for the assignment of numerical feature values to bins
          */
         virtual IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning() {
-            Property<IFeatureBinningConfig> property = this->getFeatureBinningConfig();
-            std::unique_ptr<EqualWidthFeatureBinningConfig> ptr = std::make_unique<EqualWidthFeatureBinningConfig>();
+            auto ptr = std::make_unique<EqualWidthFeatureBinningConfig>();
             IEqualWidthFeatureBinningConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getFeatureBinningConfig().set(std::move(ptr));
             return ref;
         }
 };
@@ -539,11 +533,9 @@ class MLRLCOMMON_API IEqualFrequencyFeatureBinningMixin : virtual public IRuleLe
          *         configuration of the method for the assignment of numerical feature values to bins
          */
         virtual IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning() {
-            Property<IFeatureBinningConfig> property = this->getFeatureBinningConfig();
-            std::unique_ptr<EqualFrequencyFeatureBinningConfig> ptr =
-              std::make_unique<EqualFrequencyFeatureBinningConfig>();
+            auto ptr = std::make_unique<EqualFrequencyFeatureBinningConfig>();
             IEqualFrequencyFeatureBinningConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getFeatureBinningConfig().set(std::move(ptr));
             return ref;
         }
 };
@@ -560,8 +552,7 @@ class MLRLCOMMON_API INoOutputSamplingMixin : virtual public IRuleLearnerConfig 
          * Configures the rule learner to not sample from the available outputs whenever a new rule should be learned.
          */
         virtual void useNoOutputSampling() {
-            Property<IOutputSamplingConfig> property = this->getOutputSamplingConfig();
-            property.set(std::make_unique<NoOutputSamplingConfig>());
+            this->getOutputSamplingConfig().set(std::make_unique<NoOutputSamplingConfig>());
         }
 };
 
@@ -582,11 +573,9 @@ class MLRLCOMMON_API IOutputSamplingWithoutReplacementMixin : virtual public IRu
          *         configuration of the sampling method
          */
         virtual IOutputSamplingWithoutReplacementConfig& useOutputSamplingWithoutReplacement() {
-            Property<IOutputSamplingConfig> property = this->getOutputSamplingConfig();
-            std::unique_ptr<OutputSamplingWithoutReplacementConfig> ptr =
-              std::make_unique<OutputSamplingWithoutReplacementConfig>();
+            auto ptr = std::make_unique<OutputSamplingWithoutReplacementConfig>();
             IOutputSamplingWithoutReplacementConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getOutputSamplingConfig().set(std::move(ptr));
             return ref;
         }
 };
@@ -605,8 +594,7 @@ class MLRLCOMMON_API IRoundRobinOutputSamplingMixin : virtual public IRuleLearne
          * should be learned.
          */
         virtual void useRoundRobinOutputSampling() {
-            Property<IOutputSamplingConfig> property = this->getOutputSamplingConfig();
-            property.set(std::make_unique<RoundRobinOutputSamplingConfig>());
+            this->getOutputSamplingConfig().set(std::make_unique<RoundRobinOutputSamplingConfig>());
         }
 };
 
@@ -623,8 +611,9 @@ class MLRLCOMMON_API INoInstanceSamplingMixin : virtual public IRuleLearnerConfi
          * learned.
          */
         virtual void useNoInstanceSampling() {
-            Property<IClassificationInstanceSamplingConfig> property = this->getClassificationInstanceSamplingConfig();
-            property.set(std::make_unique<NoInstanceSamplingConfig>());
+            auto ptr = std::make_shared<NoInstanceSamplingConfig>();
+            this->getClassificationInstanceSamplingConfig().set(ptr);
+            this->getRegressionInstanceSamplingConfig().set(ptr);
         }
 };
 
@@ -645,11 +634,10 @@ class MLRLCOMMON_API IInstanceSamplingWithReplacementMixin : virtual public IRul
          *         configuration of the method for sampling instances
          */
         virtual IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement() {
-            Property<IClassificationInstanceSamplingConfig> property = this->getClassificationInstanceSamplingConfig();
-            std::unique_ptr<InstanceSamplingWithReplacementConfig> ptr =
-              std::make_unique<InstanceSamplingWithReplacementConfig>();
+            auto ptr = std::make_shared<InstanceSamplingWithReplacementConfig>();
             IInstanceSamplingWithReplacementConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getClassificationInstanceSamplingConfig().set(ptr);
+            this->getRegressionInstanceSamplingConfig().set(ptr);
             return ref;
         }
 };
@@ -671,11 +659,10 @@ class MLRLCOMMON_API IInstanceSamplingWithoutReplacementMixin : virtual public I
          *         configuration of the method for sampling instances
          */
         virtual IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement() {
-            Property<IClassificationInstanceSamplingConfig> property = this->getClassificationInstanceSamplingConfig();
-            std::unique_ptr<InstanceSamplingWithoutReplacementConfig> ptr =
-              std::make_unique<InstanceSamplingWithoutReplacementConfig>();
+            auto ptr = std::make_shared<InstanceSamplingWithoutReplacementConfig>();
             IInstanceSamplingWithoutReplacementConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getClassificationInstanceSamplingConfig().set(ptr);
+            this->getRegressionInstanceSamplingConfig().set(ptr);
             return ref;
         }
 };
@@ -692,8 +679,7 @@ class MLRLCOMMON_API INoFeatureSamplingMixin : virtual public IRuleLearnerConfig
          * Configures the rule learner to not sample from the available features whenever a rule should be refined.
          */
         virtual void useNoFeatureSampling() {
-            Property<IFeatureSamplingConfig> property = this->getFeatureSamplingConfig();
-            property.set(std::make_unique<NoFeatureSamplingConfig>());
+            this->getFeatureSamplingConfig().set(std::make_unique<NoFeatureSamplingConfig>());
         }
 };
 
@@ -714,11 +700,9 @@ class MLRLCOMMON_API IFeatureSamplingWithoutReplacementMixin : virtual public IR
          *         configuration of the method for sampling features
          */
         virtual IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement() {
-            Property<IFeatureSamplingConfig> property = this->getFeatureSamplingConfig();
-            std::unique_ptr<FeatureSamplingWithoutReplacementConfig> ptr =
-              std::make_unique<FeatureSamplingWithoutReplacementConfig>();
+            auto ptr = std::make_unique<FeatureSamplingWithoutReplacementConfig>();
             IFeatureSamplingWithoutReplacementConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getFeatureSamplingConfig().set(std::move(ptr));
             return ref;
         }
 };
@@ -737,9 +721,9 @@ class MLRLCOMMON_API INoPartitionSamplingMixin : virtual public IRuleLearnerConf
          * holdout set.
          */
         virtual void useNoPartitionSampling() {
-            Property<IClassificationPartitionSamplingConfig> property =
-              this->getClassificationPartitionSamplingConfig();
-            property.set(std::make_unique<NoPartitionSamplingConfig>());
+            auto ptr = std::make_shared<NoPartitionSamplingConfig>();
+            this->getClassificationPartitionSamplingConfig().set(ptr);
+            this->getRegressionPartitionSamplingConfig().set(ptr);
         }
 };
 
@@ -761,11 +745,10 @@ class MLRLCOMMON_API IRandomBiPartitionSamplingMixin : virtual public IRuleLearn
          *         of the method for partitioning the available training examples into a training set and a holdout set
          */
         virtual IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling() {
-            Property<IClassificationPartitionSamplingConfig> property =
-              this->getClassificationPartitionSamplingConfig();
-            std::unique_ptr<RandomBiPartitionSamplingConfig> ptr = std::make_unique<RandomBiPartitionSamplingConfig>();
+            auto ptr = std::make_shared<RandomBiPartitionSamplingConfig>();
             IRandomBiPartitionSamplingConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getClassificationPartitionSamplingConfig().set(ptr);
+            this->getRegressionPartitionSamplingConfig().set(ptr);
             return ref;
         }
 };
@@ -782,8 +765,7 @@ class MLRLCOMMON_API INoRulePruningMixin : virtual public IRuleLearnerConfig {
          * Configures the rule learner to not prune individual rules.
          */
         virtual void useNoRulePruning() {
-            Property<IRulePruningConfig> property = this->getRulePruningConfig();
-            property.set(std::make_unique<NoRulePruningConfig>());
+            this->getRulePruningConfig().set(std::make_unique<NoRulePruningConfig>());
         }
 };
 
@@ -801,8 +783,7 @@ class MLRLCOMMON_API IIrepRulePruningMixin : virtual public IRuleLearnerConfig {
          * error pruning" (IREP).
          */
         virtual void useIrepRulePruning() {
-            Property<IRulePruningConfig> property = this->getRulePruningConfig();
-            property.set(std::make_unique<IrepConfig>(this->getRuleCompareFunction()));
+            this->getRulePruningConfig().set(std::make_unique<IrepConfig>(this->getRuleCompareFunction()));
         }
 };
 
@@ -819,8 +800,7 @@ class MLRLCOMMON_API INoParallelRuleRefinementMixin : virtual public IRuleLearne
          * Configures the rule learner to not use any multi-threading for the parallel refinement of rules.
          */
         virtual void useNoParallelRuleRefinement() {
-            Property<IMultiThreadingConfig> property = this->getParallelRuleRefinementConfig();
-            property.set(std::make_unique<NoMultiThreadingConfig>());
+            this->getParallelRuleRefinementConfig().set(std::make_unique<NoMultiThreadingConfig>());
         }
 };
 
@@ -840,10 +820,9 @@ class MLRLCOMMON_API IParallelRuleRefinementMixin : virtual public IRuleLearnerC
          *         the multi-threading behavior
          */
         virtual IManualMultiThreadingConfig& useParallelRuleRefinement() {
-            Property<IMultiThreadingConfig> property = this->getParallelRuleRefinementConfig();
-            std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
+            auto ptr = std::make_unique<ManualMultiThreadingConfig>();
             IManualMultiThreadingConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getParallelRuleRefinementConfig().set(std::move(ptr));
             return ref;
         }
 };
@@ -861,8 +840,7 @@ class MLRLCOMMON_API INoParallelStatisticUpdateMixin : virtual public IRuleLearn
          * Configures the rule learner to not use any multi-threading for the parallel update of statistics.
          */
         virtual void useNoParallelStatisticUpdate() {
-            Property<IMultiThreadingConfig> property = this->getParallelStatisticUpdateConfig();
-            property.set(std::make_unique<NoMultiThreadingConfig>());
+            this->getParallelStatisticUpdateConfig().set(std::make_unique<NoMultiThreadingConfig>());
         }
 };
 
@@ -882,10 +860,9 @@ class MLRLCOMMON_API IParallelStatisticUpdateMixin : virtual public IRuleLearner
          *         the multi-threading behavior
          */
         virtual IManualMultiThreadingConfig& useParallelStatisticUpdate() {
-            Property<IMultiThreadingConfig> property = this->getParallelStatisticUpdateConfig();
-            std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
+            auto ptr = std::make_unique<ManualMultiThreadingConfig>();
             IManualMultiThreadingConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getParallelStatisticUpdateConfig().set(std::move(ptr));
             return ref;
         }
 };
@@ -903,8 +880,7 @@ class MLRLCOMMON_API INoParallelPredictionMixin : virtual public IRuleLearnerCon
          * Configures the rule learner to not use any multi-threading to predict for several query examples in parallel.
          */
         virtual void useNoParallelPrediction() {
-            Property<IMultiThreadingConfig> property = this->getParallelPredictionConfig();
-            property.set(std::make_unique<NoMultiThreadingConfig>());
+            this->getParallelPredictionConfig().set(std::make_unique<NoMultiThreadingConfig>());
         }
 };
 
@@ -924,10 +900,9 @@ class MLRLCOMMON_API IParallelPredictionMixin : virtual public IRuleLearnerConfi
          *         the multi-threading behavior
          */
         virtual IManualMultiThreadingConfig& useParallelPrediction() {
-            Property<IMultiThreadingConfig> property = this->getParallelPredictionConfig();
-            std::unique_ptr<ManualMultiThreadingConfig> ptr = std::make_unique<ManualMultiThreadingConfig>();
+            auto ptr = std::make_unique<ManualMultiThreadingConfig>();
             IManualMultiThreadingConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getParallelPredictionConfig().set(std::move(ptr));
             return ref;
         }
 };
@@ -946,8 +921,7 @@ class MLRLCOMMON_API INoSizeStoppingCriterionMixin : virtual public IRuleLearner
          * does not exceed a certain maximum.
          */
         virtual void useNoSizeStoppingCriterion() {
-            Property<IStoppingCriterionConfig> property = this->getSizeStoppingCriterionConfig();
-            property.set(std::make_unique<NoStoppingCriterionConfig>());
+            this->getSizeStoppingCriterionConfig().set(std::make_unique<NoStoppingCriterionConfig>());
         }
 };
 
@@ -968,10 +942,9 @@ class MLRLCOMMON_API ISizeStoppingCriterionMixin : virtual public IRuleLearnerCo
          *         the stopping criterion
          */
         virtual ISizeStoppingCriterionConfig& useSizeStoppingCriterion() {
-            Property<IStoppingCriterionConfig> property = this->getSizeStoppingCriterionConfig();
-            std::unique_ptr<SizeStoppingCriterionConfig> ptr = std::make_unique<SizeStoppingCriterionConfig>();
+            auto ptr = std::make_unique<SizeStoppingCriterionConfig>();
             ISizeStoppingCriterionConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getSizeStoppingCriterionConfig().set(std::move(ptr));
             return ref;
         }
 };
@@ -990,8 +963,7 @@ class MLRLCOMMON_API INoTimeStoppingCriterionMixin : virtual public IRuleLearner
          * exceeded.
          */
         virtual void useNoTimeStoppingCriterion() {
-            Property<IStoppingCriterionConfig> property = this->getTimeStoppingCriterionConfig();
-            property.set(std::make_unique<NoStoppingCriterionConfig>());
+            this->getTimeStoppingCriterionConfig().set(std::make_unique<NoStoppingCriterionConfig>());
         }
 };
 
@@ -1012,10 +984,9 @@ class MLRLCOMMON_API ITimeStoppingCriterionMixin : virtual public IRuleLearnerCo
          *         the stopping criterion
          */
         virtual ITimeStoppingCriterionConfig& useTimeStoppingCriterion() {
-            Property<IStoppingCriterionConfig> property = this->getTimeStoppingCriterionConfig();
-            std::unique_ptr<TimeStoppingCriterionConfig> ptr = std::make_unique<TimeStoppingCriterionConfig>();
+            auto ptr = std::make_unique<TimeStoppingCriterionConfig>();
             ITimeStoppingCriterionConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getTimeStoppingCriterionConfig().set(std::move(ptr));
             return ref;
         }
 };
@@ -1039,10 +1010,9 @@ class MLRLCOMMON_API IPrePruningMixin : virtual public IRuleLearnerConfig {
          *         stopping criterion
          */
         virtual IPrePruningConfig& useGlobalPrePruning() {
-            Property<IGlobalPruningConfig> property = this->getGlobalPruningConfig();
-            std::unique_ptr<PrePruningConfig> ptr = std::make_unique<PrePruningConfig>();
+            auto ptr = std::make_unique<PrePruningConfig>();
             IPrePruningConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getGlobalPruningConfig().set(std::move(ptr));
             return ref;
         }
 };
@@ -1059,8 +1029,7 @@ class MLRLCOMMON_API INoGlobalPruningMixin : virtual public IRuleLearnerConfig {
          * Configures the rule learner to not use global pruning.
          */
         virtual void useNoGlobalPruning() {
-            Property<IGlobalPruningConfig> property = this->getGlobalPruningConfig();
-            property.set(std::make_unique<NoGlobalPruningConfig>());
+            this->getGlobalPruningConfig().set(std::make_unique<NoGlobalPruningConfig>());
         }
 };
 
@@ -1079,10 +1048,9 @@ class MLRLCOMMON_API IPostPruningMixin : virtual public IRuleLearnerConfig {
          * that perform best with respect to the examples in the training or holdout set according to a certain measure.
          */
         virtual IPostPruningConfig& useGlobalPostPruning() {
-            Property<IGlobalPruningConfig> property = this->getGlobalPruningConfig();
-            std::unique_ptr<PostPruningConfig> ptr = std::make_unique<PostPruningConfig>();
+            auto ptr = std::make_unique<PostPruningConfig>();
             IPostPruningConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getGlobalPruningConfig().set(std::move(ptr));
             return ref;
         }
 };
@@ -1101,8 +1069,7 @@ class MLRLCOMMON_API INoSequentialPostOptimizationMixin : virtual public IRuleLe
          * relearning it in the context of the other rules.
          */
         virtual void useNoSequentialPostOptimization() {
-            Property<IPostOptimizationPhaseConfig> property = this->getSequentialPostOptimizationConfig();
-            property.set(std::make_unique<NoPostOptimizationPhaseConfig>());
+            this->getSequentialPostOptimizationConfig().set(std::make_unique<NoPostOptimizationPhaseConfig>());
         }
 };
 
@@ -1123,11 +1090,9 @@ class MLRLCOMMON_API ISequentialPostOptimizationMixin : virtual public IRuleLear
          *         configuration of the post-optimization method
          */
         virtual ISequentialPostOptimizationConfig& useSequentialPostOptimization() {
-            Property<IPostOptimizationPhaseConfig> property = this->getSequentialPostOptimizationConfig();
-            std::unique_ptr<SequentialPostOptimizationConfig> ptr =
-              std::make_unique<SequentialPostOptimizationConfig>();
+            auto ptr = std::make_unique<SequentialPostOptimizationConfig>();
             ISequentialPostOptimizationConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getSequentialPostOptimizationConfig().set(std::move(ptr));
             return ref;
         }
 };
@@ -1144,8 +1109,8 @@ class MLRLCOMMON_API INoMarginalProbabilityCalibrationMixin : virtual public IRu
          * Configures the rule learner to not calibrate marginal probabilities.
          */
         virtual void useNoMarginalProbabilityCalibration() {
-            Property<IMarginalProbabilityCalibratorConfig> property = this->getMarginalProbabilityCalibratorConfig();
-            property.set(std::make_unique<NoMarginalProbabilityCalibratorConfig>());
+            this->getMarginalProbabilityCalibratorConfig().set(
+              std::make_unique<NoMarginalProbabilityCalibratorConfig>());
         }
 };
 
@@ -1161,7 +1126,6 @@ class MLRLCOMMON_API INoJointProbabilityCalibrationMixin : virtual public IRuleL
          * Configures the rule learner to not calibrate joint probabilities.
          */
         virtual void useNoJointProbabilityCalibration() {
-            Property<IJointProbabilityCalibratorConfig> property = this->getJointProbabilityCalibratorConfig();
-            property.set(std::make_unique<NoJointProbabilityCalibratorConfig>());
+            this->getJointProbabilityCalibratorConfig().set(std::make_unique<NoJointProbabilityCalibratorConfig>());
         }
 };
