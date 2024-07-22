@@ -2,43 +2,32 @@
 
 namespace boosting {
 
-    SparseClassificationStatisticsConfig::SparseClassificationStatisticsConfig(
-      ReadableProperty<IClassificationLossConfig> lossConfig)
-        : lossConfig_(lossConfig) {}
+    SparseStatisticsConfig::SparseStatisticsConfig(ReadableProperty<IClassificationLossConfig> classificationLossConfig,
+                                                   ReadableProperty<IRegressionLossConfig> regressionLossConfig)
+        : classificationLossConfig_(classificationLossConfig), regressionLossConfig_(regressionLossConfig) {}
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
-      SparseClassificationStatisticsConfig::createClassificationStatisticsProviderFactory(
-        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-        const Lapack& lapack) const {
-        return lossConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, blas, lapack,
-                                                                               true);
+      SparseStatisticsConfig::createClassificationStatisticsProviderFactory(const IFeatureMatrix& featureMatrix,
+                                                                            const IRowWiseLabelMatrix& labelMatrix,
+                                                                            const Blas& blas,
+                                                                            const Lapack& lapack) const {
+        return classificationLossConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix,
+                                                                                             blas, lapack, true);
     }
-
-    bool SparseClassificationStatisticsConfig::isDense() const {
-        return false;
-    }
-
-    bool SparseClassificationStatisticsConfig::isSparse() const {
-        return true;
-    }
-
-    SparseRegressionStatisticsConfig::SparseRegressionStatisticsConfig(
-      ReadableProperty<IRegressionLossConfig> lossConfig)
-        : lossConfig_(lossConfig) {}
 
     std::unique_ptr<IRegressionStatisticsProviderFactory>
-      SparseRegressionStatisticsConfig::createRegressionStatisticsProviderFactory(
+      SparseStatisticsConfig::createRegressionStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
         const Lapack& lapack) const {
-        return lossConfig_.get().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, blas,
-                                                                           lapack, true);
+        return regressionLossConfig_.get().createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix,
+                                                                                     blas, lapack, true);
     }
 
-    bool SparseRegressionStatisticsConfig::isDense() const {
+    bool SparseStatisticsConfig::isDense() const {
         return false;
     }
 
-    bool SparseRegressionStatisticsConfig::isSparse() const {
+    bool SparseStatisticsConfig::isSparse() const {
         return true;
     }
 
