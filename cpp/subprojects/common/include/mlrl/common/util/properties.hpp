@@ -149,6 +149,18 @@ static inline constexpr ReadableProperty<T> readableProperty(const std::unique_p
 }
 
 /**
+ * Creates and returns a `ReadableProperty` that is backed by a shared pointer.
+ *
+ * @tparam T        The type of the shared pointer
+ * @param sharedPtr A reference to the shared pointer
+ * @return          The `ReadableProperty` that has been created
+ */
+template<typename T>
+static inline constexpr ReadableProperty<T> readableProperty(const std::shared_ptr<T>& sharedPtr) {
+    return ReadableProperty<T>(getterFunction(sharedPtr));
+}
+
+/**
  * Creates and returns a `Property` that is backed by an unique pointer.
  *
  * @tparam T        The type of the unique pointer

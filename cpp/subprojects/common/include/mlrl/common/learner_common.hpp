@@ -541,16 +541,16 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
         std::unique_ptr<IOutputSamplingConfig> outputSamplingConfigPtr_;
 
         /**
-         * An unique pointer that stores the configuration of the method for that should be used for sampling instances
+         * A shared pointer that stores the configuration of the method for that should be used for sampling instances
          * in classification problems.
          */
-        std::unique_ptr<IClassificationInstanceSamplingConfig> classificationInstanceSamplingConfigPtr_;
+        std::shared_ptr<IClassificationInstanceSamplingConfig> classificationInstanceSamplingConfigPtr_;
 
         /**
-         * An unique pointer that stores the configuration of the method for that should be used for sampling instances
+         * A shared pointer that stores the configuration of the method for that should be used for sampling instances
          * in regression problems.
          */
-        std::unique_ptr<IRegressionInstanceSamplingConfig> regressionInstanceSamplingConfigPtr_;
+        std::shared_ptr<IRegressionInstanceSamplingConfig> regressionInstanceSamplingConfigPtr_;
 
         /**
          * An unique pointer that stores the configuration of the method for sampling features.
@@ -558,16 +558,16 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
         std::unique_ptr<IFeatureSamplingConfig> featureSamplingConfigPtr_;
 
         /**
-         * An unique pointer that stores the configuration of the method that should be used for partitioning the
+         * A shared pointer that stores the configuration of the method that should be used for partitioning the
          * available training examples in classification problems.
          */
-        std::unique_ptr<IClassificationPartitionSamplingConfig> classificationPartitionSamplingConfigPtr_;
+        std::shared_ptr<IClassificationPartitionSamplingConfig> classificationPartitionSamplingConfigPtr_;
 
         /**
-         * An unique pointer that stores the configuration of the method that should be used for partitioning the
+         * A shared pointer that stores the configuration of the method that should be used for partitioning the
          * available training examples in regression problems.
          */
-        std::unique_ptr<IRegressionPartitionSamplingConfig> regressionPartitionSamplingConfigPtr_;
+        std::shared_ptr<IRegressionPartitionSamplingConfig> regressionPartitionSamplingConfigPtr_;
 
         /**
          * An unique pointer that stores the configuration of the method for pruning individual rules.
@@ -716,24 +716,25 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
             return property(outputSamplingConfigPtr_);
         }
 
-        Property<IClassificationInstanceSamplingConfig> getClassificationInstanceSamplingConfig() override final {
-            return property(classificationInstanceSamplingConfigPtr_);
+        SharedProperty<IClassificationInstanceSamplingConfig> getClassificationInstanceSamplingConfig() override final {
+            return sharedProperty(classificationInstanceSamplingConfigPtr_);
         }
 
-        Property<IRegressionInstanceSamplingConfig> getRegressionInstanceSamplingConfig() override final {
-            return property(regressionInstanceSamplingConfigPtr_);
+        SharedProperty<IRegressionInstanceSamplingConfig> getRegressionInstanceSamplingConfig() override final {
+            return sharedProperty(regressionInstanceSamplingConfigPtr_);
         }
 
         Property<IFeatureSamplingConfig> getFeatureSamplingConfig() override final {
             return property(featureSamplingConfigPtr_);
         }
 
-        Property<IClassificationPartitionSamplingConfig> getClassificationPartitionSamplingConfig() override final {
-            return property(classificationPartitionSamplingConfigPtr_);
+        SharedProperty<IClassificationPartitionSamplingConfig> getClassificationPartitionSamplingConfig()
+          override final {
+            return sharedProperty(classificationPartitionSamplingConfigPtr_);
         }
 
-        Property<IRegressionPartitionSamplingConfig> getRegressionPartitionSamplingConfig() override final {
-            return property(regressionPartitionSamplingConfigPtr_);
+        SharedProperty<IRegressionPartitionSamplingConfig> getRegressionPartitionSamplingConfig() override final {
+            return sharedProperty(regressionPartitionSamplingConfigPtr_);
         }
 
         Property<IRulePruningConfig> getRulePruningConfig() override final {

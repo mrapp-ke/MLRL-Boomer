@@ -336,11 +336,9 @@ class MLRLCOMMON_API IOutputWiseStratifiedInstanceSamplingMixin : virtual public
          *         configuration of the method for sampling instances
          */
         virtual IOutputWiseStratifiedInstanceSamplingConfig& useOutputWiseStratifiedInstanceSampling() {
-            Property<IClassificationInstanceSamplingConfig> property = this->getClassificationInstanceSamplingConfig();
-            std::unique_ptr<OutputWiseStratifiedInstanceSamplingConfig> ptr =
-              std::make_unique<OutputWiseStratifiedInstanceSamplingConfig>();
+            auto ptr = std::make_unique<OutputWiseStratifiedInstanceSamplingConfig>();
             IOutputWiseStratifiedInstanceSamplingConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getClassificationInstanceSamplingConfig().set(std::move(ptr));
             return ref;
         }
 };
@@ -362,11 +360,9 @@ class MLRLCOMMON_API IExampleWiseStratifiedInstanceSamplingMixin : virtual publi
          *         configuration of the method for sampling instances
          */
         virtual IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling() {
-            Property<IClassificationInstanceSamplingConfig> property = this->getClassificationInstanceSamplingConfig();
-            std::unique_ptr<ExampleWiseStratifiedInstanceSamplingConfig> ptr =
-              std::make_unique<ExampleWiseStratifiedInstanceSamplingConfig>();
+            auto ptr = std::make_unique<ExampleWiseStratifiedInstanceSamplingConfig>();
             IExampleWiseStratifiedInstanceSamplingConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getClassificationInstanceSamplingConfig().set(std::move(ptr));
             return ref;
         }
 };
@@ -391,12 +387,9 @@ class MLRLCOMMON_API IOutputWiseStratifiedBiPartitionSamplingMixin : virtual pub
          *         holdout set
          */
         virtual IOutputWiseStratifiedBiPartitionSamplingConfig& useOutputWiseStratifiedBiPartitionSampling() {
-            Property<IClassificationPartitionSamplingConfig> property =
-              this->getClassificationPartitionSamplingConfig();
-            std::unique_ptr<OutputWiseStratifiedBiPartitionSamplingConfig> ptr =
-              std::make_unique<OutputWiseStratifiedBiPartitionSamplingConfig>();
+            auto ptr = std::make_unique<OutputWiseStratifiedBiPartitionSamplingConfig>();
             IOutputWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getClassificationPartitionSamplingConfig().set(std::move(ptr));
             return ref;
         }
 };
@@ -420,12 +413,9 @@ class MLRLCOMMON_API IExampleWiseStratifiedBiPartitionSamplingMixin : virtual pu
          *         and a holdout set
          */
         virtual IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling() {
-            Property<IClassificationPartitionSamplingConfig> property =
-              this->getClassificationPartitionSamplingConfig();
-            std::unique_ptr<ExampleWiseStratifiedBiPartitionSamplingConfig> ptr =
-              std::make_unique<ExampleWiseStratifiedBiPartitionSamplingConfig>();
+            auto ptr = std::make_unique<ExampleWiseStratifiedBiPartitionSamplingConfig>();
             IExampleWiseStratifiedBiPartitionSamplingConfig& ref = *ptr;
-            property.set(std::move(ptr));
+            this->getClassificationPartitionSamplingConfig().set(std::move(ptr));
             return ref;
         }
 };

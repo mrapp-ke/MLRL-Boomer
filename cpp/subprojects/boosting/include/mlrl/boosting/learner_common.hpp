@@ -85,28 +85,28 @@ namespace boosting {
             std::unique_ptr<IHeadConfig> headConfigPtr_;
 
             /**
-             * An unique pointer that stores the configuration of the statistics that should be use in classification
+             * A shared pointer that stores the configuration of the statistics that should be use in classification
              * problems.
              */
-            std::unique_ptr<IClassificationStatisticsConfig> classificationStatisticsConfigPtr_;
+            std::shared_ptr<IClassificationStatisticsConfig> classificationStatisticsConfigPtr_;
 
             /**
-             * An unique pointer that stores the configuration of the statistics that should be use in regression
+             * A shared pointer that stores the configuration of the statistics that should be use in regression
              * problems.
              */
-            std::unique_ptr<IRegressionStatisticsConfig> regressionStatisticsConfigPtr_;
+            std::shared_ptr<IRegressionStatisticsConfig> regressionStatisticsConfigPtr_;
 
             /**
-             * An unique pointer that stores the configuration of the loss function that should be used in
-             * classification problems.
-             */
-            std::unique_ptr<IClassificationLossConfig> classificationLossConfigPtr_;
-
-            /**
-             * An unique pointer that stores the configuration of the loss function that should be used in regression
+             * A shared pointer that stores the configuration of the loss function that should be used in classification
              * problems.
              */
-            std::unique_ptr<IRegressionLossConfig> regressionLossConfigPtr_;
+            std::shared_ptr<IClassificationLossConfig> classificationLossConfigPtr_;
+
+            /**
+             * A shared pointer that stores the configuration of the loss function that should be used in regression
+             * problems.
+             */
+            std::shared_ptr<IRegressionLossConfig> regressionLossConfigPtr_;
 
             /**
              * An unique pointer that stores the configuration of the L1 regularization term.
@@ -131,10 +131,10 @@ namespace boosting {
                   headConfigPtr_(std::make_unique<CompleteHeadConfig>(
                     readableProperty(labelBinningConfigPtr_), readableProperty(parallelStatisticUpdateConfigPtr_),
                     readableProperty(l1RegularizationConfigPtr_), readableProperty(l2RegularizationConfigPtr_))),
-                  classificationStatisticsConfigPtr_(std::make_unique<DenseClassificationStatisticsConfig>(
-                    readableProperty(classificationLossConfigPtr_))),
-                  regressionStatisticsConfigPtr_(
-                    std::make_unique<DenseRegressionStatisticsConfig>(readableProperty(regressionLossConfigPtr_))),
+                  classificationStatisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(
+                    readableProperty(classificationLossConfigPtr_), readableProperty(regressionLossConfigPtr_))),
+                  regressionStatisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(
+                    readableProperty(classificationLossConfigPtr_), readableProperty(regressionLossConfigPtr_))),
                   classificationLossConfigPtr_(
                     std::make_unique<DecomposableSquaredErrorLossConfig>(readableProperty(headConfigPtr_))),
                   regressionLossConfigPtr_(
@@ -150,12 +150,12 @@ namespace boosting {
                 return property(headConfigPtr_);
             }
 
-            Property<IClassificationStatisticsConfig> getClassificationStatisticsConfig() override final {
-                return property(classificationStatisticsConfigPtr_);
+            SharedProperty<IClassificationStatisticsConfig> getClassificationStatisticsConfig() override final {
+                return sharedProperty(classificationStatisticsConfigPtr_);
             }
 
-            Property<IRegressionStatisticsConfig> getRegressionStatisticsConfig() override final {
-                return property(regressionStatisticsConfigPtr_);
+            SharedProperty<IRegressionStatisticsConfig> getRegressionStatisticsConfig() override final {
+                return sharedProperty(regressionStatisticsConfigPtr_);
             }
 
             Property<IRegularizationConfig> getL1RegularizationConfig() override final {
@@ -166,12 +166,12 @@ namespace boosting {
                 return property(l2RegularizationConfigPtr_);
             }
 
-            Property<IClassificationLossConfig> getClassificationLossConfig() override final {
-                return property(classificationLossConfigPtr_);
+            SharedProperty<IClassificationLossConfig> getClassificationLossConfig() override final {
+                return sharedProperty(classificationLossConfigPtr_);
             }
 
-            Property<IRegressionLossConfig> getRegressionLossConfig() override final {
-                return property(regressionLossConfigPtr_);
+            SharedProperty<IRegressionLossConfig> getRegressionLossConfig() override final {
+                return sharedProperty(regressionLossConfigPtr_);
             }
 
             Property<ILabelBinningConfig> getLabelBinningConfig() override final {
