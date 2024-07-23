@@ -44,15 +44,15 @@ namespace boosting {
 
             std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
               const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const {
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override {
                 return this->createDecomposableClassificationLoss();
             }
 
-            std::unique_ptr<IClassificationEvaluationMeasure> createClassificationEvaluationMeasure() const {
+            std::unique_ptr<IClassificationEvaluationMeasure> createClassificationEvaluationMeasure() const override {
                 return this->createDecomposableClassificationLoss();
             }
 
-            std::unique_ptr<IRegressionEvaluationMeasure> createRegressionEvaluationMeasure() const {
+            std::unique_ptr<IRegressionEvaluationMeasure> createRegressionEvaluationMeasure() const override {
                 return this->createDecomposableRegressionLoss();
             }
     };
