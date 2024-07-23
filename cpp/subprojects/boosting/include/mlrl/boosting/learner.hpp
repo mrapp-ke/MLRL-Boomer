@@ -51,6 +51,15 @@ namespace boosting {
             virtual Property<IHeadConfig> getHeadConfig() = 0;
 
             /**
+             * Returns a `ReadableProperty` that allows to access the `IStatisticsConfig` that stores the configuration
+             * of the statistics that should be used by the rule learner.
+             *
+             * @return A `ReadableProperty` that allows to access the `IStatisticsConfig` that stores the configuration
+             *         of the statistics
+             */
+            virtual ReadableProperty<IStatisticsConfig> getStatisticsConfig() const = 0;
+
+            /**
              * Returns a `SharedProperty` that allows to access the `IClassificationStatisticsConfig` that stores the
              * configuration of the statistics that should be used by the rule learner in classification problems.
              *
@@ -85,6 +94,15 @@ namespace boosting {
              *         the L2 regularization term
              */
             virtual Property<IRegularizationConfig> getL2RegularizationConfig() = 0;
+
+            /**
+             * Returns a `ReadableProperty` that allows to access the `ILossConfig` that stores the configuration of the
+             * loss function.
+             *
+             * @return A `ReadableProperty` that allows to access the `ILossConfig` that stores the configuration of the
+             *         loss function
+             */
+            virtual ReadableProperty<ILossConfig> getLossConfig() const = 0;
 
             /**
              * Returns a `SharedProperty` that allows to access the `IClassificationLossConfig` that stores the
@@ -167,9 +185,8 @@ namespace boosting {
              * parallel refinement of rules or not.
              */
             virtual void useAutomaticParallelRuleRefinement() {
-                // TODO
                 this->getParallelRuleRefinementConfig().set(std::make_unique<AutoParallelRuleRefinementConfig>(
-                  this->getClassificationLossConfig(), this->getHeadConfig(), this->getFeatureSamplingConfig()));
+                  this->getLossConfig(), this->getHeadConfig(), this->getFeatureSamplingConfig()));
             }
     };
 
@@ -187,9 +204,8 @@ namespace boosting {
              * parallel update of statistics or not.
              */
             virtual void useAutomaticParallelStatisticUpdate() {
-                // TODO
                 this->getParallelStatisticUpdateConfig().set(
-                  std::make_unique<AutoParallelStatisticUpdateConfig>(this->getClassificationLossConfig()));
+                  std::make_unique<AutoParallelStatisticUpdateConfig>(this->getLossConfig()));
             }
     };
 
@@ -385,8 +401,7 @@ namespace boosting {
              */
             virtual void useAutomaticDefaultRule() {
                 this->getDefaultRuleConfig().set(std::make_unique<AutomaticDefaultRuleConfig>(
-                  this->getClassificationStatisticsConfig(), this->getClassificationLossConfig(),
-                  this->getHeadConfig()));
+                  this->getStatisticsConfig(), this->getLossConfig(), this->getHeadConfig()));
             }
     };
 
@@ -493,9 +508,8 @@ namespace boosting {
              */
             virtual void useAutomaticHeads() {
                 this->getHeadConfig().set(std::make_unique<AutomaticHeadConfig>(
-                  this->getClassificationLossConfig(), this->getLabelBinningConfig(),
-                  this->getParallelStatisticUpdateConfig(), this->getL1RegularizationConfig(),
-                  this->getL2RegularizationConfig()));
+                  this->getLossConfig(), this->getLabelBinningConfig(), this->getParallelStatisticUpdateConfig(),
+                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig()));
             }
     };
 

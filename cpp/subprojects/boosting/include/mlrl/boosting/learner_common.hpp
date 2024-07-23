@@ -132,9 +132,11 @@ namespace boosting {
                     readableProperty(labelBinningConfigPtr_), readableProperty(parallelStatisticUpdateConfigPtr_),
                     readableProperty(l1RegularizationConfigPtr_), readableProperty(l2RegularizationConfigPtr_))),
                   classificationStatisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(
-                    readableProperty(classificationLossConfigPtr_), readableProperty(regressionLossConfigPtr_))),
+                    readableProperty<IClassificationLossConfig>(classificationLossConfigPtr_),
+                    readableProperty<IRegressionLossConfig>(regressionLossConfigPtr_))),
                   regressionStatisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(
-                    readableProperty(classificationLossConfigPtr_), readableProperty(regressionLossConfigPtr_))),
+                    readableProperty<IClassificationLossConfig>(classificationLossConfigPtr_),
+                    readableProperty<IRegressionLossConfig>(regressionLossConfigPtr_))),
                   classificationLossConfigPtr_(
                     std::make_unique<DecomposableSquaredErrorLossConfig>(readableProperty(headConfigPtr_))),
                   regressionLossConfigPtr_(
@@ -148,6 +150,11 @@ namespace boosting {
 
             Property<IHeadConfig> getHeadConfig() override final {
                 return property(headConfigPtr_);
+            }
+
+            ReadableProperty<IStatisticsConfig> getStatisticsConfig() const override final {
+                return readableProperty<IStatisticsConfig, IClassificationStatisticsConfig>(
+                  classificationStatisticsConfigPtr_);
             }
 
             SharedProperty<IClassificationStatisticsConfig> getClassificationStatisticsConfig() override final {
@@ -164,6 +171,10 @@ namespace boosting {
 
             Property<IRegularizationConfig> getL2RegularizationConfig() override final {
                 return property(l2RegularizationConfigPtr_);
+            }
+
+            ReadableProperty<ILossConfig> getLossConfig() const override final {
+                return readableProperty<ILossConfig, IClassificationLossConfig>(classificationLossConfigPtr_);
             }
 
             SharedProperty<IClassificationLossConfig> getClassificationLossConfig() override final {

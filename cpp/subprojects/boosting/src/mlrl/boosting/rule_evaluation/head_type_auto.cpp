@@ -5,7 +5,7 @@
 
 namespace boosting {
 
-    AutomaticHeadConfig::AutomaticHeadConfig(ReadableProperty<IClassificationLossConfig> lossConfig,
+    AutomaticHeadConfig::AutomaticHeadConfig(ReadableProperty<ILossConfig> lossConfig,
                                              ReadableProperty<ILabelBinningConfig> labelBinningConfig,
                                              ReadableProperty<IMultiThreadingConfig> multiThreadingConfig,
                                              ReadableProperty<IRegularizationConfig> l1RegularizationConfig,

@@ -20,24 +20,24 @@ namespace boosting {
     class AutomaticDefaultRuleConfig final : public IDefaultRuleConfig {
         private:
 
-            const ReadableProperty<IClassificationStatisticsConfig> statisticsConfig_;
+            const ReadableProperty<IStatisticsConfig> statisticsConfig_;
 
-            const ReadableProperty<IClassificationLossConfig> lossConfig_;
+            const ReadableProperty<ILossConfig> lossConfig_;
 
             const ReadableProperty<IHeadConfig> headConfig_;
 
         public:
 
             /**
-             * @param statisticsConfig  A `ReadableProperty` that allows to access the `IClassificationStatisticsConfig`
-             *                          that stores the configuration of the statistics
-             * @param lossConfig        A `ReadableProperty` that allows to access the `IClassificationLossConfig` that
-             *                          stores the configuration of the loss function
+             * @param statisticsConfig  A `ReadableProperty` that allows to access the `IStatisticsConfig` that stores
+             *                          the configuration of the statistics
+             * @param lossConfig        A `ReadableProperty` that allows to access the `ILossConfig` that stores the
+             *                          configuration of the loss function
              * @param headConfig        A `ReadableProperty` that allows to access the `IHeadConfig` that stores the
              *                          configuration of the rule heads
              */
-            AutomaticDefaultRuleConfig(ReadableProperty<IClassificationStatisticsConfig> statisticsConfig,
-                                       ReadableProperty<IClassificationLossConfig> lossConfig,
+            AutomaticDefaultRuleConfig(ReadableProperty<IStatisticsConfig> statisticsConfig,
+                                       ReadableProperty<ILossConfig> lossConfig,
                                        ReadableProperty<IHeadConfig> headConfig);
 
             /**
