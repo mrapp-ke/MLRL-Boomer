@@ -1,8 +1,3 @@
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
 #include "mlrl/seco/learner_seco_classifier.hpp"
 
 #include "mlrl/common/learner_classification_common.hpp"
@@ -98,7 +93,3 @@ namespace seco {
     }
 
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif

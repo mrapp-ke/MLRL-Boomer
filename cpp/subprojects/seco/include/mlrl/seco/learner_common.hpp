@@ -3,11 +3,6 @@
  */
 #pragma once
 
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
 #include "mlrl/common/learner_common.hpp"
 #include "mlrl/seco/learner.hpp"
 #include "mlrl/seco/model/decision_list_builder.hpp"
@@ -154,7 +149,3 @@ namespace seco {
             }
     };
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif
