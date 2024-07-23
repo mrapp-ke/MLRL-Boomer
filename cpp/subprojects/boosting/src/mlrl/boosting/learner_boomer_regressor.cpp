@@ -24,30 +24,24 @@ namespace boosting {
                                  virtual public IBoomerRegressor::IConfig {
                 public:
 
-                    Config() {
+                    void useDefaults() override {
+                        IBoostedRuleLearnerMixin::useDefaults();
+                        this->useAutomaticDefaultRule();
                         this->useSequentialRuleModelAssemblage();
                         this->useGreedyTopDownRuleInduction();
-                        this->useNoOutputSampling();
-                        this->useNoInstanceSampling();
-                        this->useFeatureSamplingWithoutReplacement();
-                        this->useParallelPrediction();
-                        this->useAutomaticDefaultRule();
-                        this->useAutomaticPartitionSampling();
                         this->useAutomaticFeatureBinning();
-                        this->useSizeStoppingCriterion();
-                        this->useNoTimeStoppingCriterion();
-                        this->useNoRulePruning();
-                        this->useNoGlobalPruning();
-                        this->useNoSequentialPostOptimization();
+                        this->useFeatureSamplingWithoutReplacement();
+                        this->useAutomaticPartitionSampling();
                         this->useConstantShrinkagePostProcessor();
                         this->useAutomaticParallelRuleRefinement();
                         this->useAutomaticParallelStatisticUpdate();
+                        this->useParallelPrediction();
+                        this->useSizeStoppingCriterion();
+                        this->useOutputWiseScorePredictor();
                         this->useAutomaticHeads();
                         this->useAutomaticStatistics();
                         this->useDecomposableSquaredErrorLoss();
-                        this->useNoL1Regularization();
                         this->useL2Regularization();
-                        this->useOutputWiseScorePredictor();
                     }
 
                     /**
@@ -75,7 +69,9 @@ namespace boosting {
     };
 
     std::unique_ptr<IBoomerRegressor::IConfig> createBoomerRegressorConfig() {
-        return std::make_unique<BoomerRegressor::Config>();
+        auto ptr = std::make_unique<BoomerRegressor::Config>();
+        ptr->useDefaults();
+        return ptr;
     }
 
     std::unique_ptr<IBoomerRegressor> createBoomerRegressor(std::unique_ptr<IBoomerRegressor::IConfig> configPtr,

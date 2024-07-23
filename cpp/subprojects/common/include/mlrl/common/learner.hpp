@@ -17,8 +17,11 @@
 #include "mlrl/common/prediction/prediction_matrix_dense.hpp"
 #include "mlrl/common/prediction/prediction_matrix_sparse_binary.hpp"
 #include "mlrl/common/prediction/predictor_binary.hpp"
+#include "mlrl/common/prediction/predictor_binary_no.hpp"
 #include "mlrl/common/prediction/predictor_probability.hpp"
+#include "mlrl/common/prediction/predictor_probability_no.hpp"
 #include "mlrl/common/prediction/predictor_score.hpp"
+#include "mlrl/common/prediction/predictor_score_no.hpp"
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
 #include "mlrl/common/prediction/probability_calibration_no.hpp"
 #include "mlrl/common/rule_induction/rule_induction_top_down_beam_search.hpp"
@@ -139,6 +142,11 @@ class MLRLCOMMON_API IRuleLearnerConfig {
     public:
 
         virtual ~IRuleLearnerConfig() {}
+
+        /**
+         * Configures the rule learner to use the default configuration.
+         */
+        virtual void useDefaults() = 0;
 
         /**
          * Returns the definition of the function that should be used for comparing the quality of different rules.
@@ -409,8 +417,7 @@ class IDefaultRuleMixin : virtual public IRuleLearnerConfig {
          * Configures the rule learner to induce a default rule.
          */
         virtual void useDefaultRule() {
-            auto ptr = std::make_unique<DefaultRuleConfig>(true);
-            this->getDefaultRuleConfig().set(std::move(ptr));
+            this->getDefaultRuleConfig().set(std::make_unique<DefaultRuleConfig>(true));
         }
 };
 
@@ -1127,5 +1134,105 @@ class MLRLCOMMON_API INoJointProbabilityCalibrationMixin : virtual public IRuleL
          */
         virtual void useNoJointProbabilityCalibration() {
             this->getJointProbabilityCalibratorConfig().set(std::make_unique<NoJointProbabilityCalibratorConfig>());
+        }
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a rule learner to not predict scores.
+ */
+class MLRLCOMMON_API INoScorePredictorMixin : virtual public IRuleLearnerConfig {
+    public:
+
+        virtual ~INoScorePredictorMixin() override {}
+
+        /**
+         * Configures the rule learner to not predict scores.
+         */
+        virtual void useNoScorePredictor() {
+            this->getScorePredictorConfig().set(std::make_unique<NoScorePredictorConfig>());
+        }
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a rule learner to not predict probabilities.
+ */
+class MLRLCOMMON_API INoProbabilityPredictorMixin : virtual public IRuleLearnerConfig {
+    public:
+
+        virtual ~INoProbabilityPredictorMixin() override {}
+
+        /**
+         * Configures the rule learner to not predict probabilities.
+         */
+        virtual void useNoProbabilityPredictor() {
+            this->getProbabilityPredictorConfig().set(std::make_unique<NoProbabilityPredictorConfig>());
+        }
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a rule learner to not predict binary labels.
+ */
+class MLRLCOMMON_API INoBinaryPredictorMixin : virtual public IRuleLearnerConfig {
+    public:
+
+        virtual ~INoBinaryPredictorMixin() override {}
+
+        /**
+         * Configures the rule learner to not predict binary labels.
+         */
+        virtual void useNoBinaryPredictor() {
+            this->getBinaryPredictorConfig().set(std::make_unique<NoBinaryPredictorConfig>());
+        }
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a rule learner to use a simple default configuration.
+ */
+class MLRLCOMMON_API IRuleLearnerMixin : virtual public IRuleLearnerConfig,
+                                         virtual public IDefaultRuleMixin,
+                                         virtual public INoFeatureBinningMixin,
+                                         virtual public INoOutputSamplingMixin,
+                                         virtual public INoInstanceSamplingMixin,
+                                         virtual public INoFeatureSamplingMixin,
+                                         virtual public INoPartitionSamplingMixin,
+                                         virtual public INoRulePruningMixin,
+                                         virtual public INoParallelRuleRefinementMixin,
+                                         virtual public INoParallelStatisticUpdateMixin,
+                                         virtual public INoParallelPredictionMixin,
+                                         virtual public INoSizeStoppingCriterionMixin,
+                                         virtual public INoTimeStoppingCriterionMixin,
+                                         virtual public INoSequentialPostOptimizationMixin,
+                                         virtual public INoPostProcessorMixin,
+                                         virtual public INoGlobalPruningMixin,
+                                         virtual public INoScorePredictorMixin,
+                                         virtual public INoProbabilityPredictorMixin,
+                                         virtual public INoBinaryPredictorMixin,
+                                         virtual public INoMarginalProbabilityCalibrationMixin,
+                                         virtual public INoJointProbabilityCalibrationMixin {
+    public:
+
+        virtual ~IRuleLearnerMixin() override {}
+
+        virtual void useDefaults() override {
+            this->useDefaultRule();
+            this->useNoFeatureBinning();
+            this->useNoOutputSampling();
+            this->useNoInstanceSampling();
+            this->useNoFeatureSampling();
+            this->useNoPartitionSampling();
+            this->useNoRulePruning();
+            this->useNoParallelRuleRefinement();
+            this->useNoParallelStatisticUpdate();
+            this->useNoParallelPrediction();
+            this->useNoSizeStoppingCriterion();
+            this->useNoTimeStoppingCriterion();
+            this->useNoSequentialPostOptimization();
+            this->useNoPostProcessor();
+            this->useNoGlobalPruning();
+            this->useNoScorePredictor();
+            this->useNoProbabilityPredictor();
+            this->useNoBinaryPredictor();
+            this->useNoMarginalProbabilityCalibration();
+            this->useNoJointProbabilityCalibration();
         }
 };

@@ -590,4 +590,27 @@ namespace boosting {
                   std::make_unique<OutputWiseScorePredictorConfig>(this->getParallelPredictionConfig()));
             }
     };
+
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner that makes use of gradient boosting
+     * to use a simple default configuration.
+     */
+    class MLRLBOOSTING_API IBoostedRuleLearnerMixin : virtual public IRuleLearnerMixin,
+                                                      virtual public INoL1RegularizationMixin,
+                                                      virtual public INoL2RegularizationMixin,
+                                                      virtual public INoLabelBinningMixin {
+        public:
+
+            virtual ~IBoostedRuleLearnerMixin() override {}
+
+            /**
+             * @see `IRuleLearnerConfig::useDefaults`
+             */
+            virtual void useDefaults() override {
+                IRuleLearnerMixin::useDefaults();
+                this->useNoL1Regularization();
+                this->useNoL2Regularization();
+                this->useNoLabelBinning();
+            }
+    };
 }
