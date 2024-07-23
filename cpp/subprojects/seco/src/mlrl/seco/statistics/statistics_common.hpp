@@ -669,8 +669,7 @@ namespace seco {
              * @see `IStatistics::evaluatePrediction`
              */
             float64 evaluatePrediction(uint32 statisticIndex) const override final {
-                // TODO Support evaluation of predictions
-                return 0;
+                throw std::runtime_error("not implemented");
             }
 
             /**
