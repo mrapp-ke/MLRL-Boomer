@@ -12,7 +12,7 @@ namespace boosting {
 
     static inline void updateGradientAndHessianClassification(bool trueLabel, float64 predictedScore, float64& gradient,
                                                               float64& hessian) {
-        updateGradientAndHessianRegression(trueLabel ? 1 : -1, predictedScore, gradient, hessian);
+        updateGradientAndHessianRegression(trueLabel ? 1.0f : -1.0f, predictedScore, gradient, hessian);
     }
 
     static inline float64 evaluatePredictionRegression(float32 expectedScore, float64 predictedScore) {
@@ -21,7 +21,7 @@ namespace boosting {
     }
 
     static inline float64 evaluatePredictionClassification(bool trueLabel, float64 predictedScore) {
-        return evaluatePredictionRegression(trueLabel ? 1 : -1, predictedScore);
+        return evaluatePredictionRegression(trueLabel ? 1.0 : -1.0, predictedScore);
     }
 
     /**
