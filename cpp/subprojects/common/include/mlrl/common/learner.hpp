@@ -390,7 +390,7 @@ class MLRLCOMMON_API IRuleLearnerConfig {
  * Defines an interface for all classes that allow to configure a rule learner to use an algorithm that sequentially
  * induces several rules.
  */
-class ISequentialRuleModelAssemblageMixin : virtual public IRuleLearnerConfig {
+class MLRLCOMMON_API ISequentialRuleModelAssemblageMixin : virtual public IRuleLearnerConfig {
     public:
 
         virtual ~ISequentialRuleModelAssemblageMixin() override {}
@@ -408,7 +408,7 @@ class ISequentialRuleModelAssemblageMixin : virtual public IRuleLearnerConfig {
 /**
  * Defines an interface for all classes that allow to configure a rule learner to induce a default rule.
  */
-class IDefaultRuleMixin : virtual public IRuleLearnerConfig {
+class MLRLCOMMON_API IDefaultRuleMixin : virtual public IRuleLearnerConfig {
     public:
 
         virtual ~IDefaultRuleMixin() override {}
