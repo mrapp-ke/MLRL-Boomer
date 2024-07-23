@@ -153,8 +153,8 @@ namespace boosting {
              *
              * @param featureMatrix             A reference to an object of type `IFeatureMatrix` that provides access
              *                                  to the feature values of the training examples
-             * @param labelMatrix               A reference to an object of type `IRowWiseLabelMatrix` that provides
-             *                                  access to the labels of the training examples
+             * @param regressionMatrix          A reference to an object of type `IRowWiseRegressionMatrix` that
+             *                                  provides access to the regression scores of the training examples
              * @param blas                      A reference to an object of type `Blas` that allows to execute BLAS
              *                                  routines
              * @param lapack                    A reference to an object of type `Lapack` that allows to execute LAPACK
