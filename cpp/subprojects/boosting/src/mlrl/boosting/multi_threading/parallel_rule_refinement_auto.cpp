@@ -5,7 +5,7 @@
 namespace boosting {
 
     AutoParallelRuleRefinementConfig::AutoParallelRuleRefinementConfig(
-      ReadableProperty<IClassificationLossConfig> lossConfig, ReadableProperty<IHeadConfig> headConfig,
+      ReadableProperty<ILossConfig> lossConfig, ReadableProperty<IHeadConfig> headConfig,
       ReadableProperty<IFeatureSamplingConfig> featureSamplingConfig)
         : lossConfig_(lossConfig), headConfig_(headConfig), featureSamplingConfig_(featureSamplingConfig) {}
 

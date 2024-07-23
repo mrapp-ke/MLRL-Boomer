@@ -18,15 +18,15 @@ namespace boosting {
     class AutoParallelStatisticUpdateConfig final : public IMultiThreadingConfig {
         private:
 
-            const ReadableProperty<IClassificationLossConfig> lossConfig_;
+            const ReadableProperty<ILossConfig> lossConfig_;
 
         public:
 
             /**
-             * @param lossConfig A `ReadableProperty` that allows to access the `IClassificationLossConfig` that stores
-             *                   the configuration of the loss function
+             * @param lossConfig A `ReadableProperty` that allows to access the `ILossConfig` that stores the
+             *                   configuration of the loss function
              */
-            AutoParallelStatisticUpdateConfig(const ReadableProperty<IClassificationLossConfig> lossConfig);
+            AutoParallelStatisticUpdateConfig(const ReadableProperty<ILossConfig> lossConfig);
 
             /**
              * @see `IMultiThreadingConfig::getNumThreads`

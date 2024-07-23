@@ -4,8 +4,7 @@
 
 namespace boosting {
 
-    AutoParallelStatisticUpdateConfig::AutoParallelStatisticUpdateConfig(
-      ReadableProperty<IClassificationLossConfig> lossConfig)
+    AutoParallelStatisticUpdateConfig::AutoParallelStatisticUpdateConfig(ReadableProperty<ILossConfig> lossConfig)
         : lossConfig_(lossConfig) {}
 
     uint32 AutoParallelStatisticUpdateConfig::getNumThreads(const IFeatureMatrix& featureMatrix,
