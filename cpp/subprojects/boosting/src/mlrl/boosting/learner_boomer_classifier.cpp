@@ -1,9 +1,4 @@
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
-#include "mlrl/boosting/learner_boomer.hpp"
+#include "mlrl/boosting/learner_boomer_classifier.hpp"
 
 #include "mlrl/boosting/learner_common.hpp"
 #include "mlrl/common/learner_classification_common.hpp"
@@ -24,34 +19,27 @@ namespace boosting {
                                  virtual public IBoomerClassifier::IConfig {
                 public:
 
-                    Config() {
+                    void useDefaults() override {
+                        IBoostedRuleLearnerMixin::useDefaults();
+                        this->useAutomaticDefaultRule();
                         this->useSequentialRuleModelAssemblage();
                         this->useGreedyTopDownRuleInduction();
-                        this->useDefaultRule();
-                        this->useNoOutputSampling();
-                        this->useNoInstanceSampling();
-                        this->useFeatureSamplingWithoutReplacement();
-                        this->useParallelPrediction();
-                        this->useAutomaticDefaultRule();
-                        this->useAutomaticPartitionSampling();
                         this->useAutomaticFeatureBinning();
-                        this->useSizeStoppingCriterion();
-                        this->useNoTimeStoppingCriterion();
-                        this->useNoRulePruning();
-                        this->useNoGlobalPruning();
-                        this->useNoSequentialPostOptimization();
+                        this->useFeatureSamplingWithoutReplacement();
+                        this->useAutomaticPartitionSampling();
                         this->useConstantShrinkagePostProcessor();
                         this->useAutomaticParallelRuleRefinement();
                         this->useAutomaticParallelStatisticUpdate();
+                        this->useParallelPrediction();
+                        this->useSizeStoppingCriterion();
+                        this->useOutputWiseScorePredictor();
+                        this->useAutomaticProbabilityPredictor();
+                        this->useAutomaticBinaryPredictor();
                         this->useAutomaticHeads();
                         this->useAutomaticStatistics();
                         this->useDecomposableLogisticLoss();
-                        this->useNoL1Regularization();
                         this->useL2Regularization();
                         this->useAutomaticLabelBinning();
-                        this->useAutomaticBinaryPredictor();
-                        this->useOutputWiseScorePredictor();
-                        this->useAutomaticProbabilityPredictor();
                     }
 
                     /**
@@ -79,7 +67,9 @@ namespace boosting {
     };
 
     std::unique_ptr<IBoomerClassifier::IConfig> createBoomerClassifierConfig() {
-        return std::make_unique<BoomerClassifier::Config>();
+        auto ptr = std::make_unique<BoomerClassifier::Config>();
+        ptr->useDefaults();
+        return ptr;
     }
 
     std::unique_ptr<IBoomerClassifier> createBoomerClassifier(std::unique_ptr<IBoomerClassifier::IConfig> configPtr,
@@ -93,7 +83,3 @@ namespace boosting {
     }
 
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif

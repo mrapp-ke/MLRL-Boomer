@@ -5,10 +5,9 @@
 namespace boosting {
 
     AutoParallelRuleRefinementConfig::AutoParallelRuleRefinementConfig(
-      ReadableProperty<ILossConfig> lossConfigGetter, ReadableProperty<IHeadConfig> headConfigGetter,
-      ReadableProperty<IFeatureSamplingConfig> featureSamplingConfigGetter)
-        : lossConfig_(lossConfigGetter), headConfig_(headConfigGetter),
-          featureSamplingConfig_(featureSamplingConfigGetter) {}
+      ReadableProperty<ILossConfig> lossConfig, ReadableProperty<IHeadConfig> headConfig,
+      ReadableProperty<IFeatureSamplingConfig> featureSamplingConfig)
+        : lossConfig_(lossConfig), headConfig_(headConfig), featureSamplingConfig_(featureSamplingConfig) {}
 
     uint32 AutoParallelRuleRefinementConfig::getNumThreads(const IFeatureMatrix& featureMatrix,
                                                            uint32 numOutputs) const {

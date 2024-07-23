@@ -1,6 +1,6 @@
 #include "mlrl/common/sampling/partition_sampling_bi_stratified_output_wise.hpp"
 
-#include "mlrl/common/iterator/index_iterator.hpp"
+#include "mlrl/common/iterator/iterator_index.hpp"
 #include "mlrl/common/sampling/stratified_sampling_output_wise.hpp"
 #include "mlrl/common/util/validation.hpp"
 
@@ -43,7 +43,7 @@ class OutputWiseStratifiedBiPartitionSampling final : public IPartitionSampling 
  * into two mutually exclusive sets that may be used as a training set and a holdout set, such that for each label the
  * proportion of relevant and irrelevant examples is maintained.
  */
-class OutputWiseStratifiedBiPartitionSamplingFactory final : public IPartitionSamplingFactory {
+class OutputWiseStratifiedBiPartitionSamplingFactory final : public IClassificationPartitionSamplingFactory {
     private:
 
         const float32 holdoutSetSize_;
@@ -88,7 +88,7 @@ IOutputWiseStratifiedBiPartitionSamplingConfig& OutputWiseStratifiedBiPartitionS
     return *this;
 }
 
-std::unique_ptr<IPartitionSamplingFactory>
-  OutputWiseStratifiedBiPartitionSamplingConfig::createPartitionSamplingFactory() const {
+std::unique_ptr<IClassificationPartitionSamplingFactory>
+  OutputWiseStratifiedBiPartitionSamplingConfig::createClassificationPartitionSamplingFactory() const {
     return std::make_unique<OutputWiseStratifiedBiPartitionSamplingFactory>(holdoutSetSize_);
 }

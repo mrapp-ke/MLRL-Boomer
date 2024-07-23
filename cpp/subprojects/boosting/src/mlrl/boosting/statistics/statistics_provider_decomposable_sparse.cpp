@@ -1,8 +1,3 @@
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
 #include "mlrl/boosting/statistics/statistics_provider_decomposable_sparse.hpp"
 
 #include "mlrl/boosting/data/matrix_sparse_set_numeric.hpp"
@@ -38,7 +33,7 @@ namespace boosting {
     class SparseDecomposableStatistics final
         : public AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticVector,
                                                 SparseDecomposableStatisticMatrix, NumericSparseSetMatrix<float64>,
-                                                ISparseDecomposableLoss, ISparseEvaluationMeasure,
+                                                ISparseDecomposableClassificationLoss, ISparseEvaluationMeasure,
                                                 ISparseDecomposableRuleEvaluationFactory> {
         public:
 
@@ -59,7 +54,7 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of type `NumericSparseSetMatrix` that stores
              *                              the currently predicted scores
              */
-            SparseDecomposableStatistics(std::unique_ptr<ISparseDecomposableLoss> lossPtr,
+            SparseDecomposableStatistics(std::unique_ptr<ISparseDecomposableClassificationLoss> lossPtr,
                                          std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr,
                                          const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                                          const OutputMatrix& outputMatrix,
@@ -67,7 +62,7 @@ namespace boosting {
                                          std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr)
                 : AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticVector,
                                                  SparseDecomposableStatisticMatrix, NumericSparseSetMatrix<float64>,
-                                                 ISparseDecomposableLoss, ISparseEvaluationMeasure,
+                                                 ISparseDecomposableClassificationLoss, ISparseEvaluationMeasure,
                                                  ISparseDecomposableRuleEvaluationFactory>(
                     std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
                     std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
@@ -83,20 +78,21 @@ namespace boosting {
 
     template<typename OutputMatrix>
     static inline std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> createStatistics(
-      const ISparseDecomposableLossFactory& lossFactory,
+      const ISparseDecomposableClassificationLossFactory& lossFactory,
       const ISparseEvaluationMeasureFactory& evaluationMeasureFactory,
       const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory, uint32 numThreads,
       const OutputMatrix& outputMatrix) {
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
-        std::unique_ptr<ISparseDecomposableLoss> lossPtr = lossFactory.createSparseDecomposableLoss();
+        std::unique_ptr<ISparseDecomposableClassificationLoss> lossPtr =
+          lossFactory.createSparseDecomposableClassificationLoss();
         std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr =
           evaluationMeasureFactory.createSparseEvaluationMeasure();
         std::unique_ptr<SparseDecomposableStatisticMatrix> statisticMatrixPtr =
           std::make_unique<SparseDecomposableStatisticMatrix>(numExamples, numOutputs);
         std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr =
           std::make_unique<NumericSparseSetMatrix<float64>>(numExamples, numOutputs);
-        const ISparseDecomposableLoss* lossRawPtr = lossPtr.get();
+        const ISparseDecomposableClassificationLoss* lossRawPtr = lossPtr.get();
         const OutputMatrix* outputMatrixPtr = &outputMatrix;
         const SparseSetView<float64>* scoreMatrixRawPtr = &scoreMatrixPtr->getView();
         SparseSetView<Tuple<float64>>* statisticMatrixRawPtr = &statisticMatrixPtr->getView();
@@ -115,17 +111,18 @@ namespace boosting {
           std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
     }
 
-    SparseDecomposableStatisticsProviderFactory::SparseDecomposableStatisticsProviderFactory(
-      std::unique_ptr<ISparseDecomposableLossFactory> lossFactoryPtr,
-      std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
-      std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
-      std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
+    SparseDecomposableClassificationStatisticsProviderFactory::
+      SparseDecomposableClassificationStatisticsProviderFactory(
+        std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr,
+        std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
+        std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
+        std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr, uint32 numThreads)
         : lossFactoryPtr_(std::move(lossFactoryPtr)),
           evaluationMeasureFactoryPtr_(std::move(evaluationMeasureFactoryPtr)),
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)), numThreads_(numThreads) {}
 
-    std::unique_ptr<IStatisticsProvider> SparseDecomposableStatisticsProviderFactory::create(
+    std::unique_ptr<IStatisticsProvider> SparseDecomposableClassificationStatisticsProviderFactory::create(
       const CContiguousView<const uint8>& labelMatrix) const {
         std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *regularRuleEvaluationFactoryPtr_,
@@ -134,7 +131,7 @@ namespace boosting {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 
-    std::unique_ptr<IStatisticsProvider> SparseDecomposableStatisticsProviderFactory::create(
+    std::unique_ptr<IStatisticsProvider> SparseDecomposableClassificationStatisticsProviderFactory::create(
       const BinaryCsrView& labelMatrix) const {
         std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> statisticsPtr =
           createStatistics(*lossFactoryPtr_, *evaluationMeasureFactoryPtr_, *regularRuleEvaluationFactoryPtr_,
@@ -143,7 +140,3 @@ namespace boosting {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif

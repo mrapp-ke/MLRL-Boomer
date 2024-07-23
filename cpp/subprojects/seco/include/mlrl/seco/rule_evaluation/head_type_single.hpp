@@ -24,15 +24,15 @@ namespace seco {
         public:
 
             /**
-             * @param heuristicConfigGetter         A `ReadableProperty` that allows to access the `IHeuristicConfig`
-             *                                      that stores the configuration of the heuristic for learning rules
-             * @param pruningHeuristicConfigGetter  A `ReadableProperty` that allows to access the `IHeuristicConfig`
-             *                                      that stores the configuration of the heuristic for pruning rules
+             * @param heuristicConfig           A `ReadableProperty` that allows to access the `IHeuristicConfig` that
+             *                                  stores the configuration of the heuristic for learning rules
+             * @param pruningHeuristicConfig    A `ReadableProperty` that allows to access the `IHeuristicConfig` that
+             *                                  stores the configuration of the heuristic for pruning rules
              */
-            SingleOutputHeadConfig(ReadableProperty<IHeuristicConfig> heuristicConfigGetter,
-                                   ReadableProperty<IHeuristicConfig> pruningHeuristicConfigGetter);
+            SingleOutputHeadConfig(ReadableProperty<IHeuristicConfig> heuristicConfig,
+                                   ReadableProperty<IHeuristicConfig> pruningHeuristicConfig);
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IRowWiseLabelMatrix& labelMatrix) const override;
     };
 

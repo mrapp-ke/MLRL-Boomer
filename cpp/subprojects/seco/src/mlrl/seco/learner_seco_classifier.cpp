@@ -1,9 +1,4 @@
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
-#include "mlrl/seco/learner_seco.hpp"
+#include "mlrl/seco/learner_seco_classifier.hpp"
 
 #include "mlrl/common/learner_classification_common.hpp"
 #include "mlrl/seco/learner_common.hpp"
@@ -24,29 +19,21 @@ namespace seco {
                                  virtual public ISeCoClassifier::IConfig {
                 public:
 
-                    Config() {
+                    void useDefaults() override {
+                        ISeCoRuleLearnerMixin::useDefaults();
                         this->useSequentialRuleModelAssemblage();
                         this->useGreedyTopDownRuleInduction();
-                        this->useDefaultRule();
-                        this->useNoOutputSampling();
-                        this->useNoInstanceSampling();
-                        this->useNoFeatureSampling();
-                        this->useNoPartitionSampling();
-                        this->useGreedyTopDownRuleInduction();
-                        this->useCoverageStoppingCriterion();
-                        this->useSizeStoppingCriterion();
-                        this->useNoTimeStoppingCriterion();
                         this->useOutputWiseStratifiedInstanceSampling();
-                        this->useSingleOutputHeads();
                         this->useIrepRulePruning();
-                        this->useNoSequentialPostOptimization();
+                        this->useParallelRuleRefinement();
+                        this->useParallelPrediction();
+                        this->useSizeStoppingCriterion();
+                        this->useOutputWiseBinaryPredictor();
+                        this->useCoverageStoppingCriterion();
+                        this->useSingleOutputHeads();
                         this->useFMeasureHeuristic();
                         this->useAccuracyPruningHeuristic();
                         this->usePeakLiftFunction();
-                        this->useParallelRuleRefinement();
-                        this->useNoParallelStatisticUpdate();
-                        this->useParallelPrediction();
-                        this->useOutputWiseBinaryPredictor();
                     }
 
                     /**
@@ -94,7 +81,9 @@ namespace seco {
     };
 
     std::unique_ptr<ISeCoClassifier::IConfig> createSeCoClassifierConfig() {
-        return std::make_unique<SeCoClassifier::Config>();
+        auto ptr = std::make_unique<SeCoClassifier::Config>();
+        ptr->useDefaults();
+        return ptr;
     }
 
     std::unique_ptr<ISeCoClassifier> createSeCoClassifier(std::unique_ptr<ISeCoClassifier::IConfig> configPtr) {
@@ -104,7 +93,3 @@ namespace seco {
     }
 
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif

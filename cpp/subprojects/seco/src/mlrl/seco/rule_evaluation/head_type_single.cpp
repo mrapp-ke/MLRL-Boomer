@@ -6,11 +6,11 @@
 
 namespace seco {
 
-    SingleOutputHeadConfig::SingleOutputHeadConfig(ReadableProperty<IHeuristicConfig> heuristicConfigGetter,
-                                                   ReadableProperty<IHeuristicConfig> pruningHeuristicConfigGetter)
-        : heuristicConfig_(heuristicConfigGetter), pruningHeuristicConfig_(pruningHeuristicConfigGetter) {}
+    SingleOutputHeadConfig::SingleOutputHeadConfig(ReadableProperty<IHeuristicConfig> heuristicConfig,
+                                                   ReadableProperty<IHeuristicConfig> pruningHeuristicConfig)
+        : heuristicConfig_(heuristicConfig), pruningHeuristicConfig_(pruningHeuristicConfig) {}
 
-    std::unique_ptr<IStatisticsProviderFactory> SingleOutputHeadConfig::createStatisticsProviderFactory(
+    std::unique_ptr<IClassificationStatisticsProviderFactory> SingleOutputHeadConfig::createStatisticsProviderFactory(
       const IRowWiseLabelMatrix& labelMatrix) const {
         std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
           std::make_unique<DecomposableMajorityRuleEvaluationFactory>();

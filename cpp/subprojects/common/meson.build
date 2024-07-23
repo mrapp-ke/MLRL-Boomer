@@ -3,7 +3,7 @@ project('common', 'cpp')
 # Source files
 source_files = [
     'src/mlrl/common/data/vector_bit.cpp',
-    'src/mlrl/common/indices/index_iterator.cpp',
+    'src/mlrl/common/iterator/iterator_index.cpp',
     'src/mlrl/common/indices/index_vector_complete.cpp',
     'src/mlrl/common/indices/index_vector_partial.cpp',
     'src/mlrl/common/input/feature_binning_equal_frequency.cpp',
@@ -24,6 +24,8 @@ source_files = [
     'src/mlrl/common/input/feature_vector_numerical.cpp',
     'src/mlrl/common/input/label_matrix_c_contiguous.cpp',
     'src/mlrl/common/input/label_matrix_csr.cpp',
+    'src/mlrl/common/input/regression_matrix_c_contiguous.cpp',
+    'src/mlrl/common/input/regression_matrix_csr.cpp',
     'src/mlrl/common/model/body_conjunctive.cpp',
     'src/mlrl/common/model/body_empty.cpp',
     'src/mlrl/common/model/condition_list.cpp',
@@ -149,6 +151,7 @@ link_args = []
 
 if host_machine.system() == 'windows'
     cpp_args += '-DMLRLCOMMON_EXPORTS'
+    cpp_args += '/wd4250'  # Supress MSVC compiler warning C4250 ("inherits via dominance")
 
     if multi_threading_support_enabled
         cpp_args += '/openmp'

@@ -65,24 +65,35 @@ namespace boosting {
     }
 
     /**
-     * Allows to create instances of the type `IDecomposableLoss` that implement a multivariate variant of the logistic
-     * loss that is decomposable.
+     * Allows to create instances of the type `IDecomposableClassificationLoss` that implement a multivariate variant of
+     * the logistic loss that is decomposable.
      */
-    class DecomposableLogisticLossFactory final : public IDecomposableLossFactory {
+    class DecomposableLogisticLossFactory final : public IDecomposableClassificationLossFactory {
         public:
 
-            std::unique_ptr<IDecomposableLoss> createDecomposableLoss() const override {
-                return std::make_unique<DecomposableLoss>(&updateGradientAndHessian, &evaluatePrediction);
+            std::unique_ptr<IDecomposableClassificationLoss> createDecomposableClassificationLoss() const override {
+                return std::make_unique<DecomposableClassificationLoss>(&updateGradientAndHessian, &evaluatePrediction);
+            }
+
+            std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override {
+                return this->createDecomposableClassificationLoss();
+            }
+
+            std::unique_ptr<IClassificationEvaluationMeasure> createClassificationEvaluationMeasure() const override {
+                return this->createDecomposableClassificationLoss();
             }
     };
 
-    DecomposableLogisticLossConfig::DecomposableLogisticLossConfig(ReadableProperty<IHeadConfig> headConfigGetter)
-        : headConfig_(headConfigGetter) {}
+    DecomposableLogisticLossConfig::DecomposableLogisticLossConfig(ReadableProperty<IHeadConfig> headConfig)
+        : headConfig_(headConfig) {}
 
-    std::unique_ptr<IStatisticsProviderFactory> DecomposableLogisticLossConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-      const Lapack& lapack, bool preferSparseStatistics) const {
-        return headConfig_.get().createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
+    std::unique_ptr<IClassificationStatisticsProviderFactory>
+      DecomposableLogisticLossConfig::createClassificationStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+        const Lapack& lapack, bool preferSparseStatistics) const {
+        return headConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
     }
 
     std::unique_ptr<IMarginalProbabilityFunctionFactory>
@@ -99,7 +110,8 @@ namespace boosting {
         return 0;
     }
 
-    std::unique_ptr<IDecomposableLossFactory> DecomposableLogisticLossConfig::createDecomposableLossFactory() const {
+    std::unique_ptr<IDecomposableClassificationLossFactory>
+      DecomposableLogisticLossConfig::createDecomposableClassificationLossFactory() const {
         return std::make_unique<DecomposableLogisticLossFactory>();
     }
 

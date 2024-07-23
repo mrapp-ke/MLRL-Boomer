@@ -3,11 +3,9 @@
  */
 #pragma once
 
+#include "mlrl/common/input/regression_matrix_row_wise.hpp"
 #include "mlrl/common/learner.hpp"
 #include "mlrl/common/prediction/output_space_info_no.hpp"
-#include "mlrl/common/prediction/predictor_binary_no.hpp"
-#include "mlrl/common/prediction/predictor_probability_no.hpp"
-#include "mlrl/common/prediction/predictor_score_no.hpp"
 #include "mlrl/common/rule_refinement/feature_space_tabular.hpp"
 #include "mlrl/common/stopping/stopping_criterion_size.hpp"
 #include "mlrl/common/util/validation.hpp"
@@ -116,14 +114,14 @@ class RuleLearnerConfigurator {
          * May be overridden by subclasses in order to create the `IRuleModelAssemblageFactory` to be used by the rule
          * learner for the assemblage of a rule model.
          *
-         * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
-         *                      the labels of the training examples
+         * @param outputMatrix  A reference to an object of type `IOutputMatrix` that provides row-wise access to the
+         *                      ground truth of the training examples
          * @return              An unique pointer to an object of type `IRuleModelAssemblageFactory` that has been
          *                      created
          */
         virtual std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
-          const IRowWiseLabelMatrix& labelMatrix) const {
-            return config_.getRuleModelAssemblageConfig().get().createRuleModelAssemblageFactory(labelMatrix);
+          const IOutputMatrix& outputMatrix) const {
+            return config_.getRuleModelAssemblageConfig().get().createRuleModelAssemblageFactory(outputMatrix);
         }
 
         /**
@@ -174,13 +172,26 @@ class RuleLearnerConfigurator {
         }
 
         /**
-         * May be overridden by subclasses in order to create the `IInstanceSamplingFactory` to be used by the rule
-         * learner for sampling from the available training examples.
+         * May be overridden by subclasses in order to create the `IClassificationInstanceSamplingFactory` to be used by
+         * the rule learner for sampling from the available training examples in classification examples.
          *
-         * @return An unique pointer to an object of type `IInstanceSamplingFactory` that has been created
+         * @return An unique pointer to an object of type `IClassificationInstanceSamplingFactory` that has been created
          */
-        virtual std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const {
-            return config_.getInstanceSamplingConfig().get().createInstanceSamplingFactory();
+        virtual std::unique_ptr<IClassificationInstanceSamplingFactory> createClassificationInstanceSamplingFactory()
+          const {
+            return config_.getClassificationInstanceSamplingConfig()
+              .get()
+              .createClassificationInstanceSamplingFactory();
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IRegressionInstanceSamplingFactory` to be used by the
+         * rule learner for sampling from the available training examples in regression problems.
+         *
+         * @return An unique pointer to an object of type `IRegressionInstanceSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<IRegressionInstanceSamplingFactory> createRegressionInstanceSamplingFactory() const {
+            return config_.getRegressionInstanceSamplingConfig().get().createRegressionInstanceSamplingFactory();
         }
 
         /**
@@ -197,13 +208,27 @@ class RuleLearnerConfigurator {
         }
 
         /**
-         * May be overridden by subclasses in order to create the `IPartitionSamplingFactory` to be used by the rule
-         * learner for partitioning the available examples into training and test sets.
+         * May be overridden by subclasses in order to create the `IClassificationPartitionSamplingFactory` to be used
+         * by the rule learner for partitioning the available examples in classification problems.
          *
-         * @return An unique pointer to an object of type `IPartitionSamplingFactory` that has been created
+         * @return An unique pointer to an object of type `IClassificationPartitionSamplingFactory` that has been
+         *         created
          */
-        virtual std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const {
-            return config_.getPartitionSamplingConfig().get().createPartitionSamplingFactory();
+        virtual std::unique_ptr<IClassificationPartitionSamplingFactory> createClassificationPartitionSamplingFactory()
+          const {
+            return config_.getClassificationPartitionSamplingConfig()
+              .get()
+              .createClassificationPartitionSamplingFactory();
+        }
+
+        /**
+         * May be overridden by subclasses in order to create the `IRegressionPartitionSamplingFactory` to be used by
+         * the rule learner for partitioning the available examples in regression problems.
+         *
+         * @return An unique pointer to an object of type `IRegressionPartitionSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<IRegressionPartitionSamplingFactory> createRegressionPartitionSamplingFactory() const {
+            return config_.getRegressionPartitionSamplingConfig().get().createRegressionPartitionSamplingFactory();
         }
 
         /**
@@ -439,18 +464,32 @@ class RuleLearnerConfigurator {
         }
 
         /**
-         * Must be implemented by subclasses in order to create the `IStatisticsProviderFactory` to be used by the rule
-         * learner.
+         * Must be implemented by subclasses in order to create the `IClassificationStatisticsProviderFactory` to be
+         * used by the rule learner in classification problems.
          *
          * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
          *                      values of the training examples
          * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
          *                      the labels of the training examples
-         * @return              An unique pointer to an object of type `IStatisticsProviderFactory` that has been
-         *                      created
+         * @return              An unique pointer to an object of type `IClassificationStatisticsProviderFactory` that
+         *                      has been created
          */
-        virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+        virtual std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
           const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const = 0;
+
+        /**
+         * Must be implemented by subclasses in order to create the `IRegressionStatisticsProviderFactory` to be used by
+         * the rule learner in regression problems.
+         *
+         * @param featureMatrix     A reference to an object of type `IFeatureMatrix` that provides access to the
+         *                          feature values of the training examples
+         * @param regressionMatrix  A reference to an object of type `IRowWiseRegressionMatrix` that provides row-wise
+         *                          access to the labels of the training examples
+         * @return                  An unique pointer to an object of type `IClassificationStatisticsProviderFactory`
+         *                          that has been created
+         */
+        virtual std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
+          const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix) const = 0;
 
         /**
          * Must be implemented by subclasses in order to create the `IModelBuilderFactory` to be used by the rule
@@ -499,9 +538,16 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
         std::unique_ptr<IOutputSamplingConfig> outputSamplingConfigPtr_;
 
         /**
-         * An unique pointer that stores the configuration of the method for sampling instances.
+         * A shared pointer that stores the configuration of the method for that should be used for sampling instances
+         * in classification problems.
          */
-        std::unique_ptr<IInstanceSamplingConfig> instanceSamplingConfigPtr_;
+        std::shared_ptr<IClassificationInstanceSamplingConfig> classificationInstanceSamplingConfigPtr_;
+
+        /**
+         * A shared pointer that stores the configuration of the method for that should be used for sampling instances
+         * in regression problems.
+         */
+        std::shared_ptr<IRegressionInstanceSamplingConfig> regressionInstanceSamplingConfigPtr_;
 
         /**
          * An unique pointer that stores the configuration of the method for sampling features.
@@ -509,10 +555,16 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
         std::unique_ptr<IFeatureSamplingConfig> featureSamplingConfigPtr_;
 
         /**
-         * An unique pointer that stores the configuration of the method for partitioning the available training
-         * examples into a training set and a holdout set.
+         * A shared pointer that stores the configuration of the method that should be used for partitioning the
+         * available training examples in classification problems.
          */
-        std::unique_ptr<IPartitionSamplingConfig> partitionSamplingConfigPtr_;
+        std::shared_ptr<IClassificationPartitionSamplingConfig> classificationPartitionSamplingConfigPtr_;
+
+        /**
+         * A shared pointer that stores the configuration of the method that should be used for partitioning the
+         * available training examples in regression problems.
+         */
+        std::shared_ptr<IRegressionPartitionSamplingConfig> regressionPartitionSamplingConfigPtr_;
 
         /**
          * An unique pointer that stores the configuration of the method for pruning individual rules.
@@ -609,31 +661,7 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
          */
         explicit RuleLearnerConfig(RuleCompareFunction ruleCompareFunction)
             : ruleCompareFunction_(ruleCompareFunction),
-              defaultRuleConfigPtr_(std::make_unique<DefaultRuleConfig>(true)),
-              ruleModelAssemblageConfigPtr_(
-                std::make_unique<SequentialRuleModelAssemblageConfig>(readableProperty(defaultRuleConfigPtr_))),
-              ruleInductionConfigPtr_(std::make_unique<GreedyTopDownRuleInductionConfig>(
-                ruleCompareFunction_, readableProperty(parallelRuleRefinementConfigPtr_))),
-              featureBinningConfigPtr_(std::make_unique<NoFeatureBinningConfig>()),
-              outputSamplingConfigPtr_(std::make_unique<NoOutputSamplingConfig>()),
-              instanceSamplingConfigPtr_(std::make_unique<NoInstanceSamplingConfig>()),
-              featureSamplingConfigPtr_(std::make_unique<NoFeatureSamplingConfig>()),
-              partitionSamplingConfigPtr_(std::make_unique<NoPartitionSamplingConfig>()),
-              rulePruningConfigPtr_(std::make_unique<NoRulePruningConfig>()),
-              postProcessorConfigPtr_(std::make_unique<NoPostProcessorConfig>()),
-              parallelRuleRefinementConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
-              parallelStatisticUpdateConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
-              parallelPredictionConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
-              sizeStoppingCriterionConfigPtr_(std::make_unique<NoStoppingCriterionConfig>()),
-              timeStoppingCriterionConfigPtr_(std::make_unique<NoStoppingCriterionConfig>()),
-              globalPruningConfigPtr_(std::make_unique<NoGlobalPruningConfig>()),
-              sequentialPostOptimizationConfigPtr_(std::make_unique<NoPostOptimizationPhaseConfig>()),
-              unusedRuleRemovalConfigPtr_(std::make_unique<UnusedRuleRemovalConfig>()),
-              marginalProbabilityCalibratorConfigPtr_(std::make_unique<NoMarginalProbabilityCalibratorConfig>()),
-              jointProbabilityCalibratorConfigPtr_(std::make_unique<NoJointProbabilityCalibratorConfig>()),
-              scorePredictorConfigPtr_(std::make_unique<NoScorePredictorConfig>()),
-              probabilityPredictorConfigPtr_(std::make_unique<NoProbabilityPredictorConfig>()),
-              binaryPredictorConfigPtr_(std::make_unique<NoBinaryPredictorConfig>()) {}
+              unusedRuleRemovalConfigPtr_(std::make_unique<UnusedRuleRemovalConfig>()) {}
 
         virtual ~RuleLearnerConfig() override {}
 
@@ -661,16 +689,25 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
             return property(outputSamplingConfigPtr_);
         }
 
-        Property<IInstanceSamplingConfig> getInstanceSamplingConfig() override final {
-            return property(instanceSamplingConfigPtr_);
+        SharedProperty<IClassificationInstanceSamplingConfig> getClassificationInstanceSamplingConfig() override final {
+            return sharedProperty(classificationInstanceSamplingConfigPtr_);
+        }
+
+        SharedProperty<IRegressionInstanceSamplingConfig> getRegressionInstanceSamplingConfig() override final {
+            return sharedProperty(regressionInstanceSamplingConfigPtr_);
         }
 
         Property<IFeatureSamplingConfig> getFeatureSamplingConfig() override final {
             return property(featureSamplingConfigPtr_);
         }
 
-        Property<IPartitionSamplingConfig> getPartitionSamplingConfig() override final {
-            return property(partitionSamplingConfigPtr_);
+        SharedProperty<IClassificationPartitionSamplingConfig> getClassificationPartitionSamplingConfig()
+          override final {
+            return sharedProperty(classificationPartitionSamplingConfigPtr_);
+        }
+
+        SharedProperty<IRegressionPartitionSamplingConfig> getRegressionPartitionSamplingConfig() override final {
+            return sharedProperty(regressionPartitionSamplingConfigPtr_);
         }
 
         Property<IRulePruningConfig> getRulePruningConfig() override final {

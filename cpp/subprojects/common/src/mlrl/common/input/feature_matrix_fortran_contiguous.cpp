@@ -1,8 +1,3 @@
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
 #include "mlrl/common/input/feature_matrix_fortran_contiguous.hpp"
 
 #include "mlrl/common/data/matrix_dense.hpp"
@@ -47,7 +42,3 @@ std::unique_ptr<IFortranContiguousFeatureMatrix> createFortranContiguousFeatureM
                                                                                       uint32 numRows, uint32 numCols) {
     return std::make_unique<FortranContiguousFeatureMatrix>(array, numRows, numCols);
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif

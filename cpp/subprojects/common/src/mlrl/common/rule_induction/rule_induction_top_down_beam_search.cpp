@@ -417,10 +417,10 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
 };
 
 BeamSearchTopDownRuleInductionConfig::BeamSearchTopDownRuleInductionConfig(
-  RuleCompareFunction ruleCompareFunction, ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
+  RuleCompareFunction ruleCompareFunction, ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
     : ruleCompareFunction_(ruleCompareFunction), beamWidth_(4), resampleFeatures_(false), minCoverage_(1),
       minSupport_(0.0f), maxConditions_(0), maxHeadRefinements_(1), recalculatePredictions_(true),
-      multiThreadingConfig_(multiThreadingConfigGetter) {}
+      multiThreadingConfig_(multiThreadingConfig) {}
 
 uint32 BeamSearchTopDownRuleInductionConfig::getBeamWidth() const {
     return beamWidth_;

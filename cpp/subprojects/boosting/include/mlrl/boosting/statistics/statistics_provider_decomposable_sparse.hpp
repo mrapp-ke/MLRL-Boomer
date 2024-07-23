@@ -13,13 +13,15 @@
 namespace boosting {
 
     /**
-     * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
-     * `IDecomposableStatistics`, which uses sparse data structures to store the statistics.
+     * Allows to create instances of the class `IStatisticsProvider` that can be used in classification problems and
+     * provide access to an object of type `IDecomposableStatistics` using sparse data structures for storing the
+     * statistics.
      */
-    class SparseDecomposableStatisticsProviderFactory final : public IStatisticsProviderFactory {
+    class SparseDecomposableClassificationStatisticsProviderFactory final
+        : public IClassificationStatisticsProviderFactory {
         private:
 
-            const std::unique_ptr<ISparseDecomposableLossFactory> lossFactoryPtr_;
+            const std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr_;
 
             const std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr_;
 
@@ -33,9 +35,9 @@ namespace boosting {
 
             /**
              * @param lossFactoryPtr                    An unique pointer to an object of type
-             *                                          `ISparseDecomposableLossFactory` that allows to create
-             *                                          implementations of the loss function that should be used for
-             *                                          calculating gradients and Hessians
+             *                                          `ISparseDecomposableClassificationLossFactory` that allows to
+             *                                          create implementations of the loss function that should be used
+             *                                          for calculating gradients and Hessians
              * @param evaluationMeasureFactoryPtr       An unique pointer to an object of type
              *                                          `ISparseEvaluationMeasureFactory` that allows to create
              *                                          implementations of the evaluation measure that should be used
@@ -51,20 +53,20 @@ namespace boosting {
              * @param numThreads                        The number of CPU threads to be used to calculate the initial
              *                                          statistics in parallel. Must be at least 1
              */
-            SparseDecomposableStatisticsProviderFactory(
-              std::unique_ptr<ISparseDecomposableLossFactory> lossFactoryPtr,
+            SparseDecomposableClassificationStatisticsProviderFactory(
+              std::unique_ptr<ISparseDecomposableClassificationLossFactory> lossFactoryPtr,
               std::unique_ptr<ISparseEvaluationMeasureFactory> evaluationMeasureFactoryPtr,
               std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
               std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
               uint32 numThreads);
 
             /**
-             * @see `IStatisticsProviderFactory::create`
+             * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const CContiguousView<const uint8>& labelMatrix) const override;
 
             /**
-             * @see `IStatisticsProviderFactory::create`
+             * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const BinaryCsrView& labelMatrix) const override;
     };

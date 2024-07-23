@@ -20,9 +20,9 @@ class IndexIterator final {
         IndexIterator();
 
         /**
-         * @param index The index to start with
+         * @param startIndex The index to start with
          */
-        IndexIterator(uint32 index);
+        IndexIterator(uint32 startIndex);
 
         /**
          * The type that is used to represent the difference between two iterators.
@@ -42,7 +42,7 @@ class IndexIterator final {
         /**
          * The type of a reference to an element, the iterator provides access to.
          */
-        typedef uint32 reference;
+        typedef uint32& reference;
 
         /**
          * The tag that specifies the capabilities of the iterator.
@@ -55,14 +55,14 @@ class IndexIterator final {
          * @param index The index of the element to be returned
          * @return      The element at the given index
          */
-        reference operator[](uint32 index) const;
+        value_type operator[](uint32 index) const;
 
         /**
          * Returns the element, the iterator currently refers to.
          *
          * @return The element, the iterator currently refers to
          */
-        reference operator*() const;
+        value_type operator*() const;
 
         /**
          * Returns an iterator to the next element.

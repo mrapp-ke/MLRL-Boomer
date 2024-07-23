@@ -10,7 +10,7 @@
 #include <utility>
 
 /**
- * An abstract base class for all rule learners.
+ * An abstract base class for all rule learners that can be used in classification problems.
  */
 class AbstractClassificationRuleLearner : virtual public IClassificationRuleLearner {
     private:
@@ -49,8 +49,8 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
             std::unique_ptr<IOutputSpaceInfo> outputSpaceInfoPtr = configurator_.createOutputSpaceInfo(labelMatrix);
 
             // Partition training data...
-            std::unique_ptr<IPartitionSamplingFactory> partitionSamplingFactoryPtr =
-              configurator_.createPartitionSamplingFactory();
+            std::unique_ptr<IClassificationPartitionSamplingFactory> partitionSamplingFactoryPtr =
+              configurator_.createClassificationPartitionSamplingFactory();
             std::unique_ptr<IPartitionSampling> partitionSamplingPtr =
               labelMatrix.createPartitionSampling(*partitionSamplingFactoryPtr);
             IPartition& partition = partitionSamplingPtr->partition(rng);
@@ -62,8 +62,8 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
             IModelBuilder& modelBuilder = postOptimizationPtr->getModelBuilder();
 
             // Create statistics provider...
-            std::unique_ptr<IStatisticsProviderFactory> statisticsProviderFactoryPtr =
-              configurator_.createStatisticsProviderFactory(featureMatrix, labelMatrix);
+            std::unique_ptr<IClassificationStatisticsProviderFactory> statisticsProviderFactoryPtr =
+              configurator_.createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix);
             std::unique_ptr<IStatisticsProvider> statisticsProviderPtr =
               labelMatrix.createStatisticsProvider(*statisticsProviderFactoryPtr);
 
@@ -84,8 +84,8 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
             std::unique_ptr<IOutputSampling> outputSamplingPtr = outputSamplingFactoryPtr->create();
 
             // Create instance sampling...
-            std::unique_ptr<IInstanceSamplingFactory> instanceSamplingFactoryPtr =
-              configurator_.createInstanceSamplingFactory();
+            std::unique_ptr<IClassificationInstanceSamplingFactory> instanceSamplingFactoryPtr =
+              configurator_.createClassificationInstanceSamplingFactory();
             std::unique_ptr<IInstanceSampling> instanceSamplingPtr =
               partition.createInstanceSampling(*instanceSamplingFactoryPtr, labelMatrix, statisticsProviderPtr->get());
 
@@ -140,21 +140,47 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
               std::move(marginalProbabilityCalibrationModelPtr), std::move(jointProbabilityCalibrationModelPtr));
         }
 
-        bool canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix,
-                              const ITrainingResult& trainingResult) const override {
-            return this->canPredictBinary(featureMatrix, trainingResult.getNumOutputs());
+        bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override {
+            return configurator_.createScorePredictorFactory(featureMatrix, numLabels) != nullptr;
+        }
+
+        std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
+                                                              const IRuleModel& ruleModel,
+                                                              const IOutputSpaceInfo& outputSpaceInfo,
+                                                              uint32 numOutputs) const override {
+            std::unique_ptr<IScorePredictorFactory> predictorFactoryPtr =
+              configurator_.createScorePredictorFactory(featureMatrix, numOutputs);
+
+            if (predictorFactoryPtr) {
+                return featureMatrix.createScorePredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo, numOutputs);
+            }
+
+            throw std::runtime_error("The rule learner does not support to predict scores");
+        }
+
+        bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override {
+            return configurator_.createProbabilityPredictorFactory(featureMatrix, numLabels) != nullptr;
+        }
+
+        std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
+          const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
+          const IOutputSpaceInfo& outputSpaceInfo,
+          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override {
+            std::unique_ptr<IProbabilityPredictorFactory> predictorFactoryPtr =
+              configurator_.createProbabilityPredictorFactory(featureMatrix, numLabels);
+
+            if (predictorFactoryPtr) {
+                return featureMatrix.createProbabilityPredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo,
+                                                                marginalProbabilityCalibrationModel,
+                                                                jointProbabilityCalibrationModel, numLabels);
+            }
+
+            throw std::runtime_error("The rule learner does not support to predict probability estimates");
         }
 
         bool canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override {
             return configurator_.createBinaryPredictorFactory(featureMatrix, numLabels) != nullptr;
-        }
-
-        std::unique_ptr<IBinaryPredictor> createBinaryPredictor(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                const ITrainingResult& trainingResult) const override {
-            return this->createBinaryPredictor(
-              featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getOutputSpaceInfo(),
-              *trainingResult.getMarginalProbabilityCalibrationModel(),
-              *trainingResult.getJointProbabilityCalibrationModel(), trainingResult.getNumOutputs());
         }
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
@@ -175,14 +201,6 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
         }
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
-          const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override {
-            return this->createSparseBinaryPredictor(
-              featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getOutputSpaceInfo(),
-              *trainingResult.getMarginalProbabilityCalibrationModel(),
-              *trainingResult.getJointProbabilityCalibrationModel(), trainingResult.getNumOutputs());
-        }
-
-        std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
           const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
@@ -197,68 +215,5 @@ class AbstractClassificationRuleLearner : virtual public IClassificationRuleLear
             }
 
             throw std::runtime_error("The rule learner does not support to predict sparse binary labels");
-        }
-
-        bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix,
-                              const ITrainingResult& trainingResult) const override {
-            return this->canPredictScores(featureMatrix, trainingResult.getNumOutputs());
-        }
-
-        bool canPredictScores(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override {
-            return configurator_.createScorePredictorFactory(featureMatrix, numLabels) != nullptr;
-        }
-
-        std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
-                                                              const ITrainingResult& trainingResult) const override {
-            return this->createScorePredictor(featureMatrix, *trainingResult.getRuleModel(),
-                                              *trainingResult.getOutputSpaceInfo(), trainingResult.getNumOutputs());
-        }
-
-        std::unique_ptr<IScorePredictor> createScorePredictor(const IRowWiseFeatureMatrix& featureMatrix,
-                                                              const IRuleModel& ruleModel,
-                                                              const IOutputSpaceInfo& outputSpaceInfo,
-                                                              uint32 numOutputs) const override {
-            std::unique_ptr<IScorePredictorFactory> predictorFactoryPtr =
-              configurator_.createScorePredictorFactory(featureMatrix, numOutputs);
-
-            if (predictorFactoryPtr) {
-                return featureMatrix.createScorePredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo, numOutputs);
-            }
-
-            throw std::runtime_error("The rule learner does not support to predict scores");
-        }
-
-        bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix,
-                                     const ITrainingResult& trainingResult) const override {
-            return this->canPredictProbabilities(featureMatrix, trainingResult.getNumOutputs());
-        }
-
-        bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override {
-            return configurator_.createProbabilityPredictorFactory(featureMatrix, numLabels) != nullptr;
-        }
-
-        std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
-          const IRowWiseFeatureMatrix& featureMatrix, const ITrainingResult& trainingResult) const override {
-            return this->createProbabilityPredictor(
-              featureMatrix, *trainingResult.getRuleModel(), *trainingResult.getOutputSpaceInfo(),
-              *trainingResult.getMarginalProbabilityCalibrationModel(),
-              *trainingResult.getJointProbabilityCalibrationModel(), trainingResult.getNumOutputs());
-        }
-
-        std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
-          const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-          const IOutputSpaceInfo& outputSpaceInfo,
-          const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-          const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override {
-            std::unique_ptr<IProbabilityPredictorFactory> predictorFactoryPtr =
-              configurator_.createProbabilityPredictorFactory(featureMatrix, numLabels);
-
-            if (predictorFactoryPtr) {
-                return featureMatrix.createProbabilityPredictor(*predictorFactoryPtr, ruleModel, outputSpaceInfo,
-                                                                marginalProbabilityCalibrationModel,
-                                                                jointProbabilityCalibrationModel, numLabels);
-            }
-
-            throw std::runtime_error("The rule learner does not support to predict probability estimates");
         }
 };

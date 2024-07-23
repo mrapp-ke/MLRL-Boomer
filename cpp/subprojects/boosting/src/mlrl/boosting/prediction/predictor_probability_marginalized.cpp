@@ -109,9 +109,9 @@ namespace boosting {
     };
 
     MarginalizedProbabilityPredictorConfig::MarginalizedProbabilityPredictorConfig(
-      ReadableProperty<ILossConfig> lossConfigGetter,
-      ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : lossConfig_(std::move(lossConfigGetter)), multiThreadingConfig_(std::move(multiThreadingConfigGetter)) {}
+      ReadableProperty<IClassificationLossConfig> lossConfig,
+      ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
+        : lossConfig_(std::move(lossConfig)), multiThreadingConfig_(std::move(multiThreadingConfig)) {}
 
     bool MarginalizedProbabilityPredictorConfig::isProbabilityCalibrationModelUsed() const {
         return noMarginalProbabilityCalibrationModelPtr_ == nullptr;
