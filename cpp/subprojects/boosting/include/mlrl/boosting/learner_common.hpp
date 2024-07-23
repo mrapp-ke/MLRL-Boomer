@@ -126,25 +126,7 @@ namespace boosting {
 
         public:
 
-            BoostedRuleLearnerConfig()
-                : RuleLearnerConfig(BOOSTED_RULE_COMPARE_FUNCTION),
-                  headConfigPtr_(std::make_unique<CompleteHeadConfig>(
-                    readableProperty(labelBinningConfigPtr_), readableProperty(parallelStatisticUpdateConfigPtr_),
-                    readableProperty(l1RegularizationConfigPtr_), readableProperty(l2RegularizationConfigPtr_))),
-                  classificationStatisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(
-                    readableProperty<IClassificationLossConfig>(classificationLossConfigPtr_),
-                    readableProperty<IRegressionLossConfig>(regressionLossConfigPtr_))),
-                  regressionStatisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(
-                    readableProperty<IClassificationLossConfig>(classificationLossConfigPtr_),
-                    readableProperty<IRegressionLossConfig>(regressionLossConfigPtr_))),
-                  classificationLossConfigPtr_(
-                    std::make_unique<DecomposableSquaredErrorLossConfig>(readableProperty(headConfigPtr_))),
-                  regressionLossConfigPtr_(
-                    std::make_unique<DecomposableSquaredErrorLossConfig>(readableProperty(headConfigPtr_))),
-                  l1RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
-                  l2RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
-                  labelBinningConfigPtr_(std::make_unique<NoLabelBinningConfig>(
-                    readableProperty(l1RegularizationConfigPtr_), readableProperty(l2RegularizationConfigPtr_))) {}
+            BoostedRuleLearnerConfig() : RuleLearnerConfig(BOOSTED_RULE_COMPARE_FUNCTION) {}
 
             virtual ~BoostedRuleLearnerConfig() override {}
 
@@ -153,8 +135,9 @@ namespace boosting {
             }
 
             ReadableProperty<IStatisticsConfig> getStatisticsConfig() const override final {
-                return readableProperty<IStatisticsConfig, IClassificationStatisticsConfig>(
-                  classificationStatisticsConfigPtr_);
+                return readableProperty<IStatisticsConfig, IClassificationStatisticsConfig,
+                                        IRegressionStatisticsConfig>(classificationStatisticsConfigPtr_,
+                                                                     regressionStatisticsConfigPtr_);
             }
 
             SharedProperty<IClassificationStatisticsConfig> getClassificationStatisticsConfig() override final {
@@ -174,7 +157,8 @@ namespace boosting {
             }
 
             ReadableProperty<ILossConfig> getLossConfig() const override final {
-                return readableProperty<ILossConfig, IClassificationLossConfig>(classificationLossConfigPtr_);
+                return readableProperty<ILossConfig, IClassificationLossConfig, IRegressionLossConfig>(
+                  classificationLossConfigPtr_, regressionLossConfigPtr_);
             }
 
             SharedProperty<IClassificationLossConfig> getClassificationLossConfig() override final {

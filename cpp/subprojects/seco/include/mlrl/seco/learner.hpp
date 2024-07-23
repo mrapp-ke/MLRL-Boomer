@@ -511,4 +511,25 @@ namespace seco {
                   std::make_unique<OutputWiseBinaryPredictorConfig>(this->getParallelPredictionConfig()));
             }
     };
+
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner that makes use of the
+     * separate-and-conquer (SeCo) paradigm to use a simple default configuration.
+     */
+    class ISeCoRuleLearnerMixin : virtual public IRuleLearnerMixin,
+                                  virtual public INoCoverageStoppingCriterionMixin,
+                                  virtual public INoLiftFunctionMixin {
+        public:
+
+            virtual ~ISeCoRuleLearnerMixin() override {}
+
+            /**
+             * @see `IRuleLearnerConfig::useDefaults`
+             */
+            virtual void useDefaults() override {
+                IRuleLearnerMixin::useDefaults();
+                this->useNoCoverageStoppingCriterion();
+                this->useNoLiftFunction();
+            }
+    };
 }
