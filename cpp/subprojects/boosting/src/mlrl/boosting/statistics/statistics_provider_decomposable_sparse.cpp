@@ -1,8 +1,3 @@
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
 #include "mlrl/boosting/statistics/statistics_provider_decomposable_sparse.hpp"
 
 #include "mlrl/boosting/data/matrix_sparse_set_numeric.hpp"
@@ -145,7 +140,3 @@ namespace boosting {
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif

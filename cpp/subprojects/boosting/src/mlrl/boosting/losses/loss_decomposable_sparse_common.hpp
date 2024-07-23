@@ -3,11 +3,6 @@
  */
 #pragma once
 
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
 #include "loss_decomposable_common.hpp"
 #include "mlrl/boosting/losses/loss_decomposable_sparse.hpp"
 #include "mlrl/common/iterator/iterator_forward_non_zero_index.hpp"
@@ -271,7 +266,3 @@ namespace boosting {
     };
 
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif

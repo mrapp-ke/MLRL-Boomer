@@ -151,6 +151,7 @@ link_args = []
 
 if host_machine.system() == 'windows'
     cpp_args += '-DMLRLCOMMON_EXPORTS'
+    cpp_args += '/wd4250'  # Supress MSVC compiler warning C4250 ("inherits via dominance")
 
     if multi_threading_support_enabled
         cpp_args += '/openmp'
