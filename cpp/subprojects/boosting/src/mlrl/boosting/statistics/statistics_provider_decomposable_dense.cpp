@@ -1,8 +1,3 @@
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
 #include "mlrl/boosting/statistics/statistics_provider_decomposable_dense.hpp"
 
 #include "mlrl/common/util/openmp.hpp"
@@ -116,7 +111,3 @@ namespace boosting {
     }
 
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif

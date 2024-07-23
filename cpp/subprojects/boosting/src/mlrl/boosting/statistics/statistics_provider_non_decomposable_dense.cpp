@@ -1,8 +1,3 @@
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
 #include "mlrl/boosting/statistics/statistics_provider_non_decomposable_dense.hpp"
 
 #include "mlrl/boosting/data/matrix_c_contiguous_numeric.hpp"
@@ -349,7 +344,3 @@ namespace boosting {
     }
 
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif

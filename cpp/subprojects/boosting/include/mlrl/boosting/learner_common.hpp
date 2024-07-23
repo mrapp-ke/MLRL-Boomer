@@ -3,11 +3,6 @@
  */
 #pragma once
 
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
 #include "mlrl/boosting/learner.hpp"
 #include "mlrl/boosting/model/rule_list_builder.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_compare_function.hpp"
@@ -174,7 +169,3 @@ namespace boosting {
             }
     };
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif
