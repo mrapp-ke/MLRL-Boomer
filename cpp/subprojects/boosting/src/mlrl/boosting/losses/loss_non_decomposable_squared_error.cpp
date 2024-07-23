@@ -141,7 +141,7 @@ namespace boosting {
     }
 
     static inline constexpr float32 binaryConversionFunction(bool groundTruth) {
-        return groundTruth ? 1 : -1;
+        return groundTruth ? 1.0f : -1.0f;
     }
 
     static inline constexpr float32 scoreConversionFunction(float32 groundTruth) {
