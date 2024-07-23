@@ -6,9 +6,6 @@
 #include "mlrl/common/input/regression_matrix_row_wise.hpp"
 #include "mlrl/common/learner.hpp"
 #include "mlrl/common/prediction/output_space_info_no.hpp"
-#include "mlrl/common/prediction/predictor_binary_no.hpp"
-#include "mlrl/common/prediction/predictor_probability_no.hpp"
-#include "mlrl/common/prediction/predictor_score_no.hpp"
 #include "mlrl/common/rule_refinement/feature_space_tabular.hpp"
 #include "mlrl/common/stopping/stopping_criterion_size.hpp"
 #include "mlrl/common/util/validation.hpp"
@@ -664,31 +661,7 @@ class RuleLearnerConfig : virtual public IRuleLearnerConfig {
          */
         explicit RuleLearnerConfig(RuleCompareFunction ruleCompareFunction)
             : ruleCompareFunction_(ruleCompareFunction),
-              defaultRuleConfigPtr_(std::make_unique<DefaultRuleConfig>(true)),
-              ruleModelAssemblageConfigPtr_(
-                std::make_unique<SequentialRuleModelAssemblageConfig>(readableProperty(defaultRuleConfigPtr_))),
-              ruleInductionConfigPtr_(std::make_unique<GreedyTopDownRuleInductionConfig>(
-                ruleCompareFunction_, readableProperty(parallelRuleRefinementConfigPtr_))),
-              featureBinningConfigPtr_(std::make_unique<NoFeatureBinningConfig>()),
-              outputSamplingConfigPtr_(std::make_unique<NoOutputSamplingConfig>()),
-              classificationInstanceSamplingConfigPtr_(std::make_unique<NoInstanceSamplingConfig>()),
-              featureSamplingConfigPtr_(std::make_unique<NoFeatureSamplingConfig>()),
-              classificationPartitionSamplingConfigPtr_(std::make_unique<NoPartitionSamplingConfig>()),
-              rulePruningConfigPtr_(std::make_unique<NoRulePruningConfig>()),
-              postProcessorConfigPtr_(std::make_unique<NoPostProcessorConfig>()),
-              parallelRuleRefinementConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
-              parallelStatisticUpdateConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
-              parallelPredictionConfigPtr_(std::make_unique<NoMultiThreadingConfig>()),
-              sizeStoppingCriterionConfigPtr_(std::make_unique<NoStoppingCriterionConfig>()),
-              timeStoppingCriterionConfigPtr_(std::make_unique<NoStoppingCriterionConfig>()),
-              globalPruningConfigPtr_(std::make_unique<NoGlobalPruningConfig>()),
-              sequentialPostOptimizationConfigPtr_(std::make_unique<NoPostOptimizationPhaseConfig>()),
-              unusedRuleRemovalConfigPtr_(std::make_unique<UnusedRuleRemovalConfig>()),
-              marginalProbabilityCalibratorConfigPtr_(std::make_unique<NoMarginalProbabilityCalibratorConfig>()),
-              jointProbabilityCalibratorConfigPtr_(std::make_unique<NoJointProbabilityCalibratorConfig>()),
-              scorePredictorConfigPtr_(std::make_unique<NoScorePredictorConfig>()),
-              probabilityPredictorConfigPtr_(std::make_unique<NoProbabilityPredictorConfig>()),
-              binaryPredictorConfigPtr_(std::make_unique<NoBinaryPredictorConfig>()) {}
+              unusedRuleRemovalConfigPtr_(std::make_unique<UnusedRuleRemovalConfig>()) {}
 
         virtual ~RuleLearnerConfig() override {}
 
