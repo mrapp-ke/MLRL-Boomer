@@ -3,7 +3,16 @@
 """
 
 
-cdef class CContiguousRegressionMatrix(OutputMatrix):
+cdef class RowWiseRegressionMatrix(OutputMatrix):
+    """
+    A regression matrix that provides row-wise access to the regression scores of examples.
+    """
+
+    cdef IRowWiseRegressionMatrix* get_row_wise_regression_matrix_ptr(self):
+        pass
+
+
+cdef class CContiguousRegressionMatrix(RowWiseRegressionMatrix):
     """
     A regression matrix that provides row-wise access to the regression scores of examples that are stored in a
     C-contiguous array.
@@ -21,9 +30,12 @@ cdef class CContiguousRegressionMatrix(OutputMatrix):
 
     cdef IOutputMatrix* get_output_matrix_ptr(self):
         return self.regression_matrix_ptr.get()
+    
+    cdef IRowWiseRegressionMatrix* get_row_wise_regression_matrix_ptr(self):
+        return self.regression_matrix_ptr.get()
 
 
-cdef class CsrRegressionMatrix(OutputMatrix):
+cdef class CsrRegressionMatrix(RowWiseRegressionMatrix):
     """
     A regression matrix that provides row-wise access to the regression scores of examples that are stored in a sparse
     matrix in the compressed sparse row (CSR) format.
@@ -49,4 +61,7 @@ cdef class CsrRegressionMatrix(OutputMatrix):
                                                                num_outputs)
 
     cdef IOutputMatrix* get_output_matrix_ptr(self):
+        return self.regression_matrix_ptr.get()
+
+    cdef IRowWiseRegressionMatrix* get_row_wise_regression_matrix_ptr(self):
         return self.regression_matrix_ptr.get()

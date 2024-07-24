@@ -4,9 +4,15 @@ from mlrl.common.cython._types cimport float32, uint32
 from mlrl.common.cython.output_matrix cimport IOutputMatrix, OutputMatrix
 
 
+cdef extern from "mlrl/common/input/regression_matrix_row_wise.hpp" nogil:
+
+    cdef cppclass IRowWiseRegressionMatrix(IOutputMatrix):
+        pass
+
+
 cdef extern from "mlrl/common/input/regression_matrix_c_contiguous.hpp" nogil:
 
-    cdef cppclass ICContiguousRegressionMatrix(IOutputMatrix):
+    cdef cppclass ICContiguousRegressionMatrix(IRowWiseRegressionMatrix):
         pass
 
 
@@ -16,7 +22,7 @@ cdef extern from "mlrl/common/input/regression_matrix_c_contiguous.hpp" nogil:
 
 cdef extern from "mlrl/common/input/regression_matrix_csr.hpp" nogil:
 
-    cdef cppclass ICsrRegressionMatrix(IOutputMatrix):
+    cdef cppclass ICsrRegressionMatrix(IRowWiseRegressionMatrix):
         pass
 
 
@@ -24,7 +30,14 @@ cdef extern from "mlrl/common/input/regression_matrix_csr.hpp" nogil:
                                                                uint32 numRows, uint32 numCols)
 
 
-cdef class CContiguousRegressionMatrix(OutputMatrix):
+cdef class RowWiseRegressionMatrix(OutputMatrix):
+
+    # Functions:
+
+    cdef IRowWiseRegressionMatrix* get_row_wise_regression_matrix_ptr(self)
+
+
+cdef class CContiguousRegressionMatrix(RowWiseRegressionMatrix):
 
     # Attributes:
 
@@ -33,7 +46,7 @@ cdef class CContiguousRegressionMatrix(OutputMatrix):
     cdef unique_ptr[ICContiguousRegressionMatrix] regression_matrix_ptr
 
 
-cdef class CsrRegressionMatrix(OutputMatrix):
+cdef class CsrRegressionMatrix(RowWiseRegressionMatrix):
 
     # Attributes:
 
