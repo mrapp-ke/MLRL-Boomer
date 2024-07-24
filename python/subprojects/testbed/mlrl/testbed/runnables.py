@@ -12,7 +12,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, Iterable, List, Optional, Set
 
-from sklearn.base import BaseEstimator
+from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
+    RegressorMixin as SkLearnRegressorMixin
 
 from mlrl.common.config import NONE, Parameter, configure_argument_parser, create_kwargs_from_parameters
 from mlrl.common.cython.validation import assert_greater, assert_greater_or_equal, assert_less, assert_less_or_equal
@@ -669,8 +670,8 @@ class LearnerRunnable(Runnable, ABC):
         experiment.run()
 
     # pylint: disable=unused-argument
-    def _create_experiment(self, args, base_learner: BaseEstimator, learner_name: str, data_splitter: DataSplitter,
-                           pre_training_output_writers: List[OutputWriter],
+    def _create_experiment(self, args, base_learner: SkLearnBaseEstimator, learner_name: str,
+                           data_splitter: DataSplitter, pre_training_output_writers: List[OutputWriter],
                            post_training_output_writers: List[OutputWriter],
                            pre_execution_hook: Optional[Experiment.ExecutionHook],
                            train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
@@ -975,13 +976,23 @@ class LearnerRunnable(Runnable, ABC):
         return LabelVectorWriter(sinks) if len(sinks) > 0 else None
 
     @abstractmethod
-    def create_classifier(self, args):
+    def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:
         """
         Must be implemented by subclasses in order to create a machine learning algorithm that can be applied to
         classification problems.
 
         :param args:    The command line arguments
-        :return:        The learner that has been created
+        :return:        The learner that has been created or None, if regression problems are not supported
+        """
+
+    @abstractmethod
+    def create_regressor(self, args) -> Optional[SkLearnRegressorMixin]:
+        """
+        Must be implemented by subclasses in order to create a machine learning algorithm that can be applied to
+        regression problems.
+
+        :param args:    The command line arguments
+        :return:        The learner that has been created or None, if regression problems are not supported
         """
 
 
@@ -1043,16 +1054,30 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     PARAM_SPARSE_FEATURE_VALUE = '--sparse-feature-value'
 
-    def __init__(self, learner_name: str, learner_type: type, config_type: type, parameters: Set[Parameter]):
+    def __init__(self, learner_name: str, classifier_type: Optional[type], classifier_config_type: Optional[type],
+                 classifier_parameters: Optional[Set[Parameter]], regressor_type: Optional[type],
+                 regressor_config_type: Optional[type], regressor_parameters: Optional[Set[Parameter]]):
         """
-        :param learner_type:    The type of the rule learner
-        :param config_type:     The type of the rule learner's configuration
-        :param parameters:      A set that contains the parameters that may be supported by the rule learner
+        :param classifier_type:         The type of the rule learner to be used in classification problems or None, if
+                                        classification problems are not supported
+        :param classifier_config_type:  The type of the configuration to be used in classification problems or None, if
+                                        classification problems are not supported
+        :param classifier_parameters:   A set that contains the parameters that may be supported by the rule learner to
+                                        be used in regression problems or None, if regression problems are not supported
+        :param regressor_type:          The type of the rule learner to be used in regression problems or None, if
+                                        regression problems are not supported
+        :param regressor_config_type:   The type of the configuration to be used in regression problems or None, if
+                                        regression problems are not supported
+        :param regressor_parameters:    A set that contains the parameters that may be supported by the rule learner to
+                                        be used in regression problems or None, if regression problems are not supported
         """
         super().__init__(learner_name=learner_name)
-        self.learner_type = learner_type
-        self.config_type = config_type
-        self.parameters = parameters
+        self.classifier_type = classifier_type
+        self.classifier_config_type = classifier_config_type
+        self.classifier_parameters = classifier_parameters
+        self.regressor_type = regressor_type
+        self.regressor_config_type = regressor_config_type
+        self.regressor_parameters = regressor_parameters
 
     def configure_arguments(self, parser: ArgumentParser):
         super().configure_arguments(parser)
@@ -1133,10 +1158,11 @@ class RuleLearnerRunnable(LearnerRunnable):
                             default=None,
                             help='The format to be used for the representation of predictions. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
-        configure_argument_parser(parser, self.config_type, self.parameters)
+        # TODO Is it possible to use the correct config here?
+        configure_argument_parser(parser, self.classifier_config_type, self.classifier_parameters)
 
-    def _create_experiment(self, args, base_learner: BaseEstimator, learner_name: str, data_splitter: DataSplitter,
-                           pre_training_output_writers: List[OutputWriter],
+    def _create_experiment(self, args, base_learner: SkLearnBaseEstimator, learner_name: str,
+                           data_splitter: DataSplitter, pre_training_output_writers: List[OutputWriter],
                            post_training_output_writers: List[OutputWriter],
                            pre_execution_hook: Optional[Experiment.ExecutionHook],
                            train_evaluation: Optional[Evaluation], test_evaluation: Optional[Evaluation],
@@ -1156,13 +1182,30 @@ class RuleLearnerRunnable(LearnerRunnable):
                           fit_kwargs=kwargs,
                           predict_kwargs=kwargs)
 
-    def create_classifier(self, args):
-        kwargs = create_kwargs_from_parameters(args, self.parameters)
+    def create_classifier(self, args) -> Optional[SkLearnClassifierMixin]:
+        classifier_type = self.classifier_type
+
+        if classifier_type:
+            kwargs = self.__create_kwargs_from_parameters(self.classifier_parameters, args)
+            return classifier_type(**kwargs)
+        return None
+
+    def create_regressor(self, args) -> Optional[SkLearnRegressorMixin]:
+        regressor_type = self.regressor_type
+
+        if regressor_type:
+            kwargs = self.__create_kwargs_from_parameters(self.regressor_parameters, args)
+            return regressor_type(**kwargs)
+        return None
+
+    @staticmethod
+    def __create_kwargs_from_parameters(parameters: Set[Parameter], args):
+        kwargs = create_kwargs_from_parameters(args, parameters)
         kwargs['random_state'] = args.random_state
         kwargs['feature_format'] = args.feature_format
         kwargs['output_format'] = args.output_format
         kwargs['prediction_format'] = args.prediction_format
-        return self.learner_type(**kwargs)
+        return kwargs
 
     def _create_model_writer(self, args) -> Optional[OutputWriter]:
         """

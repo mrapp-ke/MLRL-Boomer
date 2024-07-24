@@ -11,7 +11,7 @@ from typing import Any, Optional
 
 import numpy as np
 
-from sklearn.base import BaseEstimator
+from sklearn.base import BaseEstimator as SkLearnBaseEstimator
 from sklearn.utils import check_array
 
 from mlrl.common.arrays import SparseFormat, enforce_2d, enforce_dense, is_sparse, is_sparse_and_memory_efficient
@@ -106,8 +106,8 @@ class SparsePolicy(Enum):
                          + str(sparse_format) + '"')
 
 
-class RuleLearner(BaseEstimator, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, IncrementalPredictionMixin,
-                  ABC):
+class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin,
+                  IncrementalPredictionMixin, ABC):
     """
     A scikit-learn implementation of a rule learning algorithm.
     """

@@ -6,9 +6,9 @@ dependency.
 """
 from typing import Optional
 
-from mlrl.boosting.boosting_learners import BoomerClassifier
-from mlrl.boosting.config import BOOMER_CLASSIFIER_PARAMETERS
-from mlrl.boosting.cython.learner_boomer import BoomerClassifierConfig
+from mlrl.boosting.boosting_learners import BoomerClassifier, BoomerRegressor
+from mlrl.boosting.config import BOOMER_CLASSIFIER_PARAMETERS, BOOMER_REGRESSOR_PARAMETERS
+from mlrl.boosting.cython.learner_boomer import BoomerClassifierConfig, BoomerRegressorConfig
 from mlrl.boosting.info import get_package_info
 
 try:
@@ -24,9 +24,12 @@ class BoomerRunnable(RuleLearnerRunnable):
 
     def __init__(self):
         super().__init__(learner_name='boomer',
-                         learner_type=BoomerClassifier,
-                         config_type=BoomerClassifierConfig,
-                         parameters=BOOMER_CLASSIFIER_PARAMETERS)
+                         classifier_type=BoomerClassifier,
+                         classifier_config_type=BoomerClassifierConfig,
+                         classifier_parameters=BOOMER_CLASSIFIER_PARAMETERS,
+                         regressor_type=BoomerRegressor,
+                         regressor_config_type=BoomerRegressorConfig,
+                         regressor_parameters=BOOMER_REGRESSOR_PARAMETERS)
 
     def get_program_info(self) -> Optional[Runnable.ProgramInfo]:
         """
