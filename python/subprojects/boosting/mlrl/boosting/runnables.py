@@ -7,7 +7,7 @@ dependency.
 from typing import Optional
 
 from mlrl.boosting.boosting_learners import BoomerClassifier
-from mlrl.boosting.config import BOOSTING_RULE_LEARNER_PARAMETERS
+from mlrl.boosting.config import BOOMER_CLASSIFIER_PARAMETERS
 from mlrl.boosting.cython.learner_boomer import BoomerClassifierConfig
 from mlrl.boosting.info import get_package_info
 
@@ -26,7 +26,7 @@ class BoomerRunnable(RuleLearnerRunnable):
         super().__init__(learner_name='boomer',
                          learner_type=BoomerClassifier,
                          config_type=BoomerClassifierConfig,
-                         parameters=BOOSTING_RULE_LEARNER_PARAMETERS)
+                         parameters=BOOMER_CLASSIFIER_PARAMETERS)
 
     def get_program_info(self) -> Optional[Runnable.ProgramInfo]:
         """
