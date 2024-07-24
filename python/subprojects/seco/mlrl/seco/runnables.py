@@ -6,7 +6,7 @@ installed as an optional dependency.
 """
 from typing import Optional
 
-from mlrl.seco.config import SECO_RULE_LEARNER_PARAMETERS
+from mlrl.seco.config import SECO_CLASSIFIER_PARAMETERS
 from mlrl.seco.cython.learner_seco import SeCoClassifierConfig
 from mlrl.seco.info import get_package_info
 from mlrl.seco.seco_learners import SeCoClassifier
@@ -24,9 +24,12 @@ class SeCoRunnable(RuleLearnerRunnable):
 
     def __init__(self):
         super().__init__(learner_name='seco',
-                         learner_type=SeCoClassifier,
-                         config_type=SeCoClassifierConfig,
-                         parameters=SECO_RULE_LEARNER_PARAMETERS)
+                         classifier_type=SeCoClassifier,
+                         classifier_config_type=SeCoClassifierConfig,
+                         classifier_parameters=SECO_CLASSIFIER_PARAMETERS,
+                         regressor_type=None,
+                         regressor_config_type=None,
+                         regressor_parameters=None)
 
     def get_program_info(self) -> Optional[Runnable.ProgramInfo]:
         """

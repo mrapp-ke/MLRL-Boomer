@@ -10,7 +10,7 @@ from functools import reduce
 from timeit import default_timer as timer
 from typing import Any, Dict, List, Optional
 
-from sklearn.base import BaseEstimator, RegressorMixin, clone
+from sklearn.base import BaseEstimator as SkLearnBaseEstimator, RegressorMixin as SkLearnRegressorMixin, clone
 
 from mlrl.common.arrays import is_sparse
 from mlrl.common.mixins import ClassifierMixin, IncrementalPredictionMixin, NominalFeatureSupportMixin, \
@@ -60,7 +60,7 @@ class Evaluation(ABC):
             try:
                 if isinstance(learner, ClassifierMixin):
                     result = predict_function(x, predict_scores=True, **kwargs)
-                elif isinstance(learner, RegressorMixin):
+                elif isinstance(learner, SkLearnRegressorMixin):
                     result = predict_function(x, **kwargs)
                 else:
                     raise RuntimeError()
@@ -235,7 +235,7 @@ class Experiment(DataSplitter.Callback):
             """
 
     def __init__(self,
-                 base_learner: BaseEstimator,
+                 base_learner: SkLearnBaseEstimator,
                  learner_name: str,
                  data_splitter: DataSplitter,
                  pre_training_output_writers: List[OutputWriter],
