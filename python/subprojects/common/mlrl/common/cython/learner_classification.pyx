@@ -68,86 +68,6 @@ cdef class ClassificationRuleLearner:
         return TrainingResult.__new__(TrainingResult, num_outputs, rule_model, output_space_info,
                                       marginal_probability_calibration_model, joint_probability_calibration_model)
 
-    def can_predict_binary(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
-        """
-        Returns whether the rule learner is able to predict binary labels or not.
-
-        :param feature_matrix:  A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
-                                query examples
-        :param num_labels:      The number of labels to predict for
-        :return:                True, if the rule learner is able to predict binary labels, False otherwise
-        """
-        return self.get_classification_rule_learner_ptr().canPredictBinary(
-            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
-
-    def create_binary_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
-                                OutputSpaceInfo output_space_info not None,
-                                MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
-                                JointProbabilityCalibrationModel joint_probability_calibration_model not None,
-                                uint32 num_labels) -> BinaryPredictor:
-        """
-        Creates and returns a predictor that may be used to predict binary labels for given query examples. If the
-        prediction of binary labels is not supported by the rule learner, a `RuntimeError` is thrown.
-
-        :param feature_matrix:                          A `RowWiseFeatureMatrix` that provides row-wise access to the
-                                                        feature values of the query examples
-        :param rule_model:                              The `RuleModel` that should be used to obtain predictions
-        :param output_space_info:                       The `OutputSpaceInfo` that provides information about the output
-                                                        space that may be used as a basis for obtaining predictions
-        :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
-                                                        the calibration of marginal probabilities
-        :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
-                                                        calibration of joint probabilities    
-        :param num_labels:                              The number of labels to predict for
-        :return:                                        A `BinaryPredictor` that may be used to predict binary labels
-                                                        for the given query examples
-        """
-        cdef unique_ptr[IBinaryPredictor] predictor_ptr = \
-            move(self.get_classification_rule_learner_ptr().createBinaryPredictor(
-                dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
-                dereference(rule_model.get_rule_model_ptr()),
-                dereference(output_space_info.get_output_space_info_ptr()),
-                dereference(marginal_probability_calibration_model.get_marginal_probability_calibration_model_ptr()),
-                dereference(joint_probability_calibration_model.get_joint_probability_calibration_model_ptr()),
-                num_labels))
-        cdef BinaryPredictor binary_predictor = BinaryPredictor.__new__(BinaryPredictor)
-        binary_predictor.predictor_ptr = move(predictor_ptr)
-        return binary_predictor
-
-    def create_sparse_binary_predictor(self, RowWiseFeatureMatrix feature_matrix not None,
-                                       RuleModel rule_model not None, OutputSpaceInfo output_space_info not None,
-                                       MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
-                                       JointProbabilityCalibrationModel joint_probability_calibration_model not None,
-                                       uint32 num_labels) -> SparseBinaryPredictor:
-        """
-        Creates and returns a predictor that may be used to predict sparse binary labels for given query examples. If
-        the prediction of sparse binary labels is not supported by the rule learner, a `RuntimeError` is thrown.
-
-        :param feature_matrix:                          A `RowWiseFeatureMatrix` that provides row-wise access to the
-                                                        feature values of the query examples
-        :param rule_model:                              The `RuleModel` that should be used to obtain predictions
-        :param output_space_info:                       The `OutputSpaceInfo` that provides information about the output
-                                                        space that may be used as a basis for obtaining predictions
-        :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
-                                                        the calibration of marginal probabilities
-        :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
-                                                        calibration of joint probabilities                                                            
-        :param num_labels:                              The number of labels to predict for
-        :return:                                        A `SparseBinaryPredictor` that may be used to predict sparse
-                                                        binary labels for the given query examples
-        """
-        cdef unique_ptr[ISparseBinaryPredictor] predictor_ptr = \
-            move(self.get_classification_rule_learner_ptr().createSparseBinaryPredictor(
-                dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
-                dereference(rule_model.get_rule_model_ptr()),
-                dereference(output_space_info.get_output_space_info_ptr()),
-                dereference(marginal_probability_calibration_model.get_marginal_probability_calibration_model_ptr()),
-                dereference(joint_probability_calibration_model.get_joint_probability_calibration_model_ptr()),
-                num_labels))
-        cdef SparseBinaryPredictor sparse_binary_predictor = SparseBinaryPredictor.__new__(SparseBinaryPredictor)
-        sparse_binary_predictor.predictor_ptr = move(predictor_ptr)
-        return sparse_binary_predictor
-
     def can_predict_scores(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
         """
         Returns whether the rule learner is able to predict scores or not.
@@ -229,6 +149,86 @@ cdef class ClassificationRuleLearner:
         cdef ProbabilityPredictor probability_predictor = ProbabilityPredictor.__new__(ProbabilityPredictor)
         probability_predictor.predictor_ptr = move(predictor_ptr)
         return probability_predictor
+
+    def can_predict_binary(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
+        """
+        Returns whether the rule learner is able to predict binary labels or not.
+
+        :param feature_matrix:  A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
+                                query examples
+        :param num_labels:      The number of labels to predict for
+        :return:                True, if the rule learner is able to predict binary labels, False otherwise
+        """
+        return self.get_classification_rule_learner_ptr().canPredictBinary(
+            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
+
+    def create_binary_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
+                                OutputSpaceInfo output_space_info not None,
+                                MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
+                                JointProbabilityCalibrationModel joint_probability_calibration_model not None,
+                                uint32 num_labels) -> BinaryPredictor:
+        """
+        Creates and returns a predictor that may be used to predict binary labels for given query examples. If the
+        prediction of binary labels is not supported by the rule learner, a `RuntimeError` is thrown.
+
+        :param feature_matrix:                          A `RowWiseFeatureMatrix` that provides row-wise access to the
+                                                        feature values of the query examples
+        :param rule_model:                              The `RuleModel` that should be used to obtain predictions
+        :param output_space_info:                       The `OutputSpaceInfo` that provides information about the output
+                                                        space that may be used as a basis for obtaining predictions
+        :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
+                                                        the calibration of marginal probabilities
+        :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
+                                                        calibration of joint probabilities    
+        :param num_labels:                              The number of labels to predict for
+        :return:                                        A `BinaryPredictor` that may be used to predict binary labels
+                                                        for the given query examples
+        """
+        cdef unique_ptr[IBinaryPredictor] predictor_ptr = \
+            move(self.get_classification_rule_learner_ptr().createBinaryPredictor(
+                dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
+                dereference(rule_model.get_rule_model_ptr()),
+                dereference(output_space_info.get_output_space_info_ptr()),
+                dereference(marginal_probability_calibration_model.get_marginal_probability_calibration_model_ptr()),
+                dereference(joint_probability_calibration_model.get_joint_probability_calibration_model_ptr()),
+                num_labels))
+        cdef BinaryPredictor binary_predictor = BinaryPredictor.__new__(BinaryPredictor)
+        binary_predictor.predictor_ptr = move(predictor_ptr)
+        return binary_predictor
+
+    def create_sparse_binary_predictor(self, RowWiseFeatureMatrix feature_matrix not None,
+                                       RuleModel rule_model not None, OutputSpaceInfo output_space_info not None,
+                                       MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
+                                       JointProbabilityCalibrationModel joint_probability_calibration_model not None,
+                                       uint32 num_labels) -> SparseBinaryPredictor:
+        """
+        Creates and returns a predictor that may be used to predict sparse binary labels for given query examples. If
+        the prediction of sparse binary labels is not supported by the rule learner, a `RuntimeError` is thrown.
+
+        :param feature_matrix:                          A `RowWiseFeatureMatrix` that provides row-wise access to the
+                                                        feature values of the query examples
+        :param rule_model:                              The `RuleModel` that should be used to obtain predictions
+        :param output_space_info:                       The `OutputSpaceInfo` that provides information about the output
+                                                        space that may be used as a basis for obtaining predictions
+        :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
+                                                        the calibration of marginal probabilities
+        :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
+                                                        calibration of joint probabilities                                                            
+        :param num_labels:                              The number of labels to predict for
+        :return:                                        A `SparseBinaryPredictor` that may be used to predict sparse
+                                                        binary labels for the given query examples
+        """
+        cdef unique_ptr[ISparseBinaryPredictor] predictor_ptr = \
+            move(self.get_classification_rule_learner_ptr().createSparseBinaryPredictor(
+                dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
+                dereference(rule_model.get_rule_model_ptr()),
+                dereference(output_space_info.get_output_space_info_ptr()),
+                dereference(marginal_probability_calibration_model.get_marginal_probability_calibration_model_ptr()),
+                dereference(joint_probability_calibration_model.get_joint_probability_calibration_model_ptr()),
+                num_labels))
+        cdef SparseBinaryPredictor sparse_binary_predictor = SparseBinaryPredictor.__new__(SparseBinaryPredictor)
+        sparse_binary_predictor.predictor_ptr = move(predictor_ptr)
+        return sparse_binary_predictor
 
 
 class OutputWiseStratifiedInstanceSamplingMixin(ABC):
