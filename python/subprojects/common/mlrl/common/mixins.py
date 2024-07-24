@@ -6,7 +6,8 @@ Provides mixins that additional functionality to machine learning algorithms.
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from sklearn.base import BaseEstimator
+from sklearn.base import BaseEstimator as SkLearnBaseEstimator, ClassifierMixin as SkLearnClassifierMixin, \
+    MultiOutputMixin as SkLearnMultiOutputMixin
 from sklearn.utils.validation import check_is_fitted
 
 KWARG_PREDICT_SCORES = 'predict_scores'
@@ -145,7 +146,7 @@ class IncrementalPredictionMixin(ABC):
         raise RuntimeError('Incremental prediction of probabilities not supported using the current configuration')
 
 
-class ClassifierMixin(BaseEstimator, ABC):
+class ClassifierMixin(SkLearnBaseEstimator, SkLearnClassifierMixin, SkLearnMultiOutputMixin, ABC):
     """
     A mixin for all machine learning algorithms that can be applied to classification problems.
     """
