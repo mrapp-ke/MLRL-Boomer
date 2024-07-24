@@ -596,6 +596,7 @@ namespace boosting {
      * to use a simple default configuration.
      */
     class MLRLBOOSTING_API IBoostedRuleLearnerMixin : virtual public IRuleLearnerMixin,
+                                                      virtual public IDefaultRuleMixin,
                                                       virtual public INoL1RegularizationMixin,
                                                       virtual public INoL2RegularizationMixin,
                                                       virtual public INoLabelBinningMixin {
