@@ -27,20 +27,6 @@ cdef extern from "mlrl/common/learner_classification.hpp" nogil:
         unique_ptr[ITrainingResult] fit(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
                                         const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const
 
-        bool canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
-
-        unique_ptr[IBinaryPredictor] createBinaryPredictor(
-            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const IOutputSpaceInfo& outputSpaceInfo,
-            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
-
-        unique_ptr[ISparseBinaryPredictor] createSparseBinaryPredictor(
-            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const IOutputSpaceInfo& outputSpaceInfo,
-            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
-
         bool canPredictScores(const IRowWiseFeatureMatrix&  featureMatrix, uint32 numLabels) const
 
         unique_ptr[IScorePredictor] createScorePredictor(
@@ -50,6 +36,20 @@ cdef extern from "mlrl/common/learner_classification.hpp" nogil:
         bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
 
         unique_ptr[IProbabilityPredictor] createProbabilityPredictor(
+            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
+            const IOutputSpaceInfo& outputSpaceInfo,
+            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
+
+        bool canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
+
+        unique_ptr[IBinaryPredictor] createBinaryPredictor(
+            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
+            const IOutputSpaceInfo& outputSpaceInfo,
+            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
+
+        unique_ptr[ISparseBinaryPredictor] createSparseBinaryPredictor(
             const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
             const IOutputSpaceInfo& outputSpaceInfo,
             const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
