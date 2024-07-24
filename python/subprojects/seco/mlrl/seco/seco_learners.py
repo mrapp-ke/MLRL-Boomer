@@ -10,7 +10,7 @@ from mlrl.common.config import configure_rule_learner
 from mlrl.common.mixins import ClassifierMixin
 from mlrl.common.rule_learners import ClassificationRuleLearner
 
-from mlrl.seco.config import SECO_RULE_LEARNER_PARAMETERS
+from mlrl.seco.config import SECO_CLASSIFIER_PARAMETERS
 from mlrl.seco.cython.learner_seco import SeCoClassifier as SeCoWrapper, SeCoClassifierConfig
 
 
@@ -121,5 +121,5 @@ class SeCoClassifier(ClassificationRuleLearner, ClassifierMixin):
 
     def _create_learner(self) -> Any:
         config = SeCoClassifierConfig()
-        configure_rule_learner(self, config, SECO_RULE_LEARNER_PARAMETERS)
+        configure_rule_learner(self, config, SECO_CLASSIFIER_PARAMETERS)
         return SeCoWrapper(config)
