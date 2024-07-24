@@ -6,16 +6,15 @@ classification rules.
 """
 from typing import Any, Optional
 
-from sklearn.base import ClassifierMixin, MultiOutputMixin
-
 from mlrl.common.config import configure_rule_learner
+from mlrl.common.mixins import ClassifierMixin
 from mlrl.common.rule_learners import ClassificationRuleLearner
 
 from mlrl.seco.config import SECO_RULE_LEARNER_PARAMETERS
 from mlrl.seco.cython.learner_seco import SeCoClassifier as SeCoWrapper, SeCoClassifierConfig
 
 
-class SeCoClassifier(ClassificationRuleLearner, ClassifierMixin, MultiOutputMixin):
+class SeCoClassifier(ClassificationRuleLearner, ClassifierMixin):
     """
     A scikit-learn implementation of a Separate-and-Conquer (SeCo) algorithm for learning multi-label classification
     rules.
