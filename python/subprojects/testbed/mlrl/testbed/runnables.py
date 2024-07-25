@@ -53,6 +53,7 @@ from mlrl.testbed.prediction_scope import PredictionType
 from mlrl.testbed.predictions import PredictionWriter
 from mlrl.testbed.probability_calibration import JointProbabilityCalibrationModelWriter, \
     MarginalProbabilityCalibrationModelWriter
+from mlrl.testbed.problem_type import ProblemType
 
 LOG_FORMAT = '%(levelname)s %(message)s'
 
@@ -368,6 +369,8 @@ class LearnerRunnable(Runnable, ABC):
             """
             clear_directory(self.output_dir)
 
+    PARAM_PROBLEM_TYPE = '--problem-type'
+
     PARAM_RANDOM_STATE = '--random-state'
 
     PARAM_DATA_SPLIT = '--data-split'
@@ -486,6 +489,16 @@ class LearnerRunnable(Runnable, ABC):
         super().__init__()
         self.learner_name = learner_name
 
+    def __create_problem_type(self, args) -> ProblemType:
+        return ProblemType.parse(self.PARAM_PROBLEM_TYPE, args.problem_type)
+
+    def __create_base_learner(self, problem_type: ProblemType, args) -> SkLearnBaseEstimator:
+        if problem_type == ProblemType.CLASSIFICATION:
+            return self.create_classifier(args)
+        if problem_type == ProblemType.REGRESSION:
+            return self.create_regressor(args)
+        raise ValueError('Unsupported type of machine learning problem: ' + str(problem_type))
+
     def __create_prediction_type(self, args) -> PredictionType:
         return PredictionType.parse(self.PARAM_PREDICTION_TYPE, args.prediction_type)
 
@@ -526,6 +539,15 @@ class LearnerRunnable(Runnable, ABC):
 
     def configure_arguments(self, parser: ArgumentParser):
         super().configure_arguments(parser)
+        parser.add_argument(self.PARAM_PROBLEM_TYPE,
+                            type=str,
+                            default=ProblemType.CLASSIFICATION.value,
+                            help='The type of the machine learning problem to be solved. Must be one of '
+                            + format_enum_values(ProblemType) + '.')
+        problem_type = self.__create_problem_type(parser.parse_known_args()[0])
+        self.configure_problem_specific_arguments(parser, problem_type)
+
+    def configure_problem_specific_arguments(self, parser: ArgumentParser, problem_type: ProblemType):
         parser.add_argument(self.PARAM_RANDOM_STATE,
                             type=int,
                             default=None,
@@ -646,12 +668,13 @@ class LearnerRunnable(Runnable, ABC):
                             + format_enum_values(PredictionType) + '.')
 
     def _run(self, args):
+        problem_type = self.__create_problem_type(args)
+        base_learner = self.__create_base_learner(problem_type, args)
         prediction_type = self.__create_prediction_type(args)
         train_evaluation = self._create_train_evaluation(args, prediction_type)
         test_evaluation = self._create_test_evaluation(args, prediction_type)
         data_splitter = self.__create_data_splitter(args)
         pre_execution_hook = self.__create_pre_execution_hook(args, data_splitter)
-        base_learner = self.create_classifier(args)
         pre_training_output_writers = self._create_pre_training_output_writers(args)
         post_training_output_writers = self._create_post_training_output_writers(args)
         parameter_input = self._create_parameter_input(args)
@@ -1079,8 +1102,15 @@ class RuleLearnerRunnable(LearnerRunnable):
         self.regressor_config_type = regressor_config_type
         self.regressor_parameters = regressor_parameters
 
-    def configure_arguments(self, parser: ArgumentParser):
-        super().configure_arguments(parser)
+    def __create_config_type_and_parameters(self, problem_type: ProblemType):
+        if problem_type == ProblemType.CLASSIFICATION:
+            return self.classifier_config_type, self.classifier_parameters
+        if problem_type == ProblemType.REGRESSION:
+            return self.regressor_config_type, self.regressor_parameters
+        raise ValueError('Unsupported type of machine learning problem: ' + str(problem_type))
+
+    def configure_problem_specific_arguments(self, parser: ArgumentParser, problem_type: ProblemType):
+        super().configure_problem_specific_arguments(parser, problem_type)
         parser.add_argument(self.PARAM_INCREMENTAL_EVALUATION,
                             type=str,
                             default=BooleanOption.FALSE.value,
@@ -1158,8 +1188,8 @@ class RuleLearnerRunnable(LearnerRunnable):
                             default=None,
                             help='The format to be used for the representation of predictions. Must be one of '
                             + format_enum_values(SparsePolicy) + '.')
-        # TODO Is it possible to use the correct config here?
-        configure_argument_parser(parser, self.classifier_config_type, self.classifier_parameters)
+        config_type, parameters = self.__create_config_type_and_parameters(problem_type)
+        configure_argument_parser(parser, config_type, parameters)
 
     def _create_experiment(self, args, base_learner: SkLearnBaseEstimator, learner_name: str,
                            data_splitter: DataSplitter, pre_training_output_writers: List[OutputWriter],
