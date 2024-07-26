@@ -680,6 +680,7 @@ class LearnerRunnable(Runnable, ABC):
         parameter_input = self._create_parameter_input(args)
         persistence = self._create_persistence(args)
         experiment = self._create_experiment(args,
+                                             problem_type=problem_type,
                                              base_learner=base_learner,
                                              learner_name=self.learner_name,
                                              data_splitter=data_splitter,
@@ -693,7 +694,7 @@ class LearnerRunnable(Runnable, ABC):
         experiment.run()
 
     # pylint: disable=unused-argument
-    def _create_experiment(self, args, base_learner: SkLearnBaseEstimator, learner_name: str,
+    def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
                            data_splitter: DataSplitter, pre_training_output_writers: List[OutputWriter],
                            post_training_output_writers: List[OutputWriter],
                            pre_execution_hook: Optional[Experiment.ExecutionHook],
@@ -704,6 +705,7 @@ class LearnerRunnable(Runnable, ABC):
         May be overridden by subclasses in order to create the `Experiment` that should be run.
 
         :param args:                            The command line arguments
+        :param problem_type:                    The type of the machine learning problem
         :param base_learner:                    The machine learning algorithm to be used
         :param learner_name:                    The name of machine learning algorithm
         :param data_splitter:                   The method to be used for splitting the available data into training and
@@ -719,7 +721,8 @@ class LearnerRunnable(Runnable, ABC):
         :param persistence:                     The `ModelPersistence` that should be used for loading and saving models
         :return:                                The `Experiment` that has been created
         """
-        return Experiment(base_learner=base_learner,
+        return Experiment(problem_type=problem_type,
+                          base_learner=base_learner,
                           learner_name=learner_name,
                           data_splitter=data_splitter,
                           pre_training_output_writers=pre_training_output_writers,
@@ -1199,7 +1202,7 @@ class RuleLearnerRunnable(LearnerRunnable):
         config_type, parameters = self.__create_config_type_and_parameters(problem_type)
         configure_argument_parser(parser, config_type, parameters)
 
-    def _create_experiment(self, args, base_learner: SkLearnBaseEstimator, learner_name: str,
+    def _create_experiment(self, args, problem_type: ProblemType, base_learner: SkLearnBaseEstimator, learner_name: str,
                            data_splitter: DataSplitter, pre_training_output_writers: List[OutputWriter],
                            post_training_output_writers: List[OutputWriter],
                            pre_execution_hook: Optional[Experiment.ExecutionHook],
@@ -1207,7 +1210,8 @@ class RuleLearnerRunnable(LearnerRunnable):
                            parameter_input: Optional[ParameterInput],
                            persistence: Optional[ModelPersistence]) -> Experiment:
         kwargs = {KWARG_SPARSE_FEATURE_VALUE: args.sparse_feature_value}
-        return Experiment(base_learner=base_learner,
+        return Experiment(problem_type=problem_type,
+                          base_learner=base_learner,
                           learner_name=learner_name,
                           data_splitter=data_splitter,
                           pre_training_output_writers=pre_training_output_writers,
