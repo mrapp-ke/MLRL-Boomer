@@ -135,7 +135,8 @@ class GlobalEvaluation(Evaluation):
                              learner, x, y, **kwargs):
         log.info('Predicting for %s %s examples...', x.shape[0], data_type.value)
         start_time = timer()
-        predictions = self._invoke_prediction_function(learner, learner.predict, learner.predict_proba, x, **kwargs)
+        predict_proba_function = learner.predict_proba if callable(getattr(learner, 'predict_proba', None)) else None
+        predictions = self._invoke_prediction_function(learner, learner.predict, predict_proba_function, x, **kwargs)
         end_time = timer()
         predict_time = end_time - start_time
 
@@ -178,8 +179,10 @@ class IncrementalEvaluation(Evaluation):
         if not isinstance(learner, IncrementalPredictionMixin):
             raise ValueError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
 
+        predict_proba_function = learner.predict_proba_incrementally if callable(
+            getattr(learner, 'predict_proba_incrementally', None)) else None
         incremental_predictor = self._invoke_prediction_function(learner, learner.predict_incrementally,
-                                                                 learner.predict_proba_incrementally, x, **kwargs)
+                                                                 predict_proba_function, x, **kwargs)
 
         if incremental_predictor is not None:
             step_size = self.step_size
