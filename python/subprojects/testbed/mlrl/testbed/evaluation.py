@@ -13,7 +13,7 @@ from sklearn import metrics
 from sklearn.utils.multiclass import is_multilabel
 
 from mlrl.common.arrays import enforce_dense
-from mlrl.common.data_types import Uint8
+from mlrl.common.data_types import Float32, Uint8
 from mlrl.common.options import Options
 
 from mlrl.testbed.data import MetaData
@@ -429,6 +429,30 @@ class BinaryEvaluationWriter(EvaluationWriter):
             predictions = np.ravel(enforce_dense(predictions, order='C', dtype=Uint8))
             ground_truth = np.ravel(enforce_dense(ground_truth, order='C', dtype=Uint8))
             evaluation_functions = self.single_label_evaluation_functions
+
+        for evaluation_function in evaluation_functions:
+            if isinstance(evaluation_function, EvaluationFunction):
+                score = evaluation_function.evaluate(ground_truth, predictions)
+                result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
+
+
+class RegressionEvaluationWriter(EvaluationWriter):
+    """
+    Evaluates the quality of scores provided by a single- or multi-output regressor according to commonly used
+    regression measures.
+    """
+
+    def __init__(self, sinks: List[OutputWriter.Sink]):
+        super().__init__(sinks)
+        options = [sink.options for sink in sinks]
+        self.regression_evaluation_functions = filter_formatters(REGRESSION_EVALUATION_MEASURES, options)
+
+    def _populate_result(self, data_split: DataSplit, result: EvaluationWriter.EvaluationResult, predictions,
+                         ground_truth):
+        num_folds = data_split.get_num_folds()
+        fold = data_split.get_fold()
+        ground_truth = enforce_dense(ground_truth, order='C', dtype=Float32)
+        evaluation_functions = self.regression_evaluation_functions
 
         for evaluation_function in evaluation_functions:
             if isinstance(evaluation_function, EvaluationFunction):
