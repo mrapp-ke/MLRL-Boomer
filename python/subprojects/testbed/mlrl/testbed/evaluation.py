@@ -436,9 +436,9 @@ class BinaryEvaluationWriter(EvaluationWriter):
                 result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
 
 
-class ScoreEvaluationWriter(EvaluationWriter):
+class RankingEvaluationWriter(EvaluationWriter):
     """
-    Evaluates the quality of scores provided by a single- or multi-output regressor according to commonly used
+    Evaluates the quality of scores provided by a single- or multi-label classifier according to commonly used
     regression and ranking measures.
     """
 
@@ -468,7 +468,7 @@ class ScoreEvaluationWriter(EvaluationWriter):
                 result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
 
 
-class ProbabilityEvaluationWriter(ScoreEvaluationWriter):
+class ProbabilityEvaluationWriter(RankingEvaluationWriter):
     """
     Evaluates the quality of probability estimates provided by a single- or multi-label classifier according to commonly
     used regression and ranking measures.
