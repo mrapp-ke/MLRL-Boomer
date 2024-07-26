@@ -466,10 +466,3 @@ class RankingEvaluationWriter(EvaluationWriter):
             if isinstance(evaluation_function, EvaluationFunction):
                 score = evaluation_function.evaluate(ground_truth, predictions)
                 result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
-
-
-class ProbabilityEvaluationWriter(RankingEvaluationWriter):
-    """
-    Evaluates the quality of probability estimates provided by a single- or multi-label classifier according to commonly
-    used regression and ranking measures.
-    """
