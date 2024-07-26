@@ -18,12 +18,9 @@ namespace boosting {
     static inline float32 calculateOutputRatio(float32 outputRatio, const IRowWiseRegressionMatrix& regressionMatrix) {
         if (outputRatio > 0) {
             return outputRatio;
+        } else {
+            return 0.33f;
         }
-
-        throw std::invalid_argument(
-          "Invalid value given for parameter \"outputRatio\": Must be greater than 0 when used in regression problems, "
-          "but is "
-          + std::to_string(outputRatio));
     }
 
     FixedPartialHeadConfig::FixedPartialHeadConfig(ReadableProperty<ILabelBinningConfig> labelBinningConfig,
