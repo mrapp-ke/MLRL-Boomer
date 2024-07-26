@@ -1,0 +1,145 @@
+INFO Starting experiment using the regression algorithm "boomer"...
+INFO Performing full 10-fold cross validation...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/atp7d.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/atp7d.arff"...
+INFO Fold 1 / 10:
+DEBUG Loading parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-1.csv"...
+INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-1.csv"
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+INFO Custom parameters (Fold 1):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+INFO Fitting model to 266 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+ERROR The learner does not support to obtain model characteristics
+INFO Fold 2 / 10:
+DEBUG Loading parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-2.csv"...
+INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-2.csv"
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+INFO Custom parameters (Fold 2):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+INFO Fitting model to 266 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+ERROR The learner does not support to obtain model characteristics
+INFO Fold 3 / 10:
+DEBUG Loading parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-3.csv"...
+INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-3.csv"
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+INFO Custom parameters (Fold 3):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+INFO Fitting model to 266 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+ERROR The learner does not support to obtain model characteristics
+INFO Fold 4 / 10:
+DEBUG Loading parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-4.csv"...
+INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-4.csv"
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+INFO Custom parameters (Fold 4):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+INFO Fitting model to 266 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+ERROR The learner does not support to obtain model characteristics
+INFO Fold 5 / 10:
+DEBUG Loading parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-5.csv"...
+INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-5.csv"
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+INFO Custom parameters (Fold 5):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+INFO Fitting model to 266 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+ERROR The learner does not support to obtain model characteristics
+INFO Fold 6 / 10:
+DEBUG Loading parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-6.csv"...
+INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-6.csv"
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+INFO Custom parameters (Fold 6):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+INFO Fitting model to 266 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+ERROR The learner does not support to obtain model characteristics
+INFO Fold 7 / 10:
+DEBUG Loading parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-7.csv"...
+INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-7.csv"
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+INFO Custom parameters (Fold 7):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+INFO Fitting model to 267 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+ERROR The learner does not support to obtain model characteristics
+INFO Fold 8 / 10:
+DEBUG Loading parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-8.csv"...
+INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-8.csv"
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+INFO Custom parameters (Fold 8):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+INFO Fitting model to 267 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+ERROR The learner does not support to obtain model characteristics
+INFO Fold 9 / 10:
+DEBUG Loading parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-9.csv"...
+INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-9.csv"
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+INFO Custom parameters (Fold 9):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+INFO Fitting model to 267 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+ERROR The learner does not support to obtain model characteristics
+INFO Fold 10 / 10:
+DEBUG Loading parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-10.csv"...
+INFO Successfully loaded parameters from file "python/subprojects/testbed/tests/res/in/parameters_fold-10.csv"
+INFO Successfully applied parameter setting: {'max_rules': '10', 'rule_induction': 'top-down-greedy{max_conditions=1}'}
+INFO Custom parameters (Fold 10):
+
+max_rules       10
+rule_induction  top-down-greedy{max_conditions=1}
+
+INFO Fitting model to 267 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+ERROR The learner does not support to obtain model characteristics
+INFO Successfully finished after <duration>
