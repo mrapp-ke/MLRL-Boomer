@@ -25,7 +25,7 @@ HOLDOUT_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
 class ClassificationCmdBuilder(CmdBuilder):
     """
-    A builder that allows to configure a command for running a rule learner.
+    A builder that allows to configure a command for applying a rule learning algorithm to a classification problem.
     """
 
     def __init__(self,
@@ -183,18 +183,15 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
                  dataset_binary: str = DATASET_ENRON,
                  dataset_nominal: str = DATASET_EMOTIONS_NOMINAL,
                  dataset_ordinal: str = DATASET_EMOTIONS_ORDINAL,
-                 dataset_single_label: str = DATASET_BREAST_CANCER,
+                 dataset_single_output: str = DATASET_BREAST_CANCER,
                  methodName='runTest'):
-        """
-        :param dataset_single_label: The name of the dataset that comes with a single label
-        """
         super().__init__(dataset_default=dataset_default,
                          dataset_numerical_sparse=dataset_numerical_sparse,
                          dataset_binary=dataset_binary,
                          dataset_nominal=dataset_nominal,
                          dataset_ordinal=dataset_ordinal,
+                         dataset_single_output=dataset_single_output,
                          methodName=methodName)
-        self.dataset_single_label = dataset_single_label
 
     @classmethod
     def setUpClass(cls):
@@ -202,15 +199,6 @@ class ClassificationIntegrationTests(IntegrationTests, ABC):
             raise SkipTest(cls.__name__ + ' is an abstract base class')
 
         super().setUpClass()
-
-    def test_single_label_classification(self):
-        """
-        Tests the evaluation of the rule learning algorithm when predicting binary labels for a single-label problem.
-        """
-        builder = self._create_cmd_builder(dataset=self.dataset_single_label) \
-            .prediction_type(PREDICTION_TYPE_BINARY) \
-            .print_evaluation()
-        builder.run_cmd('single-label-classification')
 
     def test_label_vectors_train_test(self):
         """
