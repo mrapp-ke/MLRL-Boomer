@@ -35,7 +35,7 @@ from mlrl.testbed.evaluation import OPTION_ACCURACY, OPTION_COVERAGE_ERROR, OPTI
     OPTION_MEDIAN_ABSOLUTE_ERROR, OPTION_MICRO_F1, OPTION_MICRO_JACCARD, OPTION_MICRO_PRECISION, OPTION_MICRO_RECALL, \
     OPTION_NORMALIZED_DISCOUNTED_CUMULATIVE_GAIN, OPTION_PRECISION, OPTION_PREDICTION_TIME, OPTION_RANK_LOSS, \
     OPTION_RECALL, OPTION_SUBSET_ACCURACY, OPTION_SUBSET_ZERO_ONE_LOSS, OPTION_TRAINING_TIME, OPTION_ZERO_ONE_LOSS, \
-    BinaryEvaluationWriter, EvaluationWriter, ProbabilityEvaluationWriter, ScoreEvaluationWriter
+    BinaryEvaluationWriter, EvaluationWriter, ProbabilityEvaluationWriter, RankingEvaluationWriter
 from mlrl.testbed.experiments import Evaluation, Experiment, GlobalEvaluation, IncrementalEvaluation
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, format_table
 from mlrl.testbed.info import get_package_info as get_testbed_package_info
@@ -872,7 +872,7 @@ class LearnerRunnable(Runnable, ABC):
         if len(sinks) == 0:
             return None
         if prediction_type == PredictionType.SCORES:
-            return ScoreEvaluationWriter(sinks)
+            return RankingEvaluationWriter(sinks)
         if prediction_type == PredictionType.PROBABILITIES:
             return ProbabilityEvaluationWriter(sinks)
         return BinaryEvaluationWriter(sinks)
