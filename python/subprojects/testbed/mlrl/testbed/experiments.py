@@ -23,6 +23,7 @@ from mlrl.testbed.output_writer import OutputWriter
 from mlrl.testbed.parameters import ParameterInput
 from mlrl.testbed.persistence import ModelPersistence
 from mlrl.testbed.prediction_scope import GlobalPrediction, IncrementalPrediction, PredictionScope, PredictionType
+from mlrl.testbed.problem_type import ProblemType
 
 
 class Evaluation(ABC):
@@ -235,6 +236,7 @@ class Experiment(DataSplitter.Callback):
             """
 
     def __init__(self,
+                 problem_type: ProblemType,
                  base_learner: SkLearnBaseEstimator,
                  learner_name: str,
                  data_splitter: DataSplitter,
@@ -248,6 +250,7 @@ class Experiment(DataSplitter.Callback):
                  fit_kwargs: Optional[Dict[str, Any]] = None,
                  predict_kwargs: Optional[Dict[str, Any]] = None):
         """
+        :param problem_type:                    The type of the machine learning problem
         :param base_learner:                    The machine learning algorithm to be used
         :param learner_name:                    The name of the machine learning algorithm
         :param data_splitter:                   The method to be used for splitting the available data into training and
@@ -266,6 +269,7 @@ class Experiment(DataSplitter.Callback):
         :param predict_kwargs:                  Optional keyword arguments to be passed to the learner when obtaining
                                                 predictions from a model
         """
+        self.problem_type = problem_type
         self.base_learner = base_learner
         self.learner_name = learner_name
         self.data_splitter = data_splitter
@@ -283,7 +287,8 @@ class Experiment(DataSplitter.Callback):
         """
         Runs the experiment.
         """
-        log.info('Starting experiment...')
+        log.info('Starting experiment using the ' + self.problem_type.value + ' algorithm "' + self.learner_name
+                 + '"...')
 
         # Run pre-execution hook, if necessary...
         if self.pre_execution_hook is not None:
