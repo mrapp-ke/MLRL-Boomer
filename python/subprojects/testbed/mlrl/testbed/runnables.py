@@ -494,10 +494,14 @@ class LearnerRunnable(Runnable, ABC):
 
     def __create_base_learner(self, problem_type: ProblemType, args) -> SkLearnBaseEstimator:
         if problem_type == ProblemType.CLASSIFICATION:
-            return self.create_classifier(args)
+            base_learner = self.create_classifier(args)
         if problem_type == ProblemType.REGRESSION:
-            return self.create_regressor(args)
-        raise ValueError('Unsupported type of machine learning problem: ' + str(problem_type))
+            base_learner = self.create_regressor(args)
+
+        if base_learner is not None:
+            return base_learner
+        raise RuntimeError('The machine learning algorithm "' + self.learner_name + '" does not support '
+                           + problem_type.value + ' problems')
 
     def __create_prediction_type(self, args) -> PredictionType:
         return PredictionType.parse(self.PARAM_PREDICTION_TYPE, args.prediction_type)
@@ -1115,10 +1119,16 @@ class RuleLearnerRunnable(LearnerRunnable):
 
     def __create_config_type_and_parameters(self, problem_type: ProblemType):
         if problem_type == ProblemType.CLASSIFICATION:
-            return self.classifier_config_type, self.classifier_parameters
+            config_type = self.classifier_config_type
+            parameters = self.classifier_parameters
         if problem_type == ProblemType.REGRESSION:
-            return self.regressor_config_type, self.regressor_parameters
-        raise ValueError('Unsupported type of machine learning problem: ' + str(problem_type))
+            config_type = self.regressor_config_type
+            parameters = self.regressor_parameters
+
+        if config_type is not None and parameters is not None:
+            return config_type, parameters
+        raise RuntimeError('The machine learning algorithm "' + self.learner_name + '" does not support '
+                           + problem_type.value + ' problems')
 
     def configure_problem_specific_arguments(self, parser: ArgumentParser, problem_type: ProblemType):
         super().configure_problem_specific_arguments(parser, problem_type)
