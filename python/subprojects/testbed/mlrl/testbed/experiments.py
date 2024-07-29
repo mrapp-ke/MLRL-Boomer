@@ -290,8 +290,7 @@ class Experiment(DataSplitter.Callback):
         """
         Runs the experiment.
         """
-        log.info('Starting experiment using the ' + self.problem_type.value + ' algorithm "' + self.learner_name
-                 + '"...')
+        log.info('Starting experiment using the %s algorithm "%s"...', self.problem_type.value, self.learner_name)
 
         # Run pre-execution hook, if necessary...
         if self.pre_execution_hook is not None:

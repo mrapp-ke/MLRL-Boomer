@@ -495,8 +495,10 @@ class LearnerRunnable(Runnable, ABC):
     def __create_base_learner(self, problem_type: ProblemType, args) -> SkLearnBaseEstimator:
         if problem_type == ProblemType.CLASSIFICATION:
             base_learner = self.create_classifier(args)
-        if problem_type == ProblemType.REGRESSION:
+        elif problem_type == ProblemType.REGRESSION:
             base_learner = self.create_regressor(args)
+        else:
+            base_learner = None
 
         if base_learner is not None:
             return base_learner
@@ -551,7 +553,15 @@ class LearnerRunnable(Runnable, ABC):
         problem_type = self.__create_problem_type(parser.parse_known_args()[0])
         self.configure_problem_specific_arguments(parser, problem_type)
 
+    # pylint: disable=unused-argument
     def configure_problem_specific_arguments(self, parser: ArgumentParser, problem_type: ProblemType):
+        """
+        May be overridden by subclasses in order to configure the command line arguments of the program, depending on
+        the type of machine learning problem to be solved.
+
+        :param parser:          An `ArgumentParser` that is used for parsing command line arguments
+        :param problem_type:    The type of the machine learning problem to be solved
+        """
         parser.add_argument(self.PARAM_RANDOM_STATE,
                             type=int,
                             default=None,
@@ -888,7 +898,7 @@ class LearnerRunnable(Runnable, ABC):
             return None
         if problem_type == ProblemType.REGRESSION:
             return RegressionEvaluationWriter(sinks)
-        if prediction_type == PredictionType.SCORES or prediction_type == PredictionType.PROBABILITIES:
+        if prediction_type in {PredictionType.SCORES, PredictionType.PROBABILITIES}:
             return RankingEvaluationWriter(sinks)
         return BinaryEvaluationWriter(sinks)
 
@@ -1121,9 +1131,12 @@ class RuleLearnerRunnable(LearnerRunnable):
         if problem_type == ProblemType.CLASSIFICATION:
             config_type = self.classifier_config_type
             parameters = self.classifier_parameters
-        if problem_type == ProblemType.REGRESSION:
+        elif problem_type == ProblemType.REGRESSION:
             config_type = self.regressor_config_type
             parameters = self.regressor_parameters
+        else:
+            config_type = None
+            parameters = None
 
         if config_type is not None and parameters is not None:
             return config_type, parameters
