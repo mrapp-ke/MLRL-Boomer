@@ -13,12 +13,9 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 1):
 
-Outputs                   6
-Output Density          100
-Output Sparsity           0
-Label Imbalance Ratio     1
-Label Cardinality         6
-Distinct Label Vectors   30
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 INFO Fold 2 / 10:
 INFO Fitting model to 266 training examples...
@@ -31,12 +28,9 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 2):
 
-Outputs                   6
-Output Density          100
-Output Sparsity           0
-Label Imbalance Ratio     1
-Label Cardinality         6
-Distinct Label Vectors   30
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 INFO Fold 3 / 10:
 INFO Fitting model to 266 training examples...
@@ -49,12 +43,9 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 3):
 
-Outputs                   6
-Output Density          100
-Output Sparsity           0
-Label Imbalance Ratio     1
-Label Cardinality         6
-Distinct Label Vectors   30
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 INFO Fold 4 / 10:
 INFO Fitting model to 266 training examples...
@@ -67,12 +58,9 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 4):
 
-Outputs                   6
-Output Density          100
-Output Sparsity           0
-Label Imbalance Ratio     1
-Label Cardinality         6
-Distinct Label Vectors   30
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 INFO Fold 5 / 10:
 INFO Fitting model to 266 training examples...
@@ -85,12 +73,9 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 5):
 
-Outputs                   6
-Output Density          100
-Output Sparsity           0
-Label Imbalance Ratio     1
-Label Cardinality         6
-Distinct Label Vectors   30
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 INFO Fold 6 / 10:
 INFO Fitting model to 266 training examples...
@@ -103,12 +88,9 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 6):
 
-Outputs                   6
-Output Density          100
-Output Sparsity           0
-Label Imbalance Ratio     1
-Label Cardinality         6
-Distinct Label Vectors   30
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 INFO Fold 7 / 10:
 INFO Fitting model to 267 training examples...
@@ -121,12 +103,9 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 7):
 
-Outputs                   6
-Output Density          100
-Output Sparsity           0
-Label Imbalance Ratio     1
-Label Cardinality         6
-Distinct Label Vectors   29
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 INFO Fold 8 / 10:
 INFO Fitting model to 267 training examples...
@@ -139,12 +118,9 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 8):
 
-Outputs                   6
-Output Density          100
-Output Sparsity           0
-Label Imbalance Ratio     1
-Label Cardinality         6
-Distinct Label Vectors   29
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 INFO Fold 9 / 10:
 INFO Fitting model to 267 training examples...
@@ -157,12 +133,9 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 9):
 
-Outputs                   6
-Output Density          100
-Output Sparsity           0
-Label Imbalance Ratio     1
-Label Cardinality         6
-Distinct Label Vectors   29
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 INFO Fold 10 / 10:
 INFO Fitting model to 267 training examples...
@@ -175,11 +148,8 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 10):
 
-Outputs                   6
-Output Density          100
-Output Sparsity           0
-Label Imbalance Ratio     1
-Label Cardinality         6
-Distinct Label Vectors   29
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 INFO Successfully finished after <duration>

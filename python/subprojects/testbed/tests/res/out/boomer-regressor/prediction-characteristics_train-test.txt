@@ -12,11 +12,8 @@ DEBUG A dense matrix is used to store the predicted scores
 INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data:
 
-Outputs                   6
-Output Density          100
-Output Sparsity           0
-Label Imbalance Ratio     1
-Label Cardinality         6
-Distinct Label Vectors   98
+Outputs            6
+Output Density   100
+Output Sparsity    0
 
 INFO Successfully finished after <duration>
