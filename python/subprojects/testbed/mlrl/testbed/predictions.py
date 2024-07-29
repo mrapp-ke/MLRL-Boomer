@@ -16,6 +16,7 @@ from mlrl.testbed.format import OPTION_DECIMALS, format_array
 from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
 from mlrl.testbed.output_writer import Formattable, OutputWriter
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+from mlrl.testbed.problem_type import ProblemType
 
 
 class PredictionWriter(OutputWriter):
@@ -67,8 +68,9 @@ class PredictionWriter(OutputWriter):
             super().__init__(options=options)
             self.output_dir = output_dir
 
-        def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
-                         prediction_scope: Optional[PredictionScope], output_data, **_):
+        # pylint: disable=unused-argument
+        def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
+                         data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data, **_):
             """
             See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
             """
@@ -87,8 +89,8 @@ class PredictionWriter(OutputWriter):
             save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
+                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         return PredictionWriter.Predictions(predictions=predictions, ground_truth=y)
