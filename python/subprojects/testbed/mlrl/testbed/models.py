@@ -15,7 +15,7 @@ from _io import StringIO
 
 from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBody, PartialHead, RuleModel, \
     RuleModelVisitor
-from mlrl.common.mixins import ClassifierMixin
+from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 from mlrl.common.options import Options
 
 from mlrl.testbed.data import MetaData
@@ -252,7 +252,7 @@ class RuleModelWriter(ModelWriter):
                               data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
-        if isinstance(learner, ClassifierMixin):
+        if isinstance(learner, (ClassifierMixin, RegressorMixin)):
             model = learner.model_
 
             if isinstance(model, RuleModel):
