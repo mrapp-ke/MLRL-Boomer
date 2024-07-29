@@ -21,6 +21,7 @@ from mlrl.testbed.data_splitting import CrossValidationOverall, DataSplit, DataT
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+from mlrl.testbed.problem_type import ProblemType
 
 OPTION_ENABLE_ALL = 'enable_all'
 
@@ -340,18 +341,20 @@ class EvaluationWriter(OutputWriter, ABC):
         def __init__(self, options: Options = Options()):
             super().__init__(title='Evaluation result', options=options)
 
-        def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
-                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+        def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
+                         data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data,
+                         **kwargs):
             """
             See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
             """
             fold = data_split.get_fold() if data_split.is_cross_validation_used() else 0
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold}}
-            super().write_output(meta_data, data_split, data_type, prediction_scope, output_data, **new_kwargs)
+            super().write_output(problem_type, meta_data, data_split, data_type, prediction_scope, output_data,
+                                 **new_kwargs)
 
             if data_split.is_cross_validation_used() and data_split.is_last_fold():
-                super().write_output(meta_data, CrossValidationOverall(data_split.get_num_folds()), data_type,
-                                     prediction_scope, output_data, **kwargs)
+                super().write_output(problem_type, meta_data, CrossValidationOverall(data_split.get_num_folds()),
+                                     data_type, prediction_scope, output_data, **kwargs)
 
     class CsvSink(OutputWriter.CsvSink):
         """
@@ -361,18 +364,20 @@ class EvaluationWriter(OutputWriter, ABC):
         def __init__(self, output_dir: str, options: Options = Options()):
             super().__init__(output_dir=output_dir, file_name='evaluation', options=options)
 
-        def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
-                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+        def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
+                         data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data,
+                         **kwargs):
             """
             See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
             """
             fold = data_split.get_fold() if data_split.is_cross_validation_used() else 0
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold}}
-            super().write_output(meta_data, data_split, data_type, prediction_scope, output_data, **new_kwargs)
+            super().write_output(problem_type, meta_data, data_split, data_type, prediction_scope, output_data,
+                                 **new_kwargs)
 
             if data_split.is_cross_validation_used() and data_split.is_last_fold():
-                super().write_output(meta_data, CrossValidationOverall(data_split.get_num_folds()), data_type,
-                                     prediction_scope, output_data, **kwargs)
+                super().write_output(problem_type, meta_data, CrossValidationOverall(data_split.get_num_folds()),
+                                     data_type, prediction_scope, output_data, **kwargs)
 
     def __init__(self, sinks: List[OutputWriter.Sink]):
         super().__init__(sinks)
@@ -392,8 +397,8 @@ class EvaluationWriter(OutputWriter, ABC):
         """
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
+                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         result = self.results[data_type] if data_type in self.results else EvaluationWriter.EvaluationResult()

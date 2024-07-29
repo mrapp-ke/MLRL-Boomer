@@ -21,6 +21,7 @@ from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.format import format_float, format_percentage, format_table
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+from mlrl.testbed.problem_type import ProblemType
 
 
 class ModelCharacteristicsWriter(OutputWriter, ABC):
@@ -344,8 +345,8 @@ class RuleModelCharacteristicsWriter(ModelCharacteristicsWriter):
                 self.num_neg_predictions.append(num_neg_predictions)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
+                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         if isinstance(learner, (ClassifierMixin, RegressorMixin)):
