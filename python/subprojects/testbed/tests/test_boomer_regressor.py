@@ -1,3 +1,6 @@
+"""
+Author: Michael Rapp (michael.rapp.ml@gmail.com)
+"""
 from os import path
 from typing import Any
 

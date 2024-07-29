@@ -144,7 +144,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
             """
             return self.incremental_predictor.apply_next(step_size)
 
-    class IncrementalPredictor(IncrementalPredictor):
+    class NonNativeIncrementalPredictor(IncrementalPredictor):
         """
         Allows to obtain predictions from a `RuleLearner` incrementally.
         """
@@ -268,7 +268,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
             if predictor.can_predict_incrementally():
                 return ClassificationRuleLearner.NativeIncrementalPredictor(
                     feature_matrix, predictor.create_incremental_predictor(max_rules))
-            return ClassificationRuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
+            return ClassificationRuleLearner.NonNativeIncrementalPredictor(feature_matrix, model, max_rules, predictor)
 
         return super()._predict_scores_incrementally(x, **kwargs)
 
@@ -355,7 +355,7 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
         log.debug('A dense matrix is used to store the feature values of the query examples')
         return CContiguousFeatureMatrix(x)
 
-    def __create_row_wise_output_matrix(self, y, **kwargs) -> Any:
+    def __create_row_wise_output_matrix(self, y) -> Any:
         """
         Must be implemented by subclasses in order to create a matrix that provides row-wise access to the ground truth
         of training examples.
@@ -428,7 +428,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
         def apply_next(self, step_size: int):
             return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
 
-    class IncrementalProbabilityPredictor(RuleLearner.IncrementalPredictor):
+    class NonNativeIncrementalProbabilityPredictor(RuleLearner.NonNativeIncrementalPredictor):
         """
         Allows to obtain probability estimates from a `ClassificationRuleLearner` incrementally.
         """
@@ -517,8 +517,8 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
             if predictor.can_predict_incrementally():
                 return ClassificationRuleLearner.NativeIncrementalProbabilityPredictor(
                     feature_matrix, predictor.create_incremental_predictor(max_rules))
-            return ClassificationRuleLearner.IncrementalProbabilityPredictor(feature_matrix, model, max_rules,
-                                                                             predictor)
+            return ClassificationRuleLearner.NonNativeIncrementalProbabilityPredictor(
+                feature_matrix, model, max_rules, predictor)
 
         return super().predict_proba_incrementally(x, **kwargs)
 
@@ -596,7 +596,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassif
             if predictor.can_predict_incrementally():
                 return ClassificationRuleLearner.NativeIncrementalPredictor(
                     feature_matrix, predictor.create_incremental_predictor(max_rules))
-            return ClassificationRuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
+            return ClassificationRuleLearner.NonNativeIncrementalPredictor(feature_matrix, model, max_rules, predictor)
 
         return super()._predict_binary_incrementally(x, **kwargs)
 
