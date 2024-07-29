@@ -13,8 +13,8 @@ from typing import Any, Dict, List, Optional
 from sklearn.base import BaseEstimator as SkLearnBaseEstimator, RegressorMixin as SkLearnRegressorMixin, clone
 
 from mlrl.common.arrays import is_sparse
-from mlrl.common.mixins import ClassifierMixin, IncrementalPredictionMixin, NominalFeatureSupportMixin, \
-    OrdinalFeatureSupportMixin
+from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, IncrementalRegressorMixin, \
+    NominalFeatureSupportMixin, OrdinalFeatureSupportMixin
 
 from mlrl.testbed.data import FeatureType, MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataSplitter, DataType
@@ -176,7 +176,7 @@ class IncrementalEvaluation(Evaluation):
 
     def predict_and_evaluate(self, meta_data: MetaData, data_split: DataSplit, data_type: DataType, train_time: float,
                              learner, x, y, **kwargs):
-        if not isinstance(learner, IncrementalPredictionMixin):
+        if not isinstance(learner, IncrementalClassifierMixin) and not isinstance(learner, IncrementalRegressorMixin):
             raise ValueError('Cannot obtain incremental predictions from a model of type ' + type(learner.__name__))
 
         predict_proba_function = learner.predict_proba_incrementally if callable(

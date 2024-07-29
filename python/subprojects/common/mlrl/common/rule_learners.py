@@ -28,8 +28,8 @@ from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.cython.validation import assert_greater_or_equal
 from mlrl.common.data_types import Float32, Uint8, Uint32
 from mlrl.common.format import format_enum_values
-from mlrl.common.mixins import ClassifierMixin, IncrementalPredictionMixin, NominalFeatureSupportMixin, \
-    OrdinalFeatureSupportMixin, RegressorMixin
+from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, IncrementalPredictor, \
+    IncrementalRegressorMixin, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, RegressorMixin
 
 KWARG_SPARSE_FEATURE_VALUE = 'sparse_feature_value'
 
@@ -106,13 +106,12 @@ class SparsePolicy(Enum):
                          + str(sparse_format) + '"')
 
 
-class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin,
-                  IncrementalPredictionMixin, ABC):
+class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, ABC):
     """
     A scikit-learn implementation of a rule learning algorithm.
     """
 
-    class NativeIncrementalPredictor(IncrementalPredictionMixin.IncrementalPredictor):
+    class NativeIncrementalPredictor(IncrementalPredictor):
         """
         Allows to obtain predictions from a `RuleLearner` incrementally by using its native support of this
         functionality.
@@ -129,23 +128,23 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
 
         def has_next(self) -> bool:
             """
-            See :func:`mlrl.common.mixins.IncrementalPredictionMixin.IncrementalPredictor.has_next`
+            See :func:`mlrl.common.mixins.IncrementalPredictor.has_next`
             """
             return self.incremental_predictor.has_next()
 
         def get_num_next(self) -> int:
             """
-            See :func:`mlrl.common.mixins.IncrementalPredictionMixin.IncrementalPredictor.get_num_next`
+            See :func:`mlrl.common.mixins.IncrementalPredictor.get_num_next`
             """
             return self.incremental_predictor.get_num_next()
 
         def apply_next(self, step_size: int):
             """
-            See :func:`mlrl.common.mixins.IncrementalPredictionMixin.IncrementalPredictor.apply_next`
+            See :func:`mlrl.common.mixins.IncrementalPredictor.apply_next`
             """
             return self.incremental_predictor.apply_next(step_size)
 
-    class IncrementalPredictor(IncrementalPredictionMixin.IncrementalPredictor):
+    class IncrementalPredictor(IncrementalPredictor):
         """
         Allows to obtain predictions from a `RuleLearner` incrementally.
         """
@@ -168,13 +167,13 @@ class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatu
 
         def get_num_next(self) -> int:
             """
-            See :func:`mlrl.common.mixins.IncrementalPredictionMixin.IncrementalPredictor.get_num_next`
+            See :func:`mlrl.common.mixins.IncrementalPredictor.get_num_next`
             """
             return self.num_total_rules - self.num_considered_rules
 
         def apply_next(self, step_size: int):
             """
-            See :func:`mlrl.common.mixins.IncrementalPredictionMixin.IncrementalPredictor.apply_next`
+            See :func:`mlrl.common.mixins.IncrementalPredictor.apply_next`
             """
             assert_greater_or_equal('step_size', step_size, 1)
             self.num_considered_rules = min(self.num_total_rules, self.num_considered_rules + step_size)
@@ -415,7 +414,7 @@ def convert_into_sklearn_compatible_probabilities(probabilities: np.ndarray) -> 
     return probabilities
 
 
-class ClassificationRuleLearner(RuleLearner, ClassifierMixin, ABC):
+class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassifierMixin, ABC):
     """
     A scikit-learn implementation of a rule learning algorithm that can be applied to classification problems.
     """
@@ -602,7 +601,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, ABC):
         return super()._predict_binary_incrementally(x, **kwargs)
 
 
-class RegressionRuleLearner(RuleLearner, RegressorMixin, ABC):
+class RegressionRuleLearner(RuleLearner, RegressorMixin, IncrementalRegressorMixin, ABC):
     """
     A scikit-learn implementation of a rule learning algorithm that can be applied to regression problems.
     """
