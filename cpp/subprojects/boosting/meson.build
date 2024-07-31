@@ -63,6 +63,7 @@ source_files = [
     'src/mlrl/boosting/rule_model_assemblage/default_rule_auto.cpp',
     'src/mlrl/boosting/sampling/partition_sampling_auto.cpp',
     'src/mlrl/boosting/statistics/quantization_no.cpp',
+    'src/mlrl/boosting/statistics/quantization_stochastic.cpp',
     'src/mlrl/boosting/statistics/statistic_format_auto.cpp',
     'src/mlrl/boosting/statistics/statistic_format_dense.cpp',
     'src/mlrl/boosting/statistics/statistic_format_sparse.cpp',
