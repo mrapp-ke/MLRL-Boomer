@@ -126,6 +126,21 @@ class L2RegularizationMixin(ABC):
         pass
              
              
+class NoQuantizationMixin(ABC):
+    """
+    Allows to configure a rule learner to not quantize statistics about the quality of predictions for the training
+    examples.
+    """
+
+    @abstractmethod
+    def use_no_quantization(self):
+        """
+        Configures the rule learner to not quantize statistics about the quality of predictions for the training
+        examples.
+        """
+        pass
+
+
 class CompleteHeadMixin(ABC):
     """
     Allows to configure a rule learner to induce rules with complete heads that predict for all available outputs.

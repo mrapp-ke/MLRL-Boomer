@@ -41,6 +41,13 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
         IConstantShrinkageConfig& useConstantShrinkagePostProcessor()
 
 
+    cdef cppclass INoQuantizationMixin:
+
+        # Functions:
+
+        void useNoQuantization()
+
+
     cdef cppclass INoL1RegularizationMixin:
 
         # Functions:

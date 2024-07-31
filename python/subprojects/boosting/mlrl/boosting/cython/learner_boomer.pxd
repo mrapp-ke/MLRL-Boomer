@@ -22,8 +22,8 @@ from mlrl.boosting.cython.learner cimport DdotFunction, DspmvFunction, DsysvFunc
     IAutomaticHeadMixin, IAutomaticParallelRuleRefinementMixin, IAutomaticParallelStatisticUpdateMixin, \
     ICompleteHeadMixin, IConstantShrinkageMixin, IDecomposableSquaredErrorLossMixin, IDynamicPartialHeadMixin, \
     IFixedPartialHeadMixin, IL1RegularizationMixin, IL2RegularizationMixin, INoL1RegularizationMixin, \
-    INoL2RegularizationMixin, INonDecomposableSquaredErrorLossMixin, IOutputWiseScorePredictorMixin, \
-    ISingleOutputHeadMixin
+    INoL2RegularizationMixin, INonDecomposableSquaredErrorLossMixin, INoQuantizationMixin, \
+    IOutputWiseScorePredictorMixin, ISingleOutputHeadMixin
 from mlrl.boosting.cython.learner_classification cimport IAutomaticBinaryPredictorMixin, IAutomaticDefaultRuleMixin, \
     IAutomaticLabelBinningMixin, IAutomaticPartitionSamplingMixin, IAutomaticProbabilityPredictorMixin, \
     IAutomaticStatisticsMixin, IDecomposableLogisticLossMixin, IDecomposableSquaredHingeLossMixin, \
@@ -47,6 +47,7 @@ cdef extern from "mlrl/boosting/learner_boomer_classifier.hpp" namespace "boosti
         IL1RegularizationMixin,
         INoL2RegularizationMixin,
         IL2RegularizationMixin,
+        INoQuantizationMixin,
         INoDefaultRuleMixin,
         IDefaultRuleMixin,
         IAutomaticDefaultRuleMixin,
@@ -144,6 +145,7 @@ cdef extern from "mlrl/boosting/learner_boomer_regressor.hpp" namespace "boostin
         IL1RegularizationMixin,
         INoL2RegularizationMixin,
         IL2RegularizationMixin,
+        INoQuantizationMixin,
         INoDefaultRuleMixin,
         IDefaultRuleMixin,
         IAutomaticDefaultRuleMixin,
