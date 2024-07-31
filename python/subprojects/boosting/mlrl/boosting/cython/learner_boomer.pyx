@@ -39,6 +39,7 @@ from mlrl.boosting.cython.prediction cimport ExampleWiseBinaryPredictorConfig, G
 from mlrl.boosting.cython.probability_calibration cimport IIsotonicJointProbabilityCalibratorConfig, \
     IIsotonicMarginalProbabilityCalibratorConfig, IsotonicJointProbabilityCalibratorConfig, \
     IsotonicMarginalProbabilityCalibratorConfig
+from mlrl.boosting.cython.quantization cimport IStochasticQuantizationConfig, StochasticQuantizationConfig
 from mlrl.boosting.cython.regularization cimport IManualRegularizationConfig, ManualRegularizationConfig
 
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, DefaultRuleMixin, \
@@ -61,7 +62,8 @@ from mlrl.boosting.cython.learner import AutomaticFeatureBinningMixin, Automatic
     AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, CompleteHeadMixin, \
     ConstantShrinkageMixin, DecomposableSquaredErrorLossMixin, DynamicPartialHeadMixin, FixedPartialHeadMixin, \
     L1RegularizationMixin, L2RegularizationMixin, NoL1RegularizationMixin, NoL2RegularizationMixin, \
-    NonDecomposableSquaredErrorLossMixin, NoQuantizationMixin, OutputWiseScorePredictorMixin, SingleOutputHeadMixin
+    NonDecomposableSquaredErrorLossMixin, NoQuantizationMixin, OutputWiseScorePredictorMixin, SingleOutputHeadMixin, \
+    StochasticQuantizationMixin
 from mlrl.boosting.cython.learner_classification import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
     AutomaticLabelBinningMixin, AutomaticPartitionSamplingMixin, AutomaticProbabilityPredictorMixin, \
     AutomaticStatisticsMixin, DecomposableLogisticLossMixin, DecomposableSquaredHingeLossMixin, DenseStatisticsMixin, \
@@ -84,6 +86,7 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
                                   NoL2RegularizationMixin,
                                   L2RegularizationMixin,
                                   NoQuantizationMixin,
+                                  StochasticQuantizationMixin,
                                   NoDefaultRuleMixin,
                                   DefaultRuleMixin,
                                   AutomaticDefaultRuleMixin,
@@ -466,6 +469,12 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
     def use_no_quantization(self):
         self.config_ptr.get().useNoQuantization()
 
+    def use_stochastic_quantization(self) -> StochasticQuantizationConfig:
+        cdef IStochasticQuantizationConfig* config_ptr = &self.config_ptr.get().useStochasticQuantization()
+        cdef StochasticQuantizationConfig config = StochasticQuantizationConfig.__new__(StochasticQuantizationConfig)
+        config.config_ptr = config_ptr
+        return config
+
     def use_non_decomposable_logistic_loss(self):
         self.config_ptr.get().useNonDecomposableLogisticLoss()
 
@@ -591,6 +600,7 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
                                  NoL2RegularizationMixin,
                                  L2RegularizationMixin,
                                  NoQuantizationMixin,
+                                 StochasticQuantizationMixin,
                                  NoDefaultRuleMixin,
                                  DefaultRuleMixin,
                                  AutomaticDefaultRuleMixin,
@@ -893,6 +903,12 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
 
     def use_no_quantization(self):
         self.config_ptr.get().useNoQuantization()
+
+    def use_stochastic_quantization(self) -> StochasticQuantizationConfig:
+        cdef IStochasticQuantizationConfig* config_ptr = &self.config_ptr.get().useStochasticQuantization()
+        cdef StochasticQuantizationConfig config = StochasticQuantizationConfig.__new__(StochasticQuantizationConfig)
+        config.config_ptr = config_ptr
+        return config
 
     def use_non_decomposable_squared_error_loss(self):
         self.config_ptr.get().useNonDecomposableSquaredErrorLoss()
