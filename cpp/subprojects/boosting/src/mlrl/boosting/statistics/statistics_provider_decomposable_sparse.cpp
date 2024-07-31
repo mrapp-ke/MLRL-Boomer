@@ -81,6 +81,8 @@ namespace boosting {
         public:
 
             /**
+             * @param quantizationPtr       An unique pointer to an object of type `IQuantization` that implements the
+             *                              method that should be used for calculating gradients and Hessians
              * @param lossPtr               An unique pointer to an object of template type `Loss` that implements the
              *                              loss function that should be used for calculating gradients and Hessians
              * @param evaluationMeasurePtr  An unique pointer to an object of template type `EvaluationMeasure` that
@@ -97,15 +99,16 @@ namespace boosting {
              *                              the currently predicted scores
              */
             SparseDecomposableStatistics(
-              std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
+              std::unique_ptr<IQuantization> quantizationPtr, std::unique_ptr<Loss> lossPtr,
+              std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
               const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory, const OutputMatrix& outputMatrix,
               std::unique_ptr<SparseDecomposableStatisticMatrix<statistic_type>> statisticViewPtr,
               std::unique_ptr<NumericSparseSetMatrix<statistic_type>> scoreMatrixPtr)
                 : AbstractDecomposableStatistics<OutputMatrix, SparseDecomposableStatisticMatrix<statistic_type>,
                                                  NumericSparseSetMatrix<statistic_type>, Loss, EvaluationMeasure,
                                                  ISparseDecomposableRuleEvaluationFactory>(
-                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
-                    std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
+                    std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
+                    ruleEvaluationFactory, outputMatrix, std::move(statisticViewPtr), std::move(scoreMatrixPtr)) {}
 
             /**
              * @see `IStatistics::createSubset`
@@ -319,13 +322,15 @@ namespace boosting {
 
     template<typename Loss, typename OutputMatrix, typename EvaluationMeasure, typename VectorMath>
     static inline std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> createStatistics(
-      std::unique_ptr<Loss> lossPtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
+      const IQuantizationFactory& quantizationFactory, std::unique_ptr<Loss> lossPtr,
+      std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
       const ISparseDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
       MultiThreadingSettings multiThreadingSettings, const OutputMatrix& outputMatrix,
       std::type_identity<VectorMath> vectorMath) {
         using statistic_type = Loss::statistic_type;
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
+        std::unique_ptr<IQuantization> quantizationPtr = quantizationFactory.create();
         std::unique_ptr<SparseDecomposableStatisticMatrix<statistic_type>> statisticMatrixPtr =
           std::make_unique<SparseDecomposableStatisticMatrix<statistic_type>>(numExamples, numOutputs);
         std::unique_ptr<NumericSparseSetMatrix<statistic_type>> scoreMatrixPtr =
@@ -346,19 +351,20 @@ namespace boosting {
         }
 
         return std::make_unique<SparseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure, VectorMath>>(
-          std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
-          std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
+          std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory,
+          outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
     }
 
     template<typename StatisticType, typename VectorMath>
     SparseDecomposableClassificationStatisticsProviderFactory<StatisticType, VectorMath>::
       SparseDecomposableClassificationStatisticsProviderFactory(
+        std::unique_ptr<IQuantizationFactory> quantizationFactoryPtr,
         std::unique_ptr<ISparseDecomposableClassificationLossFactory<StatisticType>> lossFactoryPtr,
         std::unique_ptr<ISparseEvaluationMeasureFactory<StatisticType>> evaluationMeasureFactoryPtr,
         std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr,
         std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr,
         MultiThreadingSettings multiThreadingSettings)
-        : lossFactoryPtr_(std::move(lossFactoryPtr)),
+        : quantizationFactoryPtr_(std::move(quantizationFactoryPtr)), lossFactoryPtr_(std::move(lossFactoryPtr)),
           evaluationMeasureFactoryPtr_(std::move(evaluationMeasureFactoryPtr)),
           regularRuleEvaluationFactoryPtr_(std::move(regularRuleEvaluationFactoryPtr)),
           pruningRuleEvaluationFactoryPtr_(std::move(pruningRuleEvaluationFactoryPtr)),
@@ -373,8 +379,9 @@ namespace boosting {
         std::unique_ptr<ISparseEvaluationMeasure<StatisticType>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createSparseEvaluationMeasure();
         std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> statisticsPtr =
-          createStatistics(std::move(lossPtr), std::move(evaluationMeasurePtr), *regularRuleEvaluationFactoryPtr_,
-                           multiThreadingSettings_, labelMatrix, std::type_identity<VectorMath> {});
+          createStatistics(*quantizationFactoryPtr_, std::move(lossPtr), std::move(evaluationMeasurePtr),
+                           *regularRuleEvaluationFactoryPtr_, multiThreadingSettings_, labelMatrix,
+                           std::type_identity<VectorMath> {});
         return std::make_unique<DecomposableStatisticsProvider<ISparseDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
@@ -388,8 +395,9 @@ namespace boosting {
         std::unique_ptr<ISparseEvaluationMeasure<StatisticType>> evaluationMeasurePtr =
           evaluationMeasureFactoryPtr_->createSparseEvaluationMeasure();
         std::unique_ptr<IDecomposableStatistics<ISparseDecomposableRuleEvaluationFactory>> statisticsPtr =
-          createStatistics(std::move(lossPtr), std::move(evaluationMeasurePtr), *regularRuleEvaluationFactoryPtr_,
-                           multiThreadingSettings_, labelMatrix, std::type_identity<VectorMath> {});
+          createStatistics(*quantizationFactoryPtr_, std::move(lossPtr), std::move(evaluationMeasurePtr),
+                           *regularRuleEvaluationFactoryPtr_, multiThreadingSettings_, labelMatrix,
+                           std::type_identity<VectorMath> {});
         return std::make_unique<DecomposableStatisticsProvider<ISparseDecomposableRuleEvaluationFactory>>(
           *regularRuleEvaluationFactoryPtr_, *pruningRuleEvaluationFactoryPtr_, std::move(statisticsPtr));
     }
