@@ -58,6 +58,12 @@ cdef extern from "mlrl/boosting/learner.hpp" namespace "boosting" nogil:
 
         void use64BitStatistics()
 
+    cdef cppclass INoQuantizationMixin:
+
+        # Functions:
+
+        void useNoQuantization()
+
     cdef cppclass INoL1RegularizationMixin:
 
         # Functions:

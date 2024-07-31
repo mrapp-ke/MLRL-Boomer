@@ -352,6 +352,25 @@ namespace boosting {
     };
 
     /**
+     * Defines an interface for all classes that allow to configure a rule learner to not quantize statistics about the
+     * quality of predictions for the training examples.
+     */
+    class MLRLBOOSTING_API INoQuantizationMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
+
+            virtual ~INoQuantizationMixin() override {}
+
+            /**
+             * Configures the rule learner to not quantize statistics about the quality of predictions for the training
+             * examples.
+             */
+            virtual void useNoQuantization() {
+                Property<IQuantizationConfig> property = this->getQuantizationConfig();
+                property.set(std::make_unique<NoQuantizationConfig>());
+            }
+    };
+
+    /**
      * Defines an interface for all classes that allow to configure a rule learner to not use L1 regularization.
      */
     class MLRLBOOSTING_API INoL1RegularizationMixin : public virtual IBoostedRuleLearnerConfig {
@@ -658,6 +677,7 @@ namespace boosting {
                                                       virtual public IFloat64StatisticsMixin,
                                                       virtual public INoL1RegularizationMixin,
                                                       virtual public INoL2RegularizationMixin,
+                                                      virtual public INoQuantizationMixin,
                                                       virtual public INoLabelBinningMixin {
         public:
 
@@ -672,6 +692,7 @@ namespace boosting {
                 this->use32BitStatistics();
                 this->useNoL1Regularization();
                 this->useNoL2Regularization();
+                this->useNoQuantization();
                 this->useNoLabelBinning();
             }
     };
