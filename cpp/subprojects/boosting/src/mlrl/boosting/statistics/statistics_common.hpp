@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/boosting/statistics/quantization.hpp"
 #include "mlrl/boosting/statistics/statistics.hpp"
 
 #include <memory>
@@ -470,6 +471,11 @@ namespace boosting {
         protected:
 
             /**
+             * An unique pointer to the method that should be used for quantizing gradients and Hessians.
+             */
+            std::unique_ptr<IQuantization> quantizationPtr_;
+
+            /**
              * An unique pointer to the state of the training process.
              */
             const std::unique_ptr<State> statePtr_;
@@ -489,6 +495,8 @@ namespace boosting {
         public:
 
             /**
+             * @param quantizationPtr       An unique pointer to an object of type `IQuantization` that implements the
+             *                              method that should be used for quantizing gradients and Hessians
              * @param statePtr              An unique pointer to an object of template type `State` that represents the
              *                              state of the training process and allows to update it
              * @param evaluationMeasurePtr  An unique pointer to an object of template type `EvaluationMeasure` that
@@ -498,9 +506,11 @@ namespace boosting {
              *                              allows to create instances of the class that should be used for calculating
              *                              the predictions of rules, as well as their overall quality
              */
-            AbstractStatistics(std::unique_ptr<State> statePtr, std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
+            AbstractStatistics(std::unique_ptr<IQuantization> quantizationPtr, std::unique_ptr<State> statePtr,
+                               std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
                                const RuleEvaluationFactory& ruleEvaluationFactory)
-                : statePtr_(std::move(statePtr)), evaluationMeasurePtr_(std::move(evaluationMeasurePtr)),
+                : quantizationPtr_(std::move(quantizationPtr)), statePtr_(std::move(statePtr)),
+                  evaluationMeasurePtr_(std::move(evaluationMeasurePtr)),
                   ruleEvaluationFactory_(&ruleEvaluationFactory) {}
 
             /**

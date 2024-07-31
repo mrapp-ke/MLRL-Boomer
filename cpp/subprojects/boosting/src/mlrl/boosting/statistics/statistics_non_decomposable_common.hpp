@@ -42,6 +42,8 @@ namespace boosting {
         public:
 
             /**
+             * @param quantizationPtr       An unique pointer to an object of type `IQuantization` that implements the
+             *                              method that should be used for quantizing gradients and Hessians
              * @param lossPtr               An unique pointer to an object of template type `Loss` that implements the
              *                              loss function that should be used for calculating gradients and Hessians
              * @param evaluationMeasurePtr  An unique pointer to an object of template type `EvaluationMeasure` that
@@ -58,7 +60,8 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of template type `ScoreMatrix` that stores
              *                              the currently predicted scores
              */
-            AbstractNonDecomposableStatistics(std::unique_ptr<Loss> lossPtr,
+            AbstractNonDecomposableStatistics(std::unique_ptr<IQuantization> quantizationPtr,
+                                              std::unique_ptr<Loss> lossPtr,
                                               std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
                                               const NonDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                                               const OutputMatrix& outputMatrix,
@@ -67,6 +70,7 @@ namespace boosting {
                 : AbstractStatistics<
                     NonDecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>,
                     EvaluationMeasure, NonDecomposableRuleEvaluationFactory>(
+                    std::move(quantizationPtr),
                     std::make_unique<
                       NonDecomposableBoostingStatisticsState<OutputMatrix, StatisticMatrix, ScoreMatrix, Loss>>(
                       outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr), std::move(lossPtr)),
