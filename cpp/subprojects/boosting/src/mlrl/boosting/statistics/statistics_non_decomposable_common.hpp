@@ -68,6 +68,8 @@ namespace boosting {
         public:
 
             /**
+             * @param quantizationPtr       An unique pointer to an object of type `IQuantization` that implements the
+             *                              method that should be used for quantizing gradients and Hessians
              * @param lossPtr               An unique pointer to an object of template type `LossFunction` that
              *                              implements the loss function that should be used for calculating gradients
              *                              and Hessians
@@ -85,7 +87,8 @@ namespace boosting {
              * @param scoreMatrixPtr        An unique pointer to an object of template type `ScoreMatrix` that stores
              *                              the currently predicted scores
              */
-            AbstractNonDecomposableStatistics(std::unique_ptr<LossFunction> lossPtr,
+            AbstractNonDecomposableStatistics(std::unique_ptr<IQuantization> quantizationPtr,
+                                              std::unique_ptr<LossFunction> lossPtr,
                                               std::unique_ptr<EvaluationMeasure> evaluationMeasurePtr,
                                               const NonDecomposableRuleEvaluationFactory& ruleEvaluationFactory,
                                               const OutputMatrix& outputMatrix,
@@ -93,8 +96,8 @@ namespace boosting {
                                               std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
                 : AbstractStatistics<OutputMatrix, StatisticVector, StatisticMatrix, ScoreMatrix, LossFunction,
                                      EvaluationMeasure, NonDecomposableRuleEvaluationFactory>(
-                    std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory, outputMatrix,
-                    std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
+                    std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
+                    ruleEvaluationFactory, outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 
             /**
              * @see `INonDecomposableStatistics::setRuleEvaluationFactory`
