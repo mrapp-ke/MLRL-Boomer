@@ -20,6 +20,8 @@
 #include "mlrl/boosting/rule_evaluation/regularization_no.hpp"
 #include "mlrl/boosting/rule_model_assemblage/default_rule_auto.hpp"
 #include "mlrl/boosting/sampling/partition_sampling_auto.hpp"
+#include "mlrl/boosting/statistics/quantization.hpp"
+#include "mlrl/boosting/statistics/quantization_no.hpp"
 #include "mlrl/boosting/statistics/statistic_format.hpp"
 #include "mlrl/boosting/statistics/statistic_format_auto.hpp"
 #include "mlrl/boosting/statistics/statistic_format_dense.hpp"
@@ -85,6 +87,15 @@ namespace boosting {
              *         configuration of the statistics
              */
             virtual SharedProperty<IRegressionStatisticsConfig> getRegressionStatisticsConfig() = 0;
+
+            /**
+             * Returns a `Property` that allows to access the `IQuantizationConfig` that stores the configuration of the
+             * method for quantizing statistics about the quality of predictions for the training examples.
+             *
+             * @return A `Property` that allows to access the `IQuantizationConfig` that stores the configuration of the
+             *         method for quantizing statistics about the quality of predictions for the training examples
+             */
+            virtual Property<IQuantizationConfig> getQuantizationConfig() = 0;
 
             /**
              * Returns a `Property` that allows to access the `IRegularizationConfig` that stores the configuration of
