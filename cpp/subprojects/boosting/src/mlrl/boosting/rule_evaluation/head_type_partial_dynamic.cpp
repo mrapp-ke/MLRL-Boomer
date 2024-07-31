@@ -11,6 +11,8 @@ namespace boosting {
     class PartialDynamicHeadPreset final : public IHeadConfig::IPreset<StatisticType> {
         private:
 
+            ReadableProperty<IQuantizationConfig> quantizationConfig_;
+
             ReadableProperty<ILabelBinningConfig> labelBinningConfig_;
 
             ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
@@ -21,11 +23,12 @@ namespace boosting {
 
         public:
 
-            PartialDynamicHeadPreset(ReadableProperty<ILabelBinningConfig> labelBinningConfig,
+            PartialDynamicHeadPreset(ReadableProperty<IQuantizationConfig> quantizationConfig,
+                                     ReadableProperty<ILabelBinningConfig> labelBinningConfig,
                                      ReadableProperty<IMultiThreadingConfig> multiThreadingConfig, float32 threshold,
                                      float32 exponent)
-                : labelBinningConfig_(labelBinningConfig), multiThreadingConfig_(multiThreadingConfig),
-                  threshold_(threshold), exponent_(exponent) {}
+                : quantizationConfig_(quantizationConfig), labelBinningConfig_(labelBinningConfig),
+                  multiThreadingConfig_(multiThreadingConfig), threshold_(threshold), exponent_(exponent) {}
 
             std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
@@ -34,6 +37,8 @@ namespace boosting {
               const override {
                 MultiThreadingSettings multiThreadingSettings =
                   multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs());
+                std::unique_ptr<IQuantizationFactory> quantizationFactoryPtr =
+                  quantizationConfig_.get().createQuantizationFactory();
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
@@ -43,7 +48,7 @@ namespace boosting {
                   labelBinningConfig_.get().createDecomposableDynamicPartialRuleEvaluationFactory(threshold_,
                                                                                                   exponent_);
                 return std::make_unique<DenseDecomposableClassificationStatisticsProviderFactory<StatisticType>>(
-                  std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+                  std::move(quantizationFactoryPtr), std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                   std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
             }
@@ -55,6 +60,8 @@ namespace boosting {
               const override {
                 MultiThreadingSettings multiThreadingSettings =
                   multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs());
+                std::unique_ptr<IQuantizationFactory> quantizationFactoryPtr =
+                  quantizationConfig_.get().createQuantizationFactory();
                 std::unique_ptr<ISparseDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createDecomposableDynamicPartialRuleEvaluationFactory(threshold_,
                                                                                                   exponent_);
@@ -62,7 +69,7 @@ namespace boosting {
                   labelBinningConfig_.get().createDecomposableDynamicPartialRuleEvaluationFactory(threshold_,
                                                                                                   exponent_);
                 return std::make_unique<SparseDecomposableClassificationStatisticsProviderFactory<StatisticType>>(
-                  std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+                  std::move(quantizationFactoryPtr), std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(regularRuleEvaluationFactoryPtr), std::move(pruningRuleEvaluationFactoryPtr),
                   multiThreadingSettings);
             }
@@ -74,6 +81,8 @@ namespace boosting {
               const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const override {
                 MultiThreadingSettings multiThreadingSettings =
                   multiThreadingConfig_.get().getSettings(featureMatrix, labelMatrix.getNumOutputs());
+                std::unique_ptr<IQuantizationFactory> quantizationFactoryPtr =
+                  quantizationConfig_.get().createQuantizationFactory();
                 std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blasFactory,
                                                                                                lapackFactory);
@@ -84,7 +93,7 @@ namespace boosting {
                   labelBinningConfig_.get().createNonDecomposableDynamicPartialRuleEvaluationFactory(
                     threshold_, exponent_, blasFactory, lapackFactory);
                 return std::make_unique<DenseNonDecomposableClassificationStatisticsProviderFactory<StatisticType>>(
-                  std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+                  std::move(quantizationFactoryPtr), std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                   std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
             }
@@ -96,6 +105,8 @@ namespace boosting {
               const override {
                 MultiThreadingSettings multiThreadingSettings =
                   multiThreadingConfig_.get().getSettings(featureMatrix, regressionMatrix.getNumOutputs());
+                std::unique_ptr<IQuantizationFactory> quantizationFactoryPtr =
+                  quantizationConfig_.get().createQuantizationFactory();
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createDecomposableCompleteRuleEvaluationFactory();
                 std::unique_ptr<IDecomposableRuleEvaluationFactory> regularRuleEvaluationFactoryPtr =
@@ -105,7 +116,7 @@ namespace boosting {
                   labelBinningConfig_.get().createDecomposableDynamicPartialRuleEvaluationFactory(threshold_,
                                                                                                   exponent_);
                 return std::make_unique<DenseDecomposableRegressionStatisticsProviderFactory<StatisticType>>(
-                  std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+                  std::move(quantizationFactoryPtr), std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                   std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
             }
@@ -117,6 +128,8 @@ namespace boosting {
               const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const override {
                 MultiThreadingSettings multiThreadingSettings =
                   multiThreadingConfig_.get().getSettings(featureMatrix, regressionMatrix.getNumOutputs());
+                std::unique_ptr<IQuantizationFactory> quantizationFactoryPtr =
+                  quantizationConfig_.get().createQuantizationFactory();
                 std::unique_ptr<INonDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr =
                   labelBinningConfig_.get().createNonDecomposableCompleteRuleEvaluationFactory(blasFactory,
                                                                                                lapackFactory);
@@ -127,16 +140,17 @@ namespace boosting {
                   labelBinningConfig_.get().createNonDecomposableDynamicPartialRuleEvaluationFactory(
                     threshold_, exponent_, blasFactory, lapackFactory);
                 return std::make_unique<DenseNonDecomposableRegressionStatisticsProviderFactory<StatisticType>>(
-                  std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
+                  std::move(quantizationFactoryPtr), std::move(lossFactoryPtr), std::move(evaluationMeasureFactoryPtr),
                   std::move(defaultRuleEvaluationFactoryPtr), std::move(regularRuleEvaluationFactoryPtr),
                   std::move(pruningRuleEvaluationFactoryPtr), multiThreadingSettings);
             }
     };
 
-    DynamicPartialHeadConfig::DynamicPartialHeadConfig(ReadableProperty<ILabelBinningConfig> labelBinningConfig,
+    DynamicPartialHeadConfig::DynamicPartialHeadConfig(ReadableProperty<IQuantizationConfig> quantizationConfig,
+                                                       ReadableProperty<ILabelBinningConfig> labelBinningConfig,
                                                        ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
-        : threshold_(0.02f), exponent_(2.0f), labelBinningConfig_(labelBinningConfig),
-          multiThreadingConfig_(multiThreadingConfig) {}
+        : threshold_(0.02f), exponent_(2.0f), quantizationConfig_(quantizationConfig),
+          labelBinningConfig_(labelBinningConfig), multiThreadingConfig_(multiThreadingConfig) {}
 
     float32 DynamicPartialHeadConfig::getThreshold() const {
         return threshold_;
@@ -160,13 +174,13 @@ namespace boosting {
     }
 
     std::unique_ptr<IHeadConfig::IPreset<float32>> DynamicPartialHeadConfig::create32BitPreset() const {
-        return std::make_unique<PartialDynamicHeadPreset<float32>>(labelBinningConfig_, multiThreadingConfig_,
-                                                                   threshold_, exponent_);
+        return std::make_unique<PartialDynamicHeadPreset<float32>>(quantizationConfig_, labelBinningConfig_,
+                                                                   multiThreadingConfig_, threshold_, exponent_);
     }
 
     std::unique_ptr<IHeadConfig::IPreset<float64>> DynamicPartialHeadConfig::create64BitPreset() const {
-        return std::make_unique<PartialDynamicHeadPreset<float64>>(labelBinningConfig_, multiThreadingConfig_,
-                                                                   threshold_, exponent_);
+        return std::make_unique<PartialDynamicHeadPreset<float64>>(quantizationConfig_, labelBinningConfig_,
+                                                                   multiThreadingConfig_, threshold_, exponent_);
     }
 
     bool DynamicPartialHeadConfig::isPartial() const {
