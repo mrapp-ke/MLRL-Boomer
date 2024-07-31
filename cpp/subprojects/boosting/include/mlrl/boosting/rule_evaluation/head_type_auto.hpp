@@ -6,6 +6,7 @@
 #include "mlrl/boosting/binning/label_binning.hpp"
 #include "mlrl/boosting/rule_evaluation/head_type.hpp"
 #include "mlrl/boosting/rule_evaluation/regularization.hpp"
+#include "mlrl/boosting/statistics/quantization.hpp"
 #include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/simd/simd.hpp"
 #include "mlrl/common/util/properties.hpp"
@@ -19,6 +20,8 @@ namespace boosting {
      */
     class AutomaticHeadConfig final : public IHeadConfig {
         private:
+
+            const ReadableProperty<IQuantizationConfig> quantizationConfig_;
 
             const ReadableProperty<ILossConfig> lossConfig_;
 
@@ -35,6 +38,9 @@ namespace boosting {
         public:
 
             /**
+             * @param quantizationConfig      A `ReadableProperty` that allows to access the `IQuantizationConfig` that
+             *                                stores the configuration of the method for quantizing gradients and
+             *                                Hessians
              * @param lossConfig              A `ReadableProperty` that allows to access the `ILossConfig` that stores
              *                                the configuration of the loss function
              * @param labelBinningConfig      A `ReadableProperty` that allows to access the `ILabelBinningConfig` that
@@ -49,7 +55,8 @@ namespace boosting {
              * @param l2RegularizationConfig  A `ReadableProperty` that allows to access the `IRegularizationConfig`
              *                                that stores the configuration of the L2 regularization
              */
-            AutomaticHeadConfig(ReadableProperty<ILossConfig> lossConfig,
+            AutomaticHeadConfig(ReadableProperty<IQuantizationConfig> quantizationConfig,
+                                ReadableProperty<ILossConfig> lossConfig,
                                 ReadableProperty<ILabelBinningConfig> labelBinningConfig,
                                 ReadableProperty<IMultiThreadingConfig> multiThreadingConfig,
                                 ReadableProperty<ISimdConfig> simdConfig,

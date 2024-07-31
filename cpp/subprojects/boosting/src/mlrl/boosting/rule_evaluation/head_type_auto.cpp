@@ -9,6 +9,8 @@ namespace boosting {
     class AutomaticHeadPreset final : public IHeadConfig::IPreset<StatisticType> {
         private:
 
+            ReadableProperty<IQuantizationConfig> quantizationConfig_;
+
             ReadableProperty<ILabelBinningConfig> labelBinningConfig_;
 
             ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
@@ -31,22 +33,23 @@ namespace boosting {
 
         public:
 
-            AutomaticHeadPreset(ReadableProperty<ILabelBinningConfig> labelBinningConfig,
+            AutomaticHeadPreset(ReadableProperty<IQuantizationConfig> quantizationConfig,
+                                ReadableProperty<ILabelBinningConfig> labelBinningConfig,
                                 ReadableProperty<IMultiThreadingConfig> multiThreadingConfig,
                                 ReadableProperty<ISimdConfig> simdConfig,
                                 ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
                                 ReadableProperty<IRegularizationConfig> l2RegularizationConfig)
-                : labelBinningConfig_(labelBinningConfig), multiThreadingConfig_(multiThreadingConfig),
-                  simdConfig_(simdConfig), l1RegularizationConfig_(l1RegularizationConfig),
-                  l2RegularizationConfig_(l2RegularizationConfig) {}
+                : quantizationConfig_(quantizationConfig), labelBinningConfig_(labelBinningConfig),
+                  multiThreadingConfig_(multiThreadingConfig), simdConfig_(simdConfig),
+                  l1RegularizationConfig_(l1RegularizationConfig), l2RegularizationConfig_(l2RegularizationConfig) {}
 
             std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
               std::unique_ptr<IDecomposableClassificationLossFactory<StatisticType>>& lossFactoryPtr,
               std::unique_ptr<IClassificationEvaluationMeasureFactory<StatisticType>>& evaluationMeasureFactoryPtr)
               const override {
-                CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, simdConfig_,
-                                              l1RegularizationConfig_, l2RegularizationConfig_);
+                CompleteHeadConfig headConfig(quantizationConfig_, labelBinningConfig_, multiThreadingConfig_,
+                                              simdConfig_, l1RegularizationConfig_, l2RegularizationConfig_);
                 return createPreset(*this, headConfig)
                   ->createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossFactoryPtr,
                                                                   evaluationMeasureFactoryPtr);
@@ -58,14 +61,14 @@ namespace boosting {
               std::unique_ptr<ISparseEvaluationMeasureFactory<StatisticType>>& evaluationMeasureFactoryPtr)
               const override {
                 if (labelMatrix.getNumOutputs() > 1) {
-                    SingleOutputHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, simdConfig_,
-                                                      l1RegularizationConfig_, l2RegularizationConfig_);
+                    SingleOutputHeadConfig headConfig(quantizationConfig_, labelBinningConfig_, multiThreadingConfig_,
+                                                      simdConfig_, l1RegularizationConfig_, l2RegularizationConfig_);
                     return createPreset(*this, headConfig)
                       ->createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossFactoryPtr,
                                                                       evaluationMeasureFactoryPtr);
                 } else {
-                    CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, simdConfig_,
-                                                  l1RegularizationConfig_, l2RegularizationConfig_);
+                    CompleteHeadConfig headConfig(quantizationConfig_, labelBinningConfig_, multiThreadingConfig_,
+                                                  simdConfig_, l1RegularizationConfig_, l2RegularizationConfig_);
                     return createPreset(*this, headConfig)
                       ->createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossFactoryPtr,
                                                                       evaluationMeasureFactoryPtr);
@@ -77,8 +80,8 @@ namespace boosting {
               std::unique_ptr<INonDecomposableClassificationLossFactory<StatisticType>>& lossFactoryPtr,
               std::unique_ptr<IClassificationEvaluationMeasureFactory<StatisticType>>& evaluationMeasureFactoryPtr,
               const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const override {
-                CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, simdConfig_,
-                                              l1RegularizationConfig_, l2RegularizationConfig_);
+                CompleteHeadConfig headConfig(quantizationConfig_, labelBinningConfig_, multiThreadingConfig_,
+                                              simdConfig_, l1RegularizationConfig_, l2RegularizationConfig_);
                 return createPreset(*this, headConfig)
                   ->createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossFactoryPtr,
                                                                   evaluationMeasureFactoryPtr, blasFactory,
@@ -90,8 +93,8 @@ namespace boosting {
               std::unique_ptr<IDecomposableRegressionLossFactory<StatisticType>>& lossFactoryPtr,
               std::unique_ptr<IRegressionEvaluationMeasureFactory<StatisticType>>& evaluationMeasureFactoryPtr)
               const override {
-                CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, simdConfig_,
-                                              l1RegularizationConfig_, l2RegularizationConfig_);
+                CompleteHeadConfig headConfig(quantizationConfig_, labelBinningConfig_, multiThreadingConfig_,
+                                              simdConfig_, l1RegularizationConfig_, l2RegularizationConfig_);
                 return createPreset(*this, headConfig)
                   ->createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, lossFactoryPtr,
                                                               evaluationMeasureFactoryPtr);
@@ -102,31 +105,34 @@ namespace boosting {
               std::unique_ptr<INonDecomposableRegressionLossFactory<StatisticType>>& lossFactoryPtr,
               std::unique_ptr<IRegressionEvaluationMeasureFactory<StatisticType>>& evaluationMeasureFactoryPtr,
               const BlasFactory& blasFactory, const LapackFactory& lapackFactory) const override {
-                CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, simdConfig_,
-                                              l1RegularizationConfig_, l2RegularizationConfig_);
+                CompleteHeadConfig headConfig(quantizationConfig_, labelBinningConfig_, multiThreadingConfig_,
+                                              simdConfig_, l1RegularizationConfig_, l2RegularizationConfig_);
                 return createPreset(*this, headConfig)
                   ->createRegressionStatisticsProviderFactory(featureMatrix, regressionMatrix, lossFactoryPtr,
                                                               evaluationMeasureFactoryPtr, blasFactory, lapackFactory);
             }
     };
 
-    AutomaticHeadConfig::AutomaticHeadConfig(ReadableProperty<ILossConfig> lossConfig,
+    AutomaticHeadConfig::AutomaticHeadConfig(ReadableProperty<IQuantizationConfig> quantizationConfig,
+                                             ReadableProperty<ILossConfig> lossConfig,
                                              ReadableProperty<ILabelBinningConfig> labelBinningConfig,
                                              ReadableProperty<IMultiThreadingConfig> multiThreadingConfig,
                                              ReadableProperty<ISimdConfig> simdConfig,
                                              ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
                                              ReadableProperty<IRegularizationConfig> l2RegularizationConfig)
-        : lossConfig_(lossConfig), labelBinningConfig_(labelBinningConfig), multiThreadingConfig_(multiThreadingConfig),
-          simdConfig_(simdConfig), l1RegularizationConfig_(l1RegularizationConfig),
-          l2RegularizationConfig_(l2RegularizationConfig) {}
+        : quantizationConfig_(quantizationConfig), lossConfig_(lossConfig), labelBinningConfig_(labelBinningConfig),
+          multiThreadingConfig_(multiThreadingConfig), simdConfig_(simdConfig),
+          l1RegularizationConfig_(l1RegularizationConfig), l2RegularizationConfig_(l2RegularizationConfig) {}
 
     std::unique_ptr<IHeadConfig::IPreset<float32>> AutomaticHeadConfig::create32BitPreset() const {
-        return std::make_unique<AutomaticHeadPreset<float32>>(labelBinningConfig_, multiThreadingConfig_, simdConfig_,
+        return std::make_unique<AutomaticHeadPreset<float32>>(quantizationConfig_, labelBinningConfig_,
+                                                              multiThreadingConfig_, simdConfig_,
                                                               l1RegularizationConfig_, l2RegularizationConfig_);
     }
 
     std::unique_ptr<IHeadConfig::IPreset<float64>> AutomaticHeadConfig::create64BitPreset() const {
-        return std::make_unique<AutomaticHeadPreset<float64>>(labelBinningConfig_, multiThreadingConfig_, simdConfig_,
+        return std::make_unique<AutomaticHeadPreset<float64>>(quantizationConfig_, labelBinningConfig_,
+                                                              multiThreadingConfig_, simdConfig_,
                                                               l1RegularizationConfig_, l2RegularizationConfig_);
     }
 
