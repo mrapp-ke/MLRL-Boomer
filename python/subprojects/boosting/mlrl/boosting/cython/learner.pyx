@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 
 from mlrl.boosting.cython.head_type import DynamicPartialHeadConfig, FixedPartialHeadConfig
 from mlrl.boosting.cython.post_processor import ConstantShrinkageConfig
+from mlrl.boosting.cython.quantization import StochasticQuantizationConfig
 from mlrl.boosting.cython.regularization import ManualRegularizationConfig
 
 
@@ -153,6 +154,21 @@ class NoQuantizationMixin(ABC):
         """
         Configures the rule learner to not quantize statistics about the quality of predictions for the training
         examples.
+        """
+
+
+class StochasticQuantizationMixin(ABC):
+    """
+    Allows to configure a rule learner to quantize statistics using a stochastic rounding strategy.
+    """
+
+    @abstractmethod
+    def use_stochastic_quantization(self) -> StochasticQuantizationConfig:
+        """
+        Configures the rule learner to quantize statistics about the quality of predictions for the training examples
+        using a stochastic rounding strategy.
+
+        :return: A `StochasticQuantizationConfig` that allows further configuration of the quantization method
         """
 
 

@@ -22,6 +22,7 @@
 #include "mlrl/boosting/sampling/partition_sampling_auto.hpp"
 #include "mlrl/boosting/statistics/quantization.hpp"
 #include "mlrl/boosting/statistics/quantization_no.hpp"
+#include "mlrl/boosting/statistics/quantization_stochastic.hpp"
 #include "mlrl/boosting/statistics/statistic_format.hpp"
 #include "mlrl/boosting/statistics/statistic_format_auto.hpp"
 #include "mlrl/boosting/statistics/statistic_format_dense.hpp"
@@ -367,6 +368,31 @@ namespace boosting {
             virtual void useNoQuantization() {
                 Property<IQuantizationConfig> property = this->getQuantizationConfig();
                 property.set(std::make_unique<NoQuantizationConfig>());
+            }
+    };
+
+    /**
+     * Defines an interface for all classes that allow to configure a rule learner to quantize statistics using a
+     * stochastic rounding strategy.
+     */
+    class MLRLBOOSTING_API IStochasticQuantizationMixin : public virtual IBoostedRuleLearnerConfig {
+        public:
+
+            virtual ~IStochasticQuantizationMixin() override {}
+
+            /**
+             * Configures the rule learner to quantize statistics about the quality of predictions for the training
+             * examples using a stochastic rounding strategy.
+             *
+             * @return A reference to an object of type `IStochasticQuantizationConfig` that allows further
+             *         configuration of the quantization method
+             */
+            virtual IStochasticQuantizationConfig& useStochasticQuantization() {
+                Property<IQuantizationConfig> property = this->getQuantizationConfig();
+                std::unique_ptr<StochasticQuantizationConfig> ptr = std::make_unique<StochasticQuantizationConfig>();
+                IStochasticQuantizationConfig& ref = *ptr;
+                property.set(std::move(ptr));
+                return ref;
             }
     };
 
