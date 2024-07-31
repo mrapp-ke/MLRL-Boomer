@@ -66,7 +66,7 @@ from mlrl.boosting.cython.learner import AutomaticFeatureBinningMixin, Automatic
     AutomaticParallelRuleRefinementMixin, AutomaticParallelStatisticUpdateMixin, CompleteHeadMixin, \
     ConstantShrinkageMixin, DecomposableSquaredErrorLossMixin, DynamicPartialHeadMixin, FixedPartialHeadMixin, \
     Float32StatisticsMixin, Float64StatisticsMixin, L1RegularizationMixin, L2RegularizationMixin, \
-    NoL1RegularizationMixin, NoL2RegularizationMixin, NonDecomposableSquaredErrorLossMixin, \
+    NoL1RegularizationMixin, NoL2RegularizationMixin, NonDecomposableSquaredErrorLossMixin, NoQuantizationMixin, \
     OutputWiseScorePredictorMixin, SingleOutputHeadMixin
 from mlrl.boosting.cython.learner_classification import AutomaticBinaryPredictorMixin, AutomaticDefaultRuleMixin, \
     AutomaticLabelBinningMixin, AutomaticPartitionSamplingMixin, AutomaticProbabilityPredictorMixin, \
@@ -91,6 +91,7 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
                                   L1RegularizationMixin,
                                   NoL2RegularizationMixin,
                                   L2RegularizationMixin,
+                                  NoQuantizationMixin,
                                   NoDefaultRuleMixin,
                                   DefaultRuleMixin,
                                   AutomaticDefaultRuleMixin,
@@ -552,6 +553,10 @@ cdef class BoomerClassifierConfig(RuleLearnerConfig,
         return config
 
     @override
+    def use_no_quantization(self):
+        self.config_ptr.get().useNoQuantization()
+
+    @override
     def use_non_decomposable_logistic_loss(self):
         self.config_ptr.get().useNonDecomposableLogisticLoss()
 
@@ -698,6 +703,7 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
                                  L1RegularizationMixin,
                                  NoL2RegularizationMixin,
                                  L2RegularizationMixin,
+                                 NoQuantizationMixin,
                                  NoDefaultRuleMixin,
                                  DefaultRuleMixin,
                                  AutomaticDefaultRuleMixin,
@@ -1069,6 +1075,10 @@ cdef class BoomerRegressorConfig(RuleLearnerConfig,
         cdef ManualRegularizationConfig config = ManualRegularizationConfig.__new__(ManualRegularizationConfig)
         config.config_ptr = config_ptr
         return config
+
+    @override
+    def use_no_quantization(self):
+        self.config_ptr.get().useNoQuantization()
 
     @override
     def use_non_decomposable_squared_error_loss(self):
