@@ -1,5 +1,5 @@
 breathe >= 4.35, < 4.36
-furo == 2024.5.6
+furo == 2024.7.18
 myst-parser >= 3.0, < 3.1
 sphinx >= 7.2, < 7.3
 sphinx-copybutton >= 0.5, < 0.6
