@@ -24,6 +24,14 @@ This release comes with several API changes. For an updated overview of the avai
 - The Python module or source file providing an integration with the machine learning algorithm to be used by the command line API must now be specified as described [here](https://mlrl-boomer.readthedocs.io/en/0.11.0/user_guide/testbed/arguments.html#basic-usage).
 - Several parameters and their values have been renamed to better reflect the scope of the project, which now includes multi-output regression problems. For an up-to-date list of parameters, please refer to the [documentation](https://mlrl-boomer.readthedocs.io/en/0.11.0/).
 
+## Version 0.10.1 (Aug. 1st, 2024)
+
+A bugfix release that comes with the following changes.
+
+- If the sparse value of a feature matrix is provided to the Python API, it is now properly taken into account when converting into a dense matrix.
+- The C++ code is now checked for common issues by applying `cpplint` via continuous integration.
+- The styling of YAML files is now verified by applying `yamlfix` via continuous integration.
+
 ## Version 0.10.0 (May 5th, 2024)
 
 A major update to the BOOMER algorithm that introduces the following changes.
