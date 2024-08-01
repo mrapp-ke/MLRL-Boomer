@@ -146,7 +146,7 @@ def check_dependency_versions(**_):
     outdated_dependencies = []
 
     for line in stdout_lines[i:]:
-        dependency = line.split()[0]
+        dependency = __normalize_dependency(line.split()[0])
 
         for module in ALL_MODULES:
             requirements_file = module.requirements_file
