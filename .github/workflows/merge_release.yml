@@ -37,7 +37,7 @@ jobs:
           git merge origin/main --strategy-option theirs -m "[Bot] Merge branch \"main\" into \"feature\"."
           git push origin feature
       - name: Merge into bugfix branch
-        if: ${{ github.event.release.target_commitish == 'main' }} || ${{ github.event.release.target_commitish == 'feature' }}
+        if: ${{ github.event.release.target_commitish == 'main' || github.event.release.target_commitish == 'feature' }}
         run: |
           git checkout -b bugfix origin/bugfix
           git merge origin/feature --strategy-option theirs -m "[Bot] Merge branch \"feature\" into \"bugfix\"."
