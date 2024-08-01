@@ -48,13 +48,14 @@ install_dir = install_root / meson.project_name() / 'mlrl' / meson.project_name(
 
 # Obtain information about the library
 lib_name = 'mlrl' + meson.project_name()
-version = common_project.get_variable('version')
+full_version = common_project.get_variable('full_version')
+library_version = common_project.get_variable('library_version')
 target_architecture = common_project.get_variable('target_architecture')
 
 # Set configuration options
 configuration = configuration_data()
 configuration.set('mlrlseco_library_name', 'lib' + lib_name)
-configuration.set('mlrlseco_library_version', version)
+configuration.set('mlrlseco_library_version', full_version)
 configuration.set('mlrlseco_target_architecture', target_architecture)
 configure_file(input : 'include/mlrl/seco/config.hpp.in', output : 'config.hpp', configuration: configuration)
 
@@ -67,7 +68,7 @@ if host_machine.system() == 'windows'
 endif
 
 seco_lib = library(lib_name, source_files, include_directories : include_dir, dependencies : dependencies,
-                   cpp_args : cpp_args, link_args : link_args, version : version, install : true,
+                   cpp_args : cpp_args, link_args : link_args, version : library_version, install : true,
                    install_dir : install_dir)
 
 # Test declaration
