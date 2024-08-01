@@ -13,8 +13,6 @@
 
 #include <memory>
 
-#include <memory>
-
 /**
  * Defines an interface for all classes that allow to optimize a rule-based model globally once it has been learned.
  */
