@@ -9,8 +9,6 @@
 
 #include <memory>
 
-#include <memory>
-
 namespace seco {
 
     /**
