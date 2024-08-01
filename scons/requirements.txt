@@ -5,11 +5,11 @@ cython >= 3.0, < 3.1
 isort >= 5.13, < 5.14
 mdformat >= 0.7, < 0.8
 mdformat-myst >= 0.1, < 0.2
-meson >= 1.4, < 1.5
+meson >= 1.5, < 1.6
 ninja >= 1.11, < 1.12
 pylint >= 3.2, < 3.3
 setuptools
-scons >= 4.7, < 4.8
+scons >= 4.8, < 4.9
 unittest-xml-reporting >= 3.2, < 3.3
 wheel >= 0.43, < 0.44
 yamlfix >= 1.16, < 1.17
