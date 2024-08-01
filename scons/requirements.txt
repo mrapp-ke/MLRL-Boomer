@@ -9,7 +9,7 @@ meson >= 1.5, < 1.6
 ninja >= 1.11, < 1.12
 pylint >= 3.2, < 3.3
 setuptools
-scons >= 4.7, < 4.8
+scons >= 4.8, < 4.9
 unittest-xml-reporting >= 3.2, < 3.3
 wheel >= 0.43, < 0.44
 yamlfix >= 1.16, < 1.17
