@@ -90,7 +90,7 @@ namespace boosting {
                 for (uint32 i = 0; i < numOutputs; i++) {
                     float64 score = valueIterator[i];
 
-                    if (calculateWeightedScore(score, minAbsScore, exponent_) > threshold) {
+                    if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
                         indexIterator[n] = outputIndexIterator[i];
                         valueIterator[n] = -gradientIterator[i];
                         n++;
