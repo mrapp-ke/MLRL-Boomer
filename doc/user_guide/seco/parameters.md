@@ -37,10 +37,15 @@ The following parameters may be used to control the behavior of the algorithm. T
 - `heuristic` (Default value = `'f-measure'`)
 
   - `'accuracy'` Uses the heuristic "Accuracy" for evaluating the quality of rules. It measures the fraction of correctly predicted labels among all labels, i.e., in contrast to the heuristic "Precision", examples that are not covered by a rule are taken into account as well.
+
   - `'precision'` Uses the metric "Precision" for evaluating the quality of rules. It measures the fraction of correctly predicted labels among all labels that are covered by a rule.
+
   - `'recall'` Uses the heuristic "Recall" for evaluating the quality of rules. It measures the fraction of uncovered labels among all labels for which a rule's prediction is (or would be) correct, i.e., for which the ground truth is equal to the rule's prediction.
+
   - `'laplace'` Uses the heuristic "Laplace" for evaluating the quality of rules. It implements a Laplace-corrected variant of the heuristic "Precision".
+
   - `'weighted-relative-accuracy'` Use the heuristic "Weighted Relative Accuracy" (WRA) for evaluating the quality of rules.
+
   - `'f-measure'` Uses the heuristic "F-Measure" for evaluating the quality of rules. It calculates as the (weighted) harmonic mean between the heuristics "Precision" and "Recall", where the parameter "beta" allows to trade off between both heuristics. If `beta = 1`, both heuristics are weighed equally. If `beta = 0`, this heuristic is equivalent to "Precision". As beta approaches infinity, this heuristic becomes equivalent to "Recall".
 
     - `beta` (Default value = `1.0`) The value of the parameter "beta".

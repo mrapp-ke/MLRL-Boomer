@@ -258,7 +258,7 @@ In a multi-label setting, the quality of binary predictions is assessed in terms
 
 ## Incremental Evaluation
 
-When evaluating the predictive performance of an [ensemble method](https://en.wikipedia.org/wiki/Ensemble_learning), i.e., models that consist of several weak predictors, also referred to as *ensemble members*, the command line API supports to evaluate these models incrementally. In particular, rule-based machine learning algorithms like the ones implemented by this project are often considered as ensemble methods, where each rule in a model can be viewed as a weak predictor.  Adding more rules to a model typically results in better predictive performance. However, adding too many rules may result in overfitting the training data and therefore achieving subpar performance on the test data. For analyzing such behavior, the arugment `--incremental-evaluation true` may be passed to the command line API:
+When evaluating the predictive performance of an [ensemble method](https://en.wikipedia.org/wiki/Ensemble_learning), i.e., models that consist of several weak predictors, also referred to as *ensemble members*, the command line API supports to evaluate these models incrementally. In particular, rule-based machine learning algorithms like the ones implemented by this project are often considered as ensemble methods, where each rule in a model can be viewed as a weak predictor. Adding more rules to a model typically results in better predictive performance. However, adding too many rules may result in overfitting the training data and therefore achieving subpar performance on the test data. For analyzing such behavior, the arugment `--incremental-evaluation true` may be passed to the command line API:
 
 ````{tab} BOOMER
    ```text
