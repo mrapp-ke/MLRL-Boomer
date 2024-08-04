@@ -71,7 +71,7 @@ namespace boosting {
                     float64 score = calculateOutputWiseScore(tuple.first, tuple.second, l1RegularizationWeight_,
                                                              l2RegularizationWeight_);
 
-                    if (calculateWeightedScore(score, minAbsScore, exponent_) > threshold) {
+                    if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
                         indexIterator[n] = outputIndexIterator[i];
                         valueIterator[n] = score;
                         quality += calculateOutputWiseQuality(score, tuple.first, tuple.second, l1RegularizationWeight_,
