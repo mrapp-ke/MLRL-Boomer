@@ -82,7 +82,7 @@ When using a {ref}`cross validation<cross-validation>`, a model is trained and e
 
 ## Predictions
 
-In cases where the {ref}`evaluation results<output-evaluation-results>` obtained via the arguments `--print-evaluation` or `--store-evaluation` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console, together with the ground truth labels, by proving the argument `--print-predictions`:
+In cases where the {ref}`evaluation results<output-evaluation-results>` obtained via the arguments `--print-evaluation` or `--store-evaluation` are not sufficient for a detailed analysis, it may be desired to directly inspect the predictions provided by the evaluated models. They can be printed on the console, together with the ground truth, by proving the argument `--print-predictions`:
 
 ````{tab} BOOMER
    ```text
@@ -102,7 +102,7 @@ In cases where the {ref}`evaluation results<output-evaluation-results>` obtained
    ```
 ````
 
-Alternatively, the argument `--store-predictions` can be used to save the predictions, as well as the ground truth labels, to [.arff](http://weka.wikispaces.com/ARFF) files:
+Alternatively, the argument `--store-predictions` can be used to save the predictions, as well as the ground truth, to [.arff](http://weka.wikispaces.com/ARFF) files:
 
 ````{tab} BOOMER
    ```text
@@ -211,8 +211,11 @@ When using a {ref}`cross validation<cross-validation>`, the data is split into s
 
 The statistics obtained via the previous commands include the following:
 
-- **The number of labels:** Indicates for how many lables predictions have been obtained.
-- **The sparsity of the prediction matrix:** The percentage of labels predicted as irrelevant for all examples.
+- **The number of outputs:** Indicates for how many outputs predictions have been obtained.
+- **The sparsity of the prediction matrix:** The percentage of elements in the prediction matrix that are zero.
+
+When dealing with classification problems, the following statistics are given as well:
+
 - **The average label cardinality:** The average number of labels predicted as relevant for each example.
 - **The number of distinct label vectors:** The number of unique label combinations predicted for different examples.
 - **The label imbalance ratio:** A measure for the imbalance between labels predicted as relevant and irrelevant, respectively. [^charte2013]
@@ -283,10 +286,13 @@ The output produced by the previous commands includes the following information 
 - **The number of examples contained in a dataset:** Besides the total number, the number of examples per type of feature (numerical, ordinal, or nominal) is also given.
 - **The sparsity of the feature matrix:** This statistic calculates as the percentage of elements in the feature matrix that are equal to zero.
 
-In addition, the following statistics regarding the labels in a dataset are provided:
+In addition, the following statistics regarding the ground truth in a dataset are provided:
 
-- **The total number of available labels**
-- **The sparsity of the label matrix:** This statistic calculates as the percentage of irrelevant labels among all examples.
+- **The total number of available outputs**
+- **The sparsity of the ground truth matrix:** This statistic calculates as the percentage of elements in the ground truth matrix that are zero.
+
+When dealing with classification problems, the following statistics are given as well:
+
 - **The average label cardinality:** The average number of relevant labels per example.
 - **The number of distinct label vectors:** The number of unique label combinations present in a dataset.
 - **The label imbalance ratio:** An important metric in multi-label classification measuring to which degree the distribution of relevant and irrelevant labels is unbalanced. [^charte2013]
@@ -295,7 +301,7 @@ In addition, the following statistics regarding the labels in a dataset are prov
 
 ## Label Vectors
 
-We refer to the unique labels combinations present for different examples in a dataset as label vectors. They can be printed by using the command line argument `--print-label-vectors`:
+We refer to the unique labels combinations present for different examples in a classification dataset as label vectors. They can be printed by using the command line argument `--print-label-vectors`:
 
 ````{tab} BOOMER
    ```text
@@ -484,23 +490,23 @@ A {ref}`cross validation<cross-validation>` results in multiple output files, ea
 - `rules_fold-4.csv`
 - `rules_fold-5.csv`
 
-Each rule in a model consists of a *body* and a *head* (we use the notation `body => head`). The body specifies to which examples a rule applies. It consist of one or several conditions that compare the feature values of given examples to thresholds derived from the training data. The head of a rule consists of the predictions it provides for individual labels. The predictions provided by a head may be restricted to a subset of the available labels or even a single one.
+Each rule in a model consists of a *body* and a *head* (we use the notation `body => head`). The body specifies to which examples a rule applies. It consist of one or several conditions that compare the feature values of given examples to thresholds derived from the training data. The head of a rule consists of the predictions it provides for individual outputs. The predictions provided by a head may be restricted to a subset of the available output or even a single one.
 
 If not configured otherwise, the first rule in a model is a *default rule*. Unlike the other rules, it does not contain any conditions in its body and therefore applies to any given example. As shown in the following example, it always provides predictions for all available labels:
 
 ```text
-{} => (label1 = -1.45, label2 = 1.45, label3 = -1.89, label4 = -1.94)
+{} => (output1 = -1.45, output2 = 1.45, output3 = -1.89, output4 = -1.94)
 ```
 
-The prediction for a particular label is positive, if most examples are associated with the respective label, otherwise it is negative. The ratio between the number of examples that are associated with a label, and those that are not, affects the absolute size of the default prediction. Large values indicate a stong preference towards predicting a particular label as relevant or irrelevant, depending on the sign.
+In regression models, the predictions of individual rules sum up to the regression scores predicted by the overall model. In classification models, a rule's prediction for a particular label is positive, if most examples it covers are associated with the respective label, otherwise it is negative. The ratio between the number of examples that are associated with a label, and those that are not, affects the absolute size of the default prediction. Large values indicate a stong preference towards predicting a particular label as relevant or irrelevant, depending on the sign.
 
 The remaining rules only apply to examples that satisfy all of the conditions in their bodies. For example, the body of the following rule consists of two conditions:
 
 ```text
-{feature1 <= 1.53 & feature2 > 7.935} => (label1 = -0.31)
+{feature1 <= 1.53 & feature2 > 7.935} => (output1 = -0.31)
 ```
 
-Examples that satisfy all conditions in a rule's body are said to be "covered" by the rule. If this is the case, the rule assigns a positive or negative value to one or several labels. Similar to the default rule, a positive value expresses a preference towards predicting the corresponding label as relevant. A negative value contributes towards predicting the label as irrelevant. The absolute size of the value corresponds to the weight of the rule's prediction. The larger the value, the stronger the impact of the respective rule, compared to the other ones.
+Examples that satisfy all conditions in a rule's body are said to be "covered" by the rule. If this is the case, the rule assigns a positive or negative value to one or several outputs. Similar to the default rule, the absolute size of the value corresponds to the weight of the rule's prediction. The larger the value, the stronger the impact of the respective rule, compared to the other ones.
 
 (output-probability-calibration-models)=
 
