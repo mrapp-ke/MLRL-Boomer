@@ -70,7 +70,7 @@ namespace boosting {
                     float64 score = calculateLabelWiseScore(tuple.first, tuple.second, l1RegularizationWeight_,
                                                             l2RegularizationWeight_);
 
-                    if (calculateWeightedScore(score, minAbsScore, exponent_) > threshold) {
+                    if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
                         indexIterator[n] = labelIndexIterator[i];
                         valueIterator[n] = score;
                         quality += calculateLabelWiseQuality(score, tuple.first, tuple.second, l1RegularizationWeight_,
