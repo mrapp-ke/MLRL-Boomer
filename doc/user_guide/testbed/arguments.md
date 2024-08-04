@@ -51,6 +51,15 @@ Optionally, the following arguments can be used to provide additional informatio
 
 - `--sparse-feature-value` (Default value = `0.0`) The value that should be used for sparse elements in the feature matrix. Does only have an effect if a sparse format is used for the representation of the feature matrix, depending on the parameter `--feature-format`.
 
+### Problem Type
+
+The command line API can conduct experiments for classification and regression problems. When dealing with the latter, the type of the machine learning problem must explicitly be specified via the following argument:
+
+- `--problem-type` (Default value = `classification`)
+
+  - `classification` The dataset is considered as a classification data set.
+  - `regression` The dataset is considered as a regression data set.
+
 ## Performance Evaluation
 
 > A more detailed description of the following arguments can be found {ref}`here<evaluation>`.
@@ -242,7 +251,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--print-predictions` (Default value = `false`)
 
-  - `true` The predictions for individual examples and labels are printed on the console.
+  - `true` The predictions for individual examples and outputs are printed on the console.
 
     - `decimals` (Default value = `2`) The number of decimals to be used for real-valued predictions or 0, if the number of decimals should not be restricted.
 
@@ -250,7 +259,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 - `--store-predictions` (Default value = `false`)
 
-  - `true` The predictions for individual examples and labels are written into .arff files. Does only have an effect if the parameter `--output-dir` is specified.
+  - `true` The predictions for individual examples and outputs are written into .arff files. Does only have an effect if the parameter `--output-dir` is specified.
 
     - `decimals` (Default value = `0`) The number of decimals to be used for real-valued predictions or 0, if the number of decimals should not be restricted.
 
@@ -266,12 +275,12 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
     - `decimals` (Default value = `2`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
-    - `outputs` (Default value = `true`) `true`, if the number of labels should be printed, `false` otherwise.
-    - `output_density` (Default value = `true`) `true`, if the label density should be printed, `false` otherwise.
-    - `output_sparsity` (Default value = `true`) `true`, if the label sparsity should be printed, `false` otherwise.
-    - `label_imbalance_ratio` (Default value = `true`) `true`, if the label imbalance ratio should be printed, `false` otherwise.
-    - `label_cardinality` (Default value = `true`) `true`, if the average label cardinality should be printed, `false` otherwise.
-    - `distinct_label_vectors` (Default value = `true`) `true`, if the number of distinct label vectors should be printed, `false` otherwise.
+    - `outputs` (Default value = `true`) `true`, if the number of outputs should be printed, `false` otherwise.
+    - `output_density` (Default value = `true`) `true`, if the density of the ground truth matrix should be printed, `false` otherwise.
+    - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the ground truth matrix should be printed, `false` otherwise.
+    - `label_imbalance_ratio` (Default value = `true`, *classification only*) `true`, if the label imbalance ratio should be printed, `false` otherwise.
+    - `label_cardinality` (Default value = `true`, *classification only*) `true`, if the average label cardinality should be printed, `false` otherwise.
+    - `distinct_label_vectors` (Default value = `true`, *classification only*) `true`, if the number of distinct label vectors should be printed, `false` otherwise.
 
   - `false` The characteristics of predictions are not printed on the console.
 
@@ -281,12 +290,12 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
     - `decimals` (Default value = `0`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
-    - `outputs` (Default value = `true`) `true`, if the number of labels should be stored, `false` otherwise.
-    - `output_density` (Default value = `true`) `true`, if the label density should be stored, `false` otherwise.
-    - `output_sparsity` (Default value = `true`) `true`, if the label sparsity should be stored, `false` otherwise.
-    - `label_imbalance_ratio` (Default value = `true`) `true`, if the label imbalance ratio should be stored, `false` otherwise.
-    - `label_cardinality` (Default value = `true`) `true`, if the average label cardinality should be stored, `false` otherwise.
-    - `distinct_label_vectors` (Default value = `true`) `true`, if the number of distinct label vectors should be stored, `false` otherwise.
+    - `outputs` (Default value = `true`) `true`, if the number of outputs should be stored, `false` otherwise.
+    - `output_density` (Default value = `true`) `true`, if the density of the ground truth matrix should be stored, `false` otherwise.
+    - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the ground truth matrix should be stored, `false` otherwise.
+    - `label_imbalance_ratio` (Default value = `true`, *classification only*) `true`, if the label imbalance ratio should be stored, `false` otherwise.
+    - `label_cardinality` (Default value = `true`, *classification only*) `true`, if the average label cardinality should be stored, `false` otherwise.
+    - `distinct_label_vectors` (Default value = `true`, *classification only*) `true`, if the number of distinct label vectors should be stored, `false` otherwise.
 
   - `false` The characteristics of predictions are not written into [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) files.
 
@@ -300,12 +309,12 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
     - `decimals` (Default value = `2`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
-    - `outputs` (Default value = `true`) `true`, if the number of labels should be printed, `false` otherwise.
-    - `output_density` (Default value = `true`) `true`, if the label density should be printed, `false` otherwise.
-    - `output_sparsity` (Default value = `true`) `true`, if the label sparsity should be printed, `false` otherwise.
-    - `label_imbalance_ratio` (Default value = `true`) `true`, if the label imbalance ratio should be printed, `false` otherwise.
-    - `label_cardinality` (Default value = `true`) `true`, if the average label cardinality should be printed, `false` otherwise.
-    - `distinct_label_vectors` (Default value = `true`) `true`, if the number of distinct label vectors should be printed, `false` otherwise.
+    - `outputs` (Default value = `true`) `true`, if the number of outputs should be printed, `false` otherwise.
+    - `output_density` (Default value = `true`) `true`, if the density of the ground truth matrix should be printed, `false` otherwise.
+    - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the ground truth matrix should be printed, `false` otherwise.
+    - `label_imbalance_ratio` (Default value = `true`, *classification only*) `true`, if the label imbalance ratio should be printed, `false` otherwise.
+    - `label_cardinality` (Default value = `true`, *classification only*) `true`, if the average label cardinality should be printed, `false` otherwise.
+    - `distinct_label_vectors` (Default value = `true`, *classification only*) `true`, if the number of distinct label vectors should be printed, `false` otherwise.
     - `examples` (Default value = `true`) `true`, if the number of examples should be printed, `false` otherwise.
     - `features` (Default value = `true`) `true`, if the number of features should be printed, `false` otherwise.
     - `numerical_features` (Default value = `true`) `true`, if the number of numerical features should be printed, `false` otherwise.
@@ -321,12 +330,12 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
     - `decimals` (Default value = `0`) The number of decimals to be used for characteristics or 0, if the number of decimals should not be restricted.
     - `percentage` (Default value = `true`) `true`, if the characteristics should be given as a percentage, if possible, `false` otherwise.
-    - `outputs` (Default value = `true`) `true`, if the number of labels should be stored, `false` otherwise.
-    - `output_density` (Default value = `true`) `true`, if the label density should be stored, `false` otherwise.
-    - `output_sparsity` (Default value = `true`) `true`, if the label sparsity should be stored, `false` otherwise.
-    - `label_imbalance_ratio` (Default value = `true`) `true`, if the label imbalance ratio should be stored, `false` otherwise.
-    - `label_cardinality` (Default value = `true`) `true`, if the average label cardinality should be stored, `false` otherwise.
-    - `distinct_label_vectors` (Default value = `true`) `true`, if the number of distinct label vectors should be stored, `false` otherwise.
+    - `outputs` (Default value = `true`) `true`, if the number of outputs should be stored, `false` otherwise.
+    - `output_density` (Default value = `true`) `true`, if the density of the ground truth matrix should be stored, `false` otherwise.
+    - `output_sparsity` (Default value = `true`) `true`, if the sparsity of the groun dtruth matrix should be stored, `false` otherwise.
+    - `label_imbalance_ratio` (Default value = `true`, *classification only*) `true`, if the label imbalance ratio should be stored, `false` otherwise.
+    - `label_cardinality` (Default value = `true`, *classification only*) `true`, if the average label cardinality should be stored, `false` otherwise.
+    - `distinct_label_vectors` (Default value = `true`, *classification only*) `true`, if the number of distinct label vectors should be stored, `false` otherwise.
     - `examples` (Default value = `true`) `true`, if the number of examples should be stored, `false` otherwise.
     - `features` (Default value = `true`) `true`, if the number of features should be stored, `false` otherwise.
     - `numerical_features` (Default value = `true`) `true`, if the number of numerical features should be stored, `false` otherwise.
@@ -340,7 +349,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
 ### Label Vectors
 
-- `--print-label-vectors` (Default value = `false`)
+- `--print-label-vectors` (Default value = `false`, *classification only*)
 
   - `true` The unique label vectors contained in the training data are printed on the console. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
@@ -348,7 +357,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
 
   - `false` The unique label vectors contained in the training data are not printed on the console.
 
-- `--store-label-vectors` (Default value = `false`)
+- `--store-label-vectors` (Default value = `false`, *classification only*)
 
   - `true` The unique label vectors contained in the training data are written into a [.csv](https://en.wikipedia.org/wiki/Comma-separated_values) file. Does only have an effect if the parameter `` `--output-dir `` is specified. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
@@ -379,7 +388,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The induced rules are printed on the console. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `print_feature_names` (Default value = `true`) `true`, if the names of features should be printed instead of their indices, `false` otherwise.
-    - `print_output_names` (Default value = `true`) `true`, if the names of labels should be printed instead of their indices, `false` otherwise.
+    - `print_output_names` (Default value = `true`) `true`, if the names of outputs should be printed instead of their indices, `false` otherwise.
     - `print_nominal_values` (Default value = `true`) `true`, if the names of nominal values should be printed instead of their numerical representation, `false` otherwise.
     - `print_bodies` (Default value = `true`) `true`, if the bodies of rules should be printed, `false` otherwise.
     - `print_heads` (Default value = `true`) `true`, if the heads of rules should be printed, `false` otherwise.
@@ -393,7 +402,7 @@ To provide valuable insights into the models learned by an algorithm, the predic
   - `true` The induced rules are written into a .txt file. Does only have an effect if the parameter `--output-dir` is specified. The following options may be specified using the {ref}`bracket notation<bracket-notation>`:
 
     - `print_feature_names` (Default value = `true`) `true`, if the names of features should be printed instead of their indices, `false` otherwise.
-    - `print_output_names` (Default value = `true`) `true`, if the names of labels should be printed instead of their indices, `false` otherwise.
+    - `print_output_names` (Default value = `true`) `true`, if the names of outputs should be printed instead of their indices, `false` otherwise.
     - `print_nominal_values` (Default value = `true`) `true`, if the names of nominal values should be printed instead of their numerical representation, `false` otherwise.
     - `print_bodies` (Default value = `true`) `true`, if the bodies of rules should be printed, `false` otherwise.
     - `print_heads` (Default value = `true`) `true`, if the heads of rules should be printed, `false` otherwise.

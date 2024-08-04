@@ -2,9 +2,9 @@
 
 # Overview of Parameters
 
-The behavior of the BOOMER algorithm can be controlled in a fine-grained manner via a large number of parameters. Values for these parameters may be provided as constructor arguments to the class `mlrl.boosting.BoomerClassifier` as shown in the section {ref}`usage`. They can also be used to configure the algorithm when using the {ref}`command line API<testbed>`.
+The behavior of the BOOMER algorithm can be controlled in a fine-grained manner via a large number of parameters. Values for these parameters may be provided as constructor arguments to the class {py:class}`mlrl.boosting.BoomerClassifier <mlrl.boosting.boosting_learners.BoomerClassifier>` or {py:class}`mlrl.boosting.BoomerRegressor <mlrl.boosting.boosting_learners.BoomerRegressor>` as shown in the section {ref}`usage`. They can also be used to configure the algorithm when using the {ref}`command line API<testbed>`.
 
-All of the parameters that are mentioned below are optional. If not specified manually, default settings that work well in most of the cases are used. In the following, an overview of all available parameters, as well as their default values, is provided.
+All parameters mentioned below are optional. If not specified manually, default settings that work well in most of the cases are used. In the following, an overview of all available parameters, as well as their default values, is provided. Unless stated otherwise, all parameters can be used for both, classification and regression problems.
 
 ## Data Format
 
@@ -18,13 +18,13 @@ The following parameters allow to specify the preferred format for representing 
 
 - `output_format` (Default value = `'auto'`)
 
-  - `'auto'` The most suitable format for representation of the label matrix is chosen automatically by estimating which representation requires less memory.
-  - `'dense'` Enforces that the label matrix is stored using a dense format.
-  - `'sparse'` Enforces that the label matrix is stored using a sparse format, if possible. Using a sparse format may reduce the memory footprint on some data sets.
+  - `'auto'` The most suitable format for representation of the ground truth matrix is chosen automatically by estimating which representation requires less memory.
+  - `'dense'` Enforces that the ground truth matrix is stored using a dense format.
+  - `'sparse'` Enforces that the ground truth matrix is stored using a sparse format, if possible. Using a sparse format may reduce the memory footprint on some data sets.
 
 - `prediction_format` (Default value = `'auto'`)
 
-  - `'auto'` The most suitable format for the representation of predictions is chosen automatically based on the sparsity of the ground truth labels supplied for training.
+  - `'auto'` The most suitable format for the representation of predictions is chosen automatically based on the sparsity of the ground truth matrix supplied for training.
   - `'dense'` Enforces that predictions are stored using a dense format.
   - `'sparse'` Enforces that predictions are stored using a sparse format, if supported. Using a sparse format may reduce the memory footprint on some data sets.
 
@@ -32,16 +32,16 @@ The following parameters allow to specify the preferred format for representing 
 
 The following parameters may be used to control the behavior of the algorithm. They should be carefully adjusted to the machine learning task one aims to solve in order to achieve optimal results in terms of training efficiency and predictive performance.
 
-### Heuristics
+### Training Objective
 
-- `loss` (Default value = `'logistic-decomposable'`)
+- `loss` (Default value = `'logistic-decomposable'` for classification or `'squared-error-decomposable'` for regression)
 
-  - `'logistic-decomposable'` A variant of the logistic loss function that is applied to each label individually.
-  - `'logistic-non-decomposable'` A variant of the logistic loss function that takes all labels into account at the same time.
-  - `'squared-error-decomposable'` A variant of the squared error loss that is applied to each label individually.
-  - `'squared-error-non-decomposable'` A variant of the squared error loss that takes all labels into account at the same time.
-  - `'squared-hinge-decomposable'` A variant of the squared hinge loss that is applied to each label individually.
-  - `'squared-hinge-non-decomposable'` A variant of the squared hinge loss that takes all labels into account at the same time.
+  - `'logistic-decomposable'` (*classification only*) A variant of the logistic loss function that is applied to each label individually.
+  - `'logistic-non-decomposable'` (*classification only*) A variant of the logistic loss function that takes all labels into account at the same time.
+  - `'squared-hinge-decomposable'` (*classification only*) A variant of the squared hinge loss that is applied to each label individually.
+  - `'squared-hinge-non-decomposable'` (*classification only*) A variant of the squared hinge loss that takes all labels into account at the same time.
+  - `'squared-error-decomposable'` A variant of the squared error loss that is applied to each output individually.
+  - `'squared-error-non-decomposable'` A variant of the squared error loss that takes all outputs into account at the same time.
 
 - `shrinkage` (Default value = `0.3`)
 
@@ -89,18 +89,18 @@ The following parameters may be used to control the behavior of the algorithm. T
 
   - `'single'` If all rules should predict for a single output.
 
-  - `'partial-fixed'` If all rules should predict for a predefined number of labels. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
+  - `'partial-fixed'` If all rules should predict for a predefined number of outputs. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
 
-    - `output_ratio` (Default value = `0.0`) A percentage that specifies for how many labels the rules should predict or 0, if the percentage should be calculated based on the average label cardinality. For example, a value of 0.05 means that the rules should predict for 5% of the available labels.
-    - `min_outputs` (Default value = `2`) The minimum number of labels for which the rules should predict. Must be at least 2.
-    - `max_outputs` (Default value = `0`) The maximum number of labels for which the rules should predict or 0, if the number of predictions should not be restricted.
+    - `output_ratio` (Default value = `0.0`) A percentage that specifies for how many outputs the rules should predict or 0, if the percentage should be set to a reasonable default value (the average label cardinality in case of classification problems). For example, a value of 0.05 means that the rules should predict for 5% of the available outputs.
+    - `min_outputs` (Default value = `2`) The minimum number of outputs for which the rules should predict. Must be at least 2.
+    - `max_outputs` (Default value = `0`) The maximum number of outputs for which the rules should predict or 0, if the number of predictions should not be restricted.
 
-  - `'partial-dynamic'` If all rules should predict for a subset of the available labels that is determined dynamically. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
+  - `'partial-dynamic'` If all rules should predict for a subset of the available outputs that is determined dynamically. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
 
-    - `threshold` (Default value = `0.02`) A threshold that affects for how many labels the rules should predict. A smaller threshold results in less labels being selected. A greater threshold results in more labels being selected. E.g., a threshold of 0.02 means that a rule will only predict for a label if the estimated predictive quality `q` for this particular label satisfies the inequality `q^exponent > q_best^exponent * (1 - 0.02)`, where `q_best` is the best quality among all labels. Must be in (0, 1)
-    - `exponent` (Default value = `2.0`) An exponent that is used to weigh the estimated predictive quality for individual labels. E.g., an exponent of 2 means that the estimated predictive quality `q` for a particular label is weighed as `q^2`. Must be at least 1.
+    - `threshold` (Default value = `0.02`) A threshold that affects for how many outputs the rules should predict. A smaller threshold results in less outputs being selected. A greater threshold results in more outputs being selected. E.g., a threshold of 0.02 means that a rule will only predict for an output if the estimated predictive quality `q` for this particular output satisfies the inequality `q^exponent > q_best^exponent * (1 - 0.02)`, where `q_best` is the best quality among all outputs. Must be in (0, 1)
+    - `exponent` (Default value = `2.0`) An exponent that is used to weigh the estimated predictive quality for individual outputs. E.g., an exponent of 2 means that the estimated predictive quality `q` for a particular output is weighed as `q^2`. Must be at least 1.
 
-  - `'complete'` If all rules should predict for all labels simultaneously, potentially capturing dependencies between the labels.
+  - `'complete'` If all rules should predict for all outputs simultaneously, potentially capturing dependencies between the outputs.
 
 ### Stopping Criteria
 
@@ -124,11 +124,11 @@ The following parameters may be used to control the behavior of the algorithm. T
 
     - `holdout_set_size` (Default value = `0.33`) The percentage of examples to be included in the holdout set. For example, a value of 0.3 corresponds to 30% of the available examples. Must be in (0, 1).
 
-  - `'stratified-output-wise'` The available examples are split into a training set and a holdout set according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
+  - `'stratified-output-wise'` (*classification only*) The available examples are split into a training set and a holdout set according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
 
     - `holdout_set_size` (Default value = `0.33`) The percentage of examples to be included in the holdout set. For example, a value of 0.3 corresponds to 30% of the available examples. Must be in (0, 1).
 
-  - `'stratified-example-wise'` The available examples are split into a training set and a holdout set according to a stratified sampling method, where distinct label vectors are treated as individual classes. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
+  - `'stratified-example-wise'` (*classification only*) The available examples are split into a training set and a holdout set according to a stratified sampling method, where distinct label vectors are treated as individual classes. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
 
     - `holdout_set_size` (Default value = `0.33`) The percentage of examples to be included in the holdout set. For example, a value of 0.3 corresponds to 30% of the available examples. Must be in (0, 1).
 
@@ -167,7 +167,7 @@ The following parameters may be used to control the behavior of the algorithm. T
   - `'true'` Each rule in a previously learned model is optimized by being relearned in the context of the other rules. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
 
     - `num_iterations` (Default value = `2`) The number of times each rule should be relearned. Must be at least 1.
-    - `refine_heads` (Default value = `'false'`) `'true'`, if the heads of rules may be refined when being relearned, `'false'`, if the relearned rules should be predict for the same labels as the original rules.
+    - `refine_heads` (Default value = `'false'`) `'true'`, if the heads of rules may be refined when being relearned, `'false'`, if the relearned rules should be predict for the same outputs as the original rules.
     - `resample_features` (Default value = `'true'`) `'true'`, if a new sample of the available features should be created whenever a new rule is refined, `'false'`, if the conditions of the new rule should use the same features as the original rule
 
 ### Sampling Techniques
@@ -207,11 +207,11 @@ The following parameters may be used to control the behavior of the algorithm. T
 
     - `sample_size` (Default value = `0.66`) The percentage of examples to be included in a sample. For example, a value of 0.6 corresponds to 60% of the available examples. Must be in (0, 1).
 
-  - `'stratified-output-wise'` The training examples to be considered for learning a new rule are selected according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
+  - `'stratified-output-wise'` (*classification only*) The training examples to be considered for learning a new rule are selected according to an iterative stratified sampling method that ensures that for each label the proportion of relevant and irrelevant examples is maintained. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
 
     - `sample_size` (Default value = `0.66`) The percentage of examples to be included in a sample. For example, a value of 0.6 corresponds to 60% of the available examples. Must be in (0, 1).
 
-  - `'stratified-example-wise'` The training examples to be considered for learning a new rule are selected according to stratified sampling method, where distinct label vectors are treated as individual classes. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
+  - `'stratified-example-wise'` (*classification only*) The training examples to be considered for learning a new rule are selected according to stratified sampling method, where distinct label vectors are treated as individual classes. The following options may be provided using the {ref}`bracket notation<bracket-notation>`:
 
     - `sample_size` (Default value = `0.66`) The percentage of examples to be included in a sample. For example, a value of 0.6 corresponds to 60% of the available examples. Must be in (0, 1).
 
@@ -233,7 +233,7 @@ The following parameters may be used to control the behavior of the algorithm. T
     - `min_bins` (Default value = `2`) The minimum number of bins. Must be at least 2.
     - `max_bins` (Default value = `0`) The maximum number of bins. Must be at least min_bins or 0, if the number of bins should not be restricted.
 
-- `label_binning` (Default Value = `'auto'`)
+- `label_binning` (Default Value = `'auto'`, *classification only*)
 
   - `'none'` No label binning is used.
 
@@ -247,13 +247,13 @@ The following parameters may be used to control the behavior of the algorithm. T
 
 - `statistic_format` (Default value `'auto'`)
 
-  - `'auto'` The most suitable format for the representation of gradients and Hessians is chosen automatically, depending on the loss function, the type of rule heads, the characteristics of the label matrix and whether a default rule is used or not.
+  - `'auto'` The most suitable format for the representation of gradients and Hessians is chosen automatically, depending on the loss function, the type of rule heads, the characteristics of the ground truth matrix and whether a default rule is used or not.
   - `'dense'` A dense format is used for the representation of gradients and Hessians.
   - `'sparse'` A sparse format is used for the representation of gradients and Hessians, if supported by the loss function.
 
 ### Probability Calibration
 
-- `marginal_probability_calibration` (Default value = `'none'`)
+- `marginal_probability_calibration` (Default value = `'none'`, *classification only*)
 
   - `'none'` Marginal probabilities are not calibrated.
 
@@ -261,7 +261,7 @@ The following parameters may be used to control the behavior of the algorithm. T
 
     - `'use_holdout_set'` (Default value = `'true'`) `'true'`, if the calibration model should be fit to the examples in the holdout set, if available, `'false'`, if the training set should be used instead.
 
-- `joint_probability_calibration` (Default value = `'none'`)
+- `joint_probability_calibration` (Default value = `'none'`, *classification only*)
 
   - `'none'` Joint probabilities are not calibrated.
 
@@ -271,7 +271,7 @@ The following parameters may be used to control the behavior of the algorithm. T
 
 ### Prediction
 
-- `binary_predictor` (Default value = `'auto'`)
+- `binary_predictor` (Default value = `'auto'`, *classification only*)
 
   - `'auto'` The most suitable strategy for predicting binary labels is chosen automatically, depending on the loss function.
 
@@ -289,7 +289,7 @@ The following parameters may be used to control the behavior of the algorithm. T
 
     - `use_probability_calibration` (Default value = `'true'`) `'true'`, if a model for the calibration of probabilities should be used, if available, `'false'` otherwise.
 
-- `probability_predictor` (Default value = `'auto'`)
+- `probability_predictor` (Default value = `'auto'`, *classification only*)
 
   - `'auto'` The most suitable strategy for predicting probability estimates is chosen automatically, depending on the loss function.
 

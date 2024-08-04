@@ -204,7 +204,7 @@ We refer to real-valued predictions, which may be positive or negative, as *scor
    ```
 ````
 
-For evaluating the quality of scores, [multi-label ranking measures](https://scikit-learn.org/stable/modules/model_evaluation.html#multilabel-ranking-metrics) provided by the [scikit-learn](https://scikit-learn.org) framework are used.
+For evaluating the quality of scores, [regression metrics](https://scikit-learn.org/stable/modules/model_evaluation.html#regression-metrics) provided by the [scikit-learn](https://scikit-learn.org) framework are used. In addition, when dealing with classification problems, [ranking measures](https://scikit-learn.org/stable/modules/model_evaluation.html#multilabel-ranking-metrics) are used.
 
 (probability-estimates)=
 
@@ -230,7 +230,7 @@ Probability estimates are given as real values between zero and one. In the cont
    ```
 ````
 
-Similar to the evaluation of {ref}`scores<scores>`, the command line API relies on [multi-label ranking measures](https://scikit-learn.org/stable/modules/model_evaluation.html#multilabel-ranking-metrics), as implemented by the [scikit-learn](https://scikit-learn.org) framework, for evaluating probability estimates.
+The command line API relies on [ranking measures](https://scikit-learn.org/stable/modules/model_evaluation.html#multilabel-ranking-metrics), as implemented by the [scikit-learn](https://scikit-learn.org) framework, for evaluating probability estimates.
 
 ### Binary Labels
 
