@@ -50,7 +50,7 @@ namespace boosting {
                 for (uint32 i = 0; i < numLabels; i++) {
                     float64 score = criteria[i];
 
-                    if (calculateWeightedScore(score, minAbsScore, exponent_) > threshold) {
+                    if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
                         indexIterator[n] = labelIndexIterator[i];
                         criteria[n] = score;
                         n++;

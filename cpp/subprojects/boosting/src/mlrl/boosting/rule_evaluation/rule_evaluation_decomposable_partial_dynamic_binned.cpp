@@ -47,7 +47,7 @@ namespace boosting {
                     float64 score = calculateOutputWiseScore(tuple.first, tuple.second, l1RegularizationWeight,
                                                              l2RegularizationWeight);
 
-                    if (calculateWeightedScore(score, minAbsScore, exponent_) > threshold) {
+                    if (calculateWeightedScore(score, minAbsScore, exponent_) >= threshold) {
                         indexIterator[n] = labelIndexIterator[i];
                         criteria[n] = score;
                         n++;
