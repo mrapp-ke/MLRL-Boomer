@@ -1,8 +1,3 @@
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
 #include "mlrl/common/input/feature_matrix_csc.hpp"
 
 #include "mlrl/common/data/view_matrix_csc.hpp"
@@ -54,7 +49,3 @@ std::unique_ptr<ICscFeatureMatrix> createCscFeatureMatrix(const float32* values,
                                                           uint32 numRows, uint32 numCols, float32 sparseValue) {
     return std::make_unique<CscFeatureMatrix>(values, indices, indptr, numRows, numCols, sparseValue);
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif

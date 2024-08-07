@@ -13,9 +13,9 @@ namespace seco {
 
     /**
      * Allows to create instances of the class `IStatisticsProvider` that provide access to an object of type
-     * `IDecomposableStatistics`, which uses dense data structures to store the statistics.
+     * `IDecomposableStatistics` using dense data structures for storing the statistics.
      */
-    class DenseDecomposableStatisticsProviderFactory final : public IStatisticsProviderFactory {
+    class DenseDecomposableStatisticsProviderFactory final : public IClassificationStatisticsProviderFactory {
         private:
 
             const std::unique_ptr<IDecomposableRuleEvaluationFactory> defaultRuleEvaluationFactoryPtr_;
@@ -46,12 +46,12 @@ namespace seco {
               std::unique_ptr<IDecomposableRuleEvaluationFactory> pruningRuleEvaluationFactoryPtr);
 
             /**
-             * @see `IStatisticsProviderFactory::create`
+             * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const CContiguousView<const uint8>& labelMatrix) const override;
 
             /**
-             * @see `IStatisticsProviderFactory::create`
+             * @see `IClassificationStatisticsProviderFactory::create`
              */
             std::unique_ptr<IStatisticsProvider> create(const BinaryCsrView& labelMatrix) const override;
     };

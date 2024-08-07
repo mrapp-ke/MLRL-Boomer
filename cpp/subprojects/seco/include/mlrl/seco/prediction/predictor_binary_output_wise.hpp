@@ -25,11 +25,11 @@ namespace seco {
         public:
 
             /**
-             * @param multiThreadingConfigGetter A `ReadableProperty` that allows to access the `IMultiThreadingConfig`
-             *                                   that stores the configuration of the multi-threading behavior that
-             *                                   should be used to predict for several query examples in parallel
+             * @param multiThreadingConfig A `ReadableProperty` that allows to access the `IMultiThreadingConfig` that
+             *                             stores the configuration of the multi-threading behavior that should be used
+             *                             to predict for several query examples in parallel
              */
-            OutputWiseBinaryPredictorConfig(ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter);
+            OutputWiseBinaryPredictorConfig(ReadableProperty<IMultiThreadingConfig> multiThreadingConfig);
 
             /**
              * @see `IPredictorConfig::createPredictorFactory`

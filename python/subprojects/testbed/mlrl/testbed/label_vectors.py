@@ -20,6 +20,7 @@ from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.format import format_table
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+from mlrl.testbed.problem_type import ProblemType
 
 OPTION_SPARSE = 'sparse'
 
@@ -124,8 +125,8 @@ class LabelVectorWriter(OutputWriter):
             super().__init__(output_dir=output_dir, file_name='label_vectors', options=options)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
+                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         return LabelVectorWriter.LabelVectors(num_labels=y.shape[1], y=y)
@@ -154,8 +155,8 @@ class LabelVectorSetWriter(LabelVectorWriter):
             """
             self.label_vectors.unique_label_vectors.append((label_vector, frequency))
 
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
+                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         if isinstance(learner, ClassificationRuleLearner):
@@ -166,5 +167,5 @@ class LabelVectorSetWriter(LabelVectorWriter):
                 output_space_info.visit(visitor)
                 return visitor.label_vectors
 
-        return super()._generate_output_data(meta_data, x, y, data_split, learner, data_type, prediction_type,
-                                             prediction_scope, predictions, train_time, predict_time)
+        return super()._generate_output_data(problem_type, meta_data, x, y, data_split, learner, data_type,
+                                             prediction_type, prediction_scope, predictions, train_time, predict_time)

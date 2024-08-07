@@ -162,7 +162,7 @@ class PruningHeuristicParameter(NominalParameter):
             conf.set_m(options.get_float(OPTION_M, conf.get_m()))
 
 
-SECO_RULE_LEARNER_PARAMETERS = RULE_LEARNER_PARAMETERS | {
+SECO_CLASSIFIER_PARAMETERS = RULE_LEARNER_PARAMETERS | {
     FeatureBinningParameter(),
     HeadTypeParameter(),
     LiftFunctionParameter(),

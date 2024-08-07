@@ -1,6 +1,6 @@
 #include "mlrl/boosting/losses/loss_non_decomposable_squared_hinge.hpp"
 
-#include "mlrl/common/iterator/binary_forward_iterator.hpp"
+#include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
 #include "mlrl/common/util/math.hpp"
 
 namespace boosting {
@@ -225,10 +225,10 @@ namespace boosting {
     }
 
     /**
-     * An implementation of the type `INonDecomposableLoss` that implements a multivariate variant of the squared hinge
-     * loss that is non-decomposable.
+     * An implementation of the type `INonDecomposableClassificationLoss` that implements a multivariate variant of the
+     * squared hinge loss that is non-decomposable.
      */
-    class NonDecomposableSquaredHingeLoss final : public INonDecomposableLoss {
+    class NonDecomposableSquaredHingeLoss final : public INonDecomposableClassificationLoss {
         public:
 
             virtual void updateDecomposableStatistics(uint32 exampleIndex,
@@ -258,8 +258,8 @@ namespace boosting {
                                                       CompleteIndexVector::const_iterator indicesBegin,
                                                       CompleteIndexVector::const_iterator indicesEnd,
                                                       CContiguousView<Tuple<float64>>& statisticView) const override {
-                auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
-                                                                  labelMatrix.indices_cend(exampleIndex));
+                auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
+                                                                       labelMatrix.indices_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
                                                        statisticView.values_begin(exampleIndex), labelMatrix.numCols);
             }
@@ -269,8 +269,8 @@ namespace boosting {
                                                       PartialIndexVector::const_iterator indicesBegin,
                                                       PartialIndexVector::const_iterator indicesEnd,
                                                       CContiguousView<Tuple<float64>>& statisticView) const override {
-                auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
-                                                                  labelMatrix.indices_cend(exampleIndex));
+                auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
+                                                                       labelMatrix.indices_cend(exampleIndex));
                 updateDecomposableStatisticsInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator,
                                                        statisticView.values_begin(exampleIndex), labelMatrix.numCols);
             }
@@ -287,15 +287,15 @@ namespace boosting {
             void updateNonDecomposableStatistics(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                                                  const CContiguousView<float64>& scoreMatrix,
                                                  DenseNonDecomposableStatisticView& statisticView) const override {
-                auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
-                                                                  labelMatrix.indices_cend(exampleIndex));
+                auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
+                                                                       labelMatrix.indices_cend(exampleIndex));
                 updateNonDecomposableStatisticsInternally(
                   scoreMatrix.values_cbegin(exampleIndex), labelIterator, statisticView.gradients_begin(exampleIndex),
                   statisticView.hessians_begin(exampleIndex), labelMatrix.numCols);
             }
 
             /**
-             * @see `IEvaluationMeasure::evaluate`
+             * @see `IClassificationEvaluationMeasure::evaluate`
              */
             float64 evaluate(uint32 exampleIndex, const CContiguousView<const uint8>& labelMatrix,
                              const CContiguousView<float64>& scoreMatrix) const override {
@@ -304,12 +304,12 @@ namespace boosting {
             }
 
             /**
-             * @see `IEvaluationMeasure::evaluate`
+             * @see `IClassificationEvaluationMeasure::evaluate`
              */
             float64 evaluate(uint32 exampleIndex, const BinaryCsrView& labelMatrix,
                              const CContiguousView<float64>& scoreMatrix) const override {
-                auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
-                                                                  labelMatrix.indices_cend(exampleIndex));
+                auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
+                                                                       labelMatrix.indices_cend(exampleIndex));
                 return evaluateInternally(scoreMatrix.values_cbegin(exampleIndex), labelIterator, labelMatrix.numCols);
             }
 
@@ -320,31 +320,44 @@ namespace boosting {
                                     View<float64>::const_iterator scoresBegin,
                                     View<float64>::const_iterator scoresEnd) const override {
                 uint32 numLabels = scoresEnd - scoresBegin;
-                auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
+                auto labelIterator = createBinarySparseForwardIterator(labelVector.cbegin(), labelVector.cend());
                 return evaluateInternally(scoresBegin, labelIterator, numLabels);
             }
     };
 
     /**
-     * Allows to create instances of the type `INonDecomposableLoss` that implement a multivariate variant of the
-     * squared hinge loss that is non-decomposable.
+     * Allows to create instances of the type `INonDecomposableClassificationLoss` that implement a multivariate variant
+     * of the squared hinge loss that is non-decomposable.
      */
-    class NonDecomposableSquaredHingeLossFactory final : public INonDecomposableLossFactory {
+    class NonDecomposableSquaredHingeLossFactory final : public INonDecomposableClassificationLossFactory {
         public:
 
-            std::unique_ptr<INonDecomposableLoss> createNonDecomposableLoss() const override {
+            std::unique_ptr<INonDecomposableClassificationLoss> createNonDecomposableClassificationLoss()
+              const override {
                 return std::make_unique<NonDecomposableSquaredHingeLoss>();
+            }
+
+            std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override {
+                return this->createNonDecomposableClassificationLoss();
+            }
+
+            std::unique_ptr<IClassificationEvaluationMeasure> createClassificationEvaluationMeasure() const override {
+                return this->createNonDecomposableClassificationLoss();
             }
     };
 
     NonDecomposableSquaredHingeLossConfig::NonDecomposableSquaredHingeLossConfig(
-      ReadableProperty<IHeadConfig> headConfigGetter)
-        : headConfig_(headConfigGetter) {}
+      ReadableProperty<IHeadConfig> headConfig)
+        : headConfig_(headConfig) {}
 
-    std::unique_ptr<IStatisticsProviderFactory> NonDecomposableSquaredHingeLossConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-      const Lapack& lapack, bool preferSparseStatistics) const {
-        return headConfig_.get().createStatisticsProviderFactory(featureMatrix, labelMatrix, *this, blas, lapack);
+    std::unique_ptr<IClassificationStatisticsProviderFactory>
+      NonDecomposableSquaredHingeLossConfig::createClassificationStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+        const Lapack& lapack, bool preferSparseStatistics) const {
+        return headConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, *this, blas,
+                                                                               lapack);
     }
 
     std::unique_ptr<IMarginalProbabilityFunctionFactory>
@@ -361,8 +374,8 @@ namespace boosting {
         return 0.5;
     }
 
-    std::unique_ptr<INonDecomposableLossFactory>
-      NonDecomposableSquaredHingeLossConfig::createNonDecomposableLossFactory() const {
+    std::unique_ptr<INonDecomposableClassificationLossFactory>
+      NonDecomposableSquaredHingeLossConfig::createNonDecomposableClassificationLossFactory() const {
         return std::make_unique<NonDecomposableSquaredHingeLossFactory>();
     }
 

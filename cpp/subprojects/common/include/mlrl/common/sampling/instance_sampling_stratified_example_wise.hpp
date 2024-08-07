@@ -39,7 +39,7 @@ class MLRLCOMMON_API IExampleWiseStratifiedInstanceSamplingConfig {
  * Allows to configure a method for selecting a subset of the available training examples using stratification, where
  * distinct label vectors are treated as individual classes.
  */
-class ExampleWiseStratifiedInstanceSamplingConfig final : public IInstanceSamplingConfig,
+class ExampleWiseStratifiedInstanceSamplingConfig final : public IClassificationInstanceSamplingConfig,
                                                           public IExampleWiseStratifiedInstanceSamplingConfig {
     private:
 
@@ -53,5 +53,6 @@ class ExampleWiseStratifiedInstanceSamplingConfig final : public IInstanceSampli
 
         IExampleWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize) override;
 
-        std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const override;
+        std::unique_ptr<IClassificationInstanceSamplingFactory> createClassificationInstanceSamplingFactory()
+          const override;
 };

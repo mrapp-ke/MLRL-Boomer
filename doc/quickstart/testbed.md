@@ -14,7 +14,11 @@ As an alternative to using algorithms provided by this project in your own Pytho
 The command line API can also be used to conduct experiments with any machine learning algorithm of your choice. All that is needed for this are few lines of Python code as described {ref}`here<runnables>`.
 ```
 
-In the following, a minimal working example of how to use the command line API for applying the BOOMER algorithm, or the SeCO algorithm, to a particular dataset is shown:
+Depending on the capabilities of an algorithm, the command line API supports both, classification and regression problems. In the following, we provide examples for both scenarios.
+
+### Classification Problems
+
+The following example illustrates use the command line API for applying the BOOMER algorithm, or the SeCO algorithm, to a particular classification dataset:
 
 ````{tab} BOOMER
    ```text
@@ -39,12 +43,25 @@ Both arguments that are included in the above command are mandatory:
 
 The program expects the data set files to be provided in the [Mulan format](http://mulan.sourceforge.net/format.html). It requires two files to be present in the specified directory:
 
-1. An [.arff](http://weka.wikispaces.com/ARFF) file that specifies the feature values and ground truth labels of the training examples.
-2. An .xml file that specifies the names of the labels.
+1. An [.arff](http://weka.wikispaces.com/ARFF) file that specifies the feature values and ground truth of the training examples.
+2. An .xml file that specifies the names of the outputs.
 
 The Mulan dataset format is commonly used for benchmark datasets that allow to compare the performance of different machine learning approaches in empirical studies. A collection of publicly available benchmark datasets is available [here](https://github.com/mrapp-ke/Boomer-Datasets).
 
-If an .xml file is not provided, the program tries to retrieve the number of labels from the `@relation` declaration that is contained in the .arff file, as it is intended by the [MEKA project's dataset format](https://waikato.github.io/meka/datasets/). According to the MEKA format, the number of labels may be specified by including the substring "-C L" in the `@relation` name, where "L" is the number of leading features in the dataset that should be treated as labels.
+If an .xml file is not provided, the program tries to parse the number of outputs from the `@relation` declaration that is contained in the .arff file, as it is intended by the [MEKA project's dataset format](https://waikato.github.io/meka/datasets/). According to the MEKA format, the number of outputs may be specified by including the substring "-C L" in the `@relation` name, where "L" is the number of leading features in the dataset that should be treated as outputs.
+
+### Regression Problems
+
+In addition to classification problems, the BOOMER algorithm can also be used for solving regression problems. As shown below, the argument `--problem-type` instructs the command line API to consider the given dataset as a regression dataset:
+
+```text
+testbed mlrl.boosting \
+    --data-dir /path/to/datasets/ \
+    --dataset dataset-name \
+    --problem-type regression
+```
+
+The semantic of the mandatory arguments `--data-dir` and `--dataset` is the same as for classification problems.
 
 ## Optional Arguments
 

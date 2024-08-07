@@ -13,7 +13,7 @@ from sklearn import metrics
 from sklearn.utils.multiclass import is_multilabel
 
 from mlrl.common.arrays import enforce_dense
-from mlrl.common.data_types import Uint8
+from mlrl.common.data_types import Float32, Uint8
 from mlrl.common.options import Options
 
 from mlrl.testbed.data import MetaData
@@ -21,6 +21,7 @@ from mlrl.testbed.data_splitting import CrossValidationOverall, DataSplit, DataT
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+from mlrl.testbed.problem_type import ProblemType
 
 OPTION_ENABLE_ALL = 'enable_all'
 
@@ -340,18 +341,20 @@ class EvaluationWriter(OutputWriter, ABC):
         def __init__(self, options: Options = Options()):
             super().__init__(title='Evaluation result', options=options)
 
-        def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
-                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+        def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
+                         data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data,
+                         **kwargs):
             """
             See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
             """
             fold = data_split.get_fold() if data_split.is_cross_validation_used() else 0
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold}}
-            super().write_output(meta_data, data_split, data_type, prediction_scope, output_data, **new_kwargs)
+            super().write_output(problem_type, meta_data, data_split, data_type, prediction_scope, output_data,
+                                 **new_kwargs)
 
             if data_split.is_cross_validation_used() and data_split.is_last_fold():
-                super().write_output(meta_data, CrossValidationOverall(data_split.get_num_folds()), data_type,
-                                     prediction_scope, output_data, **kwargs)
+                super().write_output(problem_type, meta_data, CrossValidationOverall(data_split.get_num_folds()),
+                                     data_type, prediction_scope, output_data, **kwargs)
 
     class CsvSink(OutputWriter.CsvSink):
         """
@@ -361,18 +364,20 @@ class EvaluationWriter(OutputWriter, ABC):
         def __init__(self, output_dir: str, options: Options = Options()):
             super().__init__(output_dir=output_dir, file_name='evaluation', options=options)
 
-        def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
-                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+        def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
+                         data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data,
+                         **kwargs):
             """
             See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
             """
             fold = data_split.get_fold() if data_split.is_cross_validation_used() else 0
             new_kwargs = {**kwargs, **{EvaluationWriter.KWARG_FOLD: fold}}
-            super().write_output(meta_data, data_split, data_type, prediction_scope, output_data, **new_kwargs)
+            super().write_output(problem_type, meta_data, data_split, data_type, prediction_scope, output_data,
+                                 **new_kwargs)
 
             if data_split.is_cross_validation_used() and data_split.is_last_fold():
-                super().write_output(meta_data, CrossValidationOverall(data_split.get_num_folds()), data_type,
-                                     prediction_scope, output_data, **kwargs)
+                super().write_output(problem_type, meta_data, CrossValidationOverall(data_split.get_num_folds()),
+                                     data_type, prediction_scope, output_data, **kwargs)
 
     def __init__(self, sinks: List[OutputWriter.Sink]):
         super().__init__(sinks)
@@ -392,8 +397,8 @@ class EvaluationWriter(OutputWriter, ABC):
         """
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
+                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         result = self.results[data_type] if data_type in self.results else EvaluationWriter.EvaluationResult()
@@ -436,9 +441,33 @@ class BinaryEvaluationWriter(EvaluationWriter):
                 result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
 
 
-class ScoreEvaluationWriter(EvaluationWriter):
+class RegressionEvaluationWriter(EvaluationWriter):
     """
     Evaluates the quality of scores provided by a single- or multi-output regressor according to commonly used
+    regression measures.
+    """
+
+    def __init__(self, sinks: List[OutputWriter.Sink]):
+        super().__init__(sinks)
+        options = [sink.options for sink in sinks]
+        self.regression_evaluation_functions = filter_formatters(REGRESSION_EVALUATION_MEASURES, options)
+
+    def _populate_result(self, data_split: DataSplit, result: EvaluationWriter.EvaluationResult, predictions,
+                         ground_truth):
+        num_folds = data_split.get_num_folds()
+        fold = data_split.get_fold()
+        ground_truth = enforce_dense(ground_truth, order='C', dtype=Float32)
+        evaluation_functions = self.regression_evaluation_functions
+
+        for evaluation_function in evaluation_functions:
+            if isinstance(evaluation_function, EvaluationFunction):
+                score = evaluation_function.evaluate(ground_truth, predictions)
+                result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
+
+
+class RankingEvaluationWriter(EvaluationWriter):
+    """
+    Evaluates the quality of scores provided by a single- or multi-label classifier according to commonly used
     regression and ranking measures.
     """
 
@@ -466,10 +495,3 @@ class ScoreEvaluationWriter(EvaluationWriter):
             if isinstance(evaluation_function, EvaluationFunction):
                 score = evaluation_function.evaluate(ground_truth, predictions)
                 result.put(evaluation_function, score, num_folds=num_folds, fold=fold)
-
-
-class ProbabilityEvaluationWriter(ScoreEvaluationWriter):
-    """
-    Evaluates the quality of probability estimates provided by a single- or multi-label classifier according to commonly
-    used regression and ranking measures.
-    """

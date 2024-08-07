@@ -3,11 +3,6 @@
  */
 #pragma once
 
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
 #include "mlrl/common/learner_common.hpp"
 #include "mlrl/seco/learner.hpp"
 #include "mlrl/seco/model/decision_list_builder.hpp"
@@ -53,11 +48,19 @@ namespace seco {
             }
 
             /**
-             * @see `RuleLearnerConfigurator::createStatisticsProviderFactory`
+             * @see `RuleLearnerConfigurator::createClassificationStatisticsProviderFactory`
              */
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override {
                 return configPtr_->getHeadConfig().get().createStatisticsProviderFactory(labelMatrix);
+            }
+
+            /**
+             * @see `RuleLearnerConfigurator::createRegressionStatisticsProviderFactory`
+             */
+            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix) const override {
+                throw std::runtime_error("not implemented");
             }
 
             /**
@@ -146,7 +149,3 @@ namespace seco {
             }
     };
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif

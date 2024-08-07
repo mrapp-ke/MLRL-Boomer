@@ -2,8 +2,8 @@
 
 #include "mlrl/boosting/statistics/statistics.hpp"
 #include "mlrl/common/data/array.hpp"
-#include "mlrl/common/iterator/binary_forward_iterator.hpp"
-#include "mlrl/common/iterator/non_zero_index_forward_iterator.hpp"
+#include "mlrl/common/iterator/iterator_forward_non_zero_index.hpp"
+#include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
 #include "mlrl/common/prediction/probability_calibration_no.hpp"
 
 #include <algorithm>
@@ -37,8 +37,8 @@ namespace boosting {
       const CContiguousView<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         for (uint32 i = 0; i < numExamples; i++) {
             uint32 exampleIndex = indexIterator[i];
-            auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
-                                                              labelMatrix.indices_cend(exampleIndex));
+            auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
+                                                                   labelMatrix.indices_cend(exampleIndex));
             CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
 
             for (uint32 j = 0; j < numLabels; j++) {
@@ -302,8 +302,8 @@ namespace boosting {
     };
 
     IsotonicMarginalProbabilityCalibratorConfig::IsotonicMarginalProbabilityCalibratorConfig(
-      ReadableProperty<ILossConfig> lossConfigGetter)
-        : useHoldoutSet_(true), lossConfig_(lossConfigGetter) {}
+      ReadableProperty<IClassificationLossConfig> lossConfig)
+        : useHoldoutSet_(true), lossConfig_(lossConfig) {}
 
     bool IsotonicMarginalProbabilityCalibratorConfig::isHoldoutSetUsed() const {
         return useHoldoutSet_;
@@ -365,10 +365,10 @@ namespace boosting {
 
             for (uint32 j = 0; j < numExamples; j++) {
                 uint32 exampleIndex = indexIterator[j];
-                auto labelIndicesBegin = make_non_zero_index_forward_iterator(labelMatrix.values_cbegin(exampleIndex),
-                                                                              labelMatrix.values_cend(exampleIndex));
-                auto labelIndicesEnd = make_non_zero_index_forward_iterator(labelMatrix.values_cend(exampleIndex),
-                                                                            labelMatrix.values_cend(exampleIndex));
+                auto labelIndicesBegin = createNonZeroIndexForwardIterator(labelMatrix.values_cbegin(exampleIndex),
+                                                                           labelMatrix.values_cend(exampleIndex));
+                auto labelIndicesEnd = createNonZeroIndexForwardIterator(labelMatrix.values_cend(exampleIndex),
+                                                                         labelMatrix.values_cend(exampleIndex));
                 float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
                 CContiguousView<float64>::value_const_iterator scoresBegin = scoreMatrix.values_cbegin(exampleIndex);
                 CContiguousView<float64>::value_const_iterator scoresEnd = scoreMatrix.values_cend(exampleIndex);
@@ -424,10 +424,10 @@ namespace boosting {
 
             for (uint32 j = 0; j < numExamples; j++) {
                 uint32 exampleIndex = indexIterator[j];
-                auto labelIndicesBegin = make_non_zero_index_forward_iterator(labelMatrix.values_cbegin(exampleIndex),
-                                                                              labelMatrix.values_cend(exampleIndex));
-                auto labelIndicesEnd = make_non_zero_index_forward_iterator(labelMatrix.values_cend(exampleIndex),
-                                                                            labelMatrix.values_cend(exampleIndex));
+                auto labelIndicesBegin = createNonZeroIndexForwardIterator(labelMatrix.values_cbegin(exampleIndex),
+                                                                           labelMatrix.values_cend(exampleIndex));
+                auto labelIndicesEnd = createNonZeroIndexForwardIterator(labelMatrix.values_cend(exampleIndex),
+                                                                         labelMatrix.values_cend(exampleIndex));
                 float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
                 SparseSetView<float64>::const_row scores = scoreMatrix[exampleIndex];
                 float64 jointProbability =
@@ -645,8 +645,8 @@ namespace boosting {
     };
 
     IsotonicJointProbabilityCalibratorConfig::IsotonicJointProbabilityCalibratorConfig(
-      ReadableProperty<ILossConfig> lossConfigGetter)
-        : useHoldoutSet_(true), lossConfig_(lossConfigGetter) {}
+      ReadableProperty<IClassificationLossConfig> lossConfig)
+        : useHoldoutSet_(true), lossConfig_(lossConfig) {}
 
     bool IsotonicJointProbabilityCalibratorConfig::isHoldoutSetUsed() const {
         return useHoldoutSet_;

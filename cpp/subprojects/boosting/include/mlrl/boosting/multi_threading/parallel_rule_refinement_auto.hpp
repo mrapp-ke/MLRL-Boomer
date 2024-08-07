@@ -29,17 +29,16 @@ namespace boosting {
         public:
 
             /**
-             * @param lossConfigGetter              A `ReadableProperty` that allows to access the `ILossConfig` that
-             *                                      stores the configuration of the loss function
-             * @param headConfigGetter              A `ReadableProperty` that allows to access the `IHeadConfig` that
-             *                                      stores the configuration of the rule heads
-             * @param featureSamplingConfigGetter   A `ReadableProperty` that allows to access the
-             *                                      `IFeatureSamplingConfig` that stores the configuration of the method
-             *                                      for sampling features
+             * @param lossConfig            A `ReadableProperty` that allows to access the `ILossConfig` that stores the
+             *                              configuration of the loss function
+             * @param headConfig            A `ReadableProperty` that allows to access the `IHeadConfig` that stores the
+             *                              configuration of the rule heads
+             * @param featureSamplingConfig A `ReadableProperty` that allows to access the `IFeatureSamplingConfig` that
+             *                              stores the configuration of the method for sampling features
              */
-            AutoParallelRuleRefinementConfig(ReadableProperty<ILossConfig> lossConfigGetter,
-                                             ReadableProperty<IHeadConfig> headConfigGetter,
-                                             ReadableProperty<IFeatureSamplingConfig> featureSamplingConfigGetter);
+            AutoParallelRuleRefinementConfig(ReadableProperty<ILossConfig> lossConfig,
+                                             ReadableProperty<IHeadConfig> headConfig,
+                                             ReadableProperty<IFeatureSamplingConfig> featureSamplingConfig);
 
             /**
              * @see `IMultiThreadingConfig::getNumThreads`
