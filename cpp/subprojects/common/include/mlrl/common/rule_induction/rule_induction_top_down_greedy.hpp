@@ -9,8 +9,6 @@
 
 #include <memory>
 
-#include <memory>
-
 /**
  * Defines an interface for all classes that allow to configure an algorithm for the induction of individual rules that
  * uses a greedy top-down search.

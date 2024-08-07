@@ -8,8 +8,6 @@
 
 #include <memory>
 
-#include <memory>
-
 /**
  * Provides random access to all indices within a continuous range [0, numIndices).
  */
