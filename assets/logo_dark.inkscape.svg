@@ -7,8 +7,31 @@
    viewBox="0 0 499.99999 119.43735"
    version="1.1"
    id="svg5"
+   sodipodi:docname="logo_dark.inkscape.svg"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.71649167"
+     inkscape:cx="947.67326"
+     inkscape:cy="226.10172"
+     inkscape:window-width="1920"
+     inkscape:window-height="1012"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g1073" />
   <defs
      id="defs2">
     <rect
@@ -200,37 +223,39 @@
            aria-label="Gradient Boosted Multi-Label Classification Rules"
            transform="matrix(0.26458333,0,0,0.26458333,300.82037,1.0583322)"
            id="text5064"
-           style="font-size:50.6667px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect5066);display:inline;fill:#1e1e1e;stroke:none">
+           style="font-size:50.6667px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect5066);display:inline;fill:#d1d1d1;stroke:none;fill-opacity:1">
           <text
              xml:space="preserve"
-             style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:68px;font-family:'Jost*';-inkscape-font-specification:'Jost* Medium';fill:#1e1e1e;fill-opacity:1;stroke:none;stroke-width:1.00157;stroke-dasharray:none;stroke-opacity:1"
+             style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:68px;font-family:'Jost*';-inkscape-font-specification:'Jost* Medium';fill:#d1d1d1;fill-opacity:1;stroke:none;stroke-width:1.00157;stroke-dasharray:none;stroke-opacity:1"
              x="-672.85486"
              y="320.58401"
              id="text2"><tspan
+               sodipodi:role="line"
                id="tspan2"
                x="-672.85486"
                y="320.58401"
-               style="font-size:68px;stroke:none">Gradient Boosted Multi-Output Rules</tspan></text>
+               style="font-size:68px;stroke:none;fill:#d1d1d1;fill-opacity:1">Gradient Boosted Multi-Output Rules</tspan></text>
         </g>
         <path
-           style="fill:none;stroke:#1e1e1e;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           style="fill:none;stroke:#d1d1d1;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            d="M 116.20723,66.113946 419.04695,65.617083"
            id="path25487" />
         <g
            aria-label="BOOMER"
            transform="matrix(0.26458333,0,0,0.26458333,12.209961,-2.5128633)"
            id="text65285"
-           style="font-size:264px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect65287-3);display:inline;fill:#1e1e1e;stroke:none">
+           style="font-size:264px;line-height:1.25;font-family:'Jost*';-inkscape-font-specification:'Jost*';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect65287-3);display:inline;fill:#d1d1d1;stroke:none;fill-opacity:1">
           <text
              xml:space="preserve"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Jost*';-inkscape-font-specification:'Jost*';fill:#1e1e1e;fill-opacity:1;stroke:none"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Jost*';-inkscape-font-specification:'Jost*';fill:#d1d1d1;fill-opacity:1;stroke:none"
              x="400"
              y="228.52789"
              id="text1"><tspan
+               sodipodi:role="line"
                id="tspan1"
                x="400"
                y="228.52789"
-               style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:'Jost*';-inkscape-font-specification:'Jost* Medium';fill:#1e1e1e;fill-opacity:1;stroke:none">BOOMER</tspan></text>
+               style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:'Jost*';-inkscape-font-specification:'Jost* Medium';fill:#d1d1d1;fill-opacity:1;stroke:none">BOOMER</tspan></text>
         </g>
       </g>
     </g>
