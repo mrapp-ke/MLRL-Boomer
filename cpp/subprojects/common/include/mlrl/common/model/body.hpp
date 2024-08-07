@@ -37,9 +37,9 @@ class MLRLCOMMON_API IConditional {
          * @param valuesBegin   An iterator to the beginning of the example's feature_indices
          * @param valuesEnd     An iterator to the end of the example's feature indices
          * @param sparseValue   The value that should be used for sparse feature values
-         * @param tmpArray1     An iterator that is used to temporarily store non-zero feature values. May contain
+         * @param tmpArray1     An iterator that is used to temporarily store dense feature values. May contain
                                 arbitrary values
-         * @param tmpArray2     An iterator that is used to temporarily keep track of the feature indices with non-zero
+         * @param tmpArray2     An iterator that is used to temporarily keep track of the feature indices with dense
                                 feature values. Must not contain any elements with value `n`
          * @param n             An arbitrary number. If this function is called multiple times for different examples,
          *                      but using the same `tmpArray2`, the number must be unique for each of the function

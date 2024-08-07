@@ -14,8 +14,8 @@
 namespace boosting {
 
     /**
-     * Defines an interface for all classes that allow to transform the regression scores that are predicted an example
-     * into a joint probability that corresponds to the chance of a label vector being correct.
+     * Defines an interface for all classes that allow to transform the scores that are predicted an example into a
+     * joint probability that corresponds to the chance of a label vector being correct.
      */
     class IJointProbabilityFunction : public IDistanceMeasure {
         public:
@@ -23,8 +23,8 @@ namespace boosting {
             virtual ~IJointProbabilityFunction() override {}
 
             /**
-             * Transforms the regression scores that are predicted for an example into a joint probability that
-             * corresponds to the chance of a given label vector being correct.
+             * Transforms the scores that are predicted for an example into a joint probability that corresponds to the
+             * chance of a given label vector being correct.
              *
              * @param labelVectorIndex  The index of the label vector, the scores should be compared to
              * @param labelVector       A reference to an object of type `LabelVector`, the scores should be compared to
@@ -38,8 +38,8 @@ namespace boosting {
                                                                 View<float64>::const_iterator scoresEnd) const = 0;
 
             /**
-             * Transforms the regression scores that are predicted for an example into a joint probability that
-             * corresponds to the chance of a given label vector being correct.
+             * Transforms the scores that are predicted for an example into a joint probability that corresponds to the
+             * chance of a given label vector being correct.
              *
              * @param labelVectorIndex  The index of the label vector, the scores should be compared to
              * @param labelVector       A reference to an object of type `LabelVector`, the scores should be compared to
@@ -53,8 +53,8 @@ namespace boosting {
                                                                 uint32 numLabels) const = 0;
 
             /**
-             * Transforms the regression scores that are predicted for an example into joint probabilities that
-             * correspond to the chance of individual label vectors contained by a `LabelVectorSet` being correct.
+             * Transforms the scores that are predicted for an example into joint probabilities that correspond to the
+             * chance of individual label vectors contained by a `LabelVectorSet` being correct.
              *
              * @param labelVectorSet    A reference to an object of type `LabelVectorSet` that contains the label
              *                          vectors, the scores should be compared to

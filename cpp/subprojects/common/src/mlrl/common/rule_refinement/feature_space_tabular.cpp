@@ -156,7 +156,7 @@ class TabularFeatureSpace final : public IFeatureSpace {
                 std::unordered_map<uint32, FilteredCacheEntry> cacheFiltered_;
 
                 template<typename IndexVector>
-                std::unique_ptr<IRuleRefinement> createRuleRefinementInternally(const IndexVector& labelIndices,
+                std::unique_ptr<IRuleRefinement> createRuleRefinementInternally(const IndexVector& outputIndices,
                                                                                 uint32 featureIndex) {
                     // Retrieve the `FilteredCacheEntry` from the cache, or insert a new one if it does not already
                     // exist...
@@ -172,7 +172,7 @@ class TabularFeatureSpace final : public IFeatureSpace {
                     std::unique_ptr<Callback> callbackPtr =
                       std::make_unique<Callback>(*this, featureSpace_.featureInfo_, featureIndex);
                     return std::make_unique<FeatureBasedRuleRefinement<IndexVector>>(
-                      labelIndices, featureIndex, numCovered_, std::move(callbackPtr));
+                      outputIndices, featureIndex, numCovered_, std::move(callbackPtr));
                 }
 
             public:
@@ -203,14 +203,14 @@ class TabularFeatureSpace final : public IFeatureSpace {
                     return std::make_unique<FeatureSubspace<WeightVector>>(*this);
                 }
 
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(const CompleteIndexVector& labelIndices,
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(const CompleteIndexVector& outputIndices,
                                                                       uint32 featureIndex) override {
-                    return createRuleRefinementInternally(labelIndices, featureIndex);
+                    return createRuleRefinementInternally(outputIndices, featureIndex);
                 }
 
-                std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& labelIndices,
+                std::unique_ptr<IRuleRefinement> createRuleRefinement(const PartialIndexVector& outputIndices,
                                                                       uint32 featureIndex) override {
-                    return createRuleRefinementInternally(labelIndices, featureIndex);
+                    return createRuleRefinementInternally(outputIndices, featureIndex);
                 }
 
                 void filterSubspace(const Condition& condition) override {
@@ -337,7 +337,7 @@ class TabularFeatureSpace final : public IFeatureSpace {
          * @param featureInfo           A reference to an object of type `IFeatureInfo` that provides information about
          *                              the types of individual features
          * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
-         *                              statistics about the labels of the training examples
+         *                              statistics about the quality of predictions for training examples
          * @param featureBinningFactory A reference to an object of type `IFeatureBinningFactory` that allows to create
          *                              implementations of the binning method to be used for assigning numerical feature
          *                              values to bins

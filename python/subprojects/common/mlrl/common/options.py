@@ -6,7 +6,7 @@ Provides a data structure that allows to store and parse options that are provid
 from enum import Enum
 from typing import Dict, Set, Tuple
 
-from mlrl.common.format import format_dict_keys, format_enum_values, format_string_set
+from mlrl.common.format import format_dict_keys, format_enum_values, format_set
 
 
 class BooleanOption(Enum):
@@ -86,8 +86,8 @@ class Options:
                                              + str(option_index))
 
                         if key not in allowed_keys:
-                            raise ValueError('Key must be one of ' + format_string_set(allowed_keys) + ', but got key "'
-                                             + key + '" at index ' + str(option_index))
+                            raise ValueError('Key must be one of ' + format_set(allowed_keys) + ', but got key "' + key
+                                             + '" at index ' + str(option_index))
 
                         value = parts[1]
 
@@ -184,7 +184,7 @@ def parse_param(parameter_name: str, value: str, allowed_values: Set[str]) -> st
         return value
 
     raise ValueError('Invalid value given for parameter "' + parameter_name + '": Must be one of '
-                     + format_string_set(allowed_values) + ', but is "' + value + '"')
+                     + format_set(allowed_values) + ', but is "' + value + '"')
 
 
 def parse_param_and_options(parameter_name: str, value: str,

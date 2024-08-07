@@ -10,28 +10,29 @@ import numpy as np
 
 from mlrl.common.options import Options
 
-from mlrl.testbed.data import Label, MetaData, save_arff_file
+from mlrl.testbed.data import MetaData, Output, save_arff_file
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.format import OPTION_DECIMALS, format_array
 from mlrl.testbed.io import SUFFIX_ARFF, get_file_name_per_fold
 from mlrl.testbed.output_writer import Formattable, OutputWriter
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+from mlrl.testbed.problem_type import ProblemType
 
 
 class PredictionWriter(OutputWriter):
     """
-    Allows to write predictions and corresponding ground truth labels to one or several sinks.
+    Allows to write predictions and the corresponding ground truth to one or several sinks.
     """
 
     class Predictions(Formattable):
         """
-        Stores predictions and corresponding ground truth labels.
+        Stores predictions and the corresponding ground truth.
         """
 
         def __init__(self, predictions, ground_truth):
             """
             :param predictions:     The predictions
-            :param ground_truth:    The ground truth labels
+            :param ground_truth:    The ground truth
             """
             self.predictions = predictions
             self.ground_truth = ground_truth
@@ -49,7 +50,7 @@ class PredictionWriter(OutputWriter):
 
     class LogSink(OutputWriter.LogSink):
         """
-        Allows to write predictions and corresponding ground truth labels to the console.
+        Allows to write predictions and the corresponding ground truth to the console.
         """
 
         def __init__(self, options: Options = Options()):
@@ -57,7 +58,7 @@ class PredictionWriter(OutputWriter):
 
     class ArffSink(OutputWriter.Sink):
         """
-        Allows to write predictions and corresponding ground truth labels to ARFF files.
+        Allows to write predictions and the corresponding ground truth to ARFF files.
         """
 
         def __init__(self, output_dir: str, options: Options = Options()):
@@ -67,8 +68,9 @@ class PredictionWriter(OutputWriter):
             super().__init__(options=options)
             self.output_dir = output_dir
 
-        def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
-                         prediction_scope: Optional[PredictionScope], output_data, **_):
+        # pylint: disable=unused-argument
+        def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
+                         data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data, **_):
             """
             See :func:`mlrl.testbed.output_writer.OutputWriter.Sink.write_output`
             """
@@ -81,14 +83,14 @@ class PredictionWriter(OutputWriter):
 
             file_name = get_file_name_per_fold(prediction_scope.get_file_name(data_type.get_file_name('predictions')),
                                                SUFFIX_ARFF, data_split.get_fold())
-            attributes = [Label('Ground Truth ' + label.attribute_name) for label in meta_data.labels]
-            labels = [Label('Prediction ' + label.attribute_name) for label in meta_data.labels]
-            prediction_meta_data = MetaData(attributes, labels, labels_at_start=False)
+            features = [Output('Ground Truth ' + output.name) for output in meta_data.outputs]
+            outputs = [Output('Prediction ' + output.name) for output in meta_data.outputs]
+            prediction_meta_data = MetaData(features, outputs, outputs_at_start=False)
             save_arff_file(self.output_dir, file_name, ground_truth, predictions, prediction_meta_data)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
+                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         return PredictionWriter.Predictions(predictions=predictions, ground_truth=y)

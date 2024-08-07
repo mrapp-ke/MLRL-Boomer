@@ -7,6 +7,9 @@
 #include "mlrl/boosting/rule_evaluation/head_type.hpp"
 #include "mlrl/boosting/rule_evaluation/regularization.hpp"
 #include "mlrl/common/multi_threading/multi_threading.hpp"
+#include "mlrl/common/util/properties.hpp"
+
+#include <memory>
 
 #include <memory>
 
@@ -18,52 +21,62 @@ namespace boosting {
     class AutomaticHeadConfig final : public IHeadConfig {
         private:
 
-            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+            const ReadableProperty<ILossConfig> lossConfig_;
 
-            const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr_;
+            const ReadableProperty<ILabelBinningConfig> labelBinningConfig_;
 
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
+            const ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
 
-            const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr_;
+            const ReadableProperty<IRegularizationConfig> l1RegularizationConfig_;
 
-            const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr_;
+            const ReadableProperty<IRegularizationConfig> l2RegularizationConfig_;
 
         public:
 
             /**
-             * @param lossConfigPtr             A reference to an unique pointer that stores the configuration of the
-             *                                  loss function
-             * @param labelBinningConfigPtr     A reference to an unique pointer that stores the configuration of the
-             *                                  method for assigning labels to bins
-             * @param multiThreadingConfigPtr   A reference to an unique pointer that stores the configuration of the
-             *                                  multi-threading behavior that should be used for the parallel update of
-             *                                  statistics
-             * @param l1RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L1
-             *                                  regularization
-             * @param l2RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L2
-             *                                  regularization
+             * @param lossConfig              A `ReadableProperty` that allows to access the `ILossConfig` that stores
+             *                                the configuration of the loss function
+             * @param labelBinningConfig      A `ReadableProperty` that allows to access the `ILabelBinningConfig` that
+             *                                stores the configuration of the method for assigning labels to bins
+             * @param multiThreadingConfig    A `ReadableProperty` that allows to access the `IMultiThreadingConfig`
+             *                                that stores the configuration of the multi-threading behavior that should
+             *                                be used for the parallel update of statistics
+             * @param l1RegularizationConfig  A `ReadableProperty` that allows to access the `IRegularizationConfig`
+             *                                that stores the configuration of the L1 regularization
+             * @param l2RegularizationConfig  A `ReadableProperty` that allows to access the `IRegularizationConfig`
+             *                                that stores the configuration of the L2 regularization
              */
-            AutomaticHeadConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,
-                                const std::unique_ptr<ILabelBinningConfig>& labelBinningConfigPtr,
-                                const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr,
-                                const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
-                                const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr);
+            AutomaticHeadConfig(ReadableProperty<ILossConfig> lossConfig,
+                                ReadableProperty<ILabelBinningConfig> labelBinningConfig,
+                                ReadableProperty<IMultiThreadingConfig> multiThreadingConfig,
+                                ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
+                                ReadableProperty<IRegularizationConfig> l2RegularizationConfig);
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const ILabelWiseLossConfig& lossConfig) const override;
+              const IDecomposableClassificationLossConfig& lossConfig) const override;
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const ISparseLabelWiseLossConfig& lossConfig) const override;
+              const ISparseDecomposableClassificationLossConfig& lossConfig) const override;
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const IExampleWiseLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const override;
+              const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas,
+              const Lapack& lapack) const override;
+
+            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+              const IDecomposableRegressionLossConfig& lossConfig) const override;
+
+            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+              const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas,
+              const Lapack& lapack) const override;
 
             bool isPartial() const override;
 
-            bool isSingleLabel() const override;
+            bool isSingleOutput() const override;
     };
 
 }

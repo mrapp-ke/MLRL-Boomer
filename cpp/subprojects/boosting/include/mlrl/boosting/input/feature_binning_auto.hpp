@@ -19,7 +19,7 @@ namespace boosting {
              * @see `IFeatureBinningConfig::createFeatureBinningFactory`
              */
             std::unique_ptr<IFeatureBinningFactory> createFeatureBinningFactory(
-              const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const override;
+              const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const override;
     };
 
 }

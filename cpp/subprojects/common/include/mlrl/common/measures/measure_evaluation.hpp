@@ -4,22 +4,23 @@
 #pragma once
 
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_csr.hpp"
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
 
 #include <memory>
 
 /**
- * Defines an interface for all measures that may be used to assess the quality of predictions for certain examples by
- * comparing them to the corresponding ground truth labels.
+ * Defines an interface for all measures that can be used in classification problems to assess the quality of
+ * predictions for certain examples by comparing them to the corresponding ground truth labels.
  */
-class IEvaluationMeasure {
+class IClassificationEvaluationMeasure {
     public:
 
-        virtual ~IEvaluationMeasure() {}
+        virtual ~IClassificationEvaluationMeasure() {}
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
-         * specific index by comparing them to the corresponding ground truth labels, based on a label matrix that
+         * specific index by comparing them to the corresponding ground truth according to a regression matrix that
          * provides random access to the labels of the training examples.
          *
          * @param exampleIndex  The index of the example for which the predictions should be evaluated
@@ -34,8 +35,8 @@ class IEvaluationMeasure {
 
         /**
          * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
-         * specific index by comparing them to the corresponding ground truth labels, based on a label matrix that
-         * provides row-wise access to the labels of the training examples.
+         * specific index by comparing them to the corresponding ground truth according to a label matrix that provides
+         * row-wise access to the labels of the training examples.
          *
          * @param exampleIndex  The index of the example for which the predictions should be evaluated
          * @param labelMatrix   A reference to an object of type `BinaryCsrView` that provides row-wise access to the
@@ -49,17 +50,73 @@ class IEvaluationMeasure {
 };
 
 /**
- * Defines an interface for all factories that allow to create instances of the type `IEvaluationMeasure`.
+ * Defines an interface for all measures that can be used in regression problems to assess the quality of predictions
+ * for certain examples by comparing them to the corresponding ground truth regression scores.
  */
-class IEvaluationMeasureFactory {
+class IRegressionEvaluationMeasure {
     public:
 
-        virtual ~IEvaluationMeasureFactory() {}
+        virtual ~IRegressionEvaluationMeasure() {}
 
         /**
-         * Creates and returns a new object of type `IEvaluationMeasure`.
+         * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
+         * specific index by comparing them to the corresponding ground truth according to a regression matrix that
+         * provides random access to the regression scores of the training examples.
          *
-         * @return An unique pointer to an object of type `IEvaluationMeasure` that has been created
+         * @param exampleIndex      The index of the example for which the predictions should be evaluated
+         * @param regressionMatrix  A reference to an object of type `CContiguousView` that provides random access to
+         *                          the regression scores of the training examples
+         * @param scoreMatrix       A reference to an object of type `CContiguousView` that stores the currently
+         *                          predicted scores
+         * @return                  The numerical score that has been calculated
          */
-        virtual std::unique_ptr<IEvaluationMeasure> createEvaluationMeasure() const = 0;
+        virtual float64 evaluate(uint32 exampleIndex, const CContiguousView<const float32>& regressionMatrix,
+                                 const CContiguousView<float64>& scoreMatrix) const = 0;
+
+        /**
+         * Calculates and returns a numerical score that assesses the quality of predictions for the example at a
+         * specific index by comparing them to the corresponding ground truth according to a regression matrix that
+         * provides row-wise access to the regression scores of the training examples.
+         *
+         * @param exampleIndex      The index of the example for which the predictions should be evaluated
+         * @param regressionMatrix  A reference to an object of type `CsrView` that provides row-wise access to the
+         *                          regression scores of the training examples
+         * @param scoreMatrix       A reference to an object of type `CContiguousView` that stores the currently
+         *                          predicted scores
+         * @return                  The numerical score that has been calculated
+         */
+        virtual float64 evaluate(uint32 exampleIndex, const CsrView<const float32>& regressionMatrix,
+                                 const CContiguousView<float64>& scoreMatrix) const = 0;
+};
+
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IClassificationEvaluationMeasure`.
+ */
+class IClassificationEvaluationMeasureFactory {
+    public:
+
+        virtual ~IClassificationEvaluationMeasureFactory() {}
+
+        /**
+         * Creates and returns a new object of type `IClassificationEvaluationMeasure`.
+         *
+         * @return An unique pointer to an object of type `IClassificationEvaluationMeasure` that has been created
+         */
+        virtual std::unique_ptr<IClassificationEvaluationMeasure> createClassificationEvaluationMeasure() const = 0;
+};
+
+/**
+ * Defines an interface for all factories that allow to create instances of the type `IRegressionEvaluationMeasure`.
+ */
+class IRegressionEvaluationMeasureFactory {
+    public:
+
+        virtual ~IRegressionEvaluationMeasureFactory() {}
+
+        /**
+         * Creates and returns a new object of type `IRegressionEvaluationMeasure`.
+         *
+         * @return An unique pointer to an object of type `IRegressionEvaluationMeasure` that has been created
+         */
+        virtual std::unique_ptr<IRegressionEvaluationMeasure> createRegressionEvaluationMeasure() const = 0;
 };

@@ -1,23 +1,15 @@
-from libcpp cimport bool
 from libcpp.memory cimport unique_ptr
 
 from mlrl.common.cython._types cimport uint32
 from mlrl.common.cython.feature_binning cimport IEqualFrequencyFeatureBinningConfig, IEqualWidthFeatureBinningConfig
-from mlrl.common.cython.feature_info cimport IFeatureInfo
-from mlrl.common.cython.feature_matrix cimport IColumnWiseFeatureMatrix, IRowWiseFeatureMatrix
 from mlrl.common.cython.feature_sampling cimport IFeatureSamplingWithoutReplacementConfig
-from mlrl.common.cython.instance_sampling cimport IExampleWiseStratifiedInstanceSamplingConfig, \
-    IInstanceSamplingWithoutReplacementConfig, IInstanceSamplingWithReplacementConfig, \
-    ILabelWiseStratifiedInstanceSamplingConfig
-from mlrl.common.cython.label_matrix cimport IRowWiseLabelMatrix
-from mlrl.common.cython.label_sampling cimport ILabelSamplingWithoutReplacementConfig
-from mlrl.common.cython.label_space_info cimport ILabelSpaceInfo, LabelSpaceInfo
+from mlrl.common.cython.instance_sampling cimport IInstanceSamplingWithoutReplacementConfig, \
+    IInstanceSamplingWithReplacementConfig
 from mlrl.common.cython.multi_threading cimport IManualMultiThreadingConfig
-from mlrl.common.cython.partition_sampling cimport IExampleWiseStratifiedBiPartitionSamplingConfig, \
-    ILabelWiseStratifiedBiPartitionSamplingConfig, IRandomBiPartitionSamplingConfig
+from mlrl.common.cython.output_sampling cimport IOutputSamplingWithoutReplacementConfig
+from mlrl.common.cython.output_space_info cimport IOutputSpaceInfo, OutputSpaceInfo
+from mlrl.common.cython.partition_sampling cimport IRandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization cimport ISequentialPostOptimizationConfig
-from mlrl.common.cython.prediction cimport IBinaryPredictor, IProbabilityPredictor, IScorePredictor, \
-    ISparseBinaryPredictor
 from mlrl.common.cython.probability_calibration cimport IJointProbabilityCalibrationModel, \
     IMarginalProbabilityCalibrationModel, JointProbabilityCalibrationModel, MarginalProbabilityCalibrationModel
 from mlrl.common.cython.rule_induction cimport IBeamSearchTopDownRuleInductionConfig, IGreedyTopDownRuleInductionConfig
@@ -32,352 +24,285 @@ cdef extern from "mlrl/common/learner.hpp" nogil:
 
         # Functions:
 
-        uint32 getNumLabels() const
+        uint32 getNumOutputs() const
 
         unique_ptr[IRuleModel]& getRuleModel()
 
-        unique_ptr[ILabelSpaceInfo]& getLabelSpaceInfo()
+        unique_ptr[IOutputSpaceInfo]& getOutputSpaceInfo()
 
         unique_ptr[IMarginalProbabilityCalibrationModel]& getMarginalProbabilityCalibrationModel()
 
         unique_ptr[IJointProbabilityCalibrationModel]& getJointProbabilityCalibrationModel()
 
 
-    cdef cppclass ISequentialRuleModelAssemblageMixin"IRuleLearner::ISequentialRuleModelAssemblageMixin":
+    cdef cppclass ISequentialRuleModelAssemblageMixin:
 
         # Functions:
 
         void useSequentialRuleModelAssemblage()
 
 
-    cdef cppclass IDefaultRuleMixin"IRuleLearner::IDefaultRuleMixin":
+    cdef cppclass IDefaultRuleMixin:
 
         # Functions:
 
         void useDefaultRule()
 
 
-    cdef cppclass IGreedyTopDownRuleInductionMixin"IRuleLearner::IGreedyTopDownRuleInductionMixin":
+    cdef cppclass IGreedyTopDownRuleInductionMixin:
 
         # Functions:
 
         IGreedyTopDownRuleInductionConfig& useGreedyTopDownRuleInduction()
 
         
-    cdef cppclass IBeamSearchTopDownRuleInductionMixin"IRuleLearner::IBeamSearchTopDownRuleInductionMixin":
+    cdef cppclass IBeamSearchTopDownRuleInductionMixin:
 
         # Functions:
 
         IBeamSearchTopDownRuleInductionConfig& useBeamSearchTopDownRuleInduction()
 
 
-    cdef cppclass INoPostProcessorMixin"IRuleLearner::INoPostProcessorMixin":
+    cdef cppclass INoPostProcessorMixin:
 
         # Functions:
 
         void useNoPostProcessor()
 
 
-    cdef cppclass INoFeatureBinningMixin"IRuleLearner::INoFeatureBinningMixin":
+    cdef cppclass INoFeatureBinningMixin:
 
         # Functions:
 
         void useNoFeatureBinning()
         
 
-    cdef cppclass IEqualWidthFeatureBinningMixin"IRuleLearner::IEqualWidthFeatureBinningMixin":
+    cdef cppclass IEqualWidthFeatureBinningMixin:
 
         # Functions:
 
         IEqualWidthFeatureBinningConfig& useEqualWidthFeatureBinning()
 
 
-    cdef cppclass IEqualFrequencyFeatureBinningMixin"IRuleLearner::IEqualFrequencyFeatureBinningMixin":
+    cdef cppclass IEqualFrequencyFeatureBinningMixin:
 
         # Functions:
 
         IEqualFrequencyFeatureBinningConfig& useEqualFrequencyFeatureBinning()
 
 
-    cdef cppclass INoLabelSamplingMixin"IRuleLearner::INoLabelSamplingMixin":
+    cdef cppclass INoOutputSamplingMixin:
 
         # Functions:
 
-        void useNoLabelSampling()
+        void useNoOutputSampling()
 
 
-    cdef cppclass IRoundRobinLabelSamplingMixin"IRuleLearner::IRoundRobinLabelSamplingMixin":
+    cdef cppclass IRoundRobinOutputSamplingMixin:
 
         # Functions:
 
-        void useRoundRobinLabelSampling()
+        void useRoundRobinOutputSampling()
     
     
-    cdef cppclass ILabelSamplingWithoutReplacementMixin"IRuleLearner::ILabelSamplingWithoutReplacementMixin":
+    cdef cppclass IOutputSamplingWithoutReplacementMixin:
 
         # Functions:
 
-        ILabelSamplingWithoutReplacementConfig& useLabelSamplingWithoutReplacement()
+        IOutputSamplingWithoutReplacementConfig& useOutputSamplingWithoutReplacement()
 
 
-    cdef cppclass INoInstanceSamplingMixin"IRuleLearner::INoInstanceSamplingMixin":
+    cdef cppclass INoInstanceSamplingMixin:
 
         # Functions:
 
         void useNoInstanceSampling()
 
 
-    cdef cppclass IInstanceSamplingWithoutReplacementMixin"IRuleLearner::IInstanceSamplingWithoutReplacementMixin":
+    cdef cppclass IInstanceSamplingWithoutReplacementMixin:
 
         # Functions:
 
         IInstanceSamplingWithoutReplacementConfig& useInstanceSamplingWithoutReplacement()
 
 
-    cdef cppclass IInstanceSamplingWithReplacementMixin"IRuleLearner::IInstanceSamplingWithReplacementMixin":
+    cdef cppclass IInstanceSamplingWithReplacementMixin:
 
         # Functions:
 
         IInstanceSamplingWithReplacementConfig& useInstanceSamplingWithReplacement()
 
 
-    cdef cppclass ILabelWiseStratifiedInstanceSamplingMixin"IRuleLearner::ILabelWiseStratifiedInstanceSamplingMixin":
-
-        # Functions:
-
-        ILabelWiseStratifiedInstanceSamplingConfig& useLabelWiseStratifiedInstanceSampling()
-
-
-    cdef cppclass IExampleWiseStratifiedInstanceSamplingMixin \
-        "IRuleLearner::IExampleWiseStratifiedInstanceSamplingMixin":
-
-        # Functions:
-
-        IExampleWiseStratifiedInstanceSamplingConfig& useExampleWiseStratifiedInstanceSampling()
-
-
-    cdef cppclass INoFeatureSamplingMixin"IRuleLearner::INoFeatureSamplingMixin":
+    cdef cppclass INoFeatureSamplingMixin:
 
         # Functions:
 
         void useNoFeatureSampling()
 
 
-    cdef cppclass IFeatureSamplingWithoutReplacementMixin"IRuleLearner::IFeatureSamplingWithoutReplacementMixin":
+    cdef cppclass IFeatureSamplingWithoutReplacementMixin:
 
         # Functions:
 
         IFeatureSamplingWithoutReplacementConfig& useFeatureSamplingWithoutReplacement()
 
 
-    cdef cppclass INoPartitionSamplingMixin"IRuleLearner::INoPartitionSamplingMixin":
+    cdef cppclass INoPartitionSamplingMixin:
 
         # Functions:
 
         void useNoPartitionSampling()
 
 
-    cdef cppclass IRandomBiPartitionSamplingMixin"IRuleLearner::IRandomBiPartitionSamplingMixin":
+    cdef cppclass IRandomBiPartitionSamplingMixin:
 
         # Functions:
 
         IRandomBiPartitionSamplingConfig& useRandomBiPartitionSampling()
 
 
-    cdef cppclass ILabelWiseStratifiedBiPartitionSamplingMixin\
-        "IRuleLearner::ILabelWiseStratifiedBiPartitionSamplingMixin":
-
-        # Functions:
-
-        ILabelWiseStratifiedBiPartitionSamplingConfig& useLabelWiseStratifiedBiPartitionSampling()
-
-
-    cdef cppclass IExampleWiseStratifiedBiPartitionSamplingMixin\
-        "IRuleLearner::IExampleWiseStratifiedBiPartitionSamplingMixin":
-
-        # Functions:
-
-        IExampleWiseStratifiedBiPartitionSamplingConfig& useExampleWiseStratifiedBiPartitionSampling()
-
-
-    cdef cppclass INoRulePruningMixin"IRuleLearner::INoRulePruningMixin":
+    cdef cppclass INoRulePruningMixin:
 
         # Functions:
 
         void useNoRulePruning()
 
 
-    cdef cppclass IIrepRulePruningMixin"IRuleLearner::IIrepRulePruningMixin":
+    cdef cppclass IIrepRulePruningMixin:
 
         # Functions:
 
         void useIrepRulePruning()
 
 
-    cdef cppclass INoParallelRuleRefinementMixin"IRuleLearner::INoParallelRuleRefinementMixin":
+    cdef cppclass INoParallelRuleRefinementMixin:
 
         # Functions:
 
         void useNoParallelRuleRefinement()
 
 
-    cdef cppclass IParallelRuleRefinementMixin"IRuleLearner::IParallelRuleRefinementMixin":
+    cdef cppclass IParallelRuleRefinementMixin:
 
         # Functions:
 
         IManualMultiThreadingConfig& useParallelRuleRefinement()
 
     
-    cdef cppclass INoParallelStatisticUpdateMixin"IRuleLearner::INoParallelStatisticUpdateMixin":
+    cdef cppclass INoParallelStatisticUpdateMixin:
 
         # Functions:
 
         void useNoParallelStatisticUpdate()
 
 
-    cdef cppclass IParallelStatisticUpdateMixin"IRuleLearner::IParallelStatisticUpdateMixin":
+    cdef cppclass IParallelStatisticUpdateMixin:
 
         # Functions:
 
         IManualMultiThreadingConfig& useParallelStatisticUpdate()
 
 
-    cdef cppclass INoParallelPredictionMixin"IRuleLearner::INoParallelPredictionMixin":
+    cdef cppclass INoParallelPredictionMixin:
 
         # Functions:
 
         void useNoParallelPrediction()
 
         
-    cdef cppclass IParallelPredictionMixin"IRuleLearner::IParallelPredictionMixin":
+    cdef cppclass IParallelPredictionMixin:
 
         # Functions:
 
         IManualMultiThreadingConfig& useParallelPrediction()
 
 
-    cdef cppclass INoSizeStoppingCriterionMixin"IRuleLearner::INoSizeStoppingCriterionMixin":
+    cdef cppclass INoSizeStoppingCriterionMixin:
 
         # Functions:
 
         void useNoSizeStoppingCriterion()
 
 
-    cdef cppclass ISizeStoppingCriterionMixin"IRuleLearner::ISizeStoppingCriterionMixin":
+    cdef cppclass ISizeStoppingCriterionMixin:
 
         # Functions:
 
         ISizeStoppingCriterionConfig& useSizeStoppingCriterion()
 
 
-    cdef cppclass INoTimeStoppingCriterionMixin"IRuleLearner::INoTimeStoppingCriterionMixin":
+    cdef cppclass INoTimeStoppingCriterionMixin:
 
         # Functions:
 
         void useNoTimeStoppingCriterion()
 
 
-    cdef cppclass ITimeStoppingCriterionMixin"IRuleLearner::ITimeStoppingCriterionMixin":
+    cdef cppclass ITimeStoppingCriterionMixin:
 
         # Functions:
 
         ITimeStoppingCriterionConfig& useTimeStoppingCriterion()
 
 
-    cdef cppclass IPrePruningMixin"IRuleLearner::IPrePruningMixin":
+    cdef cppclass IPrePruningMixin:
 
         # Functions:
 
         IPrePruningConfig& useGlobalPrePruning()
 
 
-    cdef cppclass INoGlobalPruningMixin"IRuleLearner::INoGlobalPruningMixin":
+    cdef cppclass INoGlobalPruningMixin:
 
         # Functions:
 
         void useNoGlobalPruning()
 
 
-    cdef cppclass IPostPruningMixin"IRuleLearner::IPostPruningMixin":
+    cdef cppclass IPostPruningMixin:
 
         # Functions:
 
         IPostPruningConfig& useGlobalPostPruning()
 
 
-    cdef cppclass INoSequentialPostOptimizationMixin"IRuleLearner::INoSequentialPostOptimizationMixin":
+    cdef cppclass INoSequentialPostOptimizationMixin:
 
         # Functions:
 
         void useNoSequentialPostOptimization()
 
 
-    cdef cppclass ISequentialPostOptimizationMixin"IRuleLearner::ISequentialPostOptimizationMixin":
+    cdef cppclass ISequentialPostOptimizationMixin:
 
         # Functions:
 
         ISequentialPostOptimizationConfig& useSequentialPostOptimization()
 
 
-    cdef cppclass INoMarginalProbabilityCalibrationMixin"IRuleLearner::INoMarginalProbabilityCalibrationMixin":
+    cdef cppclass INoMarginalProbabilityCalibrationMixin:
 
         # Functions:
 
         void useNoMarginalProbabilityCalibration()
 
 
-    cdef cppclass INoJointProbabilityCalibrationMixin"IRuleLearner::INoJointProbabilityCalibrationMixin":
+    cdef cppclass INoJointProbabilityCalibrationMixin:
 
         # Functions:
 
         void useNoJointProbabilityCalibration()
 
 
-    cdef cppclass IRuleLearner:
-
-        # Functions:
-
-        unique_ptr[ITrainingResult] fit(const IFeatureInfo& featureInfo, const IColumnWiseFeatureMatrix& featureMatrix,
-                                        const IRowWiseLabelMatrix& labelMatrix, uint32 randomState) const
-
-        bool canPredictBinary(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
-
-        unique_ptr[IBinaryPredictor] createBinaryPredictor(
-            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo,
-            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
-
-        unique_ptr[ISparseBinaryPredictor] createSparseBinaryPredictor(
-            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo,
-            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
-
-        bool canPredictScores(const IRowWiseFeatureMatrix&  featureMatrix, uint32 numLabels) const
-
-        unique_ptr[IScorePredictor] createScorePredictor(
-            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo, uint32 numLabels) except +
-
-        bool canPredictProbabilities(const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const
-
-        unique_ptr[IProbabilityPredictor] createProbabilityPredictor(
-            const IRowWiseFeatureMatrix& featureMatrix, const IRuleModel& ruleModel,
-            const ILabelSpaceInfo& labelSpaceInfo,
-            const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
-            const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) except +
-
-
 cdef class TrainingResult:
 
     # Attributes:
 
-    cdef readonly uint32 num_labels
+    cdef readonly uint32 num_outputs
 
     cdef readonly RuleModel rule_model
 
-    cdef readonly LabelSpaceInfo label_space_info
+    cdef readonly OutputSpaceInfo output_space_info
 
     cdef readonly MarginalProbabilityCalibrationModel marginal_probability_calibration_model
     
@@ -389,10 +314,3 @@ cdef class RuleLearnerConfig:
     # Attributes:
 
     cdef dict __dict__
-
-
-cdef class RuleLearner:
-
-    # Functions:
-
-    cdef IRuleLearner* get_rule_learner_ptr(self)

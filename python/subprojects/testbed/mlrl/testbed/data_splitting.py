@@ -1,7 +1,7 @@
 """
 Author: Michael Rapp (michael.rapp.ml@gmail.com)
 
-Provides classes for training and evaluating multi-label classifiers using either cross validation or separate training
+Provides classes for training and evaluating machine learning models using either cross validation or separate training
 and test sets.
 """
 import logging as log
@@ -23,14 +23,14 @@ from mlrl.testbed.io import SUFFIX_ARFF, SUFFIX_XML, get_file_name, get_file_nam
 
 class DataSet:
     """
-    Stores the properties of a data set to be used for training and evaluating multi-label classifiers.
+    Stores the properties of a data set to be used for training and evaluating machine learning models.
     """
 
     def __init__(self, data_dir: str, data_set_name: str, use_one_hot_encoding: bool):
         """
         :param data_dir:                The path of the directory where the data set is located
         :param data_set_name:           The name of the data set
-        :param use_one_hot_encoding:    True, if one-hot-encoding should be used to encode nominal attributes, False
+        :param use_one_hot_encoding:    True, if one-hot-encoding should be used to encode nominal features, False
                                         otherwise
         """
         self.data_dir = data_dir
@@ -209,9 +209,9 @@ class DataSplitter(ABC):
             :param data_split:  Information about the split of the available data that should be used for training and
                                 evaluating the model
             :param train_x:     The feature matrix of the training examples
-            :param train_y:     The label matrix of the training examples
+            :param train_y:     The output matrix of the training examples
             :param test_x:      The feature matrix of the test examples
-            :param test_y:      The label matrix of the test examples
+            :param test_y:      The output matrix of the test examples
             """
 
     def run(self, callback: Callback):
@@ -288,7 +288,7 @@ class NoSplitter(DataSplitter):
         else:
             encoded_meta_data = None
 
-        # Train and evaluate classifier...
+        # Train and evaluate model...
         data_split = NoSplit()
         callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_split, x, y,
                                     x, y)
@@ -350,7 +350,7 @@ class TrainTestSplitter(DataSplitter):
                                                                 random_state=self.random_state,
                                                                 shuffle=True)
 
-        # Train and evaluate classifier...
+        # Train and evaluate model...
         data_split = TrainingTestSplit()
         callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_split,
                                     train_x, train_y, test_x, test_y)
@@ -455,7 +455,7 @@ class CrossValidationSplitter(DataSplitter):
             # Obtain test set for current fold...
             test_x, test_y = data[fold]
 
-            # Train and evaluate classifier...
+            # Train and evaluate model...
             data_split = CrossValidationFold(num_folds=num_folds, fold=fold, current_fold=current_fold)
             callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data, data_split,
                                         train_x, train_y, test_x, test_y)
@@ -486,7 +486,7 @@ class CrossValidationSplitter(DataSplitter):
                 test_x = x[test_indices]
                 test_y = y[test_indices]
 
-                # Train and evaluate classifier...
+                # Train and evaluate model...
                 data_split = CrossValidationFold(num_folds=num_folds, fold=fold, current_fold=current_fold)
                 callback.train_and_evaluate(encoded_meta_data if encoded_meta_data is not None else meta_data,
                                             data_split, train_x, train_y, test_x, test_y)

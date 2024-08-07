@@ -3,40 +3,7 @@
 """
 
 
-cdef class LabelMatrix:
-    """
-    A label matrix.
-    """
-
-    cdef ILabelMatrix* get_label_matrix_ptr(self):
-        pass
-
-    def get_num_rows(self) -> int:
-        """
-        Returns the number of examples in the label matrix.
-
-        :return The number of examples
-        """
-        return self.get_label_matrix_ptr().getNumExamples()
-
-    def get_num_cols(self) -> int:
-        """
-        Returns the number of labels in the label matrix.
-
-        :return The number of labels
-        """
-        return self.get_label_matrix_ptr().getNumLabels()
-
-    def is_sparse(self) -> bool:
-        """
-        Returns whether the label matrix is sparse or not.
-
-        :return: True, if the label matrix is sparse, False otherwise
-        """
-        return self.get_label_matrix_ptr().isSparse()
-
-
-cdef class RowWiseLabelMatrix(LabelMatrix):
+cdef class RowWiseLabelMatrix(OutputMatrix):
     """
     A label matrix that provides row-wise access to the labels of examples.
     """
@@ -63,7 +30,7 @@ cdef class CContiguousLabelMatrix(RowWiseLabelMatrix):
         cdef uint32 num_labels = array.shape[1]
         self.label_matrix_ptr = createCContiguousLabelMatrix(&array[0, 0], num_examples, num_labels)
 
-    cdef ILabelMatrix* get_label_matrix_ptr(self):
+    cdef IOutputMatrix* get_output_matrix_ptr(self):
         return self.label_matrix_ptr.get()
 
     cdef IRowWiseLabelMatrix* get_row_wise_label_matrix_ptr(self):
@@ -79,11 +46,11 @@ cdef class CsrLabelMatrix(RowWiseLabelMatrix):
     def __cinit__(self, uint32[::1] indices not None, uint32[::1] indptr not None, uint32 num_examples,
                   uint32 num_labels):
         """
-        :param indices:         An array of type `uint32`, shape `(num_non_zero_values)`, that stores the
-                                column-indices, the relevant labels correspond to
+        :param indices:         An array of type `uint32`, shape `(num_dense_elements)`, that stores the column-indices
+                                of all dense elements explicitly stored in the matrix
         :param indptr:          An array of type `uint32`, shape `(num_examples + 1)`, that stores the indices of the
                                 first element in `indices` that corresponds to a certain example. The index at the last
-                                position is equal to `num_non_zero_values`
+                                position is equal to `num_dense_elements`
         :param num_examples:    The total number of examples
         :param num_labels:      The total number of labels
         """
@@ -91,7 +58,7 @@ cdef class CsrLabelMatrix(RowWiseLabelMatrix):
         self.indptr = indptr
         self.label_matrix_ptr = createCsrLabelMatrix(&indices[0], &indptr[0], num_examples, num_labels)
 
-    cdef ILabelMatrix* get_label_matrix_ptr(self):
+    cdef IOutputMatrix* get_output_matrix_ptr(self):
         return self.label_matrix_ptr.get()
 
     cdef IRowWiseLabelMatrix* get_row_wise_label_matrix_ptr(self):

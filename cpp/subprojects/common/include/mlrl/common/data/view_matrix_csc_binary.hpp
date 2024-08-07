@@ -16,11 +16,11 @@ class MLRLCOMMON_API BinaryCscView : public BinarySparseMatrix {
     public:
 
         /**
-         * @param indices   A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the row
-         *                  indices, the values in the matrix correspond to
+         * @param indices   A pointer to an array of type `uint32`, shape `(numDenseElements)`, that stores the row
+         *                  indices of all dense elements explicitly stored in the matrix
          * @param indptr    A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices of
-         *                  the first element in `indices` that corresponds to a certain column. The index at the last
-         *                  position must be equal to `numNonZeroValues`
+         *                  the first element in `indices` that corresponds to a certain column. The index at the
+         *                  position must be equal to `numDenseElements`
          * @param numRows   The number of rows in the view
          * @param numCols   The number of columns in the view
          */
@@ -110,11 +110,11 @@ class MLRLCOMMON_API BinaryCscView : public BinarySparseMatrix {
         }
 
         /**
-         * Returns the number of non-zero elements in the view.
+         * Returns the number of dense elements explicitly stored in the view.
          *
-         * @return The number of non-zero elements
+         * @return The number of dense elements explicitly stored in the view
          */
-        uint32 getNumNonZeroElements() const {
+        uint32 getNumDenseElements() const {
             return BinarySparseMatrix::indptr[Matrix::numCols];
         }
 };
@@ -130,15 +130,14 @@ class MLRLCOMMON_API BinaryCscViewAllocator : public Matrix {
     public:
 
         /**
-         * @param numNonZeroElements    The number of non-zero values in the view
-         * @param numRows               The number of rows in the view
-         * @param numCols               The number of columns in the view
+         * @param numDenseElements  The number of dense elements explicitly stored in the view
+         * @param numRows           The number of rows in the view
+         * @param numCols           The number of columns in the view
          */
-        BinaryCscViewAllocator(uint32 numNonZeroElements, uint32 numRows, uint32 numCols)
-            : Matrix(allocateMemory<uint32>(numNonZeroElements), allocateMemory<uint32>(numCols + 1), numRows,
-                     numCols) {
+        BinaryCscViewAllocator(uint32 numDenseElements, uint32 numRows, uint32 numCols)
+            : Matrix(allocateMemory<uint32>(numDenseElements), allocateMemory<uint32>(numCols + 1), numRows, numCols) {
             Matrix::indptr[0] = 0;
-            Matrix::indptr[numCols] = numNonZeroElements;
+            Matrix::indptr[numCols] = numDenseElements;
         }
 
         /**

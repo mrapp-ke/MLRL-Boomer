@@ -12,7 +12,7 @@ from mlrl.seco.cython.learner import AccuracyHeuristicMixin, AccuracyPruningHeur
     FMeasurePruningHeuristicMixin, KlnLiftFunctionMixin, LaplaceHeuristicMixin, LaplacePruningHeuristicMixin, \
     MEstimateHeuristicMixin, MEstimatePruningHeuristicMixin, NoLiftFunctionMixin, PartialHeadMixin, \
     PeakLiftFunctionMixin, PrecisionHeuristicMixin, PrecisionPruningHeuristicMixin, RecallHeuristicMixin, \
-    RecallPruningHeuristicMixin, SingleLabelHeadMixin, WraHeuristicMixin, WraPruningHeuristicMixin
+    RecallPruningHeuristicMixin, SingleOutputHeadMixin, WraHeuristicMixin, WraPruningHeuristicMixin
 
 HEURISTIC_ACCURACY = 'accuracy'
 
@@ -38,18 +38,18 @@ class HeadTypeParameter(NominalParameter):
     A parameter that allows to configure the type of the rule heads that should be used.
     """
 
-    HEAD_TYPE_SINGLE = 'single-label'
+    HEAD_TYPE_SINGLE = 'single'
 
     HEAD_TYPE_PARTIAL = 'partial'
 
     def __init__(self):
         super().__init__(name='head_type', description='The type of the rule heads that should be used')
-        self.add_value(name=self.HEAD_TYPE_SINGLE, mixin=SingleLabelHeadMixin)
+        self.add_value(name=self.HEAD_TYPE_SINGLE, mixin=SingleOutputHeadMixin)
         self.add_value(name=self.HEAD_TYPE_PARTIAL, mixin=PartialHeadMixin)
 
     def _configure(self, config, value: str, _: Optional[Options]):
         if value == self.HEAD_TYPE_SINGLE:
-            config.use_single_label_heads()
+            config.use_single_output_heads()
         elif value == self.HEAD_TYPE_PARTIAL:
             config.use_partial_heads()
 
@@ -162,7 +162,7 @@ class PruningHeuristicParameter(NominalParameter):
             conf.set_m(options.get_float(OPTION_M, conf.get_m()))
 
 
-SECO_RULE_LEARNER_PARAMETERS = RULE_LEARNER_PARAMETERS | {
+SECO_CLASSIFIER_PARAMETERS = RULE_LEARNER_PARAMETERS | {
     FeatureBinningParameter(),
     HeadTypeParameter(),
     LiftFunctionParameter(),

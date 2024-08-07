@@ -8,6 +8,9 @@
 #include "mlrl/common/prediction/probability_calibration_marginal.hpp"
 #include "mlrl/common/sampling/partition_sampling.hpp"
 #include "mlrl/common/stopping/global_pruning.hpp"
+#include "mlrl/common/util/properties.hpp"
+
+#include <memory>
 
 #include <memory>
 
@@ -18,37 +21,47 @@ namespace boosting {
      * examples into a training set and a holdout set, depending on whether a holdout set is needed and depending on the
      * loss function.
      */
-    class AutomaticPartitionSamplingConfig final : public IPartitionSamplingConfig {
+    class AutomaticPartitionSamplingConfig final : public IClassificationPartitionSamplingConfig,
+                                                   public IRegressionPartitionSamplingConfig {
         private:
 
-            const std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr_;
+            const ReadableProperty<IGlobalPruningConfig> globalPruningConfig_;
 
-            const std::unique_ptr<IMarginalProbabilityCalibratorConfig>& marginalProbabilityCalibratorConfigPtr_;
+            const ReadableProperty<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfig_;
 
-            const std::unique_ptr<IJointProbabilityCalibratorConfig>& jointProbabilityCalibratorConfigPtr_;
+            const ReadableProperty<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfig_;
 
         public:
 
             /**
-             * @param globalPruningConfigPtr                    A reference to an unique pointer that stores the
-             *                                                  configuration of the method that is used for pruning
-             *                                                  entire rules
-             * @param marginalProbabilityCalibratorConfigPtr    A reference to an unique pointer that stores the
-             *                                                  configuration of the calibrator that is used to fit a
-             *                                                  model for the calibration of marginal probabilities
-             * @param jointProbabilityCalibratorConfigPtr       A reference to an unique pointer that stores the
-             *                                                  configuration of the calibrator that is used to fit a
-             *                                                  model for the calibration of joint probabilities
+             * @param globalPruningConfig                 A `ReadableProperty` that allows to access the
+             *                                            `IGlobalPruningConfig` that stores the configuration of the
+             *                                            method that is used for pruning entire rules
+             * @param marginalProbabilityCalibratorConfig A `ReadableProperty` that allows to access the
+             *                                            `IMarginalProbabilityCalibratorConfig` that stores the
+             *                                            configuration of the calibrator that is used to fit a model
+             *                                            for the calibration of marginal probabilities
+             * @param jointProbabilityCalibratorConfig    A `ReadableProperty` that allows to access the
+             *                                            `IJointProbabilityCalibratorConfig` that stores the
+             *                                            configuration of the calibrator that is used to fit a model
+             *                                            for the calibration of joint probabilities
              */
             AutomaticPartitionSamplingConfig(
-              const std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr,
-              const std::unique_ptr<IMarginalProbabilityCalibratorConfig>& marginalProbabilityCalibratorConfigPtr,
-              const std::unique_ptr<IJointProbabilityCalibratorConfig>& jointProbabilityCalibratorConfigPtr);
+              ReadableProperty<IGlobalPruningConfig> globalPruningConfig,
+              ReadableProperty<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfig,
+              ReadableProperty<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfig);
 
             /**
-             * @see `IPartitionSamplingConfig::createPartitionSamplingFactory`
+             * @see `IClassificationPartitionSamplingConfig::createClassificationPartitionSamplingFactory`
              */
-            std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const override;
+            std::unique_ptr<IClassificationPartitionSamplingFactory> createClassificationPartitionSamplingFactory()
+              const override;
+
+            /**
+             * @see `IRegressionPartitionSamplingConfig::createClassificationPartitionSamplingFactory`
+             */
+            std::unique_ptr<IRegressionPartitionSamplingFactory> createRegressionPartitionSamplingFactory()
+              const override;
     };
 
 }

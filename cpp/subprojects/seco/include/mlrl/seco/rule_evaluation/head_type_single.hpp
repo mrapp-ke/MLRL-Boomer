@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/util/properties.hpp"
 #include "mlrl/seco/heuristics/heuristic.hpp"
 #include "mlrl/seco/rule_evaluation/head_type.hpp"
 
@@ -11,27 +12,27 @@
 namespace seco {
 
     /**
-     * Allows to configure single-label rule heads that predict for a single label.
+     * Allows to configure single-output heads that predict for a single output.
      */
-    class SingleLabelHeadConfig final : public IHeadConfig {
+    class SingleOutputHeadConfig final : public IHeadConfig {
         private:
 
-            const std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr_;
+            const ReadableProperty<IHeuristicConfig> heuristicConfig_;
 
-            const std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr_;
+            const ReadableProperty<IHeuristicConfig> pruningHeuristicConfig_;
 
         public:
 
             /**
-             * @param heuristicConfigPtr        A reference to an unique pointer that stores the configuration of the
-             *                                  heuristic for learning rules
-             * @param pruningHeuristicConfigPtr A reference to an unique pointer that stores the configuration of the
-             *                                  heuristic for pruning rules
+             * @param heuristicConfig           A `ReadableProperty` that allows to access the `IHeuristicConfig` that
+             *                                  stores the configuration of the heuristic for learning rules
+             * @param pruningHeuristicConfig    A `ReadableProperty` that allows to access the `IHeuristicConfig` that
+             *                                  stores the configuration of the heuristic for pruning rules
              */
-            SingleLabelHeadConfig(const std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr,
-                                  const std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr);
+            SingleOutputHeadConfig(ReadableProperty<IHeuristicConfig> heuristicConfig,
+                                   ReadableProperty<IHeuristicConfig> pruningHeuristicConfig);
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IRowWiseLabelMatrix& labelMatrix) const override;
     };
 

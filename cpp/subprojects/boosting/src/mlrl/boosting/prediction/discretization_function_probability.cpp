@@ -3,8 +3,8 @@
 namespace boosting {
 
     /**
-     * An implementation of the type `IDiscretizationFunction` that allows to discretize regression scores by
-     * transforming them into marginal probabilities.
+     * An implementation of the type `IDiscretizationFunction` that allows to discretize scores by transforming them
+     * into marginal probabilities.
      */
     class ProbabilityDiscretizationFunction final : public IDiscretizationFunction {
         private:
@@ -16,7 +16,7 @@ namespace boosting {
             /**
              * @param marginalProbabilityFunctionPtr An unique pointer to an object of type
              *                                       `IMarginalProbabilityFunction` that should be used to transform
-             *                                       regression scores into marginal probabilities
+             *                                       scores into marginal probabilities
              */
             ProbabilityDiscretizationFunction(
               std::unique_ptr<IMarginalProbabilityFunction> marginalProbabilityFunctionPtr)

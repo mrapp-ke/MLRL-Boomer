@@ -16,13 +16,13 @@ class CsrLabelMatrix final : public IterableBinarySparseMatrixDecorator<MatrixDe
     public:
 
         /**
-         * @param indices A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the
-         *                column-indices, the relevant labels correspond to
-         * @param indptr  A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices of the
-         *                first element in `indices` that corresponds to a certain row. The index at the last position
-         *                is equal to `numNonZeroValues`
-         * @param numRows The number of rows in the label matrix
-         * @param numCols The number of columns in the label matrix
+         * @param indices   A pointer to an array of type `uint32`, shape `(numDenseElements)`, that stores the column
+         *                  indices of all dense elements explicitly stored in the matrix
+         * @param indptr    A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices of
+         *                  the first element in `indices` that corresponds to a certain row. The index at the last
+         *                  position is equal to `numDenseElements`
+         * @param numRows   The number of rows in the label matrix
+         * @param numCols   The number of columns in the label matrix
          */
         CsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows, uint32 numCols)
             : IterableBinarySparseMatrixDecorator<MatrixDecorator<BinaryCsrView>>(
@@ -36,7 +36,7 @@ class CsrLabelMatrix final : public IterableBinarySparseMatrixDecorator<MatrixDe
             return this->getNumRows();
         }
 
-        uint32 getNumLabels() const override {
+        uint32 getNumOutputs() const override {
             return this->getNumCols();
         }
 
@@ -65,22 +65,22 @@ class CsrLabelMatrix final : public IterableBinarySparseMatrixDecorator<MatrixDe
         }
 
         std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
-          const IStatisticsProviderFactory& factory) const override {
+          const IClassificationStatisticsProviderFactory& factory) const override {
             return factory.create(this->getView());
         }
 
         std::unique_ptr<IPartitionSampling> createPartitionSampling(
-          const IPartitionSamplingFactory& factory) const override {
+          const IClassificationPartitionSamplingFactory& factory) const override {
             return factory.create(this->getView());
         }
 
-        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
+        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IClassificationInstanceSamplingFactory& factory,
                                                                   const SinglePartition& partition,
                                                                   IStatistics& statistics) const override {
             return factory.create(this->getView(), partition, statistics);
         }
 
-        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
+        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IClassificationInstanceSamplingFactory& factory,
                                                                   BiPartition& partition,
                                                                   IStatistics& statistics) const override {
             return factory.create(this->getView(), partition, statistics);

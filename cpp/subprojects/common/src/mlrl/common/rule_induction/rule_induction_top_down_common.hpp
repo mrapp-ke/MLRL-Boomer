@@ -42,8 +42,8 @@ struct RuleRefinementEntry final {
  *                              the potential refinements
  * @param featureIndices        A reference to an object of type `IIndexVector` that provides access to the indices of
  *                              the features that should be considered
- * @param labelIndices          A reference to an object of type `IIndexVector` that provides access to the indices of
- *                              the labels for which the refinement(s) may predict
+ * @param outputIndices         A reference to an object of type `IIndexVector` that provides access to the indices of
+ *                              the outputs for which the refinement(s) may predict
  * @param minCoverage           The minimum number of training examples that must be covered by potential refinements
  * @param numThreads            The number of CPU threads to be used to search for potential refinements across multiple
  *                              features in parallel
@@ -51,7 +51,7 @@ struct RuleRefinementEntry final {
  */
 template<typename RefinementComparator>
 static inline bool findRefinement(RefinementComparator& refinementComparator, IFeatureSubspace& featureSubspace,
-                                  const IIndexVector& featureIndices, const IIndexVector& labelIndices,
+                                  const IIndexVector& featureIndices, const IIndexVector& outputIndices,
                                   uint32 minCoverage, uint32 numThreads) {
     bool foundRefinement = false;
 
@@ -64,7 +64,7 @@ static inline bool findRefinement(RefinementComparator& refinementComparator, IF
         uint32 featureIndex = featureIndices.getIndex(i);
         RuleRefinementEntry<RefinementComparator>& ruleRefinementEntry = ruleRefinementEntries[i];
         ruleRefinementEntry.comparatorPtr = std::make_unique<RefinementComparator>(refinementComparator);
-        ruleRefinementEntry.ruleRefinementPtr = labelIndices.createRuleRefinement(featureSubspace, featureIndex);
+        ruleRefinementEntry.ruleRefinementPtr = outputIndices.createRuleRefinement(featureSubspace, featureIndex);
     }
 
     // Search for the best condition among all available features to be added to the current rule...

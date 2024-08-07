@@ -1,0 +1,284 @@
+INFO Starting experiment using the classification algorithm "boomer"...
+INFO Performing full 10-fold cross validation...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
+INFO Fold 1 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-1.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-1.model"
+INFO Predicting for 60 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 1):
+
+Example-wise F1         61.06
+Example-wise Jaccard    53.19
+Example-wise Precision  83.61
+Example-wise Recall     60.56
+Hamming Accuracy        82.5
+Hamming Loss            17.5
+Macro F1                66.9
+Macro Jaccard           51.94
+Macro Precision         79.73
+Macro Recall            60.11
+Micro F1                69.57
+Micro Jaccard           53.33
+Micro Precision         80
+Micro Recall            61.54
+Subset 0/1 Loss         71.67
+Subset Accuracy         28.33
+
+INFO Fold 2 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-2.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-2.model"
+INFO Predicting for 60 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 2):
+
+Example-wise F1         65.33
+Example-wise Jaccard    55.83
+Example-wise Precision  83.06
+Example-wise Recall     64.44
+Hamming Accuracy        81.67
+Hamming Loss            18.33
+Macro F1                68.93
+Macro Jaccard           53.47
+Macro Precision         79.55
+Macro Recall            61.79
+Micro F1                69.16
+Micro Jaccard           52.86
+Micro Precision         78.72
+Micro Recall            61.67
+Subset 0/1 Loss         75
+Subset Accuracy         25
+
+INFO Fold 3 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-3.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-3.model"
+INFO Predicting for 60 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 3):
+
+Example-wise F1         51
+Example-wise Jaccard    43.33
+Example-wise Precision  73.61
+Example-wise Recall     50.83
+Hamming Accuracy        78.06
+Hamming Loss            21.94
+Macro F1                58.26
+Macro Jaccard           41.95
+Macro Precision         71.42
+Macro Recall            51.96
+Micro F1                60.7
+Micro Jaccard           43.57
+Micro Precision         70.11
+Micro Recall            53.51
+Subset 0/1 Loss         80
+Subset Accuracy         20
+
+INFO Fold 4 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-4.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-4.model"
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 4):
+
+Example-wise F1         55.2
+Example-wise Jaccard    48.59
+Example-wise Precision  73.45
+Example-wise Recall     55.93
+Hamming Accuracy        80.23
+Hamming Loss            19.77
+Macro F1                60.43
+Macro Jaccard           44.9
+Macro Precision         67.71
+Macro Recall            55.6
+Micro F1                62.37
+Micro Jaccard           45.31
+Micro Precision         69.05
+Micro Recall            56.86
+Subset 0/1 Loss         71.19
+Subset Accuracy         28.81
+
+INFO Fold 5 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-5.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-5.model"
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 5):
+
+Example-wise F1         62.03
+Example-wise Jaccard    53.67
+Example-wise Precision  80.51
+Example-wise Recall     61.86
+Hamming Accuracy        82.77
+Hamming Loss            17.23
+Macro F1                69.25
+Macro Jaccard           55.56
+Macro Precision         81.7
+Macro Recall            63.89
+Micro F1                70.81
+Micro Jaccard           54.81
+Micro Precision         78.72
+Micro Recall            64.35
+Subset 0/1 Loss         72.88
+Subset Accuracy         27.12
+
+INFO Fold 6 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-6.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-6.model"
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 6):
+
+Example-wise F1         57.18
+Example-wise Jaccard    50.56
+Example-wise Precision  72.6
+Example-wise Recall     58.19
+Hamming Accuracy        80.51
+Hamming Loss            19.49
+Macro F1                62.06
+Macro Jaccard           46.22
+Macro Precision         73.77
+Macro Recall            59.67
+Micro F1                63.49
+Micro Jaccard           46.51
+Micro Precision         70.59
+Micro Recall            57.69
+Subset 0/1 Loss         67.8
+Subset Accuracy         32.2
+
+INFO Fold 7 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-7.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-7.model"
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 7):
+
+Example-wise F1         62.82
+Example-wise Jaccard    55.23
+Example-wise Precision  76.55
+Example-wise Recall     66.1
+Hamming Accuracy        82.2
+Hamming Loss            17.8
+Macro F1                63.25
+Macro Jaccard           48.94
+Macro Precision         69.03
+Macro Recall            59.12
+Micro F1                68.34
+Micro Jaccard           51.91
+Micro Precision         73.12
+Micro Recall            64.15
+Subset 0/1 Loss         67.8
+Subset Accuracy         32.2
+
+INFO Fold 8 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-8.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-8.model"
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 8):
+
+Example-wise F1         66.44
+Example-wise Jaccard    58.47
+Example-wise Precision  77.4
+Example-wise Recall     69.49
+Hamming Accuracy        83.9
+Hamming Loss            16.1
+Macro F1                71.13
+Macro Jaccard           56.23
+Macro Precision         74.51
+Macro Recall            71.14
+Micro F1                72.99
+Micro Jaccard           57.46
+Micro Precision         74.04
+Micro Recall            71.96
+Subset 0/1 Loss         67.8
+Subset Accuracy         32.2
+
+INFO Fold 9 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-9.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-9.model"
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 9):
+
+Example-wise F1         55.14
+Example-wise Jaccard    46.19
+Example-wise Precision  69.21
+Example-wise Recall     53.67
+Hamming Accuracy        78.81
+Hamming Loss            21.19
+Macro F1                56.47
+Macro Jaccard           42.07
+Macro Precision         65.69
+Macro Recall            51.49
+Micro F1                63.41
+Micro Jaccard           46.43
+Micro Precision         70.65
+Micro Recall            57.52
+Subset 0/1 Loss         83.05
+Subset Accuracy         16.95
+
+INFO Fold 10 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-10.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-10.model"
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 10):
+
+Example-wise F1         55.71
+Example-wise Jaccard    49.29
+Example-wise Precision  75.42
+Example-wise Recall     52.82
+Hamming Accuracy        79.94
+Hamming Loss            20.06
+Macro F1                60.8
+Macro Jaccard           45.58
+Macro Precision         76.71
+Macro Recall            52.45
+Micro F1                62.43
+Micro Jaccard           45.38
+Micro Precision         74.68
+Micro Recall            53.64
+Subset 0/1 Loss         67.8
+Subset Accuracy         32.2
+
+INFO Evaluation result for test data (Average across 10 folds):
+
+Example-wise F1         59.19  ±4.80
+Example-wise Jaccard    51.44  ±4.45
+Example-wise Precision  76.54  ±4.45
+Example-wise Recall     59.39  ±5.85
+Hamming Accuracy        81.06  ±1.76
+Hamming Loss            18.94  ±1.76
+Macro F1                63.75  ±4.77
+Macro Jaccard           48.69  ±5.07
+Macro Precision         73.98  ±5.20
+Macro Recall            58.72  ±5.83
+Micro F1                66.33  ±4.08
+Micro Jaccard           49.76  ±4.59
+Micro Precision         73.97  ±3.80
+Micro Recall            60.29  ±5.36
+Subset 0/1 Loss         72.5   ±5.15
+Subset Accuracy         27.5   ±5.15
+
+INFO Successfully finished after <duration>

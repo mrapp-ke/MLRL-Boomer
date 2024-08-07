@@ -33,7 +33,7 @@ class CContiguousLabelMatrix final : public DenseMatrixDecorator<CContiguousView
             return this->getNumRows();
         }
 
-        uint32 getNumLabels() const override {
+        uint32 getNumOutputs() const override {
             return this->getNumCols();
         }
 
@@ -78,22 +78,22 @@ class CContiguousLabelMatrix final : public DenseMatrixDecorator<CContiguousView
         }
 
         std::unique_ptr<IStatisticsProvider> createStatisticsProvider(
-          const IStatisticsProviderFactory& factory) const override {
+          const IClassificationStatisticsProviderFactory& factory) const override {
             return factory.create(this->getView());
         }
 
         std::unique_ptr<IPartitionSampling> createPartitionSampling(
-          const IPartitionSamplingFactory& factory) const override {
+          const IClassificationPartitionSamplingFactory& factory) const override {
             return factory.create(this->getView());
         }
 
-        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
+        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IClassificationInstanceSamplingFactory& factory,
                                                                   const SinglePartition& partition,
                                                                   IStatistics& statistics) const override {
             return factory.create(this->getView(), partition, statistics);
         }
 
-        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
+        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IClassificationInstanceSamplingFactory& factory,
                                                                   BiPartition& partition,
                                                                   IStatistics& statistics) const override {
             return factory.create(this->getView(), partition, statistics);

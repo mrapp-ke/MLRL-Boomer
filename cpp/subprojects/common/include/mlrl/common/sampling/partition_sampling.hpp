@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_csr.hpp"
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
 #include "mlrl/common/sampling/partition.hpp"
 #include "mlrl/common/sampling/random.hpp"
@@ -30,12 +31,13 @@ class IPartitionSampling {
 };
 
 /**
- * Defines an interface for all factories that allow to create objects of type `IPartitionSampling`.
+ * Defines an interface for all factories that allow to create objects of type `IPartitionSampling` that can be used in
+ * classification problems.
  */
-class IPartitionSamplingFactory {
+class IClassificationPartitionSamplingFactory {
     public:
 
-        virtual ~IPartitionSamplingFactory() {}
+        virtual ~IClassificationPartitionSamplingFactory() {}
 
         /**
          * Creates and returns a new object of type `IPartitionSampling`.
@@ -57,19 +59,70 @@ class IPartitionSamplingFactory {
 };
 
 /**
- * Defines an interface for all classes that allow to configure a method for partitioning the available training
- * examples into a training set and a holdout set.
+ * Defines an interface for all factories that allow to create objects of type `IPartitionSampling` that can be used in
+ * regression problems.
  */
-class IPartitionSamplingConfig {
+class IRegressionPartitionSamplingFactory {
     public:
 
-        virtual ~IPartitionSamplingConfig() {}
+        virtual ~IRegressionPartitionSamplingFactory() {}
 
         /**
-         * Creates and returns a new object of type `IPartitionSamplingFactory` according to the specified
+         * Creates and returns a new object of type `IPartitionSampling`.
+         *
+         * @param regressionMatrix  A reference to an object of type `CContiguousView` that provides random access to
+         *                          the regression scores of the training examples
+         * @return                  An unique pointer to an object of type `IPartitionSampling` that has been created
+         */
+        virtual std::unique_ptr<IPartitionSampling> create(
+          const CContiguousView<const float32>& regressionMatrix) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IPartitionSampling`.
+         *
+         * @param regressionMatrix  A reference to an object of type `CsrView` that provides row-wise access to the
+         *                          regression scores of the training examples
+         * @return                  An unique pointer to an object of type `IPartitionSampling` that has been created
+         */
+        virtual std::unique_ptr<IPartitionSampling> create(const CsrView<const float32>& regressionMatrix) const = 0;
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a method for partitioning the available training
+ * examples into a training set and a holdout set that can be used in classification problems.
+ */
+class IClassificationPartitionSamplingConfig {
+    public:
+
+        virtual ~IClassificationPartitionSamplingConfig() {}
+
+        /**
+         * Creates and returns a new object of type `IClassificationPartitionSamplingFactory` according to the specified
          * configuration.
          *
-         * @return An unique pointer to an object of type `IPartitionSamplingFactory` that has been created
+         * @return An unique pointer to an object of type `IClassificationPartitionSamplingFactory` that has been
+         * created
          */
-        virtual std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const = 0;
+        virtual std::unique_ptr<IClassificationPartitionSamplingFactory> createClassificationPartitionSamplingFactory()
+          const = 0;
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a method for partitioning the available training
+ * examples into a training set and a holdout set that can be used in regression problems.
+ */
+class IRegressionPartitionSamplingConfig {
+    public:
+
+        virtual ~IRegressionPartitionSamplingConfig() {}
+
+        /**
+         * Creates and returns a new object of type `IRegressionPartitionSamplingFactory` according to the specified
+         * configuration.
+         *
+         * @return An unique pointer to an object of type `IRegressionPartitionSamplingFactory` that has been
+         * created
+         */
+        virtual std::unique_ptr<IRegressionPartitionSamplingFactory> createRegressionPartitionSamplingFactory()
+          const = 0;
 };

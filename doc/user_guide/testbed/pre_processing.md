@@ -16,14 +16,20 @@ Even though nominal and binary features are natively supported in an efficient w
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --one-hot-encoding true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --one-hot-encoding true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --one-hot-encoding true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --one-hot-encoding true
    ```
 ````
 
-Under the hood, the program makes use of scikit-learn's [OneHotEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html) for pre-processing the data.
+Under the hood, the program makes use of scikit-learn's {py:class}`sklearn.preprocessing.OneHotEncoder` for pre-processing the data.
