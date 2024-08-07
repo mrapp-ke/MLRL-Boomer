@@ -14,5 +14,5 @@ class NoFeatureBinningConfig final : public IFeatureBinningConfig {
     public:
 
         std::unique_ptr<IFeatureBinningFactory> createFeatureBinningFactory(
-          const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const override;
+          const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const override;
 };

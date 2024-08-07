@@ -1,15 +1,15 @@
 from libcpp cimport bool
 
 
-cdef extern from "mlrl/boosting/prediction/predictor_probability_label_wise.hpp" namespace "boosting" nogil:
+cdef extern from "mlrl/boosting/prediction/predictor_probability_output_wise.hpp" namespace "boosting" nogil:
 
-    cdef cppclass ILabelWiseProbabilityPredictorConfig:
+    cdef cppclass IOutputWiseProbabilityPredictorConfig:
 
         # Functions:
 
         bool isProbabilityCalibrationModelUsed() const
 
-        ILabelWiseProbabilityPredictorConfig& setUseProbabilityCalibrationModel(bool useProbabilityCalibrationModel)
+        IOutputWiseProbabilityPredictorConfig& setUseProbabilityCalibrationModel(bool useProbabilityCalibrationModel)
 
 
 cdef extern from "mlrl/boosting/prediction/predictor_probability_marginalized.hpp" namespace "boosting" nogil:
@@ -38,15 +38,15 @@ cdef extern from "mlrl/boosting/prediction/predictor_binary_example_wise.hpp" na
         IExampleWiseBinaryPredictorConfig& setUseProbabilityCalibrationModel(bool useProbabilityCalibrationModel)
 
 
-cdef extern from "mlrl/boosting/prediction/predictor_binary_label_wise.hpp" namespace "boosting" nogil:
+cdef extern from "mlrl/boosting/prediction/predictor_binary_output_wise.hpp" namespace "boosting" nogil:
 
-    cdef cppclass ILabelWiseBinaryPredictorConfig:
+    cdef cppclass IOutputWiseBinaryPredictorConfig:
 
         # Functions:
 
         bool isBasedOnProbabilities() const
 
-        ILabelWiseBinaryPredictorConfig& setBasedOnProbabilities(bool basedOnProbabilities)
+        IOutputWiseBinaryPredictorConfig& setBasedOnProbabilities(bool basedOnProbabilities)
 
         bool isProbabilityCalibrationModelUsed() const
 
@@ -64,11 +64,11 @@ cdef extern from "mlrl/boosting/prediction/predictor_binary_gfm.hpp" namespace "
         IGfmBinaryPredictorConfig& setUseProbabilityCalibrationModel(bool useProbabilityCalibrationModel)
 
 
-cdef class LabelWiseProbabilityPredictorConfig:
+cdef class OutputWiseProbabilityPredictorConfig:
 
     # Attributes:
 
-    cdef ILabelWiseProbabilityPredictorConfig* config_ptr
+    cdef IOutputWiseProbabilityPredictorConfig* config_ptr
 
 
 cdef class MarginalizedProbabilityPredictorConfig:
@@ -85,11 +85,11 @@ cdef class ExampleWiseBinaryPredictorConfig:
     cdef IExampleWiseBinaryPredictorConfig* config_ptr
 
 
-cdef class LabelWiseBinaryPredictorConfig:
+cdef class OutputWiseBinaryPredictorConfig:
 
     # Attributes:
 
-    cdef ILabelWiseBinaryPredictorConfig* config_ptr
+    cdef IOutputWiseBinaryPredictorConfig* config_ptr
 
 
 cdef class GfmBinaryPredictorConfig:

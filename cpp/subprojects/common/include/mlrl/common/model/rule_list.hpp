@@ -327,47 +327,47 @@ class RuleList final : public IRuleList {
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IBinaryPredictorFactory& factory, const CContiguousView<const float32>& featureMatrix,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
           const IBinaryPredictorFactory& factory, const CsrView<const float32>& featureMatrix,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const ISparseBinaryPredictorFactory& factory, const CContiguousView<const float32>& featureMatrix,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const ISparseBinaryPredictorFactory& factory, const CsrView<const float32>& featureMatrix,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const CContiguousView<const float32>& featureMatrix,
-                                                              const ILabelSpaceInfo& labelSpaceInfo,
-                                                              uint32 numLabels) const override;
+                                                              const IOutputSpaceInfo& outputSpaceInfo,
+                                                              uint32 numOutputs) const override;
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const CsrView<const float32>& featureMatrix,
-                                                              const ILabelSpaceInfo& labelSpaceInfo,
-                                                              uint32 numLabels) const override;
+                                                              const IOutputSpaceInfo& outputSpaceInfo,
+                                                              uint32 numOutputs) const override;
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IProbabilityPredictorFactory& factory, const CContiguousView<const float32>& featureMatrix,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IProbabilityPredictorFactory& factory, const CsrView<const float32>& featureMatrix,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override;
 };

@@ -6,13 +6,19 @@ Because the training of machine learning models can be time-consuming, they are 
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --model-dir /path/to/models
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --model-dir /path/to/models
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --model-dir /path/to/models
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --model-dir /path/to/models
    ```
 ````
 
@@ -20,11 +26,11 @@ Because the training of machine learning models can be time-consuming, they are 
 The path of the directory, where models should be saved, can be either absolute or relative to the working directory.
 ```
 
-If {ref}`train-test-split` are used for evaluating the predictive performance of models, a single model is fit to the training data and stored in a file:
+If {ref}`train-test splits<train-test-split>` are used for evaluating the predictive performance of models, a single model is fit to the training data and stored in a file:
 
 - `boomer.model`
 
-If a {ref}`cross-validation` is performed instead, one model is trained per cross validation fold and all of these models are stored in the specified directory. For example, a 5-fold cross validation results in the following files:
+If a {ref}`cross validation<cross-validation>` is performed instead, one model is trained per cross validation fold and all of these models are stored in the specified directory. For example, a 5-fold cross validation results in the following files:
 
 - `boomer_fold-1.model`
 - `boomer_fold-2.model`

@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/view_vector_binned.hpp"
-#include "mlrl/common/iterator/binned_iterator.hpp"
+#include "mlrl/common/iterator/iterator_binned.hpp"
 #include "mlrl/common/rule_evaluation/score_vector.hpp"
 
 /**
@@ -12,7 +12,7 @@
  * same prediction is made, as well as a numerical score that assesses the overall quality of the rule, in a
  * C-contiguous array.
  *
- * @tparam IndexVector The type of the vector that provides access to the indices of the labels for which the rule may
+ * @tparam IndexVector The type of the vector that provides access to the indices of the outputs for which the rule may
  *                     predict
  */
 template<typename IndexVector>
@@ -21,7 +21,7 @@ class DenseBinnedScoreVector final
       virtual public IScoreVector {
     private:
 
-        const IndexVector& labelIndices_;
+        const IndexVector& outputIndices_;
 
         const bool sorted_;
 
@@ -30,21 +30,21 @@ class DenseBinnedScoreVector final
     public:
 
         /**
-         * @param labelIndices  A reference to an object of template type `IndexVector` that provides access to the
-         *                      indices of the labels for which the rule may predict
+         * @param outputIndices A reference to an object of template type `IndexVector` that provides access to the
+         *                      indices of the outputs for which the rule may predict
          * @param numBins       The number of bins
-         * @param sorted        True, if the indices of the labels for which the rule may predict are sorted in
+         * @param sorted        True, if the indices of the outputs for which the rule may predict are sorted in
          *                      increasing order, false otherwise
          */
-        DenseBinnedScoreVector(const IndexVector& labelIndices, uint32 numBins, bool sorted);
+        DenseBinnedScoreVector(const IndexVector& outputIndices, uint32 numBins, bool sorted);
 
         /**
-         * An iterator that provides read-only access to the indices of the labels for which the rule predicts.
+         * An iterator that provides read-only access to the indices of the output for which the rule predicts.
          */
         typedef typename IndexVector::const_iterator index_const_iterator;
 
         /**
-         * An iterator that provides read-only access to the predicted scores that correspond to individual labels.
+         * An iterator that provides read-only access to the predicted scores that correspond to individual outputs.
          */
         typedef BinnedConstIterator<float64> value_const_iterator;
 
@@ -70,14 +70,14 @@ class DenseBinnedScoreVector final
         typedef typename View<float64>::const_iterator bin_value_const_iterator;
 
         /**
-         * Returns an `index_const_iterator` to the beginning of the indices that correspond to individual labels.
+         * Returns an `index_const_iterator` to the beginning of the indices that correspond to individual outputs.
          *
          * @return An `index_const_iterator` to the beginning
          */
         index_const_iterator indices_cbegin() const;
 
         /**
-         * Returns an `index_const_iterator` to the end of the indices that correspond to individual labels.
+         * Returns an `index_const_iterator` to the end of the indices that correspond to individual outputs.
          *
          * @return An `index_const_iterator` to the end
          */
@@ -85,14 +85,14 @@ class DenseBinnedScoreVector final
 
         /**
          * Returns a `value_const_iterator` to the beginning of the predicted scores that correspond to individual
-         * labels.
+         * outputs.
          *
          * @return A `value_const_iterator` to the beginning
          */
         value_const_iterator values_cbegin() const;
 
         /**
-         * Returns a `value_const_iterator` to the end of the predicted scores that correspond to individual labels.
+         * Returns a `value_const_iterator` to the end of the predicted scores that correspond to individual outputs.
          *
          * @return A `value_const_iterator` to the end
          */
@@ -171,17 +171,17 @@ class DenseBinnedScoreVector final
         void setNumBins(uint32 numBins, bool freeMemory);
 
         /**
-         * Returns whether the rule may only predict for a subset of the available labels, or not.
+         * Returns whether the rule may only predict for a subset of the available outputs, or not.
          *
-         * @return True, if the rule may only predict for a subset of the available labels, false otherwise
+         * @return True, if the rule may only predict for a subset of the available outputs, false otherwise
          */
         bool isPartial() const;
 
         /**
-         * Returns whether the indices of the labels for which the rule may predict are sorted in increasing order, or
+         * Returns whether the indices of the outputs for which the rule may predict are sorted in increasing order, or
          * not.
          *
-         * @return True, if the indices of the labels for which the rule may predict are sorted in increasing order,
+         * @return True, if the indices of the outputs for which the rule may predict are sorted in increasing order,
          *         false otherwise
          */
         bool isSorted() const;

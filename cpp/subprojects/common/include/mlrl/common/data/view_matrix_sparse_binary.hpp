@@ -25,12 +25,12 @@ class MLRLCOMMON_API BinarySparseMatrix : public Matrix {
         uint32* indptr;
 
         /**
-         * @param indices   A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the row or
-         *                  column indices, the values in the matrix correspond to
+         * @param indices   A pointer to an array of type `uint32`, shape `(numDenseElements)`, that stores the row or
+         *                  column indices of all dense elements explicitly stored in the matrix
          * @param indptr    A pointer to an array of type `uint32`, shape `(numCols + 1)` or `(numRows + 1)`, that
          *                  stores the indices of the first element in `indices` that corresponds to a certain column,
          *                  if `indices` stores row indices, or row, if `indices` stores column indices. The index at
-         *                  the last position must be equal to `numNonZeroValues`
+         *                  the last position must be equal to `numDenseElements`
          * @param numRows   The number of rows in the view
          * @param numCols   The number of columns in the view
          */
@@ -67,12 +67,12 @@ class MLRLCOMMON_API BinarySparseMatrix : public Matrix {
         typedef View<index_type>::iterator index_iterator;
 
         /**
-         * Releases the ownership of the array that stores the row or column indices, the non-zero values in the matrix
-         * correspond to. As a result, the behavior of this view becomes undefined and it should not be used anymore.
-         * The caller is responsible for freeing the memory that is occupied by the array.
+         * Releases the ownership of the array that stores the row or column indices, the dense elements explicitly
+         * stored in the matrix correspond to. As a result, the behavior of this view becomes undefined and it should
+         * not be used anymore. The caller is responsible for freeing the memory that is occupied by the array.
          *
-         * @return  A pointer to the array that stores the row or column indices, the non-zero values in the matrix
-         *          correspond to
+         * @return  A pointer to the array that stores the row or column indices, the dense elements explicitly stored
+         *          in the matrix correspond to
          */
         index_type* releaseIndices() {
             index_type* ptr = indices;
@@ -81,11 +81,11 @@ class MLRLCOMMON_API BinarySparseMatrix : public Matrix {
         }
 
         /**
-         * Releases the ownership of the array that stores the indices of the first non-zero element that corresponds to
+         * Releases the ownership of the array that stores the indices of the first dense element that corresponds to
          * a certain column or row. As a result, the behavior of this view becomes undefined and it should not be used
          * anymore. The caller is responsible for freeing the memory that is occupied by the array.
          *
-         * @return  A pointer to an array that stores the indices of the first non-zero element that corresponds to a
+         * @return  A pointer to an array that stores the indices of the first dense element that corresponds to a
          *          certain column or row
          */
         index_type* releaseIndptr() {
@@ -166,11 +166,11 @@ class MLRLCOMMON_API IterableBinarySparseMatrixDecorator : public Matrix {
         }
 
         /**
-         * Returns the number of non-zero elements in the matrix.
+         * Returns the number of dense elements explicitly stored in the matrix.
          *
-         * @return The number of non-zero elements
+         * @return The number of dense elements explicitly stored in the matrix
          */
-        uint32 getNumNonZeroElements() const {
-            return Matrix::view.getNumNonZeroElements();
+        uint32 getNumDenseElements() const {
+            return Matrix::view.getNumDenseElements();
         }
 };

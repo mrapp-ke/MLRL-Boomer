@@ -10,7 +10,7 @@
 /**
  * A single entry of a beam, corresponding to a rule that may be further refined. It stores the conditions and the head
  * of the current rule, as well as an object of type `IFeatureSubspace` that is required to search for potential
- * refinements of the rule and an `IIndexVector` that provides access to the indices of the labels for which these
+ * refinements of the rule and an `IIndexVector` that provides access to the indices of the outputs for which these
  * refinements may predict.
  */
 struct BeamEntry final {
@@ -34,21 +34,21 @@ struct BeamEntry final {
         std::unique_ptr<IFeatureSubspace> featureSubspacePtr;
 
         /**
-         * A pointer to an object of type `IIndexVector` that provides access to the indices of the labels  for which
+         * A pointer to an object of type `IIndexVector` that provides access to the indices of the outputs for which
          * potential refinements of the rule may predict.
          */
-        const IIndexVector* labelIndices;
+        const IIndexVector* outputIndices;
 };
 
 static inline void initializeEntry(BeamEntry& entry, Refinement& refinement,
                                    std::unique_ptr<IFeatureSubspace> featureSubspacePtr,
-                                   const IIndexVector& labelIndices, bool keepHead) {
+                                   const IIndexVector& outputIndices, bool keepHead) {
     featureSubspacePtr->filterSubspace(refinement);
     entry.featureSubspacePtr = std::move(featureSubspacePtr);
     entry.conditionListPtr = std::make_unique<ConditionList>();
     entry.conditionListPtr->addCondition(refinement);
     entry.headPtr = std::move(refinement.headPtr);
-    entry.labelIndices = keepHead ? entry.headPtr.get() : &labelIndices;
+    entry.outputIndices = keepHead ? entry.headPtr.get() : &outputIndices;
 }
 
 static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry, Refinement& refinement,
@@ -61,9 +61,9 @@ static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry, Refinemen
     newEntry.headPtr = std::move(refinement.headPtr);
 
     if (refinement.numCovered <= minCoverage) {
-        newEntry.labelIndices = nullptr;
+        newEntry.outputIndices = nullptr;
     } else {
-        newEntry.labelIndices = keepHead ? newEntry.headPtr.get() : oldEntry.labelIndices;
+        newEntry.outputIndices = keepHead ? newEntry.headPtr.get() : oldEntry.outputIndices;
     }
 }
 
@@ -71,7 +71,7 @@ static inline void copyEntry(BeamEntry& newEntry, BeamEntry& oldEntry) {
     newEntry.featureSubspacePtr = std::move(oldEntry.featureSubspacePtr);
     newEntry.conditionListPtr = std::move(oldEntry.conditionListPtr);
     newEntry.headPtr = std::move(oldEntry.headPtr);
-    newEntry.labelIndices = nullptr;
+    newEntry.outputIndices = nullptr;
 }
 
 static inline const Quality& updateOrder(RuleCompareFunction ruleCompareFunction,
@@ -109,13 +109,13 @@ class Beam final {
          *                              existing refinements of rules
          * @param featureSubspacePtr    An unique pointer to an object of type `IFeatureSubspace` that has been used to
          *                              find the existing refinements of rules
-         * @param labelIndices          A reference to an object of type `IIndexVector` that provides access to the
-         *                              indices of the labels for which further refinement may predict
-         * @param keepHeads             True, if further refinements should predict for the same labels as before, false
-         *                              otherwise
+         * @param outputIndices         A reference to an object of type `IIndexVector` that provides access to the
+         *                              indices of the outputs for which further refinement may predict
+         * @param keepHeads             True, if further refinements should predict for the same outputs as before,
+         *                              false otherwise
          */
         Beam(FixedRefinementComparator& refinementComparator, std::unique_ptr<IFeatureSubspace> featureSubspacePtr,
-             const IIndexVector& labelIndices, bool keepHeads)
+             const IIndexVector& outputIndices, bool keepHeads)
             : Beam(refinementComparator.getNumElements()) {
             FixedRefinementComparator::iterator iterator = refinementComparator.begin();
             uint32 i = 0;
@@ -123,13 +123,13 @@ class Beam final {
             for (; i < numEntries_ - 1; i++) {
                 Refinement& refinement = iterator[i];
                 BeamEntry& entry = entries_[i];
-                initializeEntry(entry, refinement, featureSubspacePtr->copy(), labelIndices, keepHeads);
+                initializeEntry(entry, refinement, featureSubspacePtr->copy(), outputIndices, keepHeads);
                 order_.push_back(entry);
             }
 
             Refinement& refinement = iterator[i];
             BeamEntry& entry = entries_[i];
-            initializeEntry(entry, refinement, std::move(featureSubspacePtr), labelIndices, keepHeads);
+            initializeEntry(entry, refinement, std::move(featureSubspacePtr), outputIndices, keepHeads);
             order_.push_back(entry);
         }
 
@@ -148,8 +148,8 @@ class Beam final {
          * @param beamWidth             The number of rules the new beam should keep track of
          * @param featureSampling       A reference to an object of type `IFeatureSampling` that should be used for
          *                              sampling the features that may be used by potential refinements
-         * @param keepHeads             True, if further refinements should predict for the same labels as before, false
-         *                              otherwise
+         * @param keepHeads             True, if further refinements should predict for the same outputs as before,
+         *                              false otherwise
          * @param minCoverage           The number of training examples that must be covered by potential refinements
          * @param numThreads            The number of CPU threads to be used to search for potential refinements of a
          *                              rule in parallel
@@ -175,14 +175,14 @@ class Beam final {
                 bool foundRefinement = false;
 
                 // Check if existing beam entry can be refined...
-                if (entry.labelIndices) {
+                if (entry.outputIndices) {
                     // Sample features...
                     const IIndexVector& featureIndices = featureSampling.sample(rng);
 
                     // Search for refinements of the existing beam entry...
                     FixedRefinementComparator refinementComparator(ruleCompareFunction, beamWidth, minQuality);
                     foundRefinement = findRefinement(refinementComparator, *entry.featureSubspacePtr, featureIndices,
-                                                     *entry.labelIndices, minCoverage, numThreads);
+                                                     *entry.outputIndices, minCoverage, numThreads);
 
                     if (foundRefinement) {
                         result = true;
@@ -312,7 +312,7 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
 
     protected:
 
-        std::unique_ptr<IFeatureSubspace> growRule(IFeatureSpace& featureSpace, const IIndexVector& labelIndices,
+        std::unique_ptr<IFeatureSubspace> growRule(IFeatureSpace& featureSpace, const IIndexVector& outputIndices,
                                                    const IWeightVector& weights, IPartition& partition,
                                                    IFeatureSampling& featureSampling, RNG& rng,
                                                    std::unique_ptr<ConditionList>& conditionListPtr,
@@ -326,12 +326,12 @@ class BeamSearchTopDownRuleInduction final : public AbstractRuleInduction {
             // Search for the best refinements using a single condition...
             FixedRefinementComparator refinementComparator(ruleCompareFunction_, beamWidth_);
             bool foundRefinement = findRefinement(refinementComparator, *featureSubspacePtr, sampledFeatureIndices,
-                                                  labelIndices, minCoverage_, numThreads_);
+                                                  outputIndices, minCoverage_, numThreads_);
 
             if (foundRefinement) {
                 bool keepHeads = maxHeadRefinements_ == 1;
                 std::unique_ptr<Beam> beamPtr =
-                  std::make_unique<Beam>(refinementComparator, std::move(featureSubspacePtr), labelIndices, keepHeads);
+                  std::make_unique<Beam>(refinementComparator, std::move(featureSubspacePtr), outputIndices, keepHeads);
                 uint32 searchDepth = 1;
 
                 while (foundRefinement && (maxConditions_ == 0 || searchDepth < maxConditions_)) {
@@ -417,10 +417,10 @@ class BeamSearchTopDownRuleInductionFactory final : public IRuleInductionFactory
 };
 
 BeamSearchTopDownRuleInductionConfig::BeamSearchTopDownRuleInductionConfig(
-  RuleCompareFunction ruleCompareFunction, const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+  RuleCompareFunction ruleCompareFunction, ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
     : ruleCompareFunction_(ruleCompareFunction), beamWidth_(4), resampleFeatures_(false), minCoverage_(1),
       minSupport_(0.0f), maxConditions_(0), maxHeadRefinements_(1), recalculatePredictions_(true),
-      multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
+      multiThreadingConfig_(multiThreadingConfig) {}
 
 uint32 BeamSearchTopDownRuleInductionConfig::getBeamWidth() const {
     return beamWidth_;
@@ -498,7 +498,7 @@ IBeamSearchTopDownRuleInductionConfig& BeamSearchTopDownRuleInductionConfig::set
 }
 
 std::unique_ptr<IRuleInductionFactory> BeamSearchTopDownRuleInductionConfig::createRuleInductionFactory(
-  const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+  const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
     uint32 numExamples = featureMatrix.getNumExamples();
     uint32 minCoverage;
 
@@ -508,7 +508,7 @@ std::unique_ptr<IRuleInductionFactory> BeamSearchTopDownRuleInductionConfig::cre
         minCoverage = std::min(numExamples, minCoverage_);
     }
 
-    uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
+    uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, outputMatrix.getNumOutputs());
     return std::make_unique<BeamSearchTopDownRuleInductionFactory>(ruleCompareFunction_, beamWidth_, resampleFeatures_,
                                                                    minCoverage, maxConditions_, maxHeadRefinements_,
                                                                    recalculatePredictions_, numThreads);

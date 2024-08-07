@@ -256,19 +256,19 @@ namespace boosting {
                     BinarySparsePredictionMatrix& applyNext(const FeatureMatrix& featureMatrix, uint32 numThreads,
                                                             typename Model::const_iterator rulesBegin,
                                                             typename Model::const_iterator rulesEnd) override {
-                        uint32 numNonZeroElements;
+                        uint32 numDenseElements;
 
                         if (binaryTransformationPtr_) {
                             IncrementalPredictionDelegate delegate(realMatrix_.getView(), predictionMatrix_,
                                                                    *binaryTransformationPtr_);
-                            numNonZeroElements = BinarySparsePredictionDispatcher<FeatureMatrix, Model>().predict(
+                            numDenseElements = BinarySparsePredictionDispatcher<FeatureMatrix, Model>().predict(
                               delegate, featureMatrix, rulesBegin, rulesEnd, numThreads);
                         } else {
-                            numNonZeroElements = 0;
+                            numDenseElements = 0;
                         }
 
                         predictionMatrixPtr_ = createBinarySparsePredictionMatrix(
-                          predictionMatrix_, realMatrix_.getNumCols(), numNonZeroElements);
+                          predictionMatrix_, realMatrix_.getNumCols(), numDenseElements);
                         return *predictionMatrixPtr_;
                     }
 
@@ -350,18 +350,18 @@ namespace boosting {
              */
             std::unique_ptr<BinarySparsePredictionMatrix> predict(uint32 maxRules) const override {
                 BinaryLilMatrix predictionMatrix(featureMatrix_.numRows, numLabels_);
-                uint32 numNonZeroElements;
+                uint32 numDenseElements;
 
                 if (binaryTransformationPtr_) {
                     CContiguousMatrix<float64> scoreMatrix(numThreads_, numLabels_);
                     PredictionDelegate delegate(scoreMatrix.getView(), predictionMatrix, *binaryTransformationPtr_);
-                    numNonZeroElements = BinarySparsePredictionDispatcher<FeatureMatrix, Model>().predict(
+                    numDenseElements = BinarySparsePredictionDispatcher<FeatureMatrix, Model>().predict(
                       delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);
                 } else {
-                    numNonZeroElements = 0;
+                    numDenseElements = 0;
                 }
 
-                return createBinarySparsePredictionMatrix(predictionMatrix, numLabels_, numNonZeroElements);
+                return createBinarySparsePredictionMatrix(predictionMatrix, numLabels_, numDenseElements);
             }
 
             /**

@@ -10,8 +10,8 @@
 namespace boosting {
 
     /**
-     * Allows to create instances of the type `IMarginalProbabilityFunction` that transform regression scores that are
-     * predicted for individual labels into marginal probabilities via the logistic sigmoid function.
+     * Allows to create instances of the type `IMarginalProbabilityFunction` that transform scores that are predicted
+     * for individual labels into marginal probabilities via the logistic sigmoid function.
      */
     class LogisticFunctionFactory final : public IMarginalProbabilityFunctionFactory {
         public:

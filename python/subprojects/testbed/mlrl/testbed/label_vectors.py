@@ -8,18 +8,19 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
-from scipy.sparse import lil_matrix
+from scipy.sparse import lil_array
 
-from mlrl.common.cython.label_space_info import LabelVectorSet, LabelVectorSetVisitor
+from mlrl.common.cython.output_space_info import LabelVectorSet, LabelVectorSetVisitor
 from mlrl.common.data_types import Uint8
 from mlrl.common.options import Options
-from mlrl.common.rule_learners import RuleLearner
+from mlrl.common.rule_learners import ClassificationRuleLearner
 
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.format import format_table
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+from mlrl.testbed.problem_type import ProblemType
 
 OPTION_SPARSE = 'sparse'
 
@@ -43,14 +44,14 @@ class LabelVectorWriter(OutputWriter):
         def __init__(self, num_labels: int, y=None):
             """
             :param num_labels:  The total number of available labels
-            :param y:           A `numpy.ndarray` or `scipy.sparse` matrix, shape `(num_examples, num_labels)`, that
-                                stores the ground truth labels
+            :param y:           A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                                `(num_examples, num_labels)`, that stores the ground truth labels
             """
             self.num_labels = num_labels
 
             if y is not None:
                 unique_label_vector_strings: Dict[str, int] = {}
-                y = lil_matrix(y)
+                y = lil_array(y)
                 separator = ','
 
                 for label_vector in y.rows:
@@ -124,8 +125,8 @@ class LabelVectorWriter(OutputWriter):
             super().__init__(output_dir=output_dir, file_name='label_vectors', options=options)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
+                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         return LabelVectorWriter.LabelVectors(num_labels=y.shape[1], y=y)
@@ -150,21 +151,21 @@ class LabelVectorSetWriter(LabelVectorWriter):
 
         def visit_label_vector(self, label_vector: np.ndarray, frequency: int):
             """
-            See :func:`mlrl.common.cython.label_space_info.LabelVectorSetVisitor.visit_label_vector`
+            See :func:`mlrl.common.cython.output_space_info.LabelVectorSetVisitor.visit_label_vector`
             """
             self.label_vectors.unique_label_vectors.append((label_vector, frequency))
 
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
+                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
-        if isinstance(learner, RuleLearner):
-            label_space_info = learner.label_space_info_
+        if isinstance(learner, ClassificationRuleLearner):
+            output_space_info = learner.output_space_info_
 
-            if isinstance(label_space_info, LabelVectorSet):
+            if isinstance(output_space_info, LabelVectorSet):
                 visitor = LabelVectorSetWriter.Visitor(num_labels=y.shape[1])
-                label_space_info.visit(visitor)
+                output_space_info.visit(visitor)
                 return visitor.label_vectors
 
-        return super()._generate_output_data(meta_data, x, y, data_split, learner, data_type, prediction_type,
-                                             prediction_scope, predictions, train_time, predict_time)
+        return super()._generate_output_data(problem_type, meta_data, x, y, data_split, learner, data_type,
+                                             prediction_type, prediction_scope, predictions, train_time, predict_time)

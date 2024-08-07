@@ -3,7 +3,7 @@ project('common', 'cpp')
 # Source files
 source_files = [
     'src/mlrl/common/data/vector_bit.cpp',
-    'src/mlrl/common/indices/index_iterator.cpp',
+    'src/mlrl/common/iterator/iterator_index.cpp',
     'src/mlrl/common/indices/index_vector_complete.cpp',
     'src/mlrl/common/indices/index_vector_partial.cpp',
     'src/mlrl/common/input/feature_binning_equal_frequency.cpp',
@@ -24,6 +24,8 @@ source_files = [
     'src/mlrl/common/input/feature_vector_numerical.cpp',
     'src/mlrl/common/input/label_matrix_c_contiguous.cpp',
     'src/mlrl/common/input/label_matrix_csr.cpp',
+    'src/mlrl/common/input/regression_matrix_c_contiguous.cpp',
+    'src/mlrl/common/input/regression_matrix_csr.cpp',
     'src/mlrl/common/model/body_conjunctive.cpp',
     'src/mlrl/common/model/body_empty.cpp',
     'src/mlrl/common/model/condition_list.cpp',
@@ -33,14 +35,18 @@ source_files = [
     'src/mlrl/common/multi_threading/multi_threading_manual.cpp',
     'src/mlrl/common/multi_threading/multi_threading_no.cpp',
     'src/mlrl/common/post_optimization/model_builder_intermediate.cpp',
+    'src/mlrl/common/post_optimization/post_optimization_no.cpp',
     'src/mlrl/common/post_optimization/post_optimization_phase_list.cpp',
     'src/mlrl/common/post_optimization/post_optimization_sequential.cpp',
     'src/mlrl/common/post_optimization/post_optimization_unused_rule_removal.cpp',
     'src/mlrl/common/post_processing/post_processor_no.cpp',
-    'src/mlrl/common/prediction/label_space_info_no.cpp',
     'src/mlrl/common/prediction/label_vector_set.cpp',
+    'src/mlrl/common/prediction/output_space_info_no.cpp',
     'src/mlrl/common/prediction/prediction_matrix_dense.cpp',
     'src/mlrl/common/prediction/prediction_matrix_sparse_binary.cpp',
+    'src/mlrl/common/prediction/predictor_binary_no.cpp',
+    'src/mlrl/common/prediction/predictor_probability_no.cpp',
+    'src/mlrl/common/prediction/predictor_score_no.cpp',
     'src/mlrl/common/prediction/probability_calibration_isotonic.cpp',
     'src/mlrl/common/prediction/probability_calibration_no.cpp',
     'src/mlrl/common/rule_evaluation/score_vector_binned_dense.cpp',
@@ -65,32 +71,33 @@ source_files = [
     'src/mlrl/common/sampling/feature_sampling_without_replacement.cpp',
     'src/mlrl/common/sampling/instance_sampling_no.cpp',
     'src/mlrl/common/sampling/instance_sampling_stratified_example_wise.cpp',
-    'src/mlrl/common/sampling/instance_sampling_stratified_label_wise.cpp',
+    'src/mlrl/common/sampling/instance_sampling_stratified_output_wise.cpp',
     'src/mlrl/common/sampling/instance_sampling_with_replacement.cpp',
     'src/mlrl/common/sampling/instance_sampling_without_replacement.cpp',
-    'src/mlrl/common/sampling/label_sampling_no.cpp',
-    'src/mlrl/common/sampling/label_sampling_round_robin.cpp',
-    'src/mlrl/common/sampling/label_sampling_without_replacement.cpp',
+    'src/mlrl/common/sampling/output_sampling_no.cpp',
+    'src/mlrl/common/sampling/output_sampling_round_robin.cpp',
+    'src/mlrl/common/sampling/output_sampling_without_replacement.cpp',
     'src/mlrl/common/sampling/partition_bi.cpp',
     'src/mlrl/common/sampling/partition_sampling_bi_random.cpp',
     'src/mlrl/common/sampling/partition_sampling_bi_stratified_example_wise.cpp',
-    'src/mlrl/common/sampling/partition_sampling_bi_stratified_label_wise.cpp',
+    'src/mlrl/common/sampling/partition_sampling_bi_stratified_output_wise.cpp',
     'src/mlrl/common/sampling/partition_sampling_no.cpp',
     'src/mlrl/common/sampling/partition_single.cpp',
     'src/mlrl/common/sampling/random.cpp',
     'src/mlrl/common/sampling/stratified_sampling_example_wise.cpp',
-    'src/mlrl/common/sampling/stratified_sampling_label_wise.cpp',
+    'src/mlrl/common/sampling/stratified_sampling_output_wise.cpp',
     'src/mlrl/common/sampling/weight_vector_bit.cpp',
     'src/mlrl/common/sampling/weight_vector_dense.cpp',
     'src/mlrl/common/sampling/weight_vector_equal.cpp',
     'src/mlrl/common/sampling/weight_vector_out_of_sample.cpp',
+    'src/mlrl/common/stopping/global_pruning_no.cpp',
     'src/mlrl/common/stopping/global_pruning_post.cpp',
     'src/mlrl/common/stopping/global_pruning_pre.cpp',
     'src/mlrl/common/stopping/stopping_criterion_list.cpp',
+    'src/mlrl/common/stopping/stopping_criterion_no.cpp',
     'src/mlrl/common/stopping/stopping_criterion_size.cpp',
     'src/mlrl/common/stopping/stopping_criterion_time.cpp',
-    'src/mlrl/common/info.cpp',
-    'src/mlrl/common/learner.cpp'
+    'src/mlrl/common/info.cpp'
 ]
 
 # Test files
@@ -146,6 +153,7 @@ link_args = []
 
 if host_machine.system() == 'windows'
     cpp_args += '-DMLRLCOMMON_EXPORTS'
+    cpp_args += '/wd4250'  # Supress MSVC compiler warning C4250 ("inherits via dominance")
 
     if multi_threading_support_enabled
         cpp_args += '/openmp'

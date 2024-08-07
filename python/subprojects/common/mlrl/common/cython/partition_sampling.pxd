@@ -12,15 +12,15 @@ cdef extern from "mlrl/common/sampling/partition_sampling_bi_stratified_example_
         IExampleWiseStratifiedBiPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize) except +
 
 
-cdef extern from "mlrl/common/sampling/partition_sampling_bi_stratified_label_wise.hpp" nogil:
+cdef extern from "mlrl/common/sampling/partition_sampling_bi_stratified_output_wise.hpp" nogil:
 
-    cdef cppclass ILabelWiseStratifiedBiPartitionSamplingConfig:
+    cdef cppclass IOutputWiseStratifiedBiPartitionSamplingConfig:
 
         # Attributes:
 
         float32 getHoldoutSetSize() const
 
-        ILabelWiseStratifiedBiPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize) except +
+        IOutputWiseStratifiedBiPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize) except +
 
 
 cdef extern from "mlrl/common/sampling/partition_sampling_bi_random.hpp" nogil:
@@ -41,11 +41,11 @@ cdef class ExampleWiseStratifiedBiPartitionSamplingConfig:
     cdef IExampleWiseStratifiedBiPartitionSamplingConfig* config_ptr
 
 
-cdef class LabelWiseStratifiedBiPartitionSamplingConfig:
+cdef class OutputWiseStratifiedBiPartitionSamplingConfig:
 
     # Attributes:
 
-    cdef ILabelWiseStratifiedBiPartitionSamplingConfig* config_ptr
+    cdef IOutputWiseStratifiedBiPartitionSamplingConfig* config_ptr
 
 
 cdef class RandomBiPartitionSamplingConfig:

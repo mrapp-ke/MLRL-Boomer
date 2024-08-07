@@ -10,7 +10,7 @@
  * An one-dimensional vector that stores the scores that may be predicted by a rule, as well as an overall quality
  * score that assesses the overall quality of the rule, in a C-contiguous array.
  *
- * @tparam IndexVector The type of the vector that provides access to the indices of the labels for which the rule may
+ * @tparam IndexVector The type of the vector that provides access to the indices of the outputs for which the rule may
  *                     predict
  */
 template<typename IndexVector>
@@ -18,19 +18,19 @@ class DenseScoreVector final : public ViewDecorator<AllocatedView<float64>>,
                                virtual public IScoreVector {
     private:
 
-        const IndexVector& labelIndices_;
+        const IndexVector& outputIndices_;
 
         const bool sorted_;
 
     public:
 
         /**
-         * @param labelIndices  A reference to an object of template type `IndexVector` that provides access to the
-         *                      indices of the labels for which the rule may predict
-         * @param sorted        True, if the indices of the labels for which the rule may predict are sorted in
+         * @param outputIndices A reference to an object of template type `IndexVector` that provides access to the
+         *                      indices of the outputs for which the rule may predict
+         * @param sorted        True, if the indices of the outputs for which the rule may predict are sorted in
          *                      increasing order, false otherwise
          */
-        DenseScoreVector(const IndexVector& labelIndices, bool sorted);
+        DenseScoreVector(const IndexVector& outputIndices, bool sorted);
 
         /**
          * An iterator that provides read-only access to the indices.
@@ -90,24 +90,24 @@ class DenseScoreVector final : public ViewDecorator<AllocatedView<float64>>,
         value_const_iterator values_cend() const;
 
         /**
-         * Returns the number of labels for which the rule may predict.
+         * Returns the number of outputs for which the rule may predict.
          *
-         * @return The number of labels
+         * @return The number of outputs
          */
         uint32 getNumElements() const;
 
         /**
-         * Returns whether the rule may only predict for a subset of the available labels, or not.
+         * Returns whether the rule may only predict for a subset of the available outputs, or not.
          *
-         * @return True, if the rule may only predict for a subset of the available labels, false otherwise
+         * @return True, if the rule may only predict for a subset of the available outputs, false otherwise
          */
         bool isPartial() const;
 
         /**
-         * Returns whether the indices of the labels for which the rule may predict are sorted in increasing order, or
+         * Returns whether the indices of the outputes for which the rule may predict are sorted in increasing order, or
          * not.
          *
-         * @return True, if the indices of the labels for which the rule may predict are sorted in increasing order,
+         * @return True, if the indices of the outputs for which the rule may predict are sorted in increasing order,
          *         false otherwise
          */
         bool isSorted() const;

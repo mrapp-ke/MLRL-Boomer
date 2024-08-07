@@ -1,6 +1,6 @@
 #include "mlrl/boosting/prediction/transformation_binary_example_wise.hpp"
 
-#include "mlrl/common/iterator/binary_forward_iterator.hpp"
+#include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
 
 namespace boosting {
 
@@ -15,7 +15,7 @@ namespace boosting {
         const LabelVector& labelVector =
           distanceMeasurePtr_->getClosestLabelVector(labelVectorSet_, scoresBegin, scoresEnd);
         uint32 numLabels = predictionEnd - predictionBegin;
-        auto labelIterator = make_binary_forward_iterator(labelVector.cbegin(), labelVector.cend());
+        auto labelIterator = createBinarySparseForwardIterator(labelVector.cbegin(), labelVector.cend());
 
         for (uint32 i = 0; i < numLabels; i++) {
             bool label = *labelIterator;

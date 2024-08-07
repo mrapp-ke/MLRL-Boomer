@@ -4,7 +4,9 @@
 #pragma once
 
 #include "mlrl/common/indices/index_vector.hpp"
-#include "mlrl/common/iterator/index_iterator.hpp"
+#include "mlrl/common/iterator/iterator_index.hpp"
+
+#include <memory>
 
 #include <memory>
 

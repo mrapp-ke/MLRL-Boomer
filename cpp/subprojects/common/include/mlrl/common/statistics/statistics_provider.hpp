@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_csr.hpp"
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
 #include "mlrl/common/statistics/statistics.hpp"
 
@@ -38,12 +39,13 @@ class IStatisticsProvider {
 };
 
 /**
- * Defines an interface for all classes that allow to create instances of the class `IStatisticsProvider`.
+ * Defines an interface for all classes that allow to create instances of the class `IStatisticsProvider` that can be
+ * used in classification problems.
  */
-class IStatisticsProviderFactory {
+class IClassificationStatisticsProviderFactory {
     public:
 
-        virtual ~IStatisticsProviderFactory() {}
+        virtual ~IClassificationStatisticsProviderFactory() {}
 
         /**
          * Creates and returns a new instance of the class `IStatisticsProvider`, based on a label matrix that provides
@@ -64,4 +66,35 @@ class IStatisticsProviderFactory {
          * @return              An unique pointer to an object of type `IStatisticsProvider` that has been created
          */
         virtual std::unique_ptr<IStatisticsProvider> create(const BinaryCsrView& labelMatrix) const = 0;
+};
+
+/**
+ * Defines an interface for all classes that allow to create instances of the class `IStatisticsProvider` that can be
+ * used in regression problems.
+ */
+class IRegressionStatisticsProviderFactory {
+    public:
+
+        virtual ~IRegressionStatisticsProviderFactory() {}
+
+        /**
+         * Creates and returns a new instance of the class `IStatisticsProvider`, based on a regression matrix that
+         * provides random access to the regression scores of the training examples.
+         *
+         * @param regressionMatrix  A reference to an object of type `CContiguousView` that provides random access to
+         *                          the regression scores of the training examples
+         * @return                  An unique pointer to an object of type `IStatisticsProvider` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsProvider> create(
+          const CContiguousView<const float32>& regressionMatrix) const = 0;
+
+        /**
+         * Creates and returns a new instance of the class `IStatisticsProvider`, based on a regression matrix that
+         * provides random access to the regression scores of the training examples.
+         *
+         * @param regressionMatrix  A reference to an object of type `BinaryCsrView` that provides row-wise access to
+         *                          the regression scores of the training examples
+         * @return                  An unique pointer to an object of type `IStatisticsProvider` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsProvider> create(const CsrView<const float32>& regressionMatrix) const = 0;
 };

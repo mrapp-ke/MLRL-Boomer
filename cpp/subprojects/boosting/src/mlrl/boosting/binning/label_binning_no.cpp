@@ -1,71 +1,71 @@
 #include "mlrl/boosting/binning/label_binning_no.hpp"
 
-#include "mlrl/boosting/rule_evaluation/rule_evaluation_example_wise_complete.hpp"
-#include "mlrl/boosting/rule_evaluation/rule_evaluation_example_wise_partial_dynamic.hpp"
-#include "mlrl/boosting/rule_evaluation/rule_evaluation_example_wise_partial_fixed.hpp"
-#include "mlrl/boosting/rule_evaluation/rule_evaluation_label_wise_complete.hpp"
-#include "mlrl/boosting/rule_evaluation/rule_evaluation_label_wise_partial_dynamic.hpp"
-#include "mlrl/boosting/rule_evaluation/rule_evaluation_label_wise_partial_fixed.hpp"
+#include "mlrl/boosting/rule_evaluation/rule_evaluation_decomposable_complete.hpp"
+#include "mlrl/boosting/rule_evaluation/rule_evaluation_decomposable_partial_dynamic.hpp"
+#include "mlrl/boosting/rule_evaluation/rule_evaluation_decomposable_partial_fixed.hpp"
+#include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable_complete.hpp"
+#include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable_partial_dynamic.hpp"
+#include "mlrl/boosting/rule_evaluation/rule_evaluation_non_decomposable_partial_fixed.hpp"
 
 namespace boosting {
 
-    NoLabelBinningConfig::NoLabelBinningConfig(const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
-                                               const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr)
-        : l1RegularizationConfigPtr_(l1RegularizationConfigPtr), l2RegularizationConfigPtr_(l2RegularizationConfigPtr) {
+    NoLabelBinningConfig::NoLabelBinningConfig(ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
+                                               ReadableProperty<IRegularizationConfig> l2RegularizationConfig)
+        : l1RegularizationConfig_(l1RegularizationConfig), l2RegularizationConfig_(l2RegularizationConfig) {}
 
+    std::unique_ptr<IDecomposableRuleEvaluationFactory>
+      NoLabelBinningConfig::createDecomposableCompleteRuleEvaluationFactory() const {
+        float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
+        return std::make_unique<DecomposableCompleteRuleEvaluationFactory>(l1RegularizationWeight,
+                                                                           l2RegularizationWeight);
     }
 
-    std::unique_ptr<ILabelWiseRuleEvaluationFactory>
-      NoLabelBinningConfig::createLabelWiseCompleteRuleEvaluationFactory() const {
-        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
-        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
-        return std::make_unique<LabelWiseCompleteRuleEvaluationFactory>(l1RegularizationWeight, l2RegularizationWeight);
+    std::unique_ptr<ISparseDecomposableRuleEvaluationFactory>
+      NoLabelBinningConfig::createDecomposableFixedPartialRuleEvaluationFactory(float32 outputRatio, uint32 minOutputs,
+                                                                                uint32 maxOutputs) const {
+        float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
+        return std::make_unique<DecomposableFixedPartialRuleEvaluationFactory>(
+          outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight);
     }
 
-    std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory>
-      NoLabelBinningConfig::createLabelWiseFixedPartialRuleEvaluationFactory(float32 labelRatio, uint32 minLabels,
-                                                                             uint32 maxLabels) const {
-        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
-        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
-        return std::make_unique<LabelWiseFixedPartialRuleEvaluationFactory>(
-          labelRatio, minLabels, maxLabels, l1RegularizationWeight, l2RegularizationWeight);
-    }
-
-    std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory>
-      NoLabelBinningConfig::createLabelWiseDynamicPartialRuleEvaluationFactory(float32 threshold,
-                                                                               float32 exponent) const {
-        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
-        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
-        return std::make_unique<LabelWiseDynamicPartialRuleEvaluationFactory>(
+    std::unique_ptr<ISparseDecomposableRuleEvaluationFactory>
+      NoLabelBinningConfig::createDecomposableDynamicPartialRuleEvaluationFactory(float32 threshold,
+                                                                                  float32 exponent) const {
+        float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
+        return std::make_unique<DecomposableDynamicPartialRuleEvaluationFactory>(
           threshold, exponent, l1RegularizationWeight, l2RegularizationWeight);
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluationFactory>
-      NoLabelBinningConfig::createExampleWiseCompleteRuleEvaluationFactory(const Blas& blas,
-                                                                           const Lapack& lapack) const {
-        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
-        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
-        return std::make_unique<ExampleWiseCompleteRuleEvaluationFactory>(l1RegularizationWeight,
-                                                                          l2RegularizationWeight, blas, lapack);
-    }
-
-    std::unique_ptr<IExampleWiseRuleEvaluationFactory>
-      NoLabelBinningConfig::createExampleWiseFixedPartialRuleEvaluationFactory(float32 labelRatio, uint32 minLabels,
-                                                                               uint32 maxLabels, const Blas& blas,
+    std::unique_ptr<INonDecomposableRuleEvaluationFactory>
+      NoLabelBinningConfig::createNonDecomposableCompleteRuleEvaluationFactory(const Blas& blas,
                                                                                const Lapack& lapack) const {
-        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
-        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
-        return std::make_unique<ExampleWiseFixedPartialRuleEvaluationFactory>(
-          labelRatio, minLabels, maxLabels, l1RegularizationWeight, l2RegularizationWeight, blas, lapack);
+        float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
+        return std::make_unique<NonDecomposableCompleteRuleEvaluationFactory>(l1RegularizationWeight,
+                                                                              l2RegularizationWeight, blas, lapack);
     }
 
-    std::unique_ptr<IExampleWiseRuleEvaluationFactory>
-      NoLabelBinningConfig::createExampleWiseDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent,
-                                                                                 const Blas& blas,
-                                                                                 const Lapack& lapack) const {
-        float64 l1RegularizationWeight = l1RegularizationConfigPtr_->getWeight();
-        float64 l2RegularizationWeight = l2RegularizationConfigPtr_->getWeight();
-        return std::make_unique<ExampleWiseDynamicPartialRuleEvaluationFactory>(
+    std::unique_ptr<INonDecomposableRuleEvaluationFactory>
+      NoLabelBinningConfig::createNonDecomposableFixedPartialRuleEvaluationFactory(float32 outputRatio,
+                                                                                   uint32 minOutputs, uint32 maxOutputs,
+                                                                                   const Blas& blas,
+                                                                                   const Lapack& lapack) const {
+        float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
+        return std::make_unique<NonDecomposableFixedPartialRuleEvaluationFactory>(
+          outputRatio, minOutputs, maxOutputs, l1RegularizationWeight, l2RegularizationWeight, blas, lapack);
+    }
+
+    std::unique_ptr<INonDecomposableRuleEvaluationFactory>
+      NoLabelBinningConfig::createNonDecomposableDynamicPartialRuleEvaluationFactory(float32 threshold,
+                                                                                     float32 exponent, const Blas& blas,
+                                                                                     const Lapack& lapack) const {
+        float64 l1RegularizationWeight = l1RegularizationConfig_.get().getWeight();
+        float64 l2RegularizationWeight = l2RegularizationConfig_.get().getWeight();
+        return std::make_unique<NonDecomposableDynamicPartialRuleEvaluationFactory>(
           threshold, exponent, l1RegularizationWeight, l2RegularizationWeight, blas, lapack);
     }
 

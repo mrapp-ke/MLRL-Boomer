@@ -11,8 +11,8 @@
 namespace boosting {
 
     /**
-     * Allow to create instances of the type `IDiscretizationFunction` that discretize regression scores by transforming
-     * them into marginal probabilities.
+     * Allow to create instances of the type `IDiscretizationFunction` that discretize scores by transforming them into
+     * marginal probabilities.
      */
     class ProbabilityDiscretizationFunctionFactory : public IDiscretizationFunctionFactory {
         private:
@@ -24,8 +24,8 @@ namespace boosting {
             /**
              * @param marginalProbabilityFunctionFactoryPtr An unique pointer to an object of type
              *                                              `IMarginalProbabilityFunctionFactory` that allows to create
-             *                                              the implementation to be used to transform regression scores
-             *                                              into marginal probabilities
+             *                                              the implementation to be used to transform scores into
+             *                                              marginal probabilities
              */
             ProbabilityDiscretizationFunctionFactory(
               std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr);

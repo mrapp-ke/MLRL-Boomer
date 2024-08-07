@@ -15,18 +15,19 @@ from _io import StringIO
 
 from mlrl.common.cython.rule_model import CompleteHead, ConjunctiveBody, EmptyBody, PartialHead, RuleModel, \
     RuleModelVisitor
-from mlrl.common.learners import Learner
+from mlrl.common.mixins import ClassifierMixin, RegressorMixin
 from mlrl.common.options import Options
 
-from mlrl.testbed.data import Attribute, MetaData
+from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.format import format_float
 from mlrl.testbed.output_writer import Formattable, OutputWriter
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+from mlrl.testbed.problem_type import ProblemType
 
 OPTION_PRINT_FEATURE_NAMES = 'print_feature_names'
 
-OPTION_PRINT_LABEL_NAMES = 'print_label_names'
+OPTION_PRINT_OUTPUT_NAMES = 'print_output_names'
 
 OPTION_PRINT_NOMINAL_VALUES = 'print_nominal_values'
 
@@ -80,12 +81,12 @@ class RuleModelWriter(ModelWriter):
             :param meta_data:   The meta-data of the training data set
             :param model:       The `RuleModel`
             """
-            self.attributes = meta_data.attributes
-            self.labels = meta_data.labels
+            self.features = meta_data.features
+            self.outputs = meta_data.outputs
             self.model = model
             self.text = None
             self.print_feature_names = True
-            self.print_label_names = True
+            self.print_output_names = True
             self.print_nominal_values = True
             self.print_bodies = True
             self.print_heads = True
@@ -105,7 +106,7 @@ class RuleModelWriter(ModelWriter):
 
             if indices is not None and thresholds is not None:
                 text = self.text
-                attributes = self.attributes
+                features = self.features
                 print_feature_names = self.print_feature_names
                 print_nominal_values = self.print_nominal_values
                 decimals = self.body_decimals
@@ -116,11 +117,10 @@ class RuleModelWriter(ModelWriter):
 
                     feature_index = indices[i]
                     threshold = thresholds[i]
-                    attribute: Optional[Attribute] = attributes[feature_index] if len(
-                        attributes) > feature_index else None
+                    feature = features[feature_index] if len(features) > feature_index else None
 
-                    if print_feature_names and attribute is not None:
-                        text.write(attribute.attribute_name)
+                    if print_feature_names and feature is not None:
+                        text.write(feature.name)
                     else:
                         text.write(str(feature_index))
 
@@ -128,11 +128,11 @@ class RuleModelWriter(ModelWriter):
                     text.write(operator)
                     text.write(' ')
 
-                    if attribute is not None and attribute.nominal_values is not None:
+                    if feature is not None and feature.nominal_values is not None:
                         nominal_value = int(threshold)
 
-                        if print_nominal_values and len(attribute.nominal_values) > nominal_value:
-                            text.write('"' + attribute.nominal_values[nominal_value] + '"')
+                        if print_nominal_values and len(features.nominal_values) > nominal_value:
+                            text.write('"' + features.nominal_values[nominal_value] + '"')
                         else:
                             text.write(str(nominal_value))
                     else:
@@ -169,9 +169,9 @@ class RuleModelWriter(ModelWriter):
             text = self.text
 
             if self.print_heads:
-                print_label_names = self.print_label_names
+                print_output_names = self.print_output_names
                 decimals = self.head_decimals
-                labels = self.labels
+                outputs = self.outputs
                 scores = head.scores
 
                 if self.print_bodies:
@@ -183,8 +183,8 @@ class RuleModelWriter(ModelWriter):
                     if i > 0:
                         text.write(', ')
 
-                    if print_label_names and len(labels) > i:
-                        text.write(labels[i].attribute_name)
+                    if print_output_names and len(outputs) > i:
+                        text.write(outputs[i].name)
                     else:
                         text.write(str(i))
 
@@ -202,9 +202,9 @@ class RuleModelWriter(ModelWriter):
             text = self.text
 
             if self.print_heads:
-                print_label_names = self.print_label_names
+                print_output_names = self.print_output_names
                 decimals = self.head_decimals
-                labels = self.labels
+                outputs = self.outputs
                 indices = head.indices
                 scores = head.scores
 
@@ -217,12 +217,12 @@ class RuleModelWriter(ModelWriter):
                     if i > 0:
                         text.write(', ')
 
-                    label_index = indices[i]
+                    output_index = indices[i]
 
-                    if print_label_names and len(labels) > label_index:
-                        text.write(labels[label_index].attribute_name)
+                    if print_output_names and len(outputs) > output_index:
+                        text.write(outputs[output_index].name)
                     else:
-                        text.write(str(label_index))
+                        text.write(str(output_index))
 
                     text.write(' = ')
                     text.write(format_float(scores[i], decimals=decimals))
@@ -236,7 +236,7 @@ class RuleModelWriter(ModelWriter):
             See :func:`mlrl.testbed.output_writer.Formattable.format`
             """
             self.print_feature_names = options.get_bool(OPTION_PRINT_FEATURE_NAMES, True)
-            self.print_label_names = options.get_bool(OPTION_PRINT_LABEL_NAMES, True)
+            self.print_output_names = options.get_bool(OPTION_PRINT_OUTPUT_NAMES, True)
             self.print_nominal_values = options.get_bool(OPTION_PRINT_NOMINAL_VALUES, True)
             self.print_bodies = options.get_bool(OPTION_PRINT_BODIES, True)
             self.print_heads = options.get_bool(OPTION_PRINT_HEADS, True)
@@ -249,11 +249,11 @@ class RuleModelWriter(ModelWriter):
             return text
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
+                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
-        if isinstance(learner, Learner):
+        if isinstance(learner, (ClassifierMixin, RegressorMixin)):
             model = learner.model_
 
             if isinstance(model, RuleModel):

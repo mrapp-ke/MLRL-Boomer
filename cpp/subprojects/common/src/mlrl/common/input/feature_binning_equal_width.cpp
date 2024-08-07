@@ -257,6 +257,6 @@ IEqualWidthFeatureBinningConfig& EqualWidthFeatureBinningConfig::setMaxBins(uint
 }
 
 std::unique_ptr<IFeatureBinningFactory> EqualWidthFeatureBinningConfig::createFeatureBinningFactory(
-  const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+  const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
     return std::make_unique<EqualWidthFeatureBinningFactory>(binRatio_, minBins_, maxBins_);
 }

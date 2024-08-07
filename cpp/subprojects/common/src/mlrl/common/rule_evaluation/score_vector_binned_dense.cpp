@@ -6,23 +6,23 @@
 #include "mlrl/common/rule_refinement/score_processor.hpp"
 
 template<typename IndexVector>
-DenseBinnedScoreVector<IndexVector>::DenseBinnedScoreVector(const IndexVector& labelIndices, uint32 numBins,
+DenseBinnedScoreVector<IndexVector>::DenseBinnedScoreVector(const IndexVector& outputIndices, uint32 numBins,
                                                             bool sorted)
     : BinnedVectorDecorator<ViewDecorator<CompositeVector<AllocatedVector<uint32>, ResizableVector<float64>>>>(
         CompositeVector<AllocatedVector<uint32>, ResizableVector<float64>>(
-          AllocatedVector<uint32>(labelIndices.getNumElements()), ResizableVector<float64>(numBins))),
-      labelIndices_(labelIndices), sorted_(sorted), maxCapacity_(numBins) {}
+          AllocatedVector<uint32>(outputIndices.getNumElements()), ResizableVector<float64>(numBins))),
+      outputIndices_(outputIndices), sorted_(sorted), maxCapacity_(numBins) {}
 
 template<typename IndexVector>
 typename DenseBinnedScoreVector<IndexVector>::index_const_iterator DenseBinnedScoreVector<IndexVector>::indices_cbegin()
   const {
-    return labelIndices_.cbegin();
+    return outputIndices_.cbegin();
 }
 
 template<typename IndexVector>
 typename DenseBinnedScoreVector<IndexVector>::index_const_iterator DenseBinnedScoreVector<IndexVector>::indices_cend()
   const {
-    return labelIndices_.cend();
+    return outputIndices_.cend();
 }
 
 template<typename IndexVector>
@@ -86,7 +86,7 @@ typename DenseBinnedScoreVector<IndexVector>::bin_value_const_iterator
 
 template<typename IndexVector>
 uint32 DenseBinnedScoreVector<IndexVector>::getNumElements() const {
-    return labelIndices_.getNumElements();
+    return outputIndices_.getNumElements();
 }
 
 template<typename IndexVector>
@@ -96,7 +96,7 @@ void DenseBinnedScoreVector<IndexVector>::setNumBins(uint32 numBins, bool freeMe
 
 template<typename IndexVector>
 bool DenseBinnedScoreVector<IndexVector>::isPartial() const {
-    return labelIndices_.isPartial();
+    return outputIndices_.isPartial();
 }
 
 template<typename IndexVector>
