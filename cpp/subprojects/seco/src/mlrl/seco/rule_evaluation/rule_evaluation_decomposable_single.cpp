@@ -1,7 +1,7 @@
 #include "mlrl/seco/rule_evaluation/rule_evaluation_decomposable_single.hpp"
 
 #include "mlrl/common/indices/index_vector_partial.hpp"
-#include "mlrl/common/iterator/binary_forward_iterator.hpp"
+#include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
 #include "mlrl/common/rule_evaluation/score_vector_dense.hpp"
 #include "rule_evaluation_decomposable_common.hpp"
 
@@ -62,7 +62,8 @@ namespace seco {
                     }
                 }
 
-                auto labelIterator = make_binary_forward_iterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
+                auto labelIterator =
+                  createBinarySparseForwardIterator(majorityLabelIndicesBegin, majorityLabelIndicesEnd);
                 std::advance(labelIterator, bestIndex);
                 scoreVector_.values_begin()[0] = (float64) !(*labelIterator);
                 indexVector_.begin()[0] = bestIndex;

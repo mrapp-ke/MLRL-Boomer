@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/iterator/index_iterator.hpp"
+#include "mlrl/common/iterator/iterator_index.hpp"
 #include "mlrl/common/sampling/partition.hpp"
 
 #include <memory>
@@ -52,8 +52,12 @@ class SinglePartition final : public IPartition {
 
         std::unique_ptr<IStoppingCriterion> createStoppingCriterion(const IStoppingCriterionFactory& factory) override;
 
-        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IInstanceSamplingFactory& factory,
+        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IClassificationInstanceSamplingFactory& factory,
                                                                   const IRowWiseLabelMatrix& labelMatrix,
+                                                                  IStatistics& statistics) override;
+
+        std::unique_ptr<IInstanceSampling> createInstanceSampling(const IRegressionInstanceSamplingFactory& factory,
+                                                                  const IRowWiseRegressionMatrix& regressionMatrix,
                                                                   IStatistics& statistics) override;
 
         Quality evaluateOutOfSample(const IFeatureSubspace& featureSubspace, const CoverageMask& coverageMask,

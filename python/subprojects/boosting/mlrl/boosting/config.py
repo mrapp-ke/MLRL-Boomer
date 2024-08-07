@@ -81,7 +81,7 @@ class ExtendedParallelRuleRefinementParameter(ParallelRuleRefinementParameter):
         self.add_value(name=AUTOMATIC,
                        mixin=AutomaticParallelRuleRefinementMixin,
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
-                       + 'based on ' + 'the parameter ' + LossParameter().argument_name)
+                       + 'based on ' + 'the parameter ' + RegressionLossParameter().argument_name)
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == AUTOMATIC:
@@ -100,7 +100,7 @@ class ExtendedParallelStatisticUpdateParameter(ParallelStatisticUpdateParameter)
         self.add_value(name=AUTOMATIC,
                        mixin=AutomaticParallelStatisticUpdateMixin,
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
-                       + 'based on ' + 'the parameter ' + LossParameter().argument_name)
+                       + 'based on ' + 'the parameter ' + RegressionLossParameter().argument_name)
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == AUTOMATIC:
@@ -198,7 +198,7 @@ class StatisticFormatParameter(NominalParameter):
         self.add_value(name=AUTOMATIC,
                        mixin=AutomaticStatisticsMixin,
                        description='If set to "' + AUTOMATIC + '", the most suitable format is chosen automatically '
-                       + 'based on the parameters ' + LossParameter().argument_name + ', '
+                       + 'based on the parameters ' + RegressionLossParameter().argument_name + ', '
                        + HeadTypeParameter().argument_name + ', ' + DefaultRuleParameter().argument_name + ' and the '
                        + 'characteristics of the label matrix')
 
@@ -226,7 +226,7 @@ class LabelBinningParameter(NominalParameter):
         self.add_value(name=AUTOMATIC,
                        mixin=AutomaticLabelBinningMixin,
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
-                       + 'based on the parameters ' + LossParameter().argument_name + ' and '
+                       + 'based on the parameters ' + RegressionLossParameter().argument_name + ' and '
                        + HeadTypeParameter().argument_name)
 
     def _configure(self, config, value: str, options: Optional[Options]):
@@ -241,41 +241,54 @@ class LabelBinningParameter(NominalParameter):
             config.use_automatic_label_binning()
 
 
-class LossParameter(NominalParameter):
+class RegressionLossParameter(NominalParameter):
     """
-    A parameter that allows to configure the loss function to be minimized during training.
+    A parameter that allows to configure the loss function to be minimized during training in regression problems.
+    """
+
+    LOSS_SQUARED_ERROR_DECOMPOSABLE = 'squared-error-decomposable'
+
+    LOSS_SQUARED_ERROR_NON_DECOMPOSABLE = 'squared-error-non-decomposable'
+
+    def __init__(self):
+        super().__init__(name='loss', description='The name of the loss function to be minimized during training')
+        self.add_value(name=self.LOSS_SQUARED_ERROR_DECOMPOSABLE, mixin=DecomposableSquaredErrorLossMixin)
+        self.add_value(name=self.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE, mixin=NonDecomposableSquaredErrorLossMixin)
+
+    def _configure(self, config, value: str, _: Optional[Options]):
+        if value == self.LOSS_SQUARED_ERROR_DECOMPOSABLE:
+            config.use_decomposable_squared_error_loss()
+        elif value == self.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE:
+            config.use_non_decomposable_squared_error_loss()
+
+
+class ClassificationLossParameter(RegressionLossParameter):
+    """
+    A parameter that allows to configure the loss function to be minimized during training in classification problems.
     """
 
     LOSS_LOGISTIC_DECOMPOSABLE = 'logistic-decomposable'
 
     LOSS_LOGISTIC_NON_DECOMPOSABLE = 'logistic-non-decomposable'
 
-    LOSS_SQUARED_ERROR_DECOMPOSABLE = 'squared-error-decomposable'
-
-    LOSS_SQUARED_ERROR_NON_DECOMPOSABLE = 'squared-error-non-decomposable'
-
     LOSS_SQUARED_HINGE_DECOMPOSABLE = 'squared-hinge-decomposable'
 
     LOSS_SQUARED_HINGE_NON_DECOMPOSABLE = 'squared-hinge-non-decomposable'
 
     def __init__(self):
-        super().__init__(name='loss', description='The name of the loss function to be minimized during training')
+        super().__init__()
         self.add_value(name=self.LOSS_LOGISTIC_DECOMPOSABLE, mixin=DecomposableLogisticLossMixin)
         self.add_value(name=self.LOSS_LOGISTIC_NON_DECOMPOSABLE, mixin=NonDecomposableLogisticLossMixin)
-        self.add_value(name=self.LOSS_SQUARED_ERROR_DECOMPOSABLE, mixin=DecomposableSquaredErrorLossMixin)
-        self.add_value(name=self.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE, mixin=NonDecomposableSquaredErrorLossMixin)
         self.add_value(name=self.LOSS_SQUARED_HINGE_DECOMPOSABLE, mixin=DecomposableSquaredHingeLossMixin)
         self.add_value(name=self.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE, mixin=NonDecomposableSquaredHingeLossMixin)
 
-    def _configure(self, config, value: str, _: Optional[Options]):
+    def _configure(self, config, value: str, options: Optional[Options]):
+        super()._configure(config, value, options)
+
         if value == self.LOSS_LOGISTIC_DECOMPOSABLE:
             config.use_decomposable_logistic_loss()
         elif value == self.LOSS_LOGISTIC_NON_DECOMPOSABLE:
             config.use_non_decomposable_logistic_loss()
-        elif value == self.LOSS_SQUARED_ERROR_DECOMPOSABLE:
-            config.use_decomposable_squared_error_loss()
-        elif value == self.LOSS_SQUARED_ERROR_NON_DECOMPOSABLE:
-            config.use_non_decomposable_squared_error_loss()
         elif value == self.LOSS_SQUARED_HINGE_DECOMPOSABLE:
             config.use_decomposable_squared_hinge_loss()
         elif value == self.LOSS_SQUARED_HINGE_NON_DECOMPOSABLE:
@@ -402,7 +415,7 @@ class BinaryPredictorParameter(NominalParameter):
         self.add_value(name=AUTOMATIC,
                        mixin=AutomaticBinaryPredictorMixin,
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
-                       + 'based on the parameter ' + LossParameter().argument_name)
+                       + 'based on the parameter ' + RegressionLossParameter().argument_name)
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == self.BINARY_PREDICTOR_OUTPUT_WISE:
@@ -449,7 +462,7 @@ class ProbabilityPredictorParameter(NominalParameter):
         self.add_value(name=AUTOMATIC,
                        mixin=AutomaticProbabilityPredictorMixin,
                        description='If set to "' + AUTOMATIC + '", the most suitable strategy is chosen automatically '
-                       + 'based on the parameter ' + LossParameter().argument_name)
+                       + 'based on the parameter ' + RegressionLossParameter().argument_name)
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == self.PROBABILITY_PREDICTOR_OUTPUT_WISE:
@@ -466,7 +479,7 @@ class ProbabilityPredictorParameter(NominalParameter):
             config.use_automatic_probability_predictor()
 
 
-BOOSTING_RULE_LEARNER_PARAMETERS = RULE_LEARNER_PARAMETERS | {
+BOOMER_CLASSIFIER_PARAMETERS = RULE_LEARNER_PARAMETERS | {
     ExtendedPartitionSamplingParameter(),
     ExtendedFeatureBinningParameter(),
     ExtendedParallelRuleRefinementParameter(),
@@ -477,10 +490,24 @@ BOOSTING_RULE_LEARNER_PARAMETERS = RULE_LEARNER_PARAMETERS | {
     DefaultRuleParameter(),
     StatisticFormatParameter(),
     LabelBinningParameter(),
-    LossParameter(),
+    ClassificationLossParameter(),
     HeadTypeParameter(),
     MarginalProbabilityCalibrationParameter(),
     JointProbabilityCalibrationParameter(),
     BinaryPredictorParameter(),
     ProbabilityPredictorParameter()
+}
+
+BOOMER_REGRESSOR_PARAMETERS = RULE_LEARNER_PARAMETERS | {
+    ExtendedPartitionSamplingParameter(),
+    ExtendedFeatureBinningParameter(),
+    ExtendedParallelRuleRefinementParameter(),
+    ExtendedParallelStatisticUpdateParameter(),
+    ShrinkageParameter(),
+    L1RegularizationParameter(),
+    L2RegularizationParameter(),
+    DefaultRuleParameter(),
+    StatisticFormatParameter(),
+    RegressionLossParameter(),
+    HeadTypeParameter()
 }

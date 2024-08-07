@@ -15,7 +15,8 @@ namespace boosting {
      * Allows to configure a loss function that implements a multivariate variant of the squared error loss that is
      * decomposable.
      */
-    class DecomposableSquaredErrorLossConfig final : public IDecomposableLossConfig {
+    class DecomposableSquaredErrorLossConfig final : public IDecomposableClassificationLossConfig,
+                                                     public IDecomposableRegressionLossConfig {
         private:
 
             const ReadableProperty<IHeadConfig> headConfig_;
@@ -23,13 +24,17 @@ namespace boosting {
         public:
 
             /**
-             * @param headConfigGetter A `ReadableProperty` that allows to access the `IHeadConfig` that stores the
-             *                         configuration of rule heads
+             * @param headConfig A `ReadableProperty` that allows to access the `IHeadConfig` that stores the
+             *                   configuration of rule heads
              */
-            DecomposableSquaredErrorLossConfig(ReadableProperty<IHeadConfig> headConfigGetter);
+            DecomposableSquaredErrorLossConfig(ReadableProperty<IHeadConfig> headConfig);
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+              const Lapack& lapack, bool preferSparseStatistics) const override;
+
+            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
               const Lapack& lapack, bool preferSparseStatistics) const override;
 
             std::unique_ptr<IMarginalProbabilityFunctionFactory> createMarginalProbabilityFunctionFactory()
@@ -39,7 +44,11 @@ namespace boosting {
 
             float64 getDefaultPrediction() const override;
 
-            std::unique_ptr<IDecomposableLossFactory> createDecomposableLossFactory() const override;
+            std::unique_ptr<IDecomposableClassificationLossFactory> createDecomposableClassificationLossFactory()
+              const override;
+
+            std::unique_ptr<IDecomposableRegressionLossFactory> createDecomposableRegressionLossFactory()
+              const override;
     };
 
 }

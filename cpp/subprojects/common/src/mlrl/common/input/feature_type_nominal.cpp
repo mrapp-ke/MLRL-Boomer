@@ -2,7 +2,7 @@
 
 #include "feature_type_nominal_common.hpp"
 #include "feature_vector_decorator_nominal.hpp"
-#include "mlrl/common/iterator/index_iterator.hpp"
+#include "mlrl/common/iterator/iterator_index.hpp"
 
 template<typename IndexIterator, typename ValueIterator>
 static inline std::unique_ptr<NominalFeatureVectorDecorator> createNominalFeatureVector(

@@ -1,0 +1,185 @@
+INFO Starting experiment using the classification algorithm "boomer"...
+INFO Performing full 10-fold cross validation...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
+INFO Fold 1 / 10:
+INFO Fitting model to 533 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 60 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Prediction characteristics for test data (Fold 1):
+
+Outputs                  6
+Output Density          25
+Output Sparsity         75
+Label Imbalance Ratio    2.11
+Label Cardinality        1.5
+Distinct Label Vectors  13
+
+INFO Fold 2 / 10:
+INFO Fitting model to 533 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 60 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Prediction characteristics for test data (Fold 2):
+
+Outputs                  6
+Output Density          26.11
+Output Sparsity         73.89
+Label Imbalance Ratio    1.89
+Label Cardinality        1.57
+Distinct Label Vectors  13
+
+INFO Fold 3 / 10:
+INFO Fitting model to 533 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 60 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Prediction characteristics for test data (Fold 3):
+
+Outputs                  6
+Output Density          24.17
+Output Sparsity         75.83
+Label Imbalance Ratio    2.5
+Label Cardinality        1.45
+Distinct Label Vectors  14
+
+INFO Fold 4 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Prediction characteristics for test data (Fold 4):
+
+Outputs                  6
+Output Density          23.73
+Output Sparsity         76.27
+Label Imbalance Ratio    1.98
+Label Cardinality        1.42
+Distinct Label Vectors  14
+
+INFO Fold 5 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Prediction characteristics for test data (Fold 5):
+
+Outputs                  6
+Output Density          26.55
+Output Sparsity         73.45
+Label Imbalance Ratio    2.15
+Label Cardinality        1.59
+Distinct Label Vectors  11
+
+INFO Fold 6 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Prediction characteristics for test data (Fold 6):
+
+Outputs                  6
+Output Density          24.01
+Output Sparsity         75.99
+Label Imbalance Ratio    2.49
+Label Cardinality        1.44
+Distinct Label Vectors  16
+
+INFO Fold 7 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Prediction characteristics for test data (Fold 7):
+
+Outputs                  6
+Output Density          26.27
+Output Sparsity         73.73
+Label Imbalance Ratio    2.41
+Label Cardinality        1.58
+Distinct Label Vectors  13
+
+INFO Fold 8 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Prediction characteristics for test data (Fold 8):
+
+Outputs                  6
+Output Density          29.38
+Output Sparsity         70.62
+Label Imbalance Ratio    1.87
+Label Cardinality        1.76
+Distinct Label Vectors  12
+
+INFO Fold 9 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Prediction characteristics for test data (Fold 9):
+
+Outputs                  6
+Output Density          25.99
+Output Sparsity         74.01
+Label Imbalance Ratio    3.21
+Label Cardinality        1.56
+Distinct Label Vectors  14
+
+INFO Fold 10 / 10:
+INFO Fitting model to 534 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 59 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Prediction characteristics for test data (Fold 10):
+
+Outputs                  6
+Output Density          22.32
+Output Sparsity         77.68
+Label Imbalance Ratio    2.93
+Label Cardinality        1.34
+Distinct Label Vectors  13
+
+INFO Successfully finished after <duration>

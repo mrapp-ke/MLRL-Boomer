@@ -40,7 +40,7 @@ class MLRLCOMMON_API IOutputWiseStratifiedInstanceSamplingConfig {
  * Allows to configure a method for selecting a subset of the available training examples using stratification, such
  * that for each label the proportion of relevant and irrelevant examples is maintained.
  */
-class OutputWiseStratifiedInstanceSamplingConfig final : public IInstanceSamplingConfig,
+class OutputWiseStratifiedInstanceSamplingConfig final : public IClassificationInstanceSamplingConfig,
                                                          public IOutputWiseStratifiedInstanceSamplingConfig {
     private:
 
@@ -54,5 +54,6 @@ class OutputWiseStratifiedInstanceSamplingConfig final : public IInstanceSamplin
 
         IOutputWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize) override;
 
-        std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const override;
+        std::unique_ptr<IClassificationInstanceSamplingFactory> createClassificationInstanceSamplingFactory()
+          const override;
 };

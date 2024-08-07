@@ -4,6 +4,7 @@
 #pragma once
 
 #include "mlrl/common/data/view_matrix_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_csr.hpp"
 #include "mlrl/common/data/view_matrix_csr_binary.hpp"
 #include "mlrl/common/sampling/random.hpp"
 #include "mlrl/common/sampling/weight_vector.hpp"
@@ -34,12 +35,13 @@ class IInstanceSampling {
 };
 
 /**
- * Defines an interface for all factories that allow to create instances of the type `IInstanceSampling`.
+ * Defines an interface for all factories that allow to create instances of the type `IInstanceSampling` that can be
+ * used in classification problems.
  */
-class IInstanceSamplingFactory {
+class IClassificationInstanceSamplingFactory {
     public:
 
-        virtual ~IInstanceSamplingFactory() {}
+        virtual ~IClassificationInstanceSamplingFactory() {}
 
         /**
          * Creates and returns a new object of type `IInstanceSampling`.
@@ -48,7 +50,7 @@ class IInstanceSamplingFactory {
          *                      the training examples
          * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
          *                      of the training examples that are included in the training set
-         * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics +
+         * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics
          *                      which serve as a basis for learning rules
          * @return              An unique pointer to an object of type `IInstanceSampling` that has been created
          */
@@ -64,7 +66,7 @@ class IInstanceSamplingFactory {
          * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
          *                      the training examples that are included in the training set and the holdout set,
          *                      respectively
-         * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics +
+         * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics
          *                      which serve as a basis for learning rules
          * @return              An unique pointer to an object of type `IInstanceSampling` that has been created
          */
@@ -78,7 +80,7 @@ class IInstanceSamplingFactory {
          *                      the training examples
          * @param partition     A reference to an object of type `SinglePartition` that provides access to the indices
          *                      of the training examples that are included in the training set
-         * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics +
+         * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics
          *                      which serve as a basis for learning rules
          * @return              An unique pointer to an object of type `IInstanceSampling` that has been created
          */
@@ -94,7 +96,7 @@ class IInstanceSamplingFactory {
          * @param partition     A reference to an object of type `BiPartition` that provides access to the indices of
          *                      the training examples that are included in the training set and the holdout set,
          *                      respectively
-         * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics +
+         * @param statistics    A reference to an object of type `IStatistics` that provides access to the statistics
          *                      which serve as a basis for learning rules
          * @return              An unique pointer to an object of type `IInstanceSampling` that has been created
          */
@@ -103,17 +105,108 @@ class IInstanceSamplingFactory {
 };
 
 /**
- * Defines an interface for all classes that allow to configure a method for sampling instances.
+ * Defines an interface for all factories that allow to create instances of the type `IInstanceSampling` that can be
+ * used in regression problems.
  */
-class IInstanceSamplingConfig {
+class IRegressionInstanceSamplingFactory {
     public:
 
-        virtual ~IInstanceSamplingConfig() {}
+        virtual ~IRegressionInstanceSamplingFactory() {}
 
         /**
-         * Creates and returns a new object of type `IInstanceSamplingFactory` according to the specified configuration.
+         * Creates and returns a new object of type `IInstanceSampling`.
          *
-         * @return An unique pointer to an object of type `IInstanceSamplingFactory` that has been created
+         * @param regressionMatrix  A reference to an object of type `CContiguousView` that provides access to the
+         *                          regression scores of the training examples
+         * @param partition         A reference to an object of type `SinglePartition` that provides access to the
+         *                          indices of the training examples that are included in the training set
+         * @param statistics        A reference to an object of type `IStatistics` that provides access to the
+         *                          statistics which serve as a basis for learning rules
+         * @return                  An unique pointer to an object of type `IInstanceSampling` that has been created
          */
-        virtual std::unique_ptr<IInstanceSamplingFactory> createInstanceSamplingFactory() const = 0;
+        virtual std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
+                                                          const SinglePartition& partition,
+                                                          IStatistics& statistics) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IInstanceSampling`.
+         *
+         * @param regressionMatrix  A reference to an object of type `CContiguousView` that provides access to the
+         *                          regression scores of the training examples
+         * @param partition         A reference to an object of type `BiPartition` that provides access to the indices
+         *                          of the training examples that are included in the training set and the holdout set,
+         *                          respectively
+         * @param statistics        A reference to an object of type `IStatistics` that provides access to the
+         *                          statistics which serve as a basis for learning rules
+         * @return                  An unique pointer to an object of type `IInstanceSampling` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
+                                                          BiPartition& partition, IStatistics& statistics) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IInstanceSampling`.
+         *
+         * @param regressionMatrix  A reference to an object of type `CsrView` that provides access to the regression
+         *                          scores of the training examples
+         * @param partition         A reference to an object of type `SinglePartition` that provides access to the
+         *                          indices of the training examples that are included in the training set
+         * @param statistics        A reference to an object of type `IStatistics` that provides access to the
+         *                          statistics which serve as a basis for learning rules
+         * @return                  An unique pointer to an object of type `IInstanceSampling` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
+                                                          const SinglePartition& partition,
+                                                          IStatistics& statistics) const = 0;
+
+        /**
+         * Creates and returns a new object of type `IInstanceSampling`.
+         *
+         * @param regressionMatrix  A reference to an object of type `CsrView` that provides access to the regression
+         *                          scores of the training examples
+         * @param partition         A reference to an object of type `BiPartition` that provides access to the indices
+         *                          of the training examples that are included in the training set and the holdout set,
+         *                          respectively
+         * @param statistics        A reference to an object of type `IStatistics` that provides access to the
+         *                          statistics which serve as a basis for learning rules
+         * @return                  An unique pointer to an object of type `IInstanceSampling` that has been created
+         */
+        virtual std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
+                                                          BiPartition& partition, IStatistics& statistics) const = 0;
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a method for sampling instances that can be used in
+ * classification problems.
+ */
+class IClassificationInstanceSamplingConfig {
+    public:
+
+        virtual ~IClassificationInstanceSamplingConfig() {}
+
+        /**
+         * Creates and returns a new object of type `IClassificationInstanceSamplingFactory` according to the specified
+         * configuration.
+         *
+         * @return An unique pointer to an object of type `IClassificationInstanceSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<IClassificationInstanceSamplingFactory> createClassificationInstanceSamplingFactory()
+          const = 0;
+};
+
+/**
+ * Defines an interface for all classes that allow to configure a method for sampling instances that can be used in
+ * regression problems.
+ */
+class IRegressionInstanceSamplingConfig {
+    public:
+
+        virtual ~IRegressionInstanceSamplingConfig() {}
+
+        /**
+         * Creates and returns a new object of type `IRegressionInstanceSamplingFactory` according to the specified
+         * configuration.
+         *
+         * @return An unique pointer to an object of type `IRegressionInstanceSamplingFactory` that has been created
+         */
+        virtual std::unique_ptr<IRegressionInstanceSamplingFactory> createRegressionInstanceSamplingFactory() const = 0;
 };

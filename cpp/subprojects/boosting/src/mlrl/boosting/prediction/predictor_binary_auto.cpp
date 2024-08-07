@@ -6,9 +6,9 @@
 namespace boosting {
 
     AutomaticBinaryPredictorConfig::AutomaticBinaryPredictorConfig(
-      ReadableProperty<ILossConfig> lossConfigGetter,
-      ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : lossConfig_(lossConfigGetter), multiThreadingConfig_(multiThreadingConfigGetter) {}
+      ReadableProperty<IClassificationLossConfig> lossConfig,
+      ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
+        : lossConfig_(lossConfig), multiThreadingConfig_(multiThreadingConfig) {}
 
     std::unique_ptr<IBinaryPredictorFactory> AutomaticBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {

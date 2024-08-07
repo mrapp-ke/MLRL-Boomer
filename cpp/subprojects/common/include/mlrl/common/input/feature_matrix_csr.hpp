@@ -3,11 +3,6 @@
  */
 #pragma once
 
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
 #include "mlrl/common/input/feature_matrix_row_wise.hpp"
 
 #include <memory>
@@ -40,7 +35,3 @@ class MLRLCOMMON_API ICsrFeatureMatrix : public IRowWiseFeatureMatrix {
 MLRLCOMMON_API std::unique_ptr<ICsrFeatureMatrix> createCsrFeatureMatrix(const float32* values, uint32* indices,
                                                                          uint32* indptr, uint32 numRows, uint32 numCols,
                                                                          float32 sparseValue = 0.0f);
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif

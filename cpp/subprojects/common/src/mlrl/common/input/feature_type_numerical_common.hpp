@@ -6,7 +6,7 @@
 #include "feature_vector_decorator_numerical.hpp"
 #include "mlrl/common/data/view_matrix_csc.hpp"
 #include "mlrl/common/data/view_matrix_fortran_contiguous.hpp"
-#include "mlrl/common/iterator/index_iterator.hpp"
+#include "mlrl/common/iterator/iterator_index.hpp"
 
 #include <algorithm>
 #include <memory>

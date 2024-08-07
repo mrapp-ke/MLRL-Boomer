@@ -156,9 +156,9 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
 };
 
 GreedyTopDownRuleInductionConfig::GreedyTopDownRuleInductionConfig(
-  RuleCompareFunction ruleCompareFunction, ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
+  RuleCompareFunction ruleCompareFunction, ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
     : ruleCompareFunction_(ruleCompareFunction), minCoverage_(1), minSupport_(0.0f), maxConditions_(0),
-      maxHeadRefinements_(1), recalculatePredictions_(true), multiThreadingConfig_(multiThreadingConfigGetter) {}
+      maxHeadRefinements_(1), recalculatePredictions_(true), multiThreadingConfig_(multiThreadingConfig) {}
 
 uint32 GreedyTopDownRuleInductionConfig::getMinCoverage() const {
     return minCoverage_;

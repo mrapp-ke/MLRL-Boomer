@@ -53,21 +53,21 @@ namespace boosting {
 
             std::unique_ptr<IMarginalProbabilityCalibrationModel> noMarginalProbabilityCalibrationModelPtr_;
 
-            const ReadableProperty<ILossConfig> lossConfig_;
+            const ReadableProperty<IClassificationLossConfig> lossConfig_;
 
             const ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
 
         public:
 
             /**
-             * @param lossConfigGetter            A `ReadableProperty` that allows to access the `ILossConfig` that
-             *                                    stores the configuration of the loss function
-             * @param multiThreadingConfigGetter  A `ReadableProperty` that allows to access the `IMultiThreadingConfig`
-             *                                    that stores the configuration of the multi-threading behavior that
-             *                                    should be used to predict for several query examples in parallel
+             * @param lossConfig            A `ReadableProperty` that allows to access the `IClassificationLossConfig`
+             *                              that stores the configuration of the loss function
+             * @param multiThreadingConfig  A `ReadableProperty` that allows to access the `IMultiThreadingConfig` that
+             *                              stores the configuration of the multi-threading behavior that should be used
+             *                              to predict for several query examples in parallel
              */
-            OutputWiseProbabilityPredictorConfig(ReadableProperty<ILossConfig> lossConfigGetter,
-                                                 ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter);
+            OutputWiseProbabilityPredictorConfig(ReadableProperty<IClassificationLossConfig> lossConfig,
+                                                 ReadableProperty<IMultiThreadingConfig> multiThreadingConfig);
 
             bool isProbabilityCalibrationModelUsed() const override;
 

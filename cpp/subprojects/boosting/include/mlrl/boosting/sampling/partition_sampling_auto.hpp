@@ -19,7 +19,8 @@ namespace boosting {
      * examples into a training set and a holdout set, depending on whether a holdout set is needed and depending on the
      * loss function.
      */
-    class AutomaticPartitionSamplingConfig final : public IPartitionSamplingConfig {
+    class AutomaticPartitionSamplingConfig final : public IClassificationPartitionSamplingConfig,
+                                                   public IRegressionPartitionSamplingConfig {
         private:
 
             const ReadableProperty<IGlobalPruningConfig> globalPruningConfig_;
@@ -31,27 +32,34 @@ namespace boosting {
         public:
 
             /**
-             * @param globalPruningConfigGetter                 A `ReadableProperty` that allows to access the
-             *                                                  `IGlobalPruningConfig` that stores the configuration of
-             *                                                  the method that is used for pruning entire rules
-             * @param marginalProbabilityCalibratorConfigGetter A `ReadableProperty` that allows to access the
-             *                                                  `IMarginalProbabilityCalibratorConfig` that stores the
-             *                                                  configuration of the calibrator that is used to fit a
-             *                                                  model for the calibration of marginal probabilities
-             * @param jointProbabilityCalibratorConfigGetter    A `ReadableProperty` that allows to access the
-             *                                                  `IJointProbabilityCalibratorConfig` that stores the
-             *                                                  configuration of the calibrator that is used to fit a
-             *                                                  model for the calibration of joint probabilities
+             * @param globalPruningConfig                 A `ReadableProperty` that allows to access the
+             *                                            `IGlobalPruningConfig` that stores the configuration of the
+             *                                            method that is used for pruning entire rules
+             * @param marginalProbabilityCalibratorConfig A `ReadableProperty` that allows to access the
+             *                                            `IMarginalProbabilityCalibratorConfig` that stores the
+             *                                            configuration of the calibrator that is used to fit a model
+             *                                            for the calibration of marginal probabilities
+             * @param jointProbabilityCalibratorConfig    A `ReadableProperty` that allows to access the
+             *                                            `IJointProbabilityCalibratorConfig` that stores the
+             *                                            configuration of the calibrator that is used to fit a model
+             *                                            for the calibration of joint probabilities
              */
             AutomaticPartitionSamplingConfig(
-              ReadableProperty<IGlobalPruningConfig> globalPruningConfigGetter,
-              ReadableProperty<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfigGetter,
-              ReadableProperty<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfigGetter);
+              ReadableProperty<IGlobalPruningConfig> globalPruningConfig,
+              ReadableProperty<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfig,
+              ReadableProperty<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfig);
 
             /**
-             * @see `IPartitionSamplingConfig::createPartitionSamplingFactory`
+             * @see `IClassificationPartitionSamplingConfig::createClassificationPartitionSamplingFactory`
              */
-            std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const override;
+            std::unique_ptr<IClassificationPartitionSamplingFactory> createClassificationPartitionSamplingFactory()
+              const override;
+
+            /**
+             * @see `IRegressionPartitionSamplingConfig::createClassificationPartitionSamplingFactory`
+             */
+            std::unique_ptr<IRegressionPartitionSamplingFactory> createRegressionPartitionSamplingFactory()
+              const override;
     };
 
 }

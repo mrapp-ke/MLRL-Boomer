@@ -6,10 +6,9 @@
 namespace boosting {
 
     AutomaticLabelBinningConfig::AutomaticLabelBinningConfig(
-      ReadableProperty<IRegularizationConfig> l1RegularizationConfigGetter,
-      ReadableProperty<IRegularizationConfig> l2RegularizationConfigGetter)
-        : l1RegularizationConfig_(l1RegularizationConfigGetter), l2RegularizationConfig_(l2RegularizationConfigGetter) {
-    }
+      ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
+      ReadableProperty<IRegularizationConfig> l2RegularizationConfig)
+        : l1RegularizationConfig_(l1RegularizationConfig), l2RegularizationConfig_(l2RegularizationConfig) {}
 
     std::unique_ptr<IDecomposableRuleEvaluationFactory>
       AutomaticLabelBinningConfig::createDecomposableCompleteRuleEvaluationFactory() const {
