@@ -13,6 +13,7 @@ from mlrl.common.options import Options
 
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, Formatter, filter_formatters, format_table
 from mlrl.testbed.output_writer import Formattable, Tabularizable
+from mlrl.testbed.problem_type import ProblemType
 
 OPTION_OUTPUTS = 'outputs'
 
@@ -104,13 +105,16 @@ class OutputCharacteristics(Formattable, Tabularizable):
     Stores characteristics of an output matrix.
     """
 
-    def __init__(self, y):
+    def __init__(self, y, problem_type: ProblemType):
         """
-        :param y: A `numpy.ndarray`, `scipy.sparse.spmatrix`, `scipy.sparse.sparray`, shape
-                  `(num_examples, num_outputs)`, that stores the ground truth
+        :param y:               A `numpy.ndarray`, `scipy.sparse.spmatrix`, `scipy.sparse.sparray`, shape
+                                `(num_examples, num_outputs)`, that stores the ground truth
+        :param problem_type:    The type of the machine learning problem
         """
         self._y = y
         self.num_outputs = y.shape[1]
+        classification = problem_type == ProblemType.CLASSIFICATION
+        self.formatters = LABEL_CHARACTERISTICS if classification else OUTPUT_CHARACTERISTICS
 
     @cached_property
     def output_density(self):
@@ -155,7 +159,7 @@ class OutputCharacteristics(Formattable, Tabularizable):
         decimals = options.get_int(OPTION_DECIMALS, 2)
         rows = []
 
-        for formatter in filter_formatters(OUTPUT_CHARACTERISTICS, [options]):
+        for formatter in filter_formatters(self.formatters, [options]):
             rows.append([formatter.name, formatter.format(self, percentage=percentage, decimals=decimals)])
 
         return format_table(rows)
@@ -168,7 +172,7 @@ class OutputCharacteristics(Formattable, Tabularizable):
         decimals = options.get_int(OPTION_DECIMALS, 0)
         columns = {}
 
-        for formatter in filter_formatters(OUTPUT_CHARACTERISTICS, [options]):
+        for formatter in filter_formatters(self.formatters, [options]):
             columns[formatter] = formatter.format(self, percentage=percentage, decimals=decimals)
 
         return [columns]
@@ -196,7 +200,10 @@ class Characteristic(Formatter):
 OUTPUT_CHARACTERISTICS: List[Characteristic] = [
     Characteristic(OPTION_OUTPUTS, 'Outputs', lambda x: x.num_outputs),
     Characteristic(OPTION_OUTPUT_DENSITY, 'Output Density', lambda x: x.output_density, percentage=True),
-    Characteristic(OPTION_OUTPUT_SPARSITY, 'Output Sparsity', lambda x: x.output_sparsity, percentage=True),
+    Characteristic(OPTION_OUTPUT_SPARSITY, 'Output Sparsity', lambda x: x.output_sparsity, percentage=True)
+]
+
+LABEL_CHARACTERISTICS: List[Characteristic] = OUTPUT_CHARACTERISTICS + [
     Characteristic(OPTION_LABEL_IMBALANCE_RATIO, 'Label Imbalance Ratio', lambda x: x.avg_label_imbalance_ratio),
     Characteristic(OPTION_LABEL_CARDINALITY, 'Label Cardinality', lambda x: x.avg_label_cardinality),
     Characteristic(OPTION_DISTINCT_LABEL_VECTORS, 'Distinct Label Vectors', lambda x: x.num_distinct_label_vectors)

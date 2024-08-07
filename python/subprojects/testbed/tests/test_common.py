@@ -41,6 +41,22 @@ DATASET_LANGLOG = 'langlog'
 
 DATASET_BREAST_CANCER = 'breast-cancer'
 
+DATASET_MEKA = 'meka'
+
+DATASET_ATP7D = 'atp7d'
+
+DATASET_ATP7D_NUMERICAL_SPARSE = 'atp7d-numerical-sparse'
+
+DATASET_ATP7D_NOMINAL = 'atp7d-nominal'
+
+DATASET_ATP7D_BINARY = 'atp7d-binary'
+
+DATASET_ATP7D_ORDINAL = 'atp7d-ordinal'
+
+DATASET_ATP7D_MEKA = 'atp7d-meka'
+
+DATASET_HOUSING = 'housing'
+
 RULE_PRUNING_NO = 'none'
 
 RULE_PRUNING_IREP = 'irep'
@@ -374,7 +390,12 @@ class CmdBuilder:
 
         if expected_output_file_name is not None:
             stdout = str(out.stdout).splitlines()
-            expected_output_file = path.join(self.expected_output_dir, expected_output_file_name + '.txt')
+            expected_output_dir = self.expected_output_dir
+
+            if OVERWRITE_EXPECTED_OUTPUT_FILES:
+                makedirs(expected_output_dir, exist_ok=True)
+
+            expected_output_file = path.join(expected_output_dir, expected_output_file_name + '.txt')
 
             if OVERWRITE_EXPECTED_OUTPUT_FILES:
                 self.__overwrite_output_file(stdout, expected_output_file)
@@ -802,6 +823,8 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
                  dataset_binary: str = DATASET_ENRON,
                  dataset_nominal: str = DATASET_EMOTIONS_NOMINAL,
                  dataset_ordinal: str = DATASET_EMOTIONS_ORDINAL,
+                 dataset_single_output: str = DATASET_BREAST_CANCER,
+                 dataset_meka: str = DATASET_MEKA,
                  methodName='runTest'):
         """
         :param dataset_default:             The name of the dataset that should be used by default
@@ -809,6 +832,8 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         :param dataset_binary:              The name of a dataset with binary features
         :param dataset_nominal:             The name of a dataset with nominal features
         :param dataset_ordinal:             The name of a dataset with ordinal features
+        :param dataset_single_output:       The name of a dataset with a single target variable
+        :param dataset_meka:                The name of a dataset in the MEKA format
         """
         super().__init__(methodName)
         self.dataset_default = dataset_default
@@ -816,6 +841,8 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         self.dataset_binary = dataset_binary
         self.dataset_nominal = dataset_nominal
         self.dataset_ordinal = dataset_ordinal
+        self.dataset_single_output = dataset_single_output
+        self.dataset_meka = dataset_meka
 
     def _create_cmd_builder(self, dataset: str = DATASET_EMOTIONS) -> Any:
         """
@@ -839,6 +866,14 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
     def on_assertion_failure(self, message: str):
         self.fail(message)
 
+    def test_single_output(self):
+        """
+        Tests the evaluation of the rule learning algorithm when predicting for a single output.
+        """
+        builder = self._create_cmd_builder(dataset=self.dataset_single_output) \
+            .print_evaluation()
+        builder.run_cmd('single-output')
+
     def test_sparse_feature_value(self):
         """
         Tests the training of the rule learning algorithm when using a custom value for the sparse elements in the
@@ -852,7 +887,7 @@ class IntegrationTests(TestCase, CmdBuilder.AssertionCallback, ABC):
         """
         Tests the evaluation of the rule learning algorithm when using the MEKA data format.
         """
-        builder = self._create_cmd_builder(dataset='meka') \
+        builder = self._create_cmd_builder(dataset=self.dataset_meka) \
             .print_evaluation(False)
         builder.run_cmd('meka-format')
 

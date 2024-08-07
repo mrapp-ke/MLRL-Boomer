@@ -30,36 +30,42 @@ namespace boosting {
         public:
 
             /**
-             * @param labelBinningConfigGetter      A `ReadableProperty` that allows to access the `ILabelBinningConfig`
-             *                                      that stores the configuration of the method for assigning labels to
-             *                                      bins
-             * @param multiThreadingConfigGetter    A `ReadableProperty` that allows to access the
-             *                                      `IMultiThreadingConfig` that stores the configuration of the
-             *                                      multi-threading behavior that should be used for the parallel update
-             *                                      of statistics
-             * @param l1RegularizationConfigGetter  A `ReadableProperty` that allows to access the
-             *                                      `IRegularizationConfig` that stores the configuration of the L1
-             *                                      regularization
-             * @param l2RegularizationConfigGetter  A `ReadableProperty` that allows to access the
-             *                                      `IRegularizationConfig` that stores the configuration of the L2
-             *                                      regularization
+             * @param labelBinningConfig      A `ReadableProperty` that allows to access the `ILabelBinningConfig` that
+             *                                stores the configuration of the method for assigning labels to bins
+             * @param multiThreadingConfig    A `ReadableProperty` that allows to access the `IMultiThreadingConfig`
+             *                                that stores the configuration of the multi-threading behavior that should
+             *                                be used for the parallel update of statistics
+             * @param l1RegularizationConfig  A `ReadableProperty` that allows to access the `IRegularizationConfig`
+             *                                that stores the configuration of the L1 regularization
+             * @param l2RegularizationConfig  A `ReadableProperty` that allows to access the `IRegularizationConfig`
+             *                                that stores the configuration of the L2 regularization
              */
-            CompleteHeadConfig(ReadableProperty<ILabelBinningConfig> labelBinningConfigGetter,
-                               ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter,
-                               ReadableProperty<IRegularizationConfig> l1RegularizationConfigGetter,
-                               ReadableProperty<IRegularizationConfig> l2RegularizationConfigGetter);
+            CompleteHeadConfig(ReadableProperty<ILabelBinningConfig> labelBinningConfig,
+                               ReadableProperty<IMultiThreadingConfig> multiThreadingConfig,
+                               ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
+                               ReadableProperty<IRegularizationConfig> l2RegularizationConfig);
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const IDecomposableLossConfig& lossConfig) const override;
+              const IDecomposableClassificationLossConfig& lossConfig) const override;
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const ISparseDecomposableLossConfig& lossConfig) const override;
+              const ISparseDecomposableClassificationLossConfig& lossConfig) const override;
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
-              const INonDecomposableLossConfig& lossConfig, const Blas& blas, const Lapack& lapack) const override;
+              const INonDecomposableClassificationLossConfig& lossConfig, const Blas& blas,
+              const Lapack& lapack) const override;
+
+            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+              const IDecomposableRegressionLossConfig& lossConfig) const override;
+
+            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix,
+              const INonDecomposableRegressionLossConfig& lossConfig, const Blas& blas,
+              const Lapack& lapack) const override;
 
             bool isPartial() const override;
 

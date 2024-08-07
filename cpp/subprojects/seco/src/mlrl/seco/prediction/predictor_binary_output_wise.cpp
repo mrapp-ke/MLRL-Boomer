@@ -2,8 +2,8 @@
 
 #include "mlrl/common/data/array.hpp"
 #include "mlrl/common/data/vector_bit.hpp"
-#include "mlrl/common/iterator/index_iterator.hpp"
-#include "mlrl/common/iterator/non_zero_index_forward_iterator.hpp"
+#include "mlrl/common/iterator/iterator_forward_non_zero_index.hpp"
+#include "mlrl/common/iterator/iterator_index.hpp"
 #include "mlrl/common/model/head_complete.hpp"
 #include "mlrl/common/model/head_partial.hpp"
 #include "mlrl/common/prediction/predictor_common.hpp"
@@ -274,14 +274,14 @@ namespace seco {
 
     static inline void applyHead(const IHead& head, BinaryLilMatrix::row predictionRow, uint32 numLabels) {
         auto completeHeadVisitor = [&](const CompleteHead& head) {
-            applyHead(make_non_zero_index_forward_iterator(head.values_cbegin(), head.values_cend()),
-                      make_non_zero_index_forward_iterator(head.values_cend(), head.values_cend()), IndexIterator(0),
+            applyHead(createNonZeroIndexForwardIterator(head.values_cbegin(), head.values_cend()),
+                      createNonZeroIndexForwardIterator(head.values_cend(), head.values_cend()), IndexIterator(0),
                       predictionRow, numLabels);
         };
         auto partialHeadVisitor = [&](const PartialHead& head) {
-            applyHead(make_non_zero_index_forward_iterator(head.values_cbegin(), head.values_cend()),
-                      make_non_zero_index_forward_iterator(head.values_cend(), head.values_cend()),
-                      head.indices_cbegin(), predictionRow, numLabels);
+            applyHead(createNonZeroIndexForwardIterator(head.values_cbegin(), head.values_cend()),
+                      createNonZeroIndexForwardIterator(head.values_cend(), head.values_cend()), head.indices_cbegin(),
+                      predictionRow, numLabels);
         };
         head.visit(completeHeadVisitor, partialHeadVisitor);
     }
@@ -458,8 +458,8 @@ namespace seco {
     };
 
     OutputWiseBinaryPredictorConfig::OutputWiseBinaryPredictorConfig(
-      ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : multiThreadingConfig_(multiThreadingConfigGetter) {}
+      ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
+        : multiThreadingConfig_(multiThreadingConfig) {}
 
     std::unique_ptr<IBinaryPredictorFactory> OutputWiseBinaryPredictorConfig::createPredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, const uint32 numOutputs) const {

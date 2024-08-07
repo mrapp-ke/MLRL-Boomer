@@ -16,6 +16,7 @@ from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.io import SUFFIX_CSV, create_csv_dict_writer, get_file_name_per_fold, open_writable_csv_file, \
     open_writable_txt_file
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+from mlrl.testbed.problem_type import ProblemType
 
 
 class Formattable(ABC):
@@ -68,11 +69,13 @@ class OutputWriter(ABC):
             self.options = options
 
         @abstractmethod
-        def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
-                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+        def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
+                         data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data,
+                         **kwargs):
             """
             Must be implemented by subclasses in order to write output data to the sink.
 
+            :param problem_type:        The type of the machine learning problem
             :param meta_data:           The meta data of the data set
             :param data_split:          Information about the split of the available data, the output data corresponds
                                         to
@@ -95,8 +98,9 @@ class OutputWriter(ABC):
             super().__init__(options=options)
             self.title = title
 
-        def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
-                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+        def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
+                         data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data,
+                         **kwargs):
             message = self.title
 
             if data_type is not None:
@@ -129,8 +133,9 @@ class OutputWriter(ABC):
             self.output_dir = output_dir
             self.file_name = file_name
 
-        def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
-                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+        def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
+                         data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data,
+                         **kwargs):
             file_name = self.file_name if data_type is None else data_type.get_file_name(self.file_name)
 
             with open_writable_txt_file(directory=self.output_dir, file_name=file_name,
@@ -151,8 +156,9 @@ class OutputWriter(ABC):
             self.output_dir = output_dir
             self.file_name = file_name
 
-        def write_output(self, meta_data: MetaData, data_split: DataSplit, data_type: Optional[DataType],
-                         prediction_scope: Optional[PredictionScope], output_data, **kwargs):
+        def write_output(self, problem_type: ProblemType, meta_data: MetaData, data_split: DataSplit,
+                         data_type: Optional[DataType], prediction_scope: Optional[PredictionScope], output_data,
+                         **kwargs):
             tabular_data = output_data.tabularize(self.options, **kwargs)
 
             if tabular_data is not None:
@@ -181,8 +187,8 @@ class OutputWriter(ABC):
         self.sinks = sinks
 
     @abstractmethod
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
+                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         """
@@ -210,6 +216,7 @@ class OutputWriter(ABC):
         """
 
     def write_output(self,
+                     problem_type: ProblemType,
                      meta_data: MetaData,
                      x,
                      y,
@@ -224,6 +231,7 @@ class OutputWriter(ABC):
         """
         Generates the output data and writes it to all available sinks.
 
+        :param problem_type:        The type of the machine learning problem
         :param meta_data:           The meta-data of the data set
         :param x:                   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
                                     `(num_examples, num_features)`, that stores the feature values
@@ -245,9 +253,10 @@ class OutputWriter(ABC):
         sinks = self.sinks
 
         if len(sinks) > 0:
-            output_data = self._generate_output_data(meta_data, x, y, data_split, learner, data_type, prediction_type,
-                                                     prediction_scope, predictions, train_time, predict_time)
+            output_data = self._generate_output_data(problem_type, meta_data, x, y, data_split, learner, data_type,
+                                                     prediction_type, prediction_scope, predictions, train_time,
+                                                     predict_time)
 
             if output_data is not None:
                 for sink in sinks:
-                    sink.write_output(meta_data, data_split, data_type, prediction_scope, output_data)
+                    sink.write_output(problem_type, meta_data, data_split, data_type, prediction_scope, output_data)

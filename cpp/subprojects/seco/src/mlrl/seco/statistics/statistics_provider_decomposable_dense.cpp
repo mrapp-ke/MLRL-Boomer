@@ -1,8 +1,3 @@
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
 #include "mlrl/seco/statistics/statistics_provider_decomposable_dense.hpp"
 
 #include "mlrl/seco/data/vector_confusion_matrix_dense.hpp"
@@ -148,7 +143,3 @@ namespace seco {
     }
 
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif

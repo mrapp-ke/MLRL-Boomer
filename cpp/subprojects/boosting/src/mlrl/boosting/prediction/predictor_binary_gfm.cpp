@@ -215,10 +215,9 @@ namespace boosting {
             }
     };
 
-    GfmBinaryPredictorConfig::GfmBinaryPredictorConfig(
-      ReadableProperty<ILossConfig> lossConfigGetter,
-      ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : lossConfig_(std::move(lossConfigGetter)), multiThreadingConfig_(multiThreadingConfigGetter) {}
+    GfmBinaryPredictorConfig::GfmBinaryPredictorConfig(ReadableProperty<IClassificationLossConfig> lossConfig,
+                                                       ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
+        : lossConfig_(std::move(lossConfig)), multiThreadingConfig_(multiThreadingConfig) {}
 
     bool GfmBinaryPredictorConfig::isProbabilityCalibrationModelUsed() const {
         return noMarginalProbabilityCalibrationModelPtr_ == nullptr;

@@ -40,7 +40,7 @@ class MLRLCOMMON_API IOutputWiseStratifiedBiPartitionSamplingConfig {
  * Allows to configure a method for partitioning the available training examples into a training set and a holdout set
  * using stratification, such that for each label the proportion of relevant and irrelevant examples is maintained.
  */
-class OutputWiseStratifiedBiPartitionSamplingConfig final : public IPartitionSamplingConfig,
+class OutputWiseStratifiedBiPartitionSamplingConfig final : public IClassificationPartitionSamplingConfig,
                                                             public IOutputWiseStratifiedBiPartitionSamplingConfig {
     private:
 
@@ -54,5 +54,6 @@ class OutputWiseStratifiedBiPartitionSamplingConfig final : public IPartitionSam
 
         IOutputWiseStratifiedBiPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize) override;
 
-        std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const override;
+        std::unique_ptr<IClassificationPartitionSamplingFactory> createClassificationPartitionSamplingFactory()
+          const override;
 };

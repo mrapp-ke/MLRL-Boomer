@@ -51,7 +51,7 @@ class ExampleWiseStratifiedSampling final : public IInstanceSampling {
  * Allows to create instances of the type `IInstanceSampling` that implement stratified sampling, where distinct label
  * vectors are treated as individual classes.
  */
-class ExampleWiseStratifiedInstanceSamplingFactory final : public IInstanceSamplingFactory {
+class ExampleWiseStratifiedInstanceSamplingFactory final : public IClassificationInstanceSamplingFactory {
     private:
 
         const float32 sampleSize_;
@@ -106,7 +106,7 @@ IExampleWiseStratifiedInstanceSamplingConfig& ExampleWiseStratifiedInstanceSampl
     return *this;
 }
 
-std::unique_ptr<IInstanceSamplingFactory> ExampleWiseStratifiedInstanceSamplingConfig::createInstanceSamplingFactory()
-  const {
+std::unique_ptr<IClassificationInstanceSamplingFactory>
+  ExampleWiseStratifiedInstanceSamplingConfig::createClassificationInstanceSamplingFactory() const {
     return std::make_unique<ExampleWiseStratifiedInstanceSamplingFactory>(sampleSize_);
 }

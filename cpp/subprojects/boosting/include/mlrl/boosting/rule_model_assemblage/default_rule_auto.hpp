@@ -29,16 +29,16 @@ namespace boosting {
         public:
 
             /**
-             * @param statisticsConfigGetter    A `ReadableProperty` that allows to access the `IStatisticsConfig` that
-             *                                  stores the configuration of the statistics
-             * @param lossConfigGetter          A `ReadableProperty` that allows to access the `ILossConfig` that stores
-             *                                  the configuration of the loss function
-             * @param headConfigGetter          A `ReadableProperty` that allows to access the `IHeadConfig` that stores
-             *                                  the configuration of the rule heads
+             * @param statisticsConfig  A `ReadableProperty` that allows to access the `IStatisticsConfig` that stores
+             *                          the configuration of the statistics
+             * @param lossConfig        A `ReadableProperty` that allows to access the `ILossConfig` that stores the
+             *                          configuration of the loss function
+             * @param headConfig        A `ReadableProperty` that allows to access the `IHeadConfig` that stores the
+             *                          configuration of the rule heads
              */
-            AutomaticDefaultRuleConfig(ReadableProperty<IStatisticsConfig> statisticsConfigGetter,
-                                       ReadableProperty<ILossConfig> lossConfigGetter,
-                                       ReadableProperty<IHeadConfig> headConfigGetter);
+            AutomaticDefaultRuleConfig(ReadableProperty<IStatisticsConfig> statisticsConfig,
+                                       ReadableProperty<ILossConfig> lossConfig,
+                                       ReadableProperty<IHeadConfig> headConfig);
 
             /**
              * @see `IDefaultRuleConfig::isDefaultRuleUsed`

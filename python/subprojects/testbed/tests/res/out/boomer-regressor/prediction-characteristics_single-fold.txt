@@ -1,0 +1,20 @@
+INFO Starting experiment using the regression algorithm "boomer"...
+INFO Performing fold 1 of 10-fold cross validation...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/atp7d.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/atp7d.arff"...
+INFO Fold 1 / 10:
+INFO Fitting model to 266 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the regression scores of the training examples
+INFO Successfully fit model in <duration>
+INFO Predicting for 30 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Successfully predicted in <duration>
+INFO Prediction characteristics for test data (Fold 1):
+
+Outputs            6
+Output Density   100
+Output Sparsity    0
+
+INFO Successfully finished after <duration>

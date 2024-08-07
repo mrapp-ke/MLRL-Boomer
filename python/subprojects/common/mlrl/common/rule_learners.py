@@ -11,24 +11,25 @@ from typing import Any, Optional
 
 import numpy as np
 
-from sklearn.base import BaseEstimator
+from sklearn.base import BaseEstimator as SkLearnBaseEstimator
 from sklearn.utils import check_array
 
 from mlrl.common.arrays import SparseFormat, enforce_2d, enforce_dense, is_sparse, is_sparse_and_memory_efficient
 from mlrl.common.cython.feature_info import EqualFeatureInfo, FeatureInfo, MixedFeatureInfo
 from mlrl.common.cython.feature_matrix import CContiguousFeatureMatrix, ColumnWiseFeatureMatrix, CscFeatureMatrix, \
     CsrFeatureMatrix, FortranContiguousFeatureMatrix, RowWiseFeatureMatrix
-from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix, RowWiseLabelMatrix
+from mlrl.common.cython.label_matrix import CContiguousLabelMatrix, CsrLabelMatrix
 from mlrl.common.cython.learner_classification import ClassificationRuleLearner as RuleLearnerWrapper
 from mlrl.common.cython.output_space_info import OutputSpaceInfo
 from mlrl.common.cython.probability_calibration import JointProbabilityCalibrationModel, \
     MarginalProbabilityCalibrationModel
+from mlrl.common.cython.regression_matrix import CContiguousRegressionMatrix, CsrRegressionMatrix
 from mlrl.common.cython.rule_model import RuleModel
 from mlrl.common.cython.validation import assert_greater_or_equal
 from mlrl.common.data_types import Float32, Uint8, Uint32
 from mlrl.common.format import format_enum_values
-from mlrl.common.mixins import ClassifierMixin, IncrementalPredictionMixin, NominalFeatureSupportMixin, \
-    OrdinalFeatureSupportMixin
+from mlrl.common.mixins import ClassifierMixin, IncrementalClassifierMixin, IncrementalPredictor, \
+    IncrementalRegressorMixin, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, RegressorMixin
 
 KWARG_SPARSE_FEATURE_VALUE = 'sparse_feature_value'
 
@@ -105,13 +106,12 @@ class SparsePolicy(Enum):
                          + str(sparse_format) + '"')
 
 
-class RuleLearner(BaseEstimator, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, IncrementalPredictionMixin,
-                  ABC):
+class RuleLearner(SkLearnBaseEstimator, NominalFeatureSupportMixin, OrdinalFeatureSupportMixin, ABC):
     """
     A scikit-learn implementation of a rule learning algorithm.
     """
 
-    class NativeIncrementalPredictor(IncrementalPredictionMixin.IncrementalPredictor):
+    class NativeIncrementalPredictor(IncrementalPredictor):
         """
         Allows to obtain predictions from a `RuleLearner` incrementally by using its native support of this
         functionality.
@@ -128,23 +128,23 @@ class RuleLearner(BaseEstimator, NominalFeatureSupportMixin, OrdinalFeatureSuppo
 
         def has_next(self) -> bool:
             """
-            See :func:`mlrl.common.mixins.IncrementalPredictionMixin.IncrementalPredictor.has_next`
+            See :func:`mlrl.common.mixins.IncrementalPredictor.has_next`
             """
             return self.incremental_predictor.has_next()
 
         def get_num_next(self) -> int:
             """
-            See :func:`mlrl.common.mixins.IncrementalPredictionMixin.IncrementalPredictor.get_num_next`
+            See :func:`mlrl.common.mixins.IncrementalPredictor.get_num_next`
             """
             return self.incremental_predictor.get_num_next()
 
         def apply_next(self, step_size: int):
             """
-            See :func:`mlrl.common.mixins.IncrementalPredictionMixin.IncrementalPredictor.apply_next`
+            See :func:`mlrl.common.mixins.IncrementalPredictor.apply_next`
             """
             return self.incremental_predictor.apply_next(step_size)
 
-    class IncrementalPredictor(IncrementalPredictionMixin.IncrementalPredictor):
+    class NonNativeIncrementalPredictor(IncrementalPredictor):
         """
         Allows to obtain predictions from a `RuleLearner` incrementally.
         """
@@ -167,13 +167,13 @@ class RuleLearner(BaseEstimator, NominalFeatureSupportMixin, OrdinalFeatureSuppo
 
         def get_num_next(self) -> int:
             """
-            See :func:`mlrl.common.mixins.IncrementalPredictionMixin.IncrementalPredictor.get_num_next`
+            See :func:`mlrl.common.mixins.IncrementalPredictor.get_num_next`
             """
             return self.num_total_rules - self.num_considered_rules
 
         def apply_next(self, step_size: int):
             """
-            See :func:`mlrl.common.mixins.IncrementalPredictionMixin.IncrementalPredictor.apply_next`
+            See :func:`mlrl.common.mixins.IncrementalPredictor.apply_next`
             """
             assert_greater_or_equal('step_size', step_size, 1)
             self.num_considered_rules = min(self.num_total_rules, self.num_considered_rules + step_size)
@@ -195,6 +195,82 @@ class RuleLearner(BaseEstimator, NominalFeatureSupportMixin, OrdinalFeatureSuppo
         self.feature_format = feature_format
         self.output_format = output_format
         self.prediction_format = prediction_format
+
+    # pylint: disable=attribute-defined-outside-init
+    def _fit(self, x, y, **kwargs):
+        """
+        :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
+                                       only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
+        """
+        feature_matrix = self._create_column_wise_feature_matrix(x, **kwargs)
+        output_matrix = self.__create_row_wise_output_matrix(y)
+        feature_info = self._create_feature_info(feature_matrix.get_num_features())
+        learner = self._create_learner()
+        random_state = int(self.random_state) if self.random_state else 1
+        training_result = learner.fit(feature_info, feature_matrix, output_matrix, random_state)
+        self.num_outputs_ = training_result.num_outputs
+        self.output_space_info_ = training_result.output_space_info
+        self.marginal_probability_calibration_model_ = training_result.marginal_probability_calibration_model
+        self.joint_probability_calibration_model_ = training_result.joint_probability_calibration_model
+        return training_result.rule_model
+
+    @staticmethod
+    def _create_score_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
+                                num_outputs: int, feature_matrix: RowWiseFeatureMatrix):
+        """
+        Creates and returns a predictor for predicting scores.
+
+        :param learner:             The learner for which the predictor should be created
+        :param model:               The model to be used for prediction
+        :param output_space_info:   Information about the output space that may be used for prediction
+        :param num_outputs:         The total number of outputs to predict for
+        :param feature_matrix:      A feature matrix that provides row-wise access to the features of the query examples
+        :return:                    The predictor that has been created
+        """
+        return learner.create_score_predictor(feature_matrix, model, output_space_info, num_outputs)
+
+    def _predict_scores(self, x, **kwargs):
+        """
+        :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
+                                       only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
+        """
+        learner = self._create_learner()
+        feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
+        num_outputs = self.num_outputs_
+
+        if learner.can_predict_scores(feature_matrix, num_outputs):
+            log.debug('A dense matrix is used to store the predicted scores')
+            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
+            return self._create_score_predictor(learner, self.model_, self.output_space_info_, num_outputs,
+                                                feature_matrix).predict(max_rules)
+
+        return super()._predict_scores(x, **kwargs)
+
+    def _predict_scores_incrementally(self, x, **kwargs):
+        """
+        :keyword sparse_feature_value:  The value that should be used for sparse elements in the feature matrix. Does
+                                        only have an effect if `x` is a `scipy.sparse.spmatrix` or
+                                        `scipy.sparse.sparray`
+        :keyword max_rules:             The maximum number of rules to be used for prediction. Must be at least 1 or 0,
+                                        if the number of rules should not be restricted
+        """
+        learner = self._create_learner()
+        feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
+        num_outputs = self.num_outputs_
+
+        if learner.can_predict_scores(feature_matrix, num_outputs):
+            log.debug('A dense matrix is used to store the predicted scores')
+            model = self.model_
+            predictor = self._create_score_predictor(learner, model, self.output_space_info_, num_outputs,
+                                                     feature_matrix)
+            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
+
+            if predictor.can_predict_incrementally():
+                return ClassificationRuleLearner.NativeIncrementalPredictor(
+                    feature_matrix, predictor.create_incremental_predictor(max_rules))
+            return ClassificationRuleLearner.NonNativeIncrementalPredictor(feature_matrix, model, max_rules, predictor)
+
+        return super()._predict_scores_incrementally(x, **kwargs)
 
     def _create_feature_info(self, num_features: int) -> FeatureInfo:
         """
@@ -279,6 +355,41 @@ class RuleLearner(BaseEstimator, NominalFeatureSupportMixin, OrdinalFeatureSuppo
         log.debug('A dense matrix is used to store the feature values of the query examples')
         return CContiguousFeatureMatrix(x)
 
+    def __create_row_wise_output_matrix(self, y) -> Any:
+        """
+        Must be implemented by subclasses in order to create a matrix that provides row-wise access to the ground truth
+        of training examples.
+
+        :param x:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                    `(num_examples, num_outputs)`, that stores the ground truth of the training examples
+        :return:    The matrix that has been created
+        """
+        y_sparse_format = SparseFormat.CSR
+        prediction_sparse_policy = SparsePolicy.parse('prediction_format', self.prediction_format)
+        self.sparse_predictions_ = prediction_sparse_policy != SparsePolicy.FORCE_DENSE and (
+            prediction_sparse_policy == SparsePolicy.FORCE_SPARSE
+            or is_sparse_and_memory_efficient(y, sparse_format=y_sparse_format, dtype=Uint8, sparse_values=False))
+
+        y_sparse_policy = SparsePolicy.parse('output_format', self.output_format)
+        y_enforce_sparse = y_sparse_policy.should_enforce_sparse(y,
+                                                                 sparse_format=y_sparse_format,
+                                                                 dtype=Uint8,
+                                                                 sparse_values=False)
+        return self._create_row_wise_output_matrix(y, sparse_format=y_sparse_format, sparse=y_enforce_sparse)
+
+    @abstractmethod
+    def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **kwargs) -> Any:
+        """
+        Must be implemented by subclasses in order to create a matrix that provides row-wise access to the ground truth
+        of training examples.
+
+        :param y:               A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray`, shape
+                                `(num_examples, num_outputs)`, that stores the ground truth of the training examples
+        :param sparse_format:   The `SparseFormat` to be used for sparse matrices
+        :param sparse:          True, if the given matrix should be converted into a sparse matrix, False otherwise
+        :return:                The matrix that has been created
+        """
+
     @abstractmethod
     def _create_learner(self) -> Any:
         """
@@ -303,7 +414,7 @@ def convert_into_sklearn_compatible_probabilities(probabilities: np.ndarray) -> 
     return probabilities
 
 
-class ClassificationRuleLearner(RuleLearner, ClassifierMixin, ABC):
+class ClassificationRuleLearner(RuleLearner, ClassifierMixin, IncrementalClassifierMixin, ABC):
     """
     A scikit-learn implementation of a rule learning algorithm that can be applied to classification problems.
     """
@@ -317,7 +428,7 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, ABC):
         def apply_next(self, step_size: int):
             return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
 
-    class IncrementalProbabilityPredictor(RuleLearner.IncrementalPredictor):
+    class NonNativeIncrementalProbabilityPredictor(RuleLearner.NonNativeIncrementalPredictor):
         """
         Allows to obtain probability estimates from a `ClassificationRuleLearner` incrementally.
         """
@@ -325,45 +436,9 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, ABC):
         def apply_next(self, step_size: int):
             return convert_into_sklearn_compatible_probabilities(super().apply_next(step_size))
 
-    # pylint: disable=attribute-defined-outside-init
-    def _fit(self, x, y, **kwargs):
-        """
-        :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
-                                       only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
-        """
-        feature_matrix = self._create_column_wise_feature_matrix(x, **kwargs)
-        label_matrix = self._create_row_wise_label_matrix(y)
-        feature_info = self._create_feature_info(feature_matrix.get_num_features())
-        learner = self._create_learner()
-        random_state = int(self.random_state) if self.random_state else 1
-        training_result = learner.fit(feature_info, feature_matrix, label_matrix, random_state)
-        self.num_outputs_ = training_result.num_outputs
-        self.output_space_info_ = training_result.output_space_info
-        self.marginal_probability_calibration_model_ = training_result.marginal_probability_calibration_model
-        self.joint_probability_calibration_model_ = training_result.joint_probability_calibration_model
-        return training_result.rule_model
-
-    def _create_row_wise_label_matrix(self, y) -> RowWiseLabelMatrix:
-        """
-        Creates and returns a matrix that provides row-wise access to the ground truth labels of training examples.
-
-        :param y:   A `numpy.ndarray`, `scipy.sparse.spmatrix` or `scipy.sparse.sparray` of shape
-                    `(num_examples, num_outputs)`, that stores the ground truth labels of the training examples
-        :return:    The matrix that has been created
-        """
-        y_sparse_format = SparseFormat.CSR
-        prediction_sparse_policy = SparsePolicy.parse('prediction_format', self.prediction_format)
-        self.sparse_predictions_ = prediction_sparse_policy != SparsePolicy.FORCE_DENSE and (
-            prediction_sparse_policy == SparsePolicy.FORCE_SPARSE
-            or is_sparse_and_memory_efficient(y, sparse_format=y_sparse_format, dtype=Uint8, sparse_values=False))
-
-        y_sparse_policy = SparsePolicy.parse('output_format', self.output_format)
-        y_enforce_sparse = y_sparse_policy.should_enforce_sparse(y,
-                                                                 sparse_format=y_sparse_format,
-                                                                 dtype=Uint8,
-                                                                 sparse_values=False)
-        y = check_array(y if y_enforce_sparse else enforce_2d(enforce_dense(y, order='C', dtype=Uint8)),
-                        accept_sparse=y_sparse_format.value,
+    def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **_) -> Any:
+        y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=Uint8)),
+                        accept_sparse=sparse_format.value,
                         dtype=Uint8)
 
         if is_sparse(y):
@@ -374,64 +449,6 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, ABC):
 
         log.debug('A dense matrix is used to store the labels of the training examples')
         return CContiguousLabelMatrix(y)
-
-    @staticmethod
-    def _create_score_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
-                                num_outputs: int, feature_matrix: RowWiseFeatureMatrix):
-        """
-        Creates and returns a predictor for predicting scores.
-
-        :param learner:             The learner for which the predictor should be created
-        :param model:               The model to be used for prediction
-        :param output_space_info:   Information about the output space that may be used for prediction
-        :param num_outputs:         The total number of outputs to predict for
-        :param feature_matrix:      A feature matrix that provides row-wise access to the features of the query examples
-        :return:                    The predictor that has been created
-        """
-        return learner.create_score_predictor(feature_matrix, model, output_space_info, num_outputs)
-
-    def _predict_scores(self, x, **kwargs):
-        """
-        :keyword sparse_feature_value: The value that should be used for sparse elements in the feature matrix. Does
-                                       only have an effect if `x` is a `scipy.sparse.spmatrix` or `scipy.sparse.sparray`
-        """
-        learner = self._create_learner()
-        feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
-        num_outputs = self.num_outputs_
-
-        if learner.can_predict_scores(feature_matrix, num_outputs):
-            log.debug('A dense matrix is used to store the predicted scores')
-            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
-            return self._create_score_predictor(learner, self.model_, self.output_space_info_, num_outputs,
-                                                feature_matrix).predict(max_rules)
-
-        return super()._predict_scores(x, **kwargs)
-
-    def _predict_scores_incrementally(self, x, **kwargs):
-        """
-        :keyword sparse_feature_value:  The value that should be used for sparse elements in the feature matrix. Does
-                                        only have an effect if `x` is a `scipy.sparse.spmatrix` or
-                                        `scipy.sparse.sparray`
-        :keyword max_rules:             The maximum number of rules to be used for prediction. Must be at least 1 or 0,
-                                        if the number of rules should not be restricted
-        """
-        learner = self._create_learner()
-        feature_matrix = self._create_row_wise_feature_matrix(x, **kwargs)
-        num_outputs = self.num_outputs_
-
-        if learner.can_predict_scores(feature_matrix, num_outputs):
-            log.debug('A dense matrix is used to store the predicted scores')
-            model = self.model_
-            predictor = self._create_score_predictor(learner, model, self.output_space_info_, num_outputs,
-                                                     feature_matrix)
-            max_rules = int(kwargs.get(KWARG_MAX_RULES, 0))
-
-            if predictor.can_predict_incrementally():
-                return ClassificationRuleLearner.NativeIncrementalPredictor(
-                    feature_matrix, predictor.create_incremental_predictor(max_rules))
-            return ClassificationRuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
-
-        return super()._predict_scores_incrementally(x, **kwargs)
 
     @staticmethod
     def _create_probability_predictor(learner: RuleLearnerWrapper, model: RuleModel, output_space_info: OutputSpaceInfo,
@@ -500,8 +517,8 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, ABC):
             if predictor.can_predict_incrementally():
                 return ClassificationRuleLearner.NativeIncrementalProbabilityPredictor(
                     feature_matrix, predictor.create_incremental_predictor(max_rules))
-            return ClassificationRuleLearner.IncrementalProbabilityPredictor(feature_matrix, model, max_rules,
-                                                                             predictor)
+            return ClassificationRuleLearner.NonNativeIncrementalProbabilityPredictor(
+                feature_matrix, model, max_rules, predictor)
 
         return super().predict_proba_incrementally(x, **kwargs)
 
@@ -579,6 +596,27 @@ class ClassificationRuleLearner(RuleLearner, ClassifierMixin, ABC):
             if predictor.can_predict_incrementally():
                 return ClassificationRuleLearner.NativeIncrementalPredictor(
                     feature_matrix, predictor.create_incremental_predictor(max_rules))
-            return ClassificationRuleLearner.IncrementalPredictor(feature_matrix, model, max_rules, predictor)
+            return ClassificationRuleLearner.NonNativeIncrementalPredictor(feature_matrix, model, max_rules, predictor)
 
         return super()._predict_binary_incrementally(x, **kwargs)
+
+
+class RegressionRuleLearner(RuleLearner, RegressorMixin, IncrementalRegressorMixin, ABC):
+    """
+    A scikit-learn implementation of a rule learning algorithm that can be applied to regression problems.
+    """
+
+    def _create_row_wise_output_matrix(self, y, sparse_format: SparseFormat, sparse: bool, **_) -> Any:
+        y = check_array(y if sparse else enforce_2d(enforce_dense(y, order='C', dtype=Float32)),
+                        accept_sparse=sparse_format.value,
+                        dtype=Float32)
+
+        if is_sparse(y):
+            log.debug('A sparse matrix is used to store the regression scores of the training examples')
+            y_data = np.ascontiguousarray(y.data, dtype=Float32)
+            y_indices = np.ascontiguousarray(y.indices, dtype=Uint32)
+            y_indptr = np.ascontiguousarray(y.indptr, dtype=Uint32)
+            return CsrRegressionMatrix(y_data, y_indices, y_indptr, y.shape[0], y.shape[1])
+
+        log.debug('A dense matrix is used to store the regression scores of the training examples')
+        return CContiguousRegressionMatrix(y)

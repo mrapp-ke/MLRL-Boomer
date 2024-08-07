@@ -52,35 +52,69 @@ class NoInstanceSampling final : public IInstanceSampling {
         }
 };
 
+template<typename Partition, typename WeightVector>
+static inline std::unique_ptr<IInstanceSampling> createNoInstanceSampling(Partition& partition) {
+    return std::make_unique<NoInstanceSampling<Partition, WeightVector>>(partition);
+}
+
 /**
  * Allows to create instances of the type `IInstanceSampling` that do not perform any sampling, but assign equal weights
  * to all examples.
  */
-class NoInstanceSamplingFactory final : public IInstanceSamplingFactory {
+class NoInstanceSamplingFactory final : public IClassificationInstanceSamplingFactory,
+                                        public IRegressionInstanceSamplingFactory {
     public:
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
                                                   const SinglePartition& partition,
                                                   IStatistics& statistics) const override {
-            return std::make_unique<NoInstanceSampling<const SinglePartition, EqualWeightVector>>(partition);
+            return createNoInstanceSampling<const SinglePartition, EqualWeightVector>(partition);
         }
 
         std::unique_ptr<IInstanceSampling> create(const CContiguousView<const uint8>& labelMatrix,
                                                   BiPartition& partition, IStatistics& statistics) const override {
-            return std::make_unique<NoInstanceSampling<BiPartition, BitWeightVector>>(partition);
+            return createNoInstanceSampling<BiPartition, BitWeightVector>(partition);
         }
 
         std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, const SinglePartition& partition,
                                                   IStatistics& statistics) const override {
-            return std::make_unique<NoInstanceSampling<const SinglePartition, EqualWeightVector>>(partition);
+            return createNoInstanceSampling<const SinglePartition, EqualWeightVector>(partition);
         }
 
         std::unique_ptr<IInstanceSampling> create(const BinaryCsrView& labelMatrix, BiPartition& partition,
                                                   IStatistics& statistics) const override {
-            return std::make_unique<NoInstanceSampling<BiPartition, BitWeightVector>>(partition);
+            return createNoInstanceSampling<BiPartition, BitWeightVector>(partition);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
+                                                  const SinglePartition& partition,
+                                                  IStatistics& statistics) const override {
+            return createNoInstanceSampling<const SinglePartition, EqualWeightVector>(partition);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CContiguousView<const float32>& regressionMatrix,
+                                                  BiPartition& partition, IStatistics& statistics) const override {
+            return createNoInstanceSampling<BiPartition, BitWeightVector>(partition);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
+                                                  const SinglePartition& partition,
+                                                  IStatistics& statistics) const override {
+            return createNoInstanceSampling<const SinglePartition, EqualWeightVector>(partition);
+        }
+
+        std::unique_ptr<IInstanceSampling> create(const CsrView<const float32>& regressionMatrix,
+                                                  BiPartition& partition, IStatistics& statistics) const override {
+            return createNoInstanceSampling<BiPartition, BitWeightVector>(partition);
         }
 };
 
-std::unique_ptr<IInstanceSamplingFactory> NoInstanceSamplingConfig::createInstanceSamplingFactory() const {
+std::unique_ptr<IClassificationInstanceSamplingFactory>
+  NoInstanceSamplingConfig::createClassificationInstanceSamplingFactory() const {
+    return std::make_unique<NoInstanceSamplingFactory>();
+}
+
+std::unique_ptr<IRegressionInstanceSamplingFactory> NoInstanceSamplingConfig::createRegressionInstanceSamplingFactory()
+  const {
     return std::make_unique<NoInstanceSamplingFactory>();
 }
