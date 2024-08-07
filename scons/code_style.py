@@ -52,7 +52,8 @@ def __cpplint(directory: str):
 
 def __mdformat(directory: str, recursive: bool = False, enforce_changes: bool = False):
     suffix_md = '*.md'
-    md_files = glob(path.join(directory, '**', suffix_md) if recursive else path.join(directory, suffix_md))
+    glob_path = path.join(directory, '**', '**', suffix_md) if recursive else path.join(directory, suffix_md)
+    md_files = glob(glob_path, recursive=recursive)
     args = ['--number', '--wrap', 'no', '--end-of-line', 'lf']
 
     if not enforce_changes:

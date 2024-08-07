@@ -27,20 +27,20 @@ namespace seco {
         public:
 
             /**
-             * @param heuristicConfigGetter         A `ReadableProperty` that allows to access the `IHeuristicConfig`
-             *                                      that stores the configuration of the heuristic for learning rules
-             * @param pruningHeuristicConfigGetter  A `ReadableProperty` that allows to access the `IHeuristicConfig`
-             *                                      that stores the configuration of the heuristic for pruning rules
-             * @param liftFunctionConfigGetter      A `ReadableProperty` that allows to access the `ILiftFunctionConfig`
-             *                                      that stores the configuration of the lift function that should
-             *                                      affect the quality of rules, depending on the number of labels for
-             *                                      which they predict
+             * @param heuristicConfig           A `ReadableProperty` that allows to access the `IHeuristicConfig` that
+             *                                  stores the configuration of the heuristic for learning rules
+             * @param pruningHeuristicConfig    A `ReadableProperty` that allows to access the `IHeuristicConfig` that
+             *                                  stores the configuration of the heuristic for pruning rules
+             * @param liftFunctionConfig        A `ReadableProperty` that allows to access the `ILiftFunctionConfig`
+             *                                  that stores the configuration of the lift function that should affect
+             *                                  the quality of rules, depending on the number of labels for which they
+             *                                  predict
              */
-            PartialHeadConfig(ReadableProperty<IHeuristicConfig> heuristicConfigGetter,
-                              ReadableProperty<IHeuristicConfig> pruningHeuristicConfigGetter,
-                              ReadableProperty<ILiftFunctionConfig> liftFunctionConfigGetter);
+            PartialHeadConfig(ReadableProperty<IHeuristicConfig> heuristicConfig,
+                              ReadableProperty<IHeuristicConfig> pruningHeuristicConfig,
+                              ReadableProperty<ILiftFunctionConfig> liftFunctionConfig);
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IRowWiseLabelMatrix& labelMatrix) const override;
     };
 

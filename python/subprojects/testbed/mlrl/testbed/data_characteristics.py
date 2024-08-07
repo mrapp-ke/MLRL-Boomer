@@ -9,12 +9,14 @@ from typing import Any, Dict, List, Optional
 
 from mlrl.common.options import Options
 
-from mlrl.testbed.characteristics import OUTPUT_CHARACTERISTICS, Characteristic, OutputCharacteristics, density
+from mlrl.testbed.characteristics import LABEL_CHARACTERISTICS, OUTPUT_CHARACTERISTICS, Characteristic, \
+    OutputCharacteristics, density
 from mlrl.testbed.data import FeatureType, MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.format import OPTION_DECIMALS, OPTION_PERCENTAGE, filter_formatters, format_table
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+from mlrl.testbed.problem_type import ProblemType
 
 OPTION_EXAMPLES = 'examples'
 
@@ -111,13 +113,16 @@ class DataCharacteristicsWriter(OutputWriter):
         """
 
         def __init__(self, feature_characteristics: FeatureCharacteristics,
-                     output_characteristics: OutputCharacteristics):
+                     output_characteristics: OutputCharacteristics, problem_type: ProblemType):
             """
             :param feature_characteristics: The characteristics of the feature matrix
             :param output_characteristics:  The characteristics of the output matrix
+            :param problem_type:            The type of the machine learning problem
             """
             self.feature_characteristics = feature_characteristics
             self.output_characteristics = output_characteristics
+            classification = problem_type == ProblemType.CLASSIFICATION
+            self.output_formatters = LABEL_CHARACTERISTICS if classification else OUTPUT_CHARACTERISTICS
 
         def format(self, options: Options, **_) -> str:
             """
@@ -133,7 +138,7 @@ class DataCharacteristicsWriter(OutputWriter):
                     formatter.format(self.feature_characteristics, percentage=percentage, decimals=decimals)
                 ])
 
-            for formatter in filter_formatters(OUTPUT_CHARACTERISTICS, [options]):
+            for formatter in filter_formatters(self.output_formatters, [options]):
                 rows.append([
                     formatter.name,
                     formatter.format(self.output_characteristics, percentage=percentage, decimals=decimals)
@@ -154,7 +159,7 @@ class DataCharacteristicsWriter(OutputWriter):
                                                       percentage=percentage,
                                                       decimals=decimals)
 
-            for formatter in filter_formatters(OUTPUT_CHARACTERISTICS, [options]):
+            for formatter in filter_formatters(self.output_formatters, [options]):
                 columns[formatter] = formatter.format(self.output_characteristics,
                                                       percentage=percentage,
                                                       decimals=decimals)
@@ -178,11 +183,12 @@ class DataCharacteristicsWriter(OutputWriter):
             super().__init__(output_dir=output_dir, file_name='data_characteristics', options=options)
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
+                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
         feature_characteristics = FeatureCharacteristics(meta_data, x)
-        output_characteristics = OutputCharacteristics(y)
+        output_characteristics = OutputCharacteristics(y, problem_type)
         return DataCharacteristicsWriter.DataCharacteristics(feature_characteristics=feature_characteristics,
-                                                             output_characteristics=output_characteristics)
+                                                             output_characteristics=output_characteristics,
+                                                             problem_type=problem_type)

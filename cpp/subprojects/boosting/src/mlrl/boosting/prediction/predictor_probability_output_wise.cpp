@@ -75,9 +75,9 @@ namespace boosting {
     };
 
     OutputWiseProbabilityPredictorConfig::OutputWiseProbabilityPredictorConfig(
-      ReadableProperty<ILossConfig> lossConfigGetter,
-      ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : lossConfig_(lossConfigGetter), multiThreadingConfig_(multiThreadingConfigGetter) {}
+      ReadableProperty<IClassificationLossConfig> lossConfig,
+      ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
+        : lossConfig_(lossConfig), multiThreadingConfig_(multiThreadingConfig) {}
 
     bool OutputWiseProbabilityPredictorConfig::isProbabilityCalibrationModelUsed() const {
         return noMarginalProbabilityCalibrationModelPtr_ == nullptr;

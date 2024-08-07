@@ -164,10 +164,10 @@ namespace boosting {
     };
 
     EqualWidthLabelBinningConfig::EqualWidthLabelBinningConfig(
-      ReadableProperty<IRegularizationConfig> l1RegularizationConfigGetter,
-      ReadableProperty<IRegularizationConfig> l2RegularizationConfigGetter)
-        : binRatio_(0.04f), minBins_(1), maxBins_(0), l1RegularizationConfig_(l1RegularizationConfigGetter),
-          l2RegularizationConfig_(l2RegularizationConfigGetter) {}
+      ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
+      ReadableProperty<IRegularizationConfig> l2RegularizationConfig)
+        : binRatio_(0.04f), minBins_(1), maxBins_(0), l1RegularizationConfig_(l1RegularizationConfig),
+          l2RegularizationConfig_(l2RegularizationConfig) {}
 
     float32 EqualWidthLabelBinningConfig::getBinRatio() const {
         return binRatio_;

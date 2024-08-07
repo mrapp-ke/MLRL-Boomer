@@ -14,6 +14,10 @@ A major update to the BOOMER algorithm that introduces the following changes.
 This release comes with several API changes. For an updated overview of the available parameters and command line arguments, please refer to the [documentation](https://mlrl-boomer.readthedocs.io/en/0.11.0/).
 ```
 
+### Algorithmic Enhancements
+
+- **The BOOMER algorithm can be used for solving regression problems**, including single- and multi-output regression problems.
+
 ### Additions to the Command Line API
 
 - **Custom algorithms can now be easily integrated** with the command line API due to the ability to dynamically load code from your own Python modules or source files, as illustrated [here](https://mlrl-boomer.readthedocs.io/en/0.11.0/user_guide/testbed/runnables.html)

@@ -18,110 +18,12 @@
 #include "mlrl/boosting/prediction/predictor_probability_marginalized.hpp"
 #include "mlrl/boosting/prediction/predictor_probability_output_wise.hpp"
 #include "mlrl/boosting/prediction/probability_calibration_isotonic.hpp"
-#include "mlrl/boosting/rule_model_assemblage/default_rule_auto.hpp"
-#include "mlrl/boosting/sampling/partition_sampling_auto.hpp"
-#include "mlrl/boosting/statistics/statistic_format_auto.hpp"
-#include "mlrl/boosting/statistics/statistic_format_sparse.hpp"
 #include "mlrl/common/learner_classification.hpp"
 
 #include <memory>
 #include <utility>
 
 namespace boosting {
-
-    /**
-     * Defines an interface for all classes that allow to configure a rule learner to automatically decide whether a
-     * holdout set should be used or not.
-     */
-    class MLRLBOOSTING_API IAutomaticPartitionSamplingMixin : public virtual IBoostedRuleLearnerConfig {
-        public:
-
-            virtual ~IAutomaticPartitionSamplingMixin() override {}
-
-            /**
-             * Configures the rule learner to automatically decide whether a holdout set should be used or not.
-             */
-            virtual void useAutomaticPartitionSampling() {
-                Property<IPartitionSamplingConfig> property = this->getPartitionSamplingConfig();
-                property.set(std::make_unique<AutomaticPartitionSamplingConfig>(
-                  this->getGlobalPruningConfig(), this->getMarginalProbabilityCalibratorConfig(),
-                  this->getJointProbabilityCalibratorConfig()));
-            }
-    };
-
-    /**
-     * Defines an interface for all classes that allow to configure a rule learner to not induce a default rule.
-     */
-    class MLRLBOOSTING_API INoDefaultRuleMixin : public virtual IBoostedRuleLearnerConfig {
-        public:
-
-            virtual ~INoDefaultRuleMixin() override {}
-
-            /**
-             * Configures the rule learner to not induce a default rule.
-             */
-            virtual void useNoDefaultRule() {
-                Property<IDefaultRuleConfig> property = this->getDefaultRuleConfig();
-                property.set(std::make_unique<DefaultRuleConfig>(false));
-            }
-    };
-
-    /**
-     * Defines an interface for all classes that allow to configure a rule learner to automatically decide whether a
-     * default rule should be induced or not.
-     */
-    class MLRLBOOSTING_API IAutomaticDefaultRuleMixin : public virtual IBoostedRuleLearnerConfig {
-        public:
-
-            virtual ~IAutomaticDefaultRuleMixin() override {}
-
-            /**
-             * Configures the rule learner to automatically decide whether a default rule should be induced or not.
-             */
-            virtual void useAutomaticDefaultRule() {
-                Property<IDefaultRuleConfig> property = this->getDefaultRuleConfig();
-                property.set(std::make_unique<AutomaticDefaultRuleConfig>(
-                  this->getStatisticsConfig(), this->getLossConfig(), this->getHeadConfig()));
-            }
-    };
-
-    /**
-     * Defines an interface for all classes that allow to configure a rule learner to use a sparse representation of
-     * gradients and Hessians, if possible.
-     */
-    class MLRLBOOSTING_API ISparseStatisticsMixin : public virtual IBoostedRuleLearnerConfig {
-        public:
-
-            virtual ~ISparseStatisticsMixin() override {}
-
-            /**
-             * Configures the rule learner to use a sparse representation of gradients and Hessians, if possible.
-             */
-            virtual void useSparseStatistics() {
-                Property<IStatisticsConfig> property = this->getStatisticsConfig();
-                property.set(std::make_unique<SparseStatisticsConfig>(this->getLossConfig()));
-            }
-    };
-
-    /**
-     * Defines an interface for all classes that allow to configure a rule learner to automatically decide whether a
-     * dense or sparse representation of gradients and Hessians should be used.
-     */
-    class MLRLBOOSTING_API IAutomaticStatisticsMixin : public virtual IBoostedRuleLearnerConfig {
-        public:
-
-            virtual ~IAutomaticStatisticsMixin() override {}
-
-            /**
-             * Configures the rule learner to automatically decide whether a dense or sparse representation of gradients
-             * and Hessians should be used.
-             */
-            virtual void useAutomaticStatistics() {
-                Property<IStatisticsConfig> property = this->getStatisticsConfig();
-                property.set(std::make_unique<AutomaticStatisticsConfig>(this->getLossConfig(), this->getHeadConfig(),
-                                                                         this->getDefaultRuleConfig()));
-            }
-    };
 
     /**
      * Defines an interface for all classes that allow to configure a rule learner to use a loss function that
@@ -137,8 +39,9 @@ namespace boosting {
              * loss that is non-decomposable.
              */
             virtual void useNonDecomposableLogisticLoss() {
-                Property<ILossConfig> property = this->getLossConfig();
-                property.set(std::make_unique<NonDecomposableLogisticLossConfig>(this->getHeadConfig()));
+                this->getClassificationLossConfig().set(
+                  std::make_unique<NonDecomposableLogisticLossConfig>(this->getHeadConfig()));
+                this->getRegressionLossConfig().set(nullptr);
             }
     };
 
@@ -156,8 +59,9 @@ namespace boosting {
              * hinge loss that is non-decomposable.
              */
             virtual void useNonDecomposableSquaredHingeLoss() {
-                Property<ILossConfig> property = this->getLossConfig();
-                property.set(std::make_unique<NonDecomposableSquaredHingeLossConfig>(this->getHeadConfig()));
+                this->getClassificationLossConfig().set(
+                  std::make_unique<NonDecomposableSquaredHingeLossConfig>(this->getHeadConfig()));
+                this->getRegressionLossConfig().set(nullptr);
             }
     };
 
@@ -175,8 +79,9 @@ namespace boosting {
              * loss that is applied decomposable.
              */
             virtual void useDecomposableLogisticLoss() {
-                Property<ILossConfig> property = this->getLossConfig();
-                property.set(std::make_unique<DecomposableLogisticLossConfig>(this->getHeadConfig()));
+                this->getClassificationLossConfig().set(
+                  std::make_unique<DecomposableLogisticLossConfig>(this->getHeadConfig()));
+                this->getRegressionLossConfig().set(nullptr);
             }
     };
 
@@ -194,8 +99,9 @@ namespace boosting {
              * hinge loss that is decomposable.
              */
             virtual void useDecomposableSquaredHingeLoss() {
-                Property<ILossConfig> property = this->getLossConfig();
-                property.set(std::make_unique<DecomposableSquaredHingeLossConfig>(this->getHeadConfig()));
+                this->getClassificationLossConfig().set(
+                  std::make_unique<DecomposableSquaredHingeLossConfig>(this->getHeadConfig()));
+                this->getRegressionLossConfig().set(nullptr);
             }
     };
 
@@ -216,11 +122,10 @@ namespace boosting {
              *         configuration of the method for the assignment of labels to bins
              */
             virtual IEqualWidthLabelBinningConfig& useEqualWidthLabelBinning() {
-                Property<ILabelBinningConfig> property = this->getLabelBinningConfig();
-                std::unique_ptr<EqualWidthLabelBinningConfig> ptr = std::make_unique<EqualWidthLabelBinningConfig>(
-                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig());
+                auto ptr = std::make_unique<EqualWidthLabelBinningConfig>(this->getL1RegularizationConfig(),
+                                                                          this->getL2RegularizationConfig());
                 IEqualWidthLabelBinningConfig& ref = *ptr;
-                property.set(std::move(ptr));
+                this->getLabelBinningConfig().set(std::move(ptr));
                 return ref;
             }
     };
@@ -239,9 +144,8 @@ namespace boosting {
              * should be used or not.
              */
             virtual void useAutomaticLabelBinning() {
-                Property<ILabelBinningConfig> property = this->getLabelBinningConfig();
-                property.set(std::make_unique<AutomaticLabelBinningConfig>(this->getL1RegularizationConfig(),
-                                                                           this->getL2RegularizationConfig()));
+                this->getLabelBinningConfig().set(std::make_unique<AutomaticLabelBinningConfig>(
+                  this->getL1RegularizationConfig(), this->getL2RegularizationConfig()));
             }
     };
 
@@ -262,12 +166,10 @@ namespace boosting {
              *         further configuration of the calibrator
              */
             virtual IIsotonicMarginalProbabilityCalibratorConfig& useIsotonicMarginalProbabilityCalibration() {
-                Property<IMarginalProbabilityCalibratorConfig> property =
-                  this->getMarginalProbabilityCalibratorConfig();
-                std::unique_ptr<IsotonicMarginalProbabilityCalibratorConfig> ptr =
-                  std::make_unique<IsotonicMarginalProbabilityCalibratorConfig>(this->getLossConfig());
+                auto ptr =
+                  std::make_unique<IsotonicMarginalProbabilityCalibratorConfig>(this->getClassificationLossConfig());
                 IIsotonicMarginalProbabilityCalibratorConfig& ref = *ptr;
-                property.set(std::move(ptr));
+                this->getMarginalProbabilityCalibratorConfig().set(std::move(ptr));
                 return ref;
             }
     };
@@ -288,11 +190,10 @@ namespace boosting {
              *         configuration of the calibrator
              */
             virtual IIsotonicJointProbabilityCalibratorConfig& useIsotonicJointProbabilityCalibration() {
-                Property<IJointProbabilityCalibratorConfig> property = this->getJointProbabilityCalibratorConfig();
-                std::unique_ptr<IsotonicJointProbabilityCalibratorConfig> ptr =
-                  std::make_unique<IsotonicJointProbabilityCalibratorConfig>(this->getLossConfig());
+                auto ptr =
+                  std::make_unique<IsotonicJointProbabilityCalibratorConfig>(this->getClassificationLossConfig());
                 IIsotonicJointProbabilityCalibratorConfig& ref = *ptr;
-                property.set(std::move(ptr));
+                this->getJointProbabilityCalibratorConfig().set(std::move(ptr));
                 return ref;
             }
     };
@@ -315,12 +216,10 @@ namespace boosting {
              *         configuration of the predictor
              */
             virtual IOutputWiseProbabilityPredictorConfig& useOutputWiseProbabilityPredictor() {
-                Property<IProbabilityPredictorConfig> property = this->getProbabilityPredictorConfig();
-                std::unique_ptr<OutputWiseProbabilityPredictorConfig> ptr =
-                  std::make_unique<OutputWiseProbabilityPredictorConfig>(this->getLossConfig(),
-                                                                         this->getParallelPredictionConfig());
+                auto ptr = std::make_unique<OutputWiseProbabilityPredictorConfig>(this->getClassificationLossConfig(),
+                                                                                  this->getParallelPredictionConfig());
                 IOutputWiseProbabilityPredictorConfig& ref = *ptr;
-                property.set(std::move(ptr));
+                this->getProbabilityPredictorConfig().set(std::move(ptr));
                 return ref;
             }
     };
@@ -343,12 +242,10 @@ namespace boosting {
              *         configuration of the predictor
              */
             virtual IMarginalizedProbabilityPredictorConfig& useMarginalizedProbabilityPredictor() {
-                Property<IProbabilityPredictorConfig> property = this->getProbabilityPredictorConfig();
-                std::unique_ptr<MarginalizedProbabilityPredictorConfig> ptr =
-                  std::make_unique<MarginalizedProbabilityPredictorConfig>(this->getLossConfig(),
-                                                                           this->getParallelPredictionConfig());
+                auto ptr = std::make_unique<MarginalizedProbabilityPredictorConfig>(
+                  this->getClassificationLossConfig(), this->getParallelPredictionConfig());
                 IMarginalizedProbabilityPredictorConfig& ref = *ptr;
-                property.set(std::move(ptr));
+                this->getProbabilityPredictorConfig().set(std::move(ptr));
                 return ref;
             }
     };
@@ -366,9 +263,8 @@ namespace boosting {
              * Configures the rule learner to automatically decide for a predictor for predicting probability estimates.
              */
             virtual void useAutomaticProbabilityPredictor() {
-                Property<IProbabilityPredictorConfig> property = this->getProbabilityPredictorConfig();
-                property.set(std::make_unique<AutomaticProbabilityPredictorConfig>(
-                  this->getLossConfig(), this->getParallelPredictionConfig()));
+                this->getProbabilityPredictorConfig().set(std::make_unique<AutomaticProbabilityPredictorConfig>(
+                  this->getClassificationLossConfig(), this->getParallelPredictionConfig()));
             }
     };
 
@@ -391,12 +287,10 @@ namespace boosting {
              *         configuration of the predictor
              */
             virtual IOutputWiseBinaryPredictorConfig& useOutputWiseBinaryPredictor() {
-                Property<IBinaryPredictorConfig> property = this->getBinaryPredictorConfig();
-                std::unique_ptr<OutputWiseBinaryPredictorConfig> ptr =
-                  std::make_unique<OutputWiseBinaryPredictorConfig>(this->getLossConfig(),
-                                                                    this->getParallelPredictionConfig());
+                auto ptr = std::make_unique<OutputWiseBinaryPredictorConfig>(this->getClassificationLossConfig(),
+                                                                             this->getParallelPredictionConfig());
                 IOutputWiseBinaryPredictorConfig& ref = *ptr;
-                property.set(std::move(ptr));
+                this->getBinaryPredictorConfig().set(std::move(ptr));
                 return ref;
             }
     };
@@ -420,12 +314,10 @@ namespace boosting {
              *         configuration of the predictor
              */
             virtual IExampleWiseBinaryPredictorConfig& useExampleWiseBinaryPredictor() {
-                Property<IBinaryPredictorConfig> property = this->getBinaryPredictorConfig();
-                std::unique_ptr<ExampleWiseBinaryPredictorConfig> ptr =
-                  std::make_unique<ExampleWiseBinaryPredictorConfig>(this->getLossConfig(),
-                                                                     this->getParallelPredictionConfig());
+                auto ptr = std::make_unique<ExampleWiseBinaryPredictorConfig>(this->getClassificationLossConfig(),
+                                                                              this->getParallelPredictionConfig());
                 IExampleWiseBinaryPredictorConfig& ref = *ptr;
-                property.set(std::move(ptr));
+                this->getBinaryPredictorConfig().set(std::move(ptr));
                 return ref;
             }
     };
@@ -449,11 +341,10 @@ namespace boosting {
              *         the predictor
              */
             virtual IGfmBinaryPredictorConfig& useGfmBinaryPredictor() {
-                Property<IBinaryPredictorConfig> property = this->getBinaryPredictorConfig();
-                std::unique_ptr<GfmBinaryPredictorConfig> ptr = std::make_unique<GfmBinaryPredictorConfig>(
-                  this->getLossConfig(), this->getParallelPredictionConfig());
+                auto ptr = std::make_unique<GfmBinaryPredictorConfig>(this->getClassificationLossConfig(),
+                                                                      this->getParallelPredictionConfig());
                 IGfmBinaryPredictorConfig& ref = *ptr;
-                property.set(std::move(ptr));
+                this->getBinaryPredictorConfig().set(std::move(ptr));
                 return ref;
             }
     };
@@ -472,9 +363,8 @@ namespace boosting {
              * labels are relevant or irrelevant.
              */
             virtual void useAutomaticBinaryPredictor() {
-                Property<IBinaryPredictorConfig> property = this->getBinaryPredictorConfig();
-                property.set(std::make_unique<AutomaticBinaryPredictorConfig>(this->getLossConfig(),
-                                                                              this->getParallelPredictionConfig()));
+                this->getBinaryPredictorConfig().set(std::make_unique<AutomaticBinaryPredictorConfig>(
+                  this->getClassificationLossConfig(), this->getParallelPredictionConfig()));
             }
     };
 }

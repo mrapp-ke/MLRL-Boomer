@@ -40,29 +40,41 @@ namespace boosting {
     }
 
     /**
-     * Allows to create instances of the type `IDecomposableLoss` that implement a multivariate variant of the squared
-     * hinge loss that is decomposable.
+     * Allows to create instances of the type `IDecomposableClassificationLoss` that implement a multivariate variant of
+     * the squared hinge loss that is decomposable.
      */
-    class DecomposableSquaredHingeLossFactory final : public ISparseDecomposableLossFactory {
+    class DecomposableSquaredHingeLossFactory final : public ISparseDecomposableClassificationLossFactory {
         public:
 
-            std::unique_ptr<ISparseDecomposableLoss> createSparseDecomposableLoss() const override {
-                return std::make_unique<SparseDecomposableLoss>(&updateGradientAndHessian, &evaluatePrediction);
+            std::unique_ptr<ISparseDecomposableClassificationLoss> createSparseDecomposableClassificationLoss()
+              const override {
+                return std::make_unique<SparseDecomposableClassificationLoss>(&updateGradientAndHessian,
+                                                                              &evaluatePrediction);
+            }
+
+            std::unique_ptr<IDistanceMeasure> createDistanceMeasure(
+              const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
+              const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel) const override {
+                return this->createSparseDecomposableClassificationLoss();
+            }
+
+            std::unique_ptr<IClassificationEvaluationMeasure> createClassificationEvaluationMeasure() const override {
+                return this->createSparseDecomposableClassificationLoss();
             }
     };
 
-    DecomposableSquaredHingeLossConfig::DecomposableSquaredHingeLossConfig(
-      ReadableProperty<IHeadConfig> headConfigGetter)
-        : headConfig_(headConfigGetter) {}
+    DecomposableSquaredHingeLossConfig::DecomposableSquaredHingeLossConfig(ReadableProperty<IHeadConfig> headConfig)
+        : headConfig_(headConfig) {}
 
-    std::unique_ptr<IStatisticsProviderFactory> DecomposableSquaredHingeLossConfig::createStatisticsProviderFactory(
-      const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
-      const Lapack& lapack, bool preferSparseStatistics) const {
+    std::unique_ptr<IClassificationStatisticsProviderFactory>
+      DecomposableSquaredHingeLossConfig::createClassificationStatisticsProviderFactory(
+        const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+        const Lapack& lapack, bool preferSparseStatistics) const {
         if (preferSparseStatistics) {
-            return headConfig_.get().createStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
+            return headConfig_.get().createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, *this);
         } else {
-            return headConfig_.get().createStatisticsProviderFactory(
-              featureMatrix, labelMatrix, static_cast<const IDecomposableLossConfig&>(*this));
+            return headConfig_.get().createClassificationStatisticsProviderFactory(
+              featureMatrix, labelMatrix, static_cast<const IDecomposableClassificationLossConfig&>(*this));
         }
     }
 
@@ -80,8 +92,8 @@ namespace boosting {
         return 0.5;
     }
 
-    std::unique_ptr<ISparseDecomposableLossFactory>
-      DecomposableSquaredHingeLossConfig::createSparseDecomposableLossFactory() const {
+    std::unique_ptr<ISparseDecomposableClassificationLossFactory>
+      DecomposableSquaredHingeLossConfig::createSparseDecomposableClassificationLossFactory() const {
         return std::make_unique<DecomposableSquaredHingeLossFactory>();
     }
 

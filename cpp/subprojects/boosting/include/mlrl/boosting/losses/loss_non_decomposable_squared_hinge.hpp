@@ -15,7 +15,7 @@ namespace boosting {
      * Allows to configure a loss function that implements a multivariate variant of the squared hinge loss that is
      * non-decomposable.
      */
-    class NonDecomposableSquaredHingeLossConfig final : public INonDecomposableLossConfig {
+    class NonDecomposableSquaredHingeLossConfig final : public INonDecomposableClassificationLossConfig {
         private:
 
             const ReadableProperty<IHeadConfig> headConfig_;
@@ -23,12 +23,12 @@ namespace boosting {
         public:
 
             /**
-             * @param headConfigGetter A `ReadableProperty` that allows to access the `IHeadConfig` that stores the
-             *                         configuration of rule heads
+             * @param headConfig A `ReadableProperty` that allows to access the `IHeadConfig` that stores the
+             *                   configuration of rule heads
              */
-            NonDecomposableSquaredHingeLossConfig(ReadableProperty<IHeadConfig> headConfigGetter);
+            NonDecomposableSquaredHingeLossConfig(ReadableProperty<IHeadConfig> headConfig);
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
               const Lapack& lapack, bool preferSparseStatistics) const override;
 
@@ -39,7 +39,8 @@ namespace boosting {
 
             float64 getDefaultPrediction() const override;
 
-            std::unique_ptr<INonDecomposableLossFactory> createNonDecomposableLossFactory() const override;
+            std::unique_ptr<INonDecomposableClassificationLossFactory> createNonDecomposableClassificationLossFactory()
+              const override;
     };
 
 }

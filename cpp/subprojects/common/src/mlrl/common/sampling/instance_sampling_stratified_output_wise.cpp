@@ -53,7 +53,7 @@ class OutputWiseStratifiedSampling final : public IInstanceSampling {
  * of the available training examples, such that for each label the proportion of relevant and irrelevant examples is
  * maintained.
  */
-class OutputWiseStratifiedInstanceSamplingFactory final : public IInstanceSamplingFactory {
+class OutputWiseStratifiedInstanceSamplingFactory final : public IClassificationInstanceSamplingFactory {
     private:
 
         const float32 sampleSize_;
@@ -108,7 +108,7 @@ IOutputWiseStratifiedInstanceSamplingConfig& OutputWiseStratifiedInstanceSamplin
     return *this;
 }
 
-std::unique_ptr<IInstanceSamplingFactory> OutputWiseStratifiedInstanceSamplingConfig::createInstanceSamplingFactory()
-  const {
+std::unique_ptr<IClassificationInstanceSamplingFactory>
+  OutputWiseStratifiedInstanceSamplingConfig::createClassificationInstanceSamplingFactory() const {
     return std::make_unique<OutputWiseStratifiedInstanceSamplingFactory>(sampleSize_);
 }

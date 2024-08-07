@@ -1,0 +1,291 @@
+INFO Starting experiment using the classification algorithm "boomer"...
+INFO Using separate training and test sets...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
+INFO Fitting model to 397 training examples...
+DEBUG A dense matrix is used to store the feature values of the training examples
+DEBUG A dense matrix is used to store the labels of the training examples
+INFO Successfully fit model in <duration>
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted scores
+INFO Predicting for 196 test examples using a model of size 50...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 50:
+
+Coverage Error                    2.97
+Discounted Cumulative Gain        1.33
+Label Ranking Average Precision   0.77
+Mean Absolute Error               1.35
+Mean Absolute Percentage Error    4.27039e+15
+Mean Squared Error                2.39
+Median Absolute Error             1.29
+NDCG                             84.47
+Ranking Loss                      0.19
+
+INFO Predicting for 196 test examples using a model of size 100...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 100:
+
+Coverage Error                    2.8
+Discounted Cumulative Gain        1.36
+Label Ranking Average Precision   0.8
+Mean Absolute Error               1.61
+Mean Absolute Percentage Error    5.49626e+15
+Mean Squared Error                3.66
+Median Absolute Error             1.49
+NDCG                             86.69
+Ranking Loss                      0.16
+
+INFO Predicting for 196 test examples using a model of size 150...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 150:
+
+Coverage Error                    2.74
+Discounted Cumulative Gain        1.38
+Label Ranking Average Precision   0.82
+Mean Absolute Error               1.85
+Mean Absolute Percentage Error    6.46423e+15
+Mean Squared Error                5.04
+Median Absolute Error             1.73
+NDCG                             88.01
+Ranking Loss                      0.15
+
+INFO Predicting for 196 test examples using a model of size 200...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 200:
+
+Coverage Error                    2.73
+Discounted Cumulative Gain        1.38
+Label Ranking Average Precision   0.82
+Mean Absolute Error               1.98
+Mean Absolute Percentage Error    6.96129e+15
+Mean Squared Error                5.77
+Median Absolute Error             1.83
+NDCG                             87.67
+Ranking Loss                      0.15
+
+INFO Predicting for 196 test examples using a model of size 250...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 250:
+
+Coverage Error                    2.76
+Discounted Cumulative Gain        1.38
+Label Ranking Average Precision   0.82
+Mean Absolute Error               2.1
+Mean Absolute Percentage Error    7.43108e+15
+Mean Squared Error                6.57
+Median Absolute Error             1.92
+NDCG                             87.86
+Ranking Loss                      0.15
+
+INFO Predicting for 196 test examples using a model of size 300...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 300:
+
+Coverage Error                    2.75
+Discounted Cumulative Gain        1.39
+Label Ranking Average Precision   0.82
+Mean Absolute Error               2.21
+Mean Absolute Percentage Error    7.83486e+15
+Mean Squared Error                7.3
+Median Absolute Error             2
+NDCG                             88.15
+Ranking Loss                      0.14
+
+INFO Predicting for 196 test examples using a model of size 350...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 350:
+
+Coverage Error                    2.72
+Discounted Cumulative Gain        1.39
+Label Ranking Average Precision   0.83
+Mean Absolute Error               2.36
+Mean Absolute Percentage Error    8.38934e+15
+Mean Squared Error                8.27
+Median Absolute Error             2.14
+NDCG                             88.32
+Ranking Loss                      0.14
+
+INFO Predicting for 196 test examples using a model of size 400...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 400:
+
+Coverage Error                    2.73
+Discounted Cumulative Gain        1.38
+Label Ranking Average Precision   0.82
+Mean Absolute Error               2.46
+Mean Absolute Percentage Error    8.7637e+15
+Mean Squared Error                9.01
+Median Absolute Error             2.24
+NDCG                             87.89
+Ranking Loss                      0.14
+
+INFO Predicting for 196 test examples using a model of size 450...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 450:
+
+Coverage Error                    2.71
+Discounted Cumulative Gain        1.38
+Label Ranking Average Precision   0.83
+Mean Absolute Error               2.57
+Mean Absolute Percentage Error    9.15987e+15
+Mean Squared Error                9.79
+Median Absolute Error             2.35
+NDCG                             88.28
+Ranking Loss                      0.14
+
+INFO Predicting for 196 test examples using a model of size 500...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 500:
+
+Coverage Error                    2.7
+Discounted Cumulative Gain        1.39
+Label Ranking Average Precision   0.83
+Mean Absolute Error               2.65
+Mean Absolute Percentage Error    9.45969e+15
+Mean Squared Error               10.39
+Median Absolute Error             2.43
+NDCG                             88.63
+Ranking Loss                      0.14
+
+INFO Predicting for 196 test examples using a model of size 550...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 550:
+
+Coverage Error                    2.71
+Discounted Cumulative Gain        1.39
+Label Ranking Average Precision   0.83
+Mean Absolute Error               2.76
+Mean Absolute Percentage Error    9.86515e+15
+Mean Squared Error               11.27
+Median Absolute Error             2.53
+NDCG                             88.55
+Ranking Loss                      0.14
+
+INFO Predicting for 196 test examples using a model of size 600...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 600:
+
+Coverage Error                    2.69
+Discounted Cumulative Gain        1.39
+Label Ranking Average Precision   0.83
+Mean Absolute Error               2.81
+Mean Absolute Percentage Error    1.00785e+16
+Mean Squared Error               11.72
+Median Absolute Error             2.54
+NDCG                             88.56
+Ranking Loss                      0.14
+
+INFO Predicting for 196 test examples using a model of size 650...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 650:
+
+Coverage Error                    2.67
+Discounted Cumulative Gain        1.39
+Label Ranking Average Precision   0.83
+Mean Absolute Error               2.91
+Mean Absolute Percentage Error    1.04511e+16
+Mean Squared Error               12.62
+Median Absolute Error             2.64
+NDCG                             88.48
+Ranking Loss                      0.13
+
+INFO Predicting for 196 test examples using a model of size 700...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 700:
+
+Coverage Error                    2.67
+Discounted Cumulative Gain        1.39
+Label Ranking Average Precision   0.83
+Mean Absolute Error               3.01
+Mean Absolute Percentage Error    1.07895e+16
+Mean Squared Error               13.41
+Median Absolute Error             2.71
+NDCG                             88.68
+Ranking Loss                      0.13
+
+INFO Predicting for 196 test examples using a model of size 750...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 750:
+
+Coverage Error                    2.68
+Discounted Cumulative Gain        1.39
+Label Ranking Average Precision   0.83
+Mean Absolute Error               3.09
+Mean Absolute Percentage Error    1.1106e+16
+Mean Squared Error               14.19
+Median Absolute Error             2.78
+NDCG                             88.2
+Ranking Loss                      0.14
+
+INFO Predicting for 196 test examples using a model of size 800...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 800:
+
+Coverage Error                    2.72
+Discounted Cumulative Gain        1.38
+Label Ranking Average Precision   0.82
+Mean Absolute Error               3.16
+Mean Absolute Percentage Error    1.13218e+16
+Mean Squared Error               14.71
+Median Absolute Error             2.87
+NDCG                             87.93
+Ranking Loss                      0.14
+
+INFO Predicting for 196 test examples using a model of size 850...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 850:
+
+Coverage Error                    2.72
+Discounted Cumulative Gain        1.38
+Label Ranking Average Precision   0.82
+Mean Absolute Error               3.25
+Mean Absolute Percentage Error    1.16619e+16
+Mean Squared Error               15.54
+Median Absolute Error             2.94
+NDCG                             88.09
+Ranking Loss                      0.14
+
+INFO Predicting for 196 test examples using a model of size 900...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 900:
+
+Coverage Error                    2.73
+Discounted Cumulative Gain        1.39
+Label Ranking Average Precision   0.82
+Mean Absolute Error               3.32
+Mean Absolute Percentage Error    1.19329e+16
+Mean Squared Error               16.28
+Median Absolute Error             3.04
+NDCG                             88.12
+Ranking Loss                      0.14
+
+INFO Predicting for 196 test examples using a model of size 950...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 950:
+
+Coverage Error                    2.69
+Discounted Cumulative Gain        1.39
+Label Ranking Average Precision   0.83
+Mean Absolute Error               3.38
+Mean Absolute Percentage Error    1.21729e+16
+Mean Squared Error               16.87
+Median Absolute Error             3.07
+NDCG                             88.32
+Ranking Loss                      0.14
+
+INFO Predicting for 196 test examples using a model of size 1000...
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data using a model of size 1000:
+
+Coverage Error                    2.7
+Discounted Cumulative Gain        1.39
+Label Ranking Average Precision   0.82
+Mean Absolute Error               3.46
+Mean Absolute Percentage Error    1.24258e+16
+Mean Squared Error               17.57
+Median Absolute Error             3.15
+NDCG                             88.14
+Ranking Loss                      0.14
+
+INFO Successfully finished after <duration>

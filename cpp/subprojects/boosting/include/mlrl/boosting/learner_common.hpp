@@ -3,11 +3,6 @@
  */
 #pragma once
 
-#ifdef _WIN32
-    #pragma warning(push)
-    #pragma warning(disable : 4250)
-#endif
-
 #include "mlrl/boosting/learner.hpp"
 #include "mlrl/boosting/model/rule_list_builder.hpp"
 #include "mlrl/boosting/rule_evaluation/rule_compare_function.hpp"
@@ -46,19 +41,29 @@ namespace boosting {
                   blas_(ddotFunction, dspmvFunction), lapack_(dsysvFunction) {}
 
             /**
-             * @see `RuleLearnerConfigurator::createStatisticsProviderFactory`
-             */
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
-              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override {
-                return configPtr_->getStatisticsConfig().get().createStatisticsProviderFactory(
-                  featureMatrix, labelMatrix, blas_, lapack_);
-            }
-
-            /**
              * @see `RuleLearnerConfigurator::createModelBuilderFactory`
              */
             std::unique_ptr<IModelBuilderFactory> createModelBuilderFactory() const override {
                 return std::make_unique<RuleListBuilderFactory>();
+            }
+
+            /**
+             * @see `RuleLearnerConfigurator::createClassificationStatisticsProviderFactory`
+             */
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix) const override {
+                return configPtr_->getClassificationStatisticsConfig()
+                  .get()
+                  .createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, blas_, lapack_);
+            }
+
+            /**
+             * @see `RuleLearnerConfigurator::createRegressionStatisticsProviderFactory`
+             */
+            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix) const override {
+                return configPtr_->getRegressionStatisticsConfig().get().createRegressionStatisticsProviderFactory(
+                  featureMatrix, regressionMatrix, blas_, lapack_);
             }
     };
 
@@ -75,14 +80,28 @@ namespace boosting {
             std::unique_ptr<IHeadConfig> headConfigPtr_;
 
             /**
-             * An unique pointer that stores the configuration of the statistics.
+             * A shared pointer that stores the configuration of the statistics that should be use in classification
+             * problems.
              */
-            std::unique_ptr<IStatisticsConfig> statisticsConfigPtr_;
+            std::shared_ptr<IClassificationStatisticsConfig> classificationStatisticsConfigPtr_;
 
             /**
-             * An unique pointer that stores the configuration of the loss function.
+             * A shared pointer that stores the configuration of the statistics that should be use in regression
+             * problems.
              */
-            std::unique_ptr<ILossConfig> lossConfigPtr_;
+            std::shared_ptr<IRegressionStatisticsConfig> regressionStatisticsConfigPtr_;
+
+            /**
+             * A shared pointer that stores the configuration of the loss function that should be used in classification
+             * problems.
+             */
+            std::shared_ptr<IClassificationLossConfig> classificationLossConfigPtr_;
+
+            /**
+             * A shared pointer that stores the configuration of the loss function that should be used in regression
+             * problems.
+             */
+            std::shared_ptr<IRegressionLossConfig> regressionLossConfigPtr_;
 
             /**
              * An unique pointer that stores the configuration of the L1 regularization term.
@@ -102,17 +121,7 @@ namespace boosting {
 
         public:
 
-            BoostedRuleLearnerConfig()
-                : RuleLearnerConfig(BOOSTED_RULE_COMPARE_FUNCTION),
-                  headConfigPtr_(std::make_unique<CompleteHeadConfig>(
-                    readableProperty(labelBinningConfigPtr_), readableProperty(parallelStatisticUpdateConfigPtr_),
-                    readableProperty(l1RegularizationConfigPtr_), readableProperty(l2RegularizationConfigPtr_))),
-                  statisticsConfigPtr_(std::make_unique<DenseStatisticsConfig>(readableProperty(lossConfigPtr_))),
-                  lossConfigPtr_(std::make_unique<DecomposableLogisticLossConfig>(readableProperty(headConfigPtr_))),
-                  l1RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
-                  l2RegularizationConfigPtr_(std::make_unique<NoRegularizationConfig>()),
-                  labelBinningConfigPtr_(std::make_unique<NoLabelBinningConfig>(
-                    readableProperty(l1RegularizationConfigPtr_), readableProperty(l2RegularizationConfigPtr_))) {}
+            BoostedRuleLearnerConfig() : RuleLearnerConfig(BOOSTED_RULE_COMPARE_FUNCTION) {}
 
             virtual ~BoostedRuleLearnerConfig() override {}
 
@@ -120,8 +129,18 @@ namespace boosting {
                 return property(headConfigPtr_);
             }
 
-            Property<IStatisticsConfig> getStatisticsConfig() override final {
-                return property(statisticsConfigPtr_);
+            ReadableProperty<IStatisticsConfig> getStatisticsConfig() const override final {
+                return readableProperty<IStatisticsConfig, IClassificationStatisticsConfig,
+                                        IRegressionStatisticsConfig>(classificationStatisticsConfigPtr_,
+                                                                     regressionStatisticsConfigPtr_);
+            }
+
+            SharedProperty<IClassificationStatisticsConfig> getClassificationStatisticsConfig() override final {
+                return sharedProperty(classificationStatisticsConfigPtr_);
+            }
+
+            SharedProperty<IRegressionStatisticsConfig> getRegressionStatisticsConfig() override final {
+                return sharedProperty(regressionStatisticsConfigPtr_);
             }
 
             Property<IRegularizationConfig> getL1RegularizationConfig() override final {
@@ -132,8 +151,17 @@ namespace boosting {
                 return property(l2RegularizationConfigPtr_);
             }
 
-            Property<ILossConfig> getLossConfig() override final {
-                return property(lossConfigPtr_);
+            ReadableProperty<ILossConfig> getLossConfig() const override final {
+                return readableProperty<ILossConfig, IClassificationLossConfig, IRegressionLossConfig>(
+                  classificationLossConfigPtr_, regressionLossConfigPtr_);
+            }
+
+            SharedProperty<IClassificationLossConfig> getClassificationLossConfig() override final {
+                return sharedProperty(classificationLossConfigPtr_);
+            }
+
+            SharedProperty<IRegressionLossConfig> getRegressionLossConfig() override final {
+                return sharedProperty(regressionLossConfigPtr_);
             }
 
             Property<ILabelBinningConfig> getLabelBinningConfig() override final {
@@ -141,7 +169,3 @@ namespace boosting {
             }
     };
 }
-
-#ifdef _WIN32
-    #pragma warning(pop)
-#endif

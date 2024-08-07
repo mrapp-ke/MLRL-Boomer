@@ -33,10 +33,11 @@ testbed custom_runnable.py --data-dir path/to/datasets/ --dataset dataset-name
 
 ## Defining Command Line Arguments
 
-To ease the configuration of a machine learning algorithm, for which you created a custom integration, the base class {py:class}`mlrl.testbed.BaseRunnable <mlrl.testbed.runnables.LearnerRunnable>` provides a simple mechanism for defining custom command line arguments by overriding the method {py:meth}`configure_arguments <mlrl.testbed.runnables.Runnable.configure_arguments>`. As illustrated below, the user-specified  values for these arguments can then be retrieved in the method {py:meth}`create_classifier <mlrl.testbed.runnables.LearnerRunnable.create_classifier>`:
+To ease the configuration of a machine learning algorithm, for which you created a custom integration, the base class {py:class}`mlrl.testbed.BaseRunnable <mlrl.testbed.runnables.LearnerRunnable>` provides a simple mechanism for defining custom command line arguments by overriding the method {py:meth}`configure_problem_specific_arguments <mlrl.testbed.runnables.Runnable.configure_problem_specific_arguments>`. As illustrated below, the user-specified values for these arguments can then be retrieved in the method {py:meth}`create_classifier <mlrl.testbed.runnables.LearnerRunnable.create_classifier>`:
 
 ```python
 from argparse import ArgumentParser
+from mlrl.testbed.problem_type import ProblemType
 
 # ...
 
@@ -44,8 +45,8 @@ class Runnable(BaseRunnable):
 
     # ...
 
-    def configure_arguments(self, parser: ArgumentParser):
-        super().configure_arguments(parser)
+    def configure_problem_specific_arguments(self, parser: ArgumentParser, problem_type: ProblemType):
+        super().configure_problem_specific_arguments(parser, problem_type)
         parser.add_argument('--n-estimators', type=int, default=100, help='The number of trees in the forest')
 
     def create_classifier(self, args):
@@ -53,7 +54,7 @@ class Runnable(BaseRunnable):
 
 ```
 
-The method {py:meth}`configure_arguments <mlrl.testbed.runnables.Runnable.configure_arguments>` receives an {py:class}`argparse.ArgumentParser`, which can be used to define any command line arguments you might need, as described in the [official Python documentation](https://docs.python.org/3/library/argparse.html).
+The method {py:meth}`configure_problem_specific_arguments <mlrl.testbed.runnables.Runnable.configure_problem_specific_arguments>` receives an {py:class}`argparse.ArgumentParser`, which can be used to define any command line arguments you might need, as described in the [official Python documentation](https://docs.python.org/3/library/argparse.html).
 
 ## Providing Version Information
 

@@ -24,15 +24,13 @@ namespace boosting {
         public:
 
             /**
-             * @param l1RegularizationConfigGetter  A `ReadableProperty` that allows to access the
-             *                                      `IRegularizationConfig` that stores the configuration of the L1
-             *                                      regularization
-             * @param l2RegularizationConfigGetter  A `ReadableProperty` that allows to access the
-             *                                      `IRegularizationConfig` that stores the configuration of the L2
-             *                                      regularization
+             * @param l1RegularizationConfig  A `ReadableProperty` that allows to access the `IRegularizationConfig`
+             *                                that stores the configuration of the L1 regularization
+             * @param l2RegularizationConfig  A `ReadableProperty` that allows to access the `IRegularizationConfig`
+             *                                that stores the configuration of the L2 regularization
              */
-            AutomaticLabelBinningConfig(ReadableProperty<IRegularizationConfig> l1RegularizationConfigGetter,
-                                        ReadableProperty<IRegularizationConfig> l2RegularizationConfigGetter);
+            AutomaticLabelBinningConfig(ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
+                                        ReadableProperty<IRegularizationConfig> l2RegularizationConfig);
 
             std::unique_ptr<IDecomposableRuleEvaluationFactory> createDecomposableCompleteRuleEvaluationFactory()
               const override;

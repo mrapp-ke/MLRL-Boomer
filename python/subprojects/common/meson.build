@@ -12,6 +12,7 @@ cython_module_names = [
     'label_matrix',
     'learner',
     'learner_classification',
+    'learner_regression',
     'multi_threading',
     'output_matrix',
     'output_sampling',
@@ -20,6 +21,7 @@ cython_module_names = [
     'post_optimization',
     'prediction',
     'probability_calibration',
+    'regression_matrix',
     'rule_induction',
     'rule_model',
     'stopping_criterion'

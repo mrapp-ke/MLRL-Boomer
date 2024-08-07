@@ -151,7 +151,7 @@ namespace boosting {
     };
 
     static inline std::unique_ptr<IDiscretizationFunctionFactory> createDiscretizationFunctionFactory(
-      bool basedOnProbabilities, const ILossConfig& lossConfig) {
+      bool basedOnProbabilities, const IClassificationLossConfig& lossConfig) {
         if (basedOnProbabilities) {
             std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactory =
               lossConfig.createMarginalProbabilityFunctionFactory();
@@ -169,10 +169,9 @@ namespace boosting {
     }
 
     OutputWiseBinaryPredictorConfig::OutputWiseBinaryPredictorConfig(
-      ReadableProperty<ILossConfig> lossConfigGetter,
-      ReadableProperty<IMultiThreadingConfig> multiThreadingConfigGetter)
-        : basedOnProbabilities_(false), lossConfig_(lossConfigGetter),
-          multiThreadingConfig_(multiThreadingConfigGetter) {}
+      ReadableProperty<IClassificationLossConfig> lossConfig,
+      ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
+        : basedOnProbabilities_(false), lossConfig_(lossConfig), multiThreadingConfig_(multiThreadingConfig) {}
 
     bool OutputWiseBinaryPredictorConfig::isBasedOnProbabilities() const {
         return basedOnProbabilities_;

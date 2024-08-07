@@ -17,10 +17,13 @@ namespace boosting {
      * Allows to configure a method that automatically decides for a format for storing statistics about the quality of
      * predictions for training examples.
      */
-    class AutomaticStatisticsConfig final : public IStatisticsConfig {
+    class AutomaticStatisticsConfig final : public IClassificationStatisticsConfig,
+                                            public IRegressionStatisticsConfig {
         private:
 
-            const ReadableProperty<ILossConfig> lossConfig_;
+            const ReadableProperty<IClassificationLossConfig> classificationLossConfig_;
+
+            const ReadableProperty<IRegressionLossConfig> regressionLossConfig_;
 
             const ReadableProperty<IHeadConfig> headConfig_;
 
@@ -29,19 +32,27 @@ namespace boosting {
         public:
 
             /**
-             * @param lossConfigGetter          A `ReadableProperty` that allows to access the `ILossConfig` that stores
-             *                                  the configuration of the loss function
-             * @param headConfigGetter          A `ReadableProperty` that allows to access the `IHeadConfig` that stores
+             * @param classificationLossConfig  A `ReadableProperty` that allows to access the
+             *                                  `IClassificationLossConfig` that stores the configuration of the loss
+             *                                  function
+             * @param regressionLossConfig      A `ReadableProperty` that allows to access the `IRegressionLossConfig`
+             *                                  that stores the configuration of the loss function
+             * @param headConfig                A `ReadableProperty` that allows to access the `IHeadConfig` that stores
              *                                  the configuration of the rule heads
-             * @param defaultRuleConfigGetter   A `ReadableProperty` that allows to access the `IDefaultRuleConfig` that
+             * @param defaultRuleConfig         A `ReadableProperty` that allows to access the `IDefaultRuleConfig` that
              *                                  stores the configuration of the default rule
              */
-            AutomaticStatisticsConfig(ReadableProperty<ILossConfig> lossConfigGetter,
-                                      ReadableProperty<IHeadConfig> headConfigGetter,
-                                      ReadableProperty<IDefaultRuleConfig> defaultRuleConfigGetter);
+            AutomaticStatisticsConfig(ReadableProperty<IClassificationLossConfig> classificationLossConfig,
+                                      ReadableProperty<IRegressionLossConfig> regressionLossConfig,
+                                      ReadableProperty<IHeadConfig> headConfig,
+                                      ReadableProperty<IDefaultRuleConfig> defaultRuleConfig);
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+              const Lapack& lapack) const override;
+
+            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
               const Lapack& lapack) const override;
 
             bool isDense() const override;
@@ -49,4 +60,4 @@ namespace boosting {
             bool isSparse() const override;
     };
 
-};
+}

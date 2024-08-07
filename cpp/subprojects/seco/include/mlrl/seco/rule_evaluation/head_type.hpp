@@ -20,15 +20,15 @@ namespace seco {
             virtual ~IHeadConfig() {}
 
             /**
-             * Creates and returns a new object of type `IStatisticsProviderFactory` according to the specified
-             * configuration.
+             * Creates and returns a new object of type `IClassificationStatisticsProviderFactory` according to the
+             * specified configuration.
              *
              * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access
              *                      to the labels of the training examples
-             * @return              An unique pointer to an object of type `IStatisticsProviderFactory` that has been
-             *                      created
+             * @return              An unique pointer to an object of type `IClassificationStatisticsProviderFactory`
+             *                      that has been created
              */
-            virtual std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            virtual std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IRowWiseLabelMatrix& labelMatrix) const = 0;
     };
 

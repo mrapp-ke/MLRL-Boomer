@@ -23,7 +23,7 @@ from mlrl.seco.cython.learner cimport IAccuracyHeuristicMixin, IAccuracyPruningH
     IRecallPruningHeuristicMixin, ISingleOutputHeadMixin, IWraHeuristicMixin, IWraPruningHeuristicMixin
 
 
-cdef extern from "mlrl/seco/learner_seco.hpp" namespace "seco" nogil:
+cdef extern from "mlrl/seco/learner_seco_classifier.hpp" namespace "seco" nogil:
 
     cdef cppclass ISeCoClassifierConfig"seco::ISeCoClassifier::IConfig"(INoCoverageStoppingCriterionMixin,
                                                                         ICoverageStoppingCriterionMixin,
