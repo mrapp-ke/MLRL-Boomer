@@ -14,10 +14,10 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 1):
 
 Outputs                  6
-Output Density          25
-Output Sparsity         75
-Label Imbalance Ratio    2.11
-Label Cardinality        1.5
+Output Density          28.06
+Output Sparsity         71.94
+Label Imbalance Ratio    2.21
+Label Cardinality        1.68
 Distinct Label Vectors  13
 
 INFO Fold 2 / 10:
@@ -32,10 +32,10 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 2):
 
 Outputs                  6
-Output Density          26.11
-Output Sparsity         73.89
-Label Imbalance Ratio    1.89
-Label Cardinality        1.57
+Output Density          26.67
+Output Sparsity         73.33
+Label Imbalance Ratio    2.04
+Label Cardinality        1.6
 Distinct Label Vectors  13
 
 INFO Fold 3 / 10:
@@ -50,10 +50,10 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 3):
 
 Outputs                  6
-Output Density          24.17
-Output Sparsity         75.83
-Label Imbalance Ratio    2.5
-Label Cardinality        1.45
+Output Density          28.89
+Output Sparsity         71.11
+Label Imbalance Ratio    1.85
+Label Cardinality        1.73
 Distinct Label Vectors  14
 
 INFO Fold 4 / 10:
@@ -68,11 +68,11 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 4):
 
 Outputs                  6
-Output Density          23.73
-Output Sparsity         76.27
-Label Imbalance Ratio    1.98
-Label Cardinality        1.42
-Distinct Label Vectors  14
+Output Density          24.29
+Output Sparsity         75.71
+Label Imbalance Ratio    2.39
+Label Cardinality        1.46
+Distinct Label Vectors  15
 
 INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
@@ -86,10 +86,10 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 5):
 
 Outputs                  6
-Output Density          26.55
-Output Sparsity         73.45
-Label Imbalance Ratio    2.15
-Label Cardinality        1.59
+Output Density          28.53
+Output Sparsity         71.47
+Label Imbalance Ratio    1.91
+Label Cardinality        1.71
 Distinct Label Vectors  11
 
 INFO Fold 6 / 10:
@@ -104,11 +104,11 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 6):
 
 Outputs                  6
-Output Density          24.01
-Output Sparsity         75.99
-Label Imbalance Ratio    2.49
-Label Cardinality        1.44
-Distinct Label Vectors  16
+Output Density          27.4
+Output Sparsity         72.6
+Label Imbalance Ratio    1.93
+Label Cardinality        1.64
+Distinct Label Vectors  13
 
 INFO Fold 7 / 10:
 INFO Fitting model to 534 training examples...
@@ -122,11 +122,11 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 7):
 
 Outputs                  6
-Output Density          26.27
-Output Sparsity         73.73
-Label Imbalance Ratio    2.41
-Label Cardinality        1.58
-Distinct Label Vectors  13
+Output Density          26.55
+Output Sparsity         73.45
+Label Imbalance Ratio    2.1
+Label Cardinality        1.59
+Distinct Label Vectors  12
 
 INFO Fold 8 / 10:
 INFO Fitting model to 534 training examples...
@@ -140,11 +140,11 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 8):
 
 Outputs                  6
-Output Density          29.38
-Output Sparsity         70.62
-Label Imbalance Ratio    1.87
-Label Cardinality        1.76
-Distinct Label Vectors  12
+Output Density          31.07
+Output Sparsity         68.93
+Label Imbalance Ratio    1.6
+Label Cardinality        1.86
+Distinct Label Vectors  13
 
 INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
@@ -158,11 +158,11 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 9):
 
 Outputs                  6
-Output Density          25.99
-Output Sparsity         74.01
-Label Imbalance Ratio    3.21
-Label Cardinality        1.56
-Distinct Label Vectors  14
+Output Density          30.79
+Output Sparsity         69.21
+Label Imbalance Ratio    2.25
+Label Cardinality        1.85
+Distinct Label Vectors  15
 
 INFO Fold 10 / 10:
 INFO Fitting model to 534 training examples...
@@ -176,10 +176,10 @@ INFO Successfully predicted in <duration>
 INFO Prediction characteristics for test data (Fold 10):
 
 Outputs                  6
-Output Density          22.32
-Output Sparsity         77.68
-Label Imbalance Ratio    2.93
-Label Cardinality        1.34
-Distinct Label Vectors  13
+Output Density          26.27
+Output Sparsity         73.73
+Label Imbalance Ratio    1.83
+Label Cardinality        1.58
+Distinct Label Vectors  12
 
 INFO Successfully finished after <duration>
