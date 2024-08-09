@@ -6,6 +6,12 @@ tocdepth: 2
 
 # Release Notes
 
+## Version 0.10.2 (Aug. 9th, 2024)
+
+A bugfix release that fixes the following issues.
+
+- A rare issue that may result in rules with empty heads being learned when using the argument `--head-type partial-dynamic` has been fixed.
+
 ## Version 0.10.1 (Aug. 1st, 2024)
 
 A bugfix release that comes with the following changes.
