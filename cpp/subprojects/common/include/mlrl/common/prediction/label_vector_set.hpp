@@ -4,7 +4,7 @@
 #pragma once
 
 #include "mlrl/common/input/label_matrix_row_wise.hpp"
-#include "mlrl/common/prediction/label_space_info.hpp"
+#include "mlrl/common/prediction/output_space_info.hpp"
 
 #include <functional>
 #include <memory>
@@ -13,7 +13,7 @@
 /**
  * Defines an interface for all classes that provide access to a set of unique label vectors.
  */
-class MLRLCOMMON_API ILabelVectorSet : public ILabelSpaceInfo {
+class MLRLCOMMON_API ILabelVectorSet : public IOutputSpaceInfo {
     public:
 
         virtual ~ILabelVectorSet() override {}
@@ -137,12 +137,12 @@ class LabelVectorSet final : public ILabelVectorSet {
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const CContiguousView<const float32>& featureMatrix,
                                                               const RuleList& ruleList,
-                                                              uint32 numLabels) const override;
+                                                              uint32 numOutputs) const override;
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const CsrView<const float32>& featureMatrix,
                                                               const RuleList& ruleList,
-                                                              uint32 numLabels) const override;
+                                                              uint32 numOutputs) const override;
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IProbabilityPredictorFactory& factory, const CContiguousView<const float32>& featureMatrix,

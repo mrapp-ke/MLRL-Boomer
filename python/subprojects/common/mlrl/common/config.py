@@ -11,18 +11,19 @@ from typing import Optional, Set
 
 from mlrl.common.cython.info import get_num_cpu_cores, is_multi_threading_support_enabled
 from mlrl.common.cython.learner import BeamSearchTopDownRuleInductionMixin, EqualFrequencyFeatureBinningMixin, \
-    EqualWidthFeatureBinningMixin, ExampleWiseStratifiedBiPartitionSamplingMixin, \
-    ExampleWiseStratifiedInstanceSamplingMixin, FeatureSamplingWithoutReplacementMixin, \
-    GreedyTopDownRuleInductionMixin, InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, \
-    IrepRulePruningMixin, LabelWiseStratifiedBiPartitionSamplingMixin, LabelWiseStratifiedInstanceSamplingMixin, \
+    EqualWidthFeatureBinningMixin, FeatureSamplingWithoutReplacementMixin, GreedyTopDownRuleInductionMixin, \
+    InstanceSamplingWithoutReplacementMixin, InstanceSamplingWithReplacementMixin, IrepRulePruningMixin, \
     NoFeatureBinningMixin, NoFeatureSamplingMixin, NoGlobalPruningMixin, NoInstanceSamplingMixin, \
     NoParallelPredictionMixin, NoParallelRuleRefinementMixin, NoParallelStatisticUpdateMixin, \
     NoPartitionSamplingMixin, NoRulePruningMixin, NoSequentialPostOptimizationMixin, NoSizeStoppingCriterionMixin, \
     NoTimeStoppingCriterionMixin, ParallelPredictionMixin, ParallelRuleRefinementMixin, ParallelStatisticUpdateMixin, \
-    PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinLabelSamplingMixin, \
+    PostPruningMixin, PrePruningMixin, RandomBiPartitionSamplingMixin, RoundRobinOutputSamplingMixin, \
     SequentialPostOptimizationMixin, SizeStoppingCriterionMixin, TimeStoppingCriterionMixin
+from mlrl.common.cython.learner_classification import ExampleWiseStratifiedBiPartitionSamplingMixin, \
+    ExampleWiseStratifiedInstanceSamplingMixin, OutputWiseStratifiedBiPartitionSamplingMixin, \
+    OutputWiseStratifiedInstanceSamplingMixin
 from mlrl.common.cython.stopping_criterion import AggregationFunction
-from mlrl.common.format import format_dict_keys, format_string_set
+from mlrl.common.format import format_dict_keys, format_set
 from mlrl.common.options import BooleanOption, Options, parse_param, parse_param_and_options
 
 AUTOMATIC = 'auto'
@@ -35,7 +36,7 @@ SAMPLING_WITH_REPLACEMENT = 'with-replacement'
 
 SAMPLING_WITHOUT_REPLACEMENT = 'without-replacement'
 
-SAMPLING_STRATIFIED_LABEL_WISE = 'stratified-label-wise'
+SAMPLING_STRATIFIED_OUTPUT_WISE = 'stratified-output-wise'
 
 SAMPLING_STRATIFIED_EXAMPLE_WISE = 'stratified-example-wise'
 
@@ -200,7 +201,7 @@ class NominalParameter(Parameter, ABC):
                 suffix = ' For additional options refer to the documentation.'
                 supported_values = set(supported_values.keys())
             else:
-                description += format_string_set(supported_values)
+                description += format_set(supported_values)
                 suffix = ''
 
             description += '.'
@@ -367,29 +368,29 @@ class FeatureBinningParameter(NominalParameter):
             conf.set_max_bins(options.get_int(OPTION_MAX_BINS, conf.get_max_bins()))
 
 
-class LabelSamplingParameter(NominalParameter):
+class OutputSamplingParameter(NominalParameter):
     """
-    A parameter that allows to configure the strategy to be used for label sampling.
+    A parameter that allows to configure the strategy to be used for output sampling.
     """
 
-    LABEL_SAMPLING_ROUND_ROBIN = 'round-robin'
+    OUTPUT_SAMPLING_ROUND_ROBIN = 'round-robin'
 
     def __init__(self):
-        super().__init__(name='label_sampling', description='The name of the strategy to be used for label sampling')
+        super().__init__(name='output_sampling', description='The name of the strategy to be used for output sampling')
         self.add_value(name=NONE, mixin=NoFeatureSamplingMixin)
         self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
                        mixin=FeatureSamplingWithoutReplacementMixin,
                        options={OPTION_NUM_SAMPLES})
-        self.add_value(name=self.LABEL_SAMPLING_ROUND_ROBIN, mixin=RoundRobinLabelSamplingMixin)
+        self.add_value(name=self.OUTPUT_SAMPLING_ROUND_ROBIN, mixin=RoundRobinOutputSamplingMixin)
 
     def _configure(self, config, value: str, options: Optional[Options]):
         if value == NONE:
-            config.use_no_label_sampling()
+            config.use_no_output_sampling()
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
-            conf = config.use_label_sampling_without_replacement()
+            conf = config.use_output_sampling_without_replacement()
             conf.set_num_samples(options.get_int(OPTION_NUM_SAMPLES, conf.get_num_samples()))
-        elif value == self.LABEL_SAMPLING_ROUND_ROBIN:
-            config.use_round_robin_label_sampling()
+        elif value == self.OUTPUT_SAMPLING_ROUND_ROBIN:
+            config.use_round_robin_output_sampling()
 
 
 class InstanceSamplingParameter(NominalParameter):
@@ -407,8 +408,8 @@ class InstanceSamplingParameter(NominalParameter):
         self.add_value(name=SAMPLING_WITHOUT_REPLACEMENT,
                        mixin=InstanceSamplingWithoutReplacementMixin,
                        options={OPTION_SAMPLE_SIZE})
-        self.add_value(name=SAMPLING_STRATIFIED_LABEL_WISE,
-                       mixin=LabelWiseStratifiedInstanceSamplingMixin,
+        self.add_value(name=SAMPLING_STRATIFIED_OUTPUT_WISE,
+                       mixin=OutputWiseStratifiedInstanceSamplingMixin,
                        options={OPTION_SAMPLE_SIZE})
         self.add_value(name=SAMPLING_STRATIFIED_EXAMPLE_WISE,
                        mixin=ExampleWiseStratifiedInstanceSamplingMixin,
@@ -423,8 +424,8 @@ class InstanceSamplingParameter(NominalParameter):
         elif value == SAMPLING_WITHOUT_REPLACEMENT:
             conf = config.use_instance_sampling_without_replacement()
             conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
-        elif value == SAMPLING_STRATIFIED_LABEL_WISE:
-            conf = config.use_label_wise_stratified_instance_sampling()
+        elif value == SAMPLING_STRATIFIED_OUTPUT_WISE:
+            conf = config.use_output_wise_stratified_instance_sampling()
             conf.set_sample_size(options.get_float(OPTION_SAMPLE_SIZE, conf.get_sample_size()))
         elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
             conf = config.use_example_wise_stratified_instance_sampling()
@@ -470,8 +471,8 @@ class PartitionSamplingParameter(NominalParameter):
         self.add_value(name=self.PARTITION_SAMPLING_RANDOM,
                        mixin=RandomBiPartitionSamplingMixin,
                        options={self.OPTION_HOLDOUT_SET_SIZE})
-        self.add_value(name=SAMPLING_STRATIFIED_LABEL_WISE,
-                       mixin=LabelWiseStratifiedBiPartitionSamplingMixin,
+        self.add_value(name=SAMPLING_STRATIFIED_OUTPUT_WISE,
+                       mixin=OutputWiseStratifiedBiPartitionSamplingMixin,
                        options={self.OPTION_HOLDOUT_SET_SIZE})
         self.add_value(name=SAMPLING_STRATIFIED_EXAMPLE_WISE,
                        mixin=ExampleWiseStratifiedBiPartitionSamplingMixin,
@@ -483,8 +484,8 @@ class PartitionSamplingParameter(NominalParameter):
         elif value == self.PARTITION_SAMPLING_RANDOM:
             conf = config.use_random_bi_partition_sampling()
             conf.set_holdout_set_size(options.get_float(self.OPTION_HOLDOUT_SET_SIZE, conf.get_holdout_set_size()))
-        elif value == SAMPLING_STRATIFIED_LABEL_WISE:
-            conf = config.use_label_wise_stratified_bi_partition_sampling()
+        elif value == SAMPLING_STRATIFIED_OUTPUT_WISE:
+            conf = config.use_output_wise_stratified_bi_partition_sampling()
             conf.set_holdout_set_size(options.get_float(self.OPTION_HOLDOUT_SET_SIZE, conf.get_holdout_set_size()))
         elif value == SAMPLING_STRATIFIED_EXAMPLE_WISE:
             conf = config.use_example_wise_stratified_bi_partition_sampling()
@@ -759,7 +760,7 @@ class SequentialPostOptimizationParameter(NominalParameter):
 RULE_LEARNER_PARAMETERS = {
     RuleInductionParameter(),
     FeatureBinningParameter(),
-    LabelSamplingParameter(),
+    OutputSamplingParameter(),
     InstanceSamplingParameter(),
     FeatureSamplingParameter(),
     PartitionSamplingParameter(),

@@ -12,13 +12,14 @@ from typing import Any, Dict, List, Optional, Tuple
 from mlrl.common.cython.probability_calibration import IsotonicProbabilityCalibrationModel, \
     IsotonicProbabilityCalibrationModelVisitor, NoProbabilityCalibrationModel
 from mlrl.common.options import Options
-from mlrl.common.rule_learners import RuleLearner
+from mlrl.common.rule_learners import ClassificationRuleLearner
 
 from mlrl.testbed.data import MetaData
 from mlrl.testbed.data_splitting import DataSplit, DataType
 from mlrl.testbed.format import OPTION_DECIMALS, format_float, format_table
 from mlrl.testbed.output_writer import Formattable, OutputWriter, Tabularizable
 from mlrl.testbed.prediction_scope import PredictionScope, PredictionType
+from mlrl.testbed.problem_type import ProblemType
 
 
 class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
@@ -144,7 +145,7 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         self.list_title = list_title
 
     @abstractmethod
-    def _get_calibration_model(self, learner: RuleLearner) -> Any:
+    def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
         """
         Must be implemented by subclasses in order to retrieve the calibration model from a rule learner.
 
@@ -153,11 +154,11 @@ class ProbabilityCalibrationModelWriter(OutputWriter, ABC):
         """
 
     # pylint: disable=unused-argument
-    def _generate_output_data(self, meta_data: MetaData, x, y, data_split: DataSplit, learner,
-                              data_type: Optional[DataType], prediction_type: Optional[PredictionType],
+    def _generate_output_data(self, problem_type: ProblemType, meta_data: MetaData, x, y, data_split: DataSplit,
+                              learner, data_type: Optional[DataType], prediction_type: Optional[PredictionType],
                               prediction_scope: Optional[PredictionScope], predictions: Optional[Any],
                               train_time: float, predict_time: float) -> Optional[Any]:
-        if isinstance(learner, RuleLearner):
+        if isinstance(learner, ClassificationRuleLearner):
             calibration_model = self._get_calibration_model(learner)
 
             if isinstance(calibration_model, IsotonicProbabilityCalibrationModel):
@@ -195,7 +196,7 @@ class MarginalProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWrite
     def __init__(self, sinks: List[OutputWriter.Sink]):
         super().__init__(sinks, list_title='Label')
 
-    def _get_calibration_model(self, learner: RuleLearner) -> Any:
+    def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
         return learner.marginal_probability_calibration_model_
 
 
@@ -223,5 +224,5 @@ class JointProbabilityCalibrationModelWriter(ProbabilityCalibrationModelWriter):
     def __init__(self, sinks: List[OutputWriter.Sink]):
         super().__init__(sinks, list_title='Label vector')
 
-    def _get_calibration_model(self, learner: RuleLearner) -> Any:
+    def _get_calibration_model(self, learner: ClassificationRuleLearner) -> Any:
         return learner.joint_probability_calibration_model_

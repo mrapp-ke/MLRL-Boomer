@@ -17,7 +17,7 @@ class MLRLCOMMON_API SparseMatrix : public BinarySparseMatrix {
     public:
 
         /**
-         * A pointer to the array that stores the non-zero values, the view provides access to.
+         * A pointer to the array that stores the values of all dense elements explicitly stored in the view.
          */
         T* values;
 
@@ -27,15 +27,15 @@ class MLRLCOMMON_API SparseMatrix : public BinarySparseMatrix {
         T sparseValue;
 
         /**
-         * @param values        A pointer to an array of template type `T` that stores all non-zero values, the view
-         *                      should provide access to
-         * @param indices       A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the row
+         * @param values        A pointer to an array of template type `T` that stores the values of all dense elements
+         *                      explicitly stored in the view
+         * @param indices       A pointer to an array of type `uint32`, shape `(numDenseElements)`, that stores the row
          *                      or column indices, the values in `values` correspond to
          * @param indptr        A pointer to an array of type `uint32`, shape `(numCols + 1)` or `(numRows + 1)`, that
          *                      stores the indices of the first element in `values` and `indices` that corresponds to a
          *                      certain column, if `indices` stores row indices, or row, if `indices` stores column
          *                      indices
-         *                      The index at the last position must be equal to `numNonZeroValues`
+         *                      The index at the last position must be equal to `numDenseElements`
          * @param numRows       The number of rows in the view
          * @param numCols       The number of columns in the view
          * @param sparseValue   The value that should be used for sparse elements in the matrix
@@ -73,11 +73,11 @@ class MLRLCOMMON_API SparseMatrix : public BinarySparseMatrix {
         typedef typename View<value_type>::iterator value_iterator;
 
         /**
-         * Releases the ownership of the array that stores the non-zero values, the view provides access to. As a
-         * result, the behavior of this view becomes undefined and it should not be used anymore. The caller is
-         * responsible for freeing the memory that is occupied by the array.
+         * Releases the ownership of the array that stores the values of all dense elements explicitly stored in the
+         * view. As a result, the behavior of this view becomes undefined and it should not be used anymore. The caller
+         * is responsible for freeing the memory that is occupied by the array.
          *
-         * @return  A pointer to an array that stores the non-zero values, the view provides access to
+         * @return  A pointer to an array that stores the values of all dense elements explicitly stored in the view
          */
         value_type* releaseValues() {
             value_type* ptr = values;

@@ -1,0 +1,31 @@
+INFO Starting experiment using the classification algorithm "boomer"...
+INFO Performing fold 1 of 10-fold cross validation...
+DEBUG Parsing meta data from file "python/subprojects/testbed/tests/res/data/emotions.xml"...
+DEBUG Loading data set from file "python/subprojects/testbed/tests/res/data/emotions.arff"...
+INFO Fold 1 / 10:
+DEBUG Loading model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-1.model"...
+INFO Successfully loaded model from file "python/subprojects/testbed/tests/res/tmp/models/boomer_fold-1.model"
+INFO Predicting for 60 test examples...
+DEBUG A dense matrix is used to store the feature values of the query examples
+DEBUG A dense matrix is used to store the predicted labels
+INFO Successfully predicted in <duration>
+INFO Evaluation result for test data (Fold 1):
+
+Example-wise F1         61.06
+Example-wise Jaccard    53.19
+Example-wise Precision  83.61
+Example-wise Recall     60.56
+Hamming Accuracy        82.5
+Hamming Loss            17.5
+Macro F1                66.9
+Macro Jaccard           51.94
+Macro Precision         79.73
+Macro Recall            60.11
+Micro F1                69.57
+Micro Jaccard           53.33
+Micro Precision         80
+Micro Recall            61.54
+Subset 0/1 Loss         71.67
+Subset Accuracy         28.33
+
+INFO Successfully finished after <duration>

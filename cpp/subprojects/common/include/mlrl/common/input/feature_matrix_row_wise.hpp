@@ -9,7 +9,7 @@
 
 // Forward declarations
 class IRuleModel;
-class ILabelSpaceInfo;
+class IOutputSpaceInfo;
 class IMarginalProbabilityCalibrationModel;
 class IJointProbabilityCalibrationModel;
 class IBinaryPredictor;
@@ -36,8 +36,8 @@ class MLRLCOMMON_API IRowWiseFeatureMatrix : public IFeatureMatrix {
          *                                            should be used to create the instance
          * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
          *                                            to obtain predictions
-         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                            information about the label space that may be used as a basis for
+         * @param outputSpaceInfo                     A reference to an object of type `IOutputSpaceInfo` that provides
+         *                                            information about the output space that may be used as a basis for
          *                                            making predictions
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
@@ -50,7 +50,7 @@ class MLRLCOMMON_API IRowWiseFeatureMatrix : public IFeatureMatrix {
          *                                            been created
          */
         virtual std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
-          const IBinaryPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+          const IBinaryPredictorFactory& factory, const IRuleModel& ruleModel, const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
@@ -62,8 +62,8 @@ class MLRLCOMMON_API IRowWiseFeatureMatrix : public IFeatureMatrix {
          *                                            that should be used to create the instance
          * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
          *                                            to obtain predictions
-         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                            information about the label space that may be used as a basis for
+         * @param outputSpaceInfo                     A reference to an object of type `IOutputSpaceInfo` that provides
+         *                                            information about the output space that may be used as a basis for
          *                                            making predictions
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
@@ -77,7 +77,7 @@ class MLRLCOMMON_API IRowWiseFeatureMatrix : public IFeatureMatrix {
          */
         virtual std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 
@@ -88,15 +88,15 @@ class MLRLCOMMON_API IRowWiseFeatureMatrix : public IFeatureMatrix {
          *                        create the instance
          * @param ruleModel       A reference to an object of type `IRuleModel` that should be used to obtain
          *                        predictions
-         * @param labelSpaceInfo  A reference to an object of type `ILabelSpaceInfo` that provides information about the
-         *                        label space that may be used as a basis for making predictions
-         * @param numLabels       The number of labels to predict for
+         * @param outputSpaceInfo A reference to an object of type `IOutputSpaceInfo` that provides information about
+         *                        the output space that may be used as a basis for making predictions
+         * @param numOutputs      The number of outputs to predict for
          * @return                An unique pointer to an object of type `IScorePredictor` that has been created
          */
         virtual std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                                       const IRuleModel& ruleModel,
-                                                                      const ILabelSpaceInfo& labelSpaceInfo,
-                                                                      uint32 numLabels) const = 0;
+                                                                      const IOutputSpaceInfo& outputSpaceInfo,
+                                                                      uint32 numOutputs) const = 0;
 
         /**
          * Creates and returns a new instance of the class `IProbabilityPredictor`, based on the type of this feature
@@ -106,8 +106,8 @@ class MLRLCOMMON_API IRowWiseFeatureMatrix : public IFeatureMatrix {
          *                                            that should be used to create the instance
          * @param ruleModel                           A reference to an object of type `IRuleModel` that should be used
          *                                            to obtain predictions
-         * @param labelSpaceInfo                      A reference to an object of type `ILabelSpaceInfo` that provides
-         *                                            information about the label space that may be used as a basis for
+         * @param outputSpaceInfo                     A reference to an object of type `IOutputSpaceInfo` that provides
+         *                                            information about the output space that may be used as a basis for
          *                                            making predictions
          * @param marginalProbabilityCalibrationModel A reference to an object of type
          *                                            `IMarginalProbabilityCalibrationModel` that may be used for the
@@ -121,7 +121,7 @@ class MLRLCOMMON_API IRowWiseFeatureMatrix : public IFeatureMatrix {
          */
         virtual std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IProbabilityPredictorFactory& factory, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const = 0;
 };

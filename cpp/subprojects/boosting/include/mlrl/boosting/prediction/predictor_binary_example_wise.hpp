@@ -7,6 +7,7 @@
 #include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/prediction/predictor_binary.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -14,8 +15,8 @@ namespace boosting {
 
     /**
      * Defines an interface for all classes that allow to configure a predictor that predicts known label vectors for
-     * given query examples by comparing the predicted regression scores or probability estimates to the label vectors
-     * encountered in the training data.
+     * given query examples by comparing the predicted scores or probability estimates to the label vectors encountered
+     * in the training data.
      */
     class MLRLBOOSTING_API IExampleWiseBinaryPredictorConfig {
         public:
@@ -23,20 +24,18 @@ namespace boosting {
             virtual ~IExampleWiseBinaryPredictorConfig() {}
 
             /**
-             * Returns whether binary predictions are derived from probability estimates rather than regression scores
-             * or not.
+             * Returns whether binary predictions are derived from probability estimates rather than scores or not.
              *
-             * @return True, if binary predictions are derived from probability estimates rather than regression scores,
-             *         false otherwise
+             * @return True, if binary predictions are derived from probability estimates rather than scores, false
+             *         otherwise
              */
             virtual bool isBasedOnProbabilities() const = 0;
 
             /**
-             * Sets whether binary predictions should be derived from probability estimates rather than regression
-             * scores or not.
+             * Sets whether binary predictions should be derived from probability estimates rather than scores or not.
              *
              * @param basedOnProbabilities  True, if binary predictions should be derived from probability estimates
-             *                              rather than regression scores, false otherwise
+             *                              rather than scores, false otherwise
              * @return                      A reference to an object of type `IExampleWiseBinaryPredictorConfig` that
              *                              allows further configuration of the predictor
              */
@@ -64,7 +63,7 @@ namespace boosting {
 
     /**
      * Allows to configure a predictor that predicts known label vectors for given query examples by comparing the
-     * predicted regression scores or probability estimates to the label vectors encountered in the training data.
+     * predicted scores or probability estimates to the label vectors encountered in the training data.
      */
     class ExampleWiseBinaryPredictorConfig final : public IExampleWiseBinaryPredictorConfig,
                                                    public IBinaryPredictorConfig {
@@ -76,21 +75,21 @@ namespace boosting {
 
             std::unique_ptr<IJointProbabilityCalibrationModel> noJointProbabilityCalibrationModelPtr_;
 
-            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+            const ReadableProperty<IClassificationLossConfig> lossConfig_;
 
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
+            const ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
 
         public:
 
             /**
-             * @param lossConfigPtr             A reference to an unique pointer that stores the configuration of the
-             *                                  loss function
-             * @param multiThreadingConfigPtr   A reference to an unique pointer that stores the configuration of the
-             *                                  multi-threading behavior that should be used to predict for several
-             *                                  query examples in parallel
+             * @param lossConfig            A `ReadableProperty` that allows to access the `IClassificationLossConfig`
+             *                              that stores the configuration of the loss function
+             * @param multiThreadingConfig  A `ReadableProperty` that allows to access the `IMultiThreadingConfig` that
+             *                              stores the configuration of the multi-threading behavior that should be used
+             *                              to predict for several query examples in parallel
              */
-            ExampleWiseBinaryPredictorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,
-                                             const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+            ExampleWiseBinaryPredictorConfig(ReadableProperty<IClassificationLossConfig> lossConfig,
+                                             ReadableProperty<IMultiThreadingConfig> multiThreadingConfig);
 
             bool isBasedOnProbabilities() const override;
 
@@ -105,7 +104,7 @@ namespace boosting {
              * @see `IPredictorConfig::createPredictorFactory`
              */
             std::unique_ptr<IBinaryPredictorFactory> createPredictorFactory(const IRowWiseFeatureMatrix& featureMatrix,
-                                                                            uint32 numLabels) const override;
+                                                                            uint32 numOutputs) const override;
 
             /**
              * @see `IBinaryPredictorConfig::createSparsePredictorFactory`

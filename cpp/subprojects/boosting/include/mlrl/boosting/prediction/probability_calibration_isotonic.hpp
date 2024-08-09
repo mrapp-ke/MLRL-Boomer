@@ -6,6 +6,7 @@
 #include "mlrl/boosting/losses/loss.hpp"
 #include "mlrl/boosting/util/dll_exports.hpp"
 #include "mlrl/common/prediction/probability_calibration_isotonic.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -50,14 +51,15 @@ namespace boosting {
 
             bool useHoldoutSet_;
 
-            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+            const ReadableProperty<IClassificationLossConfig> lossConfig_;
 
         public:
 
             /**
-             * @param lossConfigPtr A reference to an unique pointer that stores the configuration of the loss function
+             * @param lossConfig A `ReadableProperty` that allows to access the `IClassificationLossConfig` that stores
+             *                   the configuration of the loss function
              */
-            IsotonicMarginalProbabilityCalibratorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr);
+            IsotonicMarginalProbabilityCalibratorConfig(ReadableProperty<IClassificationLossConfig> lossConfig);
 
             bool isHoldoutSetUsed() const override;
 
@@ -114,14 +116,15 @@ namespace boosting {
 
             bool useHoldoutSet_;
 
-            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+            const ReadableProperty<IClassificationLossConfig> lossConfig_;
 
         public:
 
             /**
-             * @param lossConfigPtr A reference to an unique pointer that stores the configuration of the loss function
+             * @param lossConfig A `ReadableProperty` that allows to access the `IClassificationLossConfig` that stores
+             *                   the configuration of the loss function
              */
-            IsotonicJointProbabilityCalibratorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr);
+            IsotonicJointProbabilityCalibratorConfig(ReadableProperty<IClassificationLossConfig> lossConfig);
 
             bool isHoldoutSetUsed() const override;
 

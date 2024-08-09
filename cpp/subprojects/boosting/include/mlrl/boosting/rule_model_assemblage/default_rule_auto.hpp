@@ -7,6 +7,7 @@
 #include "mlrl/boosting/rule_evaluation/head_type.hpp"
 #include "mlrl/boosting/statistics/statistic_format.hpp"
 #include "mlrl/common/rule_model_assemblage/default_rule.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -19,30 +20,30 @@ namespace boosting {
     class AutomaticDefaultRuleConfig final : public IDefaultRuleConfig {
         private:
 
-            const std::unique_ptr<IStatisticsConfig>& statisticsConfigPtr_;
+            const ReadableProperty<IStatisticsConfig> statisticsConfig_;
 
-            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+            const ReadableProperty<ILossConfig> lossConfig_;
 
-            const std::unique_ptr<IHeadConfig>& headConfigPtr_;
+            const ReadableProperty<IHeadConfig> headConfig_;
 
         public:
 
             /**
-             * @param statisticsConfigPtr   A reference to an unique pointer that stores the configuration of the
-             *                              statistics
-             * @param lossConfigPtr         A reference to an unique pointer that stores the configuration of the loss
-             *                              function
-             * @param headConfigPtr         A reference to an unique pointer that stores the configuration of the rule
-             *                              heads
+             * @param statisticsConfig  A `ReadableProperty` that allows to access the `IStatisticsConfig` that stores
+             *                          the configuration of the statistics
+             * @param lossConfig        A `ReadableProperty` that allows to access the `ILossConfig` that stores the
+             *                          configuration of the loss function
+             * @param headConfig        A `ReadableProperty` that allows to access the `IHeadConfig` that stores the
+             *                          configuration of the rule heads
              */
-            AutomaticDefaultRuleConfig(const std::unique_ptr<IStatisticsConfig>& statisticsConfigPtr,
-                                       const std::unique_ptr<ILossConfig>& lossConfigPtr,
-                                       const std::unique_ptr<IHeadConfig>& headConfigPtr);
+            AutomaticDefaultRuleConfig(ReadableProperty<IStatisticsConfig> statisticsConfig,
+                                       ReadableProperty<ILossConfig> lossConfig,
+                                       ReadableProperty<IHeadConfig> headConfig);
 
             /**
              * @see `IDefaultRuleConfig::isDefaultRuleUsed`
              */
-            bool isDefaultRuleUsed(const IRowWiseLabelMatrix& labelMatrix) const override;
+            bool isDefaultRuleUsed(const IOutputMatrix& outputMatrix) const override;
     };
 
 }

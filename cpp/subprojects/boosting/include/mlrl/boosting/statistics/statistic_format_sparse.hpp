@@ -5,28 +5,43 @@
 
 #include "mlrl/boosting/losses/loss.hpp"
 #include "mlrl/boosting/statistics/statistic_format.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
 namespace boosting {
 
     /**
-     * Allows to configure a sparse format for storing statistics about the labels of the training examples.
+     * Allows to configure a sparse format for storing statistics about the quality of predictions for training
+     * examples.
      */
-    class SparseStatisticsConfig final : public IStatisticsConfig {
+    class SparseStatisticsConfig final : public IClassificationStatisticsConfig,
+                                         public IRegressionStatisticsConfig {
         private:
 
-            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+            const ReadableProperty<IClassificationLossConfig> classificationLossConfig_;
+
+            const ReadableProperty<IRegressionLossConfig> regressionLossConfig_;
 
         public:
 
             /**
-             * @param lossConfigPtr A reference to an unique pointer that stores the configuration of the loss function
+             * @param classificationLossConfig  A `ReadableProperty` that allows to access the
+             *                                  `IClassificationLossConfig` that stores the configuration of the loss
+             *                                  function that should be used in classification problems
+             * @param regressionLossConfig      A `ReadableProperty` that allows to access the `IRegressionLossConfig`
+             *                                  that stores the configuration of the loss function that should be used
+             *                                  in regression problems
              */
-            SparseStatisticsConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr);
+            SparseStatisticsConfig(ReadableProperty<IClassificationLossConfig> classificationLossConfig,
+                                   ReadableProperty<IRegressionLossConfig> regressionLossConfig);
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createClassificationStatisticsProviderFactory(
               const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix, const Blas& blas,
+              const Lapack& lapack) const override;
+
+            std::unique_ptr<IRegressionStatisticsProviderFactory> createRegressionStatisticsProviderFactory(
+              const IFeatureMatrix& featureMatrix, const IRowWiseRegressionMatrix& regressionMatrix, const Blas& blas,
               const Lapack& lapack) const override;
 
             bool isDense() const override;
@@ -34,4 +49,4 @@ namespace boosting {
             bool isSparse() const override;
     };
 
-};
+}

@@ -1,3 +1,3 @@
 """
-This module provides common functionality for implementing multi-label rule learning algorithms.
+This module provides common functionality for implementing rule learning algorithms.
 """

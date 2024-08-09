@@ -2,6 +2,6 @@
 
 DefaultRuleConfig::DefaultRuleConfig(bool useDefaultRule) : useDefaultRule_(useDefaultRule) {}
 
-bool DefaultRuleConfig::isDefaultRuleUsed(const IRowWiseLabelMatrix& labelMatrix) const {
+bool DefaultRuleConfig::isDefaultRuleUsed(const IOutputMatrix& outputMatrix) const {
     return useDefaultRule_;
 }

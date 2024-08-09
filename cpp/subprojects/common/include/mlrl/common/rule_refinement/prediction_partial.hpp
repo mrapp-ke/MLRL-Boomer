@@ -10,7 +10,7 @@
 #include <memory>
 
 /**
- * Stores the scores that are predicted by a rule that predicts for a subset of the available labels.
+ * Stores the scores that are predicted by a rule that predicts for a subset of the available outputs.
  */
 class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<ResizableVector<float64>>>,
                                 public IEvaluatedPrediction {
@@ -23,9 +23,9 @@ class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<
     public:
 
         /**
-         * @param numElements   The number of labels for which the rule predicts
+         * @param numElements   The number of outputs for which the rule predicts
          * @param sorted        True, if the scores that are stored by this prediction are sorted in increasing order by
-         *                      the corresponding label indices, false otherwise
+         *                      the corresponding output indices, false otherwise
          */
         PartialPrediction(uint32 numElements, bool sorted);
 
@@ -107,10 +107,10 @@ class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<
 
         /**
          * Sets whether the scores that are stored by this prediction are sorted in increasing order by the
-         * corresponding label indices, or not.
+         * corresponding output indices, or not.
          *
          * @param sorted True, if the scores that are stored by this prediction are sorted in increasing order by the
-         *               corresponding label indices, false otherwise
+         *               corresponding output indices, false otherwise
          */
         void setSorted(bool sorted);
 

@@ -16,11 +16,11 @@ class MLRLCOMMON_API BinarySparsePredictionView final : public AllocatedBinaryCs
     public:
 
         /**
-         * @param lilMatrix             A reference to an object of type `BinaryLilMatrix` to be copied
-         * @param numCols               The number of columns of the given `BinaryLilMatrix`
-         * @param numNonZeroElements    The number of non-zero elements in the given `BinaryLilMatrix`
+         * @param lilMatrix         A reference to an object of type `BinaryLilMatrix` to be copied
+         * @param numCols           The number of columns of the given `BinaryLilMatrix`
+         * @param numDenseElements  The number of dense elements explicitly stored in the given `BinaryLilMatrix`
          */
-        BinarySparsePredictionView(const BinaryLilMatrix& lilMatrix, uint32 numCols, uint32 numNonZeroElements);
+        BinarySparsePredictionView(const BinaryLilMatrix& lilMatrix, uint32 numCols, uint32 numDenseElements);
 
         /**
          * @param other A reference to an object of type `BinarySparsePredictionView` that should be moved
@@ -37,47 +37,47 @@ class MLRLCOMMON_API BinarySparsePredictionMatrix final
     public:
 
         /**
-         * @param lilMatrix             A reference to an object of type `BinaryLilMatrix` to be copied
-         * @param numCols               The number of columns of the given `BinaryLilMatrix`
-         * @param numNonZeroElements    The number of non-zero elements in the given `BinaryLilMatrix`
+         * @param lilMatrix         A reference to an object of type `BinaryLilMatrix` to be copied
+         * @param numCols           The number of columns in the given `BinaryLilMatrix`
+         * @param numDenseElements  The number of dense elements explicitly stored in the given `BinaryLilMatrix`
          */
-        BinarySparsePredictionMatrix(const BinaryLilMatrix& lilMatrix, uint32 numCols, uint32 numNonZeroElements);
+        BinarySparsePredictionMatrix(const BinaryLilMatrix& lilMatrix, uint32 numCols, uint32 numDenseElements);
 
         /**
-         * Returns a pointer to the array that stores the column indices, the non-zero values in the matrix correspond
-         * to.
+         * Returns a pointer to the array that stores the column indices of all dense elements explicitly stored in the
+         * matrix.
          *
-         @return  A pointer to the array that stores the column indices, the non-zero values in the matrix correspond
-         *        to
+         * @return A pointer to the array that stores the column indices of all dense elements explicitly stored in the
+         *         matrix
          */
         uint32* getIndices();
 
         /**
-         * Releases the ownership of the array that stores the column indices, the non-zero values in the matrix
-         * correspond to. As a result, the behavior of this matrix becomes undefined and it should not be used anymore.
-         * The caller is responsible for freeing the memory that is occupied by the array.
+         * Releases the ownership of the array that stores the column indices of all dense elements explicitly stored in
+         * the matrix. As a result, the behavior of this matrix becomes undefined and it should not be used anymore. The
+         * caller is responsible for freeing the memory that is occupied by the array.
          *
-         * @return  A pointer to the array that stores the column indices, the non-zero values in the matrix correspond
-         *          to
+         * @return A pointer to the array that stores the column indices of all dense elements explicitly stored in the
+         *         matrix
          */
         uint32* releaseIndices();
 
         /**
-         * Returns a pointer to the array that stores the indices of the first non-zero element that corresponds to a
+         * Returns a pointer to the array that stores the indices of the first dense element that corresponds to a
          * certain row.
          *
-         * @return  A pointer to the array that stores the indices of the first non-zero element that corresponds to a
-         *          certain row
+         * @return A pointer to the array that stores the indices of the first dense element that corresponds to a
+         *         certain row
          */
         uint32* getIndptr();
 
         /**
-         * Releases the ownership of the array that stores the indices of the first non-zero element that corresponds to
-         * a certain row. As a result, the behavior of this matrix becomes undefined and it should not be used anymore.
+         * Releases the ownership of the array that stores the indices of the first dense element that corresponds to a
+         * certain row. As a result, the behavior of this matrix becomes undefined and it should not be used anymore.
          * The caller is responsible for freeing the memory that is occupied by the array.
          *
-         * @return  A pointer to an array that stores the indices of the first non-zero element that corresponds to a
-         *          certain row
+         * @return A pointer to an array that stores the indices of the first dense element that corresponds to a
+         *         certain row
          */
         uint32* releaseIndptr();
 };
@@ -86,12 +86,11 @@ class MLRLCOMMON_API BinarySparsePredictionMatrix final
  * Creates and returns a new object of the type `BinarySparsePredictionMatrix` as a copy of an existing
  * `BinaryLilMatrix`.
  *
- * @param lilMatrix             A reference to an object of type `BinaryLilMatrix` to be copied
- * @param numCols               The number of columns of the given `BinaryLilMatrix`
- * @param numNonZeroElements    The number of non-zero elements in the given `BinaryLilMatrix`
- * @return                      An unique pointer to an object of type `BinarySparsePredictionMatrix` that has been
- *                              created
+ * @param lilMatrix         A reference to an object of type `BinaryLilMatrix` to be copied
+ * @param numCols           The number of columns in the given `BinaryLilMatrix`
+ * @param numDenseElements  The number of dense elements explicitly stored in the given `BinaryLilMatrix`
+ * @return                  An unique pointer to an object of type `BinarySparsePredictionMatrix` that has been created
  */
 std::unique_ptr<BinarySparsePredictionMatrix> createBinarySparsePredictionMatrix(const BinaryLilMatrix& lilMatrix,
                                                                                  uint32 numCols,
-                                                                                 uint32 numNonZeroElements);
+                                                                                 uint32 numDenseElements);

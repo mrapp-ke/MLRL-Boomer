@@ -3,6 +3,7 @@
  */
 #pragma once
 
+#include "mlrl/common/util/properties.hpp"
 #include "mlrl/seco/heuristics/heuristic.hpp"
 #include "mlrl/seco/lift_functions/lift_function.hpp"
 #include "mlrl/seco/rule_evaluation/head_type.hpp"
@@ -17,28 +18,29 @@ namespace seco {
     class PartialHeadConfig final : public IHeadConfig {
         private:
 
-            const std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr_;
+            const ReadableProperty<IHeuristicConfig> heuristicConfig_;
 
-            const std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr_;
+            const ReadableProperty<IHeuristicConfig> pruningHeuristicConfig_;
 
-            const std::unique_ptr<ILiftFunctionConfig>& liftFunctionConfigPtr_;
+            const ReadableProperty<ILiftFunctionConfig> liftFunctionConfig_;
 
         public:
 
             /**
-             * @param heuristicConfigPtr        A reference to an unique pointer that stores the configuration of the
-             *                                  heuristic for learning rules
-             * @param pruningHeuristicConfigPtr A reference to an unique pointer that stores the configuration of the
-             *                                  heuristic for pruning rules
-             * @param liftFunctionConfigPtr     A reference to an unique pointer that stores the configuration of the
-             *                                  lift function that should affect the quality of rules, depending on the
-             *                                  number of labels for which they predict
+             * @param heuristicConfig           A `ReadableProperty` that allows to access the `IHeuristicConfig` that
+             *                                  stores the configuration of the heuristic for learning rules
+             * @param pruningHeuristicConfig    A `ReadableProperty` that allows to access the `IHeuristicConfig` that
+             *                                  stores the configuration of the heuristic for pruning rules
+             * @param liftFunctionConfig        A `ReadableProperty` that allows to access the `ILiftFunctionConfig`
+             *                                  that stores the configuration of the lift function that should affect
+             *                                  the quality of rules, depending on the number of labels for which they
+             *                                  predict
              */
-            PartialHeadConfig(const std::unique_ptr<IHeuristicConfig>& heuristicConfigPtr,
-                              const std::unique_ptr<IHeuristicConfig>& pruningHeuristicConfigPtr,
-                              const std::unique_ptr<ILiftFunctionConfig>& liftFunctionConfigPtr);
+            PartialHeadConfig(ReadableProperty<IHeuristicConfig> heuristicConfig,
+                              ReadableProperty<IHeuristicConfig> pruningHeuristicConfig,
+                              ReadableProperty<ILiftFunctionConfig> liftFunctionConfig);
 
-            std::unique_ptr<IStatisticsProviderFactory> createStatisticsProviderFactory(
+            std::unique_ptr<IClassificationStatisticsProviderFactory> createStatisticsProviderFactory(
               const IRowWiseLabelMatrix& labelMatrix) const override;
     };
 

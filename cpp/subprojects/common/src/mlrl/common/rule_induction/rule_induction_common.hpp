@@ -24,8 +24,8 @@ class AbstractRuleInduction : public IRuleInduction {
          *
          * @param featureSpace      A reference to an object of type `IFeatureSpace` that provides access to the feature
          *                          space
-         * @param labelIndices      A reference to an object of type `IIndexVector` that provides access to the indices
-         *                          of the labels for which the rule may predict
+         * @param outputIndices     A reference to an object of type `IIndexVector` that provides access to the indices
+         *                          of the outputs for which the rule may predict
          * @param weights           A reference to an object of type `IWeightVector` that provides access to the weights
          *                          of individual training examples
          * @param partition         A reference to an object of type `IPartition` that provides access to the indices of
@@ -43,7 +43,7 @@ class AbstractRuleInduction : public IRuleInduction {
          *                          grow the rule
          */
         virtual std::unique_ptr<IFeatureSubspace> growRule(IFeatureSpace& featureSpace,
-                                                           const IIndexVector& labelIndices,
+                                                           const IIndexVector& outputIndices,
                                                            const IWeightVector& weights, IPartition& partition,
                                                            IFeatureSampling& featureSampling, RNG& rng,
                                                            std::unique_ptr<ConditionList>& conditionListPtr,
@@ -61,10 +61,10 @@ class AbstractRuleInduction : public IRuleInduction {
 
         void induceDefaultRule(IStatistics& statistics, IModelBuilder& modelBuilder) const override final {
             uint32 numStatistics = statistics.getNumStatistics();
-            uint32 numLabels = statistics.getNumLabels();
-            CompleteIndexVector labelIndices(numLabels);
+            uint32 numOutputs = statistics.getNumOutputs();
+            CompleteIndexVector outputIndices(numOutputs);
             EqualWeightVector weights(numStatistics);
-            std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(labelIndices, weights);
+            std::unique_ptr<IStatisticsSubset> statisticsSubsetPtr = statistics.createSubset(outputIndices, weights);
 
             for (uint32 i = 0; i < numStatistics; i++) {
                 statisticsSubsetPtr->addToSubset(i);
@@ -82,14 +82,14 @@ class AbstractRuleInduction : public IRuleInduction {
             modelBuilder.setDefaultRule(defaultPredictionPtr);
         }
 
-        bool induceRule(IFeatureSpace& featureSpace, const IIndexVector& labelIndices, const IWeightVector& weights,
+        bool induceRule(IFeatureSpace& featureSpace, const IIndexVector& outputIndices, const IWeightVector& weights,
                         IPartition& partition, IFeatureSampling& featureSampling, const IRulePruning& rulePruning,
                         const IPostProcessor& postProcessor, RNG& rng,
                         IModelBuilder& modelBuilder) const override final {
             std::unique_ptr<ConditionList> conditionListPtr;
             std::unique_ptr<IEvaluatedPrediction> headPtr;
             std::unique_ptr<IFeatureSubspace> featureSubspacePtr = this->growRule(
-              featureSpace, labelIndices, weights, partition, featureSampling, rng, conditionListPtr, headPtr);
+              featureSpace, outputIndices, weights, partition, featureSampling, rng, conditionListPtr, headPtr);
 
             if (headPtr) {
                 if (weights.hasZeroWeights()) {

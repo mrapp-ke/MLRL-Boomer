@@ -20,7 +20,7 @@ class WeightedStatistics final : public IWeightedStatistics {
             throw std::runtime_error("not implemented");
         }
 
-        uint32 getNumLabels() const override {
+        uint32 getNumOutputs() const override {
             throw std::runtime_error("not implemented");
         }
 

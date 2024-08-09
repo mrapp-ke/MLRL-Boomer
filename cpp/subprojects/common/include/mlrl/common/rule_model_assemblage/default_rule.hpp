@@ -3,7 +3,7 @@
  */
 #pragma once
 
-#include "mlrl/common/input/label_matrix_row_wise.hpp"
+#include "mlrl/common/input/output_matrix.hpp"
 
 /**
  * Defines an interface for all classes that allow to configure the default rule that is included in a rule-based model.
@@ -16,11 +16,11 @@ class IDefaultRuleConfig {
         /**
          * Returns whether a default rule is included or not.
          *
-         * @param labelMatrix   A reference to an object of type `IRowWiseLabelMatrix` that provides row-wise access to
-         *                      the labels of the training examples
+         * @param outputMatrix  A reference to an object of type `IOutputMatrix` that provides row-wise access to the
+         *                      ground truth of the training examples
          * @return              True, if a default rule is included, false otherwise
          */
-        virtual bool isDefaultRuleUsed(const IRowWiseLabelMatrix& labelMatrix) const = 0;
+        virtual bool isDefaultRuleUsed(const IOutputMatrix& outputMatrix) const = 0;
 };
 
 /**
@@ -38,5 +38,5 @@ class DefaultRuleConfig final : public IDefaultRuleConfig {
          */
         DefaultRuleConfig(bool useDefaultRule);
 
-        bool isDefaultRuleUsed(const IRowWiseLabelMatrix& labelMatrix) const override;
+        bool isDefaultRuleUsed(const IOutputMatrix& outputMatrix) const override;
 };

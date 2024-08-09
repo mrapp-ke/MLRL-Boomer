@@ -15,16 +15,16 @@ class MLRLCOMMON_API BinaryDokVector {
     protected:
 
         /**
-         * A pointer to an object of type `std::unordered_set` that stores the indices of all non-zero elements in the
-         * view.
+         * A pointer to an object of type `std::unordered_set` that stores the indices of all dense elements explicitly
+         * stored in the view.
          */
         std::unordered_set<uint32>* indices_;
 
     public:
 
         /**
-         * @param indices A pointer to an object of type `std::unordered_set` that stores the indices of all non-zero
-         *                elements in the view
+         * @param indices A pointer to an object of type `std::unordered_set` that stores the indices of all dense
+         *                elements explicitly stored in the view
          */
         explicit BinaryDokVector(std::unordered_set<uint32>* indices) : indices_(indices) {}
 

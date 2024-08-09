@@ -1,111 +1,109 @@
 from libcpp.memory cimport unique_ptr
 
 from mlrl.common.cython.learner cimport IBeamSearchTopDownRuleInductionMixin, IDefaultRuleMixin, \
-    IEqualFrequencyFeatureBinningMixin, IEqualWidthFeatureBinningMixin, \
-    IExampleWiseStratifiedBiPartitionSamplingMixin, IExampleWiseStratifiedInstanceSamplingMixin, \
-    IFeatureSamplingWithoutReplacementMixin, IGreedyTopDownRuleInductionMixin, \
-    IInstanceSamplingWithoutReplacementMixin, IInstanceSamplingWithReplacementMixin, IIrepRulePruningMixin, \
-    ILabelSamplingWithoutReplacementMixin, ILabelWiseStratifiedBiPartitionSamplingMixin, \
-    ILabelWiseStratifiedInstanceSamplingMixin, INoFeatureBinningMixin, INoFeatureSamplingMixin, \
-    INoInstanceSamplingMixin, INoLabelSamplingMixin, INoParallelPredictionMixin, INoParallelRuleRefinementMixin, \
+    IEqualFrequencyFeatureBinningMixin, IEqualWidthFeatureBinningMixin, IFeatureSamplingWithoutReplacementMixin, \
+    IGreedyTopDownRuleInductionMixin, IInstanceSamplingWithoutReplacementMixin, IInstanceSamplingWithReplacementMixin, \
+    IIrepRulePruningMixin, INoFeatureBinningMixin, INoFeatureSamplingMixin, INoInstanceSamplingMixin, \
+    INoOutputSamplingMixin, INoParallelPredictionMixin, INoParallelRuleRefinementMixin, \
     INoParallelStatisticUpdateMixin, INoPartitionSamplingMixin, INoRulePruningMixin, \
     INoSequentialPostOptimizationMixin, INoSizeStoppingCriterionMixin, INoTimeStoppingCriterionMixin, \
-    IParallelPredictionMixin, IParallelRuleRefinementMixin, IParallelStatisticUpdateMixin, \
-    IRandomBiPartitionSamplingMixin, IRoundRobinLabelSamplingMixin, IRuleLearner, ISequentialPostOptimizationMixin, \
-    ISequentialRuleModelAssemblageMixin, ISizeStoppingCriterionMixin, ITimeStoppingCriterionMixin, RuleLearner, \
-    RuleLearnerConfig
+    IOutputSamplingWithoutReplacementMixin, IParallelPredictionMixin, IParallelRuleRefinementMixin, \
+    IParallelStatisticUpdateMixin, IRandomBiPartitionSamplingMixin, IRoundRobinOutputSamplingMixin, \
+    ISequentialPostOptimizationMixin, ISequentialRuleModelAssemblageMixin, ISizeStoppingCriterionMixin, \
+    ITimeStoppingCriterionMixin, RuleLearnerConfig
+from mlrl.common.cython.learner_classification cimport ClassificationRuleLearner, IClassificationRuleLearner, \
+    IExampleWiseStratifiedBiPartitionSamplingMixin, IExampleWiseStratifiedInstanceSamplingMixin, \
+    IOutputWiseStratifiedBiPartitionSamplingMixin, IOutputWiseStratifiedInstanceSamplingMixin
 
 from mlrl.seco.cython.learner cimport IAccuracyHeuristicMixin, IAccuracyPruningHeuristicMixin, \
     ICoverageStoppingCriterionMixin, IFMeasureHeuristicMixin, IFMeasurePruningHeuristicMixin, IKlnLiftFunctionMixin, \
-    ILabelWiseBinaryPredictorMixin, ILaplaceHeuristicMixin, ILaplacePruningHeuristicMixin, IMEstimateHeuristicMixin, \
-    IMEstimatePruningHeuristicMixin, INoCoverageStoppingCriterionMixin, INoLiftFunctionMixin, IPartialHeadMixin, \
+    ILaplaceHeuristicMixin, ILaplacePruningHeuristicMixin, IMEstimateHeuristicMixin, IMEstimatePruningHeuristicMixin, \
+    INoCoverageStoppingCriterionMixin, INoLiftFunctionMixin, IOutputWiseBinaryPredictorMixin, IPartialHeadMixin, \
     IPeakLiftFunctionMixin, IPrecisionHeuristicMixin, IPrecisionPruningHeuristicMixin, IRecallHeuristicMixin, \
-    IRecallPruningHeuristicMixin, ISingleLabelHeadMixin, IWraHeuristicMixin, IWraPruningHeuristicMixin
+    IRecallPruningHeuristicMixin, ISingleOutputHeadMixin, IWraHeuristicMixin, IWraPruningHeuristicMixin
 
 
-cdef extern from "mlrl/seco/learner_seco.hpp" namespace "seco" nogil:
+cdef extern from "mlrl/seco/learner_seco_classifier.hpp" namespace "seco" nogil:
 
-    cdef cppclass IMultiLabelSeCoRuleLearnerConfig"seco::IMultiLabelSeCoRuleLearner::IConfig"(
-            INoCoverageStoppingCriterionMixin,
-            ICoverageStoppingCriterionMixin,
-            ISingleLabelHeadMixin,
-            IPartialHeadMixin,
-            INoLiftFunctionMixin,
-            IPeakLiftFunctionMixin,
-            IKlnLiftFunctionMixin,
-            IAccuracyHeuristicMixin,
-            IAccuracyPruningHeuristicMixin,
-            IFMeasureHeuristicMixin,
-            IFMeasurePruningHeuristicMixin,
-            IMEstimateHeuristicMixin,
-            IMEstimatePruningHeuristicMixin,
-            ILaplaceHeuristicMixin,
-            ILaplacePruningHeuristicMixin,
-            IPrecisionHeuristicMixin,
-            IPrecisionPruningHeuristicMixin,
-            IRecallHeuristicMixin,
-            IRecallPruningHeuristicMixin,
-            IWraHeuristicMixin,
-            IWraPruningHeuristicMixin,
-            ILabelWiseBinaryPredictorMixin,
-            ISequentialRuleModelAssemblageMixin,
-            IDefaultRuleMixin,
-            IGreedyTopDownRuleInductionMixin,
-            IBeamSearchTopDownRuleInductionMixin,
-            INoFeatureBinningMixin,
-            IEqualWidthFeatureBinningMixin,
-            IEqualFrequencyFeatureBinningMixin,
-            INoLabelSamplingMixin,
-            IRoundRobinLabelSamplingMixin,
-            ILabelSamplingWithoutReplacementMixin,
-            INoInstanceSamplingMixin,
-            IInstanceSamplingWithReplacementMixin,
-            IInstanceSamplingWithoutReplacementMixin,
-            ILabelWiseStratifiedInstanceSamplingMixin,
-            IExampleWiseStratifiedInstanceSamplingMixin,
-            INoFeatureSamplingMixin,
-            IFeatureSamplingWithoutReplacementMixin,
-            INoPartitionSamplingMixin,
-            IRandomBiPartitionSamplingMixin,
-            ILabelWiseStratifiedBiPartitionSamplingMixin,
-            IExampleWiseStratifiedBiPartitionSamplingMixin,
-            INoRulePruningMixin,
-            IIrepRulePruningMixin,
-            INoParallelRuleRefinementMixin,
-            IParallelRuleRefinementMixin,
-            INoParallelStatisticUpdateMixin,
-            IParallelStatisticUpdateMixin,
-            INoParallelPredictionMixin,
-            IParallelPredictionMixin,
-            INoSizeStoppingCriterionMixin,
-            ISizeStoppingCriterionMixin,
-            INoTimeStoppingCriterionMixin,
-            ITimeStoppingCriterionMixin,
-            INoSequentialPostOptimizationMixin,
-            ISequentialPostOptimizationMixin):
+    cdef cppclass ISeCoClassifierConfig"seco::ISeCoClassifier::IConfig"(INoCoverageStoppingCriterionMixin,
+                                                                        ICoverageStoppingCriterionMixin,
+                                                                        ISingleOutputHeadMixin,
+                                                                        IPartialHeadMixin,
+                                                                        INoLiftFunctionMixin,
+                                                                        IPeakLiftFunctionMixin,
+                                                                        IKlnLiftFunctionMixin,
+                                                                        IAccuracyHeuristicMixin,
+                                                                        IAccuracyPruningHeuristicMixin,
+                                                                        IFMeasureHeuristicMixin,
+                                                                        IFMeasurePruningHeuristicMixin,
+                                                                        IMEstimateHeuristicMixin,
+                                                                        IMEstimatePruningHeuristicMixin,
+                                                                        ILaplaceHeuristicMixin,
+                                                                        ILaplacePruningHeuristicMixin,
+                                                                        IPrecisionHeuristicMixin,
+                                                                        IPrecisionPruningHeuristicMixin,
+                                                                        IRecallHeuristicMixin,
+                                                                        IRecallPruningHeuristicMixin,
+                                                                        IWraHeuristicMixin,
+                                                                        IWraPruningHeuristicMixin,
+                                                                        IOutputWiseBinaryPredictorMixin,
+                                                                        ISequentialRuleModelAssemblageMixin,
+                                                                        IDefaultRuleMixin,
+                                                                        IGreedyTopDownRuleInductionMixin,
+                                                                        IBeamSearchTopDownRuleInductionMixin,
+                                                                        INoFeatureBinningMixin,
+                                                                        IEqualWidthFeatureBinningMixin,
+                                                                        IEqualFrequencyFeatureBinningMixin,
+                                                                        INoOutputSamplingMixin,
+                                                                        IRoundRobinOutputSamplingMixin,
+                                                                        IOutputSamplingWithoutReplacementMixin,
+                                                                        INoInstanceSamplingMixin,
+                                                                        IInstanceSamplingWithReplacementMixin,
+                                                                        IInstanceSamplingWithoutReplacementMixin,
+                                                                        IOutputWiseStratifiedInstanceSamplingMixin,
+                                                                        IExampleWiseStratifiedInstanceSamplingMixin,
+                                                                        INoFeatureSamplingMixin,
+                                                                        IFeatureSamplingWithoutReplacementMixin,
+                                                                        INoPartitionSamplingMixin,
+                                                                        IRandomBiPartitionSamplingMixin,
+                                                                        IOutputWiseStratifiedBiPartitionSamplingMixin,
+                                                                        IExampleWiseStratifiedBiPartitionSamplingMixin,
+                                                                        INoRulePruningMixin,
+                                                                        IIrepRulePruningMixin,
+                                                                        INoParallelRuleRefinementMixin,
+                                                                        IParallelRuleRefinementMixin,
+                                                                        INoParallelStatisticUpdateMixin,
+                                                                        IParallelStatisticUpdateMixin,
+                                                                        INoParallelPredictionMixin,
+                                                                        IParallelPredictionMixin,
+                                                                        INoSizeStoppingCriterionMixin,
+                                                                        ISizeStoppingCriterionMixin,
+                                                                        INoTimeStoppingCriterionMixin,
+                                                                        ITimeStoppingCriterionMixin,
+                                                                        INoSequentialPostOptimizationMixin,
+                                                                        ISequentialPostOptimizationMixin):
         pass
 
 
-    cdef cppclass IMultiLabelSeCoRuleLearner(IRuleLearner):
+    cdef cppclass ISeCoClassifier(IClassificationRuleLearner):
         pass
 
 
-    unique_ptr[IMultiLabelSeCoRuleLearnerConfig] createMultiLabelSeCoRuleLearnerConfig()
+    unique_ptr[ISeCoClassifierConfig] createSeCoClassifierConfig()
 
 
-    unique_ptr[IMultiLabelSeCoRuleLearner] createMultiLabelSeCoRuleLearner(
-        unique_ptr[IMultiLabelSeCoRuleLearnerConfig] configPtr)
+    unique_ptr[ISeCoClassifier] createSeCoClassifier(unique_ptr[ISeCoClassifierConfig] configPtr)
 
 
-cdef class SeCoConfig(RuleLearnerConfig):
-
-    # Attributes:
-
-    cdef unique_ptr[IMultiLabelSeCoRuleLearnerConfig] config_ptr
-
-
-cdef class SeCo(RuleLearner):
+cdef class SeCoClassifierConfig(RuleLearnerConfig):
 
     # Attributes:
 
-    cdef unique_ptr[IMultiLabelSeCoRuleLearner] rule_learner_ptr
+    cdef unique_ptr[ISeCoClassifierConfig] config_ptr
+
+
+cdef class SeCoClassifier(ClassificationRuleLearner):
+
+    # Attributes:
+
+    cdef unique_ptr[ISeCoClassifier] rule_learner_ptr

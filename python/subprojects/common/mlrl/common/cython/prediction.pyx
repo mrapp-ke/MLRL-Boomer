@@ -10,7 +10,7 @@ from mlrl.common.cython._arrays cimport array_uint32, c_matrix_float64, c_matrix
 
 import numpy as np
 
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_array
 
 
 cdef class IncrementalBinaryPredictor:
@@ -125,19 +125,19 @@ cdef class IncrementalSparseBinaryPredictor:
         members are remaining, only the available ones will be used for updating the current predictions.
 
         :param step_size:   The number of additional ensemble members to be considered for prediction
-        :return:            A `scipy.sparse.csr_matrix` of type `uint8`, shape `(num_examples, num_labels)` that stores
+        :return:            A `scipy.sparse.csr_array` of type `uint8`, shape `(num_examples, num_labels)` that stores
                             the predictions
         """
         cdef BinarySparsePredictionMatrix* prediction_matrix_ptr = &self.predictor_ptr.get().applyNext(step_size)
         cdef uint32 num_rows = prediction_matrix_ptr.getNumRows()
         cdef uint32 num_cols = prediction_matrix_ptr.getNumCols()
-        cdef uint32 num_non_zero_elements = prediction_matrix_ptr.getNumNonZeroElements()
+        cdef uint32 num_dense_elements = prediction_matrix_ptr.getNumDenseElements()
         cdef uint32* indices = prediction_matrix_ptr.getIndices()
         cdef uint32* indptr = prediction_matrix_ptr.getIndptr()
-        data = np.ones(shape=(num_non_zero_elements), dtype=np.uint8) if num_non_zero_elements > 0 else np.asarray([])
-        pred_indices = np.asarray(view_uint32(indices, num_non_zero_elements) if num_non_zero_elements > 0 else [])
+        data = np.ones(shape=(num_dense_elements), dtype=np.uint8) if num_dense_elements > 0 else np.asarray([])
+        pred_indices = np.asarray(view_uint32(indices, num_dense_elements) if num_dense_elements > 0 else [])
         pred_indptr = np.asarray(view_uint32(indptr, num_rows + 1))
-        return csr_matrix((data, pred_indices, pred_indptr), shape=(num_rows, num_cols))
+        return csr_array((data, pred_indices, pred_indptr), shape=(num_rows, num_cols))
 
 
 cdef class SparseBinaryPredictor:
@@ -145,26 +145,26 @@ cdef class SparseBinaryPredictor:
     Allows to predict sparse binary labels for given query examples.
     """
 
-    def predict(self, uint32 max_rules) -> csr_matrix:
+    def predict(self, uint32 max_rules) -> csr_array:
         """
         Obtains and returns predictions for all query examples.
 
         :param max_rules:   The maximum number of rules to be used for prediction or 0, if the number of rules should
                             not be restricted
-        :return:            A `scipy.sparse.csr_matrix` of type `uint8`, shape `(num_examples, num_labels)` that stores
+        :return:            A `scipy.sparse.csr_array` of type `uint8`, shape `(num_examples, num_labels)` that stores
                             the predictions
         """
         cdef unique_ptr[BinarySparsePredictionMatrix] prediction_matrix_ptr = \
             self.predictor_ptr.get().predict(max_rules)
         cdef uint32 num_rows = prediction_matrix_ptr.get().getNumRows()
         cdef uint32 num_cols = prediction_matrix_ptr.get().getNumCols()
-        cdef uint32 num_non_zero_elements = prediction_matrix_ptr.get().getNumNonZeroElements()
+        cdef uint32 num_dense_elements = prediction_matrix_ptr.get().getNumDenseElements()
         cdef uint32* indices = prediction_matrix_ptr.get().releaseIndices()
         cdef uint32* indptr = prediction_matrix_ptr.get().releaseIndptr()
-        data = np.ones(shape=(num_non_zero_elements), dtype=np.uint8) if num_non_zero_elements > 0 else np.asarray([])
-        pred_indices = np.asarray(array_uint32(indices, num_non_zero_elements) if num_non_zero_elements > 0 else [])
+        data = np.ones(shape=(num_dense_elements), dtype=np.uint8) if num_dense_elements > 0 else np.asarray([])
+        pred_indices = np.asarray(array_uint32(indices, num_dense_elements) if num_dense_elements > 0 else [])
         pred_indptr = np.asarray(array_uint32(indptr, num_rows + 1))
-        return csr_matrix((data, pred_indices, pred_indptr), shape=(num_rows, num_cols))
+        return csr_array((data, pred_indices, pred_indptr), shape=(num_rows, num_cols))
 
     def can_predict_incrementally(self) -> bool:
         """
@@ -193,7 +193,7 @@ cdef class SparseBinaryPredictor:
 
 cdef class IncrementalScorePredictor:
     """
-    Allows to predict regression scores for given query examples incrementally.
+    Allows to predict scores for given query examples incrementally.
     """
 
     def has_next(self) -> bool:
@@ -218,7 +218,7 @@ cdef class IncrementalScorePredictor:
         members are remaining, only the available ones will be used for updating the current predictions.
 
         :param step_size:   The number of additional ensemble members to be considered for prediction
-        :return:            A `numpy.ndarray` of type `float64`, shape `(num_examples, num_labels)`, that stores the
+        :return:            A `numpy.ndarray` of type `float64`, shape `(num_examples, num_outputs)`, that stores the
                             updated predictions
         """
         cdef DensePredictionMatrix[float64]* prediction_matrix_ptr = &self.predictor_ptr.get().applyNext(step_size)
@@ -230,7 +230,7 @@ cdef class IncrementalScorePredictor:
 
 cdef class ScorePredictor:
     """
-    Allows to predict regression scores for given query examples.
+    Allows to predict scores for given query examples.
     """
 
     def predict(self, uint32 max_rules) -> np.ndarray:
@@ -239,7 +239,7 @@ cdef class ScorePredictor:
 
         :param max_rules:   The maximum number of rules to be used for prediction or 0, if the number of rules should
                             not be restricted
-        :return:            A `numpy.ndarray` of type `float64`, shape `(num_examples, num_labels)`, that stores the
+        :return:            A `numpy.ndarray` of type `float64`, shape `(num_examples, num_outputs)`, that stores the
                             predictions
         """
         cdef unique_ptr[DensePredictionMatrix[float64]] prediction_matrix_ptr = \
@@ -260,12 +260,12 @@ cdef class ScorePredictor:
 
     def create_incremental_predictor(self, uint32 max_rules) -> IncrementalScorePredictor:
         """
-        Creates and returns a predictor that allows to predict regression scores incrementally. If incremental
-        prediction is not supported, a `RuntimeError` is thrown.
+        Creates and returns a predictor that allows to predict scores incrementally. If incremental prediction is not
+        supported, a `RuntimeError` is thrown.
 
         :param max_rules:   The maximum number of rules to be used for prediction. Must be at least 1 or 0, if the
                             number of rules should not be restricted
-        :return:            A predictor that allows to predict regression scores incrementally
+        :return:            A predictor that allows to predict scores incrementally
         """
         if max_rules != 0:
             assert_greater_or_equal('max_rules', max_rules, 1)

@@ -2,8 +2,8 @@
 
 #include "mlrl/boosting/statistics/statistics.hpp"
 #include "mlrl/common/data/array.hpp"
-#include "mlrl/common/iterator/binary_forward_iterator.hpp"
-#include "mlrl/common/iterator/non_zero_index_forward_iterator.hpp"
+#include "mlrl/common/iterator/iterator_forward_non_zero_index.hpp"
+#include "mlrl/common/iterator/iterator_forward_sparse_binary.hpp"
 #include "mlrl/common/prediction/probability_calibration_no.hpp"
 
 #include <algorithm>
@@ -37,8 +37,8 @@ namespace boosting {
       const CContiguousView<float64>& scoreMatrix, const IMarginalProbabilityFunction& marginalProbabilityFunction) {
         for (uint32 i = 0; i < numExamples; i++) {
             uint32 exampleIndex = indexIterator[i];
-            auto labelIterator = make_binary_forward_iterator(labelMatrix.indices_cbegin(exampleIndex),
-                                                              labelMatrix.indices_cend(exampleIndex));
+            auto labelIterator = createBinarySparseForwardIterator(labelMatrix.indices_cbegin(exampleIndex),
+                                                                   labelMatrix.indices_cend(exampleIndex));
             CContiguousView<float64>::value_const_iterator scoreIterator = scoreMatrix.values_cbegin(exampleIndex);
 
             for (uint32 j = 0; j < numLabels; j++) {
@@ -213,8 +213,8 @@ namespace boosting {
              * @param marginalProbabilityFunctionFactory  A reference to an object of type
              *                                            `IMarginalProbabilityFunctionFactory` that allows to create
              *                                            implementations of the transformation function to be used to
-             *                                            transform regression scores that are predicted for
-             *                                            individual labels into marginal probabilities
+             *                                            transform scores that are predicted for individual labels into
+             *                                            marginal probabilities
              * @param useHoldoutSet                       True, if the calibration model should be fit to the examples
              *                                            in the holdout set, if available, false otherwise
              */
@@ -281,8 +281,8 @@ namespace boosting {
              * @param marginalProbabilityFunctionFactoryPtr An unique pointer to an object of type
              *                                              `IMarginalProbabilityFunctionFactory` that allows to create
              *                                              implementations of the transformation function to be used to
-             *                                              transform regression scores that are predicted for
-             *                                              individual labels into marginal probabilities
+             *                                              transform scores that are predicted for individual labels
+             *                                              into marginal probabilities
              * @param useHoldoutSet                         True, if the calibration model should be fit to the examples
              *                                              in the holdout set, if available, false otherwise
              */
@@ -302,8 +302,8 @@ namespace boosting {
     };
 
     IsotonicMarginalProbabilityCalibratorConfig::IsotonicMarginalProbabilityCalibratorConfig(
-      const std::unique_ptr<ILossConfig>& lossConfigPtr)
-        : useHoldoutSet_(true), lossConfigPtr_(lossConfigPtr) {}
+      ReadableProperty<IClassificationLossConfig> lossConfig)
+        : useHoldoutSet_(true), lossConfig_(lossConfig) {}
 
     bool IsotonicMarginalProbabilityCalibratorConfig::isHoldoutSetUsed() const {
         return useHoldoutSet_;
@@ -322,7 +322,7 @@ namespace boosting {
     std::unique_ptr<IMarginalProbabilityCalibratorFactory>
       IsotonicMarginalProbabilityCalibratorConfig::createMarginalProbabilityCalibratorFactory() const {
         std::unique_ptr<IMarginalProbabilityFunctionFactory> marginalProbabilityFunctionFactoryPtr =
-          lossConfigPtr_->createMarginalProbabilityFunctionFactory();
+          lossConfig_.get().createMarginalProbabilityFunctionFactory();
 
         if (marginalProbabilityFunctionFactoryPtr) {
             return std::make_unique<IsotonicMarginalProbabilityCalibratorFactory>(
@@ -365,10 +365,10 @@ namespace boosting {
 
             for (uint32 j = 0; j < numExamples; j++) {
                 uint32 exampleIndex = indexIterator[j];
-                auto labelIndicesBegin = make_non_zero_index_forward_iterator(labelMatrix.values_cbegin(exampleIndex),
-                                                                              labelMatrix.values_cend(exampleIndex));
-                auto labelIndicesEnd = make_non_zero_index_forward_iterator(labelMatrix.values_cend(exampleIndex),
-                                                                            labelMatrix.values_cend(exampleIndex));
+                auto labelIndicesBegin = createNonZeroIndexForwardIterator(labelMatrix.values_cbegin(exampleIndex),
+                                                                           labelMatrix.values_cend(exampleIndex));
+                auto labelIndicesEnd = createNonZeroIndexForwardIterator(labelMatrix.values_cend(exampleIndex),
+                                                                         labelMatrix.values_cend(exampleIndex));
                 float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
                 CContiguousView<float64>::value_const_iterator scoresBegin = scoreMatrix.values_cbegin(exampleIndex);
                 CContiguousView<float64>::value_const_iterator scoresEnd = scoreMatrix.values_cend(exampleIndex);
@@ -424,10 +424,10 @@ namespace boosting {
 
             for (uint32 j = 0; j < numExamples; j++) {
                 uint32 exampleIndex = indexIterator[j];
-                auto labelIndicesBegin = make_non_zero_index_forward_iterator(labelMatrix.values_cbegin(exampleIndex),
-                                                                              labelMatrix.values_cend(exampleIndex));
-                auto labelIndicesEnd = make_non_zero_index_forward_iterator(labelMatrix.values_cend(exampleIndex),
-                                                                            labelMatrix.values_cend(exampleIndex));
+                auto labelIndicesBegin = createNonZeroIndexForwardIterator(labelMatrix.values_cbegin(exampleIndex),
+                                                                           labelMatrix.values_cend(exampleIndex));
+                auto labelIndicesEnd = createNonZeroIndexForwardIterator(labelMatrix.values_cend(exampleIndex),
+                                                                         labelMatrix.values_cend(exampleIndex));
                 float64 trueProbability = areLabelVectorsEqual(labelIndicesBegin, labelIndicesEnd, labelVector) ? 1 : 0;
                 SparseSetView<float64>::const_row scores = scoreMatrix[exampleIndex];
                 float64 jointProbability =
@@ -542,8 +542,8 @@ namespace boosting {
              * @param jointProbabilityFunctionFactory     A reference to an object of type
              *                                            `IJointProbabilityFunctionFactory` that allows to create
              *                                            implementations of the transformation function to be used to
-             *                                            transform regression scores that are predicted for individual
-             *                                            labels into marginal probabilities
+             *                                            transform scores that are predicted for individual labels into
+             *                                            marginal probabilities
              * @param useHoldoutSet                       True, if the calibration model should be fit to the examples
              *                                            in the holdout set, if available, false otherwise
              * @param labelVectorSet                      A reference to an object of type `LabelVectorSet` that stores
@@ -614,8 +614,8 @@ namespace boosting {
              * @param jointProbabilityFunctionFactoryPtr  An unique pointer to an object of type
              *                                            `IJointProbabilityFunctionFactory` that allows to create
              *                                            implementations of the transformation function to be used to
-             *                                            transform regression scores that are predicted for individual
-             *                                            labels into joint probabilities
+             *                                            transform scores that are predicted for individual labels into
+             *                                            joint probabilities
              * @param useHoldoutSet                       True, if the calibration model should be fit to the examples
              *                                            in the holdout set, if available, false otherwise
              */
@@ -645,8 +645,8 @@ namespace boosting {
     };
 
     IsotonicJointProbabilityCalibratorConfig::IsotonicJointProbabilityCalibratorConfig(
-      const std::unique_ptr<ILossConfig>& lossConfigPtr)
-        : useHoldoutSet_(true), lossConfigPtr_(lossConfigPtr) {}
+      ReadableProperty<IClassificationLossConfig> lossConfig)
+        : useHoldoutSet_(true), lossConfig_(lossConfig) {}
 
     bool IsotonicJointProbabilityCalibratorConfig::isHoldoutSetUsed() const {
         return useHoldoutSet_;
@@ -669,7 +669,7 @@ namespace boosting {
     std::unique_ptr<IJointProbabilityCalibratorFactory>
       IsotonicJointProbabilityCalibratorConfig::createJointProbabilityCalibratorFactory() const {
         std::unique_ptr<IJointProbabilityFunctionFactory> jointProbabilityFunctionFactoryPtr =
-          lossConfigPtr_->createJointProbabilityFunctionFactory();
+          lossConfig_.get().createJointProbabilityFunctionFactory();
 
         if (jointProbabilityFunctionFactoryPtr) {
             return std::make_unique<IsotonicJointProbabilityCalibratorFactory>(

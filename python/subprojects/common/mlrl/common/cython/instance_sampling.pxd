@@ -12,15 +12,15 @@ cdef extern from "mlrl/common/sampling/instance_sampling_stratified_example_wise
         IExampleWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize)
 
 
-cdef extern from "mlrl/common/sampling/instance_sampling_stratified_label_wise.hpp" nogil:
+cdef extern from "mlrl/common/sampling/instance_sampling_stratified_output_wise.hpp" nogil:
 
-    cdef cppclass ILabelWiseStratifiedInstanceSamplingConfig:
+    cdef cppclass IOutputWiseStratifiedInstanceSamplingConfig:
 
         # Functions:
 
         float32 getSampleSize() const
 
-        ILabelWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize)
+        IOutputWiseStratifiedInstanceSamplingConfig& setSampleSize(float32 sampleSize)
 
 
 cdef extern from "mlrl/common/sampling/instance_sampling_with_replacement.hpp" nogil:
@@ -52,11 +52,11 @@ cdef class ExampleWiseStratifiedInstanceSamplingConfig:
     cdef IExampleWiseStratifiedInstanceSamplingConfig* config_ptr
 
 
-cdef class LabelWiseStratifiedInstanceSamplingConfig:
+cdef class OutputWiseStratifiedInstanceSamplingConfig:
 
     # Attributes:
 
-    cdef ILabelWiseStratifiedInstanceSamplingConfig* config_ptr
+    cdef IOutputWiseStratifiedInstanceSamplingConfig* config_ptr
 
 
 cdef class InstanceSamplingWithReplacementConfig:

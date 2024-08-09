@@ -121,7 +121,8 @@ class BinarySparsePredictionDispatcher final {
                  * @param exampleIndex      The index of the query example to predict for
                  * @param predictionIndex   The index of the row in the prediction matrix, where the predictions should
                  *                          be stored
-                 * @return                  The number of non-zero predictions
+                 * @return                  The number of dense elements explicitly stored in the affected row of the
+                                            prediction matrix
                  */
                 virtual uint32 predictForExample(const FeatureMatrix& featureMatrix,
                                                  typename Model::const_iterator rulesBegin,
@@ -143,7 +144,8 @@ class BinarySparsePredictionDispatcher final {
          *                      used for prediction
          * @param numThreads    The number of CPU threads to be used to make predictions for different query examples in
          *                      parallel. Must be at least 1
-         * @return              The total number of non-zero predictions
+         * @return              The total number of dense predictions explicitly stored in the affected row of the
+                                prediction matrix
          */
         uint32 predict(const IPredictionDelegate& delegate, const FeatureMatrix& featureMatrix,
                        typename Model::const_iterator rulesBegin, typename Model::const_iterator rulesEnd,
@@ -151,10 +153,10 @@ class BinarySparsePredictionDispatcher final {
             uint32 numExamples = featureMatrix.numRows;
             const IPredictionDelegate* delegatePtr = &delegate;
             const FeatureMatrix* featureMatrixPtr = &featureMatrix;
-            uint32 numNonZeroElements = 0;
+            uint32 numDenseElements = 0;
 
 #if MULTI_THREADING_SUPPORT_ENABLED
-    #pragma omp parallel for reduction(+ : numNonZeroElements) firstprivate(numExamples) firstprivate(delegatePtr) \
+    #pragma omp parallel for reduction(+ : numDenseElements) firstprivate(numExamples) firstprivate(delegatePtr) \
       firstprivate(rulesBegin) firstprivate(rulesEnd) firstprivate(featureMatrixPtr) schedule(dynamic) \
       num_threads(numThreads)
 #endif
@@ -164,11 +166,11 @@ class BinarySparsePredictionDispatcher final {
 #else
                 uint32 threadIndex = 1;
 #endif
-                numNonZeroElements +=
+                numDenseElements +=
                   delegatePtr->predictForExample(*featureMatrixPtr, rulesBegin, rulesEnd, threadIndex, i, i);
             }
 
-            return numNonZeroElements;
+            return numDenseElements;
         }
 };
 
