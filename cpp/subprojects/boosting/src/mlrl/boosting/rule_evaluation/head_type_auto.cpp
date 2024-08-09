@@ -17,15 +17,9 @@ namespace boosting {
       AutomaticHeadConfig::createClassificationStatisticsProviderFactory(
         const IFeatureMatrix& featureMatrix, const IRowWiseLabelMatrix& labelMatrix,
         const IDecomposableClassificationLossConfig& lossConfig) const {
-        if (labelMatrix.getNumOutputs() > 1) {
-            SingleOutputHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
-                                              l2RegularizationConfig_);
-            return headConfig.createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
-        } else {
-            CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
-                                          l2RegularizationConfig_);
-            return headConfig.createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
-        }
+        CompleteHeadConfig headConfig(labelBinningConfig_, multiThreadingConfig_, l1RegularizationConfig_,
+                                      l2RegularizationConfig_);
+        return headConfig.createClassificationStatisticsProviderFactory(featureMatrix, labelMatrix, lossConfig);
     }
 
     std::unique_ptr<IClassificationStatisticsProviderFactory>
@@ -73,11 +67,11 @@ namespace boosting {
     }
 
     bool AutomaticHeadConfig::isPartial() const {
-        return lossConfig_.get().isDecomposable();
+        return lossConfig_.get().isDecomposable() && lossConfig_.get().isSparse();
     }
 
     bool AutomaticHeadConfig::isSingleOutput() const {
-        return lossConfig_.get().isDecomposable();
+        return lossConfig_.get().isDecomposable() && lossConfig_.get().isSparse();
     }
 
 }
