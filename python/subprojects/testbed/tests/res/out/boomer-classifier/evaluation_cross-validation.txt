@@ -13,22 +13,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 1):
 
-Example-wise F1         61.06
-Example-wise Jaccard    53.19
-Example-wise Precision  83.61
-Example-wise Recall     60.56
-Hamming Accuracy        82.5
-Hamming Loss            17.5
-Macro F1                66.9
-Macro Jaccard           51.94
-Macro Precision         79.73
-Macro Recall            60.11
-Micro F1                69.57
-Micro Jaccard           53.33
-Micro Precision         80
-Micro Recall            61.54
-Subset 0/1 Loss         71.67
-Subset Accuracy         28.33
+Example-wise F1         64.94
+Example-wise Jaccard    57.08
+Example-wise Precision  73.61
+Example-wise Recall     65.56
+Hamming Accuracy        82.22
+Hamming Loss            17.78
+Macro F1                68.42
+Macro Jaccard           53.07
+Macro Precision         77.72
+Macro Recall            64.44
+Micro F1                70.64
+Micro Jaccard           54.61
+Micro Precision         76.24
+Micro Recall            65.81
+Subset 0/1 Loss         68.33
+Subset Accuracy         31.67
 
 INFO Fold 2 / 10:
 INFO Fitting model to 533 training examples...
@@ -41,22 +41,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 2):
 
-Example-wise F1         65.33
-Example-wise Jaccard    55.83
-Example-wise Precision  83.06
+Example-wise F1         65.28
+Example-wise Jaccard    57.92
+Example-wise Precision  79.44
 Example-wise Recall     64.44
 Hamming Accuracy        81.67
 Hamming Loss            18.33
-Macro F1                68.93
-Macro Jaccard           53.47
-Macro Precision         79.55
-Macro Recall            61.79
-Micro F1                69.16
-Micro Jaccard           52.86
-Micro Precision         78.72
-Micro Recall            61.67
-Subset 0/1 Loss         75
-Subset Accuracy         25
+Macro F1                68.28
+Macro Jaccard           52.76
+Macro Precision         79.01
+Macro Recall            62.27
+Micro F1                69.44
+Micro Jaccard           53.19
+Micro Precision         78.12
+Micro Recall            62.5
+Subset 0/1 Loss         65
+Subset Accuracy         35
 
 INFO Fold 3 / 10:
 INFO Fitting model to 533 training examples...
@@ -69,22 +69,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 3):
 
-Example-wise F1         51
-Example-wise Jaccard    43.33
-Example-wise Precision  73.61
-Example-wise Recall     50.83
-Hamming Accuracy        78.06
-Hamming Loss            21.94
-Macro F1                58.26
-Macro Jaccard           41.95
-Macro Precision         71.42
-Macro Recall            51.96
-Micro F1                60.7
-Micro Jaccard           43.57
-Micro Precision         70.11
-Micro Recall            53.51
-Subset 0/1 Loss         80
-Subset Accuracy         20
+Example-wise F1         62.5
+Example-wise Jaccard    54.86
+Example-wise Precision  71.67
+Example-wise Recall     65.28
+Hamming Accuracy        80
+Hamming Loss            20
+Macro F1                64.75
+Macro Jaccard           48.88
+Macro Precision         69.95
+Macro Recall            62.53
+Micro F1                66.97
+Micro Jaccard           50.34
+Micro Precision         70.19
+Micro Recall            64.04
+Subset 0/1 Loss         68.33
+Subset Accuracy         31.67
 
 INFO Fold 4 / 10:
 INFO Fitting model to 534 training examples...
@@ -97,22 +97,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 4):
 
-Example-wise F1         55.2
-Example-wise Jaccard    48.59
-Example-wise Precision  73.45
-Example-wise Recall     55.93
-Hamming Accuracy        80.23
-Hamming Loss            19.77
-Macro F1                60.43
-Macro Jaccard           44.9
-Macro Precision         67.71
-Macro Recall            55.6
-Micro F1                62.37
-Micro Jaccard           45.31
-Micro Precision         69.05
-Micro Recall            56.86
-Subset 0/1 Loss         71.19
-Subset Accuracy         28.81
+Example-wise F1         61.36
+Example-wise Jaccard    53.95
+Example-wise Precision  77.97
+Example-wise Recall     60.17
+Hamming Accuracy        81.92
+Hamming Loss            18.08
+Macro F1                63.72
+Macro Jaccard           48.57
+Macro Precision         72.25
+Macro Recall            59.32
+Micro F1                65.96
+Micro Jaccard           49.21
+Micro Precision         72.09
+Micro Recall            60.78
+Subset 0/1 Loss         67.8
+Subset Accuracy         32.2
 
 INFO Fold 5 / 10:
 INFO Fitting model to 534 training examples...
@@ -125,22 +125,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 5):
 
-Example-wise F1         62.03
-Example-wise Jaccard    53.67
-Example-wise Precision  80.51
-Example-wise Recall     61.86
-Hamming Accuracy        82.77
-Hamming Loss            17.23
-Macro F1                69.25
-Macro Jaccard           55.56
-Macro Precision         81.7
-Macro Recall            63.89
-Micro F1                70.81
-Micro Jaccard           54.81
-Micro Precision         78.72
-Micro Recall            64.35
-Subset 0/1 Loss         72.88
-Subset Accuracy         27.12
+Example-wise F1         68.7
+Example-wise Jaccard    61.02
+Example-wise Precision  79.66
+Example-wise Recall     69.49
+Hamming Accuracy        83.62
+Hamming Loss            16.38
+Macro F1                72.28
+Macro Jaccard           57.29
+Macro Precision         82.82
+Macro Recall            67.86
+Micro F1                73.15
+Micro Jaccard           57.66
+Micro Precision         78.22
+Micro Recall            68.7
+Subset 0/1 Loss         64.41
+Subset Accuracy         35.59
 
 INFO Fold 6 / 10:
 INFO Fitting model to 534 training examples...
@@ -153,22 +153,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 6):
 
-Example-wise F1         57.18
-Example-wise Jaccard    50.56
+Example-wise F1         62.54
+Example-wise Jaccard    55.51
 Example-wise Precision  72.6
-Example-wise Recall     58.19
-Hamming Accuracy        80.51
-Hamming Loss            19.49
-Macro F1                62.06
-Macro Jaccard           46.22
-Macro Precision         73.77
-Macro Recall            59.67
-Micro F1                63.49
-Micro Jaccard           46.51
-Micro Precision         70.59
-Micro Recall            57.69
-Subset 0/1 Loss         67.8
-Subset Accuracy         32.2
+Example-wise Recall     66.38
+Hamming Accuracy        81.07
+Hamming Loss            18.93
+Macro F1                65.56
+Macro Jaccard           49.85
+Macro Precision         71.04
+Macro Recall            67.46
+Micro F1                66.67
+Micro Jaccard           50
+Micro Precision         69.07
+Micro Recall            64.42
+Subset 0/1 Loss         64.41
+Subset Accuracy         35.59
 
 INFO Fold 7 / 10:
 INFO Fitting model to 534 training examples...
@@ -181,22 +181,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 7):
 
-Example-wise F1         62.82
-Example-wise Jaccard    55.23
-Example-wise Precision  76.55
-Example-wise Recall     66.1
-Hamming Accuracy        82.2
-Hamming Loss            17.8
-Macro F1                63.25
-Macro Jaccard           48.94
-Macro Precision         69.03
-Macro Recall            59.12
-Micro F1                68.34
-Micro Jaccard           51.91
-Micro Precision         73.12
-Micro Recall            64.15
-Subset 0/1 Loss         67.8
-Subset Accuracy         32.2
+Example-wise F1         60.51
+Example-wise Jaccard    53.81
+Example-wise Precision  71.47
+Example-wise Recall     62.15
+Hamming Accuracy        81.36
+Hamming Loss            18.64
+Macro F1                63.47
+Macro Jaccard           48.39
+Macro Precision         68.54
+Macro Recall            60.42
+Micro F1                67
+Micro Jaccard           50.38
+Micro Precision         71.28
+Micro Recall            63.21
+Subset 0/1 Loss         66.1
+Subset Accuracy         33.9
 
 INFO Fold 8 / 10:
 INFO Fitting model to 534 training examples...
@@ -209,22 +209,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 8):
 
-Example-wise F1         66.44
-Example-wise Jaccard    58.47
-Example-wise Precision  77.4
-Example-wise Recall     69.49
-Hamming Accuracy        83.9
-Hamming Loss            16.1
-Macro F1                71.13
-Macro Jaccard           56.23
-Macro Precision         74.51
-Macro Recall            71.14
-Micro F1                72.99
-Micro Jaccard           57.46
-Micro Precision         74.04
-Micro Recall            71.96
-Subset 0/1 Loss         67.8
-Subset Accuracy         32.2
+Example-wise F1         68.93
+Example-wise Jaccard    61.86
+Example-wise Precision  74.86
+Example-wise Recall     73.16
+Hamming Accuracy        84.46
+Hamming Loss            15.54
+Macro F1                72.99
+Macro Jaccard           58.83
+Macro Precision         73.47
+Macro Recall            75.48
+Micro F1                74.65
+Micro Jaccard           59.56
+Micro Precision         73.64
+Micro Recall            75.7
+Subset 0/1 Loss         62.71
+Subset Accuracy         37.29
 
 INFO Fold 9 / 10:
 INFO Fitting model to 534 training examples...
@@ -237,22 +237,22 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 9):
 
-Example-wise F1         55.14
-Example-wise Jaccard    46.19
-Example-wise Precision  69.21
-Example-wise Recall     53.67
-Hamming Accuracy        78.81
-Hamming Loss            21.19
-Macro F1                56.47
-Macro Jaccard           42.07
-Macro Precision         65.69
-Macro Recall            51.49
-Micro F1                63.41
-Micro Jaccard           46.43
-Micro Precision         70.65
-Micro Recall            57.52
-Subset 0/1 Loss         83.05
-Subset Accuracy         16.95
+Example-wise F1         61.41
+Example-wise Jaccard    51.84
+Example-wise Precision  69.77
+Example-wise Recall     64.12
+Hamming Accuracy        79.66
+Hamming Loss            20.34
+Macro F1                65.79
+Macro Jaccard           50.78
+Macro Precision         68.32
+Macro Recall            64.11
+Micro F1                67.57
+Micro Jaccard           51.02
+Micro Precision         68.81
+Micro Recall            66.37
+Subset 0/1 Loss         77.97
+Subset Accuracy         22.03
 
 INFO Fold 10 / 10:
 INFO Fitting model to 534 training examples...
@@ -265,40 +265,40 @@ DEBUG A dense matrix is used to store the predicted labels
 INFO Successfully predicted in <duration>
 INFO Evaluation result for test data (Fold 10):
 
-Example-wise F1         55.71
-Example-wise Jaccard    49.29
-Example-wise Precision  75.42
-Example-wise Recall     52.82
-Hamming Accuracy        79.94
-Hamming Loss            20.06
-Macro F1                60.8
-Macro Jaccard           45.58
-Macro Precision         76.71
-Macro Recall            52.45
-Micro F1                62.43
-Micro Jaccard           45.38
-Micro Precision         74.68
-Micro Recall            53.64
-Subset 0/1 Loss         67.8
-Subset Accuracy         32.2
+Example-wise F1         60.23
+Example-wise Jaccard    51.98
+Example-wise Precision  74.58
+Example-wise Recall     61.02
+Hamming Accuracy        80.51
+Hamming Loss            19.49
+Macro F1                65.09
+Macro Jaccard           48.97
+Macro Precision         71.11
+Macro Recall            60.98
+Micro F1                66.01
+Micro Jaccard           49.26
+Micro Precision         72.04
+Micro Recall            60.91
+Subset 0/1 Loss         71.19
+Subset Accuracy         28.81
 
 INFO Evaluation result for test data (Average across 10 folds):
 
-Example-wise F1         59.19  ±4.80
-Example-wise Jaccard    51.44  ±4.45
-Example-wise Precision  76.54  ±4.45
-Example-wise Recall     59.39  ±5.85
-Hamming Accuracy        81.06  ±1.76
-Hamming Loss            18.94  ±1.76
-Macro F1                63.75  ±4.77
-Macro Jaccard           48.69  ±5.07
-Macro Precision         73.98  ±5.20
-Macro Recall            58.72  ±5.83
-Micro F1                66.33  ±4.08
-Micro Jaccard           49.76  ±4.59
-Micro Precision         73.97  ±3.80
-Micro Recall            60.29  ±5.36
-Subset 0/1 Loss         72.5   ±5.15
-Subset Accuracy         27.5   ±5.15
+Example-wise F1         63.64  ±3.03
+Example-wise Jaccard    55.98  ±3.29
+Example-wise Precision  74.56  ±3.27
+Example-wise Recall     65.18  ±3.70
+Hamming Accuracy        81.65  ±1.43
+Hamming Loss            18.35  ±1.43
+Macro F1                67.03  ±3.21
+Macro Jaccard           51.74  ±3.54
+Macro Precision         73.42  ±4.61
+Macro Recall            64.49  ±4.53
+Micro F1                68.81  ±2.92
+Micro Jaccard           52.52  ±3.47
+Micro Precision         72.97  ±3.32
+Micro Recall            65.24  ±4.19
+Subset 0/1 Loss         67.62  ±4.18
+Subset Accuracy         32.38  ±4.18
 
 INFO Successfully finished after <duration>
