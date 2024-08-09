@@ -27,6 +27,7 @@ This release comes with several API changes. For an updated overview of the avai
 
 - The Python module or source file providing an integration with the machine learning algorithm to be used by the command line API must now be specified as described [here](https://mlrl-boomer.readthedocs.io/en/0.11.0/user_guide/testbed/arguments.html#basic-usage).
 - Several parameters and their values have been renamed to better reflect the scope of the project, which now includes multi-output regression problems. For an up-to-date list of parameters, please refer to the [documentation](https://mlrl-boomer.readthedocs.io/en/0.11.0/).
+- Rules with complete heads are now learned by default when using a decomposable loss function and a dense format for storing statistics.
 
 ## Version 0.10.2 (Aug. 9th, 2024)
 
