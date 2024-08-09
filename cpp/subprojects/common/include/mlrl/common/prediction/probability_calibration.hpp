@@ -30,7 +30,7 @@ class IProbabilityCalibrator {
          * @param labelMatrix A reference to an object of type `CContiguousView` that provides row-wise access to the
          *                    labels of the training examples
          * @param statistics  A reference to an object of type `IStatistics` that provides access to statistics about
-         *                    the labels of the training examples
+         *                    the quality of predictions for training examples
          * @return            An unique pointer to an object of template type `ProbabilityCalibrationModel` that has
          *                    been fit
          */
@@ -46,7 +46,7 @@ class IProbabilityCalibrator {
          * @param labelMatrix A reference to an object of type `BinaryCsrView` that provides row-wise access to the
          *                    labels of the training examples
          * @param statistics  A reference to an object of type `IStatistics` that provides access to statistics about
-         *                    the labels of the training examples
+         *                    the quality of predictions for training examples
          * @return            An unique pointer to an object of template type `ProbabilityCalibrationModel` that has
          *                    been fit
          */
@@ -61,7 +61,7 @@ class IProbabilityCalibrator {
          * @param labelMatrix A reference to an object of type `CContiguousView` that provides row-wise access to the
          *                    labels of the training examples
          * @param statistics  A reference to an object of type `IStatistics` that provides access to statistics about
-         *                    the labels of the training examples
+         *                    the quality of predictions for training examples
          * @return            An unique pointer to an object of template type `ProbabilityCalibrationModel` that has
          *                    been fit
          */
@@ -77,7 +77,7 @@ class IProbabilityCalibrator {
          * @param labelMatrix A reference to an object of type `BinaryCsrView` that provides row-wise access to the
          *                    labels of the training examples
          * @param statistics  A reference to an object of type `IStatistics` that provides access to statistics about
-         *                    the labels of the training examples
+         *                    the quality of predictions for training examples
          * @return            An unique pointer to an object of template type `ProbabilityCalibrationModel` that has
          *                    been fit
          */

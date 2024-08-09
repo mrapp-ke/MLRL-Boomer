@@ -20,14 +20,14 @@ class MLRLCOMMON_API ICsrLabelMatrix : virtual public IRowWiseLabelMatrix {
 /**
  * Creates and returns a new object of the type `ICsrLabelMatrix`.
  *
- * @param indices A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the column-indices,
- *                the relevant labels correspond to
- * @param indptr  A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices of the first
- *                element in `indices` that corresponds to a certain row. The index at the last position is equal to
- *                `numNonZeroValues`
- * @param numRows The number of rows in the label matrix
- * @param numCols The number of columns in the label matrix
- * @return        An unique pointer to an object of type `ICsrLabelMatrix` that has been created
+ * @param indices   A pointer to an array of type `uint32`, shape `(numDenseElements)`, that stores the column indices
+ *                  of all dense elements explicitly stored in the matrix
+ * @param indptr    A pointer to an array of type `uint32`, shape `(numRows + 1)`, that stores the indices of the first
+ *                  element in `indices` that corresponds to a certain row. The index at the last position is equal to
+ *                  `numDenseElements`
+ * @param numRows   The number of rows in the label matrix
+ * @param numCols   The number of columns in the label matrix
+ * @return          An unique pointer to an object of type `ICsrLabelMatrix` that has been created
  */
 MLRLCOMMON_API std::unique_ptr<ICsrLabelMatrix> createCsrLabelMatrix(uint32* indices, uint32* indptr, uint32 numRows,
                                                                      uint32 numCols);

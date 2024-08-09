@@ -2,19 +2,19 @@
 
 namespace boosting {
 
-    AutomaticDefaultRuleConfig::AutomaticDefaultRuleConfig(
-      const std::unique_ptr<IStatisticsConfig>& statisticsConfigPtr, const std::unique_ptr<ILossConfig>& lossConfigPtr,
-      const std::unique_ptr<IHeadConfig>& headConfigPtr)
-        : statisticsConfigPtr_(statisticsConfigPtr), lossConfigPtr_(lossConfigPtr), headConfigPtr_(headConfigPtr) {}
+    AutomaticDefaultRuleConfig::AutomaticDefaultRuleConfig(ReadableProperty<IStatisticsConfig> statisticsConfig,
+                                                           ReadableProperty<ILossConfig> lossConfig,
+                                                           ReadableProperty<IHeadConfig> headConfig)
+        : statisticsConfig_(statisticsConfig), lossConfig_(lossConfig), headConfig_(headConfig) {}
 
-    bool AutomaticDefaultRuleConfig::isDefaultRuleUsed(const IRowWiseLabelMatrix& labelMatrix) const {
-        if (statisticsConfigPtr_->isDense()) {
+    bool AutomaticDefaultRuleConfig::isDefaultRuleUsed(const IOutputMatrix& outputMatrix) const {
+        if (statisticsConfig_.get().isDense()) {
             return true;
-        } else if (statisticsConfigPtr_->isSparse()) {
-            return !lossConfigPtr_->isSparse();
+        } else if (statisticsConfig_.get().isSparse()) {
+            return !lossConfig_.get().isSparse();
         } else {
-            return !lossConfigPtr_->isSparse()
-                   || !shouldSparseStatisticsBePreferred(labelMatrix, false, headConfigPtr_->isPartial());
+            return !lossConfig_.get().isSparse()
+                   || !shouldSparseStatisticsBePreferred(outputMatrix, false, headConfig_.get().isPartial());
         }
     }
 

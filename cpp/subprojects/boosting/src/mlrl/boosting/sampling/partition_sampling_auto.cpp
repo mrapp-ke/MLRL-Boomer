@@ -1,27 +1,45 @@
 #include "mlrl/boosting/sampling/partition_sampling_auto.hpp"
 
-#include "mlrl/common/sampling/partition_sampling_bi_stratified_label_wise.hpp"
+#include "mlrl/common/sampling/partition_sampling_bi_random.hpp"
+#include "mlrl/common/sampling/partition_sampling_bi_stratified_output_wise.hpp"
 #include "mlrl/common/sampling/partition_sampling_no.hpp"
 
 namespace boosting {
 
-    AutomaticPartitionSamplingConfig::AutomaticPartitionSamplingConfig(
-      const std::unique_ptr<IGlobalPruningConfig>& globalPruningConfigPtr,
-      const std::unique_ptr<IMarginalProbabilityCalibratorConfig>& marginalProbabilityCalibratorConfigPtr,
-      const std::unique_ptr<IJointProbabilityCalibratorConfig>& jointProbabilityCalibratorConfigPtr)
-        : globalPruningConfigPtr_(globalPruningConfigPtr),
-          marginalProbabilityCalibratorConfigPtr_(marginalProbabilityCalibratorConfigPtr),
-          jointProbabilityCalibratorConfigPtr_(jointProbabilityCalibratorConfigPtr) {}
+    static inline bool shouldUseHoldoutSet(
+      const IGlobalPruningConfig& globalPruningConfig,
+      const IMarginalProbabilityCalibratorConfig& marginalProbabilityCalibratorConfig,
+      const IJointProbabilityCalibratorConfig& jointProbabilityCalibratorConfig) {
+        return globalPruningConfig.shouldUseHoldoutSet() || marginalProbabilityCalibratorConfig.shouldUseHoldoutSet()
+               || jointProbabilityCalibratorConfig.shouldUseHoldoutSet();
+    }
 
-    std::unique_ptr<IPartitionSamplingFactory> AutomaticPartitionSamplingConfig::createPartitionSamplingFactory()
-      const {
-        if ((globalPruningConfigPtr_.get() && globalPruningConfigPtr_->shouldUseHoldoutSet())
-            || marginalProbabilityCalibratorConfigPtr_->shouldUseHoldoutSet()
-            || jointProbabilityCalibratorConfigPtr_->shouldUseHoldoutSet()) {
-            return LabelWiseStratifiedBiPartitionSamplingConfig().createPartitionSamplingFactory();
+    AutomaticPartitionSamplingConfig::AutomaticPartitionSamplingConfig(
+      ReadableProperty<IGlobalPruningConfig> globalPruningConfig,
+      ReadableProperty<IMarginalProbabilityCalibratorConfig> marginalProbabilityCalibratorConfig,
+      ReadableProperty<IJointProbabilityCalibratorConfig> jointProbabilityCalibratorConfig)
+        : globalPruningConfig_(globalPruningConfig),
+          marginalProbabilityCalibratorConfig_(marginalProbabilityCalibratorConfig),
+          jointProbabilityCalibratorConfig_(jointProbabilityCalibratorConfig) {}
+
+    std::unique_ptr<IClassificationPartitionSamplingFactory>
+      AutomaticPartitionSamplingConfig::createClassificationPartitionSamplingFactory() const {
+        if (shouldUseHoldoutSet(globalPruningConfig_.get(), marginalProbabilityCalibratorConfig_.get(),
+                                jointProbabilityCalibratorConfig_.get())) {
+            return OutputWiseStratifiedBiPartitionSamplingConfig().createClassificationPartitionSamplingFactory();
         }
 
-        return NoPartitionSamplingConfig().createPartitionSamplingFactory();
+        return NoPartitionSamplingConfig().createClassificationPartitionSamplingFactory();
+    }
+
+    std::unique_ptr<IRegressionPartitionSamplingFactory>
+      AutomaticPartitionSamplingConfig::createRegressionPartitionSamplingFactory() const {
+        if (shouldUseHoldoutSet(globalPruningConfig_.get(), marginalProbabilityCalibratorConfig_.get(),
+                                jointProbabilityCalibratorConfig_.get())) {
+            return RandomBiPartitionSamplingConfig().createRegressionPartitionSamplingFactory();
+        }
+
+        return NoPartitionSamplingConfig().createRegressionPartitionSamplingFactory();
     }
 
 }

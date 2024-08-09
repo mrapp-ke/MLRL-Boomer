@@ -27,8 +27,8 @@ namespace boosting {
              * @param labelVectorSet                A reference to an object of type `LabelVectorSet` that stores all
              *                                      known label vectors
              * @param jointProbabilityFunctionPtr   An unique pointer to an object of type `JointProbabilityFunction`
-             *                                      that should be used to transform regression scores that are
-             *                                      predicted for individual labels into probabilities
+             *                                      that should be used to transform scores that are predicted for
+             *                                      individual labels into probabilities
              */
             MarginalizedProbabilityTransformation(
               const LabelVectorSet& labelVectorSet,

@@ -40,7 +40,8 @@ class MLRLCOMMON_API IRandomBiPartitionSamplingConfig {
  * Allows to configure a method for partitioning the available training examples into a training set and a holdout set
  * that randomly splits the training examples into two mutually exclusive sets.
  */
-class RandomBiPartitionSamplingConfig final : public IPartitionSamplingConfig,
+class RandomBiPartitionSamplingConfig final : public IClassificationPartitionSamplingConfig,
+                                              public IRegressionPartitionSamplingConfig,
                                               public IRandomBiPartitionSamplingConfig {
     private:
 
@@ -54,5 +55,8 @@ class RandomBiPartitionSamplingConfig final : public IPartitionSamplingConfig,
 
         IRandomBiPartitionSamplingConfig& setHoldoutSetSize(float32 holdoutSetSize) override;
 
-        std::unique_ptr<IPartitionSamplingFactory> createPartitionSamplingFactory() const override;
+        std::unique_ptr<IClassificationPartitionSamplingFactory> createClassificationPartitionSamplingFactory()
+          const override;
+
+        std::unique_ptr<IRegressionPartitionSamplingFactory> createRegressionPartitionSamplingFactory() const override;
 };

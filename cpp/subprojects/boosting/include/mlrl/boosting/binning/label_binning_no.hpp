@@ -5,6 +5,7 @@
 
 #include "mlrl/boosting/binning/label_binning.hpp"
 #include "mlrl/boosting/rule_evaluation/regularization.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -16,39 +17,43 @@ namespace boosting {
     class NoLabelBinningConfig final : public ILabelBinningConfig {
         private:
 
-            const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr_;
+            const ReadableProperty<IRegularizationConfig> l1RegularizationConfig_;
 
-            const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr_;
+            const ReadableProperty<IRegularizationConfig> l2RegularizationConfig_;
 
         public:
 
             /**
-             * @param l1RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L1
-             *                                  regularization
-             * @param l2RegularizationConfigPtr A reference to an unique pointer that stores the configuration of the L2
-             *                                  regularization
+             * @param l1RegularizationConfig  A `ReadableProperty` that allows to access the `IRegularizationConfig`
+             *                                that stores the configuration of the L1 regularization
+             * @param l2RegularizationConfig  A `ReadableProperty` that allows to access the `IRegularizationConfig`
+             *                                that stores the configuration of the L2 regularization
              */
-            NoLabelBinningConfig(const std::unique_ptr<IRegularizationConfig>& l1RegularizationConfigPtr,
-                                 const std::unique_ptr<IRegularizationConfig>& l2RegularizationConfigPtr);
+            NoLabelBinningConfig(ReadableProperty<IRegularizationConfig> l1RegularizationConfig,
+                                 ReadableProperty<IRegularizationConfig> l2RegularizationConfig);
 
-            std::unique_ptr<ILabelWiseRuleEvaluationFactory> createLabelWiseCompleteRuleEvaluationFactory()
+            std::unique_ptr<IDecomposableRuleEvaluationFactory> createDecomposableCompleteRuleEvaluationFactory()
               const override;
 
-            std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> createLabelWiseFixedPartialRuleEvaluationFactory(
-              float32 labelRatio, uint32 minLabels, uint32 maxLabels) const override;
+            std::unique_ptr<ISparseDecomposableRuleEvaluationFactory>
+              createDecomposableFixedPartialRuleEvaluationFactory(float32 outputRatio, uint32 minOutputs,
+                                                                  uint32 maxOutputs) const override;
 
-            std::unique_ptr<ISparseLabelWiseRuleEvaluationFactory> createLabelWiseDynamicPartialRuleEvaluationFactory(
-              float32 threshold, float32 exponent) const override;
+            std::unique_ptr<ISparseDecomposableRuleEvaluationFactory>
+              createDecomposableDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent) const override;
 
-            std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseCompleteRuleEvaluationFactory(
+            std::unique_ptr<INonDecomposableRuleEvaluationFactory> createNonDecomposableCompleteRuleEvaluationFactory(
               const Blas& blas, const Lapack& lapack) const override;
 
-            std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseFixedPartialRuleEvaluationFactory(
-              float32 labelRatio, uint32 minLabels, uint32 maxLabels, const Blas& blas,
-              const Lapack& lapack) const override;
+            std::unique_ptr<INonDecomposableRuleEvaluationFactory>
+              createNonDecomposableFixedPartialRuleEvaluationFactory(float32 outputRatio, uint32 minOutputs,
+                                                                     uint32 maxOutputs, const Blas& blas,
+                                                                     const Lapack& lapack) const override;
 
-            std::unique_ptr<IExampleWiseRuleEvaluationFactory> createExampleWiseDynamicPartialRuleEvaluationFactory(
-              float32 threshold, float32 exponent, const Blas& blas, const Lapack& lapack) const override;
+            std::unique_ptr<INonDecomposableRuleEvaluationFactory>
+              createNonDecomposableDynamicPartialRuleEvaluationFactory(float32 threshold, float32 exponent,
+                                                                       const Blas& blas,
+                                                                       const Lapack& lapack) const override;
     };
 
 }

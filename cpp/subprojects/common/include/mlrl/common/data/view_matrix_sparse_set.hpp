@@ -15,8 +15,8 @@
  * A two-dimensional view that provides random read and write access, as well as row-wise read and write access via
  * iterators, to values stored in a sparse matrix in the list of lists (LIL) format. Compared to the view
  * `ListOfLists`, the ability to provide random access to the elements in the view comes at the expense of memory
- * efficiency, as it requires to not only maintain a sparse matrix that stores the non-zero elements, but also a dense
- * matrix that stores for each element the corresponding position in the sparse matrix, if available.
+ * efficiency, as it does not only require to maintain a sparse matrix, but also a dense matrix that stores for each
+ * element the corresponding position in the sparse matrix, if available.
  *
  * The data structure that is used for the representation of a single row is often referred to as an "unordered sparse
  * set". It was originally proposed in "An efficient representation for sparse sets", Briggs, Torczon, 1993 (see
@@ -49,37 +49,37 @@ class MLRLCOMMON_API SparseSetView
         /**
          * Provides read-only access to a single row of a `SparseSetView`.
          *
-         * @tparam ValueRow         The type of the object that provides access to the non-zero elements in the row
-         * @tparam IndexIterator    The type of the iterator that provides access to the indices of non-zero elements
-         *                          that correspond to certain columns
+         * @tparam ValueRow         The type of the object that provides access to the values of all dense elements
+         *                          explicitly stored in the row
+         * @tparam IndexIterator    The type of the iterator that provides access to the column indices of all dense
+         *                          elements explicitly stored in the row
          */
         template<typename ValueRow, typename IndexIterator>
         class ConstRow {
             protected:
 
                 /**
-                 * A view that provides access to the non-zero elements in the view.
+                 * A view that provides access to all dense elements explicitly stored in the row.
                  */
                 ValueRow row_;
 
                 /**
-                 * A view that provides access to the indices of non-zero elements in the row that correspond to certain
-                 * columns.
+                 * A view that provides access to the column indices of all dense elements explicitly stored in the row.
                  */
                 IndexIterator indexIterator_;
 
             public:
 
                 /**
-                 * The number of elements in the row.
+                 * The number of dense elements explicitly stored in the row.
                  */
                 const uint32 numElements;
 
                 /**
-                 * @param row           An object of template type `ValueRow` that provides access to the non-zero
-                 *                      elements in the row
-                 * @param indexIterator An iterator that provides access to the indices in `row` that correspond to
-                 *                      certain columns
+                 * @param row           An object of template type `ValueRow` that provides access to all dense elements
+                 *                      explicitly stored in the row
+                 * @param indexIterator An iterator that provides access to the column indices of all dense elements
+                 *                      explicitly stored in the row
                  */
                 ConstRow(ValueRow row, IndexIterator indexIterator)
                     : row_(row), indexIterator_(indexIterator), numElements(row.size()) {}
@@ -128,19 +128,20 @@ class MLRLCOMMON_API SparseSetView
         /**
          * Provides read and write access to a single row of a `SparseSetView`.
          *
-         * @tparam ValueRow         The type of the object that provides access to the non-zero elements in the row
-         * @tparam IndexIterator    The type of the iterator that provides access to the indices of non-zero elements
-         *                          that correspond to certain columns
+         * @tparam ValueRow         The type of the object that provides access to the values of all dense elements
+         *                          explicitly stored in the row
+         * @tparam IndexIterator    The type of the iterator that provides access to the column indices of all dense
+         *                          elements explicitly stored in the row
          */
         template<typename ValueRow, typename IndexIterator>
         class Row final : public ConstRow<ValueRow, IndexIterator> {
             public:
 
                 /**
-                 * @param row           An object of template type `ValueRow` that provides access to the non-zero
-                 *                      elements in the row
-                 * @param indexIterator An iterator that provides access to the indices in `row` that correspond to
-                 *                      certain columns
+                 * @param row           An object of template type `ValueRow` that provides access to the values of all
+                 *                      dense elements explicitly stored in the row
+                 * @param indexIterator An iterator that provides access to the column indices of all dense elements
+                 *                      explicitly stored in the row
                  */
                 Row(ValueRow row, IndexIterator indexIterator)
                     : ConstRow<ValueRow, IndexIterator>(row, indexIterator) {}

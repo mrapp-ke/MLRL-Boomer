@@ -35,37 +35,37 @@ class CContiguousFeatureMatrix final : public MatrixDecorator<CContiguousView<co
         }
 
         std::unique_ptr<IBinaryPredictor> createBinaryPredictor(
-          const IBinaryPredictorFactory& factory, const IRuleModel& ruleModel, const ILabelSpaceInfo& labelSpaceInfo,
+          const IBinaryPredictorFactory& factory, const IRuleModel& ruleModel, const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override {
-            return ruleModel.createBinaryPredictor(factory, this->getView(), labelSpaceInfo,
+            return ruleModel.createBinaryPredictor(factory, this->getView(), outputSpaceInfo,
                                                    marginalProbabilityCalibrationModel,
                                                    jointProbabilityCalibrationModel, numLabels);
         }
 
         std::unique_ptr<ISparseBinaryPredictor> createSparseBinaryPredictor(
           const ISparseBinaryPredictorFactory& factory, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override {
-            return ruleModel.createSparseBinaryPredictor(factory, this->getView(), labelSpaceInfo,
+            return ruleModel.createSparseBinaryPredictor(factory, this->getView(), outputSpaceInfo,
                                                          marginalProbabilityCalibrationModel,
                                                          jointProbabilityCalibrationModel, numLabels);
         }
 
         std::unique_ptr<IScorePredictor> createScorePredictor(const IScorePredictorFactory& factory,
                                                               const IRuleModel& ruleModel,
-                                                              const ILabelSpaceInfo& labelSpaceInfo,
-                                                              uint32 numLabels) const override {
-            return ruleModel.createScorePredictor(factory, this->getView(), labelSpaceInfo, numLabels);
+                                                              const IOutputSpaceInfo& outputSpaceInfo,
+                                                              uint32 numOutputs) const override {
+            return ruleModel.createScorePredictor(factory, this->getView(), outputSpaceInfo, numOutputs);
         }
 
         std::unique_ptr<IProbabilityPredictor> createProbabilityPredictor(
           const IProbabilityPredictorFactory& factory, const IRuleModel& ruleModel,
-          const ILabelSpaceInfo& labelSpaceInfo,
+          const IOutputSpaceInfo& outputSpaceInfo,
           const IMarginalProbabilityCalibrationModel& marginalProbabilityCalibrationModel,
           const IJointProbabilityCalibrationModel& jointProbabilityCalibrationModel, uint32 numLabels) const override {
-            return ruleModel.createProbabilityPredictor(factory, this->getView(), labelSpaceInfo,
+            return ruleModel.createProbabilityPredictor(factory, this->getView(), outputSpaceInfo,
                                                         marginalProbabilityCalibrationModel,
                                                         jointProbabilityCalibrationModel, numLabels);
         }

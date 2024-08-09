@@ -25,9 +25,9 @@ class IFeatureVector {
          * @param featureBasedSearch            A reference to an object of type `FeatureBasedSearch` that should be
          *                                      used for conducting the search
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
-         *                                      provides access to weighted statistics about the labels of the training
-         *                                      examples, which should serve as the basis for evaluating the quality of
-         *                                      potential refinements
+         *                                      provides access to weighted statistics about the quality of predictions
+         *                                      for training examples, which should serve as the basis for evaluating
+         *                                      the quality of potential refinements
          * @param comparator                    A reference to an object of type `SingleRefinementComparator` that
          *                                      should be used for comparing potential refinements
          * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered
@@ -47,9 +47,9 @@ class IFeatureVector {
          * @param featureBasedSearch            A reference to an object of type `FeatureBasedSearch` that should be
          *                                      used for conducting the search
          * @param statisticsSubset              A reference to an object of type `IWeightedStatisticsSubset` that
-         *                                      provides access to weighted statistics about the labels of the training
-         *                                      examples, which should serve as the basis for evaluating the quality of
-         *                                      potential refinements
+         *                                      provides access to weighted statistics about the quality of predictions
+         *                                      for training examples, which should serve as the basis for evaluating
+         *                                      the quality of potential refinements
          * @param comparator                    A reference to an object of type `MultiRefinementComparator` that should
          *                                      be used for comparing potential refinements
          * @param numExamplesWithNonZeroWeights The total number of examples with non-zero weights that may be covered

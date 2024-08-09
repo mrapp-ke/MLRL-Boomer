@@ -1,31 +1,17 @@
 """
 @author: Michael Rapp (michael.rapp.ml@gmail.com)
 """
-from mlrl.common.cython.validation import assert_greater_or_equal
-
-from cython.operator cimport dereference
-from libcpp.utility cimport move
-
-from mlrl.common.cython.feature_info cimport FeatureInfo
-from mlrl.common.cython.feature_matrix cimport ColumnWiseFeatureMatrix, RowWiseFeatureMatrix
-from mlrl.common.cython.label_matrix cimport RowWiseLabelMatrix
-from mlrl.common.cython.label_space_info cimport create_label_space_info
-from mlrl.common.cython.prediction cimport BinaryPredictor, ProbabilityPredictor, ScorePredictor, SparseBinaryPredictor
-from mlrl.common.cython.probability_calibration cimport create_joint_probability_calibration_model, \
-    create_marginal_probability_calibration_model
-from mlrl.common.cython.rule_model cimport create_rule_model
-
 from abc import ABC, abstractmethod
 
 from mlrl.common.cython.feature_binning import EqualFrequencyFeatureBinningConfig, EqualWidthFeatureBinningConfig
 from mlrl.common.cython.feature_sampling import FeatureSamplingWithoutReplacementConfig
 from mlrl.common.cython.instance_sampling import ExampleWiseStratifiedInstanceSamplingConfig, \
     InstanceSamplingWithoutReplacementConfig, InstanceSamplingWithReplacementConfig, \
-    LabelWiseStratifiedInstanceSamplingConfig
-from mlrl.common.cython.label_sampling import LabelSamplingWithoutReplacementConfig
+    OutputWiseStratifiedInstanceSamplingConfig
 from mlrl.common.cython.multi_threading import ManualMultiThreadingConfig
+from mlrl.common.cython.output_sampling import OutputSamplingWithoutReplacementConfig
 from mlrl.common.cython.partition_sampling import ExampleWiseStratifiedBiPartitionSamplingConfig, \
-    LabelWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
+    OutputWiseStratifiedBiPartitionSamplingConfig, RandomBiPartitionSamplingConfig
 from mlrl.common.cython.post_optimization import SequentialPostOptimizationConfig
 from mlrl.common.cython.rule_induction import BeamSearchTopDownRuleInductionConfig, GreedyTopDownRuleInductionConfig
 from mlrl.common.cython.stopping_criterion import PostPruningConfig, PrePruningConfig, SizeStoppingCriterionConfig, \
@@ -38,229 +24,24 @@ cdef class TrainingResult:
     trained, as well as additional information that is necessary for obtaining predictions for unseen data.
     """
 
-    def __cinit__(self, uint32 num_labels, RuleModel rule_model not None, LabelSpaceInfo label_space_info not None,
+    def __cinit__(self, uint32 num_outputs, RuleModel rule_model not None, OutputSpaceInfo output_space_info not None,
                   MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
                   JointProbabilityCalibrationModel joint_probability_calibration_model not None):
         """
-        :param num_labels:                              The number of labels for which a model has been trained
+        :param num_outputs:                             The number of outputs for which a model has been trained
         :param rule_model:                              The `RuleModel` that has been trained
-        :param label_space_info:                        The `LabelSpaceInfo` that may be used as a basis for making
+        :param output_space_info:                       The `OutputSpaceInfo` that may be used as a basis for making
                                                         predictions
         :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
                                                         the calibration of marginal probabilities
         :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
                                                         calibration of joint probabilities    
         """
-        self.num_labels = num_labels
+        self.num_outputs = num_outputs
         self.rule_model = rule_model
-        self.label_space_info = label_space_info
+        self.output_space_info = output_space_info
         self.marginal_probability_calibration_model = marginal_probability_calibration_model
         self.joint_probability_calibration_model = joint_probability_calibration_model
-
-
-cdef class RuleLearner:
-    """
-    A rule learner.
-    """
-
-    cdef IRuleLearner* get_rule_learner_ptr(self):
-        pass
-
-    def fit(self, FeatureInfo feature_info not None, ColumnWiseFeatureMatrix feature_matrix not None,
-            RowWiseLabelMatrix label_matrix not None, uint32 random_state) -> TrainingResult:
-        """
-        Applies the rule learner to given training examples and corresponding ground truth labels.
-
-        :param feature_info:    A `FeatureInfo` that provides information about the types of individual features
-        :param feature_matrix:  A `ColumnWiseFeatureMatrix` that provides column-wise access to the feature values of
-                                the training examples
-        :param label_matrix:    A `RowWiseLabelMatrix` that provides row-wise access to the ground truth labels of the
-                                training examples
-        :param random_state:    The seed to be used by random number generators
-        :return:                The `TrainingResult` that provides access to the result of fitting the rule learner to
-                                the training data
-        """
-        assert_greater_or_equal("random_state", random_state, 1)
-        cdef unique_ptr[ITrainingResult] training_result_ptr = self.get_rule_learner_ptr().fit(
-            dereference(feature_info.get_feature_info_ptr()),
-            dereference(feature_matrix.get_column_wise_feature_matrix_ptr()),
-            dereference(label_matrix.get_row_wise_label_matrix_ptr()), random_state)
-        cdef uint32 num_labels = training_result_ptr.get().getNumLabels()
-        cdef unique_ptr[IRuleModel] rule_model_ptr = move(training_result_ptr.get().getRuleModel())
-        cdef unique_ptr[ILabelSpaceInfo] label_space_info_ptr = move(training_result_ptr.get().getLabelSpaceInfo())
-        cdef unique_ptr[IMarginalProbabilityCalibrationModel] marginal_probability_calibration_model_ptr = \
-            move(training_result_ptr.get().getMarginalProbabilityCalibrationModel())
-        cdef unique_ptr[IJointProbabilityCalibrationModel] joint_probability_calibration_model_ptr = \
-            move(training_result_ptr.get().getJointProbabilityCalibrationModel())
-        cdef RuleModel rule_model = create_rule_model(move(rule_model_ptr))
-        cdef LabelSpaceInfo label_space_info = create_label_space_info(move(label_space_info_ptr))
-        cdef MarginalProbabilityCalibrationModel marginal_probability_calibration_model = \
-            create_marginal_probability_calibration_model(move(marginal_probability_calibration_model_ptr))
-        cdef JointProbabilityCalibrationModel joint_probability_calibration_model = \
-            create_joint_probability_calibration_model(move(joint_probability_calibration_model_ptr))
-        return TrainingResult.__new__(TrainingResult, num_labels, rule_model, label_space_info,
-                                      marginal_probability_calibration_model, joint_probability_calibration_model)
-
-    def can_predict_binary(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
-        """
-        Returns whether the rule learner is able to predict binary labels or not.
-
-        :param feature_matrix:  A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
-                                query examples
-        :param num_labels:      The number of labels to predict for
-        :return:                True, if the rule learner is able to predict binary labels, False otherwise
-        """
-        return self.get_rule_learner_ptr().canPredictBinary(
-            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
-
-    def create_binary_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
-                                LabelSpaceInfo label_space_info not None,
-                                MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
-                                JointProbabilityCalibrationModel joint_probability_calibration_model not None,
-                                uint32 num_labels) -> BinaryPredictor:
-        """
-        Creates and returns a predictor that may be used to predict binary labels for given query examples. If the
-        prediction of binary labels is not supported by the rule learner, a `RuntimeError` is thrown.
-
-        :param feature_matrix:                          A `RowWiseFeatureMatrix` that provides row-wise access to the
-                                                        feature values of the query examples
-        :param rule_model:                              The `RuleModel` that should be used to obtain predictions
-        :param label_space_info:                        The `LabelSpaceInfo` that provides information about the label
-                                                        space that may be used as a basis for obtaining predictions
-        :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
-                                                        the calibration of marginal probabilities
-        :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
-                                                        calibration of joint probabilities    
-        :param num_labels:                              The number of labels to predict for
-        :return:                                        A `BinaryPredictor` that may be used to predict binary labels
-                                                        for the given query examples
-        """
-        cdef unique_ptr[IBinaryPredictor] predictor_ptr = move(self.get_rule_learner_ptr().createBinaryPredictor(
-            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
-            dereference(rule_model.get_rule_model_ptr()),
-            dereference(label_space_info.get_label_space_info_ptr()),
-            dereference(marginal_probability_calibration_model.get_marginal_probability_calibration_model_ptr()),
-            dereference(joint_probability_calibration_model.get_joint_probability_calibration_model_ptr()),
-            num_labels))
-        cdef BinaryPredictor binary_predictor = BinaryPredictor.__new__(BinaryPredictor)
-        binary_predictor.predictor_ptr = move(predictor_ptr)
-        return binary_predictor
-
-    def create_sparse_binary_predictor(self, RowWiseFeatureMatrix feature_matrix not None,
-                                       RuleModel rule_model not None, LabelSpaceInfo label_space_info not None,
-                                       MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
-                                       JointProbabilityCalibrationModel joint_probability_calibration_model not None,
-                                       uint32 num_labels) -> SparseBinaryPredictor:
-        """
-        Creates and returns a predictor that may be used to predict sparse binary labels for given query examples. If
-        the prediction of sparse binary labels is not supported by the rule learner, a `RuntimeError` is thrown.
-
-        :param feature_matrix:                          A `RowWiseFeatureMatrix` that provides row-wise access to the
-                                                        feature values of the query examples
-        :param rule_model:                              The `RuleModel` that should be used to obtain predictions
-        :param label_space_info:                        The `LabelSpaceInfo` that provides information about the label
-                                                        space that may be used as a basis for obtaining predictions
-        :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
-                                                        the calibration of marginal probabilities
-        :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
-                                                        calibration of joint probabilities                                                            
-        :param num_labels:                              The number of labels to predict for
-        :return:                                        A `SparseBinaryPredictor` that may be used to predict sparse
-                                                        binary labels for the given query examples
-        """
-        cdef unique_ptr[ISparseBinaryPredictor] predictor_ptr = \
-            move(self.get_rule_learner_ptr().createSparseBinaryPredictor(
-                dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
-                dereference(rule_model.get_rule_model_ptr()),
-                dereference(label_space_info.get_label_space_info_ptr()),
-                dereference(marginal_probability_calibration_model.get_marginal_probability_calibration_model_ptr()),
-                dereference(joint_probability_calibration_model.get_joint_probability_calibration_model_ptr()),
-                num_labels))
-        cdef SparseBinaryPredictor sparse_binary_predictor = SparseBinaryPredictor.__new__(SparseBinaryPredictor)
-        sparse_binary_predictor.predictor_ptr = move(predictor_ptr)
-        return sparse_binary_predictor
-
-    def can_predict_scores(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
-        """
-        Returns whether the rule learner is able to predict regression scores or not.
-
-        :param feature_matrix:  A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
-                                query examples
-        :param num_labels:      The number of labels to predict for
-        :return:                True, if the rule learner is able to predict regression scores, False otherwise
-        """
-        return self.get_rule_learner_ptr().canPredictScores(
-            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
-
-    def create_score_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
-                               LabelSpaceInfo label_space_info not None, uint32 num_labels) -> ScorePredictor:
-        """
-        Creates and returns a predictor that may be used to predict regression scores for given query examples. If the
-        prediction of regression scores is not supported by the rule learner, a `RuntimeError` is thrown.
-
-        :param feature_matrix:      A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
-                                    query examples
-        :param rule_model:          The `RuleModel` that should be used to obtain predictions
-        :param label_space_info:    The `LabelSpaceInfo` that provides information about the label space that may be
-                                    used as a basis for obtaining predictions
-        :param num_labels:          The number of labels to predict for
-        :return:                    A `ScorePredictor` that may be used to predict regression scores for the given query
-                                    examples
-        """
-        cdef unique_ptr[IScorePredictor] predictor_ptr = move(self.get_rule_learner_ptr().createScorePredictor(
-            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
-            dereference(rule_model.get_rule_model_ptr()),
-            dereference(label_space_info.get_label_space_info_ptr()),
-            num_labels))
-        cdef ScorePredictor score_predictor = ScorePredictor.__new__(ScorePredictor)
-        score_predictor.predictor_ptr = move(predictor_ptr)
-        return score_predictor
-
-    def can_predict_probabilities(self, RowWiseFeatureMatrix feature_matrix not None, uint32 num_labels) -> bool:
-        """
-        Returns whether the rule learner is able to predict probability estimates or not.
-
-        :param feature_matrix:  A `RowWiseFeatureMatrix` that provides row-wise access to the feature values of the
-                                query examples
-        :param num_labels:      The number of labels to predict for
-        :return:                True, if the rule learner is able to predict probability estimates, False otherwise
-        """
-        return self.get_rule_learner_ptr().canPredictProbabilities(
-            dereference(feature_matrix.get_row_wise_feature_matrix_ptr()), num_labels)
-
-    def create_probability_predictor(self, RowWiseFeatureMatrix feature_matrix not None, RuleModel rule_model not None,
-                                     LabelSpaceInfo label_space_info not None,
-                                     MarginalProbabilityCalibrationModel marginal_probability_calibration_model not None,
-                                     JointProbabilityCalibrationModel joint_probability_calibration_model not None,
-                                     uint32 num_labels) -> ProbabilityPredictor:
-        """
-        Creates and returns a predictor that may be used to predict probability estimates for given query examples. If
-        the prediction of probability estimates is not supported by the rule learner, a `RuntimeError` is thrown.
-
-        :param feature_matrix:                          A `RowWiseFeatureMatrix` that provides row-wise access to the
-                                                        feature values of the query examples
-        :param rule_model:                              The `RuleModel` that should be used to obtain predictions
-        :param label_space_info:                        The `LabelSpaceInfo` that provides information about the label
-                                                        space that may be used as a basis for obtaining predictions
-        :param marginal_probability_calibration_model:  The `MarginalProbabilityCalibrationModel` that may be used for
-                                                        the calibration of marginal probabilities
-        :param joint_probability_calibration_model:     The `JointProbabilityCalibrationModel` that may be used for the
-                                                        calibration of joint probabilities    
-        :param num_labels:                              The number of labels to predict for
-        :return:                                        A `ProbabilityPredictor` that may be used to predict probability
-                                                        estimates for the given query examples
-        """
-        cdef unique_ptr[IProbabilityPredictor] predictor_ptr = \
-            move(self.get_rule_learner_ptr().createProbabilityPredictor(
-                dereference(feature_matrix.get_row_wise_feature_matrix_ptr()),
-                dereference(rule_model.get_rule_model_ptr()),
-                dereference(label_space_info.get_label_space_info_ptr()),
-                dereference(marginal_probability_calibration_model.get_marginal_probability_calibration_model_ptr()),
-                dereference(joint_probability_calibration_model.get_joint_probability_calibration_model_ptr()),
-                num_labels))
-        cdef ProbabilityPredictor probability_predictor = ProbabilityPredictor.__new__(ProbabilityPredictor)
-        probability_predictor.predictor_ptr = move(predictor_ptr)
-        return probability_predictor
 
 
 cdef class RuleLearnerConfig:
@@ -386,46 +167,45 @@ class EqualFrequencyFeatureBinningMixin(ABC):
         pass
 
 
-class NoLabelSamplingMixin(ABC):
+class NoOutputSamplingMixin(ABC):
     """
-    Allows to configure a rule learner to not use label sampling.
+    Allows to configure a rule learner to not use output sampling.
     """
 
     @abstractmethod
-    def use_no_label_sampling(self):
+    def use_no_output_sampling(self):
         """
-        Configures the rule learner to not sample from the available labels whenever a new rule should be learned.
+        Configures the rule learner to not sample from the available outputs whenever a new rule should be learned.
         """
         pass
 
 
-class RoundRobinLabelSamplingMixin(ABC):
+class RoundRobinOutputSamplingMixin(ABC):
     """
-    Allows to configure a rule learner to sample single labels in a round-robin fashion.
+    Allows to configure a rule learner to sample one output at a time in a round-robin fashion.
     """
 
     @abstractmethod
-    def use_round_robin_label_sampling(self):
+    def use_round_robin_output_sampling(self):
         """
-        Configures the rule learner to sample a single label in a round-robin fashion whenever a new rule should be
-        learned.
+        Configures the rule learner to sample a one output at a time in a round-robin fashion whenever a new rule should
+        be learned.
         """
         pass
 
 
-class LabelSamplingWithoutReplacementMixin(ABC):
+class OutputSamplingWithoutReplacementMixin(ABC):
     """
-    Allows to configure a rule learner to use label sampling without replacement.
+    Allows to configure a rule learner to use output sampling without replacement.
     """
 
     @abstractmethod
-    def use_label_sampling_without_replacement(self) -> LabelSamplingWithoutReplacementConfig:
+    def use_output_sampling_without_replacement(self) -> OutputSamplingWithoutReplacementConfig:
         """
-        Configures the rule learner to sample from the available labels with replacement whenever a new rule should be
+        Configures the rule learner to sample from the available outputs with replacement whenever a new rule should be
         learned.
 
-        :return: A `LabelSamplingWithoutReplacementConfig` that allows further configuration of the method for sampling
-                 labels
+        :return: An `OutputSamplingWithoutReplacementConfig` that allows further configuration of the sampling method
         """
         pass
 
@@ -480,19 +260,19 @@ class InstanceSamplingWithoutReplacementMixin(ABC):
         pass
 
 
-class LabelWiseStratifiedInstanceSamplingMixin(ABC):
+class OutputWiseStratifiedInstanceSamplingMixin(ABC):
     """
     Allows to configure a rule learner to use label-wise stratified instance sampling.
     """
 
     @abstractmethod
-    def use_label_wise_stratified_instance_sampling(self) -> LabelWiseStratifiedInstanceSamplingConfig:
+    def use_output_wise_stratified_instance_sampling(self) -> OutputWiseStratifiedInstanceSamplingConfig:
         """
         Configures the rule learner to sample from the available training examples using stratification, such that for
         each label the proportion of relevant and irrelevant examples is maintained, whenever a new rule should be
         learned.
 
-        :return: A `LabelWiseStratifiedInstanceSamplingConfig` that allows further configuration of the method for
+        :return: An `OutputWiseStratifiedInstanceSamplingConfig` that allows further configuration of the method for
                  sampling instances
         """
         pass
@@ -578,19 +358,19 @@ class RandomBiPartitionSamplingMixin(ABC):
         pass
 
 
-class LabelWiseStratifiedBiPartitionSamplingMixin(ABC):
+class OutputWiseStratifiedBiPartitionSamplingMixin(ABC):
     """
     Allows to configure a rule learner to partition the available training examples into a training set and a holdout
     set using stratification, such that for each label the proportion of relevant and irrelevant examples is maintained.
     """
 
     @abstractmethod
-    def use_label_wise_stratified_bi_partition_sampling(self) -> LabelWiseStratifiedBiPartitionSamplingConfig:
+    def use_output_wise_stratified_bi_partition_sampling(self) -> OutputWiseStratifiedBiPartitionSamplingConfig:
         """
         Configures the rule learner to partition the available training examples into a training set and a holdout set
         using stratification, such that for each label the proportion of relevant and irrelevant examples is maintained.
 
-        :return: A `LabelWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
+        :return: An `OutputWiseStratifiedBiPartitionSamplingConfig` that allows further configuration of the method for
                  partitioning the available training examples into a training and a holdout set
         """
         pass

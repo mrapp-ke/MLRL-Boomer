@@ -10,8 +10,8 @@
 namespace boosting {
 
     /**
-     * Allow to create instances of the type `IDiscretizationFunction` that discretize regression scores by comparing
-     * them to a threshold.
+     * Allow to create instances of the type `IDiscretizationFunction` that discretize scores by comparing them to a
+     * threshold.
      */
     class ScoreDiscretizationFunctionFactory : public IDiscretizationFunctionFactory {
         private:

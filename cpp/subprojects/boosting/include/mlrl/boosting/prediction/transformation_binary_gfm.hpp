@@ -12,8 +12,8 @@
 namespace boosting {
 
     /**
-     * An implementation of the class `IBinaryTransformation` that transforms regression scores into binary predictions
-     * according to the general F-measure maximizer (GFM).
+     * An implementation of the class `IBinaryTransformation` that transforms scores into binary predictions according
+     * to the general F-measure maximizer (GFM).
      */
     class GfmBinaryTransformation final : public IBinaryTransformation {
         private:
@@ -30,8 +30,8 @@ namespace boosting {
              * @param labelVectorSet                A reference to an object of type `LabelVectorSet` that stores all
              *                                      known label vectors
              * @param jointProbabilityFunctionPtr   An unique pointer to an object of type `JointProbabilityFunction`
-             *                                      that should be used to transform regression scores that are
-             *                                      predicted for an example into a joint probability
+             *                                      that should be used to transform scores that are predicted for an
+             *                                      example into a joint probability
              */
             GfmBinaryTransformation(const LabelVectorSet& labelVectorSet,
                                     std::unique_ptr<IJointProbabilityFunction> jointProbabilityFunctionPtr);

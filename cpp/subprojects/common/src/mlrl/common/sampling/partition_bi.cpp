@@ -1,5 +1,6 @@
 #include "mlrl/common/sampling/partition_bi.hpp"
 
+#include "mlrl/common/input/regression_matrix_row_wise.hpp"
 #include "mlrl/common/prediction/probability_calibration_joint.hpp"
 #include "mlrl/common/rule_refinement/feature_subspace.hpp"
 #include "mlrl/common/rule_refinement/prediction.hpp"
@@ -70,10 +71,16 @@ std::unique_ptr<IStoppingCriterion> BiPartition::createStoppingCriterion(const I
     return factory.create(*this);
 }
 
-std::unique_ptr<IInstanceSampling> BiPartition::createInstanceSampling(const IInstanceSamplingFactory& factory,
-                                                                       const IRowWiseLabelMatrix& labelMatrix,
-                                                                       IStatistics& statistics) {
+std::unique_ptr<IInstanceSampling> BiPartition::createInstanceSampling(
+  const IClassificationInstanceSamplingFactory& factory, const IRowWiseLabelMatrix& labelMatrix,
+  IStatistics& statistics) {
     return labelMatrix.createInstanceSampling(factory, *this, statistics);
+}
+
+std::unique_ptr<IInstanceSampling> BiPartition::createInstanceSampling(
+  const IRegressionInstanceSamplingFactory& factory, const IRowWiseRegressionMatrix& regressionMatrix,
+  IStatistics& statistics) {
+    return regressionMatrix.createInstanceSampling(factory, *this, statistics);
 }
 
 Quality BiPartition::evaluateOutOfSample(const IFeatureSubspace& featureSubspace, const CoverageMask& coverageMask,

@@ -10,7 +10,7 @@
 #include <memory>
 
 /**
- * Stores the scores that are predicted by a rule that predicts for all available labels.
+ * Stores the scores that are predicted by a rule that predicts for all available outputs.
  */
 class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>>,
                                  public IEvaluatedPrediction {
@@ -21,7 +21,7 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
     public:
 
         /**
-         * @param numElements The number of labels for which the rule predicts
+         * @param numElements The number of outputs for which the rule predicts
          */
         CompletePrediction(uint32 numElements);
 
@@ -36,7 +36,7 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
         typedef View<float64>::const_iterator value_const_iterator;
 
         /**
-         * An iterator that provides read-only access to the indices of the labels for which the rule predicts.
+         * An iterator that provides read-only access to the indices of the outputs for which the rule predicts.
          */
         typedef CompleteIndexVector::const_iterator index_const_iterator;
 
@@ -69,14 +69,14 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
         value_const_iterator values_cend() const;
 
         /**
-         * Returns an `index_const_iterator` to the beginning of the indices of the labels for which the rule predicts.
+         * Returns an `index_const_iterator` to the beginning of the indices of the outputs for which the rule predicts.
          *
          * @return An `index_const_iterator` to the beginning
          */
         index_const_iterator indices_cbegin() const;
 
         /**
-         * Returns an `index_const_iterator` to the end of the indices of the labels for which the rule predicts.
+         * Returns an `index_const_iterator` to the end of the indices of the outputs for which the rule predicts.
          *
          * @return An `index_const_iterator` to the end
          */

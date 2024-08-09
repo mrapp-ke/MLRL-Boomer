@@ -18,13 +18,13 @@ class MLRLCOMMON_API CscView : public SparseMatrix<T> {
     public:
 
         /**
-         * @param values        A pointer to an array of template type `T` that stores all non-zero values, the view
-         *                      should provide access to
-         * @param indices       A pointer to an array of type `uint32`, shape `(numNonZeroValues)`, that stores the row
+         * @param values        A pointer to an array of template type `T` that stores the values of all dense elements
+         *                      explicitly stored in the view
+         * @param indices       A pointer to an array of type `uint32`, shape `(numDenseElements)`, that stores the row
          *                      indices, the values in `values` correspond to
          * @param indptr        A pointer to an array of type `uint32`, shape `(numCols + 1)`, that stores the indices
          *                      of the first element in `values` and `indices` that corresponds to a certain column. The
-         *                      index at the last position must be equal to `numNonZeroValues`
+         *                      index at the last position must be equal to `numDenseElements`
          * @param numRows       The number of rows in the view
          * @param numCols       The number of columns in the view
          * @param sparseValue   The value that should be used for sparse elements in the matrix
@@ -125,11 +125,11 @@ class MLRLCOMMON_API CscView : public SparseMatrix<T> {
         }
 
         /**
-         * Returns the number of non-zero elements in the view.
+         * Returns the number of dense elements explicitly stored in the view.
          *
-         * @return The number of non-zero elements
+         * @return The number of dense elements explicitly stored in the view
          */
-        uint32 getNumNonZeroElements() const {
+        uint32 getNumDenseElements() const {
             return SparseMatrix<T>::indptr[Matrix::numCols];
         }
 };

@@ -73,7 +73,7 @@ class IFeatureSpaceFactory {
          * @param featureInfo           A reference  to an object of type `IFeatureInfo` that provides information about
          *                              the types of individual features
          * @param statisticsProvider    A reference to an object of type `IStatisticsProvider` that provides access to
-         *                              statistics about the labels of the training examples
+         *                              statistics about the quality of predictions for training examples
          * @return                      An unique pointer to an object of type `IFeatureSpace` that has been created
          */
         virtual std::unique_ptr<IFeatureSpace> create(const IColumnWiseFeatureMatrix& featureMatrix,

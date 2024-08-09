@@ -53,8 +53,8 @@ namespace boosting {
              * @param jointProbabilityFunctionFactoryPtr    An unique pointer to an object of type
              *                                              `IJointProbabilityFunctionFactory` that allows to create
              *                                              implementations of the function to be used to transform
-             *                                              regression scores that are predicted for an example into
-             *                                              joint probabilities
+             *                                              scores that are predicted for an example into joint
+             *                                              probabilities
              * @param marginalProbabilityCalibrationModel   A pointer to an object of type
              *                                              `IMarginalProbabilityCalibrationModel` to be used for the
              *                                              calibration of marginal probabilities or a null pointer, if
@@ -109,9 +109,9 @@ namespace boosting {
     };
 
     MarginalizedProbabilityPredictorConfig::MarginalizedProbabilityPredictorConfig(
-      const std::unique_ptr<ILossConfig>& lossConfigPtr,
-      const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : lossConfigPtr_(std::move(lossConfigPtr)), multiThreadingConfigPtr_(std::move(multiThreadingConfigPtr)) {}
+      ReadableProperty<IClassificationLossConfig> lossConfig,
+      ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
+        : lossConfig_(std::move(lossConfig)), multiThreadingConfig_(std::move(multiThreadingConfig)) {}
 
     bool MarginalizedProbabilityPredictorConfig::isProbabilityCalibrationModelUsed() const {
         return noMarginalProbabilityCalibrationModelPtr_ == nullptr;
@@ -127,12 +127,12 @@ namespace boosting {
     }
 
     std::unique_ptr<IProbabilityPredictorFactory> MarginalizedProbabilityPredictorConfig::createPredictorFactory(
-      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
         std::unique_ptr<IJointProbabilityFunctionFactory> jointProbabilityFunctionFactoryPtr =
-          lossConfigPtr_->createJointProbabilityFunctionFactory();
+          lossConfig_.get().createJointProbabilityFunctionFactory();
 
         if (jointProbabilityFunctionFactoryPtr) {
-            uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+            uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numOutputs);
             return std::make_unique<MarginalizedProbabilityPredictorFactory>(
               std::move(jointProbabilityFunctionFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
               noJointProbabilityCalibrationModelPtr_.get(), numThreads);

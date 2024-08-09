@@ -10,15 +10,15 @@ namespace seco {
 
     /**
      * Defines an interface for all classes that allow to store the elements of confusion matrices that have been
-     * computed based on a weight matrix and the ground truth labels of the training examples.
+     * computed based on a weight matrix and the ground truth of the training examples.
      */
-    class ICoverageStatistics : public IStatistics {
+    class ICoverageStatistics : virtual public IStatistics {
         public:
 
             virtual ~ICoverageStatistics() override {}
 
             /**
-             * Returns the sum of the weights of all labels that remain to be covered.
+             * Returns the sum of the weights of all examples and outputs that remain to be covered.
              *
              * @return The sum of the weights
              */

@@ -9,7 +9,7 @@
 #include "mlrl/common/rule_pruning/rule_pruning.hpp"
 #include "mlrl/common/rule_refinement/feature_space.hpp"
 #include "mlrl/common/sampling/feature_sampling.hpp"
-#include "mlrl/common/sampling/label_sampling.hpp"
+#include "mlrl/common/sampling/output_sampling.hpp"
 
 #include <memory>
 
@@ -31,8 +31,8 @@ class IPostOptimizationPhase {
          * @param partition         A reference to an object of type `IPartition` that provides access to the indices of
          *                          the training examples that belong to the training set and the holdout set,
          *                          respectively
-         * @param labelSampling     A reference to an object of type `ILabelSampling` that should be used for sampling
-         *                          labels
+         * @param outputSampling    A reference to an object of type `IOutputSampling` that should be used for sampling
+         *                          outputs
          * @param instanceSampling  A reference to an object of type `IInstanceSampling` that should be used for
          *                          sampling examples
          * @param featureSampling   A reference to an object of type `IFeatureSampling` that should be used for sampling
@@ -45,7 +45,7 @@ class IPostOptimizationPhase {
          *                          to be used
          */
         virtual void optimizeModel(IFeatureSpace& featureSpace, const IRuleInduction& ruleInduction,
-                                   IPartition& partition, ILabelSampling& labelSampling,
+                                   IPartition& partition, IOutputSampling& outputSampling,
                                    IInstanceSampling& instanceSampling, IFeatureSampling& featureSampling,
                                    const IRulePruning& rulePruning, const IPostProcessor& postProcessor,
                                    RNG& rng) const = 0;

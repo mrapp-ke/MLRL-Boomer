@@ -5,6 +5,7 @@
 
 #include "mlrl/common/rule_model_assemblage/default_rule.hpp"
 #include "mlrl/common/rule_model_assemblage/rule_model_assemblage.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -15,16 +16,16 @@
 class SequentialRuleModelAssemblageConfig final : public IRuleModelAssemblageConfig {
     private:
 
-        const std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr_;
+        const ReadableProperty<IDefaultRuleConfig> defaultRuleConfig_;
 
     public:
 
         /**
-         * @param defaultRuleConfigPtr A reference to an unique pointer that stores the configuration of the default
-         *                             rule
+         * @param defaultRuleConfig A `ReadableProperty` that allows to access the `IDefaultRuleConfig` that stores the
+         *                          configuration of the default rule
          */
-        SequentialRuleModelAssemblageConfig(const std::unique_ptr<IDefaultRuleConfig>& defaultRuleConfigPtr);
+        SequentialRuleModelAssemblageConfig(ReadableProperty<IDefaultRuleConfig> defaultRuleConfig);
 
         std::unique_ptr<IRuleModelAssemblageFactory> createRuleModelAssemblageFactory(
-          const IRowWiseLabelMatrix& labelMatrix) const override;
+          const IOutputMatrix& outputMatrix) const override;
 };

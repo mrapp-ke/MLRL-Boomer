@@ -6,7 +6,7 @@
 
 #include "mlrl/common/input/feature_matrix.hpp"
 #include "mlrl/common/input/feature_type.hpp"
-#include "mlrl/common/input/label_matrix.hpp"
+#include "mlrl/common/input/output_matrix.hpp"
 
 #include <memory>
 
@@ -49,10 +49,10 @@ class IFeatureBinningConfig {
          *
          * @param featureMatrix A reference to an object of type `IFeatureMatrix` that provides access to the feature
          *                      values of the training examples
-         * @param labelMatrix   A reference to an object of type `ILabelMatrix` that provides access to the labels of
-         *                      the training examples
+         * @param outputMatrix  A reference to an object of type `IOutputMatrix` that provides access to the ground
+         *                      truth of the training examples
          * @return              An unique pointer to an object of type `IFeatureBinningFactory` that has been created
          */
         virtual std::unique_ptr<IFeatureBinningFactory> createFeatureBinningFactory(
-          const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const = 0;
+          const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const = 0;
 };

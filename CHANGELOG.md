@@ -6,6 +6,28 @@ tocdepth: 2
 
 # Release Notes
 
+## Version 0.11.0 (to be released)
+
+A major update to the BOOMER algorithm that introduces the following changes.
+
+```{warning}
+This release comes with several API changes. For an updated overview of the available parameters and command line arguments, please refer to the [documentation](https://mlrl-boomer.readthedocs.io/en/0.11.0/).
+```
+
+### Algorithmic Enhancements
+
+- **The BOOMER algorithm can be used for solving regression problems**, including single- and multi-output regression problems.
+
+### Additions to the Command Line API
+
+- **Custom algorithms can now be easily integrated** with the command line API due to the ability to dynamically load code from your own Python modules or source files, as illustrated [here](https://mlrl-boomer.readthedocs.io/en/0.11.0/user_guide/testbed/runnables.html)
+- **The value to be used for sparse elements in the feature matrix can be specified** via the argument `--sparse-feature-value`.
+
+### API Changes
+
+- The Python module or source file providing an integration with the machine learning algorithm to be used by the command line API must now be specified as described [here](https://mlrl-boomer.readthedocs.io/en/0.11.0/user_guide/testbed/arguments.html#basic-usage).
+- Several parameters and their values have been renamed to better reflect the scope of the project, which now includes multi-output regression problems. For an up-to-date list of parameters, please refer to the [documentation](https://mlrl-boomer.readthedocs.io/en/0.11.0/).
+
 ## Version 0.10.2 (Aug. 9th, 2024)
 
 A bugfix release that fixes the following issues.
@@ -41,7 +63,7 @@ This release comes with several API changes. For an updated overview of the avai
 ### Additions to the Command Line API
 
 - **Information about the program can now be printed** via the argument `-v` or `--version`.
-- **Data characteristics do now include the number of ordinal attributes** when printed on the console or written to a file via the command line argument `--print-data-characteristics` or `--store-data-characteristics`.
+- **Data characteristics do now include the number of ordinal features** when printed on the console or written to a file via the command line argument `--print-data-characteristics` or `--store-data-characteristics`.
 
 ### Bugfixes
 
@@ -99,7 +121,7 @@ This release comes with several API changes. For an updated overview of the avai
 - **Models for the calibration of marginal or joint probabilities can be printed or written to output files** via the new arguments `--print-marginal-probability-calibration-model`, `--store-marginal-probability-calibration-model`, `--print-joint-probability-calibration-model` and `--store-joint-probability-calibration-model`.
 - **Models can now be evaluated repeatedly, using a subset of their rules with increasing size,** by specifying the argument `--incremental-prediction`.
 - **More control of how data is split into training and test sets** is now provided by the argument `--data-split` that replaces the arguments `--folds` and `--current-fold`.
-- **Binary labels, regression scores, or probabilities can now be predicted,** depending on the value of the new argument `--prediction-type`, which can be set to the values `binary`, `scores`, or `probabilities`.
+- **Binary labels, scores, or probabilities can now be predicted,** depending on the value of the new argument `--prediction-type`, which can be set to the values `binary`, `scores`, or `probabilities`.
 - **Individual evaluation measures can now be enabled or disabled** via additional options that have been added to the arguments `--print-evaluation` and `--store-evaluation`.
 - **The presentation of values printed on the console has vastly been improved.** In addition, options for controlling the presentation of values to be printed or written to output files have been added to various command line arguments.
 

@@ -43,8 +43,8 @@ namespace boosting {
 
     /**
      * Allows to create instances of the type `IBinaryPredictor` that allow to predict known label vectors for given
-     * query examples by comparing the predicted regression scores or probability estimates to the label vectors
-     * encountered in the training data.
+     * query examples by comparing the predicted scores or probability estimates to the label vectors encountered in the
+     * training data.
      */
     class ExampleWiseBinaryPredictorFactory final : public IBinaryPredictorFactory {
         private:
@@ -133,8 +133,8 @@ namespace boosting {
 
     /**
      * Allows to create instances of the type `ISparseBinaryPredictor` that allow to predict known label vectors for
-     * given query examples by comparing the predicted regression scores or probability estimates to the label vectors
-     * encountered in the training data.
+     * given query examples by comparing the predicted scores or probability estimates to the label vectors encountered
+     * in the training data.
      */
     class ExampleWiseSparseBinaryPredictorFactory final : public ISparseBinaryPredictorFactory {
         private:
@@ -208,8 +208,8 @@ namespace boosting {
             }
     };
 
-    static inline std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory(bool basedOnProbabilities,
-                                                                                        const ILossConfig& lossConfig) {
+    static inline std::unique_ptr<IDistanceMeasureFactory> createDistanceMeasureFactory(
+      bool basedOnProbabilities, const IClassificationLossConfig& lossConfig) {
         if (basedOnProbabilities) {
             return lossConfig.createJointProbabilityFunctionFactory();
         } else {
@@ -218,10 +218,9 @@ namespace boosting {
     }
 
     ExampleWiseBinaryPredictorConfig::ExampleWiseBinaryPredictorConfig(
-      const std::unique_ptr<ILossConfig>& lossConfigPtr,
-      const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
-        : basedOnProbabilities_(false), lossConfigPtr_(lossConfigPtr),
-          multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
+      ReadableProperty<IClassificationLossConfig> lossConfig,
+      ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
+        : basedOnProbabilities_(false), lossConfig_(lossConfig), multiThreadingConfig_(multiThreadingConfig) {}
 
     bool ExampleWiseBinaryPredictorConfig::isBasedOnProbabilities() const {
         return basedOnProbabilities_;
@@ -247,12 +246,12 @@ namespace boosting {
     }
 
     std::unique_ptr<IBinaryPredictorFactory> ExampleWiseBinaryPredictorConfig::createPredictorFactory(
-      const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
+      const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const {
         std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr =
-          createDistanceMeasureFactory(basedOnProbabilities_, *lossConfigPtr_);
+          createDistanceMeasureFactory(basedOnProbabilities_, lossConfig_.get());
 
         if (distanceMeasureFactoryPtr) {
-            uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+            uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numOutputs);
             return std::make_unique<ExampleWiseBinaryPredictorFactory>(
               std::move(distanceMeasureFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
               noJointProbabilityCalibrationModelPtr_.get(), numThreads);
@@ -264,10 +263,10 @@ namespace boosting {
     std::unique_ptr<ISparseBinaryPredictorFactory> ExampleWiseBinaryPredictorConfig::createSparsePredictorFactory(
       const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const {
         std::unique_ptr<IDistanceMeasureFactory> distanceMeasureFactoryPtr =
-          createDistanceMeasureFactory(basedOnProbabilities_, *lossConfigPtr_);
+          createDistanceMeasureFactory(basedOnProbabilities_, lossConfig_.get());
 
         if (distanceMeasureFactoryPtr) {
-            uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, numLabels);
+            uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, numLabels);
             return std::make_unique<ExampleWiseSparseBinaryPredictorFactory>(
               std::move(distanceMeasureFactoryPtr), noMarginalProbabilityCalibrationModelPtr_.get(),
               noJointProbabilityCalibrationModelPtr_.get(), numThreads);

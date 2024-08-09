@@ -6,6 +6,7 @@
 #include "mlrl/boosting/losses/loss.hpp"
 #include "mlrl/common/multi_threading/multi_threading.hpp"
 #include "mlrl/common/prediction/predictor_probability.hpp"
+#include "mlrl/common/util/properties.hpp"
 
 #include <memory>
 
@@ -18,27 +19,27 @@ namespace boosting {
     class AutomaticProbabilityPredictorConfig final : public IProbabilityPredictorConfig {
         private:
 
-            const std::unique_ptr<ILossConfig>& lossConfigPtr_;
+            const ReadableProperty<IClassificationLossConfig> lossConfig_;
 
-            const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr_;
+            const ReadableProperty<IMultiThreadingConfig> multiThreadingConfig_;
 
         public:
 
             /**
-             * @param lossConfigPtr             A reference to an unique pointer that stores the configuration of the
-             *                                  loss function
-             * @param multiThreadingConfigPtr   A reference to an unique pointer that stores the configuration of the
-             *                                  multi-threading behavior that should be used to predict for several
-             *                                  query examples in parallel
+             * @param lossConfig            A `ReadableProperty` that allows to access the `IClassificationLossConfig`
+             *                              that stores the configuration of the loss function
+             * @param multiThreadingConfig  A `ReadableProperty` that allows to access the `IMultiThreadingConfig` that
+             *                              stores the configuration of the multi-threading behavior that should be used
+             *                              to predict for several query examples in parallel
              */
-            AutomaticProbabilityPredictorConfig(const std::unique_ptr<ILossConfig>& lossConfigPtr,
-                                                const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr);
+            AutomaticProbabilityPredictorConfig(ReadableProperty<IClassificationLossConfig> lossConfig,
+                                                ReadableProperty<IMultiThreadingConfig> multiThreadingConfig);
 
             /**
              * @see `IProbabilityPredictorConfig::createPredictorFactory`
              */
             std::unique_ptr<IProbabilityPredictorFactory> createPredictorFactory(
-              const IRowWiseFeatureMatrix& featureMatrix, uint32 numLabels) const override;
+              const IRowWiseFeatureMatrix& featureMatrix, uint32 numOutputs) const override;
 
             /**
              * @see `IPredictorConfig::isLabelVectorSetNeeded`

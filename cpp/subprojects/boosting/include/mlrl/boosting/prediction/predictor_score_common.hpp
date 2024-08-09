@@ -151,9 +151,8 @@ namespace boosting {
     };
 
     /**
-     * An implementation of the type `IScorePredictor` that allows to predict label-wise regression scores for given
-     * query examples by summing up the scores that are predicted by individual rules in a rule-based model for each
-     * label individually.
+     * An implementation of the type `IScorePredictor` that allows to predict scores for given query examples by summing
+     * up the scores that are predicted by individual rules in a rule-based model for each output.
      *
      * @tparam FeatureMatrix    The type of the feature matrix that provides row-wise access to the feature values of
      *                          the query examples
@@ -185,14 +184,14 @@ namespace boosting {
                     IncrementalPredictor(const ScorePredictor& predictor, uint32 maxRules)
                         : AbstractIncrementalPredictor<FeatureMatrix, Model, DensePredictionMatrix<float64>>(
                             predictor.featureMatrix_, predictor.model_, predictor.numThreads_, maxRules),
-                          predictionMatrix_(predictor.featureMatrix_.numRows, predictor.numLabels_, true) {}
+                          predictionMatrix_(predictor.featureMatrix_.numRows, predictor.numOutputs_, true) {}
             };
 
             const FeatureMatrix& featureMatrix_;
 
             const Model& model_;
 
-            const uint32 numLabels_;
+            const uint32 numOutputs_;
 
             const uint32 numThreads_;
 
@@ -203,19 +202,19 @@ namespace boosting {
              *                      access to the feature values of the query examples
              * @param model         A reference to an object of template type `Model` that should be used to obtain
              *                      predictions
-             * @param numLabels     The number of labels to predict for
+             * @param numOutputs    The number of outputs to predict for
              * @param numThreads    The number of CPU threads to be used to make predictions for different query
              *                      examples in parallel. Must be at least 1
              */
-            ScorePredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numLabels, uint32 numThreads)
-                : featureMatrix_(featureMatrix), model_(model), numLabels_(numLabels), numThreads_(numThreads) {}
+            ScorePredictor(const FeatureMatrix& featureMatrix, const Model& model, uint32 numOutputs, uint32 numThreads)
+                : featureMatrix_(featureMatrix), model_(model), numOutputs_(numOutputs), numThreads_(numThreads) {}
 
             /**
              * @see `IPredictor::predict`
              */
             std::unique_ptr<DensePredictionMatrix<float64>> predict(uint32 maxRules) const override {
                 std::unique_ptr<DensePredictionMatrix<float64>> predictionMatrixPtr =
-                  std::make_unique<DensePredictionMatrix<float64>>(featureMatrix_.numRows, numLabels_, true);
+                  std::make_unique<DensePredictionMatrix<float64>>(featureMatrix_.numRows, numOutputs_, true);
                 ScorePredictionDelegate<FeatureMatrix, Model> delegate(predictionMatrixPtr->getView());
                 PredictionDispatcher<float64, FeatureMatrix, Model>().predict(
                   delegate, featureMatrix_, model_.used_cbegin(maxRules), model_.used_cend(maxRules), numThreads_);

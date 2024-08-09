@@ -47,13 +47,13 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
 
     protected:
 
-        std::unique_ptr<IFeatureSubspace> growRule(IFeatureSpace& featureSpace, const IIndexVector& labelIndices,
+        std::unique_ptr<IFeatureSubspace> growRule(IFeatureSpace& featureSpace, const IIndexVector& outputIndices,
                                                    const IWeightVector& weights, IPartition& partition,
                                                    IFeatureSampling& featureSampling, RNG& rng,
                                                    std::unique_ptr<ConditionList>& conditionListPtr,
                                                    std::unique_ptr<IEvaluatedPrediction>& headPtr) const override {
-            // The label indices for which the next refinement of the rule may predict
-            const IIndexVector* currentLabelIndices = &labelIndices;
+            // The indices of the outputs for which the next refinement of the rule may predict
+            const IIndexVector* currentOutputIndices = &outputIndices;
             // A list that contains the conditions in the rule's body (in the order they have been learned)
             conditionListPtr = std::make_unique<ConditionList>();
             // The comparator that is used to keep track of the best refinement of the rule
@@ -72,12 +72,12 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
 
                 // Search for the best refinement...
                 foundRefinement = findRefinement(refinementComparator, *featureSubspacePtr, sampledFeatureIndices,
-                                                 *currentLabelIndices, minCoverage_, numThreads_);
+                                                 *currentOutputIndices, minCoverage_, numThreads_);
 
                 if (foundRefinement) {
                     Refinement& bestRefinement = *refinementComparator.begin();
 
-                    // Sort the rule's predictions by the corresponding label indices...
+                    // Sort the rule's predictions by the corresponding output indices...
                     bestRefinement.headPtr->sort();
 
                     // Filter the current subset of thresholds by applying the best refinement that has been found...
@@ -86,9 +86,9 @@ class GreedyTopDownRuleInduction final : public AbstractRuleInduction {
                     // Add the new condition...
                     conditionListPtr->addCondition(bestRefinement);
 
-                    // Keep the labels for which the rule predicts, if the head should not be further refined...
+                    // Keep the outputs for which the rule predicts, if the head should not be further refined...
                     if (maxHeadRefinements_ > 0 && conditionListPtr->getNumConditions() >= maxHeadRefinements_) {
-                        currentLabelIndices = bestRefinement.headPtr.get();
+                        currentOutputIndices = bestRefinement.headPtr.get();
                     }
 
                     // Abort refinement process if the rule is not allowed to cover less examples...
@@ -156,9 +156,9 @@ class GreedyTopDownRuleInductionFactory final : public IRuleInductionFactory {
 };
 
 GreedyTopDownRuleInductionConfig::GreedyTopDownRuleInductionConfig(
-  RuleCompareFunction ruleCompareFunction, const std::unique_ptr<IMultiThreadingConfig>& multiThreadingConfigPtr)
+  RuleCompareFunction ruleCompareFunction, ReadableProperty<IMultiThreadingConfig> multiThreadingConfig)
     : ruleCompareFunction_(ruleCompareFunction), minCoverage_(1), minSupport_(0.0f), maxConditions_(0),
-      maxHeadRefinements_(1), recalculatePredictions_(true), multiThreadingConfigPtr_(multiThreadingConfigPtr) {}
+      maxHeadRefinements_(1), recalculatePredictions_(true), multiThreadingConfig_(multiThreadingConfig) {}
 
 uint32 GreedyTopDownRuleInductionConfig::getMinCoverage() const {
     return minCoverage_;
@@ -215,7 +215,7 @@ IGreedyTopDownRuleInductionConfig& GreedyTopDownRuleInductionConfig::setRecalcul
 }
 
 std::unique_ptr<IRuleInductionFactory> GreedyTopDownRuleInductionConfig::createRuleInductionFactory(
-  const IFeatureMatrix& featureMatrix, const ILabelMatrix& labelMatrix) const {
+  const IFeatureMatrix& featureMatrix, const IOutputMatrix& outputMatrix) const {
     uint32 numExamples = featureMatrix.getNumExamples();
     uint32 minCoverage;
 
@@ -225,7 +225,7 @@ std::unique_ptr<IRuleInductionFactory> GreedyTopDownRuleInductionConfig::createR
         minCoverage = std::min(numExamples, minCoverage_);
     }
 
-    uint32 numThreads = multiThreadingConfigPtr_->getNumThreads(featureMatrix, labelMatrix.getNumLabels());
+    uint32 numThreads = multiThreadingConfig_.get().getNumThreads(featureMatrix, outputMatrix.getNumOutputs());
     return std::make_unique<GreedyTopDownRuleInductionFactory>(
       ruleCompareFunction_, minCoverage, maxConditions_, maxHeadRefinements_, recalculatePredictions_, numThreads);
 }

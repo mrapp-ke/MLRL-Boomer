@@ -4,19 +4,19 @@ Author: Michael Rapp (michael.rapp.ml@gmail.com)
 Provides utility functions for creating textual representations.
 """
 from functools import reduce
-from typing import Dict, Iterable, Set
+from typing import Any, Dict, Iterable, Set
 
 
-def format_string_iterable(strings: Iterable[str], separator: str = ', ', delimiter: str = '') -> str:
+def format_iterable(objects: Iterable[Any], separator: str = ', ', delimiter: str = '') -> str:
     """
-    Creates and returns a textual representation of string in an iterable.
+    Creates and returns a textual representation of objects in an iterable.
 
-    :params strings:    The iterable of strings to be formatted
+    :param objects:     The iterable of objects to be formatted
     :param separator:   The string that should be used as a separator
-    :param delimiter:   The string that should be added at the beginning and end of each string
+    :param delimiter:   The string that should be added at the beginning and end of each object
     :return:            The textual representation that has been created
     """
-    return reduce(lambda a, b: a + (separator if len(a) > 0 else '') + delimiter + b + delimiter, strings, '')
+    return reduce(lambda a, b: a + (separator if len(a) > 0 else '') + delimiter + str(b) + delimiter, objects, '')
 
 
 def format_enum_values(enum) -> str:
@@ -26,24 +26,24 @@ def format_enum_values(enum) -> str:
     :param enum:    The enum to be formatted
     :return:        The textual representation that has been created
     """
-    return format_string_set({x.value for x in enum})
+    return format_set({x.value for x in enum})
 
 
-def format_string_set(strings: Set[str]) -> str:
+def format_set(objects: Set[Any]) -> str:
     """
-    Creates and returns a textual representation of the strings in a set.
+    Creates and returns a textual representation of the objects in a set.
 
-    :param strings: The set of strings to be formatted
+    :param objects: The set of objects to be formatted
     :return:        The textual representation that has been created
     """
-    return '{' + format_string_iterable(strings, delimiter='"') + '}'
+    return '{' + format_iterable(objects, delimiter='"') + '}'
 
 
-def format_dict_keys(dictionary: Dict[str, Set[str]]) -> str:
+def format_dict_keys(dictionary: Dict[Any, Any]) -> str:
     """
     Creates and returns a textual representation of the keys in a dictionary.
 
     :param dictionary:  The dictionary to be formatted
     :return:            The textual representation that has been created
     """
-    return format_string_set(dictionary.keys())
+    return format_set(dictionary.keys())

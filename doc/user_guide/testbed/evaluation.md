@@ -16,13 +16,19 @@ The simplest and computationally least demanding strategy for obtaining training
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split train-test
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split train-test
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --data-split train-test
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split train-test
    ```
 ````
 
@@ -32,13 +38,19 @@ When it is the responsibility of the command line API to split a given dataset i
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split 'train-test{test_size=0.25}'
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split 'train-test{test_size=0.25}'
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --data-split 'train-test{test_size=0.25}'
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split 'train-test{test_size=0.25}'
    ```
 ````
 
@@ -52,13 +64,19 @@ A more elaborate strategy for splitting data into training and test sets, which 
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split cv
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split cv
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --data-split cv
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split cv
    ```
 ````
 
@@ -66,13 +84,19 @@ By default, a 10-fold cross validation, where ten models are trained and evaluat
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split 'cv{num_folds=5}'
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split 'cv{num_folds=5}'
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --data-split 'cv{num_folds=5}'
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split 'cv{num_folds=5}'
    ```
 ````
 
@@ -81,13 +105,19 @@ When providing the option `current_fold`, only a single fold, instead of the ent
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split 'cv{num_folds=5,current_fold=2}'
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split 'cv{num_folds=5,current_fold=2}'
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --data-split 'cv{num_folds=5,current_fold=2}'
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split 'cv{num_folds=5,current_fold=2}'
    ```
 ````
 `````
@@ -104,13 +134,19 @@ Sometimes, evaluating the performance of a model on the data it has been trained
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split none
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split none
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --data-split none
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split none
    ```
 ````
 
@@ -119,13 +155,21 @@ If you are interested in obtaining evaluation results for the training data in a
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --data-split cv --evaluate-training-data true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split cv \
+       --evaluate-training-data true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --data-split cv --evaluate-training-data true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --data-split cv \
+       --evaluate-training-data true
    ```
 ````    
 `````
@@ -134,27 +178,33 @@ If you are interested in obtaining evaluation results for the training data in a
 
 ## Types of Predictions
 
-The metrics for evaluating the quality of predictions that have been obtained for a test set are chosen automatically, depending on the type of predictions provided by the model. In general, the command line API supports evaluating binary predictions, probability estimates, and regression scores. Not all of these prediction types must be supported by a single machine learning method. For example, in case of the BOOMER algorithm, the prediction of probabilities is only possible with certain configurations.
+The metrics for evaluating the quality of predictions that have been obtained for a test set are chosen automatically, depending on the type of predictions provided by the model. In general, the command line API supports evaluating binary predictions, probability estimates, and scores. Not all of these prediction types must be supported by a single machine learning method. For example, in case of the BOOMER algorithm, the prediction of probabilities is only possible with certain configurations.
 
-(regression-scores)=
+(scores)=
 
-### Regression Scores
+### Scores
 
-We refer to real-valued predictions, which may be positive or negative, as *regression scores*. In the context of multi-label classification, positive scores indicate a preference towards predicting a label as relevant, whereas negative scores are predicted for labels that are more likely to be irrelevant. The absolute size of the scores corresponds to the confidence of the predictions, i.e., if a large value is predicted for a label, the model is more certain about the correctness of the predicted outcome. Unlike {ref}`probability-estimates`, regression scores are not bound to a certain interval and can be arbitrary positive or negative values. The BOOMER algorithm uses regression scores as a basis for predicting probabilities or binary labels. If you want to evaluate the quality of the regression scores directly, instead of transforming them into probabilities or binary predictions, the argument `--prediction-type scores` may be passed to the command line API:
+We refer to real-valued predictions, which may be positive or negative, as *scores*. In the context of multi-label classification, positive scores indicate a preference towards predicting a label as relevant, whereas negative scores are predicted for labels that are more likely to be irrelevant. The absolute size of the scores corresponds to the confidence of the predictions, i.e., if a large value is predicted for a label, the model is more certain about the correctness of the predicted outcome. Unlike {ref}`probability estimates<probability-estimates>`, scores are not bound to a certain interval and can be arbitrary positive or negative values. The BOOMER algorithm uses scores as a basis for predicting probabilities or binary labels. If you want to evaluate the quality of the scores directly, instead of transforming them into probabilities or binary predictions, the argument `--prediction-type scores` may be passed to the command line API:
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --prediction-type scores
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --prediction-type scores
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --prediction-type scores
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --prediction-type scores
    ```
 ````
 
-For evaluating the quality of regression scores, [multi-label ranking measures](https://scikit-learn.org/stable/modules/model_evaluation.html#multilabel-ranking-metrics) provided by the [scikit-learn](https://scikit-learn.org) framework are used.
+For evaluating the quality of scores, [regression metrics](https://scikit-learn.org/stable/modules/model_evaluation.html#regression-metrics) provided by the [scikit-learn](https://scikit-learn.org) framework are used. In addition, when dealing with classification problems, [ranking measures](https://scikit-learn.org/stable/modules/model_evaluation.html#multilabel-ranking-metrics) are used.
 
 (probability-estimates)=
 
@@ -164,17 +214,23 @@ Probability estimates are given as real values between zero and one. In the cont
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --prediction-type probabilities
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --prediction-type probabilities
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --prediction-type probabilities
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --prediction-type probabilities
    ```
 ````
 
-Similar to {ref}`regression-scores`, the command line API relies on [multi-label ranking measures](https://scikit-learn.org/stable/modules/model_evaluation.html#multilabel-ranking-metrics), as implemented by the [scikit-learn](https://scikit-learn.org) framework, for evaluating probability estimates.
+The command line API relies on [ranking measures](https://scikit-learn.org/stable/modules/model_evaluation.html#multilabel-ranking-metrics), as implemented by the [scikit-learn](https://scikit-learn.org) framework, for evaluating probability estimates.
 
 ### Binary Labels
 
@@ -182,13 +238,19 @@ The most common type of prediction used for multi-label classification are binar
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --prediction-type binary
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --prediction-type binary
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --prediction-type binary
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --prediction-type binary
    ```
 ````
 
@@ -196,17 +258,23 @@ In a multi-label setting, the quality of binary predictions is assessed in terms
 
 ## Incremental Evaluation
 
-When evaluating the predictive performance of an [ensemble method](https://en.wikipedia.org/wiki/Ensemble_learning), i.e., models that consist of several weak predictors, also referred to as *ensemble members*, the command line API supports to evaluate these models incrementally. In particular, rule-based machine learning algorithms like the ones implemented by this project are often considered as ensemble methods, where each rule in a model can be viewed as a weak predictor.  Adding more rules to a model typically results in better predictive performance. However, adding too many rules may result in overfitting the training data and therefore achieving subpar performance on the test data. For analyzing such behavior, the arugment `--incremental-evaluation true` may be passed to the command line API:
+When evaluating the predictive performance of an [ensemble method](https://en.wikipedia.org/wiki/Ensemble_learning), i.e., models that consist of several weak predictors, also referred to as *ensemble members*, the command line API supports to evaluate these models incrementally. In particular, rule-based machine learning algorithms like the ones implemented by this project are often considered as ensemble methods, where each rule in a model can be viewed as a weak predictor. Adding more rules to a model typically results in better predictive performance. However, adding too many rules may result in overfitting the training data and therefore achieving subpar performance on the test data. For analyzing such behavior, the arugment `--incremental-evaluation true` may be passed to the command line API:
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --incremental-evaluation true
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --incremental-evaluation true
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --incremental-evaluation true
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --incremental-evaluation true
    ```
 ````
 
@@ -220,12 +288,18 @@ For example, the following command may be used for the incremental evaluation of
 
 ````{tab} BOOMER
    ```text
-   boomer --data-dir /path/to/datasets/ --dataset dataset-name --incremental-evaluation 'true{min_size=200,max_size=1000,step_size=200}'
+   testbed mlrl.boosting \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --incremental-evaluation 'true{min_size=200,max_size=1000,step_size=200}'
    ```
 ````
 
 ````{tab} SeCo
    ```text
-   seco --data-dir /path/to/datasets/ --dataset dataset-name --incremental-evaluation 'true{min_size=200,max_size=1000,step_size=200}'
+   testbed mlrl.seco \
+       --data-dir /path/to/datasets/ \
+       --dataset dataset-name \
+       --incremental-evaluation 'true{min_size=200,max_size=1000,step_size=200}'
    ```
 ````
