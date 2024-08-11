@@ -15,6 +15,7 @@
 // Forward declarations
 class IPostProcessor;
 class IStatistics;
+class IStatisticsUpdate;
 class IStatisticsSubset;
 class IHead;
 
@@ -54,6 +55,15 @@ class IPrediction : public IIndexVector {
          * @param end   An iterator to the end of the values to be set
          */
         virtual void set(BinnedConstIterator<float64> begin, BinnedConstIterator<float64> end) = 0;
+
+        /**
+         * Creates and returns an object of type `IStatistics::IUpdate` that allows updating given `IStatistics` based
+         * on this prediction.
+         *
+         * @param statistics  A reference to an object of type `IStatistics` that should be updated
+         * @return            An unique pointer to an object of type `IStatistics::IUpdate` that has been created
+         */
+        virtual std::unique_ptr<IStatisticsUpdate> createStatisticsUpdate(IStatistics& statistics) const = 0;
 
         /**
          * Updates given statistics by applying this prediction.
