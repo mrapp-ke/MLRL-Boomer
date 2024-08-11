@@ -111,6 +111,14 @@ class PartialPrediction final : public VectorDecorator<ResizableVector<ScoreType
         index_const_iterator indices_cend() const;
 
         /**
+         * Returns a reference to the `PartialIndexVector` that stores the indices for which the rule predicts.
+         *
+         * @return A reference to an object of type `PartialIndexVector` that stores the indices for which the rule
+         *         predicts
+         */
+        const PartialIndexVector& getIndexVector() const;
+
+        /**
          * Sets whether the scores that are stored by this prediction are sorted in increasing order by the
          * corresponding output indices, or not.
          *
