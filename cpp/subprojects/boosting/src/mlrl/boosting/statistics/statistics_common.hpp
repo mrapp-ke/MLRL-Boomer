@@ -523,6 +523,10 @@ namespace boosting {
                         revertPredictionInternally(statisticIndex, prediction_, *statistics_.scoreMatrixPtr_);
                         statistics_.updateStatistics(statisticIndex, prediction_);
                     }
+
+                    void commit() override {
+                        // TODO Implement
+                    }
             };
 
         protected:

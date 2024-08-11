@@ -97,6 +97,7 @@ class AbstractRuleInduction : public IRuleInduction {
                 statisticsUpdatePtr->applyPrediction(i);
             }
 
+            statisticsUpdatePtr->commit();
             modelBuilder.setDefaultRule(defaultPredictionPtr);
         }
 
