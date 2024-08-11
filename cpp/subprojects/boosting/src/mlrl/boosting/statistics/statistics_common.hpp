@@ -623,38 +623,6 @@ namespace boosting {
             }
 
             /**
-             * @see `IStatistics::applyPrediction`
-             */
-            void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                this->updateStatistics(statisticIndex, prediction);
-            }
-
-            /**
-             * @see `IStatistics::applyPrediction`
-             */
-            void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                this->updateStatistics(statisticIndex, prediction);
-            }
-
-            /**
-             * @see `IStatistics::revertPrediction`
-             */
-            void revertPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                this->updateStatistics(statisticIndex, prediction);
-            }
-
-            /**
-             * @see `IStatistics::revertPrediction`
-             */
-            void revertPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                this->updateStatistics(statisticIndex, prediction);
-            }
-
-            /**
              * @see `IStatistics::evaluatePrediction`
              */
             float64 evaluatePrediction(uint32 statisticIndex) const override final {
