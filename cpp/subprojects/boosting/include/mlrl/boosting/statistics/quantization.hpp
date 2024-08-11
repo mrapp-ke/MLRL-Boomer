@@ -10,18 +10,19 @@
 #include "mlrl/common/indices/index_vector_complete.hpp"
 #include "mlrl/common/indices/index_vector_partial.hpp"
 
+#include <functional>
 #include <memory>
 
 namespace boosting {
 
     /**
-     * Defines an interface for all classes that implement a method for quantizing statistics about the quality of
-     * predictions for training examples.
+     * Defines an interfaces for all matrices for storing quantized statistics that are backed by a view.
      */
-    class IQuantization {
+    template<typename View>
+    class IQuantizationMatrix {
         public:
 
-            virtual ~IQuantization() {}
+            virtual ~IQuantizationMatrix() {}
 
             /**
              * Quantifies all statistics that corresonds to the available outputs.
@@ -37,6 +38,83 @@ namespace boosting {
              * @param outputIndices A reference to an object of type `IPartialIndexVector` that stores the indices of
              *                      the output for which the statistics should be quantized
              */
+            virtual void quantize(const PartialIndexVector& outputIndices) = 0;
+
+            /**
+             * The type of the view, the matrix is backed by.
+             */
+            typedef View view_type;
+
+            /**
+             * Returns the view, the matrix is backed by.
+             *
+             * @return A reference to an object of type `view_type`
+             */
+            virtual const view_type& getView() const = 0;
+    };
+
+    /**
+     * Defines an interface for all classes that implement a method for quantizing statistics about the quality of
+     * predictions for training examples.
+     */
+    class IQuantization {
+        public:
+
+            virtual ~IQuantization() {}
+
+            /**
+             * A visitor function for handling quantization matrices that are backed by a view of the type
+             * `CContiguousView<Tuple<float64>>`.
+             */
+            typedef std::function<void(std::unique_ptr<IQuantizationMatrix<CContiguousView<Tuple<float64>>>>&)>
+              DenseDecomposableMatrixVisitor;
+
+            /**
+             * A visitor function for handling quantization matrices that are backed by a view of the type
+             * `SparseSetView<Tuple<float64>>`.
+             */
+            typedef std::function<void(std::unique_ptr<IQuantizationMatrix<SparseSetView<Tuple<float64>>>>&)>
+              SparseDecomposableMatrixVisitor;
+
+            /**
+             * A visitor function for handling quantization matrices that are backed by a view of the type
+             * `DenseNonDecomposableStatisticView`.
+             */
+            typedef std::function<void(std::unique_ptr<IQuantizationMatrix<DenseNonDecomposableStatisticView>>&)>
+              DenseNonDecomposableMatrixVisitor;
+
+            /**
+             * Invokes one of the given visitor functions, depending on which one is able to handle the type of the
+             * matrix that is used for storing quantized scores.
+             *
+             * @param denseDecomposableMatrixVisitor    The visitor function for handling quantization matrices that are
+             *                                          backed by a view of the type `CContiguousView<Tuple<float64>>`
+             * @param sparseDecomposableMatrixVisitor   The visitor function for handling quantization matrices that are
+             *                                          backed by a view of the type `SparseSetView<Tuple<float64>>`
+             * @param denseNonDecomposableMatrixVisitor The visitor function for handling quantization matrices that are
+             *                                          backed by a view of the type `DenseNonDecomposableStatisticView`
+             */
+            virtual void visitQuantizationMatrix(
+              DenseDecomposableMatrixVisitor denseDecomposableMatrixVisitor,
+              SparseDecomposableMatrixVisitor sparseDecomposableMatrixVisitor,
+              DenseNonDecomposableMatrixVisitor denseNonDecomposableMatrixVisitor) = 0;
+
+            /**
+             * Quantifies all statistics that corresonds to the available outputs.
+             *
+             * @param outputIndices A reference to an object of type `ICompleteIndexVector` that stores the indices of
+             *                      the output for which the statistics should be quantized
+             */
+            // TODO Remove
+            virtual void quantize(const CompleteIndexVector& outputIndices) = 0;
+
+            /**
+             * Quantifies all statistics that correspond to a certain subset of the outputs.
+             *
+             * @param outputIndices A reference to an object of type `IPartialIndexVector` that stores the indices of
+             *                      the output for which the statistics should be quantized
+             */
+            // TODO Remove
             virtual void quantize(const PartialIndexVector& outputIndices) = 0;
     };
 

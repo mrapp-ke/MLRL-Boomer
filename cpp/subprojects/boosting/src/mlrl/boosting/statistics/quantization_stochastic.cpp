@@ -4,11 +4,19 @@
 
 namespace boosting {
 
-    /**
-     * An implementation of the type `IQuantization` that uses a stochastic rounding strategy.
-     */
-    class StochasticQuantization final : public IQuantization {
+    template<typename View>
+    class StochasticQuantizationMatrix final : public IQuantizationMatrix<CContiguousView<Tuple<float64>>> {
+        private:
+
+            const View& view_;
+
+            // TODO Use correct type
+            MatrixDecorator<AllocatedCContiguousView<Tuple<float64>>> matrix_;
+
         public:
+
+            StochasticQuantizationMatrix(const View& view)
+                : view_(view), matrix_(AllocatedCContiguousView<Tuple<float64>>(view.numRows, view.numCols)) {}
 
             void quantize(const CompleteIndexVector& outputIndices) override {
                 // TODO Implement
@@ -17,11 +25,39 @@ namespace boosting {
             void quantize(const PartialIndexVector& outputIndices) override {
                 // TODO Implement
             }
+
+            const typename IQuantizationMatrix<CContiguousView<Tuple<float64>>>::view_type& getView() const override {
+                return matrix_.getView();
+            }
     };
 
-    /**
-     * Allows to to create instances of the type `IQuantization` that uses a stochastic rounding strategy.
-     */
+    template<typename View>
+    class StochasticQuantization final : public IQuantization {
+        private:
+
+            std::unique_ptr<IQuantizationMatrix<CContiguousView<Tuple<float64>>>> quantizationMatrixPtr_;
+
+        public:
+
+            StochasticQuantization(const View& view)
+                : quantizationMatrixPtr_(std::make_unique<StochasticQuantizationMatrix<View>>(view)) {}
+
+            void quantize(const CompleteIndexVector& outputIndices) override {
+                // TODO Implement
+            }
+
+            void quantize(const PartialIndexVector& outputIndices) override {
+                // TODO Implement
+            }
+
+            void visitQuantizationMatrix(
+              IQuantization::DenseDecomposableMatrixVisitor denseDecomposableMatrixVisitor,
+              IQuantization::SparseDecomposableMatrixVisitor sparseDecomposableMatrixVisitor,
+              IQuantization::DenseNonDecomposableMatrixVisitor denseNonDecomposableMatrixVisitor) override {
+                denseDecomposableMatrixVisitor(quantizationMatrixPtr_);
+            }
+    };
+
     class StochasticQuantizationFactory final : public IQuantizationFactory {
         private:
 
@@ -36,16 +72,16 @@ namespace boosting {
 
             std::unique_ptr<IQuantization> create(
               const CContiguousView<Tuple<float64>>& statisticMatrix) const override {
-                return std::make_unique<StochasticQuantization>();
+                return std::make_unique<StochasticQuantization<CContiguousView<Tuple<float64>>>>(statisticMatrix);
             }
 
             std::unique_ptr<IQuantization> create(const SparseSetView<Tuple<float64>>& statisticMatrix) const override {
-                return std::make_unique<StochasticQuantization>();
+                return std::make_unique<StochasticQuantization<SparseSetView<Tuple<float64>>>>(statisticMatrix);
             }
 
             std::unique_ptr<IQuantization> create(
               const DenseNonDecomposableStatisticView& statisticMatrix) const override {
-                return std::make_unique<StochasticQuantization>();
+                return std::make_unique<StochasticQuantization<DenseNonDecomposableStatisticView>>(statisticMatrix);
             }
     };
 
