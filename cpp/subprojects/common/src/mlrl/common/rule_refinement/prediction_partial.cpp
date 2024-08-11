@@ -139,12 +139,8 @@ std::unique_ptr<IRuleRefinement> PartialPrediction::createRuleRefinement(IFeatur
     return indexVector_.createRuleRefinement(featureSubspace, featureIndex);
 }
 
-void PartialPrediction::apply(IStatistics& statistics, uint32 statisticIndex) const {
-    statistics.applyPrediction(statisticIndex, *this);
-}
-
-void PartialPrediction::revert(IStatistics& statistics, uint32 statisticIndex) const {
-    statistics.revertPrediction(statisticIndex, *this);
+std::unique_ptr<IStatisticsUpdate> PartialPrediction::createStatisticsUpdate(IStatistics& statistics) const {
+    return statistics.createUpdate(*this);
 }
 
 std::unique_ptr<IHead> PartialPrediction::createHead() const {

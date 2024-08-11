@@ -75,8 +75,11 @@ class AbstractRuleInduction : public IRuleInduction {
             ScoreProcessor scoreProcessor(defaultPredictionPtr);
             scoreProcessor.processScores(scoreVector);
 
+            std::unique_ptr<IStatisticsUpdate> statisticsUpdatePtr =
+              defaultPredictionPtr->createStatisticsUpdate(statistics);
+
             for (uint32 i = 0; i < numStatistics; i++) {
-                defaultPredictionPtr->apply(statistics, i);
+                statisticsUpdatePtr->applyPrediction(i);
             }
 
             modelBuilder.setDefaultRule(defaultPredictionPtr);
