@@ -71,6 +71,11 @@ typename PartialPrediction<ScoreType>::index_const_iterator PartialPrediction<Sc
 }
 
 template<typename ScoreType>
+const PartialIndexVector& PartialPrediction<ScoreType>::getIndexVector() const {
+    return indexVector_;
+}
+
+template<typename ScoreType>
 uint32 PartialPrediction<ScoreType>::getNumElements() const {
     return VectorDecorator<ResizableVector<ScoreType>>::getNumElements();
 }
