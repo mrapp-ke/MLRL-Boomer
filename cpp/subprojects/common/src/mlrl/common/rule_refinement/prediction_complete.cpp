@@ -93,12 +93,8 @@ std::unique_ptr<IRuleRefinement> CompletePrediction::createRuleRefinement(IFeatu
     return indexVector_.createRuleRefinement(featureSubspace, featureIndex);
 }
 
-void CompletePrediction::apply(IStatistics& statistics, uint32 statisticIndex) const {
-    statistics.applyPrediction(statisticIndex, *this);
-}
-
-void CompletePrediction::revert(IStatistics& statistics, uint32 statisticIndex) const {
-    statistics.revertPrediction(statisticIndex, *this);
+std::unique_ptr<IStatisticsUpdate> CompletePrediction::createStatisticsUpdate(IStatistics& statistics) const {
+    return statistics.createUpdate(*this);
 }
 
 std::unique_ptr<IHead> CompletePrediction::createHead() const {
