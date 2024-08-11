@@ -64,6 +64,24 @@ class IStatistics {
         virtual uint32 getNumOutputs() const = 0;
 
         /**
+         * Creates and returns a new object of type `IStatisticsUpdate` that allows updating the statistics based on the
+         * predictions of a rule that predicts for all available outputs.
+         *
+         * @param prediction A reference to an object of type `CompletePrediction` that stores the scores that are
+         *                   predicted by the rule
+         */
+        virtual std::unique_ptr<IStatisticsUpdate> createUpdate(const CompletePrediction& prediction) = 0;
+
+        /**
+         * Creates and returns a new object of type `IStatisticsUpdate` that allows updating the statistics based on the
+         * predictions of a rule that predicts for a subset of the available outputs.
+         *
+         * @param prediction A reference to an object of type `PartialPrediction` that stores the scores that are
+         *                   predicted by the rule
+         */
+        virtual std::unique_ptr<IStatisticsUpdate> createUpdate(const PartialPrediction& prediction) = 0;
+
+        /**
          * Updates a specific statistic based on the prediction of a rule that predicts for all available outputs.
          *
          * This function must be called for each statistic that is covered by the new rule before learning the next
