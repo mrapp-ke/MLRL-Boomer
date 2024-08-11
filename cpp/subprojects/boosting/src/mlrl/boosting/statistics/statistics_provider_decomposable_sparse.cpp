@@ -87,13 +87,13 @@ namespace boosting {
       MultiThreadingSettings multiThreadingSettings, const OutputMatrix& outputMatrix) {
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
-        std::unique_ptr<IQuantization> quantizationPtr = quantizationFactory.create();
         std::unique_ptr<ISparseDecomposableClassificationLoss> lossPtr =
           lossFactory.createSparseDecomposableClassificationLoss();
         std::unique_ptr<ISparseEvaluationMeasure> evaluationMeasurePtr =
           evaluationMeasureFactory.createSparseEvaluationMeasure();
         std::unique_ptr<SparseDecomposableStatisticMatrix> statisticMatrixPtr =
           std::make_unique<SparseDecomposableStatisticMatrix>(numExamples, numOutputs);
+        std::unique_ptr<IQuantization> quantizationPtr = quantizationFactory.create(statisticMatrixPtr->getView());
         std::unique_ptr<NumericSparseSetMatrix<float64>> scoreMatrixPtr =
           std::make_unique<NumericSparseSetMatrix<float64>>(numExamples, numOutputs);
         const ISparseDecomposableClassificationLoss* lossRawPtr = lossPtr.get();

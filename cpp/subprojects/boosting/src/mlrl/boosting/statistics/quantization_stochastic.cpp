@@ -34,7 +34,17 @@ namespace boosting {
              */
             StochasticQuantizationFactory(uint32 numBits) : numBits_(numBits) {}
 
-            std::unique_ptr<IQuantization> create() const override {
+            std::unique_ptr<IQuantization> create(
+              const CContiguousView<Tuple<float64>>& statisticMatrix) const override {
+                return std::make_unique<StochasticQuantization>();
+            }
+
+            std::unique_ptr<IQuantization> create(const SparseSetView<Tuple<float64>>& statisticMatrix) const override {
+                return std::make_unique<StochasticQuantization>();
+            }
+
+            std::unique_ptr<IQuantization> create(
+              const DenseNonDecomposableStatisticView& statisticMatrix) const override {
                 return std::make_unique<StochasticQuantization>();
             }
     };
