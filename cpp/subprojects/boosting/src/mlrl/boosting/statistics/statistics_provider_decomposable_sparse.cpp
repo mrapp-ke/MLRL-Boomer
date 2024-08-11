@@ -323,9 +323,9 @@ namespace boosting {
         typedef typename Loss::statistic_type statistic_type;
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
-        std::unique_ptr<IQuantization> quantizationPtr = quantizationFactory.create();
         std::unique_ptr<SparseDecomposableStatisticMatrix<statistic_type>> statisticMatrixPtr =
           std::make_unique<SparseDecomposableStatisticMatrix<statistic_type>>(numExamples, numOutputs);
+        std::unique_ptr<IQuantization> quantizationPtr = quantizationFactory.create(statisticMatrixPtr->getView());
         std::unique_ptr<NumericSparseSetMatrix<statistic_type>> scoreMatrixPtr =
           std::make_unique<NumericSparseSetMatrix<statistic_type>>(numExamples, numOutputs);
         const Loss* lossRawPtr = lossPtr.get();

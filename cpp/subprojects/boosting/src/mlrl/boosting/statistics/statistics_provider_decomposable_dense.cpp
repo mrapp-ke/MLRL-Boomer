@@ -14,9 +14,9 @@ namespace boosting {
         typedef typename Loss::statistic_type statistic_type;
         uint32 numExamples = outputMatrix.numRows;
         uint32 numOutputs = outputMatrix.numCols;
-        std::unique_ptr<IQuantization> quantizationPtr = quantizationFactory.create();
         std::unique_ptr<DenseDecomposableStatisticMatrix<statistic_type>> statisticMatrixPtr =
           std::make_unique<DenseDecomposableStatisticMatrix<statistic_type>>(numExamples, numOutputs);
+        std::unique_ptr<IQuantization> quantizationPtr = quantizationFactory.create(statisticMatrixPtr->getView());
         std::unique_ptr<NumericCContiguousMatrix<statistic_type>> scoreMatrixPtr =
           std::make_unique<NumericCContiguousMatrix<statistic_type>>(numExamples, numOutputs, true);
         const Loss* lossRawPtr = lossPtr.get();

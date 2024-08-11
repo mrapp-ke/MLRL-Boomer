@@ -3,6 +3,11 @@
  */
 #pragma once
 
+#include "mlrl/boosting/data/statistic.hpp"
+#include "mlrl/boosting/data/view_statistic_non_decomposable_dense.hpp"
+#include "mlrl/common/data/view_matrix_c_contiguous.hpp"
+#include "mlrl/common/data/view_matrix_sparse_set.hpp"
+
 #include <memory>
 
 namespace boosting {
@@ -28,9 +33,62 @@ namespace boosting {
             /**
              * Creates and returns a new object of type `IQuantization`.
              *
-             * @return An unique pointer to an object of type `IQuantization` that has been created
+             * @param statisticMatrix   A reference to an object of type `CContiguousView<Statistic<float32>>` that
+             *                          stores the statistics to be quantized
+             * @return                  An unique pointer to an object of type `IQuantization` that has been created
              */
-            virtual std::unique_ptr<IQuantization> create() const = 0;
+            virtual std::unique_ptr<IQuantization> create(
+              const CContiguousView<Statistic<float32>>& statisticMatrix) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IQuantization`.
+             *
+             * @param statisticMatrix   A reference to an object of type `CContiguousView<Statistic<float64>>` that
+             *                          stores the statistics to be quantized
+             * @return                  An unique pointer to an object of type `IQuantization` that has been created
+             */
+            virtual std::unique_ptr<IQuantization> create(
+              const CContiguousView<Statistic<float64>>& statisticMatrix) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IQuantization`.
+             *
+             * @param statisticMatrix   A reference to an object of type `SparseSetView<Statistic<float32>>` that stores
+             *                          the statistics to be quantized
+             * @return                  An unique pointer to an object of type `IQuantization` that has been created
+             */
+            virtual std::unique_ptr<IQuantization> create(
+              const SparseSetView<Statistic<float32>>& statisticMatrix) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IQuantization`.
+             *
+             * @param statisticMatrix   A reference to an object of type `SparseSetView<Statistic<float64>>` that stores
+             *                          the statistics to be quantized
+             * @return                  An unique pointer to an object of type `IQuantization` that has been created
+             */
+            virtual std::unique_ptr<IQuantization> create(
+              const SparseSetView<Statistic<float64>>& statisticMatrix) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IQuantization`.
+             *
+             * @param statisticMatrix   A reference to an object of type `DenseNonDecomposableStatisticView<float32>`
+             *                          that stores the statistics to be quantized
+             * @return                  An unique pointer to an object of type `IQuantization` that has been created
+             */
+            virtual std::unique_ptr<IQuantization> create(
+              const DenseNonDecomposableStatisticView<float32>& statisticMatrix) const = 0;
+
+            /**
+             * Creates and returns a new object of type `IQuantization`.
+             *
+             * @param statisticMatrix   A reference to an object of type `DenseNonDecomposableStatisticView<float64>`
+             *                          that stores the statistics to be quantized
+             * @return                  An unique pointer to an object of type `IQuantization` that has been created
+             */
+            virtual std::unique_ptr<IQuantization> create(
+              const DenseNonDecomposableStatisticView<float64>& statisticMatrix) const = 0;
     };
 
     /**
