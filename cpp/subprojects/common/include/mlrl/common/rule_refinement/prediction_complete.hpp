@@ -86,6 +86,14 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<ScoreTyp
          */
         index_const_iterator indices_cend() const;
 
+        /**
+         * Returns a reference to the `CompleteIndexVector` that stores the indices for which the rule predicts.
+         *
+         * @return A reference to an object of type `CompleteIndexVector` that stores the indices for which the rule
+         *         predicts
+         */
+        const CompleteIndexVector& getIndexVector() const;
+
         uint32 getNumElements() const override;
 
         void sort() override;
