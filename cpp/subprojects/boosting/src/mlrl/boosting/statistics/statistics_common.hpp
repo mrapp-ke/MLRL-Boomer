@@ -485,6 +485,41 @@ namespace boosting {
     template<typename OutputMatrix, typename StatisticVector, typename StatisticMatrix, typename ScoreMatrix,
              typename LossFunction, typename EvaluationMeasure, typename RuleEvaluationFactory>
     class AbstractStatistics : virtual public IBoostingStatistics {
+        private:
+
+            /**
+             * Allows updating statistics based on the predictions of a rule.
+             *
+             * @tparam Prediction The type of the predictions
+             */
+            template<typename Prediction>
+            class Update final : public IStatisticsUpdate {
+                private:
+
+                    AbstractStatistics& statistics_;
+
+                    const Prediction& prediction_;
+
+                public:
+
+                    /**
+                     * @param statistics    A reference to an object of type `AbstractStatistics` that should be used
+                     * @param prediction    The predictions of the rule
+                     */
+                    Update(AbstractStatistics& statistics, const Prediction& prediction)
+                        : statistics_(statistics), prediction_(prediction) {}
+
+                    void applyPrediction(uint32 statisticIndex) override {
+                        applyPredictionInternally(statisticIndex, prediction_, *statistics_.scoreMatrixPtr_);
+                        statistics_.updateStatistics(statisticIndex, prediction_);
+                    }
+
+                    void revertPrediction(uint32 statisticIndex) override {
+                        revertPredictionInternally(statisticIndex, prediction_, *statistics_.scoreMatrixPtr_);
+                        statistics_.updateStatistics(statisticIndex, prediction_);
+                    }
+            };
+
         protected:
 
             /**
@@ -574,35 +609,17 @@ namespace boosting {
             }
 
             /**
-             * @see `IStatistics::applyPrediction`
+             * @see `IStatistics::createUpdate`
              */
-            void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                this->updateStatistics(statisticIndex, prediction);
+            std::unique_ptr<IStatisticsUpdate> createUpdate(const CompletePrediction& prediction) override final {
+                return std::make_unique<Update<CompletePrediction>>(*this, prediction);
             }
 
             /**
-             * @see `IStatistics::applyPrediction`
+             * @see `IStatistics::createUpdate`
              */
-            void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                applyPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                this->updateStatistics(statisticIndex, prediction);
-            }
-
-            /**
-             * @see `IStatistics::revertPrediction`
-             */
-            void revertPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                this->updateStatistics(statisticIndex, prediction);
-            }
-
-            /**
-             * @see `IStatistics::revertPrediction`
-             */
-            void revertPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                revertPredictionInternally(statisticIndex, prediction, *scoreMatrixPtr_);
-                this->updateStatistics(statisticIndex, prediction);
+            std::unique_ptr<IStatisticsUpdate> createUpdate(const PartialPrediction& prediction) override final {
+                return std::make_unique<Update<PartialPrediction>>(*this, prediction);
             }
 
             /**
