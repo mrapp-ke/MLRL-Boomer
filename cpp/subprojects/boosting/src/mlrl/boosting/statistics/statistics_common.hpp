@@ -567,12 +567,20 @@ namespace boosting {
             /**
              * Must be implemented by subclasses in order to update the statistics for all available outputs at a
              * specific index.
+             *
+             * @param statisticIndex    The index of the statistics that should be updated
+             * @param prediction        A reference to an object of type `CompletePrediction` that stores the
+             *                          predictions according to which the statistics should be updated
              */
             virtual void updateStatistics(uint32 statisticIndex, const CompletePrediction& prediction) = 0;
 
             /**
              * Must be implemented by subclasses in order to update the statistics for a subset of the available outputs
              * at a specific index.
+             *
+             * @param statisticIndex    The index of the statistics that should be updated
+             * @param prediction        A reference to an object of type `PartialPrediction` that stores the predictions
+             *                          according to which the statistics should be updated
              */
             virtual void updateStatistics(uint32 statisticIndex, const PartialPrediction& prediction) = 0;
 
