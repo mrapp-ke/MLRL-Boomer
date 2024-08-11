@@ -679,42 +679,6 @@ namespace seco {
             }
 
             /**
-             * @see `IStatistics::applyPrediction`
-             */
-            void applyPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                applyPredictionInternally<CompletePrediction, CoverageMatrix>(
-                  statisticIndex, prediction, *coverageMatrixPtr_, majorityLabelVectorPtr_->cbegin(),
-                  majorityLabelVectorPtr_->cend());
-            }
-
-            /**
-             * @see `IStatistics::applyPrediction`
-             */
-            void applyPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                applyPredictionInternally<PartialPrediction, CoverageMatrix>(
-                  statisticIndex, prediction, *coverageMatrixPtr_, majorityLabelVectorPtr_->cbegin(),
-                  majorityLabelVectorPtr_->cend());
-            }
-
-            /**
-             * @see `IStatistics::revertPrediction`
-             */
-            void revertPrediction(uint32 statisticIndex, const CompletePrediction& prediction) override final {
-                revertPredictionInternally<CompletePrediction, CoverageMatrix>(
-                  statisticIndex, prediction, *coverageMatrixPtr_, majorityLabelVectorPtr_->cbegin(),
-                  majorityLabelVectorPtr_->cend());
-            }
-
-            /**
-             * @see `IStatistics::revertPrediction`
-             */
-            void revertPrediction(uint32 statisticIndex, const PartialPrediction& prediction) override final {
-                revertPredictionInternally<PartialPrediction, CoverageMatrix>(
-                  statisticIndex, prediction, *coverageMatrixPtr_, majorityLabelVectorPtr_->cbegin(),
-                  majorityLabelVectorPtr_->cend());
-            }
-
-            /**
              * @see `IStatistics::evaluatePrediction`
              */
             float64 evaluatePrediction(uint32 statisticIndex) const override final {
