@@ -118,6 +118,8 @@ class CompletePrediction final : public VectorDecorator<AllocatedVector<float64>
         std::unique_ptr<IRuleRefinement> createRuleRefinement(IFeatureSubspace& featureSubspace,
                                                               uint32 featureIndex) const override;
 
+        std::unique_ptr<IStatisticsUpdate> createStatisticsUpdate(IStatistics& statistics) const override;
+
         void apply(IStatistics& statistics, uint32 statisticIndex) const override;
 
         void revert(IStatistics& statistics, uint32 statisticIndex) const override;
