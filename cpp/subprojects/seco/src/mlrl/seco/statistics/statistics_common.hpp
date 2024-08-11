@@ -574,6 +574,41 @@ namespace seco {
     class AbstractStatistics : virtual public ICoverageStatistics {
         private:
 
+            /**
+             * Allows updating statistics based on the predictions of a rule.
+             *
+             * @tparam Prediction The type of the predictions
+             */
+            template<typename Prediction>
+            class Update final : public IStatisticsUpdate {
+                private:
+
+                    AbstractStatistics& statistics_;
+
+                    const Prediction& prediction_;
+
+                public:
+
+                    /**
+                     * @param statistics    A reference to an object of type `AbstractStatistics` that should be used
+                     * @param prediction    The predictions of the rule
+                     */
+                    Update(AbstractStatistics& statistics, const Prediction& prediction)
+                        : statistics_(statistics), prediction_(prediction) {}
+
+                    void applyPrediction(uint32 statisticIndex) override {
+                        applyPredictionInternally(statisticIndex, prediction_, *statistics_.coverageMatrixPtr_,
+                                                  statistics_.majorityLabelVectorPtr_->cbegin(),
+                                                  statistics_.majorityLabelVectorPtr_->cend());
+                    }
+
+                    void revertPrediction(uint32 statisticIndex) override {
+                        revertPredictionInternally(statisticIndex, prediction_, *statistics_.coverageMatrixPtr_,
+                                                   statistics_.majorityLabelVectorPtr_->cbegin(),
+                                                   statistics_.majorityLabelVectorPtr_->cend());
+                    }
+            };
+
             const LabelMatrix& labelMatrix_;
 
             const std::unique_ptr<BinarySparseArrayVector> majorityLabelVectorPtr_;
@@ -627,6 +662,20 @@ namespace seco {
              */
             uint32 getNumOutputs() const override final {
                 return labelMatrix_.numCols;
+            }
+
+            /**
+             * @see `IStatistics::createUpdate`
+             */
+            std::unique_ptr<IStatisticsUpdate> createUpdate(const CompletePrediction& prediction) override final {
+                return std::make_unique<Update<CompletePrediction>>(*this, prediction);
+            }
+
+            /**
+             * @see `IStatistics::createUpdate`
+             */
+            std::unique_ptr<IStatisticsUpdate> createUpdate(const PartialPrediction& prediction) override final {
+                return std::make_unique<Update<PartialPrediction>>(*this, prediction);
             }
 
             /**
