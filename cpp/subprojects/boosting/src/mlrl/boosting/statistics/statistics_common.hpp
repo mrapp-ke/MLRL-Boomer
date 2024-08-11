@@ -457,20 +457,6 @@ namespace boosting {
             }
     };
 
-    template<typename Prediction, typename ScoreMatrix>
-    static inline void applyPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                 ScoreMatrix& scoreMatrix) {
-        scoreMatrix.addToRowFromSubset(statisticIndex, prediction.values_cbegin(), prediction.values_cend(),
-                                       prediction.indices_cbegin(), prediction.indices_cend());
-    }
-
-    template<typename Prediction, typename ScoreMatrix>
-    static inline void revertPredictionInternally(uint32 statisticIndex, const Prediction& prediction,
-                                                  ScoreMatrix& scoreMatrix) {
-        scoreMatrix.removeFromRowFromSubset(statisticIndex, prediction.values_cbegin(), prediction.values_cend(),
-                                            prediction.indices_cbegin(), prediction.indices_cend());
-    }
-
     /**
      * An abstract base class for all statistics that provide access to gradients and Hessians that are calculated
      * according to a loss function.
@@ -515,12 +501,16 @@ namespace boosting {
                         : statistics_(statistics), prediction_(prediction) {}
 
                     void applyPrediction(uint32 statisticIndex) override {
-                        applyPredictionInternally(statisticIndex, prediction_, *statistics_.scoreMatrixPtr_);
+                        statistics_.scoreMatrixPtr_->addToRowFromSubset(
+                          statisticIndex, prediction_.values_cbegin(), prediction_.values_cend(),
+                          prediction_.indices_cbegin(), prediction_.indices_cend());
                         statistics_.updateStatistics(statisticIndex, prediction_);
                     }
 
                     void revertPrediction(uint32 statisticIndex) override {
-                        revertPredictionInternally(statisticIndex, prediction_, *statistics_.scoreMatrixPtr_);
+                        statistics_.scoreMatrixPtr_->removeFromRowFromSubset(
+                          statisticIndex, prediction_.values_cbegin(), prediction_.values_cend(),
+                          prediction_.indices_cbegin(), prediction_.indices_cend());
                         statistics_.updateStatistics(statisticIndex, prediction_);
                     }
 
