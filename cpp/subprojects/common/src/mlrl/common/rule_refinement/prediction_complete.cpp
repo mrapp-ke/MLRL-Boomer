@@ -97,14 +97,6 @@ std::unique_ptr<IStatisticsUpdate> CompletePrediction::createStatisticsUpdate(IS
     return statistics.createUpdate(*this);
 }
 
-void CompletePrediction::apply(IStatistics& statistics, uint32 statisticIndex) const {
-    statistics.applyPrediction(statisticIndex, *this);
-}
-
-void CompletePrediction::revert(IStatistics& statistics, uint32 statisticIndex) const {
-    statistics.revertPrediction(statisticIndex, *this);
-}
-
 std::unique_ptr<IHead> CompletePrediction::createHead() const {
     uint32 numElements = this->getNumElements();
     std::unique_ptr<CompleteHead> headPtr = std::make_unique<CompleteHead>(numElements);

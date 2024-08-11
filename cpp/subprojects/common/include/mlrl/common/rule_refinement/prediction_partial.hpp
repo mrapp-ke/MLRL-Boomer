@@ -154,9 +154,5 @@ class PartialPrediction final : public ResizableVectorDecorator<VectorDecorator<
 
         std::unique_ptr<IStatisticsUpdate> createStatisticsUpdate(IStatistics& statistics) const override;
 
-        void apply(IStatistics& statistics, uint32 statisticIndex) const override;
-
-        void revert(IStatistics& statistics, uint32 statisticIndex) const override;
-
         std::unique_ptr<IHead> createHead() const override;
 };
