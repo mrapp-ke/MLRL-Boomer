@@ -5,7 +5,13 @@ namespace boosting {
     /**
      * An implementation of the type `IQuantization` that does not actually perform any quantization.
      */
-    class NoQuantization final : public IQuantization {};
+    class NoQuantization final : public IQuantization {
+        public:
+
+            void quantize(const CompleteIndexVector& outputIndices) override {}
+
+            void quantize(const PartialIndexVector& outputIndices) override {}
+    };
 
     /**
      * Allows to to create instances of the type `IQuantization` that do not actually perform any quantization.

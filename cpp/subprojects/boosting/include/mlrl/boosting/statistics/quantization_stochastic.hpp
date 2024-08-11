@@ -4,7 +4,6 @@
 #pragma once
 
 #include "mlrl/boosting/statistics/quantization.hpp"
-#include "mlrl/common/data/types.hpp"  // TODO Remove later
 
 #include <memory>
 

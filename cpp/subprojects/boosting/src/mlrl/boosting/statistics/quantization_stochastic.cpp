@@ -7,7 +7,17 @@ namespace boosting {
     /**
      * An implementation of the type `IQuantization` that uses a stochastic rounding strategy.
      */
-    class StochasticQuantization final : public IQuantization {};
+    class StochasticQuantization final : public IQuantization {
+        public:
+
+            void quantize(const CompleteIndexVector& outputIndices) override {
+                // TODO Implement
+            }
+
+            void quantize(const PartialIndexVector& outputIndices) override {
+                // TODO Implement
+            }
+    };
 
     /**
      * Allows to to create instances of the type `IQuantization` that uses a stochastic rounding strategy.

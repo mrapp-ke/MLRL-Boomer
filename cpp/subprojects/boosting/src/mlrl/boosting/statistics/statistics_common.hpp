@@ -515,7 +515,7 @@ namespace boosting {
                     }
 
                     void commit() override {
-                        // TODO Implement
+                        statistics_.quantizationPtr_->quantize(prediction_.getIndexVector());
                     }
             };
 
