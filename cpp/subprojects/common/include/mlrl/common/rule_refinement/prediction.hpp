@@ -66,22 +66,6 @@ class IPrediction : public IIndexVector {
         virtual std::unique_ptr<IStatisticsUpdate> createStatisticsUpdate(IStatistics& statistics) const = 0;
 
         /**
-         * Updates given statistics by applying this prediction.
-         *
-         * @param statistics        A reference to an object of type `IStatistics` to be updated
-         * @param statisticIndex    The index of the statistic to be updated
-         */
-        virtual void apply(IStatistics& statistics, uint32 statisticIndex) const = 0;
-
-        /**
-         * Updates given statistics by reverting this prediction.
-         *
-         * @param statistics        A reference to an object of type `IStatistics` to be updated
-         * @param statisticIndex    The index of the statistic to be updated
-         */
-        virtual void revert(IStatistics& statistics, uint32 statisticIndex) const = 0;
-
-        /**
          * Creates and returns a new subset of the given statistics that only contains the outputs whose indices are
          * stored in this vector.
          *
