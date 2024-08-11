@@ -42,6 +42,10 @@ PartialPrediction::index_const_iterator PartialPrediction::indices_cend() const 
     return indexVector_.cend();
 }
 
+const PartialIndexVector& PartialPrediction::getIndexVector() const {
+    return indexVector_;
+}
+
 uint32 PartialPrediction::getNumElements() const {
     return ResizableVectorDecorator<VectorDecorator<ResizableVector<float64>>>::getNumElements();
 }
