@@ -57,6 +57,11 @@ typename CompletePrediction<ScoreType>::index_const_iterator CompletePrediction<
 }
 
 template<typename ScoreType>
+const CompleteIndexVector& CompletePrediction<ScoreType>::getIndexVector() const {
+    return indexVector_;
+}
+
+template<typename ScoreType>
 uint32 CompletePrediction<ScoreType>::getNumElements() const {
     return VectorDecorator<AllocatedVector<ScoreType>>::getNumElements();
 }
