@@ -54,13 +54,14 @@ namespace boosting {
      * @tparam Loss               The type of the non-decomposable loss function
      * @tparam OutputMatrix       The type of the matrix that provides access to the ground truth of the training
      *                            examples
+     * @tparam QuantizationMatrix The type of the matrix that provides access to quantized gradients and Hessians
      * @tparam EvaluationMeasure  The type of the evaluation measure that should be used to access the quality of
      *                            predictions
      */
-    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure>
+    template<typename Loss, typename OutputMatrix, typename QuantizationMatrix, typename EvaluationMeasure>
     class DenseNonDecomposableStatistics final
         : public AbstractNonDecomposableStatistics<
-            OutputMatrix, DenseNonDecomposableStatisticVector, DenseNonDecomposableStatisticMatrix,
+            OutputMatrix, QuantizationMatrix, DenseNonDecomposableStatisticVector, DenseNonDecomposableStatisticMatrix,
             NumericCContiguousMatrix<float64>, Loss, EvaluationMeasure, INonDecomposableRuleEvaluationFactory,
             IDecomposableRuleEvaluationFactory> {
         public:
@@ -91,9 +92,9 @@ namespace boosting {
                                            std::unique_ptr<DenseNonDecomposableStatisticMatrix> statisticMatrixPtr,
                                            std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
                 : AbstractNonDecomposableStatistics<
-                    OutputMatrix, DenseNonDecomposableStatisticVector, DenseNonDecomposableStatisticMatrix,
-                    NumericCContiguousMatrix<float64>, Loss, EvaluationMeasure, INonDecomposableRuleEvaluationFactory,
-                    IDecomposableRuleEvaluationFactory>(
+                    OutputMatrix, QuantizationMatrix, DenseNonDecomposableStatisticVector,
+                    DenseNonDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>, Loss, EvaluationMeasure,
+                    INonDecomposableRuleEvaluationFactory, IDecomposableRuleEvaluationFactory>(
                     std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
                     ruleEvaluationFactory, outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 
@@ -140,7 +141,8 @@ namespace boosting {
                     }
                 }
 
-                return std::make_unique<DenseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure>>(
+                return std::make_unique<
+                  DenseDecomposableStatistics<Loss, OutputMatrix, QuantizationMatrix, EvaluationMeasure>>(
                   std::move(this->quantizationPtr_), std::move(this->lossPtr_), std::move(this->evaluationMeasurePtr_),
                   ruleEvaluationFactory, this->outputMatrix_, std::move(decomposableStatisticMatrixPtr),
                   std::move(this->scoreMatrixPtr_));
@@ -188,7 +190,8 @@ namespace boosting {
         };
         auto denseNonDecomposableMatrixVisitor =
           [&](std::unique_ptr<IQuantizationMatrix<DenseNonDecomposableStatisticView>>& ptr) {
-            statisticsPtr = std::make_unique<DenseNonDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure>>(
+            statisticsPtr = std::make_unique<DenseNonDecomposableStatistics<
+              Loss, OutputMatrix, IQuantizationMatrix<DenseNonDecomposableStatisticView>, EvaluationMeasure>>(
               std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory,
               outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
         };

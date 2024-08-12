@@ -28,6 +28,7 @@ namespace boosting {
      *
      * @tparam OutputMatrix             The type of the matrix that provides access to the ground truth of the training
      *                                  examples
+     * @tparam QuantizationMatrix       The type of the matrix that provides access to quantized gradients and Hessians
      * @tparam StatisticVector          The type of the vectors that are used to store gradients and Hessians
      * @tparam StatisticMatrix          The type of the matrix that provides access to the gradients and Hessians
      * @tparam ScoreMatrix              The type of the matrices that are used to store predicted scores
@@ -38,11 +39,11 @@ namespace boosting {
      *                                  used for calculating the predictions of rules, as well as corresponding quality
      *                                  scores
      */
-    template<typename OutputMatrix, typename StatisticVector, typename StatisticMatrix, typename ScoreMatrix,
-             typename LossFunction, typename EvaluationMeasure, typename RuleEvaluationFactory>
+    template<typename OutputMatrix, typename QuantizationMatrix, typename StatisticVector, typename StatisticMatrix,
+             typename ScoreMatrix, typename LossFunction, typename EvaluationMeasure, typename RuleEvaluationFactory>
     class AbstractDecomposableStatistics
-        : public AbstractStatistics<OutputMatrix, StatisticVector, StatisticMatrix, ScoreMatrix, LossFunction,
-                                    EvaluationMeasure, RuleEvaluationFactory>,
+        : public AbstractStatistics<OutputMatrix, QuantizationMatrix, StatisticVector, StatisticMatrix, ScoreMatrix,
+                                    LossFunction, EvaluationMeasure, RuleEvaluationFactory>,
           virtual public IDecomposableStatistics<RuleEvaluationFactory> {
         protected:
 
@@ -86,8 +87,8 @@ namespace boosting {
                                            const OutputMatrix& outputMatrix,
                                            std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                                            std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-                : AbstractStatistics<OutputMatrix, StatisticVector, StatisticMatrix, ScoreMatrix, LossFunction,
-                                     EvaluationMeasure, RuleEvaluationFactory>(
+                : AbstractStatistics<OutputMatrix, QuantizationMatrix, StatisticVector, StatisticMatrix, ScoreMatrix,
+                                     LossFunction, EvaluationMeasure, RuleEvaluationFactory>(
                     std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
                     ruleEvaluationFactory, outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 

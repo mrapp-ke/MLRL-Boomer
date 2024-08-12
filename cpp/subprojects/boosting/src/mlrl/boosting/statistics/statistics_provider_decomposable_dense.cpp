@@ -36,7 +36,8 @@ namespace boosting {
         std::unique_ptr<IDecomposableStatistics<IDecomposableRuleEvaluationFactory>> statisticsPtr;
         auto denseDecomposableMatrixVisitor =
           [&](std::unique_ptr<IQuantizationMatrix<CContiguousView<Tuple<float64>>>>& ptr) {
-            statisticsPtr = std::make_unique<DenseDecomposableStatistics<Loss, OutputMatrix, EvaluationMeasure>>(
+            statisticsPtr = std::make_unique<DenseDecomposableStatistics<
+              Loss, OutputMatrix, IQuantizationMatrix<CContiguousView<Tuple<float64>>>, EvaluationMeasure>>(
               std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr), ruleEvaluationFactory,
               outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr));
         };

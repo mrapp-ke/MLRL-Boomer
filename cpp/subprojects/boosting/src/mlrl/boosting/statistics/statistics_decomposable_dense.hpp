@@ -52,11 +52,12 @@ namespace boosting {
      * @tparam Loss                 The type of the loss function
      * @tparam OutputMatrix         The type of the matrix that provides access to the ground truth of the training
      *                              examples
+     * @tparam QuantizationMatrix   The type of the matrix that provides access to quantized gradients and Hessians
      * @tparam EvaluationMeasure    The type of the evaluation that should be used to access the quality of predictions
      */
-    template<typename Loss, typename OutputMatrix, typename EvaluationMeasure>
+    template<typename Loss, typename OutputMatrix, typename QuantizationMatrix, typename EvaluationMeasure>
     class DenseDecomposableStatistics final
-        : public AbstractDecomposableStatistics<OutputMatrix, DenseDecomposableStatisticVector,
+        : public AbstractDecomposableStatistics<OutputMatrix, QuantizationMatrix, DenseDecomposableStatisticVector,
                                                 DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
                                                 Loss, EvaluationMeasure, IDecomposableRuleEvaluationFactory> {
         public:
@@ -85,7 +86,7 @@ namespace boosting {
                                         const OutputMatrix& outputMatrix,
                                         std::unique_ptr<DenseDecomposableStatisticMatrix> statisticMatrixPtr,
                                         std::unique_ptr<NumericCContiguousMatrix<float64>> scoreMatrixPtr)
-                : AbstractDecomposableStatistics<OutputMatrix, DenseDecomposableStatisticVector,
+                : AbstractDecomposableStatistics<OutputMatrix, QuantizationMatrix, DenseDecomposableStatisticVector,
                                                  DenseDecomposableStatisticMatrix, NumericCContiguousMatrix<float64>,
                                                  Loss, EvaluationMeasure, IDecomposableRuleEvaluationFactory>(
                     std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),

@@ -26,6 +26,8 @@ namespace boosting {
      *
      * @tparam OutputMatrix                         The type of the matrix that provides access to the ground truth of
      *                                              the training examples
+     * @tparam QuantizationMatrix                   The type of the matrix that provides access to quantized gradients
+     *                                              and Hessians
      * @tparam StatisticVector                      The type of the vectors that are used to store gradients and
      *                                              Hessians
      * @tparam StatisticMatrix                      The type of the matrix that stores the gradients and Hessians
@@ -43,12 +45,12 @@ namespace boosting {
      *                                              their overall quality, based on gradients and Hessians that have
      *                                              been calculated according to a decomposable loss function
      */
-    template<typename OutputMatrix, typename StatisticVector, typename StatisticMatrix, typename ScoreMatrix,
-             typename LossFunction, typename EvaluationMeasure, typename NonDecomposableRuleEvaluationFactory,
-             typename DecomposableRuleEvaluationFactory>
+    template<typename OutputMatrix, typename QuantizationMatrix, typename StatisticVector, typename StatisticMatrix,
+             typename ScoreMatrix, typename LossFunction, typename EvaluationMeasure,
+             typename NonDecomposableRuleEvaluationFactory, typename DecomposableRuleEvaluationFactory>
     class AbstractNonDecomposableStatistics
-        : public AbstractStatistics<OutputMatrix, StatisticVector, StatisticMatrix, ScoreMatrix, LossFunction,
-                                    EvaluationMeasure, NonDecomposableRuleEvaluationFactory>,
+        : public AbstractStatistics<OutputMatrix, QuantizationMatrix, StatisticVector, StatisticMatrix, ScoreMatrix,
+                                    LossFunction, EvaluationMeasure, NonDecomposableRuleEvaluationFactory>,
           virtual public INonDecomposableStatistics<NonDecomposableRuleEvaluationFactory,
                                                     DecomposableRuleEvaluationFactory> {
         protected:
@@ -94,8 +96,8 @@ namespace boosting {
                                               const OutputMatrix& outputMatrix,
                                               std::unique_ptr<StatisticMatrix> statisticMatrixPtr,
                                               std::unique_ptr<ScoreMatrix> scoreMatrixPtr)
-                : AbstractStatistics<OutputMatrix, StatisticVector, StatisticMatrix, ScoreMatrix, LossFunction,
-                                     EvaluationMeasure, NonDecomposableRuleEvaluationFactory>(
+                : AbstractStatistics<OutputMatrix, QuantizationMatrix, StatisticVector, StatisticMatrix, ScoreMatrix,
+                                     LossFunction, EvaluationMeasure, NonDecomposableRuleEvaluationFactory>(
                     std::move(quantizationPtr), std::move(lossPtr), std::move(evaluationMeasurePtr),
                     ruleEvaluationFactory, outputMatrix, std::move(statisticMatrixPtr), std::move(scoreMatrixPtr)) {}
 
